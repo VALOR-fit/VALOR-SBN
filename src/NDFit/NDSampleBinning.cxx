@@ -10,29 +10,103 @@ ChangeLog:
 
 #include "NDFit/NDSampleBinning.h"
 
-using namespace t2kana;
-using namespace t2kana::conv;
+using namespace valor::lbnx;
+using namespace valor::lbnx::conv;
 
 //________________________________________________________________________________________
-int util::NumErecoBins(NDSample_t sample, int zone)
+const int util::NumErecoBins(NDSample_t sample, int zone)
 {
-    case (ksNDNuMuCC       ) : return "numuCCincl";   break;
-    case (ksNDNuMuCC1Trk   ) : return "numuCC1trk";   break;
+  switch(sample) 
+  {
+    case (ksNDNuMuCC) : 
+    {
+      return kNErecoBinsSimple;  
+      break;
+    }
+    case (ksNDNuMuCC1Trk) : 
+    {
+      if(zone >=0 && zone < kNBinZonesQELike) 
+        return kNErecoBinsQELike[zone]; 
+      else 
+        return 0;
+      break;
+    }
+    default: 
+      return 0;
+  }//sample
 
-}
-//________________________________________________________________________________________
-double * util::ErecoBinEdges(NDSample_t sample, int zone)
-{
   return 0;
 }
 //________________________________________________________________________________________
-int util:: NumYrecoBins(NDSample_t sample, int zone)
+const double * util::ErecoBinEdges(NDSample_t sample, int zone)
 {
+  switch(sample) 
+  {
+    case (ksNDNuMuCC) : 
+    {
+      return kErecoBinEdgesSimple;  
+      break;
+    }
+    case (ksNDNuMuCC1Trk) : 
+    {
+      if(zone >=0 && zone < kNBinZonesQELike) 
+        return kErecoBinEdgesQELike[zone]; 
+      else 
+        return 0;
+      break;
+    }
+    default: 
+      return 0;
+  }//sample
+
   return 0;
 }
 //________________________________________________________________________________________
-double * util::YrecoBinEdges(NDSample_t sample, int zone)
+const int util::NumYrecoBins(NDSample_t sample, int zone)
 {
+  switch(sample) 
+  {
+    case (ksNDNuMuCC) : 
+    {
+      return kNYrecoBinsSimple;  
+      break;
+    }
+    case (ksNDNuMuCC1Trk) : 
+    {
+      if(zone >=0 && zone < kNBinZonesQELike) 
+        return kNYrecoBinsQELike[zone]; 
+      else 
+        return 0;
+      break;
+    }
+    default: 
+      return 0;
+  }//sample
+
+  return 0;
+}
+//________________________________________________________________________________________
+const double * util::YrecoBinEdges(NDSample_t sample, int zone)
+{
+  switch(sample) 
+  {
+    case (ksNDNuMuCC) : 
+    {
+      return kYrecoBinEdgesSimple;  
+      break;
+    }
+    case (ksNDNuMuCC1Trk) : 
+    {
+      if(zone >=0 && zone < kNBinZonesQELike) 
+        return kYrecoBinEdgesQELike[zone]; 
+      else 
+        return 0;
+      break;
+    }
+    default: 
+      return 0;
+  }//sample
+
   return 0;
 }
 //________________________________________________________________________________________

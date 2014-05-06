@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     t2kana::NDModel
+\class     valor::NDModel
 
 \brief     LBNE ND Model class. Derives from FitModelABC
 
@@ -19,8 +19,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _t2kana_nd_model_h_
-#define _t2kana_nd_model_h_
+#ifndef _valor_lbnx_nd_model_h_
+#define _valor_lbnx_nd_model_h_
 
 #include <string>
 #include <TObjArray.h>
@@ -33,7 +33,7 @@
 #include "NDFit/NDSampleBinning.h"
 #include "NDFit/NDSampleModes.h"
 
-namespace t2kana {
+namespace valor {
 
 class NDModel: public FitModelABC
 {
@@ -69,7 +69,7 @@ private:
 
 };
 
-} // t2kana
+} // valor
 
 #endif
 

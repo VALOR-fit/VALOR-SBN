@@ -6,7 +6,7 @@
 
 #
 #
-PACKAGE_LIB                   = $(VALOR_LBNX)/lib/$(LIBNAME)-$(VALOR_VERSION).$(DllSuf)
+PACKAGE_LIB                   = $(VALOR_LBNX)/lib/$(LIBNAME)-$(VALOR_APP_VERSION)-$(VALOR_FMWK_VERSION).$(DllSuf)
 PACKAGE_LIBNOVRS              = $(VALOR_LBNX)/lib/$(LIBNAME).$(DllSuf)
 PACKAGE_LIBMACLINK            = $(VALOR_LBNX)/lib/$(LIBNAME).$(DllLinkSuf)
 

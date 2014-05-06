@@ -27,8 +27,8 @@ ChangeLog:
 
 using std::endl;
 
-using namespace t2kana;
-using namespace t2kana::conv;
+using namespace valor;
+using namespace valor::conv;
 
 //________________________________________________________________________________________
 NDModel::NDModel() :
@@ -143,11 +143,13 @@ bool NDModel::Write(
 //________________________________________________________________________________________
 void NDModel::Book(void)
 {
+/*
   for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNNDModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
       fMCTemplNom[isample][imode][izone] = ?
     }
   }
+*/
 }
 //________________________________________________________________________________________

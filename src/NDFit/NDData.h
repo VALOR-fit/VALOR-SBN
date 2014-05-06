@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     t2kana::NDData
+\class     valor::lbnx::NDData
 
 \brief     LBNE ND Data class. Derives from FitDataABC
 
@@ -21,8 +21,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _t2kana_nd_data_h_
-#define _t2kana_nd_data_h_
+#ifndef _valor_lbnx_nd_data_h_
+#define _valor_lbnx_nd_data_h_
 
 #include <string>
 
@@ -31,7 +31,10 @@
 class TObjArray;
 class TH1D;
 
-namespace t2kana {
+using namespace valor;
+
+namespace valor {
+namespace lbnx {
 
 class NDData: public FitDataABC
 {
@@ -60,7 +63,8 @@ private:
 
 };
 
-} // t2kana
+} // lbnx
+} // valor
 
 #endif
 

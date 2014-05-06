@@ -15,6 +15,8 @@ ChangeLog:
 #include <TH1D.h>
 
 #include "NDFit/NDData.h"
+#include "NDFit/NDSample.h"
+#include "NDFit/NDSampleBinning.h"
 #include "FitCore/FitModelABC.h"
 #include "FitCore/FitParamList.h"
 #include "FitCore/PhysHypothesis.h"
@@ -23,8 +25,9 @@ ChangeLog:
 #include "Utilities/UtlNumStat.h"
 #include "Messenger/Messenger.h"
 
-using namespace t2kana;
-using namespace t2kana::conv;
+using namespace valor;
+using namespace valor::lbnx;
+using namespace valor::lbnx::conv;
 
 //________________________________________________________________________________________
 NDData::NDData() :

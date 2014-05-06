@@ -21,13 +21,14 @@
 */
 //____________________________________________________________________________
 
-#ifndef _t2kana_nd_sample_binning_h_
-#define _t2kana_nd_sample_binning_h_
+#ifndef _valor_lbnx_nd_sample_binning_h_
+#define _valor_lbnx_nd_sample_binning_h_
 
 #include "NDFit/NDSample.h"
 
-namespace t2kana {
-namespace conv   {
+namespace valor {
+namespace lbnx  {
+namespace conv  {
 
 static const int kNMaxBinZones = 4;
 
@@ -111,27 +112,27 @@ static const double kErecoBinEdgesSimple[kNErecoBinsSimple+1] =
 
 static const int kNYrecoBinsSimple = 10;
 
-static const double kYrecoBinEdgesSimple[kYErecoBinsSimple+1] = 
+static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] = 
 {
     0.000,  0.100,  0.200,  0.300,  0.400,  0.500,  0.600,  0.700,  0.800,  0.900,
     1.000
 };
 
-
-
 } // conv
 
+//
+// Associated utility functions
+//
 
 namespace util   {
-
-   int      NumErecoBins  (conv::NDSample_t sample, int zone);
-   double * ErecoBinEdges (conv::NDSample_t sample, int zone);
-   int      NumYrecoBins  (conv::NDSample_t sample, int zone);
-   double * YrecoBinEdges (conv::NDSample_t sample, int zone);
-
+   const int      NumErecoBins  (valor::lbnx::conv::NDSample_t sample, int zone);
+   const double * ErecoBinEdges (valor::lbnx::conv::NDSample_t sample, int zone);
+   const int      NumYrecoBins  (valor::lbnx::conv::NDSample_t sample, int zone);
+   const double * YrecoBinEdges (valor::lbnx::conv::NDSample_t sample, int zone);
 } // util
 
-} // t2kana
+} // lbnx
+} // valor
   
 #endif 
 

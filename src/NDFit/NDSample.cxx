@@ -10,8 +10,8 @@ ChangeLog:
 
 #include "NDFit/NDSample.h"
 
-using namespace t2kana;
-using namespace t2kana::conv;
+using namespace valor::lbnx;
+using namespace valor::lbnx::conv;
 
 //________________________________________________________________________________________
 string util::AsString(NDSample_t s)

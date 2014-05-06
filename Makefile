@@ -17,10 +17,6 @@ include $(VALOR_LBNX)/src/make/Make.include
 BUILD_TARGETS =    print-make-info    \
 		   make-bin-lib-dir   \
 		   build-conventions  \
-		   build-utilities    \
-		   build-messenger    \
-		   build-core-fitter  \
-		   build-example-fits \
 		   build-nd-fit
 
 # define targets
@@ -40,38 +36,6 @@ build-conventions: FORCE
 	@echo "** Building Conventions package..."
 	cd ${VALOR_LBNX}/src;\
 	cd Conventions;\
-	make;\
-	cd ${VALOR_LBNX}
-
-build-utilities: FORCE
-	@echo " "
-	@echo "** Building Utilities package..."
-	cd ${VALOR_LBNX}/src;\
-	cd Utilities;\
-	make;\
-	cd ${VALOR_LBNX}
-
-build-messenger: FORCE
-	@echo " "
-	@echo "** Building Messenger package..."
-	cd ${VALOR_LBNX}/src;\
-	cd Messenger;\
-	make;\
-	cd ${VALOR_LBNX}
-
-build-core-fitter: FORCE
-	@echo " "
-	@echo "** Building FitCore package..."
-	cd ${VALOR_LBNX}/src;\
-	cd FitCore;\
-	make;\
-	cd ${VALOR_LBNX}
-
-build-example-fits: FORCE
-	@echo " "
-	@echo "** Building Example packages..."
-	cd ${VALOR_LBNX}/src;\
-	cd Examples/X01;\
 	make;\
 	cd ${VALOR_LBNX}
 
@@ -95,10 +59,6 @@ purge: FORCE
 	@echo "** Purging..."
 	cd ${VALOR_LBNX}/src;\
 	cd Conventions;               make purge; cd ..; \
-	cd Utilities;                 make purge; cd ..; \
-	cd Messenger;                 make purge; cd ..; \
-	cd FitCore;                   make purge; cd ..; \
-	cd Examples/X01;              make purge; cd ../..; \
 	cd NDFit;                     make purge; cd ..; \
 	cd ${VALOR_LBNX}
 
@@ -109,10 +69,6 @@ clean-files: FORCE
 	@echo "** Cleaning..."
 	cd ${VALOR_LBNX}/src;\
 	cd Conventions;             make clean; cd ..; \
-	cd Utilities;               make clean; cd ..; \
-	cd Messenger;               make clean; cd ..; \
-	cd FitCore;                 make clean; cd ..; \
-	cd Examples/X01;            make clean; cd ../..; \
 	cd NDFit;                   make clean; cd ..; \
 	cd $(VALOR_LBNX);\
     [ ! -d ./bin ] || rm ./bin/*;\

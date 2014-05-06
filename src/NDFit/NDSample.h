@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     t2k::conv::NDSample_t
+\class     valor::lbnx::conv::NDSample_t
 
 \brief     Enumeration of LBNx ND systematic constraint samples
 
@@ -21,14 +21,15 @@
 */
 //____________________________________________________________________________
 
-#ifndef _t2kana_nd_sample_h_
-#define _t2kana_nd_sample_h_
+#ifndef _valor_lbnx_nd_sample_h_
+#define _valor_lbnx_nd_sample_h_
 
 #include <string>
 
 using std::string;
 
-namespace t2kana {
+namespace valor {
+namespace lbnx {
 namespace conv {
 
 //
@@ -79,8 +80,8 @@ namespace util {
   string AsString(conv::NDSample_t s);
 
 } // util
-
-} // t2kana
+} // lbnx
+} // valor
   
 #endif 
 

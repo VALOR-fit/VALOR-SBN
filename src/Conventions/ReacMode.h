@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     t2kana::conv::ReacMode_t
+\class     valor::conv::ReacMode_t
 
 \brief     Enumeration of true reaction modes considered separately within 
            each analysis sample
@@ -9,21 +9,21 @@
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
           
-\created   Oct 20, 2010
+\created   April 15, 2014
 
 \copyright (c) 2010-2014, The VALOR group
 
 */
 //____________________________________________________________________________
 
-#ifndef _t2kana_reaction_modes_h
-#define _t2kana_reaction_modes_h
+#ifndef _valor_lbnx_reaction_modes_h
+#define _valor_lbnx_reaction_modes_h
 
 #include <string>
 
 using std::string;
 
-namespace t2kana {
+namespace valor {
 
 namespace constants {
 static const int kNReacModes = 53;  
@@ -117,7 +117,7 @@ namespace util {
 
 }
 
-} // t2kana
+} // valor
   
 #endif 
 

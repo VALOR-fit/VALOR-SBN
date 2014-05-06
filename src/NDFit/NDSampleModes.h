@@ -21,13 +21,13 @@
 */
 //____________________________________________________________________________
 
-#ifndef _t2kana_nd_sample_modes_h_
-#define _t2kana_nd_sample_modes_h_
+#ifndef _valor_lbnx_nd_sample_modes_h_
+#define _valor_lbnx_nd_sample_modes_h_
 
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDSample.h"
 
-namespace t2kana {  
+namespace valor {  
 namespace conv   {
 
 //
@@ -535,7 +535,7 @@ static const bool kIsCC[kns][knm]= {
 */
 
 } // conv
-} // t2kana
+} // valor
   
 #endif 
 

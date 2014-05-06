@@ -1,0 +1,243 @@
+#! /usr/bin/perl -w
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# VALOR/LBNx configuration script
+#
+# For help, type ./configure --help
+#
+# Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# print out info & exit if any of the command-line arguments was --help
+#
+if(($match = grep(/--help/i, @ARGV)) > 0) { 
+  print "\n";
+  print "*** VALOR/LBNx configure script *** \n\n";
+  print "Usage: ./configure [option]... [flag=value]... \n\n";
+  print "    FLAG              DESCRIPTION                                                 DEFAULT\n\n";
+  print "    --prefix          installation location (for 'make install')                  /usr/local/\n";
+  print "\n enable/disable options with either --enable- or --disable- (eg --enable-lhapdf --disable-flux-drivers)\n\n";
+  print "    debug             Adds -g in the compiler options to request debug info       default: disabled \n";
+  print "\n options for 3rd party software, prefix with --with- (eg --with-lhapdf-lib=/some/path/)\n\n";
+  print "    optimiz-level     Compiler optimization (any of O,O2,O3,OO,Os)                default: O2 \n";
+  print "    valor-framework   Mandatory path to VALOR framework code                      default: none (tries to auto-detect a path) \n\n";
+  print "If the printout was too long then pipe it through a pager, eg: \n";
+  print "./configure --help | more \n";
+  exit 0;
+}
+
+# Check that $VALOR_LBNX is set
+#
+$VALOR_LBNX = $ENV{'VALOR_LBNX'};
+die ("*** Error *** The VALOR_LBNX environmental variable is not defined") 
+unless defined $VALOR_LBNX;
+
+# Check that $ROOTSYS is set
+#
+$ROOTSYS = $ENV{'ROOTSYS'};
+die ("*** Error *** The ROOTSYS environmental variable is not defined. Is ROOT installed?") 
+unless defined $ROOTSYS;
+
+# Enable auto-detection?
+#
+system("find $VALOR_LBNX/configure");
+print "\n";
+$auto_detect = ($?==0) ? 1 : 0;
+if(! $auto_detect) {
+  print "\n*** Warning *** Path auto-detection is turned off. You need the 'find' utility to use that feature\n\n";
+}
+
+print "\nYour input configuration options were: @ARGV";
+if($#ARGV < 0) { print "(none)" };
+print "\n\n";
+
+# Print VALOR/LBNX banner 
+#
+$BANNER_FILE = "$VALOR_LBNX/data/banner/banner.dat";
+if(-e $BANNER_FILE) {
+  open(BANNER, "<$BANNER_FILE");
+  @hdr=<BANNER>;
+  print @hdr;
+  close(BANNER);
+  print "\n";
+}
+
+# 
+# Process inputs
+# 
+
+# Create a string by joining all the command line arguments
+#
+my $options = join(" ", @ARGV);
+
+# Get & save installation location (--prefix) or set default
+#
+my $opt_prefix="/usr/local/";
+if(($match = grep(/--prefix/i, @ARGV)) > 0) { 
+  $options=~m/--prefix=(\S*)/i;
+  $opt_prefix = $1;
+  if( $VALOR_LBNX eq $opt_prefix ) {
+     print "*** Error *** --prefix can not point to the VALOR_LBNX top level directory!\n\n";
+     exit 1;
+  }
+}
+
+# Default --enable/--disable config options (for a minimal genie build)
+#
+my $opt_enable_debug = "NO";
+
+# Check configure's command line arguments for non-default values
+#
+if(($match = grep(/--enable-debug/i, @ARGV)) > 0) { $opt_enable_debug         = "YES"; }
+
+my $opt_with_cxx_debug_flag="";
+if($opt_enable_debug eq "YES") { $opt_with_cxx_debug_flag = "-g"; }
+
+
+# Check compiler optimization level
+#
+my $opt_with_cxx_optimiz_flag="O2"; # default
+if( $options=~m/--with-optimiz-level=(\S*)/i ) {
+  $opt_with_cxx_optimiz_flag = $1;
+}
+
+# Get VALOR framework path
+#
+my $opt_with_valor_framework = "";	
+if($options=~m/--with-valor-framework=(\S*)/i) {
+  $opt_with_valor_framework = $1;
+} else {
+  print "\n*** Warning *** You didn't specify the VALOR framework package \n";
+}
+# if it was not set, try to pick it up from the environment
+if(! -d $opt_with_valor_framework && defined $ENV{'VALOR_FMWK'}) { 
+  $opt_with_valor_framework = $ENV{'VALOR_FMWK'}; 
+  print "The \$VALOR_FMWK env var is defined. I will pick that and set --with-valor-framework=$opt_with_valor_framework\n";
+}
+# if it still not set, try autodetecting it
+if(! -d $opt_with_valor_framework && $auto_detect) 
+{
+  print "Auto-detecting the VALOR framework path...\n";
+  $matched = auto_detect("libValorFitCore*");
+  if( $matched=~m/(\S*)\/lib\/libValorFitCore\S*/i ) {
+     $opt_with_valor_framework = $1;
+  }
+  print "Setting --with-valor-framework=$opt_with_valor_framework\n";
+}
+if(! -d $opt_with_valor_framework) {
+    print "*** Error *** Could not locate the VALOR framework package. Please specify it using --with-valor-framework=/some/path/\n\n";
+    exit 1;
+} 
+
+
+# 
+# Read version info and automatically generate a header file with relevant flags that
+# can be used to make code conditional upon specific version numbers
+#
+$VRS_FILENAME = "$VALOR_LBNX/VERSION";
+open(VRS_FILE, "<$VRS_FILENAME") or die("Can not read the VALOR_LBNX version information!");
+@vrs_file=<VRS_FILE>;
+close(VRS_FILE);
+chomp($release = $vrs_file[0]);
+# ($major, $minor, $rev) = split('.', $release);
+# note: split() doesn't split on dots...
+$release=~m/(\d+).(\d+).(\d+)/;
+$major = $1;
+$minor = $2;
+$revis = $3;
+$VRS_HEADER_FILENAME = "$VALOR_LBNX/src/Conventions/Version.h";
+print "Automatically generating file: $VRS_HEADER_FILENAME \n";
+open(VRS_HEADER_FILE, ">$VRS_HEADER_FILENAME") or die("Can not write out the Version.h file!");
+print VRS_HEADER_FILE "#ifndef _VALOR_LBNX_VERSION_H_ \n";
+print VRS_HEADER_FILE "#define _VALOR_LBNX_VERSION_H_ \n";
+print VRS_HEADER_FILE "/* \n";
+print VRS_HEADER_FILE " * Version information automatically generated by the VALOR/LBNX installer \n";
+print VRS_HEADER_FILE " * \n";
+print VRS_HEADER_FILE " * These macros can be used in the following way (as the ones at ROOT's RVersion.h): \n";
+print VRS_HEADER_FILE " * #if __VALOR_LBNX_RELEASE_CODE__ >= GRELCODE(2,4,11) \n";
+print VRS_HEADER_FILE " * #include <newheader.h>\n";
+print VRS_HEADER_FILE " * #else\n";
+print VRS_HEADER_FILE " * #include <oldheader.h>\n";
+print VRS_HEADER_FILE " * #endif\n";
+print VRS_HEADER_FILE "*/ \n\n";
+print VRS_HEADER_FILE "#define VALOR_LBNX_RELEASE_CODE_BUILDER(a,b,c) (((a) << 16) + ((b) << 8) + (c)) \n\n";
+print VRS_HEADER_FILE "#define __VALOR_LBNX_RELEASE__      \"$release\"\n";
+print VRS_HEADER_FILE "#define __VALOR_LBNX_RELEASE_CODE__ VALOR_LBNX_RELEASE_CODE_BUILDER($major,$minor,$revis) \n\n";
+print VRS_HEADER_FILE "#endif\n\n";
+close(VRS_HEADER_FILE);
+
+# 
+# Automatically generate a header file with relevant build information that
+# can be used to make code conditional upon it
+#
+$BLD_HEADER_FILENAME = "$VALOR_LBNX/src/Conventions/Build.h";
+print "Automatically generating file: $BLD_HEADER_FILENAME \n";
+open(BLD_HEADER_FILE, ">$BLD_HEADER_FILENAME") or die("Can not write out the Build.h file!");
+print BLD_HEADER_FILE "#ifndef _VALOR_LBNX_BUILD_H_ \n";
+print BLD_HEADER_FILE "#define _VALOR_LBNX_BUILD_H_ \n";
+print BLD_HEADER_FILE "/* \n";
+print BLD_HEADER_FILE " * Version information automatically generated by the VALOR/LBNX installer \n";
+print BLD_HEADER_FILE " * \n\n\n\n";
+print BLD_HEADER_FILE "#endif\n\n";
+close(BLD_HEADER_FILE);
+
+
+#
+# Save config options to src/make/Make.config for inclusion in other Makefiles
+#
+# Open Make.config to write configuration options
+#
+$MKCONF_FILENAME = "$VALOR_LBNX/src/make/Make.config";
+print "Automatically generating file: $MKCONF_FILENAME \n";
+open(MKCONF, ">$MKCONF_FILENAME") or die("Can not write out the Make.config file!");
+print MKCONF "# \n";
+print MKCONF "# Make.config \n";
+print MKCONF "# This file was automatically generated by the VALOR/LBNX installer \n";
+print MKCONF "# for inclusion into the project Makefiles  \n";
+print MKCONF "# \n";
+print MKCONF "OPT_PREFIX=$opt_prefix\n";
+print MKCONF "OPT_WITH_CXX_DEBUG_FLAG=$opt_with_cxx_debug_flag\n";
+print MKCONF "OPT_WITH_CXX_OPTIMIZ_FLAG=-$opt_with_cxx_optimiz_flag\n";
+print MKCONF "OPT_WITH_VALOR_FRAMEWORK=$opt_with_valor_framework\n";
+close(MKCONF);
+if(-e $MKCONF_FILENAME) {
+  print "\nThe following config options were set in Make.config: \n";
+  open(MKCONFR, "<$MKCONF_FILENAME") or die("Can not read back the $VALOR_LBNX/src/make/Make.config!");
+  @make_conf=<MKCONFR>;
+  close(MKCONFR);
+# print "@make_conf\n" unless ;
+  foreach $setting (@make_conf) { 
+    chomp($setting); 
+    if ($setting=~m/\=/) {print "  $setting\n";} 
+  }
+  print "\n";
+  print "*** To continue building VALOR/LBNx type: gmake ";
+  # Warning for SRT users  
+  if(defined $ENV{'SRT_ENV_SET'}) {
+    print "(Don't forget to 'srt_setup --unsetup' first)";
+  }
+  print "\n\n";
+}
+
+sub auto_detect {
+
+  @search_dir  = ("/usr","/opt","/lib");           # std search paths
+  push (@search_dir,"$ENV{'HOME'}") 
+                 if defined $ENV{'HOME'};          # add $HOME
+  push (@search_dir,"/hep");                       # add where I add ext apps in my mac book air
+  push (@search_dir,"$ENV{'RSD_TOP_DIR'}") 
+                 if defined $ENV{'RSD_TOP_DIR'};   # add where RSD puts ext supporting libs
+
+  $search_file = shift; 
+  $optional_fullpath_substr = shift; # extra help in locating the correct file
+
+  $optional_fullpath_substr = "" unless defined $optional_fullpath_substr;
+
+  foreach(@search_dir) {
+     $curr_dir = $_;
+     if(! -d $curr_dir) {next;}
+     @matches = `find $curr_dir -type f -maxdepth 7 -name $search_file 2> /dev/null | grep \"$optional_fullpath_substr\"`;
+     $nmatches = @matches;
+     if( $nmatches > 0) { return $matches[0]; }
+  }
+  return "";
+}
