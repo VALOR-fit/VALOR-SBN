@@ -1,10 +1,10 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::conv::ReacMode_t
+\class     valor::lbnx::conv::ReacMode_t
 
 \brief     Enumeration of true reaction modes considered separately within 
-           each analysis sample
+           each LBNx analysis sample
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -24,12 +24,10 @@
 using std::string;
 
 namespace valor {
-
-namespace constants {
-static const int kNReacModes = 53;  
-}
-
+namespace lbnx {
 namespace conv {
+
+static const int kNReacModes = 53;  
 
 typedef enum EReacMode 
 {
@@ -111,12 +109,15 @@ ReacMode_t;
 
 } // conv
 
+
+//
+// Associated utilities
+//
 namespace util {
+  string AsString(lbnx::conv::ReacMode_t m);
+} // util
 
-  string AsString(conv::ReacMode_t m);
-
-}
-
+} // lbnx
 } // valor
   
 #endif 

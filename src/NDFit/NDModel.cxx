@@ -27,8 +27,11 @@ ChangeLog:
 
 using std::endl;
 
+using valor::conv::PhysHypothesis_t;
+
 using namespace valor;
-using namespace valor::conv;
+using namespace valor::lbnx;
+using namespace valor::lbnx::conv;
 
 //________________________________________________________________________________________
 NDModel::NDModel() :
@@ -64,7 +67,11 @@ bool NDModel::Generate(const PhysHypothesis & ph)
 
 
 
-
+  //
+  //
+  // ...
+  //
+  //
 
 
 
@@ -120,7 +127,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * /*write_opt*
 {
   if(!array) return false;
 
-  util::SetDefaultStyle();
+  valor::util::SetDefaultStyle();
 
   //...
 
@@ -143,13 +150,12 @@ bool NDModel::Write(
 //________________________________________________________________________________________
 void NDModel::Book(void)
 {
-/*
   for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNNDModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-      fMCTemplNom[isample][imode][izone] = ?
+//      fMCTemplNom[isample][imode][izone] = ?
+      }
     }
   }
-*/
 }
 //________________________________________________________________________________________

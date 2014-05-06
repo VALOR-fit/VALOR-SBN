@@ -28,7 +28,8 @@
 #include "NDFit/NDSample.h"
 
 namespace valor {  
-namespace conv   {
+namespace lbnx {  
+namespace conv {
 
 //
 // Define which true reactuin modes are considered for each ND sample 
@@ -115,7 +116,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCC
+  // sample: ksNDNuMuCC1TrkQE
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -189,7 +190,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuEBarNCpiCpi0,      
     kmNuEBarNCcoh,         
     kmNuEBarNCoth          
-  },
+  }
 
 };
 
@@ -535,6 +536,7 @@ static const bool kIsCC[kns][knm]= {
 */
 
 } // conv
+} // lbnx
 } // valor
   
 #endif 

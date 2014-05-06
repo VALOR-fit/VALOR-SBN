@@ -96,7 +96,7 @@ static const double kYrecoBinEdgesQELike[kNBinZonesQELike][kMaxNYrecoBinsQELike+
 
 
 // ...........................................................................
-// Simple, unoptimized inning in (Ereco,yreco) space 
+// Simple, unoptimized binning in (Ereco,yreco) space 
 //
 
 static const int kNErecoBinsSimple = 38;

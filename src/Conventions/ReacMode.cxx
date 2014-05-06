@@ -11,7 +11,8 @@ ChangeLog:
 #include "Conventions/ReacMode.h"
 
 using namespace valor;
-using namespace valor::conv;
+using namespace valor::lbnx;
+using namespace valor::lbnx::conv;
 
 //________________________________________________________________________________________
 string util::AsString(ReacMode_t m)

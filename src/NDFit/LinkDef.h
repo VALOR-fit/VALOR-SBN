@@ -9,6 +9,8 @@
 #pragma link C++ namespace valor::lbnx::conv;
 #pragma link C++ namespace valor::lbnx::util;
 
+#pragma link C++ enum valor::lbnx::conv::NDSample_t;
+
 #pragma link C++ class valor::lbnx::NDData;
 #pragma link C++ class valor::lbnx::NDModel;
 

@@ -10,7 +10,7 @@ MAKEFILE = Makefile
 #
 include $(VALOR_LBNX)/src/make/Make.include
 
-PACKAGE           = ValorFitND
+PACKAGE           = ValorLBNxND
 DICTIONARY        = _RootDict_$(PACKAGE)
 LIBNAME           = lib$(PACKAGE)
 
