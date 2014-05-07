@@ -62,7 +62,9 @@ public:
 
 private:
 
-  void Book(void);
+  void Init  (void);
+  void Book  (void);
+  void Clean (void);
 
   PhysHypothesis fPhysHypothesis;
 

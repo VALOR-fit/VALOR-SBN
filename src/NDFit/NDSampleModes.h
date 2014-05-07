@@ -31,7 +31,7 @@ namespace valor {
 namespace conv {
 
 //
-// Define which true reactuin modes are considered for each ND sample 
+// Define which true reaction modes are considered for each ND sample 
 // included in the analysis
 //
 

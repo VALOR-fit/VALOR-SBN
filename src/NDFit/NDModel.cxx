@@ -14,6 +14,7 @@ ChangeLog:
 #include <TObjArray.h>
 #include <TH1D.h>
 
+//fmwk
 #include "Conventions/PhysHypothesisId.h"
 #include "Conventions/PhysParamId.h"
 #include "Conventions/NuOscMixParam.h"
@@ -22,16 +23,15 @@ ChangeLog:
 #include "Conventions/PDG.h"
 #include "Utilities/UtlStyle.h"
 #include "Messenger/Messenger.h"
+//lbnx
+#include "Conventions/ReacMode.h"
 #include "NDFit/NDModel.h"
 #include "NDFit/NDSample.h"
 
 using std::endl;
 
-using valor::conv::PhysHypothesis_t;
-
 using namespace valor;
-using namespace valor::lbnx;
-using namespace valor::lbnx::conv;
+using namespace valor::conv;
 
 //________________________________________________________________________________________
 NDModel::NDModel() :
@@ -148,14 +148,44 @@ bool NDModel::Write(
   return true;
 }
 //________________________________________________________________________________________
-void NDModel::Book(void)
+void NDModel::Init(void)
 {
   for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-//      fMCTemplNom[isample][imode][izone] = ?
-      }
-    }
-  }
+         fMCTemplNom[isample][imode][izone] = 0;
+      }//izone
+    }//imode
+  }//isample
+}
+//________________________________________________________________________________________
+void NDModel::Book(void)
+{
+  for(int isample = 0; isample < kNNDSamples; isample++) {
+    NDSample_t s = kNDSample[isample];
+    if(s == ksNDUndefined) continue;
+    for(int imode = 0; imode < kNReacModes; imode++) {
+      ReacMode_t m = kNDReactionModes[isample][imode];
+      if(m == kmUndefined) continue;
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+         const int n_ereco_bins = util::NumErecoBins(s,izone);
+         const int n_yreco_bins = util::NumYrecoBins(s,izone);
+         if(n_ereco_bins <= 0 || n_yreco_bins <= 0) continue;
+         fMCTemplNom[isample][imode][izone] = new VALORArray(n_ereco_bins,n_yreco_bins);
+      }//izone
+    }//imode
+  }//isample
+}
+//________________________________________________________________________________________
+void NDModel::Clean(void)
+{
+  for(int isample = 0; isample < kNNDSamples; isample++) {
+    for(int imode = 0; imode < kNReacModes; imode++) {
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+        if(fMCTemplNom[isample][imode][izone]) delete fMCTemplNom[isample][imode][izone];
+        fMCTemplNom[isample][imode][izone] = 0;
+      }//izone
+    }//imode
+  }//isample
 }
 //________________________________________________________________________________________
