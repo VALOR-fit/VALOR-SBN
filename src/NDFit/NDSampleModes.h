@@ -28,7 +28,6 @@
 #include "NDFit/NDSample.h"
 
 namespace valor {  
-namespace lbnx {  
 namespace conv {
 
 //
@@ -36,11 +35,9 @@ namespace conv {
 // included in the analysis
 //
 
-static const int kNNDModes  = 72;
-
-static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] = 
+static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] = 
 {
-  // sample: ksNDNuMuCC
+  // sample: ksNDNuMuCC1trkQE
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -51,13 +48,13 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuMuCCpiCpi0,        
     kmNuMuCCcoh,           
     kmNuMuCCoth,           
-    kmNuMuNCEL,            
-    kmNuMuNCMEC,           
+  //kmNuMuNCEL,            
+  //kmNuMuNCMEC,           
     kmNuMuNC1piC,          
     kmNuMuNC1pi0,          
-    kmNuMuNC2piC,          
-    kmNuMuNC2pi0,          
-    kmNuMuNCpiCpi0,        
+  //kmNuMuNC2piC,          
+  //kmNuMuNC2pi0,          
+  //kmNuMuNCpiCpi0,        
     kmNuMuNCcoh,           
     kmNuMuNCoth,           
     kmNuMuBarCCQE,         
@@ -69,13 +66,13 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuMuBarCCpiCpi0,     
     kmNuMuBarCCcoh,        
     kmNuMuBarCCoth,        
-    kmNuMuBarNCEL,         
-    kmNuMuBarNCMEC,        
+  //kmNuMuBarNCEL,         
+  //kmNuMuBarNCMEC,        
     kmNuMuBarNC1piC,       
     kmNuMuBarNC1pi0,       
-    kmNuMuBarNC2piC,       
-    kmNuMuBarNC2pi0,       
-    kmNuMuBarNCpiCpi0,     
+  //kmNuMuBarNC2piC,       
+  //kmNuMuBarNC2pi0,       
+  //kmNuMuBarNCpiCpi0,     
     kmNuMuBarNCcoh,        
     kmNuMuBarNCoth,        
     kmNuECCQE,             
@@ -87,13 +84,13 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuECCpiCpi0,         
     kmNuECCcoh,            
     kmNuECCoth,            
-    kmNuENCEL,             
-    kmNuENCMEC,           
+  //kmNuENCEL,             
+  //kmNuENCMEC,           
     kmNuENC1piC,           
     kmNuENC1pi0,           
-    kmNuENC2piC,           
-    kmNuENC2pi0,           
-    kmNuENCpiCpi0,         
+  //kmNuENC2piC,           
+  //kmNuENC2pi0,           
+  //kmNuENCpiCpi0,         
     kmNuENCcoh,            
     kmNuENCoth,            
     kmNuEBarCCQE,          
@@ -105,18 +102,18 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuEBarCCpiCpi0,      
     kmNuEBarCCcoh,         
     kmNuEBarCCoth,         
-    kmNuEBarNCEL,          
-    kmNuEBarNCMEC,         
+  //kmNuEBarNCEL,          
+  //kmNuEBarNCMEC,         
     kmNuEBarNC1piC,        
     kmNuEBarNC1pi0,        
-    kmNuEBarNC2piC,        
-    kmNuEBarNC2pi0,        
-    kmNuEBarNCpiCpi0,      
+  //kmNuEBarNC2piC,        
+  //kmNuEBarNC2pi0,        
+  //kmNuEBarNCpiCpi0,      
     kmNuEBarNCcoh,         
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCC1TrkQE
+  // sample: ksNDNuMuCCoth
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -127,13 +124,13 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuMuCCpiCpi0,        
     kmNuMuCCcoh,           
     kmNuMuCCoth,           
-    kmNuMuNCEL,            
-    kmNuMuNCMEC,           
+  //kmNuMuNCEL,            
+  //kmNuMuNCMEC,           
     kmNuMuNC1piC,          
     kmNuMuNC1pi0,          
-    kmNuMuNC2piC,          
-    kmNuMuNC2pi0,          
-    kmNuMuNCpiCpi0,        
+  //kmNuMuNC2piC,          
+  //kmNuMuNC2pi0,          
+  //kmNuMuNCpiCpi0,        
     kmNuMuNCcoh,           
     kmNuMuNCoth,           
     kmNuMuBarCCQE,         
@@ -145,13 +142,13 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuMuBarCCpiCpi0,     
     kmNuMuBarCCcoh,        
     kmNuMuBarCCoth,        
-    kmNuMuBarNCEL,         
-    kmNuMuBarNCMEC,        
+  //kmNuMuBarNCEL,         
+  //kmNuMuBarNCMEC,        
     kmNuMuBarNC1piC,       
     kmNuMuBarNC1pi0,       
-    kmNuMuBarNC2piC,       
-    kmNuMuBarNC2pi0,       
-    kmNuMuBarNCpiCpi0,     
+  //kmNuMuBarNC2piC,       
+  //kmNuMuBarNC2pi0,       
+  //kmNuMuBarNCpiCpi0,     
     kmNuMuBarNCcoh,        
     kmNuMuBarNCoth,        
     kmNuECCQE,             
@@ -163,13 +160,13 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuECCpiCpi0,         
     kmNuECCcoh,            
     kmNuECCoth,            
-    kmNuENCEL,             
-    kmNuENCMEC,           
+  //kmNuENCEL,             
+  //kmNuENCMEC,           
     kmNuENC1piC,           
     kmNuENC1pi0,           
-    kmNuENC2piC,           
-    kmNuENC2pi0,           
-    kmNuENCpiCpi0,         
+  //kmNuENC2piC,           
+  //kmNuENC2pi0,           
+  //kmNuENCpiCpi0,         
     kmNuENCcoh,            
     kmNuENCoth,            
     kmNuEBarCCQE,          
@@ -181,13 +178,13 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNNDModes] =
     kmNuEBarCCpiCpi0,      
     kmNuEBarCCcoh,         
     kmNuEBarCCoth,         
-    kmNuEBarNCEL,          
-    kmNuEBarNCMEC,         
+  //kmNuEBarNCEL,          
+  //kmNuEBarNCMEC,         
     kmNuEBarNC1piC,        
     kmNuEBarNC1pi0,        
-    kmNuEBarNC2piC,        
-    kmNuEBarNC2pi0,        
-    kmNuEBarNCpiCpi0,      
+  //kmNuEBarNC2piC,        
+  //kmNuEBarNC2pi0,        
+  //kmNuEBarNCpiCpi0,      
     kmNuEBarNCcoh,         
     kmNuEBarNCoth          
   }
@@ -536,7 +533,6 @@ static const bool kIsCC[kns][knm]= {
 */
 
 } // conv
-} // lbnx
 } // valor
   
 #endif 

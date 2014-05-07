@@ -26,8 +26,7 @@ ChangeLog:
 #include "Messenger/Messenger.h"
 
 using namespace valor;
-using namespace valor::lbnx;
-using namespace valor::lbnx::conv;
+using namespace valor::conv;
 
 //________________________________________________________________________________________
 NDData::NDData() :

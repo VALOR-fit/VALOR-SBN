@@ -151,7 +151,7 @@ bool NDModel::Write(
 void NDModel::Book(void)
 {
   for(int isample = 0; isample < kNNDSamples; isample++) {
-    for(int imode = 0; imode < kNNDModes; imode++) {
+    for(int imode = 0; imode < kNReacModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
 //      fMCTemplNom[isample][imode][izone] = ?
       }

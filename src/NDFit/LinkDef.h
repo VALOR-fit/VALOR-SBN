@@ -5,13 +5,12 @@
 #pragma link off all functions;
 
 #pragma link C++ namespace valor;
-#pragma link C++ namespace valor::lbnx;
-#pragma link C++ namespace valor::lbnx::conv;
-#pragma link C++ namespace valor::lbnx::util;
+#pragma link C++ namespace valor::conv;
+#pragma link C++ namespace valor::util;
 
-#pragma link C++ enum valor::lbnx::conv::NDSample_t;
+#pragma link C++ enum valor::conv::NDSample_t;
 
-#pragma link C++ class valor::lbnx::NDData;
-#pragma link C++ class valor::lbnx::NDModel;
+#pragma link C++ class valor::NDData;
+#pragma link C++ class valor::NDModel;
 
 #endif

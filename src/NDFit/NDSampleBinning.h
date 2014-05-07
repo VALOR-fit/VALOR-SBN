@@ -27,7 +27,6 @@
 #include "NDFit/NDSample.h"
 
 namespace valor {
-namespace lbnx  {
 namespace conv  {
 
 static const int kNMaxBinZones = 4;
@@ -125,13 +124,12 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 //
 
 namespace util   {
-   const int      NumErecoBins  (valor::lbnx::conv::NDSample_t sample, int zone);
-   const double * ErecoBinEdges (valor::lbnx::conv::NDSample_t sample, int zone);
-   const int      NumYrecoBins  (valor::lbnx::conv::NDSample_t sample, int zone);
-   const double * YrecoBinEdges (valor::lbnx::conv::NDSample_t sample, int zone);
+   const int      NumErecoBins  (conv::NDSample_t sample, int zone);
+   const double * ErecoBinEdges (conv::NDSample_t sample, int zone);
+   const int      NumYrecoBins  (conv::NDSample_t sample, int zone);
+   const double * YrecoBinEdges (conv::NDSample_t sample, int zone);
 } // util
 
-} // lbnx
 } // valor
   
 #endif 

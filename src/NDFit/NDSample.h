@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::lbnx::conv::NDSample_t
+\class     valor::conv::NDSample_t
 
 \brief     Enumeration of LBNx ND systematic constraint samples
 
@@ -29,7 +29,6 @@
 using std::string;
 
 namespace valor {
-namespace lbnx {
 namespace conv {
 
 //
@@ -39,12 +38,14 @@ typedef enum ENDSample
 {
    ksNDUndefined = -1, 
    ksNDNuMuCC,          // numu CC inclusive
-   ksNDNuMuCC1Trk,      // numu CC - 1 track
-   ksNDNuMuCC2TrkQE,    // numu CC - 2 track QE-enhanched (mu + proton)
-   ksNDNuMuCC1PiChg,    // numu CC - 2 track (mu + 1 pi+/-)
-   ksNDNuMuCC1Pi0,      // numu CC - 2 track (mu + 1 pi0)
+   ksNDNuMuCC1trkQE,    // numu CC - 1 track QE-enhanced  (mu)
+   ksNDNuMuCC2trkQE,    // numu CC - 2 track QE-enhanched (mu + proton)
+   ksNDNuMuCC1piC,      // numu CC - 2 track (mu + 1 pi+/-)
+   ksNDNuMuCC1pi0,      // numu CC - 2 track (mu + 1 pi0)
+   ksNDNuMuCCoth,       // numu CC - other
    ksNDNC,              // NC inclusive
-   ksNDNC1pi0           // NC 1pi0
+   ksNDNC1pi0,          // NC - 1pi0
+   ksNDNCoth            // NC - other
 } 
 NDSample_t; 
 
@@ -56,22 +57,10 @@ static const int kNNDSamples  = 2;
 
 static const NDSample_t kNDSample[kNNDSamples] =
 {
-   ksNDNuMuCC,          
-   ksNDNuMuCC1Trk      
+   ksNDNuMuCC1trkQE,
+   ksNDNuMuCCoth       
 };
 
-/*
-static const NDSample_t kNDSample[kNNDSamples] =
-{
-   ksNDNuMuCC,          
-   ksNDNuMuCC1Trk,      
-   ksNDUndefined, // ksNDNuMuCC2TrkQE,    
-   ksNDUndefined, // ksNDNuMuCC1PiChg,    
-   ksNDUndefined, // ksNDNuMuCC1Pi0,      
-   ksNDUndefined,
-   ksNDUndefined
-};
-*/
 
 } // conv
 
@@ -80,7 +69,6 @@ namespace util {
   string AsString(conv::NDSample_t s);
 
 } // util
-} // lbnx
 } // valor
   
 #endif 

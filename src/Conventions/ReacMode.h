@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::lbnx::conv::ReacMode_t
+\class     valor::conv::ReacMode_t
 
 \brief     Enumeration of true reaction modes considered separately within 
            each LBNx analysis sample
@@ -24,10 +24,9 @@
 using std::string;
 
 namespace valor {
-namespace lbnx {
 namespace conv {
 
-static const int kNReacModes = 53;  
+static const int kNReacModes = 52;  
 
 typedef enum EReacMode 
 {
@@ -41,13 +40,13 @@ typedef enum EReacMode
    kmNuMuCCpiCpi0,        // numu    CC 1 pi0 + 1 pi+/-
    kmNuMuCCcoh,           // numu    CC coherent
    kmNuMuCCoth,           // numu    CC other
-   kmNuMuNCEL,            // numu    NC EL
-   kmNuMuNCMEC,           // numu    NC MEC
+//   kmNuMuNCEL,            // numu    NC EL
+//   kmNuMuNCMEC,           // numu    NC MEC
    kmNuMuNC1piC,          // numu    NC 1 pi+/-
    kmNuMuNC1pi0,          // numu    NC 1 pi0
-   kmNuMuNC2piC,          // numu    NC 2 pi+/-
-   kmNuMuNC2pi0,          // numu    NC 2 pi0
-   kmNuMuNCpiCpi0,        // numu    NC 1 pi0 + 1 pi+/-
+//   kmNuMuNC2piC,          // numu    NC 2 pi+/-
+//   kmNuMuNC2pi0,          // numu    NC 2 pi0
+//   kmNuMuNCpiCpi0,        // numu    NC 1 pi0 + 1 pi+/-
    kmNuMuNCcoh,           // numu    NC coherent
    kmNuMuNCoth,           // numu    NC other
    kmNuMuBarCCQE,         // numubar CC QE
@@ -59,13 +58,13 @@ typedef enum EReacMode
    kmNuMuBarCCpiCpi0,     // numubar CC 1 pi0 + 1 pi+/-
    kmNuMuBarCCcoh,        // numubar CC coherent
    kmNuMuBarCCoth,        // numubar CC other
-   kmNuMuBarNCEL,         // numubar NC EL
-   kmNuMuBarNCMEC,        // numubar NC MEC
+//   kmNuMuBarNCEL,         // numubar NC EL
+//   kmNuMuBarNCMEC,        // numubar NC MEC
    kmNuMuBarNC1piC,       // numubar NC 1 pi+/-
    kmNuMuBarNC1pi0,       // numubar NC 1 pi0
-   kmNuMuBarNC2piC,       // numubar NC 2 pi+/-
-   kmNuMuBarNC2pi0,       // numubar NC 2 pi0
-   kmNuMuBarNCpiCpi0,     // numubar NC 1 pi0 + 1 pi+/-
+//   kmNuMuBarNC2piC,       // numubar NC 2 pi+/-
+//   kmNuMuBarNC2pi0,       // numubar NC 2 pi0
+//   kmNuMuBarNCpiCpi0,     // numubar NC 1 pi0 + 1 pi+/-
    kmNuMuBarNCcoh,        // numubar NC coherent
    kmNuMuBarNCoth,        // numubar NC other
    kmNuECCQE,             // nue     CC QE
@@ -77,13 +76,13 @@ typedef enum EReacMode
    kmNuECCpiCpi0,         // nue     CC 1 pi0 + 1 pi+/-
    kmNuECCcoh,            // nue     CC coherent
    kmNuECCoth,            // nue     CC other
-   kmNuENCEL,             // nue     NC EL
-   kmNuENCMEC,            // nue     NC MEC
+//   kmNuENCEL,             // nue     NC EL
+//   kmNuENCMEC,            // nue     NC MEC
    kmNuENC1piC,           // nue     NC 1 pi+/-
    kmNuENC1pi0,           // nue     NC 1 pi0
-   kmNuENC2piC,           // nue     NC 2 pi+/-
-   kmNuENC2pi0,           // nue     NC 2 pi0
-   kmNuENCpiCpi0,         // nue     NC 1 pi0 + 1 pi+/-
+//   kmNuENC2piC,           // nue     NC 2 pi+/-
+//   kmNuENC2pi0,           // nue     NC 2 pi0
+//   kmNuENCpiCpi0,         // nue     NC 1 pi0 + 1 pi+/-
    kmNuENCcoh,            // nue     NC coherent
    kmNuENCoth,            // nue     NC other
    kmNuEBarCCQE,          // nuebar  CC QE
@@ -95,13 +94,13 @@ typedef enum EReacMode
    kmNuEBarCCpiCpi0,      // nuebar  CC 1 pi0 + 1 pi+/-
    kmNuEBarCCcoh,         // nuebar  CC coherent
    kmNuEBarCCoth,         // nuebar  CC other
-   kmNuEBarNCEL,          // nuebar  NC EL
-   kmNuEBarNCMEC,         // nuebar  NC MEC
+//   kmNuEBarNCEL,          // nuebar  NC EL
+//   kmNuEBarNCMEC,         // nuebar  NC MEC
    kmNuEBarNC1piC,        // nuebar  NC 1 pi+/-
    kmNuEBarNC1pi0,        // nuebar  NC 1 pi0
-   kmNuEBarNC2piC,        // nuebar  NC 2 pi+/-
-   kmNuEBarNC2pi0,        // nuebar  NC 2 pi0
-   kmNuEBarNCpiCpi0,      // nuebar  NC 1 pi0 + 1 pi+/-
+//   kmNuEBarNC2piC,        // nuebar  NC 2 pi+/-
+//   kmNuEBarNC2pi0,        // nuebar  NC 2 pi0
+//   kmNuEBarNCpiCpi0,      // nuebar  NC 1 pi0 + 1 pi+/-
    kmNuEBarNCcoh,         // nuebar  NC coherent
    kmNuEBarNCoth          // nuebar  NC other
 } 
@@ -114,10 +113,9 @@ ReacMode_t;
 // Associated utilities
 //
 namespace util {
-  string AsString(lbnx::conv::ReacMode_t m);
+  string AsString(conv::ReacMode_t m);
 } // util
 
-} // lbnx
 } // valor
   
 #endif 

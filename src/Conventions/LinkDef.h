@@ -4,10 +4,10 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-#pragma link C++ namespace valor::lbnx;
-#pragma link C++ namespace valor::lbnx::conv;
-#pragma link C++ namespace valor::lbnx::util;
+#pragma link C++ namespace valor;
+#pragma link C++ namespace valor::conv;
+#pragma link C++ namespace valor::util;
 
-#pragma link C++ enum  valor::lbnx::conv::ReacMode_t;
+#pragma link C++ enum  valor::conv::ReacMode_t;
 
 #endif

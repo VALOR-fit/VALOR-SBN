@@ -10,25 +10,25 @@ ChangeLog:
 
 #include "NDFit/NDSampleBinning.h"
 
-using namespace valor::lbnx;
-using namespace valor::lbnx::conv;
+using namespace valor;
+using namespace valor::conv;
 
 //________________________________________________________________________________________
 const int util::NumErecoBins(NDSample_t sample, int zone)
 {
   switch(sample) 
   {
-    case (ksNDNuMuCC) : 
-    {
-      return kNErecoBinsSimple;  
-      break;
-    }
-    case (ksNDNuMuCC1Trk) : 
+    case (ksNDNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNErecoBinsQELike[zone]; 
       else 
         return 0;
+      break;
+    }
+    case (ksNDNuMuCCoth) : 
+    {
+      return kNErecoBinsSimple;  
       break;
     }
     default: 
@@ -42,17 +42,17 @@ const double * util::ErecoBinEdges(NDSample_t sample, int zone)
 {
   switch(sample) 
   {
-    case (ksNDNuMuCC) : 
-    {
-      return kErecoBinEdgesSimple;  
-      break;
-    }
-    case (ksNDNuMuCC1Trk) : 
+    case (ksNDNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kErecoBinEdgesQELike[zone]; 
       else 
         return 0;
+      break;
+    }
+    case (ksNDNuMuCCoth) : 
+    {
+      return kErecoBinEdgesSimple;  
       break;
     }
     default: 
@@ -66,17 +66,17 @@ const int util::NumYrecoBins(NDSample_t sample, int zone)
 {
   switch(sample) 
   {
-    case (ksNDNuMuCC) : 
-    {
-      return kNYrecoBinsSimple;  
-      break;
-    }
-    case (ksNDNuMuCC1Trk) : 
+    case (ksNDNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNYrecoBinsQELike[zone]; 
       else 
         return 0;
+      break;
+    }
+    case (ksNDNuMuCCoth) : 
+    {
+      return kNYrecoBinsSimple;  
       break;
     }
     default: 
@@ -90,17 +90,17 @@ const double * util::YrecoBinEdges(NDSample_t sample, int zone)
 {
   switch(sample) 
   {
-    case (ksNDNuMuCC) : 
-    {
-      return kYrecoBinEdgesSimple;  
-      break;
-    }
-    case (ksNDNuMuCC1Trk) : 
+    case (ksNDNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kYrecoBinEdgesQELike[zone]; 
       else 
         return 0;
+      break;
+    }
+    case (ksNDNuMuCCoth) : 
+    {
+      return kYrecoBinEdgesSimple;  
       break;
     }
     default: 

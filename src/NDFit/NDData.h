@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::lbnx::NDData
+\class     valor::NDData
 
 \brief     LBNE ND Data class. Derives from FitDataABC
 
@@ -34,7 +34,6 @@ class TH1D;
 using namespace valor;
 
 namespace valor {
-namespace lbnx {
 
 class NDData: public FitDataABC
 {
@@ -63,7 +62,6 @@ private:
 
 };
 
-} // lbnx
 } // valor
 
 #endif

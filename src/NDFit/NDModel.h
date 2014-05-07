@@ -34,10 +34,7 @@
 #include "NDFit/NDSampleBinning.h"
 #include "NDFit/NDSampleModes.h"
 
-using valor::conv::PhysParamId_t;
-
 namespace valor {
-namespace lbnx {
 
 class NDModel: public FitModelABC
 {
@@ -55,7 +52,7 @@ public:
   bool          Generate             (const PhysHypothesis & ph);
   void          RandomizeSystematics (void);
   void          TweakSystematic      (string syst_name, double twkdial=0., Option_t * opt = 0); 
-  void          TweakSystematic      (valor::conv::PhysParamId_t syst, double twkdial=0., Option_t * opt = 0);
+  void          TweakSystematic      (conv::PhysParamId_t syst, double twkdial=0., Option_t * opt = 0);
   void          ResetSystematics     (void);  
   void          PrintSystematics     (ostream & stream = std::cout) const;
   PhysParamList Tweaks               (void);
@@ -70,10 +67,9 @@ private:
   PhysHypothesis fPhysHypothesis;
 
   // MC templates for all samplesreac_modes/bin_zones
-  VALORArray * fMCTemplNom[conv::kNNDSamples][conv::kNNDModes][conv::kNMaxBinZones];
+  VALORArray * fMCTemplNom[conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
 };
 
-} // lbnx
 } // valor
 
 #endif
