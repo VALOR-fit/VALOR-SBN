@@ -24,7 +24,7 @@
   gSystem->Load("libValorUtil.so");
   gSystem->Load("libValorMesg.so");
   gSystem->Load("libValorFitCore.so");
-  gSystem->Load("libValorFitX01.so");
-  gSystem->Load("libValorFitND.so");
+  gSystem->Load("libValorLBNxConv.so");
+  gSystem->Load("libValorLBNxND.so");
 }
 

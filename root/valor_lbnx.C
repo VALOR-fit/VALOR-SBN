@@ -108,7 +108,7 @@ void valor_style()
 
 }//End of definition of valorStyle
 
-void valor()
+void valor_lbnx()
 {   
     TString script_dir = gSystem->Getenv("VALOR_LBNX");
     script_dir += "./";

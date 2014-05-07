@@ -1,6 +1,8 @@
 {
   using namespace valor;
 
+  int zone_color[] = { kRed-9, kBlue-10, kGreen-10, kMagenta-7, kYellow+1 };
+
   // sample
   lbnx::conv::NDSample_t sample = lbnx::conv::ksNDNuMuCC1Trk;
 
@@ -15,6 +17,7 @@
   hframe->Draw();
 
   TLine * l = 0;
+  TBox * b = 0;
 
   // loop over binning zones for the current sample
   for(int izone = 0; izone < lbnx::conv::kNMaxBinZones; izone++) {
@@ -38,6 +41,10 @@
      cout << "num of y bins: " << ny << endl;
      cout << "ranges: e = [" << emin << ", " << emax << "], y = [" << ymin << ", " << ymax << "]" << endl;
  
+     b = new TBox(emin,ymin,emax,ymax);
+     b->SetFillColor(zone_color[izone]);
+     b->Draw();
+
      // draw horizontal and vertical lines at the bin boundaries
      for(int i = 0; i < ne+1; i++) {
        l = new  TLine(eb[i],ymin,eb[i],ymax);
