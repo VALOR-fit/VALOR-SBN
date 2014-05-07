@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::lbnx::NDModel
+\class     valor::NDModel
 
 \brief     LBNE ND Model class. Derives from FitModelABC
 
@@ -24,6 +24,7 @@
 
 #include <string>
 #include <TObjArray.h>
+#include <TTree.h>
 #include <TH1D.h>
 
 #include "FitCore/FitModelABC.h"
@@ -66,10 +67,23 @@ private:
   void Book  (void);
   void Clean (void);
 
+  void ZeroTemplates (void);
+  void FillTemplates (TTree * t);
+
   PhysHypothesis fPhysHypothesis;
 
-  // MC templates for all samplesreac_modes/bin_zones
-  VALORArray * fMCTemplNom[conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
+  // MC templates for all samples/reac_modes/bin_zones
+  bool         fNullMCTempl[conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
+  VALORArray * fMCTemplNom [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal 
+  VALORArray * fMCTemplTun [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal + ext. tuning
+  VALORArray * fMCTemplSys [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal + ext. tuning + systematics
+  VALORArray * fMCTemplFin [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal + ext. tuning + systematics + hypothesis
+
+  // Input DST
+  TTree * fMCTree;
+
+  double fPOTFHC; // Fwd. Horn Current POT
+  double fPOTRHC; // Rev. Horn Current POT
 };
 
 } // valor
