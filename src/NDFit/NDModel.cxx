@@ -27,6 +27,7 @@ ChangeLog:
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDModel.h"
 #include "NDFit/NDSample.h"
+#include "NDFit/NDSystDef.h"
 
 using std::endl;
 
