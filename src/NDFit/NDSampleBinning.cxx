@@ -14,6 +14,16 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
+const int util::NumEtrueBins(NDSample_t /*sample*/, int /*zone*/)
+{
+  return kNEtrueBins;
+}
+//________________________________________________________________________________________
+const double * util::EtrueBinEdges(NDSample_t /*sample*/, int /*zone*/)
+{
+  return kEtrueBinEdges;
+}
+//________________________________________________________________________________________
 const int util::NumErecoBins(NDSample_t sample, int zone)
 {
   switch(sample) 

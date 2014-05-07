@@ -117,6 +117,23 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
     1.000
 };
 
+// ...........................................................................
+// Etrue binning
+//
+
+static const int kNEtrueBins = 54;
+
+static const double kEtrueBinEdges[kNEtrueBins+1] = 
+{
+    0.000,  0.400,  0.600,  0.800,  1.000,  1.100,  1.200,  1.300,  1.400,  1.500,
+    1.600,  1.700,  1.800,  1.900,  2.000,  2.100,  2.200,  2.300,  2.400,  2.500,
+    2.600,  2.700,  2.800,  2.900,  3.000,  3.100,  3.200,  3.300,  3.400,  3.500,
+    3.600,  3.700,  3.800,  3.900,  4.000,  4.100,  4.200,  4.300,  4.400,  4.500,
+    4.700,  5.000,  5.500,  6.000,  6.500,  7.000,  8.000,  9.000, 10.000, 15.000,
+   20.000, 30.000, 40.000, 50.000, 99.999
+};
+
+
 } // conv
 
 //
@@ -124,6 +141,8 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 //
 
 namespace util   {
+   const int      NumEtrueBins  (conv::NDSample_t sample, int zone);
+   const double * EtrueBinEdges (conv::NDSample_t sample, int zone);
    const int      NumErecoBins  (conv::NDSample_t sample, int zone);
    const double * ErecoBinEdges (conv::NDSample_t sample, int zone);
    const int      NumYrecoBins  (conv::NDSample_t sample, int zone);
