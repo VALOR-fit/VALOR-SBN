@@ -47,6 +47,11 @@ NDModel::~NDModel()
   //...
 }
 //________________________________________________________________________________________
+//
+//
+// FitModelABC interface implementation:
+//
+//________________________________________________________________________________________
 string NDModel::Name(void)
 {
   return "LBNxND";
@@ -176,12 +181,25 @@ bool NDModel::Write(
   return true;
 }
 //________________________________________________________________________________________
+double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
+{
+  return 0;
+}
+//________________________________________________________________________________________
+//
+//
+// Private methods:
+//
+//________________________________________________________________________________________
+
 void NDModel::Init(void)
 {
   for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
+
          fNullMCTempl[isample][imode][izone] = true;
+
          fMCTemplNom [isample][imode][izone] = 0;
          fMCTemplTun [isample][imode][izone] = 0;
          fMCTemplSys [isample][imode][izone] = 0;
@@ -209,7 +227,9 @@ void NDModel::Book(void)
          const int n_ereco_bins = util::NumErecoBins(s,izone);
          const int n_yreco_bins = util::NumYrecoBins(s,izone);
          if(n_ereco_bins <= 0 || n_yreco_bins <= 0) continue;
+
          fNullMCTempl[isample][imode][izone] = false;
+
          fMCTemplNom [isample][imode][izone] = 
             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
          fMCTemplTun [isample][imode][izone] = 
@@ -218,6 +238,7 @@ void NDModel::Book(void)
             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
          fMCTemplFin [isample][imode][izone] = 
             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+
       }//izone
     }//imode
   }//isample
@@ -228,7 +249,9 @@ void NDModel::Clean(void)
   for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
+
         fNullMCTempl[isample][imode][izone] = true;
+
         if(fMCTemplNom[isample][imode][izone]) delete fMCTemplNom[isample][imode][izone];
         fMCTemplNom[isample][imode][izone] = 0;
         if(fMCTemplTun[isample][imode][izone]) delete fMCTemplTun[isample][imode][izone];
@@ -237,6 +260,7 @@ void NDModel::Clean(void)
         fMCTemplSys[isample][imode][izone] = 0;
         if(fMCTemplFin[isample][imode][izone]) delete fMCTemplFin[isample][imode][izone];
         fMCTemplFin[isample][imode][izone] = 0;
+
       }//izone
     }//imode
   }//isample
@@ -323,6 +347,38 @@ void NDModel::FillTemplates(TTree * t)
      fMCTemplFin[isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
 
   }//iev 
+
+}
+//________________________________________________________________________________________
+void NDModel::ApplyTuning(void)
+{
+// This method maps nom -> tun MC templates
+// No external tuning available for the time-being
+
+}
+//________________________________________________________________________________________
+void NDModel::ApplySystematics(void)
+{
+// This method maps tun -> sys MC templates.
+// No detector or uncorrelated cross-section systematics for the time being.
+
+}
+//________________________________________________________________________________________
+void NDModel::ApplyPhysics(void)
+{
+// This method maps sys -> fin MC templates.
+// Applying correlated flux and cross-section systematics
+
+  for(int isample = 0; isample < kNNDSamples; isample++) {
+    for(int imode = 0; imode < kNReacModes; imode++) {
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+         bool is_null = fNullMCTempl[isample][imode][izone];
+         if(!is_null) {
+
+         }
+      }//izone
+    }//imode
+  }//isample
 
 }
 //________________________________________________________________________________________

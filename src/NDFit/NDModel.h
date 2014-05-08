@@ -48,18 +48,19 @@ public:
   // See FitModelABC for method decription
   //
 
-  string        Name                 (void);
-  bool          Read                 (string file, Option_t * opt = 0);
-  bool          Generate             (const PhysHypothesis & ph);
-  void          RandomizeSystematics (void);
-  void          TweakSystematic      (string syst_name, double twkdial=0., Option_t * opt = 0); 
-  void          TweakSystematic      (conv::PhysParamId_t syst, double twkdial=0., Option_t * opt = 0);
-  void          ResetSystematics     (void);  
-  void          PrintSystematics     (ostream & stream = std::cout) const;
-  PhysParamList Tweaks               (void);
-  bool          Generate             (const FitParamList & fp);
-  bool          Write                (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
-  bool          Write                (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
+  string        Name                   (void);
+  bool          Read                   (string file, Option_t * opt = 0);
+  bool          Generate               (const PhysHypothesis & ph);
+  void          RandomizeSystematics   (void);
+  void          TweakSystematic        (string syst_name, double twkdial=0., Option_t * opt = 0); 
+  void          TweakSystematic        (conv::PhysParamId_t syst, double twkdial=0., Option_t * opt = 0);
+  void          ResetSystematics       (void);  
+  void          PrintSystematics       (ostream & stream = std::cout) const;
+  PhysParamList Tweaks                 (void);
+  bool          Generate               (const FitParamList & fp);
+  bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
+  bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
+  double        GetFitStatisticPenalty (Option_t * opt = 0) const;
 
 private:
 
@@ -67,17 +68,32 @@ private:
   void Book  (void);
   void Clean (void);
 
-  void ZeroTemplates (void);
-  void FillTemplates (TTree * t);
+  void ZeroTemplates    (void);
+  void FillTemplates    (TTree * t);
+  void ApplyTuning      (void);
+  void ApplySystematics (void);
+  void ApplyPhysics     (void);
 
   PhysHypothesis fPhysHypothesis;
 
   // MC templates for all samples/reac_modes/bin_zones
+  // - nom: Nominal MC 
+  // - tun: Nominal MC + Ext. tuning (eg tuning based on *external* hadro-production or neutrino cross-section data)
+  // - sys: Nominal MC + Ext. tuning + Systematic param variations
+  // - fin: Nominal MC + Ext. tuning + Systematic param variations + Physics param variations
+  // Note: 
+  // The language/convention above (nom, tun, sys, fin) derives from our oscillation analysis.
+  // All parameters we are handling here are "systematics" from the oscilation analysis point of view.
+  // However, the following distrinction is made:
+  // - Systematics "systematics". These are the ones we marginalize (eg detector systematics, uncorrelated cross-sections). 
+  //   The effect of their variation is included in the sys templates.
+  // - Physics "systematics" are the ones we attempt to constrain and are included in the output covariance matrix (eg. 
+  //   correlated flux and cross-sections). The effect of their variation is included in the fin templates.
   bool         fNullMCTempl[conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
-  VALORArray * fMCTemplNom [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal 
-  VALORArray * fMCTemplTun [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal + ext. tuning
-  VALORArray * fMCTemplSys [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal + ext. tuning + systematics
-  VALORArray * fMCTemplFin [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // nominal + ext. tuning + systematics + hypothesis
+  VALORArray * fMCTemplNom [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTemplTun [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTemplSys [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTemplFin [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
 
   // Input DST
   TTree * fMCTree;

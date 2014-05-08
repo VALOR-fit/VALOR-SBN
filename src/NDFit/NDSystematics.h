@@ -77,7 +77,7 @@ static const PhysParamId_t kNuisNormNC           = kNuis022;
 static const bool kApplySystToTemplate[kNReacModes][kNumOfSystematics] = 
 {
   // sample: any
-  {
+  //{
     // Systematics
     //                      FHC flux                            XSec
     //|--------------------------------------------------|  |-----------|
@@ -135,7 +135,7 @@ static const bool kApplySystToTemplate[kNReacModes][kNumOfSystematics] =
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuEBarNC1pi0
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuEBarNCcoh
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }  // kmNuEBarNCoth
-  }
+  //}
 };
 
 //
@@ -168,6 +168,38 @@ static const double kSystEtrueRange[kNumOfSystematics][2] =
    {  0.0, kMaxEtrue},  // kNuisNormCC1pi0
    {  0.0, kMaxEtrue},  // kNuisNormCCoth 
    {  0.0, kMaxEtrue}   // kNuisNormNC 
+};
+
+
+//
+// This array fully specifies which of the systematics are to me marginalised (profiled-out)
+// and which are the ones we try to constrain and output in the systematic covariance matrix
+//
+static const double kSystMarginalize[kNumOfSystematics] = 
+{
+   false,  // kNuisFHCNuMuFlux00
+   false,  // kNuisFHCNuMuFlux01
+   false,  // kNuisFHCNuMuFlux02
+   false,  // kNuisFHCNuMuFlux03
+   false,  // kNuisFHCNuMuFlux04
+   false,  // kNuisFHCNuMuFlux05
+   false,  // kNuisFHCNuMuFlux06
+   false,  // kNuisFHCNuMuFlux07
+   false,  // kNuisFHCNuMuFlux08
+   false,  // kNuisFHCNuMuFlux09 
+   false,  // kNuisFHCNuMuBarFlux00
+   false,  // kNuisFHCNuMuBarFlux01
+   false,  // kNuisFHCNuMuBarFlux02
+   false,  // kNuisFHCNuMuBarFlux03
+   false,  // kNuisFHCNuMuBarFlux04
+   false,  // kNuisFHCNuEFlux00 
+   false,  // kNuisFHCNuEFlux01 
+   false,  // kNuisFHCNuEFlux02 
+   false,  // kNuisNormCCQE 
+   false,  // kNuisNormCC1piC
+   false,  // kNuisNormCC1pi0
+   false,  // kNuisNormCCoth 
+   false   // kNuisNormNC 
 };
 
 
