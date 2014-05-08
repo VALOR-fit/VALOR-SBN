@@ -28,7 +28,7 @@ ChangeLog:
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDModel.h"
 #include "NDFit/NDSample.h"
-#include "NDFit/NDSystDef.h"
+#include "NDFit/NDSystematics.h"
 
 using std::endl;
 
@@ -65,11 +65,15 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
 
   //
+  fPOTFHC = util::XML2Dbl(xml,root_node,"nd/data/pot/fhc");
+  fPOTRHC = util::XML2Dbl(xml,root_node,"nd/data/pot/rhc");
+
+  //
   fMCTree = util::XML2TTree (xml,root_node,"nd/mc/dstfile");
   assert(fMCTree);
 
-  fPOTFHC = util::XML2Dbl(xml,root_node,"nd/data/pot/fhc");
-  fPOTRHC = util::XML2Dbl(xml,root_node,"nd/data/pot/rhc");
+  //
+  this->FillTemplates(fMCTree);
 
   // Release memory
   xml->FreeDoc(xmldoc);
