@@ -212,6 +212,8 @@ void NDModel::Init(void)
 
   fPOTFHC = 0;
   fPOTRHC = 0;
+
+  fArrIdx = util::NDArrIdx::Instance();
 }
 //________________________________________________________________________________________
 void NDModel::Book(void)
@@ -325,8 +327,8 @@ void NDModel::FillTemplates(TTree * t)
   {
      t->GetEntry(iev);
 
-     int isample   = 0;
-     int imode     = 1;
+     int isample   = fArrIdx->NDSampleIdx  ((NDSample_t)sample);
+     int imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)reac_mode);
      int izone     = 2;
 
      bool is_null = fNullMCTempl[isample][imode][izone];

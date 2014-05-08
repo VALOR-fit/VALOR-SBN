@@ -27,10 +27,13 @@
 #include <TTree.h>
 #include <TH1D.h>
 
+//fmwk
 #include "FitCore/FitModelABC.h"
 #include "FitCore/PhysHypothesis.h"
 #include "FitCore/PhysParamList.h"
 #include "Utilities/VALORArray.h"
+//lbnx
+#include "NDFit/NDArrIdx.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDSampleBinning.h"
 #include "NDFit/NDSampleModes.h"
@@ -73,6 +76,8 @@ private:
   void ApplyTuning      (void);
   void ApplySystematics (void);
   void ApplyPhysics     (void);
+
+  util::NDArrIdx * fArrIdx;
 
   PhysHypothesis fPhysHypothesis;
 
