@@ -74,7 +74,7 @@ static const PhysParamId_t kNuisNormNC           = kNuis022;
 //for the time-being this does not need to be function of the sample id
 //static const bool kApplySystToTemplate[kNNDSamples][kNReacModes][kNumOfSystematics] = 
 
-static const bool kApplySystToTemplate[kNNDSamples][kNReacModes][kNumOfSystematics] = 
+static const bool kApplySystToTemplate[kNReacModes][kNumOfSystematics] = 
 {
   // sample: any
   {
@@ -137,6 +137,39 @@ static const bool kApplySystToTemplate[kNNDSamples][kNReacModes][kNumOfSystemati
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }  // kmNuEBarNCoth
   }
 };
+
+//
+// This array fully specifies the true energy of each systematic
+//
+
+static const double kSystEtrueRange[kNumOfSystematics][2] = 
+{
+  // Emin, Emax
+   {  0.0,  1.0},       // kNuisFHCNuMuFlux00
+   {  1.0,  1.5},       // kNuisFHCNuMuFlux01
+   {  1.5,  2.0},       // kNuisFHCNuMuFlux02
+   {  2.0,  2.5},       // kNuisFHCNuMuFlux03
+   {  2.5,  3.0},       // kNuisFHCNuMuFlux04
+   {  3.0,  4.0},       // kNuisFHCNuMuFlux05
+   {  4.0,  5.0},       // kNuisFHCNuMuFlux06
+   {  5.0, 10.0},       // kNuisFHCNuMuFlux07
+   { 10.0, 25.0},       // kNuisFHCNuMuFlux08
+   { 25.0, kMaxEtrue }, // kNuisFHCNuMuFlux09 
+   {  0.0,  1.5},       // kNuisFHCNuMuBarFlux00
+   {  1.5,  3.0},       // kNuisFHCNuMuBarFlux01
+   {  3.0,  6.0},       // kNuisFHCNuMuBarFlux02
+   {  6.0, 10.0},       // kNuisFHCNuMuBarFlux03
+   { 10.0, kMaxEtrue},  // kNuisFHCNuMuBarFlux04
+   {  0.0,  3.0},       // kNuisFHCNuEFlux00 
+   {  3.0, 10.0},       // kNuisFHCNuEFlux01 
+   { 10.0, kMaxEtrue},  // kNuisFHCNuEFlux02 
+   {  0.0, kMaxEtrue},  // kNuisNormCCQE 
+   {  0.0, kMaxEtrue},  // kNuisNormCC1piC
+   {  0.0, kMaxEtrue},  // kNuisNormCC1pi0
+   {  0.0, kMaxEtrue},  // kNuisNormCCoth 
+   {  0.0, kMaxEtrue}   // kNuisNormNC 
+};
+
 
 } // conv
 } // valor

@@ -121,7 +121,8 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 // Etrue binning
 //
 
-static const int kNEtrueBins = 54;
+static const int    kNEtrueBins = 54;
+static const double kMaxEtrue   = 100.;
 
 static const double kEtrueBinEdges[kNEtrueBins+1] = 
 {
@@ -130,7 +131,7 @@ static const double kEtrueBinEdges[kNEtrueBins+1] =
     2.600,  2.700,  2.800,  2.900,  3.000,  3.100,  3.200,  3.300,  3.400,  3.500,
     3.600,  3.700,  3.800,  3.900,  4.000,  4.100,  4.200,  4.300,  4.400,  4.500,
     4.700,  5.000,  5.500,  6.000,  6.500,  7.000,  8.000,  9.000, 10.000, 15.000,
-   20.000, 30.000, 40.000, 50.000, 99.999
+   20.000, 30.000, 40.000, 50.000,100.000
 };
 
 
