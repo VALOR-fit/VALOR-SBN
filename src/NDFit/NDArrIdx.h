@@ -1,0 +1,67 @@
+//____________________________________________________________________________
+/*!
+
+\class     valor::util::NDArrIdx
+
+\brief     A simple helper singleton object that helps improve CPU-efficiency
+           by working-out and storing the indices for various enumerations in
+           various arrays used in this fit.
+
+\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+           University of Liverpool & STFC Rutherford Appleton Laboratory
+
+           George Christodoulou <georgios \at hep.ph.liv.ac.uk>
+           University of Liverpool
+
+           Nick Grant <n.grant \at lancaster.ac.uk>
+           University of Lancaster
+
+\created   March 27, 2014
+
+\copyright (c) 2010-2014, The VALOR group
+
+*/
+//____________________________________________________________________________
+
+#ifndef _valor_lbnx_nd_array_index_h_
+#define _valor_lbnx_nd_array_index_h_
+
+#include "Conventions/ReacMode.h"
+#include "NDFit/NDSample.h"
+#include "NDFit/NDSampleModes.h"
+
+using namespace valor;
+
+namespace valor {
+namespace util {
+
+class NDArrIdx {
+public:
+    static NDArrIdx * Instance();
+    int NDSampleIdx   (conv::NDSample_t s)                     { return fNDSampleIdx[s];      }
+    int NDReacModeIdx (conv::NDSample_t s, conv::ReacMode_t m) { return fNDReacModeIdx[s][m]; }
+private:
+    NDArrIdx();
+    NDArrIdx(const NDArrIdx &) {}
+   ~NDArrIdx() {}
+    void Init();
+    int fNDSampleIdx   [2*conv::kNNDSamples];                       ///< maps each sample to a kNDSample array index
+    int fNDReacModeIdx [2*conv::kNNDSamples][2*conv::kNReacModes];  ///< maps each mode of each sample to a kNDReactionModes array index
+    static NDArrIdx * fInstance;
+    struct Cleaner {
+      void DummyMethodAndSilentCompiler() { }
+      ~Cleaner() {
+         if (NDArrIdx::fInstance !=0) {
+            delete NDArrIdx::fInstance;
+            NDArrIdx::fInstance = 0;
+         }
+      }
+    };
+    friend struct Cleaner;
+};
+
+} // util
+} // valor
+
+#endif
+

@@ -1,0 +1,69 @@
+//________________________________________________________________________________________
+/*
+
+Copyright (c) 2010-2014, The VALOR group. All rights reserved.
+
+ChangeLog:
+
+*/
+//________________________________________________________________________________________
+
+#include <cassert>
+
+#include "NDFit/NDArrIdx.h"
+#include "Messenger/Messenger.h"
+
+using namespace valor;
+using namespace valor::conv;
+
+//________________________________________________________________________________________
+valor::util::NDArrIdx * valor::util::NDArrIdx::fInstance = 0;
+//________________________________________________________________________________________
+valor::util::NDArrIdx::NDArrIdx()
+{
+  this->Init();
+  fInstance = 0;
+}
+//________________________________________________________________________________________
+valor::util::NDArrIdx * valor::util::NDArrIdx::Instance()
+{
+  if(fInstance == 0) {
+    static valor::util::NDArrIdx::Cleaner cleaner;
+    cleaner.DummyMethodAndSilentCompiler();
+    fInstance = new valor::util::NDArrIdx;
+  }
+  return fInstance;
+}
+//________________________________________________________________________________________
+void valor::util::NDArrIdx::Init(void)
+{
+  // init to -1
+  for(int i = 0; i < 2*kNNDSamples; i++) {
+     fNDSampleIdx [i] = -1;
+     for(int j = 0; j < 2*kNReacModes; j++) {
+         fNDReacModeIdx [i][j] = -1;
+     }//i
+  }//j
+
+  // fill-in
+  for(int is = 0; is < kNNDSamples; is++) {
+     NDSample_t s = kNDSample[is];
+     if(s == ksNDUndefined) continue;
+     fNDSampleIdx [s] = is;
+
+     LOG("NDArrIdx",pINFO) 
+        << "Sample: " << util::AsString(s) << " is at slot: " << fNDSampleIdx[s];
+
+     for(int im = 0; im < kNReacModes; im++) {
+         ReacMode_t m = kNDReactionModes[is][im];
+         if(m == kmUndefined) continue;
+         fNDReacModeIdx [s][m] = im;
+
+         LOG("NDArrIdx",pINFO)
+            << "Mode: " << util::AsString(s) << "/" << util::AsString(m)
+            << " is at slot: " << fNDReacModeIdx [s][m];
+     }//im
+  }//is 
+}
+//________________________________________________________________________________________
+

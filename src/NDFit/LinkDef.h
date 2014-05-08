@@ -10,6 +10,8 @@
 
 #pragma link C++ enum valor::conv::NDSample_t;
 
+#pragma link C++ class valor::util::NDArrIdx;
+
 #pragma link C++ class valor::NDData;
 #pragma link C++ class valor::NDModel;
 
