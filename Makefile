@@ -17,7 +17,8 @@ include $(VALOR_LBNX)/src/make/Make.include
 BUILD_TARGETS =    print-make-info    \
 		   make-bin-lib-dir   \
 		   build-conventions  \
-		   build-nd-fit
+		   build-nd-fit       \
+                   build-nd-selection
 
 # define targets
 
@@ -47,6 +48,14 @@ build-nd-fit: FORCE
 	make;\
 	cd ${VALOR_LBNX}
 
+build-nd-selection: FORCE
+	@echo " "
+	@echo "** Building NDSelection package..."
+	cd ${VALOR_LBNX}/src;\
+	cd NDSelection;\
+	make;\
+	cd ${VALOR_LBNX}
+
 make-bin-lib-dir: FORCE
 	@echo " "
 	@echo "** Creating VALOR/LBNx lib and bin directories..."
@@ -60,6 +69,7 @@ purge: FORCE
 	cd ${VALOR_LBNX}/src;\
 	cd Conventions;               make purge; cd ..; \
 	cd NDFit;                     make purge; cd ..; \
+	cd NDSelection;		      make purge; cd ..; \
 	cd ${VALOR_LBNX}
 
 clean: clean-files clean-dir clean-etc
@@ -70,6 +80,7 @@ clean-files: FORCE
 	cd ${VALOR_LBNX}/src;\
 	cd Conventions;             make clean; cd ..; \
 	cd NDFit;                   make clean; cd ..; \
+	cd NDSelection;		    make clean; cd ..; \
 	cd $(VALOR_LBNX);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_LBNX)
