@@ -26,5 +26,6 @@
   gSystem->Load("libValorFitCore.so");
   gSystem->Load("libValorLBNxConv.so");
   gSystem->Load("libValorLBNxND.so");
+  gSystem->Load("libValorLBNxNDSelection.so");
 }
 
