@@ -64,9 +64,6 @@ class ReadFastMC
   // the events with npions > npionnum will be returned
   void SetMaxPionNumber(int npion) {npionnum = npion;};
 
-  // Read the root tree from the fastmc
-  //void ReadTree();
-
   // This is based on the fastmc selection- 0 for muon-like, 1 for nue-like events, 2 for nc
   int WhatToSelect(bool nc=false);
 
@@ -75,18 +72,15 @@ class ReadFastMC
   // The ratio of neutrino-antineutrino in the beam
   double FluxWeight(int neutpdg, int otherneutpdg);
   
-  // Return a histogram array for CC-npi selection.
+  // Return a histogram array for CC/NC-npi selection.
   // First argument is the number of charge pions, second is the number of pi0
   // Only for single pi0 is working at the moment
-  // At the moment there is no separation between positive and negative pions
-  //TObjArray *SelectCCnPi(int npions, int npi0);
   vector<TH1*> SelectCCnPi(int npions, int npi0);
   // And for the nc
-  //TObjArray *SelectNCnPi(int npions, int npi0);
   vector<TH1*> SelectNCnPi(int npions, int npi0);
 
   // FastMC tree
-  TTree* FastMCTree(int whattoselect, int seed); 
+  TTree* FastMCTree(int whattoselect, int seed, bool debugtree=false); 
 
  protected:
   // The input root file from FastMC
@@ -97,12 +91,16 @@ class ReadFastMC
   double enureconcut;
   // Recon partcile energy cut
   double epionreconcut, egammareconcut, eelectronreconcut, eprotonreconcut;
+  // Track length cut
+  double tracklengthcut;
   // Pi0 invariant mass cut
   double pi0invmass;
   // Particle mis-identification probabilities
   double PionMisIDAsProton, PionMisIDAsKaon, ProtonMisIDAsPion, ProtonMisIDAsKaon, KaonMisIDAsPion, KaonMisIDAsProton;
   // Parameters for the charge mis-identification for the momentum and track length parameterazion
   double ChargeConfMomSlope, ChargeConfMomConst, ChargeConfTrLSlope, ChargeConfTrLConst;
+  // Max momentum to apply the PID
+  double MaxMomentumPID;
   // Apply the reweight
   bool reweight;
   // Set the verbosity level
@@ -115,8 +113,6 @@ class ReadFastMC
   // Maximum number of pions to select in an event
   int npionnum;
 
-  // The fastmc tree
-  //TTree *gstTree;
   //Read the root tree from the fastmc
   TTree* ReadTree(string f);
 
@@ -147,6 +143,8 @@ class ReadFastMC
   int nEMf;
 
   double Q2, Q2s, Q2_reco, W, W_reco, y, ys, y_reco;
+
+  double vtxx, vtxy, vtxz;
 
   int pdgf[100], EMpdgf[100];
   double EMEf[100], EMcthf[100], EMpxf[100], EMpyf[100], EMpzf[100];

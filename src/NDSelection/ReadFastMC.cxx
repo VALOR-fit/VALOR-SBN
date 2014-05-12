@@ -180,6 +180,18 @@ void ReadFastMC::ReadDatacard(string datacard){
         par.erase(par.begin());
         ChargeConfTrLConst = atof(par.c_str());
       }
+      if(line.find("MaxMomentumPID") != string::npos){ // max momentum for pid
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        MaxMomentumPID = atof(par.c_str());
+      }
+      if(line.find("TrackLengthCut") != string::npos){ // track length cut
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        tracklengthcut = atof(par.c_str());
+      }
     }
   }
   empFile.close();
@@ -230,10 +242,10 @@ double ReadFastMC::FluxWeight(int neutpdg, int otherneutpdg){
 
 }
 // ----------------------------------------------------------------------------
-TTree* ReadFastMC::FastMCTree(int whattoselect, int seed){
+TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
 
   // The ratio of neutrino-antineutrino in the beam
-  double fluxweight = FluxWeight(neutrinoPDG, -neutrinoPDG);
+  //double fluxweight = FluxWeight(neutrinoPDG, -neutrinoPDG);
   // FastMC Tree
   TTree *gstTree = ReadTree(inFile);
   // Number of events to select
@@ -241,31 +253,38 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed){
   // Output tree
   TTree *FastMCTree = new TTree("FastMCTree","FastMC Output Tree");
   // Event weight for the neutrino-antineutrino ratio in the beam
-  double EventWeight = 1.0;
-  // Event category based on the pion selection
-  int category = 0;
+  //double EventWeight = 1.0;
+  // Event sample
+  int sample = -1;
   // Number of misidentified pions as protons
   int NPionMisIDAsProton = 0;
   // Number of misidentified protons as pions
   int NProtonMisIDAsPion = 0;
   // Charge flip for selected lepton
   bool LeptonChargeFlip = false;
+
   // Tree branches
   FastMCTree->Branch("Ev",          &Ev,          "Ev/D");
   FastMCTree->Branch("Ev_reco",     &Ev_reco,     "Ev_reco/D");
-  FastMCTree->Branch("neut_code",   &neut_code,   "neut_code/I");
   FastMCTree->Branch("neu",         &neu,         "neu/I");
-  FastMCTree->Branch("Q2",          &Q2,          "Q2/D");
-  FastMCTree->Branch("Q2_reco",     &Q2_reco,     "Q2_reco/D");
   FastMCTree->Branch("ys",          &ys,          "ys/D");
   FastMCTree->Branch("y_reco",      &y_reco,      "y_reco/D");
-  FastMCTree->Branch("EventWeight", &EventWeight, "EventWeight/D");
-  FastMCTree->Branch("category",    &category,    "category/I");
-  FastMCTree->Branch("NPionMisIDAsProton",    &NPionMisIDAsProton,    "NPionMisIDAsProton/I");
-  FastMCTree->Branch("NProtonMisIDAsPion",    &NProtonMisIDAsPion,    "NProtonMisIDAsPion/I");
-  FastMCTree->Branch("LeptonChargeFlip",      &LeptonChargeFlip,      "LeptonChargeFlip/O");
+  FastMCTree->Branch("POTWeight",   &POTWeight,   "POTWeight/D");
+  FastMCTree->Branch("sample",      &sample,      "sample/I");
+  FastMCTree->Branch("neut_code",   &neut_code,   "neut_code/I");
 
+  if(debugtree){
+    FastMCTree->Branch("Q2",          &Q2,          "Q2/D");
+    FastMCTree->Branch("Q2_reco",     &Q2_reco,     "Q2_reco/D");
+    FastMCTree->Branch("NPionMisIDAsProton",    &NPionMisIDAsProton,    "NPionMisIDAsProton/I");
+    FastMCTree->Branch("NProtonMisIDAsPion",    &NProtonMisIDAsPion,    "NProtonMisIDAsPion/I");
+    if(whattoselect != 2)// only for CC events
+      FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,      "LeptonChargeFlip/O");
+  }
+
+  // Random generator
   TRandom3 *random = new TRandom3();
+
   // Functions for the charge flip parameterization
   TF1 *ft = new TF1("ft","expo");
   ft->SetParameter(0,ChargeConfTrLConst);
@@ -298,43 +317,58 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed){
     // No recon neutrino energy? -> continue
     if(Ev_reco < enureconcut){continue;}
 
-    if(abs(PdgL_reco) == 13){
-      random->SetSeed(seed*seed + i);
-      double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
-
-      double cmisid = 0.0;
-      int rcnum = random->Integer(1000);
-      if(lmom > 0.8 && lmom < 5){
-        cmisid = fp->Eval(lmom*1000);
+    // Apply the charge flip cut only for CC selection
+    if(whattoselect < 2){
+      if(abs(PdgL_reco) == 13){
+	random->SetSeed(seed*seed + i);
+	double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
+	
+	double cmisid = 0.0;
+	int rcnum = random->Integer(1000);
+	if(lmom > 0.8 && lmom < 5){
+	  cmisid = fp->Eval(lmom*1000);
+	}
+	else if(lmom >= 5){
+	  cmisid = fp->Eval(5*1000);
+	}
+	else if(lmom > 0.5 && lmom <= 0.8){
+	  cmisid = fp->Eval(0.8*1000)*1.5;
+	}
+	else if(lmom <= 0.5){
+	  cmisid = fp->Eval(0.8*1000)*5;
+	}
+	
+	// Charge flip
+	if(rcnum < cmisid*1000)
+	  LeptonChargeFlip = true;
       }
-      else if(lmom >= 5){
-        cmisid = fp->Eval(5*1000);
-      }
-      else if(lmom > 0.5 && lmom <= 0.8){
-        cmisid = fp->Eval(0.8*1000)*1.5;
-      }
-      else if(lmom <= 0.5){
-        cmisid = fp->Eval(0.8*1000)*5;
-      }
-
-      // Charge flip
-      if(rcnum < cmisid*1000)
-        LeptonChargeFlip = true;
+      
+      // For the selected neutrino type skip the event if the charge is flipped 
+      if(neu == neutrinoPDG && LeptonChargeFlip){continue;}
+      // For anti-nu keep only the events with the charge flipped
+      if(neu == -neutrinoPDG && !LeptonChargeFlip){continue;}
     }
 
-    // Number of final state pion
+    // Number of final state pions and protons
     int npizero = 0; int npiplus = 0; int npiminus = 0; int nprotons = 0;
-    // Other em activity
+    // EM activity
     int nem = 0; int ngamma = 0;
+    // Other - this refers to regions where the PID can't separate pions from protons
+    int otherpar = 0;
 
     for(int k = 0; k < nf; k++){
       random->SetSeed(i*i + k + nf + seed);
+ 
+      // Minimum track length cut
+      if(Trkf_reco[k] < tracklengthcut){continue;}
 
       // Pt
       //double pt = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k]);
+
       // Momentum
       double momentum = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k] + pzf_reco[k]*pzf_reco[k]);
 
+      // Charge mis-id
       bool chargeflip = false;
       double chargemisid = 0.0;
       int rnum = random->Integer(1000);
@@ -364,39 +398,51 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed){
       else if(abs(pdgf[k]) == 11 && Ef_reco[k] > eelectronreconcut) // e-/e+
 	nem++;
       else if(pdgf[k] == 211  && Ef_reco[k] > epionreconcut){ // pi+
-	if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
-	  NPionMisIDAsProton++;
-	  if(chargeflip == false)
-	    nprotons++;
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
+	    NPionMisIDAsProton++;
+	    if(chargeflip == false)// has to be positive charged
+	      nprotons++;
+	  }
+	  else
+	    npiplus++;
 	}
-	else
-	  npiplus++;
       }
       else if(pdgf[k] == -211 && Ef_reco[k] > epionreconcut){ // pi-
-	if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
-          NPionMisIDAsProton++;
-	  if(chargeflip == true)
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
+	    NPionMisIDAsProton++;
+	    if(chargeflip == true)// has to be positive charged
 	    nprotons++;
-        }
-        else
-	  npiminus++;
+	  }
+	  else
+	    npiminus++;
+	}
       }
       else if(pdgf[k] == 111  && Ef_reco[k] > egammareconcut) // pi0
 	npizero++;
       else if(pdgf[k] == 2212 &&  Ef_reco[k] > eprotonreconcut){ // proton
-	if(rnum < ProtonMisIDAsPion*1000){ // mis-id as pion
-	  NProtonMisIDAsPion++;
-	  if(chargeflip == true)
-	    npiminus++;
-	  else
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < ProtonMisIDAsPion*1000){ // mis-id as pion
+	    NProtonMisIDAsPion++;
+	    if(chargeflip == true)
+	      npiminus++;
+	    else
 	    npiplus++;
-	}
-	else{// now check the charge
-	  if(chargeflip == false)
+	  }
+	  else{// now check the charge
+	    if(chargeflip == false)
 	    nprotons++;
+	  }
 	}
       }
-    }
+    } // fs particle loop
 
     int npionscharge = npiplus + npiminus;
 
@@ -421,22 +467,24 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed){
       if( fabs(imr - pizeromass) > pi0invmass){continue;}
     }
 
-    if(npionscharge == 0 && npizero == 0 && nprotons == 0) category = 1000;
-    else if(npionscharge == 0 && npizero == 0 && nprotons == 1) category = 1001;
-    else if(npionscharge == 1 && npizero == 0 && nprotons == 0) category = 1100;
-    else if(npionscharge == 1 && npizero == 0 && nprotons == 1) category = 1101;
-    else if(npionscharge == 2 && npizero == 0) category = 1209;
-    else if(npionscharge >  2 && npizero == 0) category = 1909;
-    else if(npionscharge == 0 && npizero == 1) category = 1019;
-    else if(npionscharge == 1 && npizero == 1) category = 1119;
-    else if(npionscharge == 2 && npizero == 1) category = 1219;
-    else if(npionscharge >  2 && npizero == 1) category = 1919;
-    else continue;
+    if(npionscharge == 0      && npizero == 0 && nprotons == 0 && otherpar == 0) sample = 10000;
+    else if(npionscharge == 0 && npizero == 0 && nprotons == 1 && otherpar == 0) sample = 10010;
+    else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0) sample = 11000;
+    else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0) sample = 11010;
+    else if(npionscharge == 2 && npizero == 0 && otherpar == 0) sample = 12090;
+    else if(npionscharge >  2 && npizero == 0 && otherpar == 0) sample = 19090;
+    else if(npionscharge == 0 && npizero == 1 && otherpar == 0) sample = 10190;
+    else if(npionscharge == 1 && npizero == 1 && otherpar == 0) sample = 11190;
+    else if(npionscharge == 2 && npizero == 1 && otherpar == 0) sample = 12190;
+    else if(npionscharge >  2 && npizero == 1 && otherpar == 0) sample = 19190;
+    else sample = 99999;
 
+    /*
     if(neu == -neutrinoPDG)
       EventWeight = fluxweight;
     else
       EventWeight = 1.0;
+    */
 
     // Fill the tree
     if(EvClass_reco == whattoselect)
@@ -860,6 +908,11 @@ TTree* ReadFastMC::ReadTree(string f){
   gstTree->SetBranchAddress("y",             &y);
   gstTree->SetBranchAddress("ys",            &ys);
   gstTree->SetBranchAddress("y_reco",        &y_reco);
+
+  gstTree->SetBranchAddress("vtxx",          &vtxx);
+  gstTree->SetBranchAddress("vtxy",          &vtxy);
+  gstTree->SetBranchAddress("vtxz",          &vtxz);
+
   //gstTree->SetBranchAddress("",            &);
   
   if(reweight){
