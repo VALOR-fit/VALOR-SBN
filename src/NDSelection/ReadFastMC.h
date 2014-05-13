@@ -34,6 +34,8 @@
 #include "TGraph.h"
 #include "TH1.h"
 
+#include "Utilities/UtlXML.h"
+
 using namespace std;
 // --------------------------------------------------------------------------
 namespace valor {
@@ -58,6 +60,7 @@ class ReadFastMC
 
   // Read the datacard
   void ReadDatacard(string datacard);
+  void ReadXMLDatacard(string datacard);
 
   // Set the maximum number of pions to select in the final state
   // If the number of pions requested is bigger than this number then all 
@@ -80,7 +83,7 @@ class ReadFastMC
   vector<TH1*> SelectNCnPi(int npions, int npi0);
 
   // FastMC tree
-  TTree* FastMCTree(int whattoselect, int seed, bool debugtree=false); 
+  TTree* FastMCTree(int seed, bool debugtree=false); 
 
  protected:
   // The input root file from FastMC

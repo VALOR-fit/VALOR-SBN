@@ -10,13 +10,17 @@ ChangeLog:
 #include "ReadFastMC.h"
 
 #include <math.h>
+#include <ostream>
 
 #include "TH2.h"
 #include "TAxis.h"
 #include "TRandom3.h"
 #include "TF1.h"
 
+#include "TXMLEngine.h"
+
 using namespace valor;
+using namespace valor::util;
 
 ClassImp(ReadFastMC)
 
@@ -211,6 +215,23 @@ int ReadFastMC::WhatToSelect(bool nc){
   return whattoselect;
 }
 // ----------------------------------------------------------------------------
+void ReadFastMC::ReadXMLDatacard(string datacard){
+
+  TXMLEngine* xml = new TXMLEngine; 
+  XMLDocPointer_t xmldoc = xml->ParseFile(datacard.c_str());
+  if (xmldoc==0) {
+    cerr << "Exp >> " << "Can not parse input: " << datacard << endl;
+    delete xml;
+    return;  
+  }
+  XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+ 
+  //enureconcut = util::XML2Dbl(xml,root_node,"DetConfig/ReconNeutrinoEnergyCut");
+  // Release memory
+  xml->FreeDoc(xmldoc);
+  delete xml;
+}
+// ----------------------------------------------------------------------------
 double ReadFastMC::FluxWeight(int neutpdg, int otherneutpdg){
 
   // No neutrino? ->skip
@@ -242,7 +263,7 @@ double ReadFastMC::FluxWeight(int neutpdg, int otherneutpdg){
 
 }
 // ----------------------------------------------------------------------------
-TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
+TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
   // The ratio of neutrino-antineutrino in the beam
   //double fluxweight = FluxWeight(neutrinoPDG, -neutrinoPDG);
@@ -278,8 +299,7 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
     FastMCTree->Branch("Q2_reco",     &Q2_reco,     "Q2_reco/D");
     FastMCTree->Branch("NPionMisIDAsProton",    &NPionMisIDAsProton,    "NPionMisIDAsProton/I");
     FastMCTree->Branch("NProtonMisIDAsPion",    &NProtonMisIDAsPion,    "NProtonMisIDAsPion/I");
-    if(whattoselect != 2)// only for CC events
-      FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,      "LeptonChargeFlip/O");
+    FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,      "LeptonChargeFlip/O");
   }
 
   // Random generator
@@ -318,8 +338,8 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
     if(Ev_reco < enureconcut){continue;}
 
     // Apply the charge flip cut only for CC selection
-    if(whattoselect < 2){
-      if(abs(PdgL_reco) == 13){
+    if(EvClass_reco < 2){
+      if(abs(PdgL_reco) == 13 || abs(PdgL_reco) == 11){
 	random->SetSeed(seed*seed + i);
 	double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
 	
@@ -353,15 +373,14 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
     int npizero = 0; int npiplus = 0; int npiminus = 0; int nprotons = 0;
     // EM activity
     int nem = 0; int ngamma = 0;
+    // Other stuff
+    int nother = 0;
     // Other - this refers to regions where the PID can't separate pions from protons
     int otherpar = 0;
 
     for(int k = 0; k < nf; k++){
       random->SetSeed(i*i + k + nf + seed);
  
-      // Minimum track length cut
-      if(Trkf_reco[k] < tracklengthcut){continue;}
-
       // Pt
       //double pt = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k]);
 
@@ -393,11 +412,23 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
       random->SetSeed(random->GetSeed() + seed);
       rnum = random->Integer(1000);
 
-      if(pdgf[k] == 22 && Ef_reco[k] > egammareconcut) // photons
+      if(pdgf[k] == 22){  // photons
+	if(Ef_reco[k] < egammareconcut){continue;}
 	ngamma++;
-      else if(abs(pdgf[k]) == 11 && Ef_reco[k] > eelectronreconcut) // e-/e+
-	nem++;
-      else if(pdgf[k] == 211  && Ef_reco[k] > epionreconcut){ // pi+
+      }
+      else if(abs(pdgf[k]) == 11){ // e-/e+
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < eelectronreconcut){continue;}
+	  nem++;
+      }
+      else if(pdgf[k] == 211){ // pi+
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < epionreconcut){continue;}
+
 	if(momentum > MaxMomentumPID)
 	  otherpar++;
 	else{
@@ -410,7 +441,12 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
 	    npiplus++;
 	}
       }
-      else if(pdgf[k] == -211 && Ef_reco[k] > epionreconcut){ // pi-
+      else if(pdgf[k] == -211){ // pi-
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < epionreconcut){continue;}
+
 	if(momentum > MaxMomentumPID)
 	  otherpar++;
 	else{
@@ -423,9 +459,16 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
 	    npiminus++;
 	}
       }
-      else if(pdgf[k] == 111  && Ef_reco[k] > egammareconcut) // pi0
+      else if(pdgf[k] == 111){ // pi0
+	if(Ef_reco[k] < egammareconcut){continue;}
 	npizero++;
-      else if(pdgf[k] == 2212 &&  Ef_reco[k] > eprotonreconcut){ // proton
+      }
+      else if(pdgf[k] == 2212){ // proton
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < eprotonreconcut){continue;}
+
 	if(momentum > MaxMomentumPID)
 	  otherpar++;
 	else{
@@ -442,19 +485,19 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
 	  }
 	}
       }
+      else{
+	// Minimum track length cut
+	//if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < 100){continue;}
+	  nother++;
+      }
     } // fs particle loop
 
     int npionscharge = npiplus + npiminus;
+    int npizerorecon = 0;
 
-    // Select the number of pi0s
-    //if(npizero != npi0){continue;}
-    // No other EM activity - temporary
-    if(nem > 0){continue;}
-    if(ngamma  > 0){continue;}
-    // For pi0 
-    //if(npi0 !=0 && nEMf != 2*npi0){continue;}
-
-    // This works only for single pi0 events
+    // Only for single pi0 events
     if(npizero == 1 && nEMf == 2){
       double par = sqrt(EMpxf_reco[0]*EMpxf_reco[0] + EMpyf_reco[0]*EMpyf_reco[0] + EMpzf_reco[0]*EMpzf_reco[0]);
       double pbr = sqrt(EMpxf_reco[1]*EMpxf_reco[1] + EMpyf_reco[1]*EMpyf_reco[1] + EMpzf_reco[1]*EMpzf_reco[1]);
@@ -464,31 +507,58 @@ TTree* ReadFastMC::FastMCTree(int whattoselect, int seed, bool debugtree){
       double imr = sqrt(2.0 *EMEf_reco[0]  *EMEf_reco[1]  * ( 1.0 - costhr));
       
       // Invariant mass cut
-      if( fabs(imr - pizeromass) > pi0invmass){continue;}
+      if( fabs(imr - pizeromass) < pi0invmass)
+	npizerorecon++;
     }
 
-    if(npionscharge == 0      && npizero == 0 && nprotons == 0 && otherpar == 0) sample = 10000;
-    else if(npionscharge == 0 && npizero == 0 && nprotons == 1 && otherpar == 0) sample = 10010;
-    else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0) sample = 11000;
-    else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0) sample = 11010;
-    else if(npionscharge == 2 && npizero == 0 && otherpar == 0) sample = 12090;
-    else if(npionscharge >  2 && npizero == 0 && otherpar == 0) sample = 19090;
-    else if(npionscharge == 0 && npizero == 1 && otherpar == 0) sample = 10190;
-    else if(npionscharge == 1 && npizero == 1 && otherpar == 0) sample = 11190;
-    else if(npionscharge == 2 && npizero == 1 && otherpar == 0) sample = 12190;
-    else if(npionscharge >  2 && npizero == 1 && otherpar == 0) sample = 19190;
-    else sample = 99999;
+    // NC Non-visible events
+    if(EvClass_reco == 2){
+      if(npionscharge == 0 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) {continue;}
+      if(npionscharge == 0 && npizero == 1 && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) {continue;}
+    }
 
-    /*
-    if(neu == -neutrinoPDG)
-      EventWeight = fluxweight;
-    else
-      EventWeight = 1.0;
-    */
+    // Selection
+    if(EvClass_reco == 0){ // cc-numu
+      if(npionscharge == 0      && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10000;
+      else if(npionscharge == 0 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10010;
+      else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 11000;
+      else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 11010;
+      else if(npionscharge == 2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 12000;
+      else if(npionscharge >  2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 19000;
+      else if(npionscharge == 0 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10100;
+      else if(npionscharge == 1 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 11100;
+      else if(npionscharge == 2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 12100;
+      else if(npionscharge >  2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 19100;
+      else sample = 19999;
+    }
+    else if(EvClass_reco == 1){ //cc-nue
+      if(npionscharge == 0      && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20000;
+      else if(npionscharge == 0 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20010;
+      else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 21000;
+      else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 21010;
+      else if(npionscharge == 2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 22000;
+      else if(npionscharge >  2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 29000;
+      else if(npionscharge == 0 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20100;
+      else if(npionscharge == 1 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 21100;
+      else if(npionscharge == 2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 22100;
+      else if(npionscharge >  2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 29100;
+      else sample = 29999;
+    }
+    else if(EvClass_reco == 2){ // nc
+      if(npionscharge == 0      && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 30010;
+      else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 31000;
+      else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 31010;
+      else if(npionscharge == 2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 32000;
+      else if(npionscharge >  2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 39000;
+      else if(npionscharge == 0 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 30100;
+      else if(npionscharge == 1 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 31100;
+      else if(npionscharge == 2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 32100;
+      else if(npionscharge >  2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 39100;
+      else sample = 39999;
+    }
 
     // Fill the tree
-    if(EvClass_reco == whattoselect)
-      FastMCTree->Fill();
+    FastMCTree->Fill();
   }
 
   return FastMCTree;
