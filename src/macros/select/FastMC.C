@@ -27,8 +27,10 @@ void FastMC(string outFile  = "fmctree.root",
   
   rfmc->ReadDatacard(datacard);
   
-  // 0 for numucandidates, 1 for nue candidates, 2 for nc candidates
-  TTree* ReadFastMCTree =  rfmc->FastMCTree(0,seed);
+  TTree* ReadFastMCTree =  rfmc->FastMCTree(seed);
+
+  //string xmlfile = "/hepstore/georgios/lbne/valor/softw/lbnx/trunk/config/FastMC_NDSelection_1.xml";
+  //rfmc->ReadXMLDatacard(xmlfile);
   
   TFile* out = new TFile(outFile.c_str(), "RECREATE");
   out->cd();

@@ -53,8 +53,8 @@ ChargeConfTrLSlope -0.0353907
 ChargeConfTrLConst -1.91409
 
 # Max momentum to apply the pid
-# For the STT detector pid above 800 MeV/c is impossible
-MaxMomentumPID 800.0
+# For the STT detector pid above 0.8 GeV/c is impossible
+MaxMomentumPID 0.8
 
 # Track length cut - in m
 TrackLengthCut 0.05
