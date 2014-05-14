@@ -277,6 +277,8 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
   //double EventWeight = 1.0;
   // Event sample
   int sample = -1;
+  // True reaction mode
+  int reactionmode = -1;
   // Number of misidentified pions as protons
   int NPionMisIDAsProton = 0;
   // Number of misidentified protons as pions
@@ -288,18 +290,19 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
   FastMCTree->Branch("Ev",          &Ev,          "Ev/D");
   FastMCTree->Branch("Ev_reco",     &Ev_reco,     "Ev_reco/D");
   FastMCTree->Branch("neu",         &neu,         "neu/I");
-  FastMCTree->Branch("ys",          &ys,          "ys/D");
   FastMCTree->Branch("y_reco",      &y_reco,      "y_reco/D");
   FastMCTree->Branch("POTWeight",   &POTWeight,   "POTWeight/D");
   FastMCTree->Branch("sample",      &sample,      "sample/I");
-  FastMCTree->Branch("neut_code",   &neut_code,   "neut_code/I");
+  FastMCTree->Branch("rectionmode", &reactionmode,"reactionmode/I");
 
   if(debugtree){
-    FastMCTree->Branch("Q2",          &Q2,          "Q2/D");
-    FastMCTree->Branch("Q2_reco",     &Q2_reco,     "Q2_reco/D");
-    FastMCTree->Branch("NPionMisIDAsProton",    &NPionMisIDAsProton,    "NPionMisIDAsProton/I");
-    FastMCTree->Branch("NProtonMisIDAsPion",    &NProtonMisIDAsPion,    "NProtonMisIDAsPion/I");
-    FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,      "LeptonChargeFlip/O");
+    FastMCTree->Branch("neut_code",           &neut_code,           "neut_code/I");
+    FastMCTree->Branch("ys",                  &ys,                  "ys/D");
+    FastMCTree->Branch("Q2",                  &Q2,                  "Q2/D");
+    FastMCTree->Branch("Q2_reco",             &Q2_reco,             "Q2_reco/D");
+    FastMCTree->Branch("NPionMisIDAsProton",  &NPionMisIDAsProton,  "NPionMisIDAsProton/I");
+    FastMCTree->Branch("NProtonMisIDAsPion",  &NProtonMisIDAsPion,  "NProtonMisIDAsPion/I");
+    FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,    "LeptonChargeFlip/O");
   }
 
   // Random generator
@@ -339,29 +342,27 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     // Apply the charge flip cut only for CC selection
     if(EvClass_reco < 2){
-      if(abs(PdgL_reco) == 13 || abs(PdgL_reco) == 11){
-	random->SetSeed(seed*seed + i);
-	double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
-	
-	double cmisid = 0.0;
-	int rcnum = random->Integer(1000);
-	if(lmom > 0.8 && lmom < 5){
-	  cmisid = fp->Eval(lmom*1000);
-	}
-	else if(lmom >= 5){
-	  cmisid = fp->Eval(5*1000);
-	}
-	else if(lmom > 0.5 && lmom <= 0.8){
-	  cmisid = fp->Eval(0.8*1000)*1.5;
-	}
-	else if(lmom <= 0.5){
-	  cmisid = fp->Eval(0.8*1000)*5;
-	}
-	
-	// Charge flip
-	if(rcnum < cmisid*1000)
-	  LeptonChargeFlip = true;
+      random->SetSeed(seed*seed + i);
+      double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
+      
+      double cmisid = 0.0;
+      int rcnum = random->Integer(1000);
+      if(lmom > 0.8 && lmom < 5){
+	cmisid = fp->Eval(lmom*1000);
       }
+      else if(lmom >= 5){
+	cmisid = fp->Eval(5*1000);
+      }
+      else if(lmom > 0.5 && lmom <= 0.8){
+	cmisid = fp->Eval(0.8*1000)*1.5;
+      }
+      else if(lmom <= 0.5){
+	cmisid = fp->Eval(0.8*1000)*5;
+      }
+      
+      // Charge flip
+      if(rcnum < cmisid*1000)
+	LeptonChargeFlip = true;
       
       // For the selected neutrino type skip the event if the charge is flipped 
       if(neu == neutrinoPDG && LeptonChargeFlip){continue;}
@@ -490,6 +491,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	//if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
 	if(Ef_reco[k] < 100){continue;}
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+	else
 	  nother++;
       }
     } // fs particle loop
@@ -511,49 +515,71 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	npizerorecon++;
     }
 
-    // NC Non-visible events
+    // NC Non-visible events - do not put them on the output tree
     if(EvClass_reco == 2){
       if(npionscharge == 0 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) {continue;}
       if(npionscharge == 0 && npizero == 1 && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) {continue;}
     }
 
+    // True reaction modes
+    int nipipm  = nipip + nipim;
+    int nipipm0 = nipip + nipim + nipi0;
+
+    if(cc){
+      if(coh)
+	reactionmode = 10;
+      else if(mec)
+	reactionmode = 11;
+      else if(qel)
+	reactionmode = 110;
+      else if(nipipm == 1 && nipi0 == 0)
+	reactionmode = 111;
+      else if(nipipm == 2 && nipi0 == 0)
+        reactionmode = 112;
+      else if(nipipm == 0 && nipi0 == 1)
+        reactionmode = 121;
+      else if(nipipm == 0 && nipi0 == 2)
+        reactionmode = 122;
+      else if(nipipm == 1 && nipi0 == 1)
+        reactionmode = 123;
+      else
+	reactionmode = 125;
+    }
+    else if(nc){
+      if(coh)
+        reactionmode = 20;
+      else if(nipipm == 1 && nipi0 == 0)
+        reactionmode = 221;
+      else if(nipipm == 0 && nipi0 == 1)
+        reactionmode = 221;
+      else
+        reactionmode = 225;
+    }
+
     // Selection
     if(EvClass_reco == 0){ // cc-numu
-      if(npionscharge == 0      && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10000;
-      else if(npionscharge == 0 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10010;
-      else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 11000;
-      else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 11010;
-      else if(npionscharge == 2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 12000;
-      else if(npionscharge >  2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 19000;
-      else if(npionscharge == 0 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10100;
-      else if(npionscharge == 1 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 11100;
-      else if(npionscharge == 2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 12100;
-      else if(npionscharge >  2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 19100;
+      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10000;
+      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10010;
+      else if(npionscharge == 1 && npizerorecon == 0) sample = 11009;
+      else if(npionscharge == 2 && npizerorecon == 0) sample = 12009;
+      else if(npionscharge == 0 && npizerorecon == 1) sample = 10109;
+      else if(npionscharge == 1 && npizerorecon == 1) sample = 11109;
       else sample = 19999;
     }
-    else if(EvClass_reco == 1){ //cc-nue
-      if(npionscharge == 0      && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20000;
-      else if(npionscharge == 0 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20010;
-      else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 21000;
-      else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 21010;
-      else if(npionscharge == 2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 22000;
-      else if(npionscharge >  2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 29000;
-      else if(npionscharge == 0 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20100;
-      else if(npionscharge == 1 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 21100;
-      else if(npionscharge == 2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 22100;
-      else if(npionscharge >  2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 29100;
+    else if(EvClass_reco == 1){ // cc-nue
+      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20000;
+      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20010;
+      else if(npionscharge == 1 && npizerorecon == 0) sample = 21009;
+      else if(npionscharge == 2 && npizerorecon == 0) sample = 22009;
+      else if(npionscharge == 0 && npizerorecon == 1) sample = 20109;
+      else if(npionscharge == 1 && npizerorecon == 1) sample = 21109;
       else sample = 29999;
     }
     else if(EvClass_reco == 2){ // nc
-      if(npionscharge == 0      && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 30010;
-      else if(npionscharge == 1 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 31000;
-      else if(npionscharge == 1 && npizero == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 31010;
-      else if(npionscharge == 2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 32000;
-      else if(npionscharge >  2 && npizero == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 39000;
-      else if(npionscharge == 0 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 30100;
-      else if(npionscharge == 1 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 31100;
-      else if(npionscharge == 2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 32100;
-      else if(npionscharge >  2 && npizero == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 39100;
+      if(npionscharge == 1 && npizerorecon == 0) sample = 31009;
+      else if(npionscharge == 2 && npizerorecon == 0) sample = 32009;
+      else if(npionscharge == 0 && npizerorecon == 1) sample = 30109;
+      else if(npionscharge == 1 && npizerorecon == 1) sample = 31109;
       else sample = 39999;
     }
 
@@ -932,12 +958,21 @@ TTree* ReadFastMC::ReadTree(string f){
   gstTree->SetBranchAddress("TrkL_reco",   &TrkL_reco);
   gstTree->SetBranchAddress("IsContL_reco",&IsContL_reco);
  
-  gstTree->SetBranchAddress("nf",         &nf);
+  gstTree->SetBranchAddress("nf",          &nf);
   gstTree->SetBranchAddress("nfp",         &nfp);
   gstTree->SetBranchAddress("nfn",         &nfn);
   gstTree->SetBranchAddress("nfpip",       &nfpip);
   gstTree->SetBranchAddress("nfpim",       &nfpim);
   gstTree->SetBranchAddress("nfpi0",       &nfpi0);
+
+  gstTree->SetBranchAddress("ni",          &ni);
+  gstTree->SetBranchAddress("nip",         &nip);
+  gstTree->SetBranchAddress("nin",         &nin);
+  gstTree->SetBranchAddress("nipip",       &nipip);
+  gstTree->SetBranchAddress("nipim",       &nipim);
+  gstTree->SetBranchAddress("nipi0",       &nipi0);
+
+  gstTree->SetBranchAddress("pdgi",   &pdgi);
   
   gstTree->SetBranchAddress("pdgf",   &pdgf);
   gstTree->SetBranchAddress("pf",   &pf);

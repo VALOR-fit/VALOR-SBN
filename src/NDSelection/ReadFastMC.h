@@ -142,6 +142,7 @@ class ReadFastMC
   bool IsContL_reco;
 
   int nfp, nfn, nfpip, nfpim, nfpi0, nf;
+  int nip, nin, nipip, nipim, nipi0, ni;
 
   int nEMf;
 
@@ -156,6 +157,8 @@ class ReadFastMC
   double Ef_reco[100], p0f_reco[100], pxf_reco[100], pyf_reco[100], pzf_reco[100], Trkf_reco[100], cthf_reco[100];
   double EMEf_reco[100], EMcthf_reco[100], EMpxf_reco[100], EMpyf_reco[100], EMpzf_reco[100], EMPizMass_reco[100];
   
+  int pdgi[100];
+
   int frw7; int rw7; double rw7_qelCCma[7]; double rw7_resCCma[7];
 
  private:
