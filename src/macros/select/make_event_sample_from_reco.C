@@ -2,18 +2,21 @@
 /*
 
 This macro makes selected event samples from LBNE fast MC files using reconstructed information only. 
-The following samples can be made:
+All events reconstruced as numu CC or NC are written to the output tree. The sample for each event 
+is given by sampleIndex, and this corresponds to the enum in NDSample.h. The samples are 
 
-"CCInc": reconstructed as CC inclusive (this is the same as CC 1 track)
-"CC2Track": reconstructed as CC with exactly 1 track in hadronic system with length > trackLengthCut
-"CC1ChPi": reconstructed as CC with exactly 2 tracks in hadronic system with length > trackLengthCut
-"CC1Pi0": reconstructed as CC with >= 2 tracks in hadronic system and exactly 2 EM objects; longest track has 
-          length > trackLengthCut, second longest track has length < trackLengthCut, and shortest track has 
-          length < trackLengthCut
-"CCOther": other CC
-"NC1Pi0": reconstructed as NC with >= 1 track in hadronic system and exactly 2 EM objects; both longest and 
-          shortest tracks have length < trackLengthCut
-"NCOther": other NC
+NumuCC1Track: reconstructed as numu CC with no track in hadronic system
+NumuCC2Track: reconstructed as numu CC with exactly 1 track in hadronic system with length > trackLengthCut
+NumuCC1ChPi:  reconstructed as numu CC with exactly 2 tracks in hadronic system with length > trackLengthCut
+NumuCC1Pi0:   reconstructed as numu CC with >= 2 tracks in hadronic system and exactly 2 EM objects; longest track has
+              length > trackLengthCut, second longest track has length < trackLengthCut, and shortest track has
+              length < trackLengthCut
+NumuCCOther:  other numu CC
+NueCC:        reconstructed as nue CC (there are no true nue CC events)
+NC1Pi0:       reconstructed as NC with >= 1 track in hadronic system and exactly 2 EM objects; both longest and
+              shortest tracks have length < trackLengthCut
+NCOther:      other NC
+
 
 CC event samples can be normalised using the scale factor
 
@@ -25,6 +28,7 @@ where
 in /lbne/data/users/lblpwg_tools/FastMC_Data/flux_files/v3r0p10/nominal/g4lbne_v3r0p10_FHC_ND.root.
 
 nCCEvents is the number of true CC events in event sample before selection - this is in the gst tree.
+
 
 NC event samples can be normalised in a similar way using the scale factor
 
@@ -43,10 +47,16 @@ Nick Grant 5 May 2014
 
 void make_event_sample_from_reco
 (
- TString sample = "CCOther",
+ TString sampleFileName = "NDEventSamples.root",
  double trackLengthCut = 0.05
 )
 {
+
+  using namespace valor::conv;
+
+  const int nSamples = 10;
+
+  TString sampleName[nSamples] = {"CCInc", "CC1Track", "CC2Track", "CC1ChPi", "CC1Pi0", "CCOther", "NueCC", "NCInc", "NC1Pi0", "NCOther"};
 
   TChain *fastMCchain = new TChain("gst");
   fastMCchain->Add("/lbne/data/users/lblpwg_tools/FastMC_Data/outputs/nigrant/fastMC_ND_FHC_numuflux_numu_1.root");
@@ -59,7 +69,8 @@ void make_event_sample_from_reco
   fastMCchain->Add("/lbne/data/users/lblpwg_tools/FastMC_Data/outputs/nigrant/fastMC_ND_FHC_numuflux_numu_8.root");
   fastMCchain->Add("/lbne/data/users/lblpwg_tools/FastMC_Data/outputs/nigrant/fastMC_ND_FHC_numuflux_numu_9.root");
   fastMCchain->Add("/lbne/data/users/lblpwg_tools/FastMC_Data/outputs/nigrant/fastMC_ND_FHC_numuflux_numu_10.root");
-  
+
+  int neu;  
   bool cc;
   bool nc;
   //number of CC + NC interactions per kt per POT - according to https://cdcvs.fnal.gov/redmine/projects/fast_mc/wiki/Nominal_Flux_Normalizations
@@ -71,13 +82,27 @@ void make_event_sample_from_reco
   int nipip;
   int nipim;
   int nipi0;
+  int nikp;
+  int nikm;
+  int nik0;
+  int niem;
+  int niother;
+  int ni;
   //number of pi plus in final state; "f" means "final", i.e. after intranuclear rescattering
   int nfp;
   int nfpip;
   int nfpim;
   int nfpi0;
 
-  //EVClass_reco is reco type of event: 0 = numu CC, 1 = nue CC, 2 = NC
+  //EVClass_reco is reco type of event: 0 = numu CC, 1 = nue CC, 2 = NC. This is copied from the fast MC code:
+  //  1) If there is a track longer than 2.0 m.
+  //     The event will be classifies as a CC-numu, and 
+  //     the longest track above 2.0 m will be considered the muon
+  //  2) If there is no track longer than 2.0 m then the event will be serched for unmatched EM showers
+  //     If an unmatched EM shower is found than  the event will be classified as a CC-nue, and
+  //     the unmatched shower will be taken as the electron
+  //     Unmatched refers to an alorithm that serches the list of final state EM particles for pairs that reconstruct to pi0s (more details below)
+  //  3) If there is no track longer than 2.0m and there is no unmatched EM shower, then the event is classified as and NC event.
   int EvClass_reco;
 
   //Upper case L refers to the particle reconstructed as the primary lepton.
@@ -127,6 +152,7 @@ void make_event_sample_from_reco
   double EMPizMass_reco[maxParticles];
   double EMElPizM_reco[maxParticles];
 
+  gst->SetBranchAddress("neu",&neu);
   gst->SetBranchAddress("cc",&cc);
   gst->SetBranchAddress("nc",&nc);
   gst->SetBranchAddress("POTWeight",&POTWeight);
@@ -134,6 +160,12 @@ void make_event_sample_from_reco
   gst->SetBranchAddress("nipip",&nipip);
   gst->SetBranchAddress("nipim",&nipim);
   gst->SetBranchAddress("nipi0",&nipi0);
+  gst->SetBranchAddress("nikp",&nikp);
+  gst->SetBranchAddress("nikm",&nikm);
+  gst->SetBranchAddress("nik0",&nik0);
+  gst->SetBranchAddress("niem",&niem);
+  gst->SetBranchAddress("niother",&niother);
+  gst->SetBranchAddress("ni",&ni);
   gst->SetBranchAddress("nfp",&nfp);
   gst->SetBranchAddress("nfpip",&nfpip);
   gst->SetBranchAddress("nfpim",&nfpim);
@@ -181,17 +213,15 @@ void make_event_sample_from_reco
   gst->SetBranchAddress("EMPizMass_reco",EMPizMass_reco);
   gst->SetBranchAddress("EMElPizM_reco",EMElPizM_reco);
 
-  TString fileName = sample;
-  fileName += ".root";
-
-  TFile *sampleFile = new TFile(fileName, "RECREATE");
+  TFile *sampleFile = new TFile(sampleFileName, "RECREATE");
   //clone tree from input fast MC file but don't write any events yet
   TTree *sampleTree = gst->CloneTree(0);
 
-  int nEvents, nCCEvents, nNCEvents, br_nEvents, br_nCCEvents, br_nNCEvents;
+  int sampleIndex, nEvents, nCCEvents, nNCEvents, br_sampleIndex, br_nEvents, br_nCCEvents, br_nNCEvents;
   double maxTrackLength, maxTrackLength2, minTrackLength;
 
   //add some braches to tree containing selected events
+  sampleTree->Branch("sampleIndex", &br_sampleIndex, "sampleIndex/I");
   sampleTree->Branch("nEvents", &br_nEvents, "nEvents/I");
   sampleTree->Branch("nCCEvents", &br_nCCEvents, "nCCEvents/I");
   sampleTree->Branch("nNCEvents", &br_nNCEvents, "nNCEvents/I");
@@ -200,13 +230,12 @@ void make_event_sample_from_reco
   nCCEvents = 0;
   nNCEvents = 0;
 
-  //number of true events in the selection called "sample"
-  int nTrueEvents = 0;
-  int nTrueEventsPassSel = 0;
-  int nEventsPassSel = 0;
+  //number of true events in each sample
+  int nTrueEvents[nSamples] = {0};
+  int nTrueEventsPassSel[nSamples] = {0};
+  int nEventsPassSel[nSamples] = {0};
 
   for(Long64_t i = 0; i < gst->GetEntries(); i++)
-    //for(Long64_t i = 0; i < 2000; i++)
     {
       gst->GetEntry(i);
       if(i%10000 == 0)
@@ -215,135 +244,137 @@ void make_event_sample_from_reco
       nEvents++;
 
       if(cc)
-	nCCEvents++;
+        nCCEvents++;
 
       if(nc)
         nNCEvents++;
+    }//end of loop over events
 
-      if(sample == "CCInc")
+  for(Long64_t i = 0; i < gst->GetEntries(); i++)
+    {
+      gst->GetEntry(i);
+      if(i%10000 == 0)
+        cout<<"Doing event "<<i<<endl;
+
+      maxTrackLength = -999.9;
+      maxTrackLength2 = -999.9;
+      minTrackLength = 99999.9;
+      for(int j=0; j<nf; j++)
 	{
-	if(cc)
-	  nTrueEvents++;
-	if(EvClass_reco == 0)
-	  {
-	  nEventsPassSel++;
-	  sampleTree->Fill();
-	  if(cc)
-	    nTrueEventsPassSel++;
-	  }
-	}
-
-      if(sample == "CC2Track")
-        {
-	if(cc && nfp == 1 && (nfpip + nfpim == 0) && nfpi0 == 0)
-	  nTrueEvents++;
-	if(EvClass_reco == 0 && nf == 1 && Trkf_reco[0] > trackLengthCut)
-	  {
-	  nEventsPassSel++;
-	  sampleTree->Fill();
-	if(cc && nfp == 1 && (nfpip + nfpim == 0) && nfpi0 == 0)
-	    nTrueEventsPassSel++;
-	  }
-	}
-
-      if(sample == "CC1ChPi")
-	{
-	if(cc && (nfpip + nfpim == 1) && nfpi0 == 0)
-	  nTrueEvents++;
-	if(EvClass_reco == 0 && nf == 2 && Trkf_reco[0] > trackLengthCut && Trkf_reco[1] > trackLengthCut)
-	  {
-	  nEventsPassSel++;
-	  sampleTree->Fill();
-	  if(cc && (nfpip + nfpim == 1) && nfpi0 == 0)
-	    nTrueEventsPassSel++;
-	  }
-	}
-
-      if(sample == "CC1Pi0")
-        {
-	if(cc && (nfpip + nfpim == 0) && nfpi0 == 1)
-          nTrueEvents++;
-	maxTrackLength = -999.9;
-        maxTrackLength2 = -999.9;
-	minTrackLength = 99999.9;
-	for(int j=0; j<nf; j++)
-	  {
-	  if(Trkf_reco[j] > maxTrackLength)
-	    {
-	    maxTrackLength2 = maxTrackLength;
-	    maxTrackLength = Trkf_reco[j];
-	    }
-	  if(Trkf_reco[j] < maxTrackLength && Trkf_reco[j] > maxTrackLength2)
-	     maxTrackLength2 = Trkf_reco[j];
-	  if(Trkf_reco[j] > 0.0 && Trkf_reco[j] < minTrackLength)
-            minTrackLength = Trkf_reco[j];
-	  }
-        if(EvClass_reco == 0 && nf >= 2 && maxTrackLength > trackLengthCut && maxTrackLength2 < trackLengthCut && minTrackLength < trackLengthCut && nEMf == 2)
+        if(Trkf_reco[j] > maxTrackLength)
           {
-          nEventsPassSel++;
-          sampleTree->Fill();
-          if(cc && (nfpip + nfpim == 0) && nfpi0 == 1)
-            nTrueEventsPassSel++;
+	  maxTrackLength2 = maxTrackLength;
+	  maxTrackLength = Trkf_reco[j];
           }
+        if(Trkf_reco[j] < maxTrackLength && Trkf_reco[j] > maxTrackLength2)
+	  maxTrackLength2 = Trkf_reco[j];
+        if(Trkf_reco[j] > 0.0 && Trkf_reco[j] < minTrackLength)
+          minTrackLength = Trkf_reco[j];
 	}
 
-      if(sample == "CCOther")
-        {
-        if(cc && ((nfpip + nfpim > 1) || nfpi0 > 1))
-	  nTrueEvents++;
-	if(EvClass_reco == 0 && nf > 2 && nEMf != 2)
-	  {
-	  nEventsPassSel++;
-	  sampleTree->Fill();
-	if(cc && ((nfpip + nfpim > 1) || nfpi0 > 1))
-	    nTrueEventsPassSel++;
-	  }
-        }
-
-      if(sample == "NC1Pi0")
-        {
-	if(nc && (nfpip + nfpim == 0) && nfpi0 == 1)
-	  nTrueEvents++;
-	maxTrackLength = -999.9;
-	minTrackLength = 99999.9;
-	for(int j=0; j<nf; j++)
-          {
-	  if(Trkf_reco[j] > maxTrackLength)
-	    maxTrackLength = Trkf_reco[j];
-	  if(Trkf_reco[j] > 0.0 && Trkf_reco[j] < minTrackLength)
-	    minTrackLength = Trkf_reco[j];
-          }
-	if(EvClass_reco == 2 && nf >= 1 && minTrackLength < trackLengthCut && maxTrackLength < trackLengthCut && nEMf == 2)
-	  {
-	  nEventsPassSel++;
-	  sampleTree->Fill();
-	  if(nc && (nfpip + nfpim == 0) && nfpi0 == 1)
-	    nTrueEventsPassSel++;
-	  }
-        }
-
-      if(sample == "NCOther")
+      if(cc && neu == 14)
 	{
-	if(nc && nfpi0 != 1)
-	  nTrueEvents++;
-	if(EvClass_reco == 2 && nEMf != 2)
+	if(ni == 0)
+	  nTrueEvents[ksNDNuMuCC1trkQE]++;
+	else if(nip == 1 && (nipip + nipim == 0) && nipi0 == 0 && nikp == 0 && nikm == 0 && nik0 == 0)
+	  nTrueEvents[ksNDNuMuCC2trkQE]++;
+	else if((nipip + nipim == 1) && nipi0 == 0 && nikp == 0 && nikm == 0 && nik0 == 0)
+	  nTrueEvents[ksNDNuMuCC1piC]++;
+	else if((nipip + nipim == 0) && nipi0 == 1 && nikp == 0 && nikm == 0 && nik0 == 0)
+	  nTrueEvents[ksNDNuMuCC1pi0]++;
+	else
+	  nTrueEvents[ksNDNuMuCCoth]++;
+	}
+
+      if(EvClass_reco == 0)
+	{
+	if(nf == 0 && nEMf == 0)
 	  {
-	  nEventsPassSel++;
-	  sampleTree->Fill();
-	  if(nc && nfpi0 != 1)
-	    nTrueEventsPassSel++;
+	  br_sampleIndex = ksNDNuMuCC1trkQE;
+	  nEventsPassSel[ksNDNuMuCC1trkQE]++;
+          if(cc && ni == 0)
+            nTrueEventsPassSel[ksNDNuMuCC1trkQE]++;
+	  }
+	else if(nf == 1 && Trkf_reco[0] > trackLengthCut && nEMf == 0)
+	  {
+	  br_sampleIndex = ksNDNuMuCC2trkQE;
+	  nEventsPassSel[ksNDNuMuCC2trkQE]++;
+	  if(cc && nip == 1 && (nipip + nipim == 0) && nipi0 == 0 && nikp == 0 && nikm == 0 && nik0 == 0)
+	    nTrueEventsPassSel[ksNDNuMuCC2trkQE]++;
+	  }
+	else if(nf == 2 && Trkf_reco[0] > trackLengthCut && Trkf_reco[1] > trackLengthCut && nEMf == 0)
+	  {
+	  br_sampleIndex = ksNDNuMuCC1piC;
+	  nEventsPassSel[ksNDNuMuCC1piC]++;
+	  if(cc && (nipip + nipim == 1) && nipi0 == 0 && nikp == 0 && nikm == 0 && nik0 == 0)
+	    nTrueEventsPassSel[ksNDNuMuCC1piC]++;
+	  }
+	else if(nf >= 2 && maxTrackLength > trackLengthCut && maxTrackLength2 < trackLengthCut && minTrackLength < trackLengthCut && nEMf == 2)
+	  {
+	  br_sampleIndex = ksNDNuMuCC1pi0;
+	  nEventsPassSel[ksNDNuMuCC1pi0]++;
+	  if(cc && (nipip + nipim == 0) && nipi0 == 1)
+	    nTrueEventsPassSel[ksNDNuMuCC1pi0]++;
+	  }
+	else
+	  {
+	  br_sampleIndex = ksNDNuMuCCoth;
+	  nEventsPassSel[ksNDNuMuCCoth]++;
+	  if(cc 
+             && !(nip == 1 && (nipip + nipim == 0) && nipi0 == 0  && nikp == 0 && nikm == 0 && nik0 == 0) 
+             && !((nipip + nipim == 1) && nipi0 == 0 && nikp == 0 && nikm == 0 && nik0 == 0) 
+	     && !((nipip + nipim == 0) && nipi0 == 1 && nikp == 0 && nikm == 0 && nik0 == 0))
+	     nTrueEventsPassSel[ksNDNuMuCCoth]++;
+	  }
+	}//end of if(EvClass_reco == 0)
+
+      if(EvClass_reco == 1)
+	br_sampleIndex = ksNDNuECC;
+
+      if(nc)
+        {
+	if((nipip + nipim == 0) && nipi0 == 1 && nikp == 0 && nikm == 0 && nik0 == 0)
+	  nTrueEvents[ksNDNC1pi0]++;
+	else
+	  nTrueEvents[ksNDNCoth]++;
+        }
+
+      if(EvClass_reco == 2)
+        {
+        if(nf >= 1 && minTrackLength < trackLengthCut && maxTrackLength < trackLengthCut && nEMf == 2)
+	  {
+          br_sampleIndex = ksNDNC1pi0;
+	  nEventsPassSel[ksNDNC1pi0]++;
+	  if(nc && (nipip + nipim == 0) && nipi0 == 1 && nikp == 0 && nikm == 0 && nik0 == 0)
+	    nTrueEventsPassSel[ksNDNC1pi0]++;
+	  }
+        else
+	  {
+          br_sampleIndex = ksNDNCoth;
+	  nEventsPassSel[ksNDNCoth]++;
+	  if(nc && !((nipip + nipim == 0) && nipi0 == 1) && nikp == 0 && nikm == 0 && nik0 == 0)
+	    nTrueEventsPassSel[ksNDNCoth]++;
 	  }
         }
+
+      br_nEvents = nEvents;
+      br_nCCEvents = nCCEvents;
+      br_nNCEvents = nNCEvents;
+
+      sampleTree->Fill();
+
     }//end of loop over events
 
   cout<<setprecision(3);
   cout<<endl;
-  cout<<"Efficiency / purity of sample "<<sample<<" is "<<(double)nTrueEventsPassSel / nTrueEvents<<" / "<<(double)nTrueEventsPassSel / nEventsPassSel<<endl; 
-  cout<<endl;
-
-  br_nEvents = nEvents;
-  br_nCCEvents = nCCEvents;
-  br_nNCEvents = nNCEvents;
+  for(int j=0; j<nSamples; j++)
+    {
+    if(j == 0 || j == 6 || j == 7)
+      continue;
+    cout<<"Efficiency / purity of sample "<<sampleName[j]<<" is "<<(double)nTrueEventsPassSel[j] / nTrueEvents[j]
+    <<" / "<<(double)nTrueEventsPassSel[j] / nEventsPassSel[j]<<endl; 
+    cout<<endl;
+    }
 
   sampleTree->Write();
 
