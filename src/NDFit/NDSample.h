@@ -43,6 +43,7 @@ typedef enum ENDSample
    ksNDNuMuCC1piC,      // numu CC - 2 track (mu + 1 pi+/-)
    ksNDNuMuCC1pi0,      // numu CC - 2 track (mu + 1 pi0)
    ksNDNuMuCCoth,       // numu CC - other
+   ksNDNuECC,           // nue CC
    ksNDNC,              // NC inclusive
    ksNDNC1pi0,          // NC - 1pi0
    ksNDNCoth            // NC - other

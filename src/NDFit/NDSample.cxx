@@ -23,6 +23,7 @@ string util::AsString(NDSample_t s)
     case (ksNDNuMuCC1piC   ) : return "numuCC1piC";   break; 
     case (ksNDNuMuCC1pi0   ) : return "numuCC1pi0";   break; 
     case (ksNDNuMuCCoth    ) : return "numuCCoth";    break; 
+    case (ksNDNuECC        ) : return "nueCC";        break;
     case (ksNDNC           ) : return "NCincl";       break; 
     case (ksNDNC1pi0       ) : return "NC1pi0";       break; 
     case (ksNDNCoth        ) : return "NCoth";        break; 
