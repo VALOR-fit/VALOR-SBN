@@ -369,7 +369,7 @@ void make_event_sample_from_reco
   cout<<endl;
   for(int j=0; j<nSamples; j++)
     {
-    if(j == 0 || j == 6 || j == 7)
+    if(j == ksNDNuMuCC || j == ksNDNuECC || j == ksNDNC)
       continue;
     cout<<"Efficiency / purity of sample "<<sampleName[j]<<" is "<<(double)nTrueEventsPassSel[j] / nTrueEvents[j]
     <<" / "<<(double)nTrueEventsPassSel[j] / nEventsPassSel[j]<<endl; 
