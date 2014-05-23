@@ -6,14 +6,15 @@ The ranges and numbers of bins in x and y can be set.
 
 Two binning schemes are made:
 
-1. Strips in x are found such that the number of events in each strip is equal, e.g. if there are 10560 
-events and 10 bins in x, the bin edges are set such that there are 1056 events in each strip. Strips are 
-found in y in a similar way. The x and y strips are found independently of each other.  
+1. Strips in x are found such that the number of events in each strip is equal irrespective of the y values.  
+   For example, if there are 10560 events and 10 bins in x, the bin edges are set such that there are 1056 
+   events in each strip. Strips are found in y in a similar way. The x and y strips are found independently 
+   of each other.  
 
 2. The 2D space is split into 4 zones, with the divisions between the zones being the median values of 
-x and y. For example, the bottom left zone covers x_min - x_median and y_min to y_median. Within each 
-zone, the bin edges are set in the same way as in method 1. In effect, this divides the 2D space into 4 
-separate histograms. 
+   x and y. For example, the bottom left zone covers x_min - x_median and y_min to y_median. Within each 
+   zone, the bin edges are set in the same way as in method 1. In effect, this divides the 2D space into 4 
+   separate histograms. 
 
 Nick Grant 23 May 2014
 
@@ -174,29 +175,33 @@ void make_binning_scheme_2D
 
     cout<<"Bin edges in x with single rectangular grid are:"<<endl;
     cout<<endl;
-    for(int k=n_bins_y-1; k>=0; k--)
+    cout<<"{";
+    for(int j=0; j<=n_bins_x; j++)
       {
-      for(int j=0; j<=n_bins_x; j++)
-	{
-	cout<<"    "<<bin_edge_x[j][k];
-	}
-      cout<<endl;
+      if(j == n_bins_x)
+        cout<<bin_edge_x[j][0];
+      else
+	cout<<bin_edge_x[j][0]<<",";
       }
+    cout<<"};";
+	 
+    cout<<endl;
+    cout<<endl;
 
-    cout<<endl;
-    cout<<endl;
+
 
     cout<<"Bin edges in y with single rectangular grid are:"<<endl;
     cout<<endl;
 
-    for(int k=n_bins_y; k>=0; k--)
-      {
-      for(int j=0; j<n_bins_x; j++)
-	{
-	cout<<"    "<<bin_edge_y[j][k];
-	}
-      cout<<endl;
-      }
+    cout<<"{";
+    for(int k=0; k<=n_bins_y; k++)
+      { 
+	if(k == n_bins_y)
+	  cout<<bin_edge_y[0][k];
+	else    
+	  cout<<bin_edge_y[0][k]<<",";
+      } 
+    cout<<"};";
 
     cout<<endl;
     cout<<endl;
