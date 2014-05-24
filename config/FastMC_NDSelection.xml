@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<DetConfig>
+  
+  <InFile>                   /path/to/fastmc/fastmc.root    </inFile>
+  <Events>                   25000                          </Events>
+  <NeutrinoPDG>              14                             </NeutrinoPDG>
+  
+  <ReconNeutrinoEnergyCut>   0.1                            </ReconNeutrinoEnergyCut>
+
+  <ReconPiPMEnergyCut>       0.05                           </ReconPiPMEnergyCut>
+  <ReconKaonPMEnergyCut>     0.05                           </ReconKaonPMEnergyCut>
+  <ReconProtonEnergyCut>     0.08                           </ReconProtonEnergyCut>
+  <ReconElectronEnergyCut>   0.05                           </ReconElectronEnergyCut>
+  <ReconGammaEnergyCut>      0.1                            </ReconGammaEnergyCut>
+  <Pi0InvariantMassCut>      0.4                            </Pi0InvariantMassCut>
+  <MaxMomentumPID>           0.8                            </MaxMomentumPID>
+  <TrackLengthCut>           0.05                           </TrackLengthCut> 
+  
+  <PionMisIDAsProton>        0.002                          </PionMisIDAsProton>
+  <PionMisIDAsKaon>          0.029                          </PionMisIDAsKaon>
+  <KaonMisIDAsPion>          0.016                          </KaonMisIDAsPion>
+  <KaonMisIDAsProton>        0.030                          </KaonMisIDAsProton>
+  <ProtonMisIDAsPion>        0.001                          </ProtonMisIDAsPion>
+  <ProtonMisIDAsKaon>        0.010                          </ProtonMisIDAsKaon>
+  
+  <ChargeConfMomSlope>       0.0004                         </ChargeConfMomSlope>
+  <ChargeConfMomConst>      -5.31738                        </ChargeConfMomConst>
+  <ChargeConfTrLSlope>      -0.0353907                      </ChargeConfTrLSlope>
+  <ChargeConfTrLConst>      -1.91409                        </ChargeConfTrLConst>
+  
+  <Reweight>                 0                              </Reweight>
+  
+  <Verbose>                  0                              </Verbose>
+  
+</DetConfig>
+
