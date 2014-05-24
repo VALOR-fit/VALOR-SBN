@@ -20,6 +20,9 @@ ReconNeutrinoEnergyCut 0.1
 # Reconstructed energy cut for charge pion - in GeV
 ReconPiPMEnergyCut 0.05
 
+# Reconstructed energy cut for charge kaon - in GeV
+ReconKaonPMEnergyCut 0.05
+
 # Reconstructed energy cut for protons - in GeV
 ReconProtonEnergyCut 0.08
 
