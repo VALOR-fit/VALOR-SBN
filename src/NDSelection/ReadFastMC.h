@@ -93,7 +93,7 @@ class ReadFastMC
   // Recon neutrino energy cut
   double enureconcut;
   // Recon partcile energy cut
-  double epionreconcut, egammareconcut, eelectronreconcut, eprotonreconcut;
+  double epionreconcut, egammareconcut, eelectronreconcut, eprotonreconcut, ekaonreconcut;
   // Track length cut
   double tracklengthcut;
   // Pi0 invariant mass cut
@@ -118,6 +118,9 @@ class ReadFastMC
 
   //Read the root tree from the fastmc
   TTree* ReadTree(string f);
+
+  // Generate the charge confusion
+  bool ChargeFlip(int seed, double momentum);
 
   // Global histogram binning and range
   int min; int max; int bin;

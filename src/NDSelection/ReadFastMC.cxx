@@ -94,25 +94,31 @@ void ReadFastMC::ReadDatacard(string datacard){
         ene.erase(ene.begin());
         enureconcut = atof(ene.c_str());
       }
-      if(line.find("ReconPiPMEnergyCut") != string::npos){ // recon particle energy
+      if(line.find("ReconPiPMEnergyCut") != string::npos){ // recon pion energy
         size_t found = line.find(" ");
         string ene = line.substr(found);
         ene.erase(ene.begin());
         epionreconcut = atof(ene.c_str());
       }
-      if(line.find("ReconProtonEnergyCut") != string::npos){ // recon particle energy
+      if(line.find("ReconKaonPMEnergyCut") != string::npos){ // recon kaon energy
+	size_t found = line.find(" ");
+	string ene = line.substr(found);
+	ene.erase(ene.begin());
+	ekaonreconcut = atof(ene.c_str());
+      }
+      if(line.find("ReconProtonEnergyCut") != string::npos){ // recon proton energy
         size_t found = line.find(" ");
         string ene = line.substr(found);
         ene.erase(ene.begin());
         eprotonreconcut = atof(ene.c_str());
       }
-      if(line.find("ReconGammaEnergyCut") != string::npos){ // recon particle energy
+      if(line.find("ReconGammaEnergyCut") != string::npos){ // recon gamma energy
         size_t found = line.find(" ");
         string ene = line.substr(found);
         ene.erase(ene.begin());
         egammareconcut = atof(ene.c_str());
       }
-      if(line.find("ReconElectronEnergyCut") != string::npos){ // recon particle energy
+      if(line.find("ReconElectronEnergyCut") != string::npos){ // recon electron energy
         size_t found = line.find(" ");
         string ene = line.substr(found);
         ene.erase(ene.begin());
@@ -305,19 +311,11 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,    "LeptonChargeFlip/O");
   }
 
-  // Random generator
-  TRandom3 *random = new TRandom3();
-
-  // Functions for the charge flip parameterization
-  TF1 *ft = new TF1("ft","expo");
-  ft->SetParameter(0,ChargeConfTrLConst);
-  ft->SetParameter(1,ChargeConfTrLSlope);
-  TF1 *fp = new TF1("fp","expo");
-  fp->SetParameter(0,ChargeConfMomConst);
-  fp->SetParameter(1,ChargeConfMomSlope);
-
   const double pionmass   = 0.13957;
   const double pizeromass = 0.13498;
+
+  // Random generator
+  TRandom3 *rand = new TRandom3();
 
   FastMCTree->SetDirectory(0);
   for(int i = 0; i < gstTree->GetEntries(); i++){
@@ -327,6 +325,8 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     NPionMisIDAsProton = 0;
     NProtonMisIDAsPion = 0;
     LeptonChargeFlip = false;
+
+    int newseed = seed;
 
     if(neu == neutrinoPDG){
       if(numuevents == nevents){continue;}
@@ -342,28 +342,11 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     // Apply the charge flip cut only for CC selection
     if(EvClass_reco < 2){
-      random->SetSeed(seed*seed + i);
+      newseed = seed*seed + i;
       double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
       
-      double cmisid = 0.0;
-      int rcnum = random->Integer(1000);
-      if(lmom > 0.8 && lmom < 5){
-	cmisid = fp->Eval(lmom*1000);
-      }
-      else if(lmom >= 5){
-	cmisid = fp->Eval(5*1000);
-      }
-      else if(lmom > 0.5 && lmom <= 0.8){
-	cmisid = fp->Eval(0.8*1000)*1.5;
-      }
-      else if(lmom <= 0.5){
-	cmisid = fp->Eval(0.8*1000)*5;
-      }
-      
-      // Charge flip
-      if(rcnum < cmisid*1000)
-	LeptonChargeFlip = true;
-      
+      LeptonChargeFlip = ChargeFlip(newseed, lmom);
+  
       // For the selected neutrino type skip the event if the charge is flipped 
       if(neu == neutrinoPDG && LeptonChargeFlip){continue;}
       // For anti-nu keep only the events with the charge flipped
@@ -371,7 +354,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     }
 
     // Number of final state pions and protons
-    int npizero = 0; int npiplus = 0; int npiminus = 0; int nprotons = 0;
+    int npizero = 0; int npiplus = 0; int npiminus = 0; int nprotons = 0; int nneutrons = 0; int nkaonplus = 0; int nkaonminus = 0;
     // EM activity
     int nem = 0; int ngamma = 0;
     // Other stuff
@@ -380,8 +363,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     int otherpar = 0;
 
     for(int k = 0; k < nf; k++){
-      random->SetSeed(i*i + k + nf + seed);
- 
+      newseed = i*i + k + nf + seed*seed; 
       // Pt
       //double pt = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k]);
 
@@ -389,29 +371,10 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       double momentum = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k] + pzf_reco[k]*pzf_reco[k]);
 
       // Charge mis-id
-      bool chargeflip = false;
-      double chargemisid = 0.0;
-      int rnum = random->Integer(1000);
-      if(momentum > 0.8 && momentum < 5){
-	chargemisid = fp->Eval(momentum*1000);
-      }
-      else if(momentum >= 5){
-	chargemisid = fp->Eval(5*1000);
-      }
-      else if(momentum > 0.5 && momentum <= 0.8){
-	chargemisid = fp->Eval(0.8*1000)*1.5;
-      }
-      else if(momentum <= 0.5){
-	chargemisid = fp->Eval(0.8*1000)*5;
-      }
+      bool chargeflip = ChargeFlip(newseed, momentum);
 
-      // Charge flip
-      if(rnum < chargemisid*1000)
-	chargeflip = true;
-
-      // Change the random seed
-      random->SetSeed(random->GetSeed() + seed);
-      rnum = random->Integer(1000);
+      rand->SetSeed(newseed + k + nf + i + seed);
+      int rnum = rand->Integer(1000);
 
       if(pdgf[k] == 22){  // photons
 	if(Ef_reco[k] < egammareconcut){continue;}
@@ -435,11 +398,18 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	else{
 	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
 	    NPionMisIDAsProton++;
-	    if(chargeflip == false)// has to be positive charged
+	    if(!chargeflip)// has to be positive charged
 	      nprotons++;
 	  }
-	  else
-	    npiplus++;
+	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
+	    nother++;
+	  }  
+	  else{
+	    if(chargeflip)
+	      npiminus++;
+	    else
+	      npiplus++;
+	  }
 	}
       }
       else if(pdgf[k] == -211){ // pi-
@@ -453,11 +423,18 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	else{
 	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
 	    NPionMisIDAsProton++;
-	    if(chargeflip == true)// has to be positive charged
-	    nprotons++;
+	    if(chargeflip)// has to be positive charged
+	      nprotons++;
 	  }
-	  else
-	    npiminus++;
+	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
+            nother++;
+          }
+	  else{
+	    if(chargeflip)
+	      npiplus++;
+	    else
+	      npiminus++;
+	  }
 	}
       }
       else if(pdgf[k] == 111){ // pi0
@@ -475,22 +452,79 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	else{
 	  if(rnum < ProtonMisIDAsPion*1000){ // mis-id as pion
 	    NProtonMisIDAsPion++;
-	    if(chargeflip == true)
+	    if(chargeflip)
 	      npiminus++;
 	    else
-	    npiplus++;
+	      npiplus++;
 	  }
+	  else if(rnum > ProtonMisIDAsPion*1000 && rnum < (ProtonMisIDAsPion+ProtonMisIDAsKaon)*1000){ // mis-id as proton
+            nother++;
+          }
 	  else{// now check the charge
-	    if(chargeflip == false)
-	    nprotons++;
+	    if(!chargeflip)
+	      nprotons++;
 	  }
 	}
+      }
+      else if(pdgf[k] == 321){ // kaon+
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < ekaonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+        else{
+	  if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+	    if(chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+	  }
+	  else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){
+	    if(!chargeflip)
+	      nprotons++;
+	  }
+	  else
+	    nkaonplus++;
+	}
+      }
+      else if(pdgf[k] == -321){ // kaon-
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < ekaonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+        else{
+          if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+            if(!chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+          }
+          else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){ // mis-id as proton
+            if(chargeflip)
+              nprotons++;
+          }
+          else
+            nkaonminus++;
+        }
+      }
+      if(pdgf[k] == 2112){
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < 0.1){continue;}
+
+	nneutrons++;
       }
       else{
 	// Minimum track length cut
 	//if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
-	if(Ef_reco[k] < 100){continue;}
+	if(Ef_reco[k] < 0.1){continue;}
 	if(momentum > MaxMomentumPID)
           otherpar++;
 	else
@@ -499,6 +533,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     } // fs particle loop
 
     int npionscharge = npiplus + npiminus;
+    int nkaons = nkaonplus + nkaonminus;
     int npizerorecon = 0;
 
     // Only for single pi0 events
@@ -517,8 +552,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     // NC Non-visible events - do not put them on the output tree
     if(EvClass_reco == 2){
-      if(npionscharge == 0 && npizero == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) {continue;}
-      if(npionscharge == 0 && npizero == 1 && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) {continue;}
+      if(npionscharge == 0 && npizero < 2 && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) {continue;}
     }
 
     // True reaction modes
@@ -549,7 +583,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       if(coh)
         reactionmode = 20;
       else if(nipipm == 1 && nipi0 == 0)
-        reactionmode = 221;
+        reactionmode = 211;
       else if(nipipm == 0 && nipi0 == 1)
         reactionmode = 221;
       else
@@ -558,8 +592,8 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     // Selection
     if(EvClass_reco == 0){ // cc-numu
-      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10000;
-      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 10010;
+      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 10000;
+      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 10010;
       else if(npionscharge == 1 && npizerorecon == 0) sample = 11009;
       else if(npionscharge == 2 && npizerorecon == 0) sample = 12009;
       else if(npionscharge == 0 && npizerorecon == 1) sample = 10109;
@@ -567,8 +601,8 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       else sample = 19999;
     }
     else if(EvClass_reco == 1){ // cc-nue
-      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20000;
-      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nother == 0) sample = 20010;
+      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 20000;
+      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 20010;
       else if(npionscharge == 1 && npizerorecon == 0) sample = 21009;
       else if(npionscharge == 2 && npizerorecon == 0) sample = 22009;
       else if(npionscharge == 0 && npizerorecon == 1) sample = 20109;
@@ -887,6 +921,51 @@ vector<TH1*> ReadFastMC::SelectNCnPi(int npions, int npi0){
   gstTree->Delete();
 
   return histarray;
+
+}
+// ----------------------------------------------------------------------------
+bool ReadFastMC::ChargeFlip(int seed, double momentum){
+
+  if(momentum == 0)
+    return false;
+
+  // Random generator
+  TRandom3 *random = new TRandom3();
+
+  // Functions for the charge flip parameterization
+  TF1 *ft = new TF1("ft","expo");
+  ft->SetParameter(0,ChargeConfTrLConst);
+  ft->SetParameter(1,ChargeConfTrLSlope);
+  TF1 *fp = new TF1("fp","expo");
+  fp->SetParameter(0,ChargeConfMomConst);
+  fp->SetParameter(1,ChargeConfMomSlope);
+
+  random->SetSeed(seed);
+
+  double cmisid = 0.0;
+  int rcnum = random->Integer(1000);
+  if(momentum > 0.8 && momentum < 5){
+    cmisid = fp->Eval(momentum*1000);
+  }
+  else if(momentum >= 5){
+    cmisid = fp->Eval(5*1000);
+  }
+  else if(momentum > 0.5 && momentum <= 0.8){
+    cmisid = fp->Eval(0.8*1000)*1.5;
+  }
+  else if(momentum <= 0.5){
+    cmisid = fp->Eval(0.8*1000)*5;
+  }
+
+  random->Delete();
+  ft->Delete();
+  fp->Delete();
+
+  // Charge flip
+  if(rcnum < cmisid*1000)
+    return true;
+  else
+    return false;
 
 }
 // ----------------------------------------------------------------------------
