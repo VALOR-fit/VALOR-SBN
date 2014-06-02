@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="LBNE-NDFIT" version="2014a" config="STT-baseline">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Assumed exposure for various beam configurations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+  <exposure> 
+    <fhc>
+      1.0000e+21 
+    </fhc>
+    <rhc>
+      1.0000e+21 
+    </rhc>
+  </exposure>
+</data>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Input MC templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<mc>
+  <exposure> 
+    <fhc>
+      1.0000e+20
+    </fhc>
+    <rhc>
+      1.0000e+20
+    </rhc>
+  </exposure>
+
+  <using_dst_format> 
+     true 
+  </using_dst_format> 
+  <dst> 
+    <fhc>
+      bla.root   
+    </fhc>
+    <rhc>
+      bla.root   
+    </rhc>
+  </dst>
+</mc>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Systematics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<syst>
+
+</syst>
+
+</analysis_inputs>
+
+
