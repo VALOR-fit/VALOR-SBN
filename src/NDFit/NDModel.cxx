@@ -9,7 +9,9 @@ ChangeLog:
 //________________________________________________________________________________________
 
 #include <ostream>
+#include <iostream>
 
+#include <TXMLEngine.h>
 #include <TFile.h>
 #include <TObjArray.h>
 #include <TH1D.h>
@@ -30,6 +32,7 @@ ChangeLog:
 #include "NDFit/NDSample.h"
 #include "NDFit/NDSystematics.h"
 
+using std::cout;
 using std::endl;
 
 using namespace valor;
@@ -59,26 +62,40 @@ string NDModel::Name(void)
 //________________________________________________________________________________________
 bool NDModel::Read(string file, Option_t * /*opt*/)
 {
+cout << "READING FROM " << file << endl;
+
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(file.c_str());
   if (xmldoc==0) {
-    LOG("NDModel",pERROR) << "Can not parse input: " << file;
+    LOG("NDModel",pERROR) << "Can not pars input XML file [" << file << "]";
     delete xml;
     return false;  
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
 
   //
-  fPOTFHC = util::XML2Dbl(xml,root_node,"nd/data/pot/fhc");
-  fPOTRHC = util::XML2Dbl(xml,root_node,"nd/data/pot/rhc");
+  fPOTFHC = util::XML2Dbl(xml,root_node,"data/exposure/fhc");
+//fPOTRHC = util::XML2Dbl(xml,root_node,"data/exposure/rhc");
 
-  //
-  fMCTree = util::XML2TTree (xml,root_node,"nd/mc/dstfile");
-  assert(fMCTree);
+  // Using input in VALOR DST format
+  // If true, read the ROOT files and fill-in the MC templates.
+  // If false, just read in the MC templates. 
+  // In the later case, the templates are pre-binned so the binning
+  // can not change. Make sure the templates hav ethe expected binning
+  fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format");
 
-  //
-  this->FillTemplates(fMCTree);
+  if(fUseMCDST) {
+    //
+    fMCTree = util::XML2TTree (xml,root_node,"mc/dst/fhc");
+    assert(fMCTree);
+    //
+    this->FillTemplates(fMCTree);
+  } 
+  else {
+    // ** implement later (when binning is optimized) and make it the default
+    // ** choice to reduce the size of data files stored in the SVN repository.
+  }
 
   // Release memory
   xml->FreeDoc(xmldoc);
@@ -107,8 +124,7 @@ bool NDModel::Generate(const PhysHypothesis & ph)
   //
 
 
-
-  LOG("NDModel",pDEBUG) << "Done generating predictions";
+//  LOG("NDModel",pDEBUG) << "Done generating predictions";
 
   return true;
 }
@@ -194,31 +210,33 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 
 void NDModel::Init(void)
 {
-  for(int isample = 0; isample < kNNDSamples; isample++) {
-    for(int imode = 0; imode < kNReacModes; imode++) {
-      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+   for(int isample = 0; isample < kNNDSamples; isample++) {
+     for(int imode = 0; imode < kNReacModes; imode++) {
+       for(int izone = 0; izone < kNMaxBinZones; izone++) {
+         fNullMCTempl[ibeam][isample][imode][izone] = true;
+         fMCTemplNom [ibeam][isample][imode][izone] = 0;
+         fMCTemplTun [ibeam][isample][imode][izone] = 0;
+         fMCTemplSys [ibeam][isample][imode][izone] = 0;
+         fMCTemplFin [ibeam][isample][imode][izone] = 0;
+       }//izone
+     }//imode
+   }//isample
+  }//ibeam
 
-         fNullMCTempl[isample][imode][izone] = true;
+  fUseMCDST = false;
+  fMCTree   = 0;
 
-         fMCTemplNom [isample][imode][izone] = 0;
-         fMCTemplTun [isample][imode][izone] = 0;
-         fMCTemplSys [isample][imode][izone] = 0;
-         fMCTemplFin [isample][imode][izone] = 0;
-      }//izone
-    }//imode
-  }//isample
-
-  fMCTree = 0;
-
-  fPOTFHC = 0;
-  fPOTRHC = 0;
+  fPOTFHC   = 0;
+  fPOTRHC   = 0;
 
   fArrIdx = util::NDArrIdx::Instance();
 }
 //________________________________________________________________________________________
 void NDModel::Book(void)
 {
-  for(int isample = 0; isample < kNNDSamples; isample++) {
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+   for(int isample = 0; isample < kNNDSamples; isample++) {
     NDSample_t s = kNDSample[isample];
     if(s == ksNDUndefined) continue;
     for(int imode = 0; imode < kNReacModes; imode++) {
@@ -230,62 +248,66 @@ void NDModel::Book(void)
          const int n_yreco_bins = util::NumYrecoBins(s,izone);
          if(n_ereco_bins <= 0 || n_yreco_bins <= 0) continue;
 
-         fNullMCTempl[isample][imode][izone] = false;
+         fNullMCTempl[ibeam][isample][imode][izone] = false;
 
-         fMCTemplNom [isample][imode][izone] = 
+         fMCTemplNom [ibeam][isample][imode][izone] = 
             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-         fMCTemplTun [isample][imode][izone] = 
+         fMCTemplTun [ibeam][isample][imode][izone] = 
             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-         fMCTemplSys [isample][imode][izone] = 
+         fMCTemplSys [ibeam][isample][imode][izone] = 
             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-         fMCTemplFin [isample][imode][izone] = 
+         fMCTemplFin [ibeam][isample][imode][izone] = 
             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
 
       }//izone
     }//imode
-  }//isample
+   }//isample
+  }//ibeam
 }
 //________________________________________________________________________________________
 void NDModel::Clean(void)
 {
-  for(int isample = 0; isample < kNNDSamples; isample++) {
-    for(int imode = 0; imode < kNReacModes; imode++) {
-      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+   for(int isample = 0; isample < kNNDSamples; isample++) {
+     for(int imode = 0; imode < kNReacModes; imode++) {
+       for(int izone = 0; izone < kNMaxBinZones; izone++) {
 
-        fNullMCTempl[isample][imode][izone] = true;
+         fNullMCTempl[ibeam][isample][imode][izone] = true;
 
-        if(fMCTemplNom[isample][imode][izone]) delete fMCTemplNom[isample][imode][izone];
-        fMCTemplNom[isample][imode][izone] = 0;
-        if(fMCTemplTun[isample][imode][izone]) delete fMCTemplTun[isample][imode][izone];
-        fMCTemplTun[isample][imode][izone] = 0;
-        if(fMCTemplSys[isample][imode][izone]) delete fMCTemplSys[isample][imode][izone];
-        fMCTemplSys[isample][imode][izone] = 0;
-        if(fMCTemplFin[isample][imode][izone]) delete fMCTemplFin[isample][imode][izone];
-        fMCTemplFin[isample][imode][izone] = 0;
+         if(fMCTemplNom[ibeam][isample][imode][izone]) delete fMCTemplNom[ibeam][isample][imode][izone];
+         fMCTemplNom[ibeam][isample][imode][izone] = 0;
+         if(fMCTemplTun[ibeam][isample][imode][izone]) delete fMCTemplTun[ibeam][isample][imode][izone];
+         fMCTemplTun[ibeam][isample][imode][izone] = 0;
+         if(fMCTemplSys[ibeam][isample][imode][izone]) delete fMCTemplSys[ibeam][isample][imode][izone];
+         fMCTemplSys[ibeam][isample][imode][izone] = 0;
+         if(fMCTemplFin[ibeam][isample][imode][izone]) delete fMCTemplFin[ibeam][isample][imode][izone];
+         fMCTemplFin[ibeam][isample][imode][izone] = 0;
 
-      }//izone
-    }//imode
-  }//isample
+       }//izone
+     }//imode
+   }//isample
+  }//ibeam
 
   //if (fMCTree) delete fMCTree;
 }
 //________________________________________________________________________________________
 void NDModel::ZeroTemplates(void)
 {
-  for(int isample = 0; isample < kNNDSamples; isample++) {
-    for(int imode = 0; imode < kNReacModes; imode++) {
-      for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         bool is_null = fNullMCTempl[isample][imode][izone];
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+   for(int isample = 0; isample < kNNDSamples; isample++) {
+     for(int imode = 0; imode < kNReacModes; imode++) {
+       for(int izone = 0; izone < kNMaxBinZones; izone++) {
+         bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
          if(!is_null) {
-             fMCTemplNom[isample][imode][izone]->SetAll(0.);
-             fMCTemplTun[isample][imode][izone]->SetAll(0.);
-             fMCTemplSys[isample][imode][izone]->SetAll(0.);
-             fMCTemplFin[isample][imode][izone]->SetAll(0.);
-         }
-      }//izone
-    }//imode
-  }//isample
-
+             fMCTemplNom[ibeam][isample][imode][izone]->SetAll(0.);
+             fMCTemplTun[ibeam][isample][imode][izone]->SetAll(0.);
+             fMCTemplSys[ibeam][isample][imode][izone]->SetAll(0.);
+             fMCTemplFin[ibeam][isample][imode][izone]->SetAll(0.);
+         }//!null
+       }//izone
+     }//imode
+   }//isample
+  }//ibeam
 }
 //________________________________________________________________________________________
 void NDModel::FillTemplates(TTree * t)
@@ -338,15 +360,16 @@ void NDModel::FillTemplates(TTree * t)
      int ienu_reco = 4;
      int iy_reco   = 5;
 
+     int    ibeam    = 0;
      double data_pot = fPOTFHC;
      double mc_pot   = wght_pot * 1E+20;
 
      double wght = data_pot/mc_pot;
 
-     fMCTemplNom[isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
-     fMCTemplTun[isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
-     fMCTemplSys[isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
-     fMCTemplFin[isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTemplNom[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTemplTun[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTemplSys[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTemplFin[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
 
   }//iev 
 
@@ -364,6 +387,19 @@ void NDModel::ApplySystematics(void)
 // This method maps tun -> sys MC templates.
 // No detector or uncorrelated cross-section systematics for the time being.
 
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+   for(int isample = 0; isample < kNNDSamples; isample++) {
+    for(int imode = 0; imode < kNReacModes; imode++) {
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+         bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
+         if(!is_null) {
+
+         }//!null
+      }//izone
+    }//imode
+   }//isample
+  }//ibeam
+
 }
 //________________________________________________________________________________________
 void NDModel::ApplyPhysics(void)
@@ -371,17 +407,18 @@ void NDModel::ApplyPhysics(void)
 // This method maps sys -> fin MC templates.
 // Applying correlated flux and cross-section systematics
 
-  for(int isample = 0; isample < kNNDSamples; isample++) {
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+   for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         bool is_null = fNullMCTempl[isample][imode][izone];
+         bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
          if(!is_null) {
 
-         }
+         }//!null
       }//izone
     }//imode
-  }//isample
-
+   }//isample
+  }//ibeam
 }
 //________________________________________________________________________________________
 

@@ -33,6 +33,7 @@
 #include "FitCore/PhysParamList.h"
 #include "Utilities/VALORArray.h"
 //lbnx
+#include "Conventions/BeamConf.h"
 #include "NDFit/NDArrIdx.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDSampleBinning.h"
@@ -94,11 +95,13 @@ private:
   //   The effect of their variation is included in the sys templates.
   // - Physics "systematics" are the ones we attempt to constrain and are included in the output covariance matrix (eg. 
   //   correlated flux and cross-sections). The effect of their variation is included in the fin templates.
-  bool         fNullMCTempl[conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
-  VALORArray * fMCTemplNom [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTemplTun [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTemplSys [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTemplFin [conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  bool         fNullMCTempl [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
+  VALORArray * fMCTemplNom  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTemplTun  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTemplSys  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTemplFin  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+
+  bool fUseMCDST;
 
   // Input DST
   TTree * fMCTree;
