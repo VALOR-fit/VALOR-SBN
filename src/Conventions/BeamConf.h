@@ -18,6 +18,8 @@
 #ifndef _valor_lbnx_beam_configuration_h_
 #define _valor_lbnx_beam_configuration_h_
 
+#include <TROOT.h>
+
 #include <string>
 
 using std::string;
@@ -42,7 +44,7 @@ BeamConf_t;
 // Associated utilities
 //
 namespace util {
-  string AsString(conv::BeamConf_t c);
+  string AsString(conv::BeamConf_t c, Option_t * opt=0);
 } // util
 
 } // valor

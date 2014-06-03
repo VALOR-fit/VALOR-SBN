@@ -8,21 +8,34 @@ ChangeLog:
 */
 //________________________________________________________________________________________
 
+#include <algorithm>
+//#include <functional>
+//#include <locale>
+
 #include "Conventions/BeamConf.h"
 
 using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-string util::AsString(BeamConf_t c)
+string util::AsString(BeamConf_t c, Option_t * opt)
 {
-  switch(c) {
+  string name = "";
 
-    case (kbFHC) : return "FHC"; break;
-    case (kbRHC) : return "RHC"; break;        
-    default      : return "--"; 
+  switch(c) {
+    case (kbFHC) : name = "FHC"; break;
+    case (kbRHC) : name = "RHC"; break;        
+    default      : name = "--";  
   }
-  return "";
+
+  if(opt) {
+    string optstr = opt;
+    if(optstr.find("lowercase")) {
+      std::transform(name.begin(),name.end(),name.begin(),::tolower);
+    }
+  }
+
+  return name;
 }
 //________________________________________________________________________________________
 

@@ -38,14 +38,18 @@ Input MC templates
   <using_dst_format> 
      true 
   </using_dst_format> 
+
   <dst> 
     <fhc>
-      bla.root   
+       <filename> ./data/lbne/ndfit/2014a/STT/bla.root </filename> 
+       <objname>  FastMCTree  </objname> 
+       <objtype>  TTree       </objtype> 
     </fhc>
     <rhc>
       bla.root   
     </rhc>
   </dst>
+
 </mc>
 
 <!--

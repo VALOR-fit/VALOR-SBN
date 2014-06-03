@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\file      NDSystDef
+\file      NDSystematics
 
 \brief     Typedef specific LBNx ND systematics to free PhysParamId_t slots
            of the VALOR framework
@@ -68,12 +68,44 @@ static const PhysParamId_t kNuisNormNC           = kNuis022;
 
 
 //
+// 
+//
+
+static const PhysParamId_t kSystematic[kNumOfSystematics] = 
+{
+   kNuisFHCNuMuFlux00,
+   kNuisFHCNuMuFlux01,
+   kNuisFHCNuMuFlux02,
+   kNuisFHCNuMuFlux03,
+   kNuisFHCNuMuFlux04,
+   kNuisFHCNuMuFlux05,
+   kNuisFHCNuMuFlux06,
+   kNuisFHCNuMuFlux07,
+   kNuisFHCNuMuFlux08,
+   kNuisFHCNuMuFlux09,
+   kNuisFHCNuMuBarFlux00,
+   kNuisFHCNuMuBarFlux01,
+   kNuisFHCNuMuBarFlux02,
+   kNuisFHCNuMuBarFlux03,
+   kNuisFHCNuMuBarFlux04,
+   kNuisFHCNuEFlux00, 
+   kNuisFHCNuEFlux01, 
+   kNuisFHCNuEFlux02, 
+   kNuisNormCCQE, 
+   kNuisNormCC1piC,
+   kNuisNormCC1pi0,
+   kNuisNormCCoth, 
+   kNuisNormNC 
+};
+
+
+//
 // This array fully specifies which systematics are applied to which template,
 // for all samples considered in this analysis
 //
-//for the time-being this does not need to be function of the sample id
-//static const bool kApplySystToTemplate[kNNDSamples][kNReacModes][kNumOfSystematics] = 
-
+// for the time-being this does not need to be function of the sample id
+// static const bool kApplySystToTemplate[kNNDSamples][kNReacModes][kNumOfSystematics] = 
+//
 static const bool kApplySystToTemplate[kNReacModes][kNumOfSystematics] = 
 {
   // sample: any

@@ -1,3 +1,11 @@
-Framework:
-* valor namespace -> valor::lbnx namespace (just a global find&replace) in NDFit and FDFit (LBNx-specific code) [perhaps, in future, T2K fits can fit in the same structure]
+* Binning for MC templates
 
+* In NDModel, adjust code so that it can read stored VALOR arrays in addition to VALOR DSTs.
+  Then store the arrays in the repository. 
+  Loose the ability to tweak the binning when running the default code checked out from the SVN repository.
+  But DSTs too large to store in SVN.
+
+
+* In input DST
+
+   FastMCTree --> valor_lbnx_dst

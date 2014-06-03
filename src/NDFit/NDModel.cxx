@@ -28,8 +28,10 @@ ChangeLog:
 #include "Messenger/Messenger.h"
 //lbnx
 #include "Conventions/ReacMode.h"
+#include "Conventions/BeamConf.h"
 #include "NDFit/NDModel.h"
 #include "NDFit/NDSample.h"
+#include "NDFit/NDBeamConf.h"
 #include "NDFit/NDSystematics.h"
 
 using std::cout;
@@ -74,23 +76,31 @@ cout << "READING FROM " << file << endl;
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
 
-  //
-  fPOTFHC = util::XML2Dbl(xml,root_node,"data/exposure/fhc");
-//fPOTRHC = util::XML2Dbl(xml,root_node,"data/exposure/rhc");
+  // Get assumed exposure for each beam configuration
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t bc = kNDBeamConf[ibeam];
+    if(bc == kbUndefined) continue;
+    string node_name = "data/exposure/" + util::AsString(bc, "lowercase");
+    fPOT[ibeam] = util::XML2Dbl(xml,root_node,node_name);
+  }//ibeam
 
+  //
   // Using input in VALOR DST format
   // If true, read the ROOT files and fill-in the MC templates.
   // If false, just read in the MC templates. 
   // In the later case, the templates are pre-binned so the binning
   // can not change. Make sure the templates hav ethe expected binning
+  //
   fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format");
-
   if(fUseMCDST) {
-    //
-    fMCTree = util::XML2TTree (xml,root_node,"mc/dst/fhc");
-    assert(fMCTree);
-    //
-    this->FillTemplates(fMCTree);
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+       BeamConf_t bc = kNDBeamConf[ibeam];
+       if(bc == kbUndefined) continue;
+       string node_name = "mc/dst/" + util::AsString(bc, "lowercase");
+       fMCDST[ibeam] = util::XML2TTree (xml,root_node,node_name);
+       assert(fMCDST[ibeam]);
+       this->FillTemplates(fMCDST[ibeam]);
+    }//ibeam
   } 
   else {
     // ** implement later (when binning is optimized) and make it the default
@@ -225,10 +235,11 @@ void NDModel::Init(void)
   }//ibeam
 
   fUseMCDST = false;
-  fMCTree   = 0;
 
-  fPOTFHC   = 0;
-  fPOTRHC   = 0;
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    fPOT  [ibeam] = 0;
+    fMCDST[ibeam] = 0;
+  }//ibeam
 
   fArrIdx = util::NDArrIdx::Instance();
 }
@@ -288,7 +299,7 @@ void NDModel::Clean(void)
    }//isample
   }//ibeam
 
-  //if (fMCTree) delete fMCTree;
+  //if (fMCDST) delete fMCDST;
 }
 //________________________________________________________________________________________
 void NDModel::ZeroTemplates(void)
@@ -361,7 +372,7 @@ void NDModel::FillTemplates(TTree * t)
      int iy_reco   = 5;
 
      int    ibeam    = 0;
-     double data_pot = fPOTFHC;
+     double data_pot = fPOT[ibeam];
      double mc_pot   = wght_pot * 1E+20;
 
      double wght = data_pot/mc_pot;
@@ -385,7 +396,7 @@ void NDModel::ApplyTuning(void)
 void NDModel::ApplySystematics(void)
 {
 // This method maps tun -> sys MC templates.
-// No detector or uncorrelated cross-section systematics for the time being.
+// Applying detector systematics and uncorrelated flux/cross-section systematics.
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
@@ -393,6 +404,7 @@ void NDModel::ApplySystematics(void)
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
          if(!is_null) {
+             
 
          }//!null
       }//izone
@@ -413,7 +425,24 @@ void NDModel::ApplyPhysics(void)
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
          if(!is_null) {
+           for(int isyst = 0; isyst < kNumOfSystematics; isyst++) {
+             bool apply = kApplySystToTemplate[imode][isyst];
+             if(!apply) continue;
+/*
+             const double Etrue_min = kSystEtrueRange[isyst][0];
+             const double Etrue_max = kSystEtrueRange[isyst][1];
 
+             for(int it; it < ; it++) {
+               double Etrue = ;
+               if(Etrue < Etrue_min || Etrue > Etrue_max) continue;
+               for(int ir; ir < ; ir++) {
+                 for(int iy; iy < ; iy++) {
+
+                 }//iy: yreco bins
+               }//ir: Ereco bins
+             }//it: Etrue bins
+*/
+           }//isyst
          }//!null
       }//izone
     }//imode

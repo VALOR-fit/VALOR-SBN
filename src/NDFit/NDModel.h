@@ -82,6 +82,9 @@ private:
 
   PhysHypothesis fPhysHypothesis;
 
+  // Exposure (assumed) for each beam configuration (in POT)
+  double fPOT [conv::kNBeamConf];
+
   // MC templates for all samples/reac_modes/bin_zones
   // - nom: Nominal MC 
   // - tun: Nominal MC + Ext. tuning (eg tuning based on *external* hadro-production or neutrino cross-section data)
@@ -101,13 +104,12 @@ private:
   VALORArray * fMCTemplSys  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
   VALORArray * fMCTemplFin  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
 
+  //
+  PhysParamList fSystCurrValues;
+
+  // Input VALOR MC DSTs
   bool fUseMCDST;
-
-  // Input DST
-  TTree * fMCTree;
-
-  double fPOTFHC; // Fwd. Horn Current POT
-  double fPOTRHC; // Rev. Horn Current POT
+  TTree * fMCDST[conv::kNBeamConf];
 };
 
 } // valor
