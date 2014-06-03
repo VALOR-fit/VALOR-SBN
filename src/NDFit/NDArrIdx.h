@@ -26,11 +26,13 @@
 #ifndef _valor_lbnx_nd_array_index_h_
 #define _valor_lbnx_nd_array_index_h_
 
+#include "Conventions/PhysParamId.h"
 #include "Conventions/BeamConf.h"
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDBeamConf.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDSampleModes.h"
+#include "NDFit/NDFitParams.h"
 
 using namespace valor;
 
@@ -43,6 +45,7 @@ public:
     int NDBeamConfIdx (conv::BeamConf_t b)                     { return fNDBeamConfIdx[b];    }
     int NDSampleIdx   (conv::NDSample_t s)                     { return fNDSampleIdx[s];      }
     int NDReacModeIdx (conv::NDSample_t s, conv::ReacMode_t m) { return fNDReacModeIdx[s][m]; }
+    int NDFitParamIdx (conv::PhysParamId_t p)                  { return fNDFitParamIdx[p];    }
 private:
     NDArrIdx();
     NDArrIdx(const NDArrIdx &) {}
@@ -51,6 +54,7 @@ private:
     int fNDBeamConfIdx [2*conv::kNBeamConf];                        ///< maps each beam configuration to a kNDBeamConf array index
     int fNDSampleIdx   [2*conv::kNNDSamples];                       ///< maps each sample to a kNDSample array index
     int fNDReacModeIdx [2*conv::kNNDSamples][2*conv::kNReacModes];  ///< maps each mode of each sample to a kNDReactionModes array index
+    int fNDFitParamIdx [2*conv::knppmax];                           ///< maps each physics param to a kNDFitParam array index
     static NDArrIdx * fInstance;
     struct Cleaner {
       void DummyMethodAndSilentCompiler() { }

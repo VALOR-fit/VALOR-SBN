@@ -19,6 +19,7 @@
 namespace valor {
 namespace conv   {
 
+/*
 //
 // Oscillation parameters, recent global fit values & 1 sigma errors and
 // typical initialization and range values for fitter
@@ -188,6 +189,7 @@ static const double khbarc3_SI      = khbarc_SI*khbarc_SI*khbarc_SI; // (hbar*c)
 static const double kGF             = 1.16637e-5;                    // Fermi coupling constant, (GeV^-2, natural units)
 static const double kGF_SI          = kGF*khbarc3_SI*1.0e-18;        // Fermi coupling constant, (eV cm^3, SI units), 1e-18 is used for GeV^-2 -> eV^-2
 static const double kNA             = 6.022142e23;                   // Avogadro number (mol^-1)
+*/
 
 } // conv
 } // valor

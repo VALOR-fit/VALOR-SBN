@@ -32,7 +32,6 @@ ChangeLog:
 #include "NDFit/NDModel.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDBeamConf.h"
-#include "NDFit/NDSystematics.h"
 
 using std::cout;
 using std::endl;
@@ -440,12 +439,12 @@ void NDModel::ApplyPhysics(void)
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
           if(!is_null) {
-            for(int isyst = 0; isyst < kNumOfSystematics; isyst++) {
-               bool apply = kApplySystToTemplate[imode][isyst];
+            for(int ip = 0; ip < kNNDFitParams; ip++) {
+               bool apply = kNDApplyFitParamToTemplate[imode][ip];
                if(!apply) continue;
 /*
-               const double Etrue_min = kSystEtrueRange[isyst][0];
-               const double Etrue_max = kSystEtrueRange[isyst][1];
+               const double Etrue_min = kNDFitParamEtrueRange[ip][0];
+               const double Etrue_max = kNDFitParamEtrueRange[ip][1];
 
                for(int it; it < ; it++) {
                  double Etrue = ;
@@ -457,7 +456,7 @@ void NDModel::ApplyPhysics(void)
                  }//ir: Ereco bins
                }//it: Etrue bins
 */
-            }//isyst
+            }//ip
           }//!null
         }//izone
       }//imode

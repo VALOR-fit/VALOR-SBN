@@ -37,7 +37,7 @@ valor::util::NDArrIdx * valor::util::NDArrIdx::Instance()
 //________________________________________________________________________________________
 void valor::util::NDArrIdx::Init(void)
 {
-  // init to -1
+  // Init to -1
 
   for(int i = 0; i < 2*kNBeamConf; i++) {
      fNDBeamConfIdx [i] = -1;
@@ -48,8 +48,14 @@ void valor::util::NDArrIdx::Init(void)
          fNDReacModeIdx [i][j] = -1;
      }//i
   }//j
+  for(int i = 0; i < 2*knppmax; i++) {
+     fNDFitParamIdx[i] = -1;
+  }
 
-  // fill-in
+  //
+  // Fill-in
+  //
+
   for(int ib = 0; ib < kNBeamConf; ib++) {
     BeamConf_t b = kNDBeamConf[ib];
     if(b == kbUndefined) continue;
@@ -57,6 +63,7 @@ void valor::util::NDArrIdx::Init(void)
     LOG("NDArrIdx",pNOTICE)
        << "Beam config: " << util::AsString(b) << " is at slot: " << fNDBeamConfIdx[b];
   }//ib
+
   for(int is = 0; is < kNNDSamples; is++) {
      NDSample_t s = kNDSample[is];
      if(s == ksNDUndefined) continue;
@@ -74,6 +81,15 @@ void valor::util::NDArrIdx::Init(void)
             << " is at slot: " << fNDReacModeIdx [s][m];
      }//im
   }//is 
+
+  for(int ip = 0; ip < 2*knppmax; ip++) {
+     PhysParamId_t p = kNDFitParam[ip];
+     if(p == kPhypUndefined) continue;
+     fNDFitParamIdx[p] = ip;
+     LOG("NDArrIdx",pNOTICE)
+        << "Fit parameter: " << util::RawParamAsString(p) << " is at slot: " << fNDFitParamIdx[p];
+  }
+
 }
 //________________________________________________________________________________________
 

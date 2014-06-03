@@ -38,6 +38,7 @@
 #include "NDFit/NDSample.h"
 #include "NDFit/NDSampleBinning.h"
 #include "NDFit/NDSampleModes.h"
+#include "NDFit/NDFitParams.h"
 
 namespace valor {
 
@@ -105,7 +106,7 @@ private:
   VALORArray * fMCTemplFin  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
 
   //
-  PhysParamList fSystCurrValues;
+  double fSystCurrValues[];
 
   // Input VALOR MC DSTs
   bool fUseMCDST;

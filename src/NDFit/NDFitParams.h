@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\file      NDSystematics
+\file      NDFitParams
 
 \brief     Typedef specific LBNx ND systematics to free PhysParamId_t slots
            of the VALOR framework
@@ -22,12 +22,13 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_syst_def_h_
-#define _valor_lbnx_nd_syst_def_h_
+#ifndef _valor_lbnx_nd_fit_param_definition_h_
+#define _valor_lbnx_nd_fit_param_definition_h_
 
 #include <string>
 
 #include "Conventions/PhysParamId.h"
+#include "NDFit/NDSampleBinning.h"
 
 using std::string;
 
@@ -38,7 +39,7 @@ namespace conv {
 // A very simple set of systematics for the 1st iteration
 //
 
-static const int kNumOfSystematics = 23;
+static const int kNNDFitParams = 23;
 
 // FHC flux
 static const PhysParamId_t kNuisFHCNuMuFlux00    = kNuis000; 
@@ -71,7 +72,7 @@ static const PhysParamId_t kNuisNormNC           = kNuis022;
 // 
 //
 
-static const PhysParamId_t kSystematic[kNumOfSystematics] = 
+static const PhysParamId_t kNDFitParam[kNNDFitParams] = 
 {
    kNuisFHCNuMuFlux00,
    kNuisFHCNuMuFlux01,
@@ -104,9 +105,8 @@ static const PhysParamId_t kSystematic[kNumOfSystematics] =
 // for all samples considered in this analysis
 //
 // for the time-being this does not need to be function of the sample id
-// static const bool kApplySystToTemplate[kNNDSamples][kNReacModes][kNumOfSystematics] = 
 //
-static const bool kApplySystToTemplate[kNReacModes][kNumOfSystematics] = 
+static const bool kNDApplyFitParamToTemplate[kNReacModes][kNNDFitParams] = 
 {
   // sample: any
   //{
@@ -174,7 +174,7 @@ static const bool kApplySystToTemplate[kNReacModes][kNumOfSystematics] =
 // This array fully specifies the true energy of each systematic
 //
 
-static const double kSystEtrueRange[kNumOfSystematics][2] = 
+static const double kNDFitParamEtrueRange[kNNDFitParams][2] = 
 {
   // Emin, Emax
    {  0.0,  1.0},       // kNuisFHCNuMuFlux00
@@ -207,7 +207,7 @@ static const double kSystEtrueRange[kNumOfSystematics][2] =
 // This array fully specifies which of the systematics are to me marginalised (profiled-out)
 // and which are the ones we try to constrain and output in the systematic covariance matrix
 //
-static const double kSystMarginalize[kNumOfSystematics] = 
+static const double kNDFitParamMarginalize[kNNDFitParams] = 
 {
    false,  // kNuisFHCNuMuFlux00
    false,  // kNuisFHCNuMuFlux01
