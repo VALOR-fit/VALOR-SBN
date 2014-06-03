@@ -110,20 +110,22 @@ void valor_style()
 
 void valor_lbnx()
 {   
-    TString script_dir = gSystem->Getenv("VALOR_LBNX");
-    script_dir += "./";
-
-    TString curr_dir = gSystem->pwd();
-
-    gSystem->cd(script_dir.Data());
-
     gROOT->ProcessLine(".x $VALOR_LBNX/root/loadincs.C");    
     gROOT->ProcessLine(".x $VALOR_LBNX/root/loadlibs.C");    
 
+    TString curr_dir = gSystem->pwd();
     gSystem->cd(curr_dir.Data());
 
     change_prompt();
 
     valor_style();
     gROOT->SetStyle("VALOR");
+
+    TString top_dir = gSystem->Getenv("VALOR_LBNX");
+
+    TString banner    = top_dir + "/data/banner/banner.dat";
+    TString verbosity = top_dir + "/config/verbosity.xml";
+
+    valor::util::PrintBanner(banner.Data(),500);
+    valor::util::Verbosity(verbosity.Data());
 }
