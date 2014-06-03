@@ -11,6 +11,9 @@ ChangeLog:
 
 #include <math.h>
 #include <ostream>
+#include <iomanip>
+#include <vector>
+#include <algorithm>
 
 #include "TH2.h"
 #include "TAxis.h"
@@ -68,10 +71,29 @@ void ReadFastMC::ReadDatacard(string datacard){
 	neut.erase(neut.begin());
 	neutrinoPDG = atoi(neut.c_str());
       }
+      if(line.find("Years") != string::npos){ // years to run
+	size_t found = line.find(" ");
+	string expo = line.substr(found);
+	expo.erase(expo.begin());
+	years = atof(expo.c_str());
+      }
+      if(line.find("Exposure") != string::npos){ // POT/year
+	size_t found = line.find(" ");
+	string expo = line.substr(found);
+	expo.erase(expo.begin());
+	exposure = atof(expo.c_str());
+	exposure = exposure*1e20;
+      }
       if(line.find("Detector") != string::npos){ // near or far detector
 	size_t found = line.find(" ");
 	detector = line.substr(found);
 	detector.erase(detector.begin());
+      }
+      if(line.find("DetectorMass") != string::npos){ // detector mass
+	size_t found = line.find(" ");
+	string expo = line.substr(found);
+	expo.erase(expo.begin());
+	detmass = atof(expo.c_str());
       }
       if(line.find("Reweight") != string::npos){ // do reweighting
         size_t found = line.find(" ");
@@ -299,7 +321,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
   FastMCTree->Branch("y_reco",      &y_reco,      "y_reco/D");
   FastMCTree->Branch("POTWeight",   &POTWeight,   "POTWeight/D");
   FastMCTree->Branch("sample",      &sample,      "sample/I");
-  FastMCTree->Branch("rectionmode", &reactionmode,"reactionmode/I");
+  FastMCTree->Branch("reactionmode",&reactionmode,"reactionmode/I");
 
   if(debugtree){
     FastMCTree->Branch("neut_code",           &neut_code,           "neut_code/I");
@@ -316,6 +338,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
   // Random generator
   TRandom3 *rand = new TRandom3();
+
+  // POT normalization
+  double potnorm = years*exposure*detmass/nevents;
 
   FastMCTree->SetDirectory(0);
   for(int i = 0; i < gstTree->GetEntries(); i++){
@@ -336,6 +361,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       if(anumuevents == nevents){continue;}
       anumuevents++;
     }
+
+    // Normalized POT weight potnorm=(mass*years*exposure/years)/nevents
+    POTWeight = POTWeight*potnorm;
 
     // No recon neutrino energy? -> continue
     if(Ev_reco < enureconcut){continue;}
@@ -560,61 +588,51 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     //int nipipm0 = nipip + nipim + nipi0;
 
     if(cc){
-      if(coh)
-	reactionmode = 10;
-      else if(mec)
-	reactionmode = 11;
-      else if(qel)
-	reactionmode = 110;
+      if(qel)
+	reactionmode = 0;
+      else if(coh)
+	reactionmode = 1;
       else if(nipipm == 1 && nipi0 == 0)
-	reactionmode = 111;
+	reactionmode = 2;
       else if(nipipm == 2 && nipi0 == 0)
-        reactionmode = 112;
+        reactionmode = 3;
       else if(nipipm == 0 && nipi0 == 1)
-        reactionmode = 121;
+        reactionmode = 4;
       else if(nipipm == 0 && nipi0 == 2)
-        reactionmode = 122;
+        reactionmode = 5;
       else if(nipipm == 1 && nipi0 == 1)
-        reactionmode = 123;
+        reactionmode = 6;
       else
-	reactionmode = 125;
+	reactionmode = 7;
     }
     else if(nc){
       if(coh)
-        reactionmode = 20;
+        reactionmode = 8;
       else if(nipipm == 1 && nipi0 == 0)
-        reactionmode = 211;
+        reactionmode = 9;
       else if(nipipm == 0 && nipi0 == 1)
-        reactionmode = 221;
+        reactionmode = 10;
       else
-        reactionmode = 225;
+        reactionmode = 11;
     }
 
     // Selection
     if(EvClass_reco == 0){ // cc-numu
-      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 10000;
-      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 10010;
-      else if(npionscharge == 1 && npizerorecon == 0) sample = 11009;
-      else if(npionscharge == 2 && npizerorecon == 0) sample = 12009;
-      else if(npionscharge == 0 && npizerorecon == 1) sample = 10109;
-      else if(npionscharge == 1 && npizerorecon == 1) sample = 11109;
-      else sample = 19999;
+      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 1;
+      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 2;
+      else if(npionscharge == 1 && npizerorecon == 0) sample = 3;
+      else if(npionscharge == 2 && npizerorecon == 0) sample = 4;
+      else if(npionscharge == 0 && npizerorecon == 1) sample = 5;
+      else if(npionscharge == 1 && npizerorecon == 1) sample = 6;
+      else sample = 7;
     }
     else if(EvClass_reco == 1){ // cc-nue
-      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 20000;
-      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 20010;
-      else if(npionscharge == 1 && npizerorecon == 0) sample = 21009;
-      else if(npionscharge == 2 && npizerorecon == 0) sample = 22009;
-      else if(npionscharge == 0 && npizerorecon == 1) sample = 20109;
-      else if(npionscharge == 1 && npizerorecon == 1) sample = 21109;
-      else sample = 29999;
+      sample = 8;
     }
     else if(EvClass_reco == 2){ // nc
-      if(npionscharge == 1 && npizerorecon == 0) sample = 31009;
-      else if(npionscharge == 2 && npizerorecon == 0) sample = 32009;
-      else if(npionscharge == 0 && npizerorecon == 1) sample = 30109;
-      else if(npionscharge == 1 && npizerorecon == 1) sample = 31109;
-      else sample = 39999;
+      if(npionscharge == 1 && npizerorecon == 0) sample = 10;
+      else if(npionscharge == 0 && npizerorecon == 1) sample = 11;
+      else sample = 12;
     }
 
     // Fill the tree
@@ -622,6 +640,417 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
   }
 
   return FastMCTree;
+}
+// ----------------------------------------------------------------------------
+void ReadFastMC::make_binning_scheme_2D(){
+  // FastMC Tree
+  TTree *gstTree = ReadTree(inFile);
+
+  //const int event_sample = 2; //index number of event sample as in enum in NDFit/NDSample.h
+  //const int sampleIndex = 2;
+  const int n_bins_x = 10;   //this must be an even number in this version of the macro to allow the division into zones
+  const int n_bins_y = 8;   //this must be an even number in this version of the macro to allow the division into zones
+  const double x_min = 0.0;
+  const double x_max = 50.0;
+  const double y_min = 0.0;
+  const double y_max = 1.0;
+
+  vector<double> x_values;
+  vector<double> y_values;
+
+  const int n_zone = 4;
+
+  vector<double> zone_x_values[n_zone];
+  vector<double> zone_y_values[n_zone];
+
+  vector<double>::iterator valueiter;
+
+  double bin_edge_x[n_bins_x+1][n_bins_y];
+  double bin_edge_y[n_bins_x][n_bins_y+1];
+  double zone_bin_edge_x[n_bins_x+1][n_bins_y] = {{0},{0}};
+  double zone_bin_edge_y[n_bins_x][n_bins_y+1] = {{0},{0}};
+
+  int bin_content[n_bins_x][n_bins_y] = {{0},{0}};
+  int zone_bin_content[n_bins_x][n_bins_y] = {{0},{0}};
+
+  double x_median, y_median;
+
+  //TString selection = "sampleIndex==";
+  //selection += Form("%d", event_sample);
+  TString selection = "Ev_reco>=";
+  //selection += "&&Ev_reco>=";
+  selection += Form("%f", x_min);
+  selection += "&&Ev_reco<=";
+  selection += Form("%f", x_max);
+  selection += "&&y_reco>=";
+  selection += Form("%f", y_min);
+  selection += "&&y_reco<=";
+  selection += Form("%f", y_max);
+  cout << "Selection = " << selection.Data() << endl;
+  double mean_bin_content = gstTree->GetEntries(selection) / (n_bins_x * n_bins_y);
+
+  double dev_sq_sum;
+
+  cout<<endl;
+  cout<<"Calculating optimal binning scheme in a single rectangular grid......"<<endl;
+  cout<<endl;
+
+  //put all x values into one vector and all y values into another vector
+  for(Long64_t i = 0; i < gstTree->GetEntries(); i++)
+    {
+      gstTree->GetEntry(i);
+
+      //if(sampleIndex == event_sample)
+      //{
+      if(Ev_reco >= x_min && Ev_reco <= x_max)
+	x_values.push_back(Ev_reco);
+      if(y_reco >=y_min && y_reco <= y_max)
+	y_values.push_back(y_reco);
+      //}
+      
+    }//end of loop over events
+
+  //sort x values and make x bin edges such that each bin in x has equal number of x values (irrespective of y values)
+  sort(x_values.begin(), x_values.end());
+
+  for(int y_bin=0; y_bin<n_bins_y; y_bin++)
+    bin_edge_x[0][y_bin] = 0.0;
+
+  for(int x_edge=1; x_edge<n_bins_x; x_edge++)
+    {
+    valueiter = x_values.begin() + (int)(x_edge * x_values.size() / n_bins_x);
+    for(int y_bin=0; y_bin<n_bins_y; y_bin++)
+      bin_edge_x[x_edge][y_bin] = (*valueiter);
+    }
+
+  for(int y_bin=0; y_bin<n_bins_y; y_bin++)
+    bin_edge_x[n_bins_x][y_bin] = x_max;
+  
+  //sort y values and make y bin edges such that each bin in y has equal number of y values (irrespective of x values)
+  sort(y_values.begin(), y_values.end());
+
+  for(int x_bin=0; x_bin<n_bins_x; x_bin++)
+    bin_edge_y[x_bin][0] = 0.0;
+
+  for(int y_edge=1; y_edge<n_bins_y; y_edge++)
+    {
+    valueiter = y_values.begin() + (int)(y_edge * y_values.size() / n_bins_y);
+    for(int x_bin=0; x_bin<n_bins_x; x_bin++)
+      bin_edge_y[x_bin][y_edge] = (*valueiter);
+    }
+
+  for(int x_bin=0; x_bin<n_bins_x; x_bin++)
+    bin_edge_y[x_bin][n_bins_y] = y_max;
+
+  //get bin contents for initial binning scheme which is a rectangular grid
+  for(Long64_t i = 0; i < gstTree->GetEntries(); i++)
+    {
+    gstTree->GetEntry(i);
+
+    //if(sampleIndex == event_sample)
+    // {
+    for(int x_bin = 1; x_bin <= n_bins_x; x_bin++)
+      {
+        for(int y_bin= 1; y_bin <= n_bins_y;y_bin++)
+          {
+	    if(Ev_reco > bin_edge_x[x_bin-1][y_bin-1] && Ev_reco <= bin_edge_x[x_bin][y_bin-1]
+	       && y_reco > bin_edge_y[x_bin-1][y_bin-1] && y_reco <= bin_edge_y[x_bin-1][y_bin])
+	      bin_content[x_bin-1][y_bin-1]++;
+	  }
+      }
+    //}
+    }//end of loop over events
+
+  cout<<"Bin edges in x with single rectangular grid are:"<<endl;
+  cout<<endl;
+  cout<<"{";
+  for(int j=0; j<=n_bins_x; j++)
+    {
+      if(j == n_bins_x)
+        cout<<bin_edge_x[j][0];
+      else
+	cout<<bin_edge_x[j][0]<<",";
+    }
+  cout<<"};";
+  
+  cout<<endl;
+  cout<<endl;
+  
+  cout<<"Bin edges in y with single rectangular grid are:"<<endl;
+  cout<<endl;
+  
+  cout<<"{";
+  for(int k=0; k<=n_bins_y; k++)
+    { 
+      if(k == n_bins_y)
+	cout<<bin_edge_y[0][k];
+      else    
+	cout<<bin_edge_y[0][k]<<",";
+    } 
+  cout<<"};";
+  
+  cout<<endl;
+  cout<<endl;
+  
+  dev_sq_sum = 0.0;
+
+  cout<<"Bin contents with single rectangular grid are:"<<endl;
+  cout<<endl;
+
+  for(int k=n_bins_y; k>=1; k--)
+      {
+	for(int j=1; j<=n_bins_x; j++)
+	  {
+	    cout<<"    "<<bin_content[j-1][k-1];
+	    dev_sq_sum += (bin_content[j-1][k-1] - mean_bin_content) * (bin_content[j-1][k-1] - mean_bin_content);
+	  }
+	cout<<endl;
+      }
+
+  cout<<endl;
+  cout<<endl;
+  
+  cout<<"Mean bin content is "<<mean_bin_content<<endl;
+  cout<<endl;
+  cout<<"Standard deviation of bin contents with single rectangular grid is "<<sqrt(dev_sq_sum / ((n_bins_x * n_bins_y) - 1))<<endl;
+  
+  cout<<endl;
+  cout<<endl;
+
+  cout<<endl;
+  cout<<"Calculating optimal binning scheme using 4 equal-sized zones......"<<endl;
+  cout<<endl;
+  cout<<endl;
+
+  valueiter = x_values.begin() + (int)(0.5 * x_values.size());
+  x_median = (*valueiter);
+  valueiter = y_values.begin() + (int)(0.5 * y_values.size());
+  y_median = (*valueiter);
+
+  cout << "x_median = " << x_median << " ,  y_median = " <<  y_median << endl;
+  cout<<endl;
+
+  for(Long64_t i = 0; i < gstTree->GetEntries(); i++)
+    {
+      gstTree->GetEntry(i);
+
+      //if(sampleIndex == event_sample)
+      //{
+      if(Ev_reco >= x_min && Ev_reco <= x_median && y_reco >= y_min && y_reco <= y_median)
+	{
+	  zone_x_values[0].push_back(Ev_reco);
+	  zone_y_values[0].push_back(y_reco);
+	}
+      if(Ev_reco > x_median && Ev_reco <= x_max && y_reco >= y_min && y_reco <= y_median)
+	{
+	  zone_x_values[1].push_back(Ev_reco);
+	  zone_y_values[1].push_back(y_reco);
+	}
+      if(Ev_reco >= x_min && Ev_reco <= x_median && y_reco > y_median && y_reco <= y_max)
+	{
+	  zone_x_values[2].push_back(Ev_reco);
+	  zone_y_values[2].push_back(y_reco);
+	}
+      if(Ev_reco > x_median && Ev_reco <= x_max && y_reco > y_median && y_reco <= y_max)
+	{
+	  zone_x_values[3].push_back(Ev_reco);
+	  zone_y_values[3].push_back(y_reco);
+	}
+      //}
+    }//end of loop over events
+  
+  sort(zone_x_values[0].begin(), zone_x_values[0].end());
+
+  for(int y_bin=0; y_bin<n_bins_y/2; y_bin++)
+    zone_bin_edge_x[0][y_bin] = x_min; //0.0;
+
+  for(int x_edge=1; x_edge<n_bins_x/2; x_edge++)
+    {
+    valueiter = zone_x_values[0].begin() + (int)(x_edge * zone_x_values[0].size() / (n_bins_x/2));
+    for(int y_bin=0; y_bin<n_bins_y/2; y_bin++)
+      zone_bin_edge_x[x_edge][y_bin] = (*valueiter);
+    }
+
+  for(int y_bin=0; y_bin<n_bins_y/2; y_bin++)
+    zone_bin_edge_x[n_bins_x/2][y_bin] = x_median;
+
+  sort(zone_x_values[1].begin(), zone_x_values[1].end());
+
+  for(int y_bin=0; y_bin<n_bins_y/2; y_bin++)
+    zone_bin_edge_x[n_bins_x/2][y_bin] = x_median;
+
+  for(int x_edge=(n_bins_x/2)+1; x_edge<=n_bins_x; x_edge++)
+    {
+    valueiter = zone_x_values[1].begin() + (int)((x_edge-n_bins_x/2) * zone_x_values[1].size() / (n_bins_x/2));
+    for(int y_bin=0; y_bin<n_bins_y/2; y_bin++)
+      zone_bin_edge_x[x_edge][y_bin] = (*valueiter);
+    }
+
+  for(int y_bin=0; y_bin<n_bins_y/2; y_bin++)
+    zone_bin_edge_x[n_bins_x][y_bin] = x_max;
+
+  sort(zone_x_values[2].begin(), zone_x_values[2].end());
+
+  for(int y_bin=n_bins_y/2; y_bin<n_bins_y; y_bin++)
+    zone_bin_edge_x[0][y_bin] = x_min;
+
+  for(int x_edge=1; x_edge<n_bins_x/2; x_edge++)
+    {
+    valueiter = zone_x_values[2].begin() + (int)(x_edge * zone_x_values[2].size() / (n_bins_x/2));
+    for(int y_bin=n_bins_y/2; y_bin<n_bins_y; y_bin++)
+      zone_bin_edge_x[x_edge][y_bin] = (*valueiter);
+    }
+
+  for(int y_bin=n_bins_y/2; y_bin<n_bins_y; y_bin++)
+    zone_bin_edge_x[n_bins_x/2][y_bin] = x_median;
+
+  sort(zone_x_values[3].begin(), zone_x_values[3].end());
+
+  for(int y_bin=n_bins_y/2; y_bin<n_bins_y; y_bin++)
+    zone_bin_edge_x[n_bins_x/2][y_bin] = x_median;
+
+  for(int x_edge=(n_bins_x/2)+1; x_edge<=n_bins_x; x_edge++)
+    {
+    valueiter = zone_x_values[3].begin() + (int)((x_edge-n_bins_x/2) * zone_x_values[3].size() / (n_bins_x/2));
+    for(int y_bin=n_bins_y/2; y_bin<n_bins_y; y_bin++)
+      zone_bin_edge_x[x_edge][y_bin] = (*valueiter);
+    }
+
+  for(int y_bin=n_bins_y/2; y_bin<n_bins_y; y_bin++)
+    zone_bin_edge_x[n_bins_x][y_bin] = x_max;
+
+  sort(zone_y_values[0].begin(), zone_y_values[0].end());
+
+  for(int x_bin=0; x_bin<n_bins_x/2; x_bin++)
+    zone_bin_edge_y[x_bin][0] = y_min;
+
+  for(int y_edge=1; y_edge<=n_bins_y/2; y_edge++)
+    {
+    valueiter = zone_y_values[0].begin() + (int)(y_edge * zone_y_values[0].size() / (n_bins_y/2));
+    for(int x_bin=0; x_bin<n_bins_x/2; x_bin++)
+      zone_bin_edge_y[x_bin][y_edge] = (*valueiter);
+    }
+
+  for(int x_bin=0; x_bin<n_bins_x/2; x_bin++)
+    zone_bin_edge_y[x_bin][n_bins_y/2] = y_median;
+
+  sort(zone_y_values[1].begin(), zone_y_values[1].end());
+
+  for(int x_bin=n_bins_x/2; x_bin<n_bins_x; x_bin++)
+    zone_bin_edge_y[x_bin][0] = y_min;
+
+  for(int y_edge=1; y_edge<n_bins_y/2; y_edge++)
+    {
+    valueiter = zone_y_values[1].begin() + (int)(y_edge * zone_y_values[1].size() / (n_bins_y/2));
+    for(int x_bin=n_bins_x/2; x_bin<n_bins_x; x_bin++)
+      zone_bin_edge_y[x_bin][y_edge] = (*valueiter);
+    }
+
+  for(int x_bin=n_bins_x/2; x_bin<n_bins_x; x_bin++)
+    zone_bin_edge_y[x_bin][n_bins_y/2] = y_median;
+
+  sort(zone_y_values[2].begin(), zone_y_values[2].end());
+
+  for(int x_bin=0; x_bin<n_bins_x/2; x_bin++)
+    zone_bin_edge_y[x_bin][(n_bins_y/2)+1] = y_median;
+
+  for(int y_edge=(n_bins_y/2)+1; y_edge<=n_bins_y; y_edge++)
+    {
+    valueiter = zone_y_values[2].begin() + (int)((y_edge-n_bins_y/2) * zone_y_values[2].size() / (n_bins_y/2));
+    for(int x_bin=0; x_bin<n_bins_x/2; x_bin++)
+      zone_bin_edge_y[x_bin][y_edge] = (*valueiter);
+    }
+
+  for(int x_bin=0; x_bin<n_bins_x/2; x_bin++)
+    zone_bin_edge_y[x_bin][n_bins_y] = y_max;
+
+  sort(zone_y_values[3].begin(), zone_y_values[3].end());
+
+  for(int x_bin=n_bins_x/2; x_bin<n_bins_x; x_bin++)
+    zone_bin_edge_y[x_bin][n_bins_y/2] = y_median;
+
+  for(int y_edge=(n_bins_y/2)+1; y_edge<n_bins_y; y_edge++)
+    {
+    valueiter = zone_y_values[3].begin() + (int)((y_edge-n_bins_y/2) * zone_y_values[3].size() / (n_bins_y/2));
+    for(int x_bin=n_bins_x/2; x_bin<n_bins_x; x_bin++)
+      zone_bin_edge_y[x_bin][y_edge] = (*valueiter);
+    }
+
+  for(int x_bin=n_bins_x/2; x_bin<n_bins_x; x_bin++)
+    zone_bin_edge_y[x_bin][n_bins_y] = y_max;
+
+  for(Long64_t i = 0; i < gstTree->GetEntries(); i++)
+    {
+      gstTree->GetEntry(i);
+      
+      //if(sampleIndex == event_sample)
+      //{
+      for(int x_bin = 1; x_bin <= n_bins_x; x_bin++)
+	{
+	  for(int y_bin= 1; y_bin <= n_bins_y;y_bin++)
+	    {
+	      if(Ev_reco > zone_bin_edge_x[x_bin-1][y_bin-1] && Ev_reco <= zone_bin_edge_x[x_bin][y_bin-1]
+		 && y_reco > zone_bin_edge_y[x_bin-1][y_bin-1] && y_reco <= zone_bin_edge_y[x_bin-1][y_bin])
+		zone_bin_content[x_bin-1][y_bin-1]++;
+	    }
+	}
+      //}
+    }//end of loop over events
+
+  cout<<"Bin edges in x with 4 zones are:"<<endl;
+  cout<<endl;
+  for(int k=n_bins_y-1; k>=0; k--)
+    {
+      for(int j=0; j<=n_bins_x; j++)
+	{
+	  cout<<"    "<<zone_bin_edge_x[j][k];
+	}
+      cout<<endl;
+    }
+
+  cout<<endl;
+  cout<<endl;
+  
+  cout<<"Bin edges in y with 4 zones are:"<<endl;
+  cout<<endl;
+  
+  for(int k=n_bins_y; k>=0; k--)
+    {
+      for(int j=0; j<n_bins_x; j++)// -1 George
+	{
+	  cout<<"    "<<zone_bin_edge_y[j][k];
+	}
+      cout<<endl;
+    }
+  
+  cout<<endl;
+  cout<<endl;
+  
+  dev_sq_sum = 0.0;
+
+  cout<<"Bin contents with 4 zones are:"<<endl;
+  cout<<endl;
+
+  for(int k=n_bins_y; k>=1; k--)
+    {
+      for(int j=1; j<=n_bins_x; j++)
+	{
+	  cout<<"    "<<zone_bin_content[j-1][k-1];
+	  dev_sq_sum += (zone_bin_content[j-1][k-1] - mean_bin_content) * (zone_bin_content[j-1][k-1] - mean_bin_content);
+	}
+      cout<<endl;
+    }
+  
+  cout<<endl;
+  cout<<endl;
+  
+  cout<<"Mean bin content is "<<mean_bin_content<<endl;
+  cout<<endl;
+  cout<<"Standard deviation of bin contents with 4 zones is "<<sqrt(dev_sq_sum / ((n_bins_x * n_bins_y) - 1))<<endl;
+  
+  cout<<endl;
+  cout<<endl;
+  
 }
 // ----------------------------------------------------------------------------
 vector<TH1*> ReadFastMC::SelectCCnPi(int npions, int npi0){

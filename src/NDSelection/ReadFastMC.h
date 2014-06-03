@@ -51,9 +51,6 @@ class ReadFastMC
   // Get the neutrino
   int GetNeutrino() {return neutrinoPDG;};
 
-  // Get the verbosity level
-  int GetVerbose() {return verbose;};
-
   // Set the histogram binning and range
   void SetHistogramRange(int minimum, int maximum) {min = minimum; max = maximum;};
   void SetHistogramBinning(int nbins) {bin = nbins;};
@@ -74,6 +71,9 @@ class ReadFastMC
   // pdg of the neutrino you want to find the weight
   // The ratio of neutrino-antineutrino in the beam
   double FluxWeight(int neutpdg, int otherneutpdg);
+
+  // Binning optimization
+  void make_binning_scheme_2D();
   
   // Return a histogram array for CC/NC-npi selection.
   // First argument is the number of charge pions, second is the number of pi0
@@ -112,6 +112,12 @@ class ReadFastMC
   string detector;
   // Events to run
   int nevents;
+  // Detector mass
+  double detmass;
+  // Exposure in 1e20/year
+  double exposure;
+  // Years to run
+  double years;
 
   // Maximum number of pions to select in an event
   int npionnum;
