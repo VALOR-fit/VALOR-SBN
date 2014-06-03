@@ -14,7 +14,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-const int util::NumEtrueBins(NDSample_t /*sample*/, int /*zone*/)
+ int util::NumEtrueBins(NDSample_t /*sample*/, int /*zone*/)
 {
   return kNEtrueBins;
 }
@@ -24,7 +24,7 @@ const double * util::EtrueBinEdges(NDSample_t /*sample*/, int /*zone*/)
   return kEtrueBinEdges;
 }
 //________________________________________________________________________________________
-const int util::NumErecoBins(NDSample_t sample, int zone)
+ int util::NumErecoBins(NDSample_t sample, int zone)
 {
   switch(sample) 
   {
@@ -72,7 +72,7 @@ const double * util::ErecoBinEdges(NDSample_t sample, int zone)
   return 0;
 }
 //________________________________________________________________________________________
-const int util::NumYrecoBins(NDSample_t sample, int zone)
+ int util::NumYrecoBins(NDSample_t sample, int zone)
 {
   switch(sample) 
   {

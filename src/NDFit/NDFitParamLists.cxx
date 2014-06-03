@@ -14,7 +14,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-FitParamList * valor::util::NamedParameterList (string name)
+FitParamList * valor::util::NamedParameterList (string /*name*/)
 {
   FitParamList * fp = new FitParamList;
  

@@ -230,7 +230,7 @@ void ReadFastMC::ReadXMLDatacard(string datacard){
     delete xml;
     return;  
   }
-  XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+  //XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
  
   //enureconcut = util::XML2Dbl(xml,root_node,"DetConfig/ReconNeutrinoEnergyCut");
   // Release memory
@@ -311,7 +311,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,    "LeptonChargeFlip/O");
   }
 
-  const double pionmass   = 0.13957;
+  //const double pionmass   = 0.13957;
   const double pizeromass = 0.13498;
 
   // Random generator
@@ -557,7 +557,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     // True reaction modes
     int nipipm  = nipip + nipim;
-    int nipipm0 = nipip + nipim + nipi0;
+    //int nipipm0 = nipip + nipim + nipi0;
 
     if(cc){
       if(coh)

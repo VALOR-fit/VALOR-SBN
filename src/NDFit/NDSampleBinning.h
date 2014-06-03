@@ -142,11 +142,11 @@ static const double kEtrueBinEdges[kNEtrueBins+1] =
 //
 
 namespace util   {
-   const int      NumEtrueBins  (conv::NDSample_t sample, int zone);
+    int      NumEtrueBins  (conv::NDSample_t sample, int zone);
    const double * EtrueBinEdges (conv::NDSample_t sample, int zone);
-   const int      NumErecoBins  (conv::NDSample_t sample, int zone);
+    int      NumErecoBins  (conv::NDSample_t sample, int zone);
    const double * ErecoBinEdges (conv::NDSample_t sample, int zone);
-   const int      NumYrecoBins  (conv::NDSample_t sample, int zone);
+    int      NumYrecoBins  (conv::NDSample_t sample, int zone);
    const double * YrecoBinEdges (conv::NDSample_t sample, int zone);
 } // util
 

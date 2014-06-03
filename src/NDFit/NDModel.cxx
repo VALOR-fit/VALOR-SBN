@@ -119,7 +119,7 @@ cout << "READING FROM " << file << endl;
 bool NDModel::Generate(const PhysHypothesis & ph)
 {
   fPhysHypothesis.Copy(ph);
-  PhysHypothesis_t hyp = fPhysHypothesis.Hypothesis();
+  //PhysHypothesis_t hyp = fPhysHypothesis.Hypothesis();
 
   LOG("NDModel",pINFO)  
      << "Generating model predictions for the input hypothesis: " 
@@ -182,7 +182,7 @@ bool NDModel::Generate (const FitParamList & fp)
   return this->Generate(ph);
 }
 //________________________________________________________________________________________
-bool NDModel::Write(TObjArray * array, const char * tag, Option_t * /*write_opt*/)
+bool NDModel::Write(TObjArray * array, const char * /*tag*/, Option_t * /*write_opt*/)
 {
   if(!array) return false;
 

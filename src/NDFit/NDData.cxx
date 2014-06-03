@@ -50,12 +50,12 @@ bool NDData::Read(string /*file*/, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
-bool NDData::Write(TObjArray * /*array*/, const char * /*tag*/)
+bool NDData::Write(TObjArray * /*array*/, const char * /*tag*/, Option_t * /*write_opt*/)
 {
   return true;
 }
 //________________________________________________________________________________________
-bool NDData::Write(const char * /*filename*/, const char * /*tag*/, const char * /*opt_file*/)
+bool NDData::Write(const char * /*filename*/, const char * /*tag*/, const char * /*opt_file*/, Option_t * /*file_opt*/)
 {
   return true;
 }
