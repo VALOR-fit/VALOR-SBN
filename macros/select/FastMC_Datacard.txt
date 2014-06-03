@@ -4,7 +4,13 @@
 InFile /path/to/fastmc/fastmc.root
 
 # Number of events you want to run
-Events 25000
+Events 10000
+
+# Years to run
+Years 5
+
+# POT/year - normalized to 1.0e20
+Exposure 6
 
 # Neutrino for the event selection. the other neutrino species will
 # immediately be considered as background
@@ -13,6 +19,9 @@ NeutrinoPDG 14
 # Detector to do the analysis - near or far
 # You have to change the cuts below
 Detector near
+
+# Detector mass in kT
+DetectorMass 5
 
 # Reconstructed neutrino energy cut - in Gev
 ReconNeutrinoEnergyCut 0.1
