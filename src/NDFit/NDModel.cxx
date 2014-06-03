@@ -78,28 +78,28 @@ cout << "READING FROM " << file << endl;
 
   // Get assumed exposure for each beam configuration
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t bc = kNDBeamConf[ibeam];
-    if(bc == kbUndefined) continue;
-    string node_name = "data/exposure/" + util::AsString(bc, "lowercase");
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    string node_name = "data/exposure/" + util::AsString(b, "lowercase");
     fPOT[ibeam] = util::XML2Dbl(xml,root_node,node_name);
   }//ibeam
 
   //
-  // Using input in VALOR DST format
+  // Using input in VALOR DST format?
   // If true, read the ROOT files and fill-in the MC templates.
-  // If false, just read in the MC templates. 
+  // If false, just read in the MC templates directly. 
   // In the later case, the templates are pre-binned so the binning
-  // can not change. Make sure the templates hav ethe expected binning
+  // can not change. Make sure the templates have the expected binning.
   //
   fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format");
   if(fUseMCDST) {
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-       BeamConf_t bc = kNDBeamConf[ibeam];
-       if(bc == kbUndefined) continue;
-       string node_name = "mc/dst/" + util::AsString(bc, "lowercase");
+       BeamConf_t b = kNDBeamConf[ibeam];
+       if(b == kbUndefined) continue;
+       string node_name = "mc/dst/" + util::AsString(b, "lowercase");
        fMCDST[ibeam] = util::XML2TTree (xml,root_node,node_name);
        assert(fMCDST[ibeam]);
-       this->FillTemplates(fMCDST[ibeam]);
+       this->FillTemplates(fMCDST[ibeam], ibeam);
     }//ibeam
   } 
   else {
@@ -247,56 +247,65 @@ void NDModel::Init(void)
 void NDModel::Book(void)
 {
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-   for(int isample = 0; isample < kNNDSamples; isample++) {
-    NDSample_t s = kNDSample[isample];
-    if(s == ksNDUndefined) continue;
-    for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kNDReactionModes[isample][imode];
-      if(m == kmUndefined) continue;
-      for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         const int n_etrue_bins = util::NumEtrueBins(s,izone);
-         const int n_ereco_bins = util::NumErecoBins(s,izone);
-         const int n_yreco_bins = util::NumYrecoBins(s,izone);
-         if(n_ereco_bins <= 0 || n_yreco_bins <= 0) continue;
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+      for(int imode = 0; imode < kNReacModes; imode++) {
+        ReacMode_t m = kNDReactionModes[isample][imode];
+        if(m == kmUndefined) continue;
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+           const int n_etrue_bins = util::NumEtrueBins(s,izone);
+           const int n_ereco_bins = util::NumErecoBins(s,izone);
+           const int n_yreco_bins = util::NumYrecoBins(s,izone);
+           if(n_ereco_bins <= 0 || n_yreco_bins <= 0) continue;
 
-         fNullMCTempl[ibeam][isample][imode][izone] = false;
+           fNullMCTempl[ibeam][isample][imode][izone] = false;
 
-         fMCTemplNom [ibeam][isample][imode][izone] = 
-            new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-         fMCTemplTun [ibeam][isample][imode][izone] = 
-            new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-         fMCTemplSys [ibeam][isample][imode][izone] = 
-            new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-         fMCTemplFin [ibeam][isample][imode][izone] = 
-            new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+           fMCTemplNom [ibeam][isample][imode][izone] = 
+             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+           fMCTemplTun [ibeam][isample][imode][izone] = 
+             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+           fMCTemplSys [ibeam][isample][imode][izone] = 
+             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+           fMCTemplFin [ibeam][isample][imode][izone] = 
+             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
 
-      }//izone
-    }//imode
-   }//isample
+        }//izone
+      }//imode
+    }//isample
   }//ibeam
 }
 //________________________________________________________________________________________
 void NDModel::Clean(void)
 {
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-   for(int isample = 0; isample < kNNDSamples; isample++) {
-     for(int imode = 0; imode < kNReacModes; imode++) {
-       for(int izone = 0; izone < kNMaxBinZones; izone++) {
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      for(int imode = 0; imode < kNReacModes; imode++) {
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
 
-         fNullMCTempl[ibeam][isample][imode][izone] = true;
+          fNullMCTempl[ibeam][isample][imode][izone] = true;
 
-         if(fMCTemplNom[ibeam][isample][imode][izone]) delete fMCTemplNom[ibeam][isample][imode][izone];
-         fMCTemplNom[ibeam][isample][imode][izone] = 0;
-         if(fMCTemplTun[ibeam][isample][imode][izone]) delete fMCTemplTun[ibeam][isample][imode][izone];
-         fMCTemplTun[ibeam][isample][imode][izone] = 0;
-         if(fMCTemplSys[ibeam][isample][imode][izone]) delete fMCTemplSys[ibeam][isample][imode][izone];
-         fMCTemplSys[ibeam][isample][imode][izone] = 0;
-         if(fMCTemplFin[ibeam][isample][imode][izone]) delete fMCTemplFin[ibeam][isample][imode][izone];
-         fMCTemplFin[ibeam][isample][imode][izone] = 0;
-
-       }//izone
-     }//imode
-   }//isample
+          if(fMCTemplNom[ibeam][isample][imode][izone]) {
+             delete fMCTemplNom[ibeam][isample][imode][izone];
+             fMCTemplNom[ibeam][isample][imode][izone] = 0;
+          }
+          if(fMCTemplTun[ibeam][isample][imode][izone]) {
+             delete fMCTemplTun[ibeam][isample][imode][izone];
+             fMCTemplTun[ibeam][isample][imode][izone] = 0;
+          }
+          if(fMCTemplSys[ibeam][isample][imode][izone]) { 
+             delete fMCTemplSys[ibeam][isample][imode][izone];
+             fMCTemplSys[ibeam][isample][imode][izone] = 0;
+          }
+          if(fMCTemplFin[ibeam][isample][imode][izone]) {
+             delete fMCTemplFin[ibeam][isample][imode][izone];
+             fMCTemplFin[ibeam][isample][imode][izone] = 0;
+          }
+        }//izone
+      }//imode
+    }//isample
   }//ibeam
 
   //if (fMCDST) delete fMCDST;
@@ -321,7 +330,7 @@ void NDModel::ZeroTemplates(void)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDModel::FillTemplates(TTree * t)
+void NDModel::FillTemplates(TTree * t, int ibeam)
 {
   if(!t) return;
 
@@ -371,7 +380,6 @@ void NDModel::FillTemplates(TTree * t)
      int ienu_reco = 4;
      int iy_reco   = 5;
 
-     int    ibeam    = 0;
      double data_pot = fPOT[ibeam];
      double mc_pot   = wght_pot * 1E+20;
 
@@ -420,33 +428,40 @@ void NDModel::ApplyPhysics(void)
 // Applying correlated flux and cross-section systematics
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-   for(int isample = 0; isample < kNNDSamples; isample++) {
-    for(int imode = 0; imode < kNReacModes; imode++) {
-      for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
-         if(!is_null) {
-           for(int isyst = 0; isyst < kNumOfSystematics; isyst++) {
-             bool apply = kApplySystToTemplate[imode][isyst];
-             if(!apply) continue;
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+      for(int imode = 0; imode < kNReacModes; imode++) {
+        ReacMode_t m = kNDReactionModes[isample][imode];
+        if(m == kmUndefined) continue;
+
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
+          if(!is_null) {
+            for(int isyst = 0; isyst < kNumOfSystematics; isyst++) {
+               bool apply = kApplySystToTemplate[imode][isyst];
+               if(!apply) continue;
 /*
-             const double Etrue_min = kSystEtrueRange[isyst][0];
-             const double Etrue_max = kSystEtrueRange[isyst][1];
+               const double Etrue_min = kSystEtrueRange[isyst][0];
+               const double Etrue_max = kSystEtrueRange[isyst][1];
 
-             for(int it; it < ; it++) {
-               double Etrue = ;
-               if(Etrue < Etrue_min || Etrue > Etrue_max) continue;
-               for(int ir; ir < ; ir++) {
-                 for(int iy; iy < ; iy++) {
+               for(int it; it < ; it++) {
+                 double Etrue = ;
+                 if(Etrue < Etrue_min || Etrue > Etrue_max) continue;
+                 for(int ir; ir < ; ir++) {
+                   for(int iy; iy < ; iy++) {
 
-                 }//iy: yreco bins
-               }//ir: Ereco bins
-             }//it: Etrue bins
+                   }//iy: yreco bins
+                 }//ir: Ereco bins
+               }//it: Etrue bins
 */
-           }//isyst
-         }//!null
-      }//izone
-    }//imode
-   }//isample
+            }//isyst
+          }//!null
+        }//izone
+      }//imode
+    }//isample
   }//ibeam
 }
 //________________________________________________________________________________________

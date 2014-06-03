@@ -73,7 +73,7 @@ private:
   void Clean (void);
 
   void ZeroTemplates    (void);
-  void FillTemplates    (TTree * t);
+  void FillTemplates    (TTree * t, int ibeam);
   void ApplyTuning      (void);
   void ApplySystematics (void);
   void ApplyPhysics     (void);

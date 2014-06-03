@@ -38,6 +38,10 @@ valor::util::NDArrIdx * valor::util::NDArrIdx::Instance()
 void valor::util::NDArrIdx::Init(void)
 {
   // init to -1
+
+  for(int i = 0; i < 2*kNBeamConf; i++) {
+     fNDBeamConfIdx [i] = -1;
+  }
   for(int i = 0; i < 2*kNNDSamples; i++) {
      fNDSampleIdx [i] = -1;
      for(int j = 0; j < 2*kNReacModes; j++) {
@@ -46,20 +50,26 @@ void valor::util::NDArrIdx::Init(void)
   }//j
 
   // fill-in
+  for(int ib = 0; ib < kNBeamConf; ib++) {
+    BeamConf_t b = kNDBeamConf[ib];
+    if(b == kbUndefined) continue;
+    fNDBeamConfIdx[b] = ib;
+    LOG("NDArrIdx",pNOTICE)
+       << "Beam config: " << util::AsString(b) << " is at slot: " << fNDBeamConfIdx[b];
+  }//ib
   for(int is = 0; is < kNNDSamples; is++) {
      NDSample_t s = kNDSample[is];
      if(s == ksNDUndefined) continue;
      fNDSampleIdx [s] = is;
 
-     LOG("NDArrIdx",pINFO) 
+     LOG("NDArrIdx",pNOTICE) 
         << "Sample: " << util::AsString(s) << " is at slot: " << fNDSampleIdx[s];
 
      for(int im = 0; im < kNReacModes; im++) {
          ReacMode_t m = kNDReactionModes[is][im];
          if(m == kmUndefined) continue;
          fNDReacModeIdx [s][m] = im;
-
-         LOG("NDArrIdx",pINFO)
+         LOG("NDArrIdx",pNOTICE)
             << "Mode: " << util::AsString(s) << "/" << util::AsString(m)
             << " is at slot: " << fNDReacModeIdx [s][m];
      }//im

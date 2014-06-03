@@ -26,7 +26,9 @@
 #ifndef _valor_lbnx_nd_array_index_h_
 #define _valor_lbnx_nd_array_index_h_
 
+#include "Conventions/BeamConf.h"
 #include "Conventions/ReacMode.h"
+#include "NDFit/NDBeamConf.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDSampleModes.h"
 
@@ -38,6 +40,7 @@ namespace util {
 class NDArrIdx {
 public:
     static NDArrIdx * Instance();
+    int NDBeamConfIdx (conv::BeamConf_t b)                     { return fNDBeamConfIdx[b];    }
     int NDSampleIdx   (conv::NDSample_t s)                     { return fNDSampleIdx[s];      }
     int NDReacModeIdx (conv::NDSample_t s, conv::ReacMode_t m) { return fNDReacModeIdx[s][m]; }
 private:
@@ -45,6 +48,7 @@ private:
     NDArrIdx(const NDArrIdx &) {}
    ~NDArrIdx() {}
     void Init();
+    int fNDBeamConfIdx [2*conv::kNBeamConf];                        ///< maps each beam configuration to a kNDBeamConf array index
     int fNDSampleIdx   [2*conv::kNNDSamples];                       ///< maps each sample to a kNDSample array index
     int fNDReacModeIdx [2*conv::kNNDSamples][2*conv::kNReacModes];  ///< maps each mode of each sample to a kNDReactionModes array index
     static NDArrIdx * fInstance;
