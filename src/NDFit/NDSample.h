@@ -70,7 +70,8 @@ static const NDSample_t kNDSample[kNNDSamples] =
 
 namespace util {
 
-  string AsString(conv::NDSample_t s);
+  string           AsString (conv::NDSample_t s);
+  conv::NDSample_t FromInt  (int s);
 
 } // util
 } // valor

@@ -8,6 +8,7 @@ ChangeLog:
 */
 //________________________________________________________________________________________
 
+#include <cassert>
 #include <ostream>
 
 #include <TXMLEngine.h>
@@ -477,10 +478,23 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
        LOG("NDModel",pDEBUG) << " - wght_pot  = " << wght_pot;
      }
 
-     // Get sample and mode indices
-     NDSample_t s = (NDSample_t) sample;
+     // Get sample index
+     NDSample_t s = util::FromInt(sample);
+     if(s == ksNDUndefined) {
+       LOG("NDModel",pFATAL) 
+          << " ** Undefined sample ID used in MC event: " << iev
+          << " (value stored in DST: " << sample << ")";
+       exit(1);
+     }
      int isample = fArrIdx->NDSampleIdx(s);
+     if(isample < 0) {
+       LOG("NDModel",pDEBUG) 
+         << "Current MC event (" << iev << ") is in a sample not considered "
+         << "by the present fit (" << util::AsString(s) << ")";
+       continue;
+     }
 
+     // Get mode index
      //----------------------------------------------
      //NOTE: reac_mode should be correct in the DST without further manipulation
      //NOTE: what happens for nue and nuebar?
