@@ -41,7 +41,7 @@ Input MC templates
 
   <dst> 
     <fhc>
-       <filename> lbne/ndfit/2014a/STT/fhc_fastmc.root </filename> 
+       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree.root </filename> 
        <objname>  FastMCTree  </objname> 
        <objtype>  TTree       </objtype> 
     </fhc>

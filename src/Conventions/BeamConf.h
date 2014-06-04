@@ -44,7 +44,10 @@ BeamConf_t;
 // Associated utilities
 //
 namespace util {
-  string AsString(conv::BeamConf_t c, Option_t * opt=0);
+
+  string           AsString        (conv::BeamConf_t b, Option_t * opt=0);
+  conv::BeamConf_t BeamConfFromInt (int b);
+
 } // util
 
 } // valor

@@ -115,6 +115,11 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
     LOG("NDModel",pFATAL) << "Option note supported yet";
     exit(1);
   }
+  
+  // At the point the nominal MC templates are filled-in.
+  // Apply any fixed tuning here, not on an event by event basis.
+  // It is the tuned templates that be the starting point in the Generate() method.
+  this->ApplyTuning();
 
   // Release memory
   xml->FreeDoc(xmldoc);
@@ -134,16 +139,11 @@ bool NDModel::Generate(const PhysHypothesis & ph)
      << "Generating model predictions for the input hypothesis: " 
      << fPhysHypothesis;
 
+  this->ApplySystematics();  // `tun' MC templates --> `sys' MC templates
+  this->ApplyPhysics();      // `sys' MC templates --> `fin' MC templates
+  this->CalcPDFs();          // `fin' MC templates --> p.d.f
 
-
-  //
-  //
-  // ...
-  //
-  //
-
-
-//  LOG("NDModel",pDEBUG) << "Done generating predictions";
+  LOG("NDModel",pINFO) << "Done generating predictions";
 
   return true;
 }
@@ -264,7 +264,7 @@ void NDModel::Init(void)
 //________________________________________________________________________________________
 void NDModel::Book(void)
 {
-  LOG("NDModel",pDEBUG) << "Booking MC templates...";
+  LOG("NDModel",pDEBUG) << "Booking...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
@@ -284,6 +284,13 @@ void NDModel::Book(void)
            const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
            const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
 
+           LOG("NDModel",pDEBUG) 
+              << "Booking MC template for " 
+              << "beam: "     << util::AsString(b) 
+              << ", sample: " << util::AsString(s)
+              << ", mode: "   << util::AsString(m) 
+              << ", zone: "   << izone;
+ 
            fNullMC[ibeam][isample][imode][izone] = false;
 
            // MC templates (Note order of variables: reco first, true later)
@@ -297,6 +304,14 @@ void NDModel::Book(void)
              new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
 
            // PDF
+
+           LOG("NDModel",pDEBUG) 
+              << "Booking PDF component for " 
+              << "beam: "     << util::AsString(b) 
+              << ", sample: " << util::AsString(s)
+              << ", mode: "   << util::AsString(m) 
+              << ", zone: "   << izone;
+ 
            const char * name = Form("valor_pdf_component_%s_%s_%s_z%d",
                 util::AsString(b).c_str(),util::AsString(s).c_str(),
                 util::AsString(m).c_str(),izone);
@@ -305,7 +320,15 @@ void NDModel::Book(void)
            fMCPDFH2[ibeam][isample][imode][izone] = 
              new TH2D(name,"VALOR/LBNx ND PDF",
                       n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
+
            if(imode == 0) {
+
+              LOG("NDModel",pDEBUG) 
+                 << "Booking PDF (total) for " 
+                 << "beam: "     << util::AsString(b) 
+                 << ", sample: " << util::AsString(s)
+                 << ", zone: "   << izone;
+
               const char * name2 = Form("valor_pdf_%s_%s_z%d",
                    util::AsString(b).c_str(),util::AsString(s).c_str(), izone);
               fMCPDFTot  [ibeam][isample][izone] = 
@@ -520,14 +543,21 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      // Get bin zone index
      int izone = util::BinZone(s, enu_reco, y_reco);
      if(izone < 0) {
-       LOG("NDModel",pFATAL) 
+//     LOG("NDModel",pFATAL) - turn that to fatal after binning optimization is done
+       LOG("NDModel",pWARN) 
          << "Current MC event (" << iev << ") has enu_reco = " << enu_reco << " GeV, "
          << " y_reco = " << y_reco << " which doesn't fit in any bin zone!";
-       exit(1);
+//     exit(1);
+       continue;
      }
 
-     bool is_null = fNullMC[isample][imode][izone];
-     if(is_null) continue;
+     bool is_null = fNullMC[ibeam][isample][imode][izone];
+     if(is_null) {
+       LOG("NDModel",pFATAL) 
+         << "Null MC template for sample: " << util::AsString(s) 
+         << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
+       exit(1);
+     }
 
      // Get enu_true, enu_reco, y_reco array indices
      const int n_enu_true_bins = util::NumEtrueBins(s,izone);
@@ -551,6 +581,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      // This is: 5 years of running * 6e20 POT/year * 5kt near detector mass
      // The factor of 2 is coming since nu and anti-nu are saved in the same file 
      double mc_pot = wght_pot;
+     assert(wght_pot>0.);
 
      // Calculate POT weight (assumed data exposure) / (generated MC exposure)
      double wght = data_pot/mc_pot;

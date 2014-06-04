@@ -17,11 +17,11 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-string util::AsString(BeamConf_t c, Option_t * opt)
+string util::AsString(BeamConf_t b, Option_t * opt)
 {
   string name = "";
 
-  switch(c) {
+  switch(b) {
     case (kbFHC) : name = "FHC"; break;
     case (kbRHC) : name = "RHC"; break;        
     default      : name = "--";  
@@ -39,5 +39,16 @@ string util::AsString(BeamConf_t c, Option_t * opt)
   return name;
 }
 //________________________________________________________________________________________
+BeamConf_t util::BeamConfFromInt(int b)
+{
+// Cast an integer to BeamConf_t, but with boundary check
+//            [first]              [last]
+  if(b >= (int)kbFHC && b <= (int) kbFHC) return (BeamConf_t)b;
+  return kbUndefined;
+}
+//________________________________________________________________________________________
+
+
+
 
 	
