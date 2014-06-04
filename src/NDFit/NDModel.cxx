@@ -428,7 +428,6 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   TBranch * bWghtPOT  = t->GetBranch("POTWeight");      // weight for 1E+20 POT exposure
 
   int    sample        = 0;
-  int    neu           = 0;
   int    reac_mode     = 0;
   double enu_true      = 0;
   double enu_reco      = 0;
@@ -436,7 +435,6 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   double wght_pot      = 0;
 
   t->SetBranchAddress("sample",       &sample);
-  t->SetBranchAddress("neu",          &neu);
   t->SetBranchAddress("reactionmode", &reac_mode);
   t->SetBranchAddress("Ev",           &enu_true);
   t->SetBranchAddress("Ev_reco",      &enu_reco);
@@ -501,13 +499,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
 
      // Get mode index
      //----------------------------------------------
-     //NOTE: reac_mode should be correct in the DST without further manipulation
-     //NOTE: what happens for nue and nuebar?
-     ReacMode_t m = kmUndefined; 
-     if(neu == 14)
-       m = (ReacMode_t)reac_mode;
-     else if(neu == -14)
-       m = (ReacMode_t)(reac_mode + kNReacModes/4);
+     ReacMode_t m = (ReacMode_t)reac_mode; 
      //----------------------------------------------
      int imode = fArrIdx->NDReacModeIdx(s, m);
      
@@ -537,8 +529,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      //
      // The POT weight is given in 5*6e20*5
      // This is: 5 years of running * 6e20 POT/year * 5kt near detector mass
-     // The factor of 2 is coming since nu and anti-nu are saved in the same file 
-     double mc_pot = wght_pot*2;
+     double mc_pot = wght_pot;
 
      // Calculate POT weight (assumed data exposure) / (generated MC exposure)
      double wght = data_pot/mc_pot;
