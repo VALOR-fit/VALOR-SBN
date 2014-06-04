@@ -482,7 +482,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
 */
 
      // Get sample index
-     NDSample_t s = util::FromInt(sample);
+     NDSample_t s = util::NDSampleFromInt(sample);
      if(s == ksNDUndefined) {
        LOG("NDModel",pWARN) 
           << " ** Undefined sample ID used in MC event: " << iev
@@ -491,20 +491,40 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      }
      int isample = fArrIdx->NDSampleIdx(s);
      if(isample < 0) {
+       // fine, we do not indlude all samples in the fit
        LOG("NDModel",pDEBUG) 
          << "Current MC event (" << iev << ") is in a sample not considered "
          << "by the present fit (" << util::AsString(s) << ")";
        continue;
      }
 
-     // Get mode index
-     //----------------------------------------------
-     ReacMode_t m = (ReacMode_t)reac_mode; 
-     //----------------------------------------------
+     // Get reaction mode index
+     ReacMode_t m = util::ReacModeFromInt(reac_mode); 
+     if(m == kmUndefined) {
+       LOG("NDModel",pFATAL) 
+          << " ** Undefined reaction mode ID used in MC event: " << iev
+          << " (value stored in DST: " << reac_mode << ")";
+       exit(1);
+     }
      int imode = fArrIdx->NDReacModeIdx(s, m);
+     if(imode < 0) {
+       // For a given sample we should consider a complete list of
+       // true reaction modes (otherwise there are true contributions to the
+       // event sample which are not taken into account).
+       LOG("NDModel",pFATAL) 
+         << "Current MC event (" << iev << ") is in a mode not considered "
+         << "by the present fit (" << util::AsString(s) << ")";
+       exit(1);
+     }
      
      // Get bin zone index
      int izone = util::BinZone(s, enu_reco, y_reco);
+     if(izone < 0) {
+       LOG("NDModel",pFATAL) 
+         << "Current MC event (" << iev << ") has enu_reco = " << enu_reco << " GeV, "
+         << " y_reco = " << y_reco << " which doesn't fit in any bin zone!";
+       exit(1);
+     }
 
      bool is_null = fNullMC[isample][imode][izone];
      if(is_null) continue;
@@ -529,6 +549,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      //
      // The POT weight is given in 5*6e20*5
      // This is: 5 years of running * 6e20 POT/year * 5kt near detector mass
+     // The factor of 2 is coming since nu and anti-nu are saved in the same file 
      double mc_pot = wght_pot;
 
      // Calculate POT weight (assumed data exposure) / (generated MC exposure)

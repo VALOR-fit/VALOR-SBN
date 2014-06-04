@@ -113,7 +113,10 @@ ReacMode_t;
 // Associated utilities
 //
 namespace util {
-  string AsString(conv::ReacMode_t m);
+
+  string           AsString        (conv::ReacMode_t m);
+  conv::ReacMode_t ReacModeFromInt (int m);
+
 } // util
 
 } // valor

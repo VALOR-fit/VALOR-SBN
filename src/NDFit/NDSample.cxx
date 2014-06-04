@@ -35,13 +35,11 @@ string util::AsString(NDSample_t s)
   return "";
 }
 //________________________________________________________________________________________
-NDSample_t util::FromInt(int s)
+NDSample_t util::NDSampleFromInt(int s)
 {
 // Cast an integer to NDSample_t, but with boundary check
-
 //             [first]                  [last]
   if(s >= (int)ksNDNuMuCC && s <= (int) ksNDNCoth) return (NDSample_t)s;
-
   return ksNDUndefined;
 }
 //________________________________________________________________________________________

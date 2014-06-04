@@ -102,5 +102,14 @@ string util::AsString(ReacMode_t m)
   return "";
 }
 //________________________________________________________________________________________
+ReacMode_t util::ReacModeFromInt(int m)
+{
+// Cast an integer to ReacMode_t, but with boundary check
+//             [first]                  [last]
+  if(m >= (int)kmNuMuCCQE && m <= (int) kmNuEBarNCoth) return (ReacMode_t)m;
+  return kmUndefined;
+}
+//________________________________________________________________________________________
+
 
 	
