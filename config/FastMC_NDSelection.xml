@@ -5,7 +5,13 @@
   <InFile>                   /path/to/fastmc/fastmc.root    </inFile>
   <Events>                   25000                          </Events>
   <NeutrinoPDG>              14                             </NeutrinoPDG>
-  
+
+  <Years>                    5                              </Years>
+  <!-- Exposure is in units of 1e20 -->
+  <Exposure>                 6                              </Exposure>
+  <DetectorMass>             5                              </DetectorMass>
+
+  <!-- Kinematics parameters and thresholds -->
   <ReconNeutrinoEnergyCut>   0.1                            </ReconNeutrinoEnergyCut>
 
   <ReconPiPMEnergyCut>       0.05                           </ReconPiPMEnergyCut>
@@ -16,21 +22,25 @@
   <Pi0InvariantMassCut>      0.4                            </Pi0InvariantMassCut>
   <MaxMomentumPID>           0.8                            </MaxMomentumPID>
   <TrackLengthCut>           0.05                           </TrackLengthCut> 
-  
+
+  <!-- PID parameters -->
   <PionMisIDAsProton>        0.002                          </PionMisIDAsProton>
   <PionMisIDAsKaon>          0.029                          </PionMisIDAsKaon>
   <KaonMisIDAsPion>          0.016                          </KaonMisIDAsPion>
   <KaonMisIDAsProton>        0.030                          </KaonMisIDAsProton>
   <ProtonMisIDAsPion>        0.001                          </ProtonMisIDAsPion>
   <ProtonMisIDAsKaon>        0.010                          </ProtonMisIDAsKaon>
-  
+
+  <!-- Charge confusion parameters -->
   <ChargeConfMomSlope>       0.0004                         </ChargeConfMomSlope>
   <ChargeConfMomConst>      -5.31738                        </ChargeConfMomConst>
   <ChargeConfTrLSlope>      -0.0353907                      </ChargeConfTrLSlope>
   <ChargeConfTrLConst>      -1.91409                        </ChargeConfTrLConst>
   
+  <!-- Apply reweghting -->
   <Reweight>                 0                              </Reweight>
-  
+
+  <!-- Verbosity level -->
   <Verbose>                  0                              </Verbose>
   
 </DetConfig>
