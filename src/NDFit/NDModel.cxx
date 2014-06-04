@@ -467,7 +467,11 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   {
      t->GetEntry(iev);
 
-   //if(iev%100000==0) {
+     if(iev%(nev/20)==0) {
+       double pct = 100 * (double)iev+1 / (double)nev;
+       LOG("NDModel",pDEBUG) << "Reading MC DST: " << pct << "% done";
+     }
+/*
      if(1) {
        LOG("NDModel",pDEBUG) << "Got MC event: " << iev;
        LOG("NDModel",pDEBUG) << " - sample    = " << sample;
@@ -477,14 +481,15 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
        LOG("NDModel",pDEBUG) << " - y_reco    = " << y_reco;
        LOG("NDModel",pDEBUG) << " - wght_pot  = " << wght_pot;
      }
+*/
 
      // Get sample index
      NDSample_t s = util::FromInt(sample);
      if(s == ksNDUndefined) {
-       LOG("NDModel",pFATAL) 
+       LOG("NDModel",pWARN) 
           << " ** Undefined sample ID used in MC event: " << iev
           << " (value stored in DST: " << sample << ")";
-       exit(1);
+       //exit(1);
      }
      int isample = fArrIdx->NDSampleIdx(s);
      if(isample < 0) {

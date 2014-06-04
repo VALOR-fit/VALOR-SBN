@@ -10,8 +10,8 @@
 
   <priority msgstream="Messenger">    NOTICE   </priority>
   <priority msgstream="XML">          NOTICE   </priority>
-  <priority msgstream="NDModel">      DEBUG    </priority>
+  <priority msgstream="NDModel">      INFO     </priority>
   <priority msgstream="NDArrIdx">     NOTICE   </priority>
-  <priority msgstream="NDBinning">    DEBUG    </priority>
+  <priority msgstream="NDBinning">    NOTICE   </priority>
 
 </messenger_config>
