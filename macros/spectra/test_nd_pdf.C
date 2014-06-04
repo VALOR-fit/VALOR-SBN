@@ -9,9 +9,8 @@
 void test_nd_pdf
 (
   const char * config_file = "lbne_ndfit-2014a-STT_baseline.xml",    /* analysis configuration file */
-  const char * tag         = "ND_STT_baseline",                      /* tag for output file */
+  const char * tag         = "ND_STT_baseline"                       /* tag for output file */
 )
-
 {
   using namespace std;
   using namespace valor;
@@ -22,7 +21,7 @@ void test_nd_pdf
 
   // Print settings
   cout << "\n[Job inputs]" << endl;
-  cout << "- Tag: " << tag << "/" << run << endl;
+  cout << "- Tag: " << tag << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
 
   // Get ND model & configure
