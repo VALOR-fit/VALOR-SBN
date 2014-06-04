@@ -13,7 +13,7 @@ ChangeLog:
 #include <TXMLEngine.h>
 #include <TFile.h>
 #include <TObjArray.h>
-#include <TH1D.h>
+#include <TMath.h>
 
 //fmwk
 #include "Conventions/PhysHypothesisId.h"
@@ -43,6 +43,9 @@ FitModelABC()
 {
   this->Init();
   this->Book();
+
+//why is this causing a crash??
+//this->Zero();
 }
 //________________________________________________________________________________________
 NDModel::~NDModel() 
@@ -268,35 +271,35 @@ void NDModel::Book(void)
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-           const int n_etrue_bins = util::NumEtrueBins(s,izone);
-           const int n_ereco_bins = util::NumErecoBins(s,izone);
-           const int n_yreco_bins = util::NumYrecoBins(s,izone);
-           if(n_ereco_bins <= 0 || n_yreco_bins <= 0) continue;
+           const int n_enu_true_bins = util::NumEtrueBins(s,izone);
+           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+           const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+           if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
 
-           const double * ereco_bins = util::ErecoBinEdges(s,izone);
-           const double * yreco_bins = util::YrecoBinEdges(s,izone);
+           const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
+           const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
 
            fNullMC[ibeam][isample][imode][izone] = false;
 
            // MC templates
            fMCTNom [ibeam][isample][imode][izone] = 
-             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+             new VALORArray(n_enu_true_bins, n_enu_reco_bins, n_y_reco_bins);
            fMCTTun [ibeam][isample][imode][izone] = 
-             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+             new VALORArray(n_enu_true_bins, n_enu_reco_bins, n_y_reco_bins);
            fMCTSys [ibeam][isample][imode][izone] = 
-             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+             new VALORArray(n_enu_true_bins, n_enu_reco_bins, n_y_reco_bins);
            fMCTFin [ibeam][isample][imode][izone] = 
-             new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
+             new VALORArray(n_enu_true_bins, n_enu_reco_bins, n_y_reco_bins);
 
            // PDF
            const char * name = Form("%s_%s_%s_z%d",
                 util::AsString(b).c_str(),util::AsString(s).c_str(),
                 util::AsString(m).c_str(),izone);
            fMCPDF  [ibeam][isample][imode][izone] = 
-             new VALORArray(n_ereco_bins,n_yreco_bins);           
+             new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
            fMCPDFh2[ibeam][isample][imode][izone] = 
              new TH2D(name,"VALOR/LBNx ND PDF",
-                      n_ereco_bins,ereco_bins,n_yreco_bins,yreco_bins);
+                      n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
         }//izone
       }//imode
     }//isample
@@ -384,9 +387,6 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
 
   if(!t) return;
 
-//  why is this causing a crash??
-//  this->ZeroTemplates();
-
 /*
   TBranch * bSample   = t->GetBranch("sample");         // selected ND sample
   TBranch * bReacMode = t->GetBranch("reac_mode");      // reaction mode
@@ -406,7 +406,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   int    sample        = 0;
   int    neu           = 0;
   int    reac_mode     = 0;
-  double enu           = 0;
+  double enu_true      = 0;
   double enu_reco      = 0;
   double y_reco        = 0;
   double wght_pot      = 0;
@@ -414,7 +414,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   t->SetBranchAddress("sample",       &sample);
   t->SetBranchAddress("neu",          &neu);
   t->SetBranchAddress("reactionmode", &reac_mode);
-  t->SetBranchAddress("Ev",           &enu);
+  t->SetBranchAddress("Ev",           &enu_true);
   t->SetBranchAddress("Ev_reco",      &enu_reco);
   t->SetBranchAddress("y_reco",       &y_reco);
   t->SetBranchAddress("POTWeight",    &wght_pot);
@@ -422,7 +422,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   /*
   bSample   -> SetAddress(&sample    );
   bReacMode -> SetAddress(&reac_mode );
-  bEnuTrue  -> SetAddress(&enu       );
+  bEnuTrue  -> SetAddress(&enu_true  );
   bEnuReco  -> SetAddress(&enu_reco  );
   byReco    -> SetAddress(&y_reco    );
   bWghtPOT  -> SetAddress(&wgt_pot   );
@@ -430,7 +430,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   t->SetBranchStatus("*",             0);
   t->SetBranchStatus("sample",        1); 
   t->SetBranchStatus("reac_mode",     1);    
-  t->SetBranchStatus("enu",           1);  
+  t->SetBranchStatus("enu_true",      1);  
   t->SetBranchStatus("enu_reco",      1);  
   t->SetBranchStatus("y_reco",        1);    
   t->SetBranchStatus("wght_pot",      1);
@@ -446,21 +446,39 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      }
      t->GetEntry(iev);
 
-     int isample   = fArrIdx->NDSampleIdx  ((NDSample_t)sample);
-     int imode     = -1;
+     // Get sample and mode indices
+     NDSample_t s = (NDSample_t) sample;
+     int isample = fArrIdx->NDSampleIdx(s);
+
+     //----------------------------------------------
+     //NOTE: reac_mode should be correct in the DST without further manipulation
+     //NOTE: what happens for nue and nuebar?
+     ReacMode_t m = kmUndefined; 
      if(neu == 14)
-       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)reac_mode);
+       m = (ReacMode_t)reac_mode;
      else if(neu == -14)
-       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)(reac_mode + kNReacModes/4));
+       m = (ReacMode_t)(reac_mode + kNReacModes/4);
+     //----------------------------------------------
+     int imode = fArrIdx->NDReacModeIdx(s, m);
      
-     int izone     = 2;
+     // Get bin zone index
+     int izone = util::BinZone(s, enu_reco, y_reco);
 
      bool is_null = fNullMC[isample][imode][izone];
      if(is_null) continue;
 
-     int ienu_true = 3;
-     int ienu_reco = 4;
-     int iy_reco   = 5;
+     // Get enu_true, enu_reco, y_reco array indices
+     const int n_enu_true_bins = util::NumEtrueBins(s,izone);
+     const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+     const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+
+     const double * enu_true_bin_edges = util::EtrueBinEdges(s,izone);
+     const double * enu_reco_bin_edges = util::ErecoBinEdges(s,izone);
+     const double * y_reco_bin_edges   = util::YrecoBinEdges(s,izone);
+
+     int ienu_true = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true);
+     int ienu_reco = TMath::BinarySearch((Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
+     int iy_reco   = TMath::BinarySearch((Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
 
      double data_pot = fPOT[ibeam];
      // The POT weight is given in 5*6e20*5
@@ -470,6 +488,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
 
      double wght = data_pot/mc_pot;
 
+     // Add array entry
      fMCTNom[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
      fMCTTun[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
      fMCTSys[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);

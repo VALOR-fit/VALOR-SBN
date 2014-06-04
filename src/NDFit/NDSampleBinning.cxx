@@ -14,7 +14,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
- int util::NumEtrueBins(NDSample_t /*sample*/, int /*zone*/)
+const int util::NumEtrueBins(NDSample_t /*sample*/, int /*zone*/)
 {
   return kNEtrueBins;
 }
@@ -24,7 +24,7 @@ const double * util::EtrueBinEdges(NDSample_t /*sample*/, int /*zone*/)
   return kEtrueBinEdges;
 }
 //________________________________________________________________________________________
- int util::NumErecoBins(NDSample_t sample, int zone)
+const int util::NumErecoBins(NDSample_t sample, int zone)
 {
   switch(sample) 
   {
@@ -72,7 +72,7 @@ const double * util::ErecoBinEdges(NDSample_t sample, int zone)
   return 0;
 }
 //________________________________________________________________________________________
- int util::NumYrecoBins(NDSample_t sample, int zone)
+const int util::NumYrecoBins(NDSample_t sample, int zone)
 {
   switch(sample) 
   {
@@ -118,6 +118,27 @@ const double * util::YrecoBinEdges(NDSample_t sample, int zone)
   }//sample
 
   return 0;
+}
+//________________________________________________________________________________________
+const int util::BinZone(NDSample_t sample, double enu_reco, double y_reco)
+{
+  for(int izone = 0; izone < kNMaxBinZones; izone++) {
+
+     const int      n_enu_reco_bins    = util::NumErecoBins  (sample, izone);
+     const int      n_y_reco_bins      = util::NumYrecoBins  (sample, izone);
+     const double * enu_reco_bin_edges = util::ErecoBinEdges (sample, izone);
+     const double * y_reco_bin_edges   = util::YrecoBinEdges (sample, izone);
+
+     if ( enu_reco >= enu_reco_bin_edges [0]                 &&
+          enu_reco <= enu_reco_bin_edges [n_enu_reco_bins+1] &&
+          y_reco   >= y_reco_bin_edges   [0]                 &&
+          y_reco   <= y_reco_bin_edges   [n_y_reco_bins+1] )
+     {
+       return izone;
+     }
+  }//izone
+
+  return -1;
 }
 //________________________________________________________________________________________
 
