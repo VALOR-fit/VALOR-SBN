@@ -25,7 +25,7 @@
 #include <string>
 #include <TObjArray.h>
 #include <TTree.h>
-#include <TH1D.h>
+#include <TH2D.h>
 
 //fmwk
 #include "FitCore/FitModelABC.h"
@@ -72,12 +72,13 @@ private:
   void Init  (void);
   void Book  (void);
   void Clean (void);
+  void Zero  (void);
 
-  void ZeroTemplates    (void);
   void FillTemplates    (TTree * t, int ibeam);
   void ApplyTuning      (void);
   void ApplySystematics (void);
   void ApplyPhysics     (void);
+  void CalcPDFs         (void);
 
   util::NDArrIdx * fArrIdx;
 
@@ -86,7 +87,7 @@ private:
   // Exposure (assumed) for each beam configuration (in POT)
   double fPOT [conv::kNBeamConf];
 
-  // MC templates for all samples/reac_modes/bin_zones
+  // MC templates (MCT) for all beams/samples/reac_modes/bin_zones - Each template is a 3-D (Enu_true, Enu_reco, y_reco) array
   // - nom: Nominal MC 
   // - tun: Nominal MC + Ext. tuning (eg tuning based on *external* hadro-production or neutrino cross-section data)
   // - sys: Nominal MC + Ext. tuning + Systematic param variations
@@ -99,11 +100,17 @@ private:
   //   The effect of their variation is included in the sys templates.
   // - Physics "systematics" are the ones we attempt to constrain and are included in the output covariance matrix (eg. 
   //   correlated flux and cross-sections). The effect of their variation is included in the fin templates.
-  bool         fNullMCTempl [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
-  VALORArray * fMCTemplNom  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTemplTun  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTemplSys  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTemplFin  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTNom  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTTun  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTSys  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTFin  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+
+  // Final (Enu_reco, y_reco) MC PDF for all beams/samples/reac_modes/bin_zones
+  VALORArray * fMCPDF   [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  TH2D *       fMCPDFh2 [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+
+  // Keep track of null MC templates and PDFs
+  bool fNullMC [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
 
   //
   double fSystCurrValues[];

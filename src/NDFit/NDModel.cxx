@@ -9,7 +9,6 @@ ChangeLog:
 //________________________________________________________________________________________
 
 #include <ostream>
-#include <iostream>
 
 #include <TXMLEngine.h>
 #include <TFile.h>
@@ -33,7 +32,6 @@ ChangeLog:
 #include "NDFit/NDSample.h"
 #include "NDFit/NDBeamConf.h"
 
-using std::cout;
 using std::endl;
 
 using namespace valor;
@@ -43,12 +41,13 @@ using namespace valor::conv;
 NDModel::NDModel() :
 FitModelABC()
 {
-  //...
+  this->Init();
+  this->Book();
 }
 //________________________________________________________________________________________
 NDModel::~NDModel() 
 {
-  //...
+  this->Clean();
 }
 //________________________________________________________________________________________
 //
@@ -63,13 +62,13 @@ string NDModel::Name(void)
 //________________________________________________________________________________________
 bool NDModel::Read(string file, Option_t * /*opt*/)
 {
-cout << "READING FROM " << file << endl;
+  LOG("NDModel",pNOTICE) << "Reading configuration from XML file [" << file << "]";
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(file.c_str());
   if (xmldoc==0) {
-    LOG("NDModel",pERROR) << "Can not pars input XML file [" << file << "]";
+    LOG("NDModel",pERROR) << "Can not parse input XML file [" << file << "]";
     delete xml;
     return false;  
   }
@@ -81,6 +80,9 @@ cout << "READING FROM " << file << endl;
     if(b == kbUndefined) continue;
     string node_name = "data/exposure/" + util::AsString(b, "lowercase");
     fPOT[ibeam] = util::XML2Dbl(xml,root_node,node_name);
+    LOG("NDModel",pINFO) 
+       << "Beam config: " << util::AsString(b) 
+       << " -> Exposure = " << fPOT[ibeam] << " POT.";
   }//ibeam
 
   //
@@ -92,6 +94,7 @@ cout << "READING FROM " << file << endl;
   //
   fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format");
   if(fUseMCDST) {
+    LOG("NDModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
        BeamConf_t b = kNDBeamConf[ibeam];
        if(b == kbUndefined) continue;
@@ -104,6 +107,9 @@ cout << "READING FROM " << file << endl;
   else {
     // ** implement later (when binning is optimized) and make it the default
     // ** choice to reduce the size of data files stored in the SVN repository.
+    LOG("NDModel",pINFO) << "Using stored VALOR MC templates";
+    LOG("NDModel",pFATAL) << "Option note supported yet";
+    exit(1);
   }
 
   // Release memory
@@ -219,22 +225,27 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 
 void NDModel::Init(void)
 {
+  LOG("NDModel",pDEBUG) << "Initializing...";
+
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
      for(int imode = 0; imode < kNReacModes; imode++) {
        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         fNullMCTempl[ibeam][isample][imode][izone] = true;
-         fMCTemplNom [ibeam][isample][imode][izone] = 0;
-         fMCTemplTun [ibeam][isample][imode][izone] = 0;
-         fMCTemplSys [ibeam][isample][imode][izone] = 0;
-         fMCTemplFin [ibeam][isample][imode][izone] = 0;
+         fNullMC [ibeam][isample][imode][izone] = true;
+         // MC templates
+         fMCTNom [ibeam][isample][imode][izone] = 0;
+         fMCTTun [ibeam][isample][imode][izone] = 0;
+         fMCTSys [ibeam][isample][imode][izone] = 0;
+         fMCTFin [ibeam][isample][imode][izone] = 0;
+         // PDF
+         fMCPDF  [ibeam][isample][imode][izone] = 0;
+         fMCPDFh2[ibeam][isample][imode][izone] = 0;
        }//izone
      }//imode
    }//isample
   }//ibeam
 
   fUseMCDST = false;
-
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     fPOT  [ibeam] = 0;
     fMCDST[ibeam] = 0;
@@ -245,6 +256,8 @@ void NDModel::Init(void)
 //________________________________________________________________________________________
 void NDModel::Book(void)
 {
+  LOG("NDModel",pDEBUG) << "Booking MC templates...";
+
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
@@ -260,17 +273,30 @@ void NDModel::Book(void)
            const int n_yreco_bins = util::NumYrecoBins(s,izone);
            if(n_ereco_bins <= 0 || n_yreco_bins <= 0) continue;
 
-           fNullMCTempl[ibeam][isample][imode][izone] = false;
+           const double * ereco_bins = util::ErecoBinEdges(s,izone);
+           const double * yreco_bins = util::YrecoBinEdges(s,izone);
 
-           fMCTemplNom [ibeam][isample][imode][izone] = 
+           fNullMC[ibeam][isample][imode][izone] = false;
+
+           // MC templates
+           fMCTNom [ibeam][isample][imode][izone] = 
              new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-           fMCTemplTun [ibeam][isample][imode][izone] = 
+           fMCTTun [ibeam][isample][imode][izone] = 
              new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-           fMCTemplSys [ibeam][isample][imode][izone] = 
+           fMCTSys [ibeam][isample][imode][izone] = 
              new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
-           fMCTemplFin [ibeam][isample][imode][izone] = 
+           fMCTFin [ibeam][isample][imode][izone] = 
              new VALORArray(n_etrue_bins,n_ereco_bins,n_yreco_bins);
 
+           // PDF
+           const char * name = Form("%s_%s_%s_z%d",
+                util::AsString(b).c_str(),util::AsString(s).c_str(),
+                util::AsString(m).c_str(),izone);
+           fMCPDF  [ibeam][isample][imode][izone] = 
+             new VALORArray(n_ereco_bins,n_yreco_bins);           
+           fMCPDFh2[ibeam][isample][imode][izone] = 
+             new TH2D(name,"VALOR/LBNx ND PDF",
+                      n_ereco_bins,ereco_bins,n_yreco_bins,yreco_bins);
         }//izone
       }//imode
     }//isample
@@ -279,29 +305,43 @@ void NDModel::Book(void)
 //________________________________________________________________________________________
 void NDModel::Clean(void)
 {
+  LOG("NDModel",pDEBUG) << "Cleaning-up...";
+
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     for(int isample = 0; isample < kNNDSamples; isample++) {
       for(int imode = 0; imode < kNReacModes; imode++) {
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
 
-          fNullMCTempl[ibeam][isample][imode][izone] = true;
+          fNullMC[ibeam][isample][imode][izone] = true;
 
-          if(fMCTemplNom[ibeam][isample][imode][izone]) {
-             delete fMCTemplNom[ibeam][isample][imode][izone];
-             fMCTemplNom[ibeam][isample][imode][izone] = 0;
+          // MC templates
+          if(fMCTNom[ibeam][isample][imode][izone]) {
+             delete fMCTNom[ibeam][isample][imode][izone];
+             fMCTNom[ibeam][isample][imode][izone] = 0;
           }
-          if(fMCTemplTun[ibeam][isample][imode][izone]) {
-             delete fMCTemplTun[ibeam][isample][imode][izone];
-             fMCTemplTun[ibeam][isample][imode][izone] = 0;
+          if(fMCTTun[ibeam][isample][imode][izone]) {
+             delete fMCTTun[ibeam][isample][imode][izone];
+             fMCTTun[ibeam][isample][imode][izone] = 0;
           }
-          if(fMCTemplSys[ibeam][isample][imode][izone]) { 
-             delete fMCTemplSys[ibeam][isample][imode][izone];
-             fMCTemplSys[ibeam][isample][imode][izone] = 0;
+          if(fMCTSys[ibeam][isample][imode][izone]) { 
+             delete fMCTSys[ibeam][isample][imode][izone];
+             fMCTSys[ibeam][isample][imode][izone] = 0;
           }
-          if(fMCTemplFin[ibeam][isample][imode][izone]) {
-             delete fMCTemplFin[ibeam][isample][imode][izone];
-             fMCTemplFin[ibeam][isample][imode][izone] = 0;
+          if(fMCTFin[ibeam][isample][imode][izone]) {
+             delete fMCTFin[ibeam][isample][imode][izone];
+             fMCTFin[ibeam][isample][imode][izone] = 0;
           }
+
+          // PDF
+          if(fMCPDF[ibeam][isample][imode][izone]) {
+             delete fMCPDF[ibeam][isample][imode][izone];
+             fMCPDF[ibeam][isample][imode][izone] = 0;
+          }
+          if(fMCPDFh2[ibeam][isample][imode][izone]) {
+             delete fMCPDFh2[ibeam][isample][imode][izone];
+             fMCPDFh2[ibeam][isample][imode][izone] = 0;
+          }
+          
         }//izone
       }//imode
     }//isample
@@ -310,18 +350,24 @@ void NDModel::Clean(void)
   //if (fMCDST) delete fMCDST;
 }
 //________________________________________________________________________________________
-void NDModel::ZeroTemplates(void)
+void NDModel::Zero(void)
 {
+  LOG("NDModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
+
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
      for(int imode = 0; imode < kNReacModes; imode++) {
        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
+         bool is_null = fNullMC[ibeam][isample][imode][izone];
          if(!is_null) {
-             fMCTemplNom[ibeam][isample][imode][izone]->SetAll(0.);
-             fMCTemplTun[ibeam][isample][imode][izone]->SetAll(0.);
-             fMCTemplSys[ibeam][isample][imode][izone]->SetAll(0.);
-             fMCTemplFin[ibeam][isample][imode][izone]->SetAll(0.);
+             // MC templates
+             fMCTNom[ibeam][isample][imode][izone]->SetAll(0.);
+             fMCTTun[ibeam][isample][imode][izone]->SetAll(0.);
+             fMCTSys[ibeam][isample][imode][izone]->SetAll(0.);
+             fMCTFin[ibeam][isample][imode][izone]->SetAll(0.);
+             // PDF
+             fMCPDF  [ibeam][isample][imode][izone]->SetAll(0.);
+             fMCPDFh2[ibeam][isample][imode][izone]->Reset();
          }//!null
        }//izone
      }//imode
@@ -331,71 +377,85 @@ void NDModel::ZeroTemplates(void)
 //________________________________________________________________________________________
 void NDModel::FillTemplates(TTree * t, int ibeam)
 {
+  BeamConf_t b = kNDBeamConf[ibeam];
+
+  LOG("NDModel",pDEBUG) 
+     << "Filling-in MC templates for beam configuration: " << util::AsString(b);
+
   if(!t) return;
 
-  this->ZeroTemplates();
-  //this->Init();
+//  why is this causing a crash??
+//  this->ZeroTemplates();
 
-  /*
-  TBranch * bSample   = t->GetBranch("sample");        // selected ND sample
-  TBranch * bReacMode = t->GetBranch("reactionmode");  // reaction mode
-  TBranch * bEnuTrue  = t->GetBranch("Ev");            // true energy (GeV)
-  TBranch * bEnuReco  = t->GetBranch("Ev_reco");       // reco energy (GeV)
-  TBranch * byReco    = t->GetBranch("y_reco");        // reco inelasticity y
-  TBranch * bWghtPOT  = t->GetBranch("POTWeight");     // weight for 5 years of running * 6E+20 POT exposure/year * 5 kt detector mass
-  TBranch * bneut     = t->GetBranch("neu");           // neutrino species 
-  */
+/*
+  TBranch * bSample   = t->GetBranch("sample");         // selected ND sample
+  TBranch * bReacMode = t->GetBranch("reac_mode");      // reaction mode
+  TBranch * bEnuTrue  = t->GetBranch("enu_true");       // true energy (GeV)
+  TBranch * bEnuReco  = t->GetBranch("enu_reco");       // reco energy (GeV)
+  TBranch * byReco    = t->GetBranch("y_reco");         // reco inelasticity y
+  TBranch * bWghtPOT  = t->GetBranch("wght_pot");       // weight for 1E+20 POT exposure
+*/
+  //tmp names
+  TBranch * bSample   = t->GetBranch("sample");         // selected ND sample
+  TBranch * bReacMode = t->GetBranch("reactionmode");   // reaction mode
+  TBranch * bEnuTrue  = t->GetBranch("Ev");             // true energy (GeV)
+  TBranch * bEnuReco  = t->GetBranch("Ev_reco");        // reco energy (GeV)
+  TBranch * byReco    = t->GetBranch("y_reco");         // reco inelasticity y
+  TBranch * bWghtPOT  = t->GetBranch("POTWeight");      // weight for 1E+20 POT exposure
 
-  int sample       = 0;
-  int reactionmode = 0;
-  double Ev        = 0;
-  double Ev_reco   = 0;
-  double y_reco    = 0;
-  double POTWeight = 0;
-  int neu          = 0;
+  int    sample        = 0;
+  int    neu           = 0;
+  int    reac_mode     = 0;
+  double enu           = 0;
+  double enu_reco      = 0;
+  double y_reco        = 0;
+  double wght_pot      = 0;
 
-  t->SetBranchAddress("Ev",          &Ev);
-  t->SetBranchAddress("Ev_reco",     &Ev_reco);
-  t->SetBranchAddress("neu",         &neu);
-  t->SetBranchAddress("y_reco",      &y_reco);
-  t->SetBranchAddress("POTWeight",   &POTWeight);
-  t->SetBranchAddress("sample",      &sample);
-  t->SetBranchAddress("reactionmode",&reactionmode);
+  t->SetBranchAddress("sample",       &sample);
+  t->SetBranchAddress("neu",          &neu);
+  t->SetBranchAddress("reactionmode", &reac_mode);
+  t->SetBranchAddress("Ev",           &enu);
+  t->SetBranchAddress("Ev_reco",      &enu_reco);
+  t->SetBranchAddress("y_reco",       &y_reco);
+  t->SetBranchAddress("POTWeight",    &wght_pot);
 
   /*
   bSample   -> SetAddress(&sample    );
-  bReacMode -> SetAddress(&reactionmode );
-  bEnuTrue  -> SetAddress(&Ev  );
-  bEnuReco  -> SetAddress(&Ev_reco  );
+  bReacMode -> SetAddress(&reac_mode );
+  bEnuTrue  -> SetAddress(&enu       );
+  bEnuReco  -> SetAddress(&enu_reco  );
   byReco    -> SetAddress(&y_reco    );
-  bWghtPOT  -> SetAddress(&POTWeight  );
-  bneut     -> SetAddress(&neu  );
+  bWghtPOT  -> SetAddress(&wgt_pot   );
 
-  t->SetBranchStatus("*",0);
+  t->SetBranchStatus("*",             0);
   t->SetBranchStatus("sample",        1); 
-  t->SetBranchStatus("reactionmode",     1);    
-  t->SetBranchStatus("Ev_",      1);  
-  t->SetBranchStatus("Ev_reco",      1);  
+  t->SetBranchStatus("reac_mode",     1);    
+  t->SetBranchStatus("enu",           1);  
+  t->SetBranchStatus("enu_reco",      1);  
   t->SetBranchStatus("y_reco",        1);    
-  t->SetBranchStatus("POTWeight", 1);
-  t->SetBranchStatus("neu", 1);
+  t->SetBranchStatus("wght_pot",      1);
   */
 
-  for(int iev = 0; iev < t->GetEntries(); iev++) 
+  Long_t nev = t->GetEntries();
+  LOG("NDModel",pINFO) << "Input VALOR DST has " << nev << " entries";
+
+  for(Long_t iev = 0; iev < nev; iev++) 
   {
+     if(iev%100000==0) {
+       LOG("NDModel",pDEBUG) << "Getting MC event: " << iev;
+     }
      t->GetEntry(iev);
 
      int isample   = fArrIdx->NDSampleIdx  ((NDSample_t)sample);
      int imode     = -1;
      if(neu == 14)
-       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)reactionmode);
+       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)reac_mode);
      else if(neu == -14)
-       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)(reactionmode + kNReacModes/4));
-
+       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)(reac_mode + kNReacModes/4));
      
      int izone     = 2;
 
-     bool is_null = fNullMCTempl[isample][imode][izone];
+     bool is_null = fNullMC[isample][imode][izone];
      if(is_null) continue;
 
      int ienu_true = 3;
@@ -406,14 +466,14 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      // The POT weight is given in 5*6e20*5
      // This is: 5 years of running * 6e20 POT/year * 5kt near detector mass
      // The factor of 2 is coming since nu and anti-nu are saved in the same file 
-     double mc_pot   = POTWeight*2;
+     double mc_pot = wght_pot*2;
 
      double wght = data_pot/mc_pot;
 
-     fMCTemplNom[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
-     fMCTemplTun[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
-     fMCTemplSys[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
-     fMCTemplFin[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTNom[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTTun[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTSys[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
+     fMCTFin[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
      
   }//iev 
 
@@ -435,7 +495,7 @@ void NDModel::ApplySystematics(void)
    for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
+         bool is_null = fNullMC[ibeam][isample][imode][izone];
          if(!is_null) {
              
 
@@ -463,7 +523,7 @@ void NDModel::ApplyPhysics(void)
         if(m == kmUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          bool is_null = fNullMCTempl[ibeam][isample][imode][izone];
+          bool is_null = fNullMC[ibeam][isample][imode][izone];
           if(!is_null) {
             for(int ip = 0; ip < kNNDFitParams; ip++) {
                bool apply = kNDApplyFitParamToTemplate[imode][ip];
@@ -490,4 +550,8 @@ void NDModel::ApplyPhysics(void)
   }//ibeam
 }
 //________________________________________________________________________________________
+void NDModel::CalcPDFs(void)
+{
 
+}
+//________________________________________________________________________________________

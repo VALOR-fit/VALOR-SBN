@@ -48,10 +48,11 @@ void valor::util::NDArrIdx::Init(void)
          fNDReacModeIdx [i][j] = -1;
      }//i
   }//j
+/*
   for(int i = 0; i < 2*knppmax; i++) {
      fNDFitParamIdx[i] = -1;
-  }
-
+  }//i
+*/
   //
   // Fill-in
   //
@@ -81,7 +82,7 @@ void valor::util::NDArrIdx::Init(void)
             << " is at slot: " << fNDReacModeIdx [s][m];
      }//im
   }//is 
-
+/*
   for(int ip = 0; ip < 2*knppmax; ip++) {
      PhysParamId_t p = kNDFitParam[ip];
      if(p == kPhypUndefined) continue;
@@ -89,7 +90,7 @@ void valor::util::NDArrIdx::Init(void)
      LOG("NDArrIdx",pNOTICE)
         << "Fit parameter: " << util::RawParamAsString(p) << " is at slot: " << fNDFitParamIdx[p];
   }
-
+*/
 }
 //________________________________________________________________________________________
 
