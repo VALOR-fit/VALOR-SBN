@@ -334,42 +334,65 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
   if(!t) return;
 
   this->ZeroTemplates();
+  //this->Init();
 
-  TBranch * bSample   = t->GetBranch("sample");         // selected ND sample
-  TBranch * bReacMode = t->GetBranch("reac_mode");      // reaction mode
-  TBranch * bEnuTrue  = t->GetBranch("enu_true");       // true energy (GeV)
-  TBranch * bEnuReco  = t->GetBranch("enu_reco");       // reco energy (GeV)
-  TBranch * byReco    = t->GetBranch("y_reco");         // reco inelasticity y
-  TBranch * bWghtPOT  = t->GetBranch("wgt_to1e20pot");  // weight for 1E+20 POT exposure
+  /*
+  TBranch * bSample   = t->GetBranch("sample");        // selected ND sample
+  TBranch * bReacMode = t->GetBranch("reactionmode");  // reaction mode
+  TBranch * bEnuTrue  = t->GetBranch("Ev");            // true energy (GeV)
+  TBranch * bEnuReco  = t->GetBranch("Ev_reco");       // reco energy (GeV)
+  TBranch * byReco    = t->GetBranch("y_reco");        // reco inelasticity y
+  TBranch * bWghtPOT  = t->GetBranch("POTWeight");     // weight for 5 years of running * 6E+20 POT exposure/year * 5 kt detector mass
+  TBranch * bneut     = t->GetBranch("neu");           // neutrino species 
+  */
 
-  int    sample    = 0;
-  int    reac_mode = 0;
-  double enu_true  = 0;
-  double enu_reco  = 0;
+  int sample       = 0;
+  int reactionmode = 0;
+  double Ev        = 0;
+  double Ev_reco   = 0;
   double y_reco    = 0;
-  double wght_pot  = 0;
+  double POTWeight = 0;
+  int neu          = 0;
 
+  t->SetBranchAddress("Ev",          &Ev);
+  t->SetBranchAddress("Ev_reco",     &Ev_reco);
+  t->SetBranchAddress("neu",         &neu);
+  t->SetBranchAddress("y_reco",      &y_reco);
+  t->SetBranchAddress("POTWeight",   &POTWeight);
+  t->SetBranchAddress("sample",      &sample);
+  t->SetBranchAddress("reactionmode",&reactionmode);
+
+  /*
   bSample   -> SetAddress(&sample    );
-  bReacMode -> SetAddress(&reac_mode );
-  bEnuTrue  -> SetAddress(&enu_true  );
-  bEnuReco  -> SetAddress(&enu_reco  );
+  bReacMode -> SetAddress(&reactionmode );
+  bEnuTrue  -> SetAddress(&Ev  );
+  bEnuReco  -> SetAddress(&Ev_reco  );
   byReco    -> SetAddress(&y_reco    );
-  bWghtPOT  -> SetAddress(&wght_pot  );
+  bWghtPOT  -> SetAddress(&POTWeight  );
+  bneut     -> SetAddress(&neu  );
 
   t->SetBranchStatus("*",0);
   t->SetBranchStatus("sample",        1); 
-  t->SetBranchStatus("reac_mode",     1);    
-  t->SetBranchStatus("enu_true",      1);  
-  t->SetBranchStatus("enu_reco",      1);  
+  t->SetBranchStatus("reactionmode",     1);    
+  t->SetBranchStatus("Ev_",      1);  
+  t->SetBranchStatus("Ev_reco",      1);  
   t->SetBranchStatus("y_reco",        1);    
-  t->SetBranchStatus("wgt_to1e20pot", 1);
+  t->SetBranchStatus("POTWeight", 1);
+  t->SetBranchStatus("neu", 1);
+  */
 
   for(int iev = 0; iev < t->GetEntries(); iev++) 
   {
      t->GetEntry(iev);
 
      int isample   = fArrIdx->NDSampleIdx  ((NDSample_t)sample);
-     int imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)reac_mode);
+     int imode     = -1;
+     if(neu == 14)
+       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)reactionmode);
+     else if(neu == -14)
+       imode     = fArrIdx->NDReacModeIdx((NDSample_t)sample, (ReacMode_t)(reactionmode + kNReacModes/4));
+
+     
      int izone     = 2;
 
      bool is_null = fNullMCTempl[isample][imode][izone];
@@ -380,7 +403,10 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      int iy_reco   = 5;
 
      double data_pot = fPOT[ibeam];
-     double mc_pot   = wght_pot * 1E+20;
+     // The POT weight is given in 5*6e20*5
+     // This is: 5 years of running * 6e20 POT/year * 5kt near detector mass
+     // The factor of 2 is coming since nu and anti-nu are saved in the same file 
+     double mc_pot   = POTWeight*2;
 
      double wght = data_pot/mc_pot;
 
@@ -388,7 +414,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      fMCTemplTun[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
      fMCTemplSys[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
      fMCTemplFin[ibeam][isample][imode][izone]->SetEntry(wght, ienu_true, ienu_reco, iy_reco);
-
+     
   }//iev 
 
 }
