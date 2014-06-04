@@ -69,10 +69,13 @@ void valor::util::NDArrIdx::Init(void)
      NDSample_t s = kNDSample[is];
      if(s == ksNDUndefined) continue;
      fNDSampleIdx [s] = is;
-
      LOG("NDArrIdx",pNOTICE) 
         << "Sample: " << util::AsString(s) << " is at slot: " << fNDSampleIdx[s];
+  }//is
 
+  for(int is = 0; is < kNNDSamples; is++) {
+     NDSample_t s = kNDSample[is];
+     if(s == ksNDUndefined) continue;
      for(int im = 0; im < kNReacModes; im++) {
          ReacMode_t m = kNDReactionModes[is][im];
          if(m == kmUndefined) continue;

@@ -8,10 +8,9 @@ ChangeLog:
 */
 //________________________________________________________________________________________
 
-#include <algorithm>
-//#include <functional>
-//#include <locale>
-
+//fmwk
+#include "Utilities/UtlStr.h"
+//lbnx
 #include "Conventions/BeamConf.h"
 
 using namespace valor;
@@ -29,10 +28,12 @@ string util::AsString(BeamConf_t c, Option_t * opt)
   }
 
   if(opt) {
+    string name2  = name;
     string optstr = opt;
-    if(optstr.find("lowercase")) {
-      std::transform(name.begin(),name.end(),name.begin(),::tolower);
+    if(optstr.find("lowercase") != string::npos) {
+       name2 = util::ToLowerCase(name);
     }
+    return name2;
   }
 
   return name;

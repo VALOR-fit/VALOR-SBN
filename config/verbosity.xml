@@ -12,5 +12,6 @@
   <priority msgstream="XML">          NOTICE   </priority>
   <priority msgstream="NDModel">      DEBUG    </priority>
   <priority msgstream="NDArrIdx">     NOTICE   </priority>
+  <priority msgstream="NDBinning">    DEBUG    </priority>
 
 </messenger_config>

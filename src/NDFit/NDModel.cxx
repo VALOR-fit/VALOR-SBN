@@ -464,10 +464,18 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
 
   for(Long_t iev = 0; iev < nev; iev++) 
   {
-     if(iev%100000==0) {
-       LOG("NDModel",pDEBUG) << "Getting MC event: " << iev;
-     }
      t->GetEntry(iev);
+
+   //if(iev%100000==0) {
+     if(1) {
+       LOG("NDModel",pDEBUG) << "Got MC event: " << iev;
+       LOG("NDModel",pDEBUG) << " - sample    = " << sample;
+       LOG("NDModel",pDEBUG) << " - reac_mode = " << reac_mode;
+       LOG("NDModel",pDEBUG) << " - enu_true  = " << enu_true;
+       LOG("NDModel",pDEBUG) << " - enu_reco  = " << enu_reco;
+       LOG("NDModel",pDEBUG) << " - y_reco    = " << y_reco;
+       LOG("NDModel",pDEBUG) << " - wght_pot  = " << wght_pot;
+     }
 
      // Get sample and mode indices
      NDSample_t s = (NDSample_t) sample;
@@ -517,10 +525,12 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      double wght = data_pot/mc_pot;
 
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
-     fMCTNom[ibeam][isample][imode][izone]->SetEntry(wght, ienu_reco, iy_reco, ienu_true);
-     fMCTTun[ibeam][isample][imode][izone]->SetEntry(wght, ienu_reco, iy_reco, ienu_true);
-     fMCTSys[ibeam][isample][imode][izone]->SetEntry(wght, ienu_reco, iy_reco, ienu_true);
-     fMCTFin[ibeam][isample][imode][izone]->SetEntry(wght, ienu_reco, iy_reco, ienu_true);     
+     double curr_wght = fMCTNom[ibeam][isample][imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true);
+     curr_wght += wght;
+     fMCTNom[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
+     fMCTTun[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
+     fMCTSys[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
+     fMCTFin[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);     
   }//iev 
 }
 //________________________________________________________________________________________
@@ -597,9 +607,12 @@ void NDModel::ApplyPhysics(void)
 //________________________________________________________________________________________
 void NDModel::CalcPDFs(void)
 {
-// Use the `fin' MC templates to fill in the PDFs
-// Integrate over MC template dimensions (true quantities, eg Etrue) not in PDFs 
 
+  //
+  // Use the `fin' MC templates to fill in the PDF components
+  // Integrate over true kinematical quantities (eg Etrue), but do not integrate
+  // over true reaction modes just yet
+  //
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
@@ -623,8 +636,8 @@ void NDModel::CalcPDFs(void)
                for(int iet=0; iet < n_enu_true_bins; iet++) {
                  sum += fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
                }//iet
-               fMCPDF  [ibeam][isample][imode][izone]->SetEntry     (sum, ier, iyr);
-               fMCPDFH2[ibeam][isample][imode][izone]->SetBinContent(1+ier, 1+iyr, sum);
+               fMCPDF  [ibeam][isample][imode][izone]->SetEntry      (sum, ier, iyr);
+               fMCPDFH2[ibeam][isample][imode][izone]->SetBinContent (1+ier, 1+iyr, sum);
             }//iyr
           }//ier
 
@@ -632,5 +645,37 @@ void NDModel::CalcPDFs(void)
       }//imode
     }//isample
   }//ibeam
+
+  //
+  // Now integrate the above-computed PDF components over the true reaction mode
+  // and calculate the total PDF
+  //
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+         const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+         const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+         for(int ier=0; ier < n_enu_reco_bins; ier++) {
+           for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
+              double sum = 0.;
+              for(int imode = 0; imode < kNReacModes; imode++) {
+                 ReacMode_t m = kNDReactionModes[isample][imode];
+                 if(m == kmUndefined) continue;
+                 bool is_null = fNullMC[ibeam][isample][imode][izone];
+                 if(is_null) continue;
+                 sum += fMCPDF[ibeam][isample][imode][izone]->GetEntry(ier, iyr);
+              }//imode
+              fMCPDFTot  [ibeam][isample][izone]->SetEntry      (sum, ier, iyr);
+              fMCPDFTotH2[ibeam][isample][izone]->SetBinContent (1+ier, 1+iyr, sum);
+           }//iyr
+         }//ier
+      }//izone
+    }//isample
+  }//ibeam
+
 }
 //________________________________________________________________________________________
