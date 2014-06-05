@@ -15,6 +15,8 @@ ChangeLog:
 #include <TFile.h>
 #include <TObjArray.h>
 #include <TMath.h>
+#include <TH1D.h>
+#include <TH2D.h>
 
 //fmwk
 #include "Conventions/PhysHypothesisId.h"
@@ -191,20 +193,235 @@ bool NDModel::Generate (const FitParamList & fp)
   return this->Generate(ph);
 }
 //________________________________________________________________________________________
-bool NDModel::Write(TObjArray * array, const char * /*tag*/, Option_t * /*write_opt*/)
+bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
-  if(!array) return false;
+//
+// write_opt:
+// - if null, store only what is needed for the fit (equiv. with write_opt = "pdft_va")
+// - if "all", store everything listed below
+// - include the string "mct_va" to write-out the MC templates
+//   (functions of beam,sample,mode,zone,Ereco,yreco,Etrue - in VALORArray format)
+// - include the string "pdfc_va" to write-out the PDF components 
+//   (functions of beam,sample,mode,zone,Ereco,yreco - in VALORArray format)
+// - include the string "pdfc_rt" to write out the above in bare ROOT format (TH1D, TH2D,....)
+// - include the string "pdft_va" to write-out the total PDF 
+//   (functions of beam,sample,zone,Ereco,yreco - in VALORArray format)
+// - include the string "pdft_rt" to write-out the above in bare ROOT format
+// - include the string "pdfts_rt" to write-out slices of the total PDF in bare ROOT format
+
+  LOG("NDModel",pINFO) << "Writing results to input object array...";
+
+  if(!array) {
+     LOG("NDModel",pERROR) << "Null input object array.";
+     return false;
+  }
 
   valor::util::SetDefaultStyle();
 
-  //...
+  string opt = (write_opt) ? write_opt : "pdft_va";
 
+  if(opt.find("all") != string::npos) {
+    opt = "mct_va + pdfc_va + pdfc_rt + pdft_va + pdft_rt + pdfts_rt";
+  }
+  LOG("NDModel",pINFO) << "Write option: " << opt;
+
+  //
+  // Write out MC templates (VALORArray format)
+  //
+
+  if(opt.find("mct_va") != string::npos) {
+
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      BeamConf_t b = kNDBeamConf[ibeam];
+      if(b == kbUndefined) continue;
+      for(int isample = 0; isample < kNNDSamples; isample++) {
+        NDSample_t s = kNDSample[isample];
+        if(s == ksNDUndefined) continue;
+        for(int imode = 0; imode < kNReacModes; imode++) {
+          ReacMode_t m = kNDReactionModes[isample][imode];
+          if(m == kmUndefined) continue;
+          for(int izone = 0; izone < kNMaxBinZones; izone++) {
+
+             if(fNullMC[ibeam][isample][imode][izone]) continue;
+
+             const char * name = Form("%s_%s_%s_z%d", 
+                util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
+
+             fMCTNom [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctnom_va", name) );
+             fMCTTun [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_va", name) );
+             fMCTSys [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_va", name) );
+             fMCTFin [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_va", name) );
+
+             array -> Add ( fMCTNom [ibeam][isample][imode][izone] ); 
+             array -> Add ( fMCTTun [ibeam][isample][imode][izone] ); 
+             array -> Add ( fMCTSys [ibeam][isample][imode][izone] ); 
+             array -> Add ( fMCTFin [ibeam][isample][imode][izone] );
+          }//izone
+        }//imode
+      }//isample
+    }//ibeam
+  }//mct_va
+
+  //
+  // Write out the PDF components (VALORArray or bare ROOT format)
+  //
+
+  if(opt.find("pdfc_va") != string::npos || opt.find("pdfc_rt") != string::npos) {
+
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      BeamConf_t b = kNDBeamConf[ibeam];
+      if(b == kbUndefined) continue;
+      for(int isample = 0; isample < kNNDSamples; isample++) {
+        NDSample_t s = kNDSample[isample];
+        if(s == ksNDUndefined) continue;
+        for(int imode = 0; imode < kNReacModes; imode++) {
+          ReacMode_t m = kNDReactionModes[isample][imode];
+          if(m == kmUndefined) continue;
+          for(int izone = 0; izone < kNMaxBinZones; izone++) {
+
+             if(fNullMC[ibeam][isample][imode][izone]) continue;
+
+             const char * name = Form("%s_%s_%s_z%d", 
+                util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
+
+             // in VALORArray format
+             if (opt.find("pdfc_va") != string::npos) {
+               fMCPDFComp [ibeam][isample][imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_va",name));
+               array->Add(fMCPDFComp[ibeam][isample][imode][izone]);
+             }
+             // in TH2D format
+             if (opt.find("pdfc_rt") != string::npos) {
+               // get binning
+               const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+               const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+               if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+               const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
+               const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
+               // book histogram
+               TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF component = f(beam,sample,mode,zone)",
+                 n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
+               h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_rt",name) );
+               // fill from corresponding VALOR array
+               for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+                 for(int iy = 0; iy < n_y_reco_bins; iy++) {
+                   double val = fMCPDFComp[ibeam][isample][imode][izone]->GetEntry(ier,iy);
+                   h2->SetBinContent(ier+1,iy+1,val);
+                 }//iy
+               }//ier
+               // add tp object array and clean-up
+               array->Add(h2); 
+               // delete h2; ???? // MEMORY LEAK?
+             }
+          }//izone
+        }//imode
+      }//isample
+    }//ibeam
+  }//pdfc_va,pdfc_rt
+
+
+  //
+  // Write out the total PDF (VALORArray or bare ROOT format)
+  //
+
+  if(opt.find("pdft_va") != string::npos || opt.find("pdft_rt") != string::npos) {
+
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      BeamConf_t b = kNDBeamConf[ibeam];
+      if(b == kbUndefined) continue;
+      for(int isample = 0; isample < kNNDSamples; isample++) {
+        NDSample_t s = kNDSample[isample];
+        if(s == ksNDUndefined) continue;
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+
+             const char * name = Form("%s_%s_z%d", 
+                util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
+
+             // in VALORArray format
+             if (opt.find("pdft_va") != string::npos) {
+               fMCPDFTot[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"pdft_va",name));
+               array->Add(fMCPDFTot[ibeam][isample][izone]);
+             }
+             // in TH2D format
+             if (opt.find("pdft_rt") != string::npos) {
+               // get binning
+               const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+               const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+               if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+               const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
+               const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
+               // book histogram
+               TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF = f(beam,sample,zone)",
+                 n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
+               h2 -> SetName( Form("%s_%s_%s",tag, "pdft_rt",name) );
+               // fill from corresponding VALOR array
+               for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+                 for(int iy = 0; iy < n_y_reco_bins; iy++) {
+                   double val = fMCPDFTot[ibeam][isample][izone]->GetEntry(ier,iy);
+                   h2->SetBinContent(ier+1,iy+1,val);
+                 }//iy
+               }//ier
+               // add to object array and clean-up
+               array->Add(h2); 
+               // delete h2; ???? // MEMORY LEAK?
+             }
+        }//izone
+      }//isample
+    }//ibeam
+  }//pdft_va,pdft_rt
+
+
+  //
+  // Write out the slices of the total PDF (bare ROOT format)
+  //
+
+  if(opt.find("pdfts_rt") != string::npos) {
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      BeamConf_t b = kNDBeamConf[ibeam];
+      if(b == kbUndefined) continue;
+      for(int isample = 0; isample < kNNDSamples; isample++) {
+        NDSample_t s = kNDSample[isample];
+        if(s == ksNDUndefined) continue;
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+
+          const char * name = Form("%s_%s_z%d", 
+            util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
+
+          // get binning
+          const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+          const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+          if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+          const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
+          const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
+
+          // create slices of the total PDF (function of Ereco, for given yreco bin)
+          for(int iy = 0; iy < n_y_reco_bins; iy++) {
+            TH1D * h = new TH1D("h",
+                Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]", 
+                     y_reco_bins[iy],y_reco_bins[iy+1]),
+                n_enu_reco_bins, enu_reco_bins);
+            h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_rt",name,iy) );
+            h->GetXaxis()->SetTitle("reco. E_{#nu} (GeV)");
+            for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+              double val = fMCPDFTot[ibeam][isample][izone]->GetEntry(ier,iy);
+              h->SetBinContent(ier+1, val);
+            }//ier
+            // add to obj array and clean-up 
+            array->Add(h);
+            //delete h; ??? MEM LEAK??
+          }//iy
+         
+        }//izone
+      }//isample
+    }//ibeam
+  }//pdfts_rt
   return true;
 }
 //________________________________________________________________________________________
 bool NDModel::Write(
   const char * filename, const char * tag, Option_t * write_opt, Option_t * file_opt)
 {
+  LOG("NDModel",pNOTICE) << "Writing results to file: [" << filename << "]";
+
   TObjArray * array = new TObjArray();
   this->Write(array,tag,write_opt);
 
@@ -242,11 +459,10 @@ void NDModel::Init(void)
          fMCTSys [ibeam][isample][imode][izone] = 0;
          fMCTFin [ibeam][isample][imode][izone] = 0;
          // PDF
-         fMCPDF  [ibeam][isample][imode][izone] = 0;
-         fMCPDFH2[ibeam][isample][imode][izone] = 0;
+         fMCPDFComp [ibeam][isample][imode][izone] = 0;
          if(imode == 0) {
-           fMCPDFTot  [ibeam][isample][izone] = 0;
-           fMCPDFTotH2[ibeam][isample][izone] = 0;
+           fMCPDFTot   [ibeam][isample][izone] = 0;
+           fNullPDFTot [ibeam][isample][izone] = true;
          }
        }//izone
      }//imode
@@ -281,9 +497,6 @@ void NDModel::Book(void)
            const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
            if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
 
-           const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
-           const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
-
            LOG("NDModel",pDEBUG) 
               << "Booking MC template for " 
               << "beam: "     << util::AsString(b) 
@@ -293,7 +506,8 @@ void NDModel::Book(void)
  
            fNullMC[ibeam][isample][imode][izone] = false;
 
-           // MC templates (Note order of variables: reco first, true later)
+           // >> MC templates 
+           // (Note order of variables: reco first, true later)
            fMCTNom [ibeam][isample][imode][izone] = 
              new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
            fMCTTun [ibeam][isample][imode][izone] = 
@@ -303,40 +517,24 @@ void NDModel::Book(void)
            fMCTFin [ibeam][isample][imode][izone] = 
              new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
 
-           // PDF
+           // >> PDF component
+           fMCPDFComp[ibeam][isample][imode][izone] = 
+               new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
 
-           LOG("NDModel",pDEBUG) 
-              << "Booking PDF component for " 
-              << "beam: "     << util::AsString(b) 
-              << ", sample: " << util::AsString(s)
-              << ", mode: "   << util::AsString(m) 
-              << ", zone: "   << izone;
- 
-           const char * name = Form("valor_pdf_component_%s_%s_%s_z%d",
-                util::AsString(b).c_str(),util::AsString(s).c_str(),
-                util::AsString(m).c_str(),izone);
-           fMCPDF  [ibeam][isample][imode][izone] = 
-             new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
-           fMCPDFH2[ibeam][isample][imode][izone] = 
-             new TH2D(name,"VALOR/LBNx ND PDF",
-                      n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-
-           if(imode == 0) {
-
+           // >> PDF total
+           // should get here for at least one imode value
+           if(fNullPDFTot[ibeam][isample][izone]) {              
               LOG("NDModel",pDEBUG) 
                  << "Booking PDF (total) for " 
                  << "beam: "     << util::AsString(b) 
                  << ", sample: " << util::AsString(s)
                  << ", zone: "   << izone;
 
-              const char * name2 = Form("valor_pdf_%s_%s_z%d",
-                   util::AsString(b).c_str(),util::AsString(s).c_str(), izone);
+              fNullPDFTot[ibeam][isample][izone] = false;
               fMCPDFTot  [ibeam][isample][izone] = 
                   new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
-              fMCPDFTotH2[ibeam][isample][izone] = 
-                  new TH2D(name2,"VALOR/LBNx ND PDF",
-                           n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-           }//imode==0
+           }
+
         }//izone
       }//imode
     }//isample
@@ -352,57 +550,50 @@ void NDModel::Clean(void)
       for(int imode = 0; imode < kNReacModes; imode++) {
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
 
-          fNullMC[ibeam][isample][imode][izone] = true;
-
-          // MC templates
-          if(fMCTNom[ibeam][isample][imode][izone]) {
-             delete fMCTNom[ibeam][isample][imode][izone];
-             fMCTNom[ibeam][isample][imode][izone] = 0;
+          if(!fNullMC[ibeam][isample][imode][izone]) {
+              fNullMC[ibeam][isample][imode][izone] = true;
+              // MC templates
+              delete fMCTNom[ibeam][isample][imode][izone];
+              delete fMCTTun[ibeam][isample][imode][izone];
+              delete fMCTSys[ibeam][isample][imode][izone];
+              delete fMCTFin[ibeam][isample][imode][izone];
+              fMCTNom[ibeam][isample][imode][izone] = 0;
+              fMCTTun[ibeam][isample][imode][izone] = 0;
+              fMCTSys[ibeam][isample][imode][izone] = 0;
+              fMCTFin[ibeam][isample][imode][izone] = 0;
+              // PDF components
+              delete fMCPDFComp[ibeam][isample][imode][izone];
+              fMCPDFComp[ibeam][isample][imode][izone] = 0;
           }
-          if(fMCTTun[ibeam][isample][imode][izone]) {
-             delete fMCTTun[ibeam][isample][imode][izone];
-             fMCTTun[ibeam][isample][imode][izone] = 0;
+          if(!fNullPDFTot[ibeam][isample][izone]) {
+              fNullPDFTot[ibeam][isample][izone] = true;
+              delete fMCPDFTot[ibeam][isample][izone];
+              fMCPDFTot[ibeam][isample][izone] = 0;
           }
-          if(fMCTSys[ibeam][isample][imode][izone]) { 
-             delete fMCTSys[ibeam][isample][imode][izone];
-             fMCTSys[ibeam][isample][imode][izone] = 0;
-          }
-          if(fMCTFin[ibeam][isample][imode][izone]) {
-             delete fMCTFin[ibeam][isample][imode][izone];
-             fMCTFin[ibeam][isample][imode][izone] = 0;
-          }
-
-          // PDF
-          if(fMCPDF[ibeam][isample][imode][izone]) {
-             delete fMCPDF[ibeam][isample][imode][izone];
-             fMCPDF[ibeam][isample][imode][izone] = 0;
-          }
-          if(fMCPDFH2[ibeam][isample][imode][izone]) {
-             delete fMCPDFH2[ibeam][isample][imode][izone];
-             fMCPDFH2[ibeam][isample][imode][izone] = 0;
-          }
-          if(imode==0) {
-             if(fMCPDFTot[ibeam][isample][izone]) {
-                delete fMCPDFTot[ibeam][isample][izone];
-                fMCPDFTot[ibeam][isample][izone] = 0;
-             }
-             if(fMCPDFTotH2[ibeam][isample][izone]) {
-                delete fMCPDFTotH2[ibeam][isample][izone];
-                fMCPDFTotH2[ibeam][isample][izone] = 0;
-             }
-          }//imode==0
           
         }//izone
       }//imode
     }//isample
   }//ibeam
 
-  //if (fMCDST) delete fMCDST;
+  if(fUseMCDST) {
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      if (fMCDST[ibeam]) {
+        delete fMCDST[ibeam];
+        fMCDST[ibeam] = 0;
+        fPOT  [ibeam] = 0;
+      }
+    }
+  }
 }
 //________________________________________________________________________________________
 void NDModel::Zero(void)
 {
   LOG("NDModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
+/*
+
+// Add input Option_t to zero-out selectively MC templates or PDFs
+//
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
@@ -416,13 +607,13 @@ void NDModel::Zero(void)
              fMCTSys[ibeam][isample][imode][izone]->SetAll(0.);
              fMCTFin[ibeam][isample][imode][izone]->SetAll(0.);
              // PDF
-             fMCPDF  [ibeam][isample][imode][izone]->SetAll(0.);
-             fMCPDFH2[ibeam][isample][imode][izone]->Reset();
+             fMCPDFComp[ibeam][isample][imode][izone]->SetAll(0.);
          }//!null
        }//izone
      }//imode
    }//isample
   }//ibeam
+*/
 }
 //________________________________________________________________________________________
 void NDModel::FillTemplates(TTree * t, int ibeam)
@@ -492,17 +683,6 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
        double pct = 100 * (double)iev+1 / (double)nev;
        LOG("NDModel",pDEBUG) << "Reading MC DST: " << pct << "% done";
      }
-/*
-     if(1) {
-       LOG("NDModel",pDEBUG) << "Got MC event: " << iev;
-       LOG("NDModel",pDEBUG) << " - sample    = " << sample;
-       LOG("NDModel",pDEBUG) << " - reac_mode = " << reac_mode;
-       LOG("NDModel",pDEBUG) << " - enu_true  = " << enu_true;
-       LOG("NDModel",pDEBUG) << " - enu_reco  = " << enu_reco;
-       LOG("NDModel",pDEBUG) << " - y_reco    = " << y_reco;
-       LOG("NDModel",pDEBUG) << " - wght_pot  = " << wght_pot;
-     }
-*/
 
      // Get sample index
      NDSample_t s = util::NDSampleFromInt(sample);
@@ -516,8 +696,8 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit
        LOG("NDModel",pDEBUG) 
-         << "Current MC event (" << iev << ") is in a sample not considered "
-         << "by the present fit (" << util::AsString(s) << ")";
+         << "Ignoring MC event: " << iev 
+         << "(sample ID: " << util::AsString(s) << " not included in current fit)";
        continue;
      }
 
@@ -535,8 +715,8 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
        // true reaction modes (otherwise there are true contributions to the
        // event sample which are not taken into account).
        LOG("NDModel",pFATAL) 
-         << "Current MC event (" << iev << ") is in a mode not considered "
-         << "by the present fit (" << util::AsString(s) << ")";
+         << " ** Ignoring MC event: " << iev 
+         << "(ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
        exit(1);
      }
      
@@ -545,8 +725,9 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      if(izone < 0) {
 //     LOG("NDModel",pFATAL) - turn that to fatal after binning optimization is done
        LOG("NDModel",pWARN) 
-         << "Current MC event (" << iev << ") has enu_reco = " << enu_reco << " GeV, "
-         << " y_reco = " << y_reco << " which doesn't fit in any bin zone!";
+         << " ** No bin zone for MC event: " << iev 
+         << " (" << util::AsString(s) << "/" << util::AsString(m) 
+         << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
 //     exit(1);
        continue;
      }
@@ -554,7 +735,7 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      bool is_null = fNullMC[ibeam][isample][imode][izone];
      if(is_null) {
        LOG("NDModel",pFATAL) 
-         << "Null MC template for sample: " << util::AsString(s) 
+         << "** Null MC template for sample: " << util::AsString(s) 
          << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
        exit(1);
      }
@@ -669,7 +850,6 @@ void NDModel::ApplyPhysics(void)
 //________________________________________________________________________________________
 void NDModel::CalcPDFs(void)
 {
-
   //
   // Use the `fin' MC templates to fill in the PDF components
   // Integrate over true kinematical quantities (eg Etrue), but do not integrate
@@ -698,8 +878,7 @@ void NDModel::CalcPDFs(void)
                for(int iet=0; iet < n_enu_true_bins; iet++) {
                  sum += fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
                }//iet
-               fMCPDF  [ibeam][isample][imode][izone]->SetEntry      (sum, ier, iyr);
-               fMCPDFH2[ibeam][isample][imode][izone]->SetBinContent (1+ier, 1+iyr, sum);
+               fMCPDFComp[ibeam][isample][imode][izone]->SetEntry(sum, ier, iyr);
             }//iyr
           }//ier
 
@@ -729,15 +908,13 @@ void NDModel::CalcPDFs(void)
                  if(m == kmUndefined) continue;
                  bool is_null = fNullMC[ibeam][isample][imode][izone];
                  if(is_null) continue;
-                 sum += fMCPDF[ibeam][isample][imode][izone]->GetEntry(ier, iyr);
+                 sum += fMCPDFComp[ibeam][isample][imode][izone]->GetEntry(ier, iyr);
               }//imode
-              fMCPDFTot  [ibeam][isample][izone]->SetEntry      (sum, ier, iyr);
-              fMCPDFTotH2[ibeam][isample][izone]->SetBinContent (1+ier, 1+iyr, sum);
+              fMCPDFTot[ibeam][isample][izone]->SetEntry(sum, ier, iyr);
            }//iyr
          }//ier
       }//izone
     }//isample
   }//ibeam
-
 }
 //________________________________________________________________________________________

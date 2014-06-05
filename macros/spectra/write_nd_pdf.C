@@ -1,15 +1,15 @@
 //
 // ------------------------------------------------------------------------------------------------
-// Simple program to test the LBNx/ND PDFs
+// Simple program to write out the LBNx/ND PDFs and MC templates.
 //
 // Costas Andreopoulos
 // ------------------------------------------------------------------------------------------------
 //
 	
-void test_nd_pdf
+void write_nd_pdf
 (
   const char * config_file = "lbne_ndfit-2014a-STT_baseline.xml",    /* analysis configuration file */
-  const char * tag         = "ND_STT_baseline"                       /* tag for output file */
+  const char * write_opt   = "all"                                   /* define what to write-out, see NDModel::Write() for options */
 )
 {
   using namespace std;
@@ -21,10 +21,17 @@ void test_nd_pdf
 
   // Print settings
   cout << "\n[Job inputs]" << endl;
-  cout << "- Tag: " << tag << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
 
   // Get ND model & configure
   FitModelABC * model = new NDModel;
   model->Read(config.Data());
+
+  PhysHypothesis ph; // null, get default predictions
+
+  // Generate predictions
+  model->Generate(ph);
+
+  // Write stuff out
+  model->Write("valor.root","valor",write_opt);
 }

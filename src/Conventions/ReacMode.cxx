@@ -42,7 +42,7 @@ string util::AsString(ReacMode_t m)
     case (kmNuMuBarCCMEC    ): return "numubarCCMEC";    break;        
     case (kmNuMuBarCC1piC   ): return "numubarCC1piC";   break;       
     case (kmNuMuBarCC1pi0   ): return "numubarCC1pi0";   break;       
-    case (kmNuMuBarCC2piC   ): return "numubarCC1piC";   break;      
+    case (kmNuMuBarCC2piC   ): return "numubarCC2piC";   break;      
     case (kmNuMuBarCC2pi0   ): return "numubarCC2pi0";   break;       
     case (kmNuMuBarCCpiCpi0 ): return "numubarCCpiCpi0"; break;   
     case (kmNuMuBarCCcoh    ): return "numubarCCcoh";    break;      

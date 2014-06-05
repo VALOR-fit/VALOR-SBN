@@ -25,7 +25,6 @@
 #include <string>
 #include <TObjArray.h>
 #include <TTree.h>
-#include <TH2D.h>
 
 //fmwk
 #include "FitCore/FitModelABC.h"
@@ -88,7 +87,7 @@ private:
   double fPOT [conv::kNBeamConf];
 
   // MC templates (MCT) 
-  // Each template is a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.
+  // Each template is (currently always) a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.
   // There is a template for all beams/samples/reac_modes/bin_zone combinations.
   // Four types of MC templates are constructed:
   // - nom: Nominal MC 
@@ -109,18 +108,16 @@ private:
   VALORArray * fMCTFin  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
 
   // MC PDFs
-  // Each PDF is a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
+  // Each PDF is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
   // The PDFs are computed from the `fin' MC templates, integrated over true kinematic variables, and include all effects.
   // There is a PDF for all beams/samples/reac_modes/bin_zones combinations.
   // The `Tot' versions are integrated over the true reac_modes and can be used for comparisons with data.
-  // The PDFs are stored in VALORArray format (and, if requested, in T2HD format too)
-  VALORArray * fMCPDF      [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  TH2D *       fMCPDFH2    [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // as above, but in TH2D format
-  VALORArray * fMCPDFTot   [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones]; 
-  TH2D *       fMCPDFTotH2 [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones]; // as above, but in TH2D format
+  VALORArray * fMCPDFTot  [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones];                    // total
+  VALORArray * fMCPDFComp [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // reac_mode components
 
-  // Keep track of null MC templates and PDFs
-  bool fNullMC [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
+  // Keep track of null MC templates and total PDFs
+  bool fNullMC     [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
+  bool fNullPDFTot [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones];
 
   //
   double fSystCurrValues[];
