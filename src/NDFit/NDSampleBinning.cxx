@@ -37,9 +37,19 @@ const int util::NumErecoBins(NDSample_t sample, int zone)
         return 0;
       break;
     }
+
+    case (ksNDNuMuCC1piC) :
+    {
+      if(zone >=0 && zone < kNBinZonesCC1piC)
+        return kNErecoBinsCC1piC[zone];
+      else
+        return 0;
+      break;
+    }
+
     case (ksNDNuMuCCoth) : 
     {
-      return kNErecoBinsSimple;  
+      return kNErecoBinsCCoth;  
       break;
     }
     default: 
@@ -61,9 +71,19 @@ const double * util::ErecoBinEdges(NDSample_t sample, int zone)
         return 0;
       break;
     }
+
+    case (ksNDNuMuCC1piC) :
+    {
+      if(zone >=0 && zone < kNBinZonesCC1piC)
+        return kErecoBinEdgesCC1piC[zone];
+      else
+        return 0;
+      break;
+    }
+
     case (ksNDNuMuCCoth) : 
     {
-      return kErecoBinEdgesSimple;  
+      return kErecoBinEdgesCCoth;  
       break;
     }
     default: 
@@ -85,9 +105,19 @@ const int util::NumYrecoBins(NDSample_t sample, int zone)
         return 0;
       break;
     }
+
+    case (ksNDNuMuCC1piC) :
+    {
+      if(zone >=0 && zone < kNBinZonesCC1piC)
+        return kNYrecoBinsCC1piC[zone];
+      else
+        return 0;
+      break;
+    }
+
     case (ksNDNuMuCCoth) : 
     {
-      return kNYrecoBinsSimple;  
+      return kNYrecoBinsCCoth;  
       break;
     }
     default: 
@@ -109,9 +139,19 @@ const double * util::YrecoBinEdges(NDSample_t sample, int zone)
         return 0;
       break;
     }
+
+    case (ksNDNuMuCC1piC) :
+    {
+      if(zone >=0 && zone < kNBinZonesCC1piC)
+        return kYrecoBinEdgesCC1piC[zone];
+      else
+        return 0;
+      break;
+    }
+
     case (ksNDNuMuCCoth) : 
     {
-      return kYrecoBinEdgesSimple;  
+      return kYrecoBinEdgesCCoth;  
       break;
     }
     default: 

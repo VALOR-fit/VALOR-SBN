@@ -651,7 +651,7 @@ void ReadFastMC::make_binning_scheme_2D(){
   const int n_bins_x = 10;   //this must be an even number in this version of the macro to allow the division into zones
   const int n_bins_y = 8;   //this must be an even number in this version of the macro to allow the division into zones
   const double x_min = 0.0;
-  const double x_max = 50.0;
+  const double x_max = 100.0;
   const double y_min = 0.0;
   const double y_max = 1.0;
 
