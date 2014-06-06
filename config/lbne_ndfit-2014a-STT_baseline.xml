@@ -26,15 +26,6 @@ Input MC templates
 -->
 
 <mc>
-  <exposure> 
-    <fhc>
-      1.0000e+20
-    </fhc>
-    <rhc>
-      1.0000e+20
-    </rhc>
-  </exposure>
-
   <using_dst_format> 
      true 
   </using_dst_format> 
@@ -46,7 +37,7 @@ Input MC templates
        <objtype>  TTree       </objtype> 
     </fhc>
     <rhc>
-       <filename> lbne/ndfit/2014a/STT/rhc_fastmc.root </filename> 
+       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree.root </filename> 
        <objname>  FastMCTree  </objname> 
        <objtype>  TTree       </objtype> 
     </rhc>
