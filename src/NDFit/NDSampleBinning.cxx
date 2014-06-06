@@ -25,9 +25,16 @@ const double * util::EtrueBinEdges(NDSample_t /*sample*/)
   return kEtrueBinEdges;
 }
 //________________________________________________________________________________________
-const int util::NumErecoBins(NDSample_t sample, int zone)
+const int util::NumErecoBins(NDSample_t s, int zone)
 {
-  switch(sample) 
+   LOG("NDBinning",pDEBUG) 
+     << "Getting # Ereco bins for sample " << util::AsString(s) << ", zone = " << zone;
+
+#ifdef _use_single_ereco_yreco_bin_
+  return kNErecoBins1;
+#else
+
+  switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
     {
@@ -44,14 +51,23 @@ const int util::NumErecoBins(NDSample_t sample, int zone)
     }
     default: 
       return 0;
-  }//sample
+  }//s
 
   return 0;
+
+#endif
 }
 //________________________________________________________________________________________
-const double * util::ErecoBinEdges(NDSample_t sample, int zone)
+const double * util::ErecoBinEdges(NDSample_t s, int zone)
 {
-  switch(sample) 
+   LOG("NDBinning",pDEBUG) 
+     << "Getting Ereco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
+
+#ifdef _use_single_ereco_yreco_bin_
+  return kErecoBinEdges1;
+#else
+
+  switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
     {
@@ -68,14 +84,23 @@ const double * util::ErecoBinEdges(NDSample_t sample, int zone)
     }
     default: 
       return 0;
-  }//sample
+  }//s
 
   return 0;
+
+#endif
 }
 //________________________________________________________________________________________
-const int util::NumYrecoBins(NDSample_t sample, int zone)
+const int util::NumYrecoBins(NDSample_t s, int zone)
 {
-  switch(sample) 
+   LOG("NDBinning",pDEBUG) 
+     << "Getting # yreco bins for sample " << util::AsString(s) << ", zone = " << zone;
+
+#ifdef _use_single_ereco_yreco_bin_
+  return kNYrecoBins1;
+#else
+
+  switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
     {
@@ -92,14 +117,23 @@ const int util::NumYrecoBins(NDSample_t sample, int zone)
     }
     default: 
       return 0;
-  }//sample
+  }//s
 
   return 0;
+
+#endif
 }
 //________________________________________________________________________________________
-const double * util::YrecoBinEdges(NDSample_t sample, int zone)
+const double * util::YrecoBinEdges(NDSample_t s, int zone)
 {
-  switch(sample) 
+   LOG("NDBinning",pDEBUG) 
+     << "Getting yreco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
+
+#ifdef _use_single_ereco_yreco_bin_
+  return kYrecoBinEdges1;
+#else
+
+  switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
     {
@@ -116,29 +150,31 @@ const double * util::YrecoBinEdges(NDSample_t sample, int zone)
     }
     default: 
       return 0;
-  }//sample
+  }//s
 
   return 0;
+
+#endif
 }
 //________________________________________________________________________________________
-const int util::BinZone(NDSample_t sample, double enu_reco, double y_reco)
+const int util::BinZone(NDSample_t s, double enu_reco, double y_reco)
 {
   LOG("NDBinning", pDEBUG) 
     << "Finding bin zone for enu_reco = " << enu_reco << " GeV, y_reco = " << y_reco 
-    << " in sample: " << util::AsString(sample);
+    << " in sample: " << util::AsString(s);
 
   for(int izone = 0; izone < kNMaxBinZones; izone++) {
 
      LOG("NDBinning",pDEBUG) << "Testing zone #" << izone;
 
-     const int      n_enu_reco_bins    = util::NumErecoBins  (sample, izone);
-     const int      n_y_reco_bins      = util::NumYrecoBins  (sample, izone);
+     const int      n_enu_reco_bins    = util::NumErecoBins  (s, izone);
+     const int      n_y_reco_bins      = util::NumYrecoBins  (s, izone);
 
      LOG("NDBinning",pDEBUG) << " - number of enu_reco bins = " << n_enu_reco_bins;
      LOG("NDBinning",pDEBUG) << " - number of y_reco bins   = " << n_y_reco_bins;
 
-     const double * enu_reco_bin_edges = util::ErecoBinEdges (sample, izone);
-     const double * y_reco_bin_edges   = util::YrecoBinEdges (sample, izone);
+     const double * enu_reco_bin_edges = util::ErecoBinEdges (s, izone);
+     const double * y_reco_bin_edges   = util::YrecoBinEdges (s, izone);
 
      LOG("NDBinning",pDEBUG) << " - min{enu_reco} = " << enu_reco_bin_edges [0] << " GeV";
      LOG("NDBinning",pDEBUG) << " - max{enu_reco} = " << enu_reco_bin_edges [n_enu_reco_bins] << " GeV";
