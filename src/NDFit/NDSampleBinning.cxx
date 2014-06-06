@@ -15,12 +15,12 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-const int util::NumEtrueBins(NDSample_t /*sample*/, int /*zone*/)
+const int util::NumEtrueBins(NDSample_t /*sample*/)
 {
   return kNEtrueBins;
 }
 //________________________________________________________________________________________
-const double * util::EtrueBinEdges(NDSample_t /*sample*/, int /*zone*/)
+const double * util::EtrueBinEdges(NDSample_t /*sample*/)
 {
   return kEtrueBinEdges;
 }
@@ -37,19 +37,9 @@ const int util::NumErecoBins(NDSample_t sample, int zone)
         return 0;
       break;
     }
-
-    case (ksNDNuMuCC1piC) :
-    {
-      if(zone >=0 && zone < kNBinZonesCC1piC)
-        return kNErecoBinsCC1piC[zone];
-      else
-        return 0;
-      break;
-    }
-
     case (ksNDNuMuCCoth) : 
     {
-      return kNErecoBinsCCoth;  
+      return kNErecoBinsSimple;  
       break;
     }
     default: 
@@ -71,19 +61,9 @@ const double * util::ErecoBinEdges(NDSample_t sample, int zone)
         return 0;
       break;
     }
-
-    case (ksNDNuMuCC1piC) :
-    {
-      if(zone >=0 && zone < kNBinZonesCC1piC)
-        return kErecoBinEdgesCC1piC[zone];
-      else
-        return 0;
-      break;
-    }
-
     case (ksNDNuMuCCoth) : 
     {
-      return kErecoBinEdgesCCoth;  
+      return kErecoBinEdgesSimple;  
       break;
     }
     default: 
@@ -105,19 +85,9 @@ const int util::NumYrecoBins(NDSample_t sample, int zone)
         return 0;
       break;
     }
-
-    case (ksNDNuMuCC1piC) :
-    {
-      if(zone >=0 && zone < kNBinZonesCC1piC)
-        return kNYrecoBinsCC1piC[zone];
-      else
-        return 0;
-      break;
-    }
-
     case (ksNDNuMuCCoth) : 
     {
-      return kNYrecoBinsCCoth;  
+      return kNYrecoBinsSimple;  
       break;
     }
     default: 
@@ -139,19 +109,9 @@ const double * util::YrecoBinEdges(NDSample_t sample, int zone)
         return 0;
       break;
     }
-
-    case (ksNDNuMuCC1piC) :
-    {
-      if(zone >=0 && zone < kNBinZonesCC1piC)
-        return kYrecoBinEdgesCC1piC[zone];
-      else
-        return 0;
-      break;
-    }
-
     case (ksNDNuMuCCoth) : 
     {
-      return kYrecoBinEdgesCCoth;  
+      return kYrecoBinEdgesSimple;  
       break;
     }
     default: 
