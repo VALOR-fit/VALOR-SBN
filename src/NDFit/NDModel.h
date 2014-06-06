@@ -88,7 +88,7 @@ private:
 
   // MC templates (MCT) 
   // Each template is (currently always) a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.
-  // There is a template for all beams/samples/reac_modes/bin_zone combinations.
+  // There is a template for all beam/sample/reac_mode combinations.
   // Four types of MC templates are constructed:
   // - nom: Nominal MC 
   // - tun: Nominal MC + Ext. tuning (eg tuning based on *external* hadro-production or neutrino cross-section data)
@@ -102,10 +102,20 @@ private:
   //   The effect of their variation is included in the sys templates.
   // - Physics "systematics" are the ones we attempt to constrain and are included in the output covariance matrix (eg. 
   //   correlated flux and cross-sections). The effect of their variation is included in the fin templates.
+  //
+  // Below are MCT with binning heavily optimized to reduce the CPU intensity of the fit.
+  // A number of binning zones are defined, and in each zone a variable-size binning scheme is used.
   VALORArray * fMCTNom  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
   VALORArray * fMCTTun  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
   VALORArray * fMCTSys  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
   VALORArray * fMCTFin  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  // Below are MCT versions the use a simple (fine and regular) binning throughout the whole range.
+  // These templates are not used in the fit, but mainly for the visualization of the fit results.
+  // As such, they are not all filled-in in each iteration of the fit but, typically, at the end of the fit or upon request.
+  VALORArray * fMCTNomSb [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
+  VALORArray * fMCTTunSb [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
+  VALORArray * fMCTSysSb [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
+  VALORArray * fMCTFinSb [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
 
   // MC PDFs
   // Each PDF is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
@@ -117,10 +127,12 @@ private:
 
   // Keep track of null MC templates and total PDFs
   bool fNullMC     [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
+  bool fNullMCSb   [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes];
   bool fNullPDFTot [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones];
 
-  //
-  double fSystCurrValues[];
+  // 
+  double fPhysParamCurrVal[conv::kNNDFitParams]; // current value of physics params
+  double fPhysParamFracErr[conv::kNNDFitParams]; // current value of physics params
 
   // Input VALOR MC DSTs
   bool fUseMCDST;

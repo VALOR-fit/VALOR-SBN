@@ -208,7 +208,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 //   (functions of beam,sample,zone,Ereco,yreco - in VALORArray format)
 // - include the string "pdft_rt" to write-out the above in bare ROOT format
 // - include the string "pdfts_rt" to write-out slices of the total PDF in bare ROOT format
-
+//
   LOG("NDModel",pINFO) << "Writing results to input object array...";
 
   if(!array) {
@@ -451,6 +451,14 @@ void NDModel::Init(void)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
      for(int imode = 0; imode < kNReacModes; imode++) {
+
+       fNullMCSb [ibeam][isample][imode] = true;
+       // MC templates (simple binning)
+       fMCTNomSb [ibeam][isample][imode] = 0;
+       fMCTTunSb [ibeam][isample][imode] = 0;
+       fMCTSysSb [ibeam][isample][imode] = 0;
+       fMCTFinSb [ibeam][isample][imode] = 0;
+
        for(int izone = 0; izone < kNMaxBinZones; izone++) {
          fNullMC [ibeam][isample][imode][izone] = true;
          // MC templates
@@ -465,6 +473,7 @@ void NDModel::Init(void)
            fNullPDFTot [ibeam][isample][izone] = true;
          }
        }//izone
+
      }//imode
    }//isample
   }//ibeam
@@ -474,6 +483,11 @@ void NDModel::Init(void)
     fPOT  [ibeam] = 0;
     fMCDST[ibeam] = 0;
   }//ibeam
+
+  for(int ip = 0; ip < conv::kNNDFitParams; ip++) {
+    fPhysParamCurrVal[ip] = 0;
+    fPhysParamFracErr[ip] = 0;
+  }
 
   fArrIdx = util::NDArrIdx::Instance();
 }
@@ -491,8 +505,24 @@ void NDModel::Book(void)
       for(int imode = 0; imode < kNReacModes; imode++) {
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
+
+        const int n_enu_true_bins = util::NumEtrueBins(s);
+
+        fNullMCSb[ibeam][isample][imode] = false;
+
+        // >> MC templates (simple binning)
+        // (Note order of variables: reco first, true later)
+        fMCTNomSb [ibeam][isample][imode] = 
+          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+        fMCTTunSb [ibeam][isample][imode] = 
+          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+        fMCTSysSb [ibeam][isample][imode] = 
+          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+        fMCTFinSb [ibeam][isample][imode] = 
+          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+
+        // Loop over zones
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-           const int n_enu_true_bins = util::NumEtrueBins(s,izone);
            const int n_enu_reco_bins = util::NumErecoBins(s,izone);
            const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
            if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
@@ -534,8 +564,8 @@ void NDModel::Book(void)
               fMCPDFTot  [ibeam][isample][izone] = 
                   new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
            }
-
         }//izone
+
       }//imode
     }//isample
   }//ibeam
@@ -548,8 +578,21 @@ void NDModel::Clean(void)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     for(int isample = 0; isample < kNNDSamples; isample++) {
       for(int imode = 0; imode < kNReacModes; imode++) {
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
 
+        if(!fNullMCSb[ibeam][isample][imode]) {
+            fNullMCSb[ibeam][isample][imode] = true;
+            // MC templates simple binning
+            delete fMCTNomSb[ibeam][isample][imode];
+            delete fMCTTunSb[ibeam][isample][imode];
+            delete fMCTSysSb[ibeam][isample][imode];
+            delete fMCTFinSb[ibeam][isample][imode];
+            fMCTNomSb[ibeam][isample][imode] = 0;
+            fMCTTunSb[ibeam][isample][imode] = 0;
+            fMCTSysSb[ibeam][isample][imode] = 0;
+            fMCTFinSb[ibeam][isample][imode] = 0;
+        }
+
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
           if(!fNullMC[ibeam][isample][imode][izone]) {
               fNullMC[ibeam][isample][imode][izone] = true;
               // MC templates
@@ -581,7 +624,6 @@ void NDModel::Clean(void)
       if (fMCDST[ibeam]) {
         delete fMCDST[ibeam];
         fMCDST[ibeam] = 0;
-        fPOT  [ibeam] = 0;
       }
     }
   }
@@ -740,18 +782,39 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
        exit(1);
      }
 
+     // check Ereco, yreco and Etrue values against built-in limits
+     if(enu_reco < kErecoMin || enu_reco > kErecoMax) {
+        LOG("NDModel",pWARN) 
+           << "MC event: " << iev << " has reconstructed energy = " << enu_reco 
+           << " GeV, range used: [" << kErecoMin << ", " << kErecoMax << "] GeV";
+     }
+     if(y_reco < kYrecoMin || y_reco > kYrecoMax) {
+        LOG("NDModel",pWARN) 
+           << "MC event: " << iev << " has reconstructed inelasticity y = " << y_reco 
+           << ", range used: [" << kYrecoMin << ", " << kYrecoMax << "]";
+     }
+     if(enu_true < kEtrueMin || enu_true > kEtrueMax) {
+        LOG("NDModel",pWARN) 
+           << "MC event: " << iev << " has true energy = " << enu_true 
+           << " GeV, range used: [" << kEtrueMin << ", " << kEtrueMax << "] GeV";
+     }
+
      // Get enu_true, enu_reco, y_reco array indices
-     const int n_enu_true_bins = util::NumEtrueBins(s,izone);
+     const int n_enu_true_bins = util::NumEtrueBins(s);
      const int n_enu_reco_bins = util::NumErecoBins(s,izone);
      const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
 
-     const double * enu_true_bin_edges = util::EtrueBinEdges(s,izone);
+     const double * enu_true_bin_edges = util::EtrueBinEdges(s);
      const double * enu_reco_bin_edges = util::ErecoBinEdges(s,izone);
      const double * y_reco_bin_edges   = util::YrecoBinEdges(s,izone);
 
-     int ienu_true = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true);
-     int ienu_reco = TMath::BinarySearch((Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
-     int iy_reco   = TMath::BinarySearch((Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
+     // work-out the index using the bin-edge array defining the variable-size binning scheme
+     int ienu_true    = TMath::BinarySearch(1+(Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true);
+     int ienu_reco    = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
+     int iy_reco      = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
+     // repeat, finding the indices for the template versions using a simple binning scheme
+     int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb, kErecoBinEdgesSb, enu_reco);
+     int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)kNYrecoBinsSb, kYrecoBinEdgesSb, y_reco  );
 
      // Exposure for assumed data - Weight MC templates to that exposure
      double data_pot = fPOT[ibeam];
@@ -768,12 +831,20 @@ void NDModel::FillTemplates(TTree * t, int ibeam)
      double wght = data_pot/mc_pot;
 
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
+
      double curr_wght = fMCTNom[ibeam][isample][imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true);
      curr_wght += wght;
      fMCTNom[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
      fMCTTun[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
      fMCTSys[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
      fMCTFin[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);     
+
+     double curr_wght_sb = fMCTNomSb[ibeam][isample][imode]->GetEntry(ienu_reco_sb, iy_reco_sb, ienu_true);
+     curr_wght_sb += wght;
+     fMCTNomSb[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
+     fMCTTunSb[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
+     fMCTSysSb[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
+     fMCTFinSb[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);     
   }//iev 
 }
 //________________________________________________________________________________________
@@ -819,29 +890,73 @@ void NDModel::ApplyPhysics(void)
       for(int imode = 0; imode < kNReacModes; imode++) {
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
-
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           bool is_null = fNullMC[ibeam][isample][imode][izone];
-          if(!is_null) {
-            for(int ip = 0; ip < kNNDFitParams; ip++) {
-               bool apply = kNDApplyFitParamToTemplate[imode][ip];
-               if(!apply) continue;
-/*
-               const double Etrue_min = kNDFitParamEtrueRange[ip][0];
-               const double Etrue_max = kNDFitParamEtrueRange[ip][1];
+          if(is_null) continue;
 
-               for(int it; it < ; it++) {
-                 double Etrue = ;
-                 if(Etrue < Etrue_min || Etrue > Etrue_max) continue;
-                 for(int ir; ir < ; ir++) {
-                   for(int iy; iy < ; iy++) {
+          // Get enu_true, enu_reco, y_reco array indices
+          const int n_enu_true_bins = util::NumEtrueBins(s);
+          const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+          const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
 
-                   }//iy: yreco bins
-                 }//ir: Ereco bins
-               }//it: Etrue bins
-*/
-            }//ip
-          }//!null
+          // copy sys -> fin MC templates
+          for(int iet = 0; iet < n_enu_true_bins; iet++) {
+            for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+               for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
+                 double val = fMCTSys[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 fMCTFin[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
+               }//iyr: yreco bins
+            }//ier: Ereco bins
+          }//iet: Etrue bins
+
+          const double * enu_true_bin_edges = util::EtrueBinEdges(s);
+
+          // first apply Etrue-dependent params
+          for(int ip = 0; ip < kNNDFitParams; ip++) {
+             bool apply = kNDApplyFitParamToTemplate[imode][ip];
+             if(!apply) continue;
+             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+             if(!enu_true_dep) continue;
+             const double enu_true_min = kNDFitParamEtrueRange[ip][0];
+             const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
+             double epsilon = 1E-4;
+             int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+epsilon);
+             int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-epsilon);
+             double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
+             f = TMath::Max(0.,f);
+             for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
+               for(int ier; ier < n_enu_reco_bins; ier++) {
+                 for(int iyr; iyr < n_y_reco_bins; iyr++) {
+                    double val = fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                    val *= f;
+                    fMCTFin[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
+                 }//iyr: yreco bins
+               }//ier: Ereco bins
+             }//iet: Etrue bins
+          }//ip
+
+          // then apply the non-Etrue-dependent factors (bundle them together to loop over the
+          // Ereco,yreco,Etrue bins just once)
+          double fnoEt = 1.;
+          for(int ip = 0; ip < kNNDFitParams; ip++) {
+             bool apply = kNDApplyFitParamToTemplate[imode][ip];
+             if(!apply) continue;
+             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+             if(enu_true_dep) continue;
+             double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
+             fnoEt *= f;
+          }//ip
+          fnoEt = TMath::Max(0.,fnoEt);
+          for(int iet = 0; iet < n_enu_true_bins; iet++) {
+            for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+              for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
+                 double val = fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 val *= fnoEt;
+                 fMCTFin[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
+              }//iyr: yreco bins
+            }//ier: Ereco bins
+          }//iet: Etrue bins
+
         }//izone
       }//imode
     }//isample
@@ -868,7 +983,7 @@ void NDModel::CalcPDFs(void)
           bool is_null = fNullMC[ibeam][isample][imode][izone];
           if(is_null) continue;
 
-          const int n_enu_true_bins = util::NumEtrueBins(s,izone);
+          const int n_enu_true_bins = util::NumEtrueBins(s);
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
           const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
 

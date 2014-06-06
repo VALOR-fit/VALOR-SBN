@@ -36,9 +36,9 @@ namespace conv  {
 // Parameter ranges
 //
 static const double kEtrueMin = 0.;
-static const double kEtrueMax = 100.;
+static const double kEtrueMax = 120.;
 static const double kErecoMin = 0.;
-static const double kErecoMax = 100.;
+static const double kErecoMax = 120.;
 static const double kYrecoMin = 0.;
 static const double kYrecoMax = 1.;
 
@@ -59,15 +59,33 @@ static const double kEtrueBinEdges[kNEtrueBins+1] =
 
 // ...........................................................................
 //
-// Simple (fine and regular) binning in (Ereco,yreco) space
+// Simple (~fine and ~regular) binning in (Ereco,yreco) space
 // These are not optimised to reduce the CPU-intensity of the fit and are 
 // employed in MC templates and PDF used only for graphical representation
 // of fit results
 //
-static const double kErecoBinSizeSb = 0.2;
-static const double kYrecoBinSizeSb = 0.1;
-static const int    kNErecoBinsSb   = int ((kErecoMax - kErecoMin) / kErecoBinSizeSb);
-static const int    kNYrecoBinsSb   = int ((kYrecoMax - kYrecoMin) / kYrecoBinSizeSb);
+
+static const int    kNErecoBinsSb  = 101;
+static const double kErecoBinEdgesSb [kNErecoBinsSb+1] =
+{
+   0.0,   0.2,   0.4,   0.6,   0.8,   1.0,   1.2,   1.4,   1.6,   1.8, 
+   2.0,   2.2,   2.4,   2.6,   2.8,   3.0,   3.2,   3.4,   3.6,   3.8, 
+   4.0,   4.2,   4.4,   4.6,   4.8,   5.0,   5.2,   5.4,   5.6,   5.8,
+   6.0,   6.2,   6.4,   6.6,   6.8,   7.0,   7.2,   7.4,   7.6,   7.8,
+   8.0,   8.2,   8.4,   8.6,   8.8,   9.0,   9.2,   9.4,   9.6,   9.8,
+  10.0,  10.2,  10.4,  10.6,  10.8,  11.0,  11.2,  11.4,  11.6,  11.8,
+  12.0,  12.2,  12.4,  12.6,  12.8,  13.0,  13.2,  13.4,  13.6,  13.8,
+  14.0,  14.2,  14.4,  14.6,  14.8,  15.0,  15.2,  15.4,  15.6,  15.8,
+  16.0,  16.2,  16.4,  16.6,  16.8,  17.0,  17.2,  17.4,  17.6,  17.8,
+  18.0,  18.2,  18.4,  18.6,  18.8,  19.0,  19.2,  19.4,  19.6,  19.8,
+  20.0, kErecoMax
+};
+
+static const int    kNYrecoBinsSb   = 10;
+static const double kYrecoBinEdgesSb [kNYrecoBinsSb+1] =
+{
+   0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 
+};
 
 // ...........................................................................
 //

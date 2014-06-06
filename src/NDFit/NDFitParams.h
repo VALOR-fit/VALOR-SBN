@@ -174,6 +174,33 @@ static const bool kNDApplyFitParamToTemplate[kNReacModes][kNNDFitParams] =
 // This array fully specifies the true energy of each systematic
 //
 
+static const bool kNDFitParamEtrueDependence[kNNDFitParams] = 
+{
+   true,       // kNuisFHCNuMuFlux00
+   true,       // kNuisFHCNuMuFlux01
+   true,       // kNuisFHCNuMuFlux02
+   true,       // kNuisFHCNuMuFlux03
+   true,       // kNuisFHCNuMuFlux04
+   true,       // kNuisFHCNuMuFlux05
+   true,       // kNuisFHCNuMuFlux06
+   true,       // kNuisFHCNuMuFlux07
+   true,       // kNuisFHCNuMuFlux08
+   true,       // kNuisFHCNuMuFlux09 
+   true,       // kNuisFHCNuMuBarFlux00
+   true,       // kNuisFHCNuMuBarFlux01
+   true,       // kNuisFHCNuMuBarFlux02
+   true,       // kNuisFHCNuMuBarFlux03
+   true,       // kNuisFHCNuMuBarFlux04
+   true,       // kNuisFHCNuEFlux00 
+   true,       // kNuisFHCNuEFlux01 
+   true,       // kNuisFHCNuEFlux02 
+   false,      // kNuisNormCCQE 
+   false,      // kNuisNormCC1piC
+   false,      // kNuisNormCC1pi0
+   false,      // kNuisNormCCoth 
+   false       // kNuisNormNC 
+};
+
 static const double kNDFitParamEtrueRange[kNNDFitParams][2] = 
 {
   // Emin, Emax
@@ -186,20 +213,20 @@ static const double kNDFitParamEtrueRange[kNNDFitParams][2] =
    {  4.0,  5.0},       // kNuisFHCNuMuFlux06
    {  5.0, 10.0},       // kNuisFHCNuMuFlux07
    { 10.0, 25.0},       // kNuisFHCNuMuFlux08
-   { 25.0, kMaxEtrue }, // kNuisFHCNuMuFlux09 
+   { 25.0, kEtrueMax }, // kNuisFHCNuMuFlux09 
    {  0.0,  1.5},       // kNuisFHCNuMuBarFlux00
    {  1.5,  3.0},       // kNuisFHCNuMuBarFlux01
    {  3.0,  6.0},       // kNuisFHCNuMuBarFlux02
    {  6.0, 10.0},       // kNuisFHCNuMuBarFlux03
-   { 10.0, kMaxEtrue},  // kNuisFHCNuMuBarFlux04
+   { 10.0, kEtrueMax},  // kNuisFHCNuMuBarFlux04
    {  0.0,  3.0},       // kNuisFHCNuEFlux00 
    {  3.0, 10.0},       // kNuisFHCNuEFlux01 
-   { 10.0, kMaxEtrue},  // kNuisFHCNuEFlux02 
-   {  0.0, kMaxEtrue},  // kNuisNormCCQE 
-   {  0.0, kMaxEtrue},  // kNuisNormCC1piC
-   {  0.0, kMaxEtrue},  // kNuisNormCC1pi0
-   {  0.0, kMaxEtrue},  // kNuisNormCCoth 
-   {  0.0, kMaxEtrue}   // kNuisNormNC 
+   { 10.0, kEtrueMax},  // kNuisFHCNuEFlux02 
+   {  0.0, kEtrueMax},  // kNuisNormCCQE 
+   {  0.0, kEtrueMax},  // kNuisNormCC1piC
+   {  0.0, kEtrueMax},  // kNuisNormCC1pi0
+   {  0.0, kEtrueMax},  // kNuisNormCCoth 
+   {  0.0, kEtrueMax}   // kNuisNormNC 
 };
 
 
