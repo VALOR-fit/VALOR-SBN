@@ -52,7 +52,7 @@ static const double kErecoBinEdgesQELike[kNYrecoZonesQELike][kNErecoBinsQELike+1
 
 static const int kNErecoZonesQELike = 3;
 static const int kNYrecoBinsQELike = 6;
-static const double kErecoBinEdgesQELike[kNErecoZonesQELike][kNYrecoBinsQELike+1] = 
+static const double kYrecoBinEdgesQELike[kNErecoZonesQELike][kNYrecoBinsQELike+1] = 
   {
     //zone 1 in Ev_reco
     {0,  0.0231,  0.0451,  0.084,   0.128,  0.232,  1},
@@ -85,7 +85,7 @@ static const double kErecoBinEdgesCC1piC[kNYrecoZonesCC1piC][kNErecoBinsCC1piC+1
 
 static const int kNErecoZonesCC1piC = 3;
 static const int kNYrecoBinsCC1piC = 6;
-static const double kErecoBinEdgesCC1piC[kNErecoZonesCC1piC][kNYrecoBinsCC1piC+1] = 
+static const double kYrecoBinEdgesCC1piC[kNErecoZonesCC1piC][kNYrecoBinsCC1piC+1] = 
   {
     //zone 1 in Ev_reco
     {0,  0.161,  0.203,  0.297,  0.41,  0.506,  1},
@@ -118,7 +118,7 @@ static const double kErecoBinEdgesCCoth[kNYrecoZonesCCoth][kNErecoBinsCCoth+1] =
 
 static const int kNErecoZonesCCoth = 3;
 static const int kNYrecoBinsCCoth = 6;
-static const double kErecoBinEdgesCCoth[kNErecoZonesCCoth][kNYrecoBinsCCoth+1] = 
+static const double kYrecoBinEdgesCCoth[kNErecoZonesCCoth][kNYrecoBinsCCoth+1] = 
   {
     //zone 1 in Ev_reco
     {0,  0.119,   0.197,  0.314,  0.466,  0.583,  1},
