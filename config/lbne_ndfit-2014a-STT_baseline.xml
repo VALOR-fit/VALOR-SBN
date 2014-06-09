@@ -4,6 +4,19 @@
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Near detector inputs
+The FV is 5T - the input number should be in kT
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<nd>
+  <FV>
+    0.005
+  </FV>
+</nd>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Assumed exposure for various beam configurations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
@@ -32,13 +45,13 @@ Input MC templates
 
   <dst> 
     <fhc>
-       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree.root </filename> 
-       <objname>  FastMCTree  </objname> 
+       <filename> FHC_LBNE_ND_Tree_v00.root </filename> 
+       <objname>  LBNETree  </objname> 
        <objtype>  TTree       </objtype> 
     </fhc>
     <rhc>
-       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree.root </filename> 
-       <objname>  FastMCTree  </objname> 
+       <filename> RHC_LBNE_ND_Tree_v00.root </filename> 
+       <objname>  LBNETree  </objname> 
        <objtype>  TTree       </objtype> 
     </rhc>
   </dst>
