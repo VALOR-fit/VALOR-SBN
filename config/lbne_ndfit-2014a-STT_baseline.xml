@@ -4,19 +4,6 @@
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Near detector inputs
-The FV is 5T - the input number should be in kT
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-
-<nd>
-  <FV>
-    0.005
-  </FV>
-</nd>
-
-<!--
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Assumed exposure for various beam configurations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
@@ -34,6 +21,19 @@ Assumed exposure for various beam configurations
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Information about the detector configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<nd>
+   <fiducial_mass>
+     0.005
+   </fiducial_mass>
+</nd>
+
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Input MC templates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
@@ -45,14 +45,14 @@ Input MC templates
 
   <dst> 
     <fhc>
-       <filename> FHC_LBNE_ND_Tree_v00.root </filename> 
-       <objname>  LBNETree  </objname> 
-       <objtype>  TTree       </objtype> 
+       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree_v00.root </filename> 
+       <objname>  LBNETree </objname> 
+       <objtype>  TTree    </objtype> 
     </fhc>
     <rhc>
-       <filename> RHC_LBNE_ND_Tree_v00.root </filename> 
+       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree_v00.root </filename> 
        <objname>  LBNETree  </objname> 
-       <objtype>  TTree       </objtype> 
+       <objtype>  TTree     </objtype> 
     </rhc>
   </dst>
 
