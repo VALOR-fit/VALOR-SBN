@@ -25,6 +25,30 @@ const double * util::EtrueBinEdges(NDSample_t /*sample*/)
   return kEtrueBinEdges;
 }
 //________________________________________________________________________________________
+const double * util::YrecoBinEdgesSb(NDSample_t s)
+{
+   LOG("NDBinning",pDEBUG) 
+     << "Getting yreco bin edges (simple binning) for sample " << util::AsString(s);
+
+  switch(s) 
+  {
+    case (ksNDNuMuCC1trkQE) : 
+    {
+      return kYrecoBinEdgesQELikeSb; 
+      break;
+    }
+    case (ksNDNuMuCCoth) : 
+    {
+      return kYrecoBinEdgesMiscSb;  
+      break;
+    }
+    default: 
+      return 0;
+  }//s
+
+  return 0;
+}
+//________________________________________________________________________________________
 const int util::NumErecoBins(NDSample_t s, int zone)
 {
    LOG("NDBinning",pDEBUG) 

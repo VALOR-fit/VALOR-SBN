@@ -81,10 +81,16 @@ static const double kErecoBinEdgesSb [kNErecoBinsSb+1] =
   20.0, kErecoMax
 };
 
-static const int    kNYrecoBinsSb   = 10;
-static const double kYrecoBinEdgesSb [kNYrecoBinsSb+1] =
+static const int kNYrecoBinsSb = 6;
+
+// y binning for QE-like processes
+static const double kYrecoBinEdgesQELikeSb [kNYrecoBinsSb+1] =
 {
-   0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 
+   0.000, 0.010, 0.020, 0.040, 0.070, 0.200, 1.000 
+};
+static const double kYrecoBinEdgesMiscSb [kNYrecoBinsSb+1] =
+{
+   0.000, 0.050, 0.100, 0.200, 0.400, 0.600, 1.000 
 };
 
 // ...........................................................................
@@ -234,13 +240,14 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 
 namespace util   {
 
-   const int      NumEtrueBins  (conv::NDSample_t sample);
-   const double * EtrueBinEdges (conv::NDSample_t sample);
-   const int      NumErecoBins  (conv::NDSample_t sample, int zone);
-   const double * ErecoBinEdges (conv::NDSample_t sample, int zone);
-   const int      NumYrecoBins  (conv::NDSample_t sample, int zone);
-   const double * YrecoBinEdges (conv::NDSample_t sample, int zone);
-   const int      BinZone       (conv::NDSample_t sample, double enu_reco, double y_reco);
+   const int      NumEtrueBins    (conv::NDSample_t sample);
+   const double * EtrueBinEdges   (conv::NDSample_t sample);
+   const double * YrecoBinEdgesSb (conv::NDSample_t sample);
+   const int      NumErecoBins    (conv::NDSample_t sample, int zone);
+   const double * ErecoBinEdges   (conv::NDSample_t sample, int zone);
+   const int      NumYrecoBins    (conv::NDSample_t sample, int zone);
+   const double * YrecoBinEdges   (conv::NDSample_t sample, int zone);
+   const int      BinZone         (conv::NDSample_t sample, double enu_reco, double y_reco);
 
 } // util
 

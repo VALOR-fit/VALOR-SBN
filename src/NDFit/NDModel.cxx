@@ -337,8 +337,9 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in TH2D format
              if (opt.find("pdfc_rt") != string::npos) {
                // book histogram
+               const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF component = f(beam,sample,mode)",
-                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, kYrecoBinEdgesSb);
+                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdfsbc_rt",name) );
                // fill from corresponding VALOR array
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
@@ -416,9 +417,13 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in TH2D format
              if (opt.find("pdft_rt") != string::npos) {
                // book histogram
+               const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF = f(beam,sample)",
-                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, kYrecoBinEdgesSb);
+                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdfsbt_rt",name) );
+               h2->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+               h2->GetYaxis()->SetTitle("y");
+               h2->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
                // fill from corresponding VALOR array
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                  for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
@@ -465,7 +470,8 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                      y_reco_bins[iy],y_reco_bins[iy+1]),
                 n_enu_reco_bins, enu_reco_bins);
             h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_rt",name,iy) );
-            h->GetXaxis()->SetTitle("reco. E_{#nu} (GeV)");
+            h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+            h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int ier = 0; ier < n_enu_reco_bins; ier++) {
               double val = fMCPDFTot[ibeam][isample][izone]->GetEntry(ier,iy);
               h->SetBinContent(ier+1, val);
@@ -480,13 +486,15 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const char * name = Form("%s_%s", 
             util::AsString(b).c_str(), util::AsString(s).c_str());
           // create slices of the total PDF (function of Ereco, for given yreco bin)
+          const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
           for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
             TH1D * h = new TH1D("h",
                 Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
-                     kYrecoBinEdgesSb[iy], kYrecoBinEdgesSb[iy+1]),
+                     y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
                 kNErecoBinsSb, kErecoBinEdgesSb);
             h->SetName(Form("%s_%s_%s_y%d",tag, "pdfsbts_rt",name,iy) );
-            h->GetXaxis()->SetTitle("reco. E_{#nu} (GeV)");
+            h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+            h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
               double val = fMCPDFSbTot[ibeam][isample]->GetEntry(ier,iy);
               h->SetBinContent(ier+1, val);
@@ -928,17 +936,18 @@ void NDModel::Fill(TTree * t, int ibeam)
      const int n_enu_reco_bins = util::NumErecoBins(s,izone);
      const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
 
-     const double * enu_true_bin_edges = util::EtrueBinEdges(s);
-     const double * enu_reco_bin_edges = util::ErecoBinEdges(s,izone);
-     const double * y_reco_bin_edges   = util::YrecoBinEdges(s,izone);
+     const double * enu_true_bin_edges  = util::EtrueBinEdges(s);
+     const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+     const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
+     const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
 
      // work-out the index using the bin-edge array defining the variable-size binning scheme
      int ienu_true    = TMath::BinarySearch(1+(Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true);
      int ienu_reco    = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
      int iy_reco      = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
      // repeat, finding the indices for the template versions using a simple binning scheme
-     int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb, kErecoBinEdgesSb, enu_reco);
-     int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)kNYrecoBinsSb, kYrecoBinEdgesSb, y_reco  );
+     int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb, kErecoBinEdgesSb,    enu_reco);
+     int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)kNYrecoBinsSb, y_reco_bin_edges_sb, y_reco  );
 
      // Exposure for assumed data - Weight MC templates to that exposure
      double data_pot = fPOT[ibeam];

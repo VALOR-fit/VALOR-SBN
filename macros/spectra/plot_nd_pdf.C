@@ -10,8 +10,16 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
 {
   using namespace std;
   using namespace valor;
-
+  
   double enu_reco_max = 21.; // 20 - 120 GeV is one bin, show only up to 21
+
+  const int n_pdf_slices = 6;
+  assert(n_pdf_slices >= conv::kNYrecoBinsSb);
+
+  int pdf_slice_color[n_pdf_slices] = 
+  {
+     kRed+1,   kOrange+7,   kYellow, kGreen+2,  kAzure+1, kViolet-1
+  };
 
   TFile * fin = new TFile(filename, "read");
 /*
@@ -70,25 +78,31 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
           const char * c_name = Form("c_pdf_slice_%s_%s", util::AsString(b), util::AsString(s));
           c_pdf_slice[ibeam][isample] = new TCanvas(c_name,"",20,20,600,600);
 
+          THStack * stack = new THStack("stack","spectrum contributions");
+
           TH1D * pdf_slice[conv::kNYrecoBinsSb];
           for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
              const char * name = Form("%s_%s_%s_%s_y%d",
                 tag, "pdfsbts_rt", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
              pdf_slice[iy] = (TH1D*) fin->Get(name);
           }//iy
-          double max = -9999;
+          const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+          TLegend * leg = new TLegend(0.7,0.5,0.9,0.9);  
+          leg->SetFillColor(0);
+          leg->SetHeader( Form("%s / %s", util::AsString(b).c_str(), util::AsString(s).c_str()) );
           for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
             if(pdf_slice[iy]) {
-               max = TMath::Max(max, pdf_slice[iy]->GetMaximum());
+//               pdf_slice[iy]->SetLineColor(pdf_slice_color[iy]); 
+               pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
+//             pdf_slice[iy]->SetFillStyle(3544); 
+               stack->Add(pdf_slice[iy]);
+               leg->AddEntry(pdf_slice[iy],Form("y = [%f,%f]", y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),"LF");
             }
           }
-          TH2F * hframe = (TH2F*)c_pdf_slice[ibeam][isample]->DrawFrame(conv::kErecoMin,0,enu_reco_max,1.2*max);
-          hframe->Draw();
-          for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
-            if(pdf_slice[iy]) {
-               pdf_slice[iy]->Draw("same");
-            }
-          }
+          stack->Draw();
+          stack->GetHistogram()->GetXaxis()->SetTitle("reconstructed E_{#nu} (GeV)");
+          stack->GetHistogram()->GetYaxis()->SetTitle("events /bin");
+          leg->Draw();
 
     }//isample
   }//ibeam
