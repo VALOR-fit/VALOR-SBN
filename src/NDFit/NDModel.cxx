@@ -207,7 +207,8 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 // - include the string "pdft_va" to write-out the total PDF 
 //   (functions of beam,sample,zone,Ereco,yreco - in VALORArray format)
 // - include the string "pdft_rt" to write-out the above in bare ROOT format
-// - include the string "pdfts_rt" to write-out slices of the total PDF in bare ROOT format
+// - include the string "pdfcs_rt" to write-out 1-D slices of the PDF components in bare ROOT format
+// - include the string "pdfts_rt" to write-out 1-D slices of the total PDF in bare ROOT format
 // - include the string "+SB" to write-out versions of the above in simpler binning
 //
   LOG("NDModel",pINFO) << "Writing results to input object array...";
@@ -222,7 +223,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   string opt = (write_opt) ? write_opt : "pdft_va";
 
   if(opt.find("all") != string::npos) {
-    opt = "mct_va + pdfc_va + pdfc_rt + pdft_va + pdft_rt + pdfts_rt +SB";
+    opt = "mct_va + pdfc_va + pdfc_rt + pdft_va + pdft_rt + pdfcs_rt + pdfts_rt +SB";
   }
   LOG("NDModel",pINFO) << "Write option: " << opt;
 
@@ -359,7 +360,6 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     }//ibeam
   }//pdfc_va,pdfc_rt
 
-
   //
   // Write out the total PDF (VALORArray or bare ROOT format)
   //
@@ -443,6 +443,95 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 
 
   //
+  // Write out the slices of the PDF components (bare ROOT format)
+  //
+
+  if(opt.find("pdfcs_rt") != string::npos) {
+
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      BeamConf_t b = kNDBeamConf[ibeam];
+      if(b == kbUndefined) continue;
+      for(int isample = 0; isample < kNNDSamples; isample++) {
+        NDSample_t s = kNDSample[isample];
+        if(s == ksNDUndefined) continue;
+        for(int imode = 0; imode < kNReacModes; imode++) {
+          ReacMode_t m = kNDReactionModes[isample][imode];
+          if(m == kmUndefined) continue;
+
+          for(int izone = 0; izone < kNMaxBinZones; izone++) {
+            const char * name = Form("%s_%s_%s_z%d", 
+              util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
+            // get binning
+            const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+            const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+            if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+            const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
+            const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
+            // create slices of the PDF components (function of Ereco, for given yreco bin)
+            TH1D * htot = new TH1D("htot", 
+               "VALOR/LBNx ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)", n_enu_reco_bins, enu_reco_bins);
+            htot->SetName(Form("%s_%s_%s",tag, "pdfcs_rt",name) );
+            htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+            htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
+            for(int iy = 0; iy < n_y_reco_bins; iy++) {
+              TH1D * h = new TH1D("h",
+                  Form("VALOR/LBNx ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
+                       y_reco_bins[iy],y_reco_bins[iy+1]),
+                  n_enu_reco_bins, enu_reco_bins);
+              h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_rt",name,iy) );
+              h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+              h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
+              for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+                double val = fMCPDFComp[ibeam][isample][imode][izone]->GetEntry(ier,iy);
+                h->SetBinContent(ier+1, val);
+                htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
+              }//ier
+              // add to obj array and clean-up 
+              array->Add(h);
+              //delete h; ??? MEM LEAK??
+            }//iy         
+            array->Add(htot);
+            //delete htot; ??? MEM LEAK??
+          }//izone
+
+          if(opt.find("+SB") != string::npos) {
+            const char * name = Form("%s_%s_%s", 
+              util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+            // create slices of the PDF components (function of Ereco, for given yreco bin)
+            const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+            TH1D * htot = new TH1D("htot", 
+               "VALOR/LBNx ND PDF component: Ereco spectrum = f(beam,sample,mode)", kNErecoBinsSb, kErecoBinEdgesSb);
+            htot->SetName(Form("%s_%s_%s",tag, "pdfsbcs_rt",name) );
+            htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+            htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
+            for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+              TH1D * h = new TH1D("h",
+                  Form("VALOR/LBNx ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
+                       y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
+                  kNErecoBinsSb, kErecoBinEdgesSb);
+              h->SetName(Form("%s_%s_%s_y%d",tag, "pdfsbcs_rt",name,iy) );
+              h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+              h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
+              for(int ier = 0; ier < kNErecoBinsSb; ier++) {
+                double val = fMCPDFSbComp[ibeam][isample][imode]->GetEntry(ier,iy);
+                h->SetBinContent(ier+1, val);
+                htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
+              }//ier
+              // add to obj array and clean-up 
+              array->Add(h);
+              //delete h; ??? MEM LEAK??
+            }//iy         
+            array->Add(htot);
+            //delete htot; ??? MEM LEAK??
+          }//+SB?
+
+        }//imode
+      }//isample
+    }//ibeam
+  }//pdfcs_rt
+
+
+  //
   // Write out the slices of the total PDF (bare ROOT format)
   //
 
@@ -464,6 +553,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
           const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
           // create slices of the total PDF (function of Ereco, for given yreco bin)
+          TH1D * htot = new TH1D("htot", 
+              "VALOR/LBNx ND PDF: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
+          htot->SetName(Form("%s_%s_%s",tag, "pdfts_rt",name) );
+          htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+          htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
           for(int iy = 0; iy < n_y_reco_bins; iy++) {
             TH1D * h = new TH1D("h",
                 Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]", 
@@ -475,11 +569,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             for(int ier = 0; ier < n_enu_reco_bins; ier++) {
               double val = fMCPDFTot[ibeam][isample][izone]->GetEntry(ier,iy);
               h->SetBinContent(ier+1, val);
+              htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
             array->Add(h);
-            //delete h; ??? MEM LEAK??
+            //delete h; ??? MEM LEAK??      
           }//iy         
+          array->Add(htot);
+          //delete htot; ??? MEM LEAK??      
         }//izone
 
         if(opt.find("+SB") != string::npos) {
@@ -487,6 +584,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             util::AsString(b).c_str(), util::AsString(s).c_str());
           // create slices of the total PDF (function of Ereco, for given yreco bin)
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+          TH1D * htot = new TH1D("htot", 
+              "VALOR/LBNx ND PDF: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
+          htot->SetName(Form("%s_%s_%s",tag, "pdfsbts_rt",name) );
+          htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+          htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
           for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
             TH1D * h = new TH1D("h",
                 Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
@@ -498,11 +600,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
               double val = fMCPDFSbTot[ibeam][isample]->GetEntry(ier,iy);
               h->SetBinContent(ier+1, val);
+              htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy         
+          array->Add(htot);
+          //delete htot; ??? MEM LEAK??
         }//+SB?
 
       }//isample

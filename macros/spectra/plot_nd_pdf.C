@@ -65,7 +65,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
 */
 
   //
-  // Read-in and plot 1-D PDFs slices
+  // Read-in and plot 1-D total PDFs slices
   //
   TCanvas * c_pdf_slice[conv::kNBeamConf][conv::kNNDSamples];
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
@@ -106,5 +106,57 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
 
     }//isample
   }//ibeam
+
+
+  //
+  // Read-in and plot Ereco spectra and contributions from various modes
+  //
+
+  TCanvas * c_pdf_contrib[conv::kNBeamConf][conv::kNNDSamples];
+  for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
+    conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
+    if(b == conv::kbUndefined) continue;
+    for(int isample = 0; isample < conv::kNNDSamples; isample++) {
+      conv::NDSample_t s = conv::kNDSample[isample];
+      if(s == conv::ksNDUndefined) continue;
+
+        const char * c_name = Form("c_pdf_contrib_%s_%s", util::AsString(b), util::AsString(s));
+        c_pdf_contrib[ibeam][isample] = new TCanvas(c_name,"",20,20,600,600);
+
+        THStack * stack = new THStack("stack","spectrum contributions");
+
+        TH1D * pdf_contrib[conv::kNReacModes];
+
+        TLegend * leg = new TLegend(0.7,0.5,0.9,0.9);  
+        leg->SetFillColor(0);
+        leg->SetHeader( Form("%s / %s", util::AsString(b).c_str(), util::AsString(s).c_str()) );
+
+        for(int imode = 0; imode < conv::kNReacModes; imode++) {
+           conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+           if(m == conv::kmUndefined) continue;
+
+            const char * name = Form("%s_%s_%s_%s_%s",
+              tag, "pdfsbcs_rt", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+            pdf_contrib[imode] = (TH1D*) fin->Get(name);
+            if(pdf_contrib[imode]) {
+//              pdf_contrib[imode]->SetLineColor(pdf_slice_color[iy]); 
+//              pdf_contrib[imode]->SetFillColor(pdf_slice_color[iy]); 
+//              pdf_contrib[imode]->SetFillStyle(3544); 
+                stack->Add(pdf_contrib[imode]);
+                leg->AddEntry(pdf_contrib[iy],Form("%s",util::AsString(m).c_str()), "LF");
+            }//!null
+            else {
+              cerr << "Null [" << name << "]" << endl;
+            }
+        }//imode
+
+        stack->Draw();
+//        stack->GetHistogram()->GetXaxis()->SetTitle("reconstructed E_{#nu} (GeV)");
+//        stack->GetHistogram()->GetYaxis()->SetTitle("events /bin");
+        leg->Draw();
+
+    }//isample
+  }//ibeam
+
 
 }
