@@ -80,6 +80,12 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
 
+  // Ge the near detector fiducial mass
+  string name = "nd/FV";
+  fNDFiducialVolume = util::XML2Dbl(xml,root_node,name);
+  LOG("NDModel",pINFO)
+    << "Near Detector FV = " << fNDFiducialVolume*1000 << " tonnes";
+
   // Get assumed exposure for each beam configuration
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
@@ -1056,17 +1062,16 @@ void NDModel::Fill(TTree * t, int ibeam)
 
      // Exposure for assumed data - Weight MC templates to that exposure
      double data_pot = fPOT[ibeam];
-  
-     // Get MC exposure
-     //
-     // The POT weight is given in 5*6e20*5
-     // This is: 5 years of running * 6e20 POT/year * 5kt near detector mass
-     // The factor of 2 is coming since nu and anti-nu are saved in the same file 
+ 
      double mc_pot = wght_pot;
      assert(wght_pot>0.);
 
      // Calculate POT weight (assumed data exposure) / (generated MC exposure)
-     double wght = data_pot/mc_pot;
+     //double wght = data_pot/mc_pot;
+     double wght = data_pot*mc_pot;
+
+     if(fNDFiducialVolume > 0)
+       wght = wght*fNDFiducialVolume;
 
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
 
