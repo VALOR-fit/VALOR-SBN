@@ -12,6 +12,7 @@ ChangeLog:
 
 #include <TFile.h>
 #include <TObjArray.h>
+#include <TMath.h>
 #include <TH1D.h>
 #include <TH2D.h>
 
@@ -191,15 +192,84 @@ bool NDData::Generate(
   return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
-bool NDData::Generate(FitModelABC * /*model_abc*/, bool /*fluctuate*/)
+bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
+  TObjArray * array = new TObjArray();
+  model_abc->Write(array, "curr", "pdft_va +SB");
+  
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+     BeamConf_t b = kNDBeamConf[ibeam];
+     if(b == kbUndefined) continue;
+     for(int isample = 0; isample < kNNDSamples; isample++) {
+        NDSample_t s = kNDSample[isample];
+        if(s == ksNDUndefined) continue;
+        const char * name = Form("curr_pdfsbt_va_%s_%s", 
+           util::AsString(b).c_str(), util::AsString(s).c_str());
+        VALORArray * pdf = (VALORArray*) array->FindObject(name);
+        assert(pdf);           
+        for(int ier = 0; ier < kNErecoBinsSb; ier++) {
+          for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+            double nmc   = pdf->GetEntry(ier,iy);
+            double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
+            fDataSb[ibeam][isample]->SetEntry(ndata,ier,iy);
+
+
+//
+// HERE: MUST RESET FIRST
+//
+//
+
+            // Map to distributions with optimized binning
+            //
+            const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+            double enu_reco = kErecoBinEdgesSb[ier]   + (kErecoBinEdgesSb[ier+1]-kErecoBinEdgesSb[ier])/2.;
+            double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
+            int izone = util::BinZone(s, enu_reco, y_reco);
+            if(izone < 0) {
+//             LOG("NDData",pFATAL) - turn that to fatal after binning optimization is done
+               LOG("NDData",pWARN)
+                  << " ** No bin zone for toy MC event (" << " (" << util::AsString(s) << ")"
+                  << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
+//             exit(1);
+            }
+            const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+            const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+            const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
+            const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
+            int ier2 = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
+            int iy2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
+            double ndata_curr = fData[ibeam][isample][izone]->GetEntry(ier2,iy2);
+            fData[ibeam][isample][izone]->SetEntry(ndata_curr+ndata,ier2,iy2);
+
+          }//iy
+        }//ier
+     }//isample
+  }//ibeam
 
   return true;
 }
 //________________________________________________________________________________________
 int NDData::NumOfBins(void)
 {
-  return 0;
+  int nbins = 0;
+
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+          const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+          if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+          int nbins_curr = n_enu_reco_bins * n_y_reco_bins;
+          nbins += nbins_curr;
+      }//izone
+    }//isample
+  }//ibeam
+
+  return nbins;
 }
 //________________________________________________________________________________________
 double NDData::Statistic(FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
@@ -221,12 +291,40 @@ double NDData::Statistic(FitModelABC * model_abc, const PhysHypothesis & ph, Opt
 double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/) 
 {
   TObjArray * array = new TObjArray();
-  model_abc->Write(array, "model");
-
-  // Get predictions from array
+  model_abc->Write(array, "curr", "pdft_va");
 
   // Calculate statistic
   double S = 0;
+
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+         if(fDataNull[ibeam][isample][izone]) continue;
+ 
+         const char * name = Form("curr_pdft_va_%s_%s_z%d", 
+            util::AsString(b).c_str(), util::AsString(s).c_str(),izone);
+         VALORArray * pdf = (VALORArray*) array->FindObject(name);
+         assert(pdf);           
+
+         const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+         const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+
+         for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+            for(int iy = 0; iy < n_y_reco_bins; iy++) {
+                double nmc   = pdf->GetEntry(ier,iy);
+                double ndata = fData[ibeam][isample][izone]->GetEntry(ier,iy); 
+                double dS = util::ChisqPoisson(ndata, nmc);
+                S += dS;
+            }//iy
+         }//ier
+
+      }//izone
+    }//isample
+  }//ibeam
 
   return S;
 }
