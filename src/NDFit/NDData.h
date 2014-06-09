@@ -26,7 +26,16 @@
 
 #include <string>
 
+//fmwk
 #include "FitCore/FitDataABC.h"
+#include "Utilities/VALORArray.h"
+
+//lbnx
+#include "Conventions/BeamConf.h"
+#include "NDFit/NDArrIdx.h"
+#include "NDFit/NDSample.h"
+#include "NDFit/NDSampleBinning.h"
+#include "NDFit/NDSampleModes.h"
 
 class TObjArray;
 class TH1D;
@@ -60,6 +69,20 @@ public:
 
 private:
 
+  void Init  (void);
+  void Book  (void);
+  void Clean (void);
+
+  // Data distributions:
+  // Each distribution is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
+  // There is a distribution for all beam/sample/bin_zone combinations.
+  //
+  // Distributions with binning heavily optimized to reduce the CPU intensity of the fit.
+  bool         fDataNull   [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones]; 
+  VALORArray * fData       [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones]; 
+  // Below are versions the use a simple (~fine and ~regular) binning throughout the whole range.
+  bool         fDataSbNull [conv::kNBeamConf][conv::kNNDSamples]; 
+  VALORArray * fDataSb     [conv::kNBeamConf][conv::kNNDSamples]; 
 };
 
 } // valor

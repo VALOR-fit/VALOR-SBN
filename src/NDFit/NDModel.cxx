@@ -81,10 +81,10 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
 
   // Ge the near detector fiducial mass
-  string name = "nd/FV";
-  fNDFiducialVolume = util::XML2Dbl(xml,root_node,name);
+  string name = "nd/fiducial_mass";
+  fNDFiducialMass = util::XML2Dbl(xml,root_node,name);
   LOG("NDModel",pINFO)
-    << "Near Detector FV = " << fNDFiducialVolume*1000 << " tonnes";
+    << "ND fiducial mass = " << fNDFiducialMass*1000 << " tonnes";
 
   // Get assumed exposure for each beam configuration
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
@@ -1070,8 +1070,9 @@ void NDModel::Fill(TTree * t, int ibeam)
      //double wght = data_pot/mc_pot;
      double wght = data_pot*mc_pot;
 
-     if(fNDFiducialVolume > 0)
-       wght = wght*fNDFiducialVolume;
+     if(fNDFiducialMass > 0) {
+       wght = wght*fNDFiducialMass;
+     }
 
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
 

@@ -86,8 +86,8 @@ private:
   // Exposure (assumed) for each beam configuration (in POT)
   double fPOT [conv::kNBeamConf];
 
-  // Near detector mass
-  double fNDFiducialVolume;
+  // Near detector fiducial mass (ktonnes)
+  double fNDFiducialMass;
 
   // MC templates (MCT) 
   // Each template is (currently always) a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.
