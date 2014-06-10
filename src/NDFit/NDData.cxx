@@ -65,13 +65,13 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 
   valor::util::SetDefaultStyle();
 
-  string opt = (write_opt) ? write_opt : "data_va";
+  string opt = (write_opt) ? write_opt : "data_vf";
 
   //
   // Write out MC templates (VALORArray format)
   //
 
-  if(opt.find("data_va") != string::npos || opt.find("data_rt") != string::npos) {
+  if(opt.find("data_vf") != string::npos || opt.find("data_rf") != string::npos) {
 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
@@ -83,11 +83,11 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           if(fDataNull[ibeam][isample][izone]) continue;
           const char * name = Form("%s_%s_z%d",
              util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
-          if(opt.find("data_va") != string::npos) {
-             fData[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"data_va",name));
+          if(opt.find("data_vf") != string::npos) {
+             fData[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"data_vf",name));
              array->Add(fData[ibeam][isample][izone]);
           }
-          if(opt.find("data_rt") != string::npos) {
+          if(opt.find("data_rf") != string::npos) {
              const int n_enu_reco_bins = util::NumErecoBins(s,izone);
              const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
              if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
@@ -95,7 +95,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
              TH2D * h2 = new TH2D("h2", "VALOR/LBNx ND (Ereco,yreco) data = f(beam,sample,zone)",
                  n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-             h2->SetName(Form("%s_%s_%s",tag,"data_rt",name));
+             h2->SetName(Form("%s_%s_%s",tag,"data_rf",name));
              for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                for(int iy = 0; iy < n_y_reco_bins; iy++) {
                  double val = fData[ibeam][isample][izone]->GetEntry(ier,iy);
@@ -112,15 +112,15 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
          const char * name = Form("%s_%s",
              util::AsString(b).c_str(), util::AsString(s).c_str());
           if(fDataSbNull[ibeam][isample]) continue;
-          if(opt.find("data_va") != string::npos) {
-             fDataSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"datasb_va",name));
+          if(opt.find("data_vf") != string::npos) {
+             fDataSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"datasb_vf",name));
              array->Add(fDataSb[ibeam][isample]);
-          }//data_va
-          if(opt.find("data_rt") != string::npos) {
+          }//data_vf
+          if(opt.find("data_rf") != string::npos) {
              const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
              TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) data = f(beam,sample)",
                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
-             h2->SetName(Form("%s_%s_%s",tag,"datasb_rt",name));
+             h2->SetName(Form("%s_%s_%s",tag,"datasb_rf",name));
              for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
                  double val = fDataSb[ibeam][isample]->GetEntry(ier,iy);
@@ -130,13 +130,13 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // add to object array and clean-up
              array->Add(h2);
              // delete h2; ???? // MEMORY LEAK?
-          }//data_va
+          }//data_vf
         }
 
       }//isample
     }//ibeam
 
-  }//data_va
+  }//data_vf
 
   return true;
 }
@@ -195,7 +195,7 @@ bool NDData::Generate(
 bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
   TObjArray * array = new TObjArray();
-  model_abc->Write(array, "curr", "pdft_va +SB");
+  model_abc->Write(array, "curr", "pdft_vf +SB");
   
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
      BeamConf_t b = kNDBeamConf[ibeam];
@@ -203,7 +203,7 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
      for(int isample = 0; isample < kNNDSamples; isample++) {
         NDSample_t s = kNDSample[isample];
         if(s == ksNDUndefined) continue;
-        const char * name = Form("curr_pdfsbt_va_%s_%s", 
+        const char * name = Form("curr_pdfsbt_vf_%s_%s", 
            util::AsString(b).c_str(), util::AsString(s).c_str());
         VALORArray * pdf = (VALORArray*) array->FindObject(name);
         assert(pdf);           
@@ -291,7 +291,7 @@ double NDData::Statistic(FitModelABC * model_abc, const PhysHypothesis & ph, Opt
 double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/) 
 {
   TObjArray * array = new TObjArray();
-  model_abc->Write(array, "curr", "pdft_va");
+  model_abc->Write(array, "curr", "pdft_vf");
 
   // Calculate statistic
   double S = 0;
@@ -305,7 +305,7 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          if(fDataNull[ibeam][isample][izone]) continue;
  
-         const char * name = Form("curr_pdft_va_%s_%s_z%d", 
+         const char * name = Form("curr_pdft_vf_%s_%s_z%d", 
             util::AsString(b).c_str(), util::AsString(s).c_str(),izone);
          VALORArray * pdf = (VALORArray*) array->FindObject(name);
          assert(pdf);           
