@@ -43,7 +43,7 @@ const double * util::YrecoBinEdgesSb(NDSample_t s)
       break;
     }
     default: 
-      return 0;
+      return kYrecoBinEdgesMiscSb;  
   }//s
 
   return 0;

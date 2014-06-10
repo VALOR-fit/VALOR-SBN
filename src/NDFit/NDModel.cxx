@@ -958,8 +958,8 @@ void NDModel::Fill(TTree * t, int ibeam)
      t->GetEntry(iev);
 
      if(iev%(nev/20)==0) {
-       double pct = 100 * (double)iev+1 / (double)nev;
-       LOG("NDModel",pDEBUG) << "Reading MC DST: " << pct << "% done";
+       double pct = (100 * (double)(iev+1)) / (double)nev;
+       LOG("NDModel",pNOTICE) << "Reading MC DST: " << TMath::Nint(pct) << "% done";
      }
 
      // Get sample index
@@ -975,7 +975,7 @@ void NDModel::Fill(TTree * t, int ibeam)
        // fine, we do not indlude all samples in the fit
        LOG("NDModel",pDEBUG) 
          << "Ignoring MC event: " << iev 
-         << "(sample ID: " << util::AsString(s) << " not included in current fit)";
+         << " (sample ID: " << util::AsString(s) << " not included in current fit)";
        continue;
      }
 
@@ -994,10 +994,10 @@ void NDModel::Fill(TTree * t, int ibeam)
        // event sample which are not taken into account).
        LOG("NDModel",pFATAL) 
          << " ** Ignoring MC event: " << iev 
-         << "(ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
+         << " (ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
        exit(1);
      }
-     
+
      // Get bin zone index
      int izone = util::BinZone(s, enu_reco, y_reco);
      if(izone < 0) {
