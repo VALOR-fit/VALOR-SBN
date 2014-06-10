@@ -35,6 +35,34 @@ string util::AsString(NDSample_t s)
   return "";
 }
 //________________________________________________________________________________________
+string util::AsStringTeX(NDSample_t s, bool root)
+{
+  string name = "";
+
+  switch(s) {
+    case (ksNDNuMuCC         ) : name = "#nu_{#mu} CC inclusive";               break; 
+    case (ksNDNuMuCC1trkQE   ) : name = "#nu_{#mu} CC 1-track QE-like";         break; 
+    case (ksNDNuMuCC2trkQE   ) : name = "#nu_{#mu} CC 2-track QE-like";         break; 
+    case (ksNDNuMuCC1piC     ) : name = "#nu_{#mu} CC 1#pi^{#pm}";              break; 
+    case (ksNDNuMuCC2piC     ) : name = "#nu_{#mu} CC 2#pi^{#pm}";              break; 
+    case (ksNDNuMuCC1pi0     ) : name = "#nu_{#mu} CC 1#pi^{0}";                break; 
+    case (ksNDNuMuCC1piC1pi0 ) : name = "#nu_{#mu} CC 1#pi^{#pm} + 1#pi^{0}";   break; 
+    case (ksNDNuMuCCoth      ) : name = "#nu_{#mu} CC other";                   break; 
+    case (ksNDNuECC          ) : name = "#nu_{e} CC inclusive";                 break;
+    case (ksNDNC             ) : name = "NC inclusive";                         break; 
+    case (ksNDNC1piC         ) : name = "NC 1#pi^{#pm}";                        break; 
+    case (ksNDNC1pi0         ) : name = "NC 1#pi^{0}";                          break; 
+    case (ksNDNCoth          ) : name = "NC other";                             break; 
+    default                    : name = "--"; 
+  }
+
+  if(root) return name;
+
+  // change # with \ -- later
+
+  return name;
+}
+//________________________________________________________________________________________
 NDSample_t util::NDSampleFromInt(int s)
 {
 // Cast an integer to NDSample_t, but with boundary check

@@ -218,12 +218,15 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 // - include the string "+SB" to write-out versions of the above in simpler binning
 //
 // Key:
+//  pdft  -> PDF total
+//  pdfts -> PDF total (1-D slice)
+//  pdfc  -> PDF component
+//  pdfcs -> PDF component (1-D slice)
+//  ereco -> Ereco spectrum
 //  rf    -> ROOT format
 //  vf    -> VALOR format
-//  pdft  -> PDF total
-//  pdfts -> PDF total / slice
-//  pdfc  -> PDF component
-//  pdfcs -> PDF component / slice
+//  ob    -> Optimized binning (for fit)
+//  sb    -> Simple binning (for plots)
 
   LOG("NDModel",pINFO) << "Writing results to input object array...";
 

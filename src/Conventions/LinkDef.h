@@ -8,7 +8,8 @@
 #pragma link C++ namespace valor::conv;
 #pragma link C++ namespace valor::util;
 
-#pragma link C++ enum valor::conv::ReacMode_t;
 #pragma link C++ enum valor::conv::BeamConf_t;
+#pragma link C++ enum valor::conv::ReacMode_t;
+#pragma link C++ enum valor::conv::ReacModeCoarse_t;
 
 #endif

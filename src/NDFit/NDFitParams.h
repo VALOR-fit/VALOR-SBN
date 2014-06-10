@@ -28,6 +28,7 @@
 #include <string>
 
 #include "Conventions/PhysParamId.h"
+#include "Conventions/ReacMode.h"
 #include "NDFit/NDSampleBinning.h"
 
 using std::string;
@@ -261,8 +262,13 @@ static const double kNDFitParamMarginalize[kNNDFitParams] =
    false   // kNuisNormNC 
 };
 
-
 } // conv
+
+namespace util {
+  string  AsString    (conv::PhysParamId_t p);
+  string  AsStringTeX (conv::PhysParamId_t p, bool root);
+} //util
+
 } // valor
   
 #endif 

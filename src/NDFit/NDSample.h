@@ -74,6 +74,7 @@ static const NDSample_t kNDSample[kNNDSamples] =
 namespace util {
 
   string           AsString        (conv::NDSample_t s);
+  string           AsStringTeX     (conv::NDSample_t s, bool root);
   conv::NDSample_t NDSampleFromInt (int s);
 
 } // util
