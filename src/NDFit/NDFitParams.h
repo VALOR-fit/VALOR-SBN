@@ -101,6 +101,34 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
    kNuisNormNC 
 };
 
+// eventually get this from config file
+static const double kNDFitParamAPrioriFracError[kNNDFitParams] = 
+{
+   0.15, // kNuisFHCNuMuFlux00,
+   0.15, // kNuisFHCNuMuFlux01,
+   0.15, // kNuisFHCNuMuFlux02,
+   0.15, // kNuisFHCNuMuFlux03,
+   0.15, // kNuisFHCNuMuFlux04,
+   0.15, // kNuisFHCNuMuFlux05,
+   0.15, // kNuisFHCNuMuFlux06,
+   0.15, // kNuisFHCNuMuFlux07,
+   0.15, // kNuisFHCNuMuFlux08,
+   0.15, // kNuisFHCNuMuFlux09,
+   0.20, // kNuisFHCNuMuBarFlux00,
+   0.20, // kNuisFHCNuMuBarFlux01,
+   0.20, // kNuisFHCNuMuBarFlux02,
+   0.20, // kNuisFHCNuMuBarFlux03,
+   0.20, // kNuisFHCNuMuBarFlux04,
+   0.20, // kNuisFHCNuEFlux00, 
+   0.20, // kNuisFHCNuEFlux01, 
+   0.20, // kNuisFHCNuEFlux02, 
+   0.15, // kNuisNormCCQE, 
+   0.25, // kNuisNormCC1piC,
+   0.25, // kNuisNormCC1pi0,
+   0.20, // kNuisNormCCoth, 
+   0.35  // kNuisNormNC 
+};
+
 
 //
 // This array fully specifies which systematics are applied to which template,
@@ -271,7 +299,7 @@ namespace util {
 
   conv::PhysParamId_t NDPhysParamFromString(string p);
 
-  PhysHypothesis GetPhysHypothesis (Option_t * opt = "");
+  PhysHypothesis GetPhysHypothesis (Option_t * opt = 0);
 
 } //util
 
