@@ -29,6 +29,7 @@
 
 #include "Conventions/PhysParamId.h"
 #include "Conventions/ReacMode.h"
+#include "FitCore/PhysHypothesis.h"
 #include "NDFit/NDSampleBinning.h"
 
 using std::string;
@@ -205,14 +206,14 @@ static const bool kNDFitParamEtrueDependence[kNNDFitParams] =
 static const double kNDFitParamEtrueRange[kNNDFitParams][2] = 
 {
   // Emin, Emax
-   {  0.0,  1.0},       // kNuisFHCNuMuFlux00
-   {  1.0,  1.5},       // kNuisFHCNuMuFlux01
-   {  1.5,  2.0},       // kNuisFHCNuMuFlux02
-   {  2.0,  2.5},       // kNuisFHCNuMuFlux03
-   {  2.5,  3.0},       // kNuisFHCNuMuFlux04
-   {  3.0,  4.0},       // kNuisFHCNuMuFlux05
-   {  4.0,  5.0},       // kNuisFHCNuMuFlux06
-   {  5.0, 10.0},       // kNuisFHCNuMuFlux07
+   {  0.0,  2.0},       // kNuisFHCNuMuFlux00
+   {  2.0,  2.5},       // kNuisFHCNuMuFlux01
+   {  2.5,  3.0},       // kNuisFHCNuMuFlux02
+   {  3.0,  3.5},       // kNuisFHCNuMuFlux03
+   {  3.5,  4.0},       // kNuisFHCNuMuFlux04
+   {  4.0,  5.0},       // kNuisFHCNuMuFlux05
+   {  5.0,  7.0},       // kNuisFHCNuMuFlux06
+   {  7.0, 10.0},       // kNuisFHCNuMuFlux07
    { 10.0, 25.0},       // kNuisFHCNuMuFlux08
    { 25.0, kEtrueMax }, // kNuisFHCNuMuFlux09 
    {  0.0,  1.5},       // kNuisFHCNuMuBarFlux00
@@ -267,6 +268,11 @@ static const double kNDFitParamMarginalize[kNNDFitParams] =
 namespace util {
   string  AsString    (conv::PhysParamId_t p);
   string  AsStringTeX (conv::PhysParamId_t p, bool root);
+
+  conv::PhysParamId_t NDPhysParamFromString(string p);
+
+  PhysHypothesis GetPhysHypothesis (Option_t * opt = "");
+
 } //util
 
 } // valor

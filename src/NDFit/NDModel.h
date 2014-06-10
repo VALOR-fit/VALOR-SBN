@@ -138,8 +138,8 @@ private:
   VALORArray * fMCPDFSbComp    [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; // components
 
   // 
-  double fPhysParamCurrVal[conv::kNNDFitParams]; // current value of physics params
-  double fPhysParamFracErr[conv::kNNDFitParams]; // current value of physics params
+//  double fPhysParamCurrVal[conv::kNNDFitParams]; // current value of physics params
+//  double fPhysParamFracErr[conv::kNNDFitParams]; // current value of physics params
 
   // Input VALOR MC DSTs
   bool fUseMCDST;

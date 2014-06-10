@@ -168,7 +168,7 @@ void NDModel::TweakSystematic(
 }
 //________________________________________________________________________________________
 void NDModel::TweakSystematic(
-  PhysParamId_t /*syst*/, double /*twkdial*/, Option_t * /*opt*/)
+  PhysParamId_t syst, double twkdial, Option_t * /*opt*/)
 {
   //...
 }
@@ -707,10 +707,10 @@ void NDModel::Init(void)
     fMCDST[ibeam] = 0;
   }//ibeam
 
-  for(int ip = 0; ip < conv::kNNDFitParams; ip++) {
-    fPhysParamCurrVal[ip] = 0;
-    fPhysParamFracErr[ip] = 0;
-  }
+//  for(int ip = 0; ip < conv::kNNDFitParams; ip++) {
+//    fPhysParamCurrVal[ip] = 0;
+//    fPhysParamFracErr[ip] = 0;
+//  }
 
   fArrIdx = util::NDArrIdx::Instance();
 }
@@ -1151,6 +1151,10 @@ void NDModel::ApplyPhysics(Option_t * option)
 // This method maps sys -> fin MC templates.
 // Applying correlated flux and cross-section systematics
 
+  LOG("NDModel",pINFO) << "Applying physics params (option = " << option << ")";
+
+  double epsilon = 1E-4;
+
   bool update_mct_sb = false;
   if(option) {
     string opt = option;
@@ -1172,6 +1176,13 @@ void NDModel::ApplyPhysics(Option_t * option)
         const int n_enu_true_bins = util::NumEtrueBins(s);
         const double * enu_true_bin_edges = util::EtrueBinEdges(s);
 
+        LOG("NDModel",pDEBUG) 
+           << "Handing templates for: " 
+           << util::AsString(b) << ", " << util::AsString(s) << ", " << util::AsString(m);
+
+        LOG("NDModel",pDEBUG) 
+           << "Initializing `fin' templates to the `sys' ones";
+
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           bool is_null = fMCTNull[ibeam][isample][imode][izone];
           if(is_null) continue;
@@ -1187,31 +1198,45 @@ void NDModel::ApplyPhysics(Option_t * option)
             }//ier: Ereco bins
           }//iet: Etrue bins
 
+          LOG("NDModel",pDEBUG) 
+             << "Applying Etrue-dependent params";
+
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             double epsilon = 1E-4;
              bool apply = kNDApplyFitParamToTemplate[imode][ip];
              if(!apply) continue;
-             bool tweaked = TMath::Abs(fPhysParamCurrVal[ip]) > epsilon;
-             if(!tweaked) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
+             PhysParamId_t p = kNDFitParam[ip];
+             if(p == kPhypUndefined) continue;
+             double f = fPhysHypothesis.CurrValue(p);
+             f = TMath::Max(0.,f);
+             bool tweaked = TMath::Abs(f-1) > epsilon;
+             if(!tweaked) continue;
              const double enu_true_min = kNDFitParamEtrueRange[ip][0];
              const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+epsilon);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-epsilon);
-             double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
-             f = TMath::Max(0.,f);
+             LOG("NDModel",pDEBUG) 
+                << "Applying parameter: " << util::AsString(p) << " with value = " << f 
+                << " in Etrue bin range: [" << ienu_true_min << ", " << ienu_true_max << "]";
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
-               for(int ier; ier < n_enu_reco_bins; ier++) {
-                 for(int iyr; iyr < n_y_reco_bins; iyr++) {
-                    double val = fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
-                    val *= f;
-                    fMCTFin[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
+               for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+                 for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
+                    double val_old = fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                    double val_new = val_old * f;
+                    fMCTFin[ibeam][isample][imode][izone]->SetEntry(val_new,ier,iyr,iet);
+                    LOG("NDModel",pDEBUG) 
+                      << "MCT[" << ibeam << ", " << isample << ", " << imode << ", " << izone << "] = " 
+                      << val_old << " --> " << val_new;
+
                  }//iyr: yreco bins
                }//ier: Ereco bins
              }//iet: Etrue bins
           }//ip
+
+          LOG("NDModel",pDEBUG) 
+             << "Applying Etrue-independent params";
 
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
           // Ereco,yreco,Etrue bins just once)
@@ -1221,7 +1246,12 @@ void NDModel::ApplyPhysics(Option_t * option)
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
-             double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
+             PhysParamId_t p = kNDFitParam[ip];
+             if(p == kPhypUndefined) continue;
+             double f = fPhysHypothesis.CurrValue(p);
+           //double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
+             LOG("NDModel",pDEBUG) 
+                << "Applying parameter: " << util::AsString(p) << " with value = " << f;
              fnoEt *= f;
           }//ip
           fnoEt = TMath::Max(0.,fnoEt);
@@ -1235,7 +1265,6 @@ void NDModel::ApplyPhysics(Option_t * option)
             }//ier: Ereco bins
           }//iet: Etrue bins
         }//izone
-
 
 
         if(update_mct_sb) {
@@ -1256,19 +1285,22 @@ void NDModel::ApplyPhysics(Option_t * option)
              double epsilon = 1E-4;
              bool apply = kNDApplyFitParamToTemplate[imode][ip];
              if(!apply) continue;
-             bool tweaked = TMath::Abs(fPhysParamCurrVal[ip]) > epsilon;
-             if(!tweaked) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
+             PhysParamId_t p = kNDFitParam[ip];
+             if(p == kPhypUndefined) continue;
+             double f = fPhysHypothesis.CurrValue(p);
+           //double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
+             f = TMath::Max(0.,f);
+             bool tweaked = TMath::Abs(f-1) > epsilon;
+             if(!tweaked) continue;
              const double enu_true_min = kNDFitParamEtrueRange[ip][0];
              const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+epsilon);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-epsilon);
-             double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
-             f = TMath::Max(0.,f);
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
-               for(int ier; ier < kNErecoBinsSb; ier++) {
-                 for(int iyr; iyr < kNYrecoBinsSb; iyr++) {
+               for(int ier = 0; ier < kNErecoBinsSb; ier++) {
+                 for(int iyr = 0; iyr < kNYrecoBinsSb; iyr++) {
                     double val = fMCTSbFin[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                     val *= f;
                     fMCTSbFin[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
@@ -1285,7 +1317,12 @@ void NDModel::ApplyPhysics(Option_t * option)
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
-             double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
+             PhysParamId_t p = kNDFitParam[ip];
+             if(p == kPhypUndefined) continue;
+             double f = fPhysHypothesis.CurrValue(p);
+             f = TMath::Max(0.,f);
+             bool tweaked = TMath::Abs(f-1) > epsilon;
+             if(!tweaked) continue;
              fnoEt *= f;
           }//ip
           fnoEt = TMath::Max(0.,fnoEt);
@@ -1299,7 +1336,6 @@ void NDModel::ApplyPhysics(Option_t * option)
             }//ier: Ereco bins
           }//iet: Etrue bins
         }//update_mct_sb?
-
 
       }//imode
     }//isample

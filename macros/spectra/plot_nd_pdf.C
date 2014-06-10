@@ -40,7 +40,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       if(s == conv::ksNDUndefined) continue;
       for(int izone = 0; izone < conv::kNMaxBinZones; izone++) {
          const char * name = Form("%s_%s_%s_%s_z%d", 
-             tag, "pdft_rt", util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
+             tag, "pdft_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
          pdf_tot[ibeam][isample][izone] = (TH2D*) fin->Get(name); 
       }//izone
     }//isample
@@ -83,13 +83,13 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
           TH1D * pdf_slice[conv::kNYrecoBinsSb];
           for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
              const char * name = Form("%s_%s_%s_%s_y%d",
-                tag, "pdfsbts_rt", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
+                tag, "pdfsbts_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
              pdf_slice[iy] = (TH1D*) fin->Get(name);
           }//iy
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
           TLegend * leg = new TLegend(0.7,0.5,0.9,0.9);  
           leg->SetFillColor(0);
-          leg->SetHeader( Form("%s / %s", util::AsString(b).c_str(), util::AsString(s).c_str()) );
+          leg->SetHeader( Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str()) );
           for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
             if(pdf_slice[iy]) {
 //               pdf_slice[iy]->SetLineColor(pdf_slice_color[iy]); 
@@ -100,6 +100,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
             }
           }
           stack->Draw();
+//        stack->GetHistogram()->GetXaxis()->SetRange(0, enu_reco_max);
           stack->GetHistogram()->GetXaxis()->SetTitle("reconstructed E_{#nu} (GeV)");
           stack->GetHistogram()->GetYaxis()->SetTitle("events /bin");
           leg->Draw();
@@ -120,35 +121,49 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       conv::NDSample_t s = conv::kNDSample[isample];
       if(s == conv::ksNDUndefined) continue;
 
-        const char * c_name = Form("c_pdf_contrib_%s_%s", util::AsString(b), util::AsString(s));
+        const char * c_name = Form("c_pdf_contrib_%s_%s", util::AsString(b), util::AsStringTeX(s,true));
         c_pdf_contrib[ibeam][isample] = new TCanvas(c_name,"",20,20,600,600);
 
         THStack * stack = new THStack("stack","spectrum contributions");
 
-        TH1D * pdf_contrib[conv::kNReacModes];
+        TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };
+        TH1D * pdf_contrib_coarse [conv::kNReacModesCoarse] = { 0 };
 
         TLegend * leg = new TLegend(0.7,0.5,0.9,0.9);  
         leg->SetFillColor(0);
-        leg->SetHeader( Form("%s / %s", util::AsString(b).c_str(), util::AsString(s).c_str()) );
+        leg->SetHeader( Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str()) );
 
         for(int imode = 0; imode < conv::kNReacModes; imode++) {
            conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
            if(m == conv::kmUndefined) continue;
-
             const char * name = Form("%s_%s_%s_%s_%s",
-              tag, "pdfsbcs_rt", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+              tag, "pdfsbcs_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
             pdf_contrib[imode] = (TH1D*) fin->Get(name);
             if(pdf_contrib[imode]) {
-//              pdf_contrib[imode]->SetLineColor(pdf_slice_color[iy]); 
-//              pdf_contrib[imode]->SetFillColor(pdf_slice_color[iy]); 
-//              pdf_contrib[imode]->SetFillStyle(3544); 
-                stack->Add(pdf_contrib[imode]);
-                leg->AddEntry(pdf_contrib[iy],Form("%s",util::AsString(m).c_str()), "LF");
+                conv:: ReacModeCoarse_t mc = conv::kNDMappingToCoarseModes[isample][imode];
+                if(mc == conv::kmcUndefined) continue;
+                for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+                  if(mc != conv::kNDReactionModesCoarse[isample][imodec]) continue;
+                  if(pdf_contrib_coarse[imodec] == 0) {
+                     pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
+                  } else {
+                     pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
+                  }           
+                }//imodec
             }//!null
             else {
               cerr << "Null [" << name << "]" << endl;
             }
         }//imode
+        for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+          conv:: ReacModeCoarse_t mc = conv::kNDReactionModesCoarse[isample][imodec];
+          if(mc == conv::kmcUndefined) continue;
+          pdf_contrib_coarse[imodec]->SetLineColor(conv::kNDReactionModesCoarseFormatting[isample][imodec][0]); 
+          pdf_contrib_coarse[imodec]->SetFillColor(conv::kNDReactionModesCoarseFormatting[isample][imodec][1]); 
+          pdf_contrib_coarse[imodec]->SetFillStyle(conv::kNDReactionModesCoarseFormatting[isample][imodec][2]); 
+          stack->Add(pdf_contrib_coarse[imodec]);
+          leg->AddEntry(pdf_contrib_coarse[imodec],Form("%s",util::AsStringTex(mc,true).c_str()), "LF");
+        }//imodec
 
         stack->Draw();
 //        stack->GetHistogram()->GetXaxis()->SetTitle("reconstructed E_{#nu} (GeV)");

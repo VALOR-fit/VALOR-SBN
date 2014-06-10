@@ -51,3 +51,47 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool /*root*/)
  return AsString(p);
 }
 //________________________________________________________________________________________
+PhysParamId_t util::NDPhysParamFromString(string inp_name)
+{
+  for(int ip = 0; ip < kNNDFitParams; ip++) {
+     PhysParamId_t p = kNDFitParam[ip];
+     string name = util::AsString(p);
+     if(name == inp_name) return p;
+  }
+  return kPhypUndefined;
+}
+//________________________________________________________________________________________
+PhysHypothesis util::GetPhysHypothesis (Option_t * /*opt*/)
+{
+// Create a PhysHypothesis object
+// Add all physics + nuisance params (depending on input option) with nominal values
+//
+  PhysHypothesis ph(kHypVoid); 
+
+  ph.SetCurrValue(kNuisFHCNuMuFlux00,    1.); 
+  ph.SetCurrValue(kNuisFHCNuMuFlux01,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux02,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux03,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux04,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux05,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux06,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux07,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux08,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuFlux09,    1.);
+  ph.SetCurrValue(kNuisFHCNuMuBarFlux00, 1.);
+  ph.SetCurrValue(kNuisFHCNuMuBarFlux01, 1.);
+  ph.SetCurrValue(kNuisFHCNuMuBarFlux02, 1.);
+  ph.SetCurrValue(kNuisFHCNuMuBarFlux03, 1.);
+  ph.SetCurrValue(kNuisFHCNuMuBarFlux04, 1.);
+  ph.SetCurrValue(kNuisFHCNuEFlux00,     1.);
+  ph.SetCurrValue(kNuisFHCNuEFlux01,     1.);
+  ph.SetCurrValue(kNuisFHCNuEFlux02,     1.);
+  ph.SetCurrValue(kNuisNormCCQE,         1.);
+  ph.SetCurrValue(kNuisNormCC1piC,       1.);
+  ph.SetCurrValue(kNuisNormCC1pi0,       1.);
+  ph.SetCurrValue(kNuisNormCCoth,        1.);
+  ph.SetCurrValue(kNuisNormNC,           1.);
+
+  return ph;
+}
+//________________________________________________________________________________________
