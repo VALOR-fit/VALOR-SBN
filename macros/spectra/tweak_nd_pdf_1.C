@@ -32,7 +32,6 @@ void tweak_nd_pdf_1
     cerr << "** Specify an input parameter!";
     exit(1);
   }
-
   PhysParamId_t p = util::NDPhysParamFromString(param);
   if(p == kPhypUndefined) {
     cerr << "** Specify an correct ND input parameter!";
@@ -50,28 +49,31 @@ void tweak_nd_pdf_1
   model->Read(config.Data());
 
   // Arrays to store the spectra for the default, +1 sigma and -1 sigma variations
-  const int nspectra = 3;
+  const int nspectra = 5;
   const int kdefault = 0;
   const int kpls1sig = 1;
   const int kmin1sig = 2;
-  TH1D * pdf     [kNBeamConf][kNNDSamples][nspectra] = { 0 };
-  TH1D * pdfratio[kNBeamConf][kNNDSamples][nspectra] = { 0 };
+  const int kpls2sig = 3;
+  const int kmin2sig = 4;
+  double pdf_max  [kNBeamConf][kNNDSamples]           = { -999 };
+  TH1D * pdf      [kNBeamConf][kNNDSamples][nspectra] = { 0 };
+  TH1D * pdf_ratio[kNBeamConf][kNNDSamples][nspectra] = { 0 };
 
   // Generate pdfs
   for(int i = 0; i < nspectra; i++) {
-
     cout << "** Iteration: #" << i << endl;
 
     // Get a nominal physics hypothesis
     PhysHypothesis ph = util::GetPhysHypothesis();
-
     // Tweak if needed
-    if(i == kpls1sig) {
-       ph.SetCurrValue(p, 1.5); 
-    }
-    else 
-    if(i == kmin1sig) {
-       ph.SetCurrValue(p, 0.5); 
+    if(i != kdefault) {
+      int ip = util::NDArrIdx::Instance()->NDFitParamIdx(p); // find param idx
+      assert(ip>=0 && ip<conv::kNNDFitParams);
+      double sig = conv::kNDFitParamAPrioriFracError[ip];
+      if(i == kpls1sig) { ph.SetCurrValue(p, 1 +   sig); }
+      if(i == kmin1sig) { ph.SetCurrValue(p, 1 -   sig); }
+      if(i == kpls2sig) { ph.SetCurrValue(p, 1 + 2*sig); }
+      if(i == kmin2sig) { ph.SetCurrValue(p, 1 - 2*sig); }
     }
     cout << "Physics hypothesis: " << ph;
 
@@ -97,19 +99,45 @@ void tweak_nd_pdf_1
         TH1D * curr_pdf = (TH1D*) array->FindObject(name);
         assert(curr_pdf);       
         pdf[ibeam][isample][i] = new TH1D(*curr_pdf);
-/*
-        if(i == kpls1sig || i == kmin1sig) {
-           TH1D * ratio = new TH1D(*pdf[ibeam][isample][i]);
-           ratio->Divide(pdf[ibeam][isample][kdefault]);
-           pdf_ratio[ibeam][isample][i] = ratio;
-        }
-*/
       }//isample
     }//ibeam   
-
     array->Clear("C");
     delete array;  
   }//i
+
+  // Form ratios and scan for max value in input Ereco range
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+      for(int i=0; i < nspectra; i++) {
+          pdf_ratio[ibeam][isample][i] = new TH1D(* pdf[ibeam][isample][kdefault]); // create with correct binning
+          pdf_ratio[ibeam][isample][i] -> Reset(); // reset contents
+      }//i
+      for(int ebin = 1; ebin <= pdf[ibeam][isample][kdefault]->GetNbinsX(); ebin++) {
+         // update max
+         if(pdf[ibeam][isample][kdefault]->GetBinCenter(ebin) < enu_reco_max ) {
+           for(int i=0; i < nspectra; i++) {
+              double val = pdf[ibeam][isample][i]->GetBinContent(ebin);         
+              pdf_max[ibeam][isample] = TMath::Max(pdf_max[ibeam][isample], val);
+           }//i
+         }//<emax
+         // form ratios
+         for(int i=0; i < nspectra; i++) {
+            double val_def = pdf[ibeam][isample][kdefault]->GetBinContent(ebin);         
+            if(i==kdefault) {
+               pdf_ratio[ibeam][isample][kdefault] -> SetBinContent(ebin, 1);
+            } else {
+              double val_twk = pdf[ibeam][isample][i]->GetBinContent(ebin);         
+              double ratio   = (val_def > 0) ? val_twk/val_def : 1;
+              pdf_ratio[ibeam][isample][i] -> SetBinContent(ebin, ratio);
+            }
+         }//i
+      }//ebin
+    }//isample
+  }//ibeam
 
   // Draw
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
@@ -119,36 +147,63 @@ void tweak_nd_pdf_1
     for(int isample = 0; isample < kNNDSamples; isample++) {
       NDSample_t s = kNDSample[isample];
       if(s == ksNDUndefined) continue;
-      c[ibeam]->cd(ic+1);
-
-//      pdf[ibeam][isample][i]->SetTitle(Form("%s/%s",util::AsString(b),util::AsStringTeX(s,true)));
-//      pdf[ibeam][isample][i]->SetLineWidth(1);
-//      pdf[ibeam][isample][i]->SetLineStyle(kSolid);        
-
+      ic++;
+      c[ibeam]->cd(ic);
+      const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
       if(plot_type == 0) {
-         double max = -999;
-         for(int i=0; i < nspectra; i++) {
-          max = TMath::Max(max, pdf[ibeam][isample][kdefault]->GetMaximum());
-         }         
-         TH1F * hframe = (TH1F*) c[ibeam]->GetPad(ic+1)->DrawFrame(0,0,enu_reco_max,1.2*max);
+         TH1F * hframe = (TH1F*) c[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*pdf_max[ibeam][isample]);
          hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
          hframe->GetYaxis()->SetTitle("Events in bin");
-         pdf[ibeam][isample][kpls1sig]->SetLineColor(kRed);
-         pdf[ibeam][isample][kmin1sig]->SetLineColor(kRed);
+         for(int i=0; i < nspectra; i++) {
+           pdf[ibeam][isample][i]->SetLineWidth(1);
+           if(i == kdefault) {
+              pdf[ibeam][isample][i]->SetLineColor(kBlack);
+           } else {
+              pdf[ibeam][isample][i]->SetLineColor(kRed);
+           }
+         }
+         pdf[ibeam][isample][kpls2sig]->SetLineStyle(kDashed);
+         pdf[ibeam][isample][kmin2sig]->SetLineStyle(kDashed);
          hframe->Draw();
          pdf[ibeam][isample][kdefault]->Draw("same");
          pdf[ibeam][isample][kpls1sig]->Draw("same");
          pdf[ibeam][isample][kmin1sig]->Draw("same");
+         pdf[ibeam][isample][kpls2sig]->Draw("same");
+         pdf[ibeam][isample][kmin2sig]->Draw("same");
+         TLatex * title = new TLatex(1,1.1*pdf_max[ibeam][isample],title_str);
+         title->Draw();
+         TLegend * leg = new TLegend(0.50, 0.56, 0.92, 0.86);
+         leg->SetFillColor(0);
+         leg->SetHeader(util::AsStringTeX(p,true).c_str());
+         leg->AddEntry(pdf[ibeam][isample][kdefault], "nominal",     "L");
+         leg->AddEntry(pdf[ibeam][isample][kpls1sig], "#pm 1#sigma", "L");
+         leg->AddEntry(pdf[ibeam][isample][kpls2sig], "#pm 2#sigma", "L");
+         leg->Draw();
       }//0
       if(plot_type == 1) {
-         TH1F * hframe = (TH1F*) c[ibeam]->GetPad(ic+1)->DrawFrame(0,0,enu_reco_max,1.8);
+         TH1F * hframe = (TH1F*) c[ibeam]->GetPad(ic)->DrawFrame(0,0.7,enu_reco_max,1.3);
          hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
          hframe->GetYaxis()->SetTitle("ratio (tweaked/nominal)");
+         for(int i=0; i < nspectra; i++) {
+           pdf_ratio[ibeam][isample][i]->SetLineWidth(1);
+         }
+         pdf_ratio[ibeam][isample][kpls2sig]->SetLineStyle(kDashed);
+         pdf_ratio[ibeam][isample][kmin2sig]->SetLineStyle(kDashed);
          hframe->Draw();
+       //pdf_ratio[ibeam][isample][kdefault]->Draw("same");
          pdf_ratio[ibeam][isample][kpls1sig]->Draw("same");
          pdf_ratio[ibeam][isample][kmin1sig]->Draw("same");
+         pdf_ratio[ibeam][isample][kpls2sig]->Draw("same");
+         pdf_ratio[ibeam][isample][kmin2sig]->Draw("same");
+         TLatex * title = new TLatex(1,1.24,title_str);
+         title->Draw();
+         TLegend * leg = new TLegend(0.50, 0.56, 0.92, 0.86);
+         leg->SetFillColor(0);
+         leg->SetHeader(util::AsStringTeX(p,true).c_str());
+         leg->AddEntry(pdf_ratio[ibeam][isample][kpls1sig], "#pm 1#sigma", "L");
+         leg->AddEntry(pdf_ratio[ibeam][isample][kpls2sig], "#pm 2#sigma", "L");
+         leg->Draw();
        }//1             
-      ic++;
     }//isample
     c[ibeam]->Update(); 
   }//ibeam   

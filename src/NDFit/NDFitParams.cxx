@@ -66,10 +66,62 @@ string util::AsString(conv::PhysParamId_t p)
   return "";
 }
 //________________________________________________________________________________________
-string util::AsStringTeX(conv::PhysParamId_t p, bool /*root*/)
+string util::AsStringTeX(conv::PhysParamId_t p, bool root)
 {
- // for now
- return AsString(p);
+  string name = "";
+
+  switch(p) {
+    case (kNuisFHCNuMuFlux00   ) : name = "f_{FHC;#nu_{#mu};00}";       break;
+    case (kNuisFHCNuMuFlux01   ) : name = "f_{FHC;#nu_{#mu};01}";       break;
+    case (kNuisFHCNuMuFlux02   ) : name = "f_{FHC;#nu_{#mu};02}";       break;
+    case (kNuisFHCNuMuFlux03   ) : name = "f_{FHC;#nu_{#mu};03}";       break;
+    case (kNuisFHCNuMuFlux04   ) : name = "f_{FHC;#nu_{#mu};04}";       break;
+    case (kNuisFHCNuMuFlux05   ) : name = "f_{FHC;#nu_{#mu};05}";       break;
+    case (kNuisFHCNuMuFlux06   ) : name = "f_{FHC;#nu_{#mu};06}";       break;
+    case (kNuisFHCNuMuFlux07   ) : name = "f_{FHC;#nu_{#mu};07}";       break;
+    case (kNuisFHCNuMuFlux08   ) : name = "f_{FHC;#nu_{#mu};08}";       break;
+    case (kNuisFHCNuMuFlux09   ) : name = "f_{FHC;#nu_{#mu};09}";       break;
+    case (kNuisFHCNuMuBarFlux00) : name = "f_{FHC;#bar{#nu_{#mu}};00}"; break;
+    case (kNuisFHCNuMuBarFlux01) : name = "f_{FHC;#bar{#nu_{#mu}};01}"; break;
+    case (kNuisFHCNuMuBarFlux02) : name = "f_{FHC;#bar{#nu_{#mu}};02}"; break;
+    case (kNuisFHCNuMuBarFlux03) : name = "f_{FHC;#bar{#nu_{#mu}};03}"; break;
+    case (kNuisFHCNuMuBarFlux04) : name = "f_{FHC;#bar{#nu_{#mu}};04}"; break;
+    case (kNuisFHCNuEFlux00    ) : name = "f_{FHC;#nu_{e};00}";         break;
+    case (kNuisFHCNuEFlux01    ) : name = "f_{FHC;#nu_{e};01}";         break;
+    case (kNuisFHCNuEFlux02    ) : name = "f_{FHC;#nu_{e};02}";         break;
+
+    case (kNuisRHCNuMuFlux00   ) : name = "f_{RHC;#nu_{#mu};00}";       break;
+    case (kNuisRHCNuMuFlux01   ) : name = "f_{RHC;#nu_{#mu};01}";       break;
+    case (kNuisRHCNuMuFlux02   ) : name = "f_{RHC;#nu_{#mu};02}";       break;
+    case (kNuisRHCNuMuFlux03   ) : name = "f_{RHC;#nu_{#mu};03}";       break;
+    case (kNuisRHCNuMuFlux04   ) : name = "f_{RHC;#nu_{#mu};04}";       break;
+    case (kNuisRHCNuMuFlux05   ) : name = "f_{RHC;#nu_{#mu};05}";       break;
+    case (kNuisRHCNuMuFlux06   ) : name = "f_{RHC;#nu_{#mu};06}";       break;
+    case (kNuisRHCNuMuBarFlux00) : name = "f_{RHC;#bar{#nu_{#mu}};00}"; break;
+    case (kNuisRHCNuMuBarFlux01) : name = "f_{RHC;#bar{#nu_{#mu}};01}"; break;
+    case (kNuisRHCNuMuBarFlux02) : name = "f_{RHC;#bar{#nu_{#mu}};02}"; break;
+    case (kNuisRHCNuMuBarFlux03) : name = "f_{RHC;#bar{#nu_{#mu}};03}"; break;
+    case (kNuisRHCNuMuBarFlux04) : name = "f_{RHC;#bar{#nu_{#mu}};04}"; break;
+    case (kNuisRHCNuMuBarFlux05) : name = "f_{RHC;#bar{#nu_{#mu}};05}"; break;
+    case (kNuisRHCNuMuBarFlux06) : name = "f_{RHC;#bar{#nu_{#mu}};06}"; break;
+    case (kNuisRHCNuMuBarFlux07) : name = "f_{RHC;#bar{#nu_{#mu}};07}"; break;
+    case (kNuisRHCNuEFlux00    ) : name = "f_{RHC;#nu_{e};00}";         break;
+    case (kNuisRHCNuEFlux01    ) : name = "f_{RHC;#nu_{e};01}";         break;
+    case (kNuisRHCNuEFlux02    ) : name = "f_{RHC;#nu_{e};02}";         break;
+
+    case (kNuisNormCCQE        ) : name = "f_{CCQE}";                   break;
+    case (kNuisNormCC1piC      ) : name = "f_{CC1#pi^{#pm}}";           break;
+    case (kNuisNormCC1pi0      ) : name = "f_{CC1#pi^{0}}";             break;
+    case (kNuisNormCCoth       ) : name = "f_{CCother}";                break;
+    case (kNuisNormNC          ) : name = "f_{NC}";                     break;
+    default                      : name = "--";    
+  }
+
+  if(root) return name;
+
+  // replace # with \ -- later
+
+  return name;
 }
 //________________________________________________________________________________________
 PhysParamId_t util::NDPhysParamFromString(string inp_name)
