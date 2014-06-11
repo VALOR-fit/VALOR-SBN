@@ -36,6 +36,26 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisFHCNuEFlux00    ) : return "f_fhc_flux_nue00";     break;
     case (kNuisFHCNuEFlux01    ) : return "f_fhc_flux_nue01";     break;
     case (kNuisFHCNuEFlux02    ) : return "f_fhc_flux_nue02";     break;
+
+    case (kNuisRHCNuMuFlux00   ) : return "f_rhc_flux_numu00";    break;
+    case (kNuisRHCNuMuFlux01   ) : return "f_rhc_flux_numu01";    break;
+    case (kNuisRHCNuMuFlux02   ) : return "f_rhc_flux_numu02";    break;
+    case (kNuisRHCNuMuFlux03   ) : return "f_rhc_flux_numu03";    break;
+    case (kNuisRHCNuMuFlux04   ) : return "f_rhc_flux_numu04";    break;
+    case (kNuisRHCNuMuFlux05   ) : return "f_rhc_flux_numu05";    break;
+    case (kNuisRHCNuMuFlux06   ) : return "f_rhc_flux_numu06";    break;
+    case (kNuisRHCNuMuBarFlux00) : return "f_rhc_flux_numubar00"; break;
+    case (kNuisRHCNuMuBarFlux01) : return "f_rhc_flux_numubar01"; break;
+    case (kNuisRHCNuMuBarFlux02) : return "f_rhc_flux_numubar02"; break;
+    case (kNuisRHCNuMuBarFlux03) : return "f_rhc_flux_numubar03"; break;
+    case (kNuisRHCNuMuBarFlux04) : return "f_rhc_flux_numubar04"; break;
+    case (kNuisRHCNuMuBarFlux05) : return "f_rhc_flux_numubar05"; break;
+    case (kNuisRHCNuMuBarFlux06) : return "f_rhc_flux_numubar06"; break;
+    case (kNuisRHCNuMuBarFlux07) : return "f_rhc_flux_numubar07"; break;
+    case (kNuisRHCNuEFlux00    ) : return "f_rhc_flux_nue00";     break;
+    case (kNuisRHCNuEFlux01    ) : return "f_rhc_flux_nue01";     break;
+    case (kNuisRHCNuEFlux02    ) : return "f_rhc_flux_nue02";     break;
+
     case (kNuisNormCCQE        ) : return "f_ccqe";               break;
     case (kNuisNormCC1piC      ) : return "f_cc1pic";             break;
     case (kNuisNormCC1pi0      ) : return "f_cc1pi0";             break;

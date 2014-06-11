@@ -107,7 +107,9 @@ void tweak_nd_pdf_N
          err [ibeam][isample][0]->SetBinContent(ebin, nom_val + one_sigma);
          err [ibeam][isample][1]->SetBinContent(ebin, nom_val - one_sigma);
          nom_pdf_werr [ibeam][isample] -> SetBinError(ebin,one_sigma);
-         max [ibeam][isample] = TMath::Max(max[ibeam][isample], nom_val + one_sigma);
+         if( nom_pdf[ibeam][isample]->GetBinCenter(ebin) < enu_reco_max ) {
+            max [ibeam][isample] = TMath::Max(max[ibeam][isample], nom_val + one_sigma);
+         }
       }//ebin
     }//isample
   }//ibeam   

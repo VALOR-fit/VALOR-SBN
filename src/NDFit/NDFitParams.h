@@ -28,6 +28,7 @@
 #include <string>
 
 #include "Conventions/PhysParamId.h"
+#include "Conventions/BeamConf.h"
 #include "Conventions/ReacMode.h"
 #include "FitCore/PhysHypothesis.h"
 #include "NDFit/NDSampleBinning.h"
@@ -38,10 +39,10 @@ namespace valor {
 namespace conv {
 
 //
-// A very simple set of systematics for the 1st iteration
+// A simple set of flux and cross-section parameters for the 1st iteration
 //
 
-static const int kNNDFitParams = 23;
+static const int kNNDFitParams = 41;
 
 // FHC flux
 static const PhysParamId_t kNuisFHCNuMuFlux00    = kNuis000; 
@@ -62,12 +63,31 @@ static const PhysParamId_t kNuisFHCNuMuBarFlux04 = kNuis014;
 static const PhysParamId_t kNuisFHCNuEFlux00     = kNuis015; 
 static const PhysParamId_t kNuisFHCNuEFlux01     = kNuis016; 
 static const PhysParamId_t kNuisFHCNuEFlux02     = kNuis017; 
+// RHC flux
+static const PhysParamId_t kNuisRHCNuMuFlux00    = kNuis018; 
+static const PhysParamId_t kNuisRHCNuMuFlux01    = kNuis019; 
+static const PhysParamId_t kNuisRHCNuMuFlux02    = kNuis020; 
+static const PhysParamId_t kNuisRHCNuMuFlux03    = kNuis021; 
+static const PhysParamId_t kNuisRHCNuMuFlux04    = kNuis022; 
+static const PhysParamId_t kNuisRHCNuMuFlux05    = kNuis023; 
+static const PhysParamId_t kNuisRHCNuMuFlux06    = kNuis024; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux00 = kNuis025; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux01 = kNuis026; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux02 = kNuis027; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux03 = kNuis028; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux04 = kNuis029; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux05 = kNuis030; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux06 = kNuis031; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux07 = kNuis032; 
+static const PhysParamId_t kNuisRHCNuEFlux00     = kNuis033; 
+static const PhysParamId_t kNuisRHCNuEFlux01     = kNuis034; 
+static const PhysParamId_t kNuisRHCNuEFlux02     = kNuis035; 
 // Cross-section
-static const PhysParamId_t kNuisNormCCQE         = kNuis018; 
-static const PhysParamId_t kNuisNormCC1piC       = kNuis019; 
-static const PhysParamId_t kNuisNormCC1pi0       = kNuis020; 
-static const PhysParamId_t kNuisNormCCoth        = kNuis021; 
-static const PhysParamId_t kNuisNormNC           = kNuis022; 
+static const PhysParamId_t kNuisNormCCQE         = kNuis036; 
+static const PhysParamId_t kNuisNormCC1piC       = kNuis037; 
+static const PhysParamId_t kNuisNormCC1pi0       = kNuis038; 
+static const PhysParamId_t kNuisNormCCoth        = kNuis039; 
+static const PhysParamId_t kNuisNormNC           = kNuis040; 
 
 
 //
@@ -76,6 +96,7 @@ static const PhysParamId_t kNuisNormNC           = kNuis022;
 
 static const PhysParamId_t kNDFitParam[kNNDFitParams] = 
 {
+   // FHC
    kNuisFHCNuMuFlux00,
    kNuisFHCNuMuFlux01,
    kNuisFHCNuMuFlux02,
@@ -94,6 +115,26 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
    kNuisFHCNuEFlux00, 
    kNuisFHCNuEFlux01, 
    kNuisFHCNuEFlux02, 
+   // RHC
+   kNuisRHCNuMuFlux00,
+   kNuisRHCNuMuFlux01,
+   kNuisRHCNuMuFlux02,
+   kNuisRHCNuMuFlux03,
+   kNuisRHCNuMuFlux04,
+   kNuisRHCNuMuFlux05,
+   kNuisRHCNuMuFlux06,
+   kNuisRHCNuMuBarFlux00,
+   kNuisRHCNuMuBarFlux01,
+   kNuisRHCNuMuBarFlux02,
+   kNuisRHCNuMuBarFlux03,
+   kNuisRHCNuMuBarFlux04,
+   kNuisRHCNuMuBarFlux05,
+   kNuisRHCNuMuBarFlux06,
+   kNuisRHCNuMuBarFlux07,
+   kNuisRHCNuEFlux00, 
+   kNuisRHCNuEFlux01, 
+   kNuisRHCNuEFlux02, 
+   // Cross-sections
    kNuisNormCCQE, 
    kNuisNormCC1piC,
    kNuisNormCC1pi0,
@@ -122,6 +163,26 @@ static const double kNDFitParamAPrioriFracError[kNNDFitParams] =
    0.20, // kNuisFHCNuEFlux00, 
    0.20, // kNuisFHCNuEFlux01, 
    0.20, // kNuisFHCNuEFlux02, 
+
+   0.15, // kNuisRHCNuMuFlux00,
+   0.15, // kNuisRHCNuMuFlux01,
+   0.15, // kNuisRHCNuMuFlux02,
+   0.15, // kNuisRHCNuMuFlux03,
+   0.15, // kNuisRHCNuMuFlux04,
+   0.15, // kNuisRHCNuMuFlux05,
+   0.15, // kNuisRHCNuMuFlux06,
+   0.20, // kNuisRHCNuMuBarFlux00,
+   0.20, // kNuisRHCNuMuBarFlux01,
+   0.20, // kNuisRHCNuMuBarFlux02,
+   0.20, // kNuisRHCNuMuBarFlux03,
+   0.20, // kNuisRHCNuMuBarFlux04,
+   0.20, // kNuisRHCNuMuBarFlux05,
+   0.20, // kNuisRHCNuMuBarFlux06,
+   0.20, // kNuisRHCNuMuBarFlux07,
+   0.20, // kNuisRHCNuEFlux00, 
+   0.20, // kNuisRHCNuEFlux01, 
+   0.20, // kNuisRHCNuEFlux02, 
+
    0.15, // kNuisNormCCQE, 
    0.25, // kNuisNormCC1piC,
    0.25, // kNuisNormCC1pi0,
@@ -136,68 +197,130 @@ static const double kNDFitParamAPrioriFracError[kNNDFitParams] =
 //
 // for the time-being this does not need to be function of the sample id
 //
-static const bool kNDApplyFitParamToTemplate[kNReacModes][kNNDFitParams] = 
+static const bool kNDApplyFitParamToTemplate[kNBeamConf][kNReacModes][kNNDFitParams] = 
 {
-  // sample: any
-  //{
+  // FHC
+  {
     // Systematics
-    //                      FHC flux                            XSec
-    //|--------------------------------------------------|  |-----------|
-    //            numu                numubar       nue/b 
-    //|--------------------------|  |-----------|  |-----|  
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, // kmNuMuCCQE
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, // kmNuMuCCMEC
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, // kmNuMuCC1piC
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }, // kmNuMuCC1pi0
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuCC2piC
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuCC2pi0
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuCCpiCpi0
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuCCcoh
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuCCoth
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuNC1piC
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuNC1pi0
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuNCcoh
-    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuNCoth
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0 }, // kmNuMuBarCCQE
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0 }, // kmNuMuBarCCMEC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0 }, // kmNuMuBarCC1piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0 }, // kmNuMuBarCC1pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuBarCC2piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuBarCC2pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuBarCCpiCpi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuBarCCcoh
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // kmNuMuBarCCoth
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuBarNC1piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuBarNC1pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuBarNCcoh
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1 }, // kmNuMuBarNCoth
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, // kmNuECCQE
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, // kmNuECCMEC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0 }, // kmNuECC1piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0 }, // kmNuECC1pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuECC2piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuECC2pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuECCpiCpi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuECCcoh
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuECCoth
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuENC1piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuENC1pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuENCcoh
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuENCoth
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, // kmNuEBarCCQE
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, // kmNuEBarCCMEC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0 }, // kmNuEBarCC1piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0 }, // kmNuEBarCC1pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuEBarCC2piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuEBarCC2pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuEBarCCpiCpi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuEBarCCcoh
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0 }, // kmNuEBarCCoth
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuEBarNC1piC
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuEBarNC1pi0
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }, // kmNuEBarNCcoh
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1 }  // kmNuEBarNCoth
-  //}
+    //             FHC flux                             RHC flux                  XSec
+    //|---------------------------------|  |---------------------------------|  |-------|
+    //       numu          numubar  nue/b      numu          numubar     nue/b
+    //|-----------------| |-------| |---|  |-----------| |-------------| |---|
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuMuCCQE
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuMuCCMEC
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,1,0,0,0 }, // kmNuMuCC1piC
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,1,0,0 }, // kmNuMuCC1pi0
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCC2piC
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCC2pi0
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCCpiCpi0
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCCcoh
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCCoth
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNC1piC
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNC1pi0
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNCcoh
+    { 1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNCoth
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuMuBarCCQE
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuMuBarCCMEC
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,1,0,0,0 }, // kmNuMuBarCC1piC
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,1,0,0 }, // kmNuMuBarCC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCC2piC
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCC2pi0
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCCpiCpi0
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCCcoh
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCCoth
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNC1piC
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNCcoh
+    { 0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuECCQE
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuECCMEC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,1,0,0,0 }, // kmNuECC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,1,0,0 }, // kmNuECC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuECC2piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuECC2pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuECCpiCpi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuECCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuECCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuENC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuENC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuENCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuENCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuEBarCCQE
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuEBarCCMEC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,1,0,0,0 }, // kmNuEBarCC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,1,0,0 }, // kmNuEBarCC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuEBarCC2piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuEBarCC2pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuEBarCCpiCpi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuEBarCCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuEBarCCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuEBarNC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuEBarNC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuEBarNCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }  // kmNuEBarNCoth
+  },
+
+  // RHC
+  {
+    // Systematics
+    //             FHC flux                             RHC flux                  XSec
+    //|---------------------------------|  |---------------------------------|  |-------|
+    //       numu          numubar  nue/b      numu          numubar     nue/b
+    //|-----------------| |-------| |---|  |-----------| |-------------| |---|
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuMuCCQE
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 1,0,0,0,0 }, // kmNuMuCCMEC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,1,0,0,0 }, // kmNuMuCC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,1,0,0 }, // kmNuMuCC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCC2piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCC2pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCCpiCpi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,1,0 }, // kmNuMuCCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,1 }, // kmNuMuNCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0, 1,0,0,0,0 }, // kmNuMuBarCCQE
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 1,0,0,0,0 }, // kmNuMuBarCCMEC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,1,0,0,0 }, // kmNuMuBarCC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,1,0,0 }, // kmNuMuBarCC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCC2piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCC2pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCCpiCpi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,1,0 }, // kmNuMuBarCCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0, 0,0,0,0,1 }, // kmNuMuBarNCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 1,0,0,0,0 }, // kmNuECCQE
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 1,0,0,0,0 }, // kmNuECCMEC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,1,0,0,0 }, // kmNuECC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,1,0,0 }, // kmNuECC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuECC2piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuECC2pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuECCpiCpi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuECCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuECCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }, // kmNuENC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }, // kmNuENC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }, // kmNuENCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }, // kmNuENCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 1,0,0,0,0 }, // kmNuEBarCCQE
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 1,0,0,0,0 }, // kmNuEBarCCMEC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,1,0,0,0 }, // kmNuEBarCC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,1,0,0 }, // kmNuEBarCC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuEBarCC2piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuEBarCC2pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuEBarCCpiCpi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuEBarCCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,1,0 }, // kmNuEBarCCoth
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }, // kmNuEBarNC1piC
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }, // kmNuEBarNC1pi0
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }, // kmNuEBarNCcoh
+    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1, 0,0,0,0,1 }  // kmNuEBarNCoth
+  }
+
 };
 
 //
@@ -224,6 +347,26 @@ static const bool kNDFitParamEtrueDependence[kNNDFitParams] =
    true,       // kNuisFHCNuEFlux00 
    true,       // kNuisFHCNuEFlux01 
    true,       // kNuisFHCNuEFlux02 
+
+   true,       // kNuisRHCNuMuFlux00
+   true,       // kNuisRHCNuMuFlux01
+   true,       // kNuisRHCNuMuFlux02
+   true,       // kNuisRHCNuMuFlux03
+   true,       // kNuisRHCNuMuFlux04
+   true,       // kNuisRHCNuMuFlux05
+   true,       // kNuisRHCNuMuFlux06
+   true,       // kNuisRHCNuMuBarFlux00
+   true,       // kNuisRHCNuMuBarFlux01
+   true,       // kNuisRHCNuMuBarFlux02
+   true,       // kNuisRHCNuMuBarFlux03
+   true,       // kNuisRHCNuMuBarFlux04
+   true,       // kNuisRHCNuMuBarFlux05
+   true,       // kNuisRHCNuMuBarFlux06
+   true,       // kNuisRHCNuMuBarFlux07
+   true,       // kNuisRHCNuEFlux00 
+   true,       // kNuisRHCNuEFlux01 
+   true,       // kNuisRHCNuEFlux02 
+
    false,      // kNuisNormCCQE 
    false,      // kNuisNormCC1piC
    false,      // kNuisNormCC1pi0
@@ -244,14 +387,34 @@ static const double kNDFitParamEtrueRange[kNNDFitParams][2] =
    {  7.0, 10.0},       // kNuisFHCNuMuFlux07
    { 10.0, 25.0},       // kNuisFHCNuMuFlux08
    { 25.0, kEtrueMax }, // kNuisFHCNuMuFlux09 
-   {  0.0,  1.5},       // kNuisFHCNuMuBarFlux00
-   {  1.5,  3.0},       // kNuisFHCNuMuBarFlux01
-   {  3.0,  6.0},       // kNuisFHCNuMuBarFlux02
-   {  6.0, 10.0},       // kNuisFHCNuMuBarFlux03
+   {  0.0,  3.0},       // kNuisFHCNuMuBarFlux00
+   {  3.0,  5.0},       // kNuisFHCNuMuBarFlux01
+   {  5.0,  7.0},       // kNuisFHCNuMuBarFlux02
+   {  7.0, 10.0},       // kNuisFHCNuMuBarFlux03
    { 10.0, kEtrueMax},  // kNuisFHCNuMuBarFlux04
-   {  0.0,  3.0},       // kNuisFHCNuEFlux00 
-   {  3.0, 10.0},       // kNuisFHCNuEFlux01 
+   {  0.0,  5.0},       // kNuisFHCNuEFlux00 
+   {  5.0, 10.0},       // kNuisFHCNuEFlux01 
    { 10.0, kEtrueMax},  // kNuisFHCNuEFlux02 
+
+   {  0.0,  3.0},       // kNuisRHCNuMuFlux00
+   {  3.0,  4.0},       // kNuisRHCNuMuFlux01
+   {  4.0,  5.0},       // kNuisRHCNuMuFlux02
+   {  5.0,  7.0},       // kNuisRHCNuMuFlux03
+   {  7.0, 10.0},       // kNuisRHCNuMuFlux04
+   { 10.0, 25.0},       // kNuisRHCNuMuFlux05
+   { 25.0, kEtrueMax},  // kNuisRHCNuMuFlux06
+   {  0.0,  2.0},       // kNuisRHCNuMuBarFlux00
+   {  2.0,  3.0},       // kNuisRHCNuMuBarFlux01
+   {  3.0,  4.0},       // kNuisRHCNuMuBarFlux02
+   {  4.0,  5.0},       // kNuisRHCNuMuBarFlux03
+   {  5.0,  7.0},       // kNuisRHCNuMuBarFlux04
+   {  7.0, 10.0},       // kNuisRHCNuMuBarFlux05
+   { 10.0, 25.0},       // kNuisRHCNuMuBarFlux06
+   { 25.0, kEtrueMax},  // kNuisRHCNuMuBarFlux07
+   {  0.0,  5.0},       // kNuisRHCNuEFlux00 
+   {  5.0, 10.0},       // kNuisRHCNuEFlux01 
+   { 10.0, kEtrueMax},  // kNuisRHCNuEFlux02 
+
    {  0.0, kEtrueMax},  // kNuisNormCCQE 
    {  0.0, kEtrueMax},  // kNuisNormCC1piC
    {  0.0, kEtrueMax},  // kNuisNormCC1pi0
@@ -284,6 +447,26 @@ static const double kNDFitParamMarginalize[kNNDFitParams] =
    false,  // kNuisFHCNuEFlux00 
    false,  // kNuisFHCNuEFlux01 
    false,  // kNuisFHCNuEFlux02 
+
+   false,  // kNuisRHCNuMuFlux00
+   false,  // kNuisRHCNuMuFlux01
+   false,  // kNuisRHCNuMuFlux02
+   false,  // kNuisRHCNuMuFlux03
+   false,  // kNuisRHCNuMuFlux04
+   false,  // kNuisRHCNuMuFlux05
+   false,  // kNuisRHCNuMuFlux06
+   false,  // kNuisRHCNuMuBarFlux00
+   false,  // kNuisRHCNuMuBarFlux01
+   false,  // kNuisRHCNuMuBarFlux02
+   false,  // kNuisRHCNuMuBarFlux03
+   false,  // kNuisRHCNuMuBarFlux04
+   false,  // kNuisRHCNuMuBarFlux05
+   false,  // kNuisRHCNuMuBarFlux06
+   false,  // kNuisRHCNuMuBarFlux07
+   false,  // kNuisRHCNuEFlux00 
+   false,  // kNuisRHCNuEFlux01 
+   false,  // kNuisRHCNuEFlux02 
+
    false,  // kNuisNormCCQE 
    false,  // kNuisNormCC1piC
    false,  // kNuisNormCC1pi0
