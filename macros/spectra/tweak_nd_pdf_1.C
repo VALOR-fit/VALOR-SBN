@@ -78,7 +78,7 @@ void tweak_nd_pdf_1
     cout << "Physics hypothesis: " << ph;
 
     // Generate predictions
-    model->Generate(ph);
+    model->Generate(ph,"+SB");
 
     // Array to store results
     TObjArray * array = new TObjArray();

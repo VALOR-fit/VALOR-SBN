@@ -54,7 +54,7 @@ void tweak_nd_pdf_N
     PhysHypothesis ph = util::GetPhysHypothesis(opt);
 
     // Generate predictions
-    model->Generate(ph);
+    model->Generate(ph,"+SB");
 
     // Array to store results
     TObjArray * array = new TObjArray();

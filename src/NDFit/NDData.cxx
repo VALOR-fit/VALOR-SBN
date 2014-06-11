@@ -162,7 +162,7 @@ bool NDData::Generate(
   LOG("NDData",pINFO) << "Generating a toy-MC expt with the following params: " << fp;
   LOG("NDData",pINFO) << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
 
-  bool ok = model_abc->Generate(fp);
+  bool ok = model_abc->Generate(fp,"+SB");
   if(!ok) {
     LOG("NDData",pERROR) 
        << "Could not generate predictions with model: " << model_abc->Name()
@@ -179,7 +179,7 @@ bool NDData::Generate(
   LOG("NDData",pINFO) << "Generating a toy-MC expt with the following params: " << ph;
   LOG("NDData",pINFO) << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
 
-  bool ok = model_abc->Generate(ph);
+  bool ok = model_abc->Generate(ph,"+SB");
   if(!ok) {
     LOG("NDData",pERROR) 
        << "Could not generate predictions with model: " << model_abc->Name()
@@ -328,6 +328,7 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
       }//izone
     }//isample
   }//ibeam
+  S = TMath::Max(0.,S);
 
   double Sp   = model_abc->GetFitStatisticPenalty();
   double Stot = S+Sp;

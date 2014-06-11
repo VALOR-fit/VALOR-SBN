@@ -61,4 +61,6 @@ void run_fit
   // Do the fit
   cout << "Running fitter" << endl;
   fitter->DoTheFit();
+
+  fp->GetCovMatrix()->Print();
 }

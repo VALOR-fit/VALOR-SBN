@@ -30,7 +30,7 @@ void write_nd_pdf
   PhysHypothesis ph; // null, get default predictions
 
   // Generate predictions
-  model->Generate(ph);
+  model->Generate(ph,"+SB");
 
   // Write stuff out
   model->Write("valor.root","valor",write_opt);

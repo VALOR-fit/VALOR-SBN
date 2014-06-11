@@ -46,9 +46,7 @@ FitModelABC()
 {
   this->Init();
   this->Book();
-
-//why is this causing a crash??
-//this->Zero();
+  this->Zero();
 }
 //________________________________________________________________________________________
 NDModel::~NDModel() 
@@ -68,6 +66,8 @@ string NDModel::Name(void)
 //________________________________________________________________________________________
 bool NDModel::Read(string file, Option_t * /*opt*/)
 {
+  this->Zero();
+
   LOG("NDModel",pNOTICE) << "Reading configuration from XML file [" << file << "]";
 
   // Parse the input XML configuration file
@@ -138,8 +138,12 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
-bool NDModel::Generate(const PhysHypothesis & ph)
+bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
 {
+// input opt: 
+// - Leave null for the fit
+// - Use "+SB" to generate finely-binned predictions too (for plotting or toy-MC generation)
+
   fPhysHypothesis.Copy(ph);
   //PhysHypothesis_t hyp = fPhysHypothesis.Hypothesis();
 
@@ -147,9 +151,9 @@ bool NDModel::Generate(const PhysHypothesis & ph)
      << "Generating model predictions for the input hypothesis: " 
      << fPhysHypothesis;
 
-  this->ApplySystematics("+SB");  // `tun' MC templates --> `sys' MC templates
-  this->ApplyPhysics("+SB");      // `sys' MC templates --> `fin' MC templates
-  this->UpdatePDFs("+SB");        // `fin' MC templates --> p.d.f
+//this->ApplySystematics(opt);  // `tun' MC templates --> `sys' MC templates
+  this->ApplyPhysics(opt);      // `sys' MC templates --> `fin' MC templates
+  this->UpdatePDFs(opt);        // `fin' MC templates --> p.d.f
 
   LOG("NDModel",pINFO) << "Done generating predictions";
 
@@ -190,13 +194,13 @@ void NDModel::PrintSystematics(ostream & stream) const
   stream << endl;
 }
 //________________________________________________________________________________________
-bool NDModel::Generate (const FitParamList & fp)
+bool NDModel::Generate (const FitParamList & fp, Option_t * opt)
 {
   // extract the values of params driving the oscillation, decoherence or decay model
   PhysHypothesis ph(fp);
 
   // call the main Generate() method
-  return this->Generate(ph);
+  return this->Generate(ph, opt);
 }
 //________________________________________________________________________________________
 bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
@@ -894,30 +898,38 @@ void NDModel::Clean(void)
 void NDModel::Zero(void)
 {
   LOG("NDModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
-/*
-
-// Add input Option_t to zero-out selectively MC templates or PDFs
-//
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
      for(int imode = 0; imode < kNReacModes; imode++) {
-       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         bool is_null = fNullMC[ibeam][isample][imode][izone];
-         if(!is_null) {
-             // MC templates
-             fMCTNom[ibeam][isample][imode][izone]->SetAll(0.);
-             fMCTTun[ibeam][isample][imode][izone]->SetAll(0.);
-             fMCTSys[ibeam][isample][imode][izone]->SetAll(0.);
-             fMCTFin[ibeam][isample][imode][izone]->SetAll(0.);
-             // PDF
-             fMCPDFComp[ibeam][isample][imode][izone]->SetAll(0.);
-         }//!null
-       }//izone
+
+        if(!fMCTSbNull[ibeam][isample][imode]) {
+            fMCTSbNom   [ibeam][isample][imode] -> SetAll(0.);
+            fMCTSbTun   [ibeam][isample][imode] -> SetAll(0.);
+            fMCTSbSys   [ibeam][isample][imode] -> SetAll(0.);
+            fMCTSbFin   [ibeam][isample][imode] -> SetAll(0.);
+            fMCPDFSbComp[ibeam][isample][imode] -> SetAll(0.);
+        }
+        if(!fMCPDFSbTotNull[ibeam][isample]) {
+              fMCPDFSbTot[ibeam][isample] -> SetAll(0.);
+        }
+
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          if(!fMCTNull[ibeam][isample][imode][izone]) {
+              fMCTNom   [ibeam][isample][imode][izone] -> SetAll(0.);
+              fMCTTun   [ibeam][isample][imode][izone] -> SetAll(0.); 
+              fMCTSys   [ibeam][isample][imode][izone] -> SetAll(0.);
+              fMCTFin   [ibeam][isample][imode][izone] -> SetAll(0.);
+              fMCPDFComp[ibeam][isample][imode][izone] -> SetAll(0.);
+          }
+          if(!fMCPDFTotNull[ibeam][isample][izone]) {
+              fMCPDFTot[ibeam][isample][izone] -> SetAll(0.);
+          }          
+        }//izone
+
      }//imode
    }//isample
   }//ibeam
-*/
 }
 //________________________________________________________________________________________
 void NDModel::Fill(TTree * t, int ibeam)
@@ -1165,7 +1177,10 @@ void NDModel::ApplyPhysics(Option_t * option)
 // This method maps sys -> fin MC templates.
 // Applying correlated flux and cross-section systematics
 
-  LOG("NDModel",pINFO) << "Applying physics params (option = " << option << ")";
+  LOG("NDModel",pINFO) 
+     << "Applying physics params (option: " 
+     << ((option) ? option : "")
+     << ")";
 
   double epsilon = 1E-4;
 
