@@ -137,10 +137,6 @@ private:
   VALORArray * fMCPDFSbTot     [conv::kNBeamConf][conv::kNNDSamples];                    // total
   VALORArray * fMCPDFSbComp    [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; // components
 
-  // 
-//  double fPhysParamCurrVal[conv::kNNDFitParams]; // current value of physics params
-//  double fPhysParamFracErr[conv::kNNDFitParams]; // current value of physics params
-
   // Input VALOR MC DSTs
   bool fUseMCDST;
   TTree * fMCDST[conv::kNBeamConf];

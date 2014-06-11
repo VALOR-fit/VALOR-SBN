@@ -652,7 +652,21 @@ bool NDModel::Write(
 //________________________________________________________________________________________
 double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 {
-  return 0;
+  double Sp = 0;
+
+  for(int ip = 0; ip < kNNDFitParams; ip++) {
+      PhysParamId_t p = kNDFitParam[ip];
+      if(p == kPhypUndefined) continue;
+      double sig = kNDFitParamAPrioriFracError[ip];
+      double val = fPhysHypothesis.CurrValue(p);
+      double def = 1;
+      double dSp = TMath::Power((val-def)/sig, 2.);
+      Sp += dSp;
+  }//ip
+
+  LOG("NDModel",pDEBUG) << "Current fit statistic (systematic term) = " << Sp;
+
+  return Sp;
 }
 //________________________________________________________________________________________
 //

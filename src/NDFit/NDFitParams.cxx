@@ -165,3 +165,27 @@ PhysHypothesis util::GetPhysHypothesis (Option_t * opt)
   return ph;
 }
 //________________________________________________________________________________________
+FitParamList * util::GetFitParameterList (Option_t * opt)
+{
+  string option = ((opt) ? opt : "default");
+
+  if(option.find("default") != string::npos) {
+     FitParamList * fparm = new FitParamList(kNNDFitParams);
+     for(int ip = 0; ip < kNNDFitParams; ip++) {
+        PhysParamId_t p = kNDFitParam[ip];
+        if(p == kPhypUndefined) continue; // note that if in fact there were gaps in the list the logic would be screwed - fix later
+        double init = 1.0;
+        double min  = 0.0;
+        double max  = 2.0;
+        double step = 1E-4;
+        bool   fix  = false;
+        bool   nuis = false;
+        fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
+     }//ip
+     return fparm;
+  }
+
+  return 0;
+}
+//________________________________________________________________________________________
+

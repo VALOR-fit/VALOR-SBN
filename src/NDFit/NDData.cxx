@@ -55,7 +55,6 @@ bool NDData::Read(string /*file*/, Option_t * /*opt*/)
 //________________________________________________________________________________________
 bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
-
   LOG("NDData",pINFO) << "Writing results to input object array...";
 
   if(!array) {
@@ -171,7 +170,7 @@ bool NDData::Generate(
     return false;
   }
 
-  return this->Generate(model_abc,fp,fluctuate);
+  return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
 bool NDData::Generate(
@@ -197,12 +196,18 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
   TObjArray * array = new TObjArray();
   model_abc->Write(array, "curr", "pdft_vf +SB");
   
+  this->Zero("all");
+
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
      BeamConf_t b = kNDBeamConf[ibeam];
      if(b == kbUndefined) continue;
      for(int isample = 0; isample < kNNDSamples; isample++) {
         NDSample_t s = kNDSample[isample];
         if(s == ksNDUndefined) continue;
+        LOG("NDData",pINFO) 
+          << "Generating toy-MC for: " 
+          << util::AsString(b) << " / " << util::AsString(s);
+
         const char * name = Form("curr_pdfsbt_vf_%s_%s", 
            util::AsString(b).c_str(), util::AsString(s).c_str());
         VALORArray * pdf = (VALORArray*) array->FindObject(name);
@@ -213,11 +218,9 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
             double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
             fDataSb[ibeam][isample]->SetEntry(ndata,ier,iy);
 
-
-//
-// HERE: MUST RESET FIRST
-//
-//
+            LOG("NDData",pDEBUG) 
+              << "(E_reco idx = " << ier << ", y_reco idx = " << iy 
+              << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
 
             // Map to distributions with optimized binning
             //
@@ -326,6 +329,13 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
     }//isample
   }//ibeam
 
+  double Sp   = model_abc->GetFitStatisticPenalty();
+  double Stot = S+Sp;
+
+  LOG("NDData",pINFO) 
+    << "Current fit statistic = " << Stot
+    << " (stat term = " << S << ", syst term = " << Sp << ")";
+
   return S;
 }
 //________________________________________________________________________________________
@@ -370,6 +380,8 @@ void NDData::Book(void)
 //________________________________________________________________________________________
 void NDData::Clean(void)
 {
+  LOG("NDData",pDEBUG) << "Cleaning-up...";
+
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     for(int isample = 0; isample < kNNDSamples; isample++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -381,6 +393,31 @@ void NDData::Clean(void)
       if(!fDataSbNull [ibeam][isample]) {
           fDataSbNull [ibeam][isample] = true;
           fDataSb     [ibeam][isample] = 0;
+      }
+    }//isample
+  }//ibeam
+}
+//________________________________________________________________________________________
+void NDData::Zero(Option_t * opt)
+{
+  LOG("NDData",pDEBUG) << "Zeroing-out (option: " << opt << ") ...";
+
+  string option = (opt) ? opt : "all";
+
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          if(!fDataNull[ibeam][isample][izone]) {
+            fData[ibeam][isample][izone]->SetAll(0.);
+          }
+      }//izone
+      if(!fDataSbNull[ibeam][isample]) {
+        fDataSb[ibeam][isample]->SetAll(0.);
       }
     }//isample
   }//ibeam

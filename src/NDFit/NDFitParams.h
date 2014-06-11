@@ -27,10 +27,14 @@
 
 #include <string>
 
+//fmwk
 #include "Conventions/PhysParamId.h"
+#include "FitCore/FitParamList.h"
+#include "FitCore/PhysHypothesis.h"
+
+//lbnx
 #include "Conventions/BeamConf.h"
 #include "Conventions/ReacMode.h"
-#include "FitCore/PhysHypothesis.h"
 #include "NDFit/NDSampleBinning.h"
 
 using std::string;
@@ -482,7 +486,8 @@ namespace util {
 
   conv::PhysParamId_t NDPhysParamFromString(string p);
 
-  PhysHypothesis GetPhysHypothesis (Option_t * opt = 0);
+  PhysHypothesis GetPhysHypothesis   (Option_t * opt = 0);
+  FitParamList * GetFitParameterList (Option_t * opt = 0);
 
 } //util
 

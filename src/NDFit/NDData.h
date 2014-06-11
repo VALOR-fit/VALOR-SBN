@@ -72,6 +72,7 @@ private:
   void Init  (void);
   void Book  (void);
   void Clean (void);
+  void Zero  (Option_t * opt);
 
   // Data distributions:
   // Each distribution is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
