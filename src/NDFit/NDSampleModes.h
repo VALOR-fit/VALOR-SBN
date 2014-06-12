@@ -344,6 +344,82 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
+  // sample: ksNDNuMuCC1piC1pi0
+  {
+    kmNuMuCCQE,            
+    kmNuMuCCMEC,           
+    kmNuMuCC1piC,          
+    kmNuMuCC1pi0,          
+    kmNuMuCC2piC,          
+    kmNuMuCC2pi0,          
+    kmNuMuCCpiCpi0,        
+    kmNuMuCCcoh,           
+    kmNuMuCCoth,           
+  //kmNuMuNCEL,            
+  //kmNuMuNCMEC,           
+    kmNuMuNC1piC,          
+    kmNuMuNC1pi0,          
+  //kmNuMuNC2piC,          
+  //kmNuMuNC2pi0,          
+  //kmNuMuNCpiCpi0,        
+    kmNuMuNCcoh,           
+    kmNuMuNCoth,           
+    kmNuMuBarCCQE,         
+    kmNuMuBarCCMEC,        
+    kmNuMuBarCC1piC,       
+    kmNuMuBarCC1pi0,       
+    kmNuMuBarCC2piC,       
+    kmNuMuBarCC2pi0,       
+    kmNuMuBarCCpiCpi0,     
+    kmNuMuBarCCcoh,        
+    kmNuMuBarCCoth,        
+  //kmNuMuBarNCEL,         
+  //kmNuMuBarNCMEC,        
+    kmNuMuBarNC1piC,       
+    kmNuMuBarNC1pi0,       
+  //kmNuMuBarNC2piC,       
+  //kmNuMuBarNC2pi0,       
+  //kmNuMuBarNCpiCpi0,     
+    kmNuMuBarNCcoh,        
+    kmNuMuBarNCoth,        
+    kmNuECCQE,             
+    kmNuECCMEC,            
+    kmNuECC1piC,           
+    kmNuECC1pi0,           
+    kmNuECC2piC,           
+    kmNuECC2pi0,           
+    kmNuECCpiCpi0,         
+    kmNuECCcoh,            
+    kmNuECCoth,            
+  //kmNuENCEL,             
+  //kmNuENCMEC,           
+    kmNuENC1piC,           
+    kmNuENC1pi0,           
+  //kmNuENC2piC,           
+  //kmNuENC2pi0,           
+  //kmNuENCpiCpi0,         
+    kmNuENCcoh,            
+    kmNuENCoth,            
+    kmNuEBarCCQE,          
+    kmNuEBarCCMEC,         
+    kmNuEBarCC1piC,        
+    kmNuEBarCC1pi0,        
+    kmNuEBarCC2piC,        
+    kmNuEBarCC2pi0,        
+    kmNuEBarCCpiCpi0,      
+    kmNuEBarCCcoh,         
+    kmNuEBarCCoth,         
+  //kmNuEBarNCEL,          
+  //kmNuEBarNCMEC,         
+    kmNuEBarNC1piC,        
+    kmNuEBarNC1pi0,        
+  //kmNuEBarNC2piC,        
+  //kmNuEBarNC2pi0,        
+  //kmNuEBarNCpiCpi0,      
+    kmNuEBarNCcoh,         
+    kmNuEBarNCoth          
+  },
+
   // sample: ksNDNuMuCCoth
   {
     kmNuMuCCQE,            
@@ -482,6 +558,18 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNNDSamples][kNReacModesCoa
     kmcUndefined           
   },
 
+  // sample: ksNDNuMuCC1piC1pi0
+  {
+    kmcNuMuCCQE,    
+    kmcNuMuCC1pi,   
+    kmcNuMuCC2pi,   
+    kmcNuMuCCoth,   
+    kmcNuMuBarCC,   
+    kmcNuENueBarCC, 
+    kmcNC,
+    kmcUndefined           
+  },
+
   // sample: ksNDNuMuCCoth
   {
     kmcNuMuCCQE,    
@@ -539,6 +627,18 @@ static const int kNDReactionModesCoarseFormatting[kNNDSamples][kNReacModesCoarse
   },
 
   // sample: ksNDNuMuCC1pi0
+  {
+    { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
+    { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
+    { kBlack, kBlue,     3005 }, // kmcNuMuCC2pi
+    { kBlack, kGreen,    3007 }, // kmcNuMuCCoth
+    { kBlack, kMagenta,  3001 }, // kmcNuMuBarCC  
+    { kBlack, kViolet-1, 3001 }, // kmcNuENueBarCC
+    { kBlack, kRed,      3001 }, // kmcNC           
+    {0,0,0}
+  },
+
+  // sample: ksNDNuMuCC1piC1pi0
   {
     { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
     { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
@@ -800,6 +900,82 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNNDSamples][kNReacModes] 
   },
 
   // sample: ksNDNuMuCC1pi0
+  {
+    kmcNuMuCCQE,    // kmNuMuCCQE            
+    kmcNuMuCCQE,    // kmNuMuCCMEC           
+    kmcNuMuCC1pi,   // kmNuMuCC1piC          
+    kmcNuMuCC1pi,   // kmNuMuCC1pi0          
+    kmcNuMuCC2pi,   // kmNuMuCC2piC          
+    kmcNuMuCC2pi,   // kmNuMuCC2pi0          
+    kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
+    kmcNuMuCCoth,   // kmNuMuCCcoh           
+    kmcNuMuCCoth,   // kmNuMuCCoth           
+  //kmcNC,          // kmNuMuNCEL            
+  //kmcNC,          // kmNuMuNCMEC           
+    kmcNC,          // kmNuMuNC1piC          
+    kmcNC,          // kmNuMuNC1pi0          
+  //kmcNC,          // kmNuMuNC2piC          
+  //kmcNC,          // kmNuMuNC2pi0          
+  //kmcNC,          // kmNuMuNCpiCpi0        
+    kmcNC,          // kmNuMuNCcoh           
+    kmcNC,          // kmNuMuNCoth           
+    kmcNuMuBarCC,   // kmNuMuBarCCQE         
+    kmcNuMuBarCC,   // kmNuMuBarCCMEC        
+    kmcNuMuBarCC,   // kmNuMuBarCC1piC       
+    kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
+    kmcNuMuBarCC,   // kmNuMuBarCC2piC       
+    kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
+    kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
+    kmcNuMuBarCC,   // kmNuMuBarCCcoh        
+    kmcNuMuBarCC,   // kmNuMuBarCCoth        
+  //kmcNC,          // kmNuMuBarNCEL         
+  //kmcNC,          // kmNuMuBarNCMEC        
+    kmcNC,          // kmNuMuBarNC1piC       
+    kmcNC,          // kmNuMuBarNC1pi0       
+  //kmcNC,          // kmNuMuBarNC2piC       
+  //kmcNC,          // kmNuMuBarNC2pi0       
+  //kmcNC,          // kmNuMuBarNCpiCpi0     
+    kmcNC,          // kmNuMuBarNCcoh        
+    kmcNC,          // kmNuMuBarNCoth        
+    kmcNuENueBarCC, // kmNuECCQE             
+    kmcNuENueBarCC, // kmNuECCMEC            
+    kmcNuENueBarCC, // kmNuECC1piC           
+    kmcNuENueBarCC, // kmNuECC1pi0           
+    kmcNuENueBarCC, // kmNuECC2piC           
+    kmcNuENueBarCC, // kmNuECC2pi0           
+    kmcNuENueBarCC, // kmNuECCpiCpi0         
+    kmcNuENueBarCC, // kmNuECCcoh            
+    kmcNuENueBarCC, // kmNuECCoth            
+  //kmcNC,          // kmNuENCEL             
+  //kmcNC,          // kmNuENCMEC           
+    kmcNC,          // kmNuENC1piC           
+    kmcNC,          // kmNuENC1pi0           
+  //kmcNC,          // kmNuENC2piC           
+  //kmcNC,          // kmNuENC2pi0           
+  //kmcNC,          // kmNuENCpiCpi0         
+    kmcNC,          // kmNuENCcoh            
+    kmcNC,          // kmNuENCoth            
+    kmcNuENueBarCC, // kmNuEBarCCQE          
+    kmcNuENueBarCC, // kmNuEBarCCMEC         
+    kmcNuENueBarCC, // kmNuEBarCC1piC        
+    kmcNuENueBarCC, // kmNuEBarCC1pi0        
+    kmcNuENueBarCC, // kmNuEBarCC2piC        
+    kmcNuENueBarCC, // kmNuEBarCC2pi0        
+    kmcNuENueBarCC, // kmNuEBarCCpiCpi0      
+    kmcNuENueBarCC, // kmNuEBarCCcoh         
+    kmcNuENueBarCC, // kmNuEBarCCoth         
+  //kmcNC,          // kmNuEBarNCEL          
+  //kmcNC,          // kmNuEBarNCMEC         
+    kmcNC,          // kmNuEBarNC1piC        
+    kmcNC,          // kmNuEBarNC1pi0        
+  //kmcNC,          // kmNuEBarNC2piC        
+  //kmcNC,          // kmNuEBarNC2pi0        
+  //kmcNC,          // kmNuEBarNCpiCpi0      
+    kmcNC,          // kmNuEBarNCcoh         
+    kmcNC           // kmNuEBarNCoth          
+  },
+
+  // sample: ksNDNuMuCC1piC1pi0
   {
     kmcNuMuCCQE,    // kmNuMuCCQE            
     kmcNuMuCCQE,    // kmNuMuCCMEC           

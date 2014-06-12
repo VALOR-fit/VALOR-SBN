@@ -14,5 +14,6 @@
   <priority msgstream="NDModel">      INFO     </priority>
   <priority msgstream="NDArrIdx">     NOTICE   </priority>
   <priority msgstream="NDBinning">    NOTICE   </priority>
+  <priority msgstream="HACK">         FATAL    </priority>
 
 </messenger_config>

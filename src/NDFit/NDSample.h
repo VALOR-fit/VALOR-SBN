@@ -57,7 +57,7 @@ NDSample_t;
 // Define list of samples used in present analysis
 // Note: the order of samples in the array is important for other arrays
 //
-static const int kNNDSamples  = 5; 
+static const int kNNDSamples  = 6; 
 
 static const NDSample_t kNDSample[kNNDSamples] =
 {
@@ -65,6 +65,7 @@ static const NDSample_t kNDSample[kNNDSamples] =
    ksNDNuMuCC2trkQE, 
    ksNDNuMuCC1piC,
    ksNDNuMuCC1pi0,
+   ksNDNuMuCC1piC1pi0,
    ksNDNuMuCCoth
 };
 

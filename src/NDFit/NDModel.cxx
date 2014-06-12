@@ -1008,6 +1008,13 @@ void NDModel::Fill(TTree * t, int ibeam)
           << " (value stored in DST: " << sample << ")";
        //exit(1);
      }
+     // NOTE - HACK
+     if(s == ksNDNuMuCC2piC) {
+       LOG("HACK",pNOTICE) 
+         << "MC event: " << iev << " belongs to sample: " << util::AsString(s) 
+         << " not considered separately. Bundle in sample: " << util::AsString(ksNDNuMuCCoth);
+       s = ksNDNuMuCCoth;
+     }
      int isample = fArrIdx->NDSampleIdx(s);
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit

@@ -33,13 +33,9 @@ const double * util::YrecoBinEdgesSb(NDSample_t s)
   switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
+    case (ksNDNuMuCC2trkQE) : 
     {
       return kYrecoBinEdgesQELikeSb; 
-      break;
-    }
-    case (ksNDNuMuCCoth) : 
-    {
-      return kYrecoBinEdgesMiscSb;  
       break;
     }
     default: 

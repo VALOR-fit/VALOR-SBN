@@ -72,8 +72,9 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     const char * c_name  = Form("c_pdf_slice_%s", util::AsString(b));
-    c_pdf_slice[ibeam] = new TCanvas(c_name,"",20,20,1400,400);
-    c_pdf_slice[ibeam]->Divide(conv::kNNDSamples);
+    c_pdf_slice[ibeam] = new TCanvas(c_name,"",20,20,700,700);
+  //c_pdf_slice[ibeam]->Divide(conv::kNNDSamples);
+    c_pdf_slice[ibeam]->Divide(2,3);
     double max[conv::kNNDSamples] = { -999 };
     int ic = 0;   
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
@@ -105,6 +106,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
           if(pdf_slice[iy]) {
                pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
+               pdf_slice[iy]->SetLineWidth(1); 
                stack->Add(pdf_slice[iy]);
                leg->AddEntry(pdf_slice[iy],Form("y = [%.2f,%.2f]", y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),"LF");
           }
@@ -113,7 +115,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
        TH1F * hframe = (TH1F*)c_pdf_slice[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
        hframe->Draw();
        const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-       TLatex * title = new TLatex(1,1.1*max[isample],title_str);
+       TLatex * title = new TLatex(1,1.07*max[isample],title_str);
        title->Draw(); 
        hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
        hframe->GetYaxis()->SetTitle("Events /bin");
@@ -132,8 +134,9 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     const char * c_name = Form("c_pdf_contrib_%s", util::AsString(b));
-    c_pdf_contrib[ibeam] = new TCanvas(c_name,"",20,20,1400,400);
-    c_pdf_contrib[ibeam]->Divide(conv::kNNDSamples);
+    c_pdf_contrib[ibeam] = new TCanvas(c_name,"",20,20,700,700);
+  //c_pdf_contrib[ibeam]->Divide(conv::kNNDSamples);
+    c_pdf_contrib[ibeam]->Divide(2,3);
     int ic = 0;
     double max[conv::kNNDSamples] = { -999 };
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
@@ -182,6 +185,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
           conv:: ReacModeCoarse_t mc = conv::kNDReactionModesCoarse[isample][imodec];
           if(mc == conv::kmcUndefined) continue;
+          pdf_contrib_coarse[imodec]->SetLineWidth(1); 
           pdf_contrib_coarse[imodec]->SetLineColor(conv::kNDReactionModesCoarseFormatting[isample][imodec][0]); 
           pdf_contrib_coarse[imodec]->SetFillColor(conv::kNDReactionModesCoarseFormatting[isample][imodec][1]); 
           pdf_contrib_coarse[imodec]->SetFillStyle(conv::kNDReactionModesCoarseFormatting[isample][imodec][2]); 
@@ -192,7 +196,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       TH1F * hframe = (TH1F*)c_pdf_contrib[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
       hframe->Draw();
       const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-      TLatex * title = new TLatex(1,1.1*max[isample],title_str);
+      TLatex * title = new TLatex(1,1.07*max[isample],title_str);
       title->Draw(); 
       hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
       hframe->GetYaxis()->SetTitle("Events /bin");
