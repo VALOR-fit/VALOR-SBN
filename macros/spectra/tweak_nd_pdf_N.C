@@ -17,7 +17,7 @@ void tweak_nd_pdf_N
   using namespace valor;
   using namespace valor::conv;
 
-  const int    ntoys        = 100;
+  const int    ntoys        = 5;
   const double enu_reco_max = 10;
 
   // Analysis configuration
@@ -126,7 +126,7 @@ void tweak_nd_pdf_N
       if(s == ksNDUndefined) continue;
       ic++;
       c[ibeam]->cd(ic);
-      TH1F * hframe = c[ibeam]->GetPad(ic)->DrawFrame(0.,0.,enu_reco_max, 1.2*max[ibeam][isample]);
+      TH1F * hframe = c[ibeam]->GetPad(ic)->DrawFrame(0.,0.,enu_reco_max, 1.24*max[ibeam][isample]);
       hframe -> GetXaxis() -> SetTitle("Reco. E_{#nu} (GeV)");
       hframe -> GetYaxis() -> SetTitle("");      
     //hframe -> GetYaxis() -> SetTitle("Events per bin");      
@@ -140,9 +140,10 @@ void tweak_nd_pdf_N
       nom_pdf      [ibeam][isample] -> SetMarkerSize(0);
       nom_pdf      [ibeam][isample] -> SetLineWidth(1);
       nom_pdf      [ibeam][isample] -> Draw("SAME");
-      TLatex * title = new TLatex(1,1.1*max[ibeam][isample],Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str()));
+      TLatex * title = new TLatex(1,1.03*max[ibeam][isample],Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str()));
+      title->SetTextSize(0.08);
       title->Draw();
-      TLegend * leg = new TLegend(0.50, 0.56, 0.92, 0.86);
+      TLegend * leg = new TLegend(0.50, 0.50, 0.92, 0.80);
       leg->SetFillColor(0);
       //leg->SetHeader(Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str()));
       leg->AddEntry(nom_pdf     [ibeam][isample], "nominal",        "L");
