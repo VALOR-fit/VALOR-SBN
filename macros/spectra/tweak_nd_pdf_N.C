@@ -17,7 +17,7 @@ void tweak_nd_pdf_N
   using namespace valor;
   using namespace valor::conv;
 
-  const int    ntoys        = 5;
+  const int    ntoys        = 200;
   const double enu_reco_max = 10;
 
   // Analysis configuration
