@@ -44,13 +44,11 @@ void run_fit
 
   // 
   cout << "Getting a fit parameter list" << endl;
-//PhysHypothesis ph = util::GetPhysHypothesis("default");
-  FitParamList * fp = util::GetFitParameterList("default");
+  FitParamList * fp = util::GetFitParameterList("apriori-default");
 
   // Get ND data or generate toy-MC experiment
   cout << "Generating toy-MC data" << endl;
   FitDataABC * data = new NDData;
-//data->Generate(model,ph, stat_fluct);
   data->Generate(model,*fp,stat_fluct);
   
   // Get fitter
@@ -63,4 +61,9 @@ void run_fit
   fitter->DoTheFit();
 
   fp->GetCovMatrix()->Print();
+
+  TFile f("cov.root","recreate");
+  TMatrixDSym * cov = new TMatrixDSym(*fp->GetCovMatrix());
+  cov->Write("cov");
+  f.Close();
 }
