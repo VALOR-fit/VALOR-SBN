@@ -194,6 +194,55 @@ static const double kNDFitParamAPrioriFracError[kNNDFitParams] =
    0.35  // kNuisNormNC 
 };
 
+/*
+// eventually get this from fit files
+static const double kNDFitParamTestPostFitFracError[kNNDFitParams] = 
+{
+   0.00248281, // 0.15, // kNuisFHCNuMuFlux00,
+   0.00304763, // 0.15, // kNuisFHCNuMuFlux01,
+   0.00277615, // 0.15, // kNuisFHCNuMuFlux02,
+   0.00300154, // 0.15, // kNuisFHCNuMuFlux03,
+   0.00405523, // 0.15, // kNuisFHCNuMuFlux04,
+   0.00403601, // 0.15, // kNuisFHCNuMuFlux05,
+   0.00550575, // 0.15, // kNuisFHCNuMuFlux06,
+   0.00540643, // 0.15, // kNuisFHCNuMuFlux07,
+   0.00176928, // 0.15, // kNuisFHCNuMuFlux08,
+   0.00371205, // 0.15, // kNuisFHCNuMuFlux09,
+   0.142654,   // 0.20, // kNuisFHCNuMuBarFlux00,
+   0.814961,   // 0.20, // kNuisFHCNuMuBarFlux01,
+   0.476121,   // 0.20, // kNuisFHCNuMuBarFlux02,
+   0.235724,   // 0.20, // kNuisFHCNuMuBarFlux03,
+   0.0296234,  // 0.20, // kNuisFHCNuMuBarFlux04,
+   7.14482,    // 0.20, // kNuisFHCNuEFlux00, 
+   2.49862,    // 0.20, // kNuisFHCNuEFlux01, 
+   0.511229,   // 0.20, // kNuisFHCNuEFlux02, 
+
+   0.732298,   // 0.15, // kNuisRHCNuMuFlux00,
+   0.83293,    // 0.15, // kNuisRHCNuMuFlux01,
+   0.53187,    // 0.15, // kNuisRHCNuMuFlux02,
+   0.190521,   // 0.15, // kNuisRHCNuMuFlux03,
+   0.0816919,  // 0.15, // kNuisRHCNuMuFlux04,
+   0.0145664,  // 0.15, // kNuisRHCNuMuFlux05,
+   0.0102415,  // 0.15, // kNuisRHCNuMuFlux06,
+   0.00451821, // 0.20, // kNuisRHCNuMuBarFlux00,
+   0.00213031, // 0.20, // kNuisRHCNuMuBarFlux01,
+   0.00262248, // 0.20, // kNuisRHCNuMuBarFlux02,
+   0.00663153, // 0.20, // kNuisRHCNuMuBarFlux03,
+   0.00948828, // 0.20, // kNuisRHCNuMuBarFlux04,
+   0.0099716,  // 0.20, // kNuisRHCNuMuBarFlux05,
+   0.00329067, // 0.20, // kNuisRHCNuMuBarFlux06,
+   0.00724627, // 0.20, // kNuisRHCNuMuBarFlux07,
+   0.000141421,// 0.20, // kNuisRHCNuEFlux00, 
+   1.41421,    // 0.20, // kNuisRHCNuEFlux01, 
+   1.41421,    // 0.20, // kNuisRHCNuEFlux02, 
+
+   0.000839762,// 0.15, // kNuisNormCCQE, 
+   0.000749213,// 0.25, // kNuisNormCC1piC,
+   0.00523631, // 0.25, // kNuisNormCC1pi0,
+   0.00054573, // 0.20, // kNuisNormCCoth, 
+   0.0797077  // 0.35, // kNuisNormNC 
+};
+*/
 
 //
 // This array fully specifies which systematics are applied to which template,

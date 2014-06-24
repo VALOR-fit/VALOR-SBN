@@ -141,9 +141,9 @@ PhysHypothesis util::GetPhysHypothesis (Option_t * opt)
 //
   PhysHypothesis ph(kHypVoid); 
 
-  string option = ((opt) ? opt : "default");
+  string option = ((opt) ? opt : "apriori-default");
 
-  if(option.find("default") != string::npos) {
+  if(option.find("apriori-default") != string::npos) {
     for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
@@ -151,7 +151,7 @@ PhysHypothesis util::GetPhysHypothesis (Option_t * opt)
     }//ip
   }
   else
-  if(option.find("randomize") != string::npos) {
+  if(option.find("apriori-randomize") != string::npos) {
     Rnd * r = Rnd::Instance();
     for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
@@ -161,15 +161,31 @@ PhysHypothesis util::GetPhysHypothesis (Option_t * opt)
       ph.SetCurrValue(p,val); 
     }//ip
   }
+  else
+  if(option.find("postfit-default") != string::npos) {
+/*
+    Rnd * r = Rnd::Instance();
+    for(int ip = 0; ip < kNNDFitParams; ip++) {
+      PhysParamId_t p = kNDFitParam[ip];
+      if(p == kPhypUndefined) continue;
+      double sig = kNDFitParamTestPostFitFracError[ip];
+      double val = r->RndToyMCsyst().Gaus(1,sig);
+      ph.SetCurrValue(p,val); 
+    }//ip
+*/
+  }
+  else
+  if(option.find("postfit-randomize") != string::npos) {
+  }
 
   return ph;
 }
 //________________________________________________________________________________________
 FitParamList * util::GetFitParameterList (Option_t * opt)
 {
-  string option = ((opt) ? opt : "default");
+  string option = ((opt) ? opt : "apriori-default");
 
-  if(option.find("default") != string::npos) {
+  if(option.find("apriori-default") != string::npos) {
      FitParamList * fparm = new FitParamList(kNNDFitParams);
      for(int ip = 0; ip < kNNDFitParams; ip++) {
         PhysParamId_t p = kNDFitParam[ip];
@@ -183,6 +199,34 @@ FitParamList * util::GetFitParameterList (Option_t * opt)
         fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
      }//ip
      return fparm;
+  }
+  else
+  if(option.find("apriori-randomize") != string::npos) {
+    FitParamList * fparm = new FitParamList(kNNDFitParams);
+    Rnd * r = Rnd::Instance();
+     for(int ip = 0; ip < kNNDFitParams; ip++) {
+        PhysParamId_t p = kNDFitParam[ip];
+        if(p == kPhypUndefined) continue; // note that if in fact there were gaps in the list the logic would be screwed - fix later
+        double init = 1.0;
+        double min  = 0.0;
+        double max  = 2.0;
+        double step = 1E-4;
+        bool   fix  = false;
+        bool   nuis = false;
+        fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
+        double sig = kNDFitParamAPrioriFracError[ip];
+        double val = r->RndToyMCsyst().Gaus(1,sig);
+        val = TMath::Max(val,max);
+        val = TMath::Min(val,min);
+        fparm->Update(p, val);
+     }//ip
+     return fparm;
+  }
+  else
+  if(option.find("postfit-default") != string::npos) {
+  }
+  else
+  if(option.find("postfit-randomize") != string::npos) {
   }
 
   return 0;
