@@ -51,7 +51,7 @@ void tweak_nd_pdf_N
 
     // Get a physics hypothesis by randomizing all params
     // (toy-MC #-1 is special: default)
-    Option_t * opt = (itoy<0) ? "default" : "randomize";
+    Option_t * opt = (itoy<0) ? "apriori-default" : "apriori-randomize";
     PhysHypothesis ph = util::GetPhysHypothesis(opt);
 
     // Generate predictions

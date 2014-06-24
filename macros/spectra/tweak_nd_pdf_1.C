@@ -65,7 +65,7 @@ void tweak_nd_pdf_1
     cout << "** Iteration: #" << i << endl;
 
     // Get a nominal physics hypothesis
-    PhysHypothesis ph = util::GetPhysHypothesis();
+    PhysHypothesis ph = util::GetPhysHypothesis("apriori-default");
     // Tweak if needed
     if(i != kdefault) {
       int ip = util::NDArrIdx::Instance()->NDFitParamIdx(p); // find param idx

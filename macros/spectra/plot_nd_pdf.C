@@ -1,6 +1,6 @@
 //
 // ------------------------------------------------------------------------------------------------
-// Simple program to write out the LBNx/ND PDFs and MC templates.
+// Simple program to plot LBNx/ND PDFs and MC templates written out by write_nd_pdf.C
 //
 // Costas Andreopoulos
 // ------------------------------------------------------------------------------------------------

@@ -27,7 +27,7 @@ void write_nd_pdf
   FitModelABC * model = new NDModel;
   model->Read(config.Data());
 
-  PhysHypothesis ph = util::GetPhysHypothesis("default");
+  PhysHypothesis ph = util::GetPhysHypothesis("apriori-default");
 
   // Generate predictions
   model->Generate(ph,"+SB");
