@@ -195,9 +195,10 @@ FitParamList * util::GetFitParameterList (Option_t * opt)
         double max  = 2.0;
         double step = 1E-4;
         bool   fix  = false;
-        bool   nuis = false;
+        bool   nuis = true;
         fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
      }//ip
+     fparm->ResetCurrToInitValues();
      return fparm;
   }
   else
@@ -212,12 +213,12 @@ FitParamList * util::GetFitParameterList (Option_t * opt)
         double max  = 2.0;
         double step = 1E-4;
         bool   fix  = false;
-        bool   nuis = false;
+        bool   nuis = true;
         fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
         double sig = kNDFitParamAPrioriFracError[ip];
         double val = r->RndToyMCsyst().Gaus(1,sig);
-        val = TMath::Max(val,max);
-        val = TMath::Min(val,min);
+        val = TMath::Min(val,max);
+        val = TMath::Max(val,min);
         fparm->Update(p, val);
      }//ip
      return fparm;
