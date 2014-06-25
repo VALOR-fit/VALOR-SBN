@@ -68,11 +68,11 @@ static const int kNNDSamples  = 6;
 static const NDSample_t kNDSample[kNNDSamples] =
 {
    ksNDNuMuCC1trkQE,
-   ksNDUndefined, // ksNDNuMuCC2trkQE, 
+   ksNDNuMuCC2trkQE, 
    ksNDNuMuCC1piC,
-   ksNDUndefined, // ksNDNuMuCC1pi0,
-   ksNDUndefined, // ksNDNuMuCC1piC1pi0,
-   ksNDUndefined  // ksNDNuMuCCoth
+   ksNDNuMuCC1pi0,
+   ksNDNuMuCC1piC1pi0,
+   ksNDNuMuCCoth
 };
 
 
