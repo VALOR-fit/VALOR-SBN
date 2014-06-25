@@ -105,8 +105,16 @@ static const double kYrecoBinEdgesMiscSb [kNYrecoBinsSb+1] =
 // Variable binning schemes in (Ereco,yreco) space optimised to reduce the 
 // CPU-intensity of the fit. Typically, a number of bin zones are defined
 // and a different variable-size binning scheme is used in each zone.
-// Note: granularity of the binning scheme also depends on the Ereco and yreco
+// - Note: The granularity of the binning scheme depends on the Ereco and yreco
 // dependencies of systematic errors intended to be applied to the MC templates.
+// Make sure that full bins below are included within the Ereco and yreco
+// ranges where particular systematics are applied.
+// - Note: The simple binning scheme is also used for toy-MC generation and
+// then bin contents are merged together to construct the toy-MC in the variable
+// binning scheme (the toy-MC is generated using the simple/fine binning so that a 
+// toy-MC experiment can be plotted both in the simple/fine and optimized/variable
+// binning schemes). Make sure that each bin in the optimized/variable scheme
+// fits an integral number of bins from the simple/fine binning scheme.
 //
 
 #ifdef _use_very_few_ereco_yreco_bins_
@@ -114,7 +122,7 @@ static const double kYrecoBinEdgesMiscSb [kNYrecoBinsSb+1] =
 static const int kNMaxBinZones  = 1;
 static const int kNErecoBins1   = 5;
 static const int kNYrecoBins1   = 1;
-static const double kErecoBinEdges1[kNErecoBins1+1] = { kErecoMin, 1.5, 3.0, 5.0, 10.0, kErecoMax };
+static const double kErecoBinEdges1[kNErecoBins1+1] = { kErecoMin, 1.4, 3.0, 5.0, 10.0, kErecoMax };
 static const double kYrecoBinEdges1[kNYrecoBins1+1] = { kYrecoMin, kYrecoMax };
 
 #else

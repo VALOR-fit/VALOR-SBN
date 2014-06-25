@@ -66,8 +66,12 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 
   string opt = (write_opt) ? write_opt : "data_vf";
 
+  if(opt.find("all") != string::npos) {
+    opt = "data_vf,data_rf +slices +SB";
+  }
+
   //
-  // Write out MC templates (VALORArray format)
+  // Write out data distributions (VALORArray or bare ROOT format)
   //
 
   if(opt.find("data_vf") != string::npos || opt.find("data_rf") != string::npos) {
@@ -83,7 +87,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const char * name = Form("%s_%s_z%d",
              util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
           if(opt.find("data_vf") != string::npos) {
-             fData[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"data_vf",name));
+             fData[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"data_ob_vf",name));
              array->Add(fData[ibeam][isample][izone]);
           }
           if(opt.find("data_rf") != string::npos) {
@@ -94,7 +98,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
              TH2D * h2 = new TH2D("h2", "VALOR/LBNx ND (Ereco,yreco) data = f(beam,sample,zone)",
                  n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-             h2->SetName(Form("%s_%s_%s",tag,"data_rf",name));
+             h2->SetName(Form("%s_%s_%s",tag,"data_ob_rf",name));
              for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                for(int iy = 0; iy < n_y_reco_bins; iy++) {
                  double val = fData[ibeam][isample][izone]->GetEntry(ier,iy);
@@ -112,14 +116,14 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              util::AsString(b).c_str(), util::AsString(s).c_str());
           if(fDataSbNull[ibeam][isample]) continue;
           if(opt.find("data_vf") != string::npos) {
-             fDataSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"datasb_vf",name));
+             fDataSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"data_sb_vf",name));
              array->Add(fDataSb[ibeam][isample]);
           }//data_vf
           if(opt.find("data_rf") != string::npos) {
              const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
              TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) data = f(beam,sample)",
                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
-             h2->SetName(Form("%s_%s_%s",tag,"datasb_rf",name));
+             h2->SetName(Form("%s_%s_%s",tag,"data_sb_rf",name));
              for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
                  double val = fDataSb[ibeam][isample]->GetEntry(ier,iy);
@@ -135,7 +139,91 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       }//isample
     }//ibeam
 
-  }//data_vf
+  }//data_vf, data_rf
+
+
+  //
+  // Write out the slices of the data distributions (bare ROOT format)
+  //
+
+  if(opt.find("+slices") != string::npos) {
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      BeamConf_t b = kNDBeamConf[ibeam];
+      if(b == kbUndefined) continue;
+      for(int isample = 0; isample < kNNDSamples; isample++) {
+        NDSample_t s = kNDSample[isample];
+        if(s == ksNDUndefined) continue;
+
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          const char * name = Form("%s_%s_z%d",
+            util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
+          // get binning
+          const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+          const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+          if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+          const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
+          const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
+          // create slices of the data (function of Ereco, for given yreco bin)
+          TH1D * htot = new TH1D("htot",
+              "VALOR/LBNx ND data: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
+          htot->SetName(Form("%s_%s_%s",tag, "data_slice_ob_rf",name) );
+          htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+          htot->GetYaxis()->SetTitle("Number of events /bin");
+          for(int iy = 0; iy < n_y_reco_bins; iy++) {
+            TH1D * h = new TH1D("h",
+                Form("VALOR/LBNx ND data: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",
+                     y_reco_bins[iy],y_reco_bins[iy+1]),
+                n_enu_reco_bins, enu_reco_bins);
+            h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_ob_rf",name,iy) );
+            h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+            h->GetYaxis()->SetTitle("Number of events /bin");
+            for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+              double val = fData[ibeam][isample][izone]->GetEntry(ier,iy);
+              h->SetBinContent(ier+1, val);
+              htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
+            }//ier
+            // add to obj array and clean-up
+            array->Add(h);
+            //delete h; ??? MEM LEAK??
+          }//iy
+          array->Add(htot);
+          //delete htot; ??? MEM LEAK??
+        }//izone
+
+        if(opt.find("+SB") != string::npos) {
+          const char * name = Form("%s_%s",
+            util::AsString(b).c_str(), util::AsString(s).c_str());
+          // create slices of the total PDF (function of Ereco, for given yreco bin)
+          const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+          TH1D * htot = new TH1D("htot",
+              "VALOR/LBNx ND data: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
+          htot->SetName(Form("%s_%s_%s",tag, "data_slice_sb_rf",name) );
+          htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+          htot->GetYaxis()->SetTitle("Number of events /bin");
+          for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+            TH1D * h = new TH1D("h",
+                Form("VALOR/LBNx ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
+                     y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
+                kNErecoBinsSb, kErecoBinEdgesSb);
+            h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_sb_rf",name,iy) );
+            h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
+            h->GetYaxis()->SetTitle("Number of events /bin /%f POT");
+            for(int ier = 0; ier < kNErecoBinsSb; ier++) {
+              double val = fDataSb[ibeam][isample]->GetEntry(ier,iy);
+              h->SetBinContent(ier+1, val);
+              htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
+            }//ier
+            // add to obj array and clean-up
+            array->Add(h);
+            //delete h; ??? MEM LEAK??
+          }//iy
+          array->Add(htot);
+          //delete htot; ??? MEM LEAK??
+        }//+SB?
+
+      }//isample
+    }//ibeam
+  }//+slices
 
   return true;
 }
@@ -208,7 +296,7 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
           << "Generating toy-MC for: " 
           << util::AsString(b) << " / " << util::AsString(s);
 
-        const char * name = Form("curr_pdfsbt_vf_%s_%s", 
+        const char * name = Form("curr_pdft_sb_vf_%s_%s", 
            util::AsString(b).c_str(), util::AsString(s).c_str());
         VALORArray * pdf = (VALORArray*) array->FindObject(name);
         assert(pdf);           
@@ -308,7 +396,7 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          if(fDataNull[ibeam][isample][izone]) continue;
  
-         const char * name = Form("curr_pdft_vf_%s_%s_z%d", 
+         const char * name = Form("curr_pdft_ob_vf_%s_%s_z%d", 
             util::AsString(b).c_str(), util::AsString(s).c_str(),izone);
          VALORArray * pdf = (VALORArray*) array->FindObject(name);
          assert(pdf);           

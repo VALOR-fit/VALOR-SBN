@@ -8,12 +8,14 @@
 void run_fit
 (
   const char * tag            = "toymc",                               /* tag for output file */
+  int          run            = 0,                                     /* run # */
+  int          ntoymc         = 1,                                     /* number of toy-MC experiments */
   bool         stat_fluct     = false,                                 /* include statistical fluctuation in toy MC expts? */
-  int          tweak_syst     = 0,                                     /* generate toy MC with randomized systematics? (0: none, 1: all)*/
-  const char * fit_param_list = "default",                             /* fit parameter list for the given physics hypothesis (see ?) */
+  const char * fit_param_list = "apriori-default",                     /* fit parameter list - current params may be randomized (see NDFitParams::GetFitParameterList()) */
   const char * fit_option     = "minuit",                              /* fitter option */
   const char * config_file    = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
 )
+
 {
   using namespace std;
   using namespace valor;
@@ -22,14 +24,20 @@ void run_fit
   // Analysis configuration
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
 
+  // Randomizing systematics for toy-MC?
+  string fit_param_list_str = fit_param_list;
+  bool rndsyst = (fit_param_list_str.find("randomize") != string::npos);
+
+  //
   // Print settings
+  //
+
   cout << "\n[Job inputs]" << endl;
-  cout << "- Job: " << tag << endl;
-//cout << "- Job: " << tag << "/" << run << endl;
+  cout << "- Job: " << tag << "/" << run << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
   cout << "- Toy-MC generation" << endl;
-//cout << "   - Number of toy experiments: " << nexperiments << endl;
-  cout << "   - Randomize systematics : "      << ((tweak_syst) ? "YES " : "NO") << endl;
+  cout << "   - Number of toy experiments: " << ntoymc << endl;
+  cout << "   - Randomize systematics : "      << ((rndsyst)    ? "YES " : "NO") << endl;
   cout << "   - Statistical fluctuations: "    << ((stat_fluct) ? "YES " : "NO") << endl;
   cout << "- Fit" << endl;
   cout << "   - Fit Parameter List: " << fit_param_list << endl;
@@ -37,33 +45,90 @@ void run_fit
   cout << endl;
   cout << *Rnd::Instance() << endl;
 
+  //
+  // Create file and tree to store outputs
+  //
+
+  const char * outfilename = Form("%s_%d.root",tag,run);
+  TFile * outfile = new TFile(outfilename,"recreate");
+
+  PhysParamList * true_param_array     = new PhysParamList;
+  FitParamList *  best_fit_param_array = new FitParamList;
+  TObjArray *     best_fit_model_array = new TObjArray;
+  TObjArray *     data_array           = new TObjArray;
+  best_fit_model_array -> SetOwner(false);
+  data_array           -> SetOwner(false);
+
+  TTree * fitnt = new TTree("fitnt","VALOR toy-MC experiment fit results");
+  fitnt->Branch("true_params",     "valor::PhysParamList", &true_param_array,     1280000,0);
+  fitnt->Branch("best_fit_params", "valor::FitParamList",  &best_fit_param_array, 1280000,0);
+  fitnt->Branch("best_fit_model",  "TObjArray",            &best_fit_model_array, 1280000,0);
+  fitnt->Branch("data",            "TObjArray",            &data_array,           1280000,0);
+
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
   FitModelABC * model = new NDModel;
   model->Read(config.Data());
 
-  // 
-  cout << "Getting a fit parameter list" << endl;
-  FitParamList * fp = util::GetFitParameterList("apriori-default");
+  // Use ND model to generate toy-MC experiments & fit
+  for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
+    cout << "\n\n *** Toy-MC experiment #" << itoymc << endl;
 
-  // Get ND data or generate toy-MC experiment
-  cout << "Generating toy-MC data" << endl;
-  FitDataABC * data = new NDData;
-  data->Generate(model,*fp,stat_fluct);
-  
-  // Get fitter
-  cout << "Preparing fitter" << endl;
-  FitInputs * fit_inputs = new FitInputs(data,model,fp);
-  FitterABC * fitter = util::GetFitter(fit_inputs,fit_option);
+    // Reset arrays
+    true_param_array     -> Clear();
+    best_fit_param_array -> Clear();
+    best_fit_model_array -> Clear();
+    data_array           -> Clear();
 
-  // Do the fit
-  cout << "Running fitter" << endl;
-  fitter->DoTheFit();
+    // Getting a fit parameter list
+    // The input name specifies the fit parameters.
+    // Also, the input name specifies whether (and which of) the `current' values will be randomized.
+    FitParamList * fp = util::GetFitParameterList(fit_param_list);
 
-  fp->GetCovMatrix()->Print();
+    // Generate atoy-MC experiment 
+    cout << "Generating toy-MC data" << endl;
+    FitDataABC * data = new NDData;
+    data->Generate(model,*fp,stat_fluct);
 
-  TFile f("cov.root","recreate");
-  TMatrixDSym * cov = new TMatrixDSym(*fp->GetCovMatrix());
-  cov->Write("cov");
-  f.Close();
+    // The toy-MC was generated using the `current' values of the input parameter list.
+    // Copy those values now (and they will be overwritten during the fit) to save 
+    // them in the output fit file.
+    true_param_array->Append(fp->AsPhysParamList("current"));
+
+    // Get fitter
+    cout << "Preparing fitter" << endl;
+    FitInputs * fit_inputs = new FitInputs(data,model,fp);
+    FitterABC * fitter = util::GetFitter(fit_inputs,fit_option);
+
+    // Do the fit
+    cout << "Running fitter" << endl;
+    fitter->DoTheFit();
+
+    // Copy best-fit params
+    best_fit_param_array->Copy(*fp);
+
+    // Copy best-fit to current values and re-generate the best-fit prediction
+    // with special option (not used in the fit) to generate versions of the fit model
+    // using a fine binning scheme (for plots).
+    // Then, write-out the best-fit predictions
+    fp->CopyBestFitToCurrValues();
+    model->Generate(*fp,"+SB");
+    model->Write(best_fit_model_array,"best_fit","pdfc_rf,pdft_rf,pdfts_rf,pdfcs_rf +SB");
+
+    // Write-out the toy-MC
+    data->Write(data_array,"toymc","all");
+
+    // Write to tree
+    fitnt->Fill();
+
+    delete data;
+    delete fp;
+    delete fit_inputs;
+    delete fitter;
+
+  }//itoymc
+
+  outfile->cd();
+  fitnt->Write();
+  outfile->Close();
 }

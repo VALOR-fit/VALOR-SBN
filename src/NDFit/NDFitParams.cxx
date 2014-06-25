@@ -208,17 +208,18 @@ FitParamList * util::GetFitParameterList (Option_t * opt)
      for(int ip = 0; ip < kNNDFitParams; ip++) {
         PhysParamId_t p = kNDFitParam[ip];
         if(p == kPhypUndefined) continue; // note that if in fact there were gaps in the list the logic would be screwed - fix later
-        double init = 1.0;
+     // double init = 1.0;
         double min  = 0.0;
         double max  = 2.0;
         double step = 1E-4;
         bool   fix  = false;
         bool   nuis = true;
-        fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
-        double sig = kNDFitParamAPrioriFracError[ip];
-        double val = r->RndToyMCsyst().Gaus(1,sig);
+        double sig  = kNDFitParamAPrioriFracError[ip];
+        double val  = r->RndToyMCsyst().Gaus(1,sig);
         val = TMath::Min(val,max);
         val = TMath::Max(val,min);
+     // fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
+        fparm->AddParam(ip, p, val,  min, max, step, fix, nuis); // set initial value = actual value used for toy-MC to help fitter
         fparm->Update(p, val);
      }//ip
      return fparm;

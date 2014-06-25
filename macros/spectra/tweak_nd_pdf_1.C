@@ -95,7 +95,7 @@ void tweak_nd_pdf_1
       for(int isample = 0; isample < kNNDSamples; isample++) {
         NDSample_t s = kNDSample[isample];
         if(s == ksNDUndefined) continue;
-        const char * name = Form("curr_pdfsbts_rf_%s_%s",
+        const char * name = Form("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
         TH1D * curr_pdf = (TH1D*) array->FindObject(name);
         assert(curr_pdf);       

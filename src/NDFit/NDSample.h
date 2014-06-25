@@ -54,19 +54,25 @@ typedef enum ENDSample
 NDSample_t; 
 
 //
-// Define list of samples used in present analysis
-// Note: the order of samples in the array is important for other arrays
-//
+// Define the list of samples used in present analysis.
+// Note: The order and position of samples in the array is important for other arrays. Maintain the not remove or re-arrange.
+// If you want to remove a sample from the fit, just comment-out the corresponding line and replace with ksNDUndefined.
+// kNDSample array elements that contain the ksNDUndefined flag are ignored.
+// To add a new sample in the fit, do the following:
+// - write later
+// -
+// -
+
 static const int kNNDSamples  = 6; 
 
 static const NDSample_t kNDSample[kNNDSamples] =
 {
    ksNDNuMuCC1trkQE,
-   ksNDNuMuCC2trkQE, 
+   ksNDUndefined, // ksNDNuMuCC2trkQE, 
    ksNDNuMuCC1piC,
-   ksNDNuMuCC1pi0,
-   ksNDNuMuCC1piC1pi0,
-   ksNDNuMuCCoth
+   ksNDUndefined, // ksNDNuMuCC1pi0,
+   ksNDUndefined, // ksNDNuMuCC1piC1pi0,
+   ksNDUndefined  // ksNDNuMuCCoth
 };
 
 

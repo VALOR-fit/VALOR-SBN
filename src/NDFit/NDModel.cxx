@@ -222,11 +222,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 // - include the string "+SB" to write-out versions of the above in simpler binning
 //
 // Key:
-//  pdft  -> PDF total
-//  pdfts -> PDF total (1-D slice)
-//  pdfc  -> PDF component
-//  pdfcs -> PDF component (1-D slice)
-//  ereco -> Ereco spectrum
+//  mct   -> MC template                    CC: f(Ereco,yreco,Etrue;s,m)
+//  pdft  -> PDF total                      CC: f(Ereco,yreco;s)
+//  pdfc  -> PDF component                  CC: f(Ereco,yreco;s,m)
+//  pdfts -> 1-D slice of PDF total         CC: f(Ereco;s)|yreco
+//  pdfcs -> 1-D slice of PDF component     CC: f(Ereco;s,m)|yreco
 //  rf    -> ROOT format
 //  vf    -> VALOR format
 //  ob    -> Optimized binning (for fit)
@@ -268,10 +268,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              if(fMCTNull[ibeam][isample][imode][izone]) continue;
              const char * name = Form("%s_%s_%s_z%d", 
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
-             fMCTNom [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctnom_vf", name) );
-             fMCTTun [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_vf", name) );
-             fMCTSys [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_vf", name) );
-             fMCTFin [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_vf", name) );
+             fMCTNom [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctnom_ob_vf", name) );
+             fMCTTun [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_ob_vf", name) );
+             fMCTSys [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_ob_vf", name) );
+             fMCTFin [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_ob_vf", name) );
              array -> Add ( fMCTNom [ibeam][isample][imode][izone] ); 
              array -> Add ( fMCTTun [ibeam][isample][imode][izone] ); 
              array -> Add ( fMCTSys [ibeam][isample][imode][izone] ); 
@@ -282,10 +282,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              if(fMCTSbNull[ibeam][isample][imode]) continue;
              const char * name = Form("%s_%s_%s", 
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
-             fMCTSbNom [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsbnom_vf", name) );
-             fMCTSbTun [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsbtun_vf", name) );
-             fMCTSbSys [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsbsys_vf", name) );
-             fMCTSbFin [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsbfin_vf", name) );
+             fMCTSbNom [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctnom_sb_vf", name) );
+             fMCTSbTun [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mcttun_sb_vf", name) );
+             fMCTSbSys [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsys_sb_vf", name) );
+             fMCTSbFin [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctfin_sb_vf", name) );
              array -> Add ( fMCTSbNom [ibeam][isample][imode] ); 
              array -> Add ( fMCTSbTun [ibeam][isample][imode] ); 
              array -> Add ( fMCTSbSys [ibeam][isample][imode] ); 
@@ -296,6 +296,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       }//isample
     }//ibeam
   }//mct_vf
+
 
   //
   // Write out the PDF components (VALORArray or bare ROOT format)
@@ -319,7 +320,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
-               fMCPDFComp [ibeam][isample][imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_vf",name));
+               fMCPDFComp [ibeam][isample][imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_ob_vf",name));
                array->Add(fMCPDFComp[ibeam][isample][imode][izone]);
              }
              // in TH2D format
@@ -333,7 +334,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // book histogram
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF component = f(beam,sample,mode,zone)",
                  n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-               h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_rf",name) );
+               h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_ob_rf",name) );
                // fill from corresponding VALOR array
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iy = 0; iy < n_y_reco_bins; iy++) {
@@ -353,7 +354,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
-               fMCPDFSbComp [ibeam][isample][imode]->SetName(Form("%s_%s_%s",tag,"pdfsbc_vf",name));
+               fMCPDFSbComp [ibeam][isample][imode]->SetName(Form("%s_%s_%s",tag,"pdfc_sb_vf",name));
                array->Add(fMCPDFSbComp[ibeam][isample][imode]);
              }
              // in TH2D format
@@ -362,7 +363,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF component = f(beam,sample,mode)",
                  kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
-               h2 -> SetName( Form("%s_%s_%s",tag, "pdfsbc_rf",name) );
+               h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_sb_rf",name) );
                // fill from corresponding VALOR array
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                  for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
@@ -380,6 +381,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       }//isample
     }//ibeam
   }//pdfc_vf,pdfc_rf
+
 
   //
   // Write out the total PDF (VALORArray or bare ROOT format)
@@ -399,7 +401,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
-               fMCPDFTot[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"pdft_vf",name));
+               fMCPDFTot[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"pdft_ob_vf",name));
                array->Add(fMCPDFTot[ibeam][isample][izone]);
              }
              // in TH2D format
@@ -413,7 +415,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // book histogram
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF = f(beam,sample,zone)",
                  n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-               h2 -> SetName( Form("%s_%s_%s",tag, "pdft_rf",name) );
+               h2 -> SetName( Form("%s_%s_%s",tag, "pdft_ob_rf",name) );
                // fill from corresponding VALOR array
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iy = 0; iy < n_y_reco_bins; iy++) {
@@ -432,7 +434,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 util::AsString(b).c_str(), util::AsString(s).c_str());
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
-               fMCPDFSbTot[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"pdfsbt_vf",name));
+               fMCPDFSbTot[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"pdft_sb_vf",name));
                array->Add(fMCPDFSbTot[ibeam][isample]);
              }
              // in TH2D format
@@ -441,7 +443,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF = f(beam,sample)",
                  kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
-               h2 -> SetName( Form("%s_%s_%s",tag, "pdfsbt_rf",name) );
+               h2 -> SetName( Form("%s_%s_%s",tag, "pdft_sb_rf",name) );
                h2->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
                h2->GetYaxis()->SetTitle("y");
                h2->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
@@ -491,7 +493,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             // create slices of the PDF components (function of Ereco, for given yreco bin)
             TH1D * htot = new TH1D("htot", 
                "VALOR/LBNx ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)", n_enu_reco_bins, enu_reco_bins);
-            htot->SetName(Form("%s_%s_%s",tag, "pdfcs_rf",name) );
+            htot->SetName(Form("%s_%s_%s",tag, "pdfcs_ob_rf",name) );
             htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int iy = 0; iy < n_y_reco_bins; iy++) {
@@ -499,7 +501,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                   Form("VALOR/LBNx ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
                        y_reco_bins[iy],y_reco_bins[iy+1]),
                   n_enu_reco_bins, enu_reco_bins);
-              h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_rf",name,iy) );
+              h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_ob_rf",name,iy) );
               h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
               h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
               for(int ier = 0; ier < n_enu_reco_bins; ier++) {
@@ -522,7 +524,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
             TH1D * htot = new TH1D("htot", 
                "VALOR/LBNx ND PDF component: Ereco spectrum = f(beam,sample,mode)", kNErecoBinsSb, kErecoBinEdgesSb);
-            htot->SetName(Form("%s_%s_%s",tag, "pdfsbcs_rf",name) );
+            htot->SetName(Form("%s_%s_%s",tag, "pdfcs_sb_rf",name) );
             htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
@@ -530,7 +532,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                   Form("VALOR/LBNx ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
                        y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
                   kNErecoBinsSb, kErecoBinEdgesSb);
-              h->SetName(Form("%s_%s_%s_y%d",tag, "pdfsbcs_rf",name,iy) );
+              h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_sb_rf",name,iy) );
               h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
               h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
               for(int ier = 0; ier < kNErecoBinsSb; ier++) {
@@ -576,7 +578,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           // create slices of the total PDF (function of Ereco, for given yreco bin)
           TH1D * htot = new TH1D("htot", 
               "VALOR/LBNx ND PDF: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
-          htot->SetName(Form("%s_%s_%s",tag, "pdfts_rf",name) );
+          htot->SetName(Form("%s_%s_%s",tag, "pdfts_ob_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
           for(int iy = 0; iy < n_y_reco_bins; iy++) {
@@ -584,7 +586,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]", 
                      y_reco_bins[iy],y_reco_bins[iy+1]),
                 n_enu_reco_bins, enu_reco_bins);
-            h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_rf",name,iy) );
+            h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_ob_rf",name,iy) );
             h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int ier = 0; ier < n_enu_reco_bins; ier++) {
@@ -607,7 +609,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
           TH1D * htot = new TH1D("htot", 
               "VALOR/LBNx ND PDF: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
-          htot->SetName(Form("%s_%s_%s",tag, "pdfsbts_rf",name) );
+          htot->SetName(Form("%s_%s_%s",tag, "pdfts_sb_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
           for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
@@ -615,7 +617,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
                      y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
                 kNErecoBinsSb, kErecoBinEdgesSb);
-            h->SetName(Form("%s_%s_%s_y%d",tag, "pdfsbts_rf",name,iy) );
+            h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_sb_rf",name,iy) );
             h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
