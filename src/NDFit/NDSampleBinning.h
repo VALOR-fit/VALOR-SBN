@@ -24,7 +24,9 @@
 #ifndef _valor_lbnx_nd_sample_binning_h_
 #define _valor_lbnx_nd_sample_binning_h_
 
-#define _use_single_ereco_yreco_bin_
+// The following flag replaces the optimized Ereco,yreco binning scheme with 
+// just a few very wide bins to dramatically decrease the fit time for testing purposes.
+#define _use_very_few_ereco_yreco_bins_ 
 
 #include "NDFit/NDSample.h"
 
@@ -33,7 +35,7 @@ namespace conv  {
 
 // ...........................................................................
 // 
-// Parameter ranges
+// Parameter ranges (same for all binning schemes)
 //
 static const double kEtrueMin = 0.;
 static const double kEtrueMax = 120.;
@@ -44,10 +46,12 @@ static const double kYrecoMax = 1.;
 
 // ...........................................................................
 // 
-// Etrue binning
-// (Take notice of Etrue range boundaries of fit parameter boundaries 
+// Etrue binning: 
+// For simplicity, both the "simple" (for plots) and "optimized" (for fit)
+// Ereco,yreco binning use the exact same Etrue binning.
+// Take notice of Etrue range boundaries of fit parameter boundaries 
 // when setting Etrue bin edges for the MC templates. An integral number of MC
-// template bins should fit within the Etrue range of all fit parameters)
+// template bins should fit within the Etrue range of all fit parameters.
 //
 static const int    kNEtrueBins = 51;
 static const double kEtrueBinEdges[kNEtrueBins+1] = 
@@ -105,14 +109,12 @@ static const double kYrecoBinEdgesMiscSb [kNYrecoBinsSb+1] =
 // dependencies of systematic errors intended to be applied to the MC templates.
 //
 
-#ifdef _use_single_ereco_yreco_bin_
+#ifdef _use_very_few_ereco_yreco_bins_
 
-// In the first iteration, no systematic has Ereco and yreco dependence.
-// Use a single bin in the entire (Ereco,yreco) space
 static const int kNMaxBinZones  = 1;
-static const int kNErecoBins1   = 1;
+static const int kNErecoBins1   = 5;
 static const int kNYrecoBins1   = 1;
-static const double kErecoBinEdges1[kNErecoBins1+1] = { kErecoMin, kErecoMax };
+static const double kErecoBinEdges1[kNErecoBins1+1] = { kErecoMin, 1.5, 3.0, 5.0, 10.0, kErecoMax };
 static const double kYrecoBinEdges1[kNYrecoBins1+1] = { kYrecoMin, kYrecoMax };
 
 #else
@@ -229,7 +231,7 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
     1.000
 };
 
-#endif // _use_single_ereco_yreco_bin_
+#endif // _use_very_few_ereco_yreco_bins_
 
 
 } // conv

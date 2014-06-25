@@ -50,7 +50,7 @@ const int util::NumErecoBins(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting # Ereco bins for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_single_ereco_yreco_bin_
+#ifdef _use_very_few_ereco_yreco_bins_
   return kNErecoBins1;
 #else
 
@@ -83,7 +83,7 @@ const double * util::ErecoBinEdges(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting Ereco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_single_ereco_yreco_bin_
+#ifdef _use_very_few_ereco_yreco_bins_
   return kErecoBinEdges1;
 #else
 
@@ -116,7 +116,7 @@ const int util::NumYrecoBins(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_single_ereco_yreco_bin_
+#ifdef _use_very_few_ereco_yreco_bins_
   return kNYrecoBins1;
 #else
 
@@ -149,7 +149,7 @@ const double * util::YrecoBinEdges(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting yreco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_single_ereco_yreco_bin_
+#ifdef _use_very_few_ereco_yreco_bins_
   return kYrecoBinEdges1;
 #else
 
