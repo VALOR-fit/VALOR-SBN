@@ -13,12 +13,12 @@ void fit_param_scan
 (
   const char * tag            = "scan",                                /* tag for output file */
   const char * pname          = 0,                                     /* parameter name */
-  double       pmin           = 0,                                     /* min parameter value */
-  double       pmax           = 2,                                     /* max parameter value */
-  int          npv            = 10,                                    /* number of points between minimum and maximum */
-  int          ntoymc         = 20,                                    /* number of toy-MC experiments */
-  bool         stat_fluct     = true,                                  /* include statistical fluctuation in toy MC expts? */
-  const char * param_values   = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation  (see NDFitParams.cxx) */
+  double       pmin           = 0.5,                                   /* min parameter value */
+  double       pmax           = 1.5,                                   /* max parameter value */
+  int          npv            = 21,                                    /* number of points between minimum and maximum */
+  int          ntoymc         = 1,                                     /* number of toy-MC experiments */
+  bool         stat_fluct     = false,                                 /* include statistical fluctuation in toy MC expts? */
+  const char * param_values   = "nominal",                             /* decide how to set the values of params used for toy-MC generation (see NDFitParams.cxx) */
   const char * param_list     = "standard",                            /* model parameter list (see NDFitParams.cxx) */
   const char * config_file    = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
 )
@@ -45,6 +45,7 @@ void fit_param_scan
   cout << *Rnd::Instance() << endl;
 
   PhysParamId_t p = util::NDPhysParamFromString(pname);
+  int pidx = util::NDArrIdx::Instance()->NDFitParamIdx(p);
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
@@ -56,7 +57,12 @@ void fit_param_scan
   
   //
   double pstep = (pmax - pmin) / (npv-1);
-  TH1D * h = new TH1D("h","",npv,pmin-0.5*pstep,pmax+0.5*pstep);
+  const char * hndc_name    = Form("nd_constraint_%s", util::AsString(p).c_str());
+  const char * hndc_title   = Form("\Delta(lnL) as function of parameter %s in [%.2f,%.2f] range", util::AsString(p).c_str(),pmin,pmax);
+  const char * hprior_name  = Form("prior_%s", util::AsString(p).c_str());
+  const char * hprior_title = Form("\Delta(lnL) penalty term as function of parameter %s in [%.2f,%.2f] range", util::AsString(p).c_str(),pmin,pmax);
+  TH1D * hndc   = new TH1D(hndc_name,  hndc_title,  npv,pmin-0.5*pstep,pmax+0.5*pstep);
+  TH1D * hprior = new TH1D(hprior_name,hprior_title,npv,pmin-0.5*pstep,pmax+0.5*pstep);
 
   for(int ipv = 0; ipv < npv; ipv++) {
     double pcurr = pmin + ipv * pstep;
@@ -90,21 +96,33 @@ void fit_param_scan
     }//itoy
 
     avg_fit_statistic /= ntoymc;
-    h->Fill(pcurr, avg_fit_statistic);
+    hndc   -> Fill(pcurr, avg_fit_statistic);
+    
+    double sig = kNDFitParamAPrioriFracError[pidx];
+    double prior = TMath::Power((pcurr-1.)/sig, 2.); 
+    hprior -> Fill(pcurr, prior);
   }//ipv
 
-  double min = h->GetMinimum();
-  for(int ibin=1; ibin <= h->GetXaxis()->GetNbins(); ibin++) {
-    double val = h->GetBinContent(ibin);
+  double min = hndc->GetMinimum();
+  for(int ibin=1; ibin <= hndc->GetXaxis()->GetNbins(); ibin++) {
+    double val = hndc->GetBinContent(ibin);
     double valnew = val-min;
-    h->SetBinContent(ibin,valnew);
+    hndc->SetBinContent(ibin,valnew);
   }
 
   delete model;
 
-  h->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());
-  h->GetYaxis()->SetTitle("-#Delta(lnL)");
-  h->SetMarkerSize(1.3);
-  h->SetMarkerStyle(20);
-  h->Draw("LP");
+  hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());
+  hndc->GetYaxis()->SetTitle("-#Delta(lnL)");
+  hndc->SetMarkerSize(1.3);
+  hndc->SetMarkerStyle(20);
+  hndc->Draw("LP");
+  hprior->SetLineColor(kRed);
+  hprior->Draw("LSAME");
+
+  const char * outfilename =  Form("%s-%s.root", tag, util::AsString(p).c_str());
+  TFile outfile(outfilename, "recreate");
+  hndc->Write();
+  hprior->Write();
+  outfile.Close();
 }
