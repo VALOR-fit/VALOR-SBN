@@ -10,7 +10,8 @@
 	
 void tweak_nd_pdf_N
 (
-  const char * config_file = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
+  const char * model_param_list   = "standard",                            /* list of params included in model, see NDFitParams.cxx */
+  const char * config_file        = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
 )
 {
   using namespace std;
@@ -26,6 +27,7 @@ void tweak_nd_pdf_N
   // Print settings
   cout << "\n[Job inputs]" << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
+  cout << "- Model parameter list used : " << model_param_list << endl;
 
   TCanvas * c  [kNBeamConf];
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
@@ -51,8 +53,8 @@ void tweak_nd_pdf_N
 
     // Get a physics hypothesis by randomizing all params
     // (toy-MC #-1 is special: default)
-    Option_t * opt = (itoy<0) ? "apriori-default" : "apriori-randomize";
-    PhysHypothesis ph = util::GetPhysHypothesis(opt);
+    Option_t * model_param_values = (itoy<0) ? "nominal" : "randomize-all;prefit-errors";
+    PhysHypothesis ph = util::GetPhysHypothesis(model_param_list, model_param_values);
 
     // Generate predictions
     model->Generate(ph,"+SB");

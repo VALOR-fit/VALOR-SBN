@@ -135,7 +135,7 @@ PhysParamId_t util::NDPhysParamFromString(string inp_name)
   return kPhypUndefined;
 }
 //________________________________________________________________________________________
-PhysHypothesis util::GetPhysHypothesis(Option_t * opt)
+PhysHypothesis util::GetPhysHypothesis(Option_t * param_list, Option_t * param_values)
 {
 // Create a PhysHypothesis object, adding all physics + nuisance params
 // The input option specifies both the set of parameters (eg "standard") and their set
@@ -143,34 +143,42 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * opt)
 
   PhysHypothesis ph(kHypVoid); 
 
-  string option = ((opt) ? opt : "standard;nominal");
+  string param_list_opt   = ((param_list)   ? param_list   : "standard");
+  string param_values_opt = ((param_values) ? param_values : "nominal");
+
+  LOG("NDFitParams", pNOTICE) 
+    << "Instantiating a physics hypothesis object with option: " 
+    << param_list_opt << " / " << param_values_opt;
 
   //
   // Get the standard set of parameters
   //
 
-  if(option.find("standard") != string::npos) {
+  if(param_list_opt.find("standard") != string::npos) {
     for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
       double val = -9999;
       // "nominal", a-priori defaults
-      if(option.find("nominal") != string::npos) {
+      if(param_values_opt.find("nominal") != string::npos) {
         val = 1;
       } 
       // "tuned", based on input ND best-fit params
-      else if(option.find("tuned") != string::npos) {
+      else 
+      if(param_values_opt.find("tuned") != string::npos) {
         LOG("NDFitParams", pFATAL) << "`tuned' option not implemented";
         exit(1);
       } 
       // randomize all parameters using pre-fit errors
-      else if(option.find("randomize-all;prefit-errors") != string::npos) {
+      else 
+      if(param_values_opt.find("randomize-all;prefit-errors") != string::npos) {
         Rnd * r = Rnd::Instance();
         double sig = kNDFitParamAPrioriFracError[ip];
         val = r->RndToyMCsyst().Gaus(1,sig);
       }
       // randomize all parameters using post-fit errors
-      else if(option.find("randomize-all;postfit-errors") != string::npos) {
+      else 
+      if(param_values_opt.find("randomize-all;postfit-errors") != string::npos) {
         LOG("NDFitParams", pFATAL) << "`randomize-all;postfit-errors' option not implemented";
         exit(1);
       }
@@ -186,13 +194,19 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * opt)
   return ph;
 }
 //________________________________________________________________________________________
-FitParamList * util::GetFitParameterList (Option_t * opt)
+FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * param_values)
 {
 // Create a FitParamList object, adding all physics + nuisance params.
 // The input option specifies both the set of parameters (eg "standard") and their set
 // values (eg "nominal", or "randomize-all;prefit-errors" etc).
 
-  string option = ((opt) ? opt : "standard;nominal");
+
+  string param_list_opt   = ((param_list)   ? param_list   : "standard");
+  string param_values_opt = ((param_values) ? param_values : "nominal");
+
+  LOG("NDFitParams", pNOTICE)
+    << "Instantiating a  fit parameter list object with option: " 
+    << param_list_opt << " / " << param_values_opt;
 
   FitParamList * fparm = 0;
 
@@ -200,7 +214,7 @@ FitParamList * util::GetFitParameterList (Option_t * opt)
   // Get the standard set of parameters
   //
 
-  if(option.find("standard") != string::npos) {
+  if(param_list_opt.find("standard") != string::npos) {
 
     fparm = new FitParamList(kNNDFitParams);
 
@@ -219,16 +233,18 @@ FitParamList * util::GetFitParameterList (Option_t * opt)
       bool   nuis = true;
 
       // "nominal", a-priori defaults
-      if(option.find("nominal") != string::npos) {
+      if(param_values_opt.find("nominal") != string::npos) {
         curr = init;
       } 
       // "tuned", based on input ND best-fit params
-      else if(option.find("tuned") != string::npos) {
+      else 
+      if(param_values_opt.find("tuned") != string::npos) {
         LOG("NDFitParams", pFATAL) << "`tuned' option not implemented";
         exit(1);
       } 
       // randomize all parameters using pre-fit errors
-      else if(option.find("randomize-all;prefit-errors") != string::npos) {
+      else 
+      if(param_values_opt.find("randomize-all;prefit-errors") != string::npos) {
         Rnd * r = Rnd::Instance();
         double sig = kNDFitParamAPrioriFracError[ip];
         curr = r->RndToyMCsyst().Gaus(1,sig);
@@ -238,7 +254,8 @@ FitParamList * util::GetFitParameterList (Option_t * opt)
         init = curr;
       }
       // randomize all parameters using post-fit errors
-      else if(option.find("randomize-all;postfit-errors") != string::npos) {
+      else 
+      if(param_values_opt.find("randomize-all;postfit-errors") != string::npos) {
         LOG("NDFitParams", pFATAL) << "`randomize-all;postfit-errors' option not implemented";
         exit(1);
       }

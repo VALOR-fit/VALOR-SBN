@@ -535,8 +535,8 @@ namespace util {
 
   conv::PhysParamId_t NDPhysParamFromString(string p);
 
-  PhysHypothesis GetPhysHypothesis   (Option_t * opt = 0);
-  FitParamList * GetFitParameterList (Option_t * opt = 0);
+  PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard", Option_t * param_values = "nominal");
+  FitParamList * GetFitParameterList (Option_t * param_list = "standard", Option_t * param_values = "nominal");
 
 } //util
 

@@ -9,9 +9,11 @@
 	
 void tweak_nd_pdf_1
 (
-  const char * param       = 0,                                     /* parameter name, see NDFitParams.cxx */
-  int          plot_type   = 0,                                     /* 0: spectra, 1: spectrum ratios */
-  const char * config_file = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
+  const char * param              = 0,                                     /* parameter name, see NDFitParams.cxx */
+  int          plot_type          = 0,                                     /* 0: spectra, 1: spectrum ratios */
+  const char * model_param_list   = "standard",                            /* list of params included in model, see NDFitParams.cxx */
+  const char * model_param_values = "nominal",                             /* specify param values included in model, see NDFitParams.cxx */
+  const char * config_file        = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
 )
 {
   using namespace std;
@@ -26,7 +28,10 @@ void tweak_nd_pdf_1
   // Print settings
   cout << "\n[Job inputs]" << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
+  cout << "- Model parameter list used : " << model_param_list << endl;
+  cout << "- Setting parameter values: " << model_param_values << endl;
   cout << "- Tweaking parameter: " << ((param) ? param : " ** undefined ** ") << endl;
+  cout << endl;
 
   if(!param) {
     cerr << "** Specify an input parameter!";
@@ -65,7 +70,7 @@ void tweak_nd_pdf_1
     cout << "** Iteration: #" << i << endl;
 
     // Get a nominal physics hypothesis
-    PhysHypothesis ph = util::GetPhysHypothesis("apriori-default");
+    PhysHypothesis ph = util::GetPhysHypothesis(model_param_list,model_param_values);
     // Tweak if needed
     if(i != kdefault) {
       int ip = util::NDArrIdx::Instance()->NDFitParamIdx(p); // find param idx

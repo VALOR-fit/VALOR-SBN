@@ -13,7 +13,8 @@ void run_fit
   bool         stat_fluct     = false,                                 /* include statistical fluctuation in toy MC expts? */
   const char * fit_param_list = "apriori-default",                     /* fit parameter list - current params may be randomized (see NDFitParams::GetFitParameterList()) */
   const char * fit_option     = "minuit",                              /* fitter option */
-  const char * config_file    = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
+  bool         store_spectra  = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
+  const char * config_file    = "lbne_ndfit-2014a-STT_baseline.xml",   /* analysis configuration file */
 )
 
 {
@@ -107,16 +108,18 @@ void run_fit
     // Copy best-fit params
     best_fit_param_array->Copy(*fp);
 
-    // Copy best-fit to current values and re-generate the best-fit prediction
-    // with special option (not used in the fit) to generate versions of the fit model
-    // using a fine binning scheme (for plots).
-    // Then, write-out the best-fit predictions
-    fp->CopyBestFitToCurrValues();
-    model->Generate(*fp,"+SB");
-    model->Write(best_fit_model_array,"best_fit","pdfc_rf,pdft_rf,pdfts_rf,pdfcs_rf +SB");
+    if(store_spectra) {
+      // Copy best-fit to current values and re-generate the best-fit prediction
+      // with special option (not used in the fit) to generate versions of the fit model
+      // using a fine binning scheme (for plots).
+      // Then, write-out the best-fit predictions
+      fp->CopyBestFitToCurrValues();
+      model->Generate(*fp,"+SB");
+      model->Write(best_fit_model_array,"best_fit","pdfc_rf,pdft_rf,pdfts_rf,pdfcs_rf +SB");
 
-    // Write-out the toy-MC
-    data->Write(data_array,"toymc","all");
+      // Write-out the toy-MC
+      data->Write(data_array,"toymc","all");
+    }
 
     // Write to tree
     fitnt->Fill();
