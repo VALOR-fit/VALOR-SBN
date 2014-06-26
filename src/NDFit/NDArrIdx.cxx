@@ -61,7 +61,7 @@ void valor::util::NDArrIdx::Init(void)
     if(b == kbUndefined) continue;
     fNDBeamConfIdx[b] = ib;
     LOG("NDArrIdx",pNOTICE)
-       << "Beam config: " << util::AsString(b) << " is at slot: " << fNDBeamConfIdx[b];
+       << "Beam config: [" << util::AsString(b) << "] --> at slot: " << fNDBeamConfIdx[b];
   }//ib
 
   for(int is = 0; is < kNNDSamples; is++) {
@@ -69,21 +69,17 @@ void valor::util::NDArrIdx::Init(void)
      if(s == ksNDUndefined) continue;
      fNDSampleIdx [s] = is;
      LOG("NDArrIdx",pNOTICE) 
-        << "Sample: " << util::AsString(s) << " is at slot: " << fNDSampleIdx[s];
-  }//is
-
-  for(int is = 0; is < kNNDSamples; is++) {
-     NDSample_t s = kNDSample[is];
-     if(s == ksNDUndefined) continue;
+        << "Fit sample: [" << util::AsString(s) << "] --> at slot: " << fNDSampleIdx[s];
      for(int im = 0; im < kNReacModes; im++) {
          ReacMode_t m = kNDReactionModes[is][im];
          if(m == kmUndefined) continue;
          fNDReacModeIdx [s][m] = im;
          LOG("NDArrIdx",pNOTICE)
-            << "Mode: " << util::AsString(s) << "/" << util::AsString(m)
-            << " is at slot: " << fNDReacModeIdx [s][m];
+            << " ... with contribution from mode: [" << util::AsString(m) 
+            << "] --> at slot: " << fNDReacModeIdx [s][m];
      }//im
-  }//is 
+  }//is
+
   for(int ip = 0; ip < kNNDFitParams; ip++) {
      PhysParamId_t p = kNDFitParam[ip];
      if(p == kPhypUndefined) continue;

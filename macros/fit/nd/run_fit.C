@@ -10,8 +10,9 @@ void run_fit
   const char * tag            = "toymc",                               /* tag for output file */
   int          run            = 0,                                     /* run # */
   int          ntoymc         = 1,                                     /* number of toy-MC experiments */
-  bool         stat_fluct     = false,                                 /* include statistical fluctuation in toy MC expts? */
-  const char * fit_param_list = "apriori-default",                     /* fit parameter list - current params may be randomized (see NDFitParams::GetFitParameterList()) */
+  bool         stat_fluct     = true,                                  /* include statistical fluctuation in toy MC generation? */
+  const char * param_values   = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
+  const char * fit_param_list = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
   const char * fit_option     = "minuit",                              /* fitter option */
   bool         store_spectra  = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
   const char * config_file    = "lbne_ndfit-2014a-STT_baseline.xml",   /* analysis configuration file */
@@ -25,10 +26,6 @@ void run_fit
   // Analysis configuration
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
 
-  // Randomizing systematics for toy-MC?
-  string fit_param_list_str = fit_param_list;
-  bool rndsyst = (fit_param_list_str.find("randomize") != string::npos);
-
   //
   // Print settings
   //
@@ -38,8 +35,8 @@ void run_fit
   cout << "- Reading analysis configuration from: " << config << endl;
   cout << "- Toy-MC generation" << endl;
   cout << "   - Number of toy experiments: " << ntoymc << endl;
-  cout << "   - Randomize systematics : "      << ((rndsyst)    ? "YES " : "NO") << endl;
-  cout << "   - Statistical fluctuations: "    << ((stat_fluct) ? "YES " : "NO") << endl;
+  cout << "   - Statistical fluctuations: "  << ((stat_fluct) ? "YES " : "NO") << endl;
+  cout << "   - Option for setting parameter values: " << param_values << endl;
   cout << "- Fit" << endl;
   cout << "   - Fit Parameter List: " << fit_param_list << endl;
   cout << "   - Fitter option: " << fit_option << endl;
@@ -81,10 +78,9 @@ void run_fit
     best_fit_model_array -> Clear();
     data_array           -> Clear();
 
-    // Getting a fit parameter list
-    // The input name specifies the fit parameters.
-    // Also, the input name specifies whether (and which of) the `current' values will be randomized.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list);
+    // Getting the fit parameter list that corresponds to the input option.
+    // The secondd option determined the `current' values which are used for toy-MC generatio below.
+    FitParamList * fp = util::GetFitParameterList(fit_param_list, param_values);
 
     // Generate atoy-MC experiment 
     cout << "Generating toy-MC data" << endl;
