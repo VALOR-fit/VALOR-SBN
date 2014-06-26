@@ -10,6 +10,7 @@ ChangeLog:
 
 #include "Utilities/Rnd.h"
 #include "NDFit/NDFitParams.h"
+#include "Messenger/Messenger.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -134,48 +135,52 @@ PhysParamId_t util::NDPhysParamFromString(string inp_name)
   return kPhypUndefined;
 }
 //________________________________________________________________________________________
-PhysHypothesis util::GetPhysHypothesis (Option_t * opt)
+PhysHypothesis util::GetPhysHypothesis(Option_t * opt)
 {
-// Create a PhysHypothesis object
-// Add all physics + nuisance params (depending on input option) with nominal values
-//
+// Create a PhysHypothesis object, adding all physics + nuisance params
+// The input option specifies both the set of parameters (eg "standard") and their set
+// values (eg "nominal", or "randomize-all;prefit-errors" etc).
+
   PhysHypothesis ph(kHypVoid); 
 
-  string option = ((opt) ? opt : "apriori-default");
+  string option = ((opt) ? opt : "standard;nominal");
 
-  if(option.find("apriori-default") != string::npos) {
+  //
+  // Get the standard set of parameters
+  //
+
+  if(option.find("standard") != string::npos) {
     for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
-      ph.SetCurrValue(p,1.); 
-    }//ip
-  }
-  else
-  if(option.find("apriori-randomize") != string::npos) {
-    Rnd * r = Rnd::Instance();
-    for(int ip = 0; ip < kNNDFitParams; ip++) {
-      PhysParamId_t p = kNDFitParam[ip];
-      if(p == kPhypUndefined) continue;
-      double sig = kNDFitParamAPrioriFracError[ip];
-      double val = r->RndToyMCsyst().Gaus(1,sig);
+      double val = -9999;
+      // "nominal", a-priori defaults
+      if(option.find("nominal") != string::npos) {
+        val = 1;
+      } 
+      // "tuned", based on input ND best-fit params
+      else if(option.find("tuned") != string::npos) {
+        LOG("NDFitParams", pFATAL) << "`tuned' option not implemented";
+        exit(1);
+      } 
+      // randomize all parameters using pre-fit errors
+      else if(option.find("randomize-all;prefit-errors") != string::npos) {
+        Rnd * r = Rnd::Instance();
+        double sig = kNDFitParamAPrioriFracError[ip];
+        val = r->RndToyMCsyst().Gaus(1,sig);
+      }
+      // randomize all parameters using post-fit errors
+      else if(option.find("randomize-all;postfit-errors") != string::npos) {
+        LOG("NDFitParams", pFATAL) << "`randomize-all;postfit-errors' option not implemented";
+        exit(1);
+      }
+      else {
+        LOG("NDFitParams", pFATAL) << "You didn't specify how to set the parameter values";
+        exit(1);
+      }
+
       ph.SetCurrValue(p,val); 
     }//ip
-  }
-  else
-  if(option.find("postfit-default") != string::npos) {
-/*
-    Rnd * r = Rnd::Instance();
-    for(int ip = 0; ip < kNNDFitParams; ip++) {
-      PhysParamId_t p = kNDFitParam[ip];
-      if(p == kPhypUndefined) continue;
-      double sig = kNDFitParamTestPostFitFracError[ip];
-      double val = r->RndToyMCsyst().Gaus(1,sig);
-      ph.SetCurrValue(p,val); 
-    }//ip
-*/
-  }
-  else
-  if(option.find("postfit-randomize") != string::npos) {
   }
 
   return ph;
@@ -183,55 +188,72 @@ PhysHypothesis util::GetPhysHypothesis (Option_t * opt)
 //________________________________________________________________________________________
 FitParamList * util::GetFitParameterList (Option_t * opt)
 {
-  string option = ((opt) ? opt : "apriori-default");
+// Create a FitParamList object, adding all physics + nuisance params.
+// The input option specifies both the set of parameters (eg "standard") and their set
+// values (eg "nominal", or "randomize-all;prefit-errors" etc).
 
-  if(option.find("apriori-default") != string::npos) {
-     FitParamList * fparm = new FitParamList(kNNDFitParams);
-     for(int ip = 0; ip < kNNDFitParams; ip++) {
-        PhysParamId_t p = kNDFitParam[ip];
-        if(p == kPhypUndefined) continue; // note that if in fact there were gaps in the list the logic would be screwed - fix later
-        double init = 1.0;
-        double min  = 0.0;
-        double max  = 2.0;
-        double step = 1E-4;
-        bool   fix  = false;
-        bool   nuis = true;
-        fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
-     }//ip
-     fparm->ResetCurrToInitValues();
-     return fparm;
-  }
-  else
-  if(option.find("apriori-randomize") != string::npos) {
-    FitParamList * fparm = new FitParamList(kNNDFitParams);
-    Rnd * r = Rnd::Instance();
-     for(int ip = 0; ip < kNNDFitParams; ip++) {
-        PhysParamId_t p = kNDFitParam[ip];
-        if(p == kPhypUndefined) continue; // note that if in fact there were gaps in the list the logic would be screwed - fix later
-     // double init = 1.0;
-        double min  = 0.0;
-        double max  = 2.0;
-        double step = 1E-4;
-        bool   fix  = false;
-        bool   nuis = true;
-        double sig  = kNDFitParamAPrioriFracError[ip];
-        double val  = r->RndToyMCsyst().Gaus(1,sig);
-        val = TMath::Min(val,max);
-        val = TMath::Max(val,min);
-     // fparm->AddParam(ip, p, init, min, max, step, fix, nuis);
-        fparm->AddParam(ip, p, val,  min, max, step, fix, nuis); // set initial value = actual value used for toy-MC to help fitter
-        fparm->Update(p, val);
-     }//ip
-     return fparm;
-  }
-  else
-  if(option.find("postfit-default") != string::npos) {
-  }
-  else
-  if(option.find("postfit-randomize") != string::npos) {
+  string option = ((opt) ? opt : "standard;nominal");
+
+  FitParamList * fparm = 0;
+
+  //
+  // Get the standard set of parameters
+  //
+
+  if(option.find("standard") != string::npos) {
+
+    fparm = new FitParamList(kNNDFitParams);
+
+    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
+    for(int ip = 0; ip < kNNDFitParams; ip++) {
+      PhysParamId_t p = kNDFitParam[ip];
+      if(p == kPhypUndefined) continue;
+
+      // set parameter range, current and init value, etc
+      double init = 1.0;
+      double curr = -99999;
+      double min  = 0.0;
+      double max  = 2.0;
+      double step = 1E-4;
+      bool   fix  = false;
+      bool   nuis = true;
+
+      // "nominal", a-priori defaults
+      if(option.find("nominal") != string::npos) {
+        curr = init;
+      } 
+      // "tuned", based on input ND best-fit params
+      else if(option.find("tuned") != string::npos) {
+        LOG("NDFitParams", pFATAL) << "`tuned' option not implemented";
+        exit(1);
+      } 
+      // randomize all parameters using pre-fit errors
+      else if(option.find("randomize-all;prefit-errors") != string::npos) {
+        Rnd * r = Rnd::Instance();
+        double sig = kNDFitParamAPrioriFracError[ip];
+        curr = r->RndToyMCsyst().Gaus(1,sig);
+        curr = TMath::Min(curr,max);
+        curr = TMath::Max(curr,min);
+        // help fitter by setting init to curr (curr values may be used as true values for toy-MC generation before fitting)
+        init = curr;
+      }
+      // randomize all parameters using post-fit errors
+      else if(option.find("randomize-all;postfit-errors") != string::npos) {
+        LOG("NDFitParams", pFATAL) << "`randomize-all;postfit-errors' option not implemented";
+        exit(1);
+      }
+      else {
+        LOG("NDFitParams", pFATAL) << "You didn't specify how to set the parameter values";
+        exit(1);
+      }
+
+      fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
+      ipc++; 
+      fparm->Update(p, curr);
+
+    }//ip
   }
 
-  return 0;
+  return fparm;
 }
 //________________________________________________________________________________________
-
