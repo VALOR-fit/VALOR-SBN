@@ -11,17 +11,15 @@
 	
 void fit_param_scan
 (
-  const char * tag            = "fpsens",                              /* tag for output file */
-  int          run            = 0,                                     /* run number */
+  const char * tag            = "scan",                                /* tag for output file */
   const char * pname          = 0,                                     /* parameter name */
   double       pmin           = 0,                                     /* min parameter value */
   double       pmax           = 2,                                     /* max parameter value */
   int          npv            = 10,                                    /* number of points between minimum and maximum */
   int          ntoymc         = 20,                                    /* number of toy-MC experiments */
   bool         stat_fluct     = true,                                  /* include statistical fluctuation in toy MC expts? */
-  bool         tweak_syst     = 1,                                     /* generate toy MC with randomized systematics? (0: none, 1: all but input one set at fixed value)*/
-  const char * fit_param_list = "default",                             /* fit parameter list for the given physics hypothesis (see ?) */
-  const char * fit_option     = "minuit",                              /* fitter option */
+  const char * param_values   = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation  (see NDFitParams.cxx) */
+  const char * param_list     = "standard",                            /* model parameter list (see NDFitParams.cxx) */
   const char * config_file    = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
 )
 {
@@ -34,16 +32,15 @@ void fit_param_scan
 
   // Print settings
   cout << "\n[Job inputs]" << endl;
-  cout << "- Job: " << tag << "/" << run << endl;
+  cout << "- Job: " << tag << endl;
   cout << "- Scanning parameter: " << pname << " in range [" << pmin << ", " << pmax << "] using " << npv << " points" << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
   cout << "- Toy-MC generation" << endl;
   cout << "   - Number of toy experiments: " << ntoymc << endl;
-  cout << "   - Randomize systematics : "      << ((tweak_syst) ? "YES " : "NO") << endl;
   cout << "   - Statistical fluctuations: "    << ((stat_fluct) ? "YES " : "NO") << endl;
-  cout << "- Fit" << endl;
-  cout << "   - Fit Parameter List: " << fit_param_list << endl;
-  cout << "   - Fitter option: " << fit_option << endl;
+  cout << "   - Option for setting parameter values: " << param_values << endl;
+  cout << "- Model" << endl;
+  cout << "   - Parameter List: " << param_list << endl;
   cout << endl;
   cout << *Rnd::Instance() << endl;
 
@@ -71,27 +68,24 @@ void fit_param_scan
     for(int itoy = 0; itoy < ntoymc; itoy++) {
        cout << "Toy-MC #" << itoy << endl;
 
-       // Get the fit param list ith nominal values and generate a toy-MC experiment
-       Option_t * toymcopt = ((tweak_syst == 0) ? "apriori-default" : "apriori-randomize");
-       cout << "Generating toy-MC data (option = " << toymcopt << ")" << endl;
-       FitParamList * fp = util::GetFitParameterList(toymcopt);        
-       fp->ShowOnlyCurrValuesInNextPrint();
-       cout << *fp;
+       // Get model parameters and set the parameter values according to the
+       // input options (ie params can be randomized).
+       PhysHypothesis ph = util::GetPhysHypothesis(param_list,param_values);
+       //cout << ph;
+
+       // Generate a toy-MC experiment
        FitDataABC * data = new NDData;
-       data->Generate(model,*fp,stat_fluct);
+       data->Generate(model,ph,stat_fluct);
 
        // Set input param to current value and calculate the fit statistic
        cout << "Calculating fit-statistic" << endl;
-       FitParamList * fp2 = util::GetFitParameterList("apriori-default");
-       fp2->Update(p, pcurr);
-       //fp2->ShowOnlyCurrValuesInNextPrint();
-       //cout << *fp2;
-       double fit_statistic = data->Statistic(model,*fp2,"likelihood-ratio");
+       PhysHypothesis ph2 = util::GetPhysHypothesis(param_list,"nominal");
+       ph2.SetCurrValue(p, pcurr);
+       //cout << ph2;
+       double fit_statistic = data->Statistic(model,ph2,"likelihood-ratio");
 
        avg_fit_statistic += fit_statistic;
 
-       delete fp;
-       delete fp2;
        delete data;
     }//itoy
 
