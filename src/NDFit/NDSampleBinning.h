@@ -26,6 +26,8 @@
 
 // The following flag replaces the optimized Ereco,yreco binning scheme with 
 // just a few very wide bins to dramatically decrease the fit time for testing purposes.
+// NOTE: Do not remove this, unless you also make sure that all functions defined
+// here handle all samples currently installed in the fit. Last I looked they weren't.
 #define _use_very_few_ereco_yreco_bins_ 
 
 #include "NDFit/NDSample.h"

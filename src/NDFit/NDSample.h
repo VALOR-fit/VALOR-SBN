@@ -55,15 +55,22 @@ NDSample_t;
 
 //
 // Define the list of samples used in present analysis.
+//
 // Note: The order and position of samples in the array is important for other arrays. Maintain the not remove or re-arrange.
 // If you want to remove a sample from the fit, just comment-out the corresponding line and replace with ksNDUndefined.
 // kNDSample array elements that contain the ksNDUndefined flag are ignored.
+//
 // To add a new sample in the fit, do the following:
-// - write later
-// -
+// - Edit NDSample.cxx: Add a new case (for the new sample) is all switch statements and make sure the boundaries defined
+//   in NDSampleFromInt() are correct.
+// - Edit NDSampleModes.h: Add an entry for the new sample in each array (to define modes for the new sample etc)
+// - Edit NDSampleBinning.h/cxx: Check that an appropriate binning scheme exists, and add a new case (for the new sample)
+//   all switch statements.
+// - Edit NDFitParams.h: Make sure the instructions on how to apply systematics are correct for the new sample (for the
+//   time-being these instructions are not sample-specific, so there is nothing to do, but this may change)
 // -
 
-static const int kNNDSamples  = 6; 
+static const int kNNDSamples = 8; 
 
 static const NDSample_t kNDSample[kNNDSamples] =
 {
@@ -72,7 +79,9 @@ static const NDSample_t kNDSample[kNNDSamples] =
    ksNDNuMuCC1piC,
    ksNDNuMuCC1pi0,
    ksNDNuMuCC1piC1pi0,
-   ksNDNuMuCCoth
+   ksNDNuMuCCoth,
+   ksNDNuECC,
+   ksNDNC1pi0
 };
 
 

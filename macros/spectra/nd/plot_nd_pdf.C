@@ -36,7 +36,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     if(b == conv::kbUndefined) continue;
     const char * c_name = Form("c_pdf_tot_%s", util::AsString(b));
     c_pdf_tot[ibeam] = new TCanvas(c_name,"",20,20,600,600);
-    c_pdf_tot[ibeam] -> Divide(2,3);
+    c_pdf_tot[ibeam] -> Divide(3,3);
     int ic=0;
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
       conv::NDSample_t s = conv::kNDSample[isample];
@@ -73,7 +73,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     const char * c_name  = Form("c_pdf_slice_%s", util::AsString(b));
     c_pdf_slice[ibeam] = new TCanvas(c_name,"",20,20,700,700);
   //c_pdf_slice[ibeam]->Divide(conv::kNNDSamples);
-    c_pdf_slice[ibeam]->Divide(2,3);
+    c_pdf_slice[ibeam]->Divide(3,3);
     double max[conv::kNNDSamples] = { -999 };
     int ic = 0;   
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
@@ -136,26 +136,44 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     const char * c_name = Form("c_pdf_contrib_%s", util::AsString(b));
     c_pdf_contrib[ibeam] = new TCanvas(c_name,"",20,20,700,700);
   //c_pdf_contrib[ibeam]->Divide(conv::kNNDSamples);
-    c_pdf_contrib[ibeam]->Divide(2,3);
+    c_pdf_contrib[ibeam]->Divide(3,3);
     int ic = 0;
     double max[conv::kNNDSamples] = { -999 };
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
       conv::NDSample_t s = conv::kNDSample[isample];
       if(s == conv::ksNDUndefined) continue;
+      cout << "Creating stack for beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
       THStack * stack = new THStack("stack","spectrum contributions");
       TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };
       TH1D * pdf_contrib_coarse [conv::kNReacModesCoarse] = { 0 };
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
-           conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
-           if(m == conv::kmUndefined) continue;
+            conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+            if(m == conv::kmUndefined) continue;
+            cout << "Taking mode: " << util::AsString(m) << endl;
+            cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
             const char * name = Form("%s_%s_%s_%s_%s",
               tag, "pdfcs_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
             pdf_contrib[imode] = (TH1D*) fin->Get(name);
             if(pdf_contrib[imode]) {
-                conv:: ReacModeCoarse_t mc = conv::kNDMappingToCoarseModes[isample][imode];
-                if(mc == conv::kmcUndefined) continue;
+                conv::ReacModeCoarse_t mc = conv::kNDMappingToCoarseModes[ibeam][isample][imode];
+                if(mc == conv::kmcUndefined) continue; 
+                cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
+                bool found = false;
                 for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-                  if(mc != conv::kNDReactionModesCoarse[isample][imodec]) continue;
+                  if(mc == conv::kNDReactionModesCoarse[ibeam][isample][imodec]) {
+                      found = true;
+                      break;
+                  }
+                }           
+                if(!found) {
+                  cout << "WTF! Plot type (coarse reaction mode): " << util::AsString(mc) 
+                       << " not in the list of modes considered for"
+                       << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
+                  exit(1);
+                }                  
+                for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+                  cout << "imodec = " << imodec << endl;
+                  if(mc != conv::kNDReactionModesCoarse[ibeam][isample][imodec]) continue;
                   if(pdf_contrib_coarse[imodec] == 0) {
                      pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
                   } else {
@@ -183,12 +201,12 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       TLegend * leg = new TLegend(0.5,0.3,0.9,0.8);  
       leg->SetFillColor(0);
       for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-          conv:: ReacModeCoarse_t mc = conv::kNDReactionModesCoarse[isample][imodec];
+          conv::ReacModeCoarse_t mc = conv::kNDReactionModesCoarse[ibeam][isample][imodec];
           if(mc == conv::kmcUndefined) continue;
           pdf_contrib_coarse[imodec]->SetLineWidth(1); 
-          pdf_contrib_coarse[imodec]->SetLineColor(conv::kNDReactionModesCoarseFormatting[isample][imodec][0]); 
-          pdf_contrib_coarse[imodec]->SetFillColor(conv::kNDReactionModesCoarseFormatting[isample][imodec][1]); 
-          pdf_contrib_coarse[imodec]->SetFillStyle(conv::kNDReactionModesCoarseFormatting[isample][imodec][2]); 
+          pdf_contrib_coarse[imodec]->SetLineColor(conv::kNDReactionModesCoarseFormatting[ibeam][isample][imodec][0]); 
+          pdf_contrib_coarse[imodec]->SetFillColor(conv::kNDReactionModesCoarseFormatting[ibeam][isample][imodec][1]); 
+          pdf_contrib_coarse[imodec]->SetFillStyle(conv::kNDReactionModesCoarseFormatting[ibeam][isample][imodec][2]); 
           stack->Add(pdf_contrib_coarse[imodec]);
           leg->AddEntry(pdf_contrib_coarse[imodec],Form("%s",util::AsStringTex(mc,true).c_str()), "LF");
       }//imodec
