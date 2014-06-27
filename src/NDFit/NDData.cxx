@@ -425,7 +425,7 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
     << "Current fit statistic = " << Stot
     << " (stat term = " << S << ", syst term = " << Sp << ")";
 
-  return S;
+  return Stot;
 }
 //________________________________________________________________________________________
 void NDData::Init(void)
