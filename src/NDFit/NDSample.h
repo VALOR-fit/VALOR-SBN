@@ -81,7 +81,7 @@ static const NDSample_t kNDSample[kNNDSamples] =
    ksNDNuMuCC1piC1pi0,
    ksNDNuMuCCoth,
    ksNDNuECC,
-   ksNDNC1pi0
+   ksNDUndefined // ksNDNC1pi0
 };
 
 
