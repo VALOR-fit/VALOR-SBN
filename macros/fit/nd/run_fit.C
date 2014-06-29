@@ -56,12 +56,15 @@ void run_fit
   TObjArray *     data_array           = new TObjArray;
   best_fit_model_array -> SetOwner(false);
   data_array           -> SetOwner(false);
+  int migradmin, migraderr;
 
   TTree * fitnt = new TTree("fitnt","VALOR toy-MC experiment fit results");
   fitnt->Branch("true_params",     "valor::PhysParamList", &true_param_array,     1280000,0);
   fitnt->Branch("best_fit_params", "valor::FitParamList",  &best_fit_param_array, 1280000,0);
   fitnt->Branch("best_fit_model",  "TObjArray",            &best_fit_model_array, 1280000,0);
   fitnt->Branch("data",            "TObjArray",            &data_array,           1280000,0);
+  fitnt->Branch("migradmin",                               &migradmin);
+  fitnt->Branch("migraderr",                               &migraderr);
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
@@ -100,6 +103,9 @@ void run_fit
     // Do the fit
     cout << "Running fitter" << endl;
     fitter->DoTheFit();
+
+    migradmin = fitter->FitStatusCode("migrad_min");
+    migraderr = fitter->FitStatusCode("migrad_err");
 
     // Copy best-fit params
     best_fit_param_array->Copy(*fp);
