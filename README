@@ -1,0 +1,88 @@
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+VALOR LBNx analysis
+
+(c) 2010-14 All Rights Reserved
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+
+AUTHORS:
+
+Costas Andreopoulos   University of Liverpool & STFC-RAL 
+Fatih Bay             ETH Zurich
+George Christodoulou  University of Liverpool    
+Thomas Dealtry        University of Oxford
+Steve Dennis          University of Warwick & STFC-RAL
+Debra Dewhurst        University of Oxford            
+Lorena Escudero       IFIC Valencia
+Nick Grant            University of Lancaster
+Silvestro Di Luise    ETH Zurich
+Davide Sgalaberna     ETH Zurich 
+Raj Shah              University of Oxford 
+Alfons Weber          University of Oxford & STFC-RAL
+
+............................................................................................................................
+
+PACKAGE CONTENTS:
+ 
+Schematic based on the SVN trunk (latest) version
+
+<top_level>
+    |
+    |-- config                    : Analysis configuration XML files
+    |
+    |-- data                      : Input data (templates from MC samples, etc)
+    |      |----- lbne            : LBNE-specific inputs
+    |      |----- lbno            : LBNO-specific inputs
+    |
+    |-- src                       
+    |      |----- NDFit           : Near Detector Fit (Near Detector Flux and Cross-Section Systematics Constraint)
+    |      |----- FDFit           : Far  Detector Fit (Oscillations)
+    |
+    |
+    |-- macros                    : Our analysis procedures
+    |     |------ spectra         : Macros used for testing nominal and tweaked spectra
+    |     |         |-- nd
+    |     |         |-- fd
+    |     |
+    |     |------ fit             : Macros used for fitting data or toy MC expts
+    |     |         |-- nd
+    |     |         |-- fd
+    |     |
+    |     |------ select          : Macros used for testing sample selections and constructing VALOR DSTs
+    |
+    |-- prod                      : Batch production scripts for RAL/IN2P3/Oxford farms
+    |
+    |-- root                      : The `valor_lbnx' (ROOT + VALOR framework+LBNx libraries) environment for our analysis macros
+    |
+    |-- setup                     : Environment setup scripts for various locations
+
+
+............................................................................................................................
+
+SETTING-UP YOUR ENVIRONMENT
+
+Use the appropriate script from the setup directory.
+The setup script expects two arguments: The top-level source code directory for the VALOR/LBNX and VALOR/FMWK packages.
+
+Example:
+% source setup/setup_at_XYZ.sh /path/to/lbnx/top/level/dir /path/to/fmwk/top/level/dir 
+
+BUILDING THE VALOR CODE
+
+% cd /path/to/lbnx/nuosc/top/level/dir
+% ./configure --help
+% ./configure <specify options or no options, autodetection of paths possible>
+% make
+
+RUNNING THE ANALYSIS CODE:
+
+To run the VALOR/LBNX analysis ROOT macros, use `valor_lbnx' instead of `root'.
+The valor_lbnx application is ROOT with all the VALOR/LBNX and VALOR/FMWK libraries loaded.
+When running a VALO macro: 
+% valor_lbnx 'macros/dir/some_script.C("/some/path/some/file.root",some_number)'
+make sure there are NO spaces within ''.
+
+............................................................................................................................
+
+RELEASES 
+
+
