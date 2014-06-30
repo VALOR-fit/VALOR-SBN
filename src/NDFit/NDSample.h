@@ -81,7 +81,8 @@ static const NDSample_t kNDSample[kNNDSamples] =
    ksNDNuMuCC1piC1pi0,
    ksNDNuMuCCoth,
    ksNDNuECC,
-   ksNDUndefined // ksNDNC1pi0
+   ksNDNC1pi0
+//   ksNDUndefined 
 };
 
 
@@ -91,6 +92,8 @@ namespace util {
 
   string           AsString        (conv::NDSample_t s);
   string           AsStringTeX     (conv::NDSample_t s, bool root);
+  bool             IsCC            (conv::NDSample_t s);
+  bool             IsNC            (conv::NDSample_t s);
   conv::NDSample_t NDSampleFromInt (int s);
 
 } // util

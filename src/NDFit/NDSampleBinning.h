@@ -30,10 +30,61 @@
 // here handle all samples currently installed in the fit. Last I looked they weren't.
 #define _use_very_few_ereco_yreco_bins_ 
 
+#include "Conventions/KineVar.h"
 #include "NDFit/NDSample.h"
 
 namespace valor {
 namespace conv  {
+
+// ...........................................................................
+// 
+// Define fit distributions (reco. quantities) for all samples.
+// The corresponding MC templates used for constructing the p.d.fs will 
+//
+
+const int kMCTemplateNdimMax  = 3; // (current) maximum dimensionality for MC templates
+const int kFitSpectrumNdimMax = 2; // (current) maximum dimensionality for fit distributions
+
+// Define dimensionality of MC templates
+static const int kMCTemplateNdim[kNNDSamples] =
+{
+   3, // ksNDNuMuCC1trkQE
+   3, // ksNDNuMuCC2trkQE
+   3, // ksNDNuMuCC1piC
+   3, // ksNDNuMuCC1pi0
+   3, // ksNDNuMuCC1piC1pi0
+   3, // ksNDNuMuCCoth
+   3, // ksNDNuECC
+   2  // ksNDNC1pi0
+};
+
+// Define dimensionality of fit distributions
+static const int kFitSpectrumNdim[kNNDSamples] =
+{
+   2, // ksNDNuMuCC1trkQE
+   2, // ksNDNuMuCC2trkQE
+   2, // ksNDNuMuCC1piC
+   2, // ksNDNuMuCC1pi0
+   2, // ksNDNuMuCC1piC1pi0
+   2, // ksNDNuMuCCoth
+   2, // ksNDNuECC
+   1  // ksNDNC1pi0
+};
+
+// Define variables entering in MC template definitions.
+// Variable subset {0 -> kFitSpectrumNdim[isample]} is the one entering in PDF definitions.
+static const KineVar_t kSampleKineVars[kNNDSamples][kMCTemplateNdimMax] =
+{
+   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1trkQE
+   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC2trkQE
+   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1piC
+   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1pi0
+   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1piC1pi0
+   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCCoth
+   { kvEreco, kvYreco, kvEtrue },     // ksNDNuECC
+   { kvEvis,  kvEtrue, kvUndefined }  // ksNDNC1pi0
+};
+
 
 // ...........................................................................
 // 
@@ -90,16 +141,23 @@ static const double kErecoBinEdgesSb [kNErecoBinsSb+1] =
   20.0, kErecoMax
 };
 
-static const int kNYrecoBinsSb = 6;
+static const int kNYrecoBinsCCSb = 6;
+static const int kNYrecoBinsNCSb = 1;
 
-// y binning for QE-like processes
-static const double kYrecoBinEdgesQELikeSb [kNYrecoBinsSb+1] =
+// yreco binning for CC QE-like samples
+static const double kYrecoBinEdgesQELikeSb [kNYrecoBinsCCSb+1] =
 {
    0.000, 0.010, 0.020, 0.040, 0.070, 0.200, 1.000 
 };
-static const double kYrecoBinEdgesMiscSb [kNYrecoBinsSb+1] =
+// yreco binning for other CC samples
+static const double kYrecoBinEdgesMiscSb [kNYrecoBinsCCSb+1] =
 {
    0.000, 0.050, 0.100, 0.200, 0.400, 0.600, 1.000 
+};
+// yreco binning for NC samples - yreco not defined so use [0,1]
+static const double kYrecoBinEdgesNCSb [kNYrecoBinsNCSb+1] =
+{
+   0.000, 1.000 
 };
 
 // ...........................................................................
@@ -255,9 +313,15 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 
 namespace util   {
 
+   // Etrue binning
    const int      NumEtrueBins    (conv::NDSample_t sample);
    const double * EtrueBinEdges   (conv::NDSample_t sample);
+
+   // Simple binning scheme
+   const int      NumYrecoBinsSb  (conv::NDSample_t sample);
    const double * YrecoBinEdgesSb (conv::NDSample_t sample);
+
+   // Optimized binning scheme
    const int      NumErecoBins    (conv::NDSample_t sample, int zone);
    const double * ErecoBinEdges   (conv::NDSample_t sample, int zone);
    const int      NumYrecoBins    (conv::NDSample_t sample, int zone);

@@ -360,13 +360,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in TH2D format
              if (opt.find("pdfc_rf") != string::npos) {
                // book histogram
+               const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
                const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF component = f(beam,sample,mode)",
-                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
+                 kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_sb_rf",name) );
                // fill from corresponding VALOR array
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-                 for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+                 for(int iy = 0; iy <  n_y_reco_bins_sb; iy++) {
                    double val = fMCPDFSbComp[ibeam][isample][imode]->GetEntry(ier,iy);
                    h2->SetBinContent(ier+1,iy+1,val);
                  }//iy
@@ -440,16 +441,17 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in TH2D format
              if (opt.find("pdft_rf") != string::npos) {
                // book histogram
+               const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
                const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
                TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF = f(beam,sample)",
-                 kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
+                 kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdft_sb_rf",name) );
                h2->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
                h2->GetYaxis()->SetTitle("y");
                h2->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
                // fill from corresponding VALOR array
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-                 for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+                 for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
                    double val = fMCPDFSbTot[ibeam][isample]->GetEntry(ier,iy);
                    h2->SetBinContent(ier+1,iy+1,val);
                  }//iy
@@ -521,13 +523,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             const char * name = Form("%s_%s_%s", 
               util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
             // create slices of the PDF components (function of Ereco, for given yreco bin)
+            const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
             const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
             TH1D * htot = new TH1D("htot", 
                "VALOR/LBNx ND PDF component: Ereco spectrum = f(beam,sample,mode)", kNErecoBinsSb, kErecoBinEdgesSb);
             htot->SetName(Form("%s_%s_%s",tag, "pdfcs_sb_rf",name) );
             htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
-            for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+            for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
               TH1D * h = new TH1D("h",
                   Form("VALOR/LBNx ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
                        y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
@@ -606,13 +609,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const char * name = Form("%s_%s", 
             util::AsString(b).c_str(), util::AsString(s).c_str());
           // create slices of the total PDF (function of Ereco, for given yreco bin)
+          const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
           TH1D * htot = new TH1D("htot", 
               "VALOR/LBNx ND PDF: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
           htot->SetName(Form("%s_%s_%s",tag, "pdfts_sb_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
-          for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+          for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
             TH1D * h = new TH1D("h",
                 Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
                      y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
@@ -749,6 +753,7 @@ void NDModel::Book(void)
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
+        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
         const int n_enu_true_bins = util::NumEtrueBins(s);
 
         LOG("NDModel",pDEBUG) 
@@ -761,17 +766,17 @@ void NDModel::Book(void)
         // (Note order of variables: reco first, true later)
         fMCTSbNull[ibeam][isample][imode] = false;
         fMCTSbNom [ibeam][isample][imode] = 
-          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
         fMCTSbTun [ibeam][isample][imode] = 
-          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
         fMCTSbSys [ibeam][isample][imode] = 
-          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
         fMCTSbFin [ibeam][isample][imode] = 
-          new VALORArray(kNErecoBinsSb, kNYrecoBinsSb, n_enu_true_bins);
+          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
 
         // >> PDF component
         fMCPDFSbComp[ibeam][isample][imode] = 
-            new VALORArray(kNErecoBinsSb, kNYrecoBinsSb);           
+            new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);           
         // >> PDF total
         // should get here for at least one imode value
         if(fMCPDFSbTotNull[ibeam][isample]) {              
@@ -780,7 +785,7 @@ void NDModel::Book(void)
               << "beam: "     << util::AsString(b) 
               << ", sample: " << util::AsString(s);
            fMCPDFSbTotNull [ibeam][isample] = false;
-           fMCPDFSbTot     [ibeam][isample] = new VALORArray(kNErecoBinsSb, kNYrecoBinsSb); 
+           fMCPDFSbTot     [ibeam][isample] = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb); 
         }
 
 
@@ -1093,7 +1098,7 @@ void NDModel::Fill(TTree * t, int ibeam)
      const int n_enu_true_bins = util::NumEtrueBins(s);
      const int n_enu_reco_bins = util::NumErecoBins(s,izone);
      const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
-
+     const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
      const double * enu_true_bin_edges  = util::EtrueBinEdges(s);
      const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
      const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
@@ -1104,8 +1109,8 @@ void NDModel::Fill(TTree * t, int ibeam)
      int ienu_reco    = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
      int iy_reco      = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
      // repeat, finding the indices for the template versions using a simple binning scheme
-     int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb, kErecoBinEdgesSb,    enu_reco);
-     int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)kNYrecoBinsSb, y_reco_bin_edges_sb, y_reco  );
+     int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb,    kErecoBinEdgesSb,    enu_reco);
+     int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)n_y_reco_bins_sb, y_reco_bin_edges_sb, y_reco  );
 
      // Exposure for assumed data - Weight MC templates to that exposure
      double data_pot = fPOT[ibeam];
@@ -1214,6 +1219,8 @@ void NDModel::ApplyPhysics(Option_t * option)
         const int n_enu_true_bins = util::NumEtrueBins(s);
         const double * enu_true_bin_edges = util::EtrueBinEdges(s);
 
+        const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(s);
+
         LOG("NDModel",pDEBUG) 
            << "Handing templates for: " 
            << util::AsString(b) << ", " << util::AsString(s) << ", " << util::AsString(m);
@@ -1311,7 +1318,7 @@ void NDModel::ApplyPhysics(Option_t * option)
           // copy sys -> fin MC templates
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-               for(int iyr = 0; iyr < kNYrecoBinsSb; iyr++) {
+               for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
                  double val = fMCTSbSys[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                  fMCTSbFin[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
                }//iyr: yreco bins
@@ -1338,7 +1345,7 @@ void NDModel::ApplyPhysics(Option_t * option)
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-epsilon);
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-                 for(int iyr = 0; iyr < kNYrecoBinsSb; iyr++) {
+                 for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
                     double val = fMCTSbFin[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                     val *= f;
                     fMCTSbFin[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
@@ -1366,7 +1373,7 @@ void NDModel::ApplyPhysics(Option_t * option)
           fnoEt = TMath::Max(0.,fnoEt);
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-              for(int iyr = 0; iyr < kNYrecoBinsSb; iyr++) {
+              for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
                  double val = fMCTSbFin[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                  val *= fnoEt;
                  fMCTSbFin[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
@@ -1402,10 +1409,10 @@ void NDModel::UpdatePDFs(Option_t * option)
       NDSample_t s = kNDSample[isample];
       if(s == ksNDUndefined) continue;
       const int n_enu_true_bins = util::NumEtrueBins(s);
+      const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       for(int imode = 0; imode < kNReacModes; imode++) {
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
-
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           bool is_null = fMCTNull[ibeam][isample][imode][izone];
@@ -1427,7 +1434,7 @@ void NDModel::UpdatePDFs(Option_t * option)
           bool is_null = fMCTSbNull[ibeam][isample][imode];
           if(is_null) continue;
           for(int ier=0; ier < kNErecoBinsSb; ier++) {
-            for(int iyr=0; iyr < kNYrecoBinsSb; iyr++) {
+            for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
                double sum = 0.;
                for(int iet=0; iet < n_enu_true_bins; iet++) {
                  sum += fMCTSbFin[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
@@ -1452,6 +1459,8 @@ void NDModel::UpdatePDFs(Option_t * option)
       NDSample_t s = kNDSample[isample];
       if(s == ksNDUndefined) continue;
 
+      const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
+
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          const int n_enu_reco_bins = util::NumErecoBins(s,izone);
          const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
@@ -1472,7 +1481,7 @@ void NDModel::UpdatePDFs(Option_t * option)
 
       if(update_mct_sb) {
          for(int ier=0; ier < kNErecoBinsSb; ier++) {
-           for(int iyr=0; iyr < kNYrecoBinsSb; iyr++) {
+           for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
               double sum = 0.;
               for(int imode = 0; imode < kNReacModes; imode++) {
                  ReacMode_t m = kNDReactionModes[isample][imode];

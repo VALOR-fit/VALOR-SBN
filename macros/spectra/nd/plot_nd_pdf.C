@@ -13,8 +13,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
   
   double enu_reco_max = 12.; 
 
-  const int n_pdf_slices = 6;
-  assert(n_pdf_slices >= conv::kNYrecoBinsSb);
+  const int n_pdf_slices = 10; //
 
   int pdf_slice_color[n_pdf_slices] = 
   {
@@ -80,8 +79,9 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       conv::NDSample_t s = conv::kNDSample[isample];
       if(s == conv::ksNDUndefined) continue;
       THStack * stack = new THStack("stack","spectrum contributions");
-      TH1D * pdf_slice[conv::kNYrecoBinsSb];
-      for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
+      const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
+      TH1D * pdf_slice[n_pdf_slices] = {0};
+      for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
              const char * name = Form("%s_%s_%s_%s_y%d",
                 tag, "pdfts_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
              pdf_slice[iy] = (TH1D*) fin->Get(name);
@@ -90,7 +90,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       for(int ebin = 1; ebin <= pdf_slice[0]->GetNbinsX(); ebin++) {
          if(pdf_slice[0]->GetBinCenter(ebin) < enu_reco_max ) {
            double sum = 0;
-           for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
+           for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
               double val = pdf_slice[iy]->GetBinContent(ebin);
               sum += val;
            }
@@ -102,7 +102,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
       TLegend * leg = new TLegend(0.50,0.40,0.88,0.80);  
       leg->SetFillColor(0);
-      for(int iy = 0; iy < conv::kNYrecoBinsSb; iy++) {
+      for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
           if(pdf_slice[iy]) {
                pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
                pdf_slice[iy]->SetLineWidth(1); 
@@ -116,7 +116,11 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
        const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
        TLatex * title = new TLatex(1,1.07*max[isample],title_str);
        title->Draw(); 
-       hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+       if(util::IsCC(s)) {
+         hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+       } else {
+         hframe->GetXaxis()->SetTitle("Visible Energy (GeV)");
+       }
        hframe->GetYaxis()->SetTitle("Events /bin");
        stack->Draw("same");
        leg->Draw();
@@ -216,7 +220,11 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
       TLatex * title = new TLatex(1,1.07*max[isample],title_str);
       title->Draw(); 
-      hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+      if(util::IsCC(s)) {  
+         hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+      } else {
+         hframe->GetXaxis()->SetTitle("Visible Energy (GeV)");
+      }
       hframe->GetYaxis()->SetTitle("Events /bin");
       stack->Draw("same");
       leg->Draw();

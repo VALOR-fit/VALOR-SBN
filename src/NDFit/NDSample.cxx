@@ -63,6 +63,54 @@ string util::AsStringTeX(NDSample_t s, bool root)
   return name;
 }
 //________________________________________________________________________________________
+bool util::IsCC(NDSample_t s)
+{
+  switch(s) {
+
+    case (ksNDNuMuCC         ) :
+    case (ksNDNuMuCC1trkQE   ) :
+    case (ksNDNuMuCC2trkQE   ) :
+    case (ksNDNuMuCC1piC     ) :
+    case (ksNDNuMuCC2piC     ) :
+    case (ksNDNuMuCC1pi0     ) :
+    case (ksNDNuMuCC1piC1pi0 ) :
+    case (ksNDNuMuCCoth      ) :
+    case (ksNDNuECC          ) : return true; break;
+
+    case (ksNDNC             ) : 
+    case (ksNDNC1piC         ) : 
+    case (ksNDNC1pi0         ) : 
+    case (ksNDNCoth          ) : return false; break;
+
+    default: return false; 
+  }
+  return false;
+}
+//________________________________________________________________________________________
+bool util::IsNC(NDSample_t s)
+{
+  switch(s) {
+
+    case (ksNDNuMuCC         ) :
+    case (ksNDNuMuCC1trkQE   ) :
+    case (ksNDNuMuCC2trkQE   ) :
+    case (ksNDNuMuCC1piC     ) :
+    case (ksNDNuMuCC2piC     ) :
+    case (ksNDNuMuCC1pi0     ) :
+    case (ksNDNuMuCC1piC1pi0 ) :
+    case (ksNDNuMuCCoth      ) :
+    case (ksNDNuECC          ) : return false; break;
+
+    case (ksNDNC             ) : 
+    case (ksNDNC1piC         ) : 
+    case (ksNDNC1pi0         ) : 
+    case (ksNDNCoth          ) : return true; break;
+
+    default: return false; 
+  }
+  return false;
+}
+//________________________________________________________________________________________
 NDSample_t util::NDSampleFromInt(int s)
 {
 // Cast an integer to NDSample_t, but with boundary check

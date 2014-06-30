@@ -120,12 +120,13 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              array->Add(fDataSb[ibeam][isample]);
           }//data_vf
           if(opt.find("data_rf") != string::npos) {
+             const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
              const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
              TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) data = f(beam,sample)",
-                kNErecoBinsSb, kErecoBinEdgesSb, kNYrecoBinsSb, y_reco_bin_edges_sb);
+                kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
              h2->SetName(Form("%s_%s_%s",tag,"data_sb_rf",name));
              for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-               for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+               for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
                  double val = fDataSb[ibeam][isample]->GetEntry(ier,iy);
                  h2->SetBinContent(ier+1,iy+1,val);
                }//iy
@@ -194,13 +195,14 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const char * name = Form("%s_%s",
             util::AsString(b).c_str(), util::AsString(s).c_str());
           // create slices of the total PDF (function of Ereco, for given yreco bin)
+          const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
           TH1D * htot = new TH1D("htot",
               "VALOR/LBNx ND data: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
           htot->SetName(Form("%s_%s_%s",tag, "data_slice_sb_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle("Number of events /bin");
-          for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+          for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
             TH1D * h = new TH1D("h",
                 Form("VALOR/LBNx ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
                      y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
@@ -296,12 +298,14 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
           << "Generating toy-MC for: " 
           << util::AsString(b) << " / " << util::AsString(s);
 
+        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
+
         const char * name = Form("curr_pdft_sb_vf_%s_%s", 
            util::AsString(b).c_str(), util::AsString(s).c_str());
         VALORArray * pdf = (VALORArray*) array->FindObject(name);
         assert(pdf);           
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-          for(int iy = 0; iy < kNYrecoBinsSb; iy++) {
+          for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
             double nmc   = pdf->GetEntry(ier,iy);
             double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
             fDataSb[ibeam][isample]->SetEntry(ndata,ier,iy);
@@ -454,6 +458,7 @@ void NDData::Book(void)
     for(int isample = 0; isample < kNNDSamples; isample++) {
       NDSample_t s = kNDSample[isample];
       if(s == ksNDUndefined) continue;
+      const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
           const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
@@ -462,7 +467,7 @@ void NDData::Book(void)
           fData     [ibeam][isample][izone] = new VALORArray(n_enu_reco_bins, n_y_reco_bins);
       }//izone
       fDataSbNull [ibeam][isample] = false;
-      fDataSb     [ibeam][isample] = new VALORArray(kNErecoBinsSb, kNYrecoBinsSb);
+      fDataSb     [ibeam][isample] = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);
     }//isample
   }//ibeam
 }
