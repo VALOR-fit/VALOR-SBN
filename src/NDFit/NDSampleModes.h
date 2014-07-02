@@ -981,7 +981,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCC1piC
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuCCoth
@@ -992,7 +992,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCC1pi0
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuCCoth
@@ -1003,7 +1003,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCC1piC1pi0
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuCCoth
@@ -1014,7 +1014,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCCoth
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuCCoth
@@ -1036,7 +1036,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCCWSgn
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuBarCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuBarCCoth
@@ -1084,7 +1084,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCC1piC
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuBarCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuBarCCoth
@@ -1095,7 +1095,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCC1pi0
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuBarCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuBarCCoth
@@ -1106,7 +1106,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCC1piC1pi0
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuBarCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuBarCCoth
@@ -1117,7 +1117,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCCoth
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuBarCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuBarCCoth
@@ -1139,7 +1139,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
     },
     // sample: ksNDNuMuCCWSgn
     {
-      { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
+      { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
       { kBlack, kBlue,     3005 }, // kmcNuMuCC2pi
       { kBlack, kGreen,    3007 }, // kmcNuMuCCoth
