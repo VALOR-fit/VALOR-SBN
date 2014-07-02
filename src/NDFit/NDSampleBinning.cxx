@@ -55,6 +55,7 @@ const int util::NumYrecoBinsSb(NDSample_t s)
       return kNYrecoBinsCCSb; 
       break;
 
+    case (ksNDNC            ) :
     case (ksNDNC1pi0        ) :
 
       return kNYrecoBinsNCSb; 
@@ -88,6 +89,7 @@ const double * util::YrecoBinEdgesSb(NDSample_t s)
       return kYrecoBinEdgesMiscSb;  
       break;
 
+    case (ksNDNC            ) :
     case (ksNDNC1pi0        ) :
       return kYrecoBinEdgesNCSb;  
       break;

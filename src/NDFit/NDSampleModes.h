@@ -573,7 +573,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNC1pi0
+  // sample: ksNDNC
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -744,7 +744,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcUndefined,
       kmcUndefined          
     },
-    // sample: ksNDNC1pi0
+    // sample: ksNDNC
     {
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -836,7 +836,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcUndefined,
       kmcUndefined          
     },
-    // sample: ksNDNC1pi0
+    // sample: ksNDNC
     {
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -936,7 +936,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       {0,0,0},        
       {0,0,0}  
     },
-    // sample: ksNDNC1pi0
+    // sample: ksNDNC
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
@@ -1028,7 +1028,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       {0,0,0},                             
       {0,0,0}
     },
-    // sample: ksNDNC1pi0
+    // sample: ksNDNC
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
@@ -1583,7 +1583,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNCoth        // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuECC
+    // sample: ksNDNC
     {
       kmcNuMuCC,      // kmNuMuCCQE            
       kmcNuMuCC,      // kmNuMuCCMEC           
@@ -2195,7 +2195,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNCoth             // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuECC
+    // sample: ksNDNC
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           

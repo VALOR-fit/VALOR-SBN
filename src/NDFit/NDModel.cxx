@@ -1015,13 +1015,22 @@ void NDModel::Fill(TTree * t, int ibeam)
           << " (value stored in DST: " << sample << ")";
        //exit(1);
      }
-     // NOTE - HACK
+
+     //  ================ NOTE - HACKS ================
      if(s == ksNDNuMuCC2piC) {
        LOG("HACK",pNOTICE) 
          << "MC event: " << iev << " belongs to sample: " << util::AsString(s) 
          << " not considered separately. Bundle in sample: " << util::AsString(ksNDNuMuCCoth);
        s = ksNDNuMuCCoth;
      }
+     if(util::IsNC(s)) {
+       LOG("HACK",pNOTICE) 
+         << "MC event: " << iev << " belongs to NC sample: " << util::AsString(s) 
+         << " Bundling it in sample: " << util::AsString(ksNDNC);
+       s = ksNDNC;
+     }
+     //  ==============================================
+
      int isample = fArrIdx->NDSampleIdx(s);
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit
@@ -1248,7 +1257,7 @@ void NDModel::ApplyPhysics(Option_t * option)
 
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             bool apply = kNDApplyFitParamToTemplate[ibeam][imode][ip];
+             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
@@ -1287,14 +1296,13 @@ void NDModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             bool apply = kNDApplyFitParamToTemplate[ibeam][imode][ip];
+             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
              PhysParamId_t p = kNDFitParam[ip];
              if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
-           //double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
              LOG("NDModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f;
              fnoEt *= f;
@@ -1328,14 +1336,13 @@ void NDModel::ApplyPhysics(Option_t * option)
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
              double epsilon = 1E-4;
-             bool apply = kNDApplyFitParamToTemplate[ibeam][imode][ip];
+             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
              PhysParamId_t p = kNDFitParam[ip];
              if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
-           //double f = 1 + fPhysParamCurrVal[ip] * fPhysParamFracErr[ip];
              f = TMath::Max(0.,f);
              bool tweaked = TMath::Abs(f-1) > epsilon;
              if(!tweaked) continue;
@@ -1358,7 +1365,7 @@ void NDModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             bool apply = kNDApplyFitParamToTemplate[ibeam][imode][ip];
+             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;

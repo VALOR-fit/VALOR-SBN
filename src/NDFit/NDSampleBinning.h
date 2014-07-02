@@ -55,7 +55,7 @@ static const int kMCTemplateNdim[kNNDSamples] =
    3, // ksNDNuMuCC1piC1pi0
    3, // ksNDNuMuCCoth
    3, // ksNDNuECC
-   2  // ksNDNC1pi0
+   2  // ksNDNC
 };
 
 // Define dimensionality of fit distributions
@@ -68,7 +68,7 @@ static const int kFitSpectrumNdim[kNNDSamples] =
    2, // ksNDNuMuCC1piC1pi0
    2, // ksNDNuMuCCoth
    2, // ksNDNuECC
-   1  // ksNDNC1pi0
+   1  // ksNDNC
 };
 
 // Define variables entering in MC template definitions.
@@ -82,7 +82,7 @@ static const KineVar_t kSampleKineVars[kNNDSamples][kMCTemplateNdimMax] =
    { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1piC1pi0
    { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCCoth
    { kvEreco, kvYreco, kvEtrue },     // ksNDNuECC
-   { kvEvis,  kvEtrue, kvUndefined }  // ksNDNC1pi0
+   { kvEvis,  kvEtrue, kvUndefined }  // ksNDNC
 };
 
 
