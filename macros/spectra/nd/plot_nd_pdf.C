@@ -84,6 +84,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
              const char * name = Form("%s_%s_%s_%s_y%d",
                 tag, "pdfts_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
+             cout << "getting TH1D * object: " << name << endl;
              pdf_slice[iy] = (TH1D*) fin->Get(name);
       }//iy
       // Scan for max in desired Erange

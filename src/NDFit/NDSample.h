@@ -46,6 +46,7 @@ typedef enum ENDSample
    ksNDNuMuCC1piC1pi0,  // numu CC - 3 track (mu + 1 pi+/- + 1pi0)
    ksNDNuMuCCoth,       // numu CC - other
    ksNDNuECC,           // nue CC
+   ksNDNuMuCCWSgn,      // wrong sign numu CC inclusive
    ksNDNC,              // NC inclusive
    ksNDNC1piC,          // NC - 1pi+/-
    ksNDNC1pi0,          // NC - 1pi0
@@ -66,11 +67,10 @@ NDSample_t;
 // - Edit NDSampleModes.h: Add an entry for the new sample in each array (to define modes for the new sample etc)
 // - Edit NDSampleBinning.h/cxx: Check that an appropriate binning scheme exists, and add a new case (for the new sample)
 //   all switch statements.
-// - Edit NDFitParams.h: Make sure the instructions on how to apply systematics are correct for the new sample (for the
-//   time-being these instructions are not sample-specific, so there is nothing to do, but this may change)
+// - Edit NDFitParams.h: Add instructions on how to apply systematics for the new sample 
 // -
 
-static const int kNNDSamples = 8; 
+static const int kNNDSamples = 9; 
 
 static const NDSample_t kNDSample[kNNDSamples] =
 {
@@ -81,6 +81,7 @@ static const NDSample_t kNDSample[kNNDSamples] =
    ksNDNuMuCC1piC1pi0,
    ksNDNuMuCCoth,
    ksNDNuECC,
+   ksNDNuMuCCWSgn,
    ksNDNC
  //ksNDUndefined 
 };

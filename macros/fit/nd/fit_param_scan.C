@@ -110,7 +110,7 @@ void fit_param_scan
     hndc->SetBinContent(ibin,valnew);
   }
 
-  delete model;
+  //delete model;
 
   hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());
   hndc->GetYaxis()->SetTitle("-#Delta(lnL)");

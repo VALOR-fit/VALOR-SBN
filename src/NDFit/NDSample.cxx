@@ -26,6 +26,7 @@ string util::AsString(NDSample_t s)
     case (ksNDNuMuCC1piC1pi0 ) : return "numuCC1piC1pi0"; break; 
     case (ksNDNuMuCCoth      ) : return "numuCCoth";      break; 
     case (ksNDNuECC          ) : return "nueCCincl";      break;
+    case (ksNDNuMuCCWSgn     ) : return "numuCCinclWSgn"; break;
     case (ksNDNC             ) : return "NCincl";         break; 
     case (ksNDNC1piC         ) : return "NC1piC";         break; 
     case (ksNDNC1pi0         ) : return "NC1pi0";         break; 
@@ -49,6 +50,7 @@ string util::AsStringTeX(NDSample_t s, bool root)
     case (ksNDNuMuCC1piC1pi0 ) : name = "#nu_{#mu} CC 1#pi^{#pm} + 1#pi^{0}";   break; 
     case (ksNDNuMuCCoth      ) : name = "#nu_{#mu} CC other";                   break; 
     case (ksNDNuECC          ) : name = "#nu_{e} CC inclusive";                 break;
+    case (ksNDNuMuCCWSgn     ) : name = "Wrong sign #nu_{#mu} CC inclusive";    break;
     case (ksNDNC             ) : name = "NC inclusive";                         break; 
     case (ksNDNC1piC         ) : name = "NC 1#pi^{#pm}";                        break; 
     case (ksNDNC1pi0         ) : name = "NC 1#pi^{0}";                          break; 
@@ -75,7 +77,8 @@ bool util::IsCC(NDSample_t s)
     case (ksNDNuMuCC1pi0     ) :
     case (ksNDNuMuCC1piC1pi0 ) :
     case (ksNDNuMuCCoth      ) :
-    case (ksNDNuECC          ) : return true; break;
+    case (ksNDNuECC          ) : 
+    case (ksNDNuMuCCWSgn     ) : return true; break;
 
     case (ksNDNC             ) : 
     case (ksNDNC1piC         ) : 
@@ -99,7 +102,8 @@ bool util::IsNC(NDSample_t s)
     case (ksNDNuMuCC1pi0     ) :
     case (ksNDNuMuCC1piC1pi0 ) :
     case (ksNDNuMuCCoth      ) :
-    case (ksNDNuECC          ) : return false; break;
+    case (ksNDNuECC          ) : 
+    case (ksNDNuMuCCWSgn     ) : return false; break;
 
     case (ksNDNC             ) : 
     case (ksNDNC1piC         ) : 

@@ -1007,6 +1007,15 @@ void NDModel::Fill(TTree * t, int ibeam)
        LOG("NDModel",pNOTICE) << "Reading MC DST: " << TMath::Nint(pct) << "% done";
      }
 
+     //  ================ NOTE - HACKS ================
+     // Believe that George was missing NCincl sample (10 in code) in v005, so his samples (10,11,12 are really 11,12,13)
+     if(sample==10 || sample==11 || sample==12) { 
+       LOG("HACK",pNOTICE) 
+         << "MC event: " << iev << " belongs has sample ID = " << sample << ", now incremented by 1";
+       sample = sample+1; 
+     }
+     //  ==============================================
+
      // Get sample index
      NDSample_t s = util::NDSampleFromInt(sample);
      if(s == ksNDUndefined) {
