@@ -1147,6 +1147,19 @@ void NDModel::Fill(TTree * t, int ibeam)
        wght = wght*fNDFiducialMass;
      }
 
+
+     LOG("InputMC",pDEBUG) 
+         << "Inserting to MC teplates --> MC event #" << iev 
+         << "\n ibeam     = " << ibeam    << " (" << util::AsString(b) << ")"
+         << "\n isample   = " << isample  << " (" << util::AsString(s) << ")"
+         << "\n imode     = " << imode    << " (" << util::AsString(m) << ")"
+         << "\n izone     = " << izone   
+         << "\n wght      = " << wght 
+         << "\n ienu_reco = " << ienu_reco  << " (Enu_reco = " << enu_reco << " GeV)"
+         << "\n iy_reco   = " << iy_reco    << " (y_reco   = " << y_reco   << ")"
+         << "\n ienu_true = " << ienu_true  << " (Enu_true = " << enu_true << " GeV)";
+
+
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
 
      double curr_wght = fMCTNom[ibeam][isample][imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true);

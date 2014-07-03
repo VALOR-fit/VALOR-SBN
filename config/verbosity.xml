@@ -10,10 +10,11 @@
 
   <priority msgstream="Messenger">    NOTICE   </priority>
   <priority msgstream="XML">          NOTICE   </priority>
-  <priority msgstream="NDData">       INFO  </priority>
-  <priority msgstream="NDModel">      INFO   </priority>
+  <priority msgstream="NDData">       INFO     </priority>
+  <priority msgstream="NDModel">      INFO     </priority>
   <priority msgstream="NDArrIdx">     NOTICE   </priority>
   <priority msgstream="NDBinning">    NOTICE   </priority>
+  <priority msgstream="InputMC">      FATAL    </priority>
   <priority msgstream="HACK">         FATAL    </priority>
 
 </messenger_config>
