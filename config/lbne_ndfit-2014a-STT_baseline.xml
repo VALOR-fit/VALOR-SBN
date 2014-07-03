@@ -45,12 +45,12 @@ Input MC templates
 
   <dst> 
     <fhc>
-       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree_v05.root </filename> 
+       <filename> lbne/ndfit/2014a/STT/FHC_LBNE_ND_Tree_v10.root </filename> 
        <objname>  LBNETree </objname> 
        <objtype>  TTree    </objtype> 
     </fhc>
     <rhc>
-       <filename> lbne/ndfit/2014a/STT/RHC_LBNE_ND_Tree_v05.root </filename> 
+       <filename> lbne/ndfit/2014a/STT/RHC_LBNE_ND_Tree_v10.root </filename> 
        <objname>  LBNETree  </objname> 
        <objtype>  TTree     </objtype> 
     </rhc>
