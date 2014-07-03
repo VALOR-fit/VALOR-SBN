@@ -847,21 +847,21 @@ void NDModel::Clean(void)
         if(!fMCTSbNull[ibeam][isample][imode]) {
             fMCTSbNull[ibeam][isample][imode] = true;
             // MC templates (simple binning)
-            delete fMCTSbNom[ibeam][isample][imode];
-            delete fMCTSbTun[ibeam][isample][imode];
-            delete fMCTSbSys[ibeam][isample][imode];
-            delete fMCTSbFin[ibeam][isample][imode];
+            if(fMCTSbNom[ibeam][isample][imode]) delete fMCTSbNom[ibeam][isample][imode];
+            if(fMCTSbTun[ibeam][isample][imode]) delete fMCTSbTun[ibeam][isample][imode];
+            if(fMCTSbSys[ibeam][isample][imode]) delete fMCTSbSys[ibeam][isample][imode];
+            if(fMCTSbFin[ibeam][isample][imode]) delete fMCTSbFin[ibeam][isample][imode];
             fMCTSbNom[ibeam][isample][imode] = 0;
             fMCTSbTun[ibeam][isample][imode] = 0;
             fMCTSbSys[ibeam][isample][imode] = 0;
             fMCTSbFin[ibeam][isample][imode] = 0;
             // PDF components
-            delete fMCPDFSbComp[ibeam][isample][imode];
+            if(fMCPDFSbComp[ibeam][isample][imode]) delete fMCPDFSbComp[ibeam][isample][imode];
             fMCPDFSbComp[ibeam][isample][imode] = 0;
         }
         if(!fMCPDFSbTotNull[ibeam][isample]) {
             fMCPDFSbTotNull[ibeam][isample] = true;
-              delete fMCPDFSbTot[ibeam][isample];
+              if(fMCPDFSbTot[ibeam][isample]) delete fMCPDFSbTot[ibeam][isample];
               fMCPDFSbTot[ibeam][isample] = 0;
         }
 
@@ -869,21 +869,21 @@ void NDModel::Clean(void)
           if(!fMCTNull[ibeam][isample][imode][izone]) {
               fMCTNull[ibeam][isample][imode][izone] = true;
               // MC templates
-              delete fMCTNom[ibeam][isample][imode][izone];
-              delete fMCTTun[ibeam][isample][imode][izone];
-              delete fMCTSys[ibeam][isample][imode][izone];
-              delete fMCTFin[ibeam][isample][imode][izone];
+              if(fMCTNom[ibeam][isample][imode][izone]) delete fMCTNom[ibeam][isample][imode][izone];
+              if(fMCTTun[ibeam][isample][imode][izone]) delete fMCTTun[ibeam][isample][imode][izone];
+              if(fMCTSys[ibeam][isample][imode][izone]) delete fMCTSys[ibeam][isample][imode][izone];
+              if(fMCTFin[ibeam][isample][imode][izone]) delete fMCTFin[ibeam][isample][imode][izone];
               fMCTNom[ibeam][isample][imode][izone] = 0;
               fMCTTun[ibeam][isample][imode][izone] = 0;
               fMCTSys[ibeam][isample][imode][izone] = 0;
               fMCTFin[ibeam][isample][imode][izone] = 0;
               // PDF components
-              delete fMCPDFComp[ibeam][isample][imode][izone];
+              if(fMCPDFComp[ibeam][isample][imode][izone]) delete fMCPDFComp[ibeam][isample][imode][izone];
               fMCPDFComp[ibeam][isample][imode][izone] = 0;
           }
           if(!fMCPDFTotNull[ibeam][isample][izone]) {
               fMCPDFTotNull[ibeam][isample][izone] = true;
-              delete fMCPDFTot[ibeam][isample][izone];
+              if(fMCPDFTot[ibeam][isample][izone]) delete fMCPDFTot[ibeam][isample][izone];
               fMCPDFTot[ibeam][isample][izone] = 0;
           }          
         }//izone
@@ -895,11 +895,12 @@ void NDModel::Clean(void)
   if(fUseMCDST) {
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       if (fMCDST[ibeam]) {
-        delete fMCDST[ibeam];
+        if(fMCDST[ibeam]) delete fMCDST[ibeam];
         fMCDST[ibeam] = 0;
       }
     }
   }
+
 }
 //________________________________________________________________________________________
 void NDModel::Zero(void)

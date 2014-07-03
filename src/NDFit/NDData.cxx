@@ -481,12 +481,14 @@ void NDData::Clean(void)
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
         if(!fDataNull[ibeam][isample][izone]) {
            fDataNull [ibeam][isample][izone] = true;
-           fData     [ibeam][isample][izone] = 0;
+           if (fData[ibeam][isample][izone]) delete fData[ibeam][isample][izone];
+           fData[ibeam][isample][izone] = 0;
         }
       }//izone
       if(!fDataSbNull [ibeam][isample]) {
           fDataSbNull [ibeam][isample] = true;
-          fDataSb     [ibeam][isample] = 0;
+          if(fDataSb [ibeam][isample]) delete fDataSb [ibeam][isample];
+          fDataSb [ibeam][isample] = 0;
       }
     }//isample
   }//ibeam

@@ -26,7 +26,7 @@ using std::string;
 namespace valor {
 namespace conv {
 
-static const int kNReacModes = 53;  
+static const int kNReacModes = 52;  
 
 typedef enum EReacMode 
 {

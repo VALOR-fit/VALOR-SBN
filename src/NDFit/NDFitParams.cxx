@@ -62,6 +62,19 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisNormCC1pi0      ) : return "f_cc1pi0";             break;
     case (kNuisNormCCoth       ) : return "f_ccoth";              break;
     case (kNuisNormNC          ) : return "f_nc";                 break;
+
+    case (kNuisRatioNuENuMu    ) : return "f_nuecc_numucc";       break;
+
+    case (kNuisEffNuMuCC1trkQE  ) : return "f_eff_numucc1trkqe";   break;
+    case (kNuisEffNuMuCC2trkQE  ) : return "f_eff_numucc2trkqe";   break;
+    case (kNuisEffNuMuCC1piC    ) : return "f_eff_numucc1pic";     break;
+    case (kNuisEffNuMuCC1pi0    ) : return "f_eff_numucc1pi0";     break;
+    case (kNuisEffNuMuCC1piC1pi0) : return "f_eff_numucc1pic1pi0"; break;
+    case (kNuisEffNuMuCCoth     ) : return "f_eff_numuccoth";      break;
+    case (kNuisEffNuECC         ) : return "f_eff_nuecc";          break;
+    case (kNuisEffNuMuCCWSgn    ) : return "f_eff_numuccwsgn";     break;
+    case (kNuisEffNC            ) : return "f_eff_nc";             break;
+
     default                      : return "--";    
   }
   return "";
@@ -115,6 +128,18 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisNormCC1pi0      ) : name = "f_{CC1#pi^{0}}";             break;
     case (kNuisNormCCoth       ) : name = "f_{CCother}";                break;
     case (kNuisNormNC          ) : name = "f_{NC}";                     break;
+    case (kNuisRatioNuENuMu    ) : name = "f_{#nu_{e}/#nu_{#mu}}";      break;
+
+    case (kNuisEffNuMuCC1trkQE  ) : name = "f_{eff;#nu_{#mu}CC;1trkQE}";             break;
+    case (kNuisEffNuMuCC2trkQE  ) : name = "f_{eff;#nu_{#mu}CC;2trkQE}";             break;
+    case (kNuisEffNuMuCC1piC    ) : name = "f_{eff;#nu_{#mu}CC;1#pi^{#pm}}";         break;
+    case (kNuisEffNuMuCC1pi0    ) : name = "f_{eff;#nu_{#mu}CC;1#pi^{0}}";           break;
+    case (kNuisEffNuMuCC1piC1pi0) : name = "f_{eff;#nu_{#mu}CC;1#pi^{#pm}1#pi^{0}}"; break;
+    case (kNuisEffNuMuCCoth     ) : name = "f_{eff;#nu_{#mu}CC;other}";              break;
+    case (kNuisEffNuECC         ) : name = "f_{eff;#nu_{e}CC}";                      break;
+    case (kNuisEffNuMuCCWSgn    ) : name = "f_{eff;#nu_{#mu}CC;wsgn}";               break;
+    case (kNuisEffNC            ) : name = "f_{eff;NC}";                             break;
+
     default                      : name = "--";    
   }
 
@@ -158,6 +183,11 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list, Option_t * param_v
     for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
+
+      // skip detector params?
+      bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
+      if(skip_detector_params && kNDFitIsDetectorRelated[ip]) continue;
+
       double val = -9999;
       // "nominal", a-priori defaults
       if(param_values_opt.find("nominal") != string::npos) {
@@ -222,6 +252,10 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
     for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
+
+      // skip detector params?
+      bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
+      if(skip_detector_params && kNDFitIsDetectorRelated[ip]) continue;
 
       // set parameter range, current and init value, etc
       double init = 1.0;
