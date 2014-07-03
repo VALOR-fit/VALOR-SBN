@@ -97,6 +97,8 @@ string util::AsString(ReacMode_t m)
 //  case (kmNuEBarNCpiCpi0  ): return ""; break;  
     case (kmNuEBarNCcoh     ): return "nuebarNCcoh";  break;   
     case (kmNuEBarNCoth     ): return "nuebarNCoth";  break;     
+
+    case (kmOther           ): return "other";  break;     
     default                  : return "--"; 
   }
   return "";
@@ -106,7 +108,7 @@ ReacMode_t util::ReacModeFromInt(int m)
 {
 // Cast an integer to ReacMode_t, but with boundary check
 //             [first]                  [last]
-  if(m >= (int)kmNuMuCCQE && m <= (int) kmNuEBarNCoth) return (ReacMode_t)m;
+  if(m >= (int)kmNuMuCCQE && m <= (int) kmOther) return (ReacMode_t)m;
   return kmUndefined;
 }
 //________________________________________________________________________________________

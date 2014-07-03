@@ -102,7 +102,8 @@ typedef enum EReacMode
 //   kmNuEBarNC2pi0,        // nuebar  NC 2 pi0
 //   kmNuEBarNCpiCpi0,      // nuebar  NC 1 pi0 + 1 pi+/-
    kmNuEBarNCcoh,         // nuebar  NC coherent
-   kmNuEBarNCoth          // nuebar  NC other
+   kmNuEBarNCoth,         // nuebar  NC other
+   kmOther                // other, eg contributions from interactions outside the fiducial etc
 } 
 ReacMode_t; 
 
