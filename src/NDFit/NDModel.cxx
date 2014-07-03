@@ -1125,6 +1125,8 @@ void NDModel::Fill(TTree * t, int ibeam)
      const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
      const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
 
+     // protect against vars at upper limit (eg y_reco = 1, set by hand for NC events) as
+     // the binary search below will give an index out of limits
      double epsilon = 1E-6;
      if(enu_reco >= kErecoMax) { enu_reco = enu_reco - epsilon; }
      if(y_reco   >= kYrecoMax) { y_reco   = y_reco - epsilon;   }
@@ -1162,6 +1164,10 @@ void NDModel::Fill(TTree * t, int ibeam)
          << "\n iy_reco   = " << iy_reco    << " (y_reco   = " << y_reco       << "), allowed idx range: [" << 0 << " -> " << n_y_reco_bins-1   << "], " << n_y_reco_bins << " bins"
          << "\n ienu_true = " << ienu_true  << " (Enu_true = " << enu_true << " GeV), allowed idx range: [" << 0 << " -> " << n_enu_true_bins-1 << "], " << n_enu_true_bins << " bins";
 
+     // Believe that such a check is not performed in VALORArray, so check here just in case something went wrong in binary search above
+     assert(ienu_reco >= 0 && ienu_reco < n_enu_reco_bins);
+     assert(iy_reco   >= 0 && iy_reco   < n_y_reco_bins  );
+     assert(ienu_true >= 0 && ienu_true < n_enu_true_bins);
 
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
 
