@@ -1155,9 +1155,9 @@ void NDModel::Fill(TTree * t, int ibeam)
          << "\n imode     = " << imode    << " (" << util::AsString(m) << ")"
          << "\n izone     = " << izone   
          << "\n wght      = " << wght 
-         << "\n ienu_reco = " << ienu_reco  << " (Enu_reco = " << enu_reco << " GeV), allowed idx range: [" << 0 << " -> " << n_enu_reco_bins-1 << "]"
-         << "\n iy_reco   = " << iy_reco    << " (y_reco   = " << y_reco       << "), allowed idx range: [" << 0 << " -> " << n_y_reco_bins-1   << "]"
-         << "\n ienu_true = " << ienu_true  << " (Enu_true = " << enu_true << " GeV), allowed idx range: [" << 0 << " -> " << n_enu_true_bins-1 << "]";
+         << "\n ienu_reco = " << ienu_reco  << " (Enu_reco = " << enu_reco << " GeV), allowed idx range: [" << 0 << " -> " << n_enu_reco_bins-1 << "], " << n_enu_reco_bins << " bins"
+         << "\n iy_reco   = " << iy_reco    << " (y_reco   = " << y_reco       << "), allowed idx range: [" << 0 << " -> " << n_y_reco_bins-1   << "], " << n_y_reco_bins << " bins"
+         << "\n ienu_true = " << ienu_true  << " (Enu_true = " << enu_true << " GeV), allowed idx range: [" << 0 << " -> " << n_enu_true_bins-1 << "], " << n_enu_true_bins << " bins";
 
 
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
