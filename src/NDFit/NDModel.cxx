@@ -1125,6 +1125,10 @@ void NDModel::Fill(TTree * t, int ibeam)
      const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
      const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
 
+     double epsilon = 1E-6;
+     if(enu_reco >= kErecoMax) { enu_reco = enu_reco - epsilon; }
+     if(y_reco   >= kYrecoMax) { y_reco   = y_reco - epsilon;   }
+
      // work-out the index using the bin-edge array defining the variable-size binning scheme
      int ienu_true    = TMath::BinarySearch(1+(Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true);
      int ienu_reco    = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
@@ -1146,7 +1150,6 @@ void NDModel::Fill(TTree * t, int ibeam)
      if(fNDFiducialMass > 0) {
        wght = wght*fNDFiducialMass;
      }
-
 
      LOG("InputMC",pDEBUG) 
          << "Inserting to MC teplates --> MC event #" << iev 
