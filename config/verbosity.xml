@@ -12,7 +12,7 @@
   <priority msgstream="XML">          NOTICE   </priority>
   <priority msgstream="NDData">       NOTICE   </priority>
   <priority msgstream="NDModel">      NOTICE    </priority>
-  <priority msgstream="NDArrIdx">     NOTICE   </priority>
+  <priority msgstream="NDArrIdx">     FATAL    </priority>
   <priority msgstream="NDBinning">    NOTICE   </priority>
   <priority msgstream="InputMC">      NOTICE   </priority>
   <priority msgstream="HACK">         FATAL    </priority>
