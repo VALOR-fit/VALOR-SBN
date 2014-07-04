@@ -63,6 +63,28 @@ if(-e $BANNER_FILE) {
   print "\n";
 }
 
+# Read VALOR_LBNX version number
+#
+$VRS_FILENAME = "$VALOR_LBNX/VERSION";
+open(VRS_FILE, "<$VRS_FILENAME") or die("Can not read the VALOR_LBNX version information!");
+@vrs_file=<VRS_FILE>;
+close(VRS_FILE);
+chomp($release = $vrs_file[0]);
+# ($major, $minor, $rev) = split('.', $release);
+# note: split() doesn't split on dots...
+$release=~m/(\d+).(\d+).(\d+)/;
+$major = $1;
+$minor = $2;
+$revis = $3;
+print "Configuring VALOR/LBNX source tree version: $major.$minor.$revis\n";
+
+# Read VALOR_LBNX requirements
+#
+$REQ_FILENAME = "$VALOR_LBNX/REQUIREMENTS";
+open(REQ_FILE, "<$REQ_FILENAME") or die("Can not read the VALOR_LBNX requirements file!");
+@requirements=<REQ_FILE>;
+close(REQ_FILE);
+
 # 
 # Process inputs
 # 
@@ -130,6 +152,47 @@ if(! -d $opt_with_valor_framework) {
     exit 1;
 } 
 
+# Make sure we use the correct version of the framework package
+#
+
+# Read the version of the framework package
+$FMWK_VRS_FILENAME = "$opt_with_valor_framework/VERSION";
+open(FMWK_VRS_FILE, "<$FMWK_VRS_FILENAME") or die("Can not read the VALOR_FMWK version information!");
+@fmwk_vrs_file=<FMWK_VRS_FILE>;
+close(FMWK_VRS_FILE);
+chomp($fmwk_release = $fmwk_vrs_file[0]);
+# ($major, $minor, $rev) 
+$fmwk_release=~m/(\d+).(\d+).(\d+)/;
+$fmwk_major = $1;
+$fmwk_minor = $2;
+$fmwk_revis = $3;
+print "Using VALOR framework package version: $fmwk_major.$fmwk_minor.$fmwk_revis\n";
+# Check the requirements file to make sure that an appropriate version of the framework is used
+$have_fmwk_requirement = 0;
+foreach(@requirements) {
+ if(m/FMWK/i) {
+    $have_fmwk_requirement = 1;
+    $req_fmwk_release = $_;
+    $req_fmwk_release=~m/\w*\s*(\d+).(\d+).(\d+)/;
+    $req_fmwk_major = $1;
+    $req_fmwk_minor = $2;
+    $req_fmwk_revis = $3;
+ }
+}
+# Enforce
+if($have_fmwk_requirement) {
+  print "Required VALOR framework package version: $req_fmwk_major.$req_fmwk_minor.$req_fmwk_revis\n\n";
+  if( $fmwk_major != $req_fmwk_major ||
+      $fmwk_minor != $req_fmwk_minor ||
+      $fmwk_revis != $req_fmwk_revis ) 
+  {
+     die(" *** There is a mismatch between the input and required VALOR framework package versions *** \n\n\n");
+  }    
+} else {
+  print "No VALOR framework package version requirement\n\n";
+}
+
+
 #
 # Get libxml2 and log4cpp include and library paths
 #
@@ -178,17 +241,6 @@ print "\n";
 # Read version info and automatically generate a header file with relevant flags that
 # can be used to make code conditional upon specific version numbers
 #
-$VRS_FILENAME = "$VALOR_LBNX/VERSION";
-open(VRS_FILE, "<$VRS_FILENAME") or die("Can not read the VALOR_LBNX version information!");
-@vrs_file=<VRS_FILE>;
-close(VRS_FILE);
-chomp($release = $vrs_file[0]);
-# ($major, $minor, $rev) = split('.', $release);
-# note: split() doesn't split on dots...
-$release=~m/(\d+).(\d+).(\d+)/;
-$major = $1;
-$minor = $2;
-$revis = $3;
 $VRS_HEADER_FILENAME = "$VALOR_LBNX/src/Conventions/Version.h";
 print "Automatically generating file: $VRS_HEADER_FILENAME \n";
 open(VRS_HEADER_FILE, ">$VRS_HEADER_FILENAME") or die("Can not write out the Version.h file!");
