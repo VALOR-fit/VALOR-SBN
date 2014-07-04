@@ -70,7 +70,7 @@ void read_fit_results(const char * filename)
       if(b == conv::kbUndefined) continue;
       const char * c_name = Form("c_%s", util::AsString(b));
       c[ibeam] = new TCanvas(c_name,"",20,20,700,700);
-      c[ibeam]->Divide(2,3);
+      c[ibeam]->Divide(3,3);
       int ic = 0;
       for(int isample = 0; isample < conv::kNNDSamples; isample++) {
         conv::NDSample_t s = conv::kNDSample[isample];
@@ -92,7 +92,11 @@ void read_fit_results(const char * filename)
         const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
         TLatex * title = new TLatex(1,1.07*max[isample],title_str);
         title->Draw(); 
-        hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+        if(util::IsCC(s)) { 
+          hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+        } else {
+          hframe->GetXaxis()->SetTitle("Visible Energy (GeV)");
+        }
         hframe->GetYaxis()->SetTitle("Events /bin");
         bestfit_ereco[ibeam][isample]->SetLineWidth(1);
         toymc_ereco[ibeam][isample]->SetMarkerStyle(24);
