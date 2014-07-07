@@ -51,7 +51,7 @@ foreach (@ARGV) {
 $resource               = "interactive"                           unless defined $resource;
 $tag                    = "toymc"                                 unless defined $tag;
 $nruns                  = 1                                       unless defined $nruns;
-$ntoymc                 = 1                                       unless defined $nexpts;
+$ntoymc                 = 1                                       unless defined $ntoymc;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
 $param_values           = "randomize-all;prefit-errors"           unless defined $twk_systematics;
 $fixed_param1_name      = ""                                      unless defined $fixed_param1_name;
