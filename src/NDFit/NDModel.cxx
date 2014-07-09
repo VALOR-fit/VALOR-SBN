@@ -144,6 +144,9 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
 // - Leave null for the fit
 // - Use "+SB" to generate finely-binned predictions too (for plotting or toy-MC generation)
 
+//  LOG("NDModel",pDEBUG)  
+//     << "Input physics hypothesis before copying to private data member: " << ph;
+
   fPhysHypothesis.Copy(ph);
   //PhysHypothesis_t hyp = fPhysHypothesis.Hypothesis();
 
@@ -196,6 +199,9 @@ void NDModel::PrintSystematics(ostream & stream) const
 //________________________________________________________________________________________
 bool NDModel::Generate (const FitParamList & fp, Option_t * opt)
 {
+//  LOG("NDModel",pDEBUG)  
+//     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
+
   // extract the values of params driving the oscillation, decoherence or decay model
   PhysHypothesis ph(fp);
 
@@ -1007,17 +1013,6 @@ void NDModel::Fill(TTree * t, int ibeam)
        double pct = (100 * (double)(iev+1)) / (double)nev;
        LOG("NDModel",pNOTICE) << "Reading MC DST: " << TMath::Nint(pct) << "% done";
      }
-
-/*
-     //  ================ NOTE - HACKS ================
-     // Believe that George was missing NCincl sample (10 in code) in v005, so his samples (10,11,12 are really 11,12,13)
-     if(sample==10 || sample==11 || sample==12) { 
-       LOG("HACK",pNOTICE) 
-         << "MC event: " << iev << " belongs has sample ID = " << sample << ", now incremented by 1";
-       sample = sample+1; 
-     }
-     //  ==============================================
-*/
 
      // Get sample index
      NDSample_t s = util::NDSampleFromInt(sample);

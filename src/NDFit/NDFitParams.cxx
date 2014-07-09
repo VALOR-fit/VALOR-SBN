@@ -244,19 +244,28 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
   // Get the standard set of parameters
   //
 
+  // include params 
   if(param_list_opt.find("standard") != string::npos) {
 
-    fparm = new FitParamList(kNNDFitParams);
+    fparm = new FitParamList(kNNDFitParams); // NOTE: If params are undefined, we initialize the array with more elements than used --- 
 
     int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
     for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
 
+/*
+// THIS CREATES PROBLEMS because in NDModel we loop over all kNNDFitParams and only checks for undefined ones -
+// It does not expect that params will be excluded via some other mechanism.
+// So, fix instead
+
       // skip detector params?
       bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
       if(skip_detector_params && kNDFitIsDetectorRelated[ip]) continue;
-
+      // toggle flux related params on/off
+      bool skip_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
+      if(skip_flux_params && kNDFitIsFluxRelated[ip]) continue;
+*/
       // set parameter range, current and init value, etc
       double init = 1.0;
       double curr = -99999;
@@ -301,6 +310,22 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
       fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
       ipc++; 
       fparm->Update(p, curr);
+
+
+      // toggle detector related params on/off
+      bool no_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
+      if(no_detector_params && kNDFitIsDetectorRelated[ip]) {
+       fparm->Update(p, 1.);
+       fparm->SetInitValue(p, 1.);
+       fparm->FixParameter(p);
+      }
+      // toggle flux related params on/off
+      bool no_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
+      if(no_flux_params && kNDFitIsFluxRelated[ip]) {
+       fparm->Update(p, 1.);
+       fparm->SetInitValue(p, 1.);
+       fparm->FixParameter(p);
+      }
 
     }//ip
   }

@@ -1519,7 +1519,129 @@ static const double kNDFitParamEtrueRange[kNNDFitParams][2] =
 };
 
 //
-// This array fully specifies which of the systematics are detector systematics
+// This array fully specifies which of the systematics are cross-section related
+//
+static const double kNDFitIsFluxRelated[kNNDFitParams] = 
+{
+   true,   // kNuisFHCNuMuFlux00
+   true,   // kNuisFHCNuMuFlux01
+   true,   // kNuisFHCNuMuFlux02
+   true,   // kNuisFHCNuMuFlux03
+   true,   // kNuisFHCNuMuFlux04
+   true,   // kNuisFHCNuMuFlux05
+   true,   // kNuisFHCNuMuFlux06
+   true,   // kNuisFHCNuMuFlux07
+   true,   // kNuisFHCNuMuFlux08
+   true,   // kNuisFHCNuMuFlux09 
+   true,   // kNuisFHCNuMuBarFlux00
+   true,   // kNuisFHCNuMuBarFlux01
+   true,   // kNuisFHCNuMuBarFlux02
+   true,   // kNuisFHCNuMuBarFlux03
+   true,   // kNuisFHCNuMuBarFlux04
+   true,   // kNuisFHCNuEFlux00 
+   true,   // kNuisFHCNuEFlux01 
+   true,   // kNuisFHCNuEFlux02 
+
+   true,   // kNuisRHCNuMuFlux00
+   true,   // kNuisRHCNuMuFlux01
+   true,   // kNuisRHCNuMuFlux02
+   true,   // kNuisRHCNuMuFlux03
+   true,   // kNuisRHCNuMuFlux04
+   true,   // kNuisRHCNuMuFlux05
+   true,   // kNuisRHCNuMuFlux06
+   true,   // kNuisRHCNuMuBarFlux00
+   true,   // kNuisRHCNuMuBarFlux01
+   true,   // kNuisRHCNuMuBarFlux02
+   true,   // kNuisRHCNuMuBarFlux03
+   true,   // kNuisRHCNuMuBarFlux04
+   true,   // kNuisRHCNuMuBarFlux05
+   true,   // kNuisRHCNuMuBarFlux06
+   true,   // kNuisRHCNuMuBarFlux07
+   true,   // kNuisRHCNuEFlux00 
+   true,   // kNuisRHCNuEFlux01 
+   true,   // kNuisRHCNuEFlux02 
+
+   false,  // kNuisNormCCQE 
+   false,  // kNuisNormCC1piC
+   false,  // kNuisNormCC1pi0
+   false,  // kNuisNormCCoth 
+   false,  // kNuisNormNC 
+   false,  // kNuisRatioNuENuMu
+
+   false,  // kNuisEffNuMuCC1trkQE
+   false,  // kNuisEffNuMuCC2trkQE
+   false,  // kNuisEffNuMuCC1piC   
+   false,  // kNuisEffNuMuCC1pi0
+   false,  // kNuisEffNuMuCC1piC1pi0
+   false,  // kNuisEffNuMuCCoth 
+   false,  // kNuisEffNuECC      
+   false,  // kNuisEffNuMuCCWSgn
+   false   // kNuisEffNC            
+};
+
+//
+// This array fully specifies which of the systematics are cross-section related
+//
+static const double kNDFitIsXSecRelated[kNNDFitParams] = 
+{
+   false,  // kNuisFHCNuMuFlux00
+   false,  // kNuisFHCNuMuFlux01
+   false,  // kNuisFHCNuMuFlux02
+   false,  // kNuisFHCNuMuFlux03
+   false,  // kNuisFHCNuMuFlux04
+   false,  // kNuisFHCNuMuFlux05
+   false,  // kNuisFHCNuMuFlux06
+   false,  // kNuisFHCNuMuFlux07
+   false,  // kNuisFHCNuMuFlux08
+   false,  // kNuisFHCNuMuFlux09 
+   false,  // kNuisFHCNuMuBarFlux00
+   false,  // kNuisFHCNuMuBarFlux01
+   false,  // kNuisFHCNuMuBarFlux02
+   false,  // kNuisFHCNuMuBarFlux03
+   false,  // kNuisFHCNuMuBarFlux04
+   false,  // kNuisFHCNuEFlux00 
+   false,  // kNuisFHCNuEFlux01 
+   false,  // kNuisFHCNuEFlux02 
+
+   false,  // kNuisRHCNuMuFlux00
+   false,  // kNuisRHCNuMuFlux01
+   false,  // kNuisRHCNuMuFlux02
+   false,  // kNuisRHCNuMuFlux03
+   false,  // kNuisRHCNuMuFlux04
+   false,  // kNuisRHCNuMuFlux05
+   false,  // kNuisRHCNuMuFlux06
+   false,  // kNuisRHCNuMuBarFlux00
+   false,  // kNuisRHCNuMuBarFlux01
+   false,  // kNuisRHCNuMuBarFlux02
+   false,  // kNuisRHCNuMuBarFlux03
+   false,  // kNuisRHCNuMuBarFlux04
+   false,  // kNuisRHCNuMuBarFlux05
+   false,  // kNuisRHCNuMuBarFlux06
+   false,  // kNuisRHCNuMuBarFlux07
+   false,  // kNuisRHCNuEFlux00 
+   false,  // kNuisRHCNuEFlux01 
+   false,  // kNuisRHCNuEFlux02 
+
+   true,   // kNuisNormCCQE 
+   true,   // kNuisNormCC1piC
+   true,   // kNuisNormCC1pi0
+   true,   // kNuisNormCCoth 
+   true,   // kNuisNormNC 
+   true,   // kNuisRatioNuENuMu
+
+   false,  // kNuisEffNuMuCC1trkQE
+   false,  // kNuisEffNuMuCC2trkQE
+   false,  // kNuisEffNuMuCC1piC   
+   false,  // kNuisEffNuMuCC1pi0
+   false,  // kNuisEffNuMuCC1piC1pi0
+   false,  // kNuisEffNuMuCCoth 
+   false,  // kNuisEffNuECC      
+   false,  // kNuisEffNuMuCCWSgn
+   false   // kNuisEffNC            
+};
+
+//
+// This array fully specifies which of the systematics are detector related
 //
 static const double kNDFitIsDetectorRelated[kNNDFitParams] = 
 {
