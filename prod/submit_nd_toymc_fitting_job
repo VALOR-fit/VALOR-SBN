@@ -12,8 +12,6 @@
 #  --cpu-time               : Required CPU time. Default: "6:00:00" for RAL, "11:50:00" for Oxford.
 #  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
 #  --param-values           : Specifies how to set model parameters in toy-MC generation. Default: "randomize-all;prefit-errors"
-#  --fixed-param1-name      : Specify the name of a parameter to fix during toy-MC generation, for studies of sensitivity to that parameter. Default: "".
-#  --fixed-param1-value     : Value for above param. Default: 0.
 #  --stat-fluctuations      : Include statistical fluctuation in toy-MC generation. Default: true.
 #  --fit-option             : Option passed to fitter. Default: "minuit".
 #  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
@@ -37,8 +35,6 @@ foreach (@ARGV) {
   if($_ eq '--cpu-time'               ) { $cput                = $ARGV[$iarg+1]; }
   if($_ eq '--fit-param-list'         ) { $fitparamlist        = $ARGV[$iarg+1]; }
   if($_ eq '--param-values'           ) { $param_values        = $ARGV[$iarg+1]; }
-  if($_ eq '--fixed-param1-name'      ) { $fixed_param1_name   = $ARGV[$iarg+1]; }
-  if($_ eq '--fixed-param1-value'     ) { $fixed_param1_value  = $ARGV[$iarg+1]; }
   if($_ eq '--stat-fluctuations'      ) { $stat_fluct          = 1;              }
   if($_ eq '--fit-option'             ) { $fitoption           = $ARGV[$iarg+1]; }
   if($_ eq '--store-spectra'          ) { $store_spectra       = 1;              }
@@ -54,8 +50,6 @@ $nruns                  = 1                                       unless defined
 $ntoymc                 = 1                                       unless defined $ntoymc;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
 $param_values           = "randomize-all;prefit-errors"           unless defined $twk_systematics;
-$fixed_param1_name      = ""                                      unless defined $fixed_param1_name;
-$fixed_param1_value     = 0                                       unless defined $fixed_param1_value;
 $stat_fluct             = 1                                       unless defined $stat_fluct;
 $fitoption              = "minuit"                                unless defined $fitoption;
 $store_spectra          = 0                                       unless defined $store_spectra;
@@ -76,7 +70,7 @@ $irun = 0;
 while($irun < $nruns) {
   print "Submitting run: $irun \n";
 
-  $command = "valor_lbnx -l -b -q \'$lbnx_softw_dir/macros/fit/nd/run_fit.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",\"$fixed_param1_name\",$fixed_param1_value,$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
+  $command = "valor_lbnx -l -b -q \'$lbnx_softw_dir/macros/fit/nd/run_fit.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
   print "Running: $command \n";
   
   #
