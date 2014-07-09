@@ -1,5 +1,6 @@
 //
 // ------------------------------------------------------------------------------------------------
+// Generate and fit ensembles of toy-MC experiments.
 //
 // Costas Andreopoulos
 // ------------------------------------------------------------------------------------------------
@@ -12,8 +13,6 @@ void run_fit
   int          ntoymc           = 1,                                     /* number of toy-MC experiments */
   const char * fit_param_list   = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
   const char * param_values     = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
-  const char * fix_param_name1  = 0,                                     /* (optional) specify a param and fix when creating toy-MC, eg to study sensitivity to that param (see NDFitParams.cxx) */
-  double       fix_param_value1 = 0,                                     /* (optional) value for above param */
   bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
   const char * fit_option       = "minuit",                              /* fitter option */
   bool         store_spectra    = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
@@ -28,13 +27,6 @@ void run_fit
   // Analysis configuration
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
 
-  bool defined_fix_param1 = false;
-  if(fix_param_name1) {
-   if(strlen(fix_param_name1) > 0) {
-     defined_fix_param1 = true;
-   }
-  }
-
   //
   // Print settings
   //
@@ -46,9 +38,6 @@ void run_fit
   cout << "   - Number of toy experiments: " << ntoymc << endl;
   cout << "   - Statistical fluctuations: "  << ((stat_fluct) ? "YES " : "NO") << endl;
   cout << "   - Option for setting parameter values: " << param_values << endl;
-  if(defined_fix_param1) {
-     cout << "   - NOTE: Parameter: " << fix_param_name1 << " set to value = " << fix_param_value1 << " (for toy-MC generation)" << endl;
-  }
   cout << "- Fit" << endl;
   cout << "   - Fit Parameter List: " << fit_param_list << endl;
   cout << "   - Fitter option: " << fit_option << endl;
@@ -96,23 +85,6 @@ void run_fit
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generatio below.
     FitParamList * fp = util::GetFitParameterList(fit_param_list, param_values);
-
-    // If user wants to generate toy-MC for fixed values of a parameter (but, potentially,
-    // with all other params randomized, eg for sensitivity studies) do it here
-    // Note - the parameter is fixed onlty for toy-MC generation and not in the fit
-    if(defined_fix_param1) {
-       PhysParamId_t p1 = util::NDPhysParamFromString(fix_param_name1);
-       if(p1 == kPhypUndefined) {
-         cout << "Undefined parameter: " << fix_param_name1 << endl;
-         exit(1);
-       }
-       if(! fp->Exists(p1)) {
-         cout << "Parameter: " << fix_param_name1 << " does not exist in list named: " << fit_param_list << endl;
-         exit(1);
-       }
-       fp->Update(p1, fix_param_value1);
-       cout << "Toy-MC generated for fixed value of parameter: " << fix_param_name1 << " (= " << fix_param_value1 << ")" << endl;
-    }
 
     // Generate a toy-MC experiment 
     cout << "Generating toy-MC data" << endl;
