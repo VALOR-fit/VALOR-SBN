@@ -76,7 +76,7 @@ $irun = 0;
 while($irun < $nruns) {
   print "Submitting run: $irun \n";
 
-  $command = "valor_lbnx -l -b -q \'$lbnx_softw_dir/macros/fit/nd/run_fit_sensitivity1p.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",\"$sens_param_name\",$sens_param_value,11,0.95,1.05,$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
+  $command = "valor_lbnx -l -b -q \'$lbnx_softw_dir/macros/sensitivity/nd/fit_param_sensitivity.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",\"$sens_param_name\",$sens_param_value,11,0.95,1.05,$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
   print "Running: $command \n";
   
   #
