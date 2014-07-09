@@ -1250,47 +1250,83 @@ void NDModel::FluctuateMCStat(Option_t * option)
       for(int imode = 0; imode < kNReacModes; imode++) {
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
-          if(is_null) continue;
-          const int n_enu_reco_bins = util::NumErecoBins(s,izone);
-          const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
-          for(int iet = 0; iet < n_enu_true_bins; iet++) {
-            for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-               for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
-                 double val  = fMCTTunOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
-                 double nmc  = fMCStatOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
-                 // Fluctuate MC statistics and get the tweak factor
-                 double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
-                 double twk  = (nmc > 0) ? nmcf/nmc ? 1;
-                 // Apply the tweak factor in the template, obviously a small effect for 
-                 // large MC statistics. Again noting that this is not the statistical error
-                 // for the current exposure. That one will be applied later in toy-MC generation.
-                 double valf = val * twk; 
-                 fMCTTunOb[ibeam][isample][imode][izone]->SetEntry(valf,ier,iyr,iet);
-               }//iyr: yreco bins
-            }//ier: Ereco bins
-          }//iet: Etrue bins
-        }//izone
 
-        if(update_mct_sb) {
+        // Updating only the templates using the optimized binning
+        if(!update_mct_sb) {
+          for(int izone = 0; izone < kNMaxBinZones; izone++) {
+            bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
+            if(is_null) continue;
+            const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+            const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+            for(int iet = 0; iet < n_enu_true_bins; iet++) {
+              for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+                 for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
+                   double val  = fMCTTunOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                   double nmc  = fMCStatOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                   // Fluctuate MC statistics and get the tweak factor
+                   double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
+                   double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+                   // Apply the tweak factor in the template, obviously a small effect for 
+                   // large MC statistics. Again noting that this is not the statistical error
+                   // for the current exposure. That one will be applied later in toy-MC generation.
+                   double valf = val * twk; 
+                   fMCTTunOb[ibeam][isample][imode][izone]->SetEntry(valf,ier,iyr,iet);
+                 }//iyr: yreco bins
+              }//ier: Ereco bins
+            }//iet: Etrue bins
+          }//izone
+        }
+
+        // Updating both the templates in optimized and simple binning schemes.
+        // They can not be fluctuated independently because the represent the exact same quantity
+        // in two binning schemes. The sum of bin contents (for specific bin ranges) of templates
+        // in the simple scheme should equal the contents of specific bins of templates in the optimized scheme...
+        else {
+ 
+          // Reset template in optimized binning
+          for(int izone = 0; izone < kNMaxBinZones; izone++) {
+            bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
+            if(is_null) continue;
+            fMCTTunOb[ibeam][isample][imode][izone]->SetAll(0.); 
+          }
+
+          // Start by fluctuation the templates using the simple binning.
+          // Then map each simple bin to an optimized bin and add to its contents. 
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
-                 // Same as above but for the `sb' templates
-                 // NOTE: This is not quite correct as the templates stored using the 
-                 // two different binning schemes would get different MC statistic fluctuations!
-                 // Need to fluctuate the `sb' versions, then fill the `op' version from the `sb' ones.
-                 // Do later if this is an important effect we want to keep.
                  double val  = fMCTTunSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                  double nmc  = fMCStatSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                  double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
                  double twk  = (nmc > 0) ? nmcf/nmc ? 1;
                  double valf = val * twk; 
                  fMCTTunSb[ibeam][isample][imode]->SetEntry(valf,ier,iyr,iet);
+
+                 // Map to template with optimized binning
+                 const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+                 double enu_reco = kErecoBinEdgesSb[ier]   + (kErecoBinEdgesSb[ier+1]  -kErecoBinEdgesSb[ier]  )/2.;
+                 double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
+                 int izone = util::BinZone(s, enu_reco, y_reco);
+                 if(izone < 0) {
+//                  LOG("NDModel",pFATAL) - turn that to fatal after binning optimization is done
+                    LOG("NDModel",pWARN)
+                       << " ** No bin zone for toy MC event (" << " (" << util::AsString(s) << ")"
+                       << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
+//                  exit(1);
+                 }
+                 const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+                 const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+                 const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
+                 const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
+                 int ier2 = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
+                 int iy2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );       
+                 double valf_ob = fMCTTunOb[ibeam][isample][imode][izone]->GetEntry(ier2,iyr2,iet);
+                 valf_ob += valf;
+                 fMCTTunOb[ibeam][isample][imode][izone]->SetEntry(val_ob,ier2,iyr2,iet);
                }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
+
         }//update_mct_sb
 
       }//imode
