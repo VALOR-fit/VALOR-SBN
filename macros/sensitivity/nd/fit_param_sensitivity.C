@@ -1,12 +1,21 @@
 //
 // ------------------------------------------------------------------------------------------------
-// Generate and fit ensembles of toy-MC experiments.
+// Generate and fit ensembles of toy-MC experiments with the purpose of calculating the sensitivity
+// to a single fit parameter, for a given value of that parameter.
+//
+// Toy-MC experiments are generated setting the specified fit parameter (p) to a single value (pv_gen) 
+// and randomizing (as needed) the remaining N-1 parameters. Statistical fluctuation can be included 
+// (as needed). Each toy-MC experiment is fit several times, fixing the parameter p to a series of 
+// values (pv_fit) in some range [pv_fit_min, pv_fit_max] and fitting the remaining N-1 parameters.
+// The best-fit statistic is computed as function of pv_fit for each experiment.
+// The sensitivity is calculated by averaging the best-fit statistic = f(pv_fit) curves over
+// several toy-MC experiments.
 //
 // Costas Andreopoulos
 // ------------------------------------------------------------------------------------------------
 //
 	
-void run_fit_sensitivity1p
+void fit_param_sensitivity
 (
   const char * tag                   = "toymc",                               /* tag for output file */
   int          run                   = 0,                                     /* run # */
