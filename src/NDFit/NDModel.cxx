@@ -8,6 +8,8 @@ ChangeLog:
 */
 //________________________________________________________________________________________
 
+//#define _apply_mc_stat_fluctuation_
+
 #include <cassert>
 #include <ostream>
 
@@ -154,6 +156,7 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
      << "Generating model predictions for the input hypothesis: " 
      << fPhysHypothesis;
 
+  this->FluctuateMCStat(opt);   // `tun' MC templates --> `tun' MC templates (NOTE: if important effect, will need to add a new type of templates
 //this->ApplySystematics(opt);  // `tun' MC templates --> `sys' MC templates
   this->ApplyPhysics(opt);      // `sys' MC templates --> `fin' MC templates
   this->UpdatePDFs(opt);        // `fin' MC templates --> p.d.f
@@ -271,31 +274,31 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
-             if(fMCTNull[ibeam][isample][imode][izone]) continue;
+             if(fMCTNullOb[ibeam][isample][imode][izone]) continue;
              const char * name = Form("%s_%s_%s_z%d", 
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
-             fMCTNom [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctnom_ob_vf", name) );
-             fMCTTun [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_ob_vf", name) );
-             fMCTSys [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_ob_vf", name) );
-             fMCTFin [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_ob_vf", name) );
-             array -> Add ( fMCTNom [ibeam][isample][imode][izone] ); 
-             array -> Add ( fMCTTun [ibeam][isample][imode][izone] ); 
-             array -> Add ( fMCTSys [ibeam][isample][imode][izone] ); 
-             array -> Add ( fMCTFin [ibeam][isample][imode][izone] );
+             fMCTNomOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctnom_ob_vf", name) );
+             fMCTTunOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_ob_vf", name) );
+             fMCTSysOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_ob_vf", name) );
+             fMCTFinOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_ob_vf", name) );
+             array -> Add ( fMCTNomOb [ibeam][isample][imode][izone] ); 
+             array -> Add ( fMCTTunOb [ibeam][isample][imode][izone] ); 
+             array -> Add ( fMCTSysOb [ibeam][isample][imode][izone] ); 
+             array -> Add ( fMCTFinOb [ibeam][isample][imode][izone] );
           }//izone
 
           if(opt.find("+SB") != string::npos) {
-             if(fMCTSbNull[ibeam][isample][imode]) continue;
+             if(fMCTNullSb[ibeam][isample][imode]) continue;
              const char * name = Form("%s_%s_%s", 
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
-             fMCTSbNom [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctnom_sb_vf", name) );
-             fMCTSbTun [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mcttun_sb_vf", name) );
-             fMCTSbSys [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsys_sb_vf", name) );
-             fMCTSbFin [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctfin_sb_vf", name) );
-             array -> Add ( fMCTSbNom [ibeam][isample][imode] ); 
-             array -> Add ( fMCTSbTun [ibeam][isample][imode] ); 
-             array -> Add ( fMCTSbSys [ibeam][isample][imode] ); 
-             array -> Add ( fMCTSbFin [ibeam][isample][imode] );
+             fMCTNomSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctnom_sb_vf", name) );
+             fMCTTunSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mcttun_sb_vf", name) );
+             fMCTSysSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsys_sb_vf", name) );
+             fMCTFinSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctfin_sb_vf", name) );
+             array -> Add ( fMCTNomSb [ibeam][isample][imode] ); 
+             array -> Add ( fMCTTunSb [ibeam][isample][imode] ); 
+             array -> Add ( fMCTSysSb [ibeam][isample][imode] ); 
+             array -> Add ( fMCTFinSb [ibeam][isample][imode] );
           }//+SB?
 
         }//imode
@@ -321,13 +324,13 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
-             if(fMCTNull[ibeam][isample][imode][izone]) continue;
+             if(fMCTNullOb[ibeam][isample][imode][izone]) continue;
              const char * name = Form("%s_%s_%s_z%d", 
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
-               fMCPDFComp [ibeam][isample][imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_ob_vf",name));
-               array->Add(fMCPDFComp[ibeam][isample][imode][izone]);
+               fPDFCompOb [ibeam][isample][imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_ob_vf",name));
+               array->Add(fPDFCompOb[ibeam][isample][imode][izone]);
              }
              // in TH2D format
              if (opt.find("pdfc_rf") != string::npos) {
@@ -344,7 +347,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // fill from corresponding VALOR array
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iy = 0; iy < n_y_reco_bins; iy++) {
-                   double val = fMCPDFComp[ibeam][isample][imode][izone]->GetEntry(ier,iy);
+                   double val = fPDFCompOb[ibeam][isample][imode][izone]->GetEntry(ier,iy);
                    h2->SetBinContent(ier+1,iy+1,val);
                  }//iy
                }//ier
@@ -355,13 +358,13 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           }//izone
 
           if(opt.find("+SB") != string::npos) {
-             if(fMCTSbNull[ibeam][isample][imode]) continue;
+             if(fMCTNullSb[ibeam][isample][imode]) continue;
              const char * name = Form("%s_%s_%s", 
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
-               fMCPDFSbComp [ibeam][isample][imode]->SetName(Form("%s_%s_%s",tag,"pdfc_sb_vf",name));
-               array->Add(fMCPDFSbComp[ibeam][isample][imode]);
+               fPDFCompSb [ibeam][isample][imode]->SetName(Form("%s_%s_%s",tag,"pdfc_sb_vf",name));
+               array->Add(fPDFCompSb[ibeam][isample][imode]);
              }
              // in TH2D format
              if (opt.find("pdfc_rf") != string::npos) {
@@ -374,7 +377,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // fill from corresponding VALOR array
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                  for(int iy = 0; iy <  n_y_reco_bins_sb; iy++) {
-                   double val = fMCPDFSbComp[ibeam][isample][imode]->GetEntry(ier,iy);
+                   double val = fPDFCompSb[ibeam][isample][imode]->GetEntry(ier,iy);
                    h2->SetBinContent(ier+1,iy+1,val);
                  }//iy
                }//ier
@@ -408,8 +411,8 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
-               fMCPDFTot[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"pdft_ob_vf",name));
-               array->Add(fMCPDFTot[ibeam][isample][izone]);
+               fPDFTotOb[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"pdft_ob_vf",name));
+               array->Add(fPDFTotOb[ibeam][isample][izone]);
              }
              // in TH2D format
              if (opt.find("pdft_rf") != string::npos) {
@@ -426,7 +429,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // fill from corresponding VALOR array
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iy = 0; iy < n_y_reco_bins; iy++) {
-                   double val = fMCPDFTot[ibeam][isample][izone]->GetEntry(ier,iy);
+                   double val = fPDFTotOb[ibeam][isample][izone]->GetEntry(ier,iy);
                    h2->SetBinContent(ier+1,iy+1,val);
                  }//iy
                }//ier
@@ -441,8 +444,8 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 util::AsString(b).c_str(), util::AsString(s).c_str());
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
-               fMCPDFSbTot[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"pdft_sb_vf",name));
-               array->Add(fMCPDFSbTot[ibeam][isample]);
+               fPDFTotSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"pdft_sb_vf",name));
+               array->Add(fPDFTotSb[ibeam][isample]);
              }
              // in TH2D format
              if (opt.find("pdft_rf") != string::npos) {
@@ -458,7 +461,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // fill from corresponding VALOR array
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                  for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-                   double val = fMCPDFSbTot[ibeam][isample]->GetEntry(ier,iy);
+                   double val = fPDFTotSb[ibeam][isample]->GetEntry(ier,iy);
                    h2->SetBinContent(ier+1,iy+1,val);
                  }//iy
                }//ier
@@ -513,7 +516,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
               h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
               for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-                double val = fMCPDFComp[ibeam][isample][imode][izone]->GetEntry(ier,iy);
+                double val = fPDFCompOb[ibeam][isample][imode][izone]->GetEntry(ier,iy);
                 h->SetBinContent(ier+1, val);
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
@@ -545,7 +548,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
               h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
               for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-                double val = fMCPDFSbComp[ibeam][isample][imode]->GetEntry(ier,iy);
+                double val = fPDFCompSb[ibeam][isample][imode]->GetEntry(ier,iy);
                 h->SetBinContent(ier+1, val);
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
@@ -599,7 +602,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-              double val = fMCPDFTot[ibeam][isample][izone]->GetEntry(ier,iy);
+              double val = fPDFTotOb[ibeam][isample][izone]->GetEntry(ier,iy);
               h->SetBinContent(ier+1, val);
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
@@ -631,7 +634,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-              double val = fMCPDFSbTot[ibeam][isample]->GetEntry(ier,iy);
+              double val = fPDFTotSb[ibeam][isample]->GetEntry(ier,iy);
               h->SetBinContent(ier+1, val);
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
@@ -700,30 +703,32 @@ void NDModel::Init(void)
      for(int imode = 0; imode < kNReacModes; imode++) {
 
        // MC templates (simple binning)
-       fMCTSbNom  [ibeam][isample][imode] = 0;
-       fMCTSbTun  [ibeam][isample][imode] = 0;
-       fMCTSbSys  [ibeam][isample][imode] = 0;
-       fMCTSbFin  [ibeam][isample][imode] = 0;
-       fMCTSbNull [ibeam][isample][imode] = true;
+       fMCTNullSb[ibeam][isample][imode] = true;
+       fMCTNomSb [ibeam][isample][imode] = 0;
+       fMCTTunSb [ibeam][isample][imode] = 0;
+       fMCTSysSb [ibeam][isample][imode] = 0;
+       fMCTFinSb [ibeam][isample][imode] = 0;
+       fMCStatSb [ibeam][isample][imode] = 0;
        // PDF (simple binning)
-       fMCPDFSbComp [ibeam][isample][imode] = 0;
+       fPDFCompSb [ibeam][isample][imode] = 0;
        if(imode == 0) {
-         fMCPDFSbTot     [ibeam][isample] = 0;
-         fMCPDFSbTotNull [ibeam][isample] = true;
+         fPDFTotSb     [ibeam][isample] = 0;
+         fPDFTotNullSb [ibeam][isample] = true;
        }
 
        for(int izone = 0; izone < kNMaxBinZones; izone++) {
          // MC templates
-         fMCTNom  [ibeam][isample][imode][izone] = 0;
-         fMCTTun  [ibeam][isample][imode][izone] = 0;
-         fMCTSys  [ibeam][isample][imode][izone] = 0;
-         fMCTFin  [ibeam][isample][imode][izone] = 0;
-         fMCTNull [ibeam][isample][imode][izone] = true;
+         fMCTNullOb[ibeam][isample][imode][izone] = true;
+         fMCTNomOb [ibeam][isample][imode][izone] = 0;
+         fMCTTunOb [ibeam][isample][imode][izone] = 0;
+         fMCTSysOb [ibeam][isample][imode][izone] = 0;
+         fMCTFinOb [ibeam][isample][imode][izone] = 0;
+         fMCStatOb [ibeam][isample][imode][izone] = 0;
          // PDF
-         fMCPDFComp [ibeam][isample][imode][izone] = 0;
+         fPDFCompOb [ibeam][isample][imode][izone] = 0;
          if(imode == 0) {
-           fMCPDFTot     [ibeam][isample][izone] = 0;
-           fMCPDFTotNull [ibeam][isample][izone] = true;
+           fPDFTotOb     [ibeam][isample][izone] = 0;
+           fPDFTotNullOb [ibeam][isample][izone] = true;
          }
        }//izone
 
@@ -770,28 +775,30 @@ void NDModel::Book(void)
 
         // >> MC templates (simple binning)
         // (Note order of variables: reco first, true later)
-        fMCTSbNull[ibeam][isample][imode] = false;
-        fMCTSbNom [ibeam][isample][imode] = 
+        fMCTNullSb[ibeam][isample][imode] = false;
+        fMCTNomSb [ibeam][isample][imode] = 
           new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-        fMCTSbTun [ibeam][isample][imode] = 
+        fMCTTunSb [ibeam][isample][imode] = 
           new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-        fMCTSbSys [ibeam][isample][imode] = 
+        fMCTSysSb [ibeam][isample][imode] = 
           new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-        fMCTSbFin [ibeam][isample][imode] = 
+        fMCTFinSb [ibeam][isample][imode] = 
+          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
+        fMCStatSb [ibeam][isample][imode] = 
           new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
 
         // >> PDF component
-        fMCPDFSbComp[ibeam][isample][imode] = 
+        fPDFCompSb[ibeam][isample][imode] = 
             new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);           
         // >> PDF total
         // should get here for at least one imode value
-        if(fMCPDFSbTotNull[ibeam][isample]) {              
+        if(fPDFTotNullSb[ibeam][isample]) {              
            LOG("NDModel",pDEBUG) 
               << "Booking PDF (total / simple binning) for " 
               << "beam: "     << util::AsString(b) 
               << ", sample: " << util::AsString(s);
-           fMCPDFSbTotNull [ibeam][isample] = false;
-           fMCPDFSbTot     [ibeam][isample] = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb); 
+           fPDFTotNullSb [ibeam][isample] = false;
+           fPDFTotSb     [ibeam][isample] = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb); 
         }
 
 
@@ -810,30 +817,32 @@ void NDModel::Book(void)
  
            // >> MC templates 
            // (Note order of variables: reco first, true later)
-           fMCTNull[ibeam][isample][imode][izone] = false;
-           fMCTNom [ibeam][isample][imode][izone] = 
+           fMCTNullOb[ibeam][isample][imode][izone] = false;
+           fMCTNomOb [ibeam][isample][imode][izone] = 
              new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-           fMCTTun [ibeam][isample][imode][izone] = 
+           fMCTTunOb [ibeam][isample][imode][izone] = 
              new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-           fMCTSys [ibeam][isample][imode][izone] = 
+           fMCTSysOb [ibeam][isample][imode][izone] = 
              new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-           fMCTFin [ibeam][isample][imode][izone] = 
+           fMCTFinOb [ibeam][isample][imode][izone] = 
+             new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
+           fMCStatOb [ibeam][isample][imode][izone] = 
              new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
 
            // >> PDF component
-           fMCPDFComp[ibeam][isample][imode][izone] = 
+           fPDFCompOb[ibeam][isample][imode][izone] = 
                new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
            // >> PDF total
            // should get here for at least one imode value
-           if(fMCPDFTotNull[ibeam][isample][izone]) {              
+           if(fPDFTotNullOb[ibeam][isample][izone]) {              
               LOG("NDModel",pDEBUG) 
                  << "Booking PDF (total) for " 
                  << "beam: "     << util::AsString(b) 
                  << ", sample: " << util::AsString(s)
                  << ", zone: "   << izone;
 
-              fMCPDFTotNull [ibeam][isample][izone] = false;
-              fMCPDFTot     [ibeam][isample][izone] = new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
+              fPDFTotNullOb [ibeam][isample][izone] = false;
+              fPDFTotOb     [ibeam][isample][izone] = new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
            }
         }//izone
 
@@ -850,47 +859,51 @@ void NDModel::Clean(void)
     for(int isample = 0; isample < kNNDSamples; isample++) {
       for(int imode = 0; imode < kNReacModes; imode++) {
 
-        if(!fMCTSbNull[ibeam][isample][imode]) {
-            fMCTSbNull[ibeam][isample][imode] = true;
+        if(!fMCTNullSb[ibeam][isample][imode]) {
+            fMCTNullSb[ibeam][isample][imode] = true;
             // MC templates (simple binning)
-            if(fMCTSbNom[ibeam][isample][imode]) delete fMCTSbNom[ibeam][isample][imode];
-            if(fMCTSbTun[ibeam][isample][imode]) delete fMCTSbTun[ibeam][isample][imode];
-            if(fMCTSbSys[ibeam][isample][imode]) delete fMCTSbSys[ibeam][isample][imode];
-            if(fMCTSbFin[ibeam][isample][imode]) delete fMCTSbFin[ibeam][isample][imode];
-            fMCTSbNom[ibeam][isample][imode] = 0;
-            fMCTSbTun[ibeam][isample][imode] = 0;
-            fMCTSbSys[ibeam][isample][imode] = 0;
-            fMCTSbFin[ibeam][isample][imode] = 0;
+            if ( fMCTNomSb [ibeam][isample][imode] ) delete fMCTNomSb [ibeam][isample][imode];
+            if ( fMCTTunSb [ibeam][isample][imode] ) delete fMCTTunSb [ibeam][isample][imode];
+            if ( fMCTSysSb [ibeam][isample][imode] ) delete fMCTSysSb [ibeam][isample][imode];
+            if ( fMCTFinSb [ibeam][isample][imode] ) delete fMCTFinSb [ibeam][isample][imode];
+            if ( fMCStatSb [ibeam][isample][imode] ) delete fMCStatSb [ibeam][isample][imode];
+            fMCTNomSb[ibeam][isample][imode] = 0;
+            fMCTTunSb[ibeam][isample][imode] = 0;
+            fMCTSysSb[ibeam][isample][imode] = 0;
+            fMCTFinSb[ibeam][isample][imode] = 0;
+            fMCStatSb[ibeam][isample][imode] = 0;
             // PDF components
-            if(fMCPDFSbComp[ibeam][isample][imode]) delete fMCPDFSbComp[ibeam][isample][imode];
-            fMCPDFSbComp[ibeam][isample][imode] = 0;
+            if(fPDFCompSb[ibeam][isample][imode]) delete fPDFCompSb[ibeam][isample][imode];
+            fPDFCompSb[ibeam][isample][imode] = 0;
         }
-        if(!fMCPDFSbTotNull[ibeam][isample]) {
-            fMCPDFSbTotNull[ibeam][isample] = true;
-              if(fMCPDFSbTot[ibeam][isample]) delete fMCPDFSbTot[ibeam][isample];
-              fMCPDFSbTot[ibeam][isample] = 0;
+        if(!fPDFTotNullSb[ibeam][isample]) {
+            fPDFTotNullSb[ibeam][isample] = true;
+              if(fPDFTotSb[ibeam][isample]) delete fPDFTotSb[ibeam][isample];
+              fPDFTotSb[ibeam][isample] = 0;
         }
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          if(!fMCTNull[ibeam][isample][imode][izone]) {
-              fMCTNull[ibeam][isample][imode][izone] = true;
+          if(!fMCTNullOb[ibeam][isample][imode][izone]) {
+              fMCTNullOb[ibeam][isample][imode][izone] = true;
               // MC templates
-              if(fMCTNom[ibeam][isample][imode][izone]) delete fMCTNom[ibeam][isample][imode][izone];
-              if(fMCTTun[ibeam][isample][imode][izone]) delete fMCTTun[ibeam][isample][imode][izone];
-              if(fMCTSys[ibeam][isample][imode][izone]) delete fMCTSys[ibeam][isample][imode][izone];
-              if(fMCTFin[ibeam][isample][imode][izone]) delete fMCTFin[ibeam][isample][imode][izone];
-              fMCTNom[ibeam][isample][imode][izone] = 0;
-              fMCTTun[ibeam][isample][imode][izone] = 0;
-              fMCTSys[ibeam][isample][imode][izone] = 0;
-              fMCTFin[ibeam][isample][imode][izone] = 0;
+              if ( fMCTNomOb[ibeam][isample][imode][izone] ) delete fMCTNomOb[ibeam][isample][imode][izone];
+              if ( fMCTTunOb[ibeam][isample][imode][izone] ) delete fMCTTunOb[ibeam][isample][imode][izone];
+              if ( fMCTSysOb[ibeam][isample][imode][izone] ) delete fMCTSysOb[ibeam][isample][imode][izone];
+              if ( fMCTFinOb[ibeam][isample][imode][izone] ) delete fMCTFinOb[ibeam][isample][imode][izone];
+              if ( fMCStatOb[ibeam][isample][imode][izone] ) delete fMCStatOb[ibeam][isample][imode][izone];
+              fMCTNomOb[ibeam][isample][imode][izone] = 0;
+              fMCTTunOb[ibeam][isample][imode][izone] = 0;
+              fMCTSysOb[ibeam][isample][imode][izone] = 0;
+              fMCTFinOb[ibeam][isample][imode][izone] = 0;
+              fMCStatOb[ibeam][isample][imode][izone] = 0;
               // PDF components
-              if(fMCPDFComp[ibeam][isample][imode][izone]) delete fMCPDFComp[ibeam][isample][imode][izone];
-              fMCPDFComp[ibeam][isample][imode][izone] = 0;
+              if(fPDFCompOb[ibeam][isample][imode][izone]) delete fPDFCompOb[ibeam][isample][imode][izone];
+              fPDFCompOb[ibeam][isample][imode][izone] = 0;
           }
-          if(!fMCPDFTotNull[ibeam][isample][izone]) {
-              fMCPDFTotNull[ibeam][isample][izone] = true;
-              if(fMCPDFTot[ibeam][isample][izone]) delete fMCPDFTot[ibeam][isample][izone];
-              fMCPDFTot[ibeam][isample][izone] = 0;
+          if(!fPDFTotNullOb[ibeam][isample][izone]) {
+              fPDFTotNullOb[ibeam][isample][izone] = true;
+              if(fPDFTotOb[ibeam][isample][izone]) delete fPDFTotOb[ibeam][isample][izone];
+              fPDFTotOb[ibeam][isample][izone] = 0;
           }          
         }//izone
 
@@ -917,27 +930,29 @@ void NDModel::Zero(void)
    for(int isample = 0; isample < kNNDSamples; isample++) {
      for(int imode = 0; imode < kNReacModes; imode++) {
 
-        if(!fMCTSbNull[ibeam][isample][imode]) {
-            fMCTSbNom   [ibeam][isample][imode] -> SetAll(0.);
-            fMCTSbTun   [ibeam][isample][imode] -> SetAll(0.);
-            fMCTSbSys   [ibeam][isample][imode] -> SetAll(0.);
-            fMCTSbFin   [ibeam][isample][imode] -> SetAll(0.);
-            fMCPDFSbComp[ibeam][isample][imode] -> SetAll(0.);
+        if(!fMCTNullSb[ibeam][isample][imode]) {
+            fMCTNomSb [ibeam][isample][imode] -> SetAll(0.);
+            fMCTTunSb [ibeam][isample][imode] -> SetAll(0.);
+            fMCTSysSb [ibeam][isample][imode] -> SetAll(0.);
+            fMCTFinSb [ibeam][isample][imode] -> SetAll(0.);
+            fMCStatSb [ibeam][isample][imode] -> SetAll(0.);
+            fPDFCompSb[ibeam][isample][imode] -> SetAll(0.);
         }
-        if(!fMCPDFSbTotNull[ibeam][isample]) {
-              fMCPDFSbTot[ibeam][isample] -> SetAll(0.);
+        if(!fPDFTotNullSb[ibeam][isample]) {
+              fPDFTotSb[ibeam][isample] -> SetAll(0.);
         }
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          if(!fMCTNull[ibeam][isample][imode][izone]) {
-              fMCTNom   [ibeam][isample][imode][izone] -> SetAll(0.);
-              fMCTTun   [ibeam][isample][imode][izone] -> SetAll(0.); 
-              fMCTSys   [ibeam][isample][imode][izone] -> SetAll(0.);
-              fMCTFin   [ibeam][isample][imode][izone] -> SetAll(0.);
-              fMCPDFComp[ibeam][isample][imode][izone] -> SetAll(0.);
+          if(!fMCTNullOb[ibeam][isample][imode][izone]) {
+              fMCTNomOb [ibeam][isample][imode][izone] -> SetAll(0.);
+              fMCTTunOb [ibeam][isample][imode][izone] -> SetAll(0.); 
+              fMCTSysOb [ibeam][isample][imode][izone] -> SetAll(0.);
+              fMCTFinOb [ibeam][isample][imode][izone] -> SetAll(0.);
+              fMCStatOb [ibeam][isample][imode][izone] -> SetAll(0.);
+              fPDFCompOb[ibeam][isample][imode][izone] -> SetAll(0.);
           }
-          if(!fMCPDFTotNull[ibeam][isample][izone]) {
-              fMCPDFTot[ibeam][isample][izone] -> SetAll(0.);
+          if(!fPDFTotNullOb[ibeam][isample][izone]) {
+              fPDFTotOb[ibeam][isample][izone] -> SetAll(0.);
           }          
         }//izone
 
@@ -948,6 +963,9 @@ void NDModel::Zero(void)
 //________________________________________________________________________________________
 void NDModel::Fill(TTree * t, int ibeam)
 {
+// Fill MC templates from the input VALOR/LBNx DST TTree
+// We use a single tree for all samples for a single beam configuration.
+
   BeamConf_t b = kNDBeamConf[ibeam];
 
   LOG("NDModel",pDEBUG) 
@@ -1078,14 +1096,14 @@ void NDModel::Fill(TTree * t, int ibeam)
        continue;
      }
 
-     bool is_null = fMCTNull[ibeam][isample][imode][izone];
+     bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
      if(is_null) {
        LOG("NDModel",pFATAL) 
          << "** Null MC template for sample: " << util::AsString(s) 
          << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
        exit(1);
      }
-     bool is_null_sb = fMCTSbNull[ibeam][isample][imode];
+     bool is_null_sb = fMCTNullSb[ibeam][isample][imode];
      if(is_null_sb) {
        LOG("NDModel",pFATAL) 
          << "** Null MC template (simple binning) for sample: " << util::AsString(s) 
@@ -1166,26 +1184,124 @@ void NDModel::Fill(TTree * t, int ibeam)
 
      // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
 
-     double curr_wght = fMCTNom[ibeam][isample][imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true);
+     double curr_wght = fMCTNomOb[ibeam][isample][imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true);
      curr_wght += wght;
-     fMCTNom[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
-     fMCTTun[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
-     fMCTSys[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
-     fMCTFin[ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);     
+     fMCTNomOb [ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
+     fMCTTunOb [ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
+     fMCTSysOb [ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);
+     fMCTFinOb [ibeam][isample][imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true);     
+     fMCStatOb [ibeam][isample][imode][izone]->SetEntry(        1, ienu_reco, iy_reco, ienu_true);     
 
-     double curr_wght_sb = fMCTSbNom[ibeam][isample][imode]->GetEntry(ienu_reco_sb, iy_reco_sb, ienu_true);
+     double curr_wght_sb = fMCTNomSb[ibeam][isample][imode]->GetEntry(ienu_reco_sb, iy_reco_sb, ienu_true);
      curr_wght_sb += wght;
-     fMCTSbNom[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
-     fMCTSbTun[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
-     fMCTSbSys[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
-     fMCTSbFin[ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);     
+     fMCTNomSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
+     fMCTTunSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
+     fMCTSysSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
+     fMCTFinSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);     
+     fMCStatSb [ibeam][isample][imode]->SetEntry(           1, ienu_reco_sb, iy_reco_sb, ienu_true);     
   }//iev 
 }
 //________________________________________________________________________________________
 void NDModel::ApplyTuning(void)
 {
 // This method maps nom -> tun MC templates
+// This is applied once when the model is constructed, not everytime Generate() is called.
 // No external tuning available for the time-being
+
+
+}
+//________________________________________________________________________________________
+void NDModel::FluctuateMCStat(Option_t * option)
+{
+// Take into account the effect of MC statistics on the tuned MC templates.
+// Note that this is the error due to the finite MC statistics used to construct the
+// model and not the statistical error for the assumed (or actual) experimental exposure
+// which is also taken account when generating toy-MC experiments.
+// NOTE: For the time-being the effect applied on the tuned templates and stored on the 
+// tuned templates, so we lose the tuned templates as they were before applying the MC
+// statistical error. If this is important, we ought to create a new set of templates
+// to hold this intermediate step going from the `tun' to the `sys' templates.
+
+  LOG("NDModel",pINFO) 
+     << "Applying MC statistic error (option: " 
+     << ((option) ? option : "")
+     << ")";
+
+#ifdef _apply_mc_stat_fluctuation_
+
+  bool update_mct_sb = false;
+  if(option) {
+    string opt = option;
+    if(opt.find("+SB") != string::npos) {
+      update_mct_sb = true;
+    }
+  }
+
+  Rnd * rnd = Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
+
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[isample];
+      if(s == ksNDUndefined) continue;
+      const int n_enu_true_bins = util::NumEtrueBins(s);
+      const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(s);
+      for(int imode = 0; imode < kNReacModes; imode++) {
+        ReacMode_t m = kNDReactionModes[isample][imode];
+        if(m == kmUndefined) continue;
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
+          if(is_null) continue;
+          const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+          const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+          for(int iet = 0; iet < n_enu_true_bins; iet++) {
+            for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+               for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
+                 double val  = fMCTTunOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 double nmc  = fMCStatOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 // Fluctuate MC statistics and get the tweak factor
+                 double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
+                 double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+                 // Apply the tweak factor in the template, obviously a small effect for 
+                 // large MC statistics. Again noting that this is not the statistical error
+                 // for the current exposure. That one will be applied later in toy-MC generation.
+                 double valf = val * twk; 
+                 fMCTTunOb[ibeam][isample][imode][izone]->SetEntry(valf,ier,iyr,iet);
+               }//iyr: yreco bins
+            }//ier: Ereco bins
+          }//iet: Etrue bins
+        }//izone
+
+        if(update_mct_sb) {
+          for(int iet = 0; iet < n_enu_true_bins; iet++) {
+            for(int ier = 0; ier < kNErecoBinsSb; ier++) {
+               for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
+                 // Same as above but for the `sb' templates
+                 // NOTE: This is not quite correct as the templates stored using the 
+                 // two different binning schemes would get different MC statistic fluctuations!
+                 // Need to fluctuate the `sb' versions, then fill the `op' version from the `sb' ones.
+                 // Do later if this is an important effect we want to keep.
+                 double val  = fMCTTunSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                 double nmc  = fMCStatSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                 double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
+                 double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+                 double valf = val * twk; 
+                 fMCTTunSb[ibeam][isample][imode]->SetEntry(valf,ier,iyr,iet);
+               }//iyr: yreco bins
+            }//ier: Ereco bins
+          }//iet: Etrue bins
+        }//update_mct_sb
+
+      }//imode
+    }//isample
+  }//ibeam
+
+#else
+
+  LOG("NDModel",pINFO) << "MC statistic error *not* applied";
+
+#endif
 
 }
 //________________________________________________________________________________________
@@ -1193,6 +1309,11 @@ void NDModel::ApplySystematics(Option_t * /*opt*/)
 {
 // This method maps tun -> sys MC templates.
 // Applying detector systematics and uncorrelated flux/cross-section systematics.
+
+// NOTE: For the time-being, everything (flux, cross-sections, detector systematics)
+// are applied together at the next method, ApplyPhysics()
+// Improve as we get to a new scheme where all detector systematic tweaks are obtained
+// using the Cholesky method and an input detector systematics correlation matrix.
 
 /*
   bool update_mct_sb = false;
@@ -1207,15 +1328,12 @@ void NDModel::ApplySystematics(Option_t * /*opt*/)
    for(int isample = 0; isample < kNNDSamples; isample++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
 
-
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         bool is_null = fMCTNull[ibeam][isample][imode][izone];
+         bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
          if(!is_null) {
              
-
          }//!null
       }//izone
-
 
     }//imode
    }//isample
@@ -1267,7 +1385,7 @@ void NDModel::ApplyPhysics(Option_t * option)
            << "Initializing `fin' templates to the `sys' ones";
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          bool is_null = fMCTNull[ibeam][isample][imode][izone];
+          bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
           if(is_null) continue;
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
           const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
@@ -1275,8 +1393,8 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
-                 double val = fMCTSys[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
-                 fMCTFin[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
+                 double val = fMCTSysOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 fMCTFinOb[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
                }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
@@ -1306,9 +1424,9 @@ void NDModel::ApplyPhysics(Option_t * option)
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
-                    double val_old = fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                    double val_old = fMCTFinOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
                     double val_new = val_old * f;
-                    fMCTFin[ibeam][isample][imode][izone]->SetEntry(val_new,ier,iyr,iet);
+                    fMCTFinOb[ibeam][isample][imode][izone]->SetEntry(val_new,ier,iyr,iet);
                     LOG("NDModel",pDEBUG) 
                       << "MCT[" << ibeam << ", " << isample << ", " << imode << ", " << izone << "] = " 
                       << val_old << " --> " << val_new;
@@ -1340,9 +1458,9 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < n_enu_reco_bins; ier++) {
               for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
-                 double val = fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 double val = fMCTFinOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
                  val *= fnoEt;
-                 fMCTFin[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
+                 fMCTFinOb[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
               }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
@@ -1350,14 +1468,14 @@ void NDModel::ApplyPhysics(Option_t * option)
 
 
         if(update_mct_sb) {
-          bool is_null = fMCTSbNull[ibeam][isample][imode];
+          bool is_null = fMCTNullSb[ibeam][isample][imode];
           if(is_null) continue;
           // copy sys -> fin MC templates
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
-                 double val = fMCTSbSys[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
-                 fMCTSbFin[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
+                 double val = fMCTSysSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                 fMCTFinSb[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
                }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
@@ -1382,9 +1500,9 @@ void NDModel::ApplyPhysics(Option_t * option)
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                  for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
-                    double val = fMCTSbFin[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                    double val = fMCTFinSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                     val *= f;
-                    fMCTSbFin[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
+                    fMCTFinSb[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
                  }//iyr: yreco bins
                }//ier: Ereco bins
              }//iet: Etrue bins
@@ -1410,9 +1528,9 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
               for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
-                 double val = fMCTSbFin[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                 double val = fMCTFinSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                  val *= fnoEt;
-                 fMCTSbFin[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
+                 fMCTFinSb[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
               }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
@@ -1451,7 +1569,7 @@ void NDModel::UpdatePDFs(Option_t * option)
         if(m == kmUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          bool is_null = fMCTNull[ibeam][isample][imode][izone];
+          bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
           if(is_null) continue;
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
           const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
@@ -1459,23 +1577,23 @@ void NDModel::UpdatePDFs(Option_t * option)
             for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
                double sum = 0.;
                for(int iet=0; iet < n_enu_true_bins; iet++) {
-                 sum += fMCTFin[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 sum += fMCTFinOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
                }//iet
-               fMCPDFComp[ibeam][isample][imode][izone]->SetEntry(sum, ier, iyr);
+               fPDFCompOb[ibeam][isample][imode][izone]->SetEntry(sum, ier, iyr);
             }//iyr
           }//ier
         }//izone
 
         if(update_mct_sb) {
-          bool is_null = fMCTSbNull[ibeam][isample][imode];
+          bool is_null = fMCTNullSb[ibeam][isample][imode];
           if(is_null) continue;
           for(int ier=0; ier < kNErecoBinsSb; ier++) {
             for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
                double sum = 0.;
                for(int iet=0; iet < n_enu_true_bins; iet++) {
-                 sum += fMCTSbFin[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                 sum += fMCTFinSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                }//iet
-               fMCPDFSbComp[ibeam][isample][imode]->SetEntry(sum, ier, iyr);
+               fPDFCompSb[ibeam][isample][imode]->SetEntry(sum, ier, iyr);
             }//iyr
           }//ier
         }//update_mct_sb?
@@ -1506,11 +1624,11 @@ void NDModel::UpdatePDFs(Option_t * option)
               for(int imode = 0; imode < kNReacModes; imode++) {
                  ReacMode_t m = kNDReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
-                 bool is_null = fMCTNull[ibeam][isample][imode][izone];
+                 bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
                  if(is_null) continue;
-                 sum += fMCPDFComp[ibeam][isample][imode][izone]->GetEntry(ier, iyr);
+                 sum += fPDFCompOb[ibeam][isample][imode][izone]->GetEntry(ier, iyr);
               }//imode
-              fMCPDFTot[ibeam][isample][izone]->SetEntry(sum, ier, iyr);
+              fPDFTotOb[ibeam][isample][izone]->SetEntry(sum, ier, iyr);
            }//iyr
          }//ier
       }//izone
@@ -1522,11 +1640,11 @@ void NDModel::UpdatePDFs(Option_t * option)
               for(int imode = 0; imode < kNReacModes; imode++) {
                  ReacMode_t m = kNDReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
-                 bool is_null = fMCTSbNull[ibeam][isample][imode];
+                 bool is_null = fMCTNullSb[ibeam][isample][imode];
                  if(is_null) continue;
-                 sum += fMCPDFSbComp[ibeam][isample][imode]->GetEntry(ier, iyr);
+                 sum += fPDFCompSb[ibeam][isample][imode]->GetEntry(ier, iyr);
               }//imode
-              fMCPDFSbTot[ibeam][isample]->SetEntry(sum, ier, iyr);
+              fPDFTotSb[ibeam][isample]->SetEntry(sum, ier, iyr);
            }//iyr
          }//ier
       }//update_mct_sb?
