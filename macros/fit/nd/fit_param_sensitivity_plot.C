@@ -15,7 +15,6 @@ void fit_param_sensitivity_plot
 (
   const char * filename,        /* run_fit.C output ROOT file with fit results (run `hadd' if there are many) */
   const char * pname            /* parameter name */
-
 )
 {
   using namespace valor;
@@ -59,7 +58,8 @@ void fit_param_sensitivity_plot
     double chisq_bf = best_fit_param_array->GetBestFitStatistic();
     cout << "> Toy-MC: #" << itoymc << " : true param = " << p_true 
          << ", best-fit param = " << p_bf << ", best-fit \chi^2 = " << chisq_bf << endl;
-    inpfitdata.insert(pair<double,double>(p_true,chisq_bf));
+//////    inpfitdata.insert(pair<double,double>(p_true,chisq_bf));
+    inpfitdata.insert(pair<double,double>(p_bf,chisq_bf));
   }//itoy
 
   //
@@ -121,16 +121,25 @@ void fit_param_sensitivity_plot
     cout << "*** True value = " << it_mp->first << " ==> \delta{average \chi^2} = " << it_mp->second << endl;
   }
 
-  // Draw
+  // 
+  int pidx = util::NDArrIdx::Instance()->NDFitParamIdx(p);
+  double sig = conv::kNDFitParamAPrioriFracError[pidx];
   int np = delta_chisq_avg_mp.size();
   double * p_true_array = new double[np];
   double * dchisq_array = new double[np];
+  double * dchisq_penalty_array = new double[np];
   int ip = 0;
   for(map<double,double>::iterator it_mp = delta_chisq_avg_mp.begin(); it_mp != delta_chisq_avg_mp.end(); ++it_mp) {
     p_true_array[ip] = it_mp->first;
     dchisq_array[ip] = it_mp->second;
+    dchisq_penalty_array[ip] =  TMath::Power((p_true_array[ip]-1.)/sig, 2.);
     ip++;
   }
+
+  // Draw
   TGraph * sensitivity = new TGraph(np,p_true_array,dchisq_array);
+  TGraph * prior = new TGraph(np,p_true_array,dchisq_penalty_array);
+  prior->SetLineColor(kRed);
   sensitivity->Draw("alp");
+  prior->Draw("l");
 }
