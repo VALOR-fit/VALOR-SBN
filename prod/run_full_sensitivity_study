@@ -1,0 +1,123 @@
+#!/usr/bin/perl
+
+#
+#-------------------------------------------------------------------------------------------------------------------------------
+# Inputs
+#  --resource               : Computer resource, <RAL, Oxford, Grid, ETH-Monch, interactive>. Default: interactive.
+#  --tag                    : Tag for output files. Default: "toymc".
+#  --nruns                  : Number of runs (jobs) to submit. Default: 1.
+#  --ntoymc                 : Number of toy-MC fits per run. Default: 1.
+#  --cpu-time               : Required CPU time. Default: "6:00:00" for RAL, "11:50:00" for Oxford.
+#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --param-values           : Specifies how to set model parameters in toy-MC generation. Default: "randomize-all;prefit-errors"
+#  --sens-param-value-min   : Min param value for \Delta\chi^2 = f(param value) plot
+#  --sens-param-value-max   : Max param value for \Delta\chi^2 = f(param value) plot
+#  --npoints                : Number of points between the min and max value above.
+#  --stat-fluctuations      : Include statistical fluctuation in toy-MC generation. Default: true.
+#  --fit-option             : Option passed to fitter. Default: "minuit".
+#  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
+#  --job-dir                : Directory for job scripts and outputs. Default: `pwd`.
+#  --lbnx-softw-dir         : VALOR/LBNx code top-level directory. Default: `pwd`.
+#  --fmwk-softw-dir         : VALOR/FMWK code top-level directory. Default: `pwd`/../fmwk/
+#  --config-file            : Analysis configuration file. Default: "lbne_ndfit-2014a-STT_baseline.xml".
+#
+# C.Andreopoulos
+#-------------------------------------------------------------------------------------------------------------------------------
+#
+
+$iarg=0;
+foreach (@ARGV) {
+  if($_ eq '--resource'               ) { $resource             = $ARGV[$iarg+1]; }
+  if($_ eq '--tag'                    ) { $tag                  = $ARGV[$iarg+1]; }
+  if($_ eq '--nruns'                  ) { $nruns                = $ARGV[$iarg+1]; }
+  if($_ eq '--ntoymc'                 ) { $ntoymc               = $ARGV[$iarg+1]; }
+  if($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
+  if($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
+  if($_ eq '--param-values'           ) { $param_values         = $ARGV[$iarg+1]; }
+  if($_ eq '--sens-param-value-min'   ) { $sens_param_value_min = $ARGV[$iarg+1]; }
+  if($_ eq '--sens-param-value-max'   ) { $sens_param_value_max = $ARGV[$iarg+1]; }
+  if($_ eq '--npoints'                ) { $npoints              = $ARGV[$iarg+1]; }
+  if($_ eq '--stat-fluctuations'      ) { $stat_fluct           = 1;              }
+  if($_ eq '--fit-option'             ) { $fitoption            = $ARGV[$iarg+1]; }
+  if($_ eq '--store-spectra'          ) { $store_spectra        = 1;              }
+  if($_ eq '--job-dir'                ) { $job_dir              = $ARGV[$iarg+1]; }
+  if($_ eq '--lbnx-softw-dir'         ) { $lbnx_softw_dir       = $ARGV[$iarg+1]; }
+  if($_ eq '--fmwk-softw-dir'         ) { $fmwk_softw_dir       = $ARGV[$iarg+1]; }
+  if($_ eq '--config-file'            ) { $config_file          = $ARGV[$iarg+1]; }
+  $iarg++;
+}
+
+$resource               = "interactive"                           unless defined $resource;
+$tag                    = "sens"                                  unless defined $tag;
+$nruns                  = 1                                       unless defined $nruns;
+$ntoymc                 = 1                                       unless defined $ntoymc;
+$fitparamlist           = "standard"                              unless defined $fitparamlist;
+$param_values           = "randomize-all;prefit-errors"           unless defined $param_values;
+$sens_param_value_min   = 0.9                                     unless defined $sens_param_value_min;
+$sens_param_value_max   = 1.1                                     unless defined $sens_param_value_max;
+$npoints                = 11                                      unless defined $npoints;
+$stat_fluct             = 1                                       unless defined $stat_fluct;
+$fitoption              = "minuit"                                unless defined $fitoption;
+$store_spectra          = 0                                       unless defined $store_spectra;
+$job_dir                = "."                                     unless defined $job_dir;
+$lbnx_softw_dir         = "."                                     unless defined $lbnx_softw_dir;
+$fmwk_softw_dir         = "../fmwk/"                              unless defined $fmwk_softw_dir;
+$config_file            = "lbne_ndfit-2014a-STT_baseline.xml"     unless defined $config_file;
+
+if( !defined $cput ) {
+  if($resource eq "RAL"   ) { $cput = "6:00:00";  }
+  if($resource eq "Oxford") { $cput = "11:50:00"; }
+}
+
+@param_array = (
+   "f_fhc_flux_numu00",
+   "f_fhc_flux_numu01",
+   "f_fhc_flux_numu02",
+   "f_fhc_flux_numu03",
+   "f_fhc_flux_numu04",
+   "f_fhc_flux_numu05",
+   "f_fhc_flux_numu06",
+   "f_fhc_flux_numu07",
+   "f_fhc_flux_numu08",
+   "f_fhc_flux_numu09",
+   "f_fhc_flux_numubar00",
+   "f_fhc_flux_numubar01",
+   "f_fhc_flux_numubar02",
+   "f_fhc_flux_numubar03",
+   "f_fhc_flux_numubar04",
+   "f_fhc_flux_nue00",
+   "f_fhc_flux_nue01",
+   "f_fhc_flux_nue02",
+   "f_rhc_flux_numu00",
+##   "f_rhc_flux_numu01",
+##   "f_rhc_flux_numu02",
+##   "f_rhc_flux_numu03",
+##   "f_rhc_flux_numu04",
+##   "f_rhc_flux_numu05",
+##   "f_rhc_flux_numu06",
+##   "f_rhc_flux_numubar00",
+##   "f_rhc_flux_numubar01",
+##   "f_rhc_flux_numubar02",
+##   "f_rhc_flux_numubar03",
+##   "f_rhc_flux_numubar04",
+##   "f_rhc_flux_numubar05",
+##   "f_rhc_flux_numubar06",
+##   "f_rhc_flux_numubar07",
+##   "f_rhc_flux_nue00",
+##   "f_rhc_flux_nue01",
+##   "f_rhc_flux_nue02",
+   "f_ccqe",
+   "f_cc1pic",
+   "f_cc1pi0",
+   "f_ccoth",
+   "f_nc",
+   "f_nuecc_numucc"
+);
+
+foreach(@param_array)
+{
+  $param = $_;
+  $command = "perl prod/submit_nd_fit_param_sensitivity_job --resource $resource --tag $tag-$param --nruns $nruns --ntoymc $ntoymc --sens-param-name \"$param\" --sens-param-value 1.0 --npoints $npoints --sens-param-value-min $sens_param_value_min --sens-param-value-max $sens_param_value_max --stat-fluctuations --fit-param-list \"$fitparamlist\" --param-values \"$param_values\" --job-dir $job_dir/$param --lbnx-softw-dir $lbnx_softw_dir --fmwk-softw-dir $fmwk_softw_dir";
+  print "Running:\n$command \n\n";
+  `$command`;
+}
