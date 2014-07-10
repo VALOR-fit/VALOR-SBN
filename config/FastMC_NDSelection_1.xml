@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<DetConfig>
- 
-  <ReconNeutrinoEnergyCut> 0.1 </ReconNeutrinoEnergyCut>
-
-</DetConfig>
-
