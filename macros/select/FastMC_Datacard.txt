@@ -1,27 +1,14 @@
 # File to apply parameters and cuts to the FastMC output
 
 # Input file for analysis
-InFile /path/to/fastmc/fastmc.root
+InFile /hepstore/georgios/lbne/fastmcout/valorselection/rootfiles/genieNtp_20140430_lbne_g4lbnev3r0p10_nuflux_numuflux_numu_g280_nd_all_1050.root.root
 
 # Number of events you want to run
 Events 10000
 
-# Years to run
-Years 5
-
-# POT/year - normalized to 1.0e20
-Exposure 6
-
 # Neutrino for the event selection. the other neutrino species will
 # immediately be considered as background
 NeutrinoPDG 14
-
-# Detector to do the analysis - near or far
-# You have to change the cuts below
-Detector near
-
-# Detector mass in kT
-DetectorMass 5
 
 # Reconstructed neutrino energy cut - in Gev
 ReconNeutrinoEnergyCut 0.1
@@ -53,8 +40,8 @@ ProtonMisIDAsPion 0.001
 ProtonMisIDAsKaon 0.010
 
 # Fraction of kaons mis-identified as pions or protons
-KaonMisIDAsPion 0.016
-KaonMisIDAsProton 0.030 
+KaonMisIDAsPion 0.096
+KaonMisIDAsMuon 0.080
 
 # Parameters for the charge confusion momentum parameterazion
 ChargeConfMomSlope 0.0004
@@ -65,11 +52,19 @@ ChargeConfTrLSlope -0.0353907
 ChargeConfTrLConst -1.91409
 
 # Max momentum to apply the pid
-# For the STT detector pid above 0.8 GeV/c is impossible
-MaxMomentumPID 0.8
+MaxMomentumPID 0.8 
+
+# Reconstruction efficiency
+ReconEfficiency 0.95
 
 # Track length cut - in m
 TrackLengthCut 0.05
+
+# Visible neutrino energy cut for nc events
+EVisibleCut 1.0
+
+# Reconstructed neutrino energy cut for cc events
+EReconCut 0.8
 
 # Do the reweighting
 Reweight 0

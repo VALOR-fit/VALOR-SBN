@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <stdlib.h>
 
 #include <string>
 #include <sstream>
@@ -17,24 +18,24 @@
 using namespace std;
 using namespace valor;
 
-void FastMC(string outFile  = "fmctree.root",
-	    string datacard = "FastMC_Datacard.txt",
-	    int seed(2229999) )
+void FastMC(string outFile    = "FastMCFile.root",
+	    string datacard   = "FastMC_NDSelection.xml",
+	    int seed(288888) )
 {
 
+  const char* valor_dir = getenv("VALOR_LBNX");
+  string fdatacard = string(valor_dir) + "/config/" + datacard;
+ 
   // Read the datacard and access the fastmc tree
   ReadFastMC *rfmc = new ReadFastMC();
   
-  rfmc->ReadDatacard(datacard);
+  rfmc->ReadXMLDatacard(fdatacard);
   
-  TTree* ReadFastMCTree =  rfmc->FastMCTree(seed);
-
-  //string xmlfile = "/hepstore/georgios/lbne/valor/softw/lbnx/trunk/config/FastMC_NDSelection_1.xml";
-  //rfmc->ReadXMLDatacard(xmlfile);
-  
+  TTree* LBNEMCTree =  rfmc->FastMCTree(seed,true);
+ 
   TFile* out = new TFile(outFile.c_str(), "RECREATE");
   out->cd();
-  ReadFastMCTree->Write();
+  LBNEMCTree->Write();
 
   out->Close();
   
