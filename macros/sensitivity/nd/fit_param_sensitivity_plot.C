@@ -12,14 +12,128 @@
 #include <multimap>
 #include <vector>
 
+
+TGraph * get_sensitivity     (const char * pname, const char * filename, double & ptrue, double & pmin, double & pmax);
+TF1 *    get_sensitivity_fit (TGraph * sensitivity, double pmin, double pmax);
+TGraph * get_prior           (const char * pname, double pmin, double pmax, double & err);
+
 void fit_param_sensitivity_plot
 (
-  const char * filename,        /* run_fit.C output ROOT file with fit results (run `hadd' if there are many) */
-  const char * pname            /* parameter name */
+  const char * pname,                     /* parameter name */
+  bool         fit_sensitivity_curve,     /* plot averaged 'Delta\chi^2 directly, or show fit with quadratic function? */
+  const char * filename1,                 /* run_fit.C output ROOT file with fit results (run `hadd' if there are many) */
+  const char * label1    = "Sensitivity", /*  */
+  const char * filename2 = 0,             /*  */
+  const char * label2    = 0              /*  */
 )
 {
   using namespace valor;
 
+  double epsilon = 1E-5;
+
+  double ptrue = -999;
+  double pmin  = +999;
+  double pmax  = -999;
+  double err   = -999;
+
+  //
+  // get sensitivity from first file
+  //
+  double ptrue1 = -999;
+  double pmin1  =  999;
+  double pmax1  = -999;
+  TGraph * sensitivity1 = get_sensitivity(pname,filename1,ptrue1,pmin1,pmax1);  
+  sensitivity1->SetLineColor(kBlack);
+  sensitivity1->SetLineStyle(kSolid);
+  sensitivity1->SetMarkerStyle(20);
+  sensitivity1->GetXaxis()->SetTitle(pname);
+  sensitivity1->GetYaxis()->SetTitle("#delta(-2lnL)");
+  TF1 * sensitivity1_fit_func = 0;
+  if(fit_sensitivity_curve) {
+    sensitivity1_fit_func = get_sensitivity_fit (sensitivity1,pmin1,pmax1);
+    sensitivity1_fit_func->SetLineColor(kBlack);
+    sensitivity1_fit_func->SetLineStyle(kSolid);
+    sensitivity1_fit_func->GetXaxis()->SetTitle(pname);
+    sensitivity1_fit_func->GetYaxis()->SetTitle("#delta(-2lnL)");
+  }
+  ptrue = ptrue1;
+  pmin  = pmin1;
+  pmax  = pmax1;
+
+  //
+  // get alternative sensitivity from second file (optional)
+  //
+  double ptrue2 = -999;
+  double pmin2  =  999;
+  double pmax2  = -999;
+  TGraph * sensitivity2 = 0;
+  TF1 * sensitivity2_fit_func = 0;
+  if(filename2) {
+     sensitivity2 = get_sensitivity(pname,filename2,ptrue2,pmin2,pmax2);  
+     assert(TMath::Abs(ptrue1-ptrue2) < epsilon);
+     sensitivity2->SetLineColor(kBlack);
+     sensitivity2->SetLineStyle(kDashed);
+     sensitivity2->SetMarkerStyle(20);
+     sensitivity2->GetXaxis()->SetTitle(pname);
+     sensitivity2->GetYaxis()->SetTitle("#delta(-2lnL)");
+     if(fit_sensitivity_curve) {
+       sensitivity2_fit_func = get_sensitivity_fit (sensitivity2,pmin2,pmax2);
+       sensitivity2_fit_func->SetLineColor(kBlack);
+       sensitivity2_fit_func->SetLineStyle(kDashed);
+       sensitivity2_fit_func->GetXaxis()->SetTitle(pname);
+       sensitivity2_fit_func->GetYaxis()->SetTitle("#delta(-2lnL)");
+     }
+  }
+  pmin = TMath::Min(pmin,pmin2);
+  pmax = TMath::Max(pmax,pmax2);
+
+  //
+  // get prior
+  //
+  TGraph * prior = get_prior(pname,pmin,pmax,err);
+  prior->SetLineColor(kRed);
+  prior->SetLineWidth(2);
+
+  //
+  // Draw
+  //
+
+  TCanvas * c = new TCanvas("c","",20,20,600,600);
+
+  if(fit_sensitivity_curve) {
+    sensitivity1_fit_func->Draw();
+    if(sensitivity2_fit_func) sensitivity2_fit_func->Draw("same");
+    prior->Draw("lsame");
+    TLegend * leg = new TLegend(0.4, 0.6, 0.8, 0.9);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    leg->SetBorderSize(0);
+    leg->SetHeader(Form("True %s = %.2f",pname,ptrue));
+    leg->AddEntry("sensitivity1_fit_func",label1,"L");
+    if(sensitivity2_fit_func) leg->AddEntry("sensitivity2_fit_func",label2,"L");
+    leg->AddEntry("prior", Form("Prior constraint (%.1f\%\%)",err), "L");
+    leg->Draw();
+  } else {
+    sensitivity1->Draw("alp");
+    prior->Draw("lsame");
+    TLegend * leg = new TLegend(0.4, 0.6, 0.8, 0.9);
+    leg->SetFillColor(0);
+    leg->SetFillStyle(0);
+    leg->SetBorderSize(0);
+    leg->SetHeader(Form("True %s = %.2f",pname,ptrue));
+    leg->AddEntry("sensitivity1",label1,"L");
+    if(sensitivity2) leg->AddEntry("sensitivity2",label2,"L");
+    leg->AddEntry("prior", Form("Prior constraint (%.1f\%\%)",err), "L");
+    leg->Draw();
+  }
+
+  cout << "Done!" << endl;
+}
+
+// ------------------------------------------------------------------------------------------------
+TGraph * get_sensitivity( 
+  const char * pname, const char * filename, double & p_true_out, double & p_min_out, double & p_max_out)
+{
   conv::PhysParamId_t p = util::NDPhysParamFromString(pname);
   assert(p != conv::kPhypUndefined);
   
@@ -51,10 +165,24 @@ void fit_param_sensitivity_plot
   // mappings for all toy-MC experiments included in the input ROOT file.
   multimap<double, double> inpfitdata;
 
+  bool   first       = true;
+  double p_true_save = -999999999;
+  double epsilon     = 1E-5;
+
   // Loop over entries (toy-MC experiments) in the tree
   for(Long_t itoymc; itoymc < ntoymc; itoymc++) {
-    fitnt->GetEntry(itoymc);
-    double p_true   = true_param_array->Value(p); // not checking, but this should always be the same - we are studying sensitivity at a particular point
+    fitnt->GetEntry(itoymc);  
+    double p_true = true_param_array->Value(p); 
+    if(first) {
+      p_true_save = p_true;
+      first = false;
+    } else {
+      if( TMath::Abs(p_true-p_true_save) > epsilon ) {
+        cout << "All toy-MC experiments should have been generated with the same true valye of parameter: " << pname << endl;
+        cout << "Current value = " << p_true << ", but a value of " << p_true_save << " was seen earlier" << endl;
+        exit(1);
+      }
+    }
     double p_bf     = best_fit_param_array->BestFitValue(p); // this param was fixed, it was the other N-1 that were fitted
     double chisq_bf = best_fit_param_array->GetBestFitStatistic();
     cout << "> Toy-MC: #" << itoymc << " : true param = " << p_true 
@@ -91,7 +219,7 @@ void fit_param_sensitivity_plot
     double n = 0;   
     for(multimap<double, double>::iterator it_mmp2 = inpfitdata.begin(); it_mmp2 != inpfitdata.end(); ++it_mmp2) {
       double p_value_curr = it_mmp2->first;
-      if(TMath::Abs(p_value-p_value_curr) > 1E-5 ) {
+      if(TMath::Abs(p_value-p_value_curr) > epsilon ) {
           continue;
       }
       double chisq = it_mmp2->second;
@@ -134,10 +262,51 @@ void fit_param_sensitivity_plot
     ip++;
   }
 
-  // Draw
   TGraph * sensitivity = new TGraph(np,p_value_array,dchisq_array);
-  TGraph * prior = new TGraph(np,p_value_array,dchisq_penalty_array);
-  prior->SetLineColor(kRed);
-  sensitivity->Draw("alp");
-  prior->Draw("l");
+
+  p_true_out = p_true_save;
+  p_min_out  = p_vec[0];
+  p_max_out  = p_vec[p_vec.size()-1];
+
+  return sensitivity;
 }
+// ------------------------------------------------------------------------------------------------
+TF1 * get_sensitivity_fit (TGraph * sensitivity, double pmin, double pmax)
+{
+  cout << "Fitting sensitivity with a 2nd order polynomial" << endl;
+  sensitivity->Fit("pol2","","",pmin,pmax);
+  TF1 * sensitivity_fit_func = sensitivity->GetFunction("pol2");
+  double min = sensitivity_fit_func->GetMinimum(pmin,pmax);
+  cout << "fit func min = " << min << endl;
+  sensitivity_fit_func->SetParameter(0, sensitivity_fit_func->GetParameter(0)-min);
+  return sensitivity_fit_func;
+}
+// ------------------------------------------------------------------------------------------------
+TGraph * get_prior (const char * pname, double pmin, double pmax, double & err_out)
+{
+  conv::PhysParamId_t p = util::NDPhysParamFromString(pname);
+  assert(p != conv::kPhypUndefined);
+  
+  cout << "Plotting prior for parameter: " << pname << " in range: [" << pmin << ", " << pmax << "]" << endl;
+
+  int pidx = util::NDArrIdx::Instance()->NDFitParamIdx(p);
+  double sig = conv::kNDFitParamAPrioriFracError[pidx];
+
+  const int np = 100;
+  const double dp = (pmax-pmin)/(np-1);
+
+  double pvalue_array [np];
+  double prior_array  [np];
+
+  for(int i=0; i<np; i++) {
+     pvalue_array[i] = pmin + i*dp;
+     prior_array[i]  = TMath::Power((pvalue_array[i]-1.)/sig, 2.);
+  }
+
+  TGraph * prior = new TGraph(np,pvalue_array,prior_array);
+
+  err_out = 100*sig;
+
+  return prior;
+}
+// ------------------------------------------------------------------------------------------------
