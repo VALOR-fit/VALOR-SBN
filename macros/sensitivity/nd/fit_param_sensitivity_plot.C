@@ -19,12 +19,15 @@ TGraph * get_prior           (const char * pname, double pmin, double pmax, doub
 
 void fit_param_sensitivity_plot
 (
-  const char * pname,                     /* parameter name */
-  bool         fit_sensitivity_curve,     /* plot averaged 'Delta\chi^2 directly, or show fit with quadratic function? */
-  const char * filename1,                 /* run_fit.C output ROOT file with fit results (run `hadd' if there are many) */
-  const char * label1    = "Sensitivity", /*  */
-  const char * filename2 = 0,             /*  */
-  const char * label2    = 0              /*  */
+  const char * pname,                        /* parameter name */
+  bool         fit_sensitivity_curve,        /* plot averaged 'Delta\chi^2 directly, or show fit with quadratic function? */
+  const char * filename1,                    /* run_fit.C output ROOT file with fit results (run `hadd' if there are many) */
+  const char * label1       = "Sensitivity", /*  */
+  const char * filename2    = 0,             /*  */
+  const char * label2       = 0,             /*  */
+  bool         custom_range = false,         /* by default plots will be shown in range of fit data, but if sensitivity is fitted with pol2 it can be extrapolated - define custom range if needed */
+  double       pmin_in      =  9999,
+  double       pmax_in      = -9999
 )
 {
   using namespace valor;
@@ -50,7 +53,9 @@ void fit_param_sensitivity_plot
   sensitivity1->GetYaxis()->SetTitle("#delta(-2lnL)");
   TF1 * sensitivity1_fit_func = 0;
   if(fit_sensitivity_curve) {
-    sensitivity1_fit_func = get_sensitivity_fit (sensitivity1,pmin1,pmax1);
+    double pmin_fit = (custom_range) ? pmin_in : pmin1;
+    double pmax_fit = (custom_range) ? pmax_in : pmax1;
+    sensitivity1_fit_func = get_sensitivity_fit (sensitivity1,pmin_fit,pmax_fit);
     sensitivity1_fit_func->SetLineColor(kBlack);
     sensitivity1_fit_func->SetLineStyle(kSolid);
     sensitivity1_fit_func->GetXaxis()->SetTitle(pname);
@@ -77,15 +82,22 @@ void fit_param_sensitivity_plot
      sensitivity2->GetXaxis()->SetTitle(pname);
      sensitivity2->GetYaxis()->SetTitle("#delta(-2lnL)");
      if(fit_sensitivity_curve) {
-       sensitivity2_fit_func = get_sensitivity_fit (sensitivity2,pmin2,pmax2);
+       double pmin_fit = (custom_range) ? pmin_in : pmin2;
+       double pmax_fit = (custom_range) ? pmax_in : pmax2;
+       sensitivity2_fit_func = get_sensitivity_fit (sensitivity2,pmin_fit,pmax_fit);
        sensitivity2_fit_func->SetLineColor(kBlack);
        sensitivity2_fit_func->SetLineStyle(kDashed);
        sensitivity2_fit_func->GetXaxis()->SetTitle(pname);
        sensitivity2_fit_func->GetYaxis()->SetTitle("#delta(-2lnL)");
      }
   }
-  pmin = TMath::Min(pmin,pmin2);
-  pmax = TMath::Max(pmax,pmax2);
+  if(custom_range) {
+    pmin = pmin_in;
+    pmax = pmax_in;
+  } else {
+    pmin = TMath::Min(pmin,pmin2);
+    pmax = TMath::Max(pmax,pmax2);
+  }
 
   //
   // get prior
@@ -99,7 +111,6 @@ void fit_param_sensitivity_plot
   //
 
   TCanvas * c = new TCanvas("c","",20,20,600,600);
-
   if(fit_sensitivity_curve) {
     sensitivity1_fit_func->Draw();
     if(sensitivity2_fit_func) sensitivity2_fit_func->Draw("same");
@@ -109,9 +120,9 @@ void fit_param_sensitivity_plot
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
     leg->SetHeader(Form("True %s = %.2f",pname,ptrue));
-    leg->AddEntry("sensitivity1_fit_func",label1,"L");
+    leg->AddEntry(sensitivity1_fit_func,label1,"L");
     if(sensitivity2_fit_func) leg->AddEntry("sensitivity2_fit_func",label2,"L");
-    leg->AddEntry("prior", Form("Prior constraint (%.1f\%\%)",err), "L");
+    leg->AddEntry(prior, Form("Prior constraint (%.1f\%\%)",err), "L");
     leg->Draw();
   } else {
     sensitivity1->Draw("alp");
@@ -121,11 +132,30 @@ void fit_param_sensitivity_plot
     leg->SetFillStyle(0);
     leg->SetBorderSize(0);
     leg->SetHeader(Form("True %s = %.2f",pname,ptrue));
-    leg->AddEntry("sensitivity1",label1,"L");
+    leg->AddEntry(sensitivity1,label1,"L");
     if(sensitivity2) leg->AddEntry("sensitivity2",label2,"L");
-    leg->AddEntry("prior", Form("Prior constraint (%.1f\%\%)",err), "L");
+    leg->AddEntry(prior, Form("Prior constraint (%.1f\%\%)",err), "L");
     leg->Draw();
   }
+  TLine *  l68cl = new TLine (pmin,1.00,pmax,1.00);
+  TLine *  l90cl = new TLine (pmin,2.71,pmax,2.71);
+  TLine *  l99cl = new TLine (pmin,6.63,pmax,6.63);
+  TLatex * t68cl = new TLatex(1.01*pmin,1.01*1.00,"68\% C.L.");
+  TLatex * t90cl = new TLatex(1.01*pmin,1.01*2.71,"90\% C.L.");
+  TLatex * t99cl = new TLatex(1.01*pmin,1.01*6.63,"99\% C.L.");
+  l68cl->SetLineStyle(kDashed);
+  l90cl->SetLineStyle(kDashed);
+  l99cl->SetLineStyle(kDashed);
+  t68cl->SetTextSize(0.04);
+  t90cl->SetTextSize(0.04);
+  t99cl->SetTextSize(0.04);
+  l68cl->Draw();
+  l90cl->Draw();
+  l99cl->Draw();
+  t68cl->Draw();
+  t90cl->Draw();
+  t99cl->Draw();
+  c->Update();
 
   cout << "Done!" << endl;
 }

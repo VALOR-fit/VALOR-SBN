@@ -2,7 +2,7 @@
 
 #
 #-------------------------------------------------------------------------------------------------------------------------------
-# Submit a batch of macros/fit/nd/run_fit_sensitivity1p.C jobs
+# Submit a batch of macros/sensitivity/nd/fit_param_sensitivity.C jobs
 #
 # Inputs
 #  --resource               : Computer resource, <RAL, Oxford, Grid, ETH-Monch, interactive>. Default: interactive.
