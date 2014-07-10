@@ -19,19 +19,23 @@ ChangeLog:
 #include "TAxis.h"
 #include "TRandom3.h"
 #include "TF1.h"
-
+#include "TGraphAsymmErrors.h"
 #include "TXMLEngine.h"
+
+#include "Conventions/Opt.h"
+#include "Messenger/Messenger.h"
 
 using namespace valor;
 using namespace valor::util;
+using namespace valor::conv;
 
 ClassImp(ReadFastMC)
 
 ReadFastMC::ReadFastMC()
 {
   min = 0;
-  max = 30;
-  bin = 90;
+  max = 50;
+  bin = 150;
 
   npionnum = 2;
 
@@ -42,6 +46,8 @@ ReadFastMC::~ReadFastMC(){
 }
 // ----------------------------------------------------------------------------
 void ReadFastMC::ReadDatacard(string datacard){
+
+  LOG("ReadFastMC",pNOTICE) << "Reading configuration from file [" << datacard << "]";
 
   // Open the datacard file
   ifstream empFile;
@@ -70,30 +76,6 @@ void ReadFastMC::ReadDatacard(string datacard){
 	string neut = line.substr(found);
 	neut.erase(neut.begin());
 	neutrinoPDG = atoi(neut.c_str());
-      }
-      if(line.find("Years") != string::npos){ // years to run
-	size_t found = line.find(" ");
-	string expo = line.substr(found);
-	expo.erase(expo.begin());
-	years = atof(expo.c_str());
-      }
-      if(line.find("Exposure") != string::npos){ // POT/year
-	size_t found = line.find(" ");
-	string expo = line.substr(found);
-	expo.erase(expo.begin());
-	exposure = atof(expo.c_str());
-	exposure = exposure*1e20;
-      }
-      if(line.find("Detector") != string::npos){ // near or far detector
-	size_t found = line.find(" ");
-	detector = line.substr(found);
-	detector.erase(detector.begin());
-      }
-      if(line.find("DetectorMass") != string::npos){ // detector mass
-	size_t found = line.find(" ");
-	string expo = line.substr(found);
-	expo.erase(expo.begin());
-	detmass = atof(expo.c_str());
       }
       if(line.find("Reweight") != string::npos){ // do reweighting
         size_t found = line.find(" ");
@@ -224,9 +206,55 @@ void ReadFastMC::ReadDatacard(string datacard){
         par.erase(par.begin());
         tracklengthcut = atof(par.c_str());
       }
+      if(line.find("ReconEfficiency") != string::npos){ // recon efficiency
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        ReconEfficiency = atof(par.c_str());
+      }
+      if(line.find("EVisibleCut") != string::npos){ // Visible neutrino energy cut
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        EVisibleCut = atof(par.c_str());
+      }
+      if(line.find("EReconCut") != string::npos){ // Neutrino enrgy cut for nue-cc events
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        EReconCut = atof(par.c_str());
+      }
     }
   }
   empFile.close();
+
+  if(verbose > 0){
+    LOG("ReadFastMC",pNOTICE) << "Input File = "                             <<  inFile;
+    LOG("ReadFastMC",pNOTICE) << "Number of events to run = "                <<  nevents;
+    LOG("ReadFastMC",pNOTICE) << "FHC or RHC = "                             <<  neutrinoPDG;
+    LOG("ReadFastMC",pNOTICE) << "Neutrino energy cut = "                    <<  enureconcut;
+    LOG("ReadFastMC",pNOTICE) << "Pion energy cut = "                        <<  epionreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Kaon energy cut = "                        <<  ekaonreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Proton energy cut = "                      <<  eprotonreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Gamma energy cut = "                       <<  egammareconcut;
+    LOG("ReadFastMC",pNOTICE) << "Electron energy cut = "                    <<  eelectronreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Pi0 invariant mass cut = "                 <<  pi0invmass;
+    LOG("ReadFastMC",pNOTICE) << "Pion mis-id probability as a proton = "    <<  PionMisIDAsProton;
+    LOG("ReadFastMC",pNOTICE) << "Pion mis-id probability as a kaon = "      <<  PionMisIDAsKaon;
+    LOG("ReadFastMC",pNOTICE) << "Proton mis-id probability as a pion = "    <<  ProtonMisIDAsPion;
+    LOG("ReadFastMC",pNOTICE) << "Proton mis-id probability as a kaon = "    <<  ProtonMisIDAsKaon;
+    LOG("ReadFastMC",pNOTICE) << "Kaon mis-id probability as a pion = "      <<  KaonMisIDAsPion;
+    LOG("ReadFastMC",pNOTICE) << "Kaon mis-id probability as a proton = "    <<  KaonMisIDAsProton;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum slope = "        <<  ChargeConfMomSlope;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum constant = "     <<  ChargeConfMomConst;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion track length slope = "    <<  ChargeConfTrLSlope;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion track length constant = " <<  ChargeConfTrLConst;
+    LOG("ReadFastMC",pNOTICE) << "Maximum momentum to apply the PID = "      <<  MaxMomentumPID;
+    LOG("ReadFastMC",pNOTICE) << "Track length cut = "                       <<  tracklengthcut;
+    LOG("ReadFastMC",pNOTICE) << "Visible neutrino energy cut = "            <<  EVisibleCut;
+    LOG("ReadFastMC",pNOTICE) << "Reconstructed neutrino energy cut = "      <<  EReconCut;
+    LOG("ReadFastMC",pNOTICE) << "Reconstructed efficiency cut = "           <<  ReconEfficiency;
+  }
 }
 // ----------------------------------------------------------------------------
 int ReadFastMC::WhatToSelect(bool nc){
@@ -245,6 +273,8 @@ int ReadFastMC::WhatToSelect(bool nc){
 // ----------------------------------------------------------------------------
 void ReadFastMC::ReadXMLDatacard(string datacard){
 
+  LOG("ReadFastMC",pNOTICE) << "Reading configuration from XML file [" << datacard << "]";
+
   TXMLEngine* xml = new TXMLEngine; 
   XMLDocPointer_t xmldoc = xml->ParseFile(datacard.c_str());
   if (xmldoc==0) {
@@ -252,22 +282,110 @@ void ReadFastMC::ReadXMLDatacard(string datacard){
     delete xml;
     return;  
   }
-  //XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+  XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
  
-  //enureconcut = util::XML2Dbl(xml,root_node,"DetConfig/ReconNeutrinoEnergyCut");
+  inFile             = util::XML2String(xml,root_node,"DetConfig/InFile");
+  nevents            = util::XML2Dbl(xml,root_node,"DetConfig/Events");
+  neutrinoPDG        = util::XML2Dbl(xml,root_node,"DetConfig/NeutrinoPDG");
+
+  enureconcut        = util::XML2Dbl(xml,root_node,"DetConfig/ReconNeutrinoEnergyCut");
+  epionreconcut      = util::XML2Dbl(xml,root_node,"DetConfig/ReconPiPMEnergyCut");
+  ekaonreconcut      = util::XML2Dbl(xml,root_node,"DetConfig/ReconKaonPMEnergyCut");
+  eprotonreconcut    = util::XML2Dbl(xml,root_node,"DetConfig/ReconProtonEnergyCut");
+  egammareconcut     = util::XML2Dbl(xml,root_node,"DetConfig/ReconGammaEnergyCut");
+  eelectronreconcut  = util::XML2Dbl(xml,root_node,"DetConfig/ReconElectronEnergyCut");
+  pi0invmass         = util::XML2Dbl(xml,root_node,"DetConfig/Pi0InvariantMassCut");
+
+  PionMisIDAsProton  = util::XML2Dbl(xml,root_node,"DetConfig/PionMisIDAsProton");
+  PionMisIDAsKaon    = util::XML2Dbl(xml,root_node,"DetConfig/PionMisIDAsKaon");
+  ProtonMisIDAsPion  = util::XML2Dbl(xml,root_node,"DetConfig/ProtonMisIDAsPion");
+  ProtonMisIDAsKaon  = util::XML2Dbl(xml,root_node,"DetConfig/ProtonMisIDAsKaon");
+  KaonMisIDAsPion    = util::XML2Dbl(xml,root_node,"DetConfig/KaonMisIDAsPion");
+  KaonMisIDAsProton  = util::XML2Dbl(xml,root_node,"DetConfig/KaonMisIDAsProton");
+
+  ChargeConfMomSlope = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomSlope");
+  ChargeConfMomConst = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomConst");
+  ChargeConfTrLSlope = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfTrLSlope");
+  ChargeConfTrLConst = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfTrLConst");
+
+  MaxMomentumPID     = util::XML2Dbl(xml,root_node,"DetConfig/MaxMomentumPID");
+  tracklengthcut     = util::XML2Dbl(xml,root_node,"DetConfig/TrackLengthCut");
+  EVisibleCut        = util::XML2Dbl(xml,root_node,"DetConfig/EVisibleCut");
+  EReconCut          = util::XML2Dbl(xml,root_node,"DetConfig/EReconCut");
+
+  ReconEfficiency    = util::XML2Dbl(xml,root_node,"DetConfig/ReconEfficiency");
+
+  verbose            = util::XML2Dbl(xml,root_node,"DetConfig/Verbose");
+
+  if(verbose > 0){
+    LOG("ReadFastMC",pNOTICE) << "Input File = "                             <<  inFile;
+    LOG("ReadFastMC",pNOTICE) << "Number of events to run = "                <<  nevents;
+    LOG("ReadFastMC",pNOTICE) << "FHC or RHC = "                             <<  neutrinoPDG;
+    LOG("ReadFastMC",pNOTICE) << "Neutrino energy cut = "                    <<  enureconcut;
+    LOG("ReadFastMC",pNOTICE) << "Pion energy cut = "                        <<  epionreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Kaon energy cut = "                        <<  ekaonreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Proton energy cut = "                      <<  eprotonreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Gamma energy cut = "                       <<  egammareconcut;
+    LOG("ReadFastMC",pNOTICE) << "Electron energy cut = "                    <<  eelectronreconcut;
+    LOG("ReadFastMC",pNOTICE) << "Pi0 invariant mass cut = "                 <<  pi0invmass;
+    LOG("ReadFastMC",pNOTICE) << "Pion mis-id probability as a proton = "    <<  PionMisIDAsProton;
+    LOG("ReadFastMC",pNOTICE) << "Pion mis-id probability as a kaon = "      <<  PionMisIDAsKaon;
+    LOG("ReadFastMC",pNOTICE) << "Proton mis-id probability as a pion = "    <<  ProtonMisIDAsPion;
+    LOG("ReadFastMC",pNOTICE) << "Proton mis-id probability as a kaon = "    <<  ProtonMisIDAsKaon;
+    LOG("ReadFastMC",pNOTICE) << "Kaon mis-id probability as a pion = "      <<  KaonMisIDAsPion;
+    LOG("ReadFastMC",pNOTICE) << "Kaon mis-id probability as a proton = "    <<  KaonMisIDAsProton;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum slope = "        <<  ChargeConfMomSlope;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum constant = "     <<  ChargeConfMomConst;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion track length slope = "    <<  ChargeConfTrLSlope;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion track length constant = " <<  ChargeConfTrLConst;
+    LOG("ReadFastMC",pNOTICE) << "Maximum momentum to apply the PID = "      <<  MaxMomentumPID;
+    LOG("ReadFastMC",pNOTICE) << "Track length cut = "                       <<  tracklengthcut;
+    LOG("ReadFastMC",pNOTICE) << "Visible neutrino energy cut = "            <<  EVisibleCut;
+    LOG("ReadFastMC",pNOTICE) << "Reconstructed neutrino energy cut = "      <<  EReconCut;
+    LOG("ReadFastMC",pNOTICE) << "Reconstructed efficiency cut = "           <<  ReconEfficiency;
+  }
+
   // Release memory
   xml->FreeDoc(xmldoc);
   delete xml;
 }
 // ----------------------------------------------------------------------------
-double ReadFastMC::FluxWeight(int neutpdg, int otherneutpdg){
-
-  // No neutrino? ->skip
-  if( abs(neutpdg) != 12 && abs(neutpdg) != 14 && abs(neutpdg) != 16)
-    return 0.0;
+double ReadFastMC::FluxWeight(){
 
   double nusel  = 1.0;
   double anusel = 1.0;
+
+  double ratio = 1.0;
+
+  // POT normalization
+  double potnorm = (double)1.0/nevents;
+  // FHC number of interactions / POT / kt in near detector
+  const double fhcnumucc  = 2.20470814946438192e-12;
+  const double fhcnumunc  = 7.44097783570827432e-13;
+  const double fhcanumucc = 2.40172755208848353e-13;
+  const double fhcanumunc = 9.94691414573208180e-14;
+  const double fhcnuecc   = 3.93836306563397024e-14;
+  const double fhcnuenc   = 1.28277349032322958e-14;
+  const double fhcanuecc  = 8.90001130526597293e-15;
+  const double fhcanuenc  = 3.56767548734831866e-15;
+  // RHC number of interactions / POT / kt in near detector
+  const double rhcnumucc  = 7.13519775915776830e-13;
+  const double rhcnumunc  = 2.32947135468662667e-13;
+  const double rhcanumucc = 7.25899675039850760e-13;
+  const double rhcanumunc = 3.23041943142292877e-13;
+  const double rhcnuecc   = 2.47793150219174462e-14;
+  const double rhcnuenc   = 7.95950835278876701e-15;
+  const double rhcanuecc  = 1.30149006424548413e-14;
+  const double rhcanuenc  = 5.38102770838081824e-15;
+
+  double fhcnumuweight  = (fhcnumucc  + fhcnumunc )*potnorm;
+  double fhcanumuweight = (fhcanumucc + fhcanumunc)*potnorm;
+  double rhcnumuweight  = (rhcnumucc  + rhcnumunc )*potnorm;
+  double rhcanumuweight = (rhcanumucc + rhcanumunc)*potnorm;
+  double fhcnueweight   = (fhcnuecc   + fhcnuenc  )*potnorm;
+  double fhcanueweight  = (fhcanuecc  + fhcanuenc )*potnorm;
+  double rhcnueweight   = (rhcnuecc   + rhcnuenc  )*potnorm;
+  double rhcanueweight  = (rhcanuecc  + rhcanuenc )*potnorm;
 
   TTree *gstTree = ReadTree(inFile);
 
@@ -275,62 +393,100 @@ double ReadFastMC::FluxWeight(int neutpdg, int otherneutpdg){
   for(int i = 0; i < gstTree->GetEntries(); i++){
     gstTree->GetEntry(i);
 
-    if(neu == neutpdg)
-      nusel = POTWeight;
-    if(neu == otherneutpdg)
-      anusel = POTWeight;
-   
-    // Temporary
-    if(nusel != 1.0 && anusel != 1.0)
+    if(neutrinoPDG == 14 || neutrinoPDG == 12){
+      if(neu == 14)
+	nusel = fhcnumuweight;
+      else if(neu == -14)
+	anusel = fhcanumuweight;
+      else if(neu == 12)
+	anusel = fhcnueweight;
+      else if(neu == -12)
+	anusel = fhcanueweight;
+
+      // Temporary
+      if(nusel != 1.0 && anusel != 1.0){
+	ratio = anusel/nusel;
       break;
+      }
+    }
+    else if(neutrinoPDG == -14 || neutrinoPDG == -12){
+      if(neu == 14)
+	nusel = rhcnumuweight;
+      else if(neu == -14)
+	anusel = rhcanumuweight;
+      else if(neu == 12)
+	anusel = rhcnueweight;
+      else if(neu == -12)
+	anusel = rhcanueweight;
+
+      // Temporary
+      if(nusel != 1.0 && anusel != 1.0){
+	ratio = nusel/anusel;
+      break;
+      }
+    }
   }
 
   gstTree->Delete();
 
-  return anusel/nusel;
+  return ratio;
 
 }
 // ----------------------------------------------------------------------------
 TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
-  // The ratio of neutrino-antineutrino in the beam
-  //double fluxweight = FluxWeight(neutrinoPDG, -neutrinoPDG);
   // FastMC Tree
   TTree *gstTree = ReadTree(inFile);
   // Number of events to select
   int numuevents = 0; int anumuevents = 0;
   // Output tree
   TTree *FastMCTree = new TTree("FastMCTree","FastMC Output Tree");
-  // Event weight for the neutrino-antineutrino ratio in the beam
-  //double EventWeight = 1.0;
   // Event sample
   int sample = -1;
   // True reaction mode
   int reactionmode = -1;
   // Number of misidentified pions as protons
   int NPionMisIDAsProton = 0;
+  // Number of misidentified pions as kaons
+  int NPionMisIDAsKaon = 0;
   // Number of misidentified protons as pions
   int NProtonMisIDAsPion = 0;
+  // Number of misidentified protons as kaons
+  int NProtonMisIDAsKaon = 0;
+  // Number of misidentified kaons as protons
+  int NKaonMisIDAsProton = 0;
+  // Number of misidentified kaons as pions
+  int NKaonMisIDAsPion = 0;
   // Charge flip for selected lepton
   bool LeptonChargeFlip = false;
+  // Energy of the electron selected as nc
+  double Electronenergy = -1.0;
+  // Number of nc events with only photons reconstructed
+  int NPhotonNC = -1;
 
   // Tree branches
   FastMCTree->Branch("Ev",          &Ev,          "Ev/D");
   FastMCTree->Branch("Ev_reco",     &Ev_reco,     "Ev_reco/D");
-  FastMCTree->Branch("neu",         &neu,         "neu/I");
   FastMCTree->Branch("y_reco",      &y_reco,      "y_reco/D");
   FastMCTree->Branch("POTWeight",   &POTWeight,   "POTWeight/D");
   FastMCTree->Branch("sample",      &sample,      "sample/I");
   FastMCTree->Branch("reactionmode",&reactionmode,"reactionmode/I");
 
   if(debugtree){
+    FastMCTree->Branch("neu",                 &neu,                 "neu/I");
     FastMCTree->Branch("neut_code",           &neut_code,           "neut_code/I");
     FastMCTree->Branch("ys",                  &ys,                  "ys/D");
     FastMCTree->Branch("Q2",                  &Q2,                  "Q2/D");
     FastMCTree->Branch("Q2_reco",             &Q2_reco,             "Q2_reco/D");
     FastMCTree->Branch("NPionMisIDAsProton",  &NPionMisIDAsProton,  "NPionMisIDAsProton/I");
+    FastMCTree->Branch("NPionMisIDAsKaon",    &NPionMisIDAsKaon,    "NPionMisIDAsKaon/I");
     FastMCTree->Branch("NProtonMisIDAsPion",  &NProtonMisIDAsPion,  "NProtonMisIDAsPion/I");
+    FastMCTree->Branch("NProtonMisIDAsKaon",  &NProtonMisIDAsKaon,  "NProtonMisIDAsKaon/I");
+    FastMCTree->Branch("NKaonMisIDAsProton",  &NKaonMisIDAsProton,  "NKaonMisIDAsProton/I");
+    FastMCTree->Branch("NKaonMisIDAsPion",    &NKaonMisIDAsPion,    "NKaonMisIDAsPion/I");
     FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,    "LeptonChargeFlip/O");
+    FastMCTree->Branch("Electronenergy",      &Electronenergy,      "Electronenergy/D");
+    FastMCTree->Branch("NPhotonNC",           &NPhotonNC,           "NPhotonNC/I");
   }
 
   //const double pionmass   = 0.13957;
@@ -340,7 +496,34 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
   TRandom3 *rand = new TRandom3();
 
   // POT normalization
-  double potnorm = years*exposure*detmass/nevents;
+  double potnorm = (double)1.0/nevents;
+  // FHC number of interactions / POT / kt in near detector
+  const double fhcnumucc  = 2.20470814946438192e-12;
+  const double fhcnumunc  = 7.44097783570827432e-13;
+  const double fhcanumucc = 2.40172755208848353e-13;
+  const double fhcanumunc = 9.94691414573208180e-14;
+  const double fhcnuecc   = 3.93836306563397024e-14;
+  const double fhcnuenc   = 1.28277349032322958e-14;
+  const double fhcanuecc  = 8.90001130526597293e-15;
+  const double fhcanuenc  = 3.56767548734831866e-15;
+  // RHC number of interactions / POT / kt in near detector
+  const double rhcnumucc  = 7.13519775915776830e-13;
+  const double rhcnumunc  = 2.32947135468662667e-13;
+  const double rhcanumucc = 7.25899675039850760e-13;
+  const double rhcanumunc = 3.23041943142292877e-13;
+  const double rhcnuecc   = 2.47793150219174462e-14;
+  const double rhcnuenc   = 7.95950835278876701e-15;
+  const double rhcanuecc  = 1.30149006424548413e-14;
+  const double rhcanuenc  = 5.38102770838081824e-15;
+
+  double fhcnumuweight  = (fhcnumucc  + fhcnumunc )*potnorm;
+  double fhcanumuweight = (fhcanumucc + fhcanumunc)*potnorm;
+  double rhcnumuweight  = (rhcnumucc  + rhcnumunc )*potnorm;
+  double rhcanumuweight = (rhcanumucc + rhcanumunc)*potnorm;
+  double fhcnueweight   = (fhcnuecc   + fhcnuenc  )*potnorm;
+  double fhcanueweight  = (fhcanuecc  + fhcanuenc )*potnorm;
+  double rhcnueweight   = (rhcnuecc   + rhcnuenc  )*potnorm;
+  double rhcanueweight  = (rhcanuecc  + rhcanuenc )*potnorm;
 
   FastMCTree->SetDirectory(0);
   for(int i = 0; i < gstTree->GetEntries(); i++){
@@ -348,8 +531,17 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     // Initialize
     NPionMisIDAsProton = 0;
+    NPionMisIDAsKaon   = 0;
     NProtonMisIDAsPion = 0;
-    LeptonChargeFlip = false;
+    NProtonMisIDAsKaon = 0;
+    NKaonMisIDAsProton = 0;
+    NKaonMisIDAsPion   = 0;
+    LeptonChargeFlip   = false;
+    NPhotonNC          = -1;
+    Electronenergy     = -1.0;
+
+    // For undefined events
+    bool undefined = false;
 
     int newseed = seed;
 
@@ -363,22 +555,56 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     }
 
     // Normalized POT weight potnorm=(mass*years*exposure/years)/nevents
-    POTWeight = POTWeight*potnorm;
+    if(neutrinoPDG == 14 || neutrinoPDG == 12){
+      if(neu == 14)
+	POTWeight = fhcnumuweight;
+      else if(neu == -14)
+	POTWeight = fhcanumuweight;
+      else if(neu == 12)
+	POTWeight = fhcnueweight;
+      else if(neu == -12)
+	POTWeight = fhcanueweight;
+    }
+    else if(neutrinoPDG == -14 || neutrinoPDG == -12){
+      if(neu == 14)
+	POTWeight = rhcnumuweight;
+      else if(neu == -14)
+	POTWeight = rhcanumuweight;
+      else if(neu == 12)
+	POTWeight = rhcnueweight;
+      else if(neu == -12)
+	POTWeight = rhcanueweight;
+    }
 
-    // No recon neutrino energy? -> continue
-    if(Ev_reco < enureconcut){continue;}
+    // True reaction modes
+    int nipipm  = nipip + nipim;
+    int nipipm0 = nipip + nipim + nipi0;
+
+    // Start the selection
+    // No recon neutrino energy?
+    if(Ev_reco < enureconcut){undefined = true;}
 
     // Apply the charge flip cut only for CC selection
     if(EvClass_reco < 2){
       newseed = seed*seed + i;
+      // Is reconstructed?
+      //bool recontrack = IsReconTrack(newseed*newseed);
+
       double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
       
       LeptonChargeFlip = ChargeFlip(newseed, lmom);
-  
-      // For the selected neutrino type skip the event if the charge is flipped 
-      if(neu == neutrinoPDG && LeptonChargeFlip){continue;}
-      // For anti-nu keep only the events with the charge flipped
-      if(neu == -neutrinoPDG && !LeptonChargeFlip){continue;}
+
+      // For the selected neutrino type skip the event if the charge is flipped
+      if(neutrinoPDG == 14 || neutrinoPDG == 12){
+	if(neu > 0 && LeptonChargeFlip){undefined = true;}
+	// For anti-nu keep only the events with the charge flipped
+	if(neu < 0 && !LeptonChargeFlip){undefined = true;}
+      }
+      else if(neutrinoPDG == -14 || neutrinoPDG == -12){
+	if(neu < 0 && LeptonChargeFlip){undefined = true;}
+	// For anti-nu keep only the events with the charge flipped
+	if(neu > 0 && !LeptonChargeFlip){undefined = true;}
+      }
     }
 
     // Number of final state pions and protons
@@ -392,11 +618,20 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     for(int k = 0; k < nf; k++){
       newseed = i*i + k + nf + seed*seed; 
+
+      // Is reconstructed?
+      //bool recontrack = IsReconTrack(newseed*newseed);
+
       // Pt
       //double pt = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k]);
 
+      // Has to be different from the reconstucted lepton - otherwise double counting
+      if(Trkf_reco[k] == TrkL_reco){continue;}
+
       // Momentum
       double momentum = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k] + pzf_reco[k]*pzf_reco[k]);
+      // No momentum? - skip
+      //if(momentum == 0){continue;}
 
       // Charge mis-id
       bool chargeflip = ChargeFlip(newseed, momentum);
@@ -406,16 +641,16 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
       if(pdgf[k] == 22){  // photons
 	if(Ef_reco[k] < egammareconcut){continue;}
-	ngamma++;
+	//ngamma++;
       }
       else if(abs(pdgf[k]) == 11){ // e-/e+
 	// Minimum track length cut
 	if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
 	if(Ef_reco[k] < eelectronreconcut){continue;}
-	  nem++;
+	//nem++;
       }
-      else if(pdgf[k] == 211){ // pi+
+      else if(pdgf[k] == 211 || pdgf[k] == 13){ // pi+, muons and pions are not separatable
 	// Minimum track length cut
 	if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
@@ -430,7 +665,11 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	      nprotons++;
 	  }
 	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
-	    nother++;
+	    NPionMisIDAsKaon++;
+	    if(!chargeflip)
+	      nkaonplus++;
+	    else
+	      nkaonminus++;
 	  }  
 	  else{
 	    if(chargeflip)
@@ -440,7 +679,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	  }
 	}
       }
-      else if(pdgf[k] == -211){ // pi-
+      else if(pdgf[k] == -211 || pdgf[k] == -13){ // pi-, muons and pions are not separatable
 	// Minimum track length cut
 	if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
@@ -455,7 +694,11 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	      nprotons++;
 	  }
 	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
-            nother++;
+	    NPionMisIDAsKaon++;
+            if(chargeflip)
+	      nkaonplus++;
+	    else
+	      nkaonminus++;
           }
 	  else{
 	    if(chargeflip)
@@ -486,7 +729,11 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	      npiplus++;
 	  }
 	  else if(rnum > ProtonMisIDAsPion*1000 && rnum < (ProtonMisIDAsPion+ProtonMisIDAsKaon)*1000){ // mis-id as proton
-            nother++;
+	    NProtonMisIDAsKaon++;
+            if(!chargeflip)
+	      nkaonplus++;
+	    else
+	      nkaonminus++;
           }
 	  else{// now check the charge
 	    if(!chargeflip)
@@ -504,12 +751,14 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
           otherpar++;
         else{
 	  if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+	    NKaonMisIDAsPion++;
 	    if(chargeflip)
               npiminus++;
             else
               npiplus++;
 	  }
-	  else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){
+	  else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){ // mis-id as proton
+	    NKaonMisIDAsProton++;
 	    if(!chargeflip)
 	      nprotons++;
 	  }
@@ -527,12 +776,14 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
           otherpar++;
         else{
           if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+	    NKaonMisIDAsPion++;
             if(!chargeflip)
               npiminus++;
             else
               npiplus++;
           }
           else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){ // mis-id as proton
+	    NKaonMisIDAsProton++;
             if(chargeflip)
               nprotons++;
           }
@@ -544,7 +795,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	// Minimum track length cut
         if(Trkf_reco[k] < tracklengthcut){continue;}
         // Energy cut
-        if(Ef_reco[k] < 0.1){continue;}
+        if(Ef_reco[k] < 0.25){continue;}
 
 	nneutrons++;
       }
@@ -552,11 +803,8 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	// Minimum track length cut
 	//if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
-	if(Ef_reco[k] < 0.1){continue;}
-	if(momentum > MaxMomentumPID)
-          otherpar++;
-	else
-	  nother++;
+	if(Ef_reco[k] < 0.25){continue;}
+	nother++;
       }
     } // fs particle loop
 
@@ -564,77 +812,342 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     int nkaons = nkaonplus + nkaonminus;
     int npizerorecon = 0;
 
+    // Check events with multiple EM objects
+    int nEMf_recon = 0; int pos[50] = {-1};
+    // First check for photons
+    for(int k = 0; k < nEMf; k++){
+      if(EMpdgf[k] == 22){
+	// Energy cut
+	if(EMEf_reco[k]  < egammareconcut){continue;}
+	pos[nEMf_recon] = k;
+	nEMf_recon++;
+      }
+    }
+ 
     // Only for single pi0 events
-    if(npizero == 1 && nEMf == 2){
-      double par = sqrt(EMpxf_reco[0]*EMpxf_reco[0] + EMpyf_reco[0]*EMpyf_reco[0] + EMpzf_reco[0]*EMpzf_reco[0]);
-      double pbr = sqrt(EMpxf_reco[1]*EMpxf_reco[1] + EMpyf_reco[1]*EMpyf_reco[1] + EMpzf_reco[1]*EMpzf_reco[1]);
+    if(nEMf_recon == 2){
+      int pos1 = pos[0]; int pos2 = pos[1];
+ 
+      double par = sqrt(EMpxf_reco[pos1]*EMpxf_reco[pos1] + EMpyf_reco[pos1]*EMpyf_reco[pos1] + EMpzf_reco[pos1]*EMpzf_reco[pos1]);
+      double pbr = sqrt(EMpxf_reco[pos2]*EMpxf_reco[pos2] + EMpyf_reco[pos2]*EMpyf_reco[pos2] + EMpzf_reco[pos2]*EMpzf_reco[pos2]);
       
-      double aDOTbr = EMpxf_reco[0]*EMpxf_reco[1] + EMpyf_reco[0]*EMpyf_reco[1] + EMpzf_reco[0]*EMpzf_reco[1];
+      double aDOTbr = EMpxf_reco[pos1]*EMpxf_reco[pos2] + EMpyf_reco[pos1]*EMpyf_reco[pos2] + EMpzf_reco[pos1]*EMpzf_reco[pos2];
       double costhr = aDOTbr / (par * pbr);
-      double imr = sqrt(2.0 *EMEf_reco[0]  *EMEf_reco[1]  * ( 1.0 - costhr));
+      double imr = sqrt(2.0 *EMEf_reco[pos1]  *EMEf_reco[pos2]  * ( 1.0 - costhr));
       
       // Invariant mass cut
-      if( fabs(imr - pizeromass) < pi0invmass)
+      if(fabs(imr - pizeromass) < pi0invmass)
 	npizerorecon++;
     }
+    
+    if(nEMf_recon == 3){
+      double pizerodiff = -1e20;
+      for(int j = 0; j < nEMf_recon-1; j++){
+	for(int k = 1; k < nEMf_recon; k++){
+	  if(k == j){continue;}
+	  int pos1 = pos[j]; int pos2 = pos[k];
+	  
+	  double par = sqrt(EMpxf_reco[pos1]*EMpxf_reco[pos1] + EMpyf_reco[pos1]*EMpyf_reco[pos1] + EMpzf_reco[pos1]*EMpzf_reco[pos1]);
+	  double pbr = sqrt(EMpxf_reco[pos2]*EMpxf_reco[pos2] + EMpyf_reco[pos2]*EMpyf_reco[pos2] + EMpzf_reco[pos2]*EMpzf_reco[pos2]);
+	  
+	  double aDOTbr = EMpxf_reco[pos1]*EMpxf_reco[pos2] + EMpyf_reco[pos1]*EMpyf_reco[pos2] + EMpzf_reco[pos1]*EMpzf_reco[pos2];
+	  double costhr = aDOTbr / (par * pbr);
+	  double imr = sqrt(2.0 *EMEf_reco[pos1]  *EMEf_reco[pos2]  * ( 1.0 - costhr));
+	  
+	  double diff = fabs(imr - pizeromass);
+	  if(pizerodiff < diff)
+	    pizerodiff = diff;
+	}
+      }
 
-    // NC Non-visible events - do not put them on the output tree
+      if(pizerodiff < pi0invmass){
+	npizerorecon++;
+	// We are also left with an extra gamma
+	ngamma++;
+      }
+    }
+    
+    // EM objects when no pizero reconstructed
+    int elecpos = -1; double energeticelectron = 0.0;
+    if(npizerorecon == 0){
+      for(int k = 0; k < nEMf; k++){
+	if(EMpdgf[k] == 22){
+	  // Energy cut
+	  if(EMEf_reco[k]  < egammareconcut){continue;}
+	  ngamma++;
+	}
+      }
+    }
+
+    // Check for electrons
+    for(int k = 0; k < nEMf; k++){
+      if(EMpdgf[k] == 11 || EMpdgf[k] == -11){
+	// Minimum track length cut
+	if(EMTrkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(EMEf_reco[k] < eelectronreconcut){continue;}
+	nem++;
+	if(EMEf_reco[k] > energeticelectron){
+	  energeticelectron = EMEf_reco[k];
+	  elecpos = k;
+	}
+      }
+    }
+
+    // All recon tracks
+    int ntotal = npiplus+npiminus+nprotons+nkaonplus+nkaonminus+nem+ngamma+nother+otherpar+npizerorecon;
+    // Other EM activity
+    //int otherem = nem+ngamma;
+
+    if(neu == 14){
+      if(cc){
+	if(qel)
+	  reactionmode = 0;
+	else if(mec)
+	  reactionmode = 1;
+	else if(coh)
+	  reactionmode = 7; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 2;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 3;
+	else if(nipipm == 2 && nipi0 == 0)
+	  reactionmode = 4;
+	else if(nipipm == 0 && nipi0 == 2)
+	  reactionmode = 5;
+	else if(nipipm == 1 && nipi0 == 1)
+	  reactionmode = 6;
+	else
+	  reactionmode = 8;
+      }
+      else if(nc){
+	if(coh)
+	  reactionmode = 11; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 9;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 10;
+	else
+	  reactionmode = 12;
+      }
+      else{
+	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+      }
+    }
+    else if(neu == -14){
+      if(cc){
+	if(qel)
+	  reactionmode = 13;
+	else if(mec)
+	  reactionmode = 14;
+	else if(coh)
+	  reactionmode = 20; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 15;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 16;
+	else if(nipipm == 2 && nipi0 == 0)
+	  reactionmode = 17;
+	else if(nipipm == 0 && nipi0 == 2)
+	  reactionmode = 18;
+	else if(nipipm == 1 && nipi0 == 1)
+	  reactionmode = 19;
+	else
+	  reactionmode = 21;
+      }
+      else if(nc){
+	if(coh)
+	  reactionmode = 24; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 22;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 23;
+	else
+	  reactionmode = 25;
+      }
+      else{
+	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+      }
+    }
+    else if(neu == 12){
+      if(cc){
+	if(qel)
+	  reactionmode = 26;
+	else if(mec)
+	  reactionmode = 27;
+	else if(coh)
+	  reactionmode = 33; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 28;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 29;
+	else if(nipipm == 2 && nipi0 == 0)
+	  reactionmode = 30;
+	else if(nipipm == 0 && nipi0 == 2)
+	  reactionmode = 31;
+	else if(nipipm == 1 && nipi0 == 1)
+	  reactionmode = 32;
+	else
+	  reactionmode = 34;
+      }
+      else if(nc){
+	if(coh)
+	  reactionmode = 37; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 35;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 36;
+	else
+	  reactionmode = 38;
+      }
+      else{
+	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+      }
+    }
+    else if(neu == -12){
+      if(cc){
+	if(qel)
+	  reactionmode = 39;
+	else if(mec)
+	  reactionmode = 40;
+	else if(coh)
+	  reactionmode = 46; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 41;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 42;
+	else if(nipipm == 2 && nipi0 == 0)
+	  reactionmode = 43;
+	else if(nipipm == 0 && nipi0 == 2)
+	  reactionmode = 44;
+	else if(nipipm == 1 && nipi0 == 1)
+	  reactionmode = 45;
+	else
+	  reactionmode = 47;
+      }
+      else if(nc){
+	if(coh)
+	  reactionmode = 50; // odd
+	else if(nipipm == 1 && nipi0 == 0)
+	  reactionmode = 48;
+	else if(nipipm == 0 && nipi0 == 1)
+	  reactionmode = 49;
+	else
+	  reactionmode = 51;
+      }
+      else{
+	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+      }
+    }
+    else{
+	LOG("ReadFastMC",pNOTICE) << "Unknown neutrino species: " << neu;
+    }
+
+    // If the only recon particle we have from a nc is an electron, downgrade the event to cc-nue
     if(EvClass_reco == 2){
-      if(npionscharge == 0 && npizero < 2 && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) {continue;}
+      if(npionscharge == 0 && npizerorecon == 0 && otherpar == 0 && nprotons == 0 && nkaons == 0 && nother == 0 && nem > 0 /*&& TrkL_reco < tracklengthcut*/){
+	EvClass_reco = 1;
+	y_reco = 1 - EMEf_reco[elecpos]/Ev_reco;
+	Electronenergy = EMEf_reco[elecpos];
+	bool chargeflip = ChargeFlip(newseed*newseed+elecpos, Electronenergy);
+	if(neutrinoPDG == 14 || neutrinoPDG == 12){
+	  if(EMpdgf[elecpos] == 11 && chargeflip){undefined = true;}
+	  // For anti-nu keep only the events with the charge flipped
+	  if(EMpdgf[elecpos] == -11 && !chargeflip){undefined = true;}
+	}
+	else if(neutrinoPDG == -14 || neutrinoPDG == -12){
+	  if(EMpdgf[elecpos] == -11 && chargeflip){undefined = true;}
+	  // For anti-nu keep only the events with the charge flipped
+	  if(EMpdgf[elecpos] == 11 && !chargeflip){undefined = true;}
+	}
+      }
     }
-
-    // True reaction modes
-    int nipipm  = nipip + nipim;
-    //int nipipm0 = nipip + nipim + nipi0;
-
-    if(cc){
-      if(qel)
-	reactionmode = 0;
-      else if(coh)
-	reactionmode = 1;
-      else if(nipipm == 1 && nipi0 == 0)
-	reactionmode = 2;
-      else if(nipipm == 2 && nipi0 == 0)
-        reactionmode = 3;
-      else if(nipipm == 0 && nipi0 == 1)
-        reactionmode = 4;
-      else if(nipipm == 0 && nipi0 == 2)
-        reactionmode = 5;
-      else if(nipipm == 1 && nipi0 == 1)
-        reactionmode = 6;
-      else
-	reactionmode = 7;
+    
+    // Select opposite sign numu  
+    if(undefined){
+      if(EvClass_reco == 0 && Ev_reco > EReconCut)
+	sample = 9;
+      else{
+	if(debugtree)
+	  sample = -1;
+	else // do not save the event
+	  continue;
+      }
     }
-    else if(nc){
-      if(coh)
-        reactionmode = 8;
-      else if(nipipm == 1 && nipi0 == 0)
-        reactionmode = 9;
-      else if(nipipm == 0 && nipi0 == 1)
-        reactionmode = 10;
-      else
-        reactionmode = 11;
+    else{
+      // Selection
+      if(EvClass_reco == 0){ // cc-numu
+	if(Ev_reco > EReconCut){
+	  if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 1;
+	  else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 2;
+	  else if(npionscharge == 1 && npizerorecon == 0 && otherpar == 0 && nem == 0 && ngamma == 0) sample = 3;
+	  else if(npionscharge == 2 && npizerorecon == 0 && otherpar == 0 && nem == 0 && ngamma == 0) sample = 4;
+	  else if(npionscharge == 0 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0) sample = 5;
+	  else if(npionscharge == 1 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0) sample = 6;
+	  else sample = 7; 
+	}
+	else{
+	  if(debugtree)
+            sample = -1;
+          else // do not save the event
+            continue;
+	}
+      }// cc-numu
+      else if(EvClass_reco == 1){ // cc-nue
+	if(Ev_reco > EReconCut)
+	  sample = 8;
+	else{
+	  if(debugtree)
+            sample = -1;
+          else // do not save the event
+            continue;
+	}
+      } // cc-nue
+      else if(EvClass_reco == 2){ // nc
+	// If the muon is reconstructed, but not selected in the CC selection, count it as an extra pion: - no muon-pion separation at the moment
+	if(TrkL_reco > tracklengthcut){
+	  npionscharge++;
+	  ntotal++;
+	}
+	if(ntotal > 0){ 
+	  if(npionscharge == 1 && npizerorecon == 0 && otherpar == 0 && nem == 0 && ngamma == 0){
+	    if(Ev_reco < EVisibleCut)
+	      sample = 11;
+	    else{
+	      if(debugtree)
+		sample = -1;
+	      else // do not save the event
+		continue;
+	    }
+	  }
+	  else if(npionscharge == 0 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0){
+	    if(Ev_reco < EVisibleCut)
+	      sample = 12;
+	    else{
+	      if(debugtree)
+		sample = -1;
+	      else // do not save the event
+		continue;
+	    }
+	  }
+	  else if(npionscharge == 0 && npizerorecon == 0 && otherpar == 0 && nprotons == 0 && nkaons == 0 && nother == 0 && nem == 0 && ngamma > 0){ // events with only one gamma in the fs -> do not select
+	    NPhotonNC = ngamma;
+	    // No sample here
+	    if(debugtree)
+	      sample = -1;
+	    else // do not save the event
+	      continue;
+	  }
+	  else sample = 13;
+	} // ntotal 
+	else{
+	  if(debugtree)
+	    sample = -1;
+	  else // do not save the event
+	    continue;
+	}
+      }// nc
     }
-
-    // Selection
-    if(EvClass_reco == 0){ // cc-numu
-      if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 1;
-      else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 2;
-      else if(npionscharge == 1 && npizerorecon == 0) sample = 3;
-      else if(npionscharge == 2 && npizerorecon == 0) sample = 4;
-      else if(npionscharge == 0 && npizerorecon == 1) sample = 5;
-      else if(npionscharge == 1 && npizerorecon == 1) sample = 6;
-      else sample = 7;
-    }
-    else if(EvClass_reco == 1){ // cc-nue
-      sample = 8;
-    }
-    else if(EvClass_reco == 2){ // nc
-      if(npionscharge == 1 && npizerorecon == 0) sample = 10;
-      else if(npionscharge == 0 && npizerorecon == 1) sample = 11;
-      else sample = 12;
-    }
-
     // Fill the tree
     FastMCTree->Fill();
   }
@@ -651,7 +1164,7 @@ void ReadFastMC::make_binning_scheme_2D(){
   const int n_bins_x = 10;   //this must be an even number in this version of the macro to allow the division into zones
   const int n_bins_y = 8;   //this must be an even number in this version of the macro to allow the division into zones
   const double x_min = 0.0;
-  const double x_max = 100.0;
+  const double x_max = 50.0;
   const double y_min = 0.0;
   const double y_max = 1.0;
 
@@ -1053,7 +1566,235 @@ void ReadFastMC::make_binning_scheme_2D(){
   
 }
 // ----------------------------------------------------------------------------
-vector<TH1*> ReadFastMC::SelectCCnPi(int npions, int npi0){
+TObjArray* ReadFastMC::StoreHistograms(){
+
+  // The histogram array
+  TObjArray* histarray = new TObjArray();
+  // Histograms
+  TH1D* MuonMomentumCC       = new TH1D("MuonMomentumCC"    ,"",100,min,10);
+  TH1D* PionMomentumCC       = new TH1D("PionMomentumCC"    ,"",100,min,10);
+  TH1D* ProtonMomentumCC     = new TH1D("ProtonMomentumCC"  ,"",100,min,10);
+  TH1D* ElectronMomentumCC   = new TH1D("ElectronMomentumCC","",100,min,10);
+  TH1D* OtherMomentumCC      = new TH1D("OtherMomentumCC"   ,"",100,min,10);
+
+  TH1D* MuonMomentum         = new TH1D("MuonMomentum"    ,"",50,min,3);
+  TH1D* PionMomentum         = new TH1D("PionMomentum"    ,"",50,min,3);
+  TH1D* ProtonMomentum       = new TH1D("ProtonMomentum"  ,"",50,min,3);
+  TH1D* ElectronMomentum     = new TH1D("ElectronMomentum","",50,min,3);
+  TH1D* OtherMomentum        = new TH1D("OtherMomentum"   ,"",50,min,3);
+
+  TH1D* MuonTrackLength      = new TH1D("MuonTrackLength"    ,"",200,min,10);
+  TH1D* PionTrackLength      = new TH1D("PionTrackLength"    ,"",200,min,10);
+  TH1D* ProtonTrackLength    = new TH1D("ProtonTrackLength"  ,"",200,min,10);
+  TH1D* ElectronTrackLength  = new TH1D("ElectronTrackLength","",200,min,10);
+  TH1D* OtherTrackLength     = new TH1D("OtherTrackLength"   ,"",200,min,10);
+
+  TH1D* PiZGammaEAsymm       = new TH1D("PiZGammaEAssym"     ,"",200,-1,1);
+  TH1D* PiZGammaAAsymm       = new TH1D("PiZGammaAAssym"     ,"",200,0,1);
+  TH2D* PiZGammaEAAsymm      = new TH2D("PiZGammaEAAssym"    ,"",200,-1,1,200,0,1);
+  TH2D* PiZGammaEnergy       = new TH2D("PiZGammaEnergy"     ,"",200,0,2,200,0,2);
+
+  TH2D* PiZDGammaElec1Energy = new TH2D("PiZDGammaElec1Energy","",200,0,1,200,0,1);
+  TH2D* PiZDGammaElec2Energy = new TH2D("PiZDGammaElec2Energy","",200,0,1,200,0,1);
+  TH2D* PiZDelectElecEnergy  = new TH2D("PiZDElectElecEnergy" ,"",200,0,1,200,0,1);
+
+  TH1D* SingleGammaEnergy    = new TH1D("SingleGammaEnergy"   ,"",200,0,1);
+  //TH1D* SingleGammaEnergyNC  = new TH1D("SingleGammaEnergyNC" ,"",200,0,1);
+
+
+  const double pizeromass = 0.13498;
+ 
+  TTree *gstTree = ReadTree(inFile);
+
+  for(int i = 0; i < gstTree->GetEntries(); i++){
+    gstTree->GetEntry(i);
+
+    // No recon neutrino energy? -> continue
+    if(Ev_reco < enureconcut){continue;}
+
+    if(EvClass_reco == 0){
+      // Find if the selected lepton is not actually a lepton
+      for(int k = 0; k < nf; k++){
+	if(Trkf_reco[k] == TrkL_reco){
+	  PdgL_reco = pdgf[k];
+	  break;
+	}
+      }
+      
+      // Momentum
+      double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
+      if(lmom > 0){
+	if(PdgL_reco == 13 || PdgL_reco == -13)
+	  MuonMomentumCC->Fill(lmom);
+	else if(PdgL_reco == 11 || PdgL_reco == -11)
+	  ElectronMomentumCC->Fill(lmom);
+	else if(PdgL_reco == 211 || PdgL_reco == -211)
+	  PionMomentumCC->Fill(lmom);
+	else if(PdgL_reco == 2212)
+	  ProtonMomentumCC->Fill(lmom);
+	else
+	  OtherMomentumCC->Fill(lmom);
+      }
+    }
+
+    // Loop over the fs particles
+    for(int k = 0; k < nf; k++){
+      // Reco momentum
+      double momentum = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k] + pzf_reco[k]*pzf_reco[k]);
+      if(momentum < 0.0005 || Trkf_reco[k] < 0.05){continue;}
+
+      if(Trkf_reco[k] == TrkL_reco){continue;}
+
+      if(abs(pdgf[k]) == 11){
+	ElectronMomentum->Fill(momentum);
+	ElectronTrackLength->Fill(Trkf_reco[k]);
+      }
+      else if(abs(pdgf[k]) == 13){
+	MuonMomentum->Fill(momentum);
+	MuonTrackLength->Fill(Trkf_reco[k]);
+      }
+      else if(abs(pdgf[k]) == 211){
+	PionMomentum->Fill(momentum);
+	PionTrackLength->Fill(Trkf_reco[k]);
+      }
+      else if(pdgf[k] == 2212){
+	ProtonMomentum->Fill(momentum);
+	ProtonTrackLength->Fill(Trkf_reco[k]);
+      }
+      else{
+	OtherMomentum->Fill(momentum);
+	OtherTrackLength->Fill(Trkf_reco[k]);
+      }
+    }
+
+    /*
+    // Tracker boundaries
+    const double xmin = -1.5; const double xmax = 1.5;
+    const double ymin = -1.5; const double ymax = 1.5;
+    const double zmin = 0.25; const double zmax = 5.5;
+    */
+
+    if(nEMf == 1)
+      SingleGammaEnergy->Fill(EMEf[0]);
+
+    // Dalitz decay events
+    if(nEMf == 3 && nfpi0==1){
+      int ngamma  = 0; int nelec = 0;
+      double gene = 0; double eene = 0; double pene = 0;
+      for(int k = 0; k < nEMf; k++){
+	if(EMpdgf[k] == 22){
+	  ngamma++;
+	  gene = EMEf[k];
+	}
+	else if(EMpdgf[k] == 11){
+	  nelec++;
+	  eene = EMEf[k];
+	}
+	else if(EMpdgf[k] == -11){
+	  nelec++;
+	  pene = EMEf[k];
+	}
+      }
+      if(ngamma == 1 && nelec == 2){
+	PiZDelectElecEnergy->Fill(eene,pene);
+	PiZDGammaElec1Energy->Fill(gene,eene);
+	PiZDGammaElec2Energy->Fill(gene,pene);
+      }
+    }
+
+    // Loop over EMobjects
+    if(nEMf == 2 && nfpi0==1){
+      bool twogammas = true;
+      for(int k = 0; k < nEMf; k++){
+	if(EMpdgf[k] != 22)
+	  twogammas = false;
+      }
+
+      if(twogammas){
+	double emasymmetry = (EMEf[0] - EMEf[1])/(EMEf[0] + EMEf[1]);
+	//double angularasymmetry = (EMcthf[0] - EMcthf[1]);
+
+	double par = sqrt(EMpxf_reco[0]*EMpxf_reco[0] + EMpyf_reco[0]*EMpyf_reco[0] + EMpzf_reco[0]*EMpzf_reco[0]);
+	double pbr = sqrt(EMpxf_reco[1]*EMpxf_reco[1] + EMpyf_reco[1]*EMpyf_reco[1] + EMpzf_reco[1]*EMpzf_reco[1]);
+	
+	double aDOTbr = EMpxf_reco[0]*EMpxf_reco[1] + EMpyf_reco[0]*EMpyf_reco[1] + EMpzf_reco[0]*EMpzf_reco[1];
+	double costhr = aDOTbr / (par * pbr);
+	//double imr = sqrt(2.0 *EMEf_reco[0]  *EMEf_reco[1]  * ( 1.0 - costhr));
+	/*
+	// Invariant mass cut
+	if( fabs(imr - pizeromass) < pi0invmass)
+	npizerorecon++;
+	*/
+
+	PiZGammaEAsymm->Fill(emasymmetry);
+	PiZGammaAAsymm->Fill(costhr);
+	PiZGammaEAAsymm->Fill(emasymmetry,costhr);
+	if(EMEf[0] > EMEf[1])
+	  PiZGammaEnergy->Fill(EMEf[0],EMEf[1]);
+	else
+	  PiZGammaEnergy->Fill(EMEf[1],EMEf[0]);
+
+	/*
+	// Going in the Ecal?
+	double sinthf[2] = {sqrt(1-EMcthf[0]*EMcthf[0]),sqrt(1-EMcthf[1]*EMcthf[1])};
+	if(EMcthf[0] > 0){
+	  double ydist  = ymax - vtxy;
+	  double xdist  = xmax - vtxx;
+	  //double xydist = sqrt(xdist*xdist + ydist*ydist);
+	  double hyp = ydist/sinthf[0];
+	  double zhyp = hyp*EMcthf[0];
+	  double zdist = zmax - vtxz;
+
+	  if(zhyp < zdist){ // escapes at the side
+	    double ldist = hyp - EMTrkf_reco[0];
+	    //cout << "Side: " << ldist << " , " << hyp << " , " << EMTrkf_reco[0] << endl;
+	  }
+	  else{ // escapes at the front
+	    hyp = zdist/EMcthf[0];
+	    double ldist = hyp - EMTrkf_reco[0];
+	    //cout << "Front: " << ldist << " , " << hyp << " , " << EMTrkf_reco[0] << endl;
+	  }
+	}
+	*/
+
+      }
+    }
+
+  } // event loop
+
+  // Store the histograms
+  histarray->Add(MuonMomentumCC);
+  histarray->Add(PionMomentumCC);
+  histarray->Add(ProtonMomentumCC);
+  histarray->Add(ElectronMomentumCC);
+  histarray->Add(OtherMomentumCC);
+  histarray->Add(MuonMomentum);
+  histarray->Add(PionMomentum);
+  histarray->Add(ProtonMomentum);
+  histarray->Add(ElectronMomentum);
+  histarray->Add(OtherMomentum);
+  histarray->Add(MuonTrackLength);
+  histarray->Add(PionTrackLength);
+  histarray->Add(ProtonTrackLength);
+  histarray->Add(ElectronTrackLength);
+  histarray->Add(OtherTrackLength);
+
+  histarray->Add(PiZGammaEAsymm);
+  histarray->Add(PiZGammaAAsymm);
+  histarray->Add(PiZGammaEAAsymm);
+  histarray->Add(PiZGammaEnergy);
+  histarray->Add(PiZDelectElecEnergy);
+  histarray->Add(PiZDGammaElec1Energy);
+  histarray->Add(PiZDGammaElec2Energy);
+  histarray->Add(SingleGammaEnergy);
+  //histarray->Add();
+
+  gstTree->Delete();
+
+  return histarray;
+}
+// ----------------------------------------------------------------------------
+TObjArray* ReadFastMC::SelectCCnPi(int npions, int npi0, int seed){
 
   // Maximum number of charge pion to select
   bool limit = false;
@@ -1065,11 +1806,17 @@ vector<TH1*> ReadFastMC::SelectCCnPi(int npions, int npi0){
   }
 
   // The histogram array
-  vector<TH1*> histarray;
+  TObjArray* histarray = new TObjArray();
   // The selection - choose true for nc events
   int whattoselect = WhatToSelect();
   // The ratio of neutrino-antineutrino in the beam
-  double fluxweight = FluxWeight(neutrinoPDG, -neutrinoPDG);
+  double fluxweight = FluxWeight();
+
+  //const double pionmass   = 0.13957;
+  const double pizeromass = 0.13498;
+
+  // Random generator
+  TRandom3 *rand = new TRandom3();
 
   // Histogram name
   stringstream ss, sspi0;
@@ -1113,41 +1860,213 @@ vector<TH1*> ReadFastMC::SelectCCnPi(int npions, int npi0){
       anumuevents++;
     }
 
+    // Initialize
+    int NPionMisIDAsProton = 0;
+    int NProtonMisIDAsPion = 0;
+    bool LeptonChargeFlip = false;
+
+    int newseed = seed;
+
     // No recon neutrino energy? -> continue
     if(Ev_reco < enureconcut){continue;}
 
-    // Number of final state pion
-    int npizero = 0; int npiplus = 0; int npiminus = 0;
-    // Other em activity
-    int nem = 0; int ngamma = 0;
-    for(int k = 0; k < nf; k++){
-      if(pdgf[k] == 22 && Ef_reco[k] > egammareconcut) // photons
-	ngamma++;
-      else if(abs(pdgf[k]) == 11 && Ef_reco[k] > eelectronreconcut) // e-/e+
-	nem++;
-      else if(pdgf[k] == 211  && Ef_reco[k] > epionreconcut) // pi+
-	npiplus++;
-      else if(pdgf[k] == -211 && Ef_reco[k] > epionreconcut) // pi-
-	npiminus++;
-      else if(pdgf[k] == 111  && Ef_reco[k] > egammareconcut) // pi0
-	npizero++;
+    // Apply the charge flip cut only for CC selection
+    if(EvClass_reco < 2){
+      newseed = seed*seed + i;
+      double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
+      
+      LeptonChargeFlip = ChargeFlip(newseed, lmom);
+  
+      // For the selected neutrino type skip the event if the charge is flipped 
+      if(neu == neutrinoPDG && LeptonChargeFlip){continue;}
+      // For anti-nu keep only the events with the charge flipped
+      if(neu == -neutrinoPDG && !LeptonChargeFlip){continue;}
     }
 
+    // Number of final state pions and protons
+    int npizero = 0; int npiplus = 0; int npiminus = 0; int nprotons = 0; int nneutrons = 0; int nkaonplus = 0; int nkaonminus = 0;
+    // EM activity
+    int nem = 0; int ngamma = 0;
+    // Other stuff
+    int nother = 0;
+    // Other - this refers to regions where the PID can't separate pions from protons
+    int otherpar = 0;
+
+    for(int k = 0; k < nf; k++){
+      newseed = i*i + k + nf + seed*seed; 
+      // Pt
+      //double pt = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k]);
+
+      // Momentum
+      double momentum = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k] + pzf_reco[k]*pzf_reco[k]);
+
+      // Charge mis-id
+      bool chargeflip = ChargeFlip(newseed, momentum);
+
+      rand->SetSeed(newseed + k + nf + i + seed);
+      int rnum = rand->Integer(1000);
+
+      if(pdgf[k] == 22){  // photons
+	if(Ef_reco[k] < egammareconcut){continue;}
+	ngamma++;
+      }
+      else if(abs(pdgf[k]) == 11){ // e-/e+
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < eelectronreconcut){continue;}
+	  nem++;
+      }
+      else if(pdgf[k] == 211){ // pi+
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < epionreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
+	    NPionMisIDAsProton++;
+	    if(!chargeflip)// has to be positive charged
+	      nprotons++;
+	  }
+	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
+	    nother++;
+	  }  
+	  else{
+	    if(chargeflip)
+	      npiminus++;
+	    else
+	      npiplus++;
+	  }
+	}
+      }
+      else if(pdgf[k] == -211){ // pi-
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < epionreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
+	    NPionMisIDAsProton++;
+	    if(chargeflip)// has to be positive charged
+	      nprotons++;
+	  }
+	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
+            nother++;
+          }
+	  else{
+	    if(chargeflip)
+	      npiplus++;
+	    else
+	      npiminus++;
+	  }
+	}
+      }
+      else if(pdgf[k] == 111){ // pi0
+	if(Ef_reco[k] < egammareconcut){continue;}
+	npizero++;
+      }
+      else if(pdgf[k] == 2212){ // proton
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < eprotonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < ProtonMisIDAsPion*1000){ // mis-id as pion
+	    NProtonMisIDAsPion++;
+	    if(chargeflip)
+	      npiminus++;
+	    else
+	      npiplus++;
+	  }
+	  else if(rnum > ProtonMisIDAsPion*1000 && rnum < (ProtonMisIDAsPion+ProtonMisIDAsKaon)*1000){ // mis-id as proton
+            nother++;
+          }
+	  else{// now check the charge
+	    if(!chargeflip)
+	      nprotons++;
+	  }
+	}
+      }
+      else if(pdgf[k] == 321){ // kaon+
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < ekaonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+        else{
+	  if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+	    if(chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+	  }
+	  else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){
+	    if(!chargeflip)
+	      nprotons++;
+	  }
+	  else
+	    nkaonplus++;
+	}
+      }
+      else if(pdgf[k] == -321){ // kaon-
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < ekaonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+        else{
+          if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+            if(!chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+          }
+          else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){ // mis-id as proton
+            if(chargeflip)
+              nprotons++;
+          }
+          else
+            nkaonminus++;
+        }
+      }
+      if(pdgf[k] == 2112){
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < 0.25){continue;}
+
+	nneutrons++;
+      }
+      else{
+	// Minimum track length cut
+	//if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < 0.25){continue;}
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+	else
+	  nother++;
+      }
+    } // fs particle loop
+
     int npionscharge = npiplus + npiminus;
+    int nkaons = nkaonplus + nkaonminus;
+    int npizerorecon = 0;
 
-    // Select the number of charged pions
-    if(!limit && npionscharge != npions){continue;}
-    if(limit) npions = npionnum + 1; // odd!!!!
-    if(limit  && npionscharge <  npions){continue;}
-    // Select the number of pi0s
-    if(npizero != npi0){continue;}
-    // No other EM activity - temporary
-    if(nem > 0){continue;}
-    if(ngamma  > 0){continue;}
-    // For pi0 
-    //if(npi0 !=0 && nEMf != 2*npi0){continue;}
-
-    // This works only for single pi0 events
+    // Only for single pi0 events
     if(npizero == 1 && nEMf == 2){
       double par = sqrt(EMpxf_reco[0]*EMpxf_reco[0] + EMpyf_reco[0]*EMpyf_reco[0] + EMpzf_reco[0]*EMpzf_reco[0]);
       double pbr = sqrt(EMpxf_reco[1]*EMpxf_reco[1] + EMpyf_reco[1]*EMpyf_reco[1] + EMpzf_reco[1]*EMpzf_reco[1]);
@@ -1157,9 +2076,17 @@ vector<TH1*> ReadFastMC::SelectCCnPi(int npions, int npi0){
       double imr = sqrt(2.0 *EMEf_reco[0]  *EMEf_reco[1]  * ( 1.0 - costhr));
       
       // Invariant mass cut
-      if( fabs(imr - 0.13498) > pi0invmass){continue;}
+      if( fabs(imr - pizeromass) < pi0invmass)
+	npizerorecon++;
     }
- 
+
+    // Select the number of charged pions
+    if(!limit && npionscharge != npions){continue;}
+    if(limit) npions = npionnum + 1; // odd!!!!
+    if(limit  && npionscharge <  npions){continue;}
+    // Select the number of pi0s
+    if(npizerorecon != npi0){continue;}
+
     if(neu == neutrinoPDG){ // selection
       if(EvClass_reco == whattoselect){ // cc-numu, cc-nue or nc
 	if(cc){
@@ -1188,20 +2115,20 @@ vector<TH1*> ReadFastMC::SelectCCnPi(int npions, int npi0){
     }
   } // event loop
 
-  histarray.push_back(ERecoNeutrinoANuCC);
-  histarray.push_back(ERecoNeutrinoNCALL);
-  histarray.push_back(ERecoNeutrinoCCOTH);
-  histarray.push_back(ERecoNeutrinoCCCOH);
-  histarray.push_back(ERecoNeutrinoCCDIS);
-  histarray.push_back(ERecoNeutrinoCCRES);
-  histarray.push_back(ERecoNeutrinoCCQEL);
+  histarray->Add(ERecoNeutrinoANuCC);
+  histarray->Add(ERecoNeutrinoNCALL);
+  histarray->Add(ERecoNeutrinoCCOTH);
+  histarray->Add(ERecoNeutrinoCCCOH);
+  histarray->Add(ERecoNeutrinoCCDIS);
+  histarray->Add(ERecoNeutrinoCCRES);
+  histarray->Add(ERecoNeutrinoCCQEL);
 
   gstTree->Delete();
 
   return histarray;
 }
 // ----------------------------------------------------------------------------
-vector<TH1*> ReadFastMC::SelectNCnPi(int npions, int npi0){
+TObjArray* ReadFastMC::SelectNCnPi(int npions, int npi0, int seed){
 
   // Maximum number of charge pion to select
   bool limit = false;
@@ -1213,11 +2140,17 @@ vector<TH1*> ReadFastMC::SelectNCnPi(int npions, int npi0){
   }
 
   // The histogram array
-  vector<TH1*> histarray;
+  TObjArray*  histarray = new TObjArray();
   // The selection - choose true for nc events
   int whattoselect = WhatToSelect(true);
   // The ratio of neutrino-antineutrino in the beam
-  double fluxweight = FluxWeight(neutrinoPDG, -neutrinoPDG);
+  double fluxweight = FluxWeight();
+
+  //const double pionmass   = 0.13957;
+  const double pizeromass = 0.13498;
+
+  // Random generator
+  TRandom3 *rand = new TRandom3();
 
   // Histogram name
   stringstream ss, sspi0;
@@ -1263,41 +2196,213 @@ vector<TH1*> ReadFastMC::SelectNCnPi(int npions, int npi0){
       anumuevents++;
     }
 
+    // Initialize
+    int NPionMisIDAsProton = 0;
+    int NProtonMisIDAsPion = 0;
+    bool LeptonChargeFlip = false;
+
+    int newseed = seed;
+
     // No recon neutrino energy? -> continue
     if(Ev_reco < enureconcut){continue;}
 
-    // Number of final state pion
-    int npizero = 0; int npiplus = 0; int npiminus = 0;
-    // Other em activity
-    int nem = 0; int ngamma = 0;
-    for(int k = 0; k < nf; k++){
-      if(pdgf[k] == 22 && Ef_reco[k] > egammareconcut) // photons
-	ngamma++;
-      else if(abs(pdgf[k]) == 11 && Ef_reco[k] > eelectronreconcut) // e-/e+
-	nem++;
-      else if(pdgf[k] == 211  && Ef_reco[k] > epionreconcut) // pi+
-	npiplus++;
-      else if(pdgf[k] == -211 && Ef_reco[k] > epionreconcut) // pi-
-	npiminus++;
-      else if(pdgf[k] == 111  && Ef_reco[k] > egammareconcut) // pi0
-	npizero++;
+    // Apply the charge flip cut only for CC selection
+    if(EvClass_reco < 2){
+      newseed = seed*seed + i;
+      double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
+      
+      LeptonChargeFlip = ChargeFlip(newseed, lmom);
+  
+      // For the selected neutrino type skip the event if the charge is flipped 
+      if(neu == neutrinoPDG && LeptonChargeFlip){continue;}
+      // For anti-nu keep only the events with the charge flipped
+      if(neu == -neutrinoPDG && !LeptonChargeFlip){continue;}
     }
 
+    // Number of final state pions and protons
+    int npizero = 0; int npiplus = 0; int npiminus = 0; int nprotons = 0; int nneutrons = 0; int nkaonplus = 0; int nkaonminus = 0;
+    // EM activity
+    int nem = 0; int ngamma = 0;
+    // Other stuff
+    int nother = 0;
+    // Other - this refers to regions where the PID can't separate pions from protons
+    int otherpar = 0;
+
+    for(int k = 0; k < nf; k++){
+      newseed = i*i + k + nf + seed*seed; 
+      // Pt
+      //double pt = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k]);
+
+      // Momentum
+      double momentum = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k] + pzf_reco[k]*pzf_reco[k]);
+
+      // Charge mis-id
+      bool chargeflip = ChargeFlip(newseed, momentum);
+
+      rand->SetSeed(newseed + k + nf + i + seed);
+      int rnum = rand->Integer(1000);
+
+      if(pdgf[k] == 22){  // photons
+	if(Ef_reco[k] < egammareconcut){continue;}
+	ngamma++;
+      }
+      else if(abs(pdgf[k]) == 11){ // e-/e+
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < eelectronreconcut){continue;}
+	  nem++;
+      }
+      else if(pdgf[k] == 211){ // pi+
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < epionreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
+	    NPionMisIDAsProton++;
+	    if(!chargeflip)// has to be positive charged
+	      nprotons++;
+	  }
+	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
+	    nother++;
+	  }  
+	  else{
+	    if(chargeflip)
+	      npiminus++;
+	    else
+	      npiplus++;
+	  }
+	}
+      }
+      else if(pdgf[k] == -211){ // pi-
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < epionreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
+	    NPionMisIDAsProton++;
+	    if(chargeflip)// has to be positive charged
+	      nprotons++;
+	  }
+	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
+            nother++;
+          }
+	  else{
+	    if(chargeflip)
+	      npiplus++;
+	    else
+	      npiminus++;
+	  }
+	}
+      }
+      else if(pdgf[k] == 111){ // pi0
+	if(Ef_reco[k] < egammareconcut){continue;}
+	npizero++;
+      }
+      else if(pdgf[k] == 2212){ // proton
+	// Minimum track length cut
+	if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < eprotonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+	  otherpar++;
+	else{
+	  if(rnum < ProtonMisIDAsPion*1000){ // mis-id as pion
+	    NProtonMisIDAsPion++;
+	    if(chargeflip)
+	      npiminus++;
+	    else
+	      npiplus++;
+	  }
+	  else if(rnum > ProtonMisIDAsPion*1000 && rnum < (ProtonMisIDAsPion+ProtonMisIDAsKaon)*1000){ // mis-id as proton
+            nother++;
+          }
+	  else{// now check the charge
+	    if(!chargeflip)
+	      nprotons++;
+	  }
+	}
+      }
+      else if(pdgf[k] == 321){ // kaon+
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < ekaonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+        else{
+	  if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+	    if(chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+	  }
+	  else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){
+	    if(!chargeflip)
+	      nprotons++;
+	  }
+	  else
+	    nkaonplus++;
+	}
+      }
+      else if(pdgf[k] == -321){ // kaon-
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < ekaonreconcut){continue;}
+
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+        else{
+          if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+            if(!chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+          }
+          else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){ // mis-id as proton
+            if(chargeflip)
+              nprotons++;
+          }
+          else
+            nkaonminus++;
+        }
+      }
+      if(pdgf[k] == 2112){
+	// Minimum track length cut
+        if(Trkf_reco[k] < tracklengthcut){continue;}
+        // Energy cut
+        if(Ef_reco[k] < 0.25){continue;}
+
+	nneutrons++;
+      }
+      else{
+	// Minimum track length cut
+	//if(Trkf_reco[k] < tracklengthcut){continue;}
+	// Energy cut
+	if(Ef_reco[k] < 0.25){continue;}
+	if(momentum > MaxMomentumPID)
+          otherpar++;
+	else
+	  nother++;
+      }
+    } // fs particle loop
+
     int npionscharge = npiplus + npiminus;
+    int nkaons = nkaonplus + nkaonminus;
+    int npizerorecon = 0;
 
-    // Select the number of charged pions
-    if(!limit && npionscharge != npions){continue;}
-    if(limit) npions = npionnum + 1; // odd!!!!
-    if(limit  && npionscharge <  npions){continue;}
-    // Select the number of pi0s
-    if(npizero != npi0){continue;}
-    // No other EM activity - temporary
-    if(nem > 0){continue;}
-    if(ngamma  > 0){continue;}
-    // For pi0 
-    //if(npi0 !=0 && nEMf != 2*npi0){continue;}
-
-    // This works only for single pi0 events
+    // Only for single pi0 events
     if(npizero == 1 && nEMf == 2){
       double par = sqrt(EMpxf_reco[0]*EMpxf_reco[0] + EMpyf_reco[0]*EMpyf_reco[0] + EMpzf_reco[0]*EMpzf_reco[0]);
       double pbr = sqrt(EMpxf_reco[1]*EMpxf_reco[1] + EMpyf_reco[1]*EMpyf_reco[1] + EMpzf_reco[1]*EMpzf_reco[1]);
@@ -1307,9 +2412,17 @@ vector<TH1*> ReadFastMC::SelectNCnPi(int npions, int npi0){
       double imr = sqrt(2.0 *EMEf_reco[0]  *EMEf_reco[1]  * ( 1.0 - costhr));
       
       // Invariant mass cut
-      if( fabs(imr - 0.13498) > pi0invmass){continue;}
+      if( fabs(imr - pizeromass) < pi0invmass)
+	npizerorecon++;
     }
- 
+
+    // Select the number of charged pions
+    if(!limit && npionscharge != npions){continue;}
+    if(limit) npions = npionnum + 1; // odd!!!!
+    if(limit  && npionscharge <  npions){continue;}
+    // Select the number of pi0s
+    if(npizerorecon != npi0){continue;}
+
     if(neu == neutrinoPDG){ // selection
       if(EvClass_reco == whattoselect){ // nc
 	if(nc){
@@ -1338,14 +2451,14 @@ vector<TH1*> ReadFastMC::SelectNCnPi(int npions, int npi0){
     }
   } // event loop
  
-  histarray.push_back(ERecoNeutrinoANuNA);
-  histarray.push_back(ERecoNeutrinoANuCA);
-  histarray.push_back(ERecoNeutrinoCCALL);
-  histarray.push_back(ERecoNeutrinoNCOTH);
-  histarray.push_back(ERecoNeutrinoNCCOH);
-  histarray.push_back(ERecoNeutrinoNCDIS);
-  histarray.push_back(ERecoNeutrinoNCRES);
-  histarray.push_back(ERecoNeutrinoNCQEL);
+  histarray->Add(ERecoNeutrinoANuNA);
+  histarray->Add(ERecoNeutrinoANuCA);
+  histarray->Add(ERecoNeutrinoCCALL);
+  histarray->Add(ERecoNeutrinoNCOTH);
+  histarray->Add(ERecoNeutrinoNCCOH);
+  histarray->Add(ERecoNeutrinoNCDIS);
+  histarray->Add(ERecoNeutrinoNCRES);
+  histarray->Add(ERecoNeutrinoNCQEL);
 
   gstTree->Delete();
 
@@ -1373,11 +2486,15 @@ bool ReadFastMC::ChargeFlip(int seed, double momentum){
 
   double cmisid = 0.0;
   int rcnum = random->Integer(1000);
-  if(momentum > 0.8 && momentum < 5){
+  if(momentum > 0.8 && momentum < 8){
     cmisid = fp->Eval(momentum*1000);
   }
-  else if(momentum >= 5){
-    cmisid = fp->Eval(5*1000);
+  else if(momentum >= 8){
+    cmisid = fp->Eval(8*1000);
+    if(momentum > 20 && momentum < 30)
+      cmisid = cmisid*2;
+    if(momentum > 30)
+      cmisid = cmisid*2.5;
   }
   else if(momentum > 0.5 && momentum <= 0.8){
     cmisid = fp->Eval(0.8*1000)*1.5;
@@ -1392,6 +2509,20 @@ bool ReadFastMC::ChargeFlip(int seed, double momentum){
 
   // Charge flip
   if(rcnum < cmisid*1000)
+    return true;
+  else
+    return false;
+
+}
+// ----------------------------------------------------------------------------
+bool ReadFastMC::IsReconTrack(int seed){
+
+  // Random generator
+  TRandom3 *random = new TRandom3();
+  random->SetSeed(seed);
+
+  int rcnum = random->Integer(1000);
+  if(rcnum < ReconEfficiency*1000)
     return true;
   else
     return false;
@@ -1506,6 +2637,7 @@ TTree* ReadFastMC::ReadTree(string f){
   gstTree->SetBranchAddress("EMpxf_reco",      &EMpxf_reco);
   gstTree->SetBranchAddress("EMpyf_reco",      &EMpyf_reco);
   gstTree->SetBranchAddress("EMpzf_reco",      &EMpzf_reco);
+  gstTree->SetBranchAddress("EMTrkf_reco",     &EMTrkf_reco);
 
   gstTree->SetBranchAddress("EMEf",            &EMEf);
   gstTree->SetBranchAddress("EMcthf",          &EMcthf);
