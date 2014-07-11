@@ -1,4 +1,12 @@
 
+/* This is a macro to plot fit parameter pulls and residuals from the fits of an ensemble of toy MC 
+   experiments using the LBNE fast Monte Carlo at the near detector. 
+
+   Generate and fit some experiments using run_fit.C, and run this macro over the output ROOT files.
+
+   Nick Grant 11 July 2014
+*/ 
+
 void FormatGraph(TGraph *graph, int style, int colour, int size);
 
 void plot_pulls(
