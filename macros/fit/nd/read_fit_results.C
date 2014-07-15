@@ -44,17 +44,61 @@ void read_fit_results(const char * filename)
 
     cout << "\n >> Best-fit parameter list: " << endl;
     cout << *best_fit_param_array;
+
+    cout << "\n >> Comparing true/input and best-fit paramerers: " << endl;
+    TCanvas * cprm = new TCanvas("cprm","",20,20,500,500);
+    cprm->cd();    
+    TH1D * htrue    = new TH1D("htrue",   "",conv::kNNDFitParams,0,conv::kNNDFitParams);
+    TH1D * hbestfit = new TH1D("hbestfit","",conv::kNNDFitParams,0,conv::kNNDFitParams);
+    htrue->SetDirectory(0);
+    hbestfit->SetDirectory(0);
+    for(int i=0; i< conv::kNNDFitParams; i++) {
+      conv::PhysParamId_t p = conv::kNDFitParam[i];
+      htrue->GetXaxis()->SetBinLabel(i+1,util::AsStringTeX(p,true).c_str());
+      htrue->Fill(i, true_param_array->Value(p));      
+      hbestfit->Fill(i, best_fit_param_array->BestFitValue(p));      
+    }
+    htrue->SetMarkerStyle(20);
+    htrue->SetMarkerColor(kBlue);
+    hbestfit->SetMarkerStyle(20);
+    hbestfit->SetMarkerColor(kRed);
+    htrue->Draw("P");
+    hbestfit->Draw("PSAME");
+    TLegend * legprm = new TLegend(0.1,0.7,0.4,0.9);
+    legprm->SetFillColor(0);
+    legprm->SetBorderSize(0);
+    legprm->AddEntry(htrue,"True","P");
+    legprm->AddEntry(hbestfit,"Best-fit","P");
+    legprm->Draw();
+    cprm->Update();
    
     cout << "\n >> Covariance matrix: " << endl;
     TMatrixDSym * cov = best_fit_param_array->GetCovMatrix();
     cov->Print();    
 
+    TCanvas * ccov = new TCanvas("ccov","",20,20,500,500);
+    ccov->cd();
+    cov->Draw("colz");
+
+    TCanvas * ccovdiag = new TCanvas("ccovdiag","",20,20,500,500);
+    ccovdiag->cd();
+    TH1D * hcovdiag = new TH1D("hcovdiag", "",conv::kNNDFitParams,0,conv::kNNDFitParams);
+    hcovdiag->SetDirectory(0);
+    for(int i=0; i< conv::kNNDFitParams; i++) {
+      conv::PhysParamId_t p = conv::kNDFitParam[i];
+      hcovdiag->GetXaxis()->SetBinLabel(i+1,util::AsStringTeX(p,true).c_str());
+      hcovdiag->GetYaxis()->SetTitle("#sqrt(V_{ii})");
+      hcovdiag->Fill(i, TMath::Sqrt((*cov)[i][i]));      
+    }
+    ccovdiag->Update();
+    
+/*
     // get a full list of object names printed out
     cout << "\n >> Objects stored in `best_fit_model_array' object array: " << endl;    
     best_fit_model_array->Print();
     cout << "\n >> Objects stored in `data_array' object array: " << endl;    
     data_array->Print();
-
+*/
     //
     // Plot something (Ereco spectra and contributions from various modes)
     //
@@ -108,6 +152,7 @@ void read_fit_results(const char * filename)
       c[ibeam]->Update();
     }//ibeam
 
+    break;
     cout << "type a number and press enter to continue with the next toy-MC...." << endl;
     int a;
     cin >> a;
