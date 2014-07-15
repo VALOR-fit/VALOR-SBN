@@ -33,7 +33,7 @@ void tweak_nd_pdf_N
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    c[ibeam] = new TCanvas(Form("c%d",ibeam),"",10,10,700,700);
  //c[ibeam] -> Divide(kNNDSamples);
-   c[ibeam] -> Divide(2,3);
+   c[ibeam] -> Divide(3,3);
   }
 
   // Get ND model & configure
