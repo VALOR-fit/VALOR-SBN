@@ -152,7 +152,6 @@ void read_fit_results(const char * filename)
       c[ibeam]->Update();
     }//ibeam
 
-    break;
     cout << "type a number and press enter to continue with the next toy-MC...." << endl;
     int a;
     cin >> a;
