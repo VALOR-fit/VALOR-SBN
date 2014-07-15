@@ -21,43 +21,6 @@ Alfons Weber          University of Oxford & STFC-RAL
 
 ............................................................................................................................
 
-PACKAGE CONTENTS:
- 
-Schematic based on the SVN trunk (latest) version
-
-<top_level>
-    |
-    |-- config                    : Analysis configuration XML files
-    |
-    |-- data                      : Input data (templates from MC samples, etc)
-    |      |----- lbne            : LBNE-specific inputs
-    |      |----- lbno            : LBNO-specific inputs
-    |
-    |-- src                       
-    |      |----- NDFit           : Near Detector Fit (Near Detector Flux and Cross-Section Systematics Constraint)
-    |      |----- FDFit           : Far  Detector Fit (Oscillations)
-    |
-    |
-    |-- macros                    : Our analysis procedures
-    |     |------ spectra         : Macros used for testing nominal and tweaked spectra
-    |     |         |-- nd
-    |     |         |-- fd
-    |     |
-    |     |------ fit             : Macros used for fitting data or toy MC expts
-    |     |         |-- nd
-    |     |         |-- fd
-    |     |
-    |     |------ select          : Macros used for testing sample selections and constructing VALOR DSTs
-    |
-    |-- prod                      : Batch production scripts for RAL/IN2P3/Oxford farms
-    |
-    |-- root                      : The `valor_lbnx' (ROOT + VALOR framework+LBNx libraries) environment for our analysis macros
-    |
-    |-- setup                     : Environment setup scripts for various locations
-
-
-............................................................................................................................
-
 SETTING-UP YOUR ENVIRONMENT
 
 Use the appropriate script from the setup directory.
@@ -83,6 +46,7 @@ make sure there are NO spaces within ''.
 
 ............................................................................................................................
 
-RELEASES 
+RELEASE information
 
-
+SVN tag   Fit vrs   Summary
+v1.0.0    2014v1    Fit used for CETUP*14 Systematics Workshop studies and presentations
