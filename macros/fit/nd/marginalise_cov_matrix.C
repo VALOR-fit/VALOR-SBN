@@ -49,7 +49,7 @@ TString inputfile = "/opt/ppd/t2k/users/nick/LBNX/macros/fit/nd/fit51params/toym
   double element;
 
   // Loop over entries (toy-MC experiments) in the tree
-  for(Long_t toy; toy < fitnt->GetEntries(); toy++) 
+  for(Long_t toy=0; toy < fitnt->GetEntries(); toy++) 
     {
     fitnt->GetEntry(toy);
 
