@@ -27,6 +27,7 @@ ChangeLog:
 #include "Conventions/NuOscDmsqScheme.h"
 #include "Conventions/Opt.h"
 #include "Conventions/PDG.h"
+#include "Utilities/Rnd.h"
 #include "Utilities/UtlStyle.h"
 #include "Utilities/UtlXML.h"
 #include "Messenger/Messenger.h"
@@ -1237,7 +1238,8 @@ void NDModel::FluctuateMCStat(Option_t * option)
     }
   }
 
-  Rnd * rnd = Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
+  //Rnd * rnd = Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
+  Rnd * rnd = Rnd::Instance();
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
@@ -1265,7 +1267,8 @@ void NDModel::FluctuateMCStat(Option_t * option)
                    double nmc  = fMCStatOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
                    // Fluctuate MC statistics and get the tweak factor
                    double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
-                   double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+                   //double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+		   double twk  = (nmc > 0) ? nmcf/nmc : 1;
                    // Apply the tweak factor in the template, obviously a small effect for 
                    // large MC statistics. Again noting that this is not the statistical error
                    // for the current exposure. That one will be applied later in toy-MC generation.
@@ -1298,14 +1301,16 @@ void NDModel::FluctuateMCStat(Option_t * option)
                  double val  = fMCTTunSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                  double nmc  = fMCStatSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
                  double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
-                 double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+                 //double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+		 double twk  = (nmc > 0) ? nmcf/nmc : 1;
                  double valf = val * twk; 
                  fMCTTunSb[ibeam][isample][imode]->SetEntry(valf,ier,iyr,iet);
 
                  // Map to template with optimized binning
                  const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
                  double enu_reco = kErecoBinEdgesSb[ier]   + (kErecoBinEdgesSb[ier+1]  -kErecoBinEdgesSb[ier]  )/2.;
-                 double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
+                 //double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
+		 double y_reco   = y_reco_bin_edges_sb[iyr] + (y_reco_bin_edges_sb[iyr+1]-y_reco_bin_edges_sb[iyr])/2.;
                  int izone = util::BinZone(s, enu_reco, y_reco);
                  if(izone < 0) {
 //                  LOG("NDModel",pFATAL) - turn that to fatal after binning optimization is done
@@ -1319,10 +1324,12 @@ void NDModel::FluctuateMCStat(Option_t * option)
                  const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
                  const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
                  int ier2 = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
-                 int iy2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );       
+                 //int iy2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );       
+		 int iyr2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
                  double valf_ob = fMCTTunOb[ibeam][isample][imode][izone]->GetEntry(ier2,iyr2,iet);
                  valf_ob += valf;
-                 fMCTTunOb[ibeam][isample][imode][izone]->SetEntry(val_ob,ier2,iyr2,iet);
+                 //fMCTTunOb[ibeam][isample][imode][izone]->SetEntry(val_ob,ier2,iyr2,iet);
+		 fMCTTunOb[ibeam][isample][imode][izone]->SetEntry(valf_ob,ier2,iyr2,iet);
                }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins

@@ -107,7 +107,7 @@ static const PhysParamId_t kNuisEffNC            = kNuis050;
 //
 // 
 //
-
+/*
 static const PhysParamId_t kNDFitParam[kNNDFitParams] = 
 {
    // FHC
@@ -166,6 +166,66 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
    kNuisEffNuMuCCWSgn, 
    kNuisEffNC            
 };
+*/
+static const PhysParamId_t kNDFitParam[kNNDFitParams] =
+  {
+    // FHC
+   kNuisFHCNuMuFlux00,
+   kNuisFHCNuMuFlux01,
+   kNuisFHCNuMuFlux02,
+   kNuisFHCNuMuFlux03,
+   kNuisFHCNuMuFlux04,
+   kNuisFHCNuMuFlux05,
+   kNuisFHCNuMuFlux06,
+   kNuisFHCNuMuFlux07,
+   kNuisFHCNuMuFlux08,
+   kNuisFHCNuMuFlux09,
+   kNuisFHCNuMuBarFlux00,
+   kNuisFHCNuMuBarFlux01,
+   kNuisFHCNuMuBarFlux02,
+   kNuisFHCNuMuBarFlux03,
+   kNuisFHCNuMuBarFlux04,
+   kNuisFHCNuEFlux00, 
+   kNuisFHCNuEFlux01, 
+   kNuisFHCNuEFlux02, 
+   // RHC
+   kNuisRHCNuMuFlux00,
+   kNuisRHCNuMuFlux01,
+   kNuisRHCNuMuFlux02,
+   kNuisRHCNuMuFlux03,
+   kNuisRHCNuMuFlux04,
+   kNuisRHCNuMuFlux05,
+   kNuisRHCNuMuFlux06,
+   kNuisRHCNuMuBarFlux00,
+   kNuisRHCNuMuBarFlux01,
+   kNuisRHCNuMuBarFlux02,
+   kNuisRHCNuMuBarFlux03,
+   kNuisRHCNuMuBarFlux04,
+   kNuisRHCNuMuBarFlux05,
+   kNuisRHCNuMuBarFlux06,
+   kNuisRHCNuMuBarFlux07,
+   kNuisRHCNuEFlux00, 
+   kNuisRHCNuEFlux01, 
+   kNuisRHCNuEFlux02, 
+   // Cross-sections
+   kNuisNormCCQE, 
+   kNuisNormCC1piC,
+   kNuisNormCC1pi0,
+   kNuisNormCCoth, 
+   kNuisNormNC,
+   kNuisRatioNuENuMu,
+   // Detector systematics
+   kPhypUndefined,
+   kPhypUndefined,
+   kPhypUndefined,
+   kPhypUndefined,
+   kPhypUndefined,
+   kPhypUndefined,  
+   kPhypUndefined,      
+   kPhypUndefined, 
+   kPhypUndefined   
+   };
+
 
 // eventually get this from config file
 static const double kNDFitParamAPrioriFracError[kNNDFitParams] = 
