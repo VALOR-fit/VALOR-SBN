@@ -247,10 +247,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
   // include params 
   if(param_list_opt.find("standard") != string::npos) {
 
-    //next line modified by Nick
-    //fparm = new FitParamList(kNNDFitParams); // NOTE: If params are undefined, we initialize the array with more elements than used --- 
-    fparm = new FitParamList(42);
-
+    fparm = new FitParamList(kNNDFitParams); // NOTE: If params are undefined, we initialize the array with more elements than used --- 
 
     int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
     for(int ip = 0; ip < kNNDFitParams; ip++) {
