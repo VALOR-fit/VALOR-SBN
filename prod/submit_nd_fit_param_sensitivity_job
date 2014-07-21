@@ -17,7 +17,7 @@
 #  --sens-param-value-min   : Min param value for \Delta\chi^2 = f(param value) plot
 #  --sens-param-value-max   : Max param value for \Delta\chi^2 = f(param value) plot
 #  --npoints                : Number of points between the min and max value above.
-#  --stat-fluctuations      : Include statistical fluctuation in toy-MC generation. Default: true.
+#  --no-stat-fluctuations   : Disable statistical fluctuation in toy-MC generation. Default: enabled.
 #  --fit-option             : Option passed to fitter. Default: "minuit".
 #  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`.
@@ -45,7 +45,7 @@ foreach (@ARGV) {
   if($_ eq '--sens-param-value-min'   ) { $sens_param_value_min = $ARGV[$iarg+1]; }
   if($_ eq '--sens-param-value-max'   ) { $sens_param_value_max = $ARGV[$iarg+1]; }
   if($_ eq '--npoints'                ) { $npoints              = $ARGV[$iarg+1]; }
-  if($_ eq '--stat-fluctuations'      ) { $stat_fluct           = 1;              }
+  if($_ eq '--no-stat-fluctuations'   ) { $stat_fluct           = 0;              }
   if($_ eq '--fit-option'             ) { $fitoption            = $ARGV[$iarg+1]; }
   if($_ eq '--store-spectra'          ) { $store_spectra        = 1;              }
   if($_ eq '--job-dir'                ) { $job_dir              = $ARGV[$iarg+1]; }

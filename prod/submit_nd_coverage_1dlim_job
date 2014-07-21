@@ -16,7 +16,7 @@
 #  --lim-param-value-np     : Number of points between the min and max value below.
 #  --lim-param-value-min    : Min param value for the coverage study
 #  --lim-param-value-max    : Max param value for the coverage study
-#  --stat-fluctuations      : Include statistical fluctuation in toy-MC generation. Default: true.
+#  --no-stat-fluctuations   : Disable statistical fluctuation in toy-MC generation. Default: enabled.
 #  --fit-option             : Option passed to fitter. Default: "minuit".
 #  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`.
@@ -43,7 +43,7 @@ foreach (@ARGV) {
   if($_ eq '--lim-param-value-np'     ) { $lim_param_value_np   = $ARGV[$iarg+1]; }
   if($_ eq '--lim-param-value-min'    ) { $lim_param_value_min  = $ARGV[$iarg+1]; }
   if($_ eq '--lim-param-value-max'    ) { $lim_param_value_max  = $ARGV[$iarg+1]; }
-  if($_ eq '--stat-fluctuations'      ) { $stat_fluct           = 1;              }
+  if($_ eq '--no-stat-fluctuations'   ) { $stat_fluct           = 0;              }
   if($_ eq '--fit-option'             ) { $fitoption            = $ARGV[$iarg+1]; }
   if($_ eq '--store-spectra'          ) { $store_spectra        = 1;              }
   if($_ eq '--job-dir'                ) { $job_dir              = $ARGV[$iarg+1]; }

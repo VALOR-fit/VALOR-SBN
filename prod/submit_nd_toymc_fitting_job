@@ -12,7 +12,7 @@
 #  --cpu-time               : Required CPU time. Default: "6:00:00" for RAL, "11:50:00" for Oxford.
 #  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
 #  --param-values           : Specifies how to set model parameters in toy-MC generation. Default: "randomize-all;prefit-errors"
-#  --stat-fluctuations      : Include statistical fluctuation in toy-MC generation. Default: true.
+#  --no-stat-fluctuations   : Disable statistical fluctuation in toy-MC generation. Default: enabled.
 #  --fit-option             : Option passed to fitter. Default: "minuit".
 #  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`.
@@ -35,7 +35,7 @@ foreach (@ARGV) {
   if($_ eq '--cpu-time'               ) { $cput                = $ARGV[$iarg+1]; }
   if($_ eq '--fit-param-list'         ) { $fitparamlist        = $ARGV[$iarg+1]; }
   if($_ eq '--param-values'           ) { $param_values        = $ARGV[$iarg+1]; }
-  if($_ eq '--stat-fluctuations'      ) { $stat_fluct          = 1;              }
+  if($_ eq '--no-stat-fluctuations'   ) { $stat_fluct          = 0;              }
   if($_ eq '--fit-option'             ) { $fitoption           = $ARGV[$iarg+1]; }
   if($_ eq '--store-spectra'          ) { $store_spectra       = 1;              }
   if($_ eq '--job-dir'                ) { $job_dir             = $ARGV[$iarg+1]; }
