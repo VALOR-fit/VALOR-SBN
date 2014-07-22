@@ -156,7 +156,7 @@ void fit_param_sensitivity
        cout << " Toy-MC #" << itoymc << ", fit #" << ifit+1 << "/" << nfits << endl;
 
        // Set specified param to a value in given range and fix
-       double s_param_value_fit = s_param_value_fit_min + ifit * (s_param_value_fit_max - s_param_value_fit_min)/(nfits-1);
+       double s_param_value_fit = (nfits == 1) ? s_param_value_fit_min : s_param_value_fit_min + ifit * (s_param_value_fit_max - s_param_value_fit_min)/(nfits-1);
        cout << "The fit fixes the value of parameter: " << s_param_name << " (= " << s_param_value_fit 
             << ") and allows all the remaining params to float" << endl;
 
