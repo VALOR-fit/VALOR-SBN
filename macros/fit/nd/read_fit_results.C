@@ -33,7 +33,7 @@ void read_fit_results(const char * filename)
 
   Long_t ntoymc = fitnt->GetEntries();
 
-  for(Long_t itoymc; itoymc < ntoymc; itoymc++) {
+  for(Long_t itoymc = 0; itoymc < ntoymc; itoymc++) {
     fitnt->GetEntry(itoymc);
     cout << "*******************************************************" << endl;
     cout << "Toy-MC experiment: # " << itoymc << endl;

@@ -200,7 +200,7 @@ TGraph * get_sensitivity(
   double epsilon     = 1E-5;
 
   // Loop over entries (toy-MC experiments) in the tree
-  for(Long_t itoymc; itoymc < ntoymc; itoymc++) {
+  for(Long_t itoymc = 0; itoymc < ntoymc; itoymc++) {
     fitnt->GetEntry(itoymc);  
     double p_true = true_param_array->Value(p); 
     if(first) {

@@ -19,6 +19,7 @@ void fit_param_sensitivity
 (
   const char * tag                   = "toymc",                               /* tag for output file */
   int          run                   = 0,                                     /* run # */
+  int          subrun                = 0,                                     /* sub-run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
   const char * fit_param_list        = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
@@ -30,6 +31,8 @@ void fit_param_sensitivity
   bool         stat_fluct            = true,                                  /* include statistical fluctuation in toy MC generation? */
   const char * fit_option            = "minuit",                              /* fitter option */
   bool         store_spectra         = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
+  int          rndseed_toymc_stat    = 0,                                     /* rnd seed, set (usefull if want to fit same toy-MC across different batch jobs) or leave 0 to randomize */
+  int          rndseed_toymc_syst    = 0,                                     /* rnd seed, set (usefull if want to fit same toy-MC across different batch jobs) or leave 0 to randomize */
   const char * config_file           = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
 )
 
@@ -50,12 +53,21 @@ void fit_param_sensitivity
     exit(1);
   }
 
+  // protect against negative seed values
+  rndseed_toymc_stat = TMath::Max(rndseed_toymc_stat, 0);
+  rndseed_toymc_syst = TMath::Max(rndseed_toymc_syst, 0);
+  // set seeds for the relevant rnd number generators (the last 3 are irrelevant)
+  if(rndseed_toymc_stat > 0 || rndseed_toymc_syst > 0) {
+    Rnd::Instance()->SetSeeds(rndseed_toymc_stat,rndseed_toymc_syst,0,0,0);
+  }
+
+
   //
   // Print settings
   //
 
   cout << "\n[Job inputs]" << endl;
-  cout << "- Job: " << tag << "/" << run << endl;
+  cout << "- Job: " << tag << "/" << run << "_" << subrun << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
   cout << "- Studying sensitivity to parameter: " << s_param_name << endl;
   cout << "- Toy-MC generation" << endl;
@@ -75,7 +87,7 @@ void fit_param_sensitivity
   // Create file and tree to store outputs
   //
 
-  const char * outfilename = Form("%s_%d.root",tag,run);
+  const char * outfilename = Form("%s_%d_%d.root",tag,run,subrun);
   TFile * outfile = new TFile(outfilename,"recreate");
 
   PhysParamList * true_param_array     = new PhysParamList;
