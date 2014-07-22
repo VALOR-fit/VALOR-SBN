@@ -117,7 +117,7 @@ if( !defined $cput ) {
 foreach(@param_array)
 {
   $param = $_;
-  $command = "perl prod/submit_nd_fit_param_sensitivity_job --resource $resource --tag $tag-$param --nruns $nruns --ntoymc $ntoymc --sens-param-name \"$param\" --sens-param-value 1.0 --npoints $npoints --sens-param-value-min $sens_param_value_min --sens-param-value-max $sens_param_value_max --stat-fluctuations --fit-param-list \"$fitparamlist\" --param-values \"$param_values\" --job-dir $job_dir/$param --lbnx-softw-dir $lbnx_softw_dir --fmwk-softw-dir $fmwk_softw_dir";
+  $command = "perl prod/submit_nd_fit_param_sensitivity_job --split-in-subruns --resource $resource --tag $tag-$param --nruns $nruns --ntoymc $ntoymc --sens-param-name-gen \"$param\" --sens-param-value 1.0 --npoints $npoints --sens-param-value-min $sens_param_value_min --sens-param-value-max $sens_param_value_max --stat-fluctuations --fit-param-list \"$fitparamlist\" --param-values \"$param_values\" --job-dir $job_dir/$param --lbnx-softw-dir $lbnx_softw_dir --fmwk-softw-dir $fmwk_softw_dir";
   print "Running:\n$command \n\n";
   `$command`;
 }
