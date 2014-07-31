@@ -1,10 +1,10 @@
 # File to apply parameters and cuts to the FastMC output
 
 # Input file for analysis
-InFile /hepstore/georgios/lbne/fastmcout/valorselection/rootfiles/genieNtp_20140430_lbne_g4lbnev3r0p10_nuflux_numuflux_numu_g280_nd_all_1050.root.root
+InFile genieNtp_20140430_lbne_g4lbnev3r0p10_nuflux_numuflux_numu_g280_nd_all_1050.root.root
 
 # Number of events you want to run
-Events 10000
+Events 1000000
 
 # Neutrino for the event selection. the other neutrino species will
 # immediately be considered as background
@@ -44,21 +44,31 @@ KaonMisIDAsPion 0.096
 KaonMisIDAsMuon 0.080
 
 # Parameters for the charge confusion momentum parameterazion
-ChargeConfMomSlope 0.0004
-ChargeConfMomConst -5.31738
+ChargeConfMomSlope 0.0002218
+ChargeConfMomConst -0.510744
+
+# At the tail use a different function
+ChargeConfMomTailSlope 0.0000557668
+ChargeConfMomTailConst 1.36216
 
 # Parameters for the charge confusion track length parameterazion
 ChargeConfTrLSlope -0.0353907
 ChargeConfTrLConst -1.91409
 
 # Max momentum to apply the pid
-MaxMomentumPID 0.8 
+MaxMomentumPID 1.1 
 
 # Reconstruction efficiency
 ReconEfficiency 0.95
 
 # Track length cut - in m
-TrackLengthCut 0.05
+TrackLengthCut 0.06
+
+# Muon Track length cut - in m
+TrackLengthMuon 0.12
+
+# Minimum number of hits to form a track
+ClusterHits 0.03
 
 # Visible neutrino energy cut for nc events
 EVisibleCut 1.0
@@ -66,8 +76,14 @@ EVisibleCut 1.0
 # Reconstructed neutrino energy cut for cc events
 EReconCut 0.8
 
+# Opening angle cut for ccqe events - in deg
+OpeningAngle 60
+
+# Max number of tracks to run the reconstruction
+NTracks 20
+
 # Do the reweighting
 Reweight 0
 
 # Verbosity level
-Verbose 0
+Verbose 1
