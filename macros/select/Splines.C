@@ -22,8 +22,8 @@ using namespace valor;
 void Splines(string infhc      = "FHC_LBNE_ND_Tree_v25.root",
 	     string inrhc      = "FHC_LBNE_ND_Tree_v25.root",
 	     string inTree     = "LBNETree",
-	     string outfhc     = "hadronicoutfhc.root",
-	     string outrhc     = "hadronicoutrhc.root",
+	     string outfhc     = "outfhc.root",
+	     string outrhc     = "outrhc.root",
 	     string datacard   = "lbne_ndfit-2014a-STT_baseline.xml",
 	     string matrixfile = "HadronEnergyScale.root",
 	     bool   leptonic   = false)
