@@ -72,7 +72,7 @@ namespace valor {
     
     // Binning optimization
     void make_binning_scheme_2D();
-    
+
     // Return a histogram array for CC/NC-npi selection.
     // First argument is the number of charge pions, second is the number of pi0
     // Only for single pi0 is working at the moment
@@ -96,13 +96,13 @@ namespace valor {
     // Recon partcile energy cut
     double epionreconcut, egammareconcut, eelectronreconcut, eprotonreconcut, ekaonreconcut;
     // Track length cut
-    double tracklengthcut;
+    double tracklengthcut, tracklengthmuon, clusterhits;
     // Pi0 invariant mass cut
     double pi0invmass;
     // Particle mis-identification probabilities
     double PionMisIDAsProton, PionMisIDAsKaon, ProtonMisIDAsPion, ProtonMisIDAsKaon, KaonMisIDAsPion, KaonMisIDAsProton;
     // Parameters for the charge mis-identification for the momentum and track length parameterazion
-    double ChargeConfMomSlope, ChargeConfMomConst, ChargeConfTrLSlope, ChargeConfTrLConst;
+    double ChargeConfMomSlope, ChargeConfMomConst, ChargeConfMomTailSlope, ChargeConfMomTailConst, ChargeConfTrLSlope, ChargeConfTrLConst;
     // Max momentum to apply the PID
     double MaxMomentumPID;
     // Recon efficiency
@@ -111,6 +111,10 @@ namespace valor {
     double EVisibleCut;
     // Reconstructed neutrino energy cut for nue-cc events
     double EReconCut;
+    // Opening angle cut for ccqe
+    double openangle;
+    // Max number of tracks to consider for reconstruction 
+    double ntrack;
 
     // Apply the reweight
     bool reweight;
@@ -130,13 +134,16 @@ namespace valor {
 
     // Is a track recon?
     bool IsReconTrack(int seed);
+
+    // Return a pull for the PID selection
+    bool GoodPid(int seed);
     
     // Global histogram binning and range
     int min; int max; int bin;
     
     // The FastMC tree variables - not a complete list
     int iev, neu, neut_code;
-    bool qel, mec, res, dis, coh, cohe, dfr, imd, imda, nuel, em, cc, nc, charm;
+    bool qel, mec, res, dis, coh, cohe, dfr, imd, imda, nuel, em, cc, nc, charm, sea;
     
     double Ev_reco,  EvB_reco, EvUB_reco, Ehad_reco, EhadB_reco, EhadUB_reco, pxv_reco, pyv_reco, pzv_reco, Ev, Ehad;
     double wght, POTWeight;
@@ -175,7 +182,7 @@ namespace valor {
     
   private:
     ClassDef(ReadFastMC,1)
-  };
+      };
   
 } // valor
 #endif

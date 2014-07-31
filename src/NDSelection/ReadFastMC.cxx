@@ -182,6 +182,18 @@ void ReadFastMC::ReadDatacard(string datacard){
         par.erase(par.begin());
         ChargeConfMomConst = atof(par.c_str());
       }
+      if(line.find("ChargeConfMomTailSlope") != string::npos){ // mom slope
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        ChargeConfMomTailSlope = atof(par.c_str());
+      }
+      if(line.find("ChargeConfMomTailConst") != string::npos){ // mom const
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        ChargeConfMomTailConst = atof(par.c_str());
+      }
       if(line.find("ChargeConfTrLSlope") != string::npos){ // track length slope
         size_t found = line.find(" ");
         string par = line.substr(found);
@@ -206,6 +218,18 @@ void ReadFastMC::ReadDatacard(string datacard){
         par.erase(par.begin());
         tracklengthcut = atof(par.c_str());
       }
+      if(line.find("TrackLengthMuon") != string::npos){ // track length cut
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        tracklengthmuon = atof(par.c_str());
+      }
+      if(line.find("ClusterHits") != string::npos){ // track length cut
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        clusterhits = atof(par.c_str());
+      }
       if(line.find("ReconEfficiency") != string::npos){ // recon efficiency
         size_t found = line.find(" ");
         string par = line.substr(found);
@@ -218,11 +242,23 @@ void ReadFastMC::ReadDatacard(string datacard){
         par.erase(par.begin());
         EVisibleCut = atof(par.c_str());
       }
-      if(line.find("EReconCut") != string::npos){ // Neutrino enrgy cut for nue-cc events
+      if(line.find("EReconCut") != string::npos){ // Neutrino energy cut for nue-cc events
         size_t found = line.find(" ");
         string par = line.substr(found);
         par.erase(par.begin());
         EReconCut = atof(par.c_str());
+      }
+      if(line.find("OpeningAngle") != string::npos){ // Opening angle cut for ccqe candidates
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        openangle = atof(par.c_str());
+      }
+      if(line.find("NTracks") != string::npos){ // Maximum number of tracks the reconstruction can cope
+        size_t found = line.find(" ");
+        string par = line.substr(found);
+        par.erase(par.begin());
+        ntrack = atof(par.c_str());
       }
     }
   }
@@ -247,13 +283,19 @@ void ReadFastMC::ReadDatacard(string datacard){
     LOG("ReadFastMC",pNOTICE) << "Kaon mis-id probability as a proton = "    <<  KaonMisIDAsProton;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum slope = "        <<  ChargeConfMomSlope;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum constant = "     <<  ChargeConfMomConst;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum tail slope = "   <<  ChargeConfMomTailSlope;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum tail constant = "<<  ChargeConfMomTailConst;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion track length slope = "    <<  ChargeConfTrLSlope;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion track length constant = " <<  ChargeConfTrLConst;
     LOG("ReadFastMC",pNOTICE) << "Maximum momentum to apply the PID = "      <<  MaxMomentumPID;
     LOG("ReadFastMC",pNOTICE) << "Track length cut = "                       <<  tracklengthcut;
+    LOG("ReadFastMC",pNOTICE) << "Muon Track length cut = "                  <<  tracklengthmuon;
+    LOG("ReadFastMC",pNOTICE) << "Minimum number of hits for a track = "     <<  clusterhits;
     LOG("ReadFastMC",pNOTICE) << "Visible neutrino energy cut = "            <<  EVisibleCut;
     LOG("ReadFastMC",pNOTICE) << "Reconstructed neutrino energy cut = "      <<  EReconCut;
     LOG("ReadFastMC",pNOTICE) << "Reconstructed efficiency cut = "           <<  ReconEfficiency;
+    LOG("ReadFastMC",pNOTICE) << "Opening angle cut for CCQE candidates = "  <<  openangle;
+    LOG("ReadFastMC",pNOTICE) << "Maximum number of tracks to applyrecon = " <<  ntrack;
   }
 }
 // ----------------------------------------------------------------------------
@@ -284,38 +326,45 @@ void ReadFastMC::ReadXMLDatacard(string datacard){
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
  
-  inFile             = util::XML2String(xml,root_node,"DetConfig/InFile");
-  nevents            = util::XML2Dbl(xml,root_node,"DetConfig/Events");
-  neutrinoPDG        = util::XML2Dbl(xml,root_node,"DetConfig/NeutrinoPDG");
+  inFile                 = util::XML2String(xml,root_node,"DetConfig/InFile");
+  nevents                = util::XML2Dbl(xml,root_node,"DetConfig/Events");
+  neutrinoPDG            = util::XML2Dbl(xml,root_node,"DetConfig/NeutrinoPDG");
 
-  enureconcut        = util::XML2Dbl(xml,root_node,"DetConfig/ReconNeutrinoEnergyCut");
-  epionreconcut      = util::XML2Dbl(xml,root_node,"DetConfig/ReconPiPMEnergyCut");
-  ekaonreconcut      = util::XML2Dbl(xml,root_node,"DetConfig/ReconKaonPMEnergyCut");
-  eprotonreconcut    = util::XML2Dbl(xml,root_node,"DetConfig/ReconProtonEnergyCut");
-  egammareconcut     = util::XML2Dbl(xml,root_node,"DetConfig/ReconGammaEnergyCut");
-  eelectronreconcut  = util::XML2Dbl(xml,root_node,"DetConfig/ReconElectronEnergyCut");
-  pi0invmass         = util::XML2Dbl(xml,root_node,"DetConfig/Pi0InvariantMassCut");
+  enureconcut            = util::XML2Dbl(xml,root_node,"DetConfig/ReconNeutrinoEnergyCut");
+  epionreconcut          = util::XML2Dbl(xml,root_node,"DetConfig/ReconPiPMEnergyCut");
+  ekaonreconcut          = util::XML2Dbl(xml,root_node,"DetConfig/ReconKaonPMEnergyCut");
+  eprotonreconcut        = util::XML2Dbl(xml,root_node,"DetConfig/ReconProtonEnergyCut");
+  egammareconcut         = util::XML2Dbl(xml,root_node,"DetConfig/ReconGammaEnergyCut");
+  eelectronreconcut      = util::XML2Dbl(xml,root_node,"DetConfig/ReconElectronEnergyCut");
+  pi0invmass             = util::XML2Dbl(xml,root_node,"DetConfig/Pi0InvariantMassCut");
 
-  PionMisIDAsProton  = util::XML2Dbl(xml,root_node,"DetConfig/PionMisIDAsProton");
-  PionMisIDAsKaon    = util::XML2Dbl(xml,root_node,"DetConfig/PionMisIDAsKaon");
-  ProtonMisIDAsPion  = util::XML2Dbl(xml,root_node,"DetConfig/ProtonMisIDAsPion");
-  ProtonMisIDAsKaon  = util::XML2Dbl(xml,root_node,"DetConfig/ProtonMisIDAsKaon");
-  KaonMisIDAsPion    = util::XML2Dbl(xml,root_node,"DetConfig/KaonMisIDAsPion");
-  KaonMisIDAsProton  = util::XML2Dbl(xml,root_node,"DetConfig/KaonMisIDAsProton");
+  PionMisIDAsProton      = util::XML2Dbl(xml,root_node,"DetConfig/PionMisIDAsProton");
+  PionMisIDAsKaon        = util::XML2Dbl(xml,root_node,"DetConfig/PionMisIDAsKaon");
+  ProtonMisIDAsPion      = util::XML2Dbl(xml,root_node,"DetConfig/ProtonMisIDAsPion");
+  ProtonMisIDAsKaon      = util::XML2Dbl(xml,root_node,"DetConfig/ProtonMisIDAsKaon");
+  KaonMisIDAsPion        = util::XML2Dbl(xml,root_node,"DetConfig/KaonMisIDAsPion");
+  KaonMisIDAsProton      = util::XML2Dbl(xml,root_node,"DetConfig/KaonMisIDAsProton");
 
-  ChargeConfMomSlope = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomSlope");
-  ChargeConfMomConst = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomConst");
-  ChargeConfTrLSlope = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfTrLSlope");
-  ChargeConfTrLConst = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfTrLConst");
+  ChargeConfMomSlope     = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomSlope");
+  ChargeConfMomConst     = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomConst");
+  ChargeConfMomTailSlope = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomTailSlope");
+  ChargeConfMomTailConst = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfMomTailConst");
+  ChargeConfTrLSlope     = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfTrLSlope");
+  ChargeConfTrLConst     = util::XML2Dbl(xml,root_node,"DetConfig/ChargeConfTrLConst");
 
-  MaxMomentumPID     = util::XML2Dbl(xml,root_node,"DetConfig/MaxMomentumPID");
-  tracklengthcut     = util::XML2Dbl(xml,root_node,"DetConfig/TrackLengthCut");
-  EVisibleCut        = util::XML2Dbl(xml,root_node,"DetConfig/EVisibleCut");
-  EReconCut          = util::XML2Dbl(xml,root_node,"DetConfig/EReconCut");
+  MaxMomentumPID         = util::XML2Dbl(xml,root_node,"DetConfig/MaxMomentumPID");
+  tracklengthcut         = util::XML2Dbl(xml,root_node,"DetConfig/TrackLengthCut");
+  tracklengthmuon        = util::XML2Dbl(xml,root_node,"DetConfig/TrackLengthMuon");
+  clusterhits            = util::XML2Dbl(xml,root_node,"DetConfig/ClusterHits");
+  EVisibleCut            = util::XML2Dbl(xml,root_node,"DetConfig/EVisibleCut");
+  EReconCut              = util::XML2Dbl(xml,root_node,"DetConfig/EReconCut");
 
-  ReconEfficiency    = util::XML2Dbl(xml,root_node,"DetConfig/ReconEfficiency");
+  ReconEfficiency        = util::XML2Dbl(xml,root_node,"DetConfig/ReconEfficiency");
 
-  verbose            = util::XML2Dbl(xml,root_node,"DetConfig/Verbose");
+  openangle              = util::XML2Dbl(xml,root_node,"DetConfig/OpeningAngle");
+  ntrack                 = util::XML2Dbl(xml,root_node,"DetConfig/NTracks"); 
+
+  verbose                = util::XML2Dbl(xml,root_node,"DetConfig/Verbose");
 
   if(verbose > 0){
     LOG("ReadFastMC",pNOTICE) << "Input File = "                             <<  inFile;
@@ -336,13 +385,19 @@ void ReadFastMC::ReadXMLDatacard(string datacard){
     LOG("ReadFastMC",pNOTICE) << "Kaon mis-id probability as a proton = "    <<  KaonMisIDAsProton;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum slope = "        <<  ChargeConfMomSlope;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum constant = "     <<  ChargeConfMomConst;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum tail slope = "   <<  ChargeConfMomTailSlope;
+    LOG("ReadFastMC",pNOTICE) << "Charge confusion momentum tail constant = "<<  ChargeConfMomTailConst;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion track length slope = "    <<  ChargeConfTrLSlope;
     LOG("ReadFastMC",pNOTICE) << "Charge confusion track length constant = " <<  ChargeConfTrLConst;
     LOG("ReadFastMC",pNOTICE) << "Maximum momentum to apply the PID = "      <<  MaxMomentumPID;
     LOG("ReadFastMC",pNOTICE) << "Track length cut = "                       <<  tracklengthcut;
+    LOG("ReadFastMC",pNOTICE) << "Muon Track length cut = "                  <<  tracklengthmuon;
+    LOG("ReadFastMC",pNOTICE) << "Minimum number of hits for a track = "     <<  clusterhits;
     LOG("ReadFastMC",pNOTICE) << "Visible neutrino energy cut = "            <<  EVisibleCut;
     LOG("ReadFastMC",pNOTICE) << "Reconstructed neutrino energy cut = "      <<  EReconCut;
     LOG("ReadFastMC",pNOTICE) << "Reconstructed efficiency cut = "           <<  ReconEfficiency;
+    LOG("ReadFastMC",pNOTICE) << "Opening angle cut for CCQE candidates = "  <<  openangle;
+    LOG("ReadFastMC",pNOTICE) << "Maximum number of tracks to applyrecon = " <<  ntrack;
   }
 
   // Release memory
@@ -463,6 +518,14 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
   double Electronenergy = -1.0;
   // Number of nc events with only photons reconstructed
   int NPhotonNC = -1;
+  // Number of tracks reconstructed
+  int NTracks;
+  // Opening angle for ccqe 2 tracks events
+  double OpeningAngle = -10.0;
+  // Coplanarity angle for ccqe 2 tracks events
+  //double CopAngle = -10.0;
+  // Arrays of the energy scales
+  double ELScale[7] = {-10.0}; double EhadScale[7] = {-10.0};
 
   // Tree branches
   FastMCTree->Branch("Ev",          &Ev,          "Ev/D");
@@ -475,9 +538,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
   if(debugtree){
     FastMCTree->Branch("neu",                 &neu,                 "neu/I");
     FastMCTree->Branch("neut_code",           &neut_code,           "neut_code/I");
-    FastMCTree->Branch("ys",                  &ys,                  "ys/D");
-    FastMCTree->Branch("Q2",                  &Q2,                  "Q2/D");
-    FastMCTree->Branch("Q2_reco",             &Q2_reco,             "Q2_reco/D");
+    //FastMCTree->Branch("ys",                  &ys,                  "ys/D");
+    //FastMCTree->Branch("Q2",                  &Q2,                  "Q2/D");
+    //FastMCTree->Branch("Q2_reco",             &Q2_reco,             "Q2_reco/D");
     FastMCTree->Branch("NPionMisIDAsProton",  &NPionMisIDAsProton,  "NPionMisIDAsProton/I");
     FastMCTree->Branch("NPionMisIDAsKaon",    &NPionMisIDAsKaon,    "NPionMisIDAsKaon/I");
     FastMCTree->Branch("NProtonMisIDAsPion",  &NProtonMisIDAsPion,  "NProtonMisIDAsPion/I");
@@ -486,11 +549,26 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     FastMCTree->Branch("NKaonMisIDAsPion",    &NKaonMisIDAsPion,    "NKaonMisIDAsPion/I");
     FastMCTree->Branch("LeptonChargeFlip",    &LeptonChargeFlip,    "LeptonChargeFlip/O");
     FastMCTree->Branch("Electronenergy",      &Electronenergy,      "Electronenergy/D");
-    FastMCTree->Branch("NPhotonNC",           &NPhotonNC,           "NPhotonNC/I");
+    //FastMCTree->Branch("NPhotonNC",           &NPhotonNC,           "NPhotonNC/I");
+    FastMCTree->Branch("NTracks",             &NTracks,             "NTracks/I");
+    FastMCTree->Branch("OpeningAngle",        &OpeningAngle,        "OpeningAngle/D");
+    //FastMCTree->Branch("CopAngle",            &CopAngle,            "CopAngle/D");
+    FastMCTree->Branch("EL_reco",             &EL_reco,             "EL_reco/D");
+    FastMCTree->Branch("Ehad_reco",           &Ehad_reco,           "Ehad_reco/D");
+    FastMCTree->Branch("W_reco",              &W_reco,              "W_reco/D");
+    FastMCTree->Branch("nfpip",               &nfpip,               "nfpip/I");
+    FastMCTree->Branch("nfpim",               &nfpim,               "nfpim/I");
+    FastMCTree->Branch("nfpi0",               &nfpi0,               "nfpi0/I");
+    FastMCTree->Branch("nfp",                 &nfp,                 "nfp/I");
   }
 
-  //const double pionmass   = 0.13957;
-  const double pizeromass = 0.13498;
+  // Some constants
+  const double pionmass  = 0.13957;
+  const double pizeromass  = 0.13498;
+  const double pi          = 3.14159;
+  const double neutronmass = 0.939565; // GeV/c^2
+  const double protonmass  = 0.938272; // GeV/c^2
+  const double muonmass    = 0.105658;
 
   // Random generator
   TRandom3 *rand = new TRandom3();
@@ -539,12 +617,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     LeptonChargeFlip   = false;
     NPhotonNC          = -1;
     Electronenergy     = -1.0;
+    NTracks            = 0;
 
-    // For undefined events
-    bool undefined = false;
-
-    int newseed = seed;
-
+    // How many events to run?
     if(neu == neutrinoPDG){
       if(numuevents == nevents){continue;}
       numuevents++;
@@ -553,6 +628,11 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       if(anumuevents == nevents){continue;}
       anumuevents++;
     }
+
+    // For undefined events
+    bool undefined = false;
+    // New seeding
+    int newseed = seed;
 
     // Normalized POT weight potnorm=(mass*years*exposure/years)/nevents
     if(neutrinoPDG == 14 || neutrinoPDG == 12){
@@ -576,9 +656,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	POTWeight = rhcanueweight;
     }
 
-    // True reaction modes
+    // True pion reaction modes
     int nipipm  = nipip + nipim;
-    int nipipm0 = nipip + nipim + nipi0;
+    //int nipipm0 = nipip + nipim + nipi0;
 
     // Start the selection
     // No recon neutrino energy?
@@ -589,6 +669,12 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       newseed = seed*seed + i;
       // Is reconstructed?
       //bool recontrack = IsReconTrack(newseed*newseed);
+
+      // Scale the leptonic and hadronic energy
+      //for(int j=-3; j<4; j++){
+      //	ELScale[j+3]   = EL_reco/(EL_reco + EL_reco*ELScaling*j);
+      //	EhadScale[j+3] = Ehad_reco/(Ehad_reco + Ehad_reco*EHadScaling*j);
+      //}
 
       double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
       
@@ -605,6 +691,18 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	// For anti-nu keep only the events with the charge flipped
 	if(neu > 0 && !LeptonChargeFlip){undefined = true;}
       }
+
+      // This is mostly for vertical tracks
+      double dist = abs(cthL_reco*TrkL_reco);
+      if(dist < tracklengthmuon)
+	undefined = true;
+    }
+    // NC events with y_recon != 1 -> Remove!
+    if(EvClass_reco == 2){
+      if(cc && PdgL > -1000){undefined = true;}
+      if(y_reco != 1){undefined = true;}
+      // Take the EL_reco to zero
+      EL_reco = 0.0;
     }
 
     // Number of final state pions and protons
@@ -615,6 +713,10 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     int nother = 0;
     // Other - this refers to regions where the PID can't separate pions from protons
     int otherpar = 0;
+    // Proton angle for ccqeqe events
+    //double pangle = -10.0;
+    double pke[3]    = {-1000.0};
+    double pionke[3] = {-1000.0};
 
     for(int k = 0; k < nf; k++){
       newseed = i*i + k + nf + seed*seed; 
@@ -628,6 +730,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       // Has to be different from the reconstucted lepton - otherwise double counting
       if(Trkf_reco[k] == TrkL_reco){continue;}
 
+      // Check if the pid is properly applied
+      bool goodpid = GoodPid(newseed*newseed/2);
+
       // Momentum
       double momentum = sqrt(pxf_reco[k]*pxf_reco[k] + pyf_reco[k]*pyf_reco[k] + pzf_reco[k]*pzf_reco[k]);
       // No momentum? - skip
@@ -635,9 +740,10 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
       // Charge mis-id
       bool chargeflip = ChargeFlip(newseed, momentum);
-
       rand->SetSeed(newseed + k + nf + i + seed);
       int rnum = rand->Integer(1000);
+
+      double dist = abs(Trkf_reco[k]*cthf_reco[k]);
 
       if(pdgf[k] == 22){  // photons
 	if(Ef_reco[k] < egammareconcut){continue;}
@@ -645,24 +751,33 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       }
       else if(abs(pdgf[k]) == 11){ // e-/e+
 	// Minimum track length cut
-	if(Trkf_reco[k] < tracklengthcut){continue;}
+	if(dist < tracklengthcut){continue;}
 	// Energy cut
 	if(Ef_reco[k] < eelectronreconcut){continue;}
 	//nem++;
       }
       else if(pdgf[k] == 211 || pdgf[k] == 13){ // pi+, muons and pions are not separatable
-	// Minimum track length cut
-	if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
 	if(Ef_reco[k] < epionreconcut){continue;}
+	// Minimum track length cut
+	if(dist < tracklengthcut){
+	  if(dist > clusterhits)
+	    otherpar++;
+	  continue;
+	}
 
-	if(momentum > MaxMomentumPID)
+	if(momentum > MaxMomentumPID || !goodpid){
 	  otherpar++;
+	}
 	else{
 	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
 	    NPionMisIDAsProton++;
-	    if(!chargeflip)// has to be positive charged
+	    if(!chargeflip){// has to be positive charged
 	      nprotons++;
+	      pke[0] = pxf_reco[k];
+              pke[1] = pyf_reco[k];
+              pke[2] = pzf_reco[k];
+	    }
 	  }
 	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
 	    NPionMisIDAsKaon++;
@@ -672,6 +787,10 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	      nkaonminus++;
 	  }  
 	  else{
+	    pionke[0] = pxf_reco[k];
+	    pionke[1] = pyf_reco[k];
+	    pionke[2] = pzf_reco[k];
+
 	    if(chargeflip)
 	      npiminus++;
 	    else
@@ -680,18 +799,29 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	}
       }
       else if(pdgf[k] == -211 || pdgf[k] == -13){ // pi-, muons and pions are not separatable
-	// Minimum track length cut
-	if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
 	if(Ef_reco[k] < epionreconcut){continue;}
 
-	if(momentum > MaxMomentumPID)
+	// Minimum track length cut
+        if(dist < tracklengthcut){
+	  if(dist > clusterhits)
+            otherpar++;
+
+	  continue;
+	}
+
+	if(momentum > MaxMomentumPID || !goodpid){
 	  otherpar++;
+	}
 	else{
 	  if(rnum < PionMisIDAsProton*1000){ // Mis-identified as proton?
 	    NPionMisIDAsProton++;
-	    if(chargeflip)// has to be positive charged
+	    if(chargeflip){// has to be positive charged
 	      nprotons++;
+	      pke[0] = pxf_reco[k];
+              pke[1] = pyf_reco[k];
+              pke[2] = pzf_reco[k];
+	    }
 	  }
 	  else if(rnum > PionMisIDAsProton*1000 && rnum < (PionMisIDAsProton+PionMisIDAsKaon)*1000){
 	    NPionMisIDAsKaon++;
@@ -701,6 +831,10 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	      nkaonminus++;
           }
 	  else{
+	    pionke[0] = pxf_reco[k];
+            pionke[1] = pyf_reco[k];
+            pionke[2] = pzf_reco[k];
+
 	    if(chargeflip)
 	      npiplus++;
 	    else
@@ -713,16 +847,27 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	npizero++;
       }
       else if(pdgf[k] == 2212){ // proton
-	// Minimum track length cut
-	if(Trkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
-	if(Ef_reco[k] < eprotonreconcut){continue;}
+        if(Ef_reco[k] < eprotonreconcut){continue;}
 
-	if(momentum > MaxMomentumPID)
+	// Minimum track length cut
+        if(dist < tracklengthcut){
+	  if(dist > clusterhits)
+            otherpar++;
+
+	  continue;
+	}
+
+	if(momentum > MaxMomentumPID || !goodpid){
 	  otherpar++;
+	}
 	else{
 	  if(rnum < ProtonMisIDAsPion*1000){ // mis-id as pion
 	    NProtonMisIDAsPion++;
+	    pionke[0] = pxf_reco[k];
+            pionke[1] = pyf_reco[k];
+            pionke[2] = pzf_reco[k];
+
 	    if(chargeflip)
 	      npiminus++;
 	    else
@@ -736,19 +881,45 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	      nkaonminus++;
           }
 	  else{// now check the charge
-	    if(!chargeflip)
+	    if(!chargeflip){
 	      nprotons++;
+	      pke[0] = pxf_reco[k];
+	      pke[1] = pyf_reco[k];
+	      pke[2] = pzf_reco[k];
+	      //pangle = cthf_reco[k];
+	    }
 	  }
 	}
       }
       else if(pdgf[k] == 321){ // kaon+
-	// Minimum track length cut
-        if(Trkf_reco[k] < tracklengthcut){continue;}
-        // Energy cut
+	// Energy cut
         if(Ef_reco[k] < ekaonreconcut){continue;}
 
-	if(momentum > MaxMomentumPID)
+	// Minimum track length cut
+	if(dist < tracklengthcut){
+	  if(dist > clusterhits)
+            otherpar++;
+
+	  continue;
+	}
+
+	if(momentum > MaxMomentumPID || !goodpid){
           otherpar++;
+	}
+	else if(momentum > 0.8 && momentum <= MaxMomentumPID){// exception for kaons
+	  // Above this momentum the pion-kaon separation is not possible
+	  if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+            NKaonMisIDAsPion++;
+	    pionke[0] = pxf_reco[k];
+            pionke[1] = pyf_reco[k];
+            pionke[2] = pzf_reco[k];
+
+            if(chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+          }
+	}
         else{
 	  if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
 	    NKaonMisIDAsPion++;
@@ -759,21 +930,46 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	  }
 	  else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){ // mis-id as proton
 	    NKaonMisIDAsProton++;
-	    if(!chargeflip)
+	    if(!chargeflip){
 	      nprotons++;
+	      pke[0] = pxf_reco[k];
+              pke[1] = pyf_reco[k];
+              pke[2] = pzf_reco[k];
+	    }
 	  }
 	  else
 	    nkaonplus++;
 	}
       }
       else if(pdgf[k] == -321){ // kaon-
-	// Minimum track length cut
-        if(Trkf_reco[k] < tracklengthcut){continue;}
-        // Energy cut
+	// Energy cut
         if(Ef_reco[k] < ekaonreconcut){continue;}
 
-	if(momentum > MaxMomentumPID)
-          otherpar++;
+	// Minimum track length cut
+	if(dist < tracklengthcut){
+	  if(dist > clusterhits)
+            otherpar++;
+
+	  continue;
+	}
+
+	if(momentum > MaxMomentumPID || !goodpid){
+	  otherpar++;
+	}
+	else if(momentum > 0.8 && momentum <= MaxMomentumPID){// exception for kaons
+	  // Above this momentum the pion-kaon separation is not possible
+	  if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
+            NKaonMisIDAsPion++;
+	    pionke[0] = pxf_reco[k];
+            pionke[1] = pyf_reco[k];
+            pionke[2] = pzf_reco[k];
+
+	    if(!chargeflip)
+              npiminus++;
+            else
+              npiplus++;
+	  }
+        }
         else{
           if(rnum < KaonMisIDAsPion*1000){ // mis-id as pion
 	    NKaonMisIDAsPion++;
@@ -784,8 +980,12 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
           }
           else if(rnum > KaonMisIDAsPion*1000 && rnum < (KaonMisIDAsPion+KaonMisIDAsProton)*1000){ // mis-id as proton
 	    NKaonMisIDAsProton++;
-            if(chargeflip)
+            if(chargeflip){
               nprotons++;
+	      pke[0] = pxf_reco[k];
+              pke[1] = pyf_reco[k];
+              pke[2] = pzf_reco[k];
+	    }
           }
           else
             nkaonminus++;
@@ -793,7 +993,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       }
       if(pdgf[k] == 2112){
 	// Minimum track length cut
-        if(Trkf_reco[k] < tracklengthcut){continue;}
+	if(dist < tracklengthcut){continue;}
         // Energy cut
         if(Ef_reco[k] < 0.25){continue;}
 
@@ -801,7 +1001,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       }
       else{
 	// Minimum track length cut
-	//if(Trkf_reco[k] < tracklengthcut){continue;}
+	// if(dist < tracklengthcut){continue;}
 	// Energy cut
 	if(Ef_reco[k] < 0.25){continue;}
 	nother++;
@@ -882,10 +1082,17 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     // Check for electrons
     for(int k = 0; k < nEMf; k++){
       if(EMpdgf[k] == 11 || EMpdgf[k] == -11){
-	// Minimum track length cut
-	if(EMTrkf_reco[k] < tracklengthcut){continue;}
 	// Energy cut
-	if(EMEf_reco[k] < eelectronreconcut){continue;}
+        if(EMEf_reco[k] < eelectronreconcut){continue;}
+
+	// Minimum track length cut
+	if(abs(EMTrkf_reco[k]*cthf_reco[k]) < tracklengthcut){
+	  if(abs(EMTrkf_reco[k]*cthf_reco[k]) > clusterhits)
+            otherpar++;
+
+	  continue;
+	}
+
 	nem++;
 	if(EMEf_reco[k] > energeticelectron){
 	  energeticelectron = EMEf_reco[k];
@@ -896,8 +1103,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 
     // All recon tracks
     int ntotal = npiplus+npiminus+nprotons+nkaonplus+nkaonminus+nem+ngamma+nother+otherpar+npizerorecon;
+    NTracks = ntotal + npizerorecon*2; // two recon objects (photons) to reconstruct pizero
+    if(NTracks > ntrack){undefined = true;}
     // Other EM activity
-    //int otherem = nem+ngamma;
 
     if(neu == 14){
       if(cc){
@@ -931,7 +1139,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	  reactionmode = 12;
       }
       else{
-	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	//LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	reactionmode = -1;
+	undefined = true;
       }
     }
     else if(neu == -14){
@@ -966,7 +1176,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	  reactionmode = 25;
       }
       else{
-	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	//LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	reactionmode = -1;
+        undefined = true;
       }
     }
     else if(neu == 12){
@@ -1001,7 +1213,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	  reactionmode = 38;
       }
       else{
-	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	//LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	reactionmode = -1;
+        undefined = true;
       }
     }
     else if(neu == -12){
@@ -1036,7 +1250,9 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	  reactionmode = 51;
       }
       else{
-	LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	//LOG("ReadFastMC",pNOTICE) << "Event which is not CC or NC: " << i;
+	reactionmode = -1;
+        undefined = true;
       }
     }
     else{
@@ -1062,10 +1278,10 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 	}
       }
     }
-    
     // Select opposite sign numu  
     if(undefined){
-      if(EvClass_reco == 0 && Ev_reco > EReconCut)
+      double dist = abs(cthL_reco*TrkL_reco);
+      if(EvClass_reco == 0 && Ev_reco > EReconCut && NTracks < 20 && reactionmode != -1 && dist > tracklengthcut)
 	sample = 9;
       else{
 	if(debugtree)
@@ -1078,8 +1294,23 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       // Selection
       if(EvClass_reco == 0){ // cc-numu
 	if(Ev_reco > EReconCut){
-	  if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 1;
-	  else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0) sample = 2;
+	  if(npionscharge == 0      && npizerorecon == 0 && nprotons == 0 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0){
+	    // Neutrino enrgy from CCQE formula
+	    Ev_reco = (neutronmass*EL_reco - muonmass*muonmass)/(neutronmass - EL_reco + pL_reco*cthL_reco);
+	    sample = 1;
+	  }
+	  else if(npionscharge == 0 && npizerorecon == 0 && nprotons == 1 && otherpar == 0 && nem == 0 && ngamma == 0 && nkaons == 0 && nother == 0){
+	    double mpar = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco); 
+	    double ppar = sqrt(pke[0]*pke[0] + pke[1]*pke[1] + pke[2]*pke[2]);
+	    double mdp = pxL_reco*pke[0] + pyL_reco*pke[1] + pzL_reco*pke[2];
+	    double cosmp = mdp/ (mpar*ppar);
+	    OpeningAngle = acos(cosmp)*180/pi;
+
+	    if(OpeningAngle >= openangle)
+	      sample = 2;
+	    else
+	      sample = 7;
+	  }
 	  else if(npionscharge == 1 && npizerorecon == 0 && otherpar == 0 && nem == 0 && ngamma == 0) sample = 3;
 	  else if(npionscharge == 2 && npizerorecon == 0 && otherpar == 0 && nem == 0 && ngamma == 0) sample = 4;
 	  else if(npionscharge == 0 && npizerorecon == 1 && otherpar == 0 && nem == 0 && ngamma == 0) sample = 5;
@@ -1105,11 +1336,11 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
       } // cc-nue
       else if(EvClass_reco == 2){ // nc
 	// If the muon is reconstructed, but not selected in the CC selection, count it as an extra pion: - no muon-pion separation at the moment
-	if(TrkL_reco > tracklengthcut){
-	  npionscharge++;
-	  ntotal++;
-	}
-	if(ntotal > 0){ 
+	//if(TrkL_reco > 0 && abs(TrkL_reco*cthL_reco) > tracklengthcut){
+	// npionscharge++;
+	// ntotal++;
+	//}
+	if(ntotal > 0){
 	  if(npionscharge == 1 && npizerorecon == 0 && otherpar == 0 && nem == 0 && ngamma == 0){
 	    if(Ev_reco < EVisibleCut)
 	      sample = 11;
@@ -1130,7 +1361,7 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
 		continue;
 	    }
 	  }
-	  else if(npionscharge == 0 && npizerorecon == 0 && otherpar == 0 && nprotons == 0 && nkaons == 0 && nother == 0 && nem == 0 && ngamma > 0){ // events with only one gamma in the fs -> do not select
+	  else if(npionscharge == 0 && npizerorecon == 0 && otherpar == 0 && nprotons == 0 && nkaons == 0 && nother == 0 && nem == 0 && ngamma > 0){ // events with only gammas in the fs -> do not select
 	    NPhotonNC = ngamma;
 	    // No sample here
 	    if(debugtree)
@@ -1151,6 +1382,8 @@ TTree* ReadFastMC::FastMCTree(int seed, bool debugtree){
     // Fill the tree
     FastMCTree->Fill();
   }
+
+  rand->Delete();
 
   return FastMCTree;
 }
@@ -1601,16 +1834,92 @@ TObjArray* ReadFastMC::StoreHistograms(){
   TH1D* SingleGammaEnergy    = new TH1D("SingleGammaEnergy"   ,"",200,0,1);
   //TH1D* SingleGammaEnergyNC  = new TH1D("SingleGammaEnergyNC" ,"",200,0,1);
 
+  TH1D* CCEndOfTrackerEnergy = new TH1D("CCEndOfTrackerEnergy","",200,0,20);
+  TH1D* CCFrontTrackerEnergy = new TH1D("CCFrontTrackerEnergy","",200,0,20);
+  TH1D* NCEndOfTrackerEnergy = new TH1D("NCEndOfTrackerEnergy","",200,0,20);
+  TH1D* NCFrontTrackerEnergy = new TH1D("NCFrontTrackerEnergy","",200,0,20);
+
+  TH2D* NCVertexXY           = new TH2D("NCVertexXY" ,"",100,-2,2,100,-2,2);
+  TH2D* NCVertexXZ           = new TH2D("NCVertexXZ" ,"",100,0,6,100,-2,2);
+  TH2D* NCVertexYZ           = new TH2D("NCVertexYZ" ,"",100,0,6,100,2,2);
+
+  TH2D* CCVertexXY           = new TH2D("CCVertexXY" ,"",100,-2,2,100,-2,2);
+  TH2D* CCVertexXZ           = new TH2D("CCVertexXZ" ,"",100,0,6,100,-2,2);
+  TH2D* CCVertexYZ           = new TH2D("CCVertexYZ" ,"",100,0,6,100,-2,2);
+
+  TH2D* CCVertexXAngle       = new TH2D("CCVertexXAngle" ,"",100,-2,2,200,-1,1);
+  TH2D* CCVertexYAngle       = new TH2D("CCVertexYAngle" ,"",100,-2,2,200,-1,1);
+  TH2D* CCVertexZAngle       = new TH2D("CCVertexZAngle" ,"",100,0,6,200,-1,1);
+
+  // This is for CC-nue candidates
+  TH1D* ElectronAngle        = new TH1D("ElectronAngle","",200,-1,1);
 
   const double pizeromass = 0.13498;
+
+  // POT normalization
+  double potnorm = (double)1.0/nevents;
+  // FHC number of interactions / POT / kt in near detector
+  const double fhcnumucc  = 2.20470814946438192e-12;
+  const double fhcnumunc  = 7.44097783570827432e-13;
+  const double fhcanumucc = 2.40172755208848353e-13;
+  const double fhcanumunc = 9.94691414573208180e-14;
+  const double fhcnuecc   = 3.93836306563397024e-14;
+  const double fhcnuenc   = 1.28277349032322958e-14;
+  const double fhcanuecc  = 8.90001130526597293e-15;
+  const double fhcanuenc  = 3.56767548734831866e-15;
+  // RHC number of interactions / POT / kt in near detector
+  const double rhcnumucc  = 7.13519775915776830e-13;
+  const double rhcnumunc  = 2.32947135468662667e-13;
+  const double rhcanumucc = 7.25899675039850760e-13;
+  const double rhcanumunc = 3.23041943142292877e-13;
+  const double rhcnuecc   = 2.47793150219174462e-14;
+  const double rhcnuenc   = 7.95950835278876701e-15;
+  const double rhcanuecc  = 1.30149006424548413e-14;
+  const double rhcanuenc  = 5.38102770838081824e-15;
+
+  double fhcnumuweight  = (fhcnumucc  + fhcnumunc )*potnorm;
+  double fhcanumuweight = (fhcanumucc + fhcanumunc)*potnorm;
+  double rhcnumuweight  = (rhcnumucc  + rhcnumunc )*potnorm;
+  double rhcanumuweight = (rhcanumucc + rhcanumunc)*potnorm;
+  double fhcnueweight   = (fhcnuecc   + fhcnuenc  )*potnorm;
+  double fhcanueweight  = (fhcanuecc  + fhcanuenc )*potnorm;
+  double rhcnueweight   = (rhcnuecc   + rhcnuenc  )*potnorm;
+  double rhcanueweight  = (rhcanuecc  + rhcanuenc )*potnorm;
+
  
   TTree *gstTree = ReadTree(inFile);
 
   for(int i = 0; i < gstTree->GetEntries(); i++){
     gstTree->GetEntry(i);
 
+    if(neutrinoPDG == 14 || neutrinoPDG == 12){
+      if(neu == 14)
+        POTWeight = fhcnumuweight;
+      else if(neu == -14)
+        POTWeight = fhcanumuweight;
+      else if(neu == 12)
+        POTWeight = fhcnueweight;
+      else if(neu == -12)
+        POTWeight = fhcanueweight;
+    }
+    else if(neutrinoPDG == -14 || neutrinoPDG == -12){
+      if(neu == 14)
+        POTWeight = rhcnumuweight;
+      else if(neu == -14)
+        POTWeight = rhcanumuweight;
+      else if(neu == 12)
+        POTWeight = rhcnueweight;
+      else if(neu == -12)
+        POTWeight = rhcanueweight;
+    }
+
     // No recon neutrino energy? -> continue
     if(Ev_reco < enureconcut){continue;}
+
+    // CCnue candidates
+    if(EvClass_reco == 1){
+      ElectronAngle->Fill(cthL_reco,POTWeight);
+    }
 
     if(EvClass_reco == 0){
       // Find if the selected lepton is not actually a lepton
@@ -1624,8 +1933,10 @@ TObjArray* ReadFastMC::StoreHistograms(){
       // Momentum
       double lmom = sqrt(pxL_reco*pxL_reco + pyL_reco*pyL_reco + pzL_reco*pzL_reco);
       if(lmom > 0){
-	if(PdgL_reco == 13 || PdgL_reco == -13)
+	if(PdgL_reco == 13 || PdgL_reco == -13){
 	  MuonMomentumCC->Fill(lmom);
+	  MuonTrackLength->Fill(TrkL_reco);
+	}
 	else if(PdgL_reco == 11 || PdgL_reco == -11)
 	  ElectronMomentumCC->Fill(lmom);
 	else if(PdgL_reco == 211 || PdgL_reco == -211)
@@ -1651,7 +1962,7 @@ TObjArray* ReadFastMC::StoreHistograms(){
       }
       else if(abs(pdgf[k]) == 13){
 	MuonMomentum->Fill(momentum);
-	MuonTrackLength->Fill(Trkf_reco[k]);
+	//MuonTrackLength->Fill(Trkf_reco[k]);
       }
       else if(abs(pdgf[k]) == 211){
 	PionMomentum->Fill(momentum);
@@ -1666,13 +1977,45 @@ TObjArray* ReadFastMC::StoreHistograms(){
 	OtherTrackLength->Fill(Trkf_reco[k]);
       }
     }
-
-    /*
+    
     // Tracker boundaries
     const double xmin = -1.5; const double xmax = 1.5;
     const double ymin = -1.5; const double ymax = 1.5;
     const double zmin = 0.25; const double zmax = 5.5;
-    */
+
+    // Check how many true cc events are reconstructed as nc at the rear of the detector
+    if(EvClass_reco == 2){
+
+      if(y_reco == 1){
+	if(nc){
+	  NCVertexXY->Fill(vtxx,vtxy);
+	  NCVertexXZ->Fill(vtxz,vtxx);
+	  NCVertexYZ->Fill(vtxz,vtxy);
+	}
+	else{
+	  CCVertexXY->Fill(vtxx,vtxy);
+	  CCVertexXZ->Fill(vtxz,vtxx);
+	  CCVertexYZ->Fill(vtxz,vtxy);
+	  
+	  CCVertexXAngle->Fill(vtxx,cthl);
+	  CCVertexYAngle->Fill(vtxy,cthl);
+	  CCVertexZAngle->Fill(vtxz,cthl);
+	}
+	
+	if(vtxz > zmax-0.5){
+	  if(cc)
+	    CCEndOfTrackerEnergy->Fill(Ev_reco);
+	  else
+	    NCEndOfTrackerEnergy->Fill(Ev_reco);
+	}
+	else{
+	  if(cc)
+	    CCFrontTrackerEnergy->Fill(Ev_reco);
+	  else
+	    NCFrontTrackerEnergy->Fill(Ev_reco);
+	}
+      }
+    }
 
     if(nEMf == 1)
       SingleGammaEnergy->Fill(EMEf[0]);
@@ -1788,6 +2131,21 @@ TObjArray* ReadFastMC::StoreHistograms(){
   histarray->Add(PiZDGammaElec2Energy);
   histarray->Add(SingleGammaEnergy);
   //histarray->Add();
+  histarray->Add(CCEndOfTrackerEnergy);
+  histarray->Add(NCEndOfTrackerEnergy);
+  histarray->Add(CCFrontTrackerEnergy);
+  histarray->Add(NCFrontTrackerEnergy);
+  histarray->Add(CCVertexXY);
+  histarray->Add(CCVertexXZ);
+  histarray->Add(CCVertexYZ);
+  histarray->Add(NCVertexXY);
+  histarray->Add(NCVertexXZ);
+  histarray->Add(NCVertexYZ);
+  histarray->Add(CCVertexXAngle);
+  histarray->Add(CCVertexYAngle);
+  histarray->Add(CCVertexZAngle);
+
+  histarray->Add(ElectronAngle);
 
   gstTree->Delete();
 
@@ -2475,17 +2833,49 @@ bool ReadFastMC::ChargeFlip(int seed, double momentum){
   TRandom3 *random = new TRandom3();
 
   // Functions for the charge flip parameterization
-  TF1 *ft = new TF1("ft","expo");
-  ft->SetParameter(0,ChargeConfTrLConst);
-  ft->SetParameter(1,ChargeConfTrLSlope);
+  //TF1 *ft = new TF1("ft","expo");
+  //ft->SetParameter(0,ChargeConfTrLConst);
+  //ft->SetParameter(1,ChargeConfTrLSlope);
   TF1 *fp = new TF1("fp","expo");
   fp->SetParameter(0,ChargeConfMomConst);
   fp->SetParameter(1,ChargeConfMomSlope);
+  TF1 *fptail = new TF1("fptail","expo");
+  fptail->SetParameter(0,ChargeConfMomTailConst);
+  fptail->SetParameter(1,ChargeConfMomTailSlope);
 
   random->SetSeed(seed);
 
   double cmisid = 0.0;
+  double smear = 0.0;
   int rcnum = random->Integer(1000);
+  random->SetSeed(seed*seed*seed);
+
+  if(momentum > 0.8 && momentum < 10){
+    smear = random->Gaus(1.0,0.05);
+    cmisid = fp->Eval(momentum*1000);
+    if(cmisid > 1.0)
+      cmisid = 1.0;
+
+    cmisid = cmisid*smear/100;
+  }
+  else if(momentum >= 10){
+    smear = random->Gaus(1.0,0.1);
+    cmisid = fptail->Eval(momentum*1000);
+    if(cmisid > 1.0)
+      cmisid = 1.0;
+
+    cmisid = cmisid*smear/100;
+  }
+  else if(momentum > 0.5 && momentum <= 0.8){
+    smear = random->Gaus(2.5,0.5);
+    cmisid = fp->Eval(0.8*1000)*smear/100;
+  }
+  else if(momentum <= 0.5){
+    smear = random->Gaus(2.7,0.7);
+    cmisid = fp->Eval(0.8*1000)*smear/100;
+  }
+  //cout << "momentum = " << momentum << " , cmisid = " << cmisid*1000 << " , smear = " << smear << " , rcnum = " << rcnum << endl;
+  /*
   if(momentum > 0.8 && momentum < 8){
     cmisid = fp->Eval(momentum*1000);
   }
@@ -2502,10 +2892,12 @@ bool ReadFastMC::ChargeFlip(int seed, double momentum){
   else if(momentum <= 0.5){
     cmisid = fp->Eval(0.8*1000)*5;
   }
+  */
 
   random->Delete();
-  ft->Delete();
+  //ft->Delete();
   fp->Delete();
+  fptail->Delete();
 
   // Charge flip
   if(rcnum < cmisid*1000)
@@ -2517,16 +2909,38 @@ bool ReadFastMC::ChargeFlip(int seed, double momentum){
 // ----------------------------------------------------------------------------
 bool ReadFastMC::IsReconTrack(int seed){
 
+  bool val = false;
   // Random generator
   TRandom3 *random = new TRandom3();
   random->SetSeed(seed);
 
   int rcnum = random->Integer(1000);
-  if(rcnum < ReconEfficiency*1000)
-    return true;
-  else
-    return false;
 
+  if(rcnum < ReconEfficiency*1000)
+    val = true;
+
+  random->Delete();
+  
+  return val;
+
+}
+// ----------------------------------------------------------------------------
+bool ReadFastMC::GoodPid(int seed){
+
+  bool val = true;
+  // Random generator
+  TRandom3 *random = new TRandom3();
+  random->SetSeed(seed);
+
+  double num = random->Gaus(0,1);
+
+  // Is the recon pid is 2.5 sigma away from the expected?
+  if(abs(num) > 2.5)
+    val = false;
+
+  random->Delete();
+
+  return val;
 }
 // ----------------------------------------------------------------------------
 TTree* ReadFastMC::ReadTree(string f){
@@ -2552,6 +2966,7 @@ TTree* ReadFastMC::ReadTree(string f){
   gstTree->SetBranchAddress("cc",          &cc);
   gstTree->SetBranchAddress("nc",          &nc);
   gstTree->SetBranchAddress("charm",       &charm);
+  gstTree->SetBranchAddress("sea",         &sea);
 
   gstTree->SetBranchAddress("Ev_reco",     &Ev_reco);
   gstTree->SetBranchAddress("Ev",          &Ev);
