@@ -36,6 +36,8 @@
 
 #include "Utilities/UtlXML.h"
 
+#include "Conventions/ReacMode.h"
+#include "NDFit/NDSample.h"
 #include "NDFit/NDModel.h"
 
 using namespace std;
@@ -57,6 +59,15 @@ namespace valor {
     // Read the datacard
     void ReadXMLDatacard(string datacard);
 
+    // Return the number of E_reco, E_true, y_reco bins
+    int GetERecoBins(){return erecobins;};
+    int GetETrueBins(){return etruebins;};
+    int GetYRecoBins(){return yrecobins;};
+
+    // Get the number of samples and the number of reaction modes
+    int GetNumberOfSamples(){return conv::kNNDSamples;};
+    int GetNumberOfReacModes(){return conv::kNReacModes;};
+
   protected:
     // Tree variables
     double ELScale[7], EhadScale[7];
@@ -65,6 +76,12 @@ namespace valor {
     double Ehad_reco, EL_reco;
     // NDModel
     NDModel *ndmodel;
+    // Number of bins
+    int erecobins, etruebins, yrecobins;
+    void SetERecoBins(int ferecobins){erecobins = ferecobins;};
+    void SetETrueBins(int fetruebins){etruebins = fetruebins;};
+    void SetYRecoBins(int fyrecobins){yrecobins = fyrecobins;};
+
   private:
     ClassDef(MakeSplines,1)
       };

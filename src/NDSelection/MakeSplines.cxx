@@ -153,22 +153,23 @@ TMatrixD MakeSplines::MakeGraphs(string confile){
     VALORArray* array = (VALORArray*)NDModelArray->At(i);
     
     TString arrayname(array->GetName());
+    // Options are nom, tun, sys, fin
     if(arrayname.Contains("nom"))
       NDNomModelArray->Add(array);
 
     //delete array;
 
   }
-  //cout << "sample number = " << NDNomModelArray->GetEntries() << endl;
 
   VALORArray* temparray = (VALORArray*)NDModelArray->At(0);
-  int mdim = 0;
-  for(int j = 0; j < temparray->GetSize(0); j++)
-    for(int k = 0; k < temparray->GetSize(1); k++)
-      for(int r = 0; r < temparray->GetSize(2); r++)
-	mdim++;
+  int mdim = temparray->GetSize(0)*temparray->GetSize(1)*temparray->GetSize(2);
 
-  cout << "bin number = " << mdim << " , array dimensions = " << NDNomModelArray->GetEntries() << endl;
+  LOG("MakeSplines",pNOTICE) << "E_reco bins = " << temparray->GetSize(0) << " , y_reco bins = " << temparray->GetSize(1) << " , E_true bins = " << temparray->GetSize(2) << " , All bins = " << mdim << ". Array dimensions (samples*modes) = " << NDNomModelArray->GetEntries();
+
+  // Set the number of bins
+  SetERecoBins(temparray->GetSize(0));
+  SetYRecoBins(temparray->GetSize(1));
+  SetETrueBins(temparray->GetSize(2));
  
   TMatrixD MMatrix(NDNomModelArray->GetEntries(),mdim);
 
