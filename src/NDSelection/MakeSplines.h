@@ -39,6 +39,7 @@
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDModel.h"
+#include "NDFit/NDSampleBinning.h"
 
 using namespace std;
 // --------------------------------------------------------------------------
@@ -52,7 +53,7 @@ namespace valor {
     virtual ~MakeSplines();
 
     // Matrix containing the +/- 1,2,3 sigma energy scale
-    TMatrixD MakeGraphs(string confile);
+    TMatrixD MakeGraphs(string confile, int zone, bool sb = false);
     // Array of trees saving the energy scale application 
     TObjArray* CreateArray(string inFile, string inTree, bool leptonic);
 
@@ -65,8 +66,9 @@ namespace valor {
     int GetYRecoBins(){return yrecobins;};
 
     // Get the number of samples and the number of reaction modes
-    int GetNumberOfSamples(){return conv::kNNDSamples;};
+    int GetNumberOfSamples(){return   conv::kNNDSamples;};
     int GetNumberOfReacModes(){return conv::kNReacModes;};
+    int GetNumberOfBinZones(){return  conv::kNMaxBinZones;};
 
   protected:
     // Tree variables
@@ -75,9 +77,10 @@ namespace valor {
     double Ev, Ev_reco, y_reco, POTWeight;
     double Ehad_reco, EL_reco;
     // NDModel
-    NDModel *ndmodel;
+    //NDModel *ndmodel;
     // Number of bins
     int erecobins, etruebins, yrecobins;
+
     void SetERecoBins(int ferecobins){erecobins = ferecobins;};
     void SetETrueBins(int fetruebins){etruebins = fetruebins;};
     void SetYRecoBins(int fyrecobins){yrecobins = fyrecobins;};

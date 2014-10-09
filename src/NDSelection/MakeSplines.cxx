@@ -16,6 +16,7 @@ ChangeLog:
 #include <algorithm>
 
 #include "TXMLEngine.h"
+#include "TString.h"
 
 #include "Conventions/Opt.h"
 #include "Messenger/Messenger.h"
@@ -28,12 +29,12 @@ ClassImp(MakeSplines)
 
 MakeSplines::MakeSplines()
 {
-  ndmodel = new NDModel();
+
 }
 
 MakeSplines::~MakeSplines()
 {
-  delete ndmodel;
+
 }
 
 void MakeSplines::ReadXMLDatacard(string datacard){
@@ -141,41 +142,51 @@ TObjArray* MakeSplines::CreateArray(string inFile, string inTree, bool leptonic)
   return SplineArray;
 }
 
-TMatrixD MakeSplines::MakeGraphs(string confile){
+TMatrixD MakeSplines::MakeGraphs(string confile, int zone, bool sb){
 
+  // NDModel
+  NDModel *ndmodel  = new NDModel();
   ndmodel->Read(confile);
+
+  TObjArray* Array = new TObjArray();
+
+  if(sb)
+    ndmodel->Write(Array,"model","mct_vf+SB");
+  else
+    ndmodel->Write(Array,"model","mct_vf");
+
+  // Create a smaller array with the chosen zone
   TObjArray* NDModelArray = new TObjArray();
-  ndmodel->Write(NDModelArray,"model","mct_vf");
-  
-  TObjArray* NDNomModelArray = new TObjArray();
+  TString zonestr; zonestr.Form("z%i",zone);
 
-  for(int i = 0; i < NDModelArray->GetEntries(); i++){
-    VALORArray* array = (VALORArray*)NDModelArray->At(i);
-    
+  for(int i = 0; i < Array->GetEntries(); i++){
+    VALORArray* array = (VALORArray*)Array->At(i);
     TString arrayname(array->GetName());
-    // Options are nom, tun, sys, fin
-    if(arrayname.Contains("nom"))
-      NDNomModelArray->Add(array);
-
-    //delete array;
-
+    if(arrayname.Contains(zonestr.Data()) && arrayname.Contains("nom"))
+      NDModelArray->Add(array);
   }
 
-  VALORArray* temparray = (VALORArray*)NDModelArray->At(0);
-  int mdim = temparray->GetSize(0)*temparray->GetSize(1)*temparray->GetSize(2);
+  int mdim = 0;
+  for(int i = 0; i < NDModelArray->GetEntries(); i++){
+    VALORArray* temparray = (VALORArray*)NDModelArray->At(i);
+    int tdim = temparray->GetSize(0)*temparray->GetSize(1)*temparray->GetSize(2);
+    if(tdim > mdim){
+      mdim = tdim;
+      
+      LOG("MakeSplines",pNOTICE) << "Zone " << zone << ". E_reco bins = " << temparray->GetSize(0) << " , y_reco bins = " << temparray->GetSize(1) << " , E_true bins = " << temparray->GetSize(2) << " , All bins = " << mdim << ". Array dimensions (samples*modes) = " << NDModelArray->GetEntries();
 
-  LOG("MakeSplines",pNOTICE) << "E_reco bins = " << temparray->GetSize(0) << " , y_reco bins = " << temparray->GetSize(1) << " , E_true bins = " << temparray->GetSize(2) << " , All bins = " << mdim << ". Array dimensions (samples*modes) = " << NDNomModelArray->GetEntries();
+      // Set the max number of bins
+      SetERecoBins(temparray->GetSize(0));
+      SetYRecoBins(temparray->GetSize(1));
+      SetETrueBins(temparray->GetSize(2));
+    }
+  }
 
-  // Set the number of bins
-  SetERecoBins(temparray->GetSize(0));
-  SetYRecoBins(temparray->GetSize(1));
-  SetETrueBins(temparray->GetSize(2));
- 
-  TMatrixD MMatrix(NDNomModelArray->GetEntries(),mdim);
+  TMatrixD MMatrix(NDModelArray->GetEntries(),mdim);
 
-  for(int i = 0; i < NDNomModelArray->GetEntries(); i++){
-    VALORArray* temparray = (VALORArray*)NDNomModelArray->At(i);
-        
+  for(int i = 0; i < NDModelArray->GetEntries(); i++){
+    VALORArray* temparray = (VALORArray*)NDModelArray->At(i);
+
     int fdim = 0;
     for(int j = 0; j < temparray->GetSize(0); j++){
       for(int k = 0; k < temparray->GetSize(1); k++){
@@ -187,10 +198,18 @@ TMatrixD MakeSplines::MakeGraphs(string confile){
 	}
       }
     }
+
+    if(fdim < mdim){
+      LOG("MakeSplines",pNOTICE) << "Found variable binning scheme. The last entries of the binning matrix will fill with -10000. Valor array dimensions = " << fdim << " , Max dimensions = " << mdim << " , for the array " << temparray->GetName();
+      for(int j = fdim+1; j < mdim; j++)
+	MMatrix(i,j) = -10000;
+    }
+
   }
 
-  delete NDNomModelArray;
+  delete Array;
   delete NDModelArray;
+  delete ndmodel;
 
   return MMatrix;
 
