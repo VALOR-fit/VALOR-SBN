@@ -61,7 +61,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
   }//ibeam
 
   //
-  // Read-in and plot 1-D total PDFs slices
+  // Read-in and plot 1-D PDFs slices for different y ranges
   //..............................................................................................
   //
 
@@ -229,6 +229,24 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       hframe->GetYaxis()->SetTitle("Events /bin");
       stack->Draw("same");
       leg->Draw();
+      //
+      // Now write out tables
+      //  
+      double ntot_sample = 0;
+      for(int imode = 0; imode < conv::kNReacModes; imode++) {
+         conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+         if(m == conv::kmUndefined) continue;
+            cout << "Taking mode: " << util::AsString(m) << endl;
+         ntot_sample += pdf_contrib[imode]->Integral();
+      }
+      for(int imode = 0; imode < conv::kNReacModes; imode++) {
+         conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+         if(m == conv::kmUndefined) continue;
+         double ntot = pdf_contrib[imode]->Integral();
+         double frac = 100*ntot/ntot_sample;
+         cout << util::AsStringTeX(m,false) << "\t & " << frac << "\\" << endl;
+      }
+
     }//isample
   }//ibeam
 

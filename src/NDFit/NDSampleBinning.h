@@ -317,19 +317,19 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 namespace util   {
 
    // Etrue binning
-   const int      NumEtrueBins    (conv::NDSample_t sample);
+   int            NumEtrueBins    (conv::NDSample_t sample);
    const double * EtrueBinEdges   (conv::NDSample_t sample);
 
    // Simple binning scheme
-   const int      NumYrecoBinsSb  (conv::NDSample_t sample);
+   int            NumYrecoBinsSb  (conv::NDSample_t sample);
    const double * YrecoBinEdgesSb (conv::NDSample_t sample);
 
    // Optimized binning scheme
-   const int      NumErecoBins    (conv::NDSample_t sample, int zone);
+   int            NumErecoBins    (conv::NDSample_t sample, int zone);
    const double * ErecoBinEdges   (conv::NDSample_t sample, int zone);
-   const int      NumYrecoBins    (conv::NDSample_t sample, int zone);
+   int            NumYrecoBins    (conv::NDSample_t sample, int zone);
    const double * YrecoBinEdges   (conv::NDSample_t sample, int zone);
-   const int      BinZone         (conv::NDSample_t sample, double enu_reco, double y_reco);
+   int            BinZone         (conv::NDSample_t sample, double enu_reco, double y_reco);
 
 } // util
 

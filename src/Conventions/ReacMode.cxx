@@ -8,6 +8,8 @@ ChangeLog:
 */
 //________________________________________________________________________________________
 
+#include <algorithm>
+
 #include "Conventions/ReacMode.h"
 
 using namespace valor;
@@ -102,6 +104,104 @@ string util::AsString(ReacMode_t m)
     default                  : return "--"; 
   }
   return "";
+}
+//________________________________________________________________________________________
+string util::AsStringTeX(ReacMode_t m, bool root)
+{
+  string name = "";
+
+  switch(m) {
+
+    case (kmNuMuCCQE        ): name = "#nu_{#mu} CCQE";                   break;
+    case (kmNuMuCCMEC       ): name = "#nu_{#mu} CCMEC";                  break;        
+    case (kmNuMuCC1piC      ): name = "#nu_{#mu} CC1#pi^{#pm}";           break;        
+    case (kmNuMuCC1pi0      ): name = "#nu_{#mu} CC1#pi^{0}";             break;        
+    case (kmNuMuCC2piC      ): name = "#nu_{#mu} CC2#pi^{#pm}";           break;        
+    case (kmNuMuCC2pi0      ): name = "#nu_{#mu} CC2#pi^{0}";             break;        
+    case (kmNuMuCCpiCpi0    ): name = "#nu_{#mu} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuMuCCcoh       ): name = "#nu_{#mu} CCcoh";                  break;       
+    case (kmNuMuCCoth       ): name = "#nu_{#mu} CCoth";                  break;        
+
+//  case (kmNuMuNCEL        ): name = "";                                 break;        
+//  case (kmNuMuNCMEC       ): name = "";                                 break;        
+    case (kmNuMuNC1piC      ): name = "#nu_{#mu} NC1#pi^{#pm}";           break;        
+    case (kmNuMuNC1pi0      ): name = "#nu_{#mu} NC1#pi^{0}";             break;        
+//  case (kmNuMuNC2piC      ): name = "";                                 break;        
+//  case (kmNuMuNC2pi0      ): name = "";                                 break;        
+//  case (kmNuMuNCpiCpi0    ): name = "";                                 break;       
+    case (kmNuMuNCcoh       ): name = "#nu_{#mu} NCcoh";                  break;        
+    case (kmNuMuNCoth       ): name = "#nu_{#mu} NCoth";                  break;        
+
+    case (kmNuMuBarCCQE     ): name = "#bar{#nu_{#mu}} CCQE";             break;        
+    case (kmNuMuBarCCMEC    ): name = "#bar{#nu_{#mu}} CCMEC";            break;        
+    case (kmNuMuBarCC1piC   ): name = "#bar{#nu_{#mu}} CC1#pi^{#pm}";     break;       
+    case (kmNuMuBarCC1pi0   ): name = "#bar{#nu_{#mu}} CC1#pi^{0}";       break;       
+    case (kmNuMuBarCC2piC   ): name = "#bar{#nu_{#mu}} CC2#pi^{#pm}";     break;      
+    case (kmNuMuBarCC2pi0   ): name = "#bar{#nu_{#mu}} CC2#pi^{0}";       break;       
+    case (kmNuMuBarCCpiCpi0 ): name = "#bar{#nu_{#mu}} CC#pi^{#pm}#pi0";  break;   
+    case (kmNuMuBarCCcoh    ): name = "#bar{#nu_{#mu}} CCcoh";            break;      
+    case (kmNuMuBarCCoth    ): name = "#bar{#nu_{#mu}} CCoth";            break;    
+
+//  case (kmNuMuBarNCEL     ): name = "";                                 break;    
+//  case (kmNuMuBarNCMEC    ): name = "";                                 break;    
+    case (kmNuMuBarNC1piC   ): name = "#bar{#nu_{#mu}} NC1#pi^{#pm}";     break;   
+    case (kmNuMuBarNC1pi0   ): name = "#bar{#nu_{#mu}} NC1#pi^{0}";       break;    
+//  case (kmNuMuBarNC2piC   ): name = "";                                 break;   
+//  case (kmNuMuBarNC2pi0   ): name = "";                                 break;    
+//  case (kmNuMuBarNCpiCpi0 ): name = "";                                 break;   
+    case (kmNuMuBarNCcoh    ): name = "#bar{#nu_{#mu}} NCcoh";            break;  
+    case (kmNuMuBarNCoth    ): name = "#bar{#nu_{#mu}} NCoth";            break;       
+
+    case (kmNuECCQE         ): name = "#nu_{e} CCQE";                     break;             
+    case (kmNuECCMEC        ): name = "#nu_{e} CCMEC";                    break;         
+    case (kmNuECC1piC       ): name = "#nu_{e} CC1#pi^{#pm}";             break; 
+    case (kmNuECC1pi0       ): name = "#nu_{e} CC1#pi^{0}";               break;    
+    case (kmNuECC2piC       ): name = "#nu_{e} CC2#pi^{#pm}";             break;    
+    case (kmNuECC2pi0       ): name = "#nu_{e} CC2#pi^{0}";               break;    
+    case (kmNuECCpiCpi0     ): name = "#nu_{e} CC#pi^{#pm}#pi^{0}";       break;  
+    case (kmNuECCcoh        ): name = "#nu_{e} CCcoh";                    break;  
+    case (kmNuECCoth        ): name = "#nu_{e} CCoth";                    break;    
+
+//  case (kmNuENCEL         ): name = "";                                 break;    
+//  case (kmNuENCMEC        ): name = "";                                 break;    
+    case (kmNuENC1piC       ): name = "#nu_{e} NC1#pi^{#pm}";             break;    
+    case (kmNuENC1pi0       ): name = "#nu_{e} NC1#pi^{0}";               break;    
+//  case (kmNuENC2piC       ): name = "";                                 break;   
+//  case (kmNuENC2pi0       ): name = "";                                 break;    
+//  case (kmNuENCpiCpi0     ): name = "";                                 break;   
+    case (kmNuENCcoh        ): name = "#nu_{e} NCcoh";                    break; 
+    case (kmNuENCoth        ): name = "#nu_{e} NCoth";                    break;    
+
+    case (kmNuEBarCCQE      ): name = "#bar{#nu_{e}} CCQE";               break;    
+    case (kmNuEBarCCMEC     ): name = "#bar{#nu_{e}} CCMEC";              break;    
+    case (kmNuEBarCC1piC    ): name = "#bar{#nu_{e}} CC1#pi^{#pm}";       break;   
+    case (kmNuEBarCC1pi0    ): name = "#bar{#nu_{e}} CC1#pi^{0}";         break;    
+    case (kmNuEBarCC2piC    ): name = "#bar{#nu_{e}} CC2#pi^{#pm}";       break;   
+    case (kmNuEBarCC2pi0    ): name = "#bar{#nu_{e}} CC2#pi^{0}";         break;    
+    case (kmNuEBarCCpiCpi0  ): name = "#bar{#nu_{e}} CC#pi^{#pm}#pi^{0}"; break;    
+    case (kmNuEBarCCcoh     ): name = "#bar{#nu_{e}} CCcoh";              break;    
+    case (kmNuEBarCCoth     ): name = "#bar{#nu_{e}} CCoth";              break;    
+
+//  case (kmNuEBarNCEL      ): name = "";                                 break;   
+//  case (kmNuEBarNCMEC     ): name = "";                                 break;    
+    case (kmNuEBarNC1piC    ): name = "#bar{#nu_{e}} NC1#pi^{#pm}";       break;   
+    case (kmNuEBarNC1pi0    ): name = "#bar{#nu_{e}} NC1#pi^{0}";         break;    
+//  case (kmNuEBarNC2piC    ): name = "";                                 break;   
+//  case (kmNuEBarNC2pi0    ): name = "";                                 break;    
+//  case (kmNuEBarNCpiCpi0  ): name = "";                                 break;  
+    case (kmNuEBarNCcoh     ): name = "#bar{#nu_{e}} NCcoh";              break;   
+    case (kmNuEBarNCoth     ): name = "#bar{#nu_{e}} NCoth";              break;     
+
+    case (kmOther           ): name = "Other";                            break;     
+    default                  : name = "--"; 
+  }
+
+  if(root) return name;
+
+  // normal TeX, not ROOT TeX - change '#' with '\'
+  replace( name.begin(), name.end(), '#', '\\');
+
+  return name;
 }
 //________________________________________________________________________________________
 ReacMode_t util::ReacModeFromInt(int m)

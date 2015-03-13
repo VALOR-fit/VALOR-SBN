@@ -19,7 +19,7 @@ using namespace valor::conv;
 //
 
 //________________________________________________________________________________________
-const int util::NumEtrueBins(NDSample_t /*sample*/)
+int util::NumEtrueBins(NDSample_t /*sample*/)
 {
   return kNEtrueBins;
 }
@@ -37,7 +37,7 @@ const double * util::EtrueBinEdges(NDSample_t /*sample*/)
 //
 
 //________________________________________________________________________________________
-const int util::NumYrecoBinsSb(NDSample_t s)
+int util::NumYrecoBinsSb(NDSample_t s)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s);
@@ -113,7 +113,7 @@ const double * util::YrecoBinEdgesSb(NDSample_t s)
 //
 
 //________________________________________________________________________________________
-const int util::NumErecoBins(NDSample_t s, int zone)
+int util::NumErecoBins(NDSample_t s, int zone)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting # Ereco bins for sample " << util::AsString(s) << ", zone = " << zone;
@@ -179,7 +179,7 @@ const double * util::ErecoBinEdges(NDSample_t s, int zone)
 #endif
 }
 //________________________________________________________________________________________
-const int util::NumYrecoBins(NDSample_t s, int zone)
+int util::NumYrecoBins(NDSample_t s, int zone)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s) << ", zone = " << zone;
@@ -245,7 +245,7 @@ const double * util::YrecoBinEdges(NDSample_t s, int zone)
 #endif
 }
 //________________________________________________________________________________________
-const int util::BinZone(NDSample_t s, double enu_reco, double y_reco)
+int util::BinZone(NDSample_t s, double enu_reco, double y_reco)
 {
   LOG("NDBinning", pDEBUG) 
     << "Finding bin zone for enu_reco = " << enu_reco << " GeV, y_reco = " << y_reco 

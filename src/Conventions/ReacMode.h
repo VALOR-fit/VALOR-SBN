@@ -116,6 +116,7 @@ ReacMode_t;
 namespace util {
 
   string           AsString        (conv::ReacMode_t m);
+  string           AsStringTeX     (conv::ReacMode_t m, bool root);
   conv::ReacMode_t ReacModeFromInt (int m);
 
 } // util

@@ -210,7 +210,7 @@ TGraph * get_sensitivity(
       if( TMath::Abs(p_true-p_true_save) > epsilon ) {
         cout << "All toy-MC experiments should have been generated with the same true valye of parameter: " << pname << endl;
         cout << "Current value = " << p_true << ", but a value of " << p_true_save << " was seen earlier" << endl;
-        exit(1);
+        //exit(1);
       }
     }
     double p_bf     = best_fit_param_array->BestFitValue(p); // this param was fixed, it was the other N-1 that were fitted
