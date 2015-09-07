@@ -80,7 +80,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           if(fDataNull[ibeam][isample][izone]) continue;
@@ -152,7 +152,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -292,7 +292,7 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
      BeamConf_t b = kNDBeamConf[ibeam];
      if(b == kbUndefined) continue;
      for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
         LOG("NDData",pINFO) 
           << "Generating toy-MC for: " 
@@ -352,7 +352,7 @@ int NDData::NumOfBins(void)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
@@ -395,7 +395,7 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          if(fDataNull[ibeam][isample][izone]) continue;
@@ -456,7 +456,7 @@ void NDData::Book(void)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -504,7 +504,7 @@ void NDData::Zero(Option_t * opt)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {

@@ -26,12 +26,14 @@
 
 #include <string>
 
+#include "Conventions/BeamConf.h"
+
 using std::string;
 
 namespace valor {
 namespace conv {
 
-//
+// ...........................................................................
 // Define samples
 //
 typedef enum ENDSample 
@@ -54,7 +56,8 @@ typedef enum ENDSample
 } 
 NDSample_t; 
 
-//
+// 
+// ...........................................................................
 // Define the list of samples used in present analysis.
 //
 // Note: The order and position of samples in the array is important for other arrays. Maintain the not remove or re-arrange.
@@ -72,17 +75,33 @@ NDSample_t;
 
 static const int kNNDSamples = 9; 
 
-static const NDSample_t kNDSample[kNNDSamples] =
+static const NDSample_t kNDSample[kNBeamConf][kNNDSamples] =
 {
-   ksNDNuMuCC1trkQE,
-   ksNDNuMuCC2trkQE, 
-   ksNDNuMuCC1piC,
-   ksNDNuMuCC1pi0,
-   ksNDNuMuCC1piC1pi0,
-   ksNDNuMuCCoth,
-   ksNDNuECC,
-   ksNDNuMuCCWSgn,
-   ksNDNC
+   // kbFHC
+   {
+      ksNDNuMuCC1trkQE,
+      ksNDNuMuCC2trkQE, 
+      ksNDNuMuCC1piC,
+      ksNDNuMuCC1pi0,
+      ksNDNuMuCC1piC1pi0,
+      ksNDNuMuCCoth,
+      ksNDNuECC,
+      ksNDNuMuCCWSgn,
+      ksNDNC
+   },
+
+   // kbRHC 
+   {
+      ksNDNuMuCC1trkQE,
+      ksNDNuMuCC2trkQE, 
+      ksNDNuMuCC1piC,
+      ksNDNuMuCC1pi0,
+      ksNDNuMuCC1piC1pi0,
+      ksNDNuMuCCoth,
+      ksNDNuECC,
+      ksNDNuMuCCWSgn,
+      ksNDNC
+   }
 };
 
 

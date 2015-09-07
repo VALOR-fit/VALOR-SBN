@@ -268,7 +268,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
           ReacMode_t m = kNDReactionModes[isample][imode];
@@ -318,7 +318,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
           ReacMode_t m = kNDReactionModes[isample][imode];
@@ -404,7 +404,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -487,7 +487,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
           ReacMode_t m = kNDReactionModes[isample][imode];
@@ -576,7 +576,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -759,7 +759,7 @@ void NDModel::Book(void)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       for(int imode = 0; imode < kNReacModes; imode++) {
         ReacMode_t m = kNDReactionModes[isample][imode];
@@ -1057,7 +1057,7 @@ void NDModel::Fill(TTree * t, int ibeam)
      }
      //  ==============================================
 
-     int isample = fArrIdx->NDSampleIdx(s);
+     int isample = fArrIdx->NDSampleIdx(b,s);
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit
        LOG("NDModel",pDEBUG) 
@@ -1245,7 +1245,7 @@ void NDModel::FluctuateMCStat(Option_t * option)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       const int n_enu_true_bins = util::NumEtrueBins(s);
       const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(s);
@@ -1409,7 +1409,7 @@ void NDModel::ApplyPhysics(Option_t * option)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       for(int imode = 0; imode < kNReacModes; imode++) {
         ReacMode_t m = kNDReactionModes[isample][imode];
@@ -1603,7 +1603,7 @@ void NDModel::UpdatePDFs(Option_t * option)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       const int n_enu_true_bins = util::NumEtrueBins(s);
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
@@ -1653,7 +1653,7 @@ void NDModel::UpdatePDFs(Option_t * option)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
 
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);

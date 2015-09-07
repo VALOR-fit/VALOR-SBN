@@ -41,13 +41,20 @@ void valor::util::NDArrIdx::Init(void)
 
   for(int i = 0; i < 2*kNBeamConf; i++) {
      fNDBeamConfIdx [i] = -1;
-  }
+  }//i
+
+  for(int i = 0; i < 2*kNBeamConf; i++) {
+    for(int j = 0; j < 2*kNNDSamples; j++) {
+       fNDSampleIdx [i][j] = -1;
+    }//j
+  }//i
+
   for(int i = 0; i < 2*kNNDSamples; i++) {
-     fNDSampleIdx [i] = -1;
      for(int j = 0; j < 2*kNReacModes; j++) {
          fNDReacModeIdx [i][j] = -1;
      }//i
   }//j
+
   for(int i = 0; i < 2*knppmax; i++) {
      fNDFitParamIdx[i] = -1;
   }//i
@@ -64,20 +71,31 @@ void valor::util::NDArrIdx::Init(void)
        << "Beam config: [" << util::AsString(b) << "] --> at slot: " << fNDBeamConfIdx[b];
   }//ib
 
+  for(int ib = 0; ib < kNBeamConf; ib++) {
+    BeamConf_t b = kNDBeamConf[ib];
+    if(b == kbUndefined) continue;
+    for(int is = 0; is < kNNDSamples; is++) {
+        NDSample_t s = kNDSample[ib][is];
+        if(s == ksNDUndefined) continue;
+        fNDSampleIdx [b][s] = is; // HERE
+        LOG("NDArrIdx",pNOTICE) 
+            << "Fit sample: [" << util::AsString(b)  << "/" 
+            << util::AsString(s) << "] --> at slot: " << fNDSampleIdx[s][b];
+    }//is
+  }//ib
+
+  int ib=0;//HERE
   for(int is = 0; is < kNNDSamples; is++) {
-     NDSample_t s = kNDSample[is];
-     if(s == ksNDUndefined) continue;
-     fNDSampleIdx [s] = is;
-     LOG("NDArrIdx",pNOTICE) 
-        << "Fit sample: [" << util::AsString(s) << "] --> at slot: " << fNDSampleIdx[s];
-     for(int im = 0; im < kNReacModes; im++) {
-         ReacMode_t m = kNDReactionModes[is][im];
-         if(m == kmUndefined) continue;
-         fNDReacModeIdx [s][m] = im;
-         LOG("NDArrIdx",pNOTICE)
-            << " ... with contribution from mode: [" << util::AsString(m) 
-            << "] --> at slot: " << fNDReacModeIdx [s][m];
-     }//im
+    NDSample_t s = kNDSample[ib][is];
+    if(s == ksNDUndefined) continue;
+    for(int im = 0; im < kNReacModes; im++) {
+        ReacMode_t m = kNDReactionModes[is][im];
+        if(m == kmUndefined) continue;
+        fNDReacModeIdx [s][m] = im;
+        LOG("NDArrIdx",pNOTICE)
+               << " ... with contribution from mode: [" << util::AsString(m) 
+               << "] --> at slot: " << fNDReacModeIdx [s][m];
+    }//im
   }//is
 
   for(int ip = 0; ip < kNNDFitParams; ip++) {

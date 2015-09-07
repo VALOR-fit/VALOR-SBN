@@ -40,22 +40,30 @@ namespace valor {
 namespace util {
 
 class NDArrIdx {
+
 public:
     static NDArrIdx * Instance();
+
     int NDBeamConfIdx (conv::BeamConf_t b)                     { return fNDBeamConfIdx[b];    }
-    int NDSampleIdx   (conv::NDSample_t s)                     { return fNDSampleIdx[s];      }
+    int NDSampleIdx   (conv::BeamConf_t b, conv::NDSample_t s) { return fNDSampleIdx[b][s];   }
     int NDReacModeIdx (conv::NDSample_t s, conv::ReacMode_t m) { return fNDReacModeIdx[s][m]; }
     int NDFitParamIdx (conv::PhysParamId_t p)                  { return fNDFitParamIdx[p];    }
+
 private:
+
     NDArrIdx();
     NDArrIdx(const NDArrIdx &) {}
    ~NDArrIdx() {}
+
     void Init();
+
     int fNDBeamConfIdx [2*conv::kNBeamConf];                        ///< maps each beam configuration to a kNDBeamConf array index
-    int fNDSampleIdx   [2*conv::kNNDSamples];                       ///< maps each sample to a kNDSample array index
-    int fNDReacModeIdx [2*conv::kNNDSamples][2*conv::kNReacModes];  ///< maps each mode of each sample to a kNDReactionModes array index
+    int fNDSampleIdx   [2*conv::kNBeamConf] [2*conv::kNNDSamples];  ///< maps each sample to a kNDSample array index
+    int fNDReacModeIdx [2*conv::kNNDSamples][2*conv::kNReacModes];  ///< maps each mode of each sample to a kNDReactionModes array index (same for a given sample in any beam)
     int fNDFitParamIdx [2*conv::knppmax];                           ///< maps each physics param to a kNDFitParam array index
+
     static NDArrIdx * fInstance;
+
     struct Cleaner {
       void DummyMethodAndSilentCompiler() { }
       ~Cleaner() {
