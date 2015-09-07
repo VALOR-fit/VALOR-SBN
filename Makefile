@@ -74,6 +74,8 @@ purge: FORCE
 
 clean: clean-files clean-dir clean-etc
 
+force-clean: clean-files force-clean-dir clean-etc
+
 clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
@@ -90,6 +92,12 @@ clean-dir: FORCE
 	cd $(VALOR_LBNX);\
 	[ ! -d ./bin ] || rmdir ./bin;\
 	[ ! -d ./lib ] || rmdir ./lib 
+
+force-clean-dir: FORCE
+	@echo "Deleting VALOR/LBNx lib and bin directories...";\
+	cd $(VALOR_LBNX);\
+	[ ! -d ./bin ] || rm -rf ./bin;\
+	[ ! -d ./lib ] || rm -rf ./lib 
 
 clean-etc: FORCE
 	cd $(VALOR_LBNX); \

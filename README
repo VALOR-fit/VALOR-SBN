@@ -1,23 +1,20 @@
 +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-VALOR LBNx analysis
+VALOR/LBNx
 
-(c) 2010-14 All Rights Reserved
+Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
 +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 
-AUTHORS:
+The VALOR Fitting Group:
 
 Costas Andreopoulos   University of Liverpool & STFC-RAL 
-Fatih Bay             ETH Zurich
+Christopher Barry     University of Liverpool
 George Christodoulou  University of Liverpool    
-Thomas Dealtry        University of Oxford
-Steve Dennis          University of Warwick & STFC-RAL
-Debra Dewhurst        University of Oxford            
+Thomas Dealtry        University of Lancaster
+Steve Dennis          University of Warwick
 Lorena Escudero       IFIC Valencia
-Nick Grant            University of Lancaster
-Silvestro Di Luise    ETH Zurich
+Nick Grant            University of Warwick   
 Davide Sgalaberna     ETH Zurich 
 Raj Shah              University of Oxford 
-Alfons Weber          University of Oxford & STFC-RAL
 
 ............................................................................................................................
 
