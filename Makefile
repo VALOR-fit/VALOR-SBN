@@ -14,10 +14,11 @@ include $(VALOR_LBNX)/make/Make.include
 
 # define composite targets
 #
-BUILD_TARGETS =    print-make-info    \
-		   make-bin-lib-dir   \
-		   build-conventions  \
-		   build-nd-fit       \
+BUILD_TARGETS =    print-make-info     \
+		   make-bin-lib-dir    \
+		   copy-scripts-to-bin \
+		   build-conventions   \
+		   build-nd-fit        \
                    build-nd-selection
 
 # define targets
@@ -31,6 +32,11 @@ print-make-info: FORCE
 	@echo "***** Building VALOR/LBNx from source tree at: $(VALOR_LBNX)"
 	@echo "***** The source tree corresponds to VALOR version $(VALOR_VERSION)"
 	@echo " "
+
+copy-scripts-to-bin: FORCE
+	@echo " "
+	@echo "** Copying scripts to bin..."
+	cp ${VALOR_LBNX}/make/valor_lbnx-config ${VALOR_LBNX}/bin
 
 build-conventions: FORCE
 	@echo " "
@@ -79,6 +85,7 @@ force-clean: clean-files force-clean-dir clean-etc
 clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
+	rm -f ${VALOR_LBNX}/bin/valor_lbnx-config; \
 	cd ${VALOR_LBNX}/src;\
 	cd Conventions;             make clean; cd ..; \
 	cd NDFit;                   make clean; cd ..; \
