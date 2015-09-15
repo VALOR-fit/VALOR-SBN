@@ -11,8 +11,8 @@
            George Christodoulou <georgios \at hep.ph.liv.ac.uk>
            University of Liverpool
 
-           Nick Grant <n.grant \at lancaster.ac.uk>
-           University of Lancaster
+           Nick Grant <nick.grant \at stfc.ac.uk>
+           University of Warwick
 
 \copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
 

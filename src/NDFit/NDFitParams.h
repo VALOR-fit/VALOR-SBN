@@ -12,8 +12,8 @@
            George Christodoulou <georgios \at hep.ph.liv.ac.uk>
            University of Liverpool
 
-           Nick Grant <n.grant \at lancaster.ac.uk>
-           University of Lancaster
+           Nick Grant <nick.grant \at stfc.ac.uk>
+           University of Warwick
           
 \created   March 20, 2014
 
@@ -105,12 +105,14 @@ static const PhysParamId_t kNuisEffNuMuCCWSgn    = kNuis049;
 static const PhysParamId_t kNuisEffNC            = kNuis050;
 
 //
-// 
+// ...........................................................................
+//  List of physics parameters considered in this analysis
+// ...........................................................................
 //
 
 static const PhysParamId_t kNDFitParam[kNNDFitParams] = 
 {
-   // FHC
+   // FHC flux
    kNuisFHCNuMuFlux00,
    kNuisFHCNuMuFlux01,
    kNuisFHCNuMuFlux02,
@@ -129,7 +131,7 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
    kNuisFHCNuEFlux00, 
    kNuisFHCNuEFlux01, 
    kNuisFHCNuEFlux02, 
-   // RHC
+   // RHC flux
    kNuisRHCNuMuFlux00,
    kNuisRHCNuMuFlux01,
    kNuisRHCNuMuFlux02,
@@ -167,6 +169,7 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
    kNuisEffNC            
 };
 
+// TEMP~~~~~~~~~~~~~~~~~~~~~~~~
 // eventually get this from config file
 static const double kNDFitParamAPrioriFracError[kNNDFitParams] = 
 {
@@ -225,12 +228,13 @@ static const double kNDFitParamAPrioriFracError[kNNDFitParams] =
    0.07, // kNuisEffNuMuCCWSgn
    0.10  // kNuisEffNC            
 };
+// TEMP~~~~~~~~~~~~~~~~~~~~~~~~
 
 //
-// This array fully specifies which systematics are applied to which template,
-// for all samples considered in this analysis
-//
-// for the time-being this does not need to be function of the sample id
+// ...........................................................................
+// The following arrays fully specifie which systematics are applied to 
+// which template, for all samples considered in this analysis
+// ...........................................................................
 //
 
 static const bool kNDApplyFitParamToTemplate[kNBeamConf][kNNDSamples][kNReacModes][kNNDFitParams] = 
@@ -1456,9 +1460,12 @@ static const bool kNDApplyFitParamToTemplate[kNBeamConf][kNNDSamples][kNReacMode
 };
 
 //
-// This array fully specifies the true energy of each systematic
+// ...........................................................................
+// The following arrays specifie the Etrue dependence of each systematic
+// ...........................................................................
 //
 
+// Has Etrue dependence
 static const bool kNDFitParamEtrueDependence[kNNDFitParams] = 
 {
    true,       // kNuisFHCNuMuFlux00
@@ -1517,6 +1524,7 @@ static const bool kNDFitParamEtrueDependence[kNNDFitParams] =
    false       // kNuisEffNC            
 };
 
+// Which is the true energy range?
 static const double kNDFitParamEtrueRange[kNNDFitParams][2] = 
 {
   // Emin, Emax
@@ -1577,7 +1585,12 @@ static const double kNDFitParamEtrueRange[kNNDFitParams][2] =
 };
 
 //
-// This array fully specifies which of the systematics are cross-section related
+// ...........................................................................
+// The following arrays help classify physics parameters in groups
+// ...........................................................................
+//
+
+// Is this a flux related parameter?
 //
 static const double kNDFitIsFluxRelated[kNNDFitParams] = 
 {
@@ -1637,8 +1650,7 @@ static const double kNDFitIsFluxRelated[kNNDFitParams] =
    false   // kNuisEffNC            
 };
 
-//
-// This array fully specifies which of the systematics are cross-section related
+// Is this a cross-section related parameter?
 //
 static const double kNDFitIsXSecRelated[kNNDFitParams] = 
 {
@@ -1698,8 +1710,7 @@ static const double kNDFitIsXSecRelated[kNNDFitParams] =
    false   // kNuisEffNC            
 };
 
-//
-// This array fully specifies which of the systematics are detector related
+// Is this a detector related parameter?
 //
 static const double kNDFitIsDetectorRelated[kNNDFitParams] = 
 {
@@ -1760,9 +1771,13 @@ static const double kNDFitIsDetectorRelated[kNNDFitParams] =
 };
 
 //
-// This array fully specifies which of the systematics are to me marginalised (profiled-out)
-// and which are the ones we try to constrain and output in the systematic covariance matrix
+// ...........................................................................
+// The following array fully specifies which of the systematics are to be 
+// marginalised (or profiled-out) and which are the ones we try to constrain 
+// and output in the systematic covariance matrix.
+// ...........................................................................
 //
+
 static const double kNDFitParamMarginalize[kNNDFitParams] = 
 {
    false,  // kNuisFHCNuMuFlux00

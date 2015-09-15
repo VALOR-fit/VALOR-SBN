@@ -1,7 +1,7 @@
 //________________________________________________________________________________________
 /*
 
-Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved. All rights reserved.
+Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 
 ChangeLog:
 
