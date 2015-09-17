@@ -19,6 +19,7 @@ BUILD_TARGETS =    print-make-info     \
 		   copy-scripts-to-bin \
 		   build-conventions   \
 		   build-nd-fit        \
+		   build-nd-fit-apps   \
                    build-nd-selection
 
 # define targets
@@ -54,6 +55,14 @@ build-nd-fit: FORCE
 	make;\
 	cd ${VALOR_LBNX}
 
+build-nd-fit-apps: FORCE
+	@echo " "
+	@echo "** Building NDFit package apps..."
+	cd ${VALOR_LBNX}/src;\
+	cd Apps/NDFit;\
+	make;\
+	cd ${VALOR_LBNX}
+
 build-nd-selection: FORCE
 	@echo " "
 	@echo "** Building NDSelection package..."
@@ -73,6 +82,7 @@ purge: FORCE
 	@echo " "
 	@echo "** Purging..."
 	cd ${VALOR_LBNX}/src;\
+	cd Apps/NDFit;                make purge; cd ../..; \
 	cd Conventions;               make purge; cd ..; \
 	cd NDFit;                     make purge; cd ..; \
 	cd NDSelection;		      make purge; cd ..; \
@@ -87,6 +97,7 @@ clean-files: FORCE
 	@echo "** Cleaning..."
 	rm -f ${VALOR_LBNX}/bin/valor_lbnx-config; \
 	cd ${VALOR_LBNX}/src;\
+	cd Apps/NDFit;              make clean; cd ../..; \
 	cd Conventions;             make clean; cd ..; \
 	cd NDFit;                   make clean; cd ..; \
 	cd NDSelection;		    make clean; cd ..; \
