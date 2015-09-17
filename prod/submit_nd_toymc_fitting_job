@@ -5,7 +5,7 @@
 # Submit a batch of macros/fit/nd/run_fit.C jobs
 #
 # Inputs
-#  --resource               : Computer resource, <RAL, Oxford, Grid, ETH-Monch, interactive>. Default: interactive.
+#  --resource               : Computer resource, <RAL_HTC, RAL_HTCPBS, RAL_PBS, Oxford_PBS, interactive>. Default: interactive.
 #  --tag                    : Tag for output files. Default: "toymc".
 #  --nruns                  : Number of runs (jobs) to submit. Default: 1.
 #  --ntoymc                 : Number of toy-MC fits per run. Default: 1.
@@ -21,6 +21,7 @@
 #  --config-file            : Analysis configuration file. Default: "lbne_ndfit-2014a-STT_baseline.xml".
 #
 # C.Andreopoulos
+# University of Liverpool & STFC/RAL
 #-------------------------------------------------------------------------------------------------------------------------------
 #
 
@@ -70,65 +71,68 @@ $irun = 0;
 while($irun < $nruns) {
   print "Submitting run: $irun \n";
 
-  $command = "valor_lbnx -l -b -q \'$lbnx_softw_dir/macros/fit/nd/run_fit.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
+  $command   = "valor_lbnx -l -b -q \'$lbnx_softw_dir/macros/fit/nd/run_fit.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
   print "Running: $command \n";
   
   #
-  # ETH (Monch cluster), $job_dir not used, $tag gives path/name of output file
+  # HTCondor @ RAL
   #
-  if($resource eq "ETH-Monch") {
-      open(PBS, ">/mnt/lnec/davides/VALOR/sbatch_files/run_fit-$irun.sbatch") or die("Can not create the sbatch script");
-      print PBS "#!/bin/bash -l  \n";
-      print PBS "#SBATCH --partition=dphys_compute  \n";
-      print PBS "#SBATCH --nodes=1  \n";
-      print PBS "#SBATCH --ntasks-per-node=1  \n";
-      print PBS "#SBATCH --output=/mnt/lnec/davides/VALOR/outputs/out.%j.o  \n";
-      print PBS "#SBATCH --error=/mnt/lnec/davides/VALOR/outputs/out.%j.e  \n";
-      print PBS "$command \n";
-      close(PBS);
-      `sbatch -t 00:59:00 /mnt/lnec/davides/VALOR/sbatch_files/run_fit-$irun.sbatch`;
+  if($resource eq "RAL_HTC") {
+     $batch_script = "$job_dir/$tag-$irun.pbs";
+     open(BATCH_SCRIPT, ">$batch_script") or die("Can not create the Condor batch script");
+     print BATCH_SCRIPT "Universe       = vanilla \n";
+     print BATCH_SCRIPT "Executable     = $lbnx_softw_dir/prod/htcondor_exec.sh";
+     print BATCH_SCRIPT "Arguments      = ";
+     print BATCH_SCRIPT "Log            = \n";
+     print BATCH_SCRIPT "Output         = \n";
+     print BATCH_SCRIPT "Error          = \n";
+     print BATCH_SCRIPT "Request_memory = \n";
+     print BATCH_SCRIPT "Queue \n";
+     close(BATCH_SCRIPT);
+     `condor_submit $batch_script`;
   }
-      
+
   #
-  # RAL
+  # PBS (or HTCondor with PBS-like interface) @ RAL
   #
-  if($resource eq "RAL") {
-     open(PBS, ">$job_dir/$tag-$irun.pbs") or die("Can not create the PBS batch script");
-     print PBS "#!/bin/bash \n";
-     print PBS "#PBS -N $tag-$irun \n";
-     print PBS "#PBS -l cput=$cput \n";
-     print PBS "#PBS -o $job_dir/$tag-$irun.pbs.out \n";
-     print PBS "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
-     print PBS "#PBS -q prod \n";
-     print PBS "#PBS -l walltime=$cput \n";
-     print PBS "cd $job_dir \n";
-     print PBS "source $lbnx_softw_dir/setup/setup_at_ral.sh $lbnx_softw_dir $fmwk_softw_dir\n";
-     print PBS "$command \n";
-     close(PBS);
-     `qsub -q prod $job_dir/$tag-$irun.pbs`;
+  if($resource eq "RAL_PBS" || $resource eq "RAL_HTCPBS") {    
+     $batch_script = "$job_dir/$tag-$irun.pbs";
+     open(BATCH_SCRIPT, ">$batch_script") or die("Can not create the PBS batch script");
+     print BATCH_SCRIPT "#!/bin/bash \n";
+     print BATCH_SCRIPT "#PBS -N $tag-$irun \n";
+     print BATCH_SCRIPT "#PBS -l cput=$cput \n";
+     print BATCH_SCRIPT "#PBS -o $job_dir/$tag-$irun.pbs.out \n";
+     print BATCH_SCRIPT "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
+     print BATCH_SCRIPT "#PBS -q prod \n";
+     print BATCH_SCRIPT "#PBS -l walltime=$cput \n";
+     print BATCH_SCRIPT "cd $job_dir \n";
+     print BATCH_SCRIPT "source $lbnx_softw_dir/setup/setup_at_ral.sh $lbnx_softw_dir $fmwk_softw_dir\n";
+     print BATCH_SCRIPT "$command \n";
+     close(BATCH_SCRIPT);
+     $job_submission_command = "qsub";
+     if($resource eq "RAL_HTCPBS') {
+         $job_submission_command = "condor_qsub";
+     }
+     `$job_submission_command -q prod $job_dir/$tag-$irun.pbs`;
   }
+
   #
-  # Oxford
+  # Oxford/PBS
   #
-  if($resource eq "Oxford") {
-     open(PBS, ">$job_dir/$tag-$irun.pbs") or die("Can not create the PBS batch script");
-     print PBS "#!/bin/bash \n";
-     print PBS "#PBS -N $tag-$irun \n";
-     print PBS "#PBS -l cput=$cput \n";
-     print PBS "#PBS -o $job_dir/$tag-$irun.pbs.out \n";
-     print PBS "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
-     print PBS "cd $job_dir \n";
-     print PBS "source $lbnx_softw_dir/setup/setup_at_oxford.sh $lbnx_softw_dir $fmwk_softw_dir\n";
-     print PBS "$command \n";
-     close(PBS);
+  if($resource eq "Oxford_PBS") {
+     open(BATCH_SCRIPT, ">$job_dir/$tag-$irun.pbs") or die("Can not create the PBS batch script");
+     print BATCH_SCRIPT "#!/bin/bash \n";
+     print BATCH_SCRIPT "#PBS -N $tag-$irun \n";
+     print BATCH_SCRIPT "#PBS -l cput=$cput \n";
+     print BATCH_SCRIPT "#PBS -o $job_dir/$tag-$irun.pbs.out \n";
+     print BATCH_SCRIPT "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
+     print BATCH_SCRIPT "cd $job_dir \n";
+     print BATCH_SCRIPT "source $lbnx_softw_dir/setup/setup_at_oxford.sh $lbnx_softw_dir $fmwk_softw_dir\n";
+     print BATCH_SCRIPT "$command \n";
+     close(BATCH_SCRIPT);
      `qsub $job_dir/$tag-$irun.pbs`;
   }
-  #
-  # Grid
-  #
-  if($resource eq "Grid") {
-     print "Not supported just yet!\n";
-  }
+
   #
   # interactive
   #

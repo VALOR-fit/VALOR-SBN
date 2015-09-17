@@ -12,8 +12,6 @@
 #include <iostream>
 // root
 #include "TSystem.h"
-#include "TFile.h"
-#include "TTree.h"
 #include "TObjArray.h"
 #include "TString.h"
 #include "TVirtualFitter.h"
@@ -31,6 +29,7 @@
 // lbnx
 #include "NDFit/NDModel.h"
 #include "NDFit/NDData.h"
+#include "NDFit/NDNtp.h"
 
 using namespace std;
 using namespace valor;
@@ -102,23 +101,12 @@ void run_fit
   //
 
   const char * outfilename = Form("%s_%d.root",tag,run);
-  TFile * outfile = new TFile(outfilename,"recreate");
 
-  PhysParamList * true_param_array     = new PhysParamList;
-  FitParamList *  best_fit_param_array = new FitParamList;
-  TObjArray *     best_fit_model_array = new TObjArray;
-  TObjArray *     data_array           = new TObjArray;
-  best_fit_model_array -> SetOwner(false);
-  data_array           -> SetOwner(false);
-  int migradmin, migraderr;
+  NDNtp ntp;
+  ntp.Create(outfilename);
 
-  TTree * fitnt = new TTree("fitnt","VALOR toy-MC experiment fit results");
-  fitnt->Branch("true_params",     "valor::PhysParamList", &true_param_array,     1280000,0);
-  fitnt->Branch("best_fit_params", "valor::FitParamList",  &best_fit_param_array, 1280000,0);
-  fitnt->Branch("best_fit_model",  "TObjArray",            &best_fit_model_array, 1280000,0);
-  fitnt->Branch("data",            "TObjArray",            &data_array,           1280000,0);
-  fitnt->Branch("migradmin",                               &migradmin);
-  fitnt->Branch("migraderr",                               &migraderr);
+//  fitnt->Branch("migradmin",                               &migradmin);
+//  fitnt->Branch("migraderr",                               &migraderr);
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
@@ -129,11 +117,8 @@ void run_fit
   for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
     cout << "\n\n *** Toy-MC experiment #" << itoymc << endl;
 
-    // Reset arrays
-    true_param_array     -> Clear();
-    best_fit_param_array -> Clear();
-    best_fit_model_array -> Clear();
-    data_array           -> Clear();
+    // Reset output tree variables
+    ntp.Reset();
 
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generatio below.
@@ -145,9 +130,9 @@ void run_fit
     data->Generate(model,*fp,stat_fluct);
 
     // The toy-MC was generated using the `current' values of the input parameter list.
-    // Copy those values now (and they will be overwritten during the fit) to save 
-    // them in the output fit file.
-    true_param_array->Append(fp->AsPhysParamList("current"));
+    // These values will be overwritten during the fit.
+    // Copy those values now so as to save them later in the output tree.
+    ntp.TrueParamArr()->Append(fp->AsPhysParamList("current"));
 
     // Get fitter
     cout << "Preparing fitter" << endl;
@@ -158,11 +143,11 @@ void run_fit
     cout << "Running fitter" << endl;
     fitter->DoTheFit();
 
-    migradmin = fitter->FitStatusCode("migrad_min");
-    migraderr = fitter->FitStatusCode("migrad_err");
+//    migradmin = fitter->FitStatusCode("migrad_min");
+//    migraderr = fitter->FitStatusCode("migrad_err");
 
     // Copy best-fit params
-    best_fit_param_array->Copy(*fp);
+    ntp.BestFitParamArr()->Copy(*fp);  
 
     if(store_spectra) {
       // Copy best-fit to current values and re-generate the best-fit prediction
@@ -171,14 +156,16 @@ void run_fit
       // Then, write-out the best-fit predictions
       fp->CopyBestFitToCurrValues();
       model->Generate(*fp,"+SB");
+      TObjArray * best_fit_model_array = ntp.BestFitModelArr();
       model->Write(best_fit_model_array,"best_fit","pdfc_rf,pdft_rf,pdfts_rf,pdfcs_rf +SB");
 
       // Write-out the toy-MC
+      TObjArray * data_array = ntp.DataArr();
       data->Write(data_array,"toymc","all");
     }
 
-    // Write to tree
-    fitnt->Fill();
+    // Write results to the output tree
+    ntp.Fill();
 
     delete data;
     delete fp;
@@ -187,7 +174,5 @@ void run_fit
 
   }//itoymc
 
-  outfile->cd();
-  fitnt->Write();
-  outfile->Close();
+  ntp.Save();
 }
