@@ -1,12 +1,19 @@
-//
-// ------------------------------------------------------------------------------------------------
-// Generate and fit ensembles of toy-MC experiments.
-//
-// Costas Andreopoulos
-// ------------------------------------------------------------------------------------------------
-//
+//____________________________________________________________________________
+/*!
 
-#if !defined(__CINT__) || defined(__MAKECINT__)
+\app       valor_lbnx-run_nd_fit
+
+\brief     Generate and fit ensembles of toy-MC experiments.
+
+\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+           University of Liverpool & STFC Rutherford Appleton Laboratory
+
+\created   March 27, 2014
+
+\copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
+
+*/
+//____________________________________________________________________________
 
 // system
 #include <iostream>
@@ -30,35 +37,27 @@
 #include "NDFit/NDModel.h"
 #include "NDFit/NDData.h"
 #include "NDFit/NDNtp.h"
+#include "NDFit/NDXArg.h"
 
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
 
-#endif
-	
-void run_fit
-(
-  const char * tag              = "toymc",                               /* tag for output file */
-  int          run              = 0,                                     /* run # */
-  int          ntoymc           = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list   = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
-  const char * param_values     = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
-  bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
-  const char * fit_option       = "minuit",                              /* fitter option */
-  bool         store_spectra    = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
-  const char * config_file      = "lbne_ndfit-2014a-STT_baseline.xml",   /* analysis configuration file */
-  const char * verbosity_file   = "verbosity.xml"                        /* message thresholds */
-);
+//void run_fit
+//(
+//  const char * tag              = "toymc",                               /* tag for output file */
+//  int          run              = 0,                                     /* run # */
+//  int          ntoymc           = 1,                                     /* number of toy-MC experiments */
+//  const char * fit_param_list   = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
+//  const char * param_values     = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
+//  bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
+//  const char * fit_option       = "minuit",                              /* fitter option */
+//  bool         store_spectra    = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
+//  const char * config_file      = "lbne_ndfit-2014a-STT_baseline.xml",   /* analysis configuration file */
+//  const char * verbosity_file   = "verbosity.xml"                        /* message thresholds */
+//);
 
-int main()
-{
-  Env::Instance()->AutoSet("lbnx");
-
-  run_fit();
-  return 0;
-}
-
+/*
 void run_fit
 (
   const char * tag,
@@ -72,6 +71,27 @@ void run_fit
   const char * config_file,
   const char * verbosity_file
 )
+*/
+
+
+int main(int argc, char ** argv)
+{
+  Env::Instance()->AutoSet("lbnx");
+
+  NDXArg arg;
+  arg.SetDefaults(); 
+  arg.ParseFromCmdLine(argc,argv);
+
+  LOG("valor_lbnx", pNOTICE) << arg;
+  
+
+
+
+  return 0;
+}
+
+/*
+
 {
   // Analysis configuration
   TString config    = Form("%s/%s", Env::Instance()->TopLevelConfDir().c_str(), config_file   );
@@ -176,3 +196,5 @@ void run_fit
 
   ntp.Save();
 }
+
+*/

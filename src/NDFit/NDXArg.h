@@ -28,42 +28,44 @@ using namespace std;
 
 namespace valor {
 
-class NDXArg
+class NDXArg //: public TObject
 {
 public:
   NDXArg();
   virtual ~NDXArg();
    
   bool ParseFromCmdLine (int argc, char ** argv);
-  void SetDefaults      (Option_t * opt);
-  void Report           (ostream & stream);
+  void SetDefaults      (Option_t * opt = 0);
+  void Report           (ostream& stream)  const;
 
-  const char * JobTag        (void) const { return fJobTag.c_str();        }       
-  int          RunNu         (void) const { return fRunNu;                 }
-  int          NToyMC        (void) const { return fNToyMC;                }
-  const char * FitParamList  (void) const { return fFitParamList.c_str();  }
-  const char * ParamValues   (void) const { return fParamValues.c_str();   }
-  bool         StatFluct     (void) const { return fStatFluct;             }
-  const char * FitOption     (void) const { return fFitOption.c_str();     }
-  bool         StoreSpectra  (void) const { return fStoreSpectra;          }
-  const char * ConfigFile    (void) const { return fConfigFile.c_str();    }
-  const char * VerbosityFile (void) const { return fVerbosityFile.c_str(); }
+  const char * JobTag            (void) const { return fJobTag.c_str();            }       
+  long         RunNu             (void) const { return fRunNu;                     }
+  int          NToyMC            (void) const { return fNToyMC;                    }
+  const char * FitParamList      (void) const { return fFitParamList.c_str();      }
+  const char * ParamValuesOption (void) const { return fParamValuesOption.c_str(); }
+  bool         StatFluct         (void) const { return fStatFluct;                 }
+  const char * FitOption         (void) const { return fFitOption.c_str();         }
+  bool         StoreSpectra      (void) const { return fStoreSpectra;              }
+  const char * ConfigFile        (void) const { return fConfigFile.c_str();        }
+  const char * VerbosityFile     (void) const { return fVerbosityFile.c_str();     }
 
 protected:
 
   void Reset (void);
 
   string fJobTag;             ///< job tag
-  int    fRunNu;              ///< run # 
-  int    fNToyMC;             ///< number of toy-MC experiments 
+  long   fRunNu;              ///< run # 
+  int    fNToyMC;             ///< number of toy-MC experiments in job
   string fFitParamList;       ///< fit parameter list (see NDFitParams.cxx) 
-  string fParamValues;        ///< decide how to set the values of params used for toy-MC generation 
+  string fParamValuesOption;  ///< decide how to set the values of params used for toy-MC generation 
   bool   fStatFluct;          ///< include statistical fluctuation in toy MC generation? *
   string fFitOption;          ///< fitter option 
   bool   fStoreSpectra;       ///< store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) 
   string fConfigFile;         ///< analysis configuration file 
   string fVerbosityFile;      ///< message thresholds 
 };
+
+std::ostream& operator<< (std::ostream& stream, const valor::NDXArg & arg);
 
 } // valor
 

@@ -8,19 +8,24 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 
 //#include <cassert>
 
-//#include <TFile.h>
-//#include <TTree.h>
-//#include <TObjArray.h>
-
-#include "NDFit/NDXArg.h"
-
+// fmwk
 #include "Parser/CmdLnArgParser.h"
 #include "Utilities/Rnd.h"
 #include "Utilities/Env.h"
 #include "Messenger/Messenger.h"
+// lbnx
+#include "NDFit/NDXArg.h"
 
 using namespace valor;
 
+//________________________________________________________________________________________
+namespace valor {
+  ostream & operator << (ostream & stream, const NDXArg & arg)
+  {
+    arg.Report(stream);
+    return stream;
+  }
+}
 //________________________________________________________________________________________
 NDXArg::NDXArg()
 {
@@ -36,26 +41,49 @@ bool NDXArg::ParseFromCmdLine(int argc, char ** argv)
 {
   CmdLnArgParser parser(argc,argv);
 
-  fJobTag        = "";
-  fRunNu         = 0;
-  fNToyMC        = 0;
-  fFitParamList  = "";
-  fParamValues   = "";
-  fFitOption     = "";
-  fConfigFile    = "";
+  if( parser.OptionExists("--tag") ) {
+     fJobTag = parser.ArgAsString("--tag");
+  }
+
+  if( parser.OptionExists("--run") ) {
+     fRunNu = parser.ArgAsLong("--run");
+  }
+
+  if( parser.OptionExists("--ntoymc") ) {
+     fNToyMC = parser.ArgAsInt("--ntoymc");
+  }
+
+  if( parser.OptionExists("--fit-param-list") ) {
+     fFitParamList = parser.ArgAsString("--fit-param-list");
+  }
+
+  if( parser.OptionExists("--param-values-option") ) {
+    fParamValuesOption = parser.ArgAsString("--param-values-option");
+  }
+
+  if( parser.OptionExists("--fit-opt") ) {
+    fFitOption = parser.ArgAsString("--fit-opt");
+  }
+
+  if( parser.OptionExists("--config") ) {
+    fConfigFile = parser.ArgAsString("--config");
+  }
 
   if( parser.OptionExists("--mesg-thresholds") )
   {
      fVerbosityFile = parser.ArgAsString("--mesg-thresholds");
   }
 
-  fStatFluct     = parser.OptionExists("--with-stat-fluct");
-  fStoreSpectra  = parser.OptionExists("--store-spectra");
+  if( parser.OptionExists("--with-stat-fluct")    ) fStatFluct = true;
+  if( parser.OptionExists("--without-stat-fluct") ) fStatFluct = false;
+
+  if( parser.OptionExists("--store-spectra")   ) fStoreSpectra = true;
+  if( parser.OptionExists("--discard-spectra") ) fStoreSpectra = false;
 
   return true;
 }
 //________________________________________________________________________________________
-void NDXArg::Report(ostream & stream)
+void NDXArg::Report(ostream & stream) const
 {
   stream << endl;
   stream << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
@@ -65,7 +93,7 @@ void NDXArg::Report(ostream & stream)
   stream << "- Toy-MC generation" << endl;
   stream << "   - Number of toy experiments: " << fNToyMC << endl;
   stream << "   - Statistical fluctuations: "  << ((fStatFluct) ? "YES " : "NO") << endl;
-  stream << "   - Option for setting parameter values: " << fParamValues << endl;
+  stream << "   - Option for setting parameter values: " << fParamValuesOption << endl;
   stream << "- Fit" << endl;
   stream << "   - Fit Parameter List: " << fFitParamList << endl;
   stream << "   - Fitter option: " << fStatFluct << endl;
@@ -78,29 +106,29 @@ void NDXArg::Report(ostream & stream)
 //________________________________________________________________________________________
 void NDXArg::Reset(void)
 {
-  fJobTag        = "";
-  fRunNu         = 0;
-  fNToyMC        = 0;
-  fFitParamList  = "";
-  fParamValues   = "";
-  fStatFluct     = false;
-  fFitOption     = "";
-  fStoreSpectra  = false;
-  fConfigFile    = "";
-  fVerbosityFile = "";
+  fJobTag             = "";
+  fRunNu              = 0;
+  fNToyMC             = 0;
+  fFitParamList       = "";
+  fParamValuesOption  = "";
+  fStatFluct          = false;
+  fFitOption          = "";
+  fStoreSpectra       = false;
+  fConfigFile         = "";
+  fVerbosityFile      = "";
 }
 //________________________________________________________________________________________
 void NDXArg::SetDefaults(Option_t * /*opt*/)
 {
-  fJobTag        = "toymc";
-  fRunNu         = 0;
-  fNToyMC        = 1;
-  fFitParamList  = "standard";
-  fParamValues   = "randomize-all;prefit-errors";
-  fStatFluct     = true;
-  fFitOption     = "minuit";
-  fStoreSpectra  = false;
-  fConfigFile    = "lbne_ndfit-2014a-STT_baseline.xml";
-  fVerbosityFile = "verbosity.xml";
+  fJobTag            = "toymc";
+  fRunNu             = 0;
+  fNToyMC            = 1;
+  fFitParamList      = "standard";
+  fParamValuesOption = "randomize-all;prefit-errors";
+  fStatFluct         = true;
+  fFitOption         = "minuit";
+  fStoreSpectra      = false;
+  fConfigFile        = "";
+  fVerbosityFile     = "verbosity.xml";
 }
 //________________________________________________________________________________________

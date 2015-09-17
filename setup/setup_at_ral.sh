@@ -13,5 +13,5 @@ export VALOR_FMWK=$2
 export ROOTSYS=/opt/ppd/t2k/softw/ROOT/builds/SL5_64bit/v5.34.03/
 
 export LD_LIBRARY_PATH=${VALOR_LBNX}/lib:${VALOR_FMWK}/lib:${ROOTSYS}/lib:${LD_LIBRARY_PATH}:/opt/ppd/t2k/softw/LOG4CPP/builds/SL5_64bit/v1.0/src/.libs/:/usr/lib64/
-export PATH=${VALOR_LBNX}/root:${VALOR_LBNX}/production:${ROOTSYS}/bin:${PATH}
+export PATH=${VALOR_LBNX}/bin:${VALOR_LBNX}/root:${VALOR_LBNX}/production:${ROOTSYS}/bin:${PATH}
 

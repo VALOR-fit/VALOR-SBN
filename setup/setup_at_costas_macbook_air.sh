@@ -13,4 +13,4 @@ export VALOR_FMWK=$2
 export ROOTSYS=/hep/root/v5.34.32/
 
 export DYLD_LIBRARY_PATH=${VALOR_LBNX}/lib:${VALOR_FMWK}/lib:${ROOTSYS}/lib:${DYLD_LIBRARY_PATH}
-export PATH=${VALOR_LBNX}/root:${VALOR_LBNX}/production:${ROOTSYS}/bin:${PATH}
+export PATH=${VALOR_LBNX}/bin:${VALOR_LBNX}/root:${VALOR_LBNX}/production:${ROOTSYS}/bin:${PATH}

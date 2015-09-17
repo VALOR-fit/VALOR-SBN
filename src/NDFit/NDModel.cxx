@@ -19,6 +19,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include <TH2D.h>
 
 //fmwk
+#include "Conventions/Constants.h"
 #include "Conventions/PhysHypothesisId.h"
 #include "Conventions/PhysParamId.h"
 #include "Conventions/NuOscMixParam.h"
@@ -1139,9 +1140,8 @@ void NDModel::Fill(TTree * t, int ibeam)
 
      // protect against vars at upper limit (eg y_reco = 1, set by hand for NC events) as
      // the binary search below will give an index out of limits
-     double epsilon = 1E-6;
-     if(enu_reco >= kErecoMax) { enu_reco = enu_reco - epsilon; }
-     if(y_reco   >= kYrecoMax) { y_reco   = y_reco - epsilon;   }
+     if(enu_reco >= kErecoMax) { enu_reco = enu_reco - kASmallNum; }
+     if(y_reco   >= kYrecoMax) { y_reco   = y_reco - kASmallNum;   }
 
      // work-out the index using the bin-edge array defining the variable-size binning scheme
      int ienu_true    = TMath::BinarySearch(1+(Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true);
@@ -1393,8 +1393,6 @@ void NDModel::ApplyPhysics(Option_t * option)
      << ((option) ? option : "")
      << ")";
 
-  double epsilon = 1E-4;
-
   bool update_mct_sb = false;
   if(option) {
     string opt = option;
@@ -1453,12 +1451,12 @@ void NDModel::ApplyPhysics(Option_t * option)
              if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
-             bool tweaked = TMath::Abs(f-1) > epsilon;
+             bool tweaked = TMath::Abs(f-1) > kASmallNum;
              if(!tweaked) continue;
              const double enu_true_min = kNDFitParamEtrueRange[ip][0];
              const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
-             int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+epsilon);
-             int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-epsilon);
+             int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
+             int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
              LOG("NDModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f 
                 << " in Etrue bin range: [" << ienu_true_min << ", " << ienu_true_max << "]";
@@ -1523,7 +1521,6 @@ void NDModel::ApplyPhysics(Option_t * option)
 
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             double epsilon = 1E-4;
              bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
@@ -1532,12 +1529,12 @@ void NDModel::ApplyPhysics(Option_t * option)
              if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
-             bool tweaked = TMath::Abs(f-1) > epsilon;
+             bool tweaked = TMath::Abs(f-1) > kASmallNum;
              if(!tweaked) continue;
              const double enu_true_min = kNDFitParamEtrueRange[ip][0];
              const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
-             int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+epsilon);
-             int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-epsilon);
+             int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
+             int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                  for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
@@ -1561,7 +1558,7 @@ void NDModel::ApplyPhysics(Option_t * option)
              if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
-             bool tweaked = TMath::Abs(f-1) > epsilon;
+             bool tweaked = TMath::Abs(f-1) > kASmallNum;
              if(!tweaked) continue;
              fnoEt *= f;
           }//ip
