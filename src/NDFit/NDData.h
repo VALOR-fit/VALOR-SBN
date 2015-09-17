@@ -3,16 +3,10 @@
 
 \class     valor::NDData
 
-\brief     LBNE ND Data class. Derives from FitDataABC
+\brief     VALOR/LBNX ND Data class. Derives from FitDataABC
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
-
-           George Christodoulou <georgios \at hep.ph.liv.ac.uk>
-           University of Liverpool
-
-           Nick Grant <nick.grant \at stfc.ac.uk>
-           University of Warwick
 
 \created   March 27, 2014
 

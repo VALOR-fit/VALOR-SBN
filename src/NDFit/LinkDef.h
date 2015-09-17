@@ -14,5 +14,8 @@
 
 #pragma link C++ class valor::NDData;
 #pragma link C++ class valor::NDModel;
+#pragma link C++ class valor::NDNtp;
+#pragma link C++ class valor::NDXArg;
+#pragma link C++ class valor::NDRFL;
 
 #endif

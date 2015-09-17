@@ -3,16 +3,10 @@
 
 \class     valor::NDModel
 
-\brief     LBNE ND Model class. Derives from FitModelABC
+\brief     VALOR?LBNX ND Model class. Derives from FitModelABC
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
-
-           George Christodoulou <georgios \at hep.ph.liv.ac.uk>
-           University of Liverpool
-
-           Nick Grant <nick.grant \at stfc.ac.uk>
-           University of Warwick
 
 \copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
 
