@@ -3,7 +3,7 @@ void change_prompt()
     TRint* rint = dynamic_cast<TRint*>(gApplication);
     if (!rint) return;
 
-    rint->SetPrompt("VALOR/LBNx: [%d] ");
+    rint->SetPrompt("VALOR/DUNE: [%d] ");
 }
 
 void define_valor_style()
@@ -143,7 +143,7 @@ void valor_lbnx()
     gROOT->SetStyle("VALOR");
 
     valor::Env * env = valor::Env::Instance();
-    env->AutoSet("lbnx");
+    env->AutoSet("dune");
 
     print_banner();
     config_mesg();
