@@ -43,7 +43,7 @@ NDData::~NDData()
 //________________________________________________________________________________________
 string NDData::Name(void)
 {
-  return "LBNxND";
+  return "DUNEND";
 }
 //________________________________________________________________________________________
 bool NDData::Read(string /*file*/, Option_t * /*opt*/)
@@ -94,7 +94,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
              const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
              const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
-             TH2D * h2 = new TH2D("h2", "VALOR/LBNx ND (Ereco,yreco) data = f(beam,sample,zone)",
+             TH2D * h2 = new TH2D("h2", "VALOR/DUNE ND (Ereco,yreco) data = f(beam,sample,zone)",
                  n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
              h2->SetName(Form("%s_%s_%s",tag,"data_ob_rf",name));
              for(int ier = 0; ier < n_enu_reco_bins; ier++) {
@@ -120,7 +120,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           if(opt.find("data_rf") != string::npos) {
              const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
              const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
-             TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) data = f(beam,sample)",
+             TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) data = f(beam,sample)",
                 kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
              h2->SetName(Form("%s_%s_%s",tag,"data_sb_rf",name));
              for(int ier = 0; ier < kNErecoBinsSb; ier++) {
@@ -164,13 +164,13 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
           // create slices of the data (function of Ereco, for given yreco bin)
           TH1D * htot = new TH1D("htot",
-              "VALOR/LBNx ND data: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
+              "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
           htot->SetName(Form("%s_%s_%s",tag, "data_slice_ob_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle("Number of events /bin");
           for(int iy = 0; iy < n_y_reco_bins; iy++) {
             TH1D * h = new TH1D("h",
-                Form("VALOR/LBNx ND data: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",
+                Form("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",
                      y_reco_bins[iy],y_reco_bins[iy+1]),
                 n_enu_reco_bins, enu_reco_bins);
             h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_ob_rf",name,iy) );
@@ -196,13 +196,13 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
           TH1D * htot = new TH1D("htot",
-              "VALOR/LBNx ND data: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
+              "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
           htot->SetName(Form("%s_%s_%s",tag, "data_slice_sb_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle("Number of events /bin");
           for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
             TH1D * h = new TH1D("h",
-                Form("VALOR/LBNx ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
+                Form("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
                      y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
                 kNErecoBinsSb, kErecoBinEdgesSb);
             h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_sb_rf",name,iy) );

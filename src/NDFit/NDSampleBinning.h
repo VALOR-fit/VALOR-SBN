@@ -21,8 +21,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_sample_binning_h_
-#define _valor_lbnx_nd_sample_binning_h_
+#ifndef _valor_dune_nd_sample_binning_h_
+#define _valor_dune_nd_sample_binning_h_
 
 // The following flag replaces the optimized Ereco,yreco binning scheme with 
 // just a few very wide bins to dramatically decrease the fit time for testing purposes.

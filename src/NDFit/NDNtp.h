@@ -15,8 +15,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_ntp_h_
-#define _valor_lbnx_nd_ntp_h_
+#ifndef _valor_dune_nd_ntp_h_
+#define _valor_dune_nd_ntp_h_
 
 class TFile;
 class TTree;
@@ -51,7 +51,7 @@ protected:
   void Clean (void);
 
   TFile *         fOutFile;            ///< Output file
-  TTree *         fVTree;              ///< VALOR/LBNX ND tree
+  TTree *         fVTree;              ///< VALOR/DUNE ND tree
   PhysParamList * fTrueParamArr;       ///< array holding true parameters
   FitParamList *  fBestFitParamArr;    ///< array holding best-fit parameters
   TObjArray *     fBestFitModelArr;    ///< array holding best-fit predictions for all datasets

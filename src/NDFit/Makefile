@@ -8,9 +8,9 @@ MAKEFILE = Makefile
 
 # Include machine specific flags and locations (inc. files & libs)
 #
-include $(VALOR_LBNX)/make/Make.include
+include $(VALOR_DUNE)/make/Make.include
 
-PACKAGE           = ValorLBNxND
+PACKAGE           = ValorDUNEND
 DICTIONARY        = _RootDict_$(PACKAGE)
 LIBNAME           = lib$(PACKAGE)
 
@@ -18,7 +18,7 @@ all : rootcint lib lib-link
 
 # Include standard package makefile targets
 #
-include $(VALOR_LBNX)/make/Make.template
+include $(VALOR_DUNE)/make/Make.template
 
 FORCE:
 

@@ -25,7 +25,7 @@ const int nParams = 42
   using namespace valor::conv;
 
   TChain *toymcchain = new TChain("fitnt");
-  toymcchain->Add("/opt/ppd/t2k/users/nick/LBNX/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root");
+  toymcchain->Add("/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root");
 
   PhysParamList * true_param_array     = 0; // input true params
   FitParamList *  best_fit_param_array = 0; // best-fit params

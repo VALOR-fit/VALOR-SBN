@@ -57,7 +57,7 @@ void fit_param_scan_all_plot(const char * filename)
      TLegend * leg = new TLegend(0.5,0.6,0.8,0.9);
      leg->SetFillColor(0);
      leg->SetBorderSize(0);
-     leg->AddEntry(hndc,   "LBNx ND constraint",     "LP");
+     leg->AddEntry(hndc,   "DUNE ND constraint",     "LP");
      leg->AddEntry(hprior, Form("Prior %.1f%%",sig), "L");
      leg->Draw();
   }

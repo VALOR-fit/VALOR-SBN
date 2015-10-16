@@ -10,7 +10,7 @@ ChangeLog:
 
 //fmwk
 #include "Utilities/UtlStr.h"
-//lbnx
+//dune
 #include "Conventions/BeamConf.h"
 
 using namespace valor;

@@ -25,8 +25,8 @@
   gSystem->Load("libValorFitCore.so");
   gSystem->Load("libValorUtil.so");
   gSystem->Load("libValorParse.so");
-  gSystem->Load("libValorLBNxConv.so");
-  gSystem->Load("libValorLBNxND.so");
-//  gSystem->Load("libValorLBNxNDSelection.so");
+  gSystem->Load("libValorDUNEConv.so");
+  gSystem->Load("libValorDUNEND.so");
+//  gSystem->Load("libValorDUNENDSelection.so");
 }
 

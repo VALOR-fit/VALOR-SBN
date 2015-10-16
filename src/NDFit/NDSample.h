@@ -3,7 +3,7 @@
 
 \class     valor::conv::NDSample_t
 
-\brief     Enumeration of LBNx ND systematic constraint samples
+\brief     Enumeration of DUNE ND systematic constraint samples
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -21,8 +21,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_sample_h_
-#define _valor_lbnx_nd_sample_h_
+#ifndef _valor_dune_nd_sample_h_
+#define _valor_dune_nd_sample_h_
 
 #include <string>
 

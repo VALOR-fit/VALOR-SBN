@@ -30,7 +30,7 @@ void coverage_1dlim
   using namespace valor::conv;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
  
   assert(lim_param_name);    
 

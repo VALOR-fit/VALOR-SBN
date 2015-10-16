@@ -1,6 +1,6 @@
 //
 // ------------------------------------------------------------------------------------------------
-// Simple program to write out the LBNx/ND PDFs and MC templates.
+// Simple program to write out the DUNE/ND PDFs and MC templates.
 //
 // Costas Andreopoulos
 // ------------------------------------------------------------------------------------------------
@@ -19,7 +19,7 @@ void write_nd_pdf
   using namespace valor::conv;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
 
   // Print settings
   cout << "\n[Job inputs]" << endl;

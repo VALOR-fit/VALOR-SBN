@@ -42,7 +42,7 @@ void fit_param_sensitivity
   using namespace valor::conv;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
  
   assert(s_param_name);    
 

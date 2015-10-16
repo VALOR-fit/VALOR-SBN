@@ -18,8 +18,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_coarse_reaction_modes_h
-#define _valor_lbnx_coarse_reaction_modes_h
+#ifndef _valor_dune_coarse_reaction_modes_h
+#define _valor_dune_coarse_reaction_modes_h
 
 #include <string>
 

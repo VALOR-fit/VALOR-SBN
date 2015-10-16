@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\app       valor_lbnx-run_nd_fit
+\app       valor_dune-run_nd_fit
 
 \brief     Generate and fit ensembles of toy-MC experiments.
 
@@ -33,7 +33,7 @@
 #include "Utilities/Rnd.h"
 #include "Utilities/Env.h"
 #include "Messenger/Messenger.h"
-// lbnx
+// dune
 #include "NDFit/NDModel.h"
 #include "NDFit/NDData.h"
 #include "NDFit/NDNtp.h"
@@ -76,13 +76,13 @@ void run_fit
 
 int main(int argc, char ** argv)
 {
-  Env::Instance()->AutoSet("lbnx");
+  Env::Instance()->AutoSet("dune");
 
   NDXArg arg;
   arg.SetDefaults(); 
   arg.ParseFromCmdLine(argc,argv);
 
-  LOG("valor_lbnx", pNOTICE) << arg;
+  LOG("valor_dune", pNOTICE) << arg;
   
 
 

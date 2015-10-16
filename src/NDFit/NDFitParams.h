@@ -3,7 +3,7 @@
 
 \file      NDFitParams
 
-\brief     Typedef specific LBNx ND systematics to free PhysParamId_t slots
+\brief     Typedef specific DUNE ND systematics to free PhysParamId_t slots
            of the VALOR framework
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
@@ -22,8 +22,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_fit_param_definition_h_
-#define _valor_lbnx_nd_fit_param_definition_h_
+#ifndef _valor_dune_nd_fit_param_definition_h_
+#define _valor_dune_nd_fit_param_definition_h_
 
 #include <string>
 
@@ -32,7 +32,7 @@
 #include "FitCore/FitParamList.h"
 #include "FitCore/PhysHypothesis.h"
 
-//lbnx
+//dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDSampleBinning.h"

@@ -23,8 +23,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_array_index_h_
-#define _valor_lbnx_nd_array_index_h_
+#ifndef _valor_dune_nd_array_index_h_
+#define _valor_dune_nd_array_index_h_
 
 #include "Conventions/PhysParamId.h"
 #include "Conventions/BeamConf.h"

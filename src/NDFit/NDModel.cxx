@@ -30,7 +30,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/UtlStyle.h"
 #include "Utilities/UtlXML.h"
 #include "Messenger/Messenger.h"
-//lbnx
+//dune
 #include "Conventions/ReacMode.h"
 #include "Conventions/BeamConf.h"
 #include "NDFit/NDModel.h"
@@ -63,7 +63,7 @@ NDModel::~NDModel()
 //________________________________________________________________________________________
 string NDModel::Name(void)
 {
-  return "LBNxND";
+  return "DUNEND";
 }
 //________________________________________________________________________________________
 bool NDModel::Read(string file, Option_t * /*opt*/)
@@ -135,7 +135,7 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
   xml->FreeDoc(xmldoc);
   delete xml;
 
-  LOG("NDModel",pNOTICE) << "Done configuring LBNx/ND model... \n\n";
+  LOG("NDModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
 
   return true;
 }
@@ -341,7 +341,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
                const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
                // book histogram
-               TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF component = f(beam,sample,mode,zone)",
+               TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode,zone)",
                  n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_ob_rf",name) );
                // fill from corresponding VALOR array
@@ -371,7 +371,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // book histogram
                const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
                const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
-               TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF component = f(beam,sample,mode)",
+               TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode)",
                  kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_sb_rf",name) );
                // fill from corresponding VALOR array
@@ -423,7 +423,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                const double * enu_reco_bins = util::ErecoBinEdges(s,izone);
                const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
                // book histogram
-               TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF = f(beam,sample,zone)",
+               TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample,zone)",
                  n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdft_ob_rf",name) );
                // fill from corresponding VALOR array
@@ -452,7 +452,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                // book histogram
                const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
                const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
-               TH2D * h2 = new TH2D("h2","VALOR/LBNx ND (Ereco,yreco) PDF = f(beam,sample)",
+               TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample)",
                  kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
                h2 -> SetName( Form("%s_%s_%s",tag, "pdft_sb_rf",name) );
                h2->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
@@ -503,13 +503,13 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
             // create slices of the PDF components (function of Ereco, for given yreco bin)
             TH1D * htot = new TH1D("htot", 
-               "VALOR/LBNx ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)", n_enu_reco_bins, enu_reco_bins);
+               "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)", n_enu_reco_bins, enu_reco_bins);
             htot->SetName(Form("%s_%s_%s",tag, "pdfcs_ob_rf",name) );
             htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int iy = 0; iy < n_y_reco_bins; iy++) {
               TH1D * h = new TH1D("h",
-                  Form("VALOR/LBNx ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
+                  Form("VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
                        y_reco_bins[iy],y_reco_bins[iy+1]),
                   n_enu_reco_bins, enu_reco_bins);
               h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_ob_rf",name,iy) );
@@ -535,13 +535,13 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
             const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
             const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
             TH1D * htot = new TH1D("htot", 
-               "VALOR/LBNx ND PDF component: Ereco spectrum = f(beam,sample,mode)", kNErecoBinsSb, kErecoBinEdgesSb);
+               "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode)", kNErecoBinsSb, kErecoBinEdgesSb);
             htot->SetName(Form("%s_%s_%s",tag, "pdfcs_sb_rf",name) );
             htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
             htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
             for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
               TH1D * h = new TH1D("h",
-                  Form("VALOR/LBNx ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
+                  Form("VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
                        y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
                   kNErecoBinsSb, kErecoBinEdgesSb);
               h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_sb_rf",name,iy) );
@@ -589,13 +589,13 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const double * y_reco_bins   = util::YrecoBinEdges(s,izone);
           // create slices of the total PDF (function of Ereco, for given yreco bin)
           TH1D * htot = new TH1D("htot", 
-              "VALOR/LBNx ND PDF: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
+              "VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
           htot->SetName(Form("%s_%s_%s",tag, "pdfts_ob_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
           for(int iy = 0; iy < n_y_reco_bins; iy++) {
             TH1D * h = new TH1D("h",
-                Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]", 
+                Form("VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]", 
                      y_reco_bins[iy],y_reco_bins[iy+1]),
                 n_enu_reco_bins, enu_reco_bins);
             h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_ob_rf",name,iy) );
@@ -621,13 +621,13 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
           TH1D * htot = new TH1D("htot", 
-              "VALOR/LBNx ND PDF: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
+              "VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
           htot->SetName(Form("%s_%s_%s",tag, "pdfts_sb_rf",name) );
           htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
           htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT[ibeam]));
           for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
             TH1D * h = new TH1D("h",
-                Form("VALOR/LBNx ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
+                Form("VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
                      y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
                 kNErecoBinsSb, kErecoBinEdgesSb);
             h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_sb_rf",name,iy) );
@@ -963,7 +963,7 @@ void NDModel::Zero(void)
 //________________________________________________________________________________________
 void NDModel::Fill(TTree * t, int ibeam)
 {
-// Fill MC templates from the input VALOR/LBNx DST TTree
+// Fill MC templates from the input VALOR/DUNE DST TTree
 // We use a single tree for all samples for a single beam configuration.
 
   BeamConf_t b = kNDBeamConf[ibeam];

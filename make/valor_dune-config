@@ -1,27 +1,27 @@
 #!/bin/sh
 # -*- sh-indentation: 3 -*-
 #
-# valor_lbnx-config a la ROOT's root-config
+# valor_dune-config a la ROOT's root-config
 #
 
-# VALOR/LBNx top directory path:
-topdir=$VALOR_LBNX
+# VALOR/DUNE top directory path:
+topdir=$VALOR_DUNE
 
-# VALOR/LBNx libraries path:
-libdir=$VALOR_LBNX/lib
+# VALOR/DUNE libraries path:
+libdir=$VALOR_DUNE/lib
 
-# VALOR/LBNx src top level directory:
-srcdir=$VALOR_LBNX/src
+# VALOR/DUNE src top level directory:
+srcdir=$VALOR_DUNE/src
 
-# VALOR/LBNx libraries:
-libs="-L$libdir -lValorLBNxConv -lValorLBNxND"
+# VALOR/DUNE libraries:
+libs="-L$libdir -lValorDUNEConv -lValorDUNEND"
 
 #
 # Usage
 #
 
 usage="\
-Usage: valor_lbnx-config [--libs] [--libdir] [--srcdir] [--topdir]" 
+Usage: valor_dune-config [--libs] [--libdir] [--srcdir] [--topdir]" 
 
 if test $# -eq 0; then
    echo "${usage}" 1>&2

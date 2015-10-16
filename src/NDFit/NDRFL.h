@@ -4,7 +4,7 @@
 \class     valor::NDRFL
 
 \brief     Pre-computed response function library for non-linear parameters
-           of the VALOR/LBNX ND analysis. Implemented as a singleton
+           of the VALOR/DUNE ND analysis. Implemented as a singleton
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -16,8 +16,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef __valor_lbnx_nd_response_function_library__
-#define __valor_lbnx_nd_response_function_library__
+#ifndef __valor_dune_nd_response_function_library__
+#define __valor_dune_nd_response_function_library__
 
 #include <iostream>
 

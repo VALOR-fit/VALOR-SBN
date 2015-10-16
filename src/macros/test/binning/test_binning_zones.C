@@ -4,7 +4,7 @@
   int zone_color[] = { kRed-9, kBlue-10, kGreen-10, kMagenta-7, kYellow+1 };
 
   // sample
-  lbnx::conv::NDSample_t sample = lbnx::conv::ksNDNuMuCC1Trk;
+  dune::conv::NDSample_t sample = dune::conv::ksNDNuMuCC1Trk;
 
   // overall range
   const double kemin = 0;
@@ -20,13 +20,13 @@
   TBox * b = 0;
 
   // loop over binning zones for the current sample
-  for(int izone = 0; izone < lbnx::conv::kNMaxBinZones; izone++) {
+  for(int izone = 0; izone < dune::conv::kNMaxBinZones; izone++) {
 
      // for current binning zone, get the energy and y bins (variable size)
-     const int      ne = lbnx::util::NumErecoBins  (sample, izone);
-     const double * eb = lbnx::util::ErecoBinEdges (sample, izone);
-     const int      ny = lbnx::util::NumYrecoBins  (sample, izone);
-     const double * yb = lbnx::util::YrecoBinEdges (sample, izone);         
+     const int      ne = dune::util::NumErecoBins  (sample, izone);
+     const double * eb = dune::util::ErecoBinEdges (sample, izone);
+     const int      ny = dune::util::NumYrecoBins  (sample, izone);
+     const double * yb = dune::util::YrecoBinEdges (sample, izone);         
      
      if(yb==0 || eb==0) continue;
 

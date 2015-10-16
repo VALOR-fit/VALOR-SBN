@@ -2,7 +2,7 @@
 # Costas Andreopoulos (Rutherford Lab.) <costas.andreopoulos \at stfc.ac.uk>
 #
 
-include $(VALOR_LBNX)/make/Make.config
+include $(VALOR_DUNE)/make/Make.config
 
 ifndef OPT_WITH_CXX_USERDEF_FLAGS
  OPT_WITH_CXX_USERDEF_FLAGS=
@@ -22,15 +22,15 @@ IS_MACOSX =
 
 # VALOR application release info
 #
-VALOR_APP_VERSION  = $(shell awk '{print $0}' $(VALOR_LBNX)/VERSION)
+VALOR_APP_VERSION  = $(shell awk '{print $0}' $(VALOR_DUNE)/VERSION)
 
 # VALOR application include path
 #
-VALOR_APP_INCLUDES := -I$(VALOR_LBNX)/src/
+VALOR_APP_INCLUDES := -I$(VALOR_DUNE)/src/
 
 # VALOR application libraries
 #
-VALOR_APP_LIBRARIES = $(shell $(VALOR_LBNX)/make/valor_lbnx-config --libs)
+VALOR_APP_LIBRARIES = $(shell $(VALOR_DUNE)/make/valor_dune-config --libs)
 
 #-------------------------------------------------------------------
 #                      VALOR FRAMEWORK CODE
@@ -96,7 +96,7 @@ LOG_LIBRARIES := -L$(LOG_LIB_DIR) -llog4cpp
 #-------------------------------------------------------------------
 #                       Some global variables
 #-------------------------------------------------------------------
-MAKE   := gmake
+MAKE   := make
 RM      = rm -f
 MKDIR   = mkdir -p
 CAT     = cat

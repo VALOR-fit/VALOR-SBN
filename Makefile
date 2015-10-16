@@ -1,5 +1,5 @@
 #
-# Main VALOR/LBNx project Makefile.
+# Main VALOR/DUNE project Makefile.
 # 
 # Author: Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
 #
@@ -10,7 +10,7 @@ MAKEFILE = Makefile
 
 # Include machine specific flags and locations (inc. files & libs)
 #
-include $(VALOR_LBNX)/make/Make.include
+include $(VALOR_DUNE)/make/Make.include
 
 # define composite targets
 #
@@ -29,54 +29,54 @@ install:
 print-make-info: FORCE
 	@echo " "
 	@echo " "
-	@echo "***** Building VALOR/LBNx from source tree at: $(VALOR_LBNX)"
+	@echo "***** Building VALOR/DUNE from source tree at: $(VALOR_DUNE)"
 	@echo "***** The source tree corresponds to VALOR version $(VALOR_VERSION)"
 	@echo " "
 
 copy-scripts-to-bin: FORCE
 	@echo " "
 	@echo "** Copying scripts to bin..."
-	cp ${VALOR_LBNX}/make/valor_lbnx-config ${VALOR_LBNX}/bin
+	cp ${VALOR_DUNE}/make/valor_dune-config ${VALOR_DUNE}/bin
 
 build-conventions: FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
-	cd ${VALOR_LBNX}/src;\
+	cd ${VALOR_DUNE}/src;\
 	cd Conventions;\
 	make;\
-	cd ${VALOR_LBNX}
+	cd ${VALOR_DUNE}
 
 build-nd-fit: FORCE
 	@echo " "
 	@echo "** Building NDFit package..."
-	cd ${VALOR_LBNX}/src;\
+	cd ${VALOR_DUNE}/src;\
 	cd NDFit;\
 	make;\
-	cd ${VALOR_LBNX}
+	cd ${VALOR_DUNE}
 
 build-nd-fit-apps: FORCE
 	@echo " "
 	@echo "** Building NDFit package apps..."
-	cd ${VALOR_LBNX}/src;\
+	cd ${VALOR_DUNE}/src;\
 	cd Apps/NDFit;\
 	make;\
-	cd ${VALOR_LBNX}
+	cd ${VALOR_DUNE}
 
 make-bin-lib-dir: FORCE
 	@echo " "
-	@echo "** Creating VALOR/LBNx lib and bin directories..."
-	cd ${VALOR_LBNX}; \
+	@echo "** Creating VALOR/DUNE lib and bin directories..."
+	cd ${VALOR_DUNE}; \
 	[ -d bin ] || mkdir bin; chmod 755 bin;\
 	[ -d lib ] || mkdir lib; chmod 755 lib;
 
 purge: FORCE
 	@echo " "
 	@echo "** Purging..."
-	cd ${VALOR_LBNX}/src;\
+	cd ${VALOR_DUNE}/src;\
 	cd Apps/NDFit;                make purge; cd ../..; \
 	cd Conventions;               make purge; cd ..; \
 	cd NDFit;                     make purge; cd ..; \
-	cd ${VALOR_LBNX}
+	cd ${VALOR_DUNE}
 
 clean: clean-files clean-dir clean-etc
 
@@ -85,31 +85,31 @@ force-clean: clean-files force-clean-dir clean-etc
 clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
-	rm -f ${VALOR_LBNX}/bin/valor_lbnx-config; \
-	cd ${VALOR_LBNX}/src;\
+	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
+	cd ${VALOR_DUNE}/src;\
 	cd Apps/NDFit;              make clean; cd ../..; \
 	cd Conventions;             make clean; cd ..; \
 	cd NDFit;                   make clean; cd ..; \
-	cd $(VALOR_LBNX);\
+	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
-	cd $(VALOR_LBNX)
+	cd $(VALOR_DUNE)
 
 clean-dir: FORCE
-	@echo "Deleting VALOR/LBNx lib and bin directories...";\
-	cd $(VALOR_LBNX);\
+	@echo "Deleting VALOR/DUNE lib and bin directories...";\
+	cd $(VALOR_DUNE);\
 	[ ! -d ./bin ] || rmdir ./bin;\
 	[ ! -d ./lib ] || rmdir ./lib 
 
 force-clean-dir: FORCE
-	@echo "Deleting VALOR/LBNx lib and bin directories...";\
-	cd $(VALOR_LBNX);\
+	@echo "Deleting VALOR/DUNE lib and bin directories...";\
+	cd $(VALOR_DUNE);\
 	[ ! -d ./bin ] || rm -rf ./bin;\
 	[ ! -d ./lib ] || rm -rf ./lib 
 
 clean-etc: FORCE
-	cd $(VALOR_LBNX); \
+	cd $(VALOR_DUNE); \
 	rm -f ./*log; \
-	cd ${VALOR_LBNX}
+	cd ${VALOR_DUNE}
 
 FORCE:
 

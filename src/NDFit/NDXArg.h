@@ -3,7 +3,7 @@
 
 \class     valor::NDXArg
 
-\brief     A utility class to hold command-line argument for VALOR/LBNX
+\brief     A utility class to hold command-line argument for VALOR/DUNE
            ND fit package executables
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
@@ -16,8 +16,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_xarg_h_
-#define _valor_lbnx_nd_xarg_h_
+#ifndef _valor_dune_nd_xarg_h_
+#define _valor_dune_nd_xarg_h_
 
 #include <ostream>
 #include <string>

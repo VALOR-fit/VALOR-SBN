@@ -25,7 +25,7 @@ Nick Grant  14 July 2014
 */
 
 void marginalise_cov_matrix(
-TString inputfile = "/opt/ppd/t2k/users/nick/LBNX/macros/fit/nd/fit51params/toymc_fhcflux_plus10.root",
+TString inputfile = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/fit51params/toymc_fhcflux_plus10.root",
 )
 {
   using namespace valor;

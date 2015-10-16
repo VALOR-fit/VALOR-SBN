@@ -8,9 +8,9 @@
 #   2) valor framework code top-level directory
 #
 
-export VALOR_LBNX=$1
+export VALOR_DUNE=$1
 export VALOR_FMWK=$2
 export ROOTSYS=/hep/soft/root/v5.34.34/
 
-export DYLD_LIBRARY_PATH=${VALOR_LBNX}/lib:${VALOR_FMWK}/lib:${ROOTSYS}/lib:${DYLD_LIBRARY_PATH}
-export PATH=${VALOR_LBNX}/bin:${VALOR_LBNX}/root:${VALOR_LBNX}/production:${ROOTSYS}/bin:${PATH}
+export DYLD_LIBRARY_PATH=${VALOR_DUNE}/lib:${VALOR_FMWK}/lib:${ROOTSYS}/lib:${DYLD_LIBRARY_PATH}
+export PATH=${VALOR_DUNE}/bin:${VALOR_DUNE}/root:${VALOR_DUNE}/production:${ROOTSYS}/bin:${PATH}

@@ -3,7 +3,7 @@
 
 \class     valor::NDData
 
-\brief     VALOR/LBNX ND Data class. Derives from FitDataABC
+\brief     VALOR/DUNE ND Data class. Derives from FitDataABC
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -15,8 +15,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_data_h_
-#define _valor_lbnx_nd_data_h_
+#ifndef _valor_dune_nd_data_h_
+#define _valor_dune_nd_data_h_
 
 #include <string>
 
@@ -24,7 +24,7 @@
 #include "FitCore/FitDataABC.h"
 #include "Utilities/VALORArray.h"
 
-//lbnx
+//dune
 #include "Conventions/BeamConf.h"
 #include "NDFit/NDArrIdx.h"
 #include "NDFit/NDSample.h"

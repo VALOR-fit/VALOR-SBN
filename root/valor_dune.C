@@ -124,12 +124,12 @@ void config_mesg()
   valor::util::Verbosity(verbosity.Data());
 }
 
-void valor_lbnx()
+void valor_dune()
 {   
     TString curr_dir = gSystem->pwd();
     gSystem->cd(curr_dir.Data());
 
-    TString top_dir = gSystem->Getenv("VALOR_LBNX");
+    TString top_dir = gSystem->Getenv("VALOR_DUNE");
 
     TString loadincs = ".x " + top_dir + "/root/loadincs.C";
     TString loadlibs = ".x " + top_dir + "/root/loadlibs.C";

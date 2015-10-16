@@ -1,5 +1,5 @@
 #
-# Makefile for VALOR/LBNX apps
+# Makefile for VALOR/DUNE apps
 #
 # Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
 # Sep 10, 2015
@@ -11,17 +11,17 @@ MAKEFILE = Makefile
 
 # Include machine specific flags and locations (inc. files & libs)
 #
-include $(VALOR_LBNX)/make/Make.include
+include $(VALOR_DUNE)/make/Make.include
 
-TGT = valor_lbnx-run_nd_fit
+TGT = valor_dune-run_nd_fit
 
 all: $(TGT)
 
 # 
 #
-valor_lbnx-run_nd_fit: FORCE
+valor_dune-run_nd_fit: FORCE
 	$(CXX) $(CXXFLAGS) -c run_nd_fit.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) run_nd_fit.o $(LIBRARIES) -o $(VALOR_LBNX)/bin/valor_lbnx-run_nd_fit
+	$(LD) $(LDFLAGS) run_nd_fit.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_nd_fit
 
 #################### CLEANING
 
@@ -30,10 +30,10 @@ purge: FORCE
 
 clean: FORCE
 	$(RM) *.o *~ core
-	$(RM) $(VALOR_LBNX)/bin/valor_lbnx-run_nd_fit
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_nd_fit
 
 distclean: FORCE
-	$(RM) $(VALOR_LBNX_INSTALLATION_PATH)/bin/valor_lbnx-run_nd_fit		
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_nd_fit		
 
 FORCE:
 

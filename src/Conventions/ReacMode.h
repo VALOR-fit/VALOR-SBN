@@ -4,7 +4,7 @@
 \class     valor::conv::ReacMode_t
 
 \brief     Enumeration of true reaction modes considered separately within 
-           each LBNx analysis sample
+           each DUNE analysis sample
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -16,8 +16,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_reaction_modes_h
-#define _valor_lbnx_reaction_modes_h
+#ifndef _valor_dune_reaction_modes_h
+#define _valor_dune_reaction_modes_h
 
 #include <string>
 

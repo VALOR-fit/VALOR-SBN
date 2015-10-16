@@ -15,8 +15,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_beam_configuration_h_
-#define _valor_lbnx_beam_configuration_h_
+#ifndef _valor_dune_beam_configuration_h_
+#define _valor_dune_beam_configuration_h_
 
 #include <TROOT.h>
 

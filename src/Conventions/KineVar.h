@@ -15,8 +15,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_kine_var_h_
-#define _valor_lbnx_kine_var_h_
+#ifndef _valor_dune_kine_var_h_
+#define _valor_dune_kine_var_h_
 
 #include <TROOT.h>
 

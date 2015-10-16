@@ -3,7 +3,7 @@
 
 \class     valor::NDModel
 
-\brief     VALOR?LBNX ND Model class. Derives from FitModelABC
+\brief     VALOR?DUNE ND Model class. Derives from FitModelABC
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -13,8 +13,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_model_h_
-#define _valor_lbnx_nd_model_h_
+#ifndef _valor_dune_nd_model_h_
+#define _valor_dune_nd_model_h_
 
 #include <string>
 #include <TObjArray.h>
@@ -25,7 +25,7 @@
 #include "FitCore/PhysHypothesis.h"
 #include "FitCore/PhysParamList.h"
 #include "Utilities/VALORArray.h"
-//lbnx
+//dune
 #include "Conventions/BeamConf.h"
 #include "NDFit/NDArrIdx.h"
 #include "NDFit/NDSample.h"

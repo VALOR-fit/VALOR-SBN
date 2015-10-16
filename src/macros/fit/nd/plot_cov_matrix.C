@@ -23,7 +23,7 @@ Nick Grant  21 July 2014
 */
 
 void plot_cov_matrix(
-TString inputfile = "/opt/ppd/t2k/users/nick/LBNX/macros/fit/nd/fit51params/toymc_fhcflux_plus10_4.root",
+TString inputfile = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/fit51params/toymc_fhcflux_plus10_4.root",
 bool marginalise = true
 )
 {

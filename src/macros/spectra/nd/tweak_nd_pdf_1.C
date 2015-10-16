@@ -1,6 +1,6 @@
 //
 // ------------------------------------------------------------------------------------------------
-// Simple program to test tweaking of LBNx/ND PDFs and MC templates
+// Simple program to test tweaking of DUNE/ND PDFs and MC templates
 // Tweak 1 param at a time by +/- 1 sigma
 //
 // Costas Andreopoulos
@@ -23,7 +23,7 @@ void tweak_nd_pdf_1
   double enu_reco_max = 20;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
 
   // Print settings
   cout << "\n[Job inputs]" << endl;

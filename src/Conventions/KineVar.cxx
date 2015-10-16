@@ -10,7 +10,7 @@ ChangeLog:
 
 //fmwk
 #include "Utilities/UtlStr.h"
-//lbnx
+//dune
 #include "Conventions/KineVar.h"
 
 using namespace valor;

@@ -1,6 +1,6 @@
 //
 // ------------------------------------------------------------------------------------------------
-// Simple program to test tweaking of LBNx/ND PDFs and MC templates.
+// Simple program to test tweaking of DUNE/ND PDFs and MC templates.
 // The PDF error envelopes are computed by generating N toy-MC experiments throwing 
 // all parameters simultaneously.
 //
@@ -22,7 +22,7 @@ void tweak_nd_pdf_N
   const double enu_reco_max = 10;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_LBNX"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
 
   // Print settings
   cout << "\n[Job inputs]" << endl;

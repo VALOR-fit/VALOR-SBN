@@ -34,7 +34,7 @@ NDNtp::~NDNtp()
 //________________________________________________________________________________________
 void NDNtp::Create(const char * output_filename)
 {
-  LOG("NDNtp", pDEBUG) << "Booking VALOR/LBNx ND fit tree...";
+  LOG("NDNtp", pDEBUG) << "Booking VALOR/DUNE ND fit tree...";
 
   if(output_filename) {
     fOutFile = new TFile(output_filename, "recreate");
@@ -50,7 +50,7 @@ void NDNtp::Create(const char * output_filename)
 
 //int migradmin, migraderr;
 
-  fVTree = new TTree("valor_lbnx_nd_ntp","VALOR/LBNX ND fit results");
+  fVTree = new TTree("valor_dune_nd_ntp","VALOR/DUNE ND fit results");
 
   fVTree->Branch("true_params",     "valor::PhysParamList", &fTrueParamArr,    1280000,0);
   fVTree->Branch("best_fit_params", "valor::FitParamList",  &fBestFitParamArr, 1280000,0);

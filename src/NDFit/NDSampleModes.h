@@ -21,8 +21,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_lbnx_nd_sample_modes_h_
-#define _valor_lbnx_nd_sample_modes_h_
+#ifndef _valor_dune_nd_sample_modes_h_
+#define _valor_dune_nd_sample_modes_h_
 
 #include "Conventions/BeamConf.h"
 #include "Conventions/ReacMode.h"
