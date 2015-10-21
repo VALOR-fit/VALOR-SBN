@@ -10,7 +10,7 @@ MAKEFILE = Makefile
 #
 include $(VALOR_DUNE)/make/Make.include
 
-PACKAGE           = ValorDUNEConv
+PACKAGE           = ValorDuneConv
 DICTIONARY        = _RootDict_$(PACKAGE)
 LIBNAME           = lib$(PACKAGE)
 
