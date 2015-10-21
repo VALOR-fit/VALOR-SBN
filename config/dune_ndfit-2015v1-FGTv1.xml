@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<analysis_inputs analysis="LBNE-NDFIT" version="2014a" config="STT-baseline">
+<analysis_inputs analysis="DUNE-NDFIT" version="2015v1" detector="FGTv1">
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,13 +45,13 @@ Input MC templates
 
   <dst> 
     <fhc>
-       <filename> outfhc.root </filename> 
-       <objname>  LBNETree4 </objname> 
+       <filename> dune/ndfit/2015a/STT/FHC_LBNE_ND_Tree_v25.root </filename> 
+       <objname>  LBNETree </objname> 
        <objtype>  TTree    </objtype> 
     </fhc>
     <rhc>
-       <filename> outrhc.root </filename> 
-       <objname>  LBNETree4  </objname> 
+       <filename> dune/ndfit/2015a/STT/RHC_LBNE_ND_Tree_v25.root </filename> 
+       <objname>  LBNETree  </objname> 
        <objtype>  TTree     </objtype> 
     </rhc>
   </dst>
@@ -65,7 +65,10 @@ Systematics
 -->
 
 <syst>
-
+  <EnergyScale>
+    <Leptonic> 0.025 </Leptonic>
+    <Hadronic> 0.15 </Hadronic>
+  </EnergyScale>
 </syst>
 
 </analysis_inputs>
