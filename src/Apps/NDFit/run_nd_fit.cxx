@@ -5,6 +5,23 @@
 
 \brief     Generate and fit ensembles of toy-MC experiments.
 
+\options     --tag                 : Tag for output file [def: "toymc"]
+             --run                 : Run # [def: 0]
+             --ntoymc              : Number of toy-MC experiments [def: 1]
+             --fit-param-list      : Fit parameter list (see NDFitParams.cxx) 
+                                     [def: "standard"]
+             --param-values-option : Decide how to set the values of physics 
+                                     params used for toy-MC generation 
+                                    [def:"randomize-all;prefit-errors"]
+             --fit-opt             : Fitter option [def: "minuit"]
+             --config              : Analysis configuration file [required]
+             --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
+            [--with-stat-fluct |   : Include statistical fluctuation in toy 
+                                     MC generation? [def: yes]
+             --without-stat-fluct] 
+            [--store-spectra   |   : Store toy-MC/best-fit spectra? [def: no]
+             --discard-spectra   ] 
+
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
@@ -43,37 +60,6 @@ using namespace std;
 using namespace valor;
 using namespace valor::conv;
 
-//void run_fit
-//(
-//  const char * tag              = "toymc",                               /* tag for output file */
-//  int          run              = 0,                                     /* run # */
-//  int          ntoymc           = 1,                                     /* number of toy-MC experiments */
-//  const char * fit_param_list   = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
-//  const char * param_values     = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
-//  bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
-//  const char * fit_option       = "minuit",                              /* fitter option */
-//  bool         store_spectra    = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
-//  const char * config_file      = "lbne_ndfit-2014a-STT_baseline.xml",   /* analysis configuration file */
-//  const char * verbosity_file   = "verbosity.xml"                        /* message thresholds */
-//);
-
-/*
-void run_fit
-(
-  const char * tag,
-  int          run,
-  int          ntoymc,
-  const char * fit_param_list,
-  const char * param_values,
-  bool         stat_fluct,
-  const char * fit_option,
-  bool         store_spectra,
-  const char * config_file,
-  const char * verbosity_file
-)
-*/
-
-
 int main(int argc, char ** argv)
 {
   Env::Instance()->AutoSet("dune");
@@ -84,8 +70,6 @@ int main(int argc, char ** argv)
 
   LOG("valor_dune", pNOTICE) << arg;
   
-
-
 
   return 0;
 }
