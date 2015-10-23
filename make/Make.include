@@ -179,7 +179,7 @@ endif
 # MAC OS X with gcc, 64-bit mode
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifeq ($(strip $(ARCH)),macosx64)
-OSX_VERSION      = $(shell sw_vers | grep 'ProductVersion:' | grep -o '[0-9]*\.[0-9]*\.[0-9]*')  
+OSX_VERSION   = $(shell sw_vers | grep 'ProductVersion:' | grep -o '[0-9]*\.[0-9]*\.[0-9]*')  
 ARCH_OK       = YES
 IS_MACOSX     = YES
 CXXFLAGS      = -m64 -pipe -Wshadow -W -Wall -Woverloaded-virtual \
@@ -192,11 +192,28 @@ ifeq ($(strip $(GCC_GE_4_1_0)), YES)
   CXXFLAGS += -Wno-strict-aliasing -stdlib=libc++ -mmacosx-version-min=10.9
   elseif (OSX_VERSION,10.6.)
   CXXFLAGS += -Wno-strict-aliasing -stdlib=libstdc++ -mmacosx-version-min=10.6
+  endif
 endif
+
+ifeq (APPLE_CLANG,1)
+CXXFLAGS      = -m64 -pipe -Wshadow -W -Wall -Woverloaded-virtual \
+		-fsigned-char -fno-common \
+		$(OPT_WITH_CXX_DEBUG_FLAG) \
+		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
+		$(OPT_WITH_CXX_USERDEF_FLAGS) 
 endif
+
+
 LDFLAGS       = -bind_at_load
 SOFLAGS       = -dynamiclib -flat_namespace \
 		-single_module -undefined dynamic_lookup
+
+ifeq (APPLE_CLANG,1)
+  SOFLAGS       = -dynamiclib \
+		   -single_module -undefined dynamic_lookup
+endif
+#
+
 DllSuf       := dylib
 DllLinkSuf   := so
 StaticLibSuf := a
