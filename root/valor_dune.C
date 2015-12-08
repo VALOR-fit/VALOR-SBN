@@ -26,7 +26,7 @@ void define_valor_style()
   // set the paper & margin sizes
   valorStyle->SetPaperSize(20,26);
   valorStyle->SetPadTopMargin(0.05);
-  valorStyle->SetPadRightMargin(0.05);
+  valorStyle->SetPadRightMargin(0.1);
   valorStyle->SetPadBottomMargin(0.16);
   valorStyle->SetPadLeftMargin(0.13);
 
@@ -46,7 +46,7 @@ void define_valor_style()
   valorStyle->SetTitleFont(132,"x");
   valorStyle->SetTitleFont(132,"y");
   valorStyle->SetTitleFont(132,"z");
-  valorStyle->SetTitleFont(132,"t"); 
+  valorStyle->SetTitleFont(132,"t");
   valorStyle->SetTitleFillColor(0);
   valorStyle->SetTitleX(0.25);
   valorStyle->SetTitleFontSize(0.08);
@@ -133,11 +133,13 @@ void valor_dune()
 
     TString loadincs = ".x " + top_dir + "/root/loadincs.C";
     TString loadlibs = ".x " + top_dir + "/root/loadlibs.C";
- 
-    gROOT->ProcessLine(loadincs.Data());    
-    gROOT->ProcessLine(loadlibs.Data());    
-
-    change_prompt();
+    
+    gROOT->ProcessLine(loadincs.Data());
+    gROOT->ProcessLine(loadlibs.Data());
+    
+    if (! (TString(gApplication->ApplicationName()).Contains("PyROOT")) ) {
+      change_prompt();
+    }
 
     define_valor_style();
     gROOT->SetStyle("VALOR");

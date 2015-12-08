@@ -37,7 +37,9 @@ copy-scripts-to-bin: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Copying scripts to bin..."
 	cp ${VALOR_DUNE}/make/valor_dune-config ${VALOR_DUNE}/bin
-
+	cp ${VALOR_DUNE}/root/valor_dune        ${VALOR_DUNE}/bin
+	cp ${VALOR_DUNE}/root/pydune            ${VALOR_DUNE}/bin
+	
 build-conventions: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
