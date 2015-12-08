@@ -2,6 +2,8 @@
   TString libs0 = gSystem->GetDynamicPath();
   TString libs  = libs0 + ":/usr/lib:/usr/local/lib:/opt/lib:/opt/local/lib";
   gSystem->SetDynamicPath(libs.Data());
+  
+  TString features(gROOT->GetConfigFeatures());
 
   // extra ROOT libs
   gSystem->Load("libGpad");
@@ -14,7 +16,8 @@
   gSystem->Load("libXMLIO");
   gSystem->Load("libMinuit");
   gSystem->Load("libMinuit2");
-  gSystem->Load("libMathMore"); 
+  
+  if (features.Contains("mathmore")) {gSystem->Load("libMathMore"); }
 
   // log4cpp lib
   gSystem->Load("liblog4cpp");
@@ -25,8 +28,9 @@
   gSystem->Load("libValorFitCore.so");
   gSystem->Load("libValorUtil.so");
   gSystem->Load("libValorParse.so");
-  gSystem->Load("libValorDUNEConv.so");
-  gSystem->Load("libValorDUNEND.so");
-//  gSystem->Load("libValorDUNENDSelection.so");
+  gSystem->Load("libValorDuneConv.so");
+  gSystem->Load("libValorDuneNDFit.so");
+  //~ gSystem->Load("libValorDuneFDFit.so");
+  //~ gSystem->Load("libValorDUNENDSelection.so");
 }
 
