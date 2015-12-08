@@ -33,34 +33,25 @@ print-make-info: FORCE
 	@echo "***** The source tree corresponds to VALOR version $(VALOR_VERSION)"
 	@echo " "
 
-copy-scripts-to-bin: FORCE
+copy-scripts-to-bin: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Copying scripts to bin..."
 	cp ${VALOR_DUNE}/make/valor_dune-config ${VALOR_DUNE}/bin
 
-build-conventions: FORCE
+build-conventions: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
-	cd ${VALOR_DUNE}/src;\
-	cd Conventions;\
-	make;\
-	cd ${VALOR_DUNE}
+	$(MAKE) -C ${VALOR_DUNE}/src/Conventions;
 
-build-nd-fit: FORCE
+build-nd-fit: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building NDFit package..."
-	cd ${VALOR_DUNE}/src;\
-	cd NDFit;\
-	make;\
-	cd ${VALOR_DUNE}
+	$(MAKE) -C ${VALOR_DUNE}/src/NDFit;
 
-build-nd-fit-apps: FORCE
+build-nd-fit-apps: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building NDFit package apps..."
-	cd ${VALOR_DUNE}/src;\
-	cd Apps/NDFit;\
-	make;\
-	cd ${VALOR_DUNE}
+	$(MAKE) -C ${VALOR_DUNE}/src/Apps/NDFit;
 
 make-bin-lib-dir: FORCE
 	@echo " "
@@ -73,9 +64,9 @@ purge: FORCE
 	@echo " "
 	@echo "** Purging..."
 	cd ${VALOR_DUNE}/src;\
-	cd Apps/NDFit;                make purge; cd ../..; \
-	cd Conventions;               make purge; cd ..; \
-	cd NDFit;                     make purge; cd ..; \
+	cd Apps/NDFit;                $(MAKE) purge; cd ../..; \
+	cd Conventions;               $(MAKE) purge; cd ..; \
+	cd NDFit;                     $(MAKE) purge; cd ..; \
 	cd ${VALOR_DUNE}
 
 clean: clean-files clean-dir clean-etc
@@ -87,9 +78,9 @@ clean-files: FORCE
 	@echo "** Cleaning..."
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
 	cd ${VALOR_DUNE}/src;\
-	cd Apps/NDFit;              make clean; cd ../..; \
-	cd Conventions;             make clean; cd ..; \
-	cd NDFit;                   make clean; cd ..; \
+	cd Apps/NDFit;              $(MAKE) clean; cd ../..; \
+	cd Conventions;             $(MAKE) clean; cd ..; \
+	cd NDFit;                   $(MAKE) clean; cd ..; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_DUNE)
