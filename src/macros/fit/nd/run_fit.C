@@ -16,7 +16,7 @@ void run_fit
   bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
   const char * fit_option       = "minuit",                              /* fitter option */
   bool         store_spectra    = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
-  const char * config_file      = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
+  const char * config_file      = "dune_ndfit-2015v1-FGTv1.xml"          /* analysis configuration file */
 )
 
 {

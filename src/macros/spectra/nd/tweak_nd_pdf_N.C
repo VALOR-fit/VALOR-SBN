@@ -11,7 +11,7 @@
 void tweak_nd_pdf_N
 (
   const char * model_param_list   = "standard",                            /* list of params included in model, see NDFitParams.cxx */
-  const char * config_file        = "lbne_ndfit-2014a-STT_baseline.xml"    /* analysis configuration file */
+  const char * config_file        = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
 )
 {
   using namespace std;
