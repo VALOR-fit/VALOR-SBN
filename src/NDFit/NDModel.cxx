@@ -28,6 +28,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/PDG.h"
 #include "Utilities/Rnd.h"
 #include "Utilities/UtlStyle.h"
+#include "Utilities/UtlSystem.h"
 #include "Utilities/UtlXML.h"
 #include "Messenger/Messenger.h"
 //dune
@@ -78,7 +79,7 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
   if (xmldoc==0) {
     LOG("NDModel",pERROR) << "Can not parse input XML file [" << file << "]";
     delete xml;
-    return false;  
+    util::Die(1); return false;
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
 
