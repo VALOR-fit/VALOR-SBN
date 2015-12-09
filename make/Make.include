@@ -2,6 +2,8 @@
 # Costas Andreopoulos (Rutherford Lab.) <costas.andreopoulos \at stfc.ac.uk>
 #
 
+include $(VALOR_FMWK)/make/Make.config
+
 include $(VALOR_DUNE)/make/Make.config
 
 ifndef OPT_WITH_CXX_USERDEF_FLAGS
@@ -353,3 +355,5 @@ CFLAGS    = -g
 	$(AR) $(ARFLAGS) $@ $*.o
 	$(RANLIB) $@
 	$(RM) $*.o
+
+print-%  : ; @echo $* = $($*)
