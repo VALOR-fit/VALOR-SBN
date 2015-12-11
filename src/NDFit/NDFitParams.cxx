@@ -6,6 +6,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 */
 //________________________________________________________________________________________
 
+#include "Utilities/NameRegistry.h"
 #include "Utilities/Rnd.h"
 #include "NDFit/NDFitParams.h"
 #include "Messenger/Messenger.h"
@@ -331,3 +332,15 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
   return fparm;
 }
 //________________________________________________________________________________________
+void valor::util::PopulateNameRegistry(void)
+{
+  NameRegistry * nr = util::NameRegistry::MutableInstance();
+  
+  for (int ip = -1 ; ip < conv::kLastNuisParam; ip++) {
+    conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
+    nr->fParamNames      [p] = util::AsString(p);
+    nr->fParamNamesSimple[p] = util::AsString(p); // If we start using proper names, will change this.
+  }
+  return;
+}
+//____________________________________________________________________________

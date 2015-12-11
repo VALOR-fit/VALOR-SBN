@@ -1851,6 +1851,9 @@ namespace util {
 
   PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard", Option_t * param_values = "nominal");
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", Option_t * param_values = "nominal");
+  
+  // Tell the framework classes what our parameter names are
+  void PopulateNameRegistry(void);
 
 } //util
 
