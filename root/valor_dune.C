@@ -143,10 +143,13 @@ void valor_dune()
 
     define_valor_style();
     gROOT->SetStyle("VALOR");
+    
+    print_banner();
 
     valor::Env * env = valor::Env::Instance();
     env->AutoSet("dune");
+    
+    valor::util::PopulateNameRegistry();
 
-    print_banner();
     config_mesg();
 }
