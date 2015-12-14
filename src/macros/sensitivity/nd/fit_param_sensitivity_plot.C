@@ -21,7 +21,7 @@ void fit_param_sensitivity_plot
 (
   const char * pname,                        /* parameter name */
   bool         fit_sensitivity_curve,        /* plot averaged 'Delta\chi^2 directly, or show fit with quadratic function? */
-  const char * filename1,                    /* run_fit.C output ROOT file with fit results (run `hadd' if there are many) */
+  const char * filename1,                    /* run_fit.C output ROOT file with fit results (use wildcards if there are many) */
   const char * label1       = "Sensitivity", /*  */
   const char * filename2    = 0,             /*  */
   const char * label2       = 0,             /*  */
@@ -169,8 +169,9 @@ TGraph * get_sensitivity(
   
   cout << "Plotting sensitivity to parameter: " << pname << " using toy-MC fit results stored in: " << filename << endl;
   
-  // Open input file
-  TFile f(filename, "read");
+  // Open input files
+  TChain * fitnt = new TChain("fitnt");
+  fitnt->Add(filename);
 
   // Get tree
   // Tree structure below is what is written out by run_fit.C
@@ -181,7 +182,6 @@ TGraph * get_sensitivity(
 //TObjArray *     best_fit_model_array = 0; // an array of various best-fit model predictions for the current toy-MC experiment 
 //TObjArray *     data_array           = 0; // an array of all fitted data distributions for the current toy-MC experiment
 
-  TTree * fitnt = (TTree*)f.Get("fitnt");
   fitnt->SetBranchAddress("true_params",        &true_param_array);
   fitnt->SetBranchAddress("best_fit_params",    &best_fit_param_array);
 //fitnt->SetBranchAddress("best_fit_model",     &best_fit_model_array);
@@ -297,6 +297,8 @@ TGraph * get_sensitivity(
   p_true_out = p_true_save;
   p_min_out  = p_vec[0];
   p_max_out  = p_vec[p_vec.size()-1];
+  
+  delete fitnt;
 
   return sensitivity;
 }
