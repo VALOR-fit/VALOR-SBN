@@ -34,6 +34,7 @@
 #
 
 use File::Path;
+use Cwd 'abs_path';
 
 $iarg=0;
 foreach (@ARGV) {
@@ -67,7 +68,7 @@ foreach (@ARGV) {
   $iarg++;
 }
 $resource               = "interactive"                           unless defined $resource;
-$tag                    = "toymc"                                 unless defined $tag;
+$tag                    = "param_sensitivity"                     unless defined $tag;
 $nruns                  = 1                                       unless defined $nruns;
 $ntoymc                 = 1                                       unless defined $ntoymc;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
@@ -86,9 +87,11 @@ $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dune_ndfit-2015v1-FGTv1.xml"           unless defined $config_file;
 
+chomp($job_dir);
+
 if( !defined $cput ) {
-  if($resource eq "RAL"   ) { $cput = "6:00:00";  }
-  if($resource eq "Oxford") { $cput = "11:50:00"; }
+  if($resource =~ "RAL"    ) { $cput =  "6:00:00"; }
+  if($resource eq "Oxford" ) { $cput = "11:50:00"; }
 }
 
 mkpath ($job_dir, {verbose => 1, mode=>0777}); 
@@ -106,21 +109,68 @@ while($irun < $nruns) {
   #
 
   if($subrun_split == 0) {
-
-    $command = "valor_dune -l -b -q \'$dune_softw_dir/macros/sensitivity/nd/fit_param_sensitivity.C(\"$tag\",$irun,0,$ntoymc,\"$fitparamlist\",\"$param_values\",\"$sens_param_name\",$sens_param_value_gen,$npoints,$sens_param_value_min,$sens_param_value_max,$stat_fluct,\"$fitoption\",$store_spectra,0,0,\"$config_file\")\'";
+    
+    $program   = "valor_dune";
+    $arguments = "-l -b -q \'$dune_softw_dir/src/macros/sensitivity/nd/fit_param_sensitivity.C(\"$tag\",$irun,0,$ntoymc,\"$fitparamlist\",\"$param_values\",\"$sens_param_name\",$sens_param_value_gen,$npoints,$sens_param_value_min,$sens_param_value_max,$stat_fluct,\"$fitoption\",$store_spectra,0,0,\"$config_file\")\'";
+    $command = $program." ".$arguments;
     print "Running: $command \n";
-  
+    
+    $jobID = $irun;
+    
     #
     # ETH (Monch cluster), $job_dir not used, $tag gives path/name of output file
     #
     if($resource eq "ETH-Monch") {
       print "Not supported just yet!\n";
     }
-      
+    
+    #
+    # HTCondor @ RAL
+    #
+    
+    if($resource eq "RAL" || $resource eq "RAL_HTC") {
+       $fullprogram = abs_path(`which $program`);
+       $arguments =~ s/\"/\\\"/g;        # All double quotes must be escaped for Condor
+       $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
+       $jobname = "ndsens-${tag}-${jobID}";
+       $cndfn = "$job_dir/${jobname}.condor";
+       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+       print CND "Executable               = $fullprogram \n";
+       print CND "Arguments                = $arguments \n";
+       print CND "Error                    = $job_dir/${jobname}_\$\(Process\).err \n";
+       print CND "Output                   = $job_dir/${jobname}_\$\(Process\).out \n";
+       print CND "Universe                 = vanilla \n";
+       print CND "Getenv                   = True \n";
+       print CND "should_transfer_files    = YES \n";
+       print CND "when_to_transfer_output  = ON_EXIT \n";
+       print CND "\nqueue\n";
+       
+       close(CND);
+       system("condor_submit",$cndfn);
+    }
+  
     #
     # RAL
     #
-    if($resource eq "RAL") {
+    if($resource eq "RAL_HTCPBS") {
+       open(PBS, ">$job_dir/$tag-$irun.pbs") or die("Can not create the PBS batch script");
+       print PBS "#!/bin/bash \n";
+       print PBS "#PBS -N $tag-$irun \n";
+       print PBS "#PBS -l cput=$cput \n";
+       print PBS "#PBS -o $job_dir/$tag-$irun.pbs.out \n";
+       print PBS "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
+       print PBS "#PBS -V \n";
+       print PBS "#PBS -l walltime=$cput \n";
+       print PBS "cd $job_dir \n";
+       print PBS "source $dune_softw_dir/setup/setup_at_ral.sh $dune_softw_dir $fmwk_softw_dir\n";
+       print PBS "$command \n";
+       close(PBS);
+       system("condor_qsub","$job_dir/$tag-$irun.pbs");
+    }
+    #
+    # RAL (old system, may be helpful elsewhere)
+    #
+    if($resource eq "RAL_PBS") {
        open(PBS, ">$job_dir/$tag-$irun.pbs") or die("Can not create the PBS batch script");
        print PBS "#!/bin/bash \n";
        print PBS "#PBS -N $tag-$irun \n";
@@ -172,9 +222,13 @@ while($irun < $nruns) {
 
       $isubrun = $ipoint;
       $sens_param_value_subrun = $sens_param_value_min + $isubrun * $sens_param_value_step;
-
-      $command = "valor_dune -l -b -q \'$dune_softw_dir/macros/sensitivity/nd/fit_param_sensitivity.C(\"$tag\",$irun,$isubrun,$ntoymc,\"$fitparamlist\",\"$param_values\",\"$sens_param_name\",$sens_param_value_gen,1,$sens_param_value_subrun,$sens_param_value_subrun,$stat_fluct,\"$fitoption\",$store_spectra,$rndstat,$rndsyst,\"$config_file\")\'";
+      
+      $program = "valor_dune";
+      $arguments = "-l -b -q \'$dune_softw_dir/src/macros/sensitivity/nd/fit_param_sensitivity.C(\"$tag\",$irun,$isubrun,$ntoymc,\"$fitparamlist\",\"$param_values\",\"$sens_param_name\",$sens_param_value_gen,1,$sens_param_value_subrun,$sens_param_value_subrun,$stat_fluct,\"$fitoption\",$store_spectra,$rndstat,$rndsyst,\"$config_file\")\'";
+      $command = $program." ".$arguments;
       print "Running: $command \n";
+      
+      $jobID = $irun."-".$isubrun;
 
       #
       # ETH (Monch cluster), $job_dir not used, $tag gives path/name of output file
@@ -182,11 +236,53 @@ while($irun < $nruns) {
       if($resource eq "ETH-Monch") {
         print "Not supported just yet!\n";
       }
+    
+      #
+      # HTCondor @ RAL
+      #
       
+      if($resource eq "RAL" || $resource eq "RAL_HTC") {
+         $fullprogram = abs_path(`which $program`);
+         $arguments =~ s/\"/\\\"/g;        # All double quotes must be escaped for Condor
+         $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
+         $jobname = "ndsens-${tag}-${jobID}";
+         $cndfn = "$job_dir/${jobname}.condor";
+         open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+         print CND "Executable               = $fullprogram \n";
+         print CND "Arguments                = $arguments \n";
+         print CND "Error                    = $job_dir/${jobname}_\$\(Process\).err \n";
+         print CND "Output                   = $job_dir/${jobname}_\$\(Process\).out \n";
+         print CND "Universe                 = vanilla \n";
+         print CND "Getenv                   = True \n";
+         print CND "should_transfer_files    = YES \n";
+         print CND "when_to_transfer_output  = ON_EXIT \n";
+         print CND "\nqueue\n";
+         
+         close(CND);
+         system("condor_submit",$cndfn);
+      }
       #
       # RAL
       #
-      if($resource eq "RAL") {
+      if($resource eq "RAL_HTCPBS") {
+         open(PBS, ">$job_dir/$tag-$irun-$isubrun.pbs") or die("Can not create the PBS batch script");
+         print PBS "#!/bin/bash \n";
+         print PBS "#PBS -N $tag-$irun-$isubrun \n";
+         print PBS "#PBS -l cput=$cput \n";
+         print PBS "#PBS -o $job_dir/$tag-$irun-$isubrun.pbs.out \n";
+         print PBS "#PBS -e $job_dir/$tag-$irun-$isubrun.pbs.err \n";
+         print PBS "#PBS -q prod \n";
+         print PBS "#PBS -l walltime=$cput \n";
+         print PBS "cd $job_dir \n";
+         print PBS "source $dune_softw_dir/setup/setup_at_ral.sh $dune_softw_dir $fmwk_softw_dir\n";
+         print PBS "$command \n";
+         close(PBS);
+         system("condor_qsub","$job_dir/$tag-$irun-$isubrun.pbs");
+      }
+      #
+      # RAL (old system, may be helpful elsewhere)
+      #
+      if($resource eq "RAL_PBS") {
          open(PBS, ">$job_dir/$tag-$irun-$isubrun.pbs") or die("Can not create the PBS batch script");
          print PBS "#!/bin/bash \n";
          print PBS "#PBS -N $tag-$irun-$isubrun \n";
@@ -201,6 +297,7 @@ while($irun < $nruns) {
          close(PBS);
          `qsub -q prod $job_dir/$tag-$irun-$isubrun.pbs`;
       }
+      
       #
       # Oxford
       #

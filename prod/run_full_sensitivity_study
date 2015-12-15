@@ -71,8 +71,10 @@ $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dune_ndfit-2015v1-FGTv1.xml"           unless defined $config_file;
 
+chomp($job_dir);
+
 if( !defined $cput ) {
-  if($resource eq "RAL"   ) { $cput = "6:00:00";  }
+  if($resource =~ "RAL"   ) { $cput = "6:00:00";  }
   if($resource eq "Oxford") { $cput = "11:50:00"; }
 }
 
@@ -96,23 +98,23 @@ if( !defined $cput ) {
    "f_fhc_flux_nue01",
    "f_fhc_flux_nue02",
    "f_rhc_flux_numu00",
-##   "f_rhc_flux_numu01",
-##   "f_rhc_flux_numu02",
-##   "f_rhc_flux_numu03",
-##   "f_rhc_flux_numu04",
-##   "f_rhc_flux_numu05",
-##   "f_rhc_flux_numu06",
-##   "f_rhc_flux_numubar00",
-##   "f_rhc_flux_numubar01",
-##   "f_rhc_flux_numubar02",
-##   "f_rhc_flux_numubar03",
-##   "f_rhc_flux_numubar04",
-##   "f_rhc_flux_numubar05",
-##   "f_rhc_flux_numubar06",
-##   "f_rhc_flux_numubar07",
-##   "f_rhc_flux_nue00",
-##   "f_rhc_flux_nue01",
-##   "f_rhc_flux_nue02",
+   "f_rhc_flux_numu01",
+   "f_rhc_flux_numu02",
+   "f_rhc_flux_numu03",
+   "f_rhc_flux_numu04",
+   "f_rhc_flux_numu05",
+   "f_rhc_flux_numu06",
+   "f_rhc_flux_numubar00",
+   "f_rhc_flux_numubar01",
+   "f_rhc_flux_numubar02",
+   "f_rhc_flux_numubar03",
+   "f_rhc_flux_numubar04",
+   "f_rhc_flux_numubar05",
+   "f_rhc_flux_numubar06",
+   "f_rhc_flux_numubar07",
+   "f_rhc_flux_nue00",
+   "f_rhc_flux_nue01",
+   "f_rhc_flux_nue02",
    "f_ccqe",
    "f_cc1pic",
    "f_cc1pi0",
@@ -124,7 +126,7 @@ if( !defined $cput ) {
 foreach(@param_array)
 {
   $param = $_;
-  $command = "perl prod/submit_nd_fit_param_sensitivity_job --split-in-subruns --resource $resource --tag $tag-$param --nruns $nruns --ntoymc $ntoymc --sens-param-name-gen \"$param\" --sens-param-value 1.0 --npoints $npoints --sens-param-value-min $sens_param_value_min --sens-param-value-max $sens_param_value_max --stat-fluctuations --fit-param-list \"$fitparamlist\" --param-values \"$param_values\" --job-dir $job_dir/$param --dune-softw-dir $dune_softw_dir --fmwk-softw-dir $fmwk_softw_dir";
+  $command = "submit_nd_fit_param_sensitivity_job --split-in-subruns 1 --resource $resource --tag $tag-$param --nruns $nruns --ntoymc $ntoymc --sens-param-name \"$param\" --sens-param-value-gen 1.0 --npoints $npoints --sens-param-value-min $sens_param_value_min --sens-param-value-max $sens_param_value_max --no-stat-fluctuations 0 --fit-param-list \"$fitparamlist\" --param-values \"$param_values\" --job-dir $job_dir/$param --dune-softw-dir $dune_softw_dir --fmwk-softw-dir $fmwk_softw_dir";
   print "Running:\n$command \n\n";
-  `$command`;
+  system($command);
 }
