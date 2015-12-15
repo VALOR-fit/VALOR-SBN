@@ -97,6 +97,8 @@ if( !defined $cput ) {
 mkpath ($job_dir, {verbose => 1, mode=>0777}); 
 die("$job_dir doesn't exist") unless -d $job_dir;
 
+$job_dir = abs_path($job_dir);
+
 $irun = 0;
 while($irun < $nruns) {
 
@@ -137,8 +139,9 @@ while($irun < $nruns) {
        open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
        print CND "Executable               = $fullprogram \n";
        print CND "Arguments                = $arguments \n";
-       print CND "Error                    = $job_dir/${jobname}_\$\(Process\).err \n";
-       print CND "Output                   = $job_dir/${jobname}_\$\(Process\).out \n";
+       print CND "initialdir               = $job_dir \n";
+       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
        print CND "Universe                 = vanilla \n";
        print CND "Getenv                   = True \n";
        print CND "should_transfer_files    = YES \n";
@@ -250,8 +253,9 @@ while($irun < $nruns) {
          open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
          print CND "Executable               = $fullprogram \n";
          print CND "Arguments                = $arguments \n";
-         print CND "Error                    = $job_dir/${jobname}_\$\(Process\).err \n";
-         print CND "Output                   = $job_dir/${jobname}_\$\(Process\).out \n";
+         print CND "initialdir               = $job_dir \n";
+         print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+         print CND "Output                   = ${jobname}_\$\(Process\).out \n";
          print CND "Universe                 = vanilla \n";
          print CND "Getenv                   = True \n";
          print CND "should_transfer_files    = YES \n";

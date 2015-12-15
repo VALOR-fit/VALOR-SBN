@@ -26,6 +26,7 @@
 #
 
 use File::Path;
+use Cwd 'abs_path';
 
 $iarg=0;
 foreach (@ARGV) {
@@ -66,43 +67,57 @@ $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dune_ndfit-2015v1-FGTv1.xml"           unless defined $config_file;
 
+chomp($job_dir);
+
 if( !defined $cput ) {
-  if($resource eq "RAL"   ) { $cput = "6:00:00";  }
-  if($resource eq "Oxford") { $cput = "11:50:00"; }
+  if($resource =~ "RAL"    ) { $cput =  "6:00:00"; }
+  if($resource eq "Oxford" ) { $cput = "11:50:00"; }
 }
 
 mkpath ($job_dir, {verbose => 1, mode=>0777}); 
 die("$job_dir doesn't exist") unless -d $job_dir;
 
+$job_dir = abs_path($job_dir);
+
 $irun = 0;
 while($irun < $nruns) {
   print "Submitting run: $irun \n";
-
-  $command   = "valor_dune -l -b -q \'$dune_softw_dir/macros/fit/nd/run_fit.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
+  $jobID = $irun;
+  
+  $program = "valor_dune";
+  $arguments   = " -l -b -q \'$dune_softw_dir/src/macros/fit/nd/run_fit.C(\"$tag\",$irun,$ntoymc,\"$fitparamlist\",\"$param_values\",$stat_fluct,\"$fitoption\",$store_spectra,\"$config_file\")\'";
+  $command = $program." ".$arguments;
   print "Running: $command \n";
   
   #
   # HTCondor @ RAL
   #
-  if($resource eq "RAL_HTC") {
-     $batch_script = "$job_dir/$tag-$irun.pbs";
-     open(BATCH_SCRIPT, ">$batch_script") or die("Can not create the Condor batch script");
-     print BATCH_SCRIPT "Universe       = vanilla \n";
-     print BATCH_SCRIPT "Executable     = $dune_softw_dir/prod/htcondor_exec.sh";
-     print BATCH_SCRIPT "Arguments      = ";
-     print BATCH_SCRIPT "Log            = \n";
-     print BATCH_SCRIPT "Output         = \n";
-     print BATCH_SCRIPT "Error          = \n";
-     print BATCH_SCRIPT "Request_memory = \n";
-     print BATCH_SCRIPT "Queue \n";
-     close(BATCH_SCRIPT);
-     `condor_submit $batch_script`;
+  if($resource eq "RAL" || $resource eq "RAL_HTC") {
+    $fullprogram = abs_path(`which $program`);
+    $arguments =~ s/\"/\\\"/g;        # All double quotes must be escaped for Condor
+    $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
+    $jobname = "ndfit-${tag}-${jobID}";
+    $cndfn = "$job_dir/${jobname}.condor";
+    open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+    print CND "Executable               = $fullprogram \n";
+    print CND "Arguments                = $arguments \n";
+    print CND "initialdir               = $job_dir \n";
+    print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+    print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+    print CND "Universe                 = vanilla \n";
+    print CND "Getenv                   = True \n";
+    print CND "should_transfer_files    = YES \n";
+    print CND "when_to_transfer_output  = ON_EXIT \n";
+    print CND "\nqueue\n";
+    
+    close(CND);
+    system("condor_submit",$cndfn);
   }
 
   #
   # PBS (or HTCondor with PBS-like interface) @ RAL
   #
-  if($resource eq "RAL_PBS" || $resource eq "RAL_HTCPBS") {    
+  elsif($resource eq "RAL_PBS" || $resource eq "RAL_HTCPBS") {    
      $batch_script = "$job_dir/$tag-$irun.pbs";
      open(BATCH_SCRIPT, ">$batch_script") or die("Can not create the PBS batch script");
      print BATCH_SCRIPT "#!/bin/bash \n";
@@ -111,13 +126,14 @@ while($irun < $nruns) {
      print BATCH_SCRIPT "#PBS -o $job_dir/$tag-$irun.pbs.out \n";
      print BATCH_SCRIPT "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
      print BATCH_SCRIPT "#PBS -q prod \n";
+     print BATCH_SCRIPT "#PBS -V \n";
      print BATCH_SCRIPT "#PBS -l walltime=$cput \n";
      print BATCH_SCRIPT "cd $job_dir \n";
-     print BATCH_SCRIPT "source $dune_softw_dir/setup/setup_at_ral.sh $dune_softw_dir $fmwk_softw_dir\n";
+     print PBS "source $dune_softw_dir/setup/setup_at_cvmfs.sh $dune_softw_dir $fmwk_softw_dir\n";
      print BATCH_SCRIPT "$command \n";
      close(BATCH_SCRIPT);
      $job_submission_command = "qsub";
-     if($resource eq "RAL_HTCPBS') {
+     if($resource eq "RAL_HTCPBS") {
          $job_submission_command = "condor_qsub";
      }
      `$job_submission_command -q prod $job_dir/$tag-$irun.pbs`;
@@ -126,7 +142,7 @@ while($irun < $nruns) {
   #
   # Oxford/PBS
   #
-  if($resource eq "Oxford_PBS") {
+  elsif($resource eq "Oxford_PBS") {
      open(BATCH_SCRIPT, ">$job_dir/$tag-$irun.pbs") or die("Can not create the PBS batch script");
      print BATCH_SCRIPT "#!/bin/bash \n";
      print BATCH_SCRIPT "#PBS -N $tag-$irun \n";
@@ -143,8 +159,13 @@ while($irun < $nruns) {
   #
   # interactive
   #
-  if($resource eq "interactive") {
+  elsif($resource eq "interactive") {
      system($command);
+  }
+  
+  else {
+    print "Unknown resource $resource\n";
+    exit;
   }
 
   $irun++;
