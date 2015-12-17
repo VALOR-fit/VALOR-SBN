@@ -67,71 +67,40 @@ int main(int argc, char ** argv)
   NDXArg arg;
   arg.SetDefaults(); 
   arg.ParseFromCmdLine(argc,argv);
-
   LOG("valor_dune", pNOTICE) << arg;
-  
 
-  return 0;
-}
+//  cout << *Rnd::Instance() << endl;
 
-/*
+  Messenger::Instance()->Configure(arg.VerbosityFile());
 
-{
-  // Analysis configuration
-  TString config    = Form("%s/%s", Env::Instance()->TopLevelConfDir().c_str(), config_file   );
-  TString verbosity = Form("%s/%s", Env::Instance()->TopLevelConfDir().c_str(), verbosity_file);
-
-  Messenger::Instance()->Configure(verbosity.Data());
-
-  //
-  // Print settings
-  //
-
-  cout << "\n[Job inputs]" << endl;
-  cout << "- Job: " << tag << "/" << run << endl;
-  cout << "- Reading analysis configuration from: " << config << endl;
-  cout << "- Toy-MC generation" << endl;
-  cout << "   - Number of toy experiments: " << ntoymc << endl;
-  cout << "   - Statistical fluctuations: "  << ((stat_fluct) ? "YES " : "NO") << endl;
-  cout << "   - Option for setting parameter values: " << param_values << endl;
-  cout << "- Fit" << endl;
-  cout << "   - Fit Parameter List: " << fit_param_list << endl;
-  cout << "   - Fitter option: " << fit_option << endl;
-  cout << endl;
-  cout << *Rnd::Instance() << endl;
-
-  //
   // Create file and tree to store outputs
-  //
-
-  const char * outfilename = Form("%s_%d.root",tag,run);
-
+  const char * outfilename = Form("%s_%d.root", arg.JobTag(), (int) arg.RunNu());
   NDNtp ntp;
   ntp.Create(outfilename);
 
-//  fitnt->Branch("migradmin",                               &migradmin);
-//  fitnt->Branch("migraderr",                               &migraderr);
+//  fitnt->Branch("migradmin", &migradmin); // <-- arent't these within FitParamsList?
+//  fitnt->Branch("migraderr", &migraderr);
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
   FitModelABC * model = new NDModel;
-  model->Read(config.Data());
+  model->Read(arg.ConfigFile());
 
   // Use ND model to generate toy-MC experiments & fit
-  for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
+  for(int itoymc = 0; itoymc < arg.NToyMC(); itoymc++) {
     cout << "\n\n *** Toy-MC experiment #" << itoymc << endl;
-
+	
     // Reset output tree variables
     ntp.Reset();
 
     // Getting the fit parameter list that corresponds to the input option.
-    // The secondd option determined the `current' values which are used for toy-MC generatio below.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list, param_values);
+    // The secondd option determined the `current' values which are used for toy-MC generation below.
+    FitParamList * fp = util::GetFitParameterList(arg.FitParamList(), arg.ParamValuesOption());
 
     // Generate a toy-MC experiment 
     cout << "Generating toy-MC data" << endl;
     FitDataABC * data = new NDData;
-    data->Generate(model,*fp,stat_fluct);
+    data->Generate(model,*fp,arg.StatFluct());
 
     // The toy-MC was generated using the `current' values of the input parameter list.
     // These values will be overwritten during the fit.
@@ -141,19 +110,19 @@ int main(int argc, char ** argv)
     // Get fitter
     cout << "Preparing fitter" << endl;
     FitInputs * fit_inputs = new FitInputs(data,model,fp);
-    FitterABC * fitter = util::GetFitter(fit_inputs,fit_option);
+    FitterABC * fitter = util::GetFitter(fit_inputs, arg.FitOption());
 
     // Do the fit
     cout << "Running fitter" << endl;
     fitter->DoTheFit();
 
-//    migradmin = fitter->FitStatusCode("migrad_min");
-//    migraderr = fitter->FitStatusCode("migrad_err");
+//  migradmin = fitter->FitStatusCode("migrad_min");
+//  migraderr = fitter->FitStatusCode("migrad_err");
 
     // Copy best-fit params
     ntp.BestFitParamArr()->Copy(*fp);  
 
-    if(store_spectra) {
+    if(arg.StoreSpectra()) {
       // Copy best-fit to current values and re-generate the best-fit prediction
       // with special option (not used in the fit) to generate versions of the fit model
       // using a fine binning scheme (for plots).
@@ -179,6 +148,7 @@ int main(int argc, char ** argv)
   }//itoymc
 
   ntp.Save();
+
+  return 0;
 }
 
-*/
