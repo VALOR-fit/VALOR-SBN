@@ -41,44 +41,44 @@ bool NDXArg::ParseFromCmdLine(int argc, char ** argv)
 {
   CmdLnArgParser parser(argc,argv);
 
-  if( parser.OptionExists("--tag") ) {
-     fJobTag = parser.ArgAsString("--tag");
+  if( parser.OptionExists("tag") ) {
+     fJobTag = parser.ArgAsString("tag");
   }
 
-  if( parser.OptionExists("--run") ) {
-     fRunNu = parser.ArgAsLong("--run");
+  if( parser.OptionExists("run") ) {
+     fRunNu = parser.ArgAsLong("run");
   }
 
-  if( parser.OptionExists("--ntoymc") ) {
-     fNToyMC = parser.ArgAsInt("--ntoymc");
+  if( parser.OptionExists("ntoymc") ) {
+     fNToyMC = parser.ArgAsInt("ntoymc");
   }
 
-  if( parser.OptionExists("--fit-param-list") ) {
-     fFitParamList = parser.ArgAsString("--fit-param-list");
+  if( parser.OptionExists("fit-param-list") ) {
+     fFitParamList = parser.ArgAsString("fit-param-list");
   }
 
-  if( parser.OptionExists("--param-values-option") ) {
-    fParamValuesOption = parser.ArgAsString("--param-values-option");
+  if( parser.OptionExists("param-values-option") ) {
+    fParamValuesOption = parser.ArgAsString("param-values-option");
   }
 
-  if( parser.OptionExists("--fit-opt") ) {
-    fFitOption = parser.ArgAsString("--fit-opt");
+  if( parser.OptionExists("fit-opt") ) {
+    fFitOption = parser.ArgAsString("fit-opt");
   }
 
-  if( parser.OptionExists("--config") ) {
-    fConfigFile = parser.ArgAsString("--config");
+  if( parser.OptionExists("config") ) {
+    fConfigFile = parser.ArgAsString("config");
   }
 
-  if( parser.OptionExists("--mesg-thresholds") )
+  if( parser.OptionExists("mesg-thresholds") )
   {
-     fVerbosityFile = parser.ArgAsString("--mesg-thresholds");
+     fVerbosityFile = parser.ArgAsString("mesg-thresholds");
   }
 
-  if( parser.OptionExists("--with-stat-fluct")    ) fStatFluct = true;
-  if( parser.OptionExists("--without-stat-fluct") ) fStatFluct = false;
+  if( parser.OptionExists("with-stat-fluct")    ) fStatFluct = true;
+  if( parser.OptionExists("without-stat-fluct") ) fStatFluct = false;
 
-  if( parser.OptionExists("--store-spectra")   ) fStoreSpectra = true;
-  if( parser.OptionExists("--discard-spectra") ) fStoreSpectra = false;
+  if( parser.OptionExists("store-spectra")   ) fStoreSpectra = true;
+  if( parser.OptionExists("discard-spectra") ) fStoreSpectra = false;
 
   return true;
 }
