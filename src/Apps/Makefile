@@ -2,7 +2,6 @@
 # Makefile for VALOR/DUNE apps
 #
 # Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
-# Sep 10, 2015
 #
 
 SHELL = /bin/sh
@@ -13,15 +12,22 @@ MAKEFILE = Makefile
 #
 include $(VALOR_DUNE)/make/Make.include
 
-TGT = valor_dune-run_nd_fit
+TGT = run_nd_fit \
+      fitnt_conv
 
 all: $(TGT)
 
-# 
+# Run ND fit
 #
-valor_dune-run_nd_fit: FORCE
+run_nd_fit: FORCE
 	$(CXX) $(CXXFLAGS) -c run_nd_fit.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) run_nd_fit.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_nd_fit
+
+# Pick info from the VALOR fit n-tuple and convert to bare ROOT format
+#
+fitnt_conv: FORCE
+	$(CXX) $(CXXFLAGS) -c fitnt_conv.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) fitnt_conv.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 
 #################### CLEANING
 
@@ -31,9 +37,11 @@ purge: FORCE
 clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_nd_fit
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 
 distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_nd_fit		
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 
 FORCE:
 
