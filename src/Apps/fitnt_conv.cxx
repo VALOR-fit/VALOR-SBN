@@ -7,6 +7,14 @@
            to a bare ROOT format (for comparison with other fitters or for
            interfacing the VALOR ND-fit with non-VALOR FD fits)
 
+\syntax    valor_dune-fitnt_conv
+              --input /path/input_file.root
+             [--output /path/output_file.root]
+              --format output_format
+
+           --format options:
+               * ndfit_for_ext_fdfit
+
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
@@ -43,12 +51,24 @@ void GetCommandLineArgs (int argc, char ** argv);
 
 string gOptInpFileName;
 string gOptOutFileName;
+string gOptOutFormat;
+
+int GetNDFitInfoForNonValorFDFit(void);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
   GetCommandLineArgs (argc, argv);
 
+  if(gOptOutFormat == "ndfit_for_ext_fdfit") {
+    return GetNDFitInfoForNonValorFDFit();
+  }
+
+  return 0;
+}
+//___________________________________________________________________
+int GetNDFitInfoForNonValorFDFit(void)
+{
   //
   // create the output n-tuple
   //
@@ -139,6 +159,16 @@ void GetCommandLineArgs(int argc, char ** argv)
 
   // Parse run options for this app
   CmdLnArgParser parser(argc,argv);
+
+  // get output format
+  if ( parser.OptionExists("input") ) {
+    LOG("fitnt_conv", pINFO) << "Reading output format";
+    gOptOutFormat = parser.ArgAsString("format");
+  } else {
+    LOG("fitnt_conv", pFATAL) 
+       << "Unspecified output format - Exiting";
+    exit(1);
+  }
 
   // get input VALOR fit file name
   if ( parser.OptionExists("input") ) {
