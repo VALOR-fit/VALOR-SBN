@@ -1,9 +1,9 @@
 //____________________________________________________________________________
 /*!
 
-\app       valor_dune-make_minidst
+\app       valor_dune-make_nd_minidst
 
-\brief     Converts the input analysis DST to the VALOR mini DST format.
+\brief     Converts input ND DSTs to the VALOR ND-Fit mini DST format.
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
