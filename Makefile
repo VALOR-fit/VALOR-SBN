@@ -53,7 +53,7 @@ build-nd-fit: make-bin-lib-dir FORCE
 build-nd-fit-apps: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building NDFit package apps..."
-	$(MAKE) -C ${VALOR_DUNE}/src/Apps/NDFit;
+	$(MAKE) -C ${VALOR_DUNE}/src/Apps;
 
 make-bin-lib-dir: FORCE
 	@echo " "
@@ -66,7 +66,7 @@ purge: FORCE
 	@echo " "
 	@echo "** Purging..."
 	cd ${VALOR_DUNE}/src;\
-	cd Apps/NDFit;                $(MAKE) purge; cd ../..; \
+	cd Apps;                      $(MAKE) purge; cd ..; \
 	cd Conventions;               $(MAKE) purge; cd ..; \
 	cd NDFit;                     $(MAKE) purge; cd ..; \
 	cd ${VALOR_DUNE}
@@ -80,7 +80,7 @@ clean-files: FORCE
 	@echo "** Cleaning..."
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
 	cd ${VALOR_DUNE}/src;\
-	cd Apps/NDFit;              $(MAKE) clean; cd ../..; \
+	cd Apps;                    $(MAKE) clean; cd ..; \
 	cd Conventions;             $(MAKE) clean; cd ..; \
 	cd NDFit;                   $(MAKE) clean; cd ..; \
 	cd $(VALOR_DUNE);\
