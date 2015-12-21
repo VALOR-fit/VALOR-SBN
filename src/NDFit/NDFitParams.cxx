@@ -28,14 +28,48 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisFHCNuMuFlux07   ) : return "f_fhc_flux_numu07";    break;
     case (kNuisFHCNuMuFlux08   ) : return "f_fhc_flux_numu08";    break;
     case (kNuisFHCNuMuFlux09   ) : return "f_fhc_flux_numu09";    break;
+    case (kNuisFHCNuMuFlux10   ) : return "f_fhc_flux_numu10";    break;
+    case (kNuisFHCNuMuFlux11   ) : return "f_fhc_flux_numu11";    break;
+    case (kNuisFHCNuMuFlux12   ) : return "f_fhc_flux_numu12";    break;
+    case (kNuisFHCNuMuFlux13   ) : return "f_fhc_flux_numu13";    break;
+    case (kNuisFHCNuMuFlux14   ) : return "f_fhc_flux_numu14";    break;
+    case (kNuisFHCNuMuFlux15   ) : return "f_fhc_flux_numu15";    break;
+    case (kNuisFHCNuMuFlux16   ) : return "f_fhc_flux_numu16";    break;
+    case (kNuisFHCNuMuFlux17   ) : return "f_fhc_flux_numu17";    break;
+    case (kNuisFHCNuMuFlux18   ) : return "f_fhc_flux_numu18";    break;
     case (kNuisFHCNuMuBarFlux00) : return "f_fhc_flux_numubar00"; break;
     case (kNuisFHCNuMuBarFlux01) : return "f_fhc_flux_numubar01"; break;
     case (kNuisFHCNuMuBarFlux02) : return "f_fhc_flux_numubar02"; break;
     case (kNuisFHCNuMuBarFlux03) : return "f_fhc_flux_numubar03"; break;
     case (kNuisFHCNuMuBarFlux04) : return "f_fhc_flux_numubar04"; break;
+    case (kNuisFHCNuMuBarFlux05) : return "f_fhc_flux_numubar05"; break;
+    case (kNuisFHCNuMuBarFlux06) : return "f_fhc_flux_numubar06"; break;
+    case (kNuisFHCNuMuBarFlux07) : return "f_fhc_flux_numubar07"; break;
+    case (kNuisFHCNuMuBarFlux08) : return "f_fhc_flux_numubar08"; break;
+    case (kNuisFHCNuMuBarFlux09) : return "f_fhc_flux_numubar09"; break;
+    case (kNuisFHCNuMuBarFlux10) : return "f_fhc_flux_numubar10"; break;
+    case (kNuisFHCNuMuBarFlux11) : return "f_fhc_flux_numubar11"; break;
+    case (kNuisFHCNuMuBarFlux12) : return "f_fhc_flux_numubar12"; break;
+    case (kNuisFHCNuMuBarFlux13) : return "f_fhc_flux_numubar13"; break;
+    case (kNuisFHCNuMuBarFlux14) : return "f_fhc_flux_numubar14"; break;
+    case (kNuisFHCNuMuBarFlux15) : return "f_fhc_flux_numubar15"; break;
+    case (kNuisFHCNuMuBarFlux16) : return "f_fhc_flux_numubar16"; break;
+    case (kNuisFHCNuMuBarFlux17) : return "f_fhc_flux_numubar17"; break;
+    case (kNuisFHCNuMuBarFlux18) : return "f_fhc_flux_numubar18"; break;
     case (kNuisFHCNuEFlux00    ) : return "f_fhc_flux_nue00";     break;
     case (kNuisFHCNuEFlux01    ) : return "f_fhc_flux_nue01";     break;
     case (kNuisFHCNuEFlux02    ) : return "f_fhc_flux_nue02";     break;
+    case (kNuisFHCNuEFlux03    ) : return "f_fhc_flux_nue03";     break;
+    case (kNuisFHCNuEFlux04    ) : return "f_fhc_flux_nue04";     break;
+    case (kNuisFHCNuEFlux05    ) : return "f_fhc_flux_nue05";     break;
+    case (kNuisFHCNuEFlux06    ) : return "f_fhc_flux_nue06";     break;
+    case (kNuisFHCNuEBarFlux00 ) : return "f_fhc_flux_nuebar00";  break;
+    case (kNuisFHCNuEBarFlux01 ) : return "f_fhc_flux_nuebar01";  break;
+    case (kNuisFHCNuEBarFlux02 ) : return "f_fhc_flux_nuebar02";  break;
+    case (kNuisFHCNuEBarFlux03 ) : return "f_fhc_flux_nuebar03";  break;
+    case (kNuisFHCNuEBarFlux04 ) : return "f_fhc_flux_nuebar04";  break;
+    case (kNuisFHCNuEBarFlux05 ) : return "f_fhc_flux_nuebar05";  break;
+    case (kNuisFHCNuEBarFlux06 ) : return "f_fhc_flux_nuebar06";  break;
 
     case (kNuisRHCNuMuFlux00   ) : return "f_rhc_flux_numu00";    break;
     case (kNuisRHCNuMuFlux01   ) : return "f_rhc_flux_numu01";    break;
@@ -44,6 +78,18 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisRHCNuMuFlux04   ) : return "f_rhc_flux_numu04";    break;
     case (kNuisRHCNuMuFlux05   ) : return "f_rhc_flux_numu05";    break;
     case (kNuisRHCNuMuFlux06   ) : return "f_rhc_flux_numu06";    break;
+    case (kNuisRHCNuMuFlux07   ) : return "f_rhc_flux_numu07";    break;
+    case (kNuisRHCNuMuFlux08   ) : return "f_rhc_flux_numu08";    break;
+    case (kNuisRHCNuMuFlux09   ) : return "f_rhc_flux_numu09";    break;
+    case (kNuisRHCNuMuFlux10   ) : return "f_rhc_flux_numu10";    break;
+    case (kNuisRHCNuMuFlux11   ) : return "f_rhc_flux_numu11";    break;
+    case (kNuisRHCNuMuFlux12   ) : return "f_rhc_flux_numu12";    break;
+    case (kNuisRHCNuMuFlux13   ) : return "f_rhc_flux_numu13";    break;
+    case (kNuisRHCNuMuFlux14   ) : return "f_rhc_flux_numu14";    break;
+    case (kNuisRHCNuMuFlux15   ) : return "f_rhc_flux_numu15";    break;
+    case (kNuisRHCNuMuFlux16   ) : return "f_rhc_flux_numu16";    break;
+    case (kNuisRHCNuMuFlux17   ) : return "f_rhc_flux_numu17";    break;
+    case (kNuisRHCNuMuFlux18   ) : return "f_rhc_flux_numu18";    break;
     case (kNuisRHCNuMuBarFlux00) : return "f_rhc_flux_numubar00"; break;
     case (kNuisRHCNuMuBarFlux01) : return "f_rhc_flux_numubar01"; break;
     case (kNuisRHCNuMuBarFlux02) : return "f_rhc_flux_numubar02"; break;
@@ -52,16 +98,37 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisRHCNuMuBarFlux05) : return "f_rhc_flux_numubar05"; break;
     case (kNuisRHCNuMuBarFlux06) : return "f_rhc_flux_numubar06"; break;
     case (kNuisRHCNuMuBarFlux07) : return "f_rhc_flux_numubar07"; break;
+    case (kNuisRHCNuMuBarFlux08) : return "f_rhc_flux_numubar08"; break;
+    case (kNuisRHCNuMuBarFlux09) : return "f_rhc_flux_numubar09"; break;
+    case (kNuisRHCNuMuBarFlux10) : return "f_rhc_flux_numubar10"; break;
+    case (kNuisRHCNuMuBarFlux11) : return "f_rhc_flux_numubar11"; break;
+    case (kNuisRHCNuMuBarFlux12) : return "f_rhc_flux_numubar12"; break;
+    case (kNuisRHCNuMuBarFlux13) : return "f_rhc_flux_numubar13"; break;
+    case (kNuisRHCNuMuBarFlux14) : return "f_rhc_flux_numubar14"; break;
+    case (kNuisRHCNuMuBarFlux15) : return "f_rhc_flux_numubar15"; break;
+    case (kNuisRHCNuMuBarFlux16) : return "f_rhc_flux_numubar16"; break;
+    case (kNuisRHCNuMuBarFlux17) : return "f_rhc_flux_numubar17"; break;
+    case (kNuisRHCNuMuBarFlux18) : return "f_rhc_flux_numubar18"; break;
     case (kNuisRHCNuEFlux00    ) : return "f_rhc_flux_nue00";     break;
     case (kNuisRHCNuEFlux01    ) : return "f_rhc_flux_nue01";     break;
     case (kNuisRHCNuEFlux02    ) : return "f_rhc_flux_nue02";     break;
+    case (kNuisRHCNuEFlux03    ) : return "f_rhc_flux_nue03";     break;
+    case (kNuisRHCNuEFlux04    ) : return "f_rhc_flux_nue04";     break;
+    case (kNuisRHCNuEFlux05    ) : return "f_rhc_flux_nue05";     break;
+    case (kNuisRHCNuEFlux06    ) : return "f_rhc_flux_nue06";     break;
+    case (kNuisRHCNuEBarFlux00 ) : return "f_rhc_flux_nuebar00";  break;
+    case (kNuisRHCNuEBarFlux01 ) : return "f_rhc_flux_nuebar01";  break;
+    case (kNuisRHCNuEBarFlux02 ) : return "f_rhc_flux_nuebar02";  break;
+    case (kNuisRHCNuEBarFlux03 ) : return "f_rhc_flux_nuebar03";  break;
+    case (kNuisRHCNuEBarFlux04 ) : return "f_rhc_flux_nuebar04";  break;
+    case (kNuisRHCNuEBarFlux05 ) : return "f_rhc_flux_nuebar05";  break;
+    case (kNuisRHCNuEBarFlux06 ) : return "f_rhc_flux_nuebar06";  break;
 
     case (kNuisNormCCQE        ) : return "f_ccqe";               break;
     case (kNuisNormCC1piC      ) : return "f_cc1pic";             break;
     case (kNuisNormCC1pi0      ) : return "f_cc1pi0";             break;
     case (kNuisNormCCoth       ) : return "f_ccoth";              break;
     case (kNuisNormNC          ) : return "f_nc";                 break;
-
     case (kNuisRatioNuENuMu    ) : return "f_nuecc_numucc";       break;
 
     case (kNuisEffNuMuCC1trkQE  ) : return "f_eff_numucc1trkqe";   break;
@@ -94,14 +161,48 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisFHCNuMuFlux07   ) : name = "f_{FHC;#nu_{#mu};07}";       break;
     case (kNuisFHCNuMuFlux08   ) : name = "f_{FHC;#nu_{#mu};08}";       break;
     case (kNuisFHCNuMuFlux09   ) : name = "f_{FHC;#nu_{#mu};09}";       break;
+    case (kNuisFHCNuMuFlux10   ) : name = "f_{FHC;#nu_{#mu};10}";       break;
+    case (kNuisFHCNuMuFlux11   ) : name = "f_{FHC;#nu_{#mu};11}";       break;
+    case (kNuisFHCNuMuFlux12   ) : name = "f_{FHC;#nu_{#mu};12}";       break;
+    case (kNuisFHCNuMuFlux13   ) : name = "f_{FHC;#nu_{#mu};13}";       break;
+    case (kNuisFHCNuMuFlux14   ) : name = "f_{FHC;#nu_{#mu};14}";       break;
+    case (kNuisFHCNuMuFlux15   ) : name = "f_{FHC;#nu_{#mu};15}";       break;
+    case (kNuisFHCNuMuFlux16   ) : name = "f_{FHC;#nu_{#mu};16}";       break;
+    case (kNuisFHCNuMuFlux17   ) : name = "f_{FHC;#nu_{#mu};17}";       break;
+    case (kNuisFHCNuMuFlux18   ) : name = "f_{FHC;#nu_{#mu};18}";       break;
     case (kNuisFHCNuMuBarFlux00) : name = "f_{FHC;#bar{#nu_{#mu}};00}"; break;
     case (kNuisFHCNuMuBarFlux01) : name = "f_{FHC;#bar{#nu_{#mu}};01}"; break;
     case (kNuisFHCNuMuBarFlux02) : name = "f_{FHC;#bar{#nu_{#mu}};02}"; break;
     case (kNuisFHCNuMuBarFlux03) : name = "f_{FHC;#bar{#nu_{#mu}};03}"; break;
     case (kNuisFHCNuMuBarFlux04) : name = "f_{FHC;#bar{#nu_{#mu}};04}"; break;
+    case (kNuisFHCNuMuBarFlux05) : name = "f_{FHC;#bar{#nu_{#mu}};05}"; break;
+    case (kNuisFHCNuMuBarFlux06) : name = "f_{FHC;#bar{#nu_{#mu}};06}"; break;
+    case (kNuisFHCNuMuBarFlux07) : name = "f_{FHC;#bar{#nu_{#mu}};07}"; break;
+    case (kNuisFHCNuMuBarFlux08) : name = "f_{FHC;#bar{#nu_{#mu}};08}"; break;
+    case (kNuisFHCNuMuBarFlux09) : name = "f_{FHC;#bar{#nu_{#mu}};09}"; break;
+    case (kNuisFHCNuMuBarFlux10) : name = "f_{FHC;#bar{#nu_{#mu}};10}"; break;
+    case (kNuisFHCNuMuBarFlux11) : name = "f_{FHC;#bar{#nu_{#mu}};11}"; break;
+    case (kNuisFHCNuMuBarFlux12) : name = "f_{FHC;#bar{#nu_{#mu}};12}"; break;
+    case (kNuisFHCNuMuBarFlux13) : name = "f_{FHC;#bar{#nu_{#mu}};13}"; break;
+    case (kNuisFHCNuMuBarFlux14) : name = "f_{FHC;#bar{#nu_{#mu}};14}"; break;
+    case (kNuisFHCNuMuBarFlux15) : name = "f_{FHC;#bar{#nu_{#mu}};15}"; break;
+    case (kNuisFHCNuMuBarFlux16) : name = "f_{FHC;#bar{#nu_{#mu}};16}"; break;
+    case (kNuisFHCNuMuBarFlux17) : name = "f_{FHC;#bar{#nu_{#mu}};17}"; break;
+    case (kNuisFHCNuMuBarFlux18) : name = "f_{FHC;#bar{#nu_{#mu}};18}"; break;
     case (kNuisFHCNuEFlux00    ) : name = "f_{FHC;#nu_{e};00}";         break;
     case (kNuisFHCNuEFlux01    ) : name = "f_{FHC;#nu_{e};01}";         break;
     case (kNuisFHCNuEFlux02    ) : name = "f_{FHC;#nu_{e};02}";         break;
+    case (kNuisFHCNuEFlux03    ) : name = "f_{FHC;#nu_{e};03}";         break;
+    case (kNuisFHCNuEFlux04    ) : name = "f_{FHC;#nu_{e};04}";         break;
+    case (kNuisFHCNuEFlux05    ) : name = "f_{FHC;#nu_{e};05}";         break;
+    case (kNuisFHCNuEFlux06    ) : name = "f_{FHC;#nu_{e};06}";         break;
+    case (kNuisFHCNuEBarFlux00 ) : name = "f_{FHC;#bar{#nu_{e}};00}";   break;
+    case (kNuisFHCNuEBarFlux01 ) : name = "f_{FHC;#bar{#nu_{e}};01}";   break;
+    case (kNuisFHCNuEBarFlux02 ) : name = "f_{FHC;#bar{#nu_{e}};02}";   break;
+    case (kNuisFHCNuEBarFlux03 ) : name = "f_{FHC;#bar{#nu_{e}};03}";   break;
+    case (kNuisFHCNuEBarFlux04 ) : name = "f_{FHC;#bar{#nu_{e}};04}";   break;
+    case (kNuisFHCNuEBarFlux05 ) : name = "f_{FHC;#bar{#nu_{e}};05}";   break;
+    case (kNuisFHCNuEBarFlux06 ) : name = "f_{FHC;#bar{#nu_{e}};06}";   break;
 
     case (kNuisRHCNuMuFlux00   ) : name = "f_{RHC;#nu_{#mu};00}";       break;
     case (kNuisRHCNuMuFlux01   ) : name = "f_{RHC;#nu_{#mu};01}";       break;
@@ -110,6 +211,18 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisRHCNuMuFlux04   ) : name = "f_{RHC;#nu_{#mu};04}";       break;
     case (kNuisRHCNuMuFlux05   ) : name = "f_{RHC;#nu_{#mu};05}";       break;
     case (kNuisRHCNuMuFlux06   ) : name = "f_{RHC;#nu_{#mu};06}";       break;
+    case (kNuisRHCNuMuFlux07   ) : name = "f_{RHC;#nu_{#mu};07}";       break;
+    case (kNuisRHCNuMuFlux08   ) : name = "f_{RHC;#nu_{#mu};08}";       break;
+    case (kNuisRHCNuMuFlux09   ) : name = "f_{RHC;#nu_{#mu};09}";       break;
+    case (kNuisRHCNuMuFlux10   ) : name = "f_{RHC;#nu_{#mu};10}";       break;
+    case (kNuisRHCNuMuFlux11   ) : name = "f_{RHC;#nu_{#mu};11}";       break;
+    case (kNuisRHCNuMuFlux12   ) : name = "f_{RHC;#nu_{#mu};12}";       break;
+    case (kNuisRHCNuMuFlux13   ) : name = "f_{RHC;#nu_{#mu};13}";       break;
+    case (kNuisRHCNuMuFlux14   ) : name = "f_{RHC;#nu_{#mu};14}";       break;
+    case (kNuisRHCNuMuFlux15   ) : name = "f_{RHC;#nu_{#mu};15}";       break;
+    case (kNuisRHCNuMuFlux16   ) : name = "f_{RHC;#nu_{#mu};16}";       break;
+    case (kNuisRHCNuMuFlux17   ) : name = "f_{RHC;#nu_{#mu};17}";       break;
+    case (kNuisRHCNuMuFlux18   ) : name = "f_{RHC;#nu_{#mu};18}";       break;
     case (kNuisRHCNuMuBarFlux00) : name = "f_{RHC;#bar{#nu_{#mu}};00}"; break;
     case (kNuisRHCNuMuBarFlux01) : name = "f_{RHC;#bar{#nu_{#mu}};01}"; break;
     case (kNuisRHCNuMuBarFlux02) : name = "f_{RHC;#bar{#nu_{#mu}};02}"; break;
@@ -118,10 +231,32 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisRHCNuMuBarFlux05) : name = "f_{RHC;#bar{#nu_{#mu}};05}"; break;
     case (kNuisRHCNuMuBarFlux06) : name = "f_{RHC;#bar{#nu_{#mu}};06}"; break;
     case (kNuisRHCNuMuBarFlux07) : name = "f_{RHC;#bar{#nu_{#mu}};07}"; break;
+    case (kNuisRHCNuMuBarFlux08) : name = "f_{RHC;#bar{#nu_{#mu}};08}"; break;
+    case (kNuisRHCNuMuBarFlux09) : name = "f_{RHC;#bar{#nu_{#mu}};09}"; break;
+    case (kNuisRHCNuMuBarFlux10) : name = "f_{RHC;#bar{#nu_{#mu}};10}"; break;
+    case (kNuisRHCNuMuBarFlux11) : name = "f_{RHC;#bar{#nu_{#mu}};11}"; break;
+    case (kNuisRHCNuMuBarFlux12) : name = "f_{RHC;#bar{#nu_{#mu}};12}"; break;
+    case (kNuisRHCNuMuBarFlux13) : name = "f_{RHC;#bar{#nu_{#mu}};13}"; break;
+    case (kNuisRHCNuMuBarFlux14) : name = "f_{RHC;#bar{#nu_{#mu}};14}"; break;
+    case (kNuisRHCNuMuBarFlux15) : name = "f_{RHC;#bar{#nu_{#mu}};15}"; break;
+    case (kNuisRHCNuMuBarFlux16) : name = "f_{RHC;#bar{#nu_{#mu}};16}"; break;
+    case (kNuisRHCNuMuBarFlux17) : name = "f_{RHC;#bar{#nu_{#mu}};17}"; break;
+    case (kNuisRHCNuMuBarFlux18) : name = "f_{RHC;#bar{#nu_{#mu}};18}"; break;
     case (kNuisRHCNuEFlux00    ) : name = "f_{RHC;#nu_{e};00}";         break;
     case (kNuisRHCNuEFlux01    ) : name = "f_{RHC;#nu_{e};01}";         break;
     case (kNuisRHCNuEFlux02    ) : name = "f_{RHC;#nu_{e};02}";         break;
-
+    case (kNuisRHCNuEFlux03    ) : name = "f_{RHC;#nu_{e};03}";         break;
+    case (kNuisRHCNuEFlux04    ) : name = "f_{RHC;#nu_{e};04}";         break;
+    case (kNuisRHCNuEFlux05    ) : name = "f_{RHC;#nu_{e};05}";         break;
+    case (kNuisRHCNuEFlux06    ) : name = "f_{RHC;#nu_{e};06}";         break;
+    case (kNuisRHCNuEBarFlux00 ) : name = "f_{RHC;#bar{#nu_{e}};00}";   break;
+    case (kNuisRHCNuEBarFlux01 ) : name = "f_{RHC;#bar{#nu_{e}};01}";   break;
+    case (kNuisRHCNuEBarFlux02 ) : name = "f_{RHC;#bar{#nu_{e}};02}";   break;
+    case (kNuisRHCNuEBarFlux03 ) : name = "f_{RHC;#bar{#nu_{e}};03}";   break;
+    case (kNuisRHCNuEBarFlux04 ) : name = "f_{RHC;#bar{#nu_{e}};04}";   break;
+    case (kNuisRHCNuEBarFlux05 ) : name = "f_{RHC;#bar{#nu_{e}};05}";   break;
+    case (kNuisRHCNuEBarFlux06 ) : name = "f_{RHC;#bar{#nu_{e}};06}";   break;
+      
     case (kNuisNormCCQE        ) : name = "f_{CCQE}";                   break;
     case (kNuisNormCC1piC      ) : name = "f_{CC1#pi^{#pm}}";           break;
     case (kNuisNormCC1pi0      ) : name = "f_{CC1#pi^{0}}";             break;
@@ -202,7 +337,7 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list, Option_t * param_v
       else 
       if(param_values_opt.find("randomize-all;prefit-errors") != string::npos) {
         Rnd * r = Rnd::Instance();
-        double sig = kNDFitParamAPrioriFracError[ip];
+        double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
         val = r->RndToyMCsyst().Gaus(1,sig);
       }
       // randomize all parameters using post-fit errors
@@ -288,7 +423,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
       else 
       if(param_values_opt.find("randomize-all;prefit-errors") != string::npos) {
         Rnd * r = Rnd::Instance();
-        double sig = kNDFitParamAPrioriFracError[ip];
+        double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
         curr = r->RndToyMCsyst().Gaus(1,sig);
         curr = TMath::Min(curr,max);
         curr = TMath::Max(curr,min);

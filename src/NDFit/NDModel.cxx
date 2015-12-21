@@ -677,7 +677,7 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
   for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
-      double sig = kNDFitParamAPrioriFracError[ip];
+      double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
       double val = fPhysHypothesis.CurrValue(p);
       double def = 1;
       double dSp = TMath::Power((val-def)/sig, 2.);
@@ -1444,7 +1444,11 @@ void NDModel::ApplyPhysics(Option_t * option)
 
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
+  	     //-------------- error, prone need to simplify
+	     bool apply = false;
+	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
+	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+  	     //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
@@ -1483,7 +1487,11 @@ void NDModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
+  	     //-------------- error, prone need to simplify
+	     bool apply = false;
+	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
+	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+  	     //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
@@ -1522,7 +1530,11 @@ void NDModel::ApplyPhysics(Option_t * option)
 
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
+  	     //-------------- error, prone need to simplify
+	     bool apply = false;
+	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
+	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+  	     //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
@@ -1551,7 +1563,11 @@ void NDModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             bool apply = kNDApplyFitParamToTemplate[ibeam][isample][imode][ip];
+  	     //-------------- error, prone need to simplify
+	     bool apply = false;
+	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
+	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+  	     //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;

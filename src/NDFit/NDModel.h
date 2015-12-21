@@ -3,7 +3,7 @@
 
 \class     valor::NDModel
 
-\brief     VALOR?DUNE ND Model class. Derives from FitModelABC
+\brief     VALOR/DUNE ND Model class. Derives from FitModelABC
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory

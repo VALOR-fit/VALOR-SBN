@@ -1,0 +1,89 @@
+//____________________________________________________________________________
+/*!
+
+\class     valor::NuFlux
+
+\brief     Info on DUNE neutrino flux and prior errors
+
+\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+           University of Liverpool & STFC Rutherford Appleton Laboratory
+
+\copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
+
+*/
+//____________________________________________________________________________
+
+#ifndef _valor_dune_nu_flux_h_
+#define _valor_dune_nu_flux_h_
+
+#include <iostream>
+
+#include <TObject.h>
+#include <TMatrixD.h>
+#include <TVectorD.h>
+#include <TMatrixTSym.h>
+#include <TXMLEngine.h>
+
+class TH1D;
+class TH2D;
+	
+namespace valor {
+
+class NuFlux: public TObject
+{
+public:
+  NuFlux();   
+ ~NuFlux();
+ 
+  using TObject::Read; // Suppress clang warnings
+  using TObject::Draw; // Suppress clang warnings
+
+  // Read inputs from XML file
+  bool Read (TXMLEngine* xml, XMLNodePointer_t root_node);
+
+  // Get flux covariance matrix and cholesky decomposition of covariance matrix
+  const TMatrixD & CovMatrix         (void) const { return *fCovMtrx;          }
+  const TMatrixD & CovMatrixInv      (void) const { return *fCovMtrxInv;       }
+  const TMatrixD & CovMatrixCholesky (void) const { return *fCovMtrxChoL;      }
+
+  double OneSigmaError(conv::PhysParamId_t p) const;
+  double OneSigmaError(int idx) const;
+
+  // Penalty term included in the chisq 
+  double ChisqPenalty (bool all_syst = true) const;
+
+  void Tweak(bool force_inputs, TVectorD * input_vec);
+
+  double CurrentValue(int idx) const;
+  double CurrentValue(conv::PhysParamId_t p) const;
+
+  // Get & tweak flags	
+  bool IsTweaked (void) const { return fIsTweaked; } 
+
+  // Print
+  void PrintSystematicVariations (std::ostream & stream = std::cout) const;
+    
+private:
+
+  void Init      (void);
+  void CleanUp   (void);
+
+  int  Param2Idx (conv::PhysParamId_t p) const; ///< convert BANFF PhysParamId_t to a covariance matrix or vector index
+  void CholeskyDecomposeMatrix (void);          ///< Cholesky decompose the covariance matrix
+  
+  TVectorD *  fCurrentValues;     ///< Current values of BANFF parameters 
+  TMatrixD *  fCovMtrx;           ///< BANFF covariance matrix
+  TMatrixD *  fCovMtrxInv;        ///< Inverse BANFF covariance matrix
+  TMatrixD *  fCovMtrxChoL;       ///< Triangular matrix obtained from Cholesky decomposition of BANFF covariance matrix
+  bool        fIsTweaked;         ///< Were BANFF params tweaked?
+
+  double * fCurrentArray; //! ///< Pointer to the actual memory location of the current values
+  
+  int fParam2Idx[conv::knppmax];
+
+ClassDef(NuFlux, 1)
+};
+
+} //valor
+
+#endif
