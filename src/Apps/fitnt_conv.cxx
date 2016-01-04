@@ -74,7 +74,7 @@ int GetNDFitInfoForNonValorFDFit(void)
   //
 
   TTree * outnt = new TTree(
-     "valor_ndfitnt_extracts",
+     "valor_dune_ndfit_ntuple_extracts",
       "Selected info extracted from the VALOR/DUNE ND-fit n-tuple and converted to bare ROOT format");
 
   int brItoy = 0; 
@@ -91,7 +91,7 @@ int GetNDFitInfoForNonValorFDFit(void)
 
   TFile fin(gOptInpFileName.c_str(),"READ");
 
-  TTree * fitnt = (TTree*) fin.Get("fitnt");
+  TTree * fitnt = (TTree*) fin.Get("valor_dune_nd_ntp");
 
   PhysParamList * true_param_array     = 0; // input true params
   FitParamList *  best_fit_param_array = 0; // best-fit params
