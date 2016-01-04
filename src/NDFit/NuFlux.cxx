@@ -108,14 +108,14 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   return true;
 }
 //________________________________________________________________________________________
-double NuFlux::CurrentValue(int idx) const
-{
-  return fCurrentArray[idx];
-}
-//________________________________________________________________________________________
 double NuFlux::CurrentValue(PhysParamId_t p) const
 {
   int idx = this->Param2Idx(p); 
+  return fCurrentArray[idx];
+}
+//________________________________________________________________________________________
+double NuFlux::CurrentValue(int idx) const
+{
   return fCurrentArray[idx];
 }
 //________________________________________________________________________________________
@@ -205,7 +205,7 @@ void NuFlux::Tweak(
 */
 }
 //________________________________________________________________________________________
-void NuFlux::CholeskyDecomposeMatrix()
+void NuFlux::CholeskyDecomposeMatrix(void)
 {
 #ifdef __show_cholesky_mesg_info__  
     cout << "Exp/BANFF/CholeskyDecomposeMatrix >> "
