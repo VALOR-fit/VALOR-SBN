@@ -57,7 +57,7 @@ public:
   double CurrentValue(int idx) const;
   double CurrentValue(conv::PhysParamId_t p) const;
 
-  // Get & tweak flags	
+  // Get & tweak flags
   bool IsTweaked (void) const { return fIsTweaked; } 
 
   // Print
@@ -68,14 +68,14 @@ private:
   void Init      (void);
   void CleanUp   (void);
 
-  int  Param2Idx (conv::PhysParamId_t p) const; ///< convert BANFF PhysParamId_t to a covariance matrix or vector index
+  int  Param2Idx (conv::PhysParamId_t p) const; ///< convert flux PhysParamId_t to a covariance matrix or vector index
   void CholeskyDecomposeMatrix (void);          ///< Cholesky decompose the covariance matrix
   
-  TVectorD *  fCurrentValues;     ///< Current values of BANFF parameters 
-  TMatrixD *  fCovMtrx;           ///< BANFF covariance matrix
-  TMatrixD *  fCovMtrxInv;        ///< Inverse BANFF covariance matrix
-  TMatrixD *  fCovMtrxChoL;       ///< Triangular matrix obtained from Cholesky decomposition of BANFF covariance matrix
-  bool        fIsTweaked;         ///< Were BANFF params tweaked?
+  TVectorD *  fCurrentValues;     ///< Current values of flux parameters 
+  TMatrixD *  fCovMtrx;           ///< flux covariance matrix
+  TMatrixD *  fCovMtrxInv;        ///< Inverse flux covariance matrix
+  TMatrixD *  fCovMtrxChoL;       ///< Triangular matrix obtained from Cholesky decomposition of flux covariance matrix
+  bool        fIsTweaked;         ///< Were flux params tweaked?
 
   double * fCurrentArray; //! ///< Pointer to the actual memory location of the current values
   

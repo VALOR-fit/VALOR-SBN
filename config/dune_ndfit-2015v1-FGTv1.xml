@@ -69,6 +69,14 @@ Systematics
     <Leptonic> 0.025 </Leptonic>
     <Hadronic> 0.15 </Hadronic>
   </EnergyScale>
+  
+  <flux>
+    <covariance_matrix>
+       <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
+       <objname>    h_flux_errors    </objname>    
+       <objtype>    TH2D             </objtype>
+    </covariance_matrix>
+  </flux>
 </syst>
 
 </analysis_inputs>

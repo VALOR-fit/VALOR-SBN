@@ -37,6 +37,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "NDFit/NDModel.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDBeamConf.h"
+#include "NDFit/NuFlux.h"
 
 using std::endl;
 
@@ -126,6 +127,10 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
     LOG("NDModel",pFATAL) << "Option note supported yet";
     exit(1);
   }
+  
+  // Read the flux
+  fNuFlux = new valor::NuFlux;
+  fNuFlux->Read(xml,root_node);
   
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.
@@ -749,6 +754,9 @@ void NDModel::Init(void)
 //  }
 
   fArrIdx = util::NDArrIdx::Instance();
+  
+// Flux object
+  fNuFlux = 0;
 }
 //________________________________________________________________________________________
 void NDModel::Book(void)
@@ -920,7 +928,9 @@ void NDModel::Clean(void)
       }
     }
   }
-
+  
+  if (fNuFlux) {delete fNuFlux;}
+  
 }
 //________________________________________________________________________________________
 void NDModel::Zero(void)
@@ -1030,7 +1040,7 @@ void NDModel::Fill(TTree * t, int ibeam)
 
      if(iev%(nev/20)==0) {
        double pct = (100 * (double)(iev+1)) / (double)nev;
-       LOG("NDModel",pNOTICE) << "Reading MC DST: " << TMath::Nint(pct) << "% done";
+       LOG("NDModel",pNOTICE) << "Reading "<< util::AsString(b)<<" MC DST: "<< TMath::Nint(pct) << "% done";
      }
 
      // Get sample index
@@ -1197,8 +1207,10 @@ void NDModel::Fill(TTree * t, int ibeam)
      fMCTNomSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
      fMCTTunSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
      fMCTSysSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
-     fMCTFinSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);     
-     fMCStatSb [ibeam][isample][imode]->SetEntry(           1, ienu_reco_sb, iy_reco_sb, ienu_true);     
+     fMCTFinSb [ibeam][isample][imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true);
+     fMCStatSb [ibeam][isample][imode]->SetEntry(           1, ienu_reco_sb, iy_reco_sb, ienu_true);
+     
+     //~ break;//DEBUG
   }//iev 
 }
 //________________________________________________________________________________________
@@ -1706,5 +1718,15 @@ void NDModel::UpdatePDFs(Option_t * option)
 
     }//isample
   }//ibeam
+}
+//________________________________________________________________________________________
+const valor::NuFlux * valor::NDModel::GetNuFlux(void) const
+{
+  return fNuFlux;
+}
+//________________________________________________________________________________________
+valor::NuFlux * valor::NDModel::GetNuFlux(void)
+{
+  return fNuFlux;
 }
 //________________________________________________________________________________________

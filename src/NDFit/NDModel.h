@@ -34,6 +34,8 @@
 #include "NDFit/NDFitParams.h"
 
 namespace valor {
+  
+class NuFlux;
 
 class NDModel: public FitModelABC
 {
@@ -59,6 +61,9 @@ public:
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
+  
+  NuFlux *            GetNuFlux(void);
+  const NuFlux *      GetNuFlux(void) const;
 
 private:
 
@@ -139,6 +144,9 @@ private:
   // Input VALOR MC DSTs
   bool fUseMCDST;
   TTree * fMCDST[conv::kNBeamConf];
+  
+  // Flux tuning object
+  valor::NuFlux * fNuFlux;
 };
 
 } // valor

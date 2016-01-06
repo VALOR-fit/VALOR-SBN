@@ -56,17 +56,24 @@ NuFlux::~NuFlux()
 //________________________________________________________________________________________
 void NuFlux::Init(void)
 {
-  fCurrentValues        = 0; 
+  fCurrentValues        = new TVectorD(conv::kNNDFitParamsNuFlx);
   fCovMtrx              = 0;
   fCovMtrxInv           = 0;
   fCovMtrxChoL          = 0; 
   fIsTweaked            = false;
+  
+  fCurrentArray = fCurrentValues->GetMatrixArray();
+  
+  for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
+    fCurrentArray[i] = 1.;
+  }
 }
 //________________________________________________________________________________________
 void NuFlux::CleanUp(void)
 {
   if ( fCurrentValues ) delete fCurrentValues;
   if ( fCovMtrx       ) delete fCovMtrx;
+  if ( fCovMtrxInv    ) delete fCovMtrxInv;
   if ( fCovMtrxChoL   ) delete fCovMtrxChoL;  
 }
 //________________________________________________________________________________________
@@ -75,36 +82,34 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   this->CleanUp();
   this->Init();
 
-/*
-  // Get BANFF fit covariance matrix
-  fCovMtrx = util::XML2TMatrixD(xml,root_node,T2KOpt::Instance()->fPathBanffCovMatr.c_str());
- 
+  // Get flux covariance matrix
+  fCovMtrx = util::XML2TH2D2TMatrixD(xml,root_node,"syst/flux/covariance_matrix");
+  
   if(!fCovMtrx) {
-    cerr << "Exp/BANFF >> No BANFF covariance matrix was found." << endl;
+    cerr << "NuFlux/Read >> No flux covariance matrix was found." << endl;
     std::exit(1);
   }
-  // Invert BANFF fit covariance matrix
+  // Invert flux covariance matrix
   double det;
   fCovMtrxInv = new TMatrixD(*fCovMtrx);
   (*fCovMtrxInv).Invert(&det);
-
+  
+  const int np = conv::kNNDFitParamsNuFlx;
+  
   const TMatrixD & cov = *fCovMtrx;
   if(cov.GetNrows() != np || cov.GetNcols() != np) 
   {
-    cerr << "Exp/BANFF >> BANFF covariance matrix has unexpected size!" << endl;
-    cerr << "Exp/BANFF >> Expecting: " <<  np << " x " << np << " matrix" << endl;
-    cerr << "Exp/BANFF >> Found: " << cov.GetNrows() << " x " <<  cov.GetNcols() << " matrix" << endl;
+    cerr << "NuFlux/Read >> Flux covariance matrix has unexpected size!" << endl;
+    cerr << "NuFlux/Read >> Expecting: " <<  np << " x " << np << " matrix" << endl;
+    cerr << "NuFlux/Read >> Found: " << cov.GetNrows() << " x " <<  cov.GetNcols() << " matrix" << endl;
   }
 #ifdef __show_init_mesg_debug__
-  cout << "Exp/BANFF >> Input BANFF covariance matrix: " << endl; 
+  cout << "Exp/BANFF >> Input flux covariance matrix: " << endl; 
   util::PrintCompact(cov,7,5);
-  cout << "Exp/BANFF >> Inverse BANFF covariance matrix: " << endl;
+  cout << "Exp/BANFF >> Inverse flux covariance matrix: " << endl;
   util::PrintCompact(*fCovMtrxInv,7,5);
 #endif
-*/
-
-//  fCurrentArray = fCurrentValues->GetMatrixArray();
-
+  this->CholeskyDecomposeMatrix();
   return true;
 }
 //________________________________________________________________________________________
@@ -140,7 +145,7 @@ void NuFlux::Tweak(
 {
 /*
 #ifdef __show_tweak_mesg_debug__
-  cout << "Exp/BANFF/Tweak >> Tweaking BANFF fit parameters" << endl;
+  cout << "NuFlux/Tweak >> Tweaking BANFF fit parameters" << endl;
 #endif
 
   // Switch flags
@@ -170,7 +175,7 @@ void NuFlux::Tweak(
      // This resets the BANFF params to their best-fit values.
      if(input_vec==0) {
 #ifdef __show_tweak_mesg_debug__
-        cout << "Exp/BANFF/Tweak >> Reset BANFF params to best-fit values." << endl;
+        cout << "NuFlux/Tweak >> Reset BANFF params to best-fit values." << endl;
 #endif
         fIsTweaked = false;
         current_values = bestfit_values;
@@ -179,7 +184,7 @@ void NuFlux::Tweak(
      else     
      {
 #ifdef __show_tweak_mesg_debug__
-        cout << "Exp/BANFF/Tweak >> Forcing input BANFF parameters. " << endl;
+        cout << "NuFlux/Tweak >> Forcing input BANFF parameters. " << endl;
 #endif
         TVectorD & vec = *input_vec;
         assert(vec.GetNoElements() == conv::kNumOfParamsInBANFFfit);
@@ -195,7 +200,7 @@ void NuFlux::Tweak(
   else
   {
 #ifdef __show_tweak_mesg_debug__
-     cout << "Exp/BANFF/Tweak >> Generating random twk dials (correlated)! " << endl;
+     cout << "NuFlux/Tweak >> Generating random twk dials (correlated)! " << endl;
 #endif
      TMatrixD & L = *fCovMtrxChoL;
      TVectorD vec = util::CholeskyGenerateCorrelatedParams(L,bestfit_values);
@@ -208,21 +213,19 @@ void NuFlux::Tweak(
 void NuFlux::CholeskyDecomposeMatrix(void)
 {
 #ifdef __show_cholesky_mesg_info__  
-    cout << "Exp/BANFF/CholeskyDecomposeMatrix >> "
-         << "Running Cholesky's decomposition method on the BANFF covariance matrix." << endl;
+    cout << "NuFlux/CholeskyDecomposeMatrix >> "
+         << "Running Cholesky's decomposition method on the flux covariance matrix." << endl;
 #endif
-
-    TMatrixD cov(this->CovMatrix());
 
 #ifdef __show_cholesky_mesg_debug__
-    cout << "Exp/BANFF/CholeskyDecomposeMatrix >> BANFF covariance matrix: " << endl; 
-    util::PrintCompact(cov,7,5);
+    cout << "NuFlux/CholeskyDecomposeMatrix >> flux covariance matrix: " << endl; 
+    util::PrintCompact(this->CovMatrix(),7,5);
 #endif
 
-    TMatrixD L = util::CholeskyDecomposition(cov);
+    TMatrixD L = util::CholeskyDecomposition(this->CovMatrix());
     fCovMtrxChoL = new TMatrixD(L);
 #ifdef __show_cholesky_mesg_debug__
-    cout << "Exp/BANFF/CholeskyDecomposeMatrix >> Cholesky decomposition of BANFF covariance matrix: " << endl;
+    cout << "NuFlux/CholeskyDecomposeMatrix >> Cholesky decomposition of flux covariance matrix: " << endl;
     util::PrintCompact(*fCovMtrxChoL,7,5);
 #endif
 }
@@ -234,7 +237,7 @@ double NuFlux::ChisqPenalty(bool /*all_syst*/) const
   const TVectorD & bestfit_values   = *fBestFitValues;
   const TVectorD & current_values   = *fCurrentValues;
 #ifdef __show_chisqpenalty_mesg_debug2__
-    cout << "Exp/BANFF/ChisqPenalty >> BANFF parameters: " << endl;
+    cout << "NuFlux/ChisqPenalty >> BANFF parameters: " << endl;
     util::PrintCompact(current_values, bestfit_values, 12,6,"BANFF fit params");
 #endif
 
@@ -257,16 +260,16 @@ double NuFlux::ChisqPenalty(bool /*all_syst*/) const
 #endif
 
 #ifdef __show_chisqpenalty_mesg_debug2__
-    cout << "Exp/BANFF/ChisqPenalty >> BANFF covariance matrix: " << endl;
+    cout << "NuFlux/ChisqPenalty >> BANFF covariance matrix: " << endl;
     util::PrintCompact(cov,7,5);
-    cout << "Exp/BANFF/ChisqPenalty >> Inverse BANFF covariance matrix: " << endl;
+    cout << "NuFlux/ChisqPenalty >> Inverse BANFF covariance matrix: " << endl;
     util::PrintCompact(covInv,7,5);
 #endif
 
     //Check the inverse:
 #ifdef __show_chisqpenalty_mesg_debug2__
     TMatrixD prod = cov*covInv;
-    cout << "Exp/BANFF/ChisqPenalty >> check of product cov*(cov)^-1 : "<< endl;
+    cout << "NuFlux/ChisqPenalty >> check of product cov*(cov)^-1 : "<< endl;
     util::PrintCompact(prod,7,5);
 #endif
 
@@ -274,7 +277,7 @@ double NuFlux::ChisqPenalty(bool /*all_syst*/) const
     double chisq_penalty = chisqpenalty[0][0]; //The final matrix is 1x1, just a number
 
 #ifdef __show_chisqpenalty_mesg_debug__
-    cout << "Exp/BANFF/ChisqPenalty >> ChisqPenalty = " << chisq_penalty << endl;
+    cout << "NuFlux/ChisqPenalty >> ChisqPenalty = " << chisq_penalty << endl;
 #endif
 
     if(chisq_penalty) return chisq_penalty;
@@ -285,13 +288,16 @@ double NuFlux::ChisqPenalty(bool /*all_syst*/) const
 //________________________________________________________________________________________ 
 void NuFlux::PrintSystematicVariations(std::ostream & stream) const
 {
-/*
   //assert(fCurrentValues->GetNoElements() == conv::kNumOfParamsInBANFFfit);
-  const TVectorD & current_values = *fCurrentValues;
-  const TVectorD & bestfit_values = *fBestFitValues;
-  stream << "Exp/BANFF >> BANFF parameters: " << endl; 
-  util::PrintCompact(current_values, bestfit_values, 12,6,"FHC BANFF fit params", stream);
-*/
+  //~ const TVectorD & current_values = *fCurrentValues;
+  //~ const TVectorD & bestfit_values = *fBestFitValues;
+  //~ stream << "Exp/BANFF >> BANFF parameters: " << endl; 
+  //~ util::PrintCompact(current_values);
+  
+  for (int i = 0 ; i < fCurrentValues->GetNoElements(); i++) {
+    PhysParamId_t p = (PhysParamId_t)(kNuisFHCNuMuFlux00+i); // WILL NEED UPDATING WHEN ArrIdx EXISTS
+    stream<<util::AsString(p)<<"\t"<<(*fCurrentValues)[i]<<endl;
+  }
 }
 //________________________________________________________________________________________
 int NuFlux::Param2Idx(PhysParamId_t p) const
