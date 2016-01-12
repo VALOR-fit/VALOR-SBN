@@ -12,11 +12,28 @@ MAKEFILE = Makefile
 #
 include $(VALOR_DUNE)/make/Make.include
 
-TGT = run_nd_fit \
+# Add GENIE includes and libaries for apps that depend both on GENIE and VALOR
+# GENIE needs to be enabled to compile those apps
+#
+GLIBRARIES = $(shell genie-config --libs)
+GINCLUDES  = $(shell genie-config --topsrcdir)
+GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
+GLIBRARIES := $(GLIBRARIES) $(LIBRARIES)
+
+TGT = make_nd_minidst \
+      run_nd_fit \
       fitnt_conv
 
 all: $(TGT)
 
+# Generate DSTs for ND fit
+#
+make_nd_minidst: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
+endif
+	
 # Run ND fit
 #
 run_nd_fit: FORCE
@@ -36,10 +53,12 @@ purge: FORCE
 
 clean: FORCE
 	$(RM) *.o *~ core
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_nd_fit
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 
 distclean: FORCE
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_nd_fit		
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 

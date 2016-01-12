@@ -3,7 +3,7 @@
 
 \app       valor_dune-make_nd_minidst
 
-\brief     Converts input ND DSTs to the VALOR ND-Fit mini DST format.
+\brief     Converts input ND analysis DSTs to the VALOR NDFit mini-DST format.
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -38,6 +38,7 @@ using namespace genie;
 void GetCommandLineArgs (int argc, char ** argv);
 
 string gOptInpFilename;
+string gOptOutFilename;
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -50,50 +51,51 @@ int main(int argc, char ** argv)
   // Open output file & create output mini-DST 
   //
   LOG("make_minidst", pNOTICE) 
-      << "*** Saving VALOR/DUNE mini-DST to: " << gOptOutFileName;
-  TFile fout(gOptOutFileName.c_str(),"recreate");
+      << "*** Saving VALOR/DUNE mini-DST to: " << gOptOutFilename;
+  TFile fout(gOptOutFilename.c_str(),"recreate");
 
-  TTree * minidst = new TTree("valor_dune_mini_dst","VALOR/DUNE mini-DST);
+  TTree * minidst = new TTree("valor_dune_ndfit_mini_dst","VALOR/DUNE NDFit mini-DST");
 
+/*
   // Create tree branches
   //
   minidst->Branch("iev",           &brIev,           "iev/I"         );
   minidst->Branch("neu",           &brNeutrino,      "neu/I"         );
   minidst->Branch("fspl",          &brFSPrimLept,    "fspl/I"        );
   minidst->Branch("coh",           &brIsCoh,         "coh/O"         );
+*/
 
   // open the ROOT file and get the TTree & its header
   //
 
   TFile fin(gOptInpFilename.c_str(),"READ");
 
-  TTree * input_ghep_tree = 
-     dynamic_cast <TTree *> (fin.Get("gtree"));
-  if(!input_ghep_tree) {
+  TTree * analysis_tree = 
+     dynamic_cast <TTree *> (fin.Get("GasTPCTree"));
+  if(!analysis_tree) {
     LOG("make_minidst", pFATAL) 
         << "No GHEP event tree in input file: " << gOptInpFilename;
-    gAbortingInErr=true;
+//    gAbortingInErr=true;
     exit(1);
   }
-  Long64_t nev = input_ghep_tree->GetEntries();
-  LOG("make_minidst", pFATAL) 
-     << "Input GHEP event tree has " << nev 
-     << ((nev==1) ? " entry." : " entries.");
-
-  NtpMCTreeHeader * thdr = 
-     dynamic_cast <NtpMCTreeHeader *> ( fin.Get("header") );
+  Long64_t nev = analysis_tree->GetEntries();
   LOG("make_minidst", pNOTICE) 
-     << "Input tree header: " << *thdr;
+     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
+
+//  NtpMCTreeHeader * thdr = 
+//     dynamic_cast <NtpMCTreeHeader *> ( fin.Get("header") );
+//  LOG("make_minidst", pNOTICE) 
+//     << "Input tree header: " << *thdr;
 
   NtpMCEventRecord * mcrec = 0;
-  input_ghep_tree->SetBranchAddress("gmcrec", &mcrec);
+  analysis_tree->SetBranchAddress("gmcrec", &mcrec);
 
   //
   // event loop
   //
 
   for(Long64_t iev = 0; iev <= nev; iev++) {
-    input_ghep_tree->GetEntry(iev);
+    analysis_tree->GetEntry(iev);
 
     // retrieve GHEP event record abd print it out.
     NtpMCRecHeader rec_header = mcrec->hdr;
@@ -118,15 +120,15 @@ int main(int argc, char ** argv)
 
   // clean-up
 
-  file.Close();
+  fin.Close();
 
-  LOG("make_minidst", pNOTICE)  << "Done!";
+//  LOG("make_minidst", pNOTICE)  << "Done!";
   return 0;
 }
 //___________________________________________________________________
 void GetCommandLineArgs(int argc, char ** argv)
 {
-  LOG("make_minidst", pINFO) << "*** Parsing command line arguments";
+//  LOG("make_minidst", pINFO) << "*** Parsing command line arguments";
 
   // Common run options.
   RunOpt::Instance()->ReadFromCommandLine(argc,argv);
@@ -135,15 +137,21 @@ void GetCommandLineArgs(int argc, char ** argv)
 
   CmdLnArgParser parser(argc,argv);
 
-  // get GENIE event sample
-  if ( parser.OptionExists('f') ) {
-    LOG("make_minidst", pINFO) << "Reading event sample filename";
-    gOptInpFilename = parser.ArgAsString('f');
+  if ( parser.OptionExists("--input") ) {
+    LOG("make_minidst", pINFO) << "Reading analysis file";
+    gOptInpFilename = parser.ArgAsString("--input");
   } else {
     LOG("make_minidst", pFATAL) 
-       << "Unspecified input filename - Exiting";
+       << "Unspecified input file - Exiting";
     gAbortingInErr = true;
     exit(1);
+  }
+
+  if ( parser.OptionExists("--output") ) {
+    LOG("make_minidst", pINFO) << "Reading output filename";
+    gOptOutFilename = parser.ArgAsString("--output");
+  } else {
+    gOptOutFilename = "out.root";
   }
 
 }
