@@ -54,7 +54,7 @@ public:
 
   void Tweak(bool force_inputs, TVectorD * input_vec);
 
-  double CurrentValue(int idx) const;
+  double CurrentValueByIndex(int idx) const;
   double CurrentValue(conv::PhysParamId_t p) const;
 
   // Get & tweak flags
@@ -62,6 +62,9 @@ public:
 
   // Print
   void PrintSystematicVariations (std::ostream & stream = std::cout) const;
+  
+  void UpdateFrom(const valor::FitParamList  & fpl);
+  //~ void UpdateFrom(const valor::PhysParamList & ppl);
     
 private:
 
@@ -71,15 +74,19 @@ private:
   int  Param2Idx (conv::PhysParamId_t p) const; ///< convert flux PhysParamId_t to a covariance matrix or vector index
   void CholeskyDecomposeMatrix (void);          ///< Cholesky decompose the covariance matrix
   
+  TVectorD *  fInitialValues;     ///< Initial values of flux parameters 
   TVectorD *  fCurrentValues;     ///< Current values of flux parameters 
   TMatrixD *  fCovMtrx;           ///< flux covariance matrix
   TMatrixD *  fCovMtrxInv;        ///< Inverse flux covariance matrix
   TMatrixD *  fCovMtrxChoL;       ///< Triangular matrix obtained from Cholesky decomposition of flux covariance matrix
   bool        fIsTweaked;         ///< Were flux params tweaked?
 
+  double * fInitialArray; //! ///< Pointer to the actual memory location of the initial values
   double * fCurrentArray; //! ///< Pointer to the actual memory location of the current values
   
   int fParam2Idx[conv::knppmax];
+  
+  conv::PhysParamId_t fFluxIndexToPhysParam[conv::kNNDFitParamsNuFlx];
 
 ClassDef(NuFlux, 1)
 };

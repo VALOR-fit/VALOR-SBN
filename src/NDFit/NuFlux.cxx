@@ -56,21 +56,28 @@ NuFlux::~NuFlux()
 //________________________________________________________________________________________
 void NuFlux::Init(void)
 {
+  fInitialValues        = new TVectorD(conv::kNNDFitParamsNuFlx);
   fCurrentValues        = new TVectorD(conv::kNNDFitParamsNuFlx);
   fCovMtrx              = 0;
   fCovMtrxInv           = 0;
   fCovMtrxChoL          = 0; 
   fIsTweaked            = false;
   
+  fInitialArray = fInitialValues->GetMatrixArray();
   fCurrentArray = fCurrentValues->GetMatrixArray();
   
   for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
+    fInitialArray[i] = 1.;
     fCurrentArray[i] = 1.;
+    
+    fFluxIndexToPhysParam[i] = (PhysParamId_t)(kNuisFHCNuMuFlux00+i);
   }
+  
 }
 //________________________________________________________________________________________
 void NuFlux::CleanUp(void)
 {
+  if ( fInitialValues ) delete fInitialValues;
   if ( fCurrentValues ) delete fCurrentValues;
   if ( fCovMtrx       ) delete fCovMtrx;
   if ( fCovMtrxInv    ) delete fCovMtrxInv;
@@ -119,7 +126,7 @@ double NuFlux::CurrentValue(PhysParamId_t p) const
   return fCurrentArray[idx];
 }
 //________________________________________________________________________________________
-double NuFlux::CurrentValue(int idx) const
+double NuFlux::CurrentValueByIndex(int idx) const
 {
   return fCurrentArray[idx];
 }
@@ -143,27 +150,20 @@ void NuFlux::Tweak(
   TVectorD * input_vec     // input vector of flux params - Set to 0 to reset to nominal ones 
 )
 {
-/*
+  
 #ifdef __show_tweak_mesg_debug__
-  cout << "NuFlux/Tweak >> Tweaking BANFF fit parameters" << endl;
+  cout << "NuFlux/Tweak >> Tweaking flux parameters" << endl;
 #endif
 
   // Switch flags
   fIsTweaked         = true;
-  fIsFluxWghtUpdated = false;
+  //~ fIsFluxWghtUpdated = false;
 
   //
-  // If this is the first time this function is called, then run the Cholesky 
-  // decomposition of the flux covariance matrix
-  //
-  if(fCovMtrxChoL == 0) 
-    this->CholeskyDecomposeMatrix();
-
-  //
-  // Get best-fit and current BANFF params
+  // Get best-fit and current flux params
   //
 
-  TVectorD & bestfit_values = *fBestFitValues;
+  TVectorD & initial_values = *fInitialValues;
   TVectorD & current_values = *fCurrentValues;
 
   //
@@ -178,18 +178,17 @@ void NuFlux::Tweak(
         cout << "NuFlux/Tweak >> Reset BANFF params to best-fit values." << endl;
 #endif
         fIsTweaked = false;
-        current_values = bestfit_values;
+        current_values = initial_values;
         return;
      }
      else     
      {
 #ifdef __show_tweak_mesg_debug__
-        cout << "NuFlux/Tweak >> Forcing input BANFF parameters. " << endl;
+        cout << "NuFlux/Tweak >> Forcing input flux parameters. " << endl;
 #endif
         TVectorD & vec = *input_vec;
-        assert(vec.GetNoElements() == conv::kNumOfParamsInBANFFfit);
+        assert(vec.GetNoElements() == conv::kNNDFitParamsNuFlx);
         current_values = vec;
-        return;
      }
   }//force_inputs?
 
@@ -203,11 +202,10 @@ void NuFlux::Tweak(
      cout << "NuFlux/Tweak >> Generating random twk dials (correlated)! " << endl;
 #endif
      TMatrixD & L = *fCovMtrxChoL;
-     TVectorD vec = util::CholeskyGenerateCorrelatedParams(L,bestfit_values);
+     TVectorD vec = util::CholeskyGenerateCorrelatedParams(L,initial_values);
      current_values = vec;
-     return;
   }
-*/
+  return;
 }
 //________________________________________________________________________________________
 void NuFlux::CholeskyDecomposeMatrix(void)
@@ -232,37 +230,33 @@ void NuFlux::CholeskyDecomposeMatrix(void)
 //________________________________________________________________________________________
 double NuFlux::ChisqPenalty(bool /*all_syst*/) const
 {
-/*
-  //Vector of current values & best fit values
-  const TVectorD & bestfit_values   = *fBestFitValues;
-  const TVectorD & current_values   = *fCurrentValues;
 #ifdef __show_chisqpenalty_mesg_debug2__
-    cout << "NuFlux/ChisqPenalty >> BANFF parameters: " << endl;
-    util::PrintCompact(current_values, bestfit_values, 12,6,"BANFF fit params");
+    cout << "NuFlux/ChisqPenalty >> flux parameters: " << endl;
+    util::PrintCompact(current_values, initial_values, 12,6,"flux fit params");
 #endif
 
   //covariance matrix
-  const TMatrixD cov    (this->CovMatrix());
-  const TMatrixD covInv (this->CovMatrixInv());
+  const TMatrixD & cov    (this->CovMatrix()   );
+  const TMatrixD & covInv (this->CovMatrixInv());
 
   //Vector with deviations of current values from  best fit values
-  const int np = conv::kNNDFitParams;
+  const int np = cov.GetNrows();
   TMatrixD dev  (1,np); //vector of one column in matrix form for multiplication
   TMatrixD devT (np,1); //vector of one row in matrix form for multiplication
   for(int i = 0; i < np; i++){
-    dev[0][i]  = current_values[i]-bestfit_values[i];
-    devT[i][0] = current_values[i]-bestfit_values[i];
+    dev [0][i] = fCurrentArray[i]-fInitialArray[i];
+    devT[i][0] = fCurrentArray[i]-fInitialArray[i];
   }
   
 #ifdef __show_chisqpenalty_mesg_debug__
-  cout << "Exp/ChisqPenalty >> deviations in BANFF parameters: " << endl;
-  util::PrintCompact(TMatrixDRow(dev,0), 12,6,"BANFF fit params");
+  cout << "Exp/ChisqPenalty >> deviations in flux parameters: " << endl;
+  util::PrintCompact(TMatrixDRow(dev,0), 12,6,"flux fit params");
 #endif
 
 #ifdef __show_chisqpenalty_mesg_debug2__
-    cout << "NuFlux/ChisqPenalty >> BANFF covariance matrix: " << endl;
+    cout << "NuFlux/ChisqPenalty >> flux covariance matrix: " << endl;
     util::PrintCompact(cov,7,5);
-    cout << "NuFlux/ChisqPenalty >> Inverse BANFF covariance matrix: " << endl;
+    cout << "NuFlux/ChisqPenalty >> Inverse flux covariance matrix: " << endl;
     util::PrintCompact(covInv,7,5);
 #endif
 
@@ -282,7 +276,6 @@ double NuFlux::ChisqPenalty(bool /*all_syst*/) const
 
     if(chisq_penalty) return chisq_penalty;
     //}//all_syst
-*/
   return 0;
 }
 //________________________________________________________________________________________ 
@@ -295,7 +288,7 @@ void NuFlux::PrintSystematicVariations(std::ostream & stream) const
   //~ util::PrintCompact(current_values);
   
   for (int i = 0 ; i < fCurrentValues->GetNoElements(); i++) {
-    PhysParamId_t p = (PhysParamId_t)(kNuisFHCNuMuFlux00+i); // WILL NEED UPDATING WHEN ArrIdx EXISTS
+    PhysParamId_t p = fFluxIndexToPhysParam[i];
     stream<<util::AsString(p)<<"\t"<<(*fCurrentValues)[i]<<endl;
   }
 }
@@ -304,5 +297,20 @@ int NuFlux::Param2Idx(PhysParamId_t p) const
 {
   assert(p!=kPhypUndefined);
   return fParam2Idx[p];  
+}
+//________________________________________________________________________________________
+void NuFlux::UpdateFrom(const valor::FitParamList  & fpl)
+{
+  for (int i = 0 ; i < fInitialValues->GetNoElements() ; i++) {
+    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    if (fpl.Exists(p)) {
+      fCurrentArray[i] = fpl.CurrValue(p);
+    }
+    else {
+      LOG("NuFlux",pWARN) << "Unable to update flux parameter "<<util::AsString(p)<<" from FPL.";
+    }
+  }
+  fIsTweaked = true;
+  return;
 }
 //________________________________________________________________________________________

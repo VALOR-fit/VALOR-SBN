@@ -174,7 +174,7 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
 //________________________________________________________________________________________
 void NDModel::RandomizeSystematics(void)
 {
-  //...
+  fNuFlux->Tweak(false,0);
 }
 //________________________________________________________________________________________
 void NDModel::TweakSystematic(
@@ -211,6 +211,8 @@ bool NDModel::Generate (const FitParamList & fp, Option_t * opt)
 //  LOG("NDModel",pDEBUG)  
 //     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
 
+  fNuFlux->UpdateFrom(fp);
+  
   // extract the values of params driving the oscillation, decoherence or decay model
   PhysHypothesis ph(fp);
 
@@ -681,13 +683,16 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 
   for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
-      if(p == kPhypUndefined) continue;
+      if (p == kPhypUndefined) continue;
+      if (conv::kNDFitIsFluxRelated[ip]) continue; // Flux contribution is calculated in NuFlux
       double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
       double val = fPhysHypothesis.CurrValue(p);
       double def = 1;
       double dSp = TMath::Power((val-def)/sig, 2.);
       Sp += dSp;
   }//ip
+  
+  Sp += fNuFlux->ChisqPenalty();
 
   LOG("NDModel",pDEBUG) << "Current fit statistic (systematic term) = " << Sp;
 
@@ -1575,21 +1580,21 @@ void NDModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-  	     //-------------- error, prone need to simplify
-	     bool apply = false;
-	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
-	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
-  	     //-------------- 
-             if(!apply) continue;
-             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
-             if(enu_true_dep) continue;
-             PhysParamId_t p = kNDFitParam[ip];
-             if(p == kPhypUndefined) continue;
-             double f = fPhysHypothesis.CurrValue(p);
-             f = TMath::Max(0.,f);
-             bool tweaked = TMath::Abs(f-1) > kASmallNum;
-             if(!tweaked) continue;
-             fnoEt *= f;
+            //-------------- error, prone need to simplify
+            bool apply = false;
+            if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
+            else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+            //-------------- 
+            if(!apply) continue;
+            bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+            if(enu_true_dep) continue;
+            PhysParamId_t p = kNDFitParam[ip];
+            if(p == kPhypUndefined) continue;
+            double f = fPhysHypothesis.CurrValue(p);
+            f = TMath::Max(0.,f);
+            bool tweaked = TMath::Abs(f-1) > kASmallNum;
+            if(!tweaked) continue;
+            fnoEt *= f;
           }//ip
           fnoEt = TMath::Max(0.,fnoEt);
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
