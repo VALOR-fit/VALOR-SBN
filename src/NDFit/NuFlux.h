@@ -26,8 +26,11 @@
 
 class TH1D;
 class TH2D;
-	
+
 namespace valor {
+
+class FitParamList;
+class PhysParamList;
 
 class NuFlux: public TObject
 {
@@ -65,6 +68,8 @@ public:
   
   void UpdateFrom(const valor::FitParamList  & fpl);
   //~ void UpdateFrom(const valor::PhysParamList & ppl);
+  
+  void CopyTweaksTo(valor::PhysParamList & ppl) const;
     
 private:
 

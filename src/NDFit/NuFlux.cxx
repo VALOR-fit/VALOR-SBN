@@ -26,6 +26,8 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/UtlXML.h"
 #include "Utilities/UtlNumStat.h"
 #include "Messenger/Messenger.h"
+#include "FitCore/FitParamList.h"
+#include "FitCore/PhysParamList.h"
 // dune
 #include "NDFit/NDFitParams.h"
 #include "NDFit/NuFlux.h"
@@ -311,6 +313,15 @@ void NuFlux::UpdateFrom(const valor::FitParamList  & fpl)
     }
   }
   fIsTweaked = true;
+  return;
+}
+//________________________________________________________________________________________
+void NuFlux::CopyTweaksTo(valor::PhysParamList & ppl) const
+{
+  for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
+    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    ppl.SetValue(p,fCurrentArray[i]);
+  }
   return;
 }
 //________________________________________________________________________________________

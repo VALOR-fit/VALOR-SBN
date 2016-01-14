@@ -178,27 +178,37 @@ void NDModel::RandomizeSystematics(void)
 }
 //________________________________________________________________________________________
 void NDModel::TweakSystematic(
-  string /*syst_name*/, double /*twkdial*/, Option_t * /*opt*/)
+  string syst_name, double twkdial, Option_t * opt)
 {
-  //...
+  PhysParamId_t p = util::NDPhysParamFromString(syst_name);
+  this->TweakSystematic(p,twkdial,opt);
+  return;
 }
 //________________________________________________________________________________________
 void NDModel::TweakSystematic(
   PhysParamId_t syst, double twkdial, Option_t * /*opt*/)
 {
-  //...
+  if (util::IsFluxRelated(syst)) {
+    //~ fNuFlux->Tweak();
+  }
+  // MUST FINISH WITH NON-FLUX
 }
 //________________________________________________________________________________________
 PhysParamList NDModel::Tweaks(void)
 {
   PhysParamList list;
-  //...
+  
+  fNuFlux->CopyTweaksTo(list);
+  
+  // MUST FINISH WITH NON-FLUX
+  
   return list;
 }
 //________________________________________________________________________________________
 void NDModel::ResetSystematics(void)
 {
-  //...
+  fNuFlux->Tweak(true,0);
+  // MUST FINISH WITH NON-FLUX
 }
 //________________________________________________________________________________________
 void NDModel::PrintSystematics(ostream & stream) const
@@ -998,12 +1008,12 @@ void NDModel::Fill(TTree * t, int ibeam)
   TBranch * bWghtPOT  = t->GetBranch("wght_pot");       // weight for 1E+20 POT exposure
 */
   //tmp names
-  TBranch * bSample   = t->GetBranch("sample");         // selected ND sample
-  TBranch * bReacMode = t->GetBranch("reactionmode");   // reaction mode
-  TBranch * bEnuTrue  = t->GetBranch("Ev");             // true energy (GeV)
-  TBranch * bEnuReco  = t->GetBranch("Ev_reco");        // reco energy (GeV)
-  TBranch * byReco    = t->GetBranch("y_reco");         // reco inelasticity y
-  TBranch * bWghtPOT  = t->GetBranch("POTWeight");      // weight for 1E+20 POT exposure
+  //~ TBranch * bSample   = t->GetBranch("sample");         // selected ND sample
+  //~ TBranch * bReacMode = t->GetBranch("reactionmode");   // reaction mode
+  //~ TBranch * bEnuTrue  = t->GetBranch("Ev");             // true energy (GeV)
+  //~ TBranch * bEnuReco  = t->GetBranch("Ev_reco");        // reco energy (GeV)
+  //~ TBranch * byReco    = t->GetBranch("y_reco");         // reco inelasticity y
+  //~ TBranch * bWghtPOT  = t->GetBranch("POTWeight");      // weight for 1E+20 POT exposure
 
   int    sample        = 0;
   int    reac_mode     = 0;
