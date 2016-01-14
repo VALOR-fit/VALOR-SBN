@@ -23,7 +23,12 @@ valor::util::NDArrIdx::NDArrIdx()
   fInstance = 0;
 }
 //________________________________________________________________________________________
-valor::util::NDArrIdx * valor::util::NDArrIdx::Instance()
+const valor::util::NDArrIdx * valor::util::NDArrIdx::Instance()
+{
+  return MutableInstance();
+}
+//________________________________________________________________________________________
+valor::util::NDArrIdx * valor::util::NDArrIdx::MutableInstance()
 {
   if(fInstance == 0) {
     static valor::util::NDArrIdx::Cleaner cleaner;

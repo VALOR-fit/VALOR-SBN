@@ -79,7 +79,7 @@ private:
   void ApplyPhysics     (Option_t * opt = 0);
   void UpdatePDFs       (Option_t * opt = 0);
 
-  util::NDArrIdx * fArrIdx;
+  const util::NDArrIdx * fArrIdx;
 
   PhysHypothesis fPhysHypothesis;
 

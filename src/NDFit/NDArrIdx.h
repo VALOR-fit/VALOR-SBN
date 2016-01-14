@@ -42,12 +42,13 @@ namespace util {
 class NDArrIdx {
 
 public:
-    static NDArrIdx * Instance();
+    static const NDArrIdx * Instance();
+    static       NDArrIdx * MutableInstance();
 
-    int NDBeamConfIdx (conv::BeamConf_t b)                     { return fNDBeamConfIdx[b];    }
-    int NDSampleIdx   (conv::BeamConf_t b, conv::NDSample_t s) { return fNDSampleIdx[b][s];   }
-    int NDReacModeIdx (conv::NDSample_t s, conv::ReacMode_t m) { return fNDReacModeIdx[s][m]; }
-    int NDFitParamIdx (conv::PhysParamId_t p)                  { return fNDFitParamIdx[p];    }
+    int NDBeamConfIdx (conv::BeamConf_t b)                     const { return fNDBeamConfIdx[b];    }
+    int NDSampleIdx   (conv::BeamConf_t b, conv::NDSample_t s) const { return fNDSampleIdx[b][s];   }
+    int NDReacModeIdx (conv::NDSample_t s, conv::ReacMode_t m) const { return fNDReacModeIdx[s][m]; }
+    int NDFitParamIdx (conv::PhysParamId_t p)                  const { return fNDFitParamIdx[p];    }
 
 private:
 
