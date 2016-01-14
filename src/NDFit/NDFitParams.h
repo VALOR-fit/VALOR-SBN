@@ -2553,11 +2553,18 @@ namespace util {
 
   string  AsString    (conv::PhysParamId_t p);
   string  AsStringTeX (conv::PhysParamId_t p, bool root);
+  
+  // Aliases for above
+  string  ParamAsString    (conv::PhysParamId_t p)           ;
+  string  ParamAsStringTeX (conv::PhysParamId_t p, bool root);
 
   conv::PhysParamId_t NDPhysParamFromString(string p);
 
   PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard", Option_t * param_values = "nominal");
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", Option_t * param_values = "nominal");
+  
+  bool IsFluxRelated(conv::PhysParamId_t p);
+  bool IsXSecRelated(conv::PhysParamId_t p);
   
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);

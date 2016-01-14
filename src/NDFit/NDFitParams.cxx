@@ -8,8 +8,11 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 
 #include "Utilities/NameRegistry.h"
 #include "Utilities/Rnd.h"
+#include "Utilities/UtlStr.h"
 #include "NDFit/NDFitParams.h"
 #include "Messenger/Messenger.h"
+
+#include "NDFit/NDArrIdx.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -141,7 +144,7 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisEffNuMuCCWSgn    ) : return "f_eff_numuccwsgn";     break;
     case (kNuisEffNC            ) : return "f_eff_nc";             break;
 
-    default                      : return "--";    
+    default                       : return util::RawParamAsString(p);   
   }
   return "";
 }
@@ -151,138 +154,145 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
   string name = "";
 
   switch(p) {
-    case (kNuisFHCNuMuFlux00   ) : name = "f_{FHC;#nu_{#mu};00}";       break;
-    case (kNuisFHCNuMuFlux01   ) : name = "f_{FHC;#nu_{#mu};01}";       break;
-    case (kNuisFHCNuMuFlux02   ) : name = "f_{FHC;#nu_{#mu};02}";       break;
-    case (kNuisFHCNuMuFlux03   ) : name = "f_{FHC;#nu_{#mu};03}";       break;
-    case (kNuisFHCNuMuFlux04   ) : name = "f_{FHC;#nu_{#mu};04}";       break;
-    case (kNuisFHCNuMuFlux05   ) : name = "f_{FHC;#nu_{#mu};05}";       break;
-    case (kNuisFHCNuMuFlux06   ) : name = "f_{FHC;#nu_{#mu};06}";       break;
-    case (kNuisFHCNuMuFlux07   ) : name = "f_{FHC;#nu_{#mu};07}";       break;
-    case (kNuisFHCNuMuFlux08   ) : name = "f_{FHC;#nu_{#mu};08}";       break;
-    case (kNuisFHCNuMuFlux09   ) : name = "f_{FHC;#nu_{#mu};09}";       break;
-    case (kNuisFHCNuMuFlux10   ) : name = "f_{FHC;#nu_{#mu};10}";       break;
-    case (kNuisFHCNuMuFlux11   ) : name = "f_{FHC;#nu_{#mu};11}";       break;
-    case (kNuisFHCNuMuFlux12   ) : name = "f_{FHC;#nu_{#mu};12}";       break;
-    case (kNuisFHCNuMuFlux13   ) : name = "f_{FHC;#nu_{#mu};13}";       break;
-    case (kNuisFHCNuMuFlux14   ) : name = "f_{FHC;#nu_{#mu};14}";       break;
-    case (kNuisFHCNuMuFlux15   ) : name = "f_{FHC;#nu_{#mu};15}";       break;
-    case (kNuisFHCNuMuFlux16   ) : name = "f_{FHC;#nu_{#mu};16}";       break;
-    case (kNuisFHCNuMuFlux17   ) : name = "f_{FHC;#nu_{#mu};17}";       break;
-    case (kNuisFHCNuMuFlux18   ) : name = "f_{FHC;#nu_{#mu};18}";       break;
-    case (kNuisFHCNuMuBarFlux00) : name = "f_{FHC;#bar{#nu_{#mu}};00}"; break;
-    case (kNuisFHCNuMuBarFlux01) : name = "f_{FHC;#bar{#nu_{#mu}};01}"; break;
-    case (kNuisFHCNuMuBarFlux02) : name = "f_{FHC;#bar{#nu_{#mu}};02}"; break;
-    case (kNuisFHCNuMuBarFlux03) : name = "f_{FHC;#bar{#nu_{#mu}};03}"; break;
-    case (kNuisFHCNuMuBarFlux04) : name = "f_{FHC;#bar{#nu_{#mu}};04}"; break;
-    case (kNuisFHCNuMuBarFlux05) : name = "f_{FHC;#bar{#nu_{#mu}};05}"; break;
-    case (kNuisFHCNuMuBarFlux06) : name = "f_{FHC;#bar{#nu_{#mu}};06}"; break;
-    case (kNuisFHCNuMuBarFlux07) : name = "f_{FHC;#bar{#nu_{#mu}};07}"; break;
-    case (kNuisFHCNuMuBarFlux08) : name = "f_{FHC;#bar{#nu_{#mu}};08}"; break;
-    case (kNuisFHCNuMuBarFlux09) : name = "f_{FHC;#bar{#nu_{#mu}};09}"; break;
-    case (kNuisFHCNuMuBarFlux10) : name = "f_{FHC;#bar{#nu_{#mu}};10}"; break;
-    case (kNuisFHCNuMuBarFlux11) : name = "f_{FHC;#bar{#nu_{#mu}};11}"; break;
-    case (kNuisFHCNuMuBarFlux12) : name = "f_{FHC;#bar{#nu_{#mu}};12}"; break;
-    case (kNuisFHCNuMuBarFlux13) : name = "f_{FHC;#bar{#nu_{#mu}};13}"; break;
-    case (kNuisFHCNuMuBarFlux14) : name = "f_{FHC;#bar{#nu_{#mu}};14}"; break;
-    case (kNuisFHCNuMuBarFlux15) : name = "f_{FHC;#bar{#nu_{#mu}};15}"; break;
-    case (kNuisFHCNuMuBarFlux16) : name = "f_{FHC;#bar{#nu_{#mu}};16}"; break;
-    case (kNuisFHCNuMuBarFlux17) : name = "f_{FHC;#bar{#nu_{#mu}};17}"; break;
-    case (kNuisFHCNuMuBarFlux18) : name = "f_{FHC;#bar{#nu_{#mu}};18}"; break;
-    case (kNuisFHCNuEFlux00    ) : name = "f_{FHC;#nu_{e};00}";         break;
-    case (kNuisFHCNuEFlux01    ) : name = "f_{FHC;#nu_{e};01}";         break;
-    case (kNuisFHCNuEFlux02    ) : name = "f_{FHC;#nu_{e};02}";         break;
-    case (kNuisFHCNuEFlux03    ) : name = "f_{FHC;#nu_{e};03}";         break;
-    case (kNuisFHCNuEFlux04    ) : name = "f_{FHC;#nu_{e};04}";         break;
-    case (kNuisFHCNuEFlux05    ) : name = "f_{FHC;#nu_{e};05}";         break;
-    case (kNuisFHCNuEFlux06    ) : name = "f_{FHC;#nu_{e};06}";         break;
-    case (kNuisFHCNuEBarFlux00 ) : name = "f_{FHC;#bar{#nu_{e}};00}";   break;
-    case (kNuisFHCNuEBarFlux01 ) : name = "f_{FHC;#bar{#nu_{e}};01}";   break;
-    case (kNuisFHCNuEBarFlux02 ) : name = "f_{FHC;#bar{#nu_{e}};02}";   break;
-    case (kNuisFHCNuEBarFlux03 ) : name = "f_{FHC;#bar{#nu_{e}};03}";   break;
-    case (kNuisFHCNuEBarFlux04 ) : name = "f_{FHC;#bar{#nu_{e}};04}";   break;
-    case (kNuisFHCNuEBarFlux05 ) : name = "f_{FHC;#bar{#nu_{e}};05}";   break;
-    case (kNuisFHCNuEBarFlux06 ) : name = "f_{FHC;#bar{#nu_{e}};06}";   break;
+    case (kNuisFHCNuMuFlux00   ) : name = "f_{FHC;\\nu_{\\mu};00}";                        break;
+    case (kNuisFHCNuMuFlux01   ) : name = "f_{FHC;\\nu_{\\mu};01}";                        break;
+    case (kNuisFHCNuMuFlux02   ) : name = "f_{FHC;\\nu_{\\mu};02}";                        break;
+    case (kNuisFHCNuMuFlux03   ) : name = "f_{FHC;\\nu_{\\mu};03}";                        break;
+    case (kNuisFHCNuMuFlux04   ) : name = "f_{FHC;\\nu_{\\mu};04}";                        break;
+    case (kNuisFHCNuMuFlux05   ) : name = "f_{FHC;\\nu_{\\mu};05}";                        break;
+    case (kNuisFHCNuMuFlux06   ) : name = "f_{FHC;\\nu_{\\mu};06}";                        break;
+    case (kNuisFHCNuMuFlux07   ) : name = "f_{FHC;\\nu_{\\mu};07}";                        break;
+    case (kNuisFHCNuMuFlux08   ) : name = "f_{FHC;\\nu_{\\mu};08}";                        break;
+    case (kNuisFHCNuMuFlux09   ) : name = "f_{FHC;\\nu_{\\mu};09}";                        break;
+    case (kNuisFHCNuMuFlux10   ) : name = "f_{FHC;\\nu_{\\mu};10}";                        break;
+    case (kNuisFHCNuMuFlux11   ) : name = "f_{FHC;\\nu_{\\mu};11}";                        break;
+    case (kNuisFHCNuMuFlux12   ) : name = "f_{FHC;\\nu_{\\mu};12}";                        break;
+    case (kNuisFHCNuMuFlux13   ) : name = "f_{FHC;\\nu_{\\mu};13}";                        break;
+    case (kNuisFHCNuMuFlux14   ) : name = "f_{FHC;\\nu_{\\mu};14}";                        break;
+    case (kNuisFHCNuMuFlux15   ) : name = "f_{FHC;\\nu_{\\mu};15}";                        break;
+    case (kNuisFHCNuMuFlux16   ) : name = "f_{FHC;\\nu_{\\mu};16}";                        break;
+    case (kNuisFHCNuMuFlux17   ) : name = "f_{FHC;\\nu_{\\mu};17}";                        break;
+    case (kNuisFHCNuMuFlux18   ) : name = "f_{FHC;\\nu_{\\mu};18}";                        break;
+    case (kNuisFHCNuMuBarFlux00) : name = "f_{FHC;\\bar{\\nu_{\\mu}};00}";                 break;
+    case (kNuisFHCNuMuBarFlux01) : name = "f_{FHC;\\bar{\\nu_{\\mu}};01}";                 break;
+    case (kNuisFHCNuMuBarFlux02) : name = "f_{FHC;\\bar{\\nu_{\\mu}};02}";                 break;
+    case (kNuisFHCNuMuBarFlux03) : name = "f_{FHC;\\bar{\\nu_{\\mu}};03}";                 break;
+    case (kNuisFHCNuMuBarFlux04) : name = "f_{FHC;\\bar{\\nu_{\\mu}};04}";                 break;
+    case (kNuisFHCNuMuBarFlux05) : name = "f_{FHC;\\bar{\\nu_{\\mu}};05}";                 break;
+    case (kNuisFHCNuMuBarFlux06) : name = "f_{FHC;\\bar{\\nu_{\\mu}};06}";                 break;
+    case (kNuisFHCNuMuBarFlux07) : name = "f_{FHC;\\bar{\\nu_{\\mu}};07}";                 break;
+    case (kNuisFHCNuMuBarFlux08) : name = "f_{FHC;\\bar{\\nu_{\\mu}};08}";                 break;
+    case (kNuisFHCNuMuBarFlux09) : name = "f_{FHC;\\bar{\\nu_{\\mu}};09}";                 break;
+    case (kNuisFHCNuMuBarFlux10) : name = "f_{FHC;\\bar{\\nu_{\\mu}};10}";                 break;
+    case (kNuisFHCNuMuBarFlux11) : name = "f_{FHC;\\bar{\\nu_{\\mu}};11}";                 break;
+    case (kNuisFHCNuMuBarFlux12) : name = "f_{FHC;\\bar{\\nu_{\\mu}};12}";                 break;
+    case (kNuisFHCNuMuBarFlux13) : name = "f_{FHC;\\bar{\\nu_{\\mu}};13}";                 break;
+    case (kNuisFHCNuMuBarFlux14) : name = "f_{FHC;\\bar{\\nu_{\\mu}};14}";                 break;
+    case (kNuisFHCNuMuBarFlux15) : name = "f_{FHC;\\bar{\\nu_{\\mu}};15}";                 break;
+    case (kNuisFHCNuMuBarFlux16) : name = "f_{FHC;\\bar{\\nu_{\\mu}};16}";                 break;
+    case (kNuisFHCNuMuBarFlux17) : name = "f_{FHC;\\bar{\\nu_{\\mu}};17}";                 break;
+    case (kNuisFHCNuMuBarFlux18) : name = "f_{FHC;\\bar{\\nu_{\\mu}};18}";                 break;
+    case (kNuisFHCNuEFlux00    ) : name = "f_{FHC;\\nu_{e};00}";                           break;
+    case (kNuisFHCNuEFlux01    ) : name = "f_{FHC;\\nu_{e};01}";                           break;
+    case (kNuisFHCNuEFlux02    ) : name = "f_{FHC;\\nu_{e};02}";                           break;
+    case (kNuisFHCNuEFlux03    ) : name = "f_{FHC;\\nu_{e};03}";                           break;
+    case (kNuisFHCNuEFlux04    ) : name = "f_{FHC;\\nu_{e};04}";                           break;
+    case (kNuisFHCNuEFlux05    ) : name = "f_{FHC;\\nu_{e};05}";                           break;
+    case (kNuisFHCNuEFlux06    ) : name = "f_{FHC;\\nu_{e};06}";                           break;
+    case (kNuisFHCNuEBarFlux00 ) : name = "f_{FHC;\\bar{\\nu_{e}};00}";                    break;
+    case (kNuisFHCNuEBarFlux01 ) : name = "f_{FHC;\\bar{\\nu_{e}};01}";                    break;
+    case (kNuisFHCNuEBarFlux02 ) : name = "f_{FHC;\\bar{\\nu_{e}};02}";                    break;
+    case (kNuisFHCNuEBarFlux03 ) : name = "f_{FHC;\\bar{\\nu_{e}};03}";                    break;
+    case (kNuisFHCNuEBarFlux04 ) : name = "f_{FHC;\\bar{\\nu_{e}};04}";                    break;
+    case (kNuisFHCNuEBarFlux05 ) : name = "f_{FHC;\\bar{\\nu_{e}};05}";                    break;
+    case (kNuisFHCNuEBarFlux06 ) : name = "f_{FHC;\\bar{\\nu_{e}};06}";                    break;
+    
+    case (kNuisRHCNuMuFlux00   ) : name = "f_{RHC;\\nu_{\\mu};00}";                        break;
+    case (kNuisRHCNuMuFlux01   ) : name = "f_{RHC;\\nu_{\\mu};01}";                        break;
+    case (kNuisRHCNuMuFlux02   ) : name = "f_{RHC;\\nu_{\\mu};02}";                        break;
+    case (kNuisRHCNuMuFlux03   ) : name = "f_{RHC;\\nu_{\\mu};03}";                        break;
+    case (kNuisRHCNuMuFlux04   ) : name = "f_{RHC;\\nu_{\\mu};04}";                        break;
+    case (kNuisRHCNuMuFlux05   ) : name = "f_{RHC;\\nu_{\\mu};05}";                        break;
+    case (kNuisRHCNuMuFlux06   ) : name = "f_{RHC;\\nu_{\\mu};06}";                        break;
+    case (kNuisRHCNuMuFlux07   ) : name = "f_{RHC;\\nu_{\\mu};07}";                        break;
+    case (kNuisRHCNuMuFlux08   ) : name = "f_{RHC;\\nu_{\\mu};08}";                        break;
+    case (kNuisRHCNuMuFlux09   ) : name = "f_{RHC;\\nu_{\\mu};09}";                        break;
+    case (kNuisRHCNuMuFlux10   ) : name = "f_{RHC;\\nu_{\\mu};10}";                        break;
+    case (kNuisRHCNuMuFlux11   ) : name = "f_{RHC;\\nu_{\\mu};11}";                        break;
+    case (kNuisRHCNuMuFlux12   ) : name = "f_{RHC;\\nu_{\\mu};12}";                        break;
+    case (kNuisRHCNuMuFlux13   ) : name = "f_{RHC;\\nu_{\\mu};13}";                        break;
+    case (kNuisRHCNuMuFlux14   ) : name = "f_{RHC;\\nu_{\\mu};14}";                        break;
+    case (kNuisRHCNuMuFlux15   ) : name = "f_{RHC;\\nu_{\\mu};15}";                        break;
+    case (kNuisRHCNuMuFlux16   ) : name = "f_{RHC;\\nu_{\\mu};16}";                        break;
+    case (kNuisRHCNuMuFlux17   ) : name = "f_{RHC;\\nu_{\\mu};17}";                        break;
+    case (kNuisRHCNuMuFlux18   ) : name = "f_{RHC;\\nu_{\\mu};18}";                        break;
+    case (kNuisRHCNuMuBarFlux00) : name = "f_{RHC;\\bar{\\nu_{\\mu}};00}";                 break;
+    case (kNuisRHCNuMuBarFlux01) : name = "f_{RHC;\\bar{\\nu_{\\mu}};01}";                 break;
+    case (kNuisRHCNuMuBarFlux02) : name = "f_{RHC;\\bar{\\nu_{\\mu}};02}";                 break;
+    case (kNuisRHCNuMuBarFlux03) : name = "f_{RHC;\\bar{\\nu_{\\mu}};03}";                 break;
+    case (kNuisRHCNuMuBarFlux04) : name = "f_{RHC;\\bar{\\nu_{\\mu}};04}";                 break;
+    case (kNuisRHCNuMuBarFlux05) : name = "f_{RHC;\\bar{\\nu_{\\mu}};05}";                 break;
+    case (kNuisRHCNuMuBarFlux06) : name = "f_{RHC;\\bar{\\nu_{\\mu}};06}";                 break;
+    case (kNuisRHCNuMuBarFlux07) : name = "f_{RHC;\\bar{\\nu_{\\mu}};07}";                 break;
+    case (kNuisRHCNuMuBarFlux08) : name = "f_{RHC;\\bar{\\nu_{\\mu}};08}";                 break;
+    case (kNuisRHCNuMuBarFlux09) : name = "f_{RHC;\\bar{\\nu_{\\mu}};09}";                 break;
+    case (kNuisRHCNuMuBarFlux10) : name = "f_{RHC;\\bar{\\nu_{\\mu}};10}";                 break;
+    case (kNuisRHCNuMuBarFlux11) : name = "f_{RHC;\\bar{\\nu_{\\mu}};11}";                 break;
+    case (kNuisRHCNuMuBarFlux12) : name = "f_{RHC;\\bar{\\nu_{\\mu}};12}";                 break;
+    case (kNuisRHCNuMuBarFlux13) : name = "f_{RHC;\\bar{\\nu_{\\mu}};13}";                 break;
+    case (kNuisRHCNuMuBarFlux14) : name = "f_{RHC;\\bar{\\nu_{\\mu}};14}";                 break;
+    case (kNuisRHCNuMuBarFlux15) : name = "f_{RHC;\\bar{\\nu_{\\mu}};15}";                 break;
+    case (kNuisRHCNuMuBarFlux16) : name = "f_{RHC;\\bar{\\nu_{\\mu}};16}";                 break;
+    case (kNuisRHCNuMuBarFlux17) : name = "f_{RHC;\\bar{\\nu_{\\mu}};17}";                 break;
+    case (kNuisRHCNuMuBarFlux18) : name = "f_{RHC;\\bar{\\nu_{\\mu}};18}";                 break;
+    case (kNuisRHCNuEFlux00    ) : name = "f_{RHC;\\nu_{e};00}";                           break;
+    case (kNuisRHCNuEFlux01    ) : name = "f_{RHC;\\nu_{e};01}";                           break;
+    case (kNuisRHCNuEFlux02    ) : name = "f_{RHC;\\nu_{e};02}";                           break;
+    case (kNuisRHCNuEFlux03    ) : name = "f_{RHC;\\nu_{e};03}";                           break;
+    case (kNuisRHCNuEFlux04    ) : name = "f_{RHC;\\nu_{e};04}";                           break;
+    case (kNuisRHCNuEFlux05    ) : name = "f_{RHC;\\nu_{e};05}";                           break;
+    case (kNuisRHCNuEFlux06    ) : name = "f_{RHC;\\nu_{e};06}";                           break;
+    case (kNuisRHCNuEBarFlux00 ) : name = "f_{RHC;\\bar{\\nu_{e}};00}";                    break;
+    case (kNuisRHCNuEBarFlux01 ) : name = "f_{RHC;\\bar{\\nu_{e}};01}";                    break;
+    case (kNuisRHCNuEBarFlux02 ) : name = "f_{RHC;\\bar{\\nu_{e}};02}";                    break;
+    case (kNuisRHCNuEBarFlux03 ) : name = "f_{RHC;\\bar{\\nu_{e}};03}";                    break;
+    case (kNuisRHCNuEBarFlux04 ) : name = "f_{RHC;\\bar{\\nu_{e}};04}";                    break;
+    case (kNuisRHCNuEBarFlux05 ) : name = "f_{RHC;\\bar{\\nu_{e}};05}";                    break;
+    case (kNuisRHCNuEBarFlux06 ) : name = "f_{RHC;\\bar{\\nu_{e}};06}";                    break;
+    
+    case (kNuisNormCCQE        ) : name = "f_{CCQE}";                                      break;
+    case (kNuisNormCC1piC      ) : name = "f_{CC1\\pi^{\\pm}}";                            break;
+    case (kNuisNormCC1pi0      ) : name = "f_{CC1\\pi^{0}}";                               break;
+    case (kNuisNormCCoth       ) : name = "f_{CCother}";                                   break;
+    case (kNuisNormNC          ) : name = "f_{NC}";                                        break;
+    case (kNuisRatioNuENuMu    ) : name = "f_{\\nu_{e}/\\nu_{\\mu}}";                      break;
+    
+    case (kNuisEffNuMuCC1trkQE  ) : name = "f_{eff;\\nu_{\\mu}CC;1trkQE}";                 break;
+    case (kNuisEffNuMuCC2trkQE  ) : name = "f_{eff;\\nu_{\\mu}CC;2trkQE}";                 break;
+    case (kNuisEffNuMuCC1piC    ) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{\\pm}}";           break;
+    case (kNuisEffNuMuCC1pi0    ) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{0}}";              break;
+    case (kNuisEffNuMuCC1piC1pi0) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{\\pm}1\\pi^{0}}";  break;
+    case (kNuisEffNuMuCCoth     ) : name = "f_{eff;\\nu_{\\mu}CC;other}";                  break;
+    case (kNuisEffNuECC         ) : name = "f_{eff;\\nu_{e}CC}";                           break;
+    case (kNuisEffNuMuCCWSgn    ) : name = "f_{eff;\\nu_{\\mu}CC;wsgn}";                   break;
+    case (kNuisEffNC            ) : name = "f_{eff;NC}";                                   break;
 
-    case (kNuisRHCNuMuFlux00   ) : name = "f_{RHC;#nu_{#mu};00}";       break;
-    case (kNuisRHCNuMuFlux01   ) : name = "f_{RHC;#nu_{#mu};01}";       break;
-    case (kNuisRHCNuMuFlux02   ) : name = "f_{RHC;#nu_{#mu};02}";       break;
-    case (kNuisRHCNuMuFlux03   ) : name = "f_{RHC;#nu_{#mu};03}";       break;
-    case (kNuisRHCNuMuFlux04   ) : name = "f_{RHC;#nu_{#mu};04}";       break;
-    case (kNuisRHCNuMuFlux05   ) : name = "f_{RHC;#nu_{#mu};05}";       break;
-    case (kNuisRHCNuMuFlux06   ) : name = "f_{RHC;#nu_{#mu};06}";       break;
-    case (kNuisRHCNuMuFlux07   ) : name = "f_{RHC;#nu_{#mu};07}";       break;
-    case (kNuisRHCNuMuFlux08   ) : name = "f_{RHC;#nu_{#mu};08}";       break;
-    case (kNuisRHCNuMuFlux09   ) : name = "f_{RHC;#nu_{#mu};09}";       break;
-    case (kNuisRHCNuMuFlux10   ) : name = "f_{RHC;#nu_{#mu};10}";       break;
-    case (kNuisRHCNuMuFlux11   ) : name = "f_{RHC;#nu_{#mu};11}";       break;
-    case (kNuisRHCNuMuFlux12   ) : name = "f_{RHC;#nu_{#mu};12}";       break;
-    case (kNuisRHCNuMuFlux13   ) : name = "f_{RHC;#nu_{#mu};13}";       break;
-    case (kNuisRHCNuMuFlux14   ) : name = "f_{RHC;#nu_{#mu};14}";       break;
-    case (kNuisRHCNuMuFlux15   ) : name = "f_{RHC;#nu_{#mu};15}";       break;
-    case (kNuisRHCNuMuFlux16   ) : name = "f_{RHC;#nu_{#mu};16}";       break;
-    case (kNuisRHCNuMuFlux17   ) : name = "f_{RHC;#nu_{#mu};17}";       break;
-    case (kNuisRHCNuMuFlux18   ) : name = "f_{RHC;#nu_{#mu};18}";       break;
-    case (kNuisRHCNuMuBarFlux00) : name = "f_{RHC;#bar{#nu_{#mu}};00}"; break;
-    case (kNuisRHCNuMuBarFlux01) : name = "f_{RHC;#bar{#nu_{#mu}};01}"; break;
-    case (kNuisRHCNuMuBarFlux02) : name = "f_{RHC;#bar{#nu_{#mu}};02}"; break;
-    case (kNuisRHCNuMuBarFlux03) : name = "f_{RHC;#bar{#nu_{#mu}};03}"; break;
-    case (kNuisRHCNuMuBarFlux04) : name = "f_{RHC;#bar{#nu_{#mu}};04}"; break;
-    case (kNuisRHCNuMuBarFlux05) : name = "f_{RHC;#bar{#nu_{#mu}};05}"; break;
-    case (kNuisRHCNuMuBarFlux06) : name = "f_{RHC;#bar{#nu_{#mu}};06}"; break;
-    case (kNuisRHCNuMuBarFlux07) : name = "f_{RHC;#bar{#nu_{#mu}};07}"; break;
-    case (kNuisRHCNuMuBarFlux08) : name = "f_{RHC;#bar{#nu_{#mu}};08}"; break;
-    case (kNuisRHCNuMuBarFlux09) : name = "f_{RHC;#bar{#nu_{#mu}};09}"; break;
-    case (kNuisRHCNuMuBarFlux10) : name = "f_{RHC;#bar{#nu_{#mu}};10}"; break;
-    case (kNuisRHCNuMuBarFlux11) : name = "f_{RHC;#bar{#nu_{#mu}};11}"; break;
-    case (kNuisRHCNuMuBarFlux12) : name = "f_{RHC;#bar{#nu_{#mu}};12}"; break;
-    case (kNuisRHCNuMuBarFlux13) : name = "f_{RHC;#bar{#nu_{#mu}};13}"; break;
-    case (kNuisRHCNuMuBarFlux14) : name = "f_{RHC;#bar{#nu_{#mu}};14}"; break;
-    case (kNuisRHCNuMuBarFlux15) : name = "f_{RHC;#bar{#nu_{#mu}};15}"; break;
-    case (kNuisRHCNuMuBarFlux16) : name = "f_{RHC;#bar{#nu_{#mu}};16}"; break;
-    case (kNuisRHCNuMuBarFlux17) : name = "f_{RHC;#bar{#nu_{#mu}};17}"; break;
-    case (kNuisRHCNuMuBarFlux18) : name = "f_{RHC;#bar{#nu_{#mu}};18}"; break;
-    case (kNuisRHCNuEFlux00    ) : name = "f_{RHC;#nu_{e};00}";         break;
-    case (kNuisRHCNuEFlux01    ) : name = "f_{RHC;#nu_{e};01}";         break;
-    case (kNuisRHCNuEFlux02    ) : name = "f_{RHC;#nu_{e};02}";         break;
-    case (kNuisRHCNuEFlux03    ) : name = "f_{RHC;#nu_{e};03}";         break;
-    case (kNuisRHCNuEFlux04    ) : name = "f_{RHC;#nu_{e};04}";         break;
-    case (kNuisRHCNuEFlux05    ) : name = "f_{RHC;#nu_{e};05}";         break;
-    case (kNuisRHCNuEFlux06    ) : name = "f_{RHC;#nu_{e};06}";         break;
-    case (kNuisRHCNuEBarFlux00 ) : name = "f_{RHC;#bar{#nu_{e}};00}";   break;
-    case (kNuisRHCNuEBarFlux01 ) : name = "f_{RHC;#bar{#nu_{e}};01}";   break;
-    case (kNuisRHCNuEBarFlux02 ) : name = "f_{RHC;#bar{#nu_{e}};02}";   break;
-    case (kNuisRHCNuEBarFlux03 ) : name = "f_{RHC;#bar{#nu_{e}};03}";   break;
-    case (kNuisRHCNuEBarFlux04 ) : name = "f_{RHC;#bar{#nu_{e}};04}";   break;
-    case (kNuisRHCNuEBarFlux05 ) : name = "f_{RHC;#bar{#nu_{e}};05}";   break;
-    case (kNuisRHCNuEBarFlux06 ) : name = "f_{RHC;#bar{#nu_{e}};06}";   break;
-      
-    case (kNuisNormCCQE        ) : name = "f_{CCQE}";                   break;
-    case (kNuisNormCC1piC      ) : name = "f_{CC1#pi^{#pm}}";           break;
-    case (kNuisNormCC1pi0      ) : name = "f_{CC1#pi^{0}}";             break;
-    case (kNuisNormCCoth       ) : name = "f_{CCother}";                break;
-    case (kNuisNormNC          ) : name = "f_{NC}";                     break;
-    case (kNuisRatioNuENuMu    ) : name = "f_{#nu_{e}/#nu_{#mu}}";      break;
-
-    case (kNuisEffNuMuCC1trkQE  ) : name = "f_{eff;#nu_{#mu}CC;1trkQE}";             break;
-    case (kNuisEffNuMuCC2trkQE  ) : name = "f_{eff;#nu_{#mu}CC;2trkQE}";             break;
-    case (kNuisEffNuMuCC1piC    ) : name = "f_{eff;#nu_{#mu}CC;1#pi^{#pm}}";         break;
-    case (kNuisEffNuMuCC1pi0    ) : name = "f_{eff;#nu_{#mu}CC;1#pi^{0}}";           break;
-    case (kNuisEffNuMuCC1piC1pi0) : name = "f_{eff;#nu_{#mu}CC;1#pi^{#pm}1#pi^{0}}"; break;
-    case (kNuisEffNuMuCCoth     ) : name = "f_{eff;#nu_{#mu}CC;other}";              break;
-    case (kNuisEffNuECC         ) : name = "f_{eff;#nu_{e}CC}";                      break;
-    case (kNuisEffNuMuCCWSgn    ) : name = "f_{eff;#nu_{#mu}CC;wsgn}";               break;
-    case (kNuisEffNC            ) : name = "f_{eff;NC}";                             break;
-
-    default                      : name = "--";    
+    default                       : name = "--";    
   }
-
-  if(root) return name;
-
-  // replace # with \ -- later
-
+  
+  if(root) {
+    replace( name.begin(), name.end(), '\\', '#' ); // Make slashes hashes for RooTeX
+    // Get rid of hashes preceding sin
+    size_t ind = name.find("#sin",0);
+    if (ind !=  string::npos) (name.replace(ind,4," sin"));
+    return util::TrimSpaces(name);
+  }
+  
   return name;
 }
+//________________________________________________________________________________________
+string util::ParamAsString    (conv::PhysParamId_t p)            {return util::AsString   (p);     };
+string util::ParamAsStringTeX (conv::PhysParamId_t p, bool root) {return util::AsStringTeX(p,root);};
 //________________________________________________________________________________________
 PhysParamId_t util::NDPhysParamFromString(string inp_name)
 {
@@ -477,5 +487,23 @@ void valor::util::PopulateNameRegistry(void)
     nr->fParamNamesSimple[p] = util::AsString(p); // If we start using proper names, will change this.
   }
   return;
+}
+//____________________________________________________________________________
+bool valor::util::IsFluxRelated(conv::PhysParamId_t p)
+{
+  int nd_index = NDArrIdx::Instance()->NDFitParamIdx(p);
+  if (nd_index==-1) {
+    return false;
+  }
+  return conv::kNDFitIsFluxRelated[nd_index];
+}
+//____________________________________________________________________________
+bool valor::util::IsXSecRelated(conv::PhysParamId_t p)
+{
+  int nd_index = NDArrIdx::Instance()->NDFitParamIdx(p);
+  if (nd_index==-1) {
+    return false;
+  }
+  return conv::kNDFitIsXSecRelated[nd_index];
 }
 //____________________________________________________________________________
