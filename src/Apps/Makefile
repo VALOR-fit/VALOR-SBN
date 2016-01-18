@@ -18,7 +18,7 @@ include $(VALOR_DUNE)/make/Make.include
 GLIBRARIES = $(shell genie-config --libs)
 GINCLUDES  = $(shell genie-config --topsrcdir)
 GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
-GLIBRARIES := $(GLIBRARIES) $(LIBRARIES)
+GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
 
 TGT = make_nd_minidst \
       run_nd_fit \

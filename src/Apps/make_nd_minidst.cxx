@@ -5,6 +5,11 @@
 
 \brief     Converts input ND analysis DSTs to the VALOR NDFit mini-DST format.
 
+\syntax    valor_dune-make_nd_minidst 
+              --input  input_analysis_file.root
+              --output output_file_containing_valor_minidst.root
+              --format format_of_the_input_file (hpgartpc, lartpc, fgt)
+
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
@@ -35,60 +40,93 @@
 using std::string;
 using namespace genie;
 
-void GetCommandLineArgs (int argc, char ** argv);
+string gOptInpFileFormat;
+string gOptInpFileName;
+string gOptOutFileName;
 
-string gOptInpFilename;
-string gOptOutFilename;
+void GetCommandLineArgs (int argc, char ** argv);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
   GetCommandLineArgs (argc, argv);
 
-  // set print level
+  // Set print level
   GHepRecord::SetPrintLevel(RunOpt::Instance()->EventRecordPrintLevel());
 
-  // Open output file & create output mini-DST 
-  //
-  LOG("make_minidst", pNOTICE) 
-      << "*** Saving VALOR/DUNE mini-DST to: " << gOptOutFilename;
-  TFile fout(gOptOutFilename.c_str(),"recreate");
+  // Create output mini-DST   
 
-  TTree * minidst = new TTree("valor_dune_ndfit_mini_dst","VALOR/DUNE NDFit mini-DST");
+  int    valor_minidst_sample    = 0; // see NDFit/NDSample.h 
+  int    valor_minidst_reac_mode = 0; // see Conventions/ReacMode.h 
+  double valor_minidst_enu_true  = 0; // in GeV
+  double valor_minidst_enu_reco  = 0; // in GeV
+  double valor_minidst_y_reco    = 0; // 
+  double valor_minidst_wght_pot  = 0; //  POT weight 
 
-/*
-  // Create tree branches
-  //
-  minidst->Branch("iev",           &brIev,           "iev/I"         );
-  minidst->Branch("neu",           &brNeutrino,      "neu/I"         );
-  minidst->Branch("fspl",          &brFSPrimLept,    "fspl/I"        );
-  minidst->Branch("coh",           &brIsCoh,         "coh/O"         );
-*/
+  TTree * valor_minidst = 
+   new TTree("valor_dune_nd_mini_dst","Mini-DST input for VALOR/DUNE ND Fit");
+
+  valor_minidst->Branch("sample",    &valor_minidst_sample,    "sample/I"   );
+  valor_minidst->Branch("reac_mode", &valor_minidst_reac_mode, "reac_mode/I");
+  valor_minidst->Branch("enu_true",  &valor_minidst_enu_true,  "enu_true/D" );
+  valor_minidst->Branch("enu_reco",  &valor_minidst_enu_reco,  "enu_reco/D" );
+  valor_minidst->Branch("y_reco",    &valor_minidst_y_reco,    "y_reco/D"   );
+  valor_minidst->Branch("wght_pot",  &valor_minidst_wght_pot,  "wght_pot/D" );
 
   // open the ROOT file and get the TTree & its header
-  //
 
-  TFile fin(gOptInpFilename.c_str(),"READ");
+  TFile fin(gOptInpFileName.c_str(),"READ");
 
-  TTree * analysis_tree = 
-     dynamic_cast <TTree *> (fin.Get("GasTPCTree"));
+  TTree * analysis_tree = 0;
+
+  if(gOptInpFileFormat == "hpgartpc") {
+     analysis_tree = dynamic_cast <TTree *> (fin.Get("GasTPCTree"));
+  } 
+  else
+  if(gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
+     analysis_tree = dynamic_cast <TTree *> (fin.Get("dune_dst"));     
+  }
+  else {
+     analysis_tree = 0;
+  }
+
   if(!analysis_tree) {
     LOG("make_minidst", pFATAL) 
-        << "No GHEP event tree in input file: " << gOptInpFilename;
-//    gAbortingInErr=true;
+        << "No event tree in input file: " << gOptInpFileName;
     exit(1);
   }
+
   Long64_t nev = analysis_tree->GetEntries();
   LOG("make_minidst", pNOTICE) 
      << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
 
-//  NtpMCTreeHeader * thdr = 
-//     dynamic_cast <NtpMCTreeHeader *> ( fin.Get("header") );
-//  LOG("make_minidst", pNOTICE) 
-//     << "Input tree header: " << *thdr;
-
   NtpMCEventRecord * mcrec = 0;
-  analysis_tree->SetBranchAddress("gmcrec", &mcrec);
+  int    sample        = -1;
+  int    reac_mode = -1;
+  double enu_true      =  0.;
+  double enu_reco      =  0.;
+  double y_reco        =  0.;
+  double wght_pot      =  0.;
+
+  if(gOptInpFileFormat == "hpgartpc") {
+    analysis_tree->SetBranchAddress("gmcrec",          &mcrec);
+    analysis_tree->SetBranchAddress("sample",          &sample);
+    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode);
+    analysis_tree->SetBranchAddress("Ev",              &enu_true);
+    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco);
+    analysis_tree->SetBranchAddress("y_reco",          &y_reco);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot);
+  }
+  else
+  if(gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
+    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec);
+    analysis_tree->SetBranchAddress("sample",          &sample);
+    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode);
+    analysis_tree->SetBranchAddress("Ev",              &enu_true);
+    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco);
+    analysis_tree->SetBranchAddress("y_reco",          &y_reco);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot);
+  }
 
   //
   // event loop
@@ -101,28 +139,42 @@ int main(int argc, char ** argv)
     NtpMCRecHeader rec_header = mcrec->hdr;
     EventRecord &  event = *(mcrec->event);
     LOG("make_minidst", pNOTICE) 
-       << " ** Event: " << rec_header.ievent 
+       << "\n ** Event: " << iev
        << event;
 
-    // ...
-    // ...
-    // ...
-    // ...
-    // ...
-    // ...
-    // ...
+    valor_minidst_sample    = sample; 
+    valor_minidst_reac_mode = reac_mode; 
+    valor_minidst_enu_true  = enu_true; 
+    valor_minidst_enu_reco  = enu_reco; 
+    valor_minidst_y_reco    = y_reco; 
+    valor_minidst_wght_pot  = wght_pot; 
 
+    LOG("make_minidst", pNOTICE) 
+       << "\n Information copied to Mini-DST: "
+       << "\n Sample        = " << valor_minidst_sample    
+       << "\n Reaction mode = " << valor_minidst_reac_mode 
+       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
+       << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV" 
+       << "\n y (reco)      = " << valor_minidst_y_reco    
+       << "\n weight        = " << valor_minidst_wght_pot;
 
-    minidst->Fill();
+    valor_minidst->Fill();
 
     mcrec->Clear();
   }
 
   // clean-up
-
   fin.Close();
 
-//  LOG("make_minidst", pNOTICE)  << "Done!";
+  // Saving VAKOR mini-FST to output file 
+  LOG("make_minidst", pNOTICE) 
+      << "*** Saving VALOR/DUNE mini-DST to: " << gOptOutFileName;
+  TFile fout(gOptOutFileName.c_str(),"recreate");
+  valor_minidst->Write();  
+  fout.Close();
+
+  LOG("make_minidst", pNOTICE)  << "Done!";
+
   return 0;
 }
 //___________________________________________________________________
@@ -137,9 +189,19 @@ void GetCommandLineArgs(int argc, char ** argv)
 
   CmdLnArgParser parser(argc,argv);
 
-  if ( parser.OptionExists("--input") ) {
-    LOG("make_minidst", pINFO) << "Reading analysis file";
-    gOptInpFilename = parser.ArgAsString("--input");
+  if ( parser.OptionExists("format") ) {
+    LOG("make_minidst", pNOTICE) << "Reading input format";
+    gOptInpFileFormat = parser.ArgAsString("format");
+  } else {
+    LOG("make_minidst", pFATAL) 
+       << "Unspecified input file format - Exiting";
+    gAbortingInErr = true;
+    exit(1);
+  }
+
+  if ( parser.OptionExists("input") ) {
+    LOG("make_minidst", pNOTICE) << "Reading analysis file";
+    gOptInpFileName = parser.ArgAsString("input");
   } else {
     LOG("make_minidst", pFATAL) 
        << "Unspecified input file - Exiting";
@@ -147,11 +209,11 @@ void GetCommandLineArgs(int argc, char ** argv)
     exit(1);
   }
 
-  if ( parser.OptionExists("--output") ) {
-    LOG("make_minidst", pINFO) << "Reading output filename";
-    gOptOutFilename = parser.ArgAsString("--output");
+  if ( parser.OptionExists("output") ) {
+    LOG("make_minidst", pINFO) << "Reading output file name";
+    gOptOutFileName = parser.ArgAsString("output");
   } else {
-    gOptOutFilename = "out.root";
+    gOptOutFileName = "out.root";
   }
 
 }
