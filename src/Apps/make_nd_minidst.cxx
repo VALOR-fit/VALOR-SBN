@@ -77,22 +77,27 @@ int main(int argc, char ** argv)
 
   TFile fin(gOptInpFileName.c_str(),"READ");
 
-  TTree * analysis_tree = 0;
+  string tree_name = "";
 
   if(gOptInpFileFormat == "hpgartpc") {
-     analysis_tree = dynamic_cast <TTree *> (fin.Get("GasTPCTree"));
+     tree_name = "GasTPCTree";
   } 
   else
   if(gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
-     analysis_tree = dynamic_cast <TTree *> (fin.Get("dune_dst"));     
+     tree_name = "dune_dst";
   }
   else {
-     analysis_tree = 0;
+      LOG("make_minidst", pFATAL) 
+          << "Unknown input file format. Please specify one of hpgartpc, lartpc or fgt";
+      exit(1);
   }
 
+  TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
   if(!analysis_tree) {
     LOG("make_minidst", pFATAL) 
-        << "No event tree in input file: " << gOptInpFileName;
+        << "No event tree " << tree_name 
+        << " in " << gOptInpFileFormat << "-format input file: "
+        << gOptInpFileName;
     exit(1);
   }
 
