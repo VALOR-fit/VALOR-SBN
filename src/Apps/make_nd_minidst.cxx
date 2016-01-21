@@ -8,8 +8,9 @@
 \syntax    valor_dune-make_nd_minidst 
               --input  input_analysis_file.root
               --output output_file_containing_valor_minidst.root
-              --format format_of_the_input_file (hpgartpc, lartpc, fgt)
-
+              --format format_of_the_input_file <hpgartpc, lartpc, fgt>
+             [--disable-checks]
+    
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
@@ -36,13 +37,17 @@
 #include "Messenger/Messenger.h"
 #include "Utils/CmdLnArgParser.h"
 #include "Utils/RunOpt.h"
+// valor/dune
+#include "NDFit/NDSample.h"
 
 using std::string;
 using namespace genie;
+using namespace valor;
 
 string gOptInpFileFormat;
 string gOptInpFileName;
 string gOptOutFileName;
+bool   gOptDisableChecks;
 
 void GetCommandLineArgs (int argc, char ** argv);
 
@@ -56,16 +61,18 @@ int main(int argc, char ** argv)
 
   // Create output mini-DST   
 
-  int    valor_minidst_sample    = 0; // see NDFit/NDSample.h 
-  int    valor_minidst_reac_mode = 0; // see Conventions/ReacMode.h 
-  double valor_minidst_enu_true  = 0; // in GeV
-  double valor_minidst_enu_reco  = 0; // in GeV
-  double valor_minidst_y_reco    = 0; // 
-  double valor_minidst_wght_pot  = 0; //  POT weight 
+  int    valor_minidst_beam      = -1; // see Conventions/BeamConf.h 
+  int    valor_minidst_sample    = -1; // see NDFit/NDSample.h 
+  int    valor_minidst_reac_mode = -1; // see Conventions/ReacMode.h 
+  double valor_minidst_enu_true  = -1; // true neutrino energy, in GeV
+  double valor_minidst_enu_reco  = -1; // reco neutrino energy, in GeV
+  double valor_minidst_y_reco    = -1; // inelasticity, in GeV
+  double valor_minidst_wght_pot  = -1; // POT weight 
 
   TTree * valor_minidst = 
    new TTree("valor_dune_nd_mini_dst","Mini-DST input for VALOR/DUNE ND Fit");
 
+  valor_minidst->Branch("beam",      &valor_minidst_beam,      "beam/I"     );
   valor_minidst->Branch("sample",    &valor_minidst_sample,    "sample/I"   );
   valor_minidst->Branch("reac_mode", &valor_minidst_reac_mode, "reac_mode/I");
   valor_minidst->Branch("enu_true",  &valor_minidst_enu_true,  "enu_true/D" );
@@ -107,7 +114,7 @@ int main(int argc, char ** argv)
 
   NtpMCEventRecord * mcrec = 0;
   int    sample        = -1;
-  int    reac_mode = -1;
+  int    reac_mode     = -1;
   double enu_true      =  0.;
   double enu_reco      =  0.;
   double y_reco        =  0.;
@@ -117,6 +124,7 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("gmcrec",          &mcrec);
     analysis_tree->SetBranchAddress("sample",          &sample);
     analysis_tree->SetBranchAddress("reactionmode",    &reac_mode);
+//  analysis_tree->SetBranchAddress("Ev_All",          &enu_true);
     analysis_tree->SetBranchAddress("Ev",              &enu_true);
     analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco);
     analysis_tree->SetBranchAddress("y_reco",          &y_reco);
@@ -137,15 +145,49 @@ int main(int argc, char ** argv)
   // event loop
   //
 
-  for(Long64_t iev = 0; iev <= nev; iev++) {
+  Long64_t nev_accept = 0;
+
+  for(Long64_t iev = 0; iev < nev; iev++) {
+
+    LOG("make_minidst", pNOTICE) << "** Reading event: " << iev;
+
     analysis_tree->GetEntry(iev);
 
-    // retrieve GHEP event record abd print it out.
+    // hpgartpc output in MeV, convert to GeV as in lartpc and fgt outputs
+    if(gOptInpFileFormat == "hpgartpc") {
+      enu_true = enu_true/1000.;
+      enu_reco = enu_reco/1000.;
+    }
+
+    if(!gOptDisableChecks) {
+      //
+      // ignore events that can not be used in the VALOR analysis
+      //
+      if(sample == conv::ksNDUndefined) {
+        LOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]";
+        mcrec->Clear();
+        continue;
+      }
+      if(enu_reco <= 0) {
+        LOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]";
+        mcrec->Clear();
+        continue;
+      }
+      if(y_reco < 0) {
+        LOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]";
+        mcrec->Clear();
+        continue;
+      }
+
+      LOG("make_minidst", pNOTICE) << "+ Accepting event";
+    }
+    nev_accept++;
+
+    // retrieve GHEP event record and print it out.
     NtpMCRecHeader rec_header = mcrec->hdr;
     EventRecord &  event = *(mcrec->event);
     LOG("make_minidst", pNOTICE) 
-       << "\n ** Event: " << iev
-       << event;
+       << "GENIE MC truth info: " << event;
 
     valor_minidst_sample    = sample; 
     valor_minidst_reac_mode = reac_mode; 
@@ -155,7 +197,8 @@ int main(int argc, char ** argv)
     valor_minidst_wght_pot  = wght_pot; 
 
     LOG("make_minidst", pNOTICE) 
-       << "\n Information copied to Mini-DST: "
+       << "\n Information copied to VALOR DUNE/ND Mini-DST: "
+       << "\n Beam          = " << valor_minidst_beam   
        << "\n Sample        = " << valor_minidst_sample    
        << "\n Reaction mode = " << valor_minidst_reac_mode 
        << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
@@ -168,12 +211,17 @@ int main(int argc, char ** argv)
     mcrec->Clear();
   }
 
-  // clean-up
+  LOG("make_minidst", pNOTICE) << "Closing input file";
   fin.Close();
 
-  // Saving VAKOR mini-FST to output file 
+  double f = 100. * (double)nev_accept / (double)nev;
   LOG("make_minidst", pNOTICE) 
-      << "*** Saving VALOR/DUNE mini-DST to: " << gOptOutFileName;
+     "Used " << f << "% (" << nev_accept << "/" << nev 
+     << ") of input events.";
+
+  // Saving VALOR mini-FST to output file 
+  LOG("make_minidst", pNOTICE) 
+      << "Saving VALOR/DUNE mini-DST to: " << gOptOutFileName;
   TFile fout(gOptOutFileName.c_str(),"recreate");
   valor_minidst->Write();  
   fout.Close();
@@ -220,6 +268,12 @@ void GetCommandLineArgs(int argc, char ** argv)
   } else {
     gOptOutFileName = "out.root";
   }
+
+  gOptDisableChecks = false;
+  if ( parser.OptionExists("disable-checks") ) {
+    LOG("make_minidst", pINFO) << "Disabling checks and accepting all input events";
+    gOptDisableChecks = true;
+  } 
 
 }
 //_________________________________________________________________________________
