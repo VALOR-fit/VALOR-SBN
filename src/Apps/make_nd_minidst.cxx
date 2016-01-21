@@ -31,13 +31,17 @@
 // genie
 #include "Conventions/GBuild.h"
 #include "EVGCore/EventRecord.h"
+#include "GHEP/GHepParticle.h"
 #include "Ntuple/NtpMCFormat.h"
 #include "Ntuple/NtpMCTreeHeader.h"
 #include "Ntuple/NtpMCEventRecord.h"
 #include "Messenger/Messenger.h"
+#include "PDG/PDGCodes.h"
 #include "Utils/CmdLnArgParser.h"
 #include "Utils/RunOpt.h"
 // valor/dune
+#include "Conventions/BeamConf.h"
+#include "Conventions/ReacMode.h"
 #include "NDFit/NDSample.h"
 
 using std::string;
@@ -50,6 +54,8 @@ string gOptOutFileName;
 bool   gOptDisableChecks;
 
 void GetCommandLineArgs (int argc, char ** argv);
+
+conv::ReacMode_t DetermineReactionMode(EventRecord &  event);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -277,3 +283,116 @@ void GetCommandLineArgs(int argc, char ** argv)
 
 }
 //_________________________________________________________________________________
+conv::ReacMode_t DetermineReactionMode(EventRecord & event)
+{
+   int  nupdg       = event.Probe()->Pdg();
+   bool is_nue      = (nupdg == kPdgNuE);
+   bool is_numu     = (nupdg == kPdgNuMu);
+   bool is_nuebar   = (nupdg == kPdgAntiNuE);
+   bool is_numubar  = (nupdg == kPdgAntiNuMu);
+
+   bool is_CC       = event.Summary()->ProcInfo().IsWeakCC();
+   bool is_NC       = event.Summary()->ProcInfo().IsWeakNC();
+   bool is_strange  = false;
+   bool is_charm    = false;
+   bool is_QE       = event.Summary()->ProcInfo().IsQuasiElastic() && !is_strange && !is_charm;
+   bool is_MEC      = event.Summary()->ProcInfo().IsMEC();
+   bool is_Coherent = event.Summary()->ProcInfo().IsCoherent();
+
+   int npiC = 0; // count them
+   int npi0 = 0;
+
+   bool is_1piC     = (!is_Coherent) && (npiC==1) && (npi0==0);
+   bool is_1pi0     = (!is_Coherent) && (npiC==0) && (npi0==1); 
+   bool is_2piC     = (!is_Coherent) && (npiC==2) && (npi0==0); 
+   bool is_2pi0     = (!is_Coherent) && (npiC==0) && (npi0==2); 
+   bool is_1piC1pi0 = (!is_Coherent) && (npiC==1) && (npi0==1); 
+
+   //
+   if(is_numu) {
+    if(is_CC) {
+      if      (is_QE)       return conv::kmNuMuCCQE;            // numu    CC QE
+      else if (is_MEC)      return conv::kmNuMuCCMEC;           // numu    CC MEC
+      else if (is_1piC)     return conv::kmNuMuCC1piC;          // numu    CC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuMuCC1pi0;          // numu    CC 1 pi0
+      else if (is_2piC)     return conv::kmNuMuCC2piC;          // numu    CC 2 pi+/-
+      else if (is_2pi0)     return conv::kmNuMuCC2pi0;          // numu    CC 2 pi0
+      else if (is_1piC1pi0) return conv::kmNuMuCCpiCpi0;        // numu    CC 1 pi0 + 1 pi+/-
+      else if (is_Coherent) return conv::kmNuMuCCcoh;           // numu    CC coherent
+      else                  return conv::kmNuMuCCoth;           // numu    CC other
+    }
+    if(is_NC) {
+      if      (is_1piC)     return conv::kmNuMuNC1piC;          // numu    NC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuMuNC1pi0;          // numu    NC 1 pi0
+      else if (is_Coherent) return conv::kmNuMuNCcoh;           // numu    NC coherent
+      else                  return conv::kmNuMuNCoth;           // numu    NC other
+    }
+   }
+
+   //
+   if(is_numubar) {
+    if(is_CC) {
+      if      (is_QE)       return conv::kmNuMuBarCCQE;         // numubar CC QE
+      else if (is_MEC)      return conv::kmNuMuBarCCMEC;        // numubar CC MEC
+      else if (is_1piC)     return conv::kmNuMuBarCC1piC;       // numubar CC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuMuBarCC1pi0;       // numubar CC 1 pi0
+      else if (is_2piC)     return conv::kmNuMuBarCC2piC;       // numubar CC 2 pi+/-
+      else if (is_2pi0)     return conv::kmNuMuBarCC2pi0;       // numubar CC 2 pi0
+      else if (is_1piC1pi0) return conv::kmNuMuBarCCpiCpi0;     // numubar CC 1 pi0 + 1 pi+/-
+      else if (is_Coherent) return conv::kmNuMuBarCCcoh;        // numubar CC coherent
+      else                  return conv::kmNuMuBarCCoth;        // numubar CC other
+    }
+    if(is_NC) {
+      if      (is_1piC)     return conv::kmNuMuBarNC1piC;       // numubar NC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuMuBarNC1pi0;       // numubar NC 1 pi0
+      else if (is_Coherent) return conv::kmNuMuBarNCcoh;        // numubar NC coherent
+      else                  return conv::kmNuMuBarNCoth;        // numubar NC other
+    }
+   }
+
+   //
+   if(is_nue) {
+    if(is_CC) {
+      if      (is_QE)       return conv::kmNuECCQE;             // nue     CC QE
+      else if (is_MEC)      return conv::kmNuECCMEC;            // nue     CC MEC
+      else if (is_1piC)     return conv::kmNuECC1piC;           // nue     CC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuECC1pi0;           // nue     CC 1 pi0
+      else if (is_2piC)     return conv::kmNuECC2piC;           // nue     CC 2 pi+/-
+      else if (is_2pi0)     return conv::kmNuECC2pi0;           // nue     CC 2 pi0
+      else if (is_1piC1pi0) return conv::kmNuECCpiCpi0;         // nue     CC 1 pi0 + 1 pi+/-
+      else if (is_Coherent) return conv::kmNuECCcoh;            // nue     CC coherent
+      else                  return conv::kmNuECCoth;            // nue     CC other
+    }
+    if(is_NC) {
+      if      (is_1piC)     return conv::kmNuENC1piC;           // nue     NC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuENC1pi0;           // nue     NC 1 pi0
+      else if (is_Coherent) return conv::kmNuENCcoh;            // nue     NC coherent
+      else                  return conv::kmNuENCoth;            // nue     NC other
+    }
+   }
+
+   //
+   if(is_nuebar) {
+    if(is_CC) {
+      if      (is_QE)       return conv::kmNuEBarCCQE;          // nuebar  CC QE
+      else if (is_MEC)      return conv::kmNuEBarCCMEC;         // nuebar  CC MEC
+      else if (is_1piC)     return conv::kmNuEBarCC1piC;        // nuebar  CC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuEBarCC1pi0;        // nuebar  CC 1 pi0
+      else if (is_2piC)     return conv::kmNuEBarCC2piC;        // nuebar  CC 2 pi+/-
+      else if (is_2pi0)     return conv::kmNuEBarCC2pi0;        // nuebar  CC 2 pi0
+      else if (is_1piC1pi0) return conv::kmNuEBarCCpiCpi0;      // nuebar  CC 1 pi0 + 1 pi+/-
+      else if (is_Coherent) return conv::kmNuEBarCCcoh;         // nuebar  CC coherent
+      else                  return conv::kmNuEBarCCoth;         // nuebar  CC other
+    }
+    if(is_NC) {
+      if      (is_1piC)     return conv::kmNuEBarNC1piC;        // nuebar  NC 1 pi+/-
+      else if (is_1pi0)     return conv::kmNuEBarNC1pi0;        // nuebar  NC 1 pi0
+      else if (is_Coherent) return conv::kmNuEBarNCcoh;         // nuebar  NC coherent
+      else                  return conv::kmNuEBarNCoth;         // nuebar  NC other
+    }
+   }
+
+   return conv::kmUndefined;
+}
+//_________________________________________________________________________________
+
