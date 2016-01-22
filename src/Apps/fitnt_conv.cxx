@@ -26,6 +26,7 @@
 //____________________________________________________________________________
 
 // system
+//#include <vector>
 #include <string>
 #include <sstream>
 // root
@@ -35,6 +36,8 @@
 #include <TLeaf.h>
 #include <TVector.h>
 #include <TMatrixDSym.h>
+#include <TObjArray.h>
+#include <TObjString.h>
 // fmwk
 #include "FitCore/PhysParamList.h"
 #include "FitCore/FitParamList.h"
@@ -42,7 +45,9 @@
 #include "Messenger/Messenger.h"
 #include "Parser/CmdLnArgParser.h"
 // dune
+#include "NDFit/NDFitParams.h"
 
+//using std::vector;
 using std::string;
 using std::ostringstream;
 using namespace valor;
@@ -70,8 +75,19 @@ int main(int argc, char ** argv)
 int GetNDFitInfoForNonValorFDFit(void)
 {
   //
-  // create the output n-tuple
+  // Create the output n-tuple and output meta-data
   //
+
+//  vector<string> out_pnames;
+  TObjArray * out_pnames = new TObjArray(conv::kNNDFitParams);
+
+  for(int ip=0; ip < conv::kNNDFitParams; ip++) {
+    conv::PhysParamId_t p = conv::kNDFitParam[ip];
+    TObjString * pname = new TObjString(util::AsString(p).c_str());
+//    string pname = util::AsString(p);    
+//    outfitp_names.push_back(pname);
+    out_pnames->AddAt(pname,ip);
+  }
 
   TTree * outnt = new TTree(
      "valor_dune_ndfit_ntuple_extracts",
@@ -86,7 +102,7 @@ int GetNDFitInfoForNonValorFDFit(void)
   outnt->Branch("bestfitp", "TVectorD",    &brBestFitP,  1280000,0);
 
   //
-  // open the input file, get the VALOR fit n-tuple and prepare to read it
+  // Open the input file, get the VALOR fit n-tuple and prepare to read it
   //
 
   TFile fin(gOptInpFileName.c_str(),"READ");
@@ -104,7 +120,7 @@ int GetNDFitInfoForNonValorFDFit(void)
   fitnt->SetBranchAddress("data",               &data_array);
 
   //
-  // loop over toy-MC fits and extract info
+  // Loop over toy-MC fits and extract info
   //
 
   Long_t ntoymc = fitnt->GetEntries();
@@ -147,6 +163,7 @@ int GetNDFitInfoForNonValorFDFit(void)
 
   TFile fout(gOptOutFileName.c_str(),"recreate");
   outnt->Write();
+  out_pnames->Write("blah");
   fout.Close();
 
   LOG("fitnt_conv", pNOTICE)  << "Done!";
