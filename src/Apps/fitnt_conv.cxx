@@ -13,7 +13,7 @@
               --format output_format
 
            --format options:
-               * ndfit_for_ext_fdfit
+               * ndfit_extracts_bare_root
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -26,7 +26,6 @@
 //____________________________________________________________________________
 
 // system
-//#include <vector>
 #include <string>
 #include <sstream>
 // root
@@ -36,8 +35,6 @@
 #include <TLeaf.h>
 #include <TVector.h>
 #include <TMatrixDSym.h>
-#include <TObjArray.h>
-#include <TObjString.h>
 // fmwk
 #include "FitCore/PhysParamList.h"
 #include "FitCore/FitParamList.h"
@@ -47,7 +44,6 @@
 // dune
 #include "NDFit/NDFitParams.h"
 
-//using std::vector;
 using std::string;
 using std::ostringstream;
 using namespace valor;
@@ -58,48 +54,65 @@ string gOptInpFileName;
 string gOptOutFileName;
 string gOptOutFormat;
 
-int GetNDFitInfoForNonValorFDFit(void);
+int NDFitExtractsBareRoot(void);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
   GetCommandLineArgs (argc, argv);
 
-  if(gOptOutFormat == "ndfit_for_ext_fdfit") {
-    return GetNDFitInfoForNonValorFDFit();
+  if(gOptOutFormat == "ndfit_extracts_bare_root") {
+    return NDFitExtractsBareRoot();
   }
 
   return 0;
 }
 //___________________________________________________________________
-int GetNDFitInfoForNonValorFDFit(void)
+int NDFitExtractsBareRoot(void)
 {
+// Extract selected VALOR/DUNE ND fit info and copy in bare ROOT format
+//
+
+  const int buffer_size = 100;
+
   //
   // Create the output n-tuple and output meta-data
   //
 
-//  vector<string> out_pnames;
-  TObjArray * out_pnames = new TObjArray(conv::kNNDFitParams);
+  TTree * out_metadata = new TTree (
+     "valor_dune_ndfit_metadata", 
+     "Selected metadata for VALOR/DUNE ND-fit");
+
+  int    brPId   = 0;
+  char   brPName [buffer_size] = {};
+  double brPEmin = 0;
+  double brPEmax = 0;
+
+  out_metadata -> Branch("parameter_id",   &brPId,   "parameter_id/I");
+  out_metadata -> Branch("parameter_name", (void*)brPName, "parameter_name/C", buffer_size);
+  out_metadata -> Branch("enu_true_min",   &brPEmin, "enu_true_min/D");
+  out_metadata -> Branch("enu_true_max",   &brPEmax, "enu_true_max/D");
 
   for(int ip=0; ip < conv::kNNDFitParams; ip++) {
     conv::PhysParamId_t p = conv::kNDFitParam[ip];
-    TObjString * pname = new TObjString(util::AsString(p).c_str());
-//    string pname = util::AsString(p);    
-//    outfitp_names.push_back(pname);
-    out_pnames->AddAt(pname,ip);
+    brPId = ip;
+    strcpy(brPName, util::AsString(p).c_str());
+    brPEmin = conv::kNDFitParamEtrueRange[ip][0];
+    brPEmin = conv::kNDFitParamEtrueRange[ip][1];
+    out_metadata->Fill();
   }
 
-  TTree * outnt = new TTree(
+  TTree * out_fitnt = new TTree(
      "valor_dune_ndfit_ntuple_extracts",
       "Selected info extracted from the VALOR/DUNE ND-fit n-tuple and converted to bare ROOT format");
 
-  int brItoy = 0; 
-  TMatrixDSym * brCovMtrx = 0;
-  TVectorD * brBestFitP = 0;
+  int           brItoy      = 0; 
+  TMatrixDSym * brCovMtrx  = 0;
+  TVectorD *    brBestFitP = 0;
 
-  outnt->Branch("itoymc",   &brItoy,      "itoymc/I");
-  outnt->Branch("covmtrx",  "TMatrixDSym", &brCovMtrx,   1280000,0);
-  outnt->Branch("bestfitp", "TVectorD",    &brBestFitP,  1280000,0);
+  out_fitnt->Branch("itoymc",   &brItoy,      "itoymc/I");
+  out_fitnt->Branch("covmtrx",  "TMatrixDSym", &brCovMtrx,   1280000,0);
+  out_fitnt->Branch("bestfitp", "TVectorD",    &brBestFitP,  1280000,0);
 
   //
   // Open the input file, get the VALOR fit n-tuple and prepare to read it
@@ -152,7 +165,7 @@ int GetNDFitInfoForNonValorFDFit(void)
       (*brBestFitP)(ip) = best_fit_param_array->BestFitValueByIndex(ip);
     }
 
-    outnt->Fill();
+    out_fitnt->Fill();
   }
 
   fin.Close();
@@ -162,8 +175,8 @@ int GetNDFitInfoForNonValorFDFit(void)
       << gOptOutFileName;
 
   TFile fout(gOptOutFileName.c_str(),"recreate");
-  outnt->Write();
-  out_pnames->Write("blah");
+  out_fitnt->Write();
+  out_metadata->Write();
   fout.Close();
 
   LOG("fitnt_conv", pNOTICE)  << "Done!";
