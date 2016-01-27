@@ -46,8 +46,8 @@ public:
   bool         StatFluct         (void) const { return fStatFluct;                 }
   const char * FitOption         (void) const { return fFitOption.c_str();         }
   bool         StoreSpectra      (void) const { return fStoreSpectra;              }
-  const char * ConfigFile        (void) const { return fConfigFile.c_str();        }
-  const char * VerbosityFile     (void) const { return fVerbosityFile.c_str();     }
+  const char * ConfigFile        (Option_t * opt = "check_file_exists") const;
+  const char * VerbosityFile     (Option_t * opt = "check_file_exists") const;
 
 protected:
 

@@ -8,6 +8,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 
 //#include <cassert>
 
+#include <TSystem.h>
 // fmwk
 #include "Parser/CmdLnArgParser.h"
 #include "Utilities/Rnd.h"
@@ -132,3 +133,56 @@ void NDXArg::SetDefaults(Option_t * /*opt*/)
   fVerbosityFile     = "verbosity.xml";
 }
 //________________________________________________________________________________________
+const char * NDXArg::ConfigFile(Option_t * user_opt) const 
+{ 
+  string opt = (user_opt) ? user_opt : "";
+
+  string file = fConfigFile;
+
+  if(opt.find("check_file_exists") != string::npos) {
+    // initially assume absolute path
+    string file_used = file;
+    bool found_1st = ! gSystem->AccessPathName(file_used.c_str());
+    if(!found_1st) {
+      // then try in standard config path (usually $VALOR_DUNE/config/)
+      Env * env = Env::Instance(); 
+      file_used = env->TopLevelConfDir() + "/" + file;
+      bool found_2nd = ! gSystem->AccessPathName(file_used.c_str());
+      if(!found_2nd) {
+        LOG("NDXArg", pERROR) << "Can not find XML file [" << file << "]";
+        return "";
+      }
+    }
+    return file_used.c_str();
+  }
+
+  return file.c_str();        
+}
+//________________________________________________________________________________________
+const char * NDXArg::VerbosityFile(Option_t * user_opt) const 
+{ 
+  string opt = (user_opt) ? user_opt : "";
+
+  string file = fVerbosityFile;
+
+  if(opt.find("check_file_exists") != string::npos) {
+    // initially assume absolute path
+    string file_used = file;
+    bool found_1st = ! gSystem->AccessPathName(file_used.c_str());
+    if(!found_1st) {
+      // then try in standard config path (usually $VALOR_DUNE/config/)
+      Env * env = Env::Instance(); 
+      file_used = env->TopLevelConfDir() + "/" + file;
+      bool found_2nd = ! gSystem->AccessPathName(file_used.c_str());
+      if(!found_2nd) {
+        LOG("NDXArg", pERROR) << "Can not find XML file [" << file << "]";
+        return "";
+      }
+    }
+    return file_used.c_str();
+  }
+
+  return file.c_str();        
+}
+//________________________________________________________________________________________
+

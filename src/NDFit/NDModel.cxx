@@ -27,6 +27,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/Opt.h"
 #include "Conventions/PDG.h"
 #include "Utilities/Rnd.h"
+#include "Utilities/Env.h"
 #include "Utilities/UtlStyle.h"
 #include "Utilities/UtlSystem.h"
 #include "Utilities/UtlXML.h"
@@ -72,7 +73,7 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
 {
   this->Zero();
 
-  LOG("NDModel",pNOTICE) << "Reading configuration from XML file [" << file << "]";
+  LOG("NDModel", pNOTICE) << "Reading configuration from XML file [" << file << "]";
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
