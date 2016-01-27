@@ -61,9 +61,9 @@ $nruns                  = 1                                       unless defined
 $ntoymc                 = 1                                       unless defined $ntoymc;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
 $param_values           = "randomize-all;prefit-errors"           unless defined $param_values;
-$stat_fluct             = 1                                       unless defined $stat_fluct;
 $fitoption              = "minuit"                                unless defined $fitoption;
-$store_spectra          = 0                                       unless defined $store_spectra;
+#$stat_fluct             = 1                                       unless defined $stat_fluct;
+#$store_spectra          = 0                                       unless defined $store_spectra;
 $job_dir                = `pwd`                                   unless defined $job_dir;
 $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
@@ -94,13 +94,13 @@ while($irun < $nruns) {
   # use "" in some cases as the existence of ; as part of the name can wreak havoc
   $arguments   = " --tag $tag --run $irun --ntoymc $ntoymc --fit-param-list \"$fitparamlist\" --param-values-option \"$param_values\" --fit-opt \"$fitoption\" --config $config --mesg-thresholds $mesg_thresholds";
 
-  if($store_spectra==1) {
+  if(defined $store_spectra) {
     $arguments = $arguments . " --store-spectra";
   } else {
     $arguments = $arguments . " --discard-spectra";
   }
 
-  if($stat_fluct eq 1) {
+  if(defined $stat_fluct) {
     $arguments = $arguments . " --with-stat-fluct";
   } else {
     $arguments = $arguments . " --without-stat-fluct";
@@ -118,19 +118,18 @@ while($irun < $nruns) {
     $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
     $jobname = "ndfit-${tag}-${jobID}";
     $cndfn = "$job_dir/${jobname}.condor";
-    open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-    print CND "Executable               = $fullprogram \n";
-    print CND "Arguments                = $arguments \n";
-    print CND "initialdir               = $job_dir \n";
-    print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-    print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-    print CND "Universe                 = vanilla \n";
-    print CND "Getenv                   = True \n";
-    print CND "should_transfer_files    = YES \n";
-    print CND "when_to_transfer_output  = ON_EXIT \n";
-    print CND "\nqueue\n";
-    
-    close(CND);
+    open(BATCH_SCRIPT, ">".$cndfn) or die("Cannot create the Condor batch script");
+    print BATCH_SCRIPT "Executable               = $fullprogram \n";
+    print BATCH_SCRIPT "Arguments                = $arguments \n";
+    print BATCH_SCRIPT "initialdir               = $job_dir \n";
+    print BATCH_SCRIPT "Error                    = ${jobname}_\$\(Process\).err \n";
+    print BATCH_SCRIPT "Output                   = ${jobname}_\$\(Process\).out \n";
+    print BATCH_SCRIPT "Universe                 = vanilla \n";
+    print BATCH_SCRIPT "Getenv                   = True \n";
+    print BATCH_SCRIPT "should_transfer_files    = YES \n";
+    print BATCH_SCRIPT "when_to_transfer_output  = ON_EXIT \n";
+    print BATCH_SCRIPT "\nqueue\n";    
+    close(BATCH_SCRIPT);
     system("condor_submit",$cndfn);
   }
 
@@ -148,10 +147,10 @@ while($irun < $nruns) {
      print BATCH_SCRIPT "#PBS -q prod \n";
      print BATCH_SCRIPT "#PBS -V \n";
      print BATCH_SCRIPT "#PBS -l walltime=$cput \n";
-     print PBS "source $fmwk_softw_dir/setup/setup_at_ral_no_cvmfs.sh \n";
-     print PBS "source $dune_softw_dir/setup/setup_at_ral_no_cvmfs.sh \n";
+     print BATCH_SCRIPT "source $fmwk_softw_dir/setup/setup_at_ral_no_cvmfs.sh \n";
+     print BATCH_SCRIPT "source $dune_softw_dir/setup/setup_at_ral_no_cvmfs.sh \n";
      print BATCH_SCRIPT "cd $job_dir \n";
-#    print PBS "source $dune_softw_dir/setup/setup_at_cvmfs.sh $dune_softw_dir $fmwk_softw_dir\n";
+#    print BATCH_SCRIPT "source $dune_softw_dir/setup/setup_at_cvmfs.sh $dune_softw_dir $fmwk_softw_dir\n";
      print BATCH_SCRIPT "$command \n";
      close(BATCH_SCRIPT);
      $job_submission_command = "qsub";
