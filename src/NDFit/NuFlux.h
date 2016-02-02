@@ -70,13 +70,16 @@ public:
   //~ void UpdateFrom(const valor::PhysParamList & ppl);
   
   void CopyTweaksTo(valor::PhysParamList & ppl) const;
+  void CopyTweaksTo(valor::FitParamList & fpl) const;
     
 private:
 
   void Init      (void);
   void CleanUp   (void);
 
-  int  Param2Idx (conv::PhysParamId_t p) const; ///< convert flux PhysParamId_t to a covariance matrix or vector index
+  int  Param2Idx (conv::PhysParamId_t p) const;     ///< convert flux PhysParamId_t to a covariance matrix or vector index
+  conv::PhysParamId_t  Idx2Param (int index) const; ///< convert flux a covariance matrix or vector index to PhysParamId_t
+  
   void CholeskyDecomposeMatrix (void);          ///< Cholesky decompose the covariance matrix
   
   TVectorD *  fInitialValues;     ///< Initial values of flux parameters 

@@ -7,24 +7,30 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 //________________________________________________________________________________________
 
 #define __show_init_mesg_info__  
+//#define __init_check_inverse__
 //#define __show_init_mesg_debug__   
 //#define __show_cholesky_mesg_info__
 //#define __show_cholesky_mesg_debug__
 //#define __show_tweak_mesg_debug__
 //#define __show_update_correlated_mesg_debug__
 //#define __show_chisqpenalty_mesg_debug__
+//#define __show_chisqpenalty_mesg_debug2__
 
 // system
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
 #include <iomanip> 
+#include <limits> 
 // root
 #include <TRandom3.h>
 #include <TMath.h>
 // fmwk
+#include "Conventions/Constants.h"
 #include "Utilities/UtlXML.h"
 #include "Utilities/UtlNumStat.h"
+#include "Utilities/UtlSystem.h"
+#include "Utilities/UtlPrint.h"
 #include "Messenger/Messenger.h"
 #include "FitCore/FitParamList.h"
 #include "FitCore/PhysParamList.h"
@@ -96,29 +102,60 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   
   if(!fCovMtrx) {
     cerr << "NuFlux/Read >> No flux covariance matrix was found." << endl;
-    std::exit(1);
+    util::Die(1);
   }
-  // Invert flux covariance matrix
-  double det;
-  fCovMtrxInv = new TMatrixD(*fCovMtrx);
-  (*fCovMtrxInv).Invert(&det);
   
+  TMatrixD & cov = *fCovMtrx;
   const int np = conv::kNNDFitParamsNuFlx;
   
-  const TMatrixD & cov = *fCovMtrx;
   if(cov.GetNrows() != np || cov.GetNcols() != np) 
   {
     cerr << "NuFlux/Read >> Flux covariance matrix has unexpected size!" << endl;
     cerr << "NuFlux/Read >> Expecting: " <<  np << " x " << np << " matrix" << endl;
     cerr << "NuFlux/Read >> Found: " << cov.GetNrows() << " x " <<  cov.GetNcols() << " matrix" << endl;
   }
+  
+  // Do Cholesky decomposition
+  this->CholeskyDecomposeMatrix();
+  double det;
+  
+  // Calculate matrix inversion using Cholesky triangular matrices - should be most accurate.
+  TMatrixD cholInv(*fCovMtrxChoL);
+  cholInv.Invert(&det);
+  std::cout<<"NuFlux/Read >> Flux covariance matrix decomposition determinant: "<<det<<endl;
+  TMatrixD cholInvT(TMatrixD::kTransposed,cholInv);
+  fCovMtrxInv = new TMatrixD(cholInvT * cholInv);
+  
+  //~ // Calculate matrix inversion directly
+  //~ fCovMtrxInv = new TMatrixD(cov);
+  //~ fCovMtrxInv->Invert(&det);
+  //~ std::cout<<"NuFlux/Read >> Flux covariance matrix decomposition: "<<det<<endl;
+  
+  //~ // Use scalar value decomposition for matrix inverse
+  //~ fCovMtrxInv = new TMatrixD(util::MatrixPseudoInverted(cov));
+
+#ifdef __init_check_inverse__
+  bool failure = false;
+  TMatrixD covTimesInverse = (cov * (*fCovMtrxInv));
+  for (int ii = 0 ; ii < np ; ii++) {
+    for (int jj = 0 ; jj < np ; jj++) {
+      int target = (ii==jj);
+      if (fabs(covTimesInverse[ii][jj]-target) > 1E-9) {
+        cerr<<"NuFlux/Read >> Bad inversion of flux matrix - element: "<<ii<<" , "<<jj<<": "<<covTimesInverse[ii][jj]-target<<(ii==jj?"*":"")<<endl;
+        failure = true;
+      }
+    }
+  }
+  if (failure) {exit(-1);}
+#endif // __init_check_inverse__
+  
 #ifdef __show_init_mesg_debug__
   cout << "Exp/BANFF >> Input flux covariance matrix: " << endl; 
-  util::PrintCompact(cov,7,5);
+  util::PrintMatrix(cov,7,5);
   cout << "Exp/BANFF >> Inverse flux covariance matrix: " << endl;
-  util::PrintCompact(*fCovMtrxInv,7,5);
+  util::PrintMatrix(*fCovMtrxInv,7,5);
 #endif
-  this->CholeskyDecomposeMatrix();
+  
   return true;
 }
 //________________________________________________________________________________________
@@ -188,7 +225,7 @@ void NuFlux::Tweak(
 #ifdef __show_tweak_mesg_debug__
         cout << "NuFlux/Tweak >> Forcing input flux parameters. " << endl;
 #endif
-        TVectorD & vec = *input_vec;
+        const TVectorD & vec = *input_vec;
         assert(vec.GetNoElements() == conv::kNNDFitParamsNuFlx);
         current_values = vec;
      }
@@ -203,7 +240,7 @@ void NuFlux::Tweak(
 #ifdef __show_tweak_mesg_debug__
      cout << "NuFlux/Tweak >> Generating random twk dials (correlated)! " << endl;
 #endif
-     TMatrixD & L = *fCovMtrxChoL;
+     const TMatrixD & L = *fCovMtrxChoL;
      TVectorD vec = util::CholeskyGenerateCorrelatedParams(L,initial_values);
      current_values = vec;
   }
@@ -232,11 +269,6 @@ void NuFlux::CholeskyDecomposeMatrix(void)
 //________________________________________________________________________________________
 double NuFlux::ChisqPenalty(bool /*all_syst*/) const
 {
-#ifdef __show_chisqpenalty_mesg_debug2__
-    cout << "NuFlux/ChisqPenalty >> flux parameters: " << endl;
-    util::PrintCompact(current_values, initial_values, 12,6,"flux fit params");
-#endif
-
   //covariance matrix
   const TMatrixD & cov    (this->CovMatrix()   );
   const TMatrixD & covInv (this->CovMatrixInv());
@@ -252,21 +284,14 @@ double NuFlux::ChisqPenalty(bool /*all_syst*/) const
   
 #ifdef __show_chisqpenalty_mesg_debug__
   cout << "Exp/ChisqPenalty >> deviations in flux parameters: " << endl;
-  util::PrintCompact(TMatrixDRow(dev,0), 12,6,"flux fit params");
+  util::PrintVectorPair(*fCurrentValues,*fInitialValues,7,5);
 #endif
 
 #ifdef __show_chisqpenalty_mesg_debug2__
     cout << "NuFlux/ChisqPenalty >> flux covariance matrix: " << endl;
-    util::PrintCompact(cov,7,5);
+    util::PrintMatrix(cov,7,5);
     cout << "NuFlux/ChisqPenalty >> Inverse flux covariance matrix: " << endl;
-    util::PrintCompact(covInv,7,5);
-#endif
-
-    //Check the inverse:
-#ifdef __show_chisqpenalty_mesg_debug2__
-    TMatrixD prod = cov*covInv;
-    cout << "NuFlux/ChisqPenalty >> check of product cov*(cov)^-1 : "<< endl;
-    util::PrintCompact(prod,7,5);
+    util::PrintMatrix(covInv,7,5);
 #endif
 
     TMatrixD chisqpenalty =  dev * covInv * devT;
@@ -301,6 +326,12 @@ int NuFlux::Param2Idx(PhysParamId_t p) const
   return fParam2Idx[p];  
 }
 //________________________________________________________________________________________
+conv::PhysParamId_t NuFlux::Idx2Param (int index) const
+{
+  assert(index >= 0 && index <= conv::kNNDFitParamsNuFlx);
+  return fFluxIndexToPhysParam[index];
+}
+//________________________________________________________________________________________
 void NuFlux::UpdateFrom(const valor::FitParamList  & fpl)
 {
   for (int i = 0 ; i < fInitialValues->GetNoElements() ; i++) {
@@ -321,6 +352,20 @@ void NuFlux::CopyTweaksTo(valor::PhysParamList & ppl) const
   for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
     PhysParamId_t p = fFluxIndexToPhysParam[i];
     ppl.SetValue(p,fCurrentArray[i]);
+  }
+  return;
+}
+//________________________________________________________________________________________
+void NuFlux::CopyTweaksTo(valor::FitParamList & fpl) const
+{
+  for (int i = 0 ; i < fInitialValues->GetNoElements() ; i++) {
+    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    if (fpl.Exists(p)) {
+      fpl.SetCurrentValue(p,fCurrentArray[i]);
+    }
+    else {
+      LOG("NuFlux",pWARN) << "CopyTweaksTo(FPL) >> FPL does not contain parameter "<<util::AsString(p);
+    }
   }
   return;
 }
