@@ -14,9 +14,9 @@ except:
 
 ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
 
-ROOT.gROOT.ProcessLine("using namespace valor");
-ROOT.gROOT.ProcessLine("using namespace util");
-ROOT.gROOT.ProcessLine("using namespace conv");
+ROOT.gROOT.ProcessLine("using namespace valor;");
+ROOT.gROOT.ProcessLine("using namespace valor::util;");
+ROOT.gROOT.ProcessLine("using namespace valor::conv;");
 
 rootargs = [x for x in sys.argv if x.endswith(".root")]
 i=0

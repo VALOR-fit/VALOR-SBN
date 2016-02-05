@@ -54,7 +54,7 @@ void define_valor_style()
 
   // use bold lines and markers
   valorStyle->SetMarkerStyle(20);
-  valorStyle->SetHistLineWidth(1.85);
+  valorStyle->SetHistLineWidth(2);
   valorStyle->SetLineStyleString(2,"[12 12]"); // postscript dashes
 
   // get rid of X error bars and y error bar caps
@@ -78,7 +78,7 @@ void define_valor_style()
   valorStyle->SetTextFont(42); //less bold
 
   // Add a greyscale palette for 2D plots
-  /*
+  
   int ncol=50;
   double dcol = 1./float(ncol);
   double gray = 1;
@@ -138,7 +138,13 @@ void valor_dune_utils()
     
     print_banner();
     
+    // Configure the messenger.
+    config_mesg();
+    
+    // Instantiate a singleton
+    // Something funny happens in CLING where we need to ask for an object in a library before any standalone functions
+    valor::util::NDArrIdx::Instance();
+    
     valor::util::PopulateNameRegistry();
 
-    config_mesg();
 }
