@@ -161,6 +161,7 @@ CXXFLAGS      = -pipe -W -Wall -Wno-long-double \
 		-fsigned-char -fno-common -flat_namespace \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
 		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
+		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS) 
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
@@ -204,6 +205,7 @@ CXXFLAGS      = -m64 -pipe -Wshadow -W -Wall -Wno-overloaded-virtual \
 		-fsigned-char -fno-common \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
 		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
+		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS)
 ifneq ($(strip $(GCC_GE_4_2_1)), YES) 
   ifneq ($(USING_CLANG), YES)
@@ -247,6 +249,7 @@ ARCH_OK       = YES
 CXXFLAGS      = -Wall -fPIC \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
 		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
+		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS) 
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
@@ -274,6 +277,7 @@ ARCH_OK       = YES
 CXXFLAGS      = -Wall -fPIC \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
 		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
+		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS) 
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
