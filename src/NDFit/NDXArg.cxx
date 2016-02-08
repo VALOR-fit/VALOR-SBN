@@ -141,19 +141,18 @@ const char * NDXArg::ConfigFile(Option_t * user_opt) const
 
   if(opt.find("check_file_exists") != string::npos) {
     // initially assume absolute path
-    string file_used = file;
-    bool found_1st = ! gSystem->AccessPathName(file_used.c_str());
-    if(!found_1st) {
+    bool found = ! gSystem->AccessPathName(file.c_str());
+    if(!found) {
       // then try in standard config path (usually $VALOR_DUNE/config/)
       Env * env = Env::Instance(); 
-      file_used = env->TopLevelConfDir() + "/" + file;
-      bool found_2nd = ! gSystem->AccessPathName(file_used.c_str());
-      if(!found_2nd) {
+      string file_tried = env->TopLevelConfDir() + "/" + file;
+      found = ! gSystem->AccessPathName(file_tried.c_str());
+      if(!found) {
         LOG("NDXArg", pERROR) << "Can not find XML file [" << file << "]";
         return "";
       }
+      file = file_tried;
     }
-    return file_used.c_str();
   }
 
   return file.c_str();        
@@ -167,19 +166,18 @@ const char * NDXArg::VerbosityFile(Option_t * user_opt) const
 
   if(opt.find("check_file_exists") != string::npos) {
     // initially assume absolute path
-    string file_used = file;
-    bool found_1st = ! gSystem->AccessPathName(file_used.c_str());
-    if(!found_1st) {
+    bool found = ! gSystem->AccessPathName(file.c_str());
+    if(!found) {
       // then try in standard config path (usually $VALOR_DUNE/config/)
       Env * env = Env::Instance(); 
-      file_used = env->TopLevelConfDir() + "/" + file;
-      bool found_2nd = ! gSystem->AccessPathName(file_used.c_str());
-      if(!found_2nd) {
+      string file_tried = env->TopLevelConfDir() + "/" + file;
+      found = ! gSystem->AccessPathName(file_tried.c_str());
+      if(!found) {
         LOG("NDXArg", pERROR) << "Can not find XML file [" << file << "]";
         return "";
       }
+      file = file_tried;
     }
-    return file_used.c_str();
   }
 
   return file.c_str();        
