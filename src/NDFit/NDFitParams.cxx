@@ -438,7 +438,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
         curr = TMath::Min(curr,max);
         curr = TMath::Max(curr,min);
         // help fitter by setting init to curr (curr values may be used as true values for toy-MC generation before fitting)
-        init = curr;
       }
       // randomize all parameters using post-fit errors
       else 
