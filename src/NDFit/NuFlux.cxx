@@ -98,7 +98,7 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   this->Init();
 
   // Get flux covariance matrix
-  fCovMtrx = util::XML2TH2D2TMatrixD(xml,root_node,"syst/flux/covariance_matrix");
+  fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/flux/covariance_matrix");
   
   if(!fCovMtrx) {
     cerr << "NuFlux/Read >> No flux covariance matrix was found." << endl;
