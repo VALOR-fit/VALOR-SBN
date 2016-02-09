@@ -71,6 +71,8 @@ int main(int argc, char ** argv)
 
 //  cout << *Rnd::Instance() << endl;
 
+  TString param_values_ts(arg.ParamValuesOption());
+
   Messenger::Instance()->Configure(arg.VerbosityFile());
 
   // Create file and tree to store outputs
@@ -89,13 +91,19 @@ int main(int argc, char ** argv)
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < arg.NToyMC(); itoymc++) {
     cout << "\n\n *** Toy-MC experiment #" << itoymc << endl;
-	
+    
     // Reset output tree variables
     ntp.Reset();
 
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generation below.
     FitParamList * fp = util::GetFitParameterList(arg.FitParamList(), arg.ParamValuesOption());
+    
+    // Randomise the systematics in the model, and copy them to the FPL
+    if (param_values_ts.Contains("randomize")) {
+      model->RandomizeSystematics(/*param_values_ts.Data()*/);
+    }
+    fp->FromPhysParamList(model->Tweaks(),"current");
 
     // Generate a toy-MC experiment 
     cout << "Generating toy-MC data" << endl;
@@ -106,7 +114,10 @@ int main(int argc, char ** argv)
     // These values will be overwritten during the fit.
     // Copy those values now so as to save them later in the output tree.
     ntp.TrueParamArr()->Append(fp->AsPhysParamList("current"));
-
+    
+    // Set our current values back to the fitter start point
+    fp->ResetCurrToInitValues();
+        
     // Get fitter
     cout << "Preparing fitter" << endl;
     FitInputs * fit_inputs = new FitInputs(data,model,fp);

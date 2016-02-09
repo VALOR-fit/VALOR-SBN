@@ -26,6 +26,8 @@ void run_fit
 
   // Analysis configuration
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  
+  TString param_values_ts(param_values); // TString version for useful methods
 
   //
   // Print settings
@@ -83,9 +85,16 @@ void run_fit
     data_array           -> Clear();
 
     // Getting the fit parameter list that corresponds to the input option.
-    // The secondd option determined the `current' values which are used for toy-MC generatio below.
+    // The second option determined the `current' values which are used for toy-MC generation below.
     FitParamList * fp = util::GetFitParameterList(fit_param_list, param_values);
-
+    
+    
+    // Randomise the systematics in the model, and copy them to the FPL
+    if (param_values_ts.Contains("randomize")) {
+      model->RandomizeSystematics(/*param_values*/);
+    }
+    fp->FromPhysParamList(model->Tweaks(),"current");
+    
     // Generate a toy-MC experiment 
     cout << "Generating toy-MC data" << endl;
     FitDataABC * data = new NDData;
@@ -95,6 +104,8 @@ void run_fit
     // Copy those values now (and they will be overwritten during the fit) to save 
     // them in the output fit file.
     true_param_array->Append(fp->AsPhysParamList("current"));
+    
+    fp->ResetCurrToInitValues();
 
     // Get fitter
     cout << "Preparing fitter" << endl;
