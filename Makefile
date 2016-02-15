@@ -66,7 +66,7 @@ make-bin-lib-dir: FORCE
 copy-rootdict-to-lib: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Copying ROOT dictionary PCM files to ${VALOR_DUNE}/lib"
-	$(shell find "${VALOR_DUNE}/src/" -name "_RootDict*_rdict.pcm" | xargs -n 1 -I_ cp _ "${VALOR_DUNE}/lib/" )
+	$(shell find "${VALOR_DUNE}/src/" -name "_RootDict*_rdict.pcm" | xargs -n 1 -I{} cp {} "${VALOR_DUNE}/lib/" )
 
 purge: FORCE
 	@echo " "
