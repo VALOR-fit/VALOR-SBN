@@ -104,10 +104,12 @@ void NDNtp::Clean(void)
      delete fOutFile;
   }
 
+/*
   if (fVTree          ) delete fVTree;
   if (fTrueParamArr   ) delete fTrueParamArr;
   if (fBestFitParamArr) delete fBestFitParamArr;
   if (fBestFitModelArr) delete fBestFitModelArr;
   if (fDataArr        ) delete fDataArr;
+*/
 }
 //________________________________________________________________________________________
