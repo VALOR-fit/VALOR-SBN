@@ -53,20 +53,22 @@ bool NDData::Read(string /*file*/, Option_t * /*opt*/)
 //________________________________________________________________________________________
 bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
-  LOG("NDData",pINFO) << "Writing results to input object array...";
-
-  if(!array) {
-     LOG("NDData",pERROR) << "Null input object array.";
-     return false;
-  }
-
-  valor::util::SetDefaultStyle();
+  LOG("NDData", pINFO)  << "Writing results to input object array...";
+  LOG("NDData", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
 
   string opt = (write_opt) ? write_opt : "data_vf";
 
   if(opt.find("all") != string::npos) {
     opt = "data_vf,data_rf +slices +SB";
+    LOG("NDData", pDEBUG) << "Write option replaced with = " << opt;
   }
+
+  if(!array) {
+     LOG("NDData", pERROR) << "Null input object array.";
+     return false;
+  }
+
+  valor::util::SetDefaultStyle();
 
   //
   // Write out data distributions (VALORArray or bare ROOT format)
@@ -74,20 +76,31 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 
   if(opt.find("data_vf") != string::npos || opt.find("data_rf") != string::npos) {
 
+    // Loop over beams/samples and data to input object array
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
         NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
+
+        // binning optimised for fit CPU performance
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           if(fDataNull[ibeam][isample][izone]) continue;
+          // Add data in VALOR array format
           const char * name = Form("%s_%s_z%d",
              util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
           if(opt.find("data_vf") != string::npos) {
+             assert(fData[ibeam][isample][izone]);
              fData[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"data_ob_vf",name));
+             LOG("NDData", pDEBUG) << "Adding: " << fData[ibeam][isample][izone]->GetName();
              array->Add(fData[ibeam][isample][izone]);
           }
+          // Add data in ROOT format if requested
+          // -----
+          // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+          // array to ROOT TH2D could happen elsewhere generically)
+          // -----
           if(opt.find("data_rf") != string::npos) {
              const int n_enu_reco_bins = util::NumErecoBins(s,izone);
              const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
@@ -104,19 +117,29 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                }//iy
              }//ier
              // add to object array and clean-up
+             LOG("NDData", pDEBUG) << "Adding: " << h2->GetName();
              array->Add(h2);
              // delete h2; ???? // MEMORY LEAK?
           }
         }//izone
 
+        // regular/fine binning for plotting
         if(opt.find("+SB") != string::npos) {
          const char * name = Form("%s_%s",
              util::AsString(b).c_str(), util::AsString(s).c_str());
           if(fDataSbNull[ibeam][isample]) continue;
+          // Add data in VALOR array format
           if(opt.find("data_vf") != string::npos) {
+             assert(fDataSb[ibeam][isample]);
              fDataSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"data_sb_vf",name));
+             LOG("NDData", pDEBUG) << "Adding: " << fDataSb[ibeam][isample]->GetName();
              array->Add(fDataSb[ibeam][isample]);
           }//data_vf
+          // Add data in ROOT format if requested
+          // -----
+          // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+          // array to ROOT TH2D could happen elsewhere generically)
+          // -----
           if(opt.find("data_rf") != string::npos) {
              const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
              const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
@@ -130,6 +153,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                }//iy
              }//ier
              // add to object array and clean-up
+             LOG("NDData", pDEBUG) << "Adding: " << h2->GetName();
              array->Add(h2);
              // delete h2; ???? // MEMORY LEAK?
           }//data_vf
@@ -140,11 +164,13 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 
   }//data_vf, data_rf
 
-
   //
   // Write out the slices of the data distributions (bare ROOT format)
   //
-
+  // -----
+  // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+  // array to ROOT TH1D slices could happen elsewhere generically)
+  // -----
   if(opt.find("+slices") != string::npos) {
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
@@ -182,9 +208,11 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up
+            LOG("NDData", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy
+          LOG("NDData", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
         }//izone
@@ -214,9 +242,11 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up
+            LOG("NDData", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy
+          LOG("NDData", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
         }//+SB?
@@ -224,6 +254,8 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       }//isample
     }//ibeam
   }//+slices
+
+  LOG("NDData", pINFO)  << "Done!";
 
   return true;
 }

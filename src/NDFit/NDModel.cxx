@@ -260,7 +260,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 //  ob    -> Optimized binning (for fit)
 //  sb    -> Simple binning (for plots)
 
-  LOG("NDModel",pINFO) << "Writing results to input object array...";
+  LOG("NDModel", pINFO)  << "Writing results to input object array...";
+  LOG("NDModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
+
+  string opt = (write_opt) ? write_opt : "pdft_vf";
+  if(opt.find("all") != string::npos) {
+    opt = "mct_vf + pdfc_vf + pdfc_rf + pdft_vf + pdft_rf + pdfcs_rf + pdfts_rf +SB";
+    LOG("NDModel", pDEBUG) << "Write option replaced with = " << opt;
+  }
 
   if(!array) {
      LOG("NDModel",pERROR) << "Null input object array.";
@@ -268,13 +275,6 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   }
 
   valor::util::SetDefaultStyle();
-
-  string opt = (write_opt) ? write_opt : "pdft_vf";
-
-  if(opt.find("all") != string::npos) {
-    opt = "mct_vf + pdfc_vf + pdfc_rf + pdft_vf + pdft_rf + pdfcs_rf + pdfts_rf +SB";
-  }
-  LOG("NDModel",pINFO) << "Write option: " << opt;
 
   //
   // Write out MC templates (VALORArray format)
@@ -300,6 +300,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              fMCTTunOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_ob_vf", name) );
              fMCTSysOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_ob_vf", name) );
              fMCTFinOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_ob_vf", name) );
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTNomOb [ibeam][isample][imode][izone]->GetName();
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTTunOb [ibeam][isample][imode][izone]->GetName();
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTSysOb [ibeam][isample][imode][izone]->GetName();
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTFinOb [ibeam][isample][imode][izone]->GetName();
              array -> Add ( fMCTNomOb [ibeam][isample][imode][izone] ); 
              array -> Add ( fMCTTunOb [ibeam][isample][imode][izone] ); 
              array -> Add ( fMCTSysOb [ibeam][isample][imode][izone] ); 
@@ -314,6 +318,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              fMCTTunSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mcttun_sb_vf", name) );
              fMCTSysSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsys_sb_vf", name) );
              fMCTFinSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctfin_sb_vf", name) );
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTNomSb [ibeam][isample][imode]->GetName();
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTTunSb [ibeam][isample][imode]->GetName();
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTSysSb [ibeam][isample][imode]->GetName();
+             LOG("NDModel", pDEBUG) << "Adding: " << fMCTFinSb [ibeam][isample][imode]->GetName();
              array -> Add ( fMCTNomSb [ibeam][isample][imode] ); 
              array -> Add ( fMCTTunSb [ibeam][isample][imode] ); 
              array -> Add ( fMCTSysSb [ibeam][isample][imode] ); 
@@ -349,9 +357,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
                fPDFCompOb [ibeam][isample][imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_ob_vf",name));
+               LOG("NDModel", pDEBUG) << "Adding: " << fPDFCompOb[ibeam][isample][imode][izone]->GetName();
                array->Add(fPDFCompOb[ibeam][isample][imode][izone]);
              }
              // in TH2D format
+             // -----
+             // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+             // array to ROOT TH2D could happen elsewhere generically)
+             // -----
              if (opt.find("pdfc_rf") != string::npos) {
                // get binning
                const int n_enu_reco_bins = util::NumErecoBins(s,izone);
@@ -371,6 +384,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add tp object array and clean-up
+               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -383,9 +397,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
                fPDFCompSb [ibeam][isample][imode]->SetName(Form("%s_%s_%s",tag,"pdfc_sb_vf",name));
+               LOG("NDModel", pDEBUG) << "Adding: " << fPDFCompSb[ibeam][isample][imode]->GetName();
                array->Add(fPDFCompSb[ibeam][isample][imode]);
              }
              // in TH2D format
+             // -----
+             // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+             // array to ROOT TH2D could happen elsewhere generically)
+             // -----
              if (opt.find("pdfc_rf") != string::npos) {
                // book histogram
                const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
@@ -401,6 +420,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add tp object array and clean-up
+               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -431,9 +451,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
                fPDFTotOb[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"pdft_ob_vf",name));
+               LOG("NDModel", pDEBUG) << "Adding: " << fPDFTotOb[ibeam][isample][izone]->GetName();
                array->Add(fPDFTotOb[ibeam][isample][izone]);
              }
              // in TH2D format
+             // -----
+             // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+             // array to ROOT TH2D could happen elsewhere generically)
+             // -----
              if (opt.find("pdft_rf") != string::npos) {
                // get binning
                const int n_enu_reco_bins = util::NumErecoBins(s,izone);
@@ -453,6 +478,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add to object array and clean-up
+               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -464,9 +490,14 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
                fPDFTotSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"pdft_sb_vf",name));
+               LOG("NDModel", pDEBUG) << "Adding: " << fPDFTotSb[ibeam][isample]->GetName();
                array->Add(fPDFTotSb[ibeam][isample]);
              }
              // in TH2D format
+             // -----
+             // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+             // array to ROOT TH2D could happen elsewhere generically)
+             // -----
              if (opt.find("pdft_rf") != string::npos) {
                // book histogram
                const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
@@ -485,6 +516,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add to object array and clean-up
+               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -498,6 +530,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   //
   // Write out the slices of the PDF components (bare ROOT format)
   //
+  // -----
+  // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+  // array to ROOT TH1D slices could happen elsewhere generically)
+  // -----
 
   if(opt.find("pdfcs_rf") != string::npos) {
 
@@ -540,9 +576,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
               // add to obj array and clean-up 
+               LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
               array->Add(h);
               //delete h; ??? MEM LEAK??
             }//iy         
+            LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
             array->Add(htot);
             //delete htot; ??? MEM LEAK??
           }//izone
@@ -572,9 +610,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
               // add to obj array and clean-up 
+               LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
               array->Add(h);
               //delete h; ??? MEM LEAK??
             }//iy         
+            LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
             array->Add(htot);
             //delete htot; ??? MEM LEAK??
           }//+SB?
@@ -588,6 +628,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   //
   // Write out the slices of the total PDF (bare ROOT format)
   //
+  // -----
+  // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
+  // array to ROOT TH1D slices could happen elsewhere generically)
+  // -----
 
   if(opt.find("pdfts_rf") != string::npos) {
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
@@ -626,9 +670,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
+            LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??      
           }//iy         
+          LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??      
         }//izone
@@ -658,9 +704,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
+            LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy         
+          LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
         }//+SB?
