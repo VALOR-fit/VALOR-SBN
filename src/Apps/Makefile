@@ -15,10 +15,14 @@ include $(VALOR_DUNE)/make/Make.include
 # Add GENIE includes and libaries for apps that depend both on GENIE and VALOR
 # GENIE needs to be enabled to compile those apps
 #
-GLIBRARIES = $(shell genie-config --libs)
-GINCLUDES  = $(shell genie-config --topsrcdir)
-GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
-GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
+
+#ifeq(, $(shell which genie-config))
+ifdef GENIE
+ GLIBRARIES = $(shell genie-config --libs)
+ GINCLUDES  = $(shell genie-config --topsrcdir)
+ GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
+ GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
+endif
 
 TGT = make_nd_minidst \
       run_nd_fit \
