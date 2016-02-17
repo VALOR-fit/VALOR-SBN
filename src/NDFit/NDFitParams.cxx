@@ -374,7 +374,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
 // The input option specifies both the set of parameters (eg "standard") and their set
 // values (eg "nominal", or "randomize-all;prefit-errors" etc).
 
-
   string param_list_opt   = ((param_list)   ? param_list   : "standard");
   string param_values_opt = ((param_values) ? param_values : "nominal");
 
@@ -454,16 +453,15 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
       ipc++; 
       fparm->Update(p, curr);
 
-
       // toggle detector related params on/off
-      bool no_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
+      bool no_detector_params = (param_list_opt.find("fix_det_syst") != string::npos);
       if(no_detector_params && kNDFitIsDetectorRelated[ip]) {
        fparm->Update(p, 1.);
        fparm->SetInitValue(p, 1.);
        fparm->FixParameter(p);
       }
       // toggle flux related params on/off
-      bool no_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
+      bool no_flux_params = (param_list_opt.find("fix_flux_syst") != string::npos);
       if(no_flux_params && kNDFitIsFluxRelated[ip]) {
        fparm->Update(p, 1.);
        fparm->SetInitValue(p, 1.);
