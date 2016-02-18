@@ -1,6 +1,6 @@
 {
   TString libs0 = gSystem->GetDynamicPath();
-  TString libs  = libs0 + ":/usr/lib:/usr/local/lib:/opt/lib:/opt/local/lib";
+  TString libs  = libs0 + ":/usr/lib:/usr/local/lib:/opt/lib:/opt/local/lib:$VALOR_FMWK/lib:$VALOR_DUNE/lib";
   gSystem->SetDynamicPath(libs.Data());
   
   TString features(gROOT->GetConfigFeatures());
