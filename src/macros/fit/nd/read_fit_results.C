@@ -23,7 +23,7 @@ void read_fit_results(const char * filename)
   TObjArray *     best_fit_model_array = 0; // an array of various best-fit model predictions for the current toy-MC experiment 
   TObjArray *     data_array           = 0; // an array of all fitted data distributions for the current toy-MC experiment
 
-  TTree * fitnt = (TTree*)f.Get("fitnt");
+  TTree * fitnt = (TTree*)f.Get("valor_dune_nd_ntp");
   fitnt->SetBranchAddress("true_params",        &true_param_array);
   fitnt->SetBranchAddress("best_fit_params",    &best_fit_param_array);
   fitnt->SetBranchAddress("best_fit_model",     &best_fit_model_array);
@@ -74,7 +74,7 @@ void read_fit_results(const char * filename)
    
     cout << "\n >> Covariance matrix: " << endl;
     TMatrixDSym * cov = best_fit_param_array->GetCovMatrix();
-    cov->Print();    
+    //cov->Print();    
 
     TCanvas * ccov = new TCanvas("ccov","",20,20,500,500);
     ccov->cd();
@@ -92,13 +92,12 @@ void read_fit_results(const char * filename)
     }
     ccovdiag->Update();
     
-/*
     // get a full list of object names printed out
     cout << "\n >> Objects stored in `best_fit_model_array' object array: " << endl;    
     best_fit_model_array->Print();
     cout << "\n >> Objects stored in `data_array' object array: " << endl;    
     data_array->Print();
-*/
+
     //
     // Plot something (Ereco spectra and contributions from various modes)
     //
@@ -109,7 +108,7 @@ void read_fit_results(const char * filename)
     TH1D * toymc_ereco   [conv::kNBeamConf][conv::kNNDSamples] = { 0 };
 
     TCanvas * c[conv::kNBeamConf];
-    for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
+    for(int ibeam = 0; ibeam < conv::kNBeamConf; ibeam++) {
       conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
       if(b == conv::kbUndefined) continue;
       const char * c_name = Form("c_%s", util::AsString(b));
@@ -117,14 +116,21 @@ void read_fit_results(const char * filename)
       c[ibeam]->Divide(3,3);
       int ic = 0;
       for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-        conv::NDSample_t s = conv::kNDSample[isample];
+        conv::NDSample_t s = conv::kNDSample[ibeam][isample];
         if(s == conv::ksNDUndefined) continue;
+        cout <<  "isample =  " << isample << ", s = " << s << endl;
         const char * name_model = Form("%s_%s_%s_%s",
             "best_fit", "pdfts_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str());
         const char * name_data = Form("%s_%s_%s_%s",
             "toymc", "data_slice_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str());
+
+        cout << "Retrieving best-fit E_reco spectrum : " << name_model << endl;
+        cout << "Retrieving (toy) data E_reco spectrum : " << name_data << endl;
         bestfit_ereco[ibeam][isample] = (TH1D*) best_fit_model_array->FindObject(name_model);
         toymc_ereco  [ibeam][isample] = (TH1D*) data_array->FindObject(name_data);
+        assert(bestfit_ereco[ibeam][isample]);
+        assert(toymc_ereco  [ibeam][isample]);
+
         // Start drawing
         ic++;
         //TLegend * leg = new TLegend(0.5,0.3,0.9,0.8);  
