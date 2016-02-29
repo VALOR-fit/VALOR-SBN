@@ -28,7 +28,8 @@
 // just a few very wide bins to dramatically decrease the fit time for testing purposes.
 // NOTE: Do not remove this, unless you also make sure that all functions defined
 // here handle all samples currently installed in the fit. Last I looked they weren't.
-#define _use_very_few_ereco_yreco_bins_ 
+#define _use_single_zone_optimized_binning_scheme_v1_ 
+//#define _use_single_zone_optimized_binning_scheme_v2_ 
 
 #include "Conventions/KineVar.h"
 #include "NDFit/NDSample.h"
@@ -109,6 +110,9 @@ static const double kYrecoMax = 1.;
 // when setting Etrue bin edges for the MC templates. An integral number of MC
 // template bins should fit within the Etrue range of all fit parameters.
 //
+
+/*
+// Initial binning
 static const int    kNEtrueBins = 52;
 static const double kEtrueBinEdges[kNEtrueBins+1] = 
 {
@@ -119,6 +123,17 @@ static const double kEtrueBinEdges[kNEtrueBins+1] =
     6.500,  7.000,  8.000,  9.000, 10.000, 
    12.000, 16.000, 20.000, 25.000, 30.000, 40.000, 50.000,  kEtrueMax
 };
+*/
+
+// Revised binning:
+// Using Etrue bins that match exactly the bins used for flux normalization error
+static const int    kNEtrueBins = 19;
+static const double kEtrueBinEdges[kNEtrueBins+1] = 
+{
+    0.000,  0.500,  1.000,  1.500,  2.000,  2.500,  3.000,  3.500, 4.000, 4.500, 5.000,
+    5.500,  6.000,  7.000,  8.000, 12.000, 16.000, 20.000, 40.000, kEtrueMax
+};
+
 
 // ...........................................................................
 //
@@ -180,16 +195,30 @@ static const double kYrecoBinEdgesNCSb [kNYrecoBinsNCSb+1] =
 // fits an integral number of bins from the simple/fine binning scheme.
 //
 
-#ifdef _use_very_few_ereco_yreco_bins_
+#if defined (_use_single_zone_optimized_binning_scheme_v1_)
+//  single zone with 5 Ereco bins and a single y bin
+static const int kNMaxBinZones     = 1;
+static const int kNErecoBinsOb1Z   = 5;
+static const int kNYrecoBinsCCOb1Z = 1;
+static const int kNYrecoBinsNCOb1Z = 1;
+static const double kErecoBinEdgesOb1Z[kNErecoBinsOb1Z+1] = { kErecoMin, 1.4, 3.0, 5.0, 10.0, kErecoMax };
+static const double kYrecoBinEdgesCCOb1Z[kNYrecoBinsCCOb1Z+1] = { kYrecoMin, kYrecoMax };
+static const double kYrecoBinEdgesNCOb1Z[kNYrecoBinsNCOb1Z+1] = { kYrecoMin, kYrecoMax };
 
-static const int kNMaxBinZones  = 1;
-static const int kNErecoBins1   = 5;
-static const int kNYrecoBins1   = 1;
-static const double kErecoBinEdges1[kNErecoBins1+1] = { kErecoMin, 1.4, 3.0, 5.0, 10.0, kErecoMax };
-static const double kYrecoBinEdges1[kNYrecoBins1+1] = { kYrecoMin, kYrecoMax };
+
+#elif defined (_use_single_zone_optimized_binning_scheme_v2_)
+//  single zone with 10 Ereco bins and 8 y bins (necessarily 1 y bin for NC)
+static const int kNMaxBinZones     = 1;
+static const int kNErecoBinsOb1Z   = 10;
+static const int kNYrecoBinsCCOb1Z =  8;
+static const int kNYrecoBinsNCOb1Z =  1;
+static const double kErecoBinEdgesOb1Z[kNErecoBinsOb1Z+1] = { kErecoMin, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0, 15.0, kErecoMax  };
+static const double kYrecoBinEdgesCCOb1Z[kNYrecoBinsCCOb1Z+1] = { kYrecoMin, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, kYrecoMax };
+static const double kYrecoBinEdgesNCOb1Z[kNYrecoBinsNCOb1Z+1] = { kYrecoMin, kYrecoMax };
 
 #else
 
+/*
 static const int kNMaxBinZones = 4;
 
 // 
@@ -301,6 +330,8 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
     0.000,  0.100,  0.200,  0.300,  0.400,  0.500,  0.600,  0.700,  0.800,  0.900,
     1.000
 };
+
+*/
 
 #endif // _use_very_few_ereco_yreco_bins_
 

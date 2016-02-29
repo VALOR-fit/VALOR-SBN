@@ -116,10 +116,13 @@ int util::NumErecoBins(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting # Ereco bins for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_very_few_ereco_yreco_bins_
-  return kNErecoBins1;
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+
+  return kNErecoBinsOb1Z;
+
 #else
 
+/*
   switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
@@ -138,6 +141,7 @@ int util::NumErecoBins(NDSample_t s, int zone)
     default: 
       return 0;
   }//s
+*/
 
   return 0;
 
@@ -149,10 +153,13 @@ const double * util::ErecoBinEdges(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting Ereco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_very_few_ereco_yreco_bins_
-  return kErecoBinEdges1;
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+
+  return kErecoBinEdgesOb1Z;
+
 #else
 
+/*
   switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
@@ -171,6 +178,7 @@ const double * util::ErecoBinEdges(NDSample_t s, int zone)
     default: 
       return 0;
   }//s
+*/
 
   return 0;
 
@@ -182,10 +190,15 @@ int util::NumYrecoBins(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_very_few_ereco_yreco_bins_
-  return kNYrecoBins1;
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+
+  if      (util::IsCC(s)) return kNYrecoBinsCCOb1Z;
+  else if (util::IsNC(s)) return kNYrecoBinsNCOb1Z;
+  else                    return 0;
+
 #else
 
+/*
   switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
@@ -204,6 +217,7 @@ int util::NumYrecoBins(NDSample_t s, int zone)
     default: 
       return 0;
   }//s
+*/
 
   return 0;
 
@@ -215,10 +229,15 @@ const double * util::YrecoBinEdges(NDSample_t s, int zone)
    LOG("NDBinning",pDEBUG) 
      << "Getting yreco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
 
-#ifdef _use_very_few_ereco_yreco_bins_
-  return kYrecoBinEdges1;
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+
+  if      (util::IsCC(s)) return kYrecoBinEdgesCCOb1Z;
+  else if (util::IsNC(s)) return kYrecoBinEdgesNCOb1Z;
+  else                    return 0;
+
 #else
 
+/*
   switch(s) 
   {
     case (ksNDNuMuCC1trkQE) : 
@@ -237,6 +256,7 @@ const double * util::YrecoBinEdges(NDSample_t s, int zone)
     default: 
       return 0;
   }//s
+*/
 
   return 0;
 
@@ -253,8 +273,11 @@ int util::BinZone(NDSample_t s, double enu_reco, double y_reco)
 
      LOG("NDBinning",pDEBUG) << "Testing zone #" << izone;
 
-     const int      n_enu_reco_bins    = util::NumErecoBins  (s, izone);
-     const int      n_y_reco_bins      = util::NumYrecoBins  (s, izone);
+     const int n_enu_reco_bins = util::NumErecoBins  (s, izone);
+     const int n_y_reco_bins   = util::NumYrecoBins  (s, izone);
+
+     assert(n_enu_reco_bins > 0);
+     assert(n_y_reco_bins   > 0);
 
      LOG("NDBinning",pDEBUG) << " - number of enu_reco bins = " << n_enu_reco_bins;
      LOG("NDBinning",pDEBUG) << " - number of y_reco bins   = " << n_y_reco_bins;
