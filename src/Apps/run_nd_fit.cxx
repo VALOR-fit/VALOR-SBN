@@ -95,8 +95,7 @@ int main(int argc, char ** argv)
 
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    // The secondd option determined the `current' values which are used for toy-MC generation below.
-    FitParamList * fp = util::GetFitParameterList(arg.FitParamList(), arg.ParamValuesOption());
+    FitParamList * fp = util::GetFitParameterList(arg.FitParamList());
     LOG("valor_dune", pNOTICE) << "Using fit parameter list: " << *fp;
    
     // Randomise the systematics in the model, and copy them to the FPL
