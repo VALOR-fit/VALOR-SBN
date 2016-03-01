@@ -61,7 +61,11 @@ public:
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
-  
+
+  //
+  // Auxiliary methods, not part of the  FitModelABC interface
+  //  
+
   NuFlux *            GetNuFlux(void);
   const NuFlux *      GetNuFlux(void) const;
 

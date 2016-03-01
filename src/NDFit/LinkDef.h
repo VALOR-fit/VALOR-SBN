@@ -19,5 +19,6 @@
 #pragma link C++ class valor::NDXArg+;
 #pragma link C++ class valor::NDRFL+;
 #pragma link C++ class valor::NuFlux+;
+#pragma link C++ class valor::NuInt+;
 
 #endif

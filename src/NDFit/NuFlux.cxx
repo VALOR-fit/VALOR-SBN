@@ -98,31 +98,33 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   this->Init();
 
   // Get flux covariance matrix
-  fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/flux/covariance_matrix");
-  
+  fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/flux/covariance_matrix");  
   if(!fCovMtrx) {
-    cerr << "NuFlux/Read >> No flux covariance matrix was found." << endl;
+    LOG("NuFlux",pFATAL) << "No flux covariance matrix was found.";
     util::Die(1);
   }
   
+  // Check matrix size
   TMatrixD & cov = *fCovMtrx;
-  const int np = conv::kNNDFitParamsNuFlx;
-  
+  const int np = conv::kNNDFitParamsNuFlx;  
   if(cov.GetNrows() != np || cov.GetNcols() != np) 
   {
-    cerr << "NuFlux/Read >> Flux covariance matrix has unexpected size!" << endl;
-    cerr << "NuFlux/Read >> Expecting: " <<  np << " x " << np << " matrix" << endl;
-    cerr << "NuFlux/Read >> Found: " << cov.GetNrows() << " x " <<  cov.GetNcols() << " matrix" << endl;
+     LOG("NuFlux",pFATAL)
+        << "\n Flux covariance matrix has unexpected size!"
+        << "\n Expecting: " <<  np << " x " << np << " matrix"
+        << "\n Found: " << cov.GetNrows() << " x " <<  cov.GetNcols() << " matrix";
+     util::Die(1);
   }
   
   // Do Cholesky decomposition
+  LOG("NuFlux",pNOTICE) << "Running  Cholesky decomposition of flux covariance matrix ";
   this->CholeskyDecomposeMatrix();
   double det;
   
   // Calculate matrix inversion using Cholesky triangular matrices - should be most accurate.
   TMatrixD cholInv(*fCovMtrxChoL);
   cholInv.Invert(&det);
-  std::cout<<"NuFlux/Read >> Flux covariance matrix decomposition determinant: "<<det<<endl;
+  LOG("NuFlux",pNOTICE) << "Flux covariance matrix decomposition determinant: " << det;
   TMatrixD cholInvT(TMatrixD::kTransposed,cholInv);
   fCovMtrxInv = new TMatrixD(cholInvT * cholInv);
   
@@ -141,7 +143,9 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
     for (int jj = 0 ; jj < np ; jj++) {
       int target = (ii==jj);
       if (fabs(covTimesInverse[ii][jj]-target) > 1E-9) {
-        cerr<<"NuFlux/Read >> Bad inversion of flux matrix - element: "<<ii<<" , "<<jj<<": "<<covTimesInverse[ii][jj]-target<<(ii==jj?"*":"")<<endl;
+        LOG("NuFlux",pERROR) 
+          << "Bad inversion of flux matrix - element: "
+          << ii << " , " << jj <<": " << covTimesInverse[ii][jj]-target << (ii==jj?"*":"");
         failure = true;
       }
     }
@@ -150,10 +154,10 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
 #endif // __init_check_inverse__
   
 #ifdef __show_init_mesg_debug__
-  cout << "Exp/BANFF >> Input flux covariance matrix: " << endl; 
-  util::PrintMatrix(cov,7,5);
-  cout << "Exp/BANFF >> Inverse flux covariance matrix: " << endl;
-  util::PrintMatrix(*fCovMtrxInv,7,5);
+  LOG("NuFlux",pDEBUG) << "Input flux covariance matrix: "; 
+  util::PrintMatrix(cov,7,5); // would be nice to use the same stream and threshold as mesg above
+  LOG("NuFlux",pDEBUG) << "Inverse flux covariance matrix: ";
+  util::PrintMatrix(*fCovMtrxInv,7,5); // would be nice to use the same stream and threshold as mesg above
 #endif
   
   return true;
@@ -191,7 +195,7 @@ void NuFlux::Tweak(
 {
   
 #ifdef __show_tweak_mesg_debug__
-  cout << "NuFlux/Tweak >> Tweaking flux parameters" << endl;
+  LOG("NuFlux",pDEBUG)  << "Tweaking flux parameters";
 #endif
 
   // Switch flags
@@ -206,15 +210,15 @@ void NuFlux::Tweak(
   TVectorD & current_values = *fCurrentValues;
 
   //
-  // Force input BANFF parameters
+  // Force the input parameters
   //
   if(force_inputs) 
   {
      // Input vector is NULL.
-     // This resets the BANFF params to their best-fit values.
+     // This resets the input params to their best-fit values.
      if(input_vec==0) {
 #ifdef __show_tweak_mesg_debug__
-        cout << "NuFlux/Tweak >> Reset BANFF params to best-fit values." << endl;
+        LOG("NuFlux",pDEBUG) << "Reset input params to best-fit values.";
 #endif
         fIsTweaked = false;
         current_values = initial_values;
@@ -223,7 +227,7 @@ void NuFlux::Tweak(
      else     
      {
 #ifdef __show_tweak_mesg_debug__
-        cout << "NuFlux/Tweak >> Forcing input flux parameters. " << endl;
+        LOG("NuFlux",pDEBUG) << "Forcing input flux parameters. ";
 #endif
         const TVectorD & vec = *input_vec;
         assert(vec.GetNoElements() == conv::kNNDFitParamsNuFlx);
@@ -238,7 +242,7 @@ void NuFlux::Tweak(
   else
   {
 #ifdef __show_tweak_mesg_debug__
-     cout << "NuFlux/Tweak >> Generating random twk dials (correlated)! " << endl;
+     LOG("NuFlux",pDEBUG) << "Generating random twk dials (correlated)! ";
 #endif
      const TMatrixD & L = *fCovMtrxChoL;
      TVectorD vec = util::CholeskyGenerateCorrelatedParams(L,initial_values);
@@ -250,20 +254,22 @@ void NuFlux::Tweak(
 void NuFlux::CholeskyDecomposeMatrix(void)
 {
 #ifdef __show_cholesky_mesg_info__  
-    cout << "NuFlux/CholeskyDecomposeMatrix >> "
-         << "Running Cholesky's decomposition method on the flux covariance matrix." << endl;
+    LOG("NuFlux",pDEBUG) 
+      << "Running Cholesky's decomposition method on the flux covariance matrix.";
 #endif
 
 #ifdef __show_cholesky_mesg_debug__
-    cout << "NuFlux/CholeskyDecomposeMatrix >> flux covariance matrix: " << endl; 
-    util::PrintCompact(this->CovMatrix(),7,5);
+    LOG("NuFlux",pDEBUG) 
+       << "Flux covariance matrix: "; 
+    util::PrintCompact(this->CovMatrix(),7,5); // would be nice to use the same stream and threshold as mesg above
 #endif
 
     TMatrixD L = util::CholeskyDecomposition(this->CovMatrix());
     fCovMtrxChoL = new TMatrixD(L);
 #ifdef __show_cholesky_mesg_debug__
-    cout << "NuFlux/CholeskyDecomposeMatrix >> Cholesky decomposition of flux covariance matrix: " << endl;
-    util::PrintCompact(*fCovMtrxChoL,7,5);
+    LOG("NuFlux",pDEBUG) 
+       << "Cholesky decomposition of flux covariance matrix: ";
+    util::PrintCompact(*fCovMtrxChoL,7,5); // would be nice to use the same stream and threshold as mesg above
 #endif
 }
 //________________________________________________________________________________________
@@ -283,22 +289,22 @@ double NuFlux::ChisqPenalty(bool /*all_syst*/) const
   }
   
 #ifdef __show_chisqpenalty_mesg_debug__
-  cout << "Exp/ChisqPenalty >> deviations in flux parameters: " << endl;
-  util::PrintVectorPair(*fCurrentValues,*fInitialValues,7,5);
+  LOG("NuFlux",pDEBUG) << "Deviations in flux parameters: ";
+  util::PrintVectorPair(*fCurrentValues,*fInitialValues,7,5); // would be nice to use the same stream and threshold as mesg above
 #endif
 
 #ifdef __show_chisqpenalty_mesg_debug2__
-    cout << "NuFlux/ChisqPenalty >> flux covariance matrix: " << endl;
-    util::PrintMatrix(cov,7,5);
-    cout << "NuFlux/ChisqPenalty >> Inverse flux covariance matrix: " << endl;
-    util::PrintMatrix(covInv,7,5);
+    LOG("NuFlux",pDEBUG) << "Flux covariance matrix: ";
+    util::PrintMatrix(cov,7,5); // would be nice to use the same stream and threshold as mesg above
+    LOG("NuFlux",pDEBUG) << "Inverse flux covariance matrix: ";
+    util::PrintMatrix(covInv,7,5); // would be nice to use the same stream and threshold as mesg above
 #endif
 
     TMatrixD chisqpenalty =  dev * covInv * devT;
     double chisq_penalty = chisqpenalty[0][0]; //The final matrix is 1x1, just a number
 
 #ifdef __show_chisqpenalty_mesg_debug__
-    cout << "NuFlux/ChisqPenalty >> ChisqPenalty = " << chisq_penalty << endl;
+    LOG("NuFlux",pDEBUG) << "ChisqPenalty = " << chisq_penalty;
 #endif
 
     if(chisq_penalty) return chisq_penalty;
@@ -316,7 +322,7 @@ void NuFlux::PrintSystematicVariations(std::ostream & stream) const
   
   for (int i = 0 ; i < fCurrentValues->GetNoElements(); i++) {
     PhysParamId_t p = fFluxIndexToPhysParam[i];
-    stream<<util::AsString(p)<<"\t"<<(*fCurrentValues)[i]<<endl;
+    stream << util::AsString(p) << "\t" << (*fCurrentValues)[i] << endl;
   }
 }
 //________________________________________________________________________________________
@@ -340,7 +346,8 @@ void NuFlux::UpdateFrom(const valor::FitParamList  & fpl)
       fCurrentArray[i] = fpl.CurrValue(p);
     }
     else {
-      LOG("NuFlux",pWARN) << "Unable to update flux parameter "<<util::AsString(p)<<" from FPL.";
+      LOG("NuFlux",pWARN) 
+        << "Unable to update flux parameter " << util::AsString(p) << " from FPL.";
     }
   }
   fIsTweaked = true;
@@ -364,7 +371,8 @@ void NuFlux::CopyTweaksTo(valor::FitParamList & fpl) const
       fpl.SetCurrentValue(p,fCurrentArray[i]);
     }
     else {
-      LOG("NuFlux",pWARN) << "CopyTweaksTo(FPL) >> FPL does not contain parameter "<<util::AsString(p);
+      LOG("NuFlux",pWARN) 
+        << "FPL does not contain parameter " << util::AsString(p);
     }
   }
   return;
