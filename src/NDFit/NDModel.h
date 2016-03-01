@@ -35,7 +35,8 @@
 
 namespace valor {
   
-class NuFlux;
+class NuFlux; // flux model systematics
+class NuInt;  // neutrino interaction model systematics
 
 class NDModel: public FitModelABC
 {
@@ -66,8 +67,10 @@ public:
   // Auxiliary methods, not part of the  FitModelABC interface
   //  
 
-  NuFlux *            GetNuFlux(void);
-  const NuFlux *      GetNuFlux(void) const;
+  NuFlux *       GetNuFlux (void);
+  const NuFlux * GetNuFlux (void) const;
+  NuInt *        GetNuInt  (void);
+  const NuInt *  GetNuInt  (void) const;
 
 private:
 
@@ -149,8 +152,9 @@ private:
   bool fUseMCDST;
   TTree * fMCDST[conv::kNBeamConf];
   
-  // Flux tuning object
+  // Neutrino flux and neutrino interaction modelling systematics
   valor::NuFlux * fNuFlux;
+  valor::NuInt *  fNuInt;
 };
 
 } // valor

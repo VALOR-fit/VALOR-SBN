@@ -39,6 +39,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "NDFit/NDSample.h"
 #include "NDFit/NDBeamConf.h"
 #include "NDFit/NuFlux.h"
+#include "NDFit/NuInt.h"
 
 using std::endl;
 
@@ -129,9 +130,12 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
     exit(1);
   }
   
-  // Read the flux
+  // Read the neutrino flux modelling info
   fNuFlux = new valor::NuFlux;
   fNuFlux->Read(xml,root_node);
+  // Read the neutrino interaction modelling info
+  fNuInt = new valor::NuInt;
+  fNuInt->Read(xml,root_node);
   
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.
@@ -175,7 +179,8 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
 //________________________________________________________________________________________
 void NDModel::RandomizeSystematics(void)
 {
-  fNuFlux->Tweak(false,0);
+  fNuFlux -> Tweak(false,0);
+  fNuInt  -> Tweak(false,0);
 }
 //________________________________________________________________________________________
 void NDModel::TweakSystematic(
@@ -192,23 +197,29 @@ void NDModel::TweakSystematic(
   if (util::IsFluxRelated(syst)) {
     //~ fNuFlux->Tweak();
   }
-  // MUST FINISH WITH NON-FLUX
+  if (util::IsXSecRelated(syst)) {
+    //~ fNuInt->Tweak();
+  }
+  // MUST FINISH WITH NON-FLUX, NON-XSEC
 }
 //________________________________________________________________________________________
 PhysParamList NDModel::Tweaks(void)
 {
   PhysParamList list;
   
-  fNuFlux->CopyTweaksTo(list);
+  fNuFlux -> CopyTweaksTo(list);
+  fNuInt  -> CopyTweaksTo(list);
   
-  // MUST FINISH WITH NON-FLUX
+  // MUST FINISH WITH NON-FLUX, NON-XSEC
   
   return list;
 }
 //________________________________________________________________________________________
 void NDModel::ResetSystematics(void)
 {
-  fNuFlux->Tweak(true,0);
+  fNuFlux -> Tweak(true, 0);
+  fNuInt  -> Tweak(true, 0);
+
   // MUST FINISH WITH NON-FLUX
 }
 //________________________________________________________________________________________
@@ -743,7 +754,8 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
   for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if (p == kPhypUndefined) continue;
-      if (conv::kNDFitIsFluxRelated[ip]) continue; // Flux contribution is calculated in NuFlux
+      if (conv::kNDFitIsFluxRelated[ip]) continue; // Flux modelling contribution is calculated in NuFlux
+      if (conv::kNDFitIsXSecRelated[ip]) continue; // Neutrino interaction modeling contribution is calculated in NuInt
       double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
       double val = fPhysHypothesis.CurrValue(p);
       double def = 1;
@@ -751,7 +763,8 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
       Sp += dSp;
   }//ip
   
-  Sp += fNuFlux->ChisqPenalty();
+  Sp += (fNuFlux -> ChisqPenalty());
+  Sp += (fNuInt  -> ChisqPenalty());
 
   LOG("NDModel",pDEBUG) << "Current fit statistic (systematic term) = " << Sp;
 
@@ -821,6 +834,7 @@ void NDModel::Init(void)
   
 // Flux object
   fNuFlux = 0;
+  fNuInt  = 0;
 }
 //________________________________________________________________________________________
 void NDModel::Book(void)
@@ -994,6 +1008,7 @@ void NDModel::Clean(void)
   }
   
   if (fNuFlux) {delete fNuFlux;}
+  if (fNuInt ) {delete fNuInt; }
   
 }
 //________________________________________________________________________________________
@@ -1792,5 +1807,15 @@ const valor::NuFlux * valor::NDModel::GetNuFlux(void) const
 valor::NuFlux * valor::NDModel::GetNuFlux(void)
 {
   return fNuFlux;
+}
+//________________________________________________________________________________________
+const valor::NuInt * valor::NDModel::GetNuInt(void) const
+{
+  return fNuInt;
+}
+//________________________________________________________________________________________
+valor::NuInt * valor::NDModel::GetNuInt(void)
+{
+  return fNuInt;
 }
 //________________________________________________________________________________________
