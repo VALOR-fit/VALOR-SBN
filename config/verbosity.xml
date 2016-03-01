@@ -11,7 +11,7 @@
   <priority msgstream="Messenger">    NOTICE   </priority>
   <priority msgstream="Rnd">          NOTICE   </priority>
   <priority msgstream="XML">          NOTICE   </priority>
-  <priority msgstream="NDData">       NOTICE   </priority>
+  <priority msgstream="NDData">      INFO   </priority>
   <priority msgstream="NDModel">      NOTICE   </priority>
   <priority msgstream="NDArrIdx">     FATAL    </priority>
   <priority msgstream="NDBinning">    NOTICE   </priority>

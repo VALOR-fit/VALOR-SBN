@@ -15,7 +15,7 @@ void run_fit
   const char * param_values     = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
   bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
   const char * fit_option       = "minuit",                              /* fitter option */
-  bool         store_spectra    = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
+  bool         store_spectra    = true,                                  /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
   const char * config_file      = "dune_ndfit-2015v1-FGTv1.xml"          /* analysis configuration file */
 )
 
@@ -66,8 +66,8 @@ void run_fit
   fitnt->Branch("best_fit_params", "valor::FitParamList",  &best_fit_param_array, 1280000,0);
   fitnt->Branch("best_fit_model",  "TObjArray",            &best_fit_model_array, 1280000,0);
   fitnt->Branch("data",            "TObjArray",            &data_array,           1280000,0);
-  fitnt->Branch("migradmin",                               &migradmin);
-  fitnt->Branch("migraderr",                               &migraderr);
+//  fitnt->Branch("migradmin",                               &migradmin);
+//  fitnt->Branch("migraderr",                               &migraderr);
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;

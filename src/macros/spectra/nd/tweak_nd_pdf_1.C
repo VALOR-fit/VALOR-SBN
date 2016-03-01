@@ -75,7 +75,11 @@ void tweak_nd_pdf_1
     if(i != kdefault) {
       int ip = util::NDArrIdx::Instance()->NDFitParamIdx(p); // find param idx
       assert(ip>=0 && ip<conv::kNNDFitParams);
-      double sig = conv::kNDFitParamAPrioriFracError[ip];
+      // ----
+      // improve this
+      double sig = 0.2;
+      if(conv::kNDFitIsFluxRelated[ip]) { sig = ((NDModel*)model)->GetNuFlux()->OneSigmaError((conv::PhysParamId_t)p); }
+      // -----
       if(i == kpls1sig) { ph.SetCurrValue(p, 1 +   sig); }
       if(i == kmin1sig) { ph.SetCurrValue(p, 1 -   sig); }
       if(i == kpls2sig) { ph.SetCurrValue(p, 1 + 2*sig); }
@@ -92,16 +96,18 @@ void tweak_nd_pdf_1
 
     // Write stuff out
     model->Write(array,"curr","pdfts_rf +SB");
+    array->Print();
 
     // Pick results wanted 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
+        NDSample_t s = kNDSample[ibeam][isample];
         if(s == ksNDUndefined) continue;
         const char * name = Form("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
+        cout << "Retrieving (beam #" << ibeam << ", sample #" << isample << "): " << name << endl;
         TH1D * curr_pdf = (TH1D*) array->FindObject(name);
         assert(curr_pdf);       
         pdf[ibeam][isample][i] = new TH1D(*curr_pdf);

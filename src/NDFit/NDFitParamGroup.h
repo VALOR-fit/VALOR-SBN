@@ -37,6 +37,7 @@ typedef enum ENDFitParamGroup
    kpgRHCNuEFlux,      //
    kpgRHCNuEBarFlux,   //
    kpgXSec,            //
+   kpgHadronization,   //
    kpgFSI,             //
    kpgDetector         //
 } 

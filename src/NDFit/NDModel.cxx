@@ -194,10 +194,10 @@ void NDModel::TweakSystematic(
 void NDModel::TweakSystematic(
   PhysParamId_t syst, double twkdial, Option_t * /*opt*/)
 {
-  if (util::IsFluxRelated(syst)) {
+  if (util::IsNuFluxRelated(syst)) {
     //~ fNuFlux->Tweak();
   }
-  if (util::IsXSecRelated(syst)) {
+  if (util::IsNuIntRelated(syst)) {
     //~ fNuInt->Tweak();
   }
   // MUST FINISH WITH NON-FLUX, NON-XSEC
@@ -754,9 +754,9 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
   for(int ip = 0; ip < kNNDFitParams; ip++) {
       PhysParamId_t p = kNDFitParam[ip];
       if (p == kPhypUndefined) continue;
-      if (conv::kNDFitIsFluxRelated[ip]) continue; // Flux modelling contribution is calculated in NuFlux
-      if (conv::kNDFitIsXSecRelated[ip]) continue; // Neutrino interaction modeling contribution is calculated in NuInt
-      double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
+      if (conv::kNDFitIsNuFluxRelated[ip]) continue; // Flux modelling contribution is calculated in NuFlux
+      if (conv::kNDFitIsNuIntRelated[ip]) continue; // Neutrino interaction modeling contribution is calculated in NuInt
+      double sig = 0.2; // HERE
       double val = fPhysHypothesis.CurrValue(p);
       double def = 1;
       double dSp = TMath::Power((val-def)/sig, 2.);
@@ -1537,8 +1537,8 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNNDFitParams; ip++) {
   	     //-------------- error, prone need to simplify
 	     bool apply = false;
-	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
-	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+	     if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
+	     else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
   	     //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
@@ -1580,8 +1580,8 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNNDFitParams; ip++) {
   	     //-------------- error, prone need to simplify
 	     bool apply = false;
-	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
-	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+	     if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
+	     else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
   	     //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
@@ -1623,8 +1623,8 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNNDFitParams; ip++) {
   	     //-------------- error, prone need to simplify
 	     bool apply = false;
-	     if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
-	     else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+	     if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
+	     else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
   	     //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
@@ -1656,8 +1656,8 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNNDFitParams; ip++) {
             //-------------- error, prone need to simplify
             bool apply = false;
-            if(ip < kNNDFitParamsNuFlx) apply = kNDApplyToTemplateFitParamsNuFlx[ibeam][imode][ip];
-            else apply = kNDApplyToTemplateFitParamsNonNuFlx[ibeam][isample][imode][ip-kNNDFitParamsNuFlx];
+            if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
+            else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
             //-------------- 
             if(!apply) continue;
             bool enu_true_dep = kNDFitParamEtrueDependence[ip];

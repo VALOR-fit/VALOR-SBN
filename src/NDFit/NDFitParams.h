@@ -41,10 +41,10 @@ namespace conv {
 // A simple set of flux and cross-section parameters for the 1st iteration
 //
 
-static const int kNNDFitParams      = 119; // all
-static const int kNNDFitParamsNuFlx = 104; // neutrino flux related
-static const int kNNDFitParamsNuInt =   6; // neutrino interactions related
-static const int kNNDFitParamsDet   =   9; // detector related
+static const int kNNDFitParams       = 119; // all
+static const int kNNDFitParamsNuFlux = 104; // neutrino flux related
+static const int kNNDFitParamsNuInt  =   6; // neutrino interactions related
+static const int kNNDFitParamsDet    =   9; // detector related
 
 //
 // FHC flux
@@ -324,7 +324,7 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
 // Specify how flux parameters are to be applied to the various MC templates
 //
   
-static const bool kNDApplyToTemplateFitParamsNuFlx[kNBeamConf][kNReacModes][kNNDFitParamsNuFlx] = 
+static const bool kNDApplyToTemplateFitParamsNuFlux[kNBeamConf][kNReacModes][kNNDFitParamsNuFlux] = 
 {
   //
   // FHC
@@ -455,7 +455,7 @@ static const bool kNDApplyToTemplateFitParamsNuFlx[kNBeamConf][kNReacModes][kNND
 //
 //
 
-static const bool kNDApplyToTemplateFitParamsNonNuFlx[kNBeamConf][kNNDSamples][kNReacModes][kNNDFitParams-kNNDFitParamsNuFlx] = 
+static const bool kNDApplyToTemplateFitParamsNonNuFlux[kNBeamConf][kNNDSamples][kNReacModes][kNNDFitParams-kNNDFitParamsNuFlux] = 
 {
   //
   // FHC
@@ -2021,9 +2021,9 @@ static const NDFitParamGroup_t kNDFitParamGroup[kNNDFitParams] =
    kpgDetector         // kNuisEffNC            
 };
 
-// Is this a flux related parameter?
+// Is this a neutrino flux related parameter?
 //
-static const double kNDFitIsFluxRelated[kNNDFitParams] = 
+static const double kNDFitIsNuFluxRelated[kNNDFitParams] = 
 {
    // FHC flux
    true,  // kNuisFHCNuMuFlux00
@@ -2150,9 +2150,9 @@ static const double kNDFitIsFluxRelated[kNNDFitParams] =
    false  // kNuisEffNC            
 };
 
-// Is this a cross-section related parameter?
+// Is this a neutrino interaction model related parameter?
 //
-static const double kNDFitIsXSecRelated[kNNDFitParams] = 
+static const double kNDFitIsNuIntRelated[kNNDFitParams] = 
 {
    // FHC flux
    false, // kNuisFHCNuMuFlux00
@@ -2563,8 +2563,8 @@ namespace util {
   PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard", Option_t * param_values = "nominal");
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", Option_t * param_values = "nominal");
   
-  bool IsFluxRelated(conv::PhysParamId_t p);
-  bool IsXSecRelated(conv::PhysParamId_t p);
+  bool IsNuFluxRelated(conv::PhysParamId_t p);
+  bool IsNuIntRelated (conv::PhysParamId_t p);
   
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);

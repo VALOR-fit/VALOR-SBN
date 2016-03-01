@@ -97,7 +97,7 @@ private:
   
   int fParam2Idx[conv::knppmax];
   
-  conv::PhysParamId_t fFluxIndexToPhysParam[conv::kNNDFitParamsNuFlx];
+  conv::PhysParamId_t fFluxIndexToPhysParam[conv::kNNDFitParamsNuFlux];
 
 ClassDef(NuFlux, 1)
 };

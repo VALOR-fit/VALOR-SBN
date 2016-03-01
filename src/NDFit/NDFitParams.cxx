@@ -462,7 +462,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
       }
       // toggle flux related params on/off
       bool no_flux_params = (param_list_opt.find("fix_flux_syst") != string::npos);
-      if(no_flux_params && kNDFitIsFluxRelated[ip]) {
+      if(no_flux_params && kNDFitIsNuFluxRelated[ip]) {
        fparm->Update(p, 1.);
        fparm->SetInitValue(p, 1.);
        fparm->FixParameter(p);
@@ -486,21 +486,21 @@ void valor::util::PopulateNameRegistry(void)
   return;
 }
 //____________________________________________________________________________
-bool valor::util::IsFluxRelated(conv::PhysParamId_t p)
+bool valor::util::IsNuFluxRelated(conv::PhysParamId_t p)
 {
   int nd_index = NDArrIdx::Instance()->NDFitParamIdx(p);
   if (nd_index==-1) {
     return false;
   }
-  return conv::kNDFitIsFluxRelated[nd_index];
+  return conv::kNDFitIsNuFluxRelated[nd_index];
 }
 //____________________________________________________________________________
-bool valor::util::IsXSecRelated(conv::PhysParamId_t p)
+bool valor::util::IsNuIntRelated(conv::PhysParamId_t p)
 {
   int nd_index = NDArrIdx::Instance()->NDFitParamIdx(p);
   if (nd_index==-1) {
     return false;
   }
-  return conv::kNDFitIsXSecRelated[nd_index];
+  return conv::kNDFitIsNuIntRelated[nd_index];
 }
 //____________________________________________________________________________

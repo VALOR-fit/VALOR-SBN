@@ -32,8 +32,6 @@
 */
 //____________________________________________________________________________
 
-// system
-#include <iostream>
 // root
 #include "TSystem.h"
 #include "TObjArray.h"
@@ -69,7 +67,7 @@ int main(int argc, char ** argv)
   arg.ParseFromCmdLine(argc,argv);
   LOG("valor_dune", pNOTICE) << arg;
 
-//  cout << *Rnd::Instance() << endl;
+// LOG("valor_dune", pNOTICE) << *Rnd::Instance();
 
   TString param_values_ts(arg.ParamValuesOption());
 
@@ -84,21 +82,23 @@ int main(int argc, char ** argv)
 //  fitnt->Branch("migraderr", &migraderr);
 
   // Get ND model & configure
-  cout << "Getting and configuring fit model" << endl;
+  LOG("valor_dune", pNOTICE) << "Getting and configuring the fit model";
   FitModelABC * model = new NDModel;
   model->Read(arg.ConfigFile());
 
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < arg.NToyMC(); itoymc++) {
-    cout << "\n\n *** Toy-MC experiment #" << itoymc << endl;
+    LOG("valor_dune", pNOTICE) << "\n\n *** Toy-MC experiment #" << itoymc;
     
     // Reset output tree variables
     ntp.Reset();
 
-    // Getting the fit parameter list that corresponds to the input option.
+    // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
+    // parameter limits, initial values etc).
     // The secondd option determined the `current' values which are used for toy-MC generation below.
     FitParamList * fp = util::GetFitParameterList(arg.FitParamList(), arg.ParamValuesOption());
-    
+    LOG("valor_dune", pNOTICE) << "Using fit parameter list: " << *fp;
+   
     // Randomise the systematics in the model, and copy them to the FPL
     if (param_values_ts.Contains("randomize")) {
       model->RandomizeSystematics(/*param_values_ts.Data()*/);
@@ -106,7 +106,7 @@ int main(int argc, char ** argv)
     fp->FromPhysParamList(model->Tweaks(),"current");
 
     // Generate a toy-MC experiment 
-    cout << "Generating toy-MC data" << endl;
+    LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
     FitDataABC * data = new NDData;
     data->Generate(model,*fp,arg.StatFluct());
 
@@ -119,12 +119,12 @@ int main(int argc, char ** argv)
     fp->ResetCurrToInitValues();
         
     // Get fitter
-    cout << "Preparing fitter" << endl;
+    LOG("valor_dune", pNOTICE) << "Preparing the fitter";
     FitInputs * fit_inputs = new FitInputs(data,model,fp);
     FitterABC * fitter = util::GetFitter(fit_inputs, arg.FitOption());
 
     // Do the fit
-    cout << "Running fitter" << endl;
+    LOG("valor_dune", pNOTICE) << "Running the fitter";
     fitter->DoTheFit();
 
 //  migradmin = fitter->FitStatusCode("migrad_min");

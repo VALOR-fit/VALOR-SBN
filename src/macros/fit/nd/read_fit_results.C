@@ -111,7 +111,7 @@ void read_fit_results(const char * filename)
     for(int ibeam = 0; ibeam < conv::kNBeamConf; ibeam++) {
       conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
       if(b == conv::kbUndefined) continue;
-      const char * c_name = Form("c_%s", util::AsString(b));
+      const char * c_name = Form("c_%s", util::AsString(b).c_str());
       c[ibeam] = new TCanvas(c_name,"",20,20,700,700);
       c[ibeam]->Divide(3,3);
       int ic = 0;

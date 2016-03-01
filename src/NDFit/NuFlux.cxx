@@ -64,8 +64,8 @@ NuFlux::~NuFlux()
 //________________________________________________________________________________________
 void NuFlux::Init(void)
 {
-  fInitialValues        = new TVectorD(conv::kNNDFitParamsNuFlx);
-  fCurrentValues        = new TVectorD(conv::kNNDFitParamsNuFlx);
+  fInitialValues        = new TVectorD(conv::kNNDFitParamsNuFlux);
+  fCurrentValues        = new TVectorD(conv::kNNDFitParamsNuFlux);
   fCovMtrx              = 0;
   fCovMtrxInv           = 0;
   fCovMtrxChoL          = 0; 
@@ -106,7 +106,7 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   
   // Check matrix size
   TMatrixD & cov = *fCovMtrx;
-  const int np = conv::kNNDFitParamsNuFlx;  
+  const int np = conv::kNNDFitParamsNuFlux;  
   if(cov.GetNrows() != np || cov.GetNcols() != np) 
   {
      LOG("NuFlux",pFATAL)
@@ -230,7 +230,7 @@ void NuFlux::Tweak(
         LOG("NuFlux",pDEBUG) << "Forcing input flux parameters. ";
 #endif
         const TVectorD & vec = *input_vec;
-        assert(vec.GetNoElements() == conv::kNNDFitParamsNuFlx);
+        assert(vec.GetNoElements() == conv::kNNDFitParamsNuFlux);
         current_values = vec;
      }
   }//force_inputs?
@@ -334,7 +334,7 @@ int NuFlux::Param2Idx(PhysParamId_t p) const
 //________________________________________________________________________________________
 conv::PhysParamId_t NuFlux::Idx2Param (int index) const
 {
-  assert(index >= 0 && index <= conv::kNNDFitParamsNuFlx);
+  assert(index >= 0 && index <= conv::kNNDFitParamsNuFlux);
   return fFluxIndexToPhysParam[index];
 }
 //________________________________________________________________________________________
