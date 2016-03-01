@@ -121,4 +121,6 @@ NDSample_t util::NDSampleFromInt(int s)
   return ksNDUndefined;
 }
 //________________________________________________________________________________________
-
+string valor::util::NDSampleAsString        (conv::NDSample_t s)            { return util::AsString(s);}
+string valor::util::NDSampleAsStringTeX     (conv::NDSample_t s, bool root) { return util::AsStringTeX(s,root);}
+//________________________________________________________________________________________

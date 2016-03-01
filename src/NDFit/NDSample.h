@@ -114,7 +114,10 @@ namespace util {
   bool             IsCC            (conv::NDSample_t s);
   bool             IsNC            (conv::NDSample_t s);
   conv::NDSample_t NDSampleFromInt (int s);
-
+  
+  // aliases AsString methods
+  string           NDSampleAsString        (conv::NDSample_t s);
+  string           NDSampleAsStringTeX     (conv::NDSample_t s, bool root);
 } // util
 } // valor
   
