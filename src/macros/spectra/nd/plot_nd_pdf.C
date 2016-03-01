@@ -33,7 +33,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
     conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
-    const char * c_name = Form("c_pdf_tot_%s", util::AsString(b));
+    const char * c_name = Form("c_pdf_tot_%s", util::AsString(b).c_str());
     c_pdf_tot[ibeam] = new TCanvas(c_name,"",20,20,600,600);
     c_pdf_tot[ibeam] -> Divide(3,3);
     int ic=0;
@@ -70,7 +70,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
     conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
-    const char * c_name  = Form("c_pdf_slice_%s", util::AsString(b));
+    const char * c_name  = Form("c_pdf_slice_%s", util::AsString(b).c_str());
     c_pdf_slice[ibeam] = new TCanvas(c_name,"",20,20,700,700);
   //c_pdf_slice[ibeam]->Divide(conv::kNNDSamples);
     c_pdf_slice[ibeam]->Divide(3,3);
@@ -139,7 +139,7 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
     conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
-    const char * c_name = Form("c_pdf_contrib_%s", util::AsString(b));
+    const char * c_name = Form("c_pdf_contrib_%s", util::AsString(b).c_str());
     c_pdf_contrib[ibeam] = new TCanvas(c_name,"",20,20,700,700);
   //c_pdf_contrib[ibeam]->Divide(conv::kNNDSamples);
     c_pdf_contrib[ibeam]->Divide(3,3);
