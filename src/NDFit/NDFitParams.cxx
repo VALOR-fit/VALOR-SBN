@@ -304,20 +304,22 @@ PhysParamId_t util::NDPhysParamFromString(string inp_name)
   return kPhypUndefined;
 }
 //________________________________________________________________________________________
-PhysHypothesis util::GetPhysHypothesis(Option_t * param_list, Option_t * param_values)
+PhysHypothesis util::GetPhysHypothesis(Option_t * param_list /*, Option_t * param_values*/)
 {
 // Create a PhysHypothesis object, adding all physics + nuisance params
-// The input option specifies both the set of parameters (eg "standard") and their set
-// values (eg "nominal", or "randomize-all;prefit-errors" etc).
+// The input option specifies both the set of parameters (eg "standard") 
+// and their set values (eg "nominal", or "randomize-all;prefit-errors" etc).
 
   PhysHypothesis ph(kHypVoid); 
 
   string param_list_opt   = ((param_list)   ? param_list   : "standard");
+/*
   string param_values_opt = ((param_values) ? param_values : "nominal");
+*/
 
   LOG("NDFitParams", pNOTICE) 
-    << "Instantiating a physics hypothesis object with option: " 
-    << param_list_opt << " / " << param_values_opt;
+    << "Instantiating a physics hypothesis object with option: " << param_list_opt;
+    /* << " / " << param_values_opt; */
 
   //
   // Get the standard set of parameters
@@ -332,6 +334,8 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list, Option_t * param_v
       bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
       if(skip_detector_params && kNDFitIsDetectorRelated[ip]) continue;
 
+
+/*
       double val = -9999;
       // "nominal", a-priori defaults
       if(param_values_opt.find("nominal") != string::npos) {
@@ -360,26 +364,28 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list, Option_t * param_v
         LOG("NDFitParams", pFATAL) << "You didn't specify how to set the parameter values";
         exit(1);
       }
-
       ph.SetCurrValue(p,val); 
+*/
+
     }//ip
   }
 
   return ph;
 }
 //________________________________________________________________________________________
-FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * param_values)
+FitParamList * util::GetFitParameterList (Option_t * param_list /*, Option_t * param_values*/)
 {
 // Create a FitParamList object, adding all physics + nuisance params.
-// The input option specifies both the set of parameters (eg "standard") and their set
-// values (eg "nominal", or "randomize-all;prefit-errors" etc).
+// The input option specifies both the set of parameters (eg "standard") 
+// and their set values (eg "nominal", or "randomize-all;prefit-errors" etc).
 
   string param_list_opt   = ((param_list)   ? param_list   : "standard");
+/*
   string param_values_opt = ((param_values) ? param_values : "nominal");
-
+*/
   LOG("NDFitParams", pNOTICE)
-    << "Instantiating a  fit parameter list object with option: " 
-    << param_list_opt << " / " << param_values_opt;
+    << "Instantiating a  fit parameter list object with option: " << param_list_opt;
+  /* << " / " << param_values_opt; */
 
   FitParamList * fparm = 0;
 
@@ -411,13 +417,14 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
 */
       // set parameter range, current and init value, etc
       double init = 1.0;
-      double curr = -99999;
+      double curr = 1.0;
       double min  = 0.0;
       double max  = 2.0;
       double step = 1E-4;
       bool   fix  = false;
       bool   nuis = true;
 
+/*
       // "nominal", a-priori defaults
       if(param_values_opt.find("nominal") != string::npos) {
         curr = init;
@@ -448,7 +455,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, Option_t * para
         LOG("NDFitParams", pFATAL) << "You didn't specify how to set the parameter values";
         exit(1);
       }
-
+*/
       fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
       ipc++; 
       fparm->Update(p, curr);

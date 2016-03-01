@@ -2560,8 +2560,8 @@ namespace util {
 
   conv::PhysParamId_t NDPhysParamFromString(string p);
 
-  PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard", Option_t * param_values = "nominal");
-  FitParamList * GetFitParameterList (Option_t * param_list = "standard", Option_t * param_values = "nominal");
+  PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
+  FitParamList * GetFitParameterList (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
   
   bool IsNuFluxRelated(conv::PhysParamId_t p);
   bool IsNuIntRelated (conv::PhysParamId_t p);
