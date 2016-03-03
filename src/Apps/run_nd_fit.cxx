@@ -96,7 +96,6 @@ int main(int argc, char ** argv)
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
     FitParamList * fp = util::GetFitParameterList(arg.FitParamList());
-    LOG("valor_dune", pNOTICE) << "Using fit parameter list: " << *fp;
    
     // Randomise the systematics in the model, and copy them to the FPL
     if (param_values_ts.Contains("randomize")) {
@@ -106,6 +105,7 @@ int main(int argc, char ** argv)
 
     // Generate a toy-MC experiment 
     LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
+    LOG("valor_dune", pNOTICE) << "Toy-MC generation uses fit parameter list: " << *fp;
     FitDataABC * data = new NDData;
     data->Generate(model,*fp,arg.StatFluct());
 
@@ -115,7 +115,7 @@ int main(int argc, char ** argv)
     ntp.TrueParamArr()->Append(fp->AsPhysParamList("current"));
     
     // Set our current values back to the fitter start point
-    fp->ResetCurrToInitValues();
+    // fp->ResetCurrToInitValues();
         
     // Get fitter
     LOG("valor_dune", pNOTICE) << "Preparing the fitter";
@@ -124,6 +124,7 @@ int main(int argc, char ** argv)
 
     // Do the fit
     LOG("valor_dune", pNOTICE) << "Running the fitter";
+    LOG("valor_dune", pNOTICE) << "Fit starts with the following fit parameter list: " << *fp;
     fitter->DoTheFit();
 
 //  migradmin = fitter->FitStatusCode("migrad_min");
