@@ -10,7 +10,7 @@
           
 \created   December 21, 2015
 
-\copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
+\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________

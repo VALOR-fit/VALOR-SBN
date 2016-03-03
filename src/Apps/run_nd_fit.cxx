@@ -27,7 +27,7 @@
 
 \created   March 27, 2014
 
-\copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
+\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________
@@ -45,6 +45,7 @@
 #include "FitCore/FitInputs.h"
 #include "FitCore/FitterABC.h"
 #include "FitCore/UtlFit.h"
+#include "Utilities/UtlStyle.h"
 #include "Utilities/Rnd.h"
 #include "Utilities/Env.h"
 #include "Messenger/Messenger.h"
@@ -61,6 +62,7 @@ using namespace valor::conv;
 int main(int argc, char ** argv)
 {
   Env::Instance()->AutoSet("dune");
+  valor::util::PrintBanner(Env::Instance()->Banner(),500);
 
   NDXArg arg;
   arg.SetDefaults(); 

@@ -11,7 +11,7 @@
 	   Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
-\copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
+\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________

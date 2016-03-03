@@ -18,7 +18,7 @@
 
 \created   March 27, 2014
 
-\copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved
+\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________
