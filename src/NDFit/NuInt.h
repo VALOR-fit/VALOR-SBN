@@ -8,6 +8,9 @@
 \author    Steve Dennis <>
            University of Liverpool
 
+           Lorena Escudero <>
+           University of Cambridge
+
            Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 

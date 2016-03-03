@@ -304,22 +304,17 @@ PhysParamId_t util::NDPhysParamFromString(string inp_name)
   return kPhypUndefined;
 }
 //________________________________________________________________________________________
-PhysHypothesis util::GetPhysHypothesis(Option_t * param_list /*, Option_t * param_values*/)
+PhysHypothesis util::GetPhysHypothesis(Option_t * param_list)
 {
 // Create a PhysHypothesis object, adding all physics + nuisance params
 // The input option specifies both the set of parameters (eg "standard") 
-// and their set values (eg "nominal", or "randomize-all;prefit-errors" etc).
 
   PhysHypothesis ph(kHypVoid); 
 
   string param_list_opt   = ((param_list)   ? param_list   : "standard");
-/*
-  string param_values_opt = ((param_values) ? param_values : "nominal");
-*/
 
   LOG("NDFitParams", pNOTICE) 
     << "Instantiating a physics hypothesis object with option: " << param_list_opt;
-    /* << " / " << param_values_opt; */
 
   //
   // Get the standard set of parameters
@@ -332,40 +327,7 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list /*, Option_t * para
 
       // skip detector params?
       bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
-      if(skip_detector_params && kNDFitIsDetectorRelated[ip]) continue;
-
-
-/*
-      double val = -9999;
-      // "nominal", a-priori defaults
-      if(param_values_opt.find("nominal") != string::npos) {
-        val = 1;
-      } 
-      // "tuned", based on input ND best-fit params
-      else 
-      if(param_values_opt.find("tuned") != string::npos) {
-        LOG("NDFitParams", pFATAL) << "`tuned' option not implemented";
-        exit(1);
-      } 
-      // randomize all parameters using pre-fit errors
-      else 
-      if(param_values_opt.find("randomize-all;prefit-errors") != string::npos) {
-        Rnd * r = Rnd::Instance();
-        double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
-        val = r->RndToyMCsyst().Gaus(1,sig);
-      }
-      // randomize all parameters using post-fit errors
-      else 
-      if(param_values_opt.find("randomize-all;postfit-errors") != string::npos) {
-        LOG("NDFitParams", pFATAL) << "`randomize-all;postfit-errors' option not implemented";
-        exit(1);
-      }
-      else {
-        LOG("NDFitParams", pFATAL) << "You didn't specify how to set the parameter values";
-        exit(1);
-      }
-      ph.SetCurrValue(p,val); 
-*/
+      if(skip_detector_params && kNDFitIsNuDetRelated[ip]) continue;
 
     }//ip
   }
@@ -373,19 +335,15 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list /*, Option_t * para
   return ph;
 }
 //________________________________________________________________________________________
-FitParamList * util::GetFitParameterList (Option_t * param_list /*, Option_t * param_values*/)
+FitParamList * util::GetFitParameterList (Option_t * param_list)
 {
 // Create a FitParamList object, adding all physics + nuisance params.
 // The input option specifies both the set of parameters (eg "standard") 
-// and their set values (eg "nominal", or "randomize-all;prefit-errors" etc).
 
   string param_list_opt   = ((param_list)   ? param_list   : "standard");
-/*
-  string param_values_opt = ((param_values) ? param_values : "nominal");
-*/
+
   LOG("NDFitParams", pNOTICE)
     << "Instantiating a  fit parameter list object with option: " << param_list_opt;
-  /* << " / " << param_values_opt; */
 
   FitParamList * fparm = 0;
 
@@ -403,18 +361,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list /*, Option_t * p
       PhysParamId_t p = kNDFitParam[ip];
       if(p == kPhypUndefined) continue;
 
-/*
-// THIS CREATES PROBLEMS because in NDModel we loop over all kNNDFitParams and only checks for undefined ones -
-// It does not expect that params will be excluded via some other mechanism.
-// So, fix instead
-
-      // skip detector params?
-      bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
-      if(skip_detector_params && kNDFitIsDetectorRelated[ip]) continue;
-      // toggle flux related params on/off
-      bool skip_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
-      if(skip_flux_params && kNDFitIsFluxRelated[ip]) continue;
-*/
       // set parameter range, current and init value, etc
       double init = 1.0;
       double curr = 1.0;
@@ -424,45 +370,13 @@ FitParamList * util::GetFitParameterList (Option_t * param_list /*, Option_t * p
       bool   fix  = false;
       bool   nuis = true;
 
-/*
-      // "nominal", a-priori defaults
-      if(param_values_opt.find("nominal") != string::npos) {
-        curr = init;
-      } 
-      // "tuned", based on input ND best-fit params
-      else 
-      if(param_values_opt.find("tuned") != string::npos) {
-        LOG("NDFitParams", pFATAL) << "`tuned' option not implemented";
-        exit(1);
-      } 
-      // randomize all parameters using pre-fit errors
-      else 
-      if(param_values_opt.find("randomize-all;prefit-errors") != string::npos) {
-        Rnd * r = Rnd::Instance();
-        double sig = 0.2; // kNDFitParamAPrioriFracError[ip]; // HERE
-        curr = r->RndToyMCsyst().Gaus(1,sig);
-        curr = TMath::Min(curr,max);
-        curr = TMath::Max(curr,min);
-        // help fitter by setting init to curr (curr values may be used as true values for toy-MC generation before fitting)
-      }
-      // randomize all parameters using post-fit errors
-      else 
-      if(param_values_opt.find("randomize-all;postfit-errors") != string::npos) {
-        LOG("NDFitParams", pFATAL) << "`randomize-all;postfit-errors' option not implemented";
-        exit(1);
-      }
-      else {
-        LOG("NDFitParams", pFATAL) << "You didn't specify how to set the parameter values";
-        exit(1);
-      }
-*/
       fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
       ipc++; 
       fparm->Update(p, curr);
 
       // toggle detector related params on/off
       bool no_detector_params = (param_list_opt.find("fix_det_syst") != string::npos);
-      if(no_detector_params && kNDFitIsDetectorRelated[ip]) {
+      if(no_detector_params && kNDFitIsNuDetRelated[ip]) {
        fparm->Update(p, 1.);
        fparm->SetInitValue(p, 1.);
        fparm->FixParameter(p);
@@ -509,5 +423,14 @@ bool valor::util::IsNuIntRelated(conv::PhysParamId_t p)
     return false;
   }
   return conv::kNDFitIsNuIntRelated[nd_index];
+}
+//____________________________________________________________________________
+bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
+{
+  int nd_index = NDArrIdx::Instance()->NDFitParamIdx(p);
+  if (nd_index==-1) {
+    return false;
+  }
+  return conv::kNDFitIsNuDetRelated[nd_index];
 }
 //____________________________________________________________________________

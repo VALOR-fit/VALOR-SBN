@@ -35,8 +35,9 @@
 
 namespace valor {
   
-class NuFlux; // flux model systematics
+class NuFlux; // neutrino flux model systematics
 class NuInt;  // neutrino interaction model systematics
+class NuDet;  // neutrino detector model systematics
 
 class NDModel: public FitModelABC
 {
@@ -64,13 +65,15 @@ public:
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
 
   //
-  // Auxiliary methods, not part of the  FitModelABC interface
+  // Auxiliary methods, not part of the  FitModelABC interface (needed?)
   //  
 
   NuFlux *       GetNuFlux (void);
   const NuFlux * GetNuFlux (void) const;
   NuInt *        GetNuInt  (void);
   const NuInt *  GetNuInt  (void) const;
+  NuDet *        GetNuDet  (void);
+  const NuDet *  GetNuDet  (void) const;
 
 private:
 
@@ -155,6 +158,7 @@ private:
   // Neutrino flux and neutrino interaction modelling systematics
   valor::NuFlux * fNuFlux;
   valor::NuInt *  fNuInt;
+  valor::NuDet *  fNuDet;
 };
 
 } // valor

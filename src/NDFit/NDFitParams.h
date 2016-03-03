@@ -44,7 +44,7 @@ namespace conv {
 static const int kNNDFitParams       = 119; // all
 static const int kNNDFitParamsNuFlux = 104; // neutrino flux related
 static const int kNNDFitParamsNuInt  =   6; // neutrino interactions related
-static const int kNNDFitParamsDet    =   9; // detector related
+static const int kNNDFitParamsNuDet  =   9; // neutrino detector related
 
 //
 // FHC flux
@@ -2279,9 +2279,9 @@ static const double kNDFitIsNuIntRelated[kNNDFitParams] =
    false  // kNuisEffNC            
 };
 
-// Is this a detector related parameter?
+// Is this a neutrino detector related parameter?
 //
-static const double kNDFitIsDetectorRelated[kNNDFitParams] = 
+static const double kNDFitIsNuDetRelated[kNNDFitParams] = 
 {
    // FHC flux
    false, // kNuisFHCNuMuFlux00
@@ -2565,6 +2565,7 @@ namespace util {
   
   bool IsNuFluxRelated(conv::PhysParamId_t p);
   bool IsNuIntRelated (conv::PhysParamId_t p);
+  bool IsNuDetRelated (conv::PhysParamId_t p);
   
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);

@@ -31,6 +31,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/UtlNumStat.h"
 #include "Utilities/UtlSystem.h"
 #include "Utilities/UtlPrint.h"
+#include "Utilities/Rnd.h"
 #include "Messenger/Messenger.h"
 #include "FitCore/FitParamList.h"
 #include "FitCore/PhysParamList.h"
@@ -198,11 +199,10 @@ double NuInt::OneSigmaError(int /*idx*/) const
 }
 //________________________________________________________________________________________
 void NuInt::Tweak(
-  bool       /*force_inputs*/, // force the input params or generate random ones internally  
-  TVectorD * /*input_vec*/     // input vector of interaction model params - Set to 0 to reset to nominal ones 
+  bool       force_inputs, // force the input params or generate random ones internally  
+  TVectorD * input_vec     // input vector of interaction model params - Set to 0 to reset to nominal ones 
 )
 {
-/*  
 #ifdef __show_tweak_mesg_debug__
   LOG("NuInt",pDEBUG)  << "Tweaking neutrino interaction model parameters";
 #endif
@@ -242,6 +242,7 @@ void NuInt::Tweak(
      }
   }//force_inputs?
 
+/*
   //
   // If the tweaking dials were not forced, generate correlated tweaking dials
   // using the Cholesky method
@@ -257,6 +258,18 @@ void NuInt::Tweak(
   }
   return;
 */
+
+ // -------- temporary ---------
+ // for now just tweak individually - no correlations
+ //
+  Rnd * r = Rnd::Instance();
+  for (int i = 0 ; i < current_values.GetNoElements(); i++) {
+    PhysParamId_t p = fNuIntIndexToPhysParam[i];
+    double sig = this->OneSigmaError(p);
+    current_values[i] = r->RndToyMCsyst().Gaus(1,sig);
+  }
+ // -------- temporary ---------
+
 }
 //________________________________________________________________________________________
 /*
@@ -323,6 +336,20 @@ double NuInt::ChisqPenalty(bool /*all_syst*/) const
 
   if(chisq_penalty) return chisq_penalty;
 */
+
+ // -------- temporary ---------
+ // for now ignore correlations
+ //
+ double chisq_penalty = 0;
+ double nom = 1;
+ TVectorD & current_values = *fCurrentValues;
+ for (int i = 0 ; i < current_values.GetNoElements(); i++) {
+    PhysParamId_t p = fNuIntIndexToPhysParam[i];
+    double sig = this->OneSigmaError(p);
+    double cur = current_values[i];
+    chisq_penalty += ( TMath::Power((cur-nom)/sig,2.) );
+  }
+ // -------- temporary ---------
 
   return 0;
 }

@@ -40,6 +40,7 @@ Copyright (c) 2010-2015, The VALOR Fitting Group, All Rights Reserved.
 #include "NDFit/NDBeamConf.h"
 #include "NDFit/NuFlux.h"
 #include "NDFit/NuInt.h"
+#include "NDFit/NuDet.h"
 
 using std::endl;
 
@@ -130,12 +131,15 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
     exit(1);
   }
   
-  // Read the neutrino flux modelling info
+  // Read the neutrino flux model info
   fNuFlux = new valor::NuFlux;
   fNuFlux->Read(xml,root_node);
-  // Read the neutrino interaction modelling info
+  // Read the neutrino interaction model info
   fNuInt = new valor::NuInt;
   fNuInt->Read(xml,root_node);
+  // Read the neutrino detector model info
+  fNuDet = new valor::NuDet;
+  fNuDet->Read(xml,root_node);
   
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.
@@ -181,6 +185,7 @@ void NDModel::RandomizeSystematics(void)
 {
   fNuFlux -> Tweak(false,0);
   fNuInt  -> Tweak(false,0);
+  fNuDet  -> Tweak(false,0);
 }
 //________________________________________________________________________________________
 void NDModel::TweakSystematic(
@@ -200,7 +205,9 @@ void NDModel::TweakSystematic(
   if (util::IsNuIntRelated(syst)) {
     //~ fNuInt->Tweak();
   }
-  // MUST FINISH WITH NON-FLUX, NON-XSEC
+  if (util::IsNuDetRelated(syst)) {
+    //~ fNuDet->Tweak();
+  }
 }
 //________________________________________________________________________________________
 PhysParamList NDModel::Tweaks(void)
@@ -209,8 +216,7 @@ PhysParamList NDModel::Tweaks(void)
   
   fNuFlux -> CopyTweaksTo(list);
   fNuInt  -> CopyTweaksTo(list);
-  
-  // MUST FINISH WITH NON-FLUX, NON-XSEC
+  fNuDet  -> CopyTweaksTo(list);
   
   return list;
 }
@@ -749,24 +755,17 @@ bool NDModel::Write(
 //________________________________________________________________________________________
 double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 {
-  double Sp = 0;
+  double Sp_nuflux = (fNuFlux -> ChisqPenalty());
+  double Sp_nuint  = (fNuInt  -> ChisqPenalty());
+  double Sp_nudet  = (fNuDet  -> ChisqPenalty());
 
-  for(int ip = 0; ip < kNNDFitParams; ip++) {
-      PhysParamId_t p = kNDFitParam[ip];
-      if (p == kPhypUndefined) continue;
-      if (conv::kNDFitIsNuFluxRelated[ip]) continue; // Flux modelling contribution is calculated in NuFlux
-      if (conv::kNDFitIsNuIntRelated[ip]) continue; // Neutrino interaction modeling contribution is calculated in NuInt
-      double sig = 0.2; // HERE
-      double val = fPhysHypothesis.CurrValue(p);
-      double def = 1;
-      double dSp = TMath::Power((val-def)/sig, 2.);
-      Sp += dSp;
-  }//ip
-  
-  Sp += (fNuFlux -> ChisqPenalty());
-  Sp += (fNuInt  -> ChisqPenalty());
+  double Sp = Sp_nuflux + Sp_nuint + Sp_nudet;
 
-  LOG("NDModel",pDEBUG) << "Current fit statistic (systematic term) = " << Sp;
+  LOG("NDModel",pDEBUG) 
+   << "Current penalty term = " << Sp 
+   << " (flux = " << Sp_nuflux 
+   << ", interaction = " << Sp_nuint 
+   << ", detector = " << Sp_nudet << ")";
 
   return Sp;
 }
@@ -1817,5 +1816,15 @@ const valor::NuInt * valor::NDModel::GetNuInt(void) const
 valor::NuInt * valor::NDModel::GetNuInt(void)
 {
   return fNuInt;
+}
+//________________________________________________________________________________________
+const valor::NuDet * valor::NDModel::GetNuDet(void) const
+{
+  return fNuDet;
+}
+//________________________________________________________________________________________
+valor::NuDet * valor::NDModel::GetNuDet(void)
+{
+  return fNuDet;
 }
 //________________________________________________________________________________________

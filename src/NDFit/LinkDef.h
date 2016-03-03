@@ -20,5 +20,6 @@
 #pragma link C++ class valor::NDRFL+;
 #pragma link C++ class valor::NuFlux+;
 #pragma link C++ class valor::NuInt+;
+#pragma link C++ class valor::NuDet+;
 
 #endif
