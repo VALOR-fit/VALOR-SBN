@@ -179,6 +179,53 @@ static const PhysParamId_t kNuisEffNuMuCCWSgn    = kNuis117;
 static const PhysParamId_t kNuisEffNC            = kNuis118;
 
 //
+// Interaction model, more complex
+//
+static const PhysParamId_t kNuisIntNuCCQE1          = kNuis119;
+static const PhysParamId_t kNuisIntNuCCQE2          = kNuis120;
+static const PhysParamId_t kNuisIntNuCCQE3          = kNuis121;
+static const PhysParamId_t kNuisIntNuBarCCQE1       = kNuis122;
+static const PhysParamId_t kNuisIntNuBarCCQE2       = kNuis123;
+static const PhysParamId_t kNuisIntNuBarCCQE3       = kNuis124;
+
+static const PhysParamId_t kNuisIntNuCC1piz1        = kNuis125;
+static const PhysParamId_t kNuisIntNuCC1piz2        = kNuis126;
+static const PhysParamId_t kNuisIntNuCC1piz3        = kNuis127;
+static const PhysParamId_t kNuisIntNuCC1pic1        = kNuis128;
+static const PhysParamId_t kNuisIntNuCC1pic2        = kNuis129;
+static const PhysParamId_t kNuisIntNuCC1pic3        = kNuis130;
+
+static const PhysParamId_t kNuisIntNuBarCC1piz1     = kNuis131;
+static const PhysParamId_t kNuisIntNuBarCC1piz2     = kNuis132;
+static const PhysParamId_t kNuisIntNuBarCC1piz3     = kNuis133;
+static const PhysParamId_t kNuisIntNuBarCC1pic1     = kNuis134;
+static const PhysParamId_t kNuisIntNuBarCC1pic2     = kNuis135;
+static const PhysParamId_t kNuisIntNuBarCC1pic3     = kNuis136;
+
+static const PhysParamId_t kNuisIntNuMultiPi1       = kNuis137;
+static const PhysParamId_t kNuisIntNuMultiPi2       = kNuis138;
+static const PhysParamId_t kNuisIntNuMultiPi3       = kNuis139;
+static const PhysParamId_t kNuisIntNuBarMultiPi1    = kNuis140;
+static const PhysParamId_t kNuisIntNuBarMultiPi2    = kNuis141;
+static const PhysParamId_t kNuisIntNuBarMultiPi3    = kNuis142;
+
+static const PhysParamId_t kNuisIntNormMEC          = kNuis143;
+static const PhysParamId_t kNuisIntNormCoherent     = kNuis144;
+static const PhysParamId_t kNuisIntNormCCOther      = kNuis145;
+static const PhysParamId_t kNuisIntNormNC           = kNuis146;
+static const PhysParamId_t kNuisIntNormNuMuToNuE    = kNuis147;
+static const PhysParamId_t kNuisIntNormNuBarToNu    = kNuis148;
+
+static const PhysParamId_t kNuisIntMeanFreePath     = kNuis149;
+static const PhysParamId_t kNuisIntPiChargeExchange = kNuis150;
+static const PhysParamId_t kNuisIntPiAbsorb         = kNuis151;
+static const PhysParamId_t kNuisIntPiInelastic      = kNuis152;
+
+static const PhysParamId_t kNuisIntHadronization    = kNuis153;
+
+//
+
+//
 // ...........................................................................
 //  List of physics parameters considered in this analysis
 // ...........................................................................
