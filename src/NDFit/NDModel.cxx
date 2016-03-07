@@ -32,7 +32,9 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/UtlSystem.h"
 #include "Utilities/UtlXML.h"
 #include "Messenger/Messenger.h"
+
 //dune
+#include "Conventions/DuneBuild.h"
 #include "Conventions/ReacMode.h"
 #include "Conventions/BeamConf.h"
 #include "NDFit/NDModel.h"
@@ -181,11 +183,21 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
   return true;
 }
 //________________________________________________________________________________________
-void NDModel::RandomizeSystematics(void)
+void NDModel::RandomizeSystematics(/*Option_t * options*/)
 {
-  fNuFlux -> Tweak(false,0);
-  fNuInt  -> Tweak(false,0);
-  fNuDet  -> Tweak(false,0);
+  //~ TString opt(options); // We need an option argument here, really
+  TString opt("randomize-all");
+  
+  bool randomize_flux=false, randomize_int=false, randomize_det=false;
+  if (opt.Contains("randomize-all")) {
+    randomize_flux = true;
+    randomize_int  = true;
+    randomize_det  = true;
+  }
+  if (randomize_flux) {fNuFlux->Tweak(false,0);}
+  if (randomize_int ) {fNuInt ->Tweak(false,0);}
+  if (randomize_det ) {fNuDet ->Tweak(false,0);}
+  
 }
 //________________________________________________________________________________________
 void NDModel::TweakSystematic(
@@ -1498,21 +1510,23 @@ void NDModel::ApplyPhysics(Option_t * option)
     for(int isample = 0; isample < kNNDSamples; isample++) {
       NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
+      
+      const int n_enu_true_bins         = util::NumEtrueBins(s);
+      const double * enu_true_bin_edges = util::EtrueBinEdges(s);
+      const int n_y_reco_bin_edges_sb   = util::NumYrecoBinsSb(s);
+        
       for(int imode = 0; imode < kNReacModes; imode++) {
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
-
-        const int n_enu_true_bins = util::NumEtrueBins(s);
-        const double * enu_true_bin_edges = util::EtrueBinEdges(s);
-
-        const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(s);
-
+        
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("NDModel",pDEBUG) 
            << "Handing templates for: " 
            << util::AsString(b) << ", " << util::AsString(s) << ", " << util::AsString(m);
 
         LOG("NDModel",pDEBUG) 
            << "Initializing `fin' templates to the `sys' ones";
+#endif
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
@@ -1528,17 +1542,17 @@ void NDModel::ApplyPhysics(Option_t * option)
                }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
-
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
           LOG("NDModel",pDEBUG) 
              << "Applying Etrue-dependent params";
-
+#endif
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-  	     //-------------- error, prone need to simplify
-	     bool apply = false;
-	     if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
-	     else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
-  	     //-------------- 
+            //-------------- error, prone need to simplify
+            bool apply = false;
+            if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
+            else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
+              //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
@@ -1552,53 +1566,58 @@ void NDModel::ApplyPhysics(Option_t * option)
              const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
              LOG("NDModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f 
                 << " in Etrue bin range: [" << ienu_true_min << ", " << ienu_true_max << "]";
+#endif
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
-                    double val_old = fMCTFinOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
-                    double val_new = val_old * f;
-                    fMCTFinOb[ibeam][isample][imode][izone]->SetEntry(val_new,ier,iyr,iet);
+                    double & val = fMCTFinOb[ibeam][isample][imode][izone]->GetEntryRef(ier,iyr,iet);
+                    double val_old = val;
+                    val *= f;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
                     LOG("NDModel",pDEBUG) 
                       << "MCT[" << ibeam << ", " << isample << ", " << imode << ", " << izone << "] = " 
-                      << val_old << " --> " << val_new;
-
+                      << val_old << " --> " << val;
+#endif
                  }//iyr: yreco bins
                }//ier: Ereco bins
              }//iet: Etrue bins
           }//ip
 
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
           LOG("NDModel",pDEBUG) 
              << "Applying Etrue-independent params";
-
+#endif
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-  	     //-------------- error, prone need to simplify
-	     bool apply = false;
-	     if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
-	     else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
-  	     //-------------- 
+             //-------------- error, prone need to simplify
+             bool apply = false;
+             if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
+             else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
+             //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
              PhysParamId_t p = kNDFitParam[ip];
              if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
              LOG("NDModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f;
+#endif
              fnoEt *= f;
           }//ip
           fnoEt = TMath::Max(0.,fnoEt);
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < n_enu_reco_bins; ier++) {
               for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
-                 double val = fMCTFinOb[ibeam][isample][imode][izone]->GetEntry(ier,iyr,iet);
+                 double & val = fMCTFinOb[ibeam][isample][imode][izone]->GetEntryRef(ier,iyr,iet);
                  val *= fnoEt;
-                 fMCTFinOb[ibeam][isample][imode][izone]->SetEntry(val,ier,iyr,iet);
               }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
@@ -1620,11 +1639,11 @@ void NDModel::ApplyPhysics(Option_t * option)
 
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-  	     //-------------- error, prone need to simplify
-	     bool apply = false;
-	     if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
-	     else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
-  	     //-------------- 
+             //-------------- error, prone need to simplify
+             bool apply = false;
+             if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
+             else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
+             //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
@@ -1641,9 +1660,8 @@ void NDModel::ApplyPhysics(Option_t * option)
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
                for(int ier = 0; ier < kNErecoBinsSb; ier++) {
                  for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
-                    double val = fMCTFinSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                    double & val = fMCTFinSb[ibeam][isample][imode]->GetEntryRef(ier,iyr,iet);
                     val *= f;
-                    fMCTFinSb[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
                  }//iyr: yreco bins
                }//ier: Ereco bins
              }//iet: Etrue bins
@@ -1673,9 +1691,8 @@ void NDModel::ApplyPhysics(Option_t * option)
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
             for(int ier = 0; ier < kNErecoBinsSb; ier++) {
               for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
-                 double val = fMCTFinSb[ibeam][isample][imode]->GetEntry(ier,iyr,iet);
+                 double & val = fMCTFinSb[ibeam][isample][imode]->GetEntryRef(ier,iyr,iet);
                  val *= fnoEt;
-                 fMCTFinSb[ibeam][isample][imode]->SetEntry(val,ier,iyr,iet);
               }//iyr: yreco bins
             }//ier: Ereco bins
           }//iet: Etrue bins
