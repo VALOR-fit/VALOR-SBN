@@ -38,9 +38,13 @@ namespace valor {
 namespace conv {
 
 //
-// A simple set of flux and cross-section parameters for the 1st iteration
+// A simple set of flux and cross-section parameters for the second iteration
 //
 
+//~ static const int kNNDFitParams       = 149; // all
+//~ static const int kNNDFitParamsNuFlux = 104; // neutrino flux related
+//~ static const int kNNDFitParamsNuInt  =  36; // neutrino interactions related
+//~ static const int kNNDFitParamsNuDet  =   9; // neutrino detector related
 static const int kNNDFitParams       = 119; // all
 static const int kNNDFitParamsNuFlux = 104; // neutrino flux related
 static const int kNNDFitParamsNuInt  =   6; // neutrino interactions related
@@ -216,14 +220,21 @@ static const PhysParamId_t kNuisIntNormNC           = kNuis146;
 static const PhysParamId_t kNuisIntNormNuMuToNuE    = kNuis147;
 static const PhysParamId_t kNuisIntNormNuBarToNu    = kNuis148;
 
-static const PhysParamId_t kNuisIntMeanFreePath     = kNuis149;
-static const PhysParamId_t kNuisIntPiChargeExchange = kNuis150;
-static const PhysParamId_t kNuisIntPiAbsorb         = kNuis151;
-static const PhysParamId_t kNuisIntPiInelastic      = kNuis152;
+static const PhysParamId_t kNuisIntNucMeanFreePath  = kNuis150;
+static const PhysParamId_t kNuisIntPiMeanFreePath   = kNuis151;
+static const PhysParamId_t kNuisIntPiChargeExchange = kNuis152;
+static const PhysParamId_t kNuisIntPiAbsorb         = kNuis153;
+static const PhysParamId_t kNuisIntPiInelastic      = kNuis154;
 
-static const PhysParamId_t kNuisIntHadronization    = kNuis153;
+static const PhysParamId_t kNuisIntHadronization    = kNuis155;
 
-//
+//~ // Boundaries between parameter types
+//~ static const PhysParamId_t kNuisIntFirstParameter  = kNuisIntNuCCQE1;
+//~ static const PhysParamId_t kNuisIntLastParameter   = kNuisIntHadronization;
+//~ static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC1trkQE;
+//~ static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
+//~ static const PhysParamId_t kNuisFluxFirstParameter = kNuisFHCNuMuFlux00;
+//~ static const PhysParamId_t kNuisFluxLastParameter  = kNuisRHCNuEBarFlux06;
 
 //
 // ...........................................................................

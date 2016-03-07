@@ -178,7 +178,8 @@ string util::AsString(conv::PhysParamId_t p)
     case ( kNuisIntNormNC          ) : return "f_int_nc"; 
     case ( kNuisIntNormNuMuToNuE   ) : return "f_int_numutonue"; 
     case ( kNuisIntNormNuBarToNu   ) : return "f_int_nubartonu"; 
-    case ( kNuisIntMeanFreePath    ) : return "f_int_mfp"; 
+    case ( kNuisIntNucMeanFreePath ) : return "f_int_nucmfp"; 
+    case ( kNuisIntPiMeanFreePath  ) : return "f_int_pimfp"; 
     case ( kNuisIntPiChargeExchange) : return "f_int_pichargeex"; 
     case ( kNuisIntPiAbsorb        ) : return "f_int_piabsorb"; 
     case ( kNuisIntPiInelastic     ) : return "f_int_piinelastic"; 
@@ -351,7 +352,8 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case ( kNuisIntNormNC          ) : name =  "f_{NC}";                                   break;
     case ( kNuisIntNormNuMuToNuE   ) : name =  "f_{\\nu_{\\mu} \\rightarrow \\nu_{e}}";    break;
     case ( kNuisIntNormNuBarToNu   ) : name =  "f_{\\bar{\\nu} \\rightarrow \\nu}";        break;
-    case ( kNuisIntMeanFreePath    ) : name =  "f_{\\pi \\lambda}";                        break;
+    case ( kNuisIntNucMeanFreePath ) : name =  "f_{n \\lambda}";                           break;
+    case ( kNuisIntPiMeanFreePath  ) : name =  "f_{\\pi \\lambda}";                        break;
     case ( kNuisIntPiChargeExchange) : name =  "f_{\\pi charge ex}";                       break;
     case ( kNuisIntPiAbsorb        ) : name =  "f_{\\pi absorb}";                          break;
     case ( kNuisIntPiInelastic     ) : name =  "f_{\\pi inelastic}";                       break;
