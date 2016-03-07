@@ -15,10 +15,10 @@ int resolution_x = 1024;
 int resolution_y = 768;
 
 void plot_pulls(
-const char * input_pattern = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root",
-const int nParams = 104,
-const int nParamsPerPage = 20,
-const char * img_format = "png"
+  const char * input_pattern = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root",
+  const int nParams = 119,
+  const int nParamsPerPage = 40,
+  const char * img_format = "png"
 )
 {
   using namespace valor;
@@ -26,6 +26,7 @@ const char * img_format = "png"
 
   TChain *toymcchain = new TChain("valor_dune_nd_ntp");
   toymcchain->Add(input_pattern);
+  
   
   assert(toymcchain->GetEntries());
 
@@ -36,10 +37,10 @@ const char * img_format = "png"
   //~ int migradmin, migraderr;
   int j;
   double residual;
-  double pull_mean[nParams];
-  double pull_sigma[nParams];
-  double residual_mean[nParams];
-  double residual_sigma[nParams];
+  double * pull_mean      = new double[nParams];
+  double * pull_sigma     = new double[nParams];
+  double * residual_mean  = new double[nParams];
+  double * residual_sigma = new double[nParams];
 
   toymcchain->SetBranchAddress("true_params",        &true_param_array);
   toymcchain->SetBranchAddress("best_fit_params",    &best_fit_param_array);
@@ -48,35 +49,36 @@ const char * img_format = "png"
   //~ toymcchain->SetBranchAddress("migradmin",          &migradmin);
   //~ toymcchain->SetBranchAddress("migraderr",          &migraderr);
 
-  TH1D *hPull[nParams] = {0};
-  TH1D *hResidual[nParams] = {0};
-  TPaveText *tPullSummary[nParams] = {0};
-  TPaveText *tPull[nParams] = {0};
-  TPaveText *tResidualSummary[nParams] = {0};
-  TPaveText *tResidual[nParams] = {0};
-  TText *axislabel[nParams] = {0};
-  TText *histtitle[nParams] = {0};
+  TH1D ** hPull                 = new TH1D*     [nParams];
+  TH1D ** hResidual             = new TH1D*     [nParams];
+  TPaveText ** tPullSummary     = new TPaveText*[nParams];
+  TPaveText ** tPull            = new TPaveText*[nParams];
+  TPaveText ** tResidualSummary = new TPaveText*[nParams];
+  TPaveText ** tResidual        = new TPaveText*[nParams];
+  TText ** axislabel            = new TText*    [nParams];
+  TText ** histtitle            = new TText*    [nParams];
   
   TLine * line_at_y_is_1 = new TLine(0,1,nParamsPerPage,1);
   TLine * line_at_y_is_0 = new TLine(0,0,nParamsPerPage,0);
 
   for(int hist=0; hist<nParams; hist++)
   {
-    hPull[hist] = new TH1D(Form("hPull%02i", hist), "", 50, -5.0, 5.0);
+    hPull[hist]     = new TH1D(Form("hPull%02i"    , hist), "", 50, -5.0, 5.0);
     hResidual[hist] = new TH1D(Form("hResidual%02i", hist), "", 250, -2.5, 2.5);
   } 
 
   double x_low, x_high;
 
-  for(Long_t i; i < toymcchain->GetEntries(); i++) 
+  for(Long_t i = 0; i < toymcchain->GetEntries(); i++) 
   {
     toymcchain->GetEntry(i);
     
-    //~ if(best_fit_param_array->GetStatusCode("migradmin") == 0 && best_fit_param_array->GetStatusCode("migraderr")==0)
-    {
+    //~ if(best_fit_param_array->GetStatusCode("migradmin") == 0 && best_fit_param_array->GetStatusCode("migraderr")==0) {
+    if (true){
       j = -1;
-      for(PhysParamId_t p = kNuis000; p<kNuis000+nParams; p++)
+      for(int ip = kNuis000; ip < kNuis000+nParams; ip++)
       {
+        PhysParamId_t p = (PhysParamId_t)ip;
         j++;
         //~ double pull_numerator = best_fit_param_array->BestFitValue(p) - 1;
         double pull_numerator = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
@@ -96,7 +98,7 @@ const char * img_format = "png"
     pull_mean[param] = gauss->GetParameter(1);
     pull_sigma[param] = gauss->GetParameter(2);
     hResidual[param]->Fit("gauss", "R");
-    residual_mean[param] = gauss->GetParameter(1);
+    residual_mean [param] = gauss->GetParameter(1);
     residual_sigma[param] = gauss->GetParameter(2);
   }
   
@@ -113,9 +115,9 @@ const char * img_format = "png"
   
   for (int ipage = 0 ; ipage < npages ; ipage++) {
     
-    double param_x         [nParamsPerPage] = {-999};
-    double graph_pull_mean [nParamsPerPage] = {-999};
-    double graph_pull_sigma[nParamsPerPage] = {-999};
+    double * param_x          = new double[nParamsPerPage];
+    double * graph_pull_mean  = new double[nParamsPerPage];
+    double * graph_pull_sigma = new double[nParamsPerPage];
     
     TH1D * label_hist    = new TH1D("label_hist","label_hist",nParamsPerPage,0,nParamsPerPage);
     
@@ -132,10 +134,10 @@ const char * img_format = "png"
       PullCanv->cd(ihist+1);
       gPad->SetTopMargin(0.15);
       PhysParamId_t p = kNDFitParam[iparam];
-      const char * label = util::AsString(p).c_str();
+      string label = util::AsString(p);
       hPull[iparam]->Draw();
       tPull[iparam] = new TPaveText(0.05,0.85,1.0,0.95,"NDC");
-      histtitle[iparam] = tPull[iparam]->AddText(label);
+      histtitle[iparam] = tPull[iparam]->AddText(label.c_str());
       //SetTextAlign(11) to left justify, 21 to centre and 31 to right justify 
       histtitle[iparam]->SetTextAlign(21);
       histtitle[iparam]->SetTextSize(0.12);
@@ -157,8 +159,8 @@ const char * img_format = "png"
     TString canvname_summary = TString::Format("PullSummary%i",ipage);
     TString imgname_summary  = canvname_summary+"."+img_format;
   
-    TGraph *g_pull_mean  = new TGraph(nParamsPerPage, param_x, graph_pull_mean);
-    TGraph *g_pull_sigma = new TGraph(nParamsPerPage, param_x, graph_pull_sigma);
+    TGraph * g_pull_mean  = new TGraph(nParamsPerPage, param_x, graph_pull_mean);
+    TGraph * g_pull_sigma = new TGraph(nParamsPerPage, param_x, graph_pull_sigma);
     
     TCanvas *PullSummary = new TCanvas(canvname_summary.Data(), canvname_summary.Data(), resolution_x, resolution_y);
     PullSummary->SetGridx(1);
