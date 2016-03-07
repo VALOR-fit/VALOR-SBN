@@ -239,9 +239,9 @@ close(VRS_HEADER_FILE);
 # Automatically generate a header file with relevant build information that
 # can be used to make code conditional upon it
 #
-$BLD_HEADER_FILENAME = "$VALOR_DUNE/src/Conventions/Build.h";
+$BLD_HEADER_FILENAME = "$VALOR_DUNE/src/Conventions/DuneBuild.h";
 print "Automatically generating file: $BLD_HEADER_FILENAME \n";
-open(BLD_HEADER_FILE, ">$BLD_HEADER_FILENAME") or die("Can not write out the Build.h file!");
+open(BLD_HEADER_FILE, ">$BLD_HEADER_FILENAME") or die("Can not write out the DuneBuild.h file!");
 print BLD_HEADER_FILE "#ifndef _VALOR_DUNE_BUILD_H_ \n";
 print BLD_HEADER_FILE "#define _VALOR_DUNE_BUILD_H_ \n";
 print BLD_HEADER_FILE "/* \n";
@@ -252,7 +252,7 @@ if ($opt_enable_low_level_messages eq "YES") {
   print BLD_HEADER_FILE "#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED\n\n";
 }
 
-print BLD_HEADER_FILE "\n\n#endif _VALOR_DUNE_BUILD_H_ \n\n";
+print BLD_HEADER_FILE "\n\n#endif //_VALOR_DUNE_BUILD_H_ \n\n";
 close(BLD_HEADER_FILE);
 
 
@@ -290,7 +290,7 @@ if(-e $MKCONF_FILENAME) {
   print "\n";
 }
 if(-e $BLD_HEADER_FILENAME) {
-  print "\nThe following config options were set in Build.h: \n";
+  print "\nThe following config options were set in DuneBuild.h: \n";
   open(BUILDHR, "<$BLD_HEADER_FILENAME") or die("Can not read back the $BLD_HEADER_FILENAME");
   @buildh=<BUILDHR>;
   close(BUILDHR);
