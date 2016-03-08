@@ -97,7 +97,7 @@ void NDXArg::Report(ostream & stream) const
   stream << "   - Option for setting parameter values: " << fParamValuesOption << endl;
   stream << "- Fit" << endl;
   stream << "   - Fit Parameter List: " << fFitParamList << endl;
-  stream << "   - Fitter option: " << fStatFluct << endl;
+  stream << "   - Fitter option: " << fFitOption << endl;
   stream << endl;
   stream << *Rnd::Instance() << endl;
   stream << *Env::Instance() << endl;
