@@ -40,8 +40,9 @@ valor::util::NDArrIdx * valor::util::NDArrIdx::MutableInstance()
 //________________________________________________________________________________________
 void valor::util::NDArrIdx::Init(void)
 {
+  assert(kNNDFitParams==kNNDFitParamsNuFlux+kNNDFitParamsNuInt+kNNDFitParamsNuDet);
+  
   // Init to -1
-
   for(int i = 0; i < 2*kNBeamConf; i++) {
      fNDBeamConfIdx [i] = -1;
   }//i
