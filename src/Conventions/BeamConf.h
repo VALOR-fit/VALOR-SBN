@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include "Conventions/DuneBuild.h"
+
 using std::string;
 
 namespace valor {
