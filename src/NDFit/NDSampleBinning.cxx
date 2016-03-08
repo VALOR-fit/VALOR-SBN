@@ -6,6 +6,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 */
 //________________________________________________________________________________________
 
+#include "TMath.h"
+
 #include "Messenger/Messenger.h"
 #include "NDFit/NDSampleBinning.h"
 
@@ -304,5 +306,26 @@ int util::BinZone(NDSample_t s, double enu_reco, double y_reco)
   return -1;
 }
 //________________________________________________________________________________________
-
-	
+int util::ErecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco)
+{
+  int bin_zone             = util::BinZone(s,enu_reco, y_reco);
+  int nbins                = util::NumErecoBins   (s,bin_zone);
+  const double * bin_edges = util::ErecoBinEdges  (s,bin_zone);
+  return TMath::BinarySearch(1+nbins, bin_edges, enu_reco);
+}
+//________________________________________________________________________________________
+int util::YrecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco)
+{
+  int bin_zone             = util::BinZone(s,enu_reco, y_reco);
+  int nbins                = util::NumYrecoBins   (s,bin_zone);
+  const double * bin_edges = util::YrecoBinEdges  (s,bin_zone);
+  return TMath::BinarySearch(1+nbins, bin_edges, y_reco);
+}
+//________________________________________________________________________________________
+int util::EtrueBinContaining(conv::NDSample_t s, double enu_true)
+{
+  int nbins                = util::NumEtrueBins   (s);
+  const double * bin_edges = util::EtrueBinEdges  (s);
+  return TMath::BinarySearch(1+nbins, bin_edges, enu_true);
+}
+//________________________________________________________________________________________

@@ -218,7 +218,6 @@ static const double kYrecoBinEdgesNCOb1Z[kNYrecoBinsNCOb1Z+1] = { kYrecoMin, kYr
 
 #else
 
-/*
 static const int kNMaxBinZones = 4;
 
 // 
@@ -331,9 +330,7 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
     1.000
 };
 
-*/
-
-#endif // _use_very_few_ereco_yreco_bins_
+#endif // _use_single_zone_optimized_binning_scheme_...
 
 
 } // conv
@@ -361,6 +358,11 @@ namespace util   {
    int            NumYrecoBins    (conv::NDSample_t sample, int zone);
    const double * YrecoBinEdges   (conv::NDSample_t sample, int zone);
    int            BinZone         (conv::NDSample_t sample, double enu_reco, double y_reco);
+   
+   // Get bin number from value (zone aware)
+   int ErecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco);
+   int YrecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco);
+   int EtrueBinContaining(conv::NDSample_t s, double enu_true);
 
 } // util
 
