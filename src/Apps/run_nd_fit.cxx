@@ -74,6 +74,9 @@ int main(int argc, char ** argv)
   TString param_values_ts(arg.ParamValuesOption());
 
   Messenger::Instance()->Configure(arg.VerbosityFile());
+  
+  // Set DUNE param names inside framework
+  util::PopulateNameRegistry();
 
   // Create file and tree to store outputs
   const char * outfilename = Form("%s_%d.root", arg.JobTag(), (int) arg.RunNu());
