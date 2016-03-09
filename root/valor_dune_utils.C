@@ -1,11 +1,3 @@
-void change_prompt()
-{
-    TRint* rint = dynamic_cast<TRint*>(gApplication);
-    if (!rint) return;
-
-    rint->SetPrompt("VALOR/DUNE: [%d] ");
-}
-
 void define_valor_style()
 {
   // VALOR style definition
@@ -126,10 +118,8 @@ void config_mesg()
 
 void valor_dune_utils()
 {
-    if (! (TString(gApplication->ApplicationName()).Contains("PyROOT")) ) {
-      change_prompt();
-    }
-
+    valor::util::ChangeInterpreterPrompt("VALOR/DUNE: [%d] ");
+    
     define_valor_style();
     gROOT->SetStyle("VALOR");
 
