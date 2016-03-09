@@ -102,9 +102,10 @@ int main(int argc, char ** argv)
     // parameter limits, initial values etc).
     FitParamList * fp = util::GetFitParameterList(arg.FitParamList());
    
+    model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
     if (param_values_ts.Contains("randomize")) {
-      model->RandomizeSystematics(/*param_values_ts.Data()*/);
+      model->RandomizeSystematics(param_values_ts.Data());
     }
     fp->FromPhysParamList(model->Tweaks(),"current");
 
