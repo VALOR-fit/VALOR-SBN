@@ -183,10 +183,9 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
   return true;
 }
 //________________________________________________________________________________________
-void NDModel::RandomizeSystematics(/*Option_t * options*/)
+void NDModel::RandomizeSystematics(Option_t * options)
 {
-  //~ TString opt(options); // We need an option argument here, really
-  TString opt("randomize-all");
+  TString opt(options);
   
   bool randomize_flux=false, randomize_int=false, randomize_det=false;
   if (opt.Contains("randomize-all")) {
@@ -233,15 +232,14 @@ PhysParamList NDModel::Tweaks(void)
   return list;
 }
 //________________________________________________________________________________________
-void NDModel::ResetSystematics(void)
+void NDModel::ResetSystematics(Option_t * /*opt*/)
 {
   fNuFlux -> Tweak(true, 0);
   fNuInt  -> Tweak(true, 0);
-
-  // MUST FINISH WITH NON-FLUX
+  fNuDet  -> Tweak(true, 0);
 }
 //________________________________________________________________________________________
-void NDModel::PrintSystematics(ostream & stream) const
+void NDModel::PrintSystematics(ostream & stream, Option_t * /*opt*/) const
 {
   stream << endl;
 }

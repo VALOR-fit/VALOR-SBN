@@ -53,11 +53,11 @@ public:
   string        Name                   (void);
   bool          Read                   (string file, Option_t * opt = 0);
   bool          Generate               (const PhysHypothesis & ph, Option_t * opt = 0);
-  void          RandomizeSystematics   (void);
+  void          RandomizeSystematics   (Option_t * opt = 0);
   void          TweakSystematic        (string syst_name, double twkdial=0., Option_t * opt = 0); 
   void          TweakSystematic        (conv::PhysParamId_t syst, double twkdial=0., Option_t * opt = 0);
-  void          ResetSystematics       (void);  
-  void          PrintSystematics       (ostream & stream = std::cout) const;
+  void          ResetSystematics       (Option_t * opt = 0);  
+  void          PrintSystematics       (ostream & stream = std::cout, Option_t * opt = 0) const;
   PhysParamList Tweaks                 (void);
   bool          Generate               (const FitParamList & fp, Option_t * opt = 0);
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
