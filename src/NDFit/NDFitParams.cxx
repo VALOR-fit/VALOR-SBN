@@ -470,6 +470,13 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
        fparm->SetInitValue(p, 1.);
        fparm->FixParameter(p);
       }
+      // toggle int related params on/off
+      bool no_int_params = (param_list_opt.find("fix_int_syst") != string::npos);
+      if(no_int_params && kNDFitIsNuIntRelated[ip]) {
+       fparm->Update(p, 1.);
+       fparm->SetInitValue(p, 1.);
+       fparm->FixParameter(p);
+      }
 
     }//ip
   }

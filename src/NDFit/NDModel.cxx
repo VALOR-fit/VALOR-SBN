@@ -186,6 +186,7 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
 void NDModel::RandomizeSystematics(Option_t * options)
 {
   TString opt(options);
+  if (!opt.Length()) {opt="randomize-all";}
   
   bool randomize_flux=false, randomize_int=false, randomize_det=false;
   if (opt.Contains("randomize-all")) {
@@ -193,6 +194,10 @@ void NDModel::RandomizeSystematics(Option_t * options)
     randomize_int  = true;
     randomize_det  = true;
   }
+  if (opt.Contains("randomize-flux")) {randomize_flux = true;}
+  if (opt.Contains("randomize-int" )) {randomize_int  = true;}
+  if (opt.Contains("randomize-det" )) {randomize_det  = true;}
+  
   if (randomize_flux) {fNuFlux->Tweak(false,0);}
   if (randomize_int ) {fNuInt ->Tweak(false,0);}
   if (randomize_det ) {fNuDet ->Tweak(false,0);}
