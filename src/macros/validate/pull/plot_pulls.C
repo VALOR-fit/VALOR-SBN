@@ -85,7 +85,6 @@ void plot_pulls(
         j++;
         double fitted_errors = best_fit_param_array->MigradError(p);
         if ( (!ts_options.Contains("ignore_hesse")) && best_fit_param_array->HesseErrorsSet()) {
-          assert(false);
           fitted_errors = best_fit_param_array->HesseError(p);
         }
         
