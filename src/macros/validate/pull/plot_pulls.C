@@ -18,11 +18,14 @@ void plot_pulls(
   const char * input_pattern = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root",
   const int nParams = 119,
   const int nParamsPerPage = 40,
+  const char * options = "",
   const char * img_format = "png"
 )
 {
   using namespace valor;
   using namespace valor::conv;
+  
+  TString ts_options(options);
 
   TChain *toymcchain = new TChain("valor_dune_nd_ntp");
   toymcchain->Add(input_pattern);
@@ -80,9 +83,15 @@ void plot_pulls(
       {
         PhysParamId_t p = (PhysParamId_t)ip;
         j++;
+        double fitted_errors = best_fit_param_array->MigradError(p);
+        if ( (!ts_options.Contains("ignore_hesse")) && best_fit_param_array->HesseErrorsSet()) {
+          assert(false);
+          fitted_errors = best_fit_param_array->HesseError(p);
+        }
+        
         //~ double pull_numerator = best_fit_param_array->BestFitValue(p) - 1;
         double pull_numerator = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
-        double pull_denominator = best_fit_param_array->MigradError(p);
+        double pull_denominator = fitted_errors;
         //~ double pull_denominator = sqrt(0.2*0.2 - best_fit_param_array->MigradError(p)*best_fit_param_array->MigradError(p));
         hPull[j]->Fill(pull_numerator/pull_denominator);
         residual = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
@@ -105,11 +114,15 @@ void plot_pulls(
   
   // Calculate how many pages worth of plots we'll need and how to divide up the canvas
   int npages = TMath::CeilNint((double)nParams/nParamsPerPage);
-  int n_plots_horizontal = nParamsPerPage * 0.20;
-  int n_plots_vertical   = nParamsPerPage * 0.15;
   
-  if (n_plots_horizontal*n_plots_vertical < nParamsPerPage) {n_plots_horizontal++;}
-  if (n_plots_horizontal*n_plots_vertical < nParamsPerPage) {n_plots_vertical++;}
+  int n_plots_horizontal = 1;
+  int n_plots_vertical   = 1;
+  
+  while (n_plots_horizontal * n_plots_vertical < nParamsPerPage) {
+    n_plots_horizontal++;
+    if (n_plots_horizontal * n_plots_vertical > nParamsPerPage) {break;}
+    n_plots_vertical++;
+  }
   
   int iparam = 0;
   
