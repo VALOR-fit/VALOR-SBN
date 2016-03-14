@@ -457,21 +457,21 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       fparm->Update(p, curr);
 
       // toggle detector related params on/off
-      bool no_detector_params = (param_list_opt.find("fix_det_syst") != string::npos);
+      bool no_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
       if(no_detector_params && kNDFitIsNuDetRelated[ip]) {
        fparm->Update(p, 1.);
        fparm->SetInitValue(p, 1.);
        fparm->FixParameter(p);
       }
       // toggle flux related params on/off
-      bool no_flux_params = (param_list_opt.find("fix_flux_syst") != string::npos);
+      bool no_flux_params = (param_list_opt.find("fix-flux-syst") != string::npos);
       if(no_flux_params && kNDFitIsNuFluxRelated[ip]) {
        fparm->Update(p, 1.);
        fparm->SetInitValue(p, 1.);
        fparm->FixParameter(p);
       }
       // toggle int related params on/off
-      bool no_int_params = (param_list_opt.find("fix_int_syst") != string::npos);
+      bool no_int_params = (param_list_opt.find("fix-int-syst") != string::npos);
       if(no_int_params && kNDFitIsNuIntRelated[ip]) {
        fparm->Update(p, 1.);
        fparm->SetInitValue(p, 1.);
