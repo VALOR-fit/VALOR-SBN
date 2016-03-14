@@ -21,12 +21,16 @@
 
 #include <iostream>
 
+#include <THashTable.h>
 #include <TSpline.h>
 
 #include "Conventions/BeamConf.h"
+#include "Conventions/ReacMode.h"
+
 #include "NDFit/NDArrIdx.h"
 #include "NDFit/NDSample.h"
 #include "NDFit/NDSampleBinning.h"
+#include "NDFit/NDSample.h"
 #include "NDFit/NDSampleModes.h"
 #include "NDFit/NDFitParams.h"
 
@@ -43,6 +47,23 @@ public:
   void Print(ostream & stream) const;
   friend ostream & operator << (ostream & stream, const NDRFL & rfl);
   
+  TSpline * GetSpline(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+                      conv::PhysParamId_t p, double true1, double obs1, double obs2=-999999) const;
+  
+  // Enable/Disable using the map lookup
+  void SetSplineMapIsEnabled(bool if_enabled = true);
+  
+  // If we know that all of the bins have had their splines found
+  // we can assume that a null spline in the map means no RF should be applied.
+  void SetSplineMapIsComplete(bool if_complete = true);
+  
+  // Get the name of the spline we're looking for
+  TString BuildSplineName(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+                          conv::PhysParamId_t p, int true_bin, int obs1_bin, int obs2_bin = -999999) const;
+                          
+  // Read splines from config file
+  bool Read (string file, Option_t * opt = 0);
+  
 private:
 
   NDRFL();
@@ -50,9 +71,22 @@ private:
  ~NDRFL();
 
   static NDRFL * fInstance;
+  
+  //~ unsigned int fNNDIntDetParams;
+  //~ conv::PhysParamId_t * fNDIntDetParams; // The non-flux ND params are those that can have RFs
 
-  // Actual response function
-  // TSpline3 * fWght [conv::kNNDFitParams][conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  // Actual response function block
+  TSpline ** fSplines; // This will be a big block, with dimensions [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNNDFitParams][conv::kNMaxBinsEr]
+  
+  TSpline * fFlatSpline; //A flat spline that we'll use if we're missing RFs in testing versions
+  
+  // Name for the splines (used in filename)
+  std::string fTag;
+  
+  // The map we'll store our splines in
+  mutable THashTable * fSplineMap;
+  bool fSplineMapIsComplete;
+  bool fSplineMapIsEnabled;
 
   struct Cleaner {
       void DummyMethodAndSilentCompiler() { }
