@@ -48,6 +48,12 @@ public:
   bool         StoreSpectra      (void) const { return fStoreSpectra;              }
   const char * ConfigFile        (Option_t * opt = "check_file_exists") const;
   const char * VerbosityFile     (Option_t * opt = "check_file_exists") const;
+  
+  UInt_t RndSeedToyMCstat() const {return fSeedToyMCstat;}
+  UInt_t RndSeedToyMCsyst() const {return fSeedToyMCsyst;}
+  UInt_t RndSeedToyMCosc () const {return fSeedToyMCosc; }
+  UInt_t RndSeedFitter   () const {return fSeedFitter;   }
+  UInt_t RndSeedOther    () const {return fSeedOther;    }
 
 protected:
 
@@ -63,6 +69,14 @@ protected:
   bool   fStoreSpectra;       ///< store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) 
   string fConfigFile;         ///< analysis configuration file 
   string fVerbosityFile;      ///< message thresholds 
+  
+  // Random seeds
+  UInt_t fSeedToyMCstat;      ///< initial seeds for RNG - stat fluctuations
+  UInt_t fSeedToyMCsyst;      ///< initial seeds for RNG - syst fluctuations
+  UInt_t fSeedToyMCosc;       ///< initial seeds for RNG - osc param fluctutations
+  UInt_t fSeedFitter;         ///< initial seeds for RNG - randomisation of start points in fitter
+  UInt_t fSeedOther;          ///< initial seeds for RNG - misc
+        
 };
 
 std::ostream& operator<< (std::ostream& stream, const valor::NDXArg & arg);
