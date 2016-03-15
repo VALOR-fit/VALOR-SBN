@@ -10,6 +10,7 @@ Major rewrite, Steve Dennis, Feb 2016
 */
 
 void FormatGraph(TGraph *graph, int style, int colour, int size);
+void FormatPave(TPaveText * pave);
 
 int resolution_x = 1024;
 int resolution_y = 768;
@@ -26,24 +27,42 @@ void plot_pulls(
   using namespace valor::conv;
   
   TString ts_options(options);
+  
+  bool plot_errors                 = ts_options.Contains("showerrors" );
+  bool ignore_hesse                = ts_options.Contains("ignorehesse");
+  bool save_all_plotted_histograms = ts_options.Contains("saveall"    );
+  
+  bool batchmode = gROOT->IsBatch();
 
   TChain *toymcchain = new TChain("valor_dune_nd_ntp");
   toymcchain->Add(input_pattern);
   
-  
   assert(toymcchain->GetEntries());
-
+  
+  int nfits = toymcchain->GetEntries();
+  int nsigma = 5;
+  
+  int nbins_pull = valor::util::EstimateOptimalNumberOfBinsForGaussian(nfits,nsigma);
+  int nbins_res  = valor::util::EstimateOptimalNumberOfBinsForGaussian(nfits,nsigma);
+  
   PhysParamList * true_param_array     = 0; // input true params
   FitParamList *  best_fit_param_array = 0; // best-fit params
   TObjArray *     best_fit_model_array = 0; // an array of various best-fit model predictions for the current toy-MC experiment 
   TObjArray *     data_array           = 0; // an array of all fitted data distributions for the current toy-MC experiment
   //~ int migradmin, migraderr;
-  int j;
-  double residual;
-  double * pull_mean      = new double[nParams];
-  double * pull_sigma     = new double[nParams];
-  double * residual_mean  = new double[nParams];
-  double * residual_sigma = new double[nParams];
+  
+  double * pull_mean          = new double[nParams];
+  double * pull_mean_err      = new double[nParams];
+  double * pull_sigma         = new double[nParams];
+  double * pull_sigma_err     = new double[nParams];
+  double * pull_const         = new double[nParams];
+  double * pull_const_err     = new double[nParams];
+  double * residual_mean      = new double[nParams];
+  double * residual_mean_err  = new double[nParams];
+  double * residual_sigma     = new double[nParams];
+  double * residual_sigma_err = new double[nParams];
+  double * residual_const     = new double[nParams];
+  double * residual_const_err = new double[nParams];
 
   toymcchain->SetBranchAddress("true_params",        &true_param_array);
   toymcchain->SetBranchAddress("best_fit_params",    &best_fit_param_array);
@@ -61,16 +80,17 @@ void plot_pulls(
   TText ** axislabel            = new TText*    [nParams];
   TText ** histtitle            = new TText*    [nParams];
   
+  TH1 ** fitPull                 = new TH1*[nParams];
+  TH1 ** fitResidual             = new TH1*[nParams];
+  
   TLine * line_at_y_is_1 = new TLine(0,1,nParamsPerPage,1);
   TLine * line_at_y_is_0 = new TLine(0,0,nParamsPerPage,0);
 
-  for(int hist=0; hist<nParams; hist++)
+  for(int iparam=0; iparam<nParams; iparam++)
   {
-    hPull[hist]     = new TH1D(Form("hPull%02i"    , hist), "", 50, -5.0, 5.0);
-    hResidual[hist] = new TH1D(Form("hResidual%02i", hist), "", 250, -2.5, 2.5);
-  } 
-
-  double x_low, x_high;
+    hPull    [iparam] = new TH1D(Form("hPull%02i"    , iparam), "", nbins_pull, -nsigma, +nsigma);
+    hResidual[iparam] = new TH1D(Form("hResidual%02i", iparam), "", nbins_res , -nsigma, +nsigma);
+  }
 
   for(Long_t i = 0; i < toymcchain->GetEntries(); i++) 
   {
@@ -78,13 +98,12 @@ void plot_pulls(
     
     //~ if(best_fit_param_array->GetStatusCode("migradmin") == 0 && best_fit_param_array->GetStatusCode("migraderr")==0) {
     if (true){
-      j = -1;
       for(int ip = kNuis000; ip < kNuis000+nParams; ip++)
       {
         PhysParamId_t p = (PhysParamId_t)ip;
-        j++;
+        int iparam = util::NDArrIdx::Instance()->NDFitParamIdx(p);
         double fitted_errors = best_fit_param_array->MigradError(p);
-        if ( (!ts_options.Contains("ignore_hesse")) && best_fit_param_array->HesseErrorsSet()) {
+        if (!ignore_hesse && best_fit_param_array->HesseErrorsSet()) {
           fitted_errors = best_fit_param_array->HesseError(p);
         }
         
@@ -92,24 +111,40 @@ void plot_pulls(
         double pull_numerator = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
         double pull_denominator = fitted_errors;
         //~ double pull_denominator = sqrt(0.2*0.2 - best_fit_param_array->MigradError(p)*best_fit_param_array->MigradError(p));
-        hPull[j]->Fill(pull_numerator/pull_denominator);
-        residual = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
-        hResidual[j]->Fill(residual);
+        hPull[iparam]->Fill(pull_numerator/pull_denominator);
+        double residual = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
+        hResidual[iparam]->Fill(residual);
       }
     }
   }
-
-  TF1 *gauss = new TF1("gauss", "gaus", -4.0, 4.0);
-  for(int param=0; param<nParams; param++)
+    
+  TF1 *gauss = new TF1("mygaus", "gaus(0)", -nsigma, +nsigma);
+  for(int iparam=0; iparam<nParams; iparam++)
   {
-    hPull[param]->Fit("gauss", "R");
-    pull_mean[param] = gauss->GetParameter(1);
-    pull_sigma[param] = gauss->GetParameter(2);
-    hResidual[param]->Fit("gauss", "R");
-    residual_mean [param] = gauss->GetParameter(1);
-    residual_sigma[param] = gauss->GetParameter(2);
+    hPull[iparam]->Fit(gauss, "RM0");
+    pull_const    [iparam] = gauss->GetParameter(0);
+    pull_mean     [iparam] = gauss->GetParameter(1);
+    pull_sigma    [iparam] = gauss->GetParameter(2);
+    pull_const_err[iparam] = gauss->GetParError(0);
+    pull_mean_err [iparam] = gauss->GetParError(1);
+    pull_sigma_err[iparam] = gauss->GetParError(2);
+    fitPull       [iparam] = valor::util::MakeFittedHistogramShowingFittedValues(hPull[iparam],gauss,10000);
+    
+    hResidual[iparam]->Fit(gauss, "RM0");
+    residual_const    [iparam] = gauss->GetParameter(0);
+    residual_mean     [iparam] = gauss->GetParameter(1);
+    residual_sigma    [iparam] = gauss->GetParameter(2);
+    residual_const_err[iparam] = gauss->GetParError(0);
+    residual_mean_err [iparam] = gauss->GetParError(1);
+    residual_sigma_err[iparam] = gauss->GetParError(2);
+    fitResidual       [iparam] = valor::util::MakeFittedHistogramShowingFittedValues(hPull[iparam],gauss,10000);
+    
+    //~ pull_const    [iparam] = fitPull    [iparam]->Integral();
+    //~ residual_const[iparam] = fitResidual[iparam]->Integral();
+    
+    fitPull       [iparam]->SetLineColor(kRed);
+    fitResidual   [iparam]->SetLineColor(kRed);
   }
-  
   
   // Calculate how many pages worth of plots we'll need and how to divide up the canvas
   int npages = TMath::CeilNint((double)nParams/nParamsPerPage);
@@ -127,9 +162,12 @@ void plot_pulls(
   
   for (int ipage = 0 ; ipage < npages ; ipage++) {
     
-    double * param_x          = new double[nParamsPerPage];
-    double * graph_pull_mean  = new double[nParamsPerPage];
-    double * graph_pull_sigma = new double[nParamsPerPage];
+    double * param_x              = new double[nParamsPerPage];
+    double * param_x_err          = new double[nParamsPerPage];
+    double * graph_pull_mean      = new double[nParamsPerPage];
+    double * graph_pull_sigma     = new double[nParamsPerPage];
+    double * graph_pull_mean_err  = new double[nParamsPerPage];
+    double * graph_pull_sigma_err = new double[nParamsPerPage];
     
     TH1D * label_hist    = new TH1D("label_hist","label_hist",nParamsPerPage,0,nParamsPerPage);
     
@@ -147,7 +185,6 @@ void plot_pulls(
       gPad->SetTopMargin(0.15);
       PhysParamId_t p = kNDFitParam[iparam];
       string label = util::AsString(p);
-      hPull[iparam]->Draw();
       tPull[iparam] = new TPaveText(0.05,0.85,1.0,0.95,"NDC");
       histtitle[iparam] = tPull[iparam]->AddText(label.c_str());
       //SetTextAlign(11) to left justify, 21 to centre and 31 to right justify 
@@ -155,14 +192,39 @@ void plot_pulls(
       histtitle[iparam]->SetTextSize(0.12);
       tPull[iparam]->SetFillColor(0);
       tPull[iparam]->SetBorderSize(0);
-      tPull[iparam]->Draw();
+      
+      // Draw
+      hPull  [iparam]->Draw();
+      fitPull[iparam]->Draw("LSAME");
+      tPull  [iparam]->Draw();
       
       // Fill the graph arrays
-      param_x         [ihist] = label_hist->GetXaxis()->GetBinCenter(ihist+1);
-      graph_pull_mean [ihist] = pull_mean [iparam];
-      graph_pull_sigma[ihist] = pull_sigma[iparam];
+      param_x             [ihist] = label_hist->GetXaxis()->GetBinCenter(ihist+1);
+      param_x_err         [ihist] = 0;
+      graph_pull_mean     [ihist] = pull_mean     [iparam];
+      graph_pull_sigma    [ihist] = pull_sigma    [iparam];
+      graph_pull_mean_err [ihist] = pull_mean_err [iparam];
+      graph_pull_sigma_err[ihist] = pull_sigma_err[iparam];
       
-      label_hist->GetXaxis()->SetBinLabel(ihist+1,util::AsString(p).c_str());
+      label_hist->GetXaxis()->SetBinLabel(ihist+1,label.c_str());
+      
+      if (save_all_plotted_histograms) {
+        //~ if (!batchmode) {gROOT->SetBatch(1);} // We'll want to be in batch mode for making all these histograms.
+        TCanvas c("pull_canv_tmp","pull_canv_tmp");
+        c.cd();
+        TPaveText * stats = new TPaveText(0.65,0.7,0.85,0.9,"NDC");
+        TString  mean_label = TString::Format("Mean  = %.3lf",pull_mean [iparam]);
+        TString sigma_label = TString::Format("Sigma = %.3lf",pull_sigma[iparam]);
+        stats->SetTextSize(0.05);
+        stats->AddText( mean_label.Data());
+        stats->AddText(sigma_label.Data());
+        FormatPave(stats);
+        hPull[iparam]->Draw();
+        fitPull[iparam]->Draw("LSAME");
+        stats->Draw();
+        c.SaveAs(TString::Format("PullFitted_%s.%s",label.c_str(),img_format));
+        if (batchmode) {gROOT->SetBatch(0);}
+      }
     }
       
     PullCanv->SaveAs(imgname.Data());
@@ -170,9 +232,18 @@ void plot_pulls(
     // Pull summary.
     TString canvname_summary = TString::Format("PullSummary%i",ipage);
     TString imgname_summary  = canvname_summary+"."+img_format;
-  
-    TGraph * g_pull_mean  = new TGraph(nParamsPerPage, param_x, graph_pull_mean);
-    TGraph * g_pull_sigma = new TGraph(nParamsPerPage, param_x, graph_pull_sigma);
+    
+    TGraph * g_pull_mean ; 
+    TGraph * g_pull_sigma;
+    
+    if (plot_errors) {
+      g_pull_mean  = new TGraphErrors(nParamsPerPage, param_x, graph_pull_mean , param_x_err, graph_pull_mean_err );
+      g_pull_sigma = new TGraphErrors(nParamsPerPage, param_x, graph_pull_sigma, param_x_err, graph_pull_sigma_err);
+    }
+    else {
+      g_pull_mean  = new TGraph(nParamsPerPage, param_x, graph_pull_mean );
+      g_pull_sigma = new TGraph(nParamsPerPage, param_x, graph_pull_sigma);
+    }
     
     TCanvas *PullSummary = new TCanvas(canvname_summary.Data(), canvname_summary.Data(), resolution_x, resolution_y);
     PullSummary->SetGridx(1);
@@ -192,8 +263,8 @@ void plot_pulls(
     line_at_y_is_1->Draw();
     line_at_y_is_0->Draw();
     
-    FormatGraph(g_pull_mean , kFullCircle    , kRed , 1);
-    FormatGraph(g_pull_sigma, kFullTriangleUp, kBlue, 1);
+    FormatGraph(g_pull_mean , kFullCircle    , kRed , 1.);
+    FormatGraph(g_pull_sigma, kFullTriangleUp, kBlue, 1.);
     g_pull_mean ->Draw("P");
     g_pull_sigma->Draw("P");
 
@@ -290,4 +361,14 @@ void FormatGraph(TGraph *graph, int style, int colour, int size)
   graph->SetMarkerStyle(style);
   graph->SetMarkerColor(colour);
   graph->SetMarkerSize(size);
+  graph->SetLineColor(colour);
+}
+
+void FormatPave(TPaveText * pave)
+{
+  pave->SetTextFont(22)   ;
+  pave->SetShadowColor(0) ;
+  pave->SetFillColor(0)   ;
+  pave->SetFillStyle(0)   ;
+  pave->SetLineColor(0)   ;
 }
