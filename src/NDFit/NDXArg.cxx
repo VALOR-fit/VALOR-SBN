@@ -80,6 +80,46 @@ bool NDXArg::ParseFromCmdLine(int argc, char ** argv)
 
   if( parser.OptionExists("store-spectra")   ) fStoreSpectra = true;
   if( parser.OptionExists("discard-spectra") ) fStoreSpectra = false;
+  
+  // seeds
+  if (parser.OptionExists("seed-toys-stat")) {
+    fSeedToyMCstat = parser.ArgAsUInt("seed-toys-stat");
+  }
+  else {
+    fSeedToyMCstat = 0;
+  }
+  
+  if (parser.OptionExists("seed-toys-syst")) {
+    fSeedToyMCsyst = parser.ArgAsUInt("seed-toys-syst");
+  }
+  else {
+    fSeedToyMCsyst = 0;
+  }
+  
+  if (parser.OptionExists("seed-toys-osc")) {
+    fSeedToyMCosc = parser.ArgAsUInt("seed-toys-osc");
+  }
+  else {
+    fSeedToyMCosc = 0;
+  }
+  
+  if (parser.OptionExists("seed-fitter")) {
+    fSeedFitter = parser.ArgAsUInt("seed-fitter");
+  }
+  else {
+    fSeedFitter = 0;
+  }
+  
+  if (parser.OptionExists("seed-misc")) {
+    fSeedOther = parser.ArgAsUInt("seed-misc");
+  }
+  else {
+    fSeedOther = 0;
+  }
+  
+  // Should this be done here? Or in macro code.
+  Rnd::Instance()->SetSeeds(fSeedToyMCstat,fSeedToyMCsyst,fSeedToyMCosc,fSeedFitter,fSeedOther);
+  
 
   return true;
 }
