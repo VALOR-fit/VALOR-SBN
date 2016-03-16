@@ -32,6 +32,8 @@ void plot_pulls(
   bool ignore_hesse                = ts_options.Contains("ignorehesse");
   bool save_all_plotted_histograms = ts_options.Contains("saveall"    );
   
+  bool include_fits_with_failed_hesse = true;
+  
   bool batchmode = gROOT->IsBatch();
 
   TChain *toymcchain = new TChain("valor_dune_nd_ntp");
@@ -85,6 +87,10 @@ void plot_pulls(
   
   TLine * line_at_y_is_1 = new TLine(0,1,nParamsPerPage,1);
   TLine * line_at_y_is_0 = new TLine(0,0,nParamsPerPage,0);
+  
+  int n_using_hesse_errors  = 0;
+  int n_using_migrad_errors = 0;
+  int n_errors_not_accurate = 0;
 
   for(int iparam=0; iparam<nParams; iparam++)
   {
@@ -96,16 +102,42 @@ void plot_pulls(
   {
     toymcchain->GetEntry(i);
     
+    // Decide which error to use - HESSE, MIGRAD or skip  fit
+    bool using_hesse_error = best_fit_param_array->HesseErrorsSet() && !ignore_hesse;
+    if (using_hesse_error) {
+      int hesse_status_code = best_fit_param_array->GetStatusCode("hesse_err");
+      if (hesse_status_code==3) {
+        n_using_hesse_errors++;
+      }
+      else {
+        using_hesse_error = false;
+        if (!include_fits_with_failed_hesse) {
+          n_errors_not_accurate++;
+          continue;
+        }
+      }
+    }
+    if (!using_hesse_error) {
+      int migrad_err_status = best_fit_param_array->GetStatusCode("migrad_err");
+      if (migrad_err_status==3) {
+        n_using_migrad_errors++;
+      }
+      else {
+        n_errors_not_accurate++;
+        continue;
+      }
+    }
+    
     //~ if(best_fit_param_array->GetStatusCode("migradmin") == 0 && best_fit_param_array->GetStatusCode("migraderr")==0) {
     if (true){
+      
       for(int ip = kNuis000; ip < kNuis000+nParams; ip++)
       {
         PhysParamId_t p = (PhysParamId_t)ip;
         int iparam = util::NDArrIdx::Instance()->NDFitParamIdx(p);
-        double fitted_errors = best_fit_param_array->MigradError(p);
-        if (!ignore_hesse && best_fit_param_array->HesseErrorsSet()) {
-          fitted_errors = best_fit_param_array->HesseError(p);
-        }
+        
+        // Select our fitted error
+        double fitted_errors = (using_hesse_error ? fitted_errors = best_fit_param_array->HesseError(p) : best_fit_param_array->MigradError(p));
         
         //~ double pull_numerator = best_fit_param_array->BestFitValue(p) - 1;
         double pull_numerator = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
@@ -351,9 +383,14 @@ void plot_pulls(
 //~ 
   //~ ResidualSummary->SaveAs("ResidualSummary.png");
   
+  cout<<"Got "<<nfits<<" fits. "
+      <<"Plotted "<<n_using_hesse_errors<< " with hesse errors, "
+      <<n_using_migrad_errors<<" with migrad errors and skipped "
+      <<n_errors_not_accurate<<" due to bad error matrix status."<<endl;
+      
+  
 
 }//end of plot_pulls()
-
 
 void FormatGraph(TGraph *graph, int style, int colour, int size)
 {
