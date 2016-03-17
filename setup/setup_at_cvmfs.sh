@@ -19,7 +19,7 @@ if [ -z "${VALOR_FMWK}" ] ; then
   . "${VALOR_FMWK}/setup/setup_at_cvmfs.sh" "${VALOR_FMWK}"
 fi
 
-export VALOR_DUNE="$(readlink -m $1)"
+export VALOR_DUNE="$(readlink -m "$1")"
 
 if [ -z "${VALOR_DUNE}" ]; then
   sdir="$( readlink -m "${BASH_SOURCE[0]}" )"
