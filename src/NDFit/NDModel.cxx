@@ -255,6 +255,8 @@ bool NDModel::Generate (const FitParamList & fp, Option_t * opt)
 //     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
 
   fNuFlux->UpdateFrom(fp);
+  fNuDet ->UpdateFrom(fp);
+  fNuInt ->UpdateFrom(fp);
   
   // extract the values of params driving the oscillation, decoherence or decay model
   PhysHypothesis ph(fp);
