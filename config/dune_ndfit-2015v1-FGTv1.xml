@@ -77,6 +77,23 @@ Systematics
        <objtype>    TH2D             </objtype>
     </covariance_matrix>
   </flux>
+  
+  <interaction>
+    <covariance_matrix>
+       <filename>   test/dummy_interaction_matrices.root </filename>
+       <objname>    diag_6x6_10pct    </objname>    
+       <objtype>    TMatrixD          </objtype>
+    </covariance_matrix>
+  </interaction>
+  
+  <detector>
+    <covariance_matrix>
+       <filename>   test/dummy_detector_matrices.root </filename>
+       <objname>    diag_9x9_10pct    </objname>    
+       <objtype>    TMatrixD          </objtype>
+    </covariance_matrix>
+  </detector>
+  
 </syst>
 
 </analysis_inputs>
