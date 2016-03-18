@@ -37,6 +37,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "FitCore/PhysParamList.h"
 // dune
 #include "NDFit/NDFitParams.h"
+#include "NDFit/NDRFL.h"
 #include "NDFit/NuInt.h"
 
 using std::cout;
@@ -67,11 +68,11 @@ void NuInt::Init(void)
 {
   fInitialValues        = new TVectorD(conv::kNNDFitParamsNuInt);
   fCurrentValues        = new TVectorD(conv::kNNDFitParamsNuInt);
-/*
+  
   fCovMtrx              = 0;
   fCovMtrxInv           = 0;
   fCovMtrxChoL          = 0; 
-*/
+  
   fIsTweaked            = false;
   
   fInitialArray = fInitialValues->GetMatrixArray();
@@ -89,21 +90,18 @@ void NuInt::CleanUp(void)
 {
   if ( fInitialValues ) delete fInitialValues;
   if ( fCurrentValues ) delete fCurrentValues;
-/*
   if ( fCovMtrx       ) delete fCovMtrx;
   if ( fCovMtrxInv    ) delete fCovMtrxInv;
   if ( fCovMtrxChoL   ) delete fCovMtrxChoL;  
-*/
 }
 //________________________________________________________________________________________
-bool NuInt::Read(TXMLEngine* /*xml*/, XMLNodePointer_t /*root_node*/)
+bool NuInt::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
 {
   this->CleanUp();
   this->Init();
-
-/*
+  
   // Get neutrino interaction model param covariance matrix
-  fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/generator/covariance_matrix");  
+  fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/interaction/covariance_matrix");  
   if(!fCovMtrx) {
     LOG("NuInt",pFATAL) 
        << "No neutrino interaction model param covariance matrix was found.";
@@ -162,7 +160,6 @@ bool NuInt::Read(TXMLEngine* /*xml*/, XMLNodePointer_t /*root_node*/)
      << "Inverse neutrino interaction model param covariance matrix: ";
   util::PrintMatrix(*fCovMtrxInv,7,5); // would be nice to use the same stream and threshold as mesg above
 #endif
-*/
   
   return true;
 }
@@ -178,24 +175,17 @@ double NuInt::CurrentValueByIndex(int idx) const
   return fCurrentArray[idx];
 }
 //________________________________________________________________________________________
-double NuInt::OneSigmaError(PhysParamId_t /*p*/) const
+double NuInt::OneSigmaError(PhysParamId_t p) const
 {
-  return 0.2;
-/*
   const TMatrixD & cov = *fCovMtrx;
   int idx = this->Param2Idx(p); 
-  //int idx = this->Param2Idx(p);
   return TMath::Sqrt(cov[idx][idx]);
-*/
 }
 //________________________________________________________________________________________
-double NuInt::OneSigmaError(int /*idx*/) const
+double NuInt::OneSigmaError(int idx) const
 {
-  return 0.2;
-/*
   const TMatrixD & cov = *fCovMtrx;
   return TMath::Sqrt(cov[idx][idx]);
-*/
 }
 //________________________________________________________________________________________
 void NuInt::Tweak(
@@ -242,7 +232,6 @@ void NuInt::Tweak(
      }
   }//force_inputs?
 
-/*
   //
   // If the tweaking dials were not forced, generate correlated tweaking dials
   // using the Cholesky method
@@ -257,22 +246,9 @@ void NuInt::Tweak(
      current_values = vec;
   }
   return;
-*/
-
- // -------- temporary ---------
- // for now just tweak individually - no correlations
- //
-  Rnd * r = Rnd::Instance();
-  for (int i = 0 ; i < current_values.GetNoElements(); i++) {
-    PhysParamId_t p = fNuIntIndexToPhysParam[i];
-    double sig = this->OneSigmaError(p);
-    current_values[i] = r->RndToyMCsyst().Gaus(1,sig);
-  }
- // -------- temporary ---------
 
 }
 //________________________________________________________________________________________
-/*
 void NuInt::CholeskyDecomposeMatrix(void)
 {
 #ifdef __show_cholesky_mesg_info__  
@@ -294,11 +270,9 @@ void NuInt::CholeskyDecomposeMatrix(void)
     util::PrintCompact(*fCovMtrxChoL,7,5);  // would be nice to use the same stream and threshold as mesg above
 #endif
 }
-*/
 //________________________________________________________________________________________
 double NuInt::ChisqPenalty(bool /*all_syst*/) const
 {
-/*
   //covariance matrix
   const TMatrixD & cov    (this->CovMatrix()   );
   const TMatrixD & covInv (this->CovMatrixInv());
@@ -335,21 +309,6 @@ double NuInt::ChisqPenalty(bool /*all_syst*/) const
 #endif
 
   if(chisq_penalty) return chisq_penalty;
-*/
-
- // -------- temporary ---------
- // for now ignore correlations
- //
- double chisq_penalty = 0;
- double nom = 1;
- TVectorD & current_values = *fCurrentValues;
- for (int i = 0 ; i < current_values.GetNoElements(); i++) {
-    PhysParamId_t p = fNuIntIndexToPhysParam[i];
-    double sig = this->OneSigmaError(p);
-    double cur = current_values[i];
-    chisq_penalty += ( TMath::Power((cur-nom)/sig,2.) );
-  }
- // -------- temporary ---------
 
   return 0;
 }
@@ -413,5 +372,26 @@ void NuInt::CopyTweaksTo(valor::FitParamList & fpl) const
     }
   }
   return;
+}
+//________________________________________________________________________________________
+double NuInt::GetWeight(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+                        double true1, double obs1, double obs2) const
+{
+  static const NDRFL * rfl = NDRFL::Instance();
+  double total_weight = 1;
+  bool use_spline = true;
+  for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
+    PhysParamId_t p = fNuIntIndexToPhysParam[i];
+    const double & curr_value = fCurrentArray[i];
+    if (use_spline) {
+      TSpline * spl = rfl->GetSpline(b,s,m,p,true1,obs1,obs2);
+      
+      if (spl>0) {
+        double par_weight = spl->Eval(curr_value);
+        total_weight *= par_weight;
+      }
+    }
+  }
+  return total_weight;
 }
 //________________________________________________________________________________________

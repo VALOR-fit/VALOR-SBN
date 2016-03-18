@@ -49,14 +49,12 @@ public:
 
   // Read inputs from XML file
   bool Read (TXMLEngine* xml, XMLNodePointer_t root_node);
-
-/*
+  
   // Get detector model param covariance matrix and cholesky decomposition of covariance matrix
   const TMatrixD & CovMatrix         (void) const { return *fCovMtrx;          }
   const TMatrixD & CovMatrixInv      (void) const { return *fCovMtrxInv;       }
   const TMatrixD & CovMatrixCholesky (void) const { return *fCovMtrxChoL;      }
-*/
-
+  
   // 
   double OneSigmaError (conv::PhysParamId_t p) const;
   double OneSigmaError (int idx) const;
@@ -95,17 +93,15 @@ private:
   // convert a detector model param covariance matrix or vector index to PhysParamId_t
   conv::PhysParamId_t Idx2Param (int index) const; 
 
-/*  
   void CholeskyDecomposeMatrix (void);          ///< Cholesky decompose the covariance matrix
-*/
   
   TVectorD *  fInitialValues;     ///< Initial values of detector model parameters 
   TVectorD *  fCurrentValues;     ///< Current values of detector model parameters 
-/*
+  
   TMatrixD *  fCovMtrx;           ///< Detector model parameter covariance matrix
   TMatrixD *  fCovMtrxInv;        ///< Inverse detector model parameter covariance matrix
   TMatrixD *  fCovMtrxChoL;       ///< Triangular matrix obtained from Cholesky decomposition of detector model parameter covariance matrix
-*/
+  
   bool        fIsTweaked;         ///< Were flux params tweaked?
 
   double * fInitialArray; //! ///< Pointer to the actual memory location of the initial values

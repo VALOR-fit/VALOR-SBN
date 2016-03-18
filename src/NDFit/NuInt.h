@@ -50,12 +50,10 @@ public:
   // Read inputs from XML file
   bool Read (TXMLEngine* xml, XMLNodePointer_t root_node);
 
-/*
   // Get interaction model param covariance matrix and cholesky decomposition of covariance matrix
   const TMatrixD & CovMatrix         (void) const { return *fCovMtrx;          }
   const TMatrixD & CovMatrixInv      (void) const { return *fCovMtrxInv;       }
   const TMatrixD & CovMatrixCholesky (void) const { return *fCovMtrxChoL;      }
-*/
 
   // 
   double OneSigmaError (conv::PhysParamId_t p) const;
@@ -72,7 +70,11 @@ public:
   double CurrentValue        (conv::PhysParamId_t p) const;
 
   // Get & tweak flags
-  bool IsTweaked (void) const { return fIsTweaked; } 
+  bool IsTweaked (void) const { return fIsTweaked; }
+  
+  // Bin weights (from RFL)
+  double GetWeight(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+                   double true1, double obs1, double obs2) const;
 
   // Print
   void PrintSystematicVariations (std::ostream & stream = std::cout) const;
@@ -95,17 +97,15 @@ private:
   // convert interaction a covariance matrix or vector index to PhysParamId_t
   conv::PhysParamId_t Idx2Param (int index) const; 
 
-/*  
   void CholeskyDecomposeMatrix (void);          ///< Cholesky decompose the covariance matrix
-*/
   
   TVectorD *  fInitialValues;     ///< Initial values of interaction model parameters 
   TVectorD *  fCurrentValues;     ///< Current values of interaction model parameters 
-/*
+  
   TMatrixD *  fCovMtrx;           ///< Interaction model parameter covariance matrix
   TMatrixD *  fCovMtrxInv;        ///< Inverse interaction model parameter covariance matrix
   TMatrixD *  fCovMtrxChoL;       ///< Triangular matrix obtained from Cholesky decomposition of interaction model parameter covariance matrix
-*/
+  
   bool        fIsTweaked;         ///< Were flux params tweaked?
 
   double * fInitialArray; //! ///< Pointer to the actual memory location of the initial values

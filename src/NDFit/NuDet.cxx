@@ -67,11 +67,11 @@ void NuDet::Init(void)
 {
   fInitialValues        = new TVectorD(conv::kNNDFitParamsNuDet);
   fCurrentValues        = new TVectorD(conv::kNNDFitParamsNuDet);
-/*
+  
   fCovMtrx              = 0;
   fCovMtrxInv           = 0;
   fCovMtrxChoL          = 0; 
-*/
+  
   fIsTweaked            = false;
   
   fInitialArray = fInitialValues->GetMatrixArray();
@@ -89,21 +89,20 @@ void NuDet::CleanUp(void)
 {
   if ( fInitialValues ) delete fInitialValues;
   if ( fCurrentValues ) delete fCurrentValues;
-/*
+  
   if ( fCovMtrx       ) delete fCovMtrx;
   if ( fCovMtrxInv    ) delete fCovMtrxInv;
   if ( fCovMtrxChoL   ) delete fCovMtrxChoL;  
-*/
+  
 }
 //________________________________________________________________________________________
-bool NuDet::Read(TXMLEngine* /*xml*/, XMLNodePointer_t /*root_node*/)
+bool NuDet::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
 {
   this->CleanUp();
   this->Init();
-
-/*
+  
   // Get neutrino detector model param covariance matrix
-  fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/generator/covariance_matrix");  
+  fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/detector/covariance_matrix");  
   if(!fCovMtrx) {
     LOG("NuDet",pFATAL) 
        << "No neutrino detector model param covariance matrix was found.";
@@ -162,7 +161,6 @@ bool NuDet::Read(TXMLEngine* /*xml*/, XMLNodePointer_t /*root_node*/)
      << "Inverse neutrino detector model param covariance matrix: ";
   util::PrintMatrix(*fCovMtrxInv,7,5); // would be nice to use the same stream and threshold as mesg above
 #endif
-*/
   
   return true;
 }
@@ -178,24 +176,17 @@ double NuDet::CurrentValueByIndex(int idx) const
   return fCurrentArray[idx];
 }
 //________________________________________________________________________________________
-double NuDet::OneSigmaError(PhysParamId_t /*p*/) const
+double NuDet::OneSigmaError(PhysParamId_t p) const
 {
-  return 0.2;
-/*
   const TMatrixD & cov = *fCovMtrx;
   int idx = this->Param2Idx(p); 
-  //int idx = this->Param2Idx(p);
   return TMath::Sqrt(cov[idx][idx]);
-*/
 }
 //________________________________________________________________________________________
-double NuDet::OneSigmaError(int /*idx*/) const
+double NuDet::OneSigmaError(int idx) const
 {
-  return 0.2;
-/*
   const TMatrixD & cov = *fCovMtrx;
   return TMath::Sqrt(cov[idx][idx]);
-*/
 }
 //________________________________________________________________________________________
 void NuDet::Tweak(
@@ -242,7 +233,7 @@ void NuDet::Tweak(
      }
   }//force_inputs?
 
-/*
+
   //
   // If the tweaking dials were not forced, generate correlated tweaking dials
   // using the Cholesky method
@@ -257,22 +248,8 @@ void NuDet::Tweak(
      current_values = vec;
   }
   return;
-*/
-
- // -------- temporary ---------
- // for now just tweak individually - no correlations
- //
-  Rnd * r = Rnd::Instance();
-  for (int i = 0 ; i < current_values.GetNoElements(); i++) {
-    PhysParamId_t p = fNuDetIndexToPhysParam[i];
-    double sig = this->OneSigmaError(p);
-    current_values[i] = r->RndToyMCsyst().Gaus(1,sig);
-  }
- // -------- temporary ---------
-
 }
 //________________________________________________________________________________________
-/*
 void NuDet::CholeskyDecomposeMatrix(void)
 {
 #ifdef __show_cholesky_mesg_info__  
@@ -294,11 +271,9 @@ void NuDet::CholeskyDecomposeMatrix(void)
     util::PrintCompact(*fCovMtrxChoL,7,5);  // would be nice to use the same stream and threshold as mesg above
 #endif
 }
-*/
 //________________________________________________________________________________________
 double NuDet::ChisqPenalty(bool /*all_syst*/) const
 {
-/*
   //covariance matrix
   const TMatrixD & cov    (this->CovMatrix()   );
   const TMatrixD & covInv (this->CovMatrixInv());
@@ -334,24 +309,7 @@ double NuDet::ChisqPenalty(bool /*all_syst*/) const
   LOG("NuDet",pDEBUG) << "ChisqPenalty = " << chisq_penalty << endl;
 #endif
 
-  if(chisq_penalty) return chisq_penalty;
-*/
-
- // -------- temporary ---------
- // for now ignore correlations
- //
- double chisq_penalty = 0;
- double nom = 1;
- TVectorD & current_values = *fCurrentValues;
- for (int i = 0 ; i < current_values.GetNoElements(); i++) {
-    PhysParamId_t p = fNuDetIndexToPhysParam[i];
-    double sig = this->OneSigmaError(p);
-    double cur = current_values[i];
-    chisq_penalty += ( TMath::Power((cur-nom)/sig,2.) );
-  }
- // -------- temporary ---------
-
-  return 0;
+  return chisq_penalty;
 }
 //________________________________________________________________________________________ 
 void NuDet::PrintSystematicVariations(std::ostream & stream) const
