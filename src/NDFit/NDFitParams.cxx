@@ -9,6 +9,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/NameRegistry.h"
 #include "Utilities/Rnd.h"
 #include "Utilities/UtlStr.h"
+#include "Utilities/UtlSystem.h"
 #include "NDFit/NDFitParams.h"
 #include "Messenger/Messenger.h"
 
@@ -479,6 +480,12 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       }
 
     }//ip
+  }
+  
+  if(!fparm->IsComplete()) {
+    LOG("NDFitParams",pERROR)<<"Fit parameter list is not complete";
+    fparm->Print();
+    util::Die(-1);
   }
 
   return fparm;
