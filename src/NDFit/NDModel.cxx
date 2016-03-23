@@ -28,6 +28,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/PDG.h"
 #include "Utilities/Rnd.h"
 #include "Utilities/Env.h"
+#include "Utilities/UtlNumStat.h"
 #include "Utilities/UtlStyle.h"
 #include "Utilities/UtlSystem.h"
 #include "Utilities/UtlXML.h"
@@ -1025,6 +1026,7 @@ void NDModel::Clean(void)
   
   if (fNuFlux) {delete fNuFlux;}
   if (fNuInt ) {delete fNuInt; }
+  if (fNuInt ) {delete fNuDet; }
   
 }
 //________________________________________________________________________________________
@@ -1848,5 +1850,28 @@ const valor::NuDet * valor::NDModel::GetNuDet(void) const
 valor::NuDet * valor::NDModel::GetNuDet(void)
 {
   return fNuDet;
+}
+//________________________________________________________________________________________
+valor::PhysParamList valor::NDModel::OneSigmaErrors(Option_t * /*opt*/)
+{
+  PhysParamList ppl;
+  ppl.SetName("NDModel_Errors");
+  fNuFlux->CopyOneSigmaErrorsTo(ppl);
+  fNuDet ->CopyOneSigmaErrorsTo(ppl);
+  fNuInt ->CopyOneSigmaErrorsTo(ppl);
+  return ppl;
+}
+//________________________________________________________________________________________
+TMatrixD valor::NDModel::CovarianceMatrix(Option_t * /*opt*/)
+{
+  // Get cov matrices from subcomponents
+  vector<const TMatrixD*> cov_vec;
+  cov_vec.push_back(&(fNuFlux->CovMatrix()));
+  cov_vec.push_back(&(fNuInt ->CovMatrix()));
+  cov_vec.push_back(&(fNuDet ->CovMatrix()));
+  
+  TMatrixD total = util::ConcatenateTMatrices(cov_vec);
+  
+  return total;
 }
 //________________________________________________________________________________________

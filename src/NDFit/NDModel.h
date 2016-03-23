@@ -17,6 +17,7 @@
 #define _valor_dune_nd_model_h_
 
 #include <string>
+#include <TMatrixD.h>
 #include <TObjArray.h>
 #include <TTree.h>
 
@@ -66,7 +67,10 @@ public:
 
   //
   // Auxiliary methods, not part of the  FitModelABC interface (needed?)
-  //  
+  //
+  
+  PhysParamList OneSigmaErrors (Option_t * opt = "");
+  TMatrixD CovarianceMatrix(Option_t * opt = "");
 
   NuFlux *       GetNuFlux (void);
   const NuFlux * GetNuFlux (void) const;
