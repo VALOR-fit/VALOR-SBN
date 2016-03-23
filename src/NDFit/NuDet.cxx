@@ -81,15 +81,26 @@ void NuDet::Init(void)
     fParam2Idx[ip] = -1;
   }
   
+  int i_params_det = 0;
+  for(int i = 0; i < conv::kNNDFitParams; i++) {
+    PhysParamId_t p = conv::kNDFitParam[i];
+    if (conv::kNDFitIsNuDetRelated[i]) {
+      fNuDetIndexToPhysParam[i_params_det] = p;
+      fParam2Idx[p] = i_params_det;
+      i_params_det++;
+    }
+  }
+  
   for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
     fInitialArray[i] = 1.;
     fCurrentArray[i] = 1.;
-    
-    PhysParamId_t p = (PhysParamId_t)((int)kNuisEffNuMuCC1trkQE+i);
-    fNuDetIndexToPhysParam[i] = p;
-    fParam2Idx[p] = i;
   }
   
+  // Check we have the right number of parameters labelled as related to this class
+  if (conv::kNNDFitParamsNuDet-i_params_det) {
+    LOG("NuDet",pERROR)<<"kNNDFitParamsNuDet does not match kNDFitIsNuDetRelated";
+    util::Die(-1); return;
+  }
 }
 //________________________________________________________________________________________
 void NuDet::CleanUp(void)

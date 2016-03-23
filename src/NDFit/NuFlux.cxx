@@ -78,15 +78,26 @@ void NuFlux::Init(void)
     fParam2Idx[ip] = -1;
   }
     
+  int i_params_flux = 0;
+  for(int i = 0; i < conv::kNNDFitParams; i++) {
+    PhysParamId_t p = conv::kNDFitParam[i];
+    if (conv::kNDFitIsNuFluxRelated[i]) {
+      fNuFluxIndexToPhysParam[i_params_flux] = p;
+      fParam2Idx[p] = i_params_flux;
+      i_params_flux++;
+    }
+  }
+  
   for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
     fInitialArray[i] = 1.;
     fCurrentArray[i] = 1.;
-    
-    PhysParamId_t p = (PhysParamId_t)( (int)kNuisFHCNuMuFlux00+i); // rewrite this - loop over kNDFitParams, check if flux related?
-    fFluxIndexToPhysParam[i] = p;
-    fParam2Idx[p] = i;
   }
   
+  // Check we have the right number of parameters labelled as related to this class
+  if (conv::kNNDFitParamsNuFlux-i_params_flux) {
+    LOG("NuFlux",pFATAL)<<"kNNDFitParamsNuFlux does not match kNDFitIsNuFluxRelated";
+    util::Die(-1); return;
+  }
 }
 //________________________________________________________________________________________
 void NuFlux::CleanUp(void)
@@ -326,7 +337,7 @@ void NuFlux::PrintSystematicVariations(std::ostream & stream) const
   //~ util::PrintCompact(current_values);
   
   for (int i = 0 ; i < fCurrentValues->GetNoElements(); i++) {
-    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    PhysParamId_t p = fNuFluxIndexToPhysParam[i];
     stream << util::AsString(p) << "\t" << (*fCurrentValues)[i] << endl;
   }
 }
@@ -340,13 +351,13 @@ int NuFlux::Param2Idx(PhysParamId_t p) const
 conv::PhysParamId_t NuFlux::Idx2Param (int index) const
 {
   assert(index >= 0 && index <= conv::kNNDFitParamsNuFlux);
-  return fFluxIndexToPhysParam[index];
+  return fNuFluxIndexToPhysParam[index];
 }
 //________________________________________________________________________________________
 void NuFlux::UpdateFrom(const valor::FitParamList  & fpl)
 {
   for (int i = 0 ; i < fInitialValues->GetNoElements() ; i++) {
-    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    PhysParamId_t p = fNuFluxIndexToPhysParam[i];
     if (fpl.Exists(p)) {
       fCurrentArray[i] = fpl.CurrValue(p);
     }
@@ -362,7 +373,7 @@ void NuFlux::UpdateFrom(const valor::FitParamList  & fpl)
 void NuFlux::CopyTweaksTo(valor::PhysParamList & ppl) const
 {
   for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
-    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    PhysParamId_t p = fNuFluxIndexToPhysParam[i];
     ppl.SetValue(p,fCurrentArray[i]);
   }
   return;
@@ -371,7 +382,7 @@ void NuFlux::CopyTweaksTo(valor::PhysParamList & ppl) const
 void NuFlux::CopyTweaksTo(valor::FitParamList & fpl) const
 {
   for (int i = 0 ; i < fInitialValues->GetNoElements() ; i++) {
-    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    PhysParamId_t p = fNuFluxIndexToPhysParam[i];
     if (fpl.Exists(p)) {
       fpl.SetCurrentValue(p,fCurrentArray[i]);
     }
@@ -386,7 +397,7 @@ void NuFlux::CopyTweaksTo(valor::FitParamList & fpl) const
 void NuFlux::CopyOneSigmaErrorsTo(valor::PhysParamList & ppl) const
 {
   for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
-    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    PhysParamId_t p = fNuFluxIndexToPhysParam[i];
     ppl.SetValue(p,this->OneSigmaError(p));
   }
   return;

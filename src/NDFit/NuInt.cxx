@@ -82,15 +82,26 @@ void NuInt::Init(void)
     fParam2Idx[i] = -1;
   }
   
+  int i_params_int = 0;
+  for(int i = 0; i < conv::kNNDFitParams; i++) {
+    PhysParamId_t p = conv::kNDFitParam[i];
+    if (conv::kNDFitIsNuIntRelated[i]) {
+      fNuIntIndexToPhysParam[i_params_int] = p;
+      fParam2Idx[p] = i_params_int;
+      i_params_int++;
+    }
+  }
+  
   for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
     fInitialArray[i] = 1.;
     fCurrentArray[i] = 1.;
-    
-    PhysParamId_t p = (PhysParamId_t)( (int)kNuisNormCCQE+i);
-    fNuIntIndexToPhysParam[i] = p;
-    fParam2Idx[p] = -1;
   }
   
+  // Check we have the right number of parameters labelled as related to this class
+  if (conv::kNNDFitParamsNuInt-i_params_int) {
+    LOG("NuInt",pERROR)<<"kNNDFitParamsNuInt does not match kNDFitIsNuIntRelated";
+    util::Die(-1); return;
+  }
 }
 //________________________________________________________________________________________
 void NuInt::CleanUp(void)
