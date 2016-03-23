@@ -11,10 +11,13 @@
   <priority msgstream="Messenger">    NOTICE   </priority>
   <priority msgstream="Rnd">          NOTICE   </priority>
   <priority msgstream="XML">          NOTICE   </priority>
-  <priority msgstream="NDData">      INFO   </priority>
+  <priority msgstream="NDData">       NOTICE   </priority>
   <priority msgstream="NDModel">      NOTICE   </priority>
   <priority msgstream="NDArrIdx">     FATAL    </priority>
   <priority msgstream="NDBinning">    NOTICE   </priority>
+  <priority msgstream="NuFlux">       NOTICE   </priority>
+  <priority msgstream="NuDet">        NOTICE   </priority>
+  <priority msgstream="NuInt">        NOTICE   </priority>
   <priority msgstream="InputMC">      NOTICE   </priority>
   <priority msgstream="HACK">         FATAL    </priority>
 
