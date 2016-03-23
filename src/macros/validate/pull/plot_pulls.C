@@ -17,7 +17,6 @@ int resolution_y = 768;
 
 void plot_pulls(
   const char * input_pattern = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root",
-  const int nParams = 119,
   const int nParamsPerPage = 40,
   const char * options = "",
   const char * img_format = "png"
@@ -53,6 +52,20 @@ void plot_pulls(
   TObjArray *     data_array           = 0; // an array of all fitted data distributions for the current toy-MC experiment
   //~ int migradmin, migraderr;
   
+  toymcchain->SetBranchAddress("true_params",        &true_param_array);
+  toymcchain->SetBranchAddress("best_fit_params",    &best_fit_param_array);
+  toymcchain->SetBranchAddress("best_fit_model",     &best_fit_model_array);
+  toymcchain->SetBranchAddress("data",               &data_array);
+  
+  // Get the number of unfixed parameters in the first FPL
+  toymcchain->GetEntry(0);
+  const int nParams = best_fit_param_array->GetNumberFreeParameters();
+  PhysParamId_t * params_to_fit = new PhysParamId_t[nParams];
+  FitParamList * free_params = best_fit_param_array->FreeParameterSubset();
+  for (int ip = 0 ; ip < nParams; ip++) {
+    params_to_fit[ip] = free_params->WhichParam(ip);
+  }
+  
   double * pull_mean          = new double[nParams];
   double * pull_mean_err      = new double[nParams];
   double * pull_sigma         = new double[nParams];
@@ -65,11 +78,6 @@ void plot_pulls(
   double * residual_sigma_err = new double[nParams];
   double * residual_const     = new double[nParams];
   double * residual_const_err = new double[nParams];
-
-  toymcchain->SetBranchAddress("true_params",        &true_param_array);
-  toymcchain->SetBranchAddress("best_fit_params",    &best_fit_param_array);
-  toymcchain->SetBranchAddress("best_fit_model",     &best_fit_model_array);
-  toymcchain->SetBranchAddress("data",               &data_array);
   //~ toymcchain->SetBranchAddress("migradmin",          &migradmin);
   //~ toymcchain->SetBranchAddress("migraderr",          &migraderr);
 
@@ -131,10 +139,9 @@ void plot_pulls(
     //~ if(best_fit_param_array->GetStatusCode("migradmin") == 0 && best_fit_param_array->GetStatusCode("migraderr")==0) {
     if (true){
       
-      for(int ip = kNuis000; ip < kNuis000+nParams; ip++)
+      for(int ip = 0; ip < nParams; ip++)
       {
-        PhysParamId_t p = (PhysParamId_t)ip;
-        int iparam = util::NDArrIdx::Instance()->NDFitParamIdx(p);
+        PhysParamId_t p = params_to_fit[ip];
         
         // Select our fitted error
         double fitted_errors = (using_hesse_error ? fitted_errors = best_fit_param_array->HesseError(p) : best_fit_param_array->MigradError(p));
@@ -143,9 +150,9 @@ void plot_pulls(
         double pull_numerator = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
         double pull_denominator = fitted_errors;
         //~ double pull_denominator = sqrt(0.2*0.2 - best_fit_param_array->MigradError(p)*best_fit_param_array->MigradError(p));
-        hPull[iparam]->Fill(pull_numerator/pull_denominator);
+        hPull[ip]->Fill(pull_numerator/pull_denominator);
         double residual = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
-        hResidual[iparam]->Fill(residual);
+        hResidual[ip]->Fill(residual);
       }
     }
   }
@@ -215,7 +222,7 @@ void plot_pulls(
       if (iparam >= nParams) {continue;}
       PullCanv->cd(ihist+1);
       gPad->SetTopMargin(0.15);
-      PhysParamId_t p = kNDFitParam[iparam];
+      PhysParamId_t p = params_to_fit[iparam];
       string label = util::AsString(p);
       tPull[iparam] = new TPaveText(0.05,0.85,1.0,0.95,"NDC");
       histtitle[iparam] = tPull[iparam]->AddText(label.c_str());
@@ -241,7 +248,6 @@ void plot_pulls(
       label_hist->GetXaxis()->SetBinLabel(ihist+1,label.c_str());
       
       if (save_all_plotted_histograms) {
-        //~ if (!batchmode) {gROOT->SetBatch(1);} // We'll want to be in batch mode for making all these histograms.
         TCanvas c("pull_canv_tmp","pull_canv_tmp");
         c.cd();
         TPaveText * stats = new TPaveText(0.65,0.7,0.85,0.9,"NDC");
@@ -255,7 +261,6 @@ void plot_pulls(
         fitPull[iparam]->Draw("LSAME");
         stats->Draw();
         c.SaveAs(TString::Format("PullFitted_%s.%s",label.c_str(),img_format));
-        if (batchmode) {gROOT->SetBatch(0);}
       }
     }
       
@@ -321,26 +326,7 @@ void plot_pulls(
     
     PullSummary->SaveAs(imgname_summary);
   }
-//~ 
-  //~ for(int param=0; param<nParams; param++)
-  //~ {
-    //~ PhysParamId_t p = kNDFitParam[param];
-    //~ //const char * label = util::AsStringTeX(p,true).c_str();
-    //~ const char * label = util::AsString(p).c_str();
-    //~ x_low = param + 0.5;
-    //~ x_high = x_low + 1.0;
-    //~ tPullSummary[param] = new TPaveText(x_low,-1.45,x_high,-1.05);
-    //~ axislabel[param] = tPullSummary[param]->AddText(label);
-    //~ axislabel[param]->SetTextAngle(90);
-    //~ //SetTextAlign(11) to left justify, 21 to centre and 31 to right justify
-    //~ axislabel[param]->SetTextAlign(31);
-    //~ axislabel[param]->SetTextSize(0.03);
-    //~ tPullSummary[param]->SetFillColor(0);
-    //~ tPullSummary[param]->SetBorderSize(0);
-    //~ tPullSummary[param]->Draw();
-  //~ }
-//~ 
-  //~ PullSummary->SaveAs("PullSummary.png");
+  
   //~ 
   //~ TGraph *g_residual_mean = new TGraph(nParams, param_x, residual_mean);
   //~ TGraph *g_residual_sigma = new TGraph(nParams, param_x, residual_sigma);
@@ -365,7 +351,7 @@ void plot_pulls(
 //~ 
   //~ for(int param=0; param<nParams; param++)
     //~ {
-    //~ PhysParamId_t p = kNDFitParam[param];
+    //~ PhysParamId_t p = params_to_fit[param];
     //~ //const char * label = util::AsStringTeX(p,true).c_str();
     //~ const char * label = util::AsString(p).c_str();
     //~ x_low = param + 0.5;
