@@ -78,10 +78,17 @@ void NuInt::Init(void)
   fInitialArray = fInitialValues->GetMatrixArray();
   fCurrentArray = fCurrentValues->GetMatrixArray();
   
+  for (int i = 0 ; i < conv::knppmax; i++) {
+    fParam2Idx[i] = -1;
+  }
+  
   for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
     fInitialArray[i] = 1.;
-    fCurrentArray[i] = 1.;    
-    fNuIntIndexToPhysParam[i] = (PhysParamId_t)(kNuisNormCCQE+i);
+    fCurrentArray[i] = 1.;
+    
+    PhysParamId_t p = (PhysParamId_t)( (int)kNuisNormCCQE+i);
+    fNuIntIndexToPhysParam[i] = p;
+    fParam2Idx[p] = -1;
   }
   
 }
@@ -182,7 +189,7 @@ double NuInt::OneSigmaError(PhysParamId_t p) const
   return TMath::Sqrt(cov[idx][idx]);
 }
 //________________________________________________________________________________________
-double NuInt::OneSigmaError(int idx) const
+double NuInt::OneSigmaErrorByIndex(int idx) const
 {
   const TMatrixD & cov = *fCovMtrx;
   return TMath::Sqrt(cov[idx][idx]);
@@ -370,6 +377,15 @@ void NuInt::CopyTweaksTo(valor::FitParamList & fpl) const
       LOG("NuInt",pWARN) 
          << "FPL does not contain parameter " << util::AsString(p);
     }
+  }
+  return;
+}
+//________________________________________________________________________________________
+void NuInt::CopyOneSigmaErrorsTo(valor::PhysParamList & ppl) const
+{
+  for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
+    PhysParamId_t p = fNuIntIndexToPhysParam[i];
+    ppl.SetValue(p,this->OneSigmaError(p));
   }
   return;
 }

@@ -74,11 +74,17 @@ void NuFlux::Init(void)
   fInitialArray = fInitialValues->GetMatrixArray();
   fCurrentArray = fCurrentValues->GetMatrixArray();
   
+  for (int ip = 0 ; ip < conv::knppmax; ip++) {
+    fParam2Idx[ip] = -1;
+  }
+    
   for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
     fInitialArray[i] = 1.;
     fCurrentArray[i] = 1.;
     
-    fFluxIndexToPhysParam[i] = (PhysParamId_t)(kNuisFHCNuMuFlux00+i);
+    PhysParamId_t p = (PhysParamId_t)( (int)kNuisFHCNuMuFlux00+i); // rewrite this - loop over kNDFitParams, check if flux related?
+    fFluxIndexToPhysParam[i] = p;
+    fParam2Idx[p] = i;
   }
   
 }
@@ -178,11 +184,10 @@ double NuFlux::OneSigmaError(PhysParamId_t p) const
 {
   const TMatrixD & cov = *fCovMtrx;
   int idx = this->Param2Idx(p); 
-  //int idx = this->Param2Idx(p);
   return TMath::Sqrt(cov[idx][idx]);
 }
 //________________________________________________________________________________________
-double NuFlux::OneSigmaError(int idx) const
+double NuFlux::OneSigmaErrorByIndex(int idx) const
 {
   const TMatrixD & cov = *fCovMtrx;
   return TMath::Sqrt(cov[idx][idx]);
@@ -374,6 +379,15 @@ void NuFlux::CopyTweaksTo(valor::FitParamList & fpl) const
       LOG("NuFlux",pWARN) 
         << "FPL does not contain parameter " << util::AsString(p);
     }
+  }
+  return;
+}
+//________________________________________________________________________________________
+void NuFlux::CopyOneSigmaErrorsTo(valor::PhysParamList & ppl) const
+{
+  for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
+    PhysParamId_t p = fFluxIndexToPhysParam[i];
+    ppl.SetValue(p,this->OneSigmaError(p));
   }
   return;
 }

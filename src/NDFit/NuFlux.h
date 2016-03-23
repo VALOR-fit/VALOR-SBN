@@ -53,7 +53,7 @@ public:
   const TMatrixD & CovMatrixCholesky (void) const { return *fCovMtrxChoL;      }
 
   double OneSigmaError(conv::PhysParamId_t p) const;
-  double OneSigmaError(int idx) const;
+  double OneSigmaErrorByIndex(int idx) const;
 
   // Penalty term included in the chisq 
   double ChisqPenalty (bool all_syst = true) const;
@@ -74,6 +74,7 @@ public:
   
   void CopyTweaksTo(valor::PhysParamList & ppl) const;
   void CopyTweaksTo(valor::FitParamList & fpl) const;
+  void CopyOneSigmaErrorsTo(valor::PhysParamList & ppl) const;
     
 private:
 

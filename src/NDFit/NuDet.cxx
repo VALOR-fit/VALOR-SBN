@@ -77,10 +77,17 @@ void NuDet::Init(void)
   fInitialArray = fInitialValues->GetMatrixArray();
   fCurrentArray = fCurrentValues->GetMatrixArray();
   
+  for (int ip = 0 ; ip < conv::knppmax; ip++) {
+    fParam2Idx[ip] = -1;
+  }
+  
   for(int i = 0 ; i < fCurrentValues->GetNrows(); i++ ) {
     fInitialArray[i] = 1.;
-    fCurrentArray[i] = 1.;    
-    fNuDetIndexToPhysParam[i] = (PhysParamId_t)(kNuisEffNuMuCC1trkQE+i);
+    fCurrentArray[i] = 1.;
+    
+    PhysParamId_t p = (PhysParamId_t)((int)kNuisEffNuMuCC1trkQE+i);
+    fNuDetIndexToPhysParam[i] = p;
+    fParam2Idx[p] = i;
   }
   
 }
@@ -183,7 +190,7 @@ double NuDet::OneSigmaError(PhysParamId_t p) const
   return TMath::Sqrt(cov[idx][idx]);
 }
 //________________________________________________________________________________________
-double NuDet::OneSigmaError(int idx) const
+double NuDet::OneSigmaErrorByIndex(int idx) const
 {
   const TMatrixD & cov = *fCovMtrx;
   return TMath::Sqrt(cov[idx][idx]);
@@ -369,6 +376,15 @@ void NuDet::CopyTweaksTo(valor::FitParamList & fpl) const
       LOG("NuDet",pWARN) 
          << "FPL does not contain parameter " << util::AsString(p);
     }
+  }
+  return;
+}
+//________________________________________________________________________________________
+void NuDet::CopyOneSigmaErrorsTo(valor::PhysParamList & ppl) const
+{
+  for (int i = 0 ; i < fCurrentValues->GetNoElements() ; i++) {
+    PhysParamId_t p = fNuDetIndexToPhysParam[i];
+    ppl.SetValue(p,this->OneSigmaError(p));
   }
   return;
 }
