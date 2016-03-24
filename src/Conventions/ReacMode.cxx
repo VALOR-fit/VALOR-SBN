@@ -15,6 +15,8 @@ ChangeLog:
 using namespace valor;
 using namespace valor::conv;
 
+using std::string;
+
 //________________________________________________________________________________________
 string util::AsString(ReacMode_t m)
 {
@@ -212,6 +214,7 @@ ReacMode_t util::ReacModeFromInt(int m)
   return kmUndefined;
 }
 //________________________________________________________________________________________
-
-
-	
+//aliases for systems that can't overload based on enum type (eg python)
+string util::ModeAsStringTeX(ReacMode_t m, bool root) {return AsStringTeX(m,root);}
+string util::ModeAsString   (ReacMode_t m) {return AsString(m);}
+//________________________________________________________________________________________
