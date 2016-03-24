@@ -111,16 +111,16 @@ static const NDSample_t kNDSample[kNBeamConf][kNNDSamples] =
 
 namespace util {
 
-  string           AsString        (conv::NDSample_t s);
-  string           AsStringTeX     (conv::NDSample_t s, bool root);
-  bool             IsCC            (conv::NDSample_t s);
-  bool             IsNC            (conv::NDSample_t s);
-  conv::NDSample_t NDSampleFromInt (int s);
+  string           AsString           (conv::NDSample_t s);
+  string           AsStringTeX        (conv::NDSample_t s, bool root = false);
+  bool             IsCC               (conv::NDSample_t s);
+  bool             IsNC               (conv::NDSample_t s);
+  conv::NDSample_t NDSampleFromInt    (int s);
   conv::NDSample_t NDSampleFromString (std::string s);
   
   // aliases AsString methods
   string           NDSampleAsString        (conv::NDSample_t s);
-  string           NDSampleAsStringTeX     (conv::NDSample_t s, bool root);
+  string           NDSampleAsStringTeX     (conv::NDSample_t s, bool root = false);
 } // util
 } // valor
   
