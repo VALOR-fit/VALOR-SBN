@@ -10,6 +10,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/Rnd.h"
 #include "Utilities/UtlStr.h"
 #include "Utilities/UtlSystem.h"
+#include "NDFit/NDAppliedParamsConv.h"
 #include "NDFit/NDFitParams.h"
 #include "Messenger/Messenger.h"
 
@@ -528,5 +529,39 @@ bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
     return false;
   }
   return conv::kNDFitIsNuDetRelated[nd_index];
+}
+//____________________________________________________________________________
+bool util::ParamIsAppliedTo(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m, conv::PhysParamId_t p)
+{
+  if (b==conv::kbUndefined   ) {return false;}
+  if (m==conv::kmUndefined   ) {return false;}
+  if (s==conv::ksNDUndefined ) {return false;}
+  if (p==conv::kPhypUndefined) {return false;}
+  
+  // Get parameter mask
+  int ip = NDArrIdx::Instance()->NDFitParamIdx(p);
+  if (ip<0) {return false;}
+  conv::ApplyMask_t pmask = conv::kNDApplyParamToTemplates[ip];
+  
+  NuFlavour_t f = conv::kReacModeToFlavour[m];
+  ReacType_t  t = conv::kReacModeToType[m];
+  
+  // Check beam current is applied
+  bool apply_to_beam    = (kNDApplyToBeamMode [b] & pmask);
+  bool apply_to_sample  = (kNDApplyToSample   [s] & pmask);
+  bool apply_to_flavour = (kNDApplyToFlavour  [f] & pmask);
+  bool apply_to_type    = (kNDApplyToReacType [t] & pmask);
+  
+  bool apply_to_mode = apply_to_flavour && apply_to_type;
+  
+  bool apply = (apply_to_beam && apply_to_sample && apply_to_mode);
+  
+  //~ std::cerr<<"Param    : "  <<util::AsString(p)<<std::endl;
+  //~ std::cerr<<"Beam     : "  <<apply_to_beam  <<"\t("<<util::AsString(b)<<")"<<std::endl;
+  //~ std::cerr<<"Sample   : "  <<apply_to_sample<<"\t("<<util::AsString(s)<<")"<<std::endl;
+  //~ std::cerr<<"Mode     : "  <<apply_to_mode  <<"\t("<<util::AsString(m)<<")"<<std::endl;
+  //~ std::cerr<<"Returning: "  <<(apply?"true":"false")<<std::endl;
+  
+  return apply;
 }
 //____________________________________________________________________________

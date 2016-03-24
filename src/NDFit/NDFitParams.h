@@ -28,6 +28,7 @@
 
 //dune
 #include "Conventions/BeamConf.h"
+#include "Conventions/DuneBuild.h"
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDSampleBinning.h"
 #include "NDFit/NDFitParamGroup.h"
@@ -37,18 +38,21 @@ using std::string;
 namespace valor {
 namespace conv {
 
-//
-// A simple set of flux and cross-section parameters for the second iteration
-//
+// If we don't have an interaction model defined, use the simple one.
+#ifndef INT_MODEL
+#define INT_MODEL 1
+#endif
 
-//~ static const int kNNDFitParams       = 149; // all
-//~ static const int kNNDFitParamsNuFlux = 104; // neutrino flux related
-//~ static const int kNNDFitParamsNuInt  =  36; // neutrino interactions related
-//~ static const int kNNDFitParamsNuDet  =   9; // neutrino detector related
-static const int kNNDFitParams       = 119; // all
 static const int kNNDFitParamsNuFlux = 104; // neutrino flux related
-static const int kNNDFitParamsNuInt  =   6; // neutrino interactions related
 static const int kNNDFitParamsNuDet  =   9; // neutrino detector related
+#if INT_MODEL == 1 // The simple sample normalisaation xsec model
+static const int kNNDFitParamsNuInt  =   6; // neutrino interactions related
+#elif INT_MODEL == 2 // The GENIE-based model with responses
+static const int kNNDFitParamsNuInt  =  37; // neutrino interactions related
+#endif //INT_MODEL
+
+static const int kNNDFitParams = kNNDFitParamsNuFlux+kNNDFitParamsNuInt+kNNDFitParamsNuDet;
+
 
 //
 // FHC flux
@@ -228,15 +232,20 @@ static const PhysParamId_t kNuisIntPiInelastic      = kNuis154;
 
 static const PhysParamId_t kNuisIntHadronization    = kNuis155;
 
-//~ // Boundaries between parameter types
-//~ static const PhysParamId_t kNuisIntFirstParameter  = kNuisIntNuCCQE1;
-//~ static const PhysParamId_t kNuisIntLastParameter   = kNuisIntHadronization;
-//~ static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC1trkQE;
-//~ static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
-//~ static const PhysParamId_t kNuisFluxFirstParameter = kNuisFHCNuMuFlux00;
-//~ static const PhysParamId_t kNuisFluxLastParameter  = kNuisRHCNuEBarFlux06;
+// Boundaries between parameter types
+static const PhysParamId_t kNuisFluxFirstParameter = kNuisFHCNuMuFlux00;
+static const PhysParamId_t kNuisFluxLastParameter  = kNuisRHCNuEBarFlux06;
+#if INT_MODEL == 1
+static const PhysParamId_t kNuisIntFirstParameter  = kNuisNormCCQE;
+static const PhysParamId_t kNuisIntLastParameter   = kNuisRatioNuENuMu;
+#elif INT_MODEL == 2
+static const PhysParamId_t kNuisIntFirstParameter  = kNuisIntNuCCQE1;
+static const PhysParamId_t kNuisIntLastParameter   = kNuisIntHadronization;
+#endif
+static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC1trkQE;
+static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
 
-//
+
 // ...........................................................................
 //  List of physics parameters considered in this analysis
 // ...........................................................................
@@ -1040,60 +1049,6 @@ static const bool kNDApplyToTemplateFitParamsNonNuFlux[kNBeamConf][kNNDSamples][
     { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNC1pi0
     { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNCcoh
     { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }  // kmNuEBarNCoth
-/*
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCCQE
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCCMEC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCC1piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCC1pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCC2piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCC2pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCCpiCpi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCCcoh
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuCCoth
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuNC1piC
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuNC1pi0
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuNCcoh
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuNCoth
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCCQE
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCCMEC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCC1piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCC1pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCC2piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCC2pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCCpiCpi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCCcoh
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarCCoth
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarNC1piC
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarNC1pi0
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarNCcoh
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuMuBarNCoth
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECCQE
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECCMEC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECC1piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECC1pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECC2piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECC2pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECCpiCpi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECCcoh
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuECCoth
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuENC1piC
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuENC1pi0
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuENCcoh
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuENCoth
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCCQE
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCCMEC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCC1piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCC1pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCC2piC
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCC2pi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCCpiCpi0
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCCcoh
-    { 0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarCCoth
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNC1piC
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNC1pi0
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNCcoh
-    { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }  // kmNuEBarNCoth
-*/
    } //ksNDNC
 
   },//FHC
@@ -2610,11 +2565,11 @@ static const double kNDFitParamMarginalize[kNNDFitParams] =
 namespace util {
 
   string  AsString    (conv::PhysParamId_t p);
-  string  AsStringTeX (conv::PhysParamId_t p, bool root);
+  string  AsStringTeX (conv::PhysParamId_t p, bool root = false);
   
   // Aliases for above
-  string  ParamAsString    (conv::PhysParamId_t p)           ;
-  string  ParamAsStringTeX (conv::PhysParamId_t p, bool root);
+  string  ParamAsString    (conv::PhysParamId_t p) ;
+  string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
 
   conv::PhysParamId_t NDPhysParamFromString(string p);
 
@@ -2624,6 +2579,10 @@ namespace util {
   bool IsNuFluxRelated(conv::PhysParamId_t p);
   bool IsNuIntRelated (conv::PhysParamId_t p);
   bool IsNuDetRelated (conv::PhysParamId_t p);
+  
+  // ONLY HALF IMPLEMENTED
+  bool ParamIsAppliedTo(conv::BeamConf_t b, conv::NDSample_t s,
+                        conv::ReacMode_t m, conv::PhysParamId_t p);
   
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);
