@@ -6,6 +6,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 */
 //________________________________________________________________________________________
 
+#include "Utilities/UtlStr.h"
+
 #include "NDFit/NDSample.h"
 
 using namespace valor;
@@ -118,6 +120,20 @@ NDSample_t util::NDSampleFromInt(int s)
 // Cast an integer to NDSample_t, but with boundary check
 //             [first]                  [last]
   if(s >= (int)ksNDNuMuCC && s <= (int) ksNDNCoth) return (NDSample_t)s;
+  return ksNDUndefined;
+}
+//________________________________________________________________________________________
+NDSample_t util::NDSampleFromString(string sample)
+{
+  string lc_sample = util::ToLowerCase(sample);
+  for (int i = 0 ; i < kMaxNNDSamples ; i++ ) {
+    NDSample_t s = (NDSample_t)i;
+    string this_samp = util::ToLowerCase(util::AsString(s));
+    if(lc_sample==this_samp && this_samp!="--") {
+      return s;
+    }
+  }
+    
   return ksNDUndefined;
 }
 //________________________________________________________________________________________

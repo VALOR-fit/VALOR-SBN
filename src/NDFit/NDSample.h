@@ -56,6 +56,8 @@ typedef enum ENDSample
 } 
 NDSample_t; 
 
+static const int kMaxNNDSamples = 14;
+
 // 
 // ...........................................................................
 // Define the list of samples used in present analysis.
@@ -114,6 +116,7 @@ namespace util {
   bool             IsCC            (conv::NDSample_t s);
   bool             IsNC            (conv::NDSample_t s);
   conv::NDSample_t NDSampleFromInt (int s);
+  conv::NDSample_t NDSampleFromString (std::string s);
   
   // aliases AsString methods
   string           NDSampleAsString        (conv::NDSample_t s);
