@@ -47,8 +47,17 @@ BeamConf_t util::BeamConfFromInt(int b)
   return kbUndefined;
 }
 //________________________________________________________________________________________
-
-
-
-
-	
+BeamConf_t util::BeamConfFromString(string beam)
+{
+  string lc_beam = util::ToLowerCase(beam);
+  for (int i = 0 ; i < kNBeamConf ; i++ ) {
+    BeamConf_t s = (BeamConf_t)i;
+    string this_beam = util::ToLowerCase(util::AsString(s));
+    if(lc_beam==this_beam && this_beam!="--") {
+      return s;
+    }
+  }
+    
+  return kbUndefined;
+}
+//________________________________________________________________________________________
