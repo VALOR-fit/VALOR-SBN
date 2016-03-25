@@ -31,7 +31,7 @@ coln_width = 3
 def main(beam_mode, sample,
          output_file="syst_applied_table.tex",
          config_file = "dune_ndfit.xml",
-         skipflux=False, skipint=False, skipdet =False):
+         skipflux=False, skipint=False, skipdet =False, include_empty = False):
   
   model = valor.NDModel()
   model.Read(base_dir+"/config/"+config_file)
@@ -54,7 +54,7 @@ def main(beam_mode, sample,
   
   tex_output = open(output_file,"w")
   
-  tex_output.write("""\documentclass[10pt]{article}
+  tex_output.write("""\\documentclass[10pt]{article}
 \\usepackage[utf8]{inputenc}
 \\usepackage{amsmath}
 \\usepackage{amsfonts}
@@ -62,13 +62,10 @@ def main(beam_mode, sample,
 \\usepackage{fullpage}
 \\usepackage{rotate}  
 \\usepackage{rotating}
-\\usepackage[paperwidth=800mm,paperheight=800mm]{geometry}
-\\usepackage{varwidth}
+\\usepackage[paperwidth=800mm,paperheight=800mm]{geometry} % This is huge - use pdfcrop
 
 \\newcommand{\ck}{$\\checkmark$}
 \\begin{document}
-
-\%\\begin{varwidth}{\\linewidth}
 
 {
 \\setlength{\\tabcolsep}{3pt}
@@ -85,19 +82,21 @@ def main(beam_mode, sample,
   tex_output.write("\\\\ \hline \n")
   
   for param in params:
+    if skipflux and util.IsNuFluxRelated(param): continue
+    if skipint  and util.IsNuIntRelated(param) : continue
+    if skipdet  and util.IsNuDetRelated(param) : continue
     entries = ["$"+util.ParamAsStringTeX(param,0).ljust(col1_width)+"$"]
-    row = False
+    include_row = include_empty
     for m in modes:
       if util.ParamIsAppliedTo(beam_mode,sample,m,param):
         entries.append("\\ck".ljust(coln_width))
-        row = True
+        include_row = True
       else:
         entries.append("".ljust(coln_width))
-    if row: tex_output.write("& ".join(entries) + " \\\\ \hline \n")
+    if include_row: tex_output.write("& ".join(entries) + " \\\\ \hline \n")
     
   tex_output.write("\n\\end{tabular}\n")
   tex_output.write("\\end{table}\n}\n")
-  tex_output.write("\%\\end{varwidth}\n")
   tex_output.write("\\end{document}\n")
   
   print "\n\nTable output written to ",output_file
@@ -111,15 +110,17 @@ if __name__=="__main__":
   
   parser.add_option('-c', '--config', dest='config', default="dune_ndfit.xml", help="Configuration file")
   
-  parser.add_option('-s', '--sample' , dest='sample'      , default="numuCC1trkQE"     , help="Sample (numuCC1trkQE etc)")
-  parser.add_option('--skip-flux'    , dest='skipflux'    , action="store_true", default=False, help="Skip the flux parameters")
-  parser.add_option('--skip-int'     , dest='skipint', action="store_true", default=False, help="Skip the interaction parameters")
-  parser.add_option('--skip-det'     , dest='skipdet', action="store_true", default=False, help="Skip the detector parameters")
+  parser.add_option('-b', '--beam'   , dest='beam'     , default="FHC"     , help="Beam current (FHC/RHC)")
+  parser.add_option('-s', '--sample' , dest='sample'   , default="numuCC1trkQE"     , help="Sample (numuCC1trkQE etc)")
+  parser.add_option('--skip-flux'    , dest='skipflux' , action="store_true", default=False, help="Skip the flux parameters")
+  parser.add_option('--skip-int'     , dest='skipint'  , action="store_true", default=False, help="Skip the interaction parameters")
+  parser.add_option('--skip-det'     , dest='skipdet'  , action="store_true", default=False, help="Skip the detector parameters")
+  parser.add_option('--include-empty', dest='incempty' , action="store_true", default=False, help="Write completely empty rows in the table")
   
   o,other = parser.parse_args()
-  beam = conv.kbFHC
+  beam = util.BeamConfFromString(o.beam)
   sample = util.NDSampleFromString(o.sample)
-  main(beam,sample,o.output_file,o.config, o.skipflux, o.skipint, o.skipdet)
+  main(beam,sample,o.output_file,o.config, o.skipflux, o.skipint, o.skipdet,o.incempty)
   
   if other:
     print "Warning - ignored arguments: ",other
