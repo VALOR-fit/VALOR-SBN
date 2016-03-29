@@ -70,6 +70,10 @@ static const ApplyMask_t ktApplyToNCpiCpi0        = (kApplyMaskOne << 44 );
 static const ApplyMask_t ktApplyToNCcoh           = (kApplyMaskOne << 45 );
 static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 46 );
 
+// Groups of systematics (alternative definition) - should maybe move to this for everything (take groups out of mask)
+static const ApplyMask_t kfApplyToNuAny    = kfApplyToNuMu    | kfApplyToNuE   ; // NuAny means any non-barred
+static const ApplyMask_t kfApplyToNuBarAny = kfApplyToNuMuBar | kfApplyToNuEBar;
+
 // Which masks apply to which beam modes
 // This is defined for all samples in the BeamConf_t enum.
 static const ApplyMask_t kNDApplyToBeamMode[kNBeamConf] = {
@@ -109,23 +113,23 @@ static const ApplyMask_t kNDApplyToFlavour[conv::kNNuFlavour] = {
 // Which masks apply to which reaction type
 static const ApplyMask_t kNDApplyToReacType[kNReacType] = {
   /* kmtCCQE,     */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCQE    ,
-  /* kmtCCMEC,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCMEC   ,
+  /* kmtCCMEC,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCMEC   | ktApplyToCCQE,
   /* kmtCC1piC,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC1piC  ,
   /* kmtCC1pi0,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC1pi0  ,
-  /* kmtCC2piC,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC2piC  ,
-  /* kmtCC2pi0,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC2pi0  ,
-  /* kmtCCpiCpi0, */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCpiCpi0,
-  /* kmtCCcoh,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCcoh   ,
-  /* kmtCCoth,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCoth   ,
-  /* kmtNCEL,     */ ktApplyToAll | ktApplyToAllCC | ktApplyToNCEL    , 
-  /* kmtNCMEC,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToNCMEC   ,
-  /* kmtNC1piC,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToNC1piC  ,
-  /* kmtNC1pi0,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToNC1pi0  ,
-  /* kmtNC2piC,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToNC2piC  ,
-  /* kmtNC2pi0,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToNC2pi0  ,
-  /* kmtNCpiCpi0, */ ktApplyToAll | ktApplyToAllCC | ktApplyToNCpiCpi0,
-  /* kmtNCcoh,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToNCcoh   ,
-  /* kmtNCoth,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToNCoth   ,
+  /* kmtCC2piC,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC2piC  | ktApplyToCCoth,
+  /* kmtCC2pi0,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC2pi0  | ktApplyToCCoth,
+  /* kmtCCpiCpi0, */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCpiCpi0| ktApplyToCCoth,
+  /* kmtCCcoh,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCcoh   | ktApplyToCCoth,
+  /* kmtCCoth,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCoth   | ktApplyToCCoth,
+  /* kmtNCEL,     */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCEL    , 
+  /* kmtNCMEC,    */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCMEC   | ktApplyToNCEL,
+  /* kmtNC1piC,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC1piC  | ktApplyToNCoth,
+  /* kmtNC1pi0,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC1pi0  | ktApplyToNCoth,
+  /* kmtNC2piC,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC2piC  | ktApplyToNCoth,
+  /* kmtNC2pi0,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC2pi0  | ktApplyToNCoth,
+  /* kmtNCpiCpi0, */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCpiCpi0| ktApplyToNCoth,
+  /* kmtNCcoh,    */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCcoh   | ktApplyToNCoth,
+  /* kmtNCoth,    */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCoth   ,
   /* kmtOther     */ ktApplyToAll
 };
 
@@ -241,12 +245,35 @@ static const ApplyMask_t kNDApplyParamToTemplates[kNNDFitParams] =
   /* kNuisRHCNuEBarFlux05  */ kbApplyToRHC | kfApplyToNuEBar  | ksApplyToAll | ktApplyToAll ,
   /* kNuisRHCNuEBarFlux06  */ kbApplyToRHC | kfApplyToNuEBar  | ksApplyToAll | ktApplyToAll ,
   // Cross-sections
+#if INT_MODEL==1
   /* kNuisNormCCQE         */ kbApplyToAll | kfApplyToAll     | ksApplyToAll | ktApplyToCCQE   ,
   /* kNuisNormCC1piC       */ kbApplyToAll | kfApplyToAll     | ksApplyToAll | ktApplyToCC1piC ,
   /* kNuisNormCC1pi0       */ kbApplyToAll | kfApplyToAll     | ksApplyToAll | ktApplyToCC1pi0 ,
+#elif INT_MODEL==2
+  /* kNuisIntNuCCQE1       */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCCQE   ,
+  /* kNuisIntNuCCQE2       */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCCQE   ,
+  /* kNuisIntNuCCQE3       */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCCQE   ,
+  /* kNuisIntNuBarCCQE1    */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCCQE   ,
+  /* kNuisIntNuBarCCQE2    */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCCQE   ,
+  /* kNuisIntNuBarCCQE3    */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCCQE   ,
+  /* kNuisIntNuCC1piz1     */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCC1pi0 ,
+  /* kNuisIntNuCC1piz2     */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCC1pi0 ,
+  /* kNuisIntNuCC1piz3     */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCC1pi0 ,
+  /* kNuisIntNuCC1pic1     */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCC1piC ,
+  /* kNuisIntNuCC1pic2     */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCC1piC ,
+  /* kNuisIntNuCC1pic3     */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToCC1piC ,
+  /* kNuisIntNuBarCC1piz1  */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCC1pi0 ,
+  /* kNuisIntNuBarCC1piz2  */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCC1pi0 ,
+  /* kNuisIntNuBarCC1piz3  */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCC1pi0 ,
+  /* kNuisIntNuBarCC1pic1  */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCC1piC ,
+  /* kNuisIntNuBarCC1pic2  */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCC1piC ,
+  /* kNuisIntNuBarCC1pic3  */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCC1piC ,
+#else
+  static_assert(!"NDAppliedConv: INT_MODEL not supported.");
+#endif //INT_MODEL
   /* kNuisNormCCoth        */ kbApplyToAll | kfApplyToAll     | ksApplyToAll | ktApplyToCCoth  ,
   /* kNuisNormNC           */ kbApplyToAll | kfApplyToAll     | ksApplyToAll | ktApplyToAllNC  ,
-  /* kNuisRatioNuENuMu     */ kbApplyToAll | kfApplyToNuEAny  | ksApplyToAll | ktApplyToAll    ,
+  /* kNuisRatioNuENuMu     */ kbApplyToAll | kfApplyToNuEAny  | ksApplyToAll | ktApplyToAllCC  ,
   // Detector systematics
   /* kNuisEffNuMuCC1trkQE  */ kbApplyToAll | kfApplyToAll | ksApplyToNuMuCC1trkQE   | ktApplyToAll ,
   /* kNuisEffNuMuCC2trkQE  */ kbApplyToAll | kfApplyToAll | ksApplyToNuMuCC2trkQE   | ktApplyToAll ,

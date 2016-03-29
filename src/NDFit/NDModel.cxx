@@ -44,6 +44,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "NDFit/NuFlux.h"
 #include "NDFit/NuInt.h"
 #include "NDFit/NuDet.h"
+#include "NDFit/NDAppliedParamsConv.h"
 
 using std::endl;
 
@@ -1556,15 +1557,13 @@ void NDModel::ApplyPhysics(Option_t * option)
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
             //-------------- error, prone need to simplify
-            bool apply = false;
-            if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
-            else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
+            PhysParamId_t p = kNDFitParam[ip];
+            if(p == kPhypUndefined) continue;
+            bool apply = util::ParamIsAppliedTo(b,s,m,p);
               //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
-             PhysParamId_t p = kNDFitParam[ip];
-             if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
              bool tweaked = TMath::Abs(f-1) > kASmallNum;
@@ -1603,15 +1602,13 @@ void NDModel::ApplyPhysics(Option_t * option)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
              //-------------- error, prone need to simplify
-             bool apply = false;
-             if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
-             else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
+             PhysParamId_t p = kNDFitParam[ip];
+             if(p == kPhypUndefined) continue;
+             bool apply = util::ParamIsAppliedTo(b,s,m,p);
              //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
-             PhysParamId_t p = kNDFitParam[ip];
-             if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
              LOG("NDModel",pDEBUG) 
@@ -1647,15 +1644,13 @@ void NDModel::ApplyPhysics(Option_t * option)
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
              //-------------- error, prone need to simplify
-             bool apply = false;
-             if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
-             else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
+             PhysParamId_t p = kNDFitParam[ip];
+             if(p == kPhypUndefined) continue;
+             bool apply = util::ParamIsAppliedTo(b,s,m,p);
              //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
-             PhysParamId_t p = kNDFitParam[ip];
-             if(p == kPhypUndefined) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
              bool tweaked = TMath::Abs(f-1) > kASmallNum;
@@ -1679,15 +1674,13 @@ void NDModel::ApplyPhysics(Option_t * option)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
             //-------------- error, prone need to simplify
-            bool apply = false;
-            if(ip < kNNDFitParamsNuFlux) apply = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];
-            else apply = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];
+            PhysParamId_t p = kNDFitParam[ip];
+            if(p == kPhypUndefined) continue;
+            bool apply = util::ParamIsAppliedTo(b,s,m,p);
             //-------------- 
             if(!apply) continue;
             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
             if(enu_true_dep) continue;
-            PhysParamId_t p = kNDFitParam[ip];
-            if(p == kPhypUndefined) continue;
             double f = fPhysHypothesis.CurrValue(p);
             f = TMath::Max(0.,f);
             bool tweaked = TMath::Abs(f-1) > kASmallNum;

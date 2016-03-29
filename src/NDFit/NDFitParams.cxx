@@ -543,10 +543,21 @@ bool util::ParamIsAppliedTo(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMo
   if (ip<0) {return false;}
   conv::ApplyMask_t pmask = conv::kNDApplyParamToTemplates[ip];
   
+  
+  //~ // DEBUG TESTING - old method.
+  //~ int ibeam   = NDArrIdx::Instance()->NDBeamConfIdx(b);
+  //~ int imode   = NDArrIdx::Instance()->NDReacModeIdx(s,m);
+  //~ int isample = NDArrIdx::Instance()->NDSampleIdx  (b,s);
+  //~ bool apply_db;
+  //~ if(ip < kNNDFitParamsNuFlux){ apply_db = kNDApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];}
+  //~ else {apply_db = kNDApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNNDFitParamsNuFlux];}
+  //~ return apply_db;
+  //~ //END DEBUG
+  
   NuFlavour_t f = conv::kReacModeToFlavour[m];
   ReacType_t  t = conv::kReacModeToType[m];
   
-  // Check beam current is applied
+  // Check whether or not to apply the param to this
   bool apply_to_beam    = (kNDApplyToBeamMode [b] & pmask);
   bool apply_to_sample  = (kNDApplyToSample   [s] & pmask);
   bool apply_to_flavour = (kNDApplyToFlavour  [f] & pmask);
@@ -563,5 +574,13 @@ bool util::ParamIsAppliedTo(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMo
   //~ std::cerr<<"Returning: "  <<(apply?"true":"false")<<std::endl;
   
   return apply;
+}
+//____________________________________________________________________________
+conv::NDFitParamGroup_t util::GetNDParameterGroup(conv::PhysParamId_t p)
+{
+  if (p==conv::kPhypUndefined) {return conv::kpgUndefined;}
+  int ip = NDArrIdx::Instance()->NDFitParamIdx(p);
+  if (ip<0) {return conv::kpgUndefined;}
+  return conv::kNDFitParamGroup[ip];
 }
 //____________________________________________________________________________
