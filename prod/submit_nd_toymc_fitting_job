@@ -73,8 +73,9 @@ $mesg_thresholds        = "verbosity.xml"                         unless defined
 chomp($job_dir);
 
 if( !defined $cput ) {
-  if($resource =~ "RAL"    ) { $cput =  "6:00:00"; }
-  if($resource eq "Oxford" ) { $cput = "11:50:00"; }
+  if($resource =~ "RAL"       ) { $cput =  "6:00:00"; }
+  if($resource =~ "Oxford"    ) { $cput = "11:50:00"; }
+  if($resource =~ "Liverpool" ) { $cput = "17:50:00"; }
 }
 
 mkpath ($job_dir, {verbose => 1, mode=>0777}); 
@@ -172,6 +173,24 @@ while($irun < $nruns) {
      print BATCH_SCRIPT "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
      print BATCH_SCRIPT "cd $job_dir \n";
      print BATCH_SCRIPT "source $dune_softw_dir/setup/setup_at_oxford.sh $dune_softw_dir $fmwk_softw_dir\n";
+     print BATCH_SCRIPT "$command \n";
+     close(BATCH_SCRIPT);
+     `qsub $job_dir/$tag-$irun.pbs`;
+  }
+  
+  #
+  # Liverpool
+  #
+  elsif($resource eq "Liverpool_PBS") {
+     open(BATCH_SCRIPT, ">$job_dir/$tag-$irun.pbs") or die("Can not create the PBS batch script");
+     print BATCH_SCRIPT "#!/bin/bash \n";
+     print BATCH_SCRIPT "#PBS -q all64 \n";
+     print BATCH_SCRIPT "#PBS -N $tag-$irun \n";
+     print BATCH_SCRIPT "#PBS -l cput=$cput \n";
+     print BATCH_SCRIPT "#PBS -o $job_dir/$tag-$irun.pbs.out \n";
+     print BATCH_SCRIPT "#PBS -e $job_dir/$tag-$irun.pbs.err \n";
+     print BATCH_SCRIPT "cd $job_dir \n";
+     print BATCH_SCRIPT "source $dune_softw_dir/setup/setup_at_cvmfs.sh $dune_softw_dir $fmwk_softw_dir\n";
      print BATCH_SCRIPT "$command \n";
      close(BATCH_SCRIPT);
      `qsub $job_dir/$tag-$irun.pbs`;
