@@ -6,7 +6,7 @@
 // Costas Andreopoulos
 // ------------------------------------------------------------------------------------------------
 //
-	
+
 void tweak_nd_pdf_1
 (
   const char * param              = 0,                                     /* parameter name, see NDFitParams.cxx */
@@ -70,25 +70,23 @@ void tweak_nd_pdf_1
     cout << "** Iteration: #" << i << endl;
 
     // Get a nominal physics hypothesis
-    PhysHypothesis ph = util::GetPhysHypothesis(model_param_list,model_param_values);
+    FitParamList * fpl = util::GetFitParameterList(model_param_list/*,model_param_values*/);
     // Tweak if needed
     if(i != kdefault) {
       int ip = util::NDArrIdx::Instance()->NDFitParamIdx(p); // find param idx
       assert(ip>=0 && ip<conv::kNNDFitParams);
-      // ----
-      // improve this
-      double sig = 0.2;
-      if(conv::kNDFitIsFluxRelated[ip]) { sig = ((NDModel*)model)->GetNuFlux()->OneSigmaError((conv::PhysParamId_t)p); }
-      // -----
-      if(i == kpls1sig) { ph.SetCurrValue(p, 1 +   sig); }
-      if(i == kmin1sig) { ph.SetCurrValue(p, 1 -   sig); }
-      if(i == kpls2sig) { ph.SetCurrValue(p, 1 + 2*sig); }
-      if(i == kmin2sig) { ph.SetCurrValue(p, 1 - 2*sig); }
+      
+      double sig = ((NDModel*)model)->OneSigmaErrors().Value(p);
+      
+      if(i == kpls1sig) { fpl->SetCurrentValue(p, 1 +   sig); }
+      if(i == kmin1sig) { fpl->SetCurrentValue(p, 1 -   sig); }
+      if(i == kpls2sig) { fpl->SetCurrentValue(p, 1 + 2*sig); }
+      if(i == kmin2sig) { fpl->SetCurrentValue(p, 1 - 2*sig); }
     }
-    cout << "Physics hypothesis: " << ph;
+    cout << "FitParamList: " << *fpl;
 
     // Generate predictions
-    model->Generate(ph,"+SB");
+    model->Generate(*fpl,"+SB");
 
     // Array to store results
     TObjArray * array = new TObjArray();
@@ -122,7 +120,7 @@ void tweak_nd_pdf_1
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       for(int i=0; i < nspectra; i++) {
           pdf_ratio[ibeam][isample][i] = new TH1D(* pdf[ibeam][isample][kdefault]); // create with correct binning
@@ -157,7 +155,7 @@ void tweak_nd_pdf_1
     if(b == kbUndefined) continue;
     int ic = 0;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
+      NDSample_t s = kNDSample[ibeam][isample];
       if(s == ksNDUndefined) continue;
       ic++;
       c[ibeam]->cd(ic);
