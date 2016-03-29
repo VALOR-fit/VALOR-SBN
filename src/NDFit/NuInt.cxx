@@ -123,7 +123,7 @@ bool NuInt::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   if(!fCovMtrx) {
     LOG("NuInt",pFATAL) 
        << "No neutrino interaction model param covariance matrix was found.";
-    util::Die(1);
+    util::Die(1); return false;
   }
   
   // Check matrix size
@@ -135,7 +135,7 @@ bool NuInt::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
         << "\n Neutrino interaction model param covariance matrix has unexpected size!"
         << "\n Expecting: " <<  np << " x " << np << " matrix"
         << "\n Found: " << cov.GetNrows() << " x " <<  cov.GetNcols() << " matrix";
-     util::Die(1);
+      util::Die(1); return false;
   }
   
   // Do Cholesky decomposition
@@ -167,7 +167,7 @@ bool NuInt::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
       }
     }
   }
-  if (failure) {exit(-1);}
+  if (failure) {util::Die(1); return false;}
 #endif // __init_check_inverse__
   
 #ifdef __show_init_mesg_debug__

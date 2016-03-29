@@ -118,7 +118,7 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
   fCovMtrx = util::XML2TMatrixD(xml,root_node,"syst/flux/covariance_matrix");  
   if(!fCovMtrx) {
     LOG("NuFlux",pFATAL) << "No flux covariance matrix was found.";
-    util::Die(1);
+    util::Die(1); return false;
   }
   
   // Check matrix size
@@ -130,7 +130,7 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
         << "\n Flux covariance matrix has unexpected size!"
         << "\n Expecting: " <<  np << " x " << np << " matrix"
         << "\n Found: " << cov.GetNrows() << " x " <<  cov.GetNcols() << " matrix";
-     util::Die(1);
+     util::Die(1); return false;
   }
   
   // Do Cholesky decomposition
@@ -167,7 +167,7 @@ bool NuFlux::Read(TXMLEngine* xml, XMLNodePointer_t root_node)
       }
     }
   }
-  if (failure) {exit(-1);}
+  if (failure) {util::Die(1); return false;}
 #endif // __init_check_inverse__
   
 #ifdef __show_init_mesg_debug__
