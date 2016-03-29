@@ -129,7 +129,12 @@ def main(beam_mode_arg = None, sample_arg = None,
             include_row = True
           else:
             entries.append("".ljust(coln_width))
-        if include_row: tex_output.write("& ".join(entries) + " \\\\ \\hline \n")
+        if not include_row: continue
+        tex_output.write("& ".join(entries) + " \\\\ \\hline ")
+        # Add second line if we're at the end of a group
+        if util.GetNDParameterGroup(param)!=util.GetNDParameterGroup(param+1):
+          tex_output.write(" \\hline ")
+        tex_output.write("\n")
       
       # Close table and finalise tex document
       tex_output.write("\n\\end{tabular}\n")
