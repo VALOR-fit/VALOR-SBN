@@ -153,26 +153,26 @@ string util::AsString(conv::PhysParamId_t p)
     case ( kNuisIntNuBarCCQE2      ) : return "f_int_nubar_ccqe_2"; 
     case ( kNuisIntNuBarCCQE3      ) : return "f_int_nubar_ccqe_3"; 
     
-    case ( kNuisIntNuCC1piz1       ) : return "f_int_nu_cc1piz1"; 
-    case ( kNuisIntNuCC1piz2       ) : return "f_int_nu_cc1piz2"; 
-    case ( kNuisIntNuCC1piz3       ) : return "f_int_nu_cc1piz3"; 
-    case ( kNuisIntNuCC1pic1       ) : return "f_int_nu_cc1pic1"; 
-    case ( kNuisIntNuCC1pic2       ) : return "f_int_nu_cc1pic2"; 
-    case ( kNuisIntNuCC1pic3       ) : return "f_int_nu_cc1pic3"; 
+    case ( kNuisIntNuCC1piz1       ) : return "f_int_nu_cc1piz_1"; 
+    case ( kNuisIntNuCC1piz2       ) : return "f_int_nu_cc1piz_2"; 
+    case ( kNuisIntNuCC1piz3       ) : return "f_int_nu_cc1piz_3"; 
+    case ( kNuisIntNuCC1pic1       ) : return "f_int_nu_cc1pic_1"; 
+    case ( kNuisIntNuCC1pic2       ) : return "f_int_nu_cc1pic_2"; 
+    case ( kNuisIntNuCC1pic3       ) : return "f_int_nu_cc1pic_3"; 
     
-    case ( kNuisIntNuBarCC1piz1    ) : return "f_int_nubar_1piz1"; 
-    case ( kNuisIntNuBarCC1piz2    ) : return "f_int_nubar_1piz2"; 
-    case ( kNuisIntNuBarCC1piz3    ) : return "f_int_nubar_1piz3"; 
-    case ( kNuisIntNuBarCC1pic1    ) : return "f_int_nubar_1pic1"; 
-    case ( kNuisIntNuBarCC1pic2    ) : return "f_int_nubar_1pic2"; 
-    case ( kNuisIntNuBarCC1pic3    ) : return "f_int_nubar_1pic3"; 
+    case ( kNuisIntNuBarCC1piz1    ) : return "f_int_nubar_1piz_1"; 
+    case ( kNuisIntNuBarCC1piz2    ) : return "f_int_nubar_1piz_2"; 
+    case ( kNuisIntNuBarCC1piz3    ) : return "f_int_nubar_1piz_3"; 
+    case ( kNuisIntNuBarCC1pic1    ) : return "f_int_nubar_1pic_1"; 
+    case ( kNuisIntNuBarCC1pic2    ) : return "f_int_nubar_1pic_2"; 
+    case ( kNuisIntNuBarCC1pic3    ) : return "f_int_nubar_1pic_3"; 
     
-    case ( kNuisIntNuMultiPi1      ) : return "f_int_nu_npi1"; 
-    case ( kNuisIntNuMultiPi2      ) : return "f_int_nu_npi2"; 
-    case ( kNuisIntNuMultiPi3      ) : return "f_int_nu_npi3"; 
-    case ( kNuisIntNuBarMultiPi1   ) : return "f_int_nubar_npi1"; 
-    case ( kNuisIntNuBarMultiPi2   ) : return "f_int_nubar_npi2"; 
-    case ( kNuisIntNuBarMultiPi3   ) : return "f_int_nubar_npi3"; 
+    case ( kNuisIntNuMultiPi1      ) : return "f_int_nu_npi_1"; 
+    case ( kNuisIntNuMultiPi2      ) : return "f_int_nu_npi_2"; 
+    case ( kNuisIntNuMultiPi3      ) : return "f_int_nu_npi_3"; 
+    case ( kNuisIntNuBarMultiPi1   ) : return "f_int_nubar_npi_1"; 
+    case ( kNuisIntNuBarMultiPi2   ) : return "f_int_nubar_npi_2"; 
+    case ( kNuisIntNuBarMultiPi3   ) : return "f_int_nubar_npi_3"; 
     
     case ( kNuisIntNormMEC         ) : return "f_int_mec"; 
     case ( kNuisIntNormCoherent    ) : return "f_int_coh"; 
