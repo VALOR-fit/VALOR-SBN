@@ -6,6 +6,7 @@
 
 #
 #
+PACKAGE_LIBDIR                = $(VALOR_DUNE)/lib/
 PACKAGE_LIB                   = $(VALOR_DUNE)/lib/$(LIBNAME)-$(VALOR_APP_VERSION)-$(VALOR_FMWK_VERSION).$(DllSuf)
 PACKAGE_LIBNOVRS              = $(VALOR_DUNE)/lib/$(LIBNAME).$(DllSuf)
 PACKAGE_LIBMACLINK            = $(VALOR_DUNE)/lib/$(LIBNAME).$(DllLinkSuf)
@@ -61,7 +62,10 @@ purge: FORCE
 
 #
 #
-clean: FORCE   
-	$(RM) *.o *_rdict.pcm *~ core a.out $(PACKAGE_LIB) $(PACKAGE_LIBMACLINK) $(PACKAGE_LIBNOVRS) $(DICTIONARY).* Makefile.temp
-
+clean: FORCE
+ifeq ($(strip $(DICTIONARY)),undefined)
+	$(RM) *.o *_rdict.pcm *~ core a.out $(PACKAGE_LIB) $(PACKAGE_LIBMACLINK) $(PACKAGE_LIBNOVRS) Makefile.temp
+else
+	$(RM) *.o *_rdict.pcm *~ core a.out $(PACKAGE_LIB) $(PACKAGE_LIBMACLINK) $(PACKAGE_LIBNOVRS) $(DICTIONARY)* $(PACKAGE_LIBDIR)/$(DICTIONARY)* Makefile.temp
+endif
 
