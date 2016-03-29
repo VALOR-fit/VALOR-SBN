@@ -50,6 +50,9 @@ namespace util {
   string           AsString        (conv::BeamConf_t b, Option_t * opt=0);
   conv::BeamConf_t BeamConfFromInt (int b);
   conv::BeamConf_t BeamConfFromString (std::string b);
+  
+  // Alias for above
+  string           BeamConfAsString(conv::BeamConf_t b, Option_t * opt=0);
 
 } // util
 

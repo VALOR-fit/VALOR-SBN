@@ -39,6 +39,8 @@ string util::AsString(BeamConf_t b, Option_t * opt)
   return name;
 }
 //________________________________________________________________________________________
+string util::BeamConfAsString(BeamConf_t b, Option_t * opt) {return util::AsString(b,opt);}
+//________________________________________________________________________________________
 BeamConf_t util::BeamConfFromInt(int b)
 {
 // Cast an integer to BeamConf_t, but with boundary check
