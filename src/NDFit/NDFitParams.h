@@ -1821,8 +1821,8 @@ static const bool kNDFitParamEtrueDependence[kNNDFitParams] =
 };
 
 #if INT_MODEL==2
-static const double kIntBinEdgeEtrue1 = 1.0;
-static const double kIntBinEdgeEtrue2 = 3.0;
+static const double kIntBinEdgeEtrue1 = 2.0;
+static const double kIntBinEdgeEtrue2 = 4.0;
 #endif
 
 // Which is the true energy range?
