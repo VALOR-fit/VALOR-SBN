@@ -137,15 +137,17 @@ bool NDModel::Read(string file, Option_t * opt)
        string node_name = "mc/dst/" + util::AsString(b, "lowercase");
        fMCDST[ibeam] = util::XML2TTree (xml,root_node,node_name);
        assert(fMCDST[ibeam]);
-       this->Fill(fMCDST[ibeam], ibeam);
+       this->FillFromDST(fMCDST[ibeam], ibeam);
     }//ibeam
   } 
   else {
-    // ** implement later (when binning is optimized) and make it the default
-    // ** choice to reduce the size of data files stored in the SVN repository.
     LOG("NDModel",pINFO) << "Using stored VALOR MC templates";
-    LOG("NDModel",pFATAL) << "Option note supported yet";
-    exit(1);
+    string template_tag = util::XML2String(xml,root_node,"mc/template/tag");
+    TFile * template_file = util::XML2TFile(xml,root_node,"mc/template/filename");
+    
+    this->FillFromTemplateFile(template_file,template_tag);
+    template_file->Close();
+    delete template_file;
   }
   
   // At the point the nominal MC templates are filled-in.
@@ -1073,7 +1075,7 @@ void NDModel::Zero(void)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDModel::Fill(TTree * t, int ibeam)
+void NDModel::FillFromDST(TTree * t, int ibeam)
 {
 // Fill MC templates from the input VALOR/DUNE DST TTree
 // We use a single tree for all samples for a single beam configuration.
@@ -1313,6 +1315,25 @@ void NDModel::Fill(TTree * t, int ibeam)
      
      //~ break;//DEBUG
   }//iev 
+}
+//________________________________________________________________________________________
+void NDModel::FillFromTemplateFile (TFile * f, string tag)
+{
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kNDBeamConf[ibeam];
+    if(b == kbUndefined) continue;
+    for(int isample = 0; isample < kNNDSamples; isample++) {
+      NDSample_t s = kNDSample[ibeam][isample];
+      if(s == ksNDUndefined) continue;
+      for(int imode = 0; imode < kNReacModes; imode++) {
+        ReacMode_t m = kNDReactionModes[isample][imode];
+        if(m == kmUndefined) continue;
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          
+        }//izone
+      } //imode
+    }//isample
+  } //ibeam
 }
 //________________________________________________________________________________________
 void NDModel::ApplyTuning(void)

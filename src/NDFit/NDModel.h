@@ -85,7 +85,8 @@ private:
   void Book  (void);
   void Clean (void);
   void Zero  (void);
-  void Fill  (TTree * t, int ibeam);
+  void FillFromDST  (TTree * t, int ibeam);
+  void FillFromTemplateFile (TFile * f, std::string tag);
 
   void ApplyTuning      (void);
   void FluctuateMCStat  (Option_t * opt = 0);
