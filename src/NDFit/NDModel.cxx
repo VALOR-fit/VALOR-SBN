@@ -90,8 +90,18 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
     util::Die(1); return false;
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+  
+  // Read the neutrino flux model info
+  fNuFlux = new valor::NuFlux;
+  fNuFlux->Read(xml,root_node);
+  // Read the neutrino interaction model info
+  fNuInt = new valor::NuInt;
+  fNuInt->Read(xml,root_node);
+  // Read the neutrino detector model info
+  fNuDet = new valor::NuDet;
+  fNuDet->Read(xml,root_node);
 
-  // Ge the near detector fiducial mass
+  // Get the near detector fiducial mass
   string name = "nd/fiducial_mass";
   fNDFiducialMass = util::XML2Dbl(xml,root_node,name);
   LOG("NDModel",pINFO)
@@ -134,16 +144,6 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
     LOG("NDModel",pFATAL) << "Option note supported yet";
     exit(1);
   }
-  
-  // Read the neutrino flux model info
-  fNuFlux = new valor::NuFlux;
-  fNuFlux->Read(xml,root_node);
-  // Read the neutrino interaction model info
-  fNuInt = new valor::NuInt;
-  fNuInt->Read(xml,root_node);
-  // Read the neutrino detector model info
-  fNuDet = new valor::NuDet;
-  fNuDet->Read(xml,root_node);
   
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.
