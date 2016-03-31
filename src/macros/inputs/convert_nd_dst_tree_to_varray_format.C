@@ -12,7 +12,7 @@ void convert_nd_dst_tree_to_varray_format(
   
   // Get ND model & configure
   FitModelABC * model = new NDModel;
-  model->Read(config.Data());
+  model->Read(config.Data(),"forcedst");
   
   // Get array with all VArrays in
   TObjArray output_arr;

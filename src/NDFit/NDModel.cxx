@@ -75,9 +75,12 @@ string NDModel::Name(void)
   return "DUNEND";
 }
 //________________________________________________________________________________________
-bool NDModel::Read(string file, Option_t * /*opt*/)
+bool NDModel::Read(string file, Option_t * opt)
 {
   this->Zero();
+  
+  TString ts_opt(opt);
+  bool force_use_dst = ts_opt.Contains("forcedst");
 
   LOG("NDModel", pNOTICE) << "Reading configuration from XML file [" << file << "]";
 
@@ -125,7 +128,7 @@ bool NDModel::Read(string file, Option_t * /*opt*/)
   // In the later case, the templates are pre-binned so the binning
   // can not change. Make sure the templates have the expected binning.
   //
-  fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format");
+  fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format") | force_use_dst;
   if(fUseMCDST) {
     LOG("NDModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
