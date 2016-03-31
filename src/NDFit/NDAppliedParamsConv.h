@@ -23,114 +23,134 @@ typedef ULong64_t ApplyMask_t;
 static const ApplyMask_t kApplyMaskOne = 1ul;
 
 static const ApplyMask_t kApplyUndefined          = (kApplyMaskOne <<  0 );
-static const ApplyMask_t kbApplyToAll             = (kApplyMaskOne <<  1 ); // Current
-static const ApplyMask_t kbApplyToFHC             = (kApplyMaskOne <<  2 );
-static const ApplyMask_t kbApplyToRHC             = (kApplyMaskOne <<  3 );
-static const ApplyMask_t kfApplyToAll             = (kApplyMaskOne <<  4 ); // True flavour
-static const ApplyMask_t kfApplyToNuMuAny         = (kApplyMaskOne <<  5 );
-static const ApplyMask_t kfApplyToNuMu            = (kApplyMaskOne <<  6 );
-static const ApplyMask_t kfApplyToNuMuBar         = (kApplyMaskOne <<  7 );
-static const ApplyMask_t kfApplyToNuEAny          = (kApplyMaskOne <<  8 );
-static const ApplyMask_t kfApplyToNuE             = (kApplyMaskOne <<  9 );
-static const ApplyMask_t kfApplyToNuEBar          = (kApplyMaskOne << 10 );
-static const ApplyMask_t ksApplyToAll             = (kApplyMaskOne << 11 ); // Sample
-static const ApplyMask_t ksApplyToNuMuCC          = (kApplyMaskOne << 12 );
-static const ApplyMask_t ksApplyToNuMuCC1trkQE    = (kApplyMaskOne << 13 );
-static const ApplyMask_t ksApplyToNuMuCC2trkQE    = (kApplyMaskOne << 14 );
-static const ApplyMask_t ksApplyToNuMuCC1piC      = (kApplyMaskOne << 15 );
-static const ApplyMask_t ksApplyToNuMuCC2piC      = (kApplyMaskOne << 16 );
-static const ApplyMask_t ksApplyToNuMuCC1pi0      = (kApplyMaskOne << 17 );
-static const ApplyMask_t ksApplyToNuMuCC1piC1pi0  = (kApplyMaskOne << 18 );
-static const ApplyMask_t ksApplyToNuMuCCoth       = (kApplyMaskOne << 19 );
-static const ApplyMask_t ksApplyToNuECC           = (kApplyMaskOne << 20 );
-static const ApplyMask_t ksApplyToNuMuCCWSgn      = (kApplyMaskOne << 21 );
-static const ApplyMask_t ksApplyToNC              = (kApplyMaskOne << 22 );
-static const ApplyMask_t ksApplyToNC1piC          = (kApplyMaskOne << 23 );
-static const ApplyMask_t ksApplyToNC1pi0          = (kApplyMaskOne << 24 );
-static const ApplyMask_t ksApplyToNCoth           = (kApplyMaskOne << 25 ); 
-static const ApplyMask_t ktApplyToAll             = (kApplyMaskOne << 26 ); // Reaction type
-static const ApplyMask_t ktApplyToAllCC           = (kApplyMaskOne << 27 );
-static const ApplyMask_t ktApplyToCCQE            = (kApplyMaskOne << 28 );
-static const ApplyMask_t ktApplyToCCMEC           = (kApplyMaskOne << 29 );
-static const ApplyMask_t ktApplyToCC1piC          = (kApplyMaskOne << 30 );
-static const ApplyMask_t ktApplyToCC1pi0          = (kApplyMaskOne << 31 );
-static const ApplyMask_t ktApplyToCC2piC          = (kApplyMaskOne << 32 );
-static const ApplyMask_t ktApplyToCC2pi0          = (kApplyMaskOne << 33 );
-static const ApplyMask_t ktApplyToCCpiCpi0        = (kApplyMaskOne << 34 );
-static const ApplyMask_t ktApplyToCCcoh           = (kApplyMaskOne << 35 );
-static const ApplyMask_t ktApplyToCCoth           = (kApplyMaskOne << 36 );
-static const ApplyMask_t ktApplyToAllNC           = (kApplyMaskOne << 37 );
-static const ApplyMask_t ktApplyToNCEL            = (kApplyMaskOne << 38 );
-static const ApplyMask_t ktApplyToNCMEC           = (kApplyMaskOne << 39 );
-static const ApplyMask_t ktApplyToNC1piC          = (kApplyMaskOne << 40 );
-static const ApplyMask_t ktApplyToNC1pi0          = (kApplyMaskOne << 41 );
-static const ApplyMask_t ktApplyToNC2piC          = (kApplyMaskOne << 42 );
-static const ApplyMask_t ktApplyToNC2pi0          = (kApplyMaskOne << 43 );
-static const ApplyMask_t ktApplyToNCpiCpi0        = (kApplyMaskOne << 44 );
-static const ApplyMask_t ktApplyToNCcoh           = (kApplyMaskOne << 45 );
-static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 46 );
+static const ApplyMask_t kbApplyToFHC             = (kApplyMaskOne <<  1 ); // Current
+static const ApplyMask_t kbApplyToRHC             = (kApplyMaskOne <<  2 );
+static const ApplyMask_t kfApplyToNuMu            = (kApplyMaskOne <<  3 ); // True flavour
+static const ApplyMask_t kfApplyToNuMuBar         = (kApplyMaskOne <<  4 );
+static const ApplyMask_t kfApplyToNuE             = (kApplyMaskOne <<  5 );
+static const ApplyMask_t kfApplyToNuEBar          = (kApplyMaskOne <<  6 );
+static const ApplyMask_t ksApplyToNuMuCC          = (kApplyMaskOne <<  7 ); 
+static const ApplyMask_t ksApplyToNuMuCC1trkQE    = (kApplyMaskOne <<  8 ); // Sample
+static const ApplyMask_t ksApplyToNuMuCC2trkQE    = (kApplyMaskOne <<  9 );
+static const ApplyMask_t ksApplyToNuMuCC1piC      = (kApplyMaskOne << 10 );
+static const ApplyMask_t ksApplyToNuMuCC2piC      = (kApplyMaskOne << 11 );
+static const ApplyMask_t ksApplyToNuMuCC1pi0      = (kApplyMaskOne << 12 );
+static const ApplyMask_t ksApplyToNuMuCC1piC1pi0  = (kApplyMaskOne << 13 );
+static const ApplyMask_t ksApplyToNuMuCCoth       = (kApplyMaskOne << 14 );
+static const ApplyMask_t ksApplyToNuECC           = (kApplyMaskOne << 15 );
+static const ApplyMask_t ksApplyToNuMuCCWSgn      = (kApplyMaskOne << 16 );
+static const ApplyMask_t ksApplyToNC              = (kApplyMaskOne << 17 );
+static const ApplyMask_t ksApplyToNC1piC          = (kApplyMaskOne << 18 );
+static const ApplyMask_t ksApplyToNC1pi0          = (kApplyMaskOne << 19 );
+static const ApplyMask_t ksApplyToNCoth           = (kApplyMaskOne << 20 ); 
+static const ApplyMask_t ktApplyToCCQE            = (kApplyMaskOne << 21 ); // Reaction type
+static const ApplyMask_t ktApplyToCCMEC           = (kApplyMaskOne << 22 );
+static const ApplyMask_t ktApplyToCC1piC          = (kApplyMaskOne << 23 );
+static const ApplyMask_t ktApplyToCC1pi0          = (kApplyMaskOne << 24 );
+static const ApplyMask_t ktApplyToCC2piC          = (kApplyMaskOne << 25 );
+static const ApplyMask_t ktApplyToCC2pi0          = (kApplyMaskOne << 26 );
+static const ApplyMask_t ktApplyToCCpiCpi0        = (kApplyMaskOne << 27 );
+static const ApplyMask_t ktApplyToCCcoh           = (kApplyMaskOne << 28 );
+static const ApplyMask_t ktApplyToCCoth           = (kApplyMaskOne << 29 );
+static const ApplyMask_t ktApplyToNCEL            = (kApplyMaskOne << 30 );
+static const ApplyMask_t ktApplyToNCMEC           = (kApplyMaskOne << 31 );
+static const ApplyMask_t ktApplyToNC1piC          = (kApplyMaskOne << 32 );
+static const ApplyMask_t ktApplyToNC1pi0          = (kApplyMaskOne << 33 );
+static const ApplyMask_t ktApplyToNC2piC          = (kApplyMaskOne << 34 );
+static const ApplyMask_t ktApplyToNC2pi0          = (kApplyMaskOne << 35 );
+static const ApplyMask_t ktApplyToNCpiCpi0        = (kApplyMaskOne << 36 );
+static const ApplyMask_t ktApplyToNCcoh           = (kApplyMaskOne << 37 );
+static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 38 );
 
-// Groups of systematics (alternative definition) - should maybe move to this for everything (take groups out of mask)
+// Groups of systematics - should maybe move to this for everything
+// Beam
+static const ApplyMask_t kbApplyToAll = kbApplyToFHC | kbApplyToRHC;
+
+// Nu flavour
 static const ApplyMask_t kfApplyToNuAny    = kfApplyToNuMu    | kfApplyToNuE   ; // NuAny means any non-barred
 static const ApplyMask_t kfApplyToNuBarAny = kfApplyToNuMuBar | kfApplyToNuEBar;
+static const ApplyMask_t kfApplyToNuEAny   = kfApplyToNuE     | kfApplyToNuEBar;
+static const ApplyMask_t kfApplyToNuMuAny  = kfApplyToNuMu    | kfApplyToNuMuBar;
+static const ApplyMask_t kfApplyToAll      = kfApplyToNuAny   | kfApplyToNuBarAny;
+
+// Reaction type
+static const ApplyMask_t ktApplyToCCQELike = ktApplyToCCQE   | ktApplyToCCMEC;
+static const ApplyMask_t ktApplyToAllCC1pi = ktApplyToCC1piC | ktApplyToCC1pi0;
+static const ApplyMask_t ktApplyToAllCC2pi = ktApplyToCC2piC | ktApplyToCC2pi0 | ktApplyToCCpiCpi0;
+static const ApplyMask_t ktApplyToAllCC    = ktApplyToCCQELike | ktApplyToAllCC1pi | ktApplyToAllCC2pi | ktApplyToCCcoh | ktApplyToCCoth;
+
+static const ApplyMask_t ktApplyToNCElLike = ktApplyToNCEL   | ktApplyToNCMEC;
+static const ApplyMask_t ktApplyToAllNC1pi = ktApplyToNC1piC | ktApplyToNC1pi0;
+static const ApplyMask_t ktApplyToAllNC2pi = ktApplyToNC2piC | ktApplyToNC2pi0 | ktApplyToNCpiCpi0;
+static const ApplyMask_t ktApplyToAllNC    = ktApplyToNCElLike | ktApplyToAllNC1pi | ktApplyToAllNC2pi | ktApplyToNCcoh | ktApplyToNCoth;
+
+static const ApplyMask_t ktApplyToAll = ktApplyToAllCC | ktApplyToAllNC;
+
+// Samples
+static const ApplyMask_t ksApplyToAll = (
+ ksApplyToNuMuCC     | ksApplyToNuMuCC1trkQE | ksApplyToNuMuCC2trkQE   | ksApplyToNuMuCC1piC |
+ ksApplyToNuMuCC2piC | ksApplyToNuMuCC1pi0   | ksApplyToNuMuCC1piC1pi0 | ksApplyToNuMuCCoth  |
+ ksApplyToNuECC      | ksApplyToNuMuCCWSgn   | ksApplyToNC             | ksApplyToNC1piC     |
+ ksApplyToNC1pi0     | ksApplyToNCoth );
+ 
 
 // Which masks apply to which beam modes
 // This is defined for all samples in the BeamConf_t enum.
 static const ApplyMask_t kNDApplyToBeamMode[kNBeamConf] = {
-  /* kbFHC */ kbApplyToAll | kbApplyToFHC ,
-  /* kbRHC */ kbApplyToAll | kbApplyToRHC ,
+  /* kbFHC */ kbApplyToFHC ,
+  /* kbRHC */ kbApplyToRHC ,
 };
 
 // Which masks apply to which samples
 // This is defined for all samples in the NDSample_t enum.
 static const ApplyMask_t kNDApplyToSample[kMaxNNDSamples] = {
- /* ksNDNuMuCC         */ ksApplyToAll | ksApplyToNuMuCC          ,
- /* ksNDNuMuCC1trkQE   */ ksApplyToAll | ksApplyToNuMuCC1trkQE    ,
- /* ksNDNuMuCC2trkQE   */ ksApplyToAll | ksApplyToNuMuCC2trkQE    ,
- /* ksNDNuMuCC1piC     */ ksApplyToAll | ksApplyToNuMuCC1piC      ,
- /* ksNDNuMuCC2piC     */ ksApplyToAll | ksApplyToNuMuCC2piC      ,
- /* ksNDNuMuCC1pi0     */ ksApplyToAll | ksApplyToNuMuCC1pi0      ,
- /* ksNDNuMuCC1piC1pi0 */ ksApplyToAll | ksApplyToNuMuCC1piC1pi0  ,
- /* ksNDNuMuCCoth      */ ksApplyToAll | ksApplyToNuMuCCoth       ,
- /* ksNDNuECC          */ ksApplyToAll | ksApplyToNuECC           ,
- /* ksNDNuMuCCWSgn     */ ksApplyToAll | ksApplyToNuMuCCWSgn      ,
- /* ksNDNC,            */ ksApplyToAll | ksApplyToNC              ,
- /* ksNDNC1piC         */ ksApplyToAll | ksApplyToNC1piC          ,
- /* ksNDNC1pi0         */ ksApplyToAll | ksApplyToNC1pi0          ,
- /* ksNDNCoth          */ ksApplyToAll | ksApplyToNCoth           ,
+ /* ksNDNuMuCC         */ ksApplyToNuMuCC          ,
+ /* ksNDNuMuCC1trkQE   */ ksApplyToNuMuCC1trkQE    ,
+ /* ksNDNuMuCC2trkQE   */ ksApplyToNuMuCC2trkQE    ,
+ /* ksNDNuMuCC1piC     */ ksApplyToNuMuCC1piC      ,
+ /* ksNDNuMuCC2piC     */ ksApplyToNuMuCC2piC      ,
+ /* ksNDNuMuCC1pi0     */ ksApplyToNuMuCC1pi0      ,
+ /* ksNDNuMuCC1piC1pi0 */ ksApplyToNuMuCC1piC1pi0  ,
+ /* ksNDNuMuCCoth      */ ksApplyToNuMuCCoth       ,
+ /* ksNDNuECC          */ ksApplyToNuECC           ,
+ /* ksNDNuMuCCWSgn     */ ksApplyToNuMuCCWSgn      ,
+ /* ksNDNC,            */ ksApplyToNC              ,
+ /* ksNDNC1piC         */ ksApplyToNC1piC          ,
+ /* ksNDNC1pi0         */ ksApplyToNC1pi0          ,
+ /* ksNDNCoth          */ ksApplyToNCoth           ,
 };
 
 // Which masks apply to which parent particle flavour
 static const ApplyMask_t kNDApplyToFlavour[conv::kNNuFlavour] = {
-  /* kNuE     */ kfApplyToAll | kfApplyToNuEAny  | kfApplyToNuE     , 
-  /* kNuMu    */ kfApplyToAll | kfApplyToNuMuAny | kfApplyToNuMu    ,
-  /* kNuTau   */ kfApplyToAll                                       , 
-  /* kNuEBar  */ kfApplyToAll | kfApplyToNuEAny  | kfApplyToNuEBar  , 
-  /* kNuMuBar */ kfApplyToAll | kfApplyToNuMuAny | kfApplyToNuMuBar ,
-  /* kNuTau   */ kfApplyToAll                                       ,
+  /* kNuE     */ kfApplyToNuE     , 
+  /* kNuMu    */ kfApplyToNuMu    ,
+  /* kNuTau   */ 0                , 
+  /* kNuEBar  */ kfApplyToNuEBar  , 
+  /* kNuMuBar */ kfApplyToNuMuBar ,
+  /* kNuTau   */ 0                ,
 };
 
 // Which masks apply to which reaction type
 static const ApplyMask_t kNDApplyToReacType[kNReacType] = {
-  /* kmtCCQE,     */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCQE    ,
-  /* kmtCCMEC,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCMEC   | ktApplyToCCQE,
-  /* kmtCC1piC,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC1piC  ,
-  /* kmtCC1pi0,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC1pi0  ,
-  /* kmtCC2piC,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC2piC  | ktApplyToCCoth,
-  /* kmtCC2pi0,   */ ktApplyToAll | ktApplyToAllCC | ktApplyToCC2pi0  | ktApplyToCCoth,
-  /* kmtCCpiCpi0, */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCpiCpi0| ktApplyToCCoth,
-  /* kmtCCcoh,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCcoh   | ktApplyToCCoth,
-  /* kmtCCoth,    */ ktApplyToAll | ktApplyToAllCC | ktApplyToCCoth   | ktApplyToCCoth,
-  /* kmtNCEL,     */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCEL    , 
-  /* kmtNCMEC,    */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCMEC   | ktApplyToNCEL,
-  /* kmtNC1piC,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC1piC  | ktApplyToNCoth,
-  /* kmtNC1pi0,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC1pi0  | ktApplyToNCoth,
-  /* kmtNC2piC,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC2piC  | ktApplyToNCoth,
-  /* kmtNC2pi0,   */ ktApplyToAll | ktApplyToAllNC | ktApplyToNC2pi0  | ktApplyToNCoth,
-  /* kmtNCpiCpi0, */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCpiCpi0| ktApplyToNCoth,
-  /* kmtNCcoh,    */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCcoh   | ktApplyToNCoth,
-  /* kmtNCoth,    */ ktApplyToAll | ktApplyToAllNC | ktApplyToNCoth   ,
-  /* kmtOther     */ ktApplyToAll
+  /* kmtCCQE,     */ ktApplyToCCQE    ,
+  /* kmtCCMEC,    */ ktApplyToCCMEC   | ktApplyToCCQE,
+  /* kmtCC1piC,   */ ktApplyToCC1piC  ,
+  /* kmtCC1pi0,   */ ktApplyToCC1pi0  ,
+  /* kmtCC2piC,   */ ktApplyToCC2piC  | ktApplyToCCoth,
+  /* kmtCC2pi0,   */ ktApplyToCC2pi0  | ktApplyToCCoth,
+  /* kmtCCpiCpi0, */ ktApplyToCCpiCpi0| ktApplyToCCoth,
+  /* kmtCCcoh,    */ ktApplyToCCcoh   | ktApplyToCCoth,
+  /* kmtCCoth,    */ ktApplyToCCoth   | ktApplyToCCoth,
+  /* kmtNCEL,     */ ktApplyToNCEL    , 
+  /* kmtNCMEC,    */ ktApplyToNCMEC   | ktApplyToNCEL,
+  /* kmtNC1piC,   */ ktApplyToNC1piC  | ktApplyToNCoth,
+  /* kmtNC1pi0,   */ ktApplyToNC1pi0  | ktApplyToNCoth,
+  /* kmtNC2piC,   */ ktApplyToNC2piC  | ktApplyToNCoth,
+  /* kmtNC2pi0,   */ ktApplyToNC2pi0  | ktApplyToNCoth,
+  /* kmtNCpiCpi0, */ ktApplyToNCpiCpi0| ktApplyToNCoth,
+  /* kmtNCcoh,    */ ktApplyToNCcoh   | ktApplyToNCoth,
+  /* kmtNCoth,    */ ktApplyToNCoth   ,
+  /* kmtOther     */ 0
 };
 
 // Which physics parameters are applied to which beam/sample/mode
