@@ -143,7 +143,7 @@ bool NDModel::Read(string file, Option_t * opt)
   else {
     LOG("NDModel",pINFO) << "Using stored VALOR MC templates";
     string template_tag = util::XML2String(xml,root_node,"mc/template/tag");
-    TFile * template_file = util::XML2TFile(xml,root_node,"mc/template/filename");
+    TFile * template_file = util::XML2TFile(xml,root_node,"mc/template");
     
     this->FillFromTemplateFile(template_file,template_tag);
     template_file->Close();
@@ -1317,8 +1317,9 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
   }//iev 
 }
 //________________________________________________________________________________________
-void NDModel::FillFromTemplateFile (TFile * f, string tag)
+bool NDModel::FillFromTemplateFile (TFile * f, string tag)
 {
+  bool success = true;
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
@@ -1329,11 +1330,26 @@ void NDModel::FillFromTemplateFile (TFile * f, string tag)
         ReacMode_t m = kNDReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          
+          TString name = TString::Format("%s_%s_%s_z%d", 
+                util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
+          TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_ob_vf", name.Data());
+          VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
+          if (arr) {
+            fMCTNomOb [ibeam][isample][imode][izone]->CopyFrom(*arr);
+            delete arr;
+          }
+          else {
+            success = false;
+            LOG("NDModel",pERROR) << "Failed to read template "<<obj_name;
+          }
         }//izone
       } //imode
     }//isample
   } //ibeam
+  if (!success) {
+    util::Die(-1);
+  }
+  return success;
 }
 //________________________________________________________________________________________
 void NDModel::ApplyTuning(void)

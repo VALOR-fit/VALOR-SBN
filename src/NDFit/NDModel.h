@@ -86,7 +86,7 @@ private:
   void Clean (void);
   void Zero  (void);
   void FillFromDST  (TTree * t, int ibeam);
-  void FillFromTemplateFile (TFile * f, std::string tag);
+  bool FillFromTemplateFile (TFile * f, std::string tag);
 
   void ApplyTuning      (void);
   void FluctuateMCStat  (Option_t * opt = 0);
