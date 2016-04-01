@@ -1,0 +1,63 @@
+//____________________________________________________________________________
+/*!
+
+\class     valor::conv::Detector_t
+
+\brief     Detector enumeration
+
+\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+           University of Liverpool & STFC Rutherford Appleton Laboratory
+          
+\created   April 1, 2016
+
+\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
+
+*/
+//____________________________________________________________________________
+
+#ifndef _valor_dune_detector_h_
+#define _valor_dune_detector_h_
+
+#include <TROOT.h>
+
+#include <string>
+
+#include "Conventions/DuneBuild.h"
+
+using std::string;
+
+namespace valor {
+namespace conv {
+
+static const int kNDetectorsDefined = 6;
+
+typedef enum EDetector
+{
+   kdUndefined = -1, 
+   kdDUNEND,     // Generic DUNE near detector
+   kdDUNEFD1ph,  // Single-phase LArTPC DUNE far detector
+   kdDUNEFD2ph,  // Double-phase LArTPC DUNE far detector
+   kdSBND,       // SBN near detector 
+   kdSBNuBooNE,  // MicroBooNE detector in SBN
+   kdSBNICARUS   // Refurshished ICARUS detector in SBN
+} 
+Detector_t; 
+
+} // conv
+
+
+//
+// Associated utilities
+//
+namespace util {
+
+  string           AsString           (conv::Detector_t d, Option_t * opt=0);
+  conv::Detector_t DetectorFromInt    (int b);
+  conv::Detector_t DetectorFromString (std::string b);
+  
+} // util
+
+} // valor
+  
+#endif 
+

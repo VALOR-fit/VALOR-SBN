@@ -1,0 +1,67 @@
+//________________________________________________________________________________________
+/*
+
+Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
+
+ChangeLog:
+
+*/
+//________________________________________________________________________________________
+
+//fmwk
+#include "Utilities/UtlStr.h"
+//dune
+#include "Conventions/Detector.h"
+
+using namespace valor;
+using namespace valor::conv;
+
+//________________________________________________________________________________________
+string util::AsString(Detector_t d, Option_t * /*opt*/)
+{
+  string name = "";
+
+  switch(d) {
+    case (kdDUNEND   ) : name = "dune_nd";    break;
+    case (kdDUNEFD1ph) : name = "dune_fd1ph"; break;
+    case (kdDUNEFD2ph) : name = "dune_fd2ph"; break;
+    case (kdSBND     ) : name = "sbn_nd";     break;
+    case (kdSBNuBooNE) : name = "sbn_uboone"; break;
+    case (kdSBNICARUS) : name = "sbn_icarus"; break;
+    default            : name = "--";  
+  }
+/*
+  if(opt) {
+    string name2  = name;
+    string optstr = opt;
+    if(optstr.find("lowercase") != string::npos) {
+       name2 = util::ToLowerCase(name);
+    }
+    return name2;
+  }
+*/
+  return name;
+}
+//________________________________________________________________________________________
+Detector_t util::DetectorFromInt(int d)
+{
+// Cast an integer to Detector_t, but with boundary check
+//            [first]                 [last]
+  if(d >= (int)kdDUNEND && d <= (int) kdDUNEND) return (Detector_t)d;
+  return kdUndefined;
+}
+//________________________________________________________________________________________
+Detector_t util::DetectorFromString(string detector)
+{
+  string lc_detector = util::ToLowerCase(detector);
+  for (int i = 0 ; i < kNDetectorsDefined ; i++ ) {
+    Detector_t d = (Detector_t)i;
+    string this_lc_detector = util::ToLowerCase(util::AsString(d));
+    if(lc_detector == this_lc_detector && this_lc_detector!="--") {
+      return d;
+    }
+  }
+    
+  return kdUndefined;
+}
+//________________________________________________________________________________________
