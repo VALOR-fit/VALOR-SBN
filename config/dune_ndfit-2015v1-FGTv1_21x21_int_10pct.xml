@@ -40,7 +40,7 @@ Input MC templates
 
 <mc>
   <using_dst_format> 
-     true 
+     false 
   </using_dst_format> 
 
   <dst> 
@@ -55,6 +55,11 @@ Input MC templates
        <objtype>  TTree     </objtype> 
     </rhc>
   </dst>
+  
+  <template>
+    <filename> dune/ndfit/2015a/STT/LBNE_ND_v25_Templates.root</filename>
+    <tag> nd </tag>
+  </template>
 
 </mc>
 
