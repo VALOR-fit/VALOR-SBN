@@ -69,9 +69,9 @@ SDModel::~SDModel()
 // FitModelABC interface implementation:
 //
 //________________________________________________________________________________________
-string SDModel::Name(void)
+string SDModel::Name(void) const
 {
-  return "DUNEND";
+  return fName;
 }
 //________________________________________________________________________________________
 bool SDModel::Read(string file, Option_t * opt)
@@ -232,7 +232,7 @@ void SDModel::TweakSystematic(
   }
 }
 //________________________________________________________________________________________
-PhysParamList SDModel::Tweaks(void)
+PhysParamList SDModel::Tweaks(Option_t * /*opt*/) const
 {
   PhysParamList list;
   
@@ -802,6 +802,9 @@ double SDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 void SDModel::Init(void)
 {
   LOG("SDModel",pDEBUG) << "Initializing...";
+  
+  fName="SDModel";
+  fBaseline=-1;
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
