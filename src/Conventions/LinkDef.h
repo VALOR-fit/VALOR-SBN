@@ -10,6 +10,7 @@
 
 #pragma link C++ enum valor::conv::KineVar_t;
 #pragma link C++ enum valor::conv::BeamConf_t;
+#pragma link C++ enum valor::conv::Sample_t;
 #pragma link C++ enum valor::conv::ReacMode_t;
 #pragma link C++ enum valor::conv::ReacModeCoarse_t;
 
