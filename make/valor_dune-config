@@ -14,7 +14,7 @@ libdir=$VALOR_DUNE/lib
 srcdir=$VALOR_DUNE/src
 
 # VALOR/DUNE libraries:
-libs="-L$libdir -lValorDuneConv -lValorDuneNDFit"
+libs="-L$libdir -lValorDuneConv -lValorDuneSDFit"
 
 #
 # Usage

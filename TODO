@@ -12,7 +12,7 @@
 
 * Binning for MC templates - optimize
 
-* In NDModel, adjust code so that it can read stored VALOR arrays in addition to VALOR DSTs.
+* In SDModel, adjust code so that it can read stored VALOR arrays in addition to VALOR DSTs.
   Then store the arrays in the repository. 
   Loose the ability to tweak the binning when running the default code checked out from the SVN repository.
   But DSTs too large to store in SVN.

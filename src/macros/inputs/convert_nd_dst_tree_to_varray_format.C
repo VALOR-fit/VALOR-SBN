@@ -11,7 +11,7 @@ void convert_nd_dst_tree_to_varray_format(
   TString config = TString::Format("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
   
   // Get ND model & configure
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data(),"forcedst");
   
   // Get array with all VArrays in

@@ -1,9 +1,10 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::NDData
+\class     valor::SDData
 
-\brief     VALOR/DUNE ND Data class. Derives from FitDataABC
+\brief     VALOR single detector data class. 
+           Derives from FitDataABC
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -15,8 +16,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_dune_nd_data_h_
-#define _valor_dune_nd_data_h_
+#ifndef _valor_single_detector_data_h_
+#define _valor_single_detector_data_h_
 
 #include <string>
 
@@ -38,11 +39,11 @@ using namespace valor;
 
 namespace valor {
 
-class NDData: public FitDataABC
+class SDData: public FitDataABC
 {
 public:
-  NDData();
-  virtual ~NDData();
+  SDData();
+  virtual ~SDData();
 
   //
   // Implement the FitDataABC interface

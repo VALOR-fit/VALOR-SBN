@@ -49,10 +49,10 @@
 #include "Utilities/Rnd.h"
 #include "Utilities/Env.h"
 #include "Messenger/Messenger.h"
+#include "Ntuple/StdFitNtp.h"
 // dune
-#include "SDFit/NDModel.h"
-#include "SDFit/NDData.h"
-#include "SDFit/NDNtp.h"
+#include "SDFit/SDModel.h"
+#include "SDFit/SDData.h"
 #include "SDFit/NDXArg.h"
 
 using namespace std;
@@ -80,15 +80,15 @@ int main(int argc, char ** argv)
 
   // Create file and tree to store outputs
   const char * outfilename = Form("%s_%d.root", arg.JobTag(), (int) arg.RunNu());
-  NDNtp ntp;
-  ntp.Create(outfilename);
+  StdFitNtp ntp;
+  ntp.Create(outfilename, "valor_dune_nd_ntp", "VALOR DUNE / ND-Fit n-tuple");
 
 //  fitnt->Branch("migradmin", &migradmin); // <-- arent't these within FitParamsList?
 //  fitnt->Branch("migraderr", &migraderr);
 
   // Get ND model & configure
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit model";
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(arg.ConfigFile());
 
   // Use ND model to generate toy-MC experiments & fit
@@ -112,7 +112,7 @@ int main(int argc, char ** argv)
     // Generate a toy-MC experiment 
     LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
     LOG("valor_dune", pNOTICE) << "Toy-MC generation uses fit parameter list: " << *fp;
-    FitDataABC * data = new NDData;
+    FitDataABC * data = new SDData;
     data->Generate(model,*fp,arg.StatFluct());
 
     // The toy-MC was generated using the `current' values of the input parameter list.

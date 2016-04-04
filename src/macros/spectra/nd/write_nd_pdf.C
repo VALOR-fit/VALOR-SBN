@@ -11,7 +11,7 @@ void write_nd_pdf
   const char * model_param_list   = "standard",                             /* list of params included in model, see NDFitParams.cxx */
   const char * model_param_values = "nominal",                              /* specify param values included in model, see NDFitParams.cxx */
   const char * config_file        = "dune_ndfit-2015v1-FGTv1.xml",    /* analysis configuration file */
-  const char * write_opt          = "all"                                   /* define what to write-out, see NDModel::Write() for options */
+  const char * write_opt          = "all"                                   /* define what to write-out, see SDModel::Write() for options */
 )
 {
   using namespace std;
@@ -29,7 +29,7 @@ void write_nd_pdf
   cout << endl;
 
   // Get ND model & configure
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data());
 
   // Get an initialized physics hypothesis  

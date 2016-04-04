@@ -1,9 +1,10 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::NDModel
+\class     valor::SDModel
 
-\brief     VALOR/DUNE ND Model class. Derives from FitModelABC
+\brief     VALOR single detector model class. 
+           Derives from FitModelABC
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -13,8 +14,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_dune_nd_model_h_
-#define _valor_dune_nd_model_h_
+#ifndef _valor_single_detector_model_h_
+#define _valor_single_detector_model_h_
 
 #include <string>
 #include <TMatrixD.h>
@@ -40,11 +41,11 @@ class NuFlux; // neutrino flux model systematics
 class NuInt;  // neutrino interaction model systematics
 class NuDet;  // neutrino detector model systematics
 
-class NDModel: public FitModelABC
+class SDModel: public FitModelABC
 {
 public:
-  NDModel();
- ~NDModel();
+  SDModel();
+ ~SDModel();
 
   //
   // Implement the FitModelABC interface

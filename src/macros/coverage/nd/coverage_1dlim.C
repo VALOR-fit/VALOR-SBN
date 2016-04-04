@@ -86,7 +86,7 @@ void coverage_1dlim
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data());
 
   // Use ND model to generate toy-MC experiments & fit
@@ -113,14 +113,14 @@ void coverage_1dlim
     int ival = (int) (lim_param_npoints * Rnd::Instance()->RndOther().Rndm());
     double lim_param_value = lim_param_value_min + ival * (lim_param_value_max - lim_param_value_min)/(lim_param_npoints-1);
 
-    fp->Update      (sp, lim_param_value); // matters when I call NDModel::Generate()
-    fp->SetInitValue(sp, lim_param_value); // matters when the fitter starts calling NDModel::Generate()
+    fp->Update      (sp, lim_param_value); // matters when I call SDModel::Generate()
+    fp->SetInitValue(sp, lim_param_value); // matters when the fitter starts calling SDModel::Generate()
     cout << "Toy-MC generated for a fixed value of parameter: " << lim_param_name << " (= " << lim_param_value << ")" << endl;
     //cout << *fp << endl;
 
     // Generate a toy-MC experiment 
     cout << "Generating toy-MC data" << endl;
-    FitDataABC * data = new NDData;
+    FitDataABC * data = new SDData;
     data->Generate(model,*fp,stat_fluct);
 
     // The toy-MC was generated using the `current' values of the input parameter list.

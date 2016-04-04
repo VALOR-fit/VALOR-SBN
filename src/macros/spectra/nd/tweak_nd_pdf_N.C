@@ -37,7 +37,7 @@ void tweak_nd_pdf_N
   }
 
   // Get ND model & configure
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data());
 
   // Arrays to store the spectra for the default, +1 sigma and -1 sigma variations

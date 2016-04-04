@@ -49,7 +49,7 @@ void fit_param_scan
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data());
 
   // Create histogram to plot \Delta{fit statistic} vs parameter
@@ -80,7 +80,7 @@ void fit_param_scan
        //cout << ph;
 
        // Generate a toy-MC experiment
-       FitDataABC * data = new NDData;
+       FitDataABC * data = new SDData;
        data->Generate(model,ph,stat_fluct);
 
        // Set input param to current value and calculate the fit statistic

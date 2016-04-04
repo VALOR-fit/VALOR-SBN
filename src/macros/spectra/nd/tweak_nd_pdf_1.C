@@ -51,7 +51,7 @@ void tweak_nd_pdf_1
   }
 
   // Get ND model & configure
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data());
 
   // Arrays to store the spectra for the default, +1 sigma and -1 sigma variations
@@ -76,7 +76,7 @@ void tweak_nd_pdf_1
       int ip = util::NDArrIdx::Instance()->NDFitParamIdx(p); // find param idx
       assert(ip>=0 && ip<conv::kNNDFitParams);
       
-      double sig = ((NDModel*)model)->OneSigmaErrors().Value(p);
+      double sig = ((SDModel*)model)->OneSigmaErrors().Value(p);
       
       if(i == kpls1sig) { fpl->SetCurrentValue(p, 1 +   sig); }
       if(i == kmin1sig) { fpl->SetCurrentValue(p, 1 -   sig); }

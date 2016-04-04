@@ -12,8 +12,8 @@
 
 #pragma link C++ class valor::util::NDArrIdx+;
 
-#pragma link C++ class valor::NDData+;
-#pragma link C++ class valor::NDModel+;
+#pragma link C++ class valor::SDData+;
+#pragma link C++ class valor::SDModel+;
 #pragma link C++ class valor::NDXArg+;
 #pragma link C++ class valor::NDRFL+;
 #pragma link C++ class valor::NuFlux+;

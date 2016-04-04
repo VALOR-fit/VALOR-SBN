@@ -71,7 +71,7 @@ void run_fit
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data());
 
   // Use ND model to generate toy-MC experiments & fit
@@ -97,7 +97,7 @@ void run_fit
     
     // Generate a toy-MC experiment 
     cout << "Generating toy-MC data" << endl;
-    FitDataABC * data = new NDData;
+    FitDataABC * data = new SDData;
     data->Generate(model,*fp,stat_fluct);
 
     // The toy-MC was generated using the `current' values of the input parameter list.

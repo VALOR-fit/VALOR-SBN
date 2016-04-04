@@ -18,9 +18,9 @@ BUILD_TARGETS =    print-make-info     \
 		   make-bin-lib-dir    \
 		   copy-scripts-to-bin \
 		   build-conventions   \
-		   build-nd-fit        \
+		   build-sd-fit        \
 		   copy-rootdict-to-lib \
-		   build-nd-fit-apps   
+		   build-apps   
 
 # define targets
 
@@ -46,14 +46,14 @@ build-conventions: make-bin-lib-dir FORCE
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/Conventions;
 
-build-nd-fit: make-bin-lib-dir FORCE
+build-sd-fit: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building SDFit package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/SDFit;
 
-build-nd-fit-apps: make-bin-lib-dir FORCE
+build-apps: make-bin-lib-dir FORCE
 	@echo " "
-	@echo "** Building SDFit package apps..."
+	@echo "** Building apps..."
 	$(MAKE) -C ${VALOR_DUNE}/src/Apps;
 
 make-bin-lib-dir: FORCE

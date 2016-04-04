@@ -14,7 +14,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TH1D.h>
 #include <TH2D.h>
 
-#include "SDFit/NDData.h"
+#include "SDFit/SDData.h"
 #include "SDFit/NDSampleBinning.h"
 #include "FitCore/FitModelABC.h"
 #include "FitCore/FitParamList.h"
@@ -28,42 +28,42 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-NDData::NDData() :
+SDData::SDData() :
 FitDataABC()
 {
   this->Init();
   this->Book();
 }
 //________________________________________________________________________________________
-NDData::~NDData() 
+SDData::~SDData() 
 {
 
 }
 //________________________________________________________________________________________
-string NDData::Name(void)
+string SDData::Name(void)
 {
   return "DUNEND";
 }
 //________________________________________________________________________________________
-bool NDData::Read(string /*file*/, Option_t * /*opt*/)
+bool SDData::Read(string /*file*/, Option_t * /*opt*/)
 {
   return true;
 }
 //________________________________________________________________________________________
-bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
+bool SDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
-  LOG("NDData", pINFO)  << "Writing results to input object array...";
-  LOG("NDData", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
+  LOG("SDData", pINFO)  << "Writing results to input object array...";
+  LOG("SDData", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
 
   string opt = (write_opt) ? write_opt : "data_vf";
 
   if(opt.find("all") != string::npos) {
     opt = "data_vf,data_rf +slices +SB";
-    LOG("NDData", pDEBUG) << "Write option replaced with = " << opt;
+    LOG("SDData", pDEBUG) << "Write option replaced with = " << opt;
   }
 
   if(!array) {
-     LOG("NDData", pERROR) << "Null input object array.";
+     LOG("SDData", pERROR) << "Null input object array.";
      return false;
   }
 
@@ -92,7 +92,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           if(opt.find("data_vf") != string::npos) {
              assert(fData[ibeam][isample][izone]);
              fData[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"data_ob_vf",name));
-             LOG("NDData", pDEBUG) << "Adding: " << fData[ibeam][isample][izone]->GetName();
+             LOG("SDData", pDEBUG) << "Adding: " << fData[ibeam][isample][izone]->GetName();
              array->Add(fData[ibeam][isample][izone]);
           }
           // Add data in ROOT format if requested
@@ -116,7 +116,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                }//iy
              }//ier
              // add to object array and clean-up
-             LOG("NDData", pDEBUG) << "Adding: " << h2->GetName();
+             LOG("SDData", pDEBUG) << "Adding: " << h2->GetName();
              array->Add(h2);
              // delete h2; ???? // MEMORY LEAK?
           }
@@ -131,7 +131,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
           if(opt.find("data_vf") != string::npos) {
              assert(fDataSb[ibeam][isample]);
              fDataSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"data_sb_vf",name));
-             LOG("NDData", pDEBUG) << "Adding: " << fDataSb[ibeam][isample]->GetName();
+             LOG("SDData", pDEBUG) << "Adding: " << fDataSb[ibeam][isample]->GetName();
              array->Add(fDataSb[ibeam][isample]);
           }//data_vf
           // Add data in ROOT format if requested
@@ -152,7 +152,7 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                }//iy
              }//ier
              // add to object array and clean-up
-             LOG("NDData", pDEBUG) << "Adding: " << h2->GetName();
+             LOG("SDData", pDEBUG) << "Adding: " << h2->GetName();
              array->Add(h2);
              // delete h2; ???? // MEMORY LEAK?
           }//data_vf
@@ -207,11 +207,11 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up
-            LOG("NDData", pDEBUG) << "Adding: " << h->GetName();
+            LOG("SDData", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy
-          LOG("NDData", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("SDData", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
         }//izone
@@ -241,11 +241,11 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up
-            LOG("NDData", pDEBUG) << "Adding: " << h->GetName();
+            LOG("SDData", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy
-          LOG("NDData", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("SDData", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
         }//+SB?
@@ -254,15 +254,15 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     }//ibeam
   }//+slices
 
-  LOG("NDData", pINFO)  << "Done!";
+  LOG("SDData", pINFO)  << "Done!";
 
   return true;
 }
 //________________________________________________________________________________________
-bool NDData::Write(
+bool SDData::Write(
   const char * filename, const char * tag, const char * write_opt, Option_t * file_opt)
 {
-  LOG("NDData",pNOTICE) << "Writing results to file: [" << filename << "]";
+  LOG("SDData",pNOTICE) << "Writing results to file: [" << filename << "]";
 
   TObjArray * array = new TObjArray();
   this->Write(array,tag,write_opt);
@@ -275,15 +275,15 @@ bool NDData::Write(
   return true;
 }
 //________________________________________________________________________________________
-bool NDData::Generate(
+bool SDData::Generate(
     FitModelABC * model_abc, const FitParamList & fp, bool fluctuate)
 {
-  LOG("NDData",pINFO) << "Generating a toy-MC expt with the following params: " << fp;
-  LOG("NDData",pINFO) << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
+  LOG("SDData",pINFO) << "Generating a toy-MC expt with the following params: " << fp;
+  LOG("SDData",pINFO) << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
 
   bool ok = model_abc->Generate(fp,"+SB");
   if(!ok) {
-    LOG("NDData",pERROR) 
+    LOG("SDData",pERROR) 
        << "Could not generate predictions with model: " << model_abc->Name()
        << " and input params: " << fp;
     return false;
@@ -292,15 +292,15 @@ bool NDData::Generate(
   return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
-bool NDData::Generate(
+bool SDData::Generate(
    FitModelABC * model_abc, const PhysHypothesis & ph, bool fluctuate)
 {
-  LOG("NDData",pINFO) << "Generating a toy-MC expt with the following params: " << ph;
-  LOG("NDData",pINFO) << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
+  LOG("SDData",pINFO) << "Generating a toy-MC expt with the following params: " << ph;
+  LOG("SDData",pINFO) << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
 
   bool ok = model_abc->Generate(ph,"+SB");
   if(!ok) {
-    LOG("NDData",pERROR) 
+    LOG("SDData",pERROR) 
        << "Could not generate predictions with model: " << model_abc->Name()
        << " with systematic tweaks: " << model_abc->Tweaks()
        << " and input params: " << ph;
@@ -310,7 +310,7 @@ bool NDData::Generate(
   return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
-bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
+bool SDData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
   TObjArray * array = new TObjArray();
   model_abc->Write(array, "curr", "pdft_vf +SB");
@@ -323,7 +323,7 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
      for(int isample = 0; isample < kNNDSamples; isample++) {
         Sample_t s = kNDSample[ibeam][isample];
         if(s == ksUndefined) continue;
-        LOG("NDData",pINFO) 
+        LOG("SDData",pINFO) 
           << "Generating toy-MC for: " 
           << util::AsString(b) << " / " << util::AsString(s);
 
@@ -339,7 +339,7 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
             double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
             fDataSb[ibeam][isample]->SetEntry(ndata,ier,iy);
 
-            LOG("NDData",pDEBUG) 
+            LOG("SDData",pDEBUG) 
               << "(E_reco idx = " << ier << ", y_reco idx = " << iy 
               << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
 
@@ -350,8 +350,8 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
             double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
             int izone = util::BinZone(s, enu_reco, y_reco);
             if(izone < 0) {
-//             LOG("NDData",pFATAL) - turn that to fatal after binning optimization is done
-               LOG("NDData",pWARN)
+//             LOG("SDData",pFATAL) - turn that to fatal after binning optimization is done
+               LOG("SDData",pWARN)
                   << " ** No bin zone for toy MC event (" << " (" << util::AsString(s) << ")"
                   << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
 //             exit(1);
@@ -373,7 +373,7 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
   return true;
 }
 //________________________________________________________________________________________
-int NDData::NumOfBins(void)
+int SDData::NumOfBins(void)
 {
   int nbins = 0;
 
@@ -396,7 +396,7 @@ int NDData::NumOfBins(void)
   return nbins;
 }
 //________________________________________________________________________________________
-double NDData::Statistic(FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
+double SDData::Statistic(FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
 {
   bool ok = model_abc->Generate(fp);
   assert(ok);
@@ -404,7 +404,7 @@ double NDData::Statistic(FitModelABC* model_abc, const FitParamList & fp, Option
   return this->Statistic(model_abc,opt);
 }
 //________________________________________________________________________________________
-double NDData::Statistic(FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt)
+double SDData::Statistic(FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt)
 {
   bool ok = model_abc->Generate(ph);
   assert(ok);
@@ -412,7 +412,7 @@ double NDData::Statistic(FitModelABC * model_abc, const PhysHypothesis & ph, Opt
   return this->Statistic(model_abc,opt);  
 }
 //________________________________________________________________________________________
-double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/) 
+double SDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/) 
 {
   TObjArray * array = new TObjArray();
   model_abc->Write(array, "curr", "pdft_vf");
@@ -454,16 +454,16 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
   double Sp   = model_abc->GetFitStatisticPenalty();
   double Stot = S+Sp;
 
-  LOG("NDData",pINFO) 
+  LOG("SDData",pINFO) 
     << "Current fit statistic = " << Stot
     << " (stat term = " << S << ", syst term = " << Sp << ")";
 
   return Stot;
 }
 //________________________________________________________________________________________
-void NDData::Init(void)
+void SDData::Init(void)
 {
-  LOG("NDData",pDEBUG) << "Initializing...";
+  LOG("SDData",pDEBUG) << "Initializing...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
@@ -477,9 +477,9 @@ void NDData::Init(void)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDData::Book(void)
+void SDData::Book(void)
 {
-  LOG("NDData",pDEBUG) << "Booking...";
+  LOG("SDData",pDEBUG) << "Booking...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
@@ -501,9 +501,9 @@ void NDData::Book(void)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDData::Clean(void)
+void SDData::Clean(void)
 {
-  LOG("NDData",pDEBUG) << "Cleaning-up...";
+  LOG("SDData",pDEBUG) << "Cleaning-up...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     for(int isample = 0; isample < kNNDSamples; isample++) {
@@ -523,9 +523,9 @@ void NDData::Clean(void)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDData::Zero(Option_t * opt)
+void SDData::Zero(Option_t * opt)
 {
-  LOG("NDData",pDEBUG) << "Zeroing-out (option: " << opt << ") ...";
+  LOG("SDData",pDEBUG) << "Zeroing-out (option: " << opt << ") ...";
 
   string option = (opt) ? opt : "all";
 

@@ -105,7 +105,7 @@ void fit_param_sensitivity
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
-  FitModelABC * model = new NDModel;
+  FitModelABC * model = new SDModel;
   model->Read(config.Data());
 
   // Use ND model to generate toy-MC experiments & fit
@@ -130,14 +130,14 @@ void fit_param_sensitivity
 
     // If user wants to generate toy-MC for fixed values of a parameter 
     // (but, potentially, with all other params randomized, eg for sensitivity studies) do it here
-    fp->Update      (sp, s_param_value_gen); // matters when I call NDModel::Generate()
-    fp->SetInitValue(sp, s_param_value_gen); // matters when the fitter starts calling NDModel::Generate()
+    fp->Update      (sp, s_param_value_gen); // matters when I call SDModel::Generate()
+    fp->SetInitValue(sp, s_param_value_gen); // matters when the fitter starts calling SDModel::Generate()
     cout << "Toy-MC generated for a fixed value of parameter: " << s_param_name << " (= " << s_param_value_gen << ")" << endl;
     //cout << *fp << endl;
 
     // Generate a toy-MC experiment 
     cout << "Generating toy-MC data" << endl;
-    FitDataABC * data = new NDData;
+    FitDataABC * data = new SDData;
     data->Generate(model,*fp,stat_fluct);
 
     // The toy-MC was generated using the `current' values of the input parameter list.
@@ -161,8 +161,8 @@ void fit_param_sensitivity
             << ") and allows all the remaining params to float" << endl;
 
        FitParamList * fp2 = new FitParamList(*fp);
-       fp2->Update      (sp, s_param_value_fit); // matters when I call NDModel::Generate()
-       fp2->SetInitValue(sp, s_param_value_fit); // matters when the fitter starts calling NDModel::Generate()
+       fp2->Update      (sp, s_param_value_fit); // matters when I call SDModel::Generate()
+       fp2->SetInitValue(sp, s_param_value_fit); // matters when the fitter starts calling SDModel::Generate()
        fp2->FixParameter(sp);
 
        // Get fitter

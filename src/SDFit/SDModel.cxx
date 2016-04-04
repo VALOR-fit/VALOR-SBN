@@ -38,7 +38,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/DuneBuild.h"
 #include "Conventions/ReacMode.h"
 #include "Conventions/BeamConf.h"
-#include "SDFit/NDModel.h"
+#include "SDFit/SDModel.h"
 #include "SDFit/NDBeamConf.h"
 #include "SDFit/NuFlux.h"
 #include "SDFit/NuInt.h"
@@ -51,7 +51,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-NDModel::NDModel() :
+SDModel::SDModel() :
 FitModelABC()
 {
   this->Init();
@@ -59,7 +59,7 @@ FitModelABC()
   this->Zero();
 }
 //________________________________________________________________________________________
-NDModel::~NDModel() 
+SDModel::~SDModel() 
 {
   this->Clean();
 }
@@ -69,25 +69,25 @@ NDModel::~NDModel()
 // FitModelABC interface implementation:
 //
 //________________________________________________________________________________________
-string NDModel::Name(void)
+string SDModel::Name(void)
 {
   return "DUNEND";
 }
 //________________________________________________________________________________________
-bool NDModel::Read(string file, Option_t * opt)
+bool SDModel::Read(string file, Option_t * opt)
 {
   this->Zero();
   
   TString ts_opt(opt);
   bool force_use_dst = ts_opt.Contains("forcedst");
 
-  LOG("NDModel", pNOTICE) << "Reading configuration from XML file [" << file << "]";
+  LOG("SDModel", pNOTICE) << "Reading configuration from XML file [" << file << "]";
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(file.c_str());
   if (xmldoc==0) {
-    LOG("NDModel",pERROR) << "Can not parse input XML file [" << file << "]";
+    LOG("SDModel",pERROR) << "Can not parse input XML file [" << file << "]";
     delete xml;
     util::Die(1); return false;
   }
@@ -106,7 +106,7 @@ bool NDModel::Read(string file, Option_t * opt)
   // Get the near detector fiducial mass
   string name = "nd/fiducial_mass";
   fNDFiducialMass = util::XML2Dbl(xml,root_node,name);
-  LOG("NDModel",pINFO)
+  LOG("SDModel",pINFO)
     << "ND fiducial mass = " << fNDFiducialMass*1000 << " tonnes";
 
   // Get assumed exposure for each beam configuration
@@ -115,7 +115,7 @@ bool NDModel::Read(string file, Option_t * opt)
     if(b == kbUndefined) continue;
     string node_name = "data/exposure/" + util::AsString(b, "lowercase");
     fPOT[ibeam] = util::XML2Dbl(xml,root_node,node_name);
-    LOG("NDModel",pINFO) 
+    LOG("SDModel",pINFO) 
        << "Beam config: " << util::AsString(b) 
        << " -> Exposure = " << fPOT[ibeam] << " POT.";
   }//ibeam
@@ -129,7 +129,7 @@ bool NDModel::Read(string file, Option_t * opt)
   //
   fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format") | force_use_dst;
   if(fUseMCDST) {
-    LOG("NDModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
+    LOG("SDModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
        BeamConf_t b = kNDBeamConf[ibeam];
        if(b == kbUndefined) continue;
@@ -140,7 +140,7 @@ bool NDModel::Read(string file, Option_t * opt)
     }//ibeam
   } 
   else {
-    LOG("NDModel",pINFO) << "Using stored VALOR MC templates";
+    LOG("SDModel",pINFO) << "Using stored VALOR MC templates";
     string template_tag = util::XML2String(xml,root_node,"mc/template/tag");
     TFile * template_file = util::XML2TFile(xml,root_node,"mc/template");
     
@@ -158,24 +158,24 @@ bool NDModel::Read(string file, Option_t * opt)
   xml->FreeDoc(xmldoc);
   delete xml;
 
-  LOG("NDModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
+  LOG("SDModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
 
   return true;
 }
 //________________________________________________________________________________________
-bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
+bool SDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
 {
 // input opt: 
 // - Leave null for the fit
 // - Use "+SB" to generate finely-binned predictions too (for plotting or toy-MC generation)
 
-//  LOG("NDModel",pDEBUG)  
+//  LOG("SDModel",pDEBUG)  
 //     << "Input physics hypothesis before copying to private data member: " << ph;
 
   fPhysHypothesis.Copy(ph);
   //PhysHypothesis_t hyp = fPhysHypothesis.Hypothesis();
 
-  LOG("NDModel",pINFO)  
+  LOG("SDModel",pINFO)  
      << "Generating model predictions for the input hypothesis: " 
      << fPhysHypothesis;
 
@@ -184,12 +184,12 @@ bool NDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
   this->ApplyPhysics(opt);      // `sys' MC templates --> `fin' MC templates
   this->UpdatePDFs(opt);        // `fin' MC templates --> p.d.f
 
-  LOG("NDModel",pINFO) << "Done generating predictions";
+  LOG("SDModel",pINFO) << "Done generating predictions";
 
   return true;
 }
 //________________________________________________________________________________________
-void NDModel::RandomizeSystematics(Option_t * options)
+void SDModel::RandomizeSystematics(Option_t * options)
 {
   TString opt(options);
   if (!opt.Length()) {opt="randomize-all";}
@@ -210,7 +210,7 @@ void NDModel::RandomizeSystematics(Option_t * options)
   
 }
 //________________________________________________________________________________________
-void NDModel::TweakSystematic(
+void SDModel::TweakSystematic(
   string syst_name, double twkdial, Option_t * opt)
 {
   PhysParamId_t p = util::NDPhysParamFromString(syst_name);
@@ -218,7 +218,7 @@ void NDModel::TweakSystematic(
   return;
 }
 //________________________________________________________________________________________
-void NDModel::TweakSystematic(
+void SDModel::TweakSystematic(
   PhysParamId_t syst, double twkdial, Option_t * /*opt*/)
 {
   if (util::IsNuFluxRelated(syst)) {
@@ -232,7 +232,7 @@ void NDModel::TweakSystematic(
   }
 }
 //________________________________________________________________________________________
-PhysParamList NDModel::Tweaks(void)
+PhysParamList SDModel::Tweaks(void)
 {
   PhysParamList list;
   
@@ -243,21 +243,21 @@ PhysParamList NDModel::Tweaks(void)
   return list;
 }
 //________________________________________________________________________________________
-void NDModel::ResetSystematics(Option_t * /*opt*/)
+void SDModel::ResetSystematics(Option_t * /*opt*/)
 {
   fNuFlux -> Tweak(true, 0);
   fNuInt  -> Tweak(true, 0);
   fNuDet  -> Tweak(true, 0);
 }
 //________________________________________________________________________________________
-void NDModel::PrintSystematics(ostream & stream, Option_t * /*opt*/) const
+void SDModel::PrintSystematics(ostream & stream, Option_t * /*opt*/) const
 {
   stream << endl;
 }
 //________________________________________________________________________________________
-bool NDModel::Generate (const FitParamList & fp, Option_t * opt)
+bool SDModel::Generate (const FitParamList & fp, Option_t * opt)
 {
-//  LOG("NDModel",pDEBUG)  
+//  LOG("SDModel",pDEBUG)  
 //     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
 
   fNuFlux->UpdateFrom(fp);
@@ -271,7 +271,7 @@ bool NDModel::Generate (const FitParamList & fp, Option_t * opt)
   return this->Generate(ph, opt);
 }
 //________________________________________________________________________________________
-bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
+bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
 //
 // write_opt:
@@ -300,17 +300,17 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 //  ob    -> Optimized binning (for fit)
 //  sb    -> Simple binning (for plots)
 
-  LOG("NDModel", pINFO)  << "Writing results to input object array...";
-  LOG("NDModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
+  LOG("SDModel", pINFO)  << "Writing results to input object array...";
+  LOG("SDModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
 
   string opt = (write_opt) ? write_opt : "pdft_vf";
   if(opt.find("all") != string::npos) {
     opt = "mct_vf + pdfc_vf + pdfc_rf + pdft_vf + pdft_rf + pdfcs_rf + pdfts_rf +SB";
-    LOG("NDModel", pDEBUG) << "Write option replaced with = " << opt;
+    LOG("SDModel", pDEBUG) << "Write option replaced with = " << opt;
   }
 
   if(!array) {
-     LOG("NDModel",pERROR) << "Null input object array.";
+     LOG("SDModel",pERROR) << "Null input object array.";
      return false;
   }
 
@@ -340,10 +340,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              fMCTTunOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_ob_vf", name) );
              fMCTSysOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_ob_vf", name) );
              fMCTFinOb [ibeam][isample][imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_ob_vf", name) );
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTNomOb [ibeam][isample][imode][izone]->GetName();
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTTunOb [ibeam][isample][imode][izone]->GetName();
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTSysOb [ibeam][isample][imode][izone]->GetName();
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTFinOb [ibeam][isample][imode][izone]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTNomOb [ibeam][isample][imode][izone]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTTunOb [ibeam][isample][imode][izone]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTSysOb [ibeam][isample][imode][izone]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTFinOb [ibeam][isample][imode][izone]->GetName();
              array -> Add ( fMCTNomOb [ibeam][isample][imode][izone] ); 
              array -> Add ( fMCTTunOb [ibeam][isample][imode][izone] ); 
              array -> Add ( fMCTSysOb [ibeam][isample][imode][izone] ); 
@@ -358,10 +358,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              fMCTTunSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mcttun_sb_vf", name) );
              fMCTSysSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctsys_sb_vf", name) );
              fMCTFinSb [ibeam][isample][imode] -> SetName( Form("%s_%s_%s", tag, "mctfin_sb_vf", name) );
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTNomSb [ibeam][isample][imode]->GetName();
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTTunSb [ibeam][isample][imode]->GetName();
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTSysSb [ibeam][isample][imode]->GetName();
-             LOG("NDModel", pDEBUG) << "Adding: " << fMCTFinSb [ibeam][isample][imode]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTNomSb [ibeam][isample][imode]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTTunSb [ibeam][isample][imode]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTSysSb [ibeam][isample][imode]->GetName();
+             LOG("SDModel", pDEBUG) << "Adding: " << fMCTFinSb [ibeam][isample][imode]->GetName();
              array -> Add ( fMCTNomSb [ibeam][isample][imode] ); 
              array -> Add ( fMCTTunSb [ibeam][isample][imode] ); 
              array -> Add ( fMCTSysSb [ibeam][isample][imode] ); 
@@ -397,7 +397,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
                fPDFCompOb [ibeam][isample][imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_ob_vf",name));
-               LOG("NDModel", pDEBUG) << "Adding: " << fPDFCompOb[ibeam][isample][imode][izone]->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << fPDFCompOb[ibeam][isample][imode][izone]->GetName();
                array->Add(fPDFCompOb[ibeam][isample][imode][izone]);
              }
              // in TH2D format
@@ -424,7 +424,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add tp object array and clean-up
-               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -437,7 +437,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
                fPDFCompSb [ibeam][isample][imode]->SetName(Form("%s_%s_%s",tag,"pdfc_sb_vf",name));
-               LOG("NDModel", pDEBUG) << "Adding: " << fPDFCompSb[ibeam][isample][imode]->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << fPDFCompSb[ibeam][isample][imode]->GetName();
                array->Add(fPDFCompSb[ibeam][isample][imode]);
              }
              // in TH2D format
@@ -460,7 +460,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add tp object array and clean-up
-               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -491,7 +491,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
                fPDFTotOb[ibeam][isample][izone]->SetName(Form("%s_%s_%s",tag,"pdft_ob_vf",name));
-               LOG("NDModel", pDEBUG) << "Adding: " << fPDFTotOb[ibeam][isample][izone]->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << fPDFTotOb[ibeam][isample][izone]->GetName();
                array->Add(fPDFTotOb[ibeam][isample][izone]);
              }
              // in TH2D format
@@ -518,7 +518,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add to object array and clean-up
-               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -530,7 +530,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
                fPDFTotSb[ibeam][isample]->SetName(Form("%s_%s_%s",tag,"pdft_sb_vf",name));
-               LOG("NDModel", pDEBUG) << "Adding: " << fPDFTotSb[ibeam][isample]->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << fPDFTotSb[ibeam][isample]->GetName();
                array->Add(fPDFTotSb[ibeam][isample]);
              }
              // in TH2D format
@@ -556,7 +556,7 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                  }//iy
                }//ier
                // add to object array and clean-up
-               LOG("NDModel", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -616,11 +616,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
               // add to obj array and clean-up 
-               LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << h->GetName();
               array->Add(h);
               //delete h; ??? MEM LEAK??
             }//iy         
-            LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
+            LOG("SDModel", pDEBUG) << "Adding: " << htot->GetName();
             array->Add(htot);
             //delete htot; ??? MEM LEAK??
           }//izone
@@ -650,11 +650,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
               // add to obj array and clean-up 
-               LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
+               LOG("SDModel", pDEBUG) << "Adding: " << h->GetName();
               array->Add(h);
               //delete h; ??? MEM LEAK??
             }//iy         
-            LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
+            LOG("SDModel", pDEBUG) << "Adding: " << htot->GetName();
             array->Add(htot);
             //delete htot; ??? MEM LEAK??
           }//+SB?
@@ -710,11 +710,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
-            LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
+            LOG("SDModel", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??      
           }//iy         
-          LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("SDModel", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??      
         }//izone
@@ -744,11 +744,11 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
-            LOG("NDModel", pDEBUG) << "Adding: " << h->GetName();
+            LOG("SDModel", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy         
-          LOG("NDModel", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("SDModel", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
         }//+SB?
@@ -760,10 +760,10 @@ bool NDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   return true;
 }
 //________________________________________________________________________________________
-bool NDModel::Write(
+bool SDModel::Write(
   const char * filename, const char * tag, Option_t * write_opt, Option_t * file_opt)
 {
-  LOG("NDModel",pNOTICE) << "Writing results to file: [" << filename << "]";
+  LOG("SDModel",pNOTICE) << "Writing results to file: [" << filename << "]";
 
   TObjArray * array = new TObjArray();
   this->Write(array,tag,write_opt);
@@ -776,7 +776,7 @@ bool NDModel::Write(
   return true;
 }
 //________________________________________________________________________________________
-double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
+double SDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 {
   double Sp_nuflux = (fNuFlux -> ChisqPenalty());
   double Sp_nuint  = (fNuInt  -> ChisqPenalty());
@@ -784,7 +784,7 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 
   double Sp = Sp_nuflux + Sp_nuint + Sp_nudet;
 
-  LOG("NDModel",pDEBUG) 
+  LOG("SDModel",pDEBUG) 
    << "Current penalty term = " << Sp 
    << " (flux = " << Sp_nuflux 
    << ", interaction = " << Sp_nuint 
@@ -799,9 +799,9 @@ double NDModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 //
 //________________________________________________________________________________________
 
-void NDModel::Init(void)
+void SDModel::Init(void)
 {
-  LOG("NDModel",pDEBUG) << "Initializing...";
+  LOG("SDModel",pDEBUG) << "Initializing...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
@@ -859,9 +859,9 @@ void NDModel::Init(void)
   fNuInt  = 0;
 }
 //________________________________________________________________________________________
-void NDModel::Book(void)
+void SDModel::Book(void)
 {
-  LOG("NDModel",pDEBUG) << "Booking...";
+  LOG("SDModel",pDEBUG) << "Booking...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
@@ -876,7 +876,7 @@ void NDModel::Book(void)
         const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
         const int n_enu_true_bins = util::NumEtrueBins(s);
 
-        LOG("NDModel",pDEBUG) 
+        LOG("SDModel",pDEBUG) 
             << "Booking MC template (simple binning) for " 
             << "beam: "     << util::AsString(b) 
             << ", sample: " << util::AsString(s)
@@ -902,7 +902,7 @@ void NDModel::Book(void)
         // >> PDF total
         // should get here for at least one imode value
         if(fPDFTotNullSb[ibeam][isample]) {              
-           LOG("NDModel",pDEBUG) 
+           LOG("SDModel",pDEBUG) 
               << "Booking PDF (total / simple binning) for " 
               << "beam: "     << util::AsString(b) 
               << ", sample: " << util::AsString(s);
@@ -917,7 +917,7 @@ void NDModel::Book(void)
            const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
            if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
 
-           LOG("NDModel",pDEBUG) 
+           LOG("SDModel",pDEBUG) 
               << "Booking MC template for " 
               << "beam: "     << util::AsString(b) 
               << ", sample: " << util::AsString(s)
@@ -944,7 +944,7 @@ void NDModel::Book(void)
            // >> PDF total
            // should get here for at least one imode value
            if(fPDFTotNullOb[ibeam][isample][izone]) {              
-              LOG("NDModel",pDEBUG) 
+              LOG("SDModel",pDEBUG) 
                  << "Booking PDF (total) for " 
                  << "beam: "     << util::AsString(b) 
                  << ", sample: " << util::AsString(s)
@@ -960,9 +960,9 @@ void NDModel::Book(void)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDModel::Clean(void)
+void SDModel::Clean(void)
 {
-  LOG("NDModel",pDEBUG) << "Cleaning-up...";
+  LOG("SDModel",pDEBUG) << "Cleaning-up...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     for(int isample = 0; isample < kNNDSamples; isample++) {
@@ -1035,9 +1035,9 @@ void NDModel::Clean(void)
   
 }
 //________________________________________________________________________________________
-void NDModel::Zero(void)
+void SDModel::Zero(void)
 {
-  LOG("NDModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
+  LOG("SDModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    for(int isample = 0; isample < kNNDSamples; isample++) {
@@ -1074,14 +1074,14 @@ void NDModel::Zero(void)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDModel::FillFromDST(TTree * t, int ibeam)
+void SDModel::FillFromDST(TTree * t, int ibeam)
 {
 // Fill MC templates from the input VALOR/DUNE DST TTree
 // We use a single tree for all samples for a single beam configuration.
 
   BeamConf_t b = kNDBeamConf[ibeam];
 
-  LOG("NDModel",pDEBUG) 
+  LOG("SDModel",pDEBUG) 
      << "Filling-in MC templates for beam configuration: " << util::AsString(b);
 
   if(!t) return;
@@ -1134,7 +1134,7 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
   */
 
   Long_t nev = t->GetEntries();
-  LOG("NDModel",pINFO) << "Input VALOR DST has " << nev << " entries";
+  LOG("SDModel",pINFO) << "Input VALOR DST has " << nev << " entries";
 
   for(Long_t iev = 0; iev < nev; iev++) 
   {
@@ -1142,13 +1142,13 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
 
      if(iev%(nev/20)==0) {
        double pct = (100 * (double)(iev+1)) / (double)nev;
-       LOG("NDModel",pNOTICE) << "Reading "<< util::AsString(b)<<" MC DST: "<< TMath::Nint(pct) << "% done";
+       LOG("SDModel",pNOTICE) << "Reading "<< util::AsString(b)<<" MC DST: "<< TMath::Nint(pct) << "% done";
      }
 
      // Get sample index
      Sample_t s = util::SampleFromInt(sample);
      if(s == ksUndefined) {
-       LOG("NDModel",pWARN) 
+       LOG("SDModel",pWARN) 
           << " ** Undefined sample ID used in MC event: " << iev
           << " (value stored in DST: " << sample << ")";
        //exit(1);
@@ -1172,7 +1172,7 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
      int isample = fArrIdx->NDSampleIdx(b,s);
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit
-       LOG("NDModel",pDEBUG) 
+       LOG("SDModel",pDEBUG) 
          << "Ignoring MC event: " << iev 
          << " (sample ID: " << util::AsString(s) << " not included in current fit)";
        continue;
@@ -1181,7 +1181,7 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
      // Get reaction mode index
      ReacMode_t m = util::ReacModeFromInt(reac_mode); 
      if(m == kmUndefined) {
-       LOG("NDModel",pFATAL) 
+       LOG("SDModel",pFATAL) 
           << " ** Undefined reaction mode ID used in MC event: " << iev
           << " (value stored in DST: " << reac_mode << ")";
        exit(1);
@@ -1191,7 +1191,7 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
        // For a given sample we should consider a complete list of
        // true reaction modes (otherwise there are true contributions to the
        // event sample which are not taken into account).
-       LOG("NDModel",pFATAL) 
+       LOG("SDModel",pFATAL) 
          << " ** Ignoring MC event: " << iev 
          << " (ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
        exit(1);
@@ -1200,8 +1200,8 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
      // Get bin zone index
      int izone = util::BinZone(s, enu_reco, y_reco);
      if(izone < 0) {
-//     LOG("NDModel",pFATAL) - turn that to fatal after binning optimization is done
-       LOG("NDModel",pWARN) 
+//     LOG("SDModel",pFATAL) - turn that to fatal after binning optimization is done
+       LOG("SDModel",pWARN) 
          << " ** No bin zone for MC event: " << iev 
          << " (" << util::AsString(s) << "/" << util::AsString(m) 
          << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
@@ -1211,14 +1211,14 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
 
      bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
      if(is_null) {
-       LOG("NDModel",pFATAL) 
+       LOG("SDModel",pFATAL) 
          << "** Null MC template for sample: " << util::AsString(s) 
          << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
        exit(1);
      }
      bool is_null_sb = fMCTNullSb[ibeam][isample][imode];
      if(is_null_sb) {
-       LOG("NDModel",pFATAL) 
+       LOG("SDModel",pFATAL) 
          << "** Null MC template (simple binning) for sample: " << util::AsString(s) 
          << ", mode: " << util::AsString(m) << " ??";
        exit(1);
@@ -1226,17 +1226,17 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
 
      // check Ereco, yreco and Etrue values against built-in limits
      if(enu_reco < kErecoMin || enu_reco > kErecoMax) {
-        LOG("NDModel",pWARN) 
+        LOG("SDModel",pWARN) 
            << "MC event: " << iev << " has reconstructed energy = " << enu_reco 
            << " GeV, range used: [" << kErecoMin << ", " << kErecoMax << "] GeV";
      }
      if(y_reco < kYrecoMin || y_reco > kYrecoMax) {
-        LOG("NDModel",pWARN) 
+        LOG("SDModel",pWARN) 
            << "MC event: " << iev << " has reconstructed inelasticity y = " << y_reco 
            << ", range used: [" << kYrecoMin << ", " << kYrecoMax << "]";
      }
      if(enu_true < kEtrueMin || enu_true > kEtrueMax) {
-        LOG("NDModel",pWARN) 
+        LOG("SDModel",pWARN) 
            << "MC event: " << iev << " has true energy = " << enu_true 
            << " GeV, range used: [" << kEtrueMin << ", " << kEtrueMax << "] GeV";
      }
@@ -1316,7 +1316,7 @@ void NDModel::FillFromDST(TTree * t, int ibeam)
   }//iev 
 }
 //________________________________________________________________________________________
-bool NDModel::FillFromTemplateFile (TFile * f, string tag)
+bool SDModel::FillFromTemplateFile (TFile * f, string tag)
 {
   bool success = true;
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
@@ -1339,7 +1339,7 @@ bool NDModel::FillFromTemplateFile (TFile * f, string tag)
           }
           else {
             success = false;
-            LOG("NDModel",pERROR) << "Failed to read template "<<obj_name;
+            LOG("SDModel",pERROR) << "Failed to read template "<<obj_name;
           }
         }//izone
       } //imode
@@ -1351,7 +1351,7 @@ bool NDModel::FillFromTemplateFile (TFile * f, string tag)
   return success;
 }
 //________________________________________________________________________________________
-void NDModel::ApplyTuning(void)
+void SDModel::ApplyTuning(void)
 {
 // This method maps nom -> tun MC templates
 // This is applied once when the model is constructed, not everytime Generate() is called.
@@ -1360,7 +1360,7 @@ void NDModel::ApplyTuning(void)
 
 }
 //________________________________________________________________________________________
-void NDModel::FluctuateMCStat(Option_t * option)
+void SDModel::FluctuateMCStat(Option_t * option)
 {
 // Take into account the effect of MC statistics on the tuned MC templates.
 // Note that this is the error due to the finite MC statistics used to construct the
@@ -1371,7 +1371,7 @@ void NDModel::FluctuateMCStat(Option_t * option)
 // statistical error. If this is important, we ought to create a new set of templates
 // to hold this intermediate step going from the `tun' to the `sys' templates.
 
-  LOG("NDModel",pINFO) 
+  LOG("SDModel",pINFO) 
      << "Applying MC statistic error (option: " 
      << ((option) ? option : "")
      << ")";
@@ -1461,8 +1461,8 @@ void NDModel::FluctuateMCStat(Option_t * option)
 		 double y_reco   = y_reco_bin_edges_sb[iyr] + (y_reco_bin_edges_sb[iyr+1]-y_reco_bin_edges_sb[iyr])/2.;
                  int izone = util::BinZone(s, enu_reco, y_reco);
                  if(izone < 0) {
-//                  LOG("NDModel",pFATAL) - turn that to fatal after binning optimization is done
-                    LOG("NDModel",pWARN)
+//                  LOG("SDModel",pFATAL) - turn that to fatal after binning optimization is done
+                    LOG("SDModel",pWARN)
                        << " ** No bin zone for toy MC event (" << " (" << util::AsString(s) << ")"
                        << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
 //                  exit(1);
@@ -1490,13 +1490,13 @@ void NDModel::FluctuateMCStat(Option_t * option)
 
 #else
 
-  LOG("NDModel",pINFO) << "MC statistic error *not* applied";
+  LOG("SDModel",pINFO) << "MC statistic error *not* applied";
 
 #endif
 
 }
 //________________________________________________________________________________________
-void NDModel::ApplySystematics(Option_t * /*opt*/)
+void SDModel::ApplySystematics(Option_t * /*opt*/)
 {
 // This method maps tun -> sys MC templates.
 // Applying detector systematics and uncorrelated flux/cross-section systematics.
@@ -1533,12 +1533,12 @@ void NDModel::ApplySystematics(Option_t * /*opt*/)
 
 }
 //________________________________________________________________________________________
-void NDModel::ApplyPhysics(Option_t * option)
+void SDModel::ApplyPhysics(Option_t * option)
 {
 // This method maps sys -> fin MC templates.
 // Applying correlated flux and cross-section systematics
 
-  LOG("NDModel",pINFO) 
+  LOG("SDModel",pINFO) 
      << "Applying physics params (option: " 
      << ((option) ? option : "")
      << ")";
@@ -1567,11 +1567,11 @@ void NDModel::ApplyPhysics(Option_t * option)
         if(m == kmUndefined) continue;
         
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-        LOG("NDModel",pDEBUG) 
+        LOG("SDModel",pDEBUG) 
            << "Handing templates for: " 
            << util::AsString(b) << ", " << util::AsString(s) << ", " << util::AsString(m);
 
-        LOG("NDModel",pDEBUG) 
+        LOG("SDModel",pDEBUG) 
            << "Initializing `fin' templates to the `sys' ones";
 #endif
 
@@ -1590,7 +1590,7 @@ void NDModel::ApplyPhysics(Option_t * option)
             }//ier: Ereco bins
           }//iet: Etrue bins
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-          LOG("NDModel",pDEBUG) 
+          LOG("SDModel",pDEBUG) 
              << "Applying Etrue-dependent params";
 #endif
           // first apply Etrue-dependent params
@@ -1612,7 +1612,7 @@ void NDModel::ApplyPhysics(Option_t * option)
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-             LOG("NDModel",pDEBUG) 
+             LOG("SDModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f 
                 << " in Etrue bin range: [" << ienu_true_min << ", " << ienu_true_max << "]";
 #endif
@@ -1623,7 +1623,7 @@ void NDModel::ApplyPhysics(Option_t * option)
                     double val_old = val;
                     val *= f;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-                    LOG("NDModel",pDEBUG) 
+                    LOG("SDModel",pDEBUG) 
                       << "MCT[" << ibeam << ", " << isample << ", " << imode << ", " << izone << "] = " 
                       << val_old << " --> " << val;
 #endif
@@ -1633,7 +1633,7 @@ void NDModel::ApplyPhysics(Option_t * option)
           }//ip
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-          LOG("NDModel",pDEBUG) 
+          LOG("SDModel",pDEBUG) 
              << "Applying Etrue-independent params";
 #endif
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
@@ -1650,7 +1650,7 @@ void NDModel::ApplyPhysics(Option_t * option)
              if(enu_true_dep) continue;
              double f = fPhysHypothesis.CurrValue(p);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-             LOG("NDModel",pDEBUG) 
+             LOG("SDModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f;
 #endif
              fnoEt *= f;
@@ -1742,7 +1742,7 @@ void NDModel::ApplyPhysics(Option_t * option)
   }//ibeam
 }
 //________________________________________________________________________________________
-void NDModel::UpdatePDFs(Option_t * option)
+void SDModel::UpdatePDFs(Option_t * option)
 {
   bool update_mct_sb = false;
   if(option) {
@@ -1854,37 +1854,37 @@ void NDModel::UpdatePDFs(Option_t * option)
   }//ibeam
 }
 //________________________________________________________________________________________
-const valor::NuFlux * valor::NDModel::GetNuFlux(void) const
+const valor::NuFlux * valor::SDModel::GetNuFlux(void) const
 {
   return fNuFlux;
 }
 //________________________________________________________________________________________
-valor::NuFlux * valor::NDModel::GetNuFlux(void)
+valor::NuFlux * valor::SDModel::GetNuFlux(void)
 {
   return fNuFlux;
 }
 //________________________________________________________________________________________
-const valor::NuInt * valor::NDModel::GetNuInt(void) const
+const valor::NuInt * valor::SDModel::GetNuInt(void) const
 {
   return fNuInt;
 }
 //________________________________________________________________________________________
-valor::NuInt * valor::NDModel::GetNuInt(void)
+valor::NuInt * valor::SDModel::GetNuInt(void)
 {
   return fNuInt;
 }
 //________________________________________________________________________________________
-const valor::NuDet * valor::NDModel::GetNuDet(void) const
+const valor::NuDet * valor::SDModel::GetNuDet(void) const
 {
   return fNuDet;
 }
 //________________________________________________________________________________________
-valor::NuDet * valor::NDModel::GetNuDet(void)
+valor::NuDet * valor::SDModel::GetNuDet(void)
 {
   return fNuDet;
 }
 //________________________________________________________________________________________
-valor::PhysParamList valor::NDModel::OneSigmaErrors(Option_t * /*opt*/)
+valor::PhysParamList valor::SDModel::OneSigmaErrors(Option_t * /*opt*/)
 {
   PhysParamList ppl;
   ppl.SetName("NDModel_Errors");
@@ -1894,7 +1894,7 @@ valor::PhysParamList valor::NDModel::OneSigmaErrors(Option_t * /*opt*/)
   return ppl;
 }
 //________________________________________________________________________________________
-TMatrixD valor::NDModel::CovarianceMatrix(Option_t * /*opt*/)
+TMatrixD valor::SDModel::CovarianceMatrix(Option_t * /*opt*/)
 {
   // Get cov matrices from subcomponents
   vector<const TMatrixD*> cov_vec;
