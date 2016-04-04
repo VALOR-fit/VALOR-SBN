@@ -8,7 +8,7 @@
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
-           George Christodoulou <georgios \at hep.ph.liv.ac.uk>
+           Steve Dennis <s.r.dennis \at liverpool.ac.uk>
            University of Liverpool
 
            Nick Grant <nick.grant \at stfc.ac.uk>
@@ -32,7 +32,7 @@
 //#define _use_single_zone_optimized_binning_scheme_v2_ 
 
 #include "Conventions/KineVar.h"
-#include "NDFit/NDSample.h"
+#include "Conventions/Sample.h"
 
 namespace valor {
 namespace conv  {
@@ -49,44 +49,44 @@ const int kFitSpectrumNdimMax = 2; // (current) maximum dimensionality for fit d
 // Define dimensionality of MC templates
 static const int kMCTemplateNdim[kNNDSamples] =
 {
-   3, // ksNDNuMuCC1trkQE
-   3, // ksNDNuMuCC2trkQE
-   3, // ksNDNuMuCC1piC
-   3, // ksNDNuMuCC1pi0
-   3, // ksNDNuMuCC1piC1pi0
-   3, // ksNDNuMuCCoth
-   3, // ksNDNuECC
-   3, // ksNDNuMuCCWSgn
-   2  // ksNDNC
+   3, // ksNuMuCC1trkQE
+   3, // ksNuMuCC2trkQE
+   3, // ksNuMuCC1piC
+   3, // ksNuMuCC1pi0
+   3, // ksNuMuCC1piC1pi0
+   3, // ksNuMuCCoth
+   3, // ksNuECC
+   3, // ksNuMuCCWSgn
+   2  // ksNC
 };
 
 // Define dimensionality of fit distributions
 static const int kFitSpectrumNdim[kNNDSamples] =
 {
-   2, // ksNDNuMuCC1trkQE
-   2, // ksNDNuMuCC2trkQE
-   2, // ksNDNuMuCC1piC
-   2, // ksNDNuMuCC1pi0
-   2, // ksNDNuMuCC1piC1pi0
-   2, // ksNDNuMuCCoth
-   2, // ksNDNuECC
-   2, // ksNDNuMuCCWSgn
-   1  // ksNDNC
+   2, // ksNuMuCC1trkQE
+   2, // ksNuMuCC2trkQE
+   2, // ksNuMuCC1piC
+   2, // ksNuMuCC1pi0
+   2, // ksNuMuCC1piC1pi0
+   2, // ksNuMuCCoth
+   2, // ksNuECC
+   2, // ksNuMuCCWSgn
+   1  // ksNC
 };
 
 // Define variables entering in MC template definitions.
 // Variable subset {0 -> kFitSpectrumNdim[isample]} is the one entering in PDF definitions.
 static const KineVar_t kSampleKineVars[kNNDSamples][kMCTemplateNdimMax] =
 {
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1trkQE
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC2trkQE
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1piC
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1pi0
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCC1piC1pi0
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCCoth
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuECC
-   { kvEreco, kvYreco, kvEtrue },     // ksNDNuMuCCWSgn
-   { kvEvis,  kvEtrue, kvUndefined }  // ksNDNC
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1trkQE
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC2trkQE
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1piC
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1pi0
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1piC1pi0
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCCoth
+   { kvEreco, kvYreco, kvEtrue },     // ksNuECC
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCCWSgn
+   { kvEvis,  kvEtrue, kvUndefined }  // ksNC
 };
 
 
@@ -345,24 +345,24 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 namespace util   {
 
    // Etrue binning
-   int            NumEtrueBins    (conv::NDSample_t sample);
-   const double * EtrueBinEdges   (conv::NDSample_t sample);
+   int            NumEtrueBins    (conv::Sample_t sample);
+   const double * EtrueBinEdges   (conv::Sample_t sample);
 
    // Simple binning scheme
-   int            NumYrecoBinsSb  (conv::NDSample_t sample);
-   const double * YrecoBinEdgesSb (conv::NDSample_t sample);
+   int            NumYrecoBinsSb  (conv::Sample_t sample);
+   const double * YrecoBinEdgesSb (conv::Sample_t sample);
 
    // Optimized binning scheme
-   int            NumErecoBins    (conv::NDSample_t sample, int zone);
-   const double * ErecoBinEdges   (conv::NDSample_t sample, int zone);
-   int            NumYrecoBins    (conv::NDSample_t sample, int zone);
-   const double * YrecoBinEdges   (conv::NDSample_t sample, int zone);
-   int            BinZone         (conv::NDSample_t sample, double enu_reco, double y_reco);
+   int            NumErecoBins    (conv::Sample_t sample, int zone);
+   const double * ErecoBinEdges   (conv::Sample_t sample, int zone);
+   int            NumYrecoBins    (conv::Sample_t sample, int zone);
+   const double * YrecoBinEdges   (conv::Sample_t sample, int zone);
+   int            BinZone         (conv::Sample_t sample, double enu_reco, double y_reco);
    
    // Get bin number from value (zone aware)
-   int ErecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco);
-   int YrecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco);
-   int EtrueBinContaining(conv::NDSample_t s, double enu_true);
+   int ErecoBinContaining(conv::Sample_t s, double enu_reco, double y_reco);
+   int YrecoBinContaining(conv::Sample_t s, double enu_reco, double y_reco);
+   int EtrueBinContaining(conv::Sample_t s, double enu_true);
 
 } // util
 

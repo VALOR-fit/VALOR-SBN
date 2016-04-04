@@ -79,8 +79,8 @@ void valor::util::NDArrIdx::Init(void)
     BeamConf_t b = kNDBeamConf[ib];
     if(b == kbUndefined) continue;
     for(int is = 0; is < kNNDSamples; is++) {
-        NDSample_t s = kNDSample[ib][is];
-        if(s == ksNDUndefined) continue;
+        Sample_t s = kNDSample[ib][is];
+        if(s == ksUndefined) continue;
         fNDSampleIdx [b][s] = is; // HERE
         LOG("NDArrIdx",pNOTICE) 
             << "Fit sample: [" << util::AsString(b)  << "/" 
@@ -90,8 +90,8 @@ void valor::util::NDArrIdx::Init(void)
 
   int ib=0;//HERE
   for(int is = 0; is < kNNDSamples; is++) {
-    NDSample_t s = kNDSample[ib][is];
-    if(s == ksNDUndefined) continue;
+    Sample_t s = kNDSample[ib][is];
+    if(s == ksUndefined) continue;
     for(int im = 0; im < kNReacModes; im++) {
         ReacMode_t m = kNDReactionModes[is][im];
         if(m == kmUndefined) continue;

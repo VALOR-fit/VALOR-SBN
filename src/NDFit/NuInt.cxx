@@ -401,7 +401,7 @@ void NuInt::CopyOneSigmaErrorsTo(valor::PhysParamList & ppl) const
   return;
 }
 //________________________________________________________________________________________
-double NuInt::GetWeight(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+double NuInt::GetWeight(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m,
                         double true1, double obs1, double obs2) const
 {
   static const NDRFL * rfl = NDRFL::Instance();

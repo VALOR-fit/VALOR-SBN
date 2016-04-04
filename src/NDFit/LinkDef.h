@@ -8,7 +8,7 @@
 #pragma link C++ namespace valor::conv;
 #pragma link C++ namespace valor::util;
 
-#pragma link C++ enum valor::conv::NDSample_t;
+#pragma link C++ enum valor::conv::Sample_t;
 #pragma link C++ enum valor::conv::NDFitParamGroup_t;
 
 #pragma link C++ class valor::util::NDArrIdx+;

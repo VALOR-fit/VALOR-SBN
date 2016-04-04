@@ -73,7 +73,7 @@ public:
   bool IsTweaked (void) const { return fIsTweaked; }
   
   // Bin weights (from RFL)
-  double GetWeight(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+  double GetWeight(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m,
                    double true1, double obs1, double obs2) const;
 
   // Print

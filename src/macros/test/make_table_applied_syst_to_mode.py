@@ -92,7 +92,7 @@ def main(beam_mode_arg = None, sample_arg = None,
       # Get the mode list for this sample
       modes_array      = array.array("i",[-1]*conv.kNReacModes)
       root_loop  = "{ int * mode_arr = (int*)%s;" % str(modes_array.buffer_info()[0])
-      root_loop += "int is = NDArrIdx::Instance()->NDSampleIdx((BeamConf_t)%s,(NDSample_t)%s);"%(str(beam_mode),str(sample))
+      root_loop += "int is = NDArrIdx::Instance()->NDSampleIdx((BeamConf_t)%s,(Sample_t)%s);"%(str(beam_mode),str(sample))
       root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kNDReactionModes[is][i];};};"
       ROOT.gROOT.ProcessLine(root_loop)
       modes  = [m for m in modes_array     if m != conv.kmUndefined]

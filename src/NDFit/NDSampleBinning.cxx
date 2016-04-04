@@ -19,12 +19,12 @@ using namespace valor::conv;
 //
 
 //________________________________________________________________________________________
-int util::NumEtrueBins(NDSample_t /*sample*/)
+int util::NumEtrueBins(Sample_t /*sample*/)
 {
   return kNEtrueBins;
 }
 //________________________________________________________________________________________
-const double * util::EtrueBinEdges(NDSample_t /*sample*/)
+const double * util::EtrueBinEdges(Sample_t /*sample*/)
 {
   return kEtrueBinEdges;
 }
@@ -37,28 +37,28 @@ const double * util::EtrueBinEdges(NDSample_t /*sample*/)
 //
 
 //________________________________________________________________________________________
-int util::NumYrecoBinsSb(NDSample_t s)
+int util::NumYrecoBinsSb(Sample_t s)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s);
 
   switch(s) 
   {
-    case (ksNDNuMuCC1trkQE  ) :
-    case (ksNDNuMuCC2trkQE  ) :
-    case (ksNDNuMuCC1piC    ) :
-    case (ksNDNuMuCC1pi0    ) :
-    case (ksNDNuMuCC1piC1pi0) :
-    case (ksNDNuMuCCoth     ) :
-    case (ksNDNuECC         ) : 
-    case (ksNDNuMuCCWSgn    ) : 
+    case (ksNuMuCC1trkQE  ) :
+    case (ksNuMuCC2trkQE  ) :
+    case (ksNuMuCC1piC    ) :
+    case (ksNuMuCC1pi0    ) :
+    case (ksNuMuCC1piC1pi0) :
+    case (ksNuMuCCoth     ) :
+    case (ksNuECC         ) : 
+    case (ksNuMuCCWSgn    ) : 
       return kNYrecoBinsCCSb; 
       break;
 
-    case (ksNDNC            ) :
-    case (ksNDNC1piC        ) :
-    case (ksNDNC1pi0        ) :
-    case (ksNDNCoth         ) :
+    case (ksNC            ) :
+    case (ksNC1piC        ) :
+    case (ksNC1pi0        ) :
+    case (ksNCoth         ) :
       return kNYrecoBinsNCSb; 
       break;
 
@@ -69,32 +69,32 @@ int util::NumYrecoBinsSb(NDSample_t s)
   return 0;
 }
 //________________________________________________________________________________________
-const double * util::YrecoBinEdgesSb(NDSample_t s)
+const double * util::YrecoBinEdgesSb(Sample_t s)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting yreco bin edges (simple binning) for sample " << util::AsString(s);
 
   switch(s) 
   {
-    case (ksNDNuMuCC1trkQE) : 
-    case (ksNDNuMuCC2trkQE) : 
+    case (ksNuMuCC1trkQE) : 
+    case (ksNuMuCC2trkQE) : 
     {
       return kYrecoBinEdgesQELikeSb; 
       break;
     }
-    case (ksNDNuMuCC1piC    ) :
-    case (ksNDNuMuCC1pi0    ) :
-    case (ksNDNuMuCC1piC1pi0) :
-    case (ksNDNuMuCCoth     ) :
-    case (ksNDNuECC         ) : 
-    case (ksNDNuMuCCWSgn    ) : 
+    case (ksNuMuCC1piC    ) :
+    case (ksNuMuCC1pi0    ) :
+    case (ksNuMuCC1piC1pi0) :
+    case (ksNuMuCCoth     ) :
+    case (ksNuECC         ) : 
+    case (ksNuMuCCWSgn    ) : 
       return kYrecoBinEdgesMiscSb;  
       break;
 
-    case (ksNDNC            ) :
-    case (ksNDNC1piC        ) :
-    case (ksNDNC1pi0        ) :
-    case (ksNDNCoth         ) :
+    case (ksNC            ) :
+    case (ksNC1piC        ) :
+    case (ksNC1pi0        ) :
+    case (ksNCoth         ) :
       return kYrecoBinEdgesNCSb;  
       break;
 
@@ -113,7 +113,7 @@ const double * util::YrecoBinEdgesSb(NDSample_t s)
 //
 
 //________________________________________________________________________________________
-int util::NumErecoBins(NDSample_t s, int zone)
+int util::NumErecoBins(Sample_t s, int zone)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting # Ereco bins for sample " << util::AsString(s) << ", zone = " << zone;
@@ -127,7 +127,7 @@ int util::NumErecoBins(NDSample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNDNuMuCC1trkQE) : 
+    case (ksNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNErecoBinsQELike[zone]; 
@@ -135,7 +135,7 @@ int util::NumErecoBins(NDSample_t s, int zone)
         return 0;
       break;
     }
-    case (ksNDNuMuCCoth) : 
+    case (ksNuMuCCoth) : 
     {
       return kNErecoBinsSimple;  
       break;
@@ -150,7 +150,7 @@ int util::NumErecoBins(NDSample_t s, int zone)
 #endif
 }
 //________________________________________________________________________________________
-const double * util::ErecoBinEdges(NDSample_t s, int zone)
+const double * util::ErecoBinEdges(Sample_t s, int zone)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting Ereco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
@@ -164,7 +164,7 @@ const double * util::ErecoBinEdges(NDSample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNDNuMuCC1trkQE) : 
+    case (ksNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kErecoBinEdgesQELike[zone]; 
@@ -172,7 +172,7 @@ const double * util::ErecoBinEdges(NDSample_t s, int zone)
         return 0;
       break;
     }
-    case (ksNDNuMuCCoth) : 
+    case (ksNuMuCCoth) : 
     {
       return kErecoBinEdgesSimple;  
       break;
@@ -187,7 +187,7 @@ const double * util::ErecoBinEdges(NDSample_t s, int zone)
 #endif
 }
 //________________________________________________________________________________________
-int util::NumYrecoBins(NDSample_t s, int zone)
+int util::NumYrecoBins(Sample_t s, int zone)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s) << ", zone = " << zone;
@@ -203,7 +203,7 @@ int util::NumYrecoBins(NDSample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNDNuMuCC1trkQE) : 
+    case (ksNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNYrecoBinsQELike[zone]; 
@@ -211,7 +211,7 @@ int util::NumYrecoBins(NDSample_t s, int zone)
         return 0;
       break;
     }
-    case (ksNDNuMuCCoth) : 
+    case (ksNuMuCCoth) : 
     {
       return kNYrecoBinsSimple;  
       break;
@@ -226,7 +226,7 @@ int util::NumYrecoBins(NDSample_t s, int zone)
 #endif
 }
 //________________________________________________________________________________________
-const double * util::YrecoBinEdges(NDSample_t s, int zone)
+const double * util::YrecoBinEdges(Sample_t s, int zone)
 {
    LOG("NDBinning",pDEBUG) 
      << "Getting yreco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
@@ -242,7 +242,7 @@ const double * util::YrecoBinEdges(NDSample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNDNuMuCC1trkQE) : 
+    case (ksNuMuCC1trkQE) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kYrecoBinEdgesQELike[zone]; 
@@ -250,7 +250,7 @@ const double * util::YrecoBinEdges(NDSample_t s, int zone)
         return 0;
       break;
     }
-    case (ksNDNuMuCCoth) : 
+    case (ksNuMuCCoth) : 
     {
       return kYrecoBinEdgesSimple;  
       break;
@@ -265,7 +265,7 @@ const double * util::YrecoBinEdges(NDSample_t s, int zone)
 #endif
 }
 //________________________________________________________________________________________
-int util::BinZone(NDSample_t s, double enu_reco, double y_reco)
+int util::BinZone(Sample_t s, double enu_reco, double y_reco)
 {
   LOG("NDBinning", pDEBUG) 
     << "Finding bin zone for enu_reco = " << enu_reco << " GeV, y_reco = " << y_reco 
@@ -306,7 +306,7 @@ int util::BinZone(NDSample_t s, double enu_reco, double y_reco)
   return -1;
 }
 //________________________________________________________________________________________
-int util::ErecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco)
+int util::ErecoBinContaining(conv::Sample_t s, double enu_reco, double y_reco)
 {
   int bin_zone             = util::BinZone(s,enu_reco, y_reco);
   int nbins                = util::NumErecoBins   (s,bin_zone);
@@ -314,7 +314,7 @@ int util::ErecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco)
   return TMath::BinarySearch(1+nbins, bin_edges, enu_reco);
 }
 //________________________________________________________________________________________
-int util::YrecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco)
+int util::YrecoBinContaining(conv::Sample_t s, double enu_reco, double y_reco)
 {
   int bin_zone             = util::BinZone(s,enu_reco, y_reco);
   int nbins                = util::NumYrecoBins   (s,bin_zone);
@@ -322,7 +322,7 @@ int util::YrecoBinContaining(conv::NDSample_t s, double enu_reco, double y_reco)
   return TMath::BinarySearch(1+nbins, bin_edges, y_reco);
 }
 //________________________________________________________________________________________
-int util::EtrueBinContaining(conv::NDSample_t s, double enu_true)
+int util::EtrueBinContaining(conv::Sample_t s, double enu_true)
 {
   int nbins                = util::NumEtrueBins   (s);
   const double * bin_edges = util::EtrueBinEdges  (s);

@@ -71,8 +71,8 @@ void tweak_nd_pdf_N
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[isample];
-        if(s == ksNDUndefined) continue;
+        Sample_t s = kNDSample[isample];
+        if(s == ksUndefined) continue;
         const char * name = Form("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
         TH1D * curr_pdf = (TH1D*) array->FindObject(name);
@@ -93,8 +93,8 @@ void tweak_nd_pdf_N
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[isample];
+      if(s == ksUndefined) continue;
       err [ibeam][isample][0] = new TH1D(*nom_pdf[ibeam][isample]);
       err [ibeam][isample][1] = new TH1D(*nom_pdf[ibeam][isample]);
       err [ibeam][isample][0] -> Reset();
@@ -124,8 +124,8 @@ void tweak_nd_pdf_N
     if(b == kbUndefined) continue;
     int ic = 0;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[isample];
+      if(s == ksUndefined) continue;
       ic++;
       c[ibeam]->cd(ic);
       TH1F * hframe = c[ibeam]->GetPad(ic)->DrawFrame(0.,0.,enu_reco_max, 1.24*max[ibeam][isample]);

@@ -4,7 +4,7 @@
   int zone_color[] = { kRed-9, kBlue-10, kGreen-10, kMagenta-7, kYellow+1 };
 
   // sample
-  dune::conv::NDSample_t sample = dune::conv::ksNDNuMuCC1Trk;
+  dune::conv::Sample_t sample = dune::conv::ksNDNuMuCC1Trk;
 
   // overall range
   const double kemin = 0;

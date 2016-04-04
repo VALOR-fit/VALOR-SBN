@@ -38,8 +38,8 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     c_pdf_tot[ibeam] -> Divide(3,3);
     int ic=0;
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::NDSample_t s = conv::kNDSample[ibeam][isample];
-      if(s == conv::ksNDUndefined) continue;
+      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+      if(s == conv::ksUndefined) continue;
 //    for(int izone = 0; izone < conv::kNMaxBinZones; izone++) {
 //       const char * name = Form("%s_%s_%s_%s_z%d", 
 //           tag, "pdft_ob_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
@@ -77,8 +77,8 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     double max[conv::kNNDSamples] = { -999 };
     int ic = 0;   
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::NDSample_t s = conv::kNDSample[ibeam][isample];
-      if(s == conv::ksNDUndefined) continue;
+      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+      if(s == conv::ksUndefined) continue;
       THStack * stack = new THStack("stack","spectrum contributions");
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       TH1D * pdf_slice[n_pdf_slices] = {0};
@@ -146,8 +146,8 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
     int ic = 0;
     double max[conv::kNNDSamples] = { -999 };
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::NDSample_t s = conv::kNDSample[ibeam][isample];
-      if(s == conv::ksNDUndefined) continue;
+      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+      if(s == conv::ksUndefined) continue;
       cout << "Creating stack for beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
       THStack * stack = new THStack("stack","spectrum contributions");
       TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };

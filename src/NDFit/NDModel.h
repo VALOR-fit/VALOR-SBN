@@ -28,8 +28,8 @@
 #include "Utilities/VALORArray.h"
 //dune
 #include "Conventions/BeamConf.h"
+#include "Conventions/Sample.h"
 #include "NDFit/NDArrIdx.h"
-#include "NDFit/NDSample.h"
 #include "NDFit/NDSampleBinning.h"
 #include "NDFit/NDSampleModes.h"
 #include "NDFit/NDFitParams.h"

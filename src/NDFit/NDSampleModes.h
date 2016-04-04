@@ -8,7 +8,7 @@
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
-           George Christodoulou <georgios \at hep.ph.liv.ac.uk>
+           Steve Dennis <s.r.dennis \at liverpool.ac.uk>
            University of Liverpool
 
            Nick Grant <nick.grant \at stfc.ac.uk>
@@ -25,9 +25,9 @@
 #define _valor_dune_nd_sample_modes_h_
 
 #include "Conventions/BeamConf.h"
+#include "Conventions/Sample.h"
 #include "Conventions/ReacMode.h"
 #include "Conventions/ReacModeCoarse.h"
-#include "NDFit/NDSample.h"
 
 namespace valor {  
 namespace conv {
@@ -41,7 +41,7 @@ namespace conv {
 
 static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] = 
 {
-  // sample: ksNDNuMuCC1trkQE
+  // sample: ksNuMuCC1trkQE
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -117,7 +117,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCC2trkQE
+  // sample: ksNuMuCC2trkQE
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -193,7 +193,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCC1piC
+  // sample: ksNuMuCC1piC
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -269,7 +269,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCC1pi0
+  // sample: ksNuMuCC1pi0
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -345,7 +345,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCC1piC1pi0
+  // sample: ksNuMuCC1piC1pi0
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -421,7 +421,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCCoth
+  // sample: ksNuMuCCoth
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -497,7 +497,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuECC
+  // sample: ksNuECC
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -573,7 +573,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNuMuCCWSgn
+  // sample: ksNuMuCCWSgn
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -649,7 +649,7 @@ static const ReacMode_t kNDReactionModes[kNNDSamples][kNReacModes] =
     kmNuEBarNCoth          
   },
 
-  // sample: ksNDNC
+  // sample: ksNC
   {
     kmNuMuCCQE,            
     kmNuMuCCMEC,           
@@ -743,7 +743,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
 {
   // FHC
   {
-    // sample: ksNDNuMuCC1trkQE
+    // sample: ksNuMuCC1trkQE
     {
       kmcNuMuCCQE,    
       kmcNuMuCCMEC,    
@@ -754,7 +754,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNuENuEBarCC, 
       kmcNC           
     },
-    // sample: ksNDNuMuCC2trkQE
+    // sample: ksNuMuCC2trkQE
     {
       kmcNuMuCCQE,    
       kmcNuMuCCMEC,    
@@ -765,7 +765,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNuENuEBarCC, 
       kmcNC           
     },
-    // sample: ksNDNuMuCC1piC
+    // sample: ksNuMuCC1piC
     {
       kmcNuMuCCQEMEC,    
       kmcNuMuCC1pi,   
@@ -776,7 +776,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined
     },
-    // sample: ksNDNuMuCC1pi0
+    // sample: ksNuMuCC1pi0
     {
       kmcNuMuCCQEMEC,    
       kmcNuMuCC1pi,   
@@ -787,7 +787,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined           
     },
-    // sample: ksNDNuMuCC1piC1pi0
+    // sample: ksNuMuCC1piC1pi0
     {
       kmcNuMuCCQEMEC,    
       kmcNuMuCC1pi,   
@@ -798,7 +798,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined           
     },
-    // sample: ksNDNuMuCCoth
+    // sample: ksNuMuCCoth
     {
       kmcNuMuCCQEMEC,    
       kmcNuMuCC1pi,   
@@ -809,7 +809,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined          
     },
-    // sample: ksNDNuECC
+    // sample: ksNuECC
     {
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -820,7 +820,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcUndefined,
       kmcUndefined          
     },
-    // sample: ksNDNuMuCCWSgn
+    // sample: ksNuMuCCWSgn
     {
       kmcNuMuBarCCQEMEC,    
       kmcNuMuBarCC1pi,   
@@ -831,7 +831,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined           
     },
-    // sample: ksNDNC
+    // sample: ksNC
     {
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -846,7 +846,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
 
   // RHC
   {
-    // sample: ksNDNuMuCC1trkQE
+    // sample: ksNuMuCC1trkQE
     {
       kmcNuMuBarCCQE,    
       kmcNuMuBarCCMEC,    
@@ -857,7 +857,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNuENuEBarCC, 
       kmcNC           
     },
-    // sample: ksNDNuMuCC2trkQE
+    // sample: ksNuMuCC2trkQE
     {
       kmcNuMuBarCCQE,    
       kmcNuMuBarCCMEC,    
@@ -868,7 +868,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNuENuEBarCC, 
       kmcNC           
     },
-    // sample: ksNDNuMuCC1piC
+    // sample: ksNuMuCC1piC
     {
       kmcNuMuBarCCQEMEC,    
       kmcNuMuBarCC1pi,   
@@ -879,7 +879,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined
     },
-    // sample: ksNDNuMuCC1pi0
+    // sample: ksNuMuCC1pi0
     {
       kmcNuMuBarCCQEMEC,    
       kmcNuMuBarCC1pi,   
@@ -890,7 +890,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined           
     },
-    // sample: ksNDNuMuCC1piC1pi0
+    // sample: ksNuMuCC1piC1pi0
     {
       kmcNuMuBarCCQEMEC,    
       kmcNuMuBarCC1pi,   
@@ -901,7 +901,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined           
     },
-    // sample: ksNDNuMuCCoth
+    // sample: ksNuMuCCoth
     {
       kmcNuMuBarCCQEMEC,    
       kmcNuMuBarCC1pi,   
@@ -912,7 +912,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined          
     },
-    // sample: ksNDNuECC
+    // sample: ksNuECC
     {
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -923,7 +923,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcUndefined,
       kmcUndefined          
     },
-    // sample: ksNDNuMuCCWSgn
+    // sample: ksNuMuCCWSgn
     {
       kmcNuMuCCQEMEC,    
       kmcNuMuCC1pi,   
@@ -934,7 +934,7 @@ static const ReacModeCoarse_t kNDReactionModesCoarse[kNBeamConf][kNNDSamples][kN
       kmcNC,
       kmcUndefined           
     },
-    // sample: ksNDNC
+    // sample: ksNC
     {
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -957,7 +957,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
 {
   // FHC
   {
-    // sample: ksNDNuMuCC1trkQE
+    // sample: ksNuMuCC1trkQE
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
       { kBlack, kYellow,   3001 }, // kmcNuMuCCMEC    
@@ -968,7 +968,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kViolet-1, 3001 }, // kmcNuENuEBarCC
       { kBlack, kRed,      3001 }  // kmcNC           
     },
-    // sample: ksNDNuMuCC2trkQE
+    // sample: ksNuMuCC2trkQE
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuCCQE    
       { kBlack, kYellow,   3001 }, // kmcNuMuCCMEC    
@@ -979,7 +979,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kViolet-1, 3001 }, // kmcNuENuEBarCC
       { kBlack, kRed,      3001 }  // kmcNC           
     },
-    // sample: ksNDNuMuCC1piC
+    // sample: ksNuMuCC1piC
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
@@ -990,7 +990,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNuMuCC1pi0
+    // sample: ksNuMuCC1pi0
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
@@ -1001,7 +1001,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNuMuCC1piC1pi0
+    // sample: ksNuMuCC1piC1pi0
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
@@ -1012,7 +1012,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNuMuCCoth
+    // sample: ksNuMuCCoth
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
@@ -1023,7 +1023,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC         
       {0,0,0}  
     },
-    // sample: ksNDNuECC
+    // sample: ksNuECC
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
@@ -1034,7 +1034,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       {0,0,0},        
       {0,0,0}  
     },
-    // sample: ksNDNuMuCCWSgn
+    // sample: ksNuMuCCWSgn
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
@@ -1045,7 +1045,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNC
+    // sample: ksNC
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
@@ -1060,7 +1060,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
 
   // RHC
   {
-    // sample: ksNDNuMuCC1trkQE
+    // sample: ksNuMuCC1trkQE
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQE    
       { kBlack, kYellow,   3001 }, // kmcNuMuBarCCMEC    
@@ -1071,7 +1071,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kViolet-1, 3001 }, // kmcNuENuEBarCC
       { kBlack, kRed,      3001 }  // kmcNC           
     },
-    // sample: ksNDNuMuCC2trkQE
+    // sample: ksNuMuCC2trkQE
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQE    
       { kBlack, kYellow,   3001 }, // kmcNuMuBarCCMEC    
@@ -1082,7 +1082,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kViolet-1, 3001 }, // kmcNuENuEBarCC
       { kBlack, kRed,      3001 }  // kmcNC           
     },
-    // sample: ksNDNuMuCC1piC
+    // sample: ksNuMuCC1piC
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
@@ -1093,7 +1093,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNuMuCC1pi0
+    // sample: ksNuMuCC1pi0
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
@@ -1104,7 +1104,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNuMuCC1piC1pi0
+    // sample: ksNuMuCC1piC1pi0
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
@@ -1115,7 +1115,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNuMuCCoth
+    // sample: ksNuMuCCoth
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuBarCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuBarCC1pi
@@ -1126,7 +1126,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC         
       {0,0,0}  
     },
-    // sample: ksNDNuECC
+    // sample: ksNuECC
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
@@ -1137,7 +1137,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       {0,0,0},                             
       {0,0,0}
     },
-    // sample: ksNDNuMuCCWSgn
+    // sample: ksNuMuCCWSgn
     {
       { kBlack, kWhite,    3544 }, // kmcNuMuCCQEMEC    
       { kBlack, kAzure,    3004 }, // kmcNuMuCC1pi
@@ -1148,7 +1148,7 @@ static const int kNDReactionModesCoarseFormatting[kNBeamConf][kNNDSamples][kNRea
       { kBlack, kRed,      3001 }, // kmcNC           
       {0,0,0}
     },
-    // sample: ksNDNC
+    // sample: ksNC
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
@@ -1171,7 +1171,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
 {
   // FHC
   {
-    // sample: ksNDNuMuCC1trkQE
+    // sample: ksNuMuCC1trkQE
     {
       kmcNuMuCCQE,    // kmNuMuCCQE            
       kmcNuMuCCMEC,   // kmNuMuCCMEC           
@@ -1247,7 +1247,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC           // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC2trkQE
+    // sample: ksNuMuCC2trkQE
     {
       kmcNuMuCCQE,    // kmNuMuCCQE            
       kmcNuMuCCMEC,   // kmNuMuCCMEC           
@@ -1323,7 +1323,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC           // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC1piC
+    // sample: ksNuMuCC1piC
     {
       kmcNuMuCCQEMEC, // kmNuMuCCQE            
       kmcNuMuCCQEMEC, // kmNuMuCCMEC           
@@ -1399,7 +1399,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC           // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC1pi0
+    // sample: ksNuMuCC1pi0
     {
       kmcNuMuCCQEMEC, // kmNuMuCCQE            
       kmcNuMuCCQEMEC, // kmNuMuCCMEC           
@@ -1475,7 +1475,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC           // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC1piC1pi0
+    // sample: ksNuMuCC1piC1pi0
     {
       kmcNuMuCCQEMEC, // kmNuMuCCQE            
       kmcNuMuCCQEMEC, // kmNuMuCCMEC           
@@ -1551,7 +1551,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC           // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCCoth
+    // sample: ksNuMuCCoth
     {
       kmcNuMuCCQEMEC, // kmNuMuCCQE            
       kmcNuMuCCQEMEC, // kmNuMuCCMEC           
@@ -1627,7 +1627,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC           // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuECC
+    // sample: ksNuECC
     {
       kmcNuMuCC,      // kmNuMuCCQE            
       kmcNuMuCC,       // kmNuMuCCMEC           
@@ -1703,7 +1703,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNCoth        // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCCWSgn
+    // sample: ksNuMuCCWSgn
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -1779,7 +1779,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC                // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNC
+    // sample: ksNC
     {
       kmcNuMuCC,      // kmNuMuCCQE            
       kmcNuMuCC,      // kmNuMuCCMEC           
@@ -1859,7 +1859,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
 
   // RHC
   {
-    // sample: ksNDNuMuCC1trkQE
+    // sample: ksNuMuCC1trkQE
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -1935,7 +1935,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC                // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC2trkQE
+    // sample: ksNuMuCC2trkQE
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -2011,7 +2011,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC                // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC1piC
+    // sample: ksNuMuCC1piC
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -2087,7 +2087,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC                // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC1pi0
+    // sample: ksNuMuCC1pi0
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -2163,7 +2163,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC                // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCC1piC1pi0
+    // sample: ksNuMuCC1piC1pi0
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -2239,7 +2239,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC                // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCCoth
+    // sample: ksNuMuCCoth
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -2315,7 +2315,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC                // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuECC
+    // sample: ksNuECC
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           
@@ -2391,7 +2391,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNCoth             // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNuMuCCWSgn
+    // sample: ksNuMuCCWSgn
     {
       kmcNuMuCCQEMEC, // kmNuMuCCQE            
       kmcNuMuCCQEMEC, // kmNuMuCCMEC           
@@ -2467,7 +2467,7 @@ static const ReacModeCoarse_t kNDMappingToCoarseModes[kNBeamConf][kNNDSamples][k
       kmcNC           // kmNuEBarNCoth          
     },
 
-    // sample: ksNDNC
+    // sample: ksNC
     {
       kmcNuMuCC,           // kmNuMuCCQE            
       kmcNuMuCC,           // kmNuMuCCMEC           

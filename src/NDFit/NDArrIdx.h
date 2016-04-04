@@ -10,7 +10,7 @@
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
-           George Christodoulou <georgios \at hep.ph.liv.ac.uk>
+           Steve Dennis <s.r.dennis \at liverpool.ac.uk>
            University of Liverpool
 
            Nick Grant <nick.grant \at stfc.ac.uk>
@@ -28,9 +28,9 @@
 
 #include "Conventions/PhysParamId.h"
 #include "Conventions/BeamConf.h"
+#include "Conventions/Sample.h"
 #include "Conventions/ReacMode.h"
 #include "NDFit/NDBeamConf.h"
-#include "NDFit/NDSample.h"
 #include "NDFit/NDSampleModes.h"
 #include "NDFit/NDFitParams.h"
 
@@ -46,8 +46,8 @@ public:
     static       NDArrIdx * MutableInstance();
 
     int NDBeamConfIdx (conv::BeamConf_t b)                     const { return fNDBeamConfIdx[b];    }
-    int NDSampleIdx   (conv::BeamConf_t b, conv::NDSample_t s) const { return fNDSampleIdx[b][s];   }
-    int NDReacModeIdx (conv::NDSample_t s, conv::ReacMode_t m) const { return fNDReacModeIdx[s][m]; }
+    int NDSampleIdx   (conv::BeamConf_t b, conv::Sample_t s) const { return fNDSampleIdx[b][s];   }
+    int NDReacModeIdx (conv::Sample_t s, conv::ReacMode_t m) const { return fNDReacModeIdx[s][m]; }
     int NDFitParamIdx (conv::PhysParamId_t p)                  const { return fNDFitParamIdx[p];    }
 
 private:

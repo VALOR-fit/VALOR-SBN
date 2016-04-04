@@ -101,8 +101,8 @@ void tweak_nd_pdf_1
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[ibeam][isample];
-        if(s == ksNDUndefined) continue;
+        Sample_t s = kNDSample[ibeam][isample];
+        if(s == ksUndefined) continue;
         const char * name = Form("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
         cout << "Retrieving (beam #" << ibeam << ", sample #" << isample << "): " << name << endl;
@@ -120,8 +120,8 @@ void tweak_nd_pdf_1
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[ibeam][isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[ibeam][isample];
+      if(s == ksUndefined) continue;
       for(int i=0; i < nspectra; i++) {
           pdf_ratio[ibeam][isample][i] = new TH1D(* pdf[ibeam][isample][kdefault]); // create with correct binning
           pdf_ratio[ibeam][isample][i] -> Reset(); // reset contents
@@ -155,8 +155,8 @@ void tweak_nd_pdf_1
     if(b == kbUndefined) continue;
     int ic = 0;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[ibeam][isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[ibeam][isample];
+      if(s == ksUndefined) continue;
       ic++;
       c[ibeam]->cd(ic);
       const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());

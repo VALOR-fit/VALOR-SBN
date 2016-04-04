@@ -21,7 +21,6 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "NDFit/NDBeamConf.h"
 #include "NDFit/NDRFL.h"
 #include "NDFit/NDFitParams.h"
-#include "NDFit/NDSample.h"
 
 #define USE_FLAT_SPLINE_FOR_MISSING
 
@@ -45,7 +44,7 @@ namespace valor{
  
   private:
     conv::BeamConf_t    fBeam;
-    conv::NDSample_t    fSample;
+    conv::Sample_t    fSample;
     conv::ReacMode_t    fMode;
     conv::PhysParamId_t fParam;
     Double_t            fTruevar1;
@@ -55,7 +54,7 @@ namespace valor{
     
   public:
     SplineKey(conv::BeamConf_t b = conv::kbFHC,
-              conv::NDSample_t s = conv::ksNDUndefined,
+              conv::Sample_t s = conv::ksUndefined,
               conv::ReacMode_t m = conv::kmUndefined,
               conv::PhysParamId_t p = conv::kPhypUndefined,
               Double_t true1=-1, Double_t obs1=-1, Double_t obs2=-1) :
@@ -67,7 +66,7 @@ namespace valor{
     }
     
     // Sets the hashed quantities
-    void Update(conv::BeamConf_t b, conv::NDSample_t s,
+    void Update(conv::BeamConf_t b, conv::Sample_t s,
                 conv::ReacMode_t m, conv::PhysParamId_t p,
                 Double_t true1, Double_t obs1, Double_t obs2)
     {
@@ -189,7 +188,7 @@ void NDRFL::Print(ostream & stream) const
 
 }
 //________________________________________________________________________________________
-TSpline * NDRFL::GetSpline(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+TSpline * NDRFL::GetSpline(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m,
                            conv::PhysParamId_t p, double true1, double obs1, double obs2) const
 {
   TSpline * spl = (TSpline*)-2;
@@ -243,7 +242,7 @@ void NDRFL::SetSplineMapIsEnabled(bool is_enabled)
   fSplineMapIsEnabled = is_enabled;
 }
 //________________________________________________________________________________________
-TString NDRFL::BuildSplineName(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+TString NDRFL::BuildSplineName(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m,
                         conv::PhysParamId_t p, int true_bin, int obs1_bin, int obs2_bin) const
 {
   TString name;
@@ -289,8 +288,8 @@ bool valor::NDRFL::Read(std::string config_file,Option_t * /*option*/)
     conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::NDSample_t s = conv::kNDSample[ibeam][isample];
-      if(s == conv::ksNDUndefined) continue;
+      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+      if(s == conv::ksUndefined) continue;
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
         conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
         if(m == conv::kmUndefined) continue;

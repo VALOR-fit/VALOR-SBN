@@ -25,12 +25,11 @@
 #include <TSpline.h>
 
 #include "Conventions/BeamConf.h"
+#include "Conventions/Sample.h"
 #include "Conventions/ReacMode.h"
 
 #include "NDFit/NDArrIdx.h"
-#include "NDFit/NDSample.h"
 #include "NDFit/NDSampleBinning.h"
-#include "NDFit/NDSample.h"
 #include "NDFit/NDSampleModes.h"
 #include "NDFit/NDFitParams.h"
 
@@ -47,7 +46,7 @@ public:
   void Print(ostream & stream) const;
   friend ostream & operator << (ostream & stream, const NDRFL & rfl);
   
-  TSpline * GetSpline(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+  TSpline * GetSpline(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m,
                       conv::PhysParamId_t p, double true1, double obs1, double obs2=-999999) const;
   
   // Enable/Disable using the map lookup
@@ -58,7 +57,7 @@ public:
   void SetSplineMapIsComplete(bool if_complete = true);
   
   // Get the name of the spline we're looking for
-  TString BuildSplineName(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m,
+  TString BuildSplineName(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m,
                           conv::PhysParamId_t p, int true_bin, int obs1_bin, int obs2_bin = -999999) const;
                           
   // Read splines from config file

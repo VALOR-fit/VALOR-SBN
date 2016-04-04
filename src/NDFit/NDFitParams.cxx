@@ -531,11 +531,11 @@ bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
   return conv::kNDFitIsNuDetRelated[nd_index];
 }
 //____________________________________________________________________________
-bool util::ParamIsAppliedTo(conv::BeamConf_t b, conv::NDSample_t s, conv::ReacMode_t m, conv::PhysParamId_t p)
+bool util::ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m, conv::PhysParamId_t p)
 {
   if (b==conv::kbUndefined   ) {return false;}
   if (m==conv::kmUndefined   ) {return false;}
-  if (s==conv::ksNDUndefined ) {return false;}
+  if (s==conv::ksUndefined ) {return false;}
   if (p==conv::kPhypUndefined) {return false;}
   
   // Get parameter mask

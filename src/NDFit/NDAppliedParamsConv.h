@@ -102,22 +102,22 @@ static const ApplyMask_t kNDApplyToBeamMode[kNBeamConf] = {
 };
 
 // Which masks apply to which samples
-// This is defined for all samples in the NDSample_t enum.
-static const ApplyMask_t kNDApplyToSample[kMaxNNDSamples] = {
- /* ksNDNuMuCC         */ ksApplyToNuMuCC          ,
- /* ksNDNuMuCC1trkQE   */ ksApplyToNuMuCC1trkQE    ,
- /* ksNDNuMuCC2trkQE   */ ksApplyToNuMuCC2trkQE    ,
- /* ksNDNuMuCC1piC     */ ksApplyToNuMuCC1piC      ,
- /* ksNDNuMuCC2piC     */ ksApplyToNuMuCC2piC      ,
- /* ksNDNuMuCC1pi0     */ ksApplyToNuMuCC1pi0      ,
- /* ksNDNuMuCC1piC1pi0 */ ksApplyToNuMuCC1piC1pi0  ,
- /* ksNDNuMuCCoth      */ ksApplyToNuMuCCoth       ,
- /* ksNDNuECC          */ ksApplyToNuECC           ,
- /* ksNDNuMuCCWSgn     */ ksApplyToNuMuCCWSgn      ,
- /* ksNDNC,            */ ksApplyToNC              ,
- /* ksNDNC1piC         */ ksApplyToNC1piC          ,
- /* ksNDNC1pi0         */ ksApplyToNC1pi0          ,
- /* ksNDNCoth          */ ksApplyToNCoth           ,
+// This is defined for all samples in the Sample_t enum.
+static const ApplyMask_t kNDApplyToSample[kMaxNSamples] = {
+ /* ksNuMuCC         */ ksApplyToNuMuCC          ,
+ /* ksNuMuCC1trkQE   */ ksApplyToNuMuCC1trkQE    ,
+ /* ksNuMuCC2trkQE   */ ksApplyToNuMuCC2trkQE    ,
+ /* ksNuMuCC1piC     */ ksApplyToNuMuCC1piC      ,
+ /* ksNuMuCC2piC     */ ksApplyToNuMuCC2piC      ,
+ /* ksNuMuCC1pi0     */ ksApplyToNuMuCC1pi0      ,
+ /* ksNuMuCC1piC1pi0 */ ksApplyToNuMuCC1piC1pi0  ,
+ /* ksNuMuCCoth      */ ksApplyToNuMuCCoth       ,
+ /* ksNuECC          */ ksApplyToNuECC           ,
+ /* ksNuMuCCWSgn     */ ksApplyToNuMuCCWSgn      ,
+ /* ksNC,            */ ksApplyToNC              ,
+ /* ksNC1piC         */ ksApplyToNC1piC          ,
+ /* ksNC1pi0         */ ksApplyToNC1pi0          ,
+ /* ksNCoth          */ ksApplyToNCoth           ,
 };
 
 // Which masks apply to which parent particle flavour

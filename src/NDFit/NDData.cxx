@@ -15,7 +15,6 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TH2D.h>
 
 #include "NDFit/NDData.h"
-#include "NDFit/NDSample.h"
 #include "NDFit/NDSampleBinning.h"
 #include "FitCore/FitModelABC.h"
 #include "FitCore/FitParamList.h"
@@ -81,8 +80,8 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[ibeam][isample];
-        if(s == ksNDUndefined) continue;
+        Sample_t s = kNDSample[ibeam][isample];
+        if(s == ksUndefined) continue;
 
         // binning optimised for fit CPU performance
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -176,8 +175,8 @@ bool NDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[ibeam][isample];
-        if(s == ksNDUndefined) continue;
+        Sample_t s = kNDSample[ibeam][isample];
+        if(s == ksUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           const char * name = Form("%s_%s_z%d",
@@ -322,8 +321,8 @@ bool NDData::Generate(FitModelABC * model_abc, bool fluctuate)
      BeamConf_t b = kNDBeamConf[ibeam];
      if(b == kbUndefined) continue;
      for(int isample = 0; isample < kNNDSamples; isample++) {
-        NDSample_t s = kNDSample[ibeam][isample];
-        if(s == ksNDUndefined) continue;
+        Sample_t s = kNDSample[ibeam][isample];
+        if(s == ksUndefined) continue;
         LOG("NDData",pINFO) 
           << "Generating toy-MC for: " 
           << util::AsString(b) << " / " << util::AsString(s);
@@ -382,8 +381,8 @@ int NDData::NumOfBins(void)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[ibeam][isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[ibeam][isample];
+      if(s == ksUndefined) continue;
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
           const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
@@ -425,8 +424,8 @@ double NDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[ibeam][isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[ibeam][isample];
+      if(s == ksUndefined) continue;
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          if(fDataNull[ibeam][isample][izone]) continue;
  
@@ -486,8 +485,8 @@ void NDData::Book(void)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[ibeam][isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[ibeam][isample];
+      if(s == ksUndefined) continue;
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
@@ -534,8 +533,8 @@ void NDData::Zero(Option_t * opt)
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNNDSamples; isample++) {
-      NDSample_t s = kNDSample[ibeam][isample];
-      if(s == ksNDUndefined) continue;
+      Sample_t s = kNDSample[ibeam][isample];
+      if(s == ksUndefined) continue;
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
           if(!fDataNull[ibeam][isample][izone]) {

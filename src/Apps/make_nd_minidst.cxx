@@ -169,7 +169,7 @@ int main(int argc, char ** argv)
       //
       // ignore events that can not be used in the VALOR analysis
       //
-      if(sample == conv::ksNDUndefined) {
+      if(sample == conv::ksUndefined) {
         LOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]";
         mcrec->Clear();
         continue;

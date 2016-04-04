@@ -554,7 +554,7 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
   //~ //
   //~ {
 //~ 
-   //~ // ksNDNuMuCC1trkQE
+   //~ // ksNuMuCC1trkQE
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -610,9 +610,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 1,0,0,0,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 1,0,0,0,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 1,0,0,0,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, // ksNDNuMuCC1trkQE
+   //~ }, // ksNuMuCC1trkQE
 //~ 
-   //~ // ksNDNuMuCC2trkQE
+   //~ // ksNuMuCC2trkQE
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -668,9 +668,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,1,0,0,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,1,0,0,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,1,0,0,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC2trkQE
+   //~ }, //ksNuMuCC2trkQE
 //~ 
-   //~ // ksNDNuMuCC1piC
+   //~ // ksNuMuCC1piC
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -726,9 +726,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,1,0,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,1,0,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,1,0,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC2trkQE
+   //~ }, //ksNuMuCC2trkQE
 //~ 
-   //~ // ksNDNuMuCC1pi0
+   //~ // ksNuMuCC1pi0
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -784,9 +784,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,1,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,1,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,1,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC1pi0
+   //~ }, //ksNuMuCC1pi0
 //~ 
-   //~ // ksNDNuMuCC1piC1pi0
+   //~ // ksNuMuCC1piC1pi0
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -842,9 +842,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,1,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,1,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,1,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC1piC1pi0
+   //~ }, //ksNuMuCC1piC1pi0
 //~ 
-   //~ // ksNDNuMuCCoth
+   //~ // ksNuMuCCoth
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -900,9 +900,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,1,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,1,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,1,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCCoth
+   //~ }, //ksNuMuCCoth
 //~ 
-   //~ // ksNDNuECC
+   //~ // ksNuECC
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -958,9 +958,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,1,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,1,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,1,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuECC
+   //~ }, //ksNuECC
 //~ 
-   //~ // ksNDNuMuCCWSgn
+   //~ // ksNuMuCCWSgn
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1016,9 +1016,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,1,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,1,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,1,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCCWSgn
+   //~ }, //ksNuMuCCWSgn
 //~ 
-   //~ // ksNDNC
+   //~ // ksNC
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1074,7 +1074,7 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }  // kmNuEBarNCoth
-   //~ } //ksNDNC
+   //~ } //ksNC
 //~ 
   //~ },//FHC
 //~ 
@@ -1083,7 +1083,7 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
   //~ //
   //~ {
 //~ 
-   //~ // ksNDNuMuCC1trkQE
+   //~ // ksNuMuCC1trkQE
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1139,9 +1139,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 1,0,0,0,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 1,0,0,0,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 1,0,0,0,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC1trkQE   
+   //~ }, //ksNuMuCC1trkQE   
 //~ 
-   //~ // ksNDNuMuCC2trkQE
+   //~ // ksNuMuCC2trkQE
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1197,9 +1197,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,1,0,0,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,1,0,0,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,1,0,0,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC2trkQE
+   //~ }, //ksNuMuCC2trkQE
  //~ 
-   //~ // ksNDNuMuCC1piC
+   //~ // ksNuMuCC1piC
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1255,9 +1255,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,1,0,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,1,0,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,1,0,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC1piC
+   //~ }, //ksNuMuCC1piC
 //~ 
-   //~ // ksNDNuMuCC1pi0
+   //~ // ksNuMuCC1pi0
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1313,9 +1313,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,1,0,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,1,0,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,1,0,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC1pi0
+   //~ }, //ksNuMuCC1pi0
 //~ 
-   //~ // ksNDNuMuCC1piC1pi0
+   //~ // ksNuMuCC1piC1pi0
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1371,9 +1371,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,1,0,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,1,0,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,1,0,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCC1piC1pi0
+   //~ }, //ksNuMuCC1piC1pi0
 //~ 
-   //~ // ksNDNuMuCCoth
+   //~ // ksNuMuCCoth
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1429,9 +1429,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,1,0,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,1,0,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,1,0,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCCoth
+   //~ }, //ksNuMuCCoth
 //~ 
-   //~ // ksNDNuECC
+   //~ // ksNuECC
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1487,9 +1487,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,1,0,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,1,0,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,1,0,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuECC
+   //~ }, //ksNuECC
 //~ 
-   //~ // ksNDNuMuCCWSgn
+   //~ // ksNuMuCCWSgn
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1545,9 +1545,9 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,1,0 }, // kmNuEBarNC1pi0
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,1,0 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,1,0 }  // kmNuEBarNCoth
-   //~ }, //ksNDNuMuCCWSgn
+   //~ }, //ksNuMuCCWSgn
 //~ 
-   //~ // ksNDNC
+   //~ // ksNC
    //~ {
     //~ // XSec         Efficiency
     //~ //|---------|  |---------------|
@@ -1657,7 +1657,7 @@ static const PhysParamId_t kNDFitParam[kNNDFitParams] =
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }, // kmNuEBarNCcoh
     //~ { 0,0,0,0,1,0, 0,0,0,0,0,0,0,0,1 }  // kmNuEBarNCoth
 //~ */
-   //~ } //ksNDNC
+   //~ } //ksNC
 //~ 
   //~ } //RHC
 //~ 
@@ -2751,7 +2751,7 @@ namespace util {
   
   conv::NDFitParamGroup_t GetNDParameterGroup(conv::PhysParamId_t p);
   
-  bool ParamIsAppliedTo(conv::BeamConf_t b, conv::NDSample_t s,
+  bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,
                         conv::ReacMode_t m, conv::PhysParamId_t p);
   
   // Tell the framework classes what our parameter names are

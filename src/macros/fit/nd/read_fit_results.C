@@ -45,6 +45,8 @@ void read_fit_results(const char * filename)
     cout << "\n >> Best-fit parameter list: " << endl;
     cout << *best_fit_param_array;
 
+//    cout << "Fit time = " << best_fit_param_array->GetFitTime() << endl;
+
     cout << "\n >> Comparing true/input and best-fit paramerers: " << endl;
     TCanvas * cprm = new TCanvas("cprm","",20,20,500,500);
     cprm->cd();    
@@ -94,9 +96,9 @@ void read_fit_results(const char * filename)
     
     // get a full list of object names printed out
     cout << "\n >> Objects stored in `best_fit_model_array' object array: " << endl;    
-    best_fit_model_array->Print();
+    //best_fit_model_array->Print();
     cout << "\n >> Objects stored in `data_array' object array: " << endl;    
-    data_array->Print();
+    //data_array->Print();
 
     //
     // Plot something (Ereco spectra and contributions from various modes)
@@ -116,8 +118,8 @@ void read_fit_results(const char * filename)
       c[ibeam]->Divide(3,3);
       int ic = 0;
       for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-        conv::NDSample_t s = conv::kNDSample[ibeam][isample];
-        if(s == conv::ksNDUndefined) continue;
+        conv::Sample_t s = conv::kNDSample[ibeam][isample];
+        if(s == conv::ksUndefined) continue;
         cout <<  "isample =  " << isample << ", s = " << s << endl;
         const char * name_model = Form("%s_%s_%s_%s",
             "best_fit", "pdfts_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str());
