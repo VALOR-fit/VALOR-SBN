@@ -29,10 +29,10 @@
 //dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
-#include "NDFit/NDArrIdx.h"
-#include "NDFit/NDSampleBinning.h"
-#include "NDFit/NDSampleModes.h"
-#include "NDFit/NDFitParams.h"
+#include "SDFit/NDArrIdx.h"
+#include "SDFit/NDSampleBinning.h"
+#include "SDFit/NDSampleModes.h"
+#include "SDFit/NDFitParams.h"
 
 namespace valor {
   

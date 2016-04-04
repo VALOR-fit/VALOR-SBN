@@ -8,7 +8,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include <cassert>
 
-#include "NDFit/NDArrIdx.h"
+#include "SDFit/NDArrIdx.h"
 #include "Messenger/Messenger.h"
 
 using namespace valor;

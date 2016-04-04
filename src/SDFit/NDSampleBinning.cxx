@@ -9,7 +9,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "TMath.h"
 
 #include "Messenger/Messenger.h"
-#include "NDFit/NDSampleBinning.h"
+#include "SDFit/NDSampleBinning.h"
 
 using namespace valor;
 using namespace valor::conv;

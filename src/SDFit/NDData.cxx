@@ -14,8 +14,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TH1D.h>
 #include <TH2D.h>
 
-#include "NDFit/NDData.h"
-#include "NDFit/NDSampleBinning.h"
+#include "SDFit/NDData.h"
+#include "SDFit/NDSampleBinning.h"
 #include "FitCore/FitModelABC.h"
 #include "FitCore/FitParamList.h"
 #include "FitCore/PhysHypothesis.h"

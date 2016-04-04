@@ -35,8 +35,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "FitCore/FitParamList.h"
 #include "FitCore/PhysParamList.h"
 // dune
-#include "NDFit/NDFitParams.h"
-#include "NDFit/NuFlux.h"
+#include "SDFit/NDFitParams.h"
+#include "SDFit/NuFlux.h"
 
 using std::cout;
 using std::cerr;

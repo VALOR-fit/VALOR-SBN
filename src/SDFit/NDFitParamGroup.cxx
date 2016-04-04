@@ -8,7 +8,7 @@ ChangeLog:
 */
 //________________________________________________________________________________________
 
-#include "NDFit/NDFitParamGroup.h"
+#include "SDFit/NDFitParamGroup.h"
 
 using namespace valor;
 using namespace valor::conv;

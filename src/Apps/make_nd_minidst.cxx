@@ -3,7 +3,7 @@
 
 \app       valor_dune-make_nd_minidst
 
-\brief     Converts input ND analysis DSTs to the VALOR NDFit mini-DST format.
+\brief     Converts input ND analysis DSTs to the VALOR SDFit mini-DST format.
 
 \syntax    valor_dune-make_nd_minidst 
               --input  input_analysis_file.root
@@ -42,7 +42,7 @@
 // valor/dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/ReacMode.h"
-#include "NDFit/NDSample.h"
+#include "SDFit/NDSample.h"
 
 using std::string;
 using namespace genie;
@@ -68,7 +68,7 @@ int main(int argc, char ** argv)
   // Create output mini-DST   
 
   int    valor_minidst_beam      = -1; // see Conventions/BeamConf.h 
-  int    valor_minidst_sample    = -1; // see NDFit/NDSample.h 
+  int    valor_minidst_sample    = -1; // see SDFit/NDSample.h 
   int    valor_minidst_reac_mode = -1; // see Conventions/ReacMode.h 
   double valor_minidst_enu_true  = -1; // true neutrino energy, in GeV
   double valor_minidst_enu_reco  = -1; // reco neutrino energy, in GeV

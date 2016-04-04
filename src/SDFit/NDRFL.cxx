@@ -17,10 +17,10 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/BeamConf.h"
 
 
-#include "NDFit/NDArrIdx.h"
-#include "NDFit/NDBeamConf.h"
-#include "NDFit/NDRFL.h"
-#include "NDFit/NDFitParams.h"
+#include "SDFit/NDArrIdx.h"
+#include "SDFit/NDBeamConf.h"
+#include "SDFit/NDRFL.h"
+#include "SDFit/NDFitParams.h"
 
 #define USE_FLAT_SPLINE_FOR_MISSING
 

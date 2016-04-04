@@ -11,7 +11,7 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/DuneBuild.h"
 #include "Conventions/ReacMode.h"
-#include "NDFit/NDFitParams.h"
+#include "SDFit/NDFitParams.h"
 
 namespace valor {
 namespace conv {

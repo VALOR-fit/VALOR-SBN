@@ -30,9 +30,9 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
 #include "Conventions/ReacMode.h"
-#include "NDFit/NDBeamConf.h"
-#include "NDFit/NDSampleModes.h"
-#include "NDFit/NDFitParams.h"
+#include "SDFit/NDBeamConf.h"
+#include "SDFit/NDSampleModes.h"
+#include "SDFit/NDFitParams.h"
 
 using namespace valor;
 

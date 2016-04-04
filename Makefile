@@ -48,12 +48,12 @@ build-conventions: make-bin-lib-dir FORCE
 
 build-nd-fit: make-bin-lib-dir FORCE
 	@echo " "
-	@echo "** Building NDFit package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/NDFit;
+	@echo "** Building SDFit package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/SDFit;
 
 build-nd-fit-apps: make-bin-lib-dir FORCE
 	@echo " "
-	@echo "** Building NDFit package apps..."
+	@echo "** Building SDFit package apps..."
 	$(MAKE) -C ${VALOR_DUNE}/src/Apps;
 
 make-bin-lib-dir: FORCE
@@ -74,7 +74,7 @@ purge: FORCE
 	cd ${VALOR_DUNE}/src;\
 	cd Apps;                      $(MAKE) purge; cd ..; \
 	cd Conventions;               $(MAKE) purge; cd ..; \
-	cd NDFit;                     $(MAKE) purge; cd ..; \
+	cd SDFit;                     $(MAKE) purge; cd ..; \
 	cd ${VALOR_DUNE}
 
 clean: clean-files clean-dir clean-etc
@@ -88,7 +88,7 @@ clean-files: FORCE
 	cd ${VALOR_DUNE}/src;\
 	cd Apps;                    $(MAKE) clean; cd ..; \
 	cd Conventions;             $(MAKE) clean; cd ..; \
-	cd NDFit;                   $(MAKE) clean; cd ..; \
+	cd SDFit;                   $(MAKE) clean; cd ..; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_DUNE)

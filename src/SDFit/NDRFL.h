@@ -28,10 +28,10 @@
 #include "Conventions/Sample.h"
 #include "Conventions/ReacMode.h"
 
-#include "NDFit/NDArrIdx.h"
-#include "NDFit/NDSampleBinning.h"
-#include "NDFit/NDSampleModes.h"
-#include "NDFit/NDFitParams.h"
+#include "SDFit/NDArrIdx.h"
+#include "SDFit/NDSampleBinning.h"
+#include "SDFit/NDSampleModes.h"
+#include "SDFit/NDFitParams.h"
 
 using std::ostream;
 

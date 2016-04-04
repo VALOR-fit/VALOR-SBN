@@ -15,7 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/Env.h"
 #include "Messenger/Messenger.h"
 // dune
-#include "NDFit/NDXArg.h"
+#include "SDFit/NDXArg.h"
 
 using namespace valor;
 

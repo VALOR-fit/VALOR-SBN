@@ -10,11 +10,11 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/Rnd.h"
 #include "Utilities/UtlStr.h"
 #include "Utilities/UtlSystem.h"
-#include "NDFit/NDAppliedParamsConv.h"
-#include "NDFit/NDFitParams.h"
+#include "SDFit/NDAppliedParamsConv.h"
+#include "SDFit/NDFitParams.h"
 #include "Messenger/Messenger.h"
 
-#include "NDFit/NDArrIdx.h"
+#include "SDFit/NDArrIdx.h"
 
 using namespace valor;
 using namespace valor::conv;

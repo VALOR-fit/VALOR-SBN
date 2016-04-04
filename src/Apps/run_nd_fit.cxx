@@ -50,10 +50,10 @@
 #include "Utilities/Env.h"
 #include "Messenger/Messenger.h"
 // dune
-#include "NDFit/NDModel.h"
-#include "NDFit/NDData.h"
-#include "NDFit/NDNtp.h"
-#include "NDFit/NDXArg.h"
+#include "SDFit/NDModel.h"
+#include "SDFit/NDData.h"
+#include "SDFit/NDNtp.h"
+#include "SDFit/NDXArg.h"
 
 using namespace std;
 using namespace valor;

@@ -38,12 +38,12 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/DuneBuild.h"
 #include "Conventions/ReacMode.h"
 #include "Conventions/BeamConf.h"
-#include "NDFit/NDModel.h"
-#include "NDFit/NDBeamConf.h"
-#include "NDFit/NuFlux.h"
-#include "NDFit/NuInt.h"
-#include "NDFit/NuDet.h"
-#include "NDFit/NDAppliedParamsConv.h"
+#include "SDFit/NDModel.h"
+#include "SDFit/NDBeamConf.h"
+#include "SDFit/NuFlux.h"
+#include "SDFit/NuInt.h"
+#include "SDFit/NuDet.h"
+#include "SDFit/NDAppliedParamsConv.h"
 
 using std::endl;
 

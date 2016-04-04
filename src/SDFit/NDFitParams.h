@@ -30,8 +30,8 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/DuneBuild.h"
 #include "Conventions/ReacMode.h"
-#include "NDFit/NDSampleBinning.h"
-#include "NDFit/NDFitParamGroup.h"
+#include "SDFit/NDSampleBinning.h"
+#include "SDFit/NDFitParamGroup.h"
 
 using std::string;
 
