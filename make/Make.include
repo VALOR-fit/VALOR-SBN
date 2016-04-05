@@ -254,8 +254,8 @@ CXXFLAGS      = -Wall -fPIC \
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
 endif
-LDFLAGS       = -g -Wl,--no-as-needed
-SOFLAGS       = -shared
+LDFLAGS       = $(OPT_WITH_CXX_DEBUG_FLAG) -Wl,--no-as-needed
+SOFLAGS       = $(OPT_WITH_CXX_DEBUG_FLAG) -shared
 DllSuf       := so
 DllLinkSuf   := 
 StaticLibSuf := a
@@ -274,7 +274,7 @@ endif
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifeq ($(strip $(ARCH)),linuxx8664gcc) 
 ARCH_OK       = YES
-CXXFLAGS      = -Wall -fPIC \
+CXXFLAGS      = -Wall -Wextra -Wshadow -fPIC \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
 		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
 		$(OPT_WITH_CXX_VERSION_FLAG) \
@@ -282,8 +282,8 @@ CXXFLAGS      = -Wall -fPIC \
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
 endif
-LDFLAGS       = -g -Wl,--no-as-needed
-SOFLAGS       = -shared
+LDFLAGS       = $(OPT_WITH_CXX_DEBUG_FLAG) -Wl,--no-as-needed
+SOFLAGS       = $(OPT_WITH_CXX_DEBUG_FLAG) -shared
 DllSuf       := so
 DllLinkSuf   := 
 StaticLibSuf := a
