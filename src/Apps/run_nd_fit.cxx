@@ -72,6 +72,7 @@ int main(int argc, char ** argv)
 // LOG("valor_dune", pNOTICE) << *Rnd::Instance();
 
   TString param_values_ts(arg.ParamValuesOption());
+  TString fit_options_ts (arg.FitOption());
 
   Messenger::Instance()->Configure(arg.VerbosityFile());
   
@@ -82,10 +83,7 @@ int main(int argc, char ** argv)
   const char * outfilename = Form("%s_%d.root", arg.JobTag(), (int) arg.RunNu());
   StdFitNtp ntp;
   ntp.Create(outfilename, "valor_dune_nd_ntp", "VALOR DUNE / ND-Fit n-tuple");
-
-//  fitnt->Branch("migradmin", &migradmin); // <-- arent't these within FitParamsList?
-//  fitnt->Branch("migraderr", &migraderr);
-
+  
   // Get ND model & configure
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit model";
   FitModelABC * model = new SDModel;
@@ -108,20 +106,28 @@ int main(int argc, char ** argv)
       model->RandomizeSystematics(param_values_ts.Data());
     }
     fp->FromPhysParamList(model->Tweaks(),"current");
+    
+    if (fit_options_ts.Contains("start-at-true")) {
+      LOG("valor_dune", pNOTICE) << "Copying current values to initial values to give the fitter some help.";
+      fp->CopyCurrToInitValues();
+    }
+    
+    PhysParamList true_params = fp->AsPhysParamList("current");
 
     // Generate a toy-MC experiment 
     LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
-    LOG("valor_dune", pNOTICE) << "Toy-MC generation uses fit parameter list: " << *fp;
+    LOG("valor_dune", pNOTICE) << "Toy-MC generation uses true parameters: " << true_params;
     FitDataABC * data = new SDData;
     data->Generate(model,*fp,arg.StatFluct());
 
     // The toy-MC was generated using the `current' values of the input parameter list.
     // These values will be overwritten during the fit.
     // Copy those values now so as to save them later in the output tree.
-    ntp.TrueParamArr()->Append(fp->AsPhysParamList("current"));
+    ntp.TrueParamArr()->Append(true_params);
     
-    // Set our current values back to the fitter start point
-    // fp->ResetCurrToInitValues();
+    // Set our current values back to the fitter start point.
+    // This will be central values unless start-at-true is defined.
+    fp->ResetCurrToInitValues();
         
     // Get fitter
     LOG("valor_dune", pNOTICE) << "Preparing the fitter";
@@ -165,6 +171,12 @@ int main(int argc, char ** argv)
   }//itoymc
 
   ntp.Save();
+  
+  //~ // Write a PPL with the prior uncertainties used
+  //~ SDModel * ndm =  dynamic_cast<SDModel*>(model);
+  //~ PhysParamList ppl = ndm->OneSigmaErrors();
+  //~ ppl.Write("initial_errors");
+  
 
   return 0;
 }
