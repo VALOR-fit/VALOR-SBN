@@ -23,8 +23,9 @@
   gSystem->Load("liblog4cpp");
 
   // VALOR libs
-  gSystem->Load("libValorConv.so");
   gSystem->Load("libValorMesg.so");
+  gSystem->Load("libValorRegistry.so");
+  gSystem->Load("libValorConv.so");
   gSystem->Load("libValorFitCore.so");
   gSystem->Load("libValorUtil.so");
   gSystem->Load("libValorParse.so");
