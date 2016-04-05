@@ -1598,22 +1598,20 @@ void SDModel::ApplyPhysics(Option_t * option)
 #endif
           // first apply Etrue-dependent params
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-            //-------------- error, prone need to simplify
             PhysParamId_t p = kNDFitParam[ip];
             if(p == kPhypUndefined) continue;
+            bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+            if(!enu_true_dep) continue;
             bool apply = util::ParamIsAppliedTo(b,s,m,p);
-              //-------------- 
-             if(!apply) continue;
-             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
-             if(!enu_true_dep) continue;
-             double f = fPhysHypothesis.CurrValue(p);
-             f = TMath::Max(0.,f);
-             bool tweaked = TMath::Abs(f-1) > kASmallNum;
-             if(!tweaked) continue;
-             const double enu_true_min = kNDFitParamEtrueRange[ip][0];
-             const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
-             int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
-             int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
+            if(!apply) continue;
+            double f = fPhysHypothesis.CurrValue(p);
+            f = TMath::Max(0.,f);
+            bool tweaked = TMath::Abs(f-1) > kASmallNum;
+            if(!tweaked) continue;
+            const double enu_true_min = kNDFitParamEtrueRange[ip][0];
+            const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
+            int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
+            int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
              LOG("SDModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f 
@@ -1623,12 +1621,11 @@ void SDModel::ApplyPhysics(Option_t * option)
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
                     double & val = fMCTFinOb[ibeam][isample][imode][izone]->GetEntryRef(ier,iyr,iet);
-                    double val_old = val;
                     val *= f;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
                     LOG("SDModel",pDEBUG) 
                       << "MCT[" << ibeam << ", " << isample << ", " << imode << ", " << izone << "] = " 
-                      << val_old << " --> " << val;
+                      << val/f << " --> " << val;
 #endif
                  }//iyr: yreco bins
                }//ier: Ereco bins
@@ -1643,14 +1640,12 @@ void SDModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-             //-------------- error, prone need to simplify
              PhysParamId_t p = kNDFitParam[ip];
              if(p == kPhypUndefined) continue;
-             bool apply = util::ParamIsAppliedTo(b,s,m,p);
-             //-------------- 
-             if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
+             bool apply = util::ParamIsAppliedTo(b,s,m,p);
+             if(!apply) continue;
              double f = fPhysHypothesis.CurrValue(p);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
              LOG("SDModel",pDEBUG) 
@@ -1688,11 +1683,10 @@ void SDModel::ApplyPhysics(Option_t * option)
              //-------------- error, prone need to simplify
              PhysParamId_t p = kNDFitParam[ip];
              if(p == kPhypUndefined) continue;
-             bool apply = util::ParamIsAppliedTo(b,s,m,p);
-             //-------------- 
-             if(!apply) continue;
              bool enu_true_dep = kNDFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
+             bool apply = util::ParamIsAppliedTo(b,s,m,p);
+             if(!apply) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
              bool tweaked = TMath::Abs(f-1) > kASmallNum;
@@ -1715,14 +1709,12 @@ void SDModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
           for(int ip = 0; ip < kNNDFitParams; ip++) {
-            //-------------- error, prone need to simplify
             PhysParamId_t p = kNDFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool apply = util::ParamIsAppliedTo(b,s,m,p);
-            //-------------- 
-            if(!apply) continue;
             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
             if(enu_true_dep) continue;
+            bool apply = util::ParamIsAppliedTo(b,s,m,p);
+            if(!apply) continue;
             double f = fPhysHypothesis.CurrValue(p);
             f = TMath::Max(0.,f);
             bool tweaked = TMath::Abs(f-1) > kASmallNum;

@@ -533,16 +533,17 @@ bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
 //____________________________________________________________________________
 bool util::ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m, conv::PhysParamId_t p)
 {
+  static const NDArrIdx * arridx = NDArrIdx::Instance();
+  
   if (b==conv::kbUndefined   ) {return false;}
   if (m==conv::kmUndefined   ) {return false;}
-  if (s==conv::ksUndefined ) {return false;}
+  if (s==conv::ksUndefined   ) {return false;}
   if (p==conv::kPhypUndefined) {return false;}
   
   // Get parameter mask
-  int ip = NDArrIdx::Instance()->NDFitParamIdx(p);
+  int ip = arridx->NDFitParamIdx(p);
   if (ip<0) {return false;}
   conv::ApplyMask_t pmask = conv::kNDApplyParamToTemplates[ip];
-  
   
   //~ // DEBUG TESTING - old method.
   //~ int ibeam   = NDArrIdx::Instance()->NDBeamConfIdx(b);
@@ -564,7 +565,6 @@ bool util::ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode
   bool apply_to_type    = (kNDApplyToReacType [t] & pmask);
   
   bool apply_to_mode = apply_to_flavour && apply_to_type;
-  
   bool apply = (apply_to_beam && apply_to_sample && apply_to_mode);
   
   //~ std::cerr<<"Param    : "  <<util::AsString(p)<<std::endl;

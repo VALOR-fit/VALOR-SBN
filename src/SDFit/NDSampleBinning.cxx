@@ -115,8 +115,10 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
 //________________________________________________________________________________________
 int util::NumErecoBins(Sample_t s, int zone)
 {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
    LOG("NDBinning",pDEBUG) 
      << "Getting # Ereco bins for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 
@@ -152,8 +154,10 @@ int util::NumErecoBins(Sample_t s, int zone)
 //________________________________________________________________________________________
 const double * util::ErecoBinEdges(Sample_t s, int zone)
 {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
    LOG("NDBinning",pDEBUG) 
      << "Getting Ereco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 
@@ -189,8 +193,10 @@ const double * util::ErecoBinEdges(Sample_t s, int zone)
 //________________________________________________________________________________________
 int util::NumYrecoBins(Sample_t s, int zone)
 {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
    LOG("NDBinning",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 
@@ -228,8 +234,10 @@ int util::NumYrecoBins(Sample_t s, int zone)
 //________________________________________________________________________________________
 const double * util::YrecoBinEdges(Sample_t s, int zone)
 {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
    LOG("NDBinning",pDEBUG) 
      << "Getting yreco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 
@@ -267,30 +275,37 @@ const double * util::YrecoBinEdges(Sample_t s, int zone)
 //________________________________________________________________________________________
 int util::BinZone(Sample_t s, double enu_reco, double y_reco)
 {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
   LOG("NDBinning", pDEBUG) 
     << "Finding bin zone for enu_reco = " << enu_reco << " GeV, y_reco = " << y_reco 
     << " in sample: " << util::AsString(s);
+#endif
 
   for(int izone = 0; izone < kNMaxBinZones; izone++) {
 
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
      LOG("NDBinning",pDEBUG) << "Testing zone #" << izone;
+#endif
 
      const int n_enu_reco_bins = util::NumErecoBins  (s, izone);
      const int n_y_reco_bins   = util::NumYrecoBins  (s, izone);
 
      assert(n_enu_reco_bins > 0);
      assert(n_y_reco_bins   > 0);
-
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
      LOG("NDBinning",pDEBUG) << " - number of enu_reco bins = " << n_enu_reco_bins;
      LOG("NDBinning",pDEBUG) << " - number of y_reco bins   = " << n_y_reco_bins;
+#endif
 
      const double * enu_reco_bin_edges = util::ErecoBinEdges (s, izone);
      const double * y_reco_bin_edges   = util::YrecoBinEdges (s, izone);
-
+     
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
      LOG("NDBinning",pDEBUG) << " - min{enu_reco} = " << enu_reco_bin_edges [0] << " GeV";
      LOG("NDBinning",pDEBUG) << " - max{enu_reco} = " << enu_reco_bin_edges [n_enu_reco_bins] << " GeV";
      LOG("NDBinning",pDEBUG) << " - min{y_reco}   = " << y_reco_bin_edges   [0];
      LOG("NDBinning",pDEBUG) << " - max{y_reco}   = " << y_reco_bin_edges   [n_y_reco_bins];
+#endif
 
      if ( enu_reco >= enu_reco_bin_edges [0]                &&
           enu_reco <= enu_reco_bin_edges [n_enu_reco_bins]  &&
@@ -298,7 +313,9 @@ int util::BinZone(Sample_t s, double enu_reco, double y_reco)
           y_reco   <= y_reco_bin_edges   [n_y_reco_bins] 
         )
      {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
        LOG("NDBinning",pDEBUG) << "Returning zone#" << izone;
+#endif
        return izone;
      }
   }//izone
