@@ -29,8 +29,6 @@
   gSystem->Load("libValorUtil.so");
   gSystem->Load("libValorParse.so");
   gSystem->Load("libValorDuneConv.so");
-  gSystem->Load("libValorDuneNDFit.so");
-  //~ gSystem->Load("libValorDuneFDFit.so");
-  //~ gSystem->Load("libValorDUNENDSelection.so");
+  gSystem->Load("libValorDuneSDFit.so");
 }
 
