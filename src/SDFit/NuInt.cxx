@@ -47,10 +47,9 @@ CorrelatedSystematics()
     util::Die(-1); return;
   }
   
-  this->Init(nparams, params);
+  this->Init(nparams, params,"interaction");
   
   this->SetName("NuInt");
-  this->SetXMLNodeName("interaction");
 }
 //________________________________________________________________________________________
 NuInt::~NuInt()

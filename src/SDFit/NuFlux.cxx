@@ -47,10 +47,9 @@ CorrelatedSystematics()
     util::Die(-1); return;
   }
   
-  this->Init(nparams, params);
+  this->Init(nparams, params,"flux");
   
   this->SetName("NuFlux");
-  this->SetXMLNodeName("flux");
 }
 //________________________________________________________________________________________
 NuFlux::~NuFlux()

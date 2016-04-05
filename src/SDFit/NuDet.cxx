@@ -47,10 +47,9 @@ CorrelatedSystematics()
     util::Die(-1); return;
   }
   
-  this->Init(nparams, params);
+  this->Init(nparams, params,"detector");
   
   this->SetName("NuDet");
-  this->SetXMLNodeName("detector");
 }
 //________________________________________________________________________________________
 NuDet::~NuDet()
