@@ -18,6 +18,7 @@ BUILD_TARGETS =    print-make-info     \
 		   make-bin-lib-dir    \
 		   copy-scripts-to-bin \
 		   build-conventions   \
+		   build-elements      \
 		   build-sd-fit        \
 		   copy-rootdict-to-lib \
 		   build-apps   
@@ -45,6 +46,11 @@ build-conventions: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/Conventions;
+
+build-elements: make-bin-lib-dir FORCE
+	@echo " "
+	@echo "** Building Elements package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/Elements;
 
 build-sd-fit: make-bin-lib-dir FORCE
 	@echo " "
