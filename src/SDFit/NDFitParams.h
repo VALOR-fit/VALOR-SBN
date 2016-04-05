@@ -2135,7 +2135,7 @@ static const NDFitParamGroup_t kNDFitParamGroup[kNNDFitParams] =
 
 // Is this a neutrino flux related parameter?
 //
-static const double kNDFitIsNuFluxRelated[kNNDFitParams] = 
+static const bool kNDFitIsNuFluxRelated[kNNDFitParams] = 
 {
    // FHC flux
    true,  // kNuisFHCNuMuFlux00
@@ -2287,7 +2287,7 @@ static const double kNDFitIsNuFluxRelated[kNNDFitParams] =
 
 // Is this a neutrino interaction model related parameter?
 //
-static const double kNDFitIsNuIntRelated[kNNDFitParams] = 
+static const bool kNDFitIsNuIntRelated[kNNDFitParams] = 
 {
    // FHC flux
    false, // kNuisFHCNuMuFlux00
@@ -2439,7 +2439,7 @@ static const double kNDFitIsNuIntRelated[kNNDFitParams] =
 
 // Is this a neutrino detector related parameter?
 //
-static const double kNDFitIsNuDetRelated[kNNDFitParams] = 
+static const bool kNDFitIsNuDetRelated[kNNDFitParams] = 
 {
    // FHC flux
    false, // kNuisFHCNuMuFlux00
