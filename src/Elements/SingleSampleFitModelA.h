@@ -13,6 +13,9 @@ brief      An abstract implementation of the fit model for a single sample,
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
+           Steve Dennis <s.r.dennis@liverpool.ac.uk>
+           University of Liverpool
+
 \copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */

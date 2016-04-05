@@ -13,6 +13,9 @@
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
+           Steve Dennis <s.r.dennis@liverpool.ac.uk>
+           University of Liverpool
+
 \created   March 27, 2014
 
 \copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
