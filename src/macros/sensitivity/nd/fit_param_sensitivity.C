@@ -21,9 +21,9 @@ void fit_param_sensitivity
   int          run                   = 0,                                     /* run # */
   int          subrun                = 0,                                     /* sub-run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list        = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
+  const char * fit_param_list        = "standard",                            /* fit parameter list (see FitParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
-  const char * s_param_name          = 0,                                     /* specify the param name (see NDFitParams.cxx) whose sensitivity to is studied */
+  const char * s_param_name          = 0,                                     /* specify the param name (see FitParam.cxx) whose sensitivity to is studied */
   double       s_param_value_gen     = 1,                                     /* value for above param for toy-MC generation */
   int          nfits                 = 11,                                    /* number of fits for each toy-MC (for different fixed values of above param) */
   double       s_param_value_fit_min = 0.9,                                   /* min fixed value of above param */
@@ -46,7 +46,7 @@ void fit_param_sensitivity
  
   assert(s_param_name);    
 
-  PhysParamId_t sp = util::NDPhysParamFromString(s_param_name);
+  PhysParamId_t sp = util::PhysParamFromString(s_param_name);
   cout << util::AsString(sp) << endl;
   if(sp == kPhypUndefined) {
     cerr << "Undefined parameter: " << s_param_name << endl;

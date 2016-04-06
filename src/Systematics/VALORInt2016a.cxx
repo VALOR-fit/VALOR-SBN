@@ -28,13 +28,13 @@ ClassImp(VALORInt2016a)
 VALORInt2016a::VALORInt2016a() :
 CorrelatedSystematics()
 {
-  int nparams = kNNDFitParamsNuInt;
+  int nparams = kNFitParamsNuInt;
   PhysParamId_t params[nparams];
-  const bool * is_relevant = conv::kNDFitIsNuIntRelated;
+  const bool * is_relevant = conv::kFitIsNuIntRelated;
   
   int i_params = 0;
-  for(int i = 0; i < conv::kNNDFitParams; i++) {
-    PhysParamId_t p = conv::kNDFitParam[i];
+  for(int i = 0; i < conv::kNFitParams; i++) {
+    PhysParamId_t p = conv::kFitParam[i];
     if (is_relevant[i]) {
       params[i_params] = p;
       i_params++;
@@ -43,7 +43,7 @@ CorrelatedSystematics()
   
   // Check we have the right number of parameters labelled as related to this class
   if (nparams-i_params) {
-    LOG("VALORInt2016a",pFATAL)<<"kNNDFitParamsNuInt does not match kNDFitIsNuIntRelated";
+    LOG("VALORInt2016a",pFATAL)<<"kNFitParamsNuInt does not match kFitIsNuIntRelated";
     util::Die(-1); return;
   }
   

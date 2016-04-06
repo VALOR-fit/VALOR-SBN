@@ -10,7 +10,7 @@
 	
 void tweak_nd_pdf_N
 (
-  const char * model_param_list   = "standard",                            /* list of params included in model, see NDFitParams.cxx */
+  const char * model_param_list   = "standard",                            /* list of params included in model, see FitParam.cxx */
   const char * config_file        = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
 )
 {
@@ -32,7 +32,7 @@ void tweak_nd_pdf_N
   TCanvas * c  [kNBeamConf];
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    c[ibeam] = new TCanvas(Form("c%d",ibeam),"",10,10,700,700);
- //c[ibeam] -> Divide(kNNDSamples);
+ //c[ibeam] -> Divide(kNSamples);
    c[ibeam] -> Divide(3,3);
   }
 
@@ -41,11 +41,11 @@ void tweak_nd_pdf_N
   model->Read(config.Data());
 
   // Arrays to store the spectra for the default, +1 sigma and -1 sigma variations
-  TH1D * nom_pdf_werr [kNBeamConf][kNNDSamples]        = { 0 };
-  TH1D * nom_pdf      [kNBeamConf][kNNDSamples]        = { 0 };
-  TH1D * twk_pdf      [kNBeamConf][kNNDSamples][ntoys] = { 0 };
-  TH1D * err          [kNBeamConf][kNNDSamples][2]     = { 0 };
-  double max          [kNBeamConf][kNNDSamples]        = { -999 };
+  TH1D * nom_pdf_werr [kNBeamConf][kNSamples]        = { 0 };
+  TH1D * nom_pdf      [kNBeamConf][kNSamples]        = { 0 };
+  TH1D * twk_pdf      [kNBeamConf][kNSamples][ntoys] = { 0 };
+  TH1D * err          [kNBeamConf][kNSamples][2]     = { 0 };
+  double max          [kNBeamConf][kNSamples]        = { -999 };
 
   // Generate pdfs
   for(int itoy = -1; itoy < ntoys; itoy++) {
@@ -68,10 +68,10 @@ void tweak_nd_pdf_N
 
     // Pick results wanted 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[isample];
         if(s == ksUndefined) continue;
         const char * name = Form("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
@@ -90,10 +90,10 @@ void tweak_nd_pdf_N
   }//itoy
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[isample];
       if(s == ksUndefined) continue;
       err [ibeam][isample][0] = new TH1D(*nom_pdf[ibeam][isample]);
       err [ibeam][isample][1] = new TH1D(*nom_pdf[ibeam][isample]);
@@ -120,11 +120,11 @@ void tweak_nd_pdf_N
 
   // Draw
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     int ic = 0;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[isample];
       if(s == ksUndefined) continue;
       ic++;
       c[ibeam]->cd(ic);

@@ -4,7 +4,7 @@ and a TH1D(s) of the square root(s) of its/their diagonal elements. It writes th
 file. The input ROOT file is made by generating and fitting some toy experiments using run_fit.C.
 
 There is an option to marginalise the input covariance matrix/matrices. This can only be done if the input matrix/
-matrices have dimensions kNNDFitParams x kNNDFitParams. The marginalisation is done by deleting the rows and 
+matrices have dimensions kNFitParams x kNFitParams. The marginalisation is done by deleting the rows and 
 columns that correspond to the parameters to be marginalised. This is equivalent to integrating over the parameters 
 to be marginalised if the parameters have a multivariate Gaussian distribution - please see, for example
 
@@ -52,7 +52,7 @@ bool marginalise = true
     {
     n_params_after_marg = 0;
     //find number of parameters after marginalisation
-    for(int i=0; i<kNNDFitParams; i++)
+    for(int i=0; i<kNFitParams; i++)
       {
       if(!kNDFitParamMarginalize[i])
         n_params_after_marg++;
@@ -130,16 +130,16 @@ bool marginalise = true
     if(marginalise)
       {
       //check that input covariance matrix has correct dimensions
-      if(cov->GetNrows() != kNNDFitParams || cov->GetNcols() != kNNDFitParams)
+      if(cov->GetNrows() != kNFitParams || cov->GetNcols() != kNFitParams)
         {
-        cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions to be marginalised - it must be "<<kNNDFitParams<<" x "<<kNNDFitParams<<"."<<endl;
+        cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions to be marginalised - it must be "<<kNFitParams<<" x "<<kNFitParams<<"."<<endl;
         exit(1);
         }
       }//end of if(marginalise)
 
     double *covmat_array = cov->GetMatrixArray();
     if(marginalise)
-      double *end_covmat_array = covmat_array + kNNDFitParams * kNNDFitParams;
+      double *end_covmat_array = covmat_array + kNFitParams * kNFitParams;
     else
       double *end_covmat_array = covmat_array + n_params * n_params;
 
@@ -153,7 +153,7 @@ bool marginalise = true
       //need to find 2D indices to write element to marginalised covariance matrix
       if(marginalise)
 	{
-        if((j+1)%kNNDFitParams==0)
+        if((j+1)%kNFitParams==0)
 	  {
 	  i++;
 	  j = -1;
@@ -218,7 +218,7 @@ bool marginalise = true
 
     for(int param=0; param<n_params; param++)
       {
-      PhysParamId_t p = kNDFitParam[param];
+      PhysParamId_t p = kFitParam[param];
       //const char * label = util::AsStringTeX(p,true).c_str();
       const char * label = util::AsString(p).c_str();
       x_low = param;

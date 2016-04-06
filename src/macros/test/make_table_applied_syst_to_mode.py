@@ -45,7 +45,7 @@ def main(beam_mode_arg = None, sample_arg = None,
   nd_params_array  = array.array("i",[-1]*conv.kNNDFitParams)
   
   root_loop  = "{ int * par_arr = (int*)%s;" % str(nd_params_array.buffer_info()[0])
-  root_loop += " for (int i = 0 ; i < kNNDFitParams;i++){par_arr[i]=kNDFitParam[i];};};"
+  root_loop += " for (int i = 0 ; i < kNFitParams;i++){par_arr[i]=kFitParam[i];};};"
   ROOT.gROOT.ProcessLine(root_loop)
   
   params = [p for p in nd_params_array if p != conv.kPhypUndefined]
@@ -79,7 +79,7 @@ def main(beam_mode_arg = None, sample_arg = None,
   for beam_mode in beam_modes:
     nd_samples_array = array.array("i",[-1]*conv.kNNDSamples)
     root_loop  = "{ int * smp_arr = (int*)%s;" % str(nd_samples_array.buffer_info()[0])
-    root_loop += " for (int i = 0 ; i < kNNDSamples;i++){smp_arr[i]=kNDSample[%s][i];};};"%str(beam_mode)
+    root_loop += " for (int i = 0 ; i < kNSamples;i++){smp_arr[i]=kSample[%s][i];};};"%str(beam_mode)
     ROOT.gROOT.ProcessLine(root_loop)
     
     if sample_arg is None:
@@ -92,8 +92,8 @@ def main(beam_mode_arg = None, sample_arg = None,
       # Get the mode list for this sample
       modes_array      = array.array("i",[-1]*conv.kNReacModes)
       root_loop  = "{ int * mode_arr = (int*)%s;" % str(modes_array.buffer_info()[0])
-      root_loop += "int is = NDArrIdx::Instance()->NDSampleIdx((BeamConf_t)%s,(Sample_t)%s);"%(str(beam_mode),str(sample))
-      root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kNDReactionModes[is][i];};};"
+      root_loop += "int is = ArrIdx::Instance()->SampleIdx((BeamConf_t)%s,(Sample_t)%s);"%(str(beam_mode),str(sample))
+      root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kReactionModes[is][i];};};"
       ROOT.gROOT.ProcessLine(root_loop)
       modes  = [m for m in modes_array     if m != conv.kmUndefined]
       

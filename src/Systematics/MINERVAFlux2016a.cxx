@@ -28,13 +28,13 @@ ClassImp(MINERVAFlux2016a)
 MINERVAFlux2016a::MINERVAFlux2016a() :
 CorrelatedSystematics()
 {
-  int nparams = kNNDFitParamsNuFlux;
+  int nparams = kNFitParamsNuFlux;
   PhysParamId_t params[nparams];
-  const bool * is_relevant = conv::kNDFitIsNuFluxRelated;
+  const bool * is_relevant = conv::kFitIsNuFluxRelated;
   
   int i_params = 0;
-  for(int i = 0; i < conv::kNNDFitParams; i++) {
-    PhysParamId_t p = conv::kNDFitParam[i];
+  for(int i = 0; i < conv::kNFitParams; i++) {
+    PhysParamId_t p = conv::kFitParam[i];
     if (is_relevant[i]) {
       params[i_params] = p;
       i_params++;
@@ -43,7 +43,7 @@ CorrelatedSystematics()
   
   // Check we have the right number of parameters labelled as related to this class
   if (nparams-i_params) {
-    LOG("MINERVAFlux2016a",pFATAL)<<"kNNDFitParamsNuFlux does not match kNDFitIsNuFluxRelated";
+    LOG("MINERVAFlux2016a",pFATAL)<<"kNFitParamsNuFlux does not match kFitIsNuFluxRelated";
     util::Die(-1); return;
   }
   

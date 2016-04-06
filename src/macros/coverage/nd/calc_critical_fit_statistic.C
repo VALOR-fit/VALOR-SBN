@@ -14,12 +14,12 @@
 void calc_critical_fit_statistic
 (
   const char * filename,
-  const char * lim_param_name  /* specify the param name (see NDFitParams.cxx) */
+  const char * lim_param_name  /* specify the param name (see FitParam.cxx) */
 )
 {
   using namespace valor;
 
-  conv::PhysParamId_t p = util::NDPhysParamFromString(lim_param_name);
+  conv::PhysParamId_t p = util::PhysParamFromString(lim_param_name);
   assert(p != conv::kPhypUndefined);
   
   cout << "Calculating critical values of fit statistic for parameter: " << lim_param_name << endl;

@@ -27,18 +27,18 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
   //..............................................................................................
   //
 
-//TH2D * pdf_tot[conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones]; 
-  TH2D * pdf_tot[conv::kNBeamConf][conv::kNNDSamples]; 
+//TH2D * pdf_tot[conv::kNBeamConf][conv::kNSamples][conv::kNMaxBinZones]; 
+  TH2D * pdf_tot[conv::kNBeamConf][conv::kNSamples]; 
   TCanvas * c_pdf_tot[conv::kNBeamConf];
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
-    conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
+    conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     const char * c_name = Form("c_pdf_tot_%s", util::AsString(b).c_str());
     c_pdf_tot[ibeam] = new TCanvas(c_name,"",20,20,600,600);
     c_pdf_tot[ibeam] -> Divide(3,3);
     int ic=0;
-    for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+    for(int isample = 0; isample < conv::kNSamples; isample++) {
+      conv::Sample_t s = conv::kSample[ibeam][isample];
       if(s == conv::ksUndefined) continue;
 //    for(int izone = 0; izone < conv::kNMaxBinZones; izone++) {
 //       const char * name = Form("%s_%s_%s_%s_z%d", 
@@ -68,16 +68,16 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
 
   TCanvas * c_pdf_slice[conv::kNBeamConf];
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
-    conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
+    conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     const char * c_name  = Form("c_pdf_slice_%s", util::AsString(b).c_str());
     c_pdf_slice[ibeam] = new TCanvas(c_name,"",20,20,700,700);
-  //c_pdf_slice[ibeam]->Divide(conv::kNNDSamples);
+  //c_pdf_slice[ibeam]->Divide(conv::kNSamples);
     c_pdf_slice[ibeam]->Divide(3,3);
-    double max[conv::kNNDSamples] = { -999 };
+    double max[conv::kNSamples] = { -999 };
     int ic = 0;   
-    for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+    for(int isample = 0; isample < conv::kNSamples; isample++) {
+      conv::Sample_t s = conv::kSample[ibeam][isample];
       if(s == conv::ksUndefined) continue;
       THStack * stack = new THStack("stack","spectrum contributions");
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
@@ -137,23 +137,23 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
 
   TCanvas * c_pdf_contrib[conv::kNBeamConf];
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
-    conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
+    conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     const char * c_name = Form("c_pdf_contrib_%s", util::AsString(b).c_str());
     c_pdf_contrib[ibeam] = new TCanvas(c_name,"",20,20,700,700);
-  //c_pdf_contrib[ibeam]->Divide(conv::kNNDSamples);
+  //c_pdf_contrib[ibeam]->Divide(conv::kNSamples);
     c_pdf_contrib[ibeam]->Divide(3,3);
     int ic = 0;
-    double max[conv::kNNDSamples] = { -999 };
-    for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+    double max[conv::kNSamples] = { -999 };
+    for(int isample = 0; isample < conv::kNSamples; isample++) {
+      conv::Sample_t s = conv::kSample[ibeam][isample];
       if(s == conv::ksUndefined) continue;
       cout << "Creating stack for beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
       THStack * stack = new THStack("stack","spectrum contributions");
       TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };
       TH1D * pdf_contrib_coarse [conv::kNReacModesCoarse] = { 0 };
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
-            conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+            conv::ReacMode_t m = conv::kReactionModes[isample][imode];
             if(m == conv::kmUndefined) continue;
             cout << "Taking mode: " << util::AsString(m) << endl;
             cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
@@ -235,13 +235,13 @@ void plot_nd_pdf(const char * filename, const char * tag = "valor")
       //  
       double ntot_sample = 0;
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
-         conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+         conv::ReacMode_t m = conv::kReactionModes[isample][imode];
          if(m == conv::kmUndefined) continue;
             cout << "Taking mode: " << util::AsString(m) << endl;
          ntot_sample += pdf_contrib[imode]->Integral();
       }
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
-         conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+         conv::ReacMode_t m = conv::kReactionModes[isample][imode];
          if(m == conv::kmUndefined) continue;
          double ntot = pdf_contrib[imode]->Integral();
          double frac = 100*ntot/ntot_sample;

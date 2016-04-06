@@ -50,12 +50,12 @@ void read_fit_results(const char * filename)
     cout << "\n >> Comparing true/input and best-fit paramerers: " << endl;
     TCanvas * cprm = new TCanvas("cprm","",20,20,500,500);
     cprm->cd();    
-    TH1D * htrue    = new TH1D("htrue",   "",conv::kNNDFitParams,0,conv::kNNDFitParams);
-    TH1D * hbestfit = new TH1D("hbestfit","",conv::kNNDFitParams,0,conv::kNNDFitParams);
+    TH1D * htrue    = new TH1D("htrue",   "",conv::kNFitParams,0,conv::kNFitParams);
+    TH1D * hbestfit = new TH1D("hbestfit","",conv::kNFitParams,0,conv::kNFitParams);
     htrue->SetDirectory(0);
     hbestfit->SetDirectory(0);
-    for(int i=0; i< conv::kNNDFitParams; i++) {
-      conv::PhysParamId_t p = conv::kNDFitParam[i];
+    for(int i=0; i< conv::kNFitParams; i++) {
+      conv::PhysParamId_t p = conv::kFitParam[i];
       htrue->GetXaxis()->SetBinLabel(i+1,util::AsStringTeX(p,true).c_str());
       htrue->Fill(i, true_param_array->Value(p));      
       hbestfit->Fill(i, best_fit_param_array->BestFitValue(p));      
@@ -84,10 +84,10 @@ void read_fit_results(const char * filename)
 
     TCanvas * ccovdiag = new TCanvas("ccovdiag","",20,20,500,500);
     ccovdiag->cd();
-    TH1D * hcovdiag = new TH1D("hcovdiag", "",conv::kNNDFitParams,0,conv::kNNDFitParams);
+    TH1D * hcovdiag = new TH1D("hcovdiag", "",conv::kNFitParams,0,conv::kNFitParams);
     hcovdiag->SetDirectory(0);
-    for(int i=0; i< conv::kNNDFitParams; i++) {
-      conv::PhysParamId_t p = conv::kNDFitParam[i];
+    for(int i=0; i< conv::kNFitParams; i++) {
+      conv::PhysParamId_t p = conv::kFitParam[i];
       hcovdiag->GetXaxis()->SetBinLabel(i+1,util::AsStringTeX(p,true).c_str());
       hcovdiag->GetYaxis()->SetTitle("#sqrt(V_{ii})");
       hcovdiag->Fill(i, TMath::Sqrt((*cov)[i][i]));      
@@ -106,19 +106,19 @@ void read_fit_results(const char * filename)
 
     double enu_reco_max = 12.; // show only up to 12 GeV
 
-    TH1D * bestfit_ereco [conv::kNBeamConf][conv::kNNDSamples] = { 0 };
-    TH1D * toymc_ereco   [conv::kNBeamConf][conv::kNNDSamples] = { 0 };
+    TH1D * bestfit_ereco [conv::kNBeamConf][conv::kNSamples] = { 0 };
+    TH1D * toymc_ereco   [conv::kNBeamConf][conv::kNSamples] = { 0 };
 
     TCanvas * c[conv::kNBeamConf];
     for(int ibeam = 0; ibeam < conv::kNBeamConf; ibeam++) {
-      conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
+      conv::BeamConf_t b = conv::kBeamConf[ibeam];
       if(b == conv::kbUndefined) continue;
       const char * c_name = Form("c_%s", util::AsString(b).c_str());
       c[ibeam] = new TCanvas(c_name,"",20,20,700,700);
       c[ibeam]->Divide(3,3);
       int ic = 0;
-      for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-        conv::Sample_t s = conv::kNDSample[ibeam][isample];
+      for(int isample = 0; isample < conv::kNSamples; isample++) {
+        conv::Sample_t s = conv::kSample[ibeam][isample];
         if(s == conv::ksUndefined) continue;
         cout <<  "isample =  " << isample << ", s = " << s << endl;
         const char * name_model = Form("%s_%s_%s_%s",

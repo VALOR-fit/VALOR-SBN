@@ -9,10 +9,10 @@
 
 void tweak_nd_pdf_1
 (
-  const char * param              = 0,                                     /* parameter name, see NDFitParams.cxx */
+  const char * param              = 0,                                     /* parameter name, see FitParam.cxx */
   int          plot_type          = 0,                                     /* 0: spectra, 1: spectrum ratios */
-  const char * model_param_list   = "standard",                            /* list of params included in model, see NDFitParams.cxx */
-  const char * model_param_values = "nominal",                             /* specify param values included in model, see NDFitParams.cxx */
+  const char * model_param_list   = "standard",                            /* list of params included in model, see FitParam.cxx */
+  const char * model_param_values = "nominal",                             /* specify param values included in model, see FitParam.cxx */
   const char * config_file        = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
 )
 {
@@ -37,7 +37,7 @@ void tweak_nd_pdf_1
     cerr << "** Specify an input parameter!";
     exit(1);
   }
-  PhysParamId_t p = util::NDPhysParamFromString(param);
+  PhysParamId_t p = util::PhysParamFromString(param);
   if(p == kPhypUndefined) {
     cerr << "** Specify an correct ND input parameter!";
     exit(1);
@@ -46,7 +46,7 @@ void tweak_nd_pdf_1
   TCanvas * c  [kNBeamConf];
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
    c[ibeam] = new TCanvas(Form("c%d",ibeam),"",10,10,700,700);
- //c[ibeam] -> Divide(kNNDSamples);
+ //c[ibeam] -> Divide(kNSamples);
    c[ibeam] -> Divide(3,3);
   }
 
@@ -61,9 +61,9 @@ void tweak_nd_pdf_1
   const int kmin1sig = 2;
   const int kpls2sig = 3;
   const int kmin2sig = 4;
-  double pdf_max  [kNBeamConf][kNNDSamples]           = { -999 };
-  TH1D * pdf      [kNBeamConf][kNNDSamples][nspectra] = { 0 };
-  TH1D * pdf_ratio[kNBeamConf][kNNDSamples][nspectra] = { 0 };
+  double pdf_max  [kNBeamConf][kNSamples]           = { -999 };
+  TH1D * pdf      [kNBeamConf][kNSamples][nspectra] = { 0 };
+  TH1D * pdf_ratio[kNBeamConf][kNSamples][nspectra] = { 0 };
 
   // Generate pdfs
   for(int i = 0; i < nspectra; i++) {
@@ -73,8 +73,8 @@ void tweak_nd_pdf_1
     FitParamList * fpl = util::GetFitParameterList(model_param_list/*,model_param_values*/);
     // Tweak if needed
     if(i != kdefault) {
-      int ip = util::NDArrIdx::Instance()->NDFitParamIdx(p); // find param idx
-      assert(ip>=0 && ip<conv::kNNDFitParams);
+      int ip = util::ArrIdx::Instance()->FitParamIdx(p); // find param idx
+      assert(ip>=0 && ip<conv::kNFitParams);
       
       double sig = ((SDModel*)model)->OneSigmaErrors().Value(p);
       
@@ -98,10 +98,10 @@ void tweak_nd_pdf_1
 
     // Pick results wanted 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         const char * name = Form("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
@@ -117,10 +117,10 @@ void tweak_nd_pdf_1
 
   // Form ratios and scan for max value in input Ereco range
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       for(int i=0; i < nspectra; i++) {
           pdf_ratio[ibeam][isample][i] = new TH1D(* pdf[ibeam][isample][kdefault]); // create with correct binning
@@ -151,11 +151,11 @@ void tweak_nd_pdf_1
 
   // Draw
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     int ic = 0;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       ic++;
       c[ibeam]->cd(ic);

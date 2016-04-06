@@ -24,8 +24,8 @@ void fit_param_scan_all_plot(const char * filename)
   c->Divide(nrows,ncols);
 
   int ic = 100;
-  for(int ip = 0; ip < kNNDFitParams; ip++) {
-     PhysParamId_t p = kNDFitParam[ip];
+  for(int ip = 0; ip < kNFitParams; ip++) {
+     PhysParamId_t p = kFitParam[ip];
      if(p == kPhypUndefined) continue;
 
      ic++;
@@ -50,7 +50,7 @@ void fit_param_scan_all_plot(const char * filename)
      hprior->SetLineColor(kRed);
      hprior->Draw("LSAME");
 
-     int pidx = util::NDArrIdx::Instance()->NDFitParamIdx(p);
+     int pidx = util::ArrIdx::Instance()->FitParamIdx(p);
      double sig = 100*kNDFitParamAPrioriFracError[pidx];
 
 

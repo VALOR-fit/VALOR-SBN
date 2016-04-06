@@ -93,12 +93,12 @@ int NDFitExtractsBareRoot(void)
   out_metadata -> Branch("enu_true_min",   &brPEmin, "enu_true_min/D");
   out_metadata -> Branch("enu_true_max",   &brPEmax, "enu_true_max/D");
 
-  for(int ip=0; ip < conv::kNNDFitParams; ip++) {
-    conv::PhysParamId_t p = conv::kNDFitParam[ip];
+  for(int ip=0; ip < conv::kNFitParams; ip++) {
+    conv::PhysParamId_t p = conv::kFitParam[ip];
     brPId = ip;
     strcpy(brPName, util::AsString(p).c_str());
-    brPEmin = conv::kNDFitParamEtrueRange[ip][0];
-    brPEmin = conv::kNDFitParamEtrueRange[ip][1];
+    brPEmin = conv::kFitParamEtrueRange[ip][0];
+    brPEmin = conv::kFitParamEtrueRange[ip][1];
     out_metadata->Fill();
   }
 

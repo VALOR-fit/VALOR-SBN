@@ -8,7 +8,7 @@
 \options     --tag                 : Tag for output file [def: "toymc"]
              --run                 : Run # [def: 0]
              --ntoymc              : Number of toy-MC experiments [def: 1]
-             --fit-param-list      : Fit parameter list (see NDFitParams.cxx) 
+             --fit-param-list      : Fit parameter list (see FitParam.cxx) 
                                      [def: "standard"]
              --param-values-option : Decide how to set the values of physics 
                                      params used for toy-MC generation 

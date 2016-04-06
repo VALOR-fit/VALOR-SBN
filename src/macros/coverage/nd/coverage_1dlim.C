@@ -12,9 +12,9 @@ void coverage_1dlim
   const char * tag                   = "toymc",                               /* tag for output file */
   int          run                   = 0,                                     /* run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list        = "standard",                            /* fit parameter list (see NDFitParams.cxx) */
+  const char * fit_param_list        = "standard",                            /* fit parameter list (see FitParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
-  const char * lim_param_name        = 0,                                     /* specify the param name (see NDFitParams.cxx) for which a confidence limit is computed */
+  const char * lim_param_name        = 0,                                     /* specify the param name (see FitParam.cxx) for which a confidence limit is computed */
   int          lim_param_npoints     = 11,                                    /* coverage will be checked for a number of points within a range */
   double       lim_param_value_min   = 0.9,                                   /* min value in above-mentioned range */
   double       lim_param_value_max   = 1.1,                                   /* max value in avove-mentioned range */
@@ -34,7 +34,7 @@ void coverage_1dlim
  
   assert(lim_param_name);    
 
-  PhysParamId_t sp = util::NDPhysParamFromString(lim_param_name);
+  PhysParamId_t sp = util::PhysParamFromString(lim_param_name);
   cout << util::AsString(sp) << endl;
   if(sp == kPhypUndefined) {
     cerr << "Undefined parameter: " << lim_param_name << endl;

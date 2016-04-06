@@ -14,7 +14,7 @@ The parameters to be marginalised are taken from the enum valor::conv::kNDFitPar
 
 ******* IMPORTANT NOTE ********
 
-The input covariance matrix MUST have dimensions kNNDFitParams x kNNDFitParams, and the code will exit if the 
+The input covariance matrix MUST have dimensions kNFitParams x kNFitParams, and the code will exit if the 
 dimensions are not correct.  The covariance matrix is a TMatrixDSym, and its elements are accessed by a pointer 
 to an array. Pointer arithmetic is used to find the elements, and this will go hopelessly wrong if the input 
 matrix has the wrong dimensions. The problem is that, if the pointer goes beyond the memory holding the array, 
@@ -60,9 +60,9 @@ TString inputfile = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/fit51params/toym
     TMatrixDSym * cov = best_fit_param_array->GetCovMatrix();
 
     //check that input covariance matrix has correct dimensions
-    if(cov->GetNrows() != kNNDFitParams || cov->GetNcols() != kNNDFitParams)
+    if(cov->GetNrows() != kNFitParams || cov->GetNcols() != kNFitParams)
       {
-      cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions - it must be "<<kNNDFitParams<<" x "<<kNNDFitParams<<"."<<endl;
+      cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions - it must be "<<kNFitParams<<" x "<<kNFitParams<<"."<<endl;
       exit(1);
       }
 
@@ -71,16 +71,16 @@ TString inputfile = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/fit51params/toym
     cov->Print();    
 
     double *covmat_array = cov->GetMatrixArray();
-    //pointer will increment kNNDFitParams * kNNDFitParams times from start of array
+    //pointer will increment kNFitParams * kNFitParams times from start of array
     //hence input covariance matrix must have these dimensions
-    double *end_covmat_array = covmat_array + kNNDFitParams * kNNDFitParams;
+    double *end_covmat_array = covmat_array + kNFitParams * kNFitParams;
     cout<<endl;
     cout<<endl;
 
     //find number of parameters after marginalisation
     int kNNDFitParamsAfterMarg = 0;
 
-    for(int i=0; i<kNNDFitParams; i++)
+    for(int i=0; i<kNFitParams; i++)
       {
       if(!kNDFitParamMarginalize[i])
         kNNDFitParamsAfterMarg++;
@@ -98,7 +98,7 @@ TString inputfile = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/fit51params/toym
       //get element from input covariance matrix
       element = *covmat_array;
       //need to find 2D indices to write element to marginalised covariance matrix
-      if((j+1)%kNNDFitParams==0)
+      if((j+1)%kNFitParams==0)
 	{
 	 i++;
 	 j = -1;

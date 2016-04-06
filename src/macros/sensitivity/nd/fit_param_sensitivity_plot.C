@@ -164,7 +164,7 @@ void fit_param_sensitivity_plot
 TGraph * get_sensitivity( 
   const char * pname, const char * filename, double & p_true_out, double & p_min_out, double & p_max_out)
 {
-  conv::PhysParamId_t p = util::NDPhysParamFromString(pname);
+  conv::PhysParamId_t p = util::PhysParamFromString(pname);
   assert(p != conv::kPhypUndefined);
   
   cout << "Plotting sensitivity to parameter: " << pname << " using toy-MC fit results stored in: " << filename << endl;
@@ -278,7 +278,7 @@ TGraph * get_sensitivity(
   }
 
   // Format as TGraphs
-  int pidx = util::NDArrIdx::Instance()->NDFitParamIdx(p);
+  int pidx = util::ArrIdx::Instance()->FitParamIdx(p);
   double sig = conv::kNDFitParamAPrioriFracError[pidx];
   int np = delta_chisq_avg_mp.size();
   double * p_value_array = new double[np];
@@ -316,12 +316,12 @@ TF1 * get_sensitivity_fit (TGraph * sensitivity, double pmin, double pmax)
 // ------------------------------------------------------------------------------------------------
 TGraph * get_prior (const char * pname, double pmin, double pmax, double & err_out)
 {
-  conv::PhysParamId_t p = util::NDPhysParamFromString(pname);
+  conv::PhysParamId_t p = util::PhysParamFromString(pname);
   assert(p != conv::kPhypUndefined);
   
   cout << "Plotting prior for parameter: " << pname << " in range: [" << pmin << ", " << pmax << "]" << endl;
 
-  int pidx = util::NDArrIdx::Instance()->NDFitParamIdx(p);
+  int pidx = util::ArrIdx::Instance()->FitParamIdx(p);
   double sig = conv::kNDFitParamAPrioriFracError[pidx];
 
   const int np = 100;

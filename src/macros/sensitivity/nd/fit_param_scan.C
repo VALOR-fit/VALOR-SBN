@@ -18,8 +18,8 @@ void fit_param_scan
   int          npv            = 21,                                    /* number of points between minimum and maximum */
   int          ntoymc         = 1,                                     /* number of toy-MC experiments */
   bool         stat_fluct     = false,                                 /* include statistical fluctuation in toy MC expts? */
-  const char * param_values   = "nominal",                             /* decide how to set the values of params used for toy-MC generation (see NDFitParams.cxx) */
-  const char * param_list     = "standard",                            /* model parameter list (see NDFitParams.cxx) */
+  const char * param_values   = "nominal",                             /* decide how to set the values of params used for toy-MC generation (see FitParam.cxx) */
+  const char * param_list     = "standard",                            /* model parameter list (see FitParam.cxx) */
   const char * config_file    = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
 )
 {
@@ -44,8 +44,8 @@ void fit_param_scan
   cout << endl;
   cout << *Rnd::Instance() << endl;
 
-  PhysParamId_t p = util::NDPhysParamFromString(pname);
-  int pidx = util::NDArrIdx::Instance()->NDFitParamIdx(p);
+  PhysParamId_t p = util::PhysParamFromString(pname);
+  int pidx = util::ArrIdx::Instance()->FitParamIdx(p);
 
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
