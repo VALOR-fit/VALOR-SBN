@@ -37,14 +37,13 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/DuneBuild.h"
 #include "Conventions/ReacMode.h"
 #include "Conventions/BeamConf.h"
+#include "Conventions/FitParamApply.h"
 #include "Elements/SingleSampleFitModelA.h"
 // --------------------------------------
 // abstract: should come either from conventions or as configurations
-#include "SDFit/NDBeamConf.h"
 #include "SDFit/NuFlux.h"
 #include "SDFit/NuInt.h"
 #include "SDFit/NuDet.h"
-#include "SDFit/NDAppliedParamsConv.h"
 // --------------------------------------
 
 using std::endl;
@@ -219,7 +218,7 @@ void SingleSampleFitModelA::RandomizeSystematics(Option_t * options)
 void SingleSampleFitModelA::TweakSystematic(
   string syst_name, double twkdial, Option_t * opt)
 {
-  PhysParamId_t p = util::NDPhysParamFromString(syst_name);
+  PhysParamId_t p = util::PhysParamFromString(syst_name);
   this->TweakSystematic(p,twkdial,opt);
   return;
 }
@@ -322,7 +321,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
 
   valor::util::SetDefaultStyle();
 
-  int isample = fArrIdx->NDSampleIdx(fBeam,fSample);
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   //
   // Write out MC templates (VALORArray format)
@@ -331,7 +330,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
   if(opt.find("mct_vf") != string::npos) {
 
       for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kNDReactionModes[isample][imode];
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -380,7 +379,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
   if(opt.find("pdfc_vf") != string::npos || opt.find("pdfc_rf") != string::npos) {
 
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kNDReactionModes[isample][imode];
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -560,7 +559,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
   if(opt.find("pdfcs_rf") != string::npos) {
 
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kNDReactionModes[isample][imode];
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -807,12 +806,12 @@ void SingleSampleFitModelA::Init(void)
   fPOT   = 0;
   fMCDST = 0;
 
-//  for(int ip = 0; ip < conv::kNNDFitParams; ip++) {
+//  for(int ip = 0; ip < conv::kNFitParams; ip++) {
 //    fPhysParamCurrVal[ip] = 0;
 //    fPhysParamFracErr[ip] = 0;
 //  }
 
-  fArrIdx = util::NDArrIdx::Instance();
+  fArrIdx = util::ArrIdx::Instance();
   
 // Flux object
   fNuFlux = 0;
@@ -823,10 +822,10 @@ void SingleSampleFitModelA::Book(void)
 {
   LOG("SingleSampleFitModelA",pDEBUG) << "Booking...";
 
-  int isample = fArrIdx->NDSampleIdx(fBeam,fSample);
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
@@ -1120,7 +1119,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
        continue;  
      }
 
-     int isample = fArrIdx->NDSampleIdx(fBeam,fSample);
+     int isample = fArrIdx->SampleIdx(fBeam,fSample);
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit
        LOG("SingleSampleFitModelA",pDEBUG) 
@@ -1137,7 +1136,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
           << " (value stored in DST: " << reac_mode << ")";
        exit(1);
      }
-     int imode = fArrIdx->NDReacModeIdx(s, m);
+     int imode = fArrIdx->ReacModeIdx(s, m);
      if(imode < 0) {
        // For a given sample we should consider a complete list of
        // true reaction modes (otherwise there are true contributions to the
@@ -1269,9 +1268,9 @@ bool SingleSampleFitModelA::FillFromTemplateFile (TFile * f, string tag)
 {
   bool success = true;
 
-  int isample = fArrIdx->NDSampleIdx(fBeam,fSample);
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           TString name = TString::Format("%s_%s_%s_z%d", 
@@ -1333,13 +1332,13 @@ void SingleSampleFitModelA::FluctuateMCStat(Option_t * option)
   //Rnd * rnd = Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
   Rnd * rnd = Rnd::Instance();
 
-  int isample = fArrIdx->NDSampleIdx(fBeam,fSample);
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   const int n_enu_true_bins = util::NumEtrueBins(fSample);
   const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(fSample);
   for(int imode = 0; imode < kNReacModes; imode++) {
 
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         // Updating only the templates using the optimized binning
@@ -1490,10 +1489,10 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
   const double * enu_true_bin_edges = util::EtrueBinEdges(fSample);
   const int n_y_reco_bin_edges_sb   = util::NumYrecoBinsSb(fSample);
 
-  int isample = fArrIdx->NDSampleIdx(fBeam,fSample);
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
         
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1524,21 +1523,21 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
              << "Applying Etrue-dependent params";
 #endif
           // first apply Etrue-dependent params
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
+          for(int ip = 0; ip < kNFitParams; ip++) {
             //-------------- error, prone need to simplify
-            PhysParamId_t p = kNDFitParam[ip];
+            PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
             bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
               //-------------- 
              if(!apply) continue;
-             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+             bool enu_true_dep = kFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
              bool tweaked = TMath::Abs(f-1) > kASmallNum;
              if(!tweaked) continue;
-             const double enu_true_min = kNDFitParamEtrueRange[ip][0];
-             const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
+             const double enu_true_min = kFitParamEtrueRange[ip][0];
+             const double enu_true_max = kFitParamEtrueRange[ip][1];     
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1569,14 +1568,14 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
+          for(int ip = 0; ip < kNFitParams; ip++) {
              //-------------- error, prone need to simplify
-             PhysParamId_t p = kNDFitParam[ip];
+             PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
              bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
              //-------------- 
              if(!apply) continue;
-             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+             bool enu_true_dep = kFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
              double f = fPhysHypothesis.CurrValue(p);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1611,21 +1610,21 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
           }//iet: Etrue bins
 
           // first apply Etrue-dependent params
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
+          for(int ip = 0; ip < kNFitParams; ip++) {
              //-------------- error, prone need to simplify
-             PhysParamId_t p = kNDFitParam[ip];
+             PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
              bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
              //-------------- 
              if(!apply) continue;
-             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+             bool enu_true_dep = kFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
              double f = fPhysHypothesis.CurrValue(p);
              f = TMath::Max(0.,f);
              bool tweaked = TMath::Abs(f-1) > kASmallNum;
              if(!tweaked) continue;
-             const double enu_true_min = kNDFitParamEtrueRange[ip][0];
-             const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
+             const double enu_true_min = kFitParamEtrueRange[ip][0];
+             const double enu_true_max = kFitParamEtrueRange[ip][1];     
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
@@ -1641,14 +1640,14 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
+          for(int ip = 0; ip < kNFitParams; ip++) {
             //-------------- error, prone need to simplify
-            PhysParamId_t p = kNDFitParam[ip];
+            PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
             bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
             //-------------- 
             if(!apply) continue;
-            bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+            bool enu_true_dep = kFitParamEtrueDependence[ip];
             if(enu_true_dep) continue;
             double f = fPhysHypothesis.CurrValue(p);
             f = TMath::Max(0.,f);
@@ -1686,13 +1685,13 @@ void SingleSampleFitModelA::UpdatePDFs(Option_t * option)
   // over true reaction modes just yet
   //
 
-  int isample = fArrIdx->NDSampleIdx(fBeam,fSample);
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   const int n_enu_true_bins = util::NumEtrueBins(fSample);
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -1739,7 +1738,7 @@ void SingleSampleFitModelA::UpdatePDFs(Option_t * option)
            for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
               double sum = 0.;
               for(int imode = 0; imode < kNReacModes; imode++) {
-                 ReacMode_t m = kNDReactionModes[isample][imode];
+                 ReacMode_t m = kReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
                  bool is_null = fMCTNullOb[imode][izone];
                  if(is_null) continue;
@@ -1755,7 +1754,7 @@ void SingleSampleFitModelA::UpdatePDFs(Option_t * option)
            for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
               double sum = 0.;
               for(int imode = 0; imode < kNReacModes; imode++) {
-                 ReacMode_t m = kNDReactionModes[isample][imode];
+                 ReacMode_t m = kReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
                  bool is_null = fMCTNullSb[imode];
                  if(is_null) continue;

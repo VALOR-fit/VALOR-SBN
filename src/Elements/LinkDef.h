@@ -6,6 +6,7 @@
 
 #pragma link C++ namespace valor;
 
+#pragma link C++ class valor::ElementFactory;
 #pragma link C++ class valor::SingleSampleFitModelA+;
 #pragma link C++ class valor::SingleSampleDataA+;
 

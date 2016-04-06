@@ -38,13 +38,10 @@ brief      An abstract implementation of the fit model for a single sample,
 #include "Conventions/Detector.h"
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
-// --------------------------------------
-// abstract: should come either from conventions or as configurations
-#include "SDFit/NDArrIdx.h"
-#include "SDFit/NDSampleBinning.h"
-#include "SDFit/NDSampleModes.h"
-#include "SDFit/NDFitParams.h"
-// --------------------------------------
+#include "Conventions/SampleKineBinning.h"
+#include "Conventions/SampleReacMode.h"
+#include "Conventions/FitParam.h"
+#include "Conventions/ArrIdx.h"
 
 namespace valor {
 
@@ -111,7 +108,7 @@ protected:
   void ApplyPhysics     (Option_t * opt = 0);
   void UpdatePDFs       (Option_t * opt = 0);
 
-  const util::NDArrIdx * fArrIdx;
+  const util::ArrIdx * fArrIdx;
 
   PhysHypothesis fPhysHypothesis;
 

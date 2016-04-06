@@ -35,12 +35,9 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
 #include "Conventions/Detector.h"
-// --------------------------------------
-// abstract: should come either from conventions or as configurations
-#include "SDFit/NDArrIdx.h"
-#include "SDFit/NDSampleBinning.h"
-#include "SDFit/NDSampleModes.h"
-// --------------------------------------
+#include "Conventions/SampleKineBinning.h"
+#include "Conventions/SampleReacMode.h"
+#include "Conventions/ArrIdx.h"
 
 class TObjArray;
 class TH1D;
