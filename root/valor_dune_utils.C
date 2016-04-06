@@ -133,7 +133,7 @@ void valor_dune_utils()
     
     // Instantiate a singleton
     // Something funny happens in CLING where we need to ask for an object in a library before any standalone functions
-    valor::util::NDArrIdx::Instance();
+    valor::util::ArrIdx::Instance();
     
     valor::util::PopulateNameRegistry();
 
