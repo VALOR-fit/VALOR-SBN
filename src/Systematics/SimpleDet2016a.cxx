@@ -15,7 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Messenger/Messenger.h"
 #include "Utilities/UtlSystem.h"
 // dune
-#include "SDFit/NDFitParams.h"
+#include "Conventions/FitParam.h"
 #include "Systematics/SimpleDet2016a.h"
 
 using namespace valor;

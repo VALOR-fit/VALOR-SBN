@@ -42,7 +42,7 @@
 #include "Messenger/Messenger.h"
 #include "Parser/CmdLnArgParser.h"
 // dune
-#include "SDFit/NDFitParams.h"
+#include "Conventions/FitParam.h"
 
 using std::string;
 using std::ostringstream;
