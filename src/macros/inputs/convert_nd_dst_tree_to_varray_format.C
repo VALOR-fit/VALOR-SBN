@@ -16,7 +16,7 @@ void convert_nd_dst_tree_to_varray_format(
   
   // Get array with all VArrays in
   TObjArray output_arr;
-  model->Write(&output_arr,tag,"mct_vf");
+  model->Write(&output_arr,tag,"mct_vf+SB");
   
   // Open an output file
   
@@ -32,7 +32,7 @@ void convert_nd_dst_tree_to_varray_format(
   for (int i = 0 ; i < output_arr.GetEntries(); i++) {
     TObject * obj = output_arr.At(i);
     TString name = obj->GetName();
-    if (name.Contains("mctnom_ob_vf")) {
+    if (name.Contains("mctnom_ob_vf") || name.Contains("mctnom_sb_vf")) {
       VALORArray * va = dynamic_cast<VALORArray*>(obj);
       if (!va) {
         std::cerr<<"Warning, not able to convert "<<name<<" to VALORArray"<<endl;
