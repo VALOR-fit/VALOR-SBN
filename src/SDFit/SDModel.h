@@ -30,9 +30,9 @@
 //dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
+#include "Conventions/SampleKineBinning.h"
+#include "Conventions/SampleReacModes.h"
 #include "SDFit/NDArrIdx.h"
-#include "SDFit/NDSampleBinning.h"
-#include "SDFit/NDSampleModes.h"
 #include "SDFit/NDFitParams.h"
 
 namespace valor {
@@ -129,21 +129,21 @@ private:
   //
   // Below are MCT with binning heavily optimized to reduce the CPU intensity of the fit.
   // A number of binning zones are defined, and in each zone a variable-size binning scheme is used.
-  bool         fMCTNullOb [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones];
-  VALORArray * fMCTNomOb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTTunOb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTSysOb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTFinOb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCStatOb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // MC statistics 
+  bool         fMCTNullOb [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNMaxBinZones];
+  VALORArray * fMCTNomOb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTTunOb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTSysOb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCTFinOb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNMaxBinZones]; 
+  VALORArray * fMCStatOb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNMaxBinZones]; // MC statistics 
   // Below are MCT versions the use a simple (~fine and ~regular) binning throughout the whole range.
   // These templates are not used in the fit, but mainly for the visualization of the fit results.
   // As such, they are not all filled-in in each iteration of the fit but, typically, at the end of the fit or upon request.
-  bool         fMCTNullSb [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes];
-  VALORArray * fMCTNomSb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
-  VALORArray * fMCTTunSb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
-  VALORArray * fMCTSysSb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
-  VALORArray * fMCTFinSb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; 
-  VALORArray * fMCStatSb  [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; // MC statistics
+  bool         fMCTNullSb [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes];
+  VALORArray * fMCTNomSb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes]; 
+  VALORArray * fMCTTunSb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes]; 
+  VALORArray * fMCTSysSb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes]; 
+  VALORArray * fMCTFinSb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes]; 
+  VALORArray * fMCStatSb  [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes]; // MC statistics
 
   // MC PDFs
   // Each PDF is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
@@ -152,13 +152,13 @@ private:
   // The `Tot' versions are integrated over the true reac_modes and can be used for comparisons with data.
   //
   // Below are PDFs with binning heavily optimized to reduce the CPU intensity of the fit.
-  bool         fPDFTotNullOb [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones];                    //
-  VALORArray * fPDFTotOb     [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones];                    // total
-  VALORArray * fPDFCompOb    [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNMaxBinZones]; // components
+  bool         fPDFTotNullOb [conv::kNBeamConf][conv::kNSamples][conv::kNMaxBinZones];                    //
+  VALORArray * fPDFTotOb     [conv::kNBeamConf][conv::kNSamples][conv::kNMaxBinZones];                    // total
+  VALORArray * fPDFCompOb    [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNMaxBinZones]; // components
   // Below are PDFs versions the use a simple (~fine and ~regular) binning throughout the whole range.
-  bool         fPDFTotNullSb [conv::kNBeamConf][conv::kNNDSamples];                    // 
-  VALORArray * fPDFTotSb     [conv::kNBeamConf][conv::kNNDSamples];                    // total
-  VALORArray * fPDFCompSb    [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes]; // components
+  bool         fPDFTotNullSb [conv::kNBeamConf][conv::kNSamples];                    // 
+  VALORArray * fPDFTotSb     [conv::kNBeamConf][conv::kNSamples];                    // total
+  VALORArray * fPDFCompSb    [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes]; // components
 
   // Input VALOR MC DSTs
   bool fUseMCDST;

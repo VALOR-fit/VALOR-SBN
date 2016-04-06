@@ -28,9 +28,9 @@
 //dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
+#include "Conventions/SampleKineBinning.h"
+#include "Conventions/SampleReacModes.h"
 #include "SDFit/NDArrIdx.h"
-#include "SDFit/NDSampleBinning.h"
-#include "SDFit/NDSampleModes.h"
 
 class TObjArray;
 class TH1D;
@@ -74,11 +74,11 @@ private:
   // There is a distribution for all beam/sample/bin_zone combinations.
   //
   // Distributions with binning heavily optimized to reduce the CPU intensity of the fit.
-  bool         fDataNull   [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones]; 
-  VALORArray * fData       [conv::kNBeamConf][conv::kNNDSamples][conv::kNMaxBinZones]; 
+  bool         fDataNull   [conv::kNBeamConf][conv::kNSamples][conv::kNMaxBinZones]; 
+  VALORArray * fData       [conv::kNBeamConf][conv::kNSamples][conv::kNMaxBinZones]; 
   // Below are versions the use a simple (~fine and ~regular) binning throughout the whole range.
-  bool         fDataSbNull [conv::kNBeamConf][conv::kNNDSamples]; 
-  VALORArray * fDataSb     [conv::kNBeamConf][conv::kNNDSamples]; 
+  bool         fDataSbNull [conv::kNBeamConf][conv::kNSamples]; 
+  VALORArray * fDataSb     [conv::kNBeamConf][conv::kNSamples]; 
 };
 
 } // valor

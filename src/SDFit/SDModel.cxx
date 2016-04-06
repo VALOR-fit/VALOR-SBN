@@ -325,11 +325,11 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kNDReactionModes[isample][imode];
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -383,11 +383,11 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kNDReactionModes[isample][imode];
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -481,8 +481,8 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -580,11 +580,11 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kNDReactionModes[isample][imode];
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -677,8 +677,8 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -807,7 +807,7 @@ void SDModel::Init(void)
   fBaseline=-1;
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-   for(int isample = 0; isample < kNNDSamples; isample++) {
+   for(int isample = 0; isample < kNSamples; isample++) {
      for(int imode = 0; imode < kNReacModes; imode++) {
 
        // MC templates (simple binning)
@@ -869,11 +869,11 @@ void SDModel::Book(void)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
@@ -968,7 +968,7 @@ void SDModel::Clean(void)
   LOG("SDModel",pDEBUG) << "Cleaning-up...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    for(int isample = 0; isample < kNNDSamples; isample++) {
+    for(int isample = 0; isample < kNSamples; isample++) {
       for(int imode = 0; imode < kNReacModes; imode++) {
 
         if(!fMCTNullSb[ibeam][isample][imode]) {
@@ -1043,7 +1043,7 @@ void SDModel::Zero(void)
   LOG("SDModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-   for(int isample = 0; isample < kNNDSamples; isample++) {
+   for(int isample = 0; isample < kNSamples; isample++) {
      for(int imode = 0; imode < kNReacModes; imode++) {
 
         if(!fMCTNullSb[ibeam][isample][imode]) {
@@ -1325,11 +1325,11 @@ bool SDModel::FillFromTemplateFile (TFile * f, string tag)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           TString name = TString::Format("%s_%s_%s_z%d", 
@@ -1395,13 +1395,13 @@ void SDModel::FluctuateMCStat(Option_t * option)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       const int n_enu_true_bins = util::NumEtrueBins(s);
       const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(s);
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         // Updating only the templates using the optimized binning
@@ -1519,7 +1519,7 @@ void SDModel::ApplySystematics(Option_t * /*opt*/)
   }
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-   for(int isample = 0; isample < kNNDSamples; isample++) {
+   for(int isample = 0; isample < kNSamples; isample++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -1557,8 +1557,8 @@ void SDModel::ApplyPhysics(Option_t * option)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       
       const int n_enu_true_bins         = util::NumEtrueBins(s);
@@ -1566,7 +1566,7 @@ void SDModel::ApplyPhysics(Option_t * option)
       const int n_y_reco_bin_edges_sb   = util::NumYrecoBinsSb(s);
         
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1755,13 +1755,13 @@ void SDModel::UpdatePDFs(Option_t * option)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       const int n_enu_true_bins = util::NumEtrueBins(s);
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kNDReactionModes[isample][imode];
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -1805,8 +1805,8 @@ void SDModel::UpdatePDFs(Option_t * option)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
 
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
@@ -1818,7 +1818,7 @@ void SDModel::UpdatePDFs(Option_t * option)
            for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
               double sum = 0.;
               for(int imode = 0; imode < kNReacModes; imode++) {
-                 ReacMode_t m = kNDReactionModes[isample][imode];
+                 ReacMode_t m = kReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
                  bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
                  if(is_null) continue;
@@ -1834,7 +1834,7 @@ void SDModel::UpdatePDFs(Option_t * option)
            for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
               double sum = 0.;
               for(int imode = 0; imode < kNReacModes; imode++) {
-                 ReacMode_t m = kNDReactionModes[isample][imode];
+                 ReacMode_t m = kReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
                  bool is_null = fMCTNullSb[ibeam][isample][imode];
                  if(is_null) continue;

@@ -27,10 +27,10 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
 #include "Conventions/ReacMode.h"
+#include "Conventions/SampleKineBinning.h"
+#include "Conventions/SampleReacModes.h"
 
 #include "SDFit/NDArrIdx.h"
-#include "SDFit/NDSampleBinning.h"
-#include "SDFit/NDSampleModes.h"
 #include "SDFit/NDFitParams.h"
 
 using std::ostream;
@@ -75,7 +75,7 @@ private:
   //~ conv::PhysParamId_t * fNDIntDetParams; // The non-flux ND params are those that can have RFs
 
   // Actual response function block
-  TSpline ** fSplines; // This will be a big block, with dimensions [conv::kNBeamConf][conv::kNNDSamples][conv::kNReacModes][conv::kNNDFitParams][conv::kNMaxBinsEr]
+  TSpline ** fSplines; // This will be a big block, with dimensions [conv::kNBeamConf][conv::kNSamples][conv::kNReacModes][conv::kNNDFitParams][conv::kNMaxBinsEr]
   
   TSpline * fFlatSpline; //A flat spline that we'll use if we're missing RFs in testing versions
   

@@ -31,7 +31,7 @@ using namespace valor;
 //________________________________________________________________________________________
 inline int SPLINE_INDEX(const int& ib, const int& is, const int& im, const int& ip, const int& ibin)
 {
-  return ib * conv::kNNDSamples*conv::kNReacModes*conv::kNNDFitParams*conv::kNMaxBinZones +
+  return ib * conv::kNSamples*conv::kNReacModes*conv::kNNDFitParams*conv::kNMaxBinZones +
          is * conv::kNReacModes*conv::kNNDFitParams*conv::kNMaxBinZones +
          im * conv::kNNDFitParams*conv::kNMaxBinZones +
          ip * conv::kNMaxBinZones +
@@ -141,12 +141,12 @@ NDRFL::NDRFL()
   static Double_t flat_knots_y[5] = {  1,  1, 1, 1,  1};
   fFlatSpline = new TSpline3("flat_spline",flat_knots_x,flat_knots_y,5);
   
-  fSplines = new TSpline*[conv::kNNDFitParams*conv::kNBeamConf*conv::kNNDSamples*conv::kNReacModes*conv::kNMaxBinZones];
+  fSplines = new TSpline*[conv::kNNDFitParams*conv::kNBeamConf*conv::kNSamples*conv::kNReacModes*conv::kNMaxBinZones];
   
   //DEBUG - fill with flat splines with titles
   int ibin = 0;
   for (int ib = 0 ; ib < conv::kNBeamConf ; ib++) {
-    for (int is = 0 ; is < conv::kNNDSamples; is++) {
+    for (int is = 0 ; is < conv::kNSamples; is++) {
       for (int im = 0 ; im < conv::kNReacModes ; im++) {
         for (int ip = 0 ; ip < conv::kNNDFitParams ; ip++) {
           int i = SPLINE_INDEX(ib,is,im,ip,ibin);
@@ -287,11 +287,11 @@ bool valor::NDRFL::Read(std::string config_file,Option_t * /*option*/)
   for(int ibeam = 0; ibeam < conv::kNBeamConf; ibeam++) {
     conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
-    for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      conv::Sample_t s = conv::kNDSample[ibeam][isample];
+    for(int isample = 0; isample < conv::kNSamples; isample++) {
+      conv::Sample_t s = conv::kSample[ibeam][isample];
       if(s == conv::ksUndefined) continue;
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
-        conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
+        conv::ReacMode_t m = conv::kReactionModes[isample][imode];
         if(m == conv::kmUndefined) continue;
         for (int ip = 0 ; ip < conv::kNNDFitParams ; ip++) {
           conv::PhysParamId_t p = conv::kNDFitParam[ip];

@@ -15,7 +15,6 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TH2D.h>
 
 #include "SDFit/SDData.h"
-#include "SDFit/NDSampleBinning.h"
 #include "FitCore/FitModelABC.h"
 #include "FitCore/FitParamList.h"
 #include "FitCore/PhysHypothesis.h"
@@ -79,8 +78,8 @@ bool SDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
 
         // binning optimised for fit CPU performance
@@ -174,8 +173,8 @@ bool SDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kNDBeamConf[ibeam];
       if(b == kbUndefined) continue;
-      for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+      for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -320,8 +319,8 @@ bool SDData::Generate(FitModelABC * model_abc, bool fluctuate)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
      BeamConf_t b = kNDBeamConf[ibeam];
      if(b == kbUndefined) continue;
-     for(int isample = 0; isample < kNNDSamples; isample++) {
-        Sample_t s = kNDSample[ibeam][isample];
+     for(int isample = 0; isample < kNSamples; isample++) {
+        Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         LOG("SDData",pINFO) 
           << "Generating toy-MC for: " 
@@ -380,8 +379,8 @@ int SDData::NumOfBins(void)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
           const int n_enu_reco_bins = util::NumErecoBins(s,izone);
@@ -423,8 +422,8 @@ double SDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
          if(fDataNull[ibeam][isample][izone]) continue;
@@ -466,7 +465,7 @@ void SDData::Init(void)
   LOG("SDData",pDEBUG) << "Initializing...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-   for(int isample = 0; isample < kNNDSamples; isample++) {
+   for(int isample = 0; isample < kNSamples; isample++) {
      for(int izone = 0; izone < kNMaxBinZones; izone++) {
         fDataNull [ibeam][isample][izone] = true;
         fData     [ibeam][isample][izone] = 0;
@@ -484,8 +483,8 @@ void SDData::Book(void)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -506,7 +505,7 @@ void SDData::Clean(void)
   LOG("SDData",pDEBUG) << "Cleaning-up...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    for(int isample = 0; isample < kNNDSamples; isample++) {
+    for(int isample = 0; isample < kNSamples; isample++) {
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
         if(!fDataNull[ibeam][isample][izone]) {
            fDataNull [ibeam][isample][izone] = true;
@@ -532,8 +531,8 @@ void SDData::Zero(Option_t * opt)
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kNDBeamConf[ibeam];
     if(b == kbUndefined) continue;
-    for(int isample = 0; isample < kNNDSamples; isample++) {
-      Sample_t s = kNDSample[ibeam][isample];
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
