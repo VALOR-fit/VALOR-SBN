@@ -35,21 +35,21 @@ namespace conv {
 //
 typedef enum ESample 
 {
-   ksUndefined = -1, 
-   ksNuMuCC,          // numu CC inclusive
-   ksNuMuCC1trkQE,    // numu CC - 1 track QE-enhanced  (mu)
-   ksNuMuCC2trkQE,    // numu CC - 2 track QE-enhanched (mu + proton)
-   ksNuMuCC1piC,      // numu CC - 2 track (mu + 1 pi+/-)
-   ksNuMuCC2piC,      // numu CC - 3 track (mu + 2 pi+/-)
-   ksNuMuCC1pi0,      // numu CC - 2 track (mu + 1 pi0)
-   ksNuMuCC1piC1pi0,  // numu CC - 3 track (mu + 1 pi+/- + 1pi0)
-   ksNuMuCCoth,       // numu CC - other
-   ksNuECC,           // nue CC
-   ksNuMuCCWSgn,      // wrong sign numu CC inclusive
-   ksNC,              // NC inclusive
-   ksNC1piC,          // NC - 1pi+/-
-   ksNC1pi0,          // NC - 1pi0
-   ksNCoth            // NC - other
+   ksUndefined       = -1, 
+   ksNuMuCC          =  0, // numu CC inclusive
+   ksNuMuCC1trkQE    =  1, // numu CC - 1 track QE-enhanced  (mu)
+   ksNuMuCC2trkQE    =  2, // numu CC - 2 track QE-enhanched (mu + proton)
+   ksNuMuCC1piC      =  3, // numu CC - 2 track (mu + 1 pi+/-)
+   ksNuMuCC2piC      =  4, // numu CC - 3 track (mu + 2 pi+/-)
+   ksNuMuCC1pi0      =  5, // numu CC - 2 track (mu + 1 pi0)
+   ksNuMuCC1piC1pi0  =  6, // numu CC - 3 track (mu + 1 pi+/- + 1pi0)
+   ksNuMuCCoth       =  7, // numu CC - other
+   ksNuECC           =  8, // nue CC
+   ksNuMuCCWSgn      =  9, // wrong sign numu CC inclusive
+   ksNC              = 10, // NC inclusive
+   ksNC1piC,               // NC - 1pi+/-
+   ksNC1pi0,               // NC - 1pi0
+   ksNCoth                 // NC - other
 } 
 Sample_t; 
 
