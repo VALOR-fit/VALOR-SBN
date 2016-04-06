@@ -15,9 +15,12 @@ void FormatPave(TPaveText * pave);
 int resolution_x = 1024;
 int resolution_y = 768;
 
+double range_y_min = -1.;
+double range_y_max =  3.;
+
 void plot_pulls(
   const char * input_pattern = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root",
-  const int nParamsPerPage = 40,
+  int nParamsPerPage = -999,
   const char * options = "",
   const char * img_format = "png"
 )
@@ -30,10 +33,20 @@ void plot_pulls(
   bool plot_errors                 = ts_options.Contains("showerrors" );
   bool ignore_hesse                = ts_options.Contains("ignorehesse");
   bool save_all_plotted_histograms = ts_options.Contains("saveall"    );
+  bool use_banff_pull_definition   = ts_options.Contains("banffpull"  );
   
   bool include_fits_with_failed_hesse = true;
   
   bool batchmode = gROOT->IsBatch();
+  
+  //Should be done properly - stored in NTP?
+  PhysParamList * initial_errors = 0;
+  if (use_banff_pull_definition) {
+    TFile f("initial_errors.root");
+    PhysParamList * tmp_ppl = dynamic_cast<PhysParamList*>(f.Get("NDModel_Errors"));
+    initial_errors = new PhysParamList(*tmp_ppl);
+    f.Close();
+  }
 
   TChain *toymcchain = new TChain("valor_dune_nd_ntp");
   toymcchain->Add(input_pattern);
@@ -66,6 +79,11 @@ void plot_pulls(
     params_to_fit[ip] = free_params->WhichParam(ip);
   }
   
+  // If the nparamsperpage is negative, put them all on.
+  if (nParamsPerPage < 0) {
+    nParamsPerPage = nParams;
+  }
+  
   double * pull_mean          = new double[nParams];
   double * pull_mean_err      = new double[nParams];
   double * pull_sigma         = new double[nParams];
@@ -80,7 +98,7 @@ void plot_pulls(
   double * residual_const_err = new double[nParams];
   //~ toymcchain->SetBranchAddress("migradmin",          &migradmin);
   //~ toymcchain->SetBranchAddress("migraderr",          &migraderr);
-
+  
   TH1D ** hPull                 = new TH1D*     [nParams];
   TH1D ** hResidual             = new TH1D*     [nParams];
   TPaveText ** tPullSummary     = new TPaveText*[nParams];
@@ -95,6 +113,23 @@ void plot_pulls(
   
   TLine * line_at_y_is_1 = new TLine(0,1,nParamsPerPage,1);
   TLine * line_at_y_is_0 = new TLine(0,0,nParamsPerPage,0);
+  
+  TLine ** dividing_lines = new TLine*[nParams];
+  //~ int * dividing_lines_position = new int[nParams;]
+  
+  int n_dividing_lines = 0;
+  // Work out where to draw our dividing lines
+  for (int ip = 1 ; ip < nParams; ip++ ) {
+    PhysParamId_t p_last = free_params->WhichParam(ip-1);
+    PhysParamId_t p_this = free_params->WhichParam(ip);
+    FitParamGroup_t g_last = util::GetParameterGroup(p_last);
+    FitParamGroup_t g_this = util::GetParameterGroup(p_this);
+    
+    if (g_last!=g_this) {
+      dividing_lines[n_dividing_lines] = new TLine(ip,range_y_min,ip,range_y_max);
+      n_dividing_lines++;
+    }
+  }
   
   int n_using_hesse_errors  = 0;
   int n_using_migrad_errors = 0;
@@ -138,18 +173,23 @@ void plot_pulls(
     
     //~ if(best_fit_param_array->GetStatusCode("migradmin") == 0 && best_fit_param_array->GetStatusCode("migraderr")==0) {
     if (true){
-      
       for(int ip = 0; ip < nParams; ip++)
       {
         PhysParamId_t p = params_to_fit[ip];
         
         // Select our fitted error
-        double fitted_errors = (using_hesse_error ? fitted_errors = best_fit_param_array->HesseError(p) : best_fit_param_array->MigradError(p));
+        double fitted_error = (using_hesse_error ? fitted_error = best_fit_param_array->HesseError(p) : best_fit_param_array->MigradError(p));
         
-        //~ double pull_numerator = best_fit_param_array->BestFitValue(p) - 1;
-        double pull_numerator = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
-        double pull_denominator = fitted_errors;
-        //~ double pull_denominator = sqrt(0.2*0.2 - best_fit_param_array->MigradError(p)*best_fit_param_array->MigradError(p));
+        double pull_numerator,pull_denominator;
+        if (use_banff_pull_definition) {
+          double prior_error = initial_errors->Value(p);
+          pull_numerator = best_fit_param_array->BestFitValue(p) - 1;
+          pull_denominator = sqrt(prior_error*prior_error - fitted_error*fitted_error);
+        }
+        else {
+          pull_numerator = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
+          pull_denominator = fitted_error;
+        }
         hPull[ip]->Fill(pull_numerator/pull_denominator);
         double residual = best_fit_param_array->BestFitValue(p) - true_param_array->Value(p);
         hResidual[ip]->Fill(residual);
@@ -245,7 +285,9 @@ void plot_pulls(
       graph_pull_mean_err [ihist] = pull_mean_err [iparam];
       graph_pull_sigma_err[ihist] = pull_sigma_err[iparam];
       
-      label_hist->GetXaxis()->SetBinLabel(ihist+1,label.c_str());
+      if (ihist%4 == 0) {
+        label_hist->GetXaxis()->SetBinLabel(ihist+1,label.c_str());
+      }
       
       if (save_all_plotted_histograms) {
         TCanvas c("pull_canv_tmp","pull_canv_tmp");
@@ -291,7 +333,7 @@ void plot_pulls(
     
     // Draw the axis
     label_hist->GetXaxis()->SetNdivisions(000);
-    label_hist->GetYaxis()->SetRangeUser(-1.0, 3.0);
+    label_hist->GetYaxis()->SetRangeUser(range_y_min, range_y_max);
     label_hist->GetXaxis()->LabelsOption("v"); // Vertical labels
     label_hist->SetTitle("");
     label_hist->Draw("AXIS");
@@ -300,10 +342,18 @@ void plot_pulls(
     line_at_y_is_1->Draw();
     line_at_y_is_0->Draw();
     
+    // If we're putting them all on one page, draw the divider lines
+    if (nParamsPerPage == nParams) {
+      for (int il = 0 ; il < n_dividing_lines ; il++) {
+        dividing_lines[il]->Draw();
+      }
+    }
+    
     FormatGraph(g_pull_mean , kFullCircle    , kRed , 1.);
     FormatGraph(g_pull_sigma, kFullTriangleUp, kBlue, 1.);
     g_pull_mean ->Draw("P");
     g_pull_sigma->Draw("P");
+    
 
     //~ TLegend *lpull = new TLegend(0.71, 0.74, 0.85, 0.88);
     //~ lpull->AddEntry(g_pull_mean, "Mean", "P");
