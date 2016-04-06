@@ -22,6 +22,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/UtlStyle.h"
 #include "Utilities/UtlNumStat.h"
 #include "Messenger/Messenger.h"
+#include "Conventions/ArrIdx.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -76,7 +77,7 @@ bool SDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 
     // Loop over beams/samples and data to input object array
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -171,7 +172,7 @@ bool SDData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   // -----
   if(opt.find("+slices") != string::npos) {
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -317,7 +318,7 @@ bool SDData::Generate(FitModelABC * model_abc, bool fluctuate)
   this->Zero("all");
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-     BeamConf_t b = kNDBeamConf[ibeam];
+     BeamConf_t b = kBeamConf[ibeam];
      if(b == kbUndefined) continue;
      for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -377,7 +378,7 @@ int SDData::NumOfBins(void)
   int nbins = 0;
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -420,7 +421,7 @@ double SDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
   double S = 0;
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -481,7 +482,7 @@ void SDData::Book(void)
   LOG("SDData",pDEBUG) << "Booking...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -529,7 +530,7 @@ void SDData::Zero(Option_t * opt)
   string option = (opt) ? opt : "all";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];

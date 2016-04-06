@@ -19,18 +19,16 @@
 #ifndef _valor_single_detector_data_h_
 #define _valor_single_detector_data_h_
 
+// system
 #include <string>
-
-//fmwk
+// fmwk
 #include "FitCore/FitDataABC.h"
 #include "Utilities/VALORArray.h"
-
-//dune
+// dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
 #include "Conventions/SampleKineBinning.h"
-#include "Conventions/SampleReacModes.h"
-#include "SDFit/NDArrIdx.h"
+#include "Conventions/SampleReacMode.h"
 
 class TObjArray;
 class TH1D;

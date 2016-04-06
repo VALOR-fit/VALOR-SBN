@@ -62,7 +62,7 @@ protected:
   string fJobTag;             ///< job tag
   long   fRunNu;              ///< run # 
   int    fNToyMC;             ///< number of toy-MC experiments in job
-  string fFitParamList;       ///< fit parameter list (see NDFitParams.cxx) 
+  string fFitParamList;       ///< fit parameter list (see FitParam.cxx) 
   string fParamValuesOption;  ///< decide how to set the values of params used for toy-MC generation 
   bool   fStatFluct;          ///< include statistical fluctuation in toy MC generation? *
   string fFitOption;          ///< fitter option 

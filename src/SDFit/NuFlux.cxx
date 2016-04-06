@@ -15,7 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Messenger/Messenger.h"
 #include "Utilities/UtlSystem.h"
 // dune
-#include "SDFit/NDFitParams.h"
+#include "Conventions/FitParam.h"
 #include "SDFit/NuFlux.h"
 
 using namespace valor;
@@ -28,13 +28,13 @@ ClassImp(NuFlux)
 NuFlux::NuFlux() :
 CorrelatedSystematics()
 {
-  int nparams = kNNDFitParamsNuFlux;
+  int nparams = kNFitParamsNuFlux;
   PhysParamId_t params[nparams];
-  const bool * is_relevant = conv::kNDFitIsNuFluxRelated;
+  const bool * is_relevant = conv::kFitIsNuFluxRelated;
   
   int i_params = 0;
-  for(int i = 0; i < conv::kNNDFitParams; i++) {
-    PhysParamId_t p = conv::kNDFitParam[i];
+  for(int i = 0; i < conv::kNFitParams; i++) {
+    PhysParamId_t p = conv::kFitParam[i];
     if (is_relevant[i]) {
       params[i_params] = p;
       i_params++;
@@ -43,7 +43,7 @@ CorrelatedSystematics()
   
   // Check we have the right number of parameters labelled as related to this class
   if (nparams-i_params) {
-    LOG("NuFlux",pFATAL)<<"kNNDFitParamsNuFlux does not match kNDFitIsNuFluxRelated";
+    LOG("NuFlux",pFATAL)<<"kNFitParamsNuFlux does not match kFitIsNuFluxRelated";
     util::Die(-1); return;
   }
   

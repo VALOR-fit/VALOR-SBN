@@ -36,14 +36,13 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 //dune
 #include "Conventions/DuneBuild.h"
-#include "Conventions/ReacMode.h"
-#include "Conventions/BeamConf.h"
+//#include "Conventions/ReacMode.h"
+//#include "Conventions/BeamConf.h"
+#include "Conventions/FitParamApply.h"
 #include "SDFit/SDModel.h"
-#include "SDFit/NDBeamConf.h"
 #include "SDFit/NuFlux.h"
 #include "SDFit/NuInt.h"
 #include "SDFit/NuDet.h"
-#include "SDFit/NDAppliedParamsConv.h"
 
 using std::endl;
 
@@ -111,7 +110,7 @@ bool SDModel::Read(string file, Option_t * opt)
 
   // Get assumed exposure for each beam configuration
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     string node_name = "data/exposure/" + util::AsString(b, "lowercase");
     fPOT[ibeam] = util::XML2Dbl(xml,root_node,node_name);
@@ -131,7 +130,7 @@ bool SDModel::Read(string file, Option_t * opt)
   if(fUseMCDST) {
     LOG("SDModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-       BeamConf_t b = kNDBeamConf[ibeam];
+       BeamConf_t b = kBeamConf[ibeam];
        if(b == kbUndefined) continue;
        string node_name = "mc/dst/" + util::AsString(b, "lowercase");
        fMCDST[ibeam] = util::XML2TTree (xml,root_node,node_name);
@@ -213,7 +212,7 @@ void SDModel::RandomizeSystematics(Option_t * options)
 void SDModel::TweakSystematic(
   string syst_name, double twkdial, Option_t * opt)
 {
-  PhysParamId_t p = util::NDPhysParamFromString(syst_name);
+  PhysParamId_t p = util::PhysParamFromString(syst_name);
   this->TweakSystematic(p,twkdial,opt);
   return;
 }
@@ -323,7 +322,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   if(opt.find("mct_vf") != string::npos) {
 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -381,7 +380,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   if(opt.find("pdfc_vf") != string::npos || opt.find("pdfc_rf") != string::npos) {
 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -479,7 +478,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   if(opt.find("pdft_vf") != string::npos || opt.find("pdft_rf") != string::npos) {
 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -578,7 +577,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
   if(opt.find("pdfcs_rf") != string::npos) {
 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -675,7 +674,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 
   if(opt.find("pdfts_rf") != string::npos) {
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kNDBeamConf[ibeam];
+      BeamConf_t b = kBeamConf[ibeam];
       if(b == kbUndefined) continue;
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = kSample[ibeam][isample];
@@ -850,12 +849,12 @@ void SDModel::Init(void)
     fMCDST[ibeam] = 0;
   }//ibeam
 
-//  for(int ip = 0; ip < conv::kNNDFitParams; ip++) {
+//  for(int ip = 0; ip < conv::kNFitParams; ip++) {
 //    fPhysParamCurrVal[ip] = 0;
 //    fPhysParamFracErr[ip] = 0;
 //  }
 
-  fArrIdx = util::NDArrIdx::Instance();
+  fArrIdx = util::ArrIdx::Instance();
   
 // Flux object
   fNuFlux = 0;
@@ -867,7 +866,7 @@ void SDModel::Book(void)
   LOG("SDModel",pDEBUG) << "Booking...";
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -1082,7 +1081,7 @@ void SDModel::FillFromDST(TTree * t, int ibeam)
 // Fill MC templates from the input VALOR/DUNE DST TTree
 // We use a single tree for all samples for a single beam configuration.
 
-  BeamConf_t b = kNDBeamConf[ibeam];
+  BeamConf_t b = kBeamConf[ibeam];
 
   LOG("SDModel",pDEBUG) 
      << "Filling-in MC templates for beam configuration: " << util::AsString(b);
@@ -1172,7 +1171,7 @@ void SDModel::FillFromDST(TTree * t, int ibeam)
      }
      //  ==============================================
 
-     int isample = fArrIdx->NDSampleIdx(b,s);
+     int isample = fArrIdx->SampleIdx(b,s);
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit
        LOG("SDModel",pDEBUG) 
@@ -1189,7 +1188,7 @@ void SDModel::FillFromDST(TTree * t, int ibeam)
           << " (value stored in DST: " << reac_mode << ")";
        exit(1);
      }
-     int imode = fArrIdx->NDReacModeIdx(s, m);
+     int imode = fArrIdx->ReacModeIdx(s, m);
      if(imode < 0) {
        // For a given sample we should consider a complete list of
        // true reaction modes (otherwise there are true contributions to the
@@ -1323,7 +1322,7 @@ bool SDModel::FillFromTemplateFile (TFile * f, string tag)
 {
   bool success = true;
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -1393,7 +1392,7 @@ void SDModel::FluctuateMCStat(Option_t * option)
   Rnd * rnd = Rnd::Instance();
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -1555,7 +1554,7 @@ void SDModel::ApplyPhysics(Option_t * option)
   }
 
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -1597,10 +1596,10 @@ void SDModel::ApplyPhysics(Option_t * option)
              << "Applying Etrue-dependent params";
 #endif
           // first apply Etrue-dependent params
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
-            PhysParamId_t p = kNDFitParam[ip];
+          for(int ip = 0; ip < kNFitParams; ip++) {
+            PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+            bool enu_true_dep = kFitParamEtrueDependence[ip];
             if(!enu_true_dep) continue;
             bool apply = util::ParamIsAppliedTo(b,s,m,p);
             if(!apply) continue;
@@ -1608,8 +1607,8 @@ void SDModel::ApplyPhysics(Option_t * option)
             f = TMath::Max(0.,f);
             bool tweaked = TMath::Abs(f-1) > kASmallNum;
             if(!tweaked) continue;
-            const double enu_true_min = kNDFitParamEtrueRange[ip][0];
-            const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
+            const double enu_true_min = kFitParamEtrueRange[ip][0];
+            const double enu_true_max = kFitParamEtrueRange[ip][1];     
             int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
             int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1639,10 +1638,10 @@ void SDModel::ApplyPhysics(Option_t * option)
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
-             PhysParamId_t p = kNDFitParam[ip];
+          for(int ip = 0; ip < kNFitParams; ip++) {
+             PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
-             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+             bool enu_true_dep = kFitParamEtrueDependence[ip];
              if(enu_true_dep) continue;
              bool apply = util::ParamIsAppliedTo(b,s,m,p);
              if(!apply) continue;
@@ -1679,11 +1678,11 @@ void SDModel::ApplyPhysics(Option_t * option)
           }//iet: Etrue bins
 
           // first apply Etrue-dependent params
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
+          for(int ip = 0; ip < kNFitParams; ip++) {
              //-------------- error, prone need to simplify
-             PhysParamId_t p = kNDFitParam[ip];
+             PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
-             bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+             bool enu_true_dep = kFitParamEtrueDependence[ip];
              if(!enu_true_dep) continue;
              bool apply = util::ParamIsAppliedTo(b,s,m,p);
              if(!apply) continue;
@@ -1691,8 +1690,8 @@ void SDModel::ApplyPhysics(Option_t * option)
              f = TMath::Max(0.,f);
              bool tweaked = TMath::Abs(f-1) > kASmallNum;
              if(!tweaked) continue;
-             const double enu_true_min = kNDFitParamEtrueRange[ip][0];
-             const double enu_true_max = kNDFitParamEtrueRange[ip][1];     
+             const double enu_true_min = kFitParamEtrueRange[ip][0];
+             const double enu_true_max = kFitParamEtrueRange[ip][1];     
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
              for(int iet = ienu_true_min; iet <= ienu_true_max; iet++) {
@@ -1708,10 +1707,10 @@ void SDModel::ApplyPhysics(Option_t * option)
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
-          for(int ip = 0; ip < kNNDFitParams; ip++) {
-            PhysParamId_t p = kNDFitParam[ip];
+          for(int ip = 0; ip < kNFitParams; ip++) {
+            PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool enu_true_dep = kNDFitParamEtrueDependence[ip];
+            bool enu_true_dep = kFitParamEtrueDependence[ip];
             if(enu_true_dep) continue;
             bool apply = util::ParamIsAppliedTo(b,s,m,p);
             if(!apply) continue;
@@ -1753,7 +1752,7 @@ void SDModel::UpdatePDFs(Option_t * option)
   // over true reaction modes just yet
   //
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];
@@ -1803,7 +1802,7 @@ void SDModel::UpdatePDFs(Option_t * option)
   // and calculate the total PDF
   //
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-    BeamConf_t b = kNDBeamConf[ibeam];
+    BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
     for(int isample = 0; isample < kNSamples; isample++) {
       Sample_t s = kSample[ibeam][isample];

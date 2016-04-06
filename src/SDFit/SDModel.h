@@ -31,9 +31,9 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
 #include "Conventions/SampleKineBinning.h"
-#include "Conventions/SampleReacModes.h"
-#include "SDFit/NDArrIdx.h"
-#include "SDFit/NDFitParams.h"
+#include "Conventions/SampleReacMode.h"
+#include "Conventions/FitParam.h"
+#include "Conventions/ArrIdx.h"
 
 namespace valor {
   
@@ -95,7 +95,7 @@ private:
   void ApplyPhysics     (Option_t * opt = 0);
   void UpdatePDFs       (Option_t * opt = 0);
 
-  const util::NDArrIdx * fArrIdx;
+  const util::ArrIdx * fArrIdx;
 
   PhysHypothesis fPhysHypothesis;
   
