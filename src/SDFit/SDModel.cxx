@@ -44,6 +44,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "SDFit/NuInt.h"
 #include "SDFit/NuDet.h"
 
+using std::cerr;
 using std::endl;
 
 using namespace valor;
@@ -1335,8 +1336,13 @@ bool SDModel::FillFromTemplateFile (TFile * f, string tag)
                 util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
           TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_ob_vf", name.Data());
           VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
-          if (arr) {
+          if (arr && arr->GetSize()) {
             fMCTNomOb [ibeam][isample][imode][izone]->CopyFrom(*arr);
+            fMCTTunOb [ibeam][isample][imode][izone]->CopyFrom(*arr);
+            fMCTSysOb [ibeam][isample][imode][izone]->CopyFrom(*arr);
+            fMCTFinOb [ibeam][isample][imode][izone]->CopyFrom(*arr);
+            fMCStatOb [ibeam][isample][imode][izone]->CopyFrom(*arr);
+            fMCStatOb [ibeam][isample][imode][izone]->SetAll(1.);  
             delete arr;
           }
           else {
@@ -1344,6 +1350,24 @@ bool SDModel::FillFromTemplateFile (TFile * f, string tag)
             LOG("SDModel",pERROR) << "Failed to read template "<<obj_name;
           }
         }//izone
+        // Do the Sb arrays
+        TString name = TString::Format("%s_%s_%s", 
+          util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+        TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_sb_vf", name.Data());
+        VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
+        if (arr && arr->GetSize()) {
+          fMCTNomSb [ibeam][isample][imode]->CopyFrom(*arr);
+          fMCTTunSb [ibeam][isample][imode]->CopyFrom(*arr);
+          fMCTSysSb [ibeam][isample][imode]->CopyFrom(*arr);
+          fMCTFinSb [ibeam][isample][imode]->CopyFrom(*arr);
+          fMCStatSb [ibeam][isample][imode]->CopyFrom(*arr);
+          fMCStatSb [ibeam][isample][imode]->SetAll(1.);
+          delete arr;
+        }
+        else {
+          success = false;
+          LOG("SDModel",pERROR) << "Failed to read template "<<obj_name;
+        }
       } //imode
     }//isample
   } //ibeam
