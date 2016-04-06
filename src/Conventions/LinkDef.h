@@ -14,5 +14,7 @@
 #pragma link C++ enum valor::conv::Sample_t;
 #pragma link C++ enum valor::conv::ReacMode_t;
 #pragma link C++ enum valor::conv::ReacModeCoarse_t;
+#pragma link C++ enum valor::conv::FitParamGroup_t;
+#pragma link C++ class valor::util::ArrIdx+;
 
 #endif

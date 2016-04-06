@@ -39,20 +39,30 @@ typedef enum EBeamConf
 } 
 BeamConf_t; 
 
-} // conv
+// ---------------------------------------------------------------------
+// NOTE:
+// This is used to loop over all beam configurations / samples.
+// Probably could be removed once we start using the Compound* classes
+static const BeamConf_t kBeamConf[kNBeamConf] =
+{
+   kbFHC, 
+   kbRHC 
+};
+// ---------------------------------------------------------------------
 
+} // conv
 
 //
 // Associated utilities
 //
 namespace util {
 
-  string           AsString        (conv::BeamConf_t b, Option_t * opt=0);
-  conv::BeamConf_t BeamConfFromInt (int b);
+  string           AsString           (conv::BeamConf_t b, Option_t * opt=0);
+  conv::BeamConf_t BeamConfFromInt    (int b);
   conv::BeamConf_t BeamConfFromString (std::string b);
   
   // Alias for above
-  string           BeamConfAsString(conv::BeamConf_t b, Option_t * opt=0);
+  string BeamConfAsString(conv::BeamConf_t b, Option_t * opt=0);
 
 } // util
 

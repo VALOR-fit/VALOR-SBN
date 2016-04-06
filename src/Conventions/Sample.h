@@ -3,7 +3,7 @@
 
 \class     valor::conv::Sample_t
 
-\brief     Enumeration of DUNE ND systematic constraint samples
+\brief     Enumeration of DUNE event samples
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -61,20 +61,24 @@ static const int kMaxNSamples = 14;
 //
 // Note: The order and position of samples in the array is important for other arrays. Maintain the not remove or re-arrange.
 // If you want to remove a sample from the fit, just comment-out the corresponding line and replace with ksUndefined.
-// kNDSample array elements that contain the ksUndefined flag are ignored.
+// kSample array elements that contain the ksUndefined flag are ignored.
 //
 // To add a new sample in the fit, do the following:
-// - Edit NDSample.cxx: Add a new case (for the new sample) is all switch statements and make sure the boundaries defined
+// - Edit Sample.cxx: Add a new case (for the new sample) is all switch statements and make sure the boundaries defined
 //   in SampleFromInt() are correct.
-// - Edit NDSampleModes.h: Add an entry for the new sample in each array (to define modes for the new sample etc)
-// - Edit NDSampleBinning.h/cxx: Check that an appropriate binning scheme exists, and add a new case (for the new sample)
+// - Edit SampleReacMode.h: Add an entry for the new sample in each array (to define modes for the new sample etc)
+// - Edit SampleKineBinning.h/cxx: Check that an appropriate binning scheme exists, and add a new case (for the new sample)
 //   all switch statements.
-// - Edit NDFitParams.h: Add instructions on how to apply systematics for the new sample 
+// - Edit FitParams.h: Add instructions on how to apply systematics for the new sample 
 // -
 
-static const int kNNDSamples = 9; 
+static const int kNSamples = 9; 
 
-static const Sample_t kNDSample[kNBeamConf][kNNDSamples] =
+// ---------------------------------------------------------------------
+// NOTE:
+// This is used to loop over all beam configurations / samples.
+// Probably could be removed once we start using the Compound* classes
+static const Sample_t kSample[kNBeamConf][kNSamples] =
 {
    // kbFHC
    {
@@ -102,6 +106,7 @@ static const Sample_t kNDSample[kNBeamConf][kNNDSamples] =
       ksNC
    }
 };
+// ---------------------------------------------------------------------
 
 
 } // conv
