@@ -33,6 +33,7 @@ brief      An abstract implementation of the fit model for a single sample,
 #include "FitCore/FitModelABC.h"
 #include "FitCore/PhysHypothesis.h"
 #include "FitCore/PhysParamList.h"
+#include "FitCore/CorrelatedSystematics.h"
 #include "Utilities/VALORArray.h"
 //dune
 #include "Conventions/Detector.h"
@@ -47,9 +48,9 @@ namespace valor {
 
 // --------------------------------------
 // abstract this  
-class NuFlux; // neutrino flux model systematics
-class NuInt;  // neutrino interaction model systematics
-class NuDet;  // neutrino detector model systematics
+//class NuFlux; // neutrino flux model systematics
+//class NuInt;  // neutrino interaction model systematics
+//class NuDet;  // neutrino detector model systematics
 // --------------------------------------
 
 class SingleSampleFitModelA: public FitModelABC
@@ -84,14 +85,16 @@ public:
   //
   
   PhysParamList OneSigmaErrors (Option_t * opt = "");
-  TMatrixD CovarianceMatrix(Option_t * opt = "");
+//  TMatrixD CovarianceMatrix(Option_t * opt = "");
 
-  NuFlux *       GetNuFlux (void);
-  const NuFlux * GetNuFlux (void) const;
-  NuInt *        GetNuInt  (void);
-  const NuInt *  GetNuInt  (void) const;
-  NuDet *        GetNuDet  (void);
-  const NuDet *  GetNuDet  (void) const;
+  // ----------remove / using CorrelatedSystematics
+  // NuFlux *       GetNuFlux (void);
+  // const NuFlux * GetNuFlux (void) const;
+  // NuInt *        GetNuInt  (void);
+  // const NuInt *  GetNuInt  (void) const;
+  // NuDet *        GetNuDet  (void);
+  // const NuDet *  GetNuDet  (void) const;
+  //-----------
 
 private:
 
@@ -116,7 +119,7 @@ private:
   double fPOT;
 
   // Near detector fiducial mass (ktonnes)
-  double fNDFiducialMass;
+  double fFiducialMass;
 
   // Configuration
   conv::Detector_t fDetector;
@@ -179,10 +182,13 @@ private:
   bool fUseMCDST;
   TTree * fMCDST;
   
-  // Neutrino flux and neutrino interaction modelling systematics
-  valor::NuFlux * fNuFlux;
-  valor::NuInt *  fNuInt;
-  valor::NuDet *  fNuDet;
+  // Systematics
+  //---------------- remove
+  //valor::NuFlux * fNuFlux;
+  //valor::NuInt *  fNuInt;
+  //valor::NuDet *  fNuDet;
+  //----------------
+  CorrelatedSystematics * fSyst;
 };
 
 } // valor

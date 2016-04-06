@@ -39,12 +39,6 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/BeamConf.h"
 #include "Conventions/FitParamApply.h"
 #include "Elements/SingleSampleFitModelA.h"
-// --------------------------------------
-// abstract: should come either from conventions or as configurations
-#include "SDFit/NuFlux.h"
-#include "SDFit/NuInt.h"
-#include "SDFit/NuDet.h"
-// --------------------------------------
 
 using std::endl;
 
@@ -114,7 +108,18 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
     util::Die(1); return false;
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
-  
+
+  //------------------------
+  // TODO
+  // fSyst = new What? CompoundCorrelatedSystematics; 
+  // fSyst->Read(xml,root_node);
+  //------------------------
+
+/*  
+  //------------------------
+  // TODO
+  // Remove
+
   // Read the neutrino flux model info
   fNuFlux = new valor::NuFlux;
   fNuFlux->Read(xml,root_node);
@@ -124,12 +129,14 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
   // Read the neutrino detector model info
   fNuDet = new valor::NuDet;
   fNuDet->Read(xml,root_node);
+  //------------------------
+*/
 
-  // Get the near detector fiducial mass
-  string name = "nd/fiducial_mass";
-  fNDFiducialMass = util::XML2Dbl(xml,root_node,name);
+  // Get the detector fiducial mass
+  string name = "fiducial_mass";
+  fFiducialMass = util::XML2Dbl(xml,root_node,name);
   LOG("SingleSampleFitModelA",pINFO)
-    << "ND fiducial mass = " << fNDFiducialMass*1000 << " tonnes";
+    << "Fiducial mass = " << fFiducialMass*1000 << " tonnes";
 
   // Get assumed exposure for each beam configuration
   {
@@ -220,9 +227,14 @@ void SingleSampleFitModelA::RandomizeSystematics(Option_t * options)
   if (opt.Contains("randomize-int" )) {randomize_int  = true;}
   if (opt.Contains("randomize-det" )) {randomize_det  = true;}
   
-  if (randomize_flux) {fNuFlux->Tweak(false,0);}
-  if (randomize_int ) {fNuInt ->Tweak(false,0);}
-  if (randomize_det ) {fNuDet ->Tweak(false,0);}
+  // -------------------------------------------- 
+  // TODO
+  // How do we do that if we have a single matrix
+  //       
+  //if (randomize_flux) {fNuFlux->Tweak(false,0);}
+  //if (randomize_int ) {fNuInt ->Tweak(false,0);}
+  //if (randomize_det ) {fNuDet ->Tweak(false,0);}
+  // -------------------------------------------- 
   
 }
 //________________________________________________________________________________________
@@ -251,19 +263,31 @@ void SingleSampleFitModelA::TweakSystematic(
 PhysParamList SingleSampleFitModelA::Tweaks(void)
 {
   PhysParamList list;
-  
-  fNuFlux -> CopyTweaksTo(list);
-  fNuInt  -> CopyTweaksTo(list);
-  fNuDet  -> CopyTweaksTo(list);
+
+  // -----------------------------------  
+  // TODO
+  // Remove
+  //fNuFlux -> CopyTweaksTo(list);
+  //fNuInt  -> CopyTweaksTo(list);
+  //fNuDet  -> CopyTweaksTo(list);
+  // -----------------------------------  
+
+  fSyst -> CopyTweaksTo(list);
   
   return list;
 }
 //________________________________________________________________________________________
 void SingleSampleFitModelA::ResetSystematics(Option_t * /*opt*/)
 {
-  fNuFlux -> Tweak(true, 0);
-  fNuInt  -> Tweak(true, 0);
-  fNuDet  -> Tweak(true, 0);
+  // -----------------------------------  
+  // TODO
+  // Remove
+  //fNuFlux -> Tweak(true, 0);
+  //fNuInt  -> Tweak(true, 0);
+  //fNuDet  -> Tweak(true, 0);
+  // -----------------------------------  
+
+  fSyst -> Tweak(true, 0);
 }
 //________________________________________________________________________________________
 void SingleSampleFitModelA::PrintSystematics(ostream & stream, Option_t * /*opt*/) const
@@ -276,9 +300,14 @@ bool SingleSampleFitModelA::Generate (const FitParamList & fp, Option_t * opt)
 //  LOG("SingleSampleFitModelA",pDEBUG)  
 //     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
 
-  fNuFlux->UpdateFrom(fp);
-  fNuDet ->UpdateFrom(fp);
-  fNuInt ->UpdateFrom(fp);
+  // -----------------------------------  
+  // TODO
+  // Remove
+  //fNuFlux->UpdateFrom(fp);
+  //fNuDet ->UpdateFrom(fp);
+  //fNuInt ->UpdateFrom(fp);
+  // -----------------------------------  
+  fSyst ->UpdateFrom(fp);
   
   // extract the values of params driving the oscillation, decoherence or decay model
   PhysHypothesis ph(fp);
@@ -754,6 +783,11 @@ bool SingleSampleFitModelA::Write(
 //________________________________________________________________________________________
 double SingleSampleFitModelA::GetFitStatisticPenalty (Option_t * /*opt*/) const
 {
+/*
+  // ------------------
+  // TODO
+  // Remove
+  //
   double Sp_nuflux = (fNuFlux -> ChisqPenalty());
   double Sp_nuint  = (fNuInt  -> ChisqPenalty());
   double Sp_nudet  = (fNuDet  -> ChisqPenalty());
@@ -765,7 +799,9 @@ double SingleSampleFitModelA::GetFitStatisticPenalty (Option_t * /*opt*/) const
    << " (flux = " << Sp_nuflux 
    << ", interaction = " << Sp_nuint 
    << ", detector = " << Sp_nudet << ")";
-
+  // ------------------
+*/
+  double Sp = (fSyst-> ChisqPenalty());
   return Sp;
 }
 //________________________________________________________________________________________
@@ -824,9 +860,17 @@ void SingleSampleFitModelA::Init(void)
 
   fArrIdx = util::ArrIdx::Instance();
   
-// Flux object
+/*
+  // ----------------
+  // TODO
+  // Remove
   fNuFlux = 0;
   fNuInt  = 0;
+  fNuDet  = 0;
+  // ----------------
+*/
+
+  fSyst = 0;
 }
 //________________________________________________________________________________________
 void SingleSampleFitModelA::Book(void)
@@ -986,11 +1030,17 @@ void SingleSampleFitModelA::Clean(void)
       fMCDST = 0;
     }
   }
-  
+
+/*
+  //---------------------
+  // TODO
+  // Remove  
   if (fNuFlux) {delete fNuFlux;}
   if (fNuInt ) {delete fNuInt; }
   if (fNuInt ) {delete fNuDet; }
-  
+  //---------------------
+*/
+  if (fSyst) { delete fSyst; }  
 }
 //________________________________________________________________________________________
 void SingleSampleFitModelA::Zero(void)
@@ -1235,8 +1285,8 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
      //double wght = data_pot/mc_pot;
      double wght = data_pot*mc_pot;
 
-     if(fNDFiducialMass > 0) {
-       wght = wght*fNDFiducialMass;
+     if(fFiducialMass > 0) {
+       wght = wght*fFiducialMass;
      }
 
      LOG("InputMC",pDEBUG) 
@@ -1778,6 +1828,7 @@ void SingleSampleFitModelA::UpdatePDFs(Option_t * option)
 
 }
 //________________________________________________________________________________________
+/*
 const valor::NuFlux * valor::SingleSampleFitModelA::GetNuFlux(void) const
 {
   return fNuFlux;
@@ -1807,18 +1858,34 @@ valor::NuDet * valor::SingleSampleFitModelA::GetNuDet(void)
 {
   return fNuDet;
 }
+*/
 //________________________________________________________________________________________
 valor::PhysParamList valor::SingleSampleFitModelA::OneSigmaErrors(Option_t * /*opt*/)
 {
   PhysParamList ppl;
-  ppl.SetName("NDModel_Errors");
-  fNuFlux->CopyOneSigmaErrorsTo(ppl);
-  fNuDet ->CopyOneSigmaErrorsTo(ppl);
-  fNuInt ->CopyOneSigmaErrorsTo(ppl);
+
+  // -----------------------------------  
+  // TODO
+  // remove
+  //ppl.SetName("NDModel_Errors");
+  //fNuFlux->CopyOneSigmaErrorsTo(ppl);
+  //fNuDet ->CopyOneSigmaErrorsTo(ppl);
+  //fNuInt ->CopyOneSigmaErrorsTo(ppl);
+  //--------------------------------------- 
+
+  ppl.SetName("PreFitErrors");
+  fSyst->CopyOneSigmaErrorsTo(ppl);
   return ppl;
 }
 //________________________________________________________________________________________
-TMatrixD valor::SingleSampleFitModelA::CovarianceMatrix(Option_t * /*opt*/)
+
+/* 
+  // -----------------------------------  
+  // TODO
+  // remove
+  // GUESS THIS NOW DONE WITHIN THE INPUT SYSTEMATICS CLASS
+
+TMatrixD valor::SingleSampleFitModelA::CovarianceMatrix(Option_t * opt)
 {
   // Get cov matrices from subcomponents
   vector<const TMatrixD*> cov_vec;
@@ -1830,4 +1897,6 @@ TMatrixD valor::SingleSampleFitModelA::CovarianceMatrix(Option_t * /*opt*/)
   
   return total;
 }
+*/
+
 //________________________________________________________________________________________
