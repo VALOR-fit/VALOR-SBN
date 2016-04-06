@@ -83,11 +83,12 @@ copy-rootdict-to-lib: make-bin-lib-dir FORCE
 purge: FORCE
 	@echo " "
 	@echo "** Purging..."
-	cd ${VALOR_DUNE}/src;\
-	cd Apps;                      $(MAKE) purge; cd ..; \
-	cd Conventions;               $(MAKE) purge; cd ..; \
-	cd SDFit;                     $(MAKE) purge; cd ..; \
-	cd ${VALOR_DUNE}
+	$(MAKE) -C src/Apps          purge; \
+	$(MAKE) -C src/Conventions   purge; \
+	$(MAKE) -C src/DuneUtilities purge; \
+	$(MAKE) -C src/Elements      purge; \
+	$(MAKE) -C src/SDFit         purge; \
+	$(MAKE) -C src/Systematics   purge; \
 
 clean: clean-files clean-dir clean-etc
 
@@ -97,10 +98,12 @@ clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
-	cd ${VALOR_DUNE}/src;\
-	cd Apps;                    $(MAKE) clean; cd ..; \
-	cd Conventions;             $(MAKE) clean; cd ..; \
-	cd SDFit;                   $(MAKE) clean; cd ..; \
+	$(MAKE) -C src/Apps          clean; \
+	$(MAKE) -C src/Conventions   clean; \
+	$(MAKE) -C src/DuneUtilities clean; \
+	$(MAKE) -C src/Elements      clean; \
+	$(MAKE) -C src/SDFit         clean; \
+	$(MAKE) -C src/Systematics   clean; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_DUNE)
