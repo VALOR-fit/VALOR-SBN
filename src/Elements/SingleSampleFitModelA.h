@@ -56,6 +56,8 @@ class SingleSampleFitModelA: public FitModelABC
 {
 public:
 
+  SingleSampleFitModelA();
+//SingleSampleFitModelA(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s); // not use - take, d,b,s at config
   virtual ~SingleSampleFitModelA();
 
   //
@@ -91,9 +93,7 @@ public:
   NuDet *        GetNuDet  (void);
   const NuDet *  GetNuDet  (void) const;
 
-protected:
-
-  SingleSampleFitModelA(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s);
+private:
 
   void Init  (void);
   void Book  (void);

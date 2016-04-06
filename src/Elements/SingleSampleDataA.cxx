@@ -29,6 +29,15 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
+SingleSampleDataA::SingleSampleDataA() :
+FitDataABC()
+{
+  this->Init();
+
+  // incomplete
+}
+//________________________________________________________________________________________
+/*
 SingleSampleDataA::SingleSampleDataA(Detector_t d, BeamConf_t b, Sample_t s) :
 FitDataABC()
 {
@@ -43,11 +52,13 @@ FitDataABC()
   assert(fSample   != ksUndefined);
 
   this->Book();
+  this->Zero();
 }
+*/
 //________________________________________________________________________________________
 SingleSampleDataA::~SingleSampleDataA() 
 {
-
+  this->Clean();
 }
 //________________________________________________________________________________________
 string SingleSampleDataA::Name(void)

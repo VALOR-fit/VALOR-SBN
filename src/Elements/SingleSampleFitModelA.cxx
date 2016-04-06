@@ -52,6 +52,15 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
+SingleSampleFitModelA::SingleSampleFitModelA() :
+FitModelABC()
+{
+  this->Init();
+
+  // incomplete
+}
+//________________________________________________________________________________________
+/*
 SingleSampleFitModelA::SingleSampleFitModelA(
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s) :
 FitModelABC()
@@ -69,6 +78,7 @@ FitModelABC()
   this->Book();
   this->Zero();
 }
+*/
 //________________________________________________________________________________________
 SingleSampleFitModelA::~SingleSampleFitModelA() 
 {
@@ -92,7 +102,8 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
   TString ts_opt(opt);
   bool force_use_dst = ts_opt.Contains("forcedst");
 
-  LOG("SingleSampleFitModelA", pNOTICE) << "Reading configuration from XML file [" << file << "]";
+  LOG("SingleSampleFitModelA", pNOTICE) 
+    << "Reading configuration from XML file [" << file << "]";
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   

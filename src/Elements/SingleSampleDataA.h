@@ -50,6 +50,8 @@ class SingleSampleDataA: public FitDataABC
 {
 public:
 
+  SingleSampleDataA(void);
+//SingleSampleDataA(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s); // not use - take, d,b,s at config
   virtual ~SingleSampleDataA();
 
   //
@@ -69,9 +71,7 @@ public:
   double Statistic      (FitModelABC * pred, const PhysHypothesis & ph, Option_t * opt = "likelihood-ratio");
   double Statistic      (FitModelABC * pred, Option_t * opt = "likelihood-ratio");
 
-protected:
-
-  SingleSampleDataA(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s);
+private:
 
   void Init  (void);
   void Book  (void);
