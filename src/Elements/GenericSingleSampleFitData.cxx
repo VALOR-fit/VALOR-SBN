@@ -24,29 +24,29 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Messenger/Messenger.h"
 // dune
 #include "Conventions/Names.h"
-#include "Elements/SingleSampleFitDataA.h"
+#include "Elements/GenericSingleSampleFitData.h"
 
 using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-SingleSampleFitDataA::SingleSampleFitDataA() :
+GenericSingleSampleFitData::GenericSingleSampleFitData() :
 SingleSampleFitDataABC()
 {
   this->Init();
 }
 //________________________________________________________________________________________
-SingleSampleFitDataA::~SingleSampleFitDataA() 
+GenericSingleSampleFitData::~GenericSingleSampleFitData() 
 {
   this->Clean();
 }
 //________________________________________________________________________________________
-string SingleSampleFitDataA::Name(void)
+string GenericSingleSampleFitData::Name(void)
 {  
   return fName;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitDataA::Read(string /*file*/, Option_t * /*opt*/)
+bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
 {
   assert(fDetector != kdUndefined);
   assert(fBeam     != kbUndefined);
@@ -60,22 +60,22 @@ bool SingleSampleFitDataA::Read(string /*file*/, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitDataA::Write(TObjArray * array, const char * tag, Option_t * write_opt)
+bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
-  LOG("SingleSampleFitDataA", pINFO)  
+  LOG("GenericSingleSampleFitData", pINFO)  
      << "Writing results to input object array...";
-  LOG("SingleSampleFitDataA", pDEBUG) 
+  LOG("GenericSingleSampleFitData", pDEBUG) 
      << "tag = " << tag << ", write option = " << write_opt;
 
   string opt = (write_opt) ? write_opt : "data_vf";
 
   if(opt.find("all") != string::npos) {
     opt = "data_vf,data_rf +slices +SB";
-    LOG("SingleSampleFitDataA", pDEBUG) << "Write option replaced with = " << opt;
+    LOG("GenericSingleSampleFitData", pDEBUG) << "Write option replaced with = " << opt;
   }
 
   if(!array) {
-     LOG("SingleSampleFitDataA", pERROR) << "Null input object array.";
+     LOG("GenericSingleSampleFitData", pERROR) << "Null input object array.";
      return false;
   }
 
@@ -96,7 +96,7 @@ bool SingleSampleFitDataA::Write(TObjArray * array, const char * tag, Option_t *
        if(opt.find("data_vf") != string::npos) {
           assert(fDataOb[izone]);
           fDataOb[izone]->SetName(Form("%s_%s_%s",tag,"data_ob_vf",name));
-          LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << fDataOb[izone]->GetName();
+          LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataOb[izone]->GetName();
           array->Add(fDataOb[izone]);
        }
        // Add data in ROOT format if requested
@@ -120,7 +120,7 @@ bool SingleSampleFitDataA::Write(TObjArray * array, const char * tag, Option_t *
             }//iy
           }//ier
           // add to object array and clean-up
-          LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << h2->GetName();
+          LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h2->GetName();
           array->Add(h2);
           // delete h2; ???? // MEMORY LEAK?
        }
@@ -135,7 +135,7 @@ bool SingleSampleFitDataA::Write(TObjArray * array, const char * tag, Option_t *
           if(opt.find("data_vf") != string::npos) {
              assert(fDataSb);
              fDataSb->SetName(Form("%s_%s_%s",tag,"data_sb_vf",name));
-             LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << fDataSb->GetName();
+             LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataSb->GetName();
              array->Add(fDataSb);
           }//data_vf
           // Add data in ROOT format if requested
@@ -156,7 +156,7 @@ bool SingleSampleFitDataA::Write(TObjArray * array, const char * tag, Option_t *
                 }//iy
               }//ier
               // add to object array and clean-up
-              LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << h2->GetName();
+              LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h2->GetName();
               array->Add(h2);
               // delete h2; ???? // MEMORY LEAK?
           }//data_vf
@@ -201,11 +201,11 @@ bool SingleSampleFitDataA::Write(TObjArray * array, const char * tag, Option_t *
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up
-            LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << h->GetName();
+            LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy
-          LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
       }//izone
@@ -235,25 +235,25 @@ bool SingleSampleFitDataA::Write(TObjArray * array, const char * tag, Option_t *
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up
-            LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << h->GetName();
+            LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy
-          LOG("SingleSampleFitDataA", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
       }//+SB?
   }//+slices
 
-  LOG("SingleSampleFitDataA", pINFO)  << "Done!";
+  LOG("GenericSingleSampleFitData", pINFO)  << "Done!";
 
   return true;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitDataA::Write(
+bool GenericSingleSampleFitData::Write(
   const char * filename, const char * tag, const char * write_opt, Option_t * file_opt)
 {
-  LOG("SingleSampleFitDataA",pNOTICE) 
+  LOG("GenericSingleSampleFitData",pNOTICE) 
     << "Writing results to file: [" << filename << "]";
 
   TObjArray * array = new TObjArray();
@@ -267,17 +267,17 @@ bool SingleSampleFitDataA::Write(
   return true;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitDataA::Generate(
+bool GenericSingleSampleFitData::Generate(
     FitModelABC * model_abc, const FitParamList & fp, bool fluctuate)
 {
-  LOG("SingleSampleFitDataA",pINFO) 
+  LOG("GenericSingleSampleFitData",pINFO) 
      << "Generating a toy-MC expt with the following params: " << fp;
-  LOG("SingleSampleFitDataA",pINFO)
+  LOG("GenericSingleSampleFitData",pINFO)
      << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
 
   bool ok = model_abc->Generate(fp,"+SB");
   if(!ok) {
-    LOG("SingleSampleFitDataA",pERROR) 
+    LOG("GenericSingleSampleFitData",pERROR) 
        << "Could not generate predictions with model: " << model_abc->Name()
        << " and input params: " << fp;
     return false;
@@ -286,17 +286,17 @@ bool SingleSampleFitDataA::Generate(
   return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
-bool SingleSampleFitDataA::Generate(
+bool GenericSingleSampleFitData::Generate(
    FitModelABC * model_abc, const PhysHypothesis & ph, bool fluctuate)
 {
-  LOG("SingleSampleFitDataA",pINFO) 
+  LOG("GenericSingleSampleFitData",pINFO) 
      << "Generating a toy-MC expt with the following params: " << ph;
-  LOG("SingleSampleFitDataA",pINFO)
+  LOG("GenericSingleSampleFitData",pINFO)
       << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
 
   bool ok = model_abc->Generate(ph,"+SB");
   if(!ok) {
-    LOG("SingleSampleFitDataA",pERROR) 
+    LOG("GenericSingleSampleFitData",pERROR) 
        << "Could not generate predictions with model: " << model_abc->Name()
        << " with systematic tweaks: " << model_abc->Tweaks()
        << " and input params: " << ph;
@@ -306,14 +306,14 @@ bool SingleSampleFitDataA::Generate(
   return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
-bool SingleSampleFitDataA::Generate(FitModelABC * model_abc, bool fluctuate)
+bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
   TObjArray * array = new TObjArray();
   model_abc->Write(array, "curr", "pdft_vf +SB");
   
   this->Zero("all");
 
-  LOG("SingleSampleFitDataA",pINFO) 
+  LOG("GenericSingleSampleFitData",pINFO) 
      << "Generating toy-MC for: " 
      << util::AsString(fBeam) << " / " << util::AsString(fSample);
 
@@ -329,7 +329,7 @@ bool SingleSampleFitDataA::Generate(FitModelABC * model_abc, bool fluctuate)
         double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
         fDataSb->SetEntry(ndata,ier,iy);
 
-        LOG("SingleSampleFitDataA",pDEBUG) 
+        LOG("GenericSingleSampleFitData",pDEBUG) 
            << "(E_reco idx = " << ier << ", y_reco idx = " << iy 
            << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
 
@@ -340,8 +340,8 @@ bool SingleSampleFitDataA::Generate(FitModelABC * model_abc, bool fluctuate)
         double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
         int izone = util::BinZone(fSample, enu_reco, y_reco);
         if(izone < 0) {
-//         LOG("SingleSampleFitDataA",pFATAL) - turn that to fatal after binning optimization is done
-           LOG("SingleSampleFitDataA",pWARN)
+//         LOG("GenericSingleSampleFitData",pFATAL) - turn that to fatal after binning optimization is done
+           LOG("GenericSingleSampleFitData",pWARN)
               << " ** No bin zone for toy MC event (" << " (" << util::AsString(fSample) << ")"
               << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
 //         exit(1);
@@ -360,7 +360,7 @@ bool SingleSampleFitDataA::Generate(FitModelABC * model_abc, bool fluctuate)
   return true;
 }
 //________________________________________________________________________________________
-int SingleSampleFitDataA::NumOfBins(void)
+int GenericSingleSampleFitData::NumOfBins(void)
 {
   int nbins = 0;
 
@@ -375,7 +375,7 @@ int SingleSampleFitDataA::NumOfBins(void)
   return nbins;
 }
 //________________________________________________________________________________________
-double SingleSampleFitDataA::Statistic(
+double GenericSingleSampleFitData::Statistic(
   FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
 {
   bool ok = model_abc->Generate(fp);
@@ -384,7 +384,7 @@ double SingleSampleFitDataA::Statistic(
   return this->Statistic(model_abc,opt);
 }
 //________________________________________________________________________________________
-double SingleSampleFitDataA::Statistic(
+double GenericSingleSampleFitData::Statistic(
   FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt)
 {
   bool ok = model_abc->Generate(ph);
@@ -393,7 +393,7 @@ double SingleSampleFitDataA::Statistic(
   return this->Statistic(model_abc,opt);  
 }
 //________________________________________________________________________________________
-double SingleSampleFitDataA::Statistic(
+double GenericSingleSampleFitData::Statistic(
   FitModelABC * model_abc, Option_t * /*opt*/) 
 {
   TObjArray * array = new TObjArray();
@@ -424,16 +424,16 @@ double SingleSampleFitDataA::Statistic(
   double Sp   = model_abc->GetFitStatisticPenalty();
   double Stot = S+Sp;
 
-  LOG("SingleSampleFitDataA",pINFO) 
+  LOG("GenericSingleSampleFitData",pINFO) 
     << "Current fit statistic = " << Stot
     << " (stat term = " << S << ", syst term = " << Sp << ")";
 
   return Stot;
 }
 //________________________________________________________________________________________
-void SingleSampleFitDataA::Init(void)
+void GenericSingleSampleFitData::Init(void)
 {
-  LOG("SingleSampleFitDataA",pDEBUG) << "Initializing...";
+  LOG("GenericSingleSampleFitData",pDEBUG) << "Initializing...";
 
   fName = "none";
 
@@ -449,9 +449,9 @@ void SingleSampleFitDataA::Init(void)
   fDataSb     = 0;
 }
 //________________________________________________________________________________________
-void SingleSampleFitDataA::Book(void)
+void GenericSingleSampleFitData::Book(void)
 {
-  LOG("SingleSampleFitDataA",pDEBUG) << "Booking...";
+  LOG("GenericSingleSampleFitData",pDEBUG) << "Booking...";
 
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
   for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -465,9 +465,9 @@ void SingleSampleFitDataA::Book(void)
   fDataSb     = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);
 }
 //________________________________________________________________________________________
-void SingleSampleFitDataA::Clean(void)
+void GenericSingleSampleFitData::Clean(void)
 {
-  LOG("SingleSampleFitDataA",pDEBUG) << "Cleaning-up...";
+  LOG("GenericSingleSampleFitData",pDEBUG) << "Cleaning-up...";
 
   for(int izone = 0; izone < kNMaxBinZones; izone++) {
     if(!fDataObNull[izone]) {
@@ -483,9 +483,9 @@ void SingleSampleFitDataA::Clean(void)
   }
 }
 //________________________________________________________________________________________
-void SingleSampleFitDataA::Zero(Option_t * opt)
+void GenericSingleSampleFitData::Zero(Option_t * opt)
 {
-  LOG("SingleSampleFitDataA",pDEBUG) << "Zeroing-out (option: " << opt << ") ...";
+  LOG("GenericSingleSampleFitData",pDEBUG) << "Zeroing-out (option: " << opt << ") ...";
 
   string option = (opt) ? opt : "all";
 

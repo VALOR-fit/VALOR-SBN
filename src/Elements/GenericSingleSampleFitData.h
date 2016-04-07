@@ -1,9 +1,9 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::SingleSampleFitDataA
+\class     valor::GenericSingleSampleFitData
 
-\brief     An abstract class for storing data for a single sample, 
+\brief     A generic class for storing data for a single sample, 
            in a specific beam configuration and for a specific detector.
            //
            // Some description about what info is stored for the sample
@@ -23,8 +23,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_single_sample_data_a_h_
-#define _valor_single_sample_data_a_h_
+#ifndef _valor_generic_single_sample_data_h_
+#define _valor_generic_single_sample_data_h_
 
 #include <string>
 
@@ -47,11 +47,11 @@ using namespace valor;
 
 namespace valor {
 
-class SingleSampleFitDataA: public SingleSampleFitDataABC
+class GenericSingleSampleFitData: public SingleSampleFitDataABC
 {
 public:
-  SingleSampleFitDataA(void);
-  virtual ~SingleSampleFitDataA();
+  GenericSingleSampleFitData(void);
+  virtual ~GenericSingleSampleFitData();
 
   //
   // Implement the FitDataABC interface

@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::CompoundFitSetup
+\class     valor::CompoundFitElements
 
 \brief   
 
@@ -15,8 +15,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_dune_compound_fit_setup_h_
-#define _valor_dune_compound_fit_setup_h_
+#ifndef _valor_dune_compound_fit_elements_h_
+#define _valor_dune_compound_fit_elements_h_
 
 #include <string>
 
@@ -34,24 +34,32 @@ using namespace valor;
 
 namespace valor {
 
-class CompoundFitSetup
+class CompoundFitElements
 {
 public:
-  CompoundFitSetup();
- ~CompoundFitSetup();
+  CompoundFitElements();
+ ~CompoundFitElements();
 
   bool Read(string xmlconfig);
 
-  FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleDataA"    );
-  FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleFitModelA");
+//FitDataABC *  FitData  (void) const { return fCompoundFitData;  }
+  FitModelABC * FitModel (void) const { return fCompoundFitModel; }
 
 private:
+
+  void Init  (void);
+  void Book  (void);
+  void Clean (void);
 
   bool ReadElementList (TXMLEngine* xmleng, XMLNodePointer_t top_node);
   bool ReadElement     (TXMLEngine* xmleng, XMLNodePointer_t top_node);
 
-  void * InstantiateUsingDictionaryRegistration (string class_name);
+  FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name);
+  FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name);
+  void *        InstantiateUsingDictionaryRegistration (string class_name);
 
+//FitDataABC *  fCompoundFitData;
+  FitModelABC * fCompoundFitModel;
 };
 
 } // valor

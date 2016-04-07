@@ -39,7 +39,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/BeamConf.h"
 #include "Conventions/FitParamApply.h"
 #include "Conventions/Names.h"
-#include "Elements/SingleSampleFitModelA.h"
+#include "Elements/GenericSingleSampleFitModel.h"
 
 using std::endl;
 
@@ -47,13 +47,13 @@ using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
-SingleSampleFitModelA::SingleSampleFitModelA() :
+GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
 SingleSampleFitModelABC()
 {
   this->Init();
 }
 //________________________________________________________________________________________
-SingleSampleFitModelA::~SingleSampleFitModelA() 
+GenericSingleSampleFitModel::~GenericSingleSampleFitModel() 
 {
   this->Clean();
 }
@@ -63,12 +63,12 @@ SingleSampleFitModelA::~SingleSampleFitModelA()
 // FitModelABC interface implementation:
 //
 //________________________________________________________________________________________
-string SingleSampleFitModelA::Name(void)
+string GenericSingleSampleFitModel::Name(void)
 {
   return fName;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitModelA::Read(string file, Option_t * opt)
+bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 {
   assert(fDetector != kdUndefined);
   assert(fBeam     != kbUndefined);
@@ -82,14 +82,14 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
   TString ts_opt(opt);
   bool force_use_dst = ts_opt.Contains("forcedst");
 
-  LOG("SingleSampleFitModelA", pNOTICE) 
+  LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(file.c_str());
   if (xmldoc==0) {
-    LOG("SingleSampleFitModelA",pERROR) << "Can not parse input XML file [" << file << "]";
+    LOG("GenericSingleSampleFitModel",pERROR) << "Can not parse input XML file [" << file << "]";
     delete xml;
     util::Die(1); return false;
   }
@@ -121,14 +121,14 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
   // Get the detector fiducial mass
   string name = "fiducial_mass";
   fFiducialMass = util::XML2Dbl(xml,root_node,name);
-  LOG("SingleSampleFitModelA",pINFO)
+  LOG("GenericSingleSampleFitModel",pINFO)
     << "Fiducial mass = " << fFiducialMass*1000 << " tonnes";
 
   // Get assumed exposure for each beam configuration
   {
      string node_name = "data/exposure/" + util::AsString(fBeam, "lowercase");
      fPOT = util::XML2Dbl(xml,root_node,node_name);
-     LOG("SingleSampleFitModelA",pINFO) 
+     LOG("GenericSingleSampleFitModel",pINFO) 
          << "Beam config: " << util::AsString(fBeam) 
          << " -> Exposure = " << fPOT << " POT.";
   }
@@ -142,14 +142,14 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
   //
   fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format") | force_use_dst;
   if(fUseMCDST) {
-    LOG("SingleSampleFitModelA",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
+    LOG("GenericSingleSampleFitModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
     string node_name = "mc/dst/" + util::AsString(fBeam, "lowercase");
     fMCDST = util::XML2TTree (xml,root_node,node_name);
     assert(fMCDST);
     this->FillFromDST(fMCDST);
   } 
   else {
-    LOG("SingleSampleFitModelA",pINFO) << "Using stored VALOR MC templates";
+    LOG("GenericSingleSampleFitModel",pINFO) << "Using stored VALOR MC templates";
     string template_tag = util::XML2String(xml,root_node,"mc/template/tag");
     TFile * template_file = util::XML2TFile(xml,root_node,"mc/template");
     
@@ -167,24 +167,24 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
   xml->FreeDoc(xmldoc);
   delete xml;
 
-  LOG("SingleSampleFitModelA",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
+  LOG("GenericSingleSampleFitModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
 
   return true;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitModelA::Generate(const PhysHypothesis & ph, Option_t * opt)
+bool GenericSingleSampleFitModel::Generate(const PhysHypothesis & ph, Option_t * opt)
 {
 // input opt: 
 // - Leave null for the fit
 // - Use "+SB" to generate finely-binned predictions too (for plotting or toy-MC generation)
 
-//  LOG("SingleSampleFitModelA",pDEBUG)  
+//  LOG("GenericSingleSampleFitModel",pDEBUG)  
 //     << "Input physics hypothesis before copying to private data member: " << ph;
 
   fPhysHypothesis.Copy(ph);
   //PhysHypothesis_t hyp = fPhysHypothesis.Hypothesis();
 
-  LOG("SingleSampleFitModelA",pINFO)  
+  LOG("GenericSingleSampleFitModel",pINFO)  
      << "Generating model predictions for the input hypothesis: " 
      << fPhysHypothesis;
 
@@ -193,12 +193,12 @@ bool SingleSampleFitModelA::Generate(const PhysHypothesis & ph, Option_t * opt)
   this->ApplyPhysics(opt);      // `sys' MC templates --> `fin' MC templates
   this->UpdatePDFs(opt);        // `fin' MC templates --> p.d.f
 
-  LOG("SingleSampleFitModelA",pINFO) << "Done generating predictions";
+  LOG("GenericSingleSampleFitModel",pINFO) << "Done generating predictions";
 
   return true;
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::RandomizeSystematics(Option_t * options)
+void GenericSingleSampleFitModel::RandomizeSystematics(Option_t * options)
 {
   TString opt(options);
   if (!opt.Length()) {opt="randomize-all";}
@@ -224,7 +224,7 @@ void SingleSampleFitModelA::RandomizeSystematics(Option_t * options)
   
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::TweakSystematic(
+void GenericSingleSampleFitModel::TweakSystematic(
   string syst_name, double twkdial, Option_t * opt)
 {
   PhysParamId_t p = util::PhysParamFromString(syst_name);
@@ -232,7 +232,7 @@ void SingleSampleFitModelA::TweakSystematic(
   return;
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::TweakSystematic(
+void GenericSingleSampleFitModel::TweakSystematic(
   PhysParamId_t syst, double twkdial, Option_t * /*opt*/)
 {
   if (util::IsNuFluxRelated(syst)) {
@@ -246,7 +246,7 @@ void SingleSampleFitModelA::TweakSystematic(
   }
 }
 //________________________________________________________________________________________
-PhysParamList SingleSampleFitModelA::Tweaks(void)
+PhysParamList GenericSingleSampleFitModel::Tweaks(void)
 {
   PhysParamList list;
 
@@ -263,7 +263,7 @@ PhysParamList SingleSampleFitModelA::Tweaks(void)
   return list;
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::ResetSystematics(Option_t * /*opt*/)
+void GenericSingleSampleFitModel::ResetSystematics(Option_t * /*opt*/)
 {
   // -----------------------------------  
   // TODO
@@ -276,14 +276,14 @@ void SingleSampleFitModelA::ResetSystematics(Option_t * /*opt*/)
   fSyst -> Tweak(true, 0);
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::PrintSystematics(ostream & stream, Option_t * /*opt*/) const
+void GenericSingleSampleFitModel::PrintSystematics(ostream & stream, Option_t * /*opt*/) const
 {
   stream << endl;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitModelA::Generate (const FitParamList & fp, Option_t * opt)
+bool GenericSingleSampleFitModel::Generate (const FitParamList & fp, Option_t * opt)
 {
-//  LOG("SingleSampleFitModelA",pDEBUG)  
+//  LOG("GenericSingleSampleFitModel",pDEBUG)  
 //     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
 
   // -----------------------------------  
@@ -302,7 +302,7 @@ bool SingleSampleFitModelA::Generate (const FitParamList & fp, Option_t * opt)
   return this->Generate(ph, opt);
 }
 //________________________________________________________________________________________
-bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t * write_opt)
+bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
 //
 // write_opt:
@@ -331,17 +331,17 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
 //  ob    -> Optimized binning (for fit)
 //  sb    -> Simple binning (for plots)
 
-  LOG("SingleSampleFitModelA", pINFO)  << "Writing results to input object array...";
-  LOG("SingleSampleFitModelA", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
+  LOG("GenericSingleSampleFitModel", pINFO)  << "Writing results to input object array...";
+  LOG("GenericSingleSampleFitModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
 
   string opt = (write_opt) ? write_opt : "pdft_vf";
   if(opt.find("all") != string::npos) {
     opt = "mct_vf + pdfc_vf + pdfc_rf + pdft_vf + pdft_rf + pdfcs_rf + pdfts_rf +SB";
-    LOG("SingleSampleFitModelA", pDEBUG) << "Write option replaced with = " << opt;
+    LOG("GenericSingleSampleFitModel", pDEBUG) << "Write option replaced with = " << opt;
   }
 
   if(!array) {
-     LOG("SingleSampleFitModelA",pERROR) << "Null input object array.";
+     LOG("GenericSingleSampleFitModel",pERROR) << "Null input object array.";
      return false;
   }
 
@@ -367,10 +367,10 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
              fMCTTunOb [imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_ob_vf", name) );
              fMCTSysOb [imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_ob_vf", name) );
              fMCTFinOb [imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_ob_vf", name) );
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTNomOb [imode][izone]->GetName();
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTTunOb [imode][izone]->GetName();
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTSysOb [imode][izone]->GetName();
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTFinOb [imode][izone]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTNomOb [imode][izone]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTTunOb [imode][izone]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTSysOb [imode][izone]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTFinOb [imode][izone]->GetName();
              array -> Add ( fMCTNomOb [imode][izone] ); 
              array -> Add ( fMCTTunOb [imode][izone] ); 
              array -> Add ( fMCTSysOb [imode][izone] ); 
@@ -385,10 +385,10 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
              fMCTTunSb [imode] -> SetName( Form("%s_%s_%s", tag, "mcttun_sb_vf", name) );
              fMCTSysSb [imode] -> SetName( Form("%s_%s_%s", tag, "mctsys_sb_vf", name) );
              fMCTFinSb [imode] -> SetName( Form("%s_%s_%s", tag, "mctfin_sb_vf", name) );
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTNomSb [imode]->GetName();
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTTunSb [imode]->GetName();
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTSysSb [imode]->GetName();
-             LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fMCTFinSb [imode]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTNomSb [imode]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTTunSb [imode]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTSysSb [imode]->GetName();
+             LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTFinSb [imode]->GetName();
              array -> Add ( fMCTNomSb [imode] ); 
              array -> Add ( fMCTTunSb [imode] ); 
              array -> Add ( fMCTSysSb [imode] ); 
@@ -415,7 +415,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
                fPDFCompOb [imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_ob_vf",name));
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fPDFCompOb[imode][izone]->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompOb[imode][izone]->GetName();
                array->Add(fPDFCompOb[imode][izone]);
              }
              // in TH2D format
@@ -442,7 +442,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
                  }//iy
                }//ier
                // add tp object array and clean-up
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -455,7 +455,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
              // in VALORArray format
              if (opt.find("pdfc_vf") != string::npos) {
                fPDFCompSb[imode]->SetName(Form("%s_%s_%s",tag,"pdfc_sb_vf",name));
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fPDFCompSb[imode]->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompSb[imode]->GetName();
                array->Add(fPDFCompSb[imode]);
              }
              // in TH2D format
@@ -478,7 +478,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
                  }//iy
                }//ier
                // add tp object array and clean-up
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -500,7 +500,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
                fPDFTotOb[izone]->SetName(Form("%s_%s_%s",tag,"pdft_ob_vf",name));
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fPDFTotOb[izone]->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotOb[izone]->GetName();
                array->Add(fPDFTotOb[izone]);
              }
              // in TH2D format
@@ -527,7 +527,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
                  }//iy
                }//ier
                // add to object array and clean-up
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -539,7 +539,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
              // in VALORArray format
              if (opt.find("pdft_vf") != string::npos) {
                fPDFTotSb->SetName(Form("%s_%s_%s",tag,"pdft_sb_vf",name));
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << fPDFTotSb->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotSb->GetName();
                array->Add(fPDFTotSb);
              }
              // in TH2D format
@@ -565,7 +565,7 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
                  }//iy
                }//ier
                // add to object array and clean-up
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h2->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
                array->Add(h2); 
                // delete h2; ???? // MEMORY LEAK?
              }
@@ -617,11 +617,11 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
               // add to obj array and clean-up 
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
               array->Add(h);
               //delete h; ??? MEM LEAK??
             }//iy         
-            LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << htot->GetName();
+            LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
             array->Add(htot);
             //delete htot; ??? MEM LEAK??
           }//izone
@@ -651,11 +651,11 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
                 htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
               }//ier
               // add to obj array and clean-up 
-               LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h->GetName();
+               LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
               array->Add(h);
               //delete h; ??? MEM LEAK??
             }//iy         
-            LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << htot->GetName();
+            LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
             array->Add(htot);
             //delete htot; ??? MEM LEAK??
           }//+SB?
@@ -703,11 +703,11 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
-            LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h->GetName();
+            LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??      
           }//iy         
-          LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??      
         }//izone
@@ -737,11 +737,11 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
               htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
             }//ier
             // add to obj array and clean-up 
-            LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << h->GetName();
+            LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
             array->Add(h);
             //delete h; ??? MEM LEAK??
           }//iy         
-          LOG("SingleSampleFitModelA", pDEBUG) << "Adding: " << htot->GetName();
+          LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
           array->Add(htot);
           //delete htot; ??? MEM LEAK??
         }//+SB?
@@ -751,10 +751,10 @@ bool SingleSampleFitModelA::Write(TObjArray * array, const char * tag, Option_t 
   return true;
 }
 //________________________________________________________________________________________
-bool SingleSampleFitModelA::Write(
+bool GenericSingleSampleFitModel::Write(
   const char * filename, const char * tag, Option_t * write_opt, Option_t * file_opt)
 {
-  LOG("SingleSampleFitModelA",pNOTICE) << "Writing results to file: [" << filename << "]";
+  LOG("GenericSingleSampleFitModel",pNOTICE) << "Writing results to file: [" << filename << "]";
 
   TObjArray * array = new TObjArray();
   this->Write(array,tag,write_opt);
@@ -767,7 +767,7 @@ bool SingleSampleFitModelA::Write(
   return true;
 }
 //________________________________________________________________________________________
-double SingleSampleFitModelA::GetFitStatisticPenalty (Option_t * /*opt*/) const
+double GenericSingleSampleFitModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 {
 /*
   // ------------------
@@ -780,7 +780,7 @@ double SingleSampleFitModelA::GetFitStatisticPenalty (Option_t * /*opt*/) const
 
   double Sp = Sp_nuflux + Sp_nuint + Sp_nudet;
 
-  LOG("SingleSampleFitModelA",pDEBUG) 
+  LOG("GenericSingleSampleFitModel",pDEBUG) 
    << "Current penalty term = " << Sp 
    << " (flux = " << Sp_nuflux 
    << ", interaction = " << Sp_nuint 
@@ -797,9 +797,9 @@ double SingleSampleFitModelA::GetFitStatisticPenalty (Option_t * /*opt*/) const
 //
 //________________________________________________________________________________________
 
-void SingleSampleFitModelA::Init(void)
+void GenericSingleSampleFitModel::Init(void)
 {
-  LOG("SingleSampleFitModelA",pDEBUG) << "Initializing...";
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "Initializing...";
 
   fName         = "none";
   fFiducialMass = 0;
@@ -860,9 +860,9 @@ void SingleSampleFitModelA::Init(void)
   fSyst = 0;
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::Book(void)
+void GenericSingleSampleFitModel::Book(void)
 {
-  LOG("SingleSampleFitModelA",pDEBUG) << "Booking...";
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "Booking...";
 
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
@@ -873,7 +873,7 @@ void SingleSampleFitModelA::Book(void)
         const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
         const int n_enu_true_bins = util::NumEtrueBins(fSample);
 
-        LOG("SingleSampleFitModelA",pDEBUG) 
+        LOG("GenericSingleSampleFitModel",pDEBUG) 
             << "Booking MC template (simple binning) for " 
             << "beam: "     << util::AsString(fBeam) 
             << ", sample: " << util::AsString(fSample)
@@ -899,7 +899,7 @@ void SingleSampleFitModelA::Book(void)
         // >> PDF total
         // should get here for at least one imode value
         if(fPDFTotNullSb) {              
-           LOG("SingleSampleFitModelA",pDEBUG) 
+           LOG("GenericSingleSampleFitModel",pDEBUG) 
               << "Booking PDF (total / simple binning) for " 
               << "beam: "     << util::AsString(fBeam) 
               << ", sample: " << util::AsString(fSample);
@@ -914,7 +914,7 @@ void SingleSampleFitModelA::Book(void)
            const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
            if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
 
-           LOG("SingleSampleFitModelA",pDEBUG) 
+           LOG("GenericSingleSampleFitModel",pDEBUG) 
               << "Booking MC template for " 
               << "beam: "     << util::AsString(fBeam) 
               << ", sample: " << util::AsString(fSample)
@@ -941,7 +941,7 @@ void SingleSampleFitModelA::Book(void)
            // >> PDF total
            // should get here for at least one imode value
            if(fPDFTotNullOb[izone]) {              
-              LOG("SingleSampleFitModelA",pDEBUG) 
+              LOG("GenericSingleSampleFitModel",pDEBUG) 
                  << "Booking PDF (total) for " 
                  << "beam: "     << util::AsString(fBeam) 
                  << ", sample: " << util::AsString(fSample)
@@ -955,9 +955,9 @@ void SingleSampleFitModelA::Book(void)
   }//imode
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::Clean(void)
+void GenericSingleSampleFitModel::Clean(void)
 {
-  LOG("SingleSampleFitModelA",pDEBUG) << "Cleaning-up...";
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "Cleaning-up...";
 
   for(int imode = 0; imode < kNReacModes; imode++) {
 
@@ -1030,9 +1030,9 @@ void SingleSampleFitModelA::Clean(void)
   if (fSyst) { delete fSyst; }  
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::Zero(void)
+void GenericSingleSampleFitModel::Zero(void)
 {
-  LOG("SingleSampleFitModelA",pDEBUG) << "Zeroing MC templates and/or PDFs...";
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
 
   for(int imode = 0; imode < kNReacModes; imode++) {
 
@@ -1065,12 +1065,12 @@ void SingleSampleFitModelA::Zero(void)
   }//imode
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::FillFromDST(TTree * t)
+void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 {
 // Fill MC templates from the input VALOR/DUNE DST TTree
 // We use a single tree for all samples for a single beam configuration.
 
-  LOG("SingleSampleFitModelA",pDEBUG) 
+  LOG("GenericSingleSampleFitModel",pDEBUG) 
      << "Filling-in MC templates for beam configuration: " << util::AsString(fBeam);
 
   if(!t) return;
@@ -1123,7 +1123,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
   */
 
   Long_t nev = t->GetEntries();
-  LOG("SingleSampleFitModelA",pINFO) << "Input VALOR DST has " << nev << " entries";
+  LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
 
   for(Long_t iev = 0; iev < nev; iev++) 
   {
@@ -1131,13 +1131,13 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
 
      if(iev%(nev/20)==0) {
        double pct = (100 * (double)(iev+1)) / (double)nev;
-       LOG("SingleSampleFitModelA",pNOTICE) << "Reading "<< util::AsString(fBeam)<<" MC DST: "<< TMath::Nint(pct) << "% done";
+       LOG("GenericSingleSampleFitModel",pNOTICE) << "Reading "<< util::AsString(fBeam)<<" MC DST: "<< TMath::Nint(pct) << "% done";
      }
 
      // Get sample index
      Sample_t s = util::SampleFromInt(sample);
      if(s == ksUndefined) {
-       LOG("SingleSampleFitModelA",pWARN) 
+       LOG("GenericSingleSampleFitModel",pWARN) 
           << " ** Undefined sample ID used in MC event: " << iev
           << " (value stored in DST: " << sample << ")";
        //exit(1);
@@ -1159,7 +1159,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
      //  ==============================================
 
      if(s != fSample) {
-       LOG("SingleSampleFitModelA",pDEBUG) 
+       LOG("GenericSingleSampleFitModel",pDEBUG) 
          << "Ignoring MC event: " << iev 
          << " (sample ID: " << util::AsString(s) 
          << " not matching one used for configuring model: " 
@@ -1170,7 +1170,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
      int isample = fArrIdx->SampleIdx(fBeam,fSample);
      if(isample < 0) {
        // fine, we do not indlude all samples in the fit
-       LOG("SingleSampleFitModelA",pDEBUG) 
+       LOG("GenericSingleSampleFitModel",pDEBUG) 
          << "Ignoring MC event: " << iev 
          << " (sample ID: " << util::AsString(s) << " not included in current fit)";
        continue;
@@ -1179,7 +1179,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
      // Get reaction mode index
      ReacMode_t m = util::ReacModeFromInt(reac_mode); 
      if(m == kmUndefined) {
-       LOG("SingleSampleFitModelA",pFATAL) 
+       LOG("GenericSingleSampleFitModel",pFATAL) 
           << " ** Undefined reaction mode ID used in MC event: " << iev
           << " (value stored in DST: " << reac_mode << ")";
        exit(1);
@@ -1189,7 +1189,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
        // For a given sample we should consider a complete list of
        // true reaction modes (otherwise there are true contributions to the
        // event sample which are not taken into account).
-       LOG("SingleSampleFitModelA",pFATAL) 
+       LOG("GenericSingleSampleFitModel",pFATAL) 
          << " ** Ignoring MC event: " << iev 
          << " (ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
        exit(1);
@@ -1198,8 +1198,8 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
      // Get bin zone index
      int izone = util::BinZone(s, enu_reco, y_reco);
      if(izone < 0) {
-//     LOG("SingleSampleFitModelA",pFATAL) - turn that to fatal after binning optimization is done
-       LOG("SingleSampleFitModelA",pWARN) 
+//     LOG("GenericSingleSampleFitModel",pFATAL) - turn that to fatal after binning optimization is done
+       LOG("GenericSingleSampleFitModel",pWARN) 
          << " ** No bin zone for MC event: " << iev 
          << " (" << util::AsString(s) << "/" << util::AsString(m) 
          << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
@@ -1209,14 +1209,14 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
 
      bool is_null = fMCTNullOb[imode][izone];
      if(is_null) {
-       LOG("SingleSampleFitModelA",pFATAL) 
+       LOG("GenericSingleSampleFitModel",pFATAL) 
          << "** Null MC template for sample: " << util::AsString(s) 
          << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
        exit(1);
      }
      bool is_null_sb = fMCTNullSb[imode];
      if(is_null_sb) {
-       LOG("SingleSampleFitModelA",pFATAL) 
+       LOG("GenericSingleSampleFitModel",pFATAL) 
          << "** Null MC template (simple binning) for sample: " << util::AsString(s) 
          << ", mode: " << util::AsString(m) << " ??";
        exit(1);
@@ -1224,17 +1224,17 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
 
      // check Ereco, yreco and Etrue values against built-in limits
      if(enu_reco < kErecoMin || enu_reco > kErecoMax) {
-        LOG("SingleSampleFitModelA",pWARN) 
+        LOG("GenericSingleSampleFitModel",pWARN) 
            << "MC event: " << iev << " has reconstructed energy = " << enu_reco 
            << " GeV, range used: [" << kErecoMin << ", " << kErecoMax << "] GeV";
      }
      if(y_reco < kYrecoMin || y_reco > kYrecoMax) {
-        LOG("SingleSampleFitModelA",pWARN) 
+        LOG("GenericSingleSampleFitModel",pWARN) 
            << "MC event: " << iev << " has reconstructed inelasticity y = " << y_reco 
            << ", range used: [" << kYrecoMin << ", " << kYrecoMax << "]";
      }
      if(enu_true < kEtrueMin || enu_true > kEtrueMax) {
-        LOG("SingleSampleFitModelA",pWARN) 
+        LOG("GenericSingleSampleFitModel",pWARN) 
            << "MC event: " << iev << " has true energy = " << enu_true 
            << " GeV, range used: [" << kEtrueMin << ", " << kEtrueMax << "] GeV";
      }
@@ -1312,7 +1312,7 @@ void SingleSampleFitModelA::FillFromDST(TTree * t)
   }//iev 
 }
 //________________________________________________________________________________________
-bool SingleSampleFitModelA::FillFromTemplateFile (TFile * f, string tag)
+bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
 {
   bool success = true;
 
@@ -1331,7 +1331,7 @@ bool SingleSampleFitModelA::FillFromTemplateFile (TFile * f, string tag)
           }
           else {
             success = false;
-            LOG("SingleSampleFitModelA",pERROR) << "Failed to read template "<<obj_name;
+            LOG("GenericSingleSampleFitModel",pERROR) << "Failed to read template "<<obj_name;
           }
         }//izone
   } //imode
@@ -1342,7 +1342,7 @@ bool SingleSampleFitModelA::FillFromTemplateFile (TFile * f, string tag)
   return success;
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::ApplyTuning(void)
+void GenericSingleSampleFitModel::ApplyTuning(void)
 {
 // This method maps nom -> tun MC templates
 // This is applied once when the model is constructed, not everytime Generate() is called.
@@ -1351,7 +1351,7 @@ void SingleSampleFitModelA::ApplyTuning(void)
 
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::FluctuateMCStat(Option_t * option)
+void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
 {
 // Take into account the effect of MC statistics on the tuned MC templates.
 // Note that this is the error due to the finite MC statistics used to construct the
@@ -1362,7 +1362,7 @@ void SingleSampleFitModelA::FluctuateMCStat(Option_t * option)
 // statistical error. If this is important, we ought to create a new set of templates
 // to hold this intermediate step going from the `tun' to the `sys' templates.
 
-  LOG("SingleSampleFitModelA",pINFO) 
+  LOG("GenericSingleSampleFitModel",pINFO) 
      << "Applying MC statistic error (option: " 
      << ((option) ? option : "")
      << ")";
@@ -1449,8 +1449,8 @@ void SingleSampleFitModelA::FluctuateMCStat(Option_t * option)
 		 double y_reco   = y_reco_bin_edges_sb[iyr] + (y_reco_bin_edges_sb[iyr+1]-y_reco_bin_edges_sb[iyr])/2.;
                  int izone = util::BinZone(fSample, enu_reco, y_reco);
                  if(izone < 0) {
-//                  LOG("SingleSampleFitModelA",pFATAL) - turn that to fatal after binning optimization is done
-                    LOG("SingleSampleFitModelA",pWARN)
+//                  LOG("GenericSingleSampleFitModel",pFATAL) - turn that to fatal after binning optimization is done
+                    LOG("GenericSingleSampleFitModel",pWARN)
                        << " ** No bin zone for toy MC event (" << " (" << util::AsString(fSample) << ")"
                        << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
 //                  exit(1);
@@ -1476,13 +1476,13 @@ void SingleSampleFitModelA::FluctuateMCStat(Option_t * option)
 
 #else
 
-  LOG("SingleSampleFitModelA",pINFO) << "MC statistic error *not* applied";
+  LOG("GenericSingleSampleFitModel",pINFO) << "MC statistic error *not* applied";
 
 #endif
 
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::ApplySystematics(Option_t * /*opt*/)
+void GenericSingleSampleFitModel::ApplySystematics(Option_t * /*opt*/)
 {
 // This method maps tun -> sys MC templates.
 // Applying detector systematics and uncorrelated flux/cross-section systematics.
@@ -1515,12 +1515,12 @@ void SingleSampleFitModelA::ApplySystematics(Option_t * /*opt*/)
 
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
+void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 {
 // This method maps sys -> fin MC templates.
 // Applying correlated flux and cross-section systematics
 
-  LOG("SingleSampleFitModelA",pINFO) 
+  LOG("GenericSingleSampleFitModel",pINFO) 
      << "Applying physics params (option: " 
      << ((option) ? option : "")
      << ")";
@@ -1544,11 +1544,11 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
         if(m == kmUndefined) continue;
         
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-        LOG("SingleSampleFitModelA",pDEBUG) 
+        LOG("GenericSingleSampleFitModel",pDEBUG) 
            << "Handing templates for: " 
            << util::AsString(fBeam) << ", " << util::AsString(fSample) << ", " << util::AsString(m);
 
-        LOG("SingleSampleFitModelA",pDEBUG) 
+        LOG("GenericSingleSampleFitModel",pDEBUG) 
            << "Initializing `fin' templates to the `sys' ones";
 #endif
 
@@ -1567,7 +1567,7 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
             }//ier: Ereco bins
           }//iet: Etrue bins
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-          LOG("SingleSampleFitModelA",pDEBUG) 
+          LOG("GenericSingleSampleFitModel",pDEBUG) 
              << "Applying Etrue-dependent params";
 #endif
           // first apply Etrue-dependent params
@@ -1589,7 +1589,7 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
              int ienu_true_min = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_min+kASmallNum);
              int ienu_true_max = TMath::BinarySearch((Long_t)n_enu_true_bins, enu_true_bin_edges, enu_true_max-kASmallNum);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-             LOG("SingleSampleFitModelA",pDEBUG) 
+             LOG("GenericSingleSampleFitModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f 
                 << " in Etrue bin range: [" << ienu_true_min << ", " << ienu_true_max << "]";
 #endif
@@ -1600,7 +1600,7 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
                     double val_old = val;
                     val *= f;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-                    LOG("SingleSampleFitModelA",pDEBUG) 
+                    LOG("GenericSingleSampleFitModel",pDEBUG) 
                       << "MCT[" << imode << ", " << izone << "] = " 
                       << val_old << " --> " << val;
 #endif
@@ -1610,7 +1610,7 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
           }//ip
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-          LOG("SingleSampleFitModelA",pDEBUG) 
+          LOG("GenericSingleSampleFitModel",pDEBUG) 
              << "Applying Etrue-independent params";
 #endif
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
@@ -1627,7 +1627,7 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
              if(enu_true_dep) continue;
              double f = fPhysHypothesis.CurrValue(p);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-             LOG("SingleSampleFitModelA",pDEBUG) 
+             LOG("GenericSingleSampleFitModel",pDEBUG) 
                 << "Applying parameter: " << util::AsString(p) << " with value = " << f;
 #endif
              fnoEt *= f;
@@ -1717,7 +1717,7 @@ void SingleSampleFitModelA::ApplyPhysics(Option_t * option)
       }//imode
 }
 //________________________________________________________________________________________
-void SingleSampleFitModelA::UpdatePDFs(Option_t * option)
+void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
 {
   bool update_mct_sb = false;
   if(option) {
@@ -1816,38 +1816,38 @@ void SingleSampleFitModelA::UpdatePDFs(Option_t * option)
 }
 //________________________________________________________________________________________
 /*
-const valor::NuFlux * valor::SingleSampleFitModelA::GetNuFlux(void) const
+const valor::NuFlux * valor::GenericSingleSampleFitModel::GetNuFlux(void) const
 {
   return fNuFlux;
 }
 //________________________________________________________________________________________
-valor::NuFlux * valor::SingleSampleFitModelA::GetNuFlux(void)
+valor::NuFlux * valor::GenericSingleSampleFitModel::GetNuFlux(void)
 {
   return fNuFlux;
 }
 //________________________________________________________________________________________
-const valor::NuInt * valor::SingleSampleFitModelA::GetNuInt(void) const
+const valor::NuInt * valor::GenericSingleSampleFitModel::GetNuInt(void) const
 {
   return fNuInt;
 }
 //________________________________________________________________________________________
-valor::NuInt * valor::SingleSampleFitModelA::GetNuInt(void)
+valor::NuInt * valor::GenericSingleSampleFitModel::GetNuInt(void)
 {
   return fNuInt;
 }
 //________________________________________________________________________________________
-const valor::NuDet * valor::SingleSampleFitModelA::GetNuDet(void) const
+const valor::NuDet * valor::GenericSingleSampleFitModel::GetNuDet(void) const
 {
   return fNuDet;
 }
 //________________________________________________________________________________________
-valor::NuDet * valor::SingleSampleFitModelA::GetNuDet(void)
+valor::NuDet * valor::GenericSingleSampleFitModel::GetNuDet(void)
 {
   return fNuDet;
 }
 */
 //________________________________________________________________________________________
-valor::PhysParamList valor::SingleSampleFitModelA::OneSigmaErrors(Option_t * /*opt*/)
+valor::PhysParamList valor::GenericSingleSampleFitModel::OneSigmaErrors(Option_t * /*opt*/)
 {
   PhysParamList ppl;
 
@@ -1872,7 +1872,7 @@ valor::PhysParamList valor::SingleSampleFitModelA::OneSigmaErrors(Option_t * /*o
   // remove
   // GUESS THIS NOW DONE WITHIN THE INPUT SYSTEMATICS CLASS
 
-TMatrixD valor::SingleSampleFitModelA::CovarianceMatrix(Option_t * opt)
+TMatrixD valor::GenericSingleSampleFitModel::CovarianceMatrix(Option_t * opt)
 {
   // Get cov matrices from subcomponents
   vector<const TMatrixD*> cov_vec;

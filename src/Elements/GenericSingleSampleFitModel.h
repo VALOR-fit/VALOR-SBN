@@ -1,9 +1,9 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::SingleSampleFitModelA
+\class     valor::GenericSingleSampleFitModel
 
-brief      An abstract implementation of the fit model for a single sample,
+brief      A generic implementation of the fit model for a single sample,
            in a specific beam configuration and for a specific detector.
            //
            // Some description about what info is stored for the sample
@@ -21,8 +21,8 @@ brief      An abstract implementation of the fit model for a single sample,
 */
 //____________________________________________________________________________
 
-#ifndef _valor_single_sample_model_a_h_
-#define _valor_single_sample_model_a_h_
+#ifndef _valor_generic_single_sample_model_h_
+#define _valor_generic_single_sample_model_h_
 
 #include <string>
 
@@ -56,12 +56,12 @@ namespace valor {
 //class NuDet;  // neutrino detector model systematics
 // --------------------------------------
 
-class SingleSampleFitModelA: public SingleSampleFitModelABC
+class GenericSingleSampleFitModel: public SingleSampleFitModelABC
 {
 public:
 
-  SingleSampleFitModelA();
-  virtual ~SingleSampleFitModelA();
+  GenericSingleSampleFitModel();
+  virtual ~GenericSingleSampleFitModel();
 
   //
   // Implement the FitModelABC interface

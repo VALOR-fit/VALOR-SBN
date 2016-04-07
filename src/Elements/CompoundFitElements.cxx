@@ -15,25 +15,27 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Messenger/Messenger.h"
 #include "Utilities/UtlSystem.h"
 #include "Utilities/UtlStr.h"
+//#include "FitCore/CompoundFitData.h"
+#include "FitCore/CompoundFitModel.h"
 // dune
-#include "Elements/CompoundFitSetup.h"
+#include "Elements/CompoundFitElements.h"
 #include "Elements/SingleSampleFitDataABC.h"
 #include "Elements/SingleSampleFitModelABC.h"
 
 using namespace valor;
 
 //________________________________________________________________________________________
-CompoundFitSetup::CompoundFitSetup(void)
+CompoundFitElements::CompoundFitElements(void)
 {
-
+  this->Init();
 }
 //________________________________________________________________________________________
-CompoundFitSetup::~CompoundFitSetup(void)
+CompoundFitElements::~CompoundFitElements(void)
 {
-
+  this->Clean();
 }
 //________________________________________________________________________________________
-bool CompoundFitSetup::Read(string xmlfile)
+bool CompoundFitElements::Read(string xmlfile)
 {
 // It reads a list of fit datasets and models and setups compound datasets and fit models.
 // The following XML schema is expected.
@@ -51,7 +53,7 @@ bool CompoundFitSetup::Read(string xmlfile)
 //         <data>         data.xml                     </data>
 //         <mc>           mc_production.xml            </mc>
 //         <data_class>   valor::SingleSampleDataA     </data_class>
-//         <model_class>  valor::SingleSampleFitModelA </model_class>
+//         <model_class>  valor::GenericSingleSampleFitModel </model_class>
 //      </element>
 //
 //   </element_list>
@@ -59,14 +61,14 @@ bool CompoundFitSetup::Read(string xmlfile)
 // ......................................................................
 //
 
-  LOG("CompoundFitSetup", pNOTICE) 
+  LOG("CompoundFitElements", pNOTICE) 
     << "Reading compound fit setup from XML file [" << xmlfile << "]";
 
   // Parse the input XML configuration file
   TXMLEngine* xmleng = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xmleng->ParseFile(xmlfile.c_str());
   if (xmldoc==0) {
-    LOG("CompoundFitSetup", pERROR) 
+    LOG("CompoundFitElements", pERROR) 
       << "Can not parse input XML file [" << xmlfile << "]";
     delete xmleng;
     util::Die(1); return false;
@@ -77,7 +79,8 @@ bool CompoundFitSetup::Read(string xmlfile)
   while(curr_node) {
     string curr_node_name = xmleng->GetNodeName(curr_node);
     if(curr_node_name == "element_list") {
-       LOG("CompoundFitSetup", pNOTICE) << "Found element list named: ";
+       string list_name = xmleng->GetAttr(curr_node,"name");
+       LOG("CompoundFitElements", pNOTICE) << "Found element list named: " << list_name;
        this->ReadElementList(xmleng,curr_node);
     }
     curr_node = xmleng->GetNext(curr_node);
@@ -88,13 +91,14 @@ bool CompoundFitSetup::Read(string xmlfile)
   return true;
 }
 //________________________________________________________________________________________
-bool CompoundFitSetup::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t top_node)
+bool CompoundFitElements::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t top_node)
 {
   XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
   while(curr_node) {
       string curr_node_name = xmleng->GetNodeName(curr_node);
       if(curr_node_name == "element") {
-        LOG("CompoundFitSetup", pNOTICE) << "Found element named: ";
+        string element_name = xmleng->GetAttr(curr_node,"name");
+        LOG("CompoundFitElements", pNOTICE) << "Found element named: " << element_name;	
         bool ok = this->ReadElement(xmleng,curr_node);
         if(!ok) return false;
       }
@@ -103,16 +107,8 @@ bool CompoundFitSetup::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t top_
   return true;
 }
 //________________________________________________________________________________________
-bool CompoundFitSetup::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node)
+bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node)
 {
-//        <detector>     dunend                       </detector>
-//        <beam>         fhc                          </beam>
-//        <sample>       numuccincl                   </sample>
-//        <data>         data.xml                     </data>
-//        <mc>           mc_production.xml            </mc>
-//        <data_class>   valor::SingleSampleDataA     </data_class>
-//        <model_class>  valor::SingleSampleFitModelA </model_class>
-
   string detector_name = "";
   string beam_name     = "";
   string sample_name   = "";
@@ -126,7 +122,7 @@ bool CompoundFitSetup::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node
       string curr_node_name = xmleng->GetNodeName(curr_node);
       if(xmleng->GetNodeContent(curr_node)) {
         string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
-        LOG("CompoundFitSetup", pNOTICE) << curr_node_name << " --> " << content;
+        LOG("CompoundFitElements", pNOTICE) << curr_node_name << " --> " << content;
         if(curr_node_name == "detector"   ) { detector_name = content; }
         if(curr_node_name == "beam"       ) { beam_name     = content; }
         if(curr_node_name == "sample"     ) { sample_name   = content; }
@@ -151,6 +147,9 @@ bool CompoundFitSetup::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node
   FitModelABC * fit_model = 
      this->AdoptFitModel(mc_file,   detector, beam, sample, model_class);
 
+  assert(fit_data);
+  assert(fit_model);
+
   //
   //
   // ... add to compound fit data and fit model
@@ -160,7 +159,25 @@ bool CompoundFitSetup::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node
   return true;
 }
 //________________________________________________________________________________________
-FitDataABC * CompoundFitSetup::AdoptFitData(
+void CompoundFitElements::Init(void)
+{
+//fCompoundFitData  = 0;
+  fCompoundFitModel = 0;
+}
+//________________________________________________________________________________________
+void CompoundFitElements::Book(void)
+{
+//fCompoundFitData  = new CompoundFitData;
+  fCompoundFitModel = new CompoundFitModel;
+}
+//________________________________________________________________________________________
+void CompoundFitElements::Clean(void)
+{
+//if(fCompoundFitData ) delete fCompoundFitData;
+  if(fCompoundFitModel) delete fCompoundFitModel;
+}
+//________________________________________________________________________________________
+FitDataABC * CompoundFitElements::AdoptFitData(
   string config_file, 
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name)
 {
@@ -172,7 +189,7 @@ FitDataABC * CompoundFitSetup::AdoptFitData(
   return dataset;
 }
 //________________________________________________________________________________________
-FitModelABC * CompoundFitSetup::AdoptFitModel(
+FitModelABC * CompoundFitElements::AdoptFitModel(
   string config_file, 
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name)
 {
@@ -184,22 +201,21 @@ FitModelABC * CompoundFitSetup::AdoptFitModel(
   return model;
 }
 //________________________________________________________________________________________
-void * CompoundFitSetup::InstantiateUsingDictionaryRegistration(string class_name)
+void * CompoundFitElements::InstantiateUsingDictionaryRegistration(string class_name)
 {
   TClass * tclass = TClass::GetClass(class_name.c_str());
   if(!tclass) {
-     LOG("CompoundFitSetup", pERROR) 
+     LOG("CompoundFitElements", pERROR) 
          << "Failed getting class = " << class_name;
      return 0;
   }
   void * vbase = tclass->New();
   if(!vbase) {
-     LOG("CompoundFitSetup", pERROR) 
+     LOG("CompoundFitElements", pERROR) 
          << "Failed instantiating class = " << class_name;
      return 0;
   }
   return vbase;
 }
 //________________________________________________________________________________________
-
 
