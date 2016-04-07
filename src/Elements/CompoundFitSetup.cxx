@@ -12,36 +12,51 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include "Messenger/Messenger.h"
 
-#include "Elements/ElementFactory.h"
+#include "Elements/CompoundFitSetup.h"
 #include "Elements/SingleSampleFitDataABC.h"
 #include "Elements/SingleSampleFitModelABC.h"
 
 using namespace valor;
 
 //________________________________________________________________________________________
-ElementFactory * ElementFactory::fgInstance = 0;
-//________________________________________________________________________________________
-ElementFactory::ElementFactory(void)
+CompoundFitSetup::CompoundFitSetup(void)
 {
-  fgInstance =  0;
+
 }
 //________________________________________________________________________________________
-ElementFactory::~ElementFactory(void)
+CompoundFitSetup::~CompoundFitSetup(void)
 {
-  fgInstance = 0;
+
 }
 //________________________________________________________________________________________
-ElementFactory * ElementFactory::Instance()
+bool CompoundFitSetup::Read(string xmlconfig)
 {
-  if(fgInstance == 0) {
-    static ElementFactory::Cleaner cleaner;
-    cleaner.DummyMethodAndSilentCompiler();
-    fgInstance = new ElementFactory;
-  }
-  return fgInstance;
+// It reads a list of "elements" (sample
+// 
+// .....................................................................
+// <?xml version="1.0"?>
+//
+// <element_list name="DUNE-NDFit">
+//
+//    <element>
+//        <detector>     dunend                       </detector>
+//        <beam>         fhc                          </beam>
+//        <sample>       numuccincl                   </sample>
+//        <data>         data.xml                     </data>
+//        <mc>           mc_production.xml            </mc>
+//        <data_class>   valor::SingleSampleDataA     </data_class>
+//        <model_class>  valor::SingleSampleFitModelA </model_class>
+//    </element>
+//
+// </element_list>
+//
+// ......................................................................
+//
+
+
 }
 //________________________________________________________________________________________
-FitDataABC * ElementFactory::AdoptFitData(
+FitDataABC * CompoundFitSetup::AdoptFitData(
   string config_file, 
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name)
 {
@@ -53,7 +68,7 @@ FitDataABC * ElementFactory::AdoptFitData(
   return dataset;
 }
 //________________________________________________________________________________________
-FitModelABC * ElementFactory::AdoptFitModel(
+FitModelABC * CompoundFitSetup::AdoptFitModel(
   string config_file, 
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name)
 {
@@ -65,17 +80,17 @@ FitModelABC * ElementFactory::AdoptFitModel(
   return model;
 }
 //________________________________________________________________________________________
-void * ElementFactory::InstantiateUsingDictionaryRegistration(string class_name)
+void * CompoundFitSetup::InstantiateUsingDictionaryRegistration(string class_name)
 {
   TClass * tclass = TClass::GetClass(class_name.c_str());
   if(!tclass) {
-     LOG("ElementFactory", pERROR) 
+     LOG("CompoundFitSetup", pERROR) 
          << "Failed getting class = " << class_name;
      return 0;
   }
   void * vbase = tclass->New();
   if(!vbase) {
-     LOG("ElementFactory", pERROR) 
+     LOG("CompoundFitSetup", pERROR) 
          << "Failed instantiating class = " << class_name;
      return 0;
   }

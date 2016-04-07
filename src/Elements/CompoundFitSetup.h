@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::ElementFactory
+\class     valor::CompoundFitSetup
 
 \brief   
 
@@ -15,8 +15,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_dune_element_factory_h_
-#define _valor_dune_element_factory_h_
+#ifndef _valor_dune_compound_fit_setup_h_
+#define _valor_dune_compound_fit_setup_h_
 
 #include <string>
 
@@ -32,36 +32,21 @@ using namespace valor;
 
 namespace valor {
 
-class ElementFactory
+class CompoundFitSetup
 {
 public:
-  static ElementFactory * Instance();
+  CompoundFitSetup();
+ ~CompoundFitSetup();
+
+  bool Read(string xmlconfig);
 
   FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleDataA"    );
   FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleFitModelA");
 
 private:
-  ElementFactory(void);
-  ElementFactory(const ElementFactory & elf);
-  virtual ~ElementFactory();
 
-  // self
-  static ElementFactory * fgInstance;
-
-  //
   void * InstantiateUsingDictionaryRegistration (string class_name);
 
-  // singleton cleaner
-  struct Cleaner {
-      void DummyMethodAndSilentCompiler() { }
-      ~Cleaner() {
-         if (ElementFactory::fgInstance !=0) {
-            delete ElementFactory::fgInstance;
-            ElementFactory::fgInstance = 0;
-         }
-      }
-  };
-  friend struct Cleaner;
 };
 
 } // valor
