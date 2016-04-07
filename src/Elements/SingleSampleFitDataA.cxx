@@ -23,6 +23,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Utilities/UtlNumStat.h"
 #include "Messenger/Messenger.h"
 // dune
+#include "Conventions/Names.h"
 #include "Elements/SingleSampleFitDataA.h"
 
 using namespace valor;
@@ -42,7 +43,7 @@ SingleSampleFitDataA::~SingleSampleFitDataA()
 //________________________________________________________________________________________
 string SingleSampleFitDataA::Name(void)
 {  
-  return "DUNEND";
+  return fName;
 }
 //________________________________________________________________________________________
 bool SingleSampleFitDataA::Read(string /*file*/, Option_t * /*opt*/)
@@ -50,6 +51,8 @@ bool SingleSampleFitDataA::Read(string /*file*/, Option_t * /*opt*/)
   assert(fDetector != kdUndefined);
   assert(fBeam     != kbUndefined);
   assert(fSample   != ksUndefined);
+
+  fName = util::nm::DSetName(fDetector, fBeam, fSample, "");
 
   this->Book();
 //this->Zero();
@@ -431,6 +434,8 @@ double SingleSampleFitDataA::Statistic(
 void SingleSampleFitDataA::Init(void)
 {
   LOG("SingleSampleFitDataA",pDEBUG) << "Initializing...";
+
+  fName = "none";
 
   fDetector = kdUndefined;
   fBeam     = kbUndefined;

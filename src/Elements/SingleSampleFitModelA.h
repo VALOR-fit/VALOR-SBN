@@ -25,6 +25,7 @@ brief      An abstract implementation of the fit model for a single sample,
 #define _valor_single_sample_model_a_h_
 
 #include <string>
+
 #include <TMatrixD.h>
 #include <TObjArray.h>
 #include <TTree.h>
@@ -43,6 +44,8 @@ brief      An abstract implementation of the fit model for a single sample,
 #include "Conventions/FitParam.h"
 #include "Conventions/ArrIdx.h"
 #include "Elements/SingleSampleFitModelABC.h"
+
+using std::string;
 
 namespace valor {
 
@@ -114,12 +117,19 @@ private:
 
   PhysHypothesis fPhysHypothesis;
 
-  // Exposure (assumed) for each beam configuration (in POT)
+  // Name of this VALOR fit model (see Conventions/Names.h)
+  string fName;
+
+  // Exposure for corresponding sample (in POT)
   double fPOT;
 
-  // Near detector fiducial mass (ktonnes)
+  // Fiducial mass (ktonnes)
   double fFiducialMass;
 
+  // Input VALOR MC DSTs
+  bool fUseMCDST;
+  TTree * fMCDST;
+  
   // MC templates (MCT) 
   // Each template is (currently always) a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.
   // There is a template for all beam/sample/reac_mode combinations.
@@ -171,10 +181,6 @@ private:
   bool         fPDFTotNullSb;                     // 
   VALORArray * fPDFTotSb;                         // total
   VALORArray * fPDFCompSb    [conv::kNReacModes]; // components
-
-  // Input VALOR MC DSTs
-  bool fUseMCDST;
-  TTree * fMCDST;
   
   // Systematics
   //---------------- remove

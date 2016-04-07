@@ -42,6 +42,7 @@
 class TObjArray;
 class TH1D;
 
+using std::string;
 using namespace valor;
 
 namespace valor {
@@ -75,6 +76,9 @@ private:
   void Book  (void);
   void Clean (void);
   void Zero  (Option_t * opt);
+
+  // Name of this VALOR fit dataset (see Conventions/Names.h)
+  string fName;
 
   // Data distributions:
   // Each distribution is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.

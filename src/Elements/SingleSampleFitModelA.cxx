@@ -38,6 +38,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Conventions/ReacMode.h"
 #include "Conventions/BeamConf.h"
 #include "Conventions/FitParamApply.h"
+#include "Conventions/Names.h"
 #include "Elements/SingleSampleFitModelA.h"
 
 using std::endl;
@@ -64,7 +65,7 @@ SingleSampleFitModelA::~SingleSampleFitModelA()
 //________________________________________________________________________________________
 string SingleSampleFitModelA::Name(void)
 {
-  return "DUNEND";
+  return fName;
 }
 //________________________________________________________________________________________
 bool SingleSampleFitModelA::Read(string file, Option_t * opt)
@@ -72,6 +73,8 @@ bool SingleSampleFitModelA::Read(string file, Option_t * opt)
   assert(fDetector != kdUndefined);
   assert(fBeam     != kbUndefined);
   assert(fSample   != ksUndefined);
+
+  fName = util::nm::MdlName(fDetector, fBeam, fSample, "");
 
   this->Book();
   this->Zero();
@@ -798,6 +801,12 @@ void SingleSampleFitModelA::Init(void)
 {
   LOG("SingleSampleFitModelA",pDEBUG) << "Initializing...";
 
+  fName         = "none";
+  fFiducialMass = 0;
+  fPOT          = 0;
+  fUseMCDST     = false;
+  fMCDST        = 0;
+
   for(int imode = 0; imode < kNReacModes; imode++) {
 
        // MC templates (simple binning)
@@ -832,10 +841,6 @@ void SingleSampleFitModelA::Init(void)
 
   }//imode
 
-  fUseMCDST = false;
-  fPOT   = 0;
-  fMCDST = 0;
-
 //  for(int ip = 0; ip < conv::kNFitParams; ip++) {
 //    fPhysParamCurrVal[ip] = 0;
 //    fPhysParamFracErr[ip] = 0;
@@ -852,7 +857,6 @@ void SingleSampleFitModelA::Init(void)
   fNuDet  = 0;
   // ----------------
 */
-
   fSyst = 0;
 }
 //________________________________________________________________________________________
