@@ -37,8 +37,8 @@ class ElementFactory
 public:
   static ElementFactory * Instance();
 
-  FitDataABC *  AdoptFitData  (conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleDataA"    );
-  FitModelABC * AdoptFitModel (conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleFitModelA");
+  FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleDataA"    );
+  FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleFitModelA");
 
 private:
   ElementFactory(void);
@@ -49,7 +49,7 @@ private:
   static ElementFactory * fgInstance;
 
   //
-  void * InstantiateUsingDictionaryRegistration (conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name);
+  void * InstantiateUsingDictionaryRegistration (string class_name);
 
   // singleton cleaner
   struct Cleaner {

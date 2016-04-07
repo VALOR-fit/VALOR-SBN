@@ -30,7 +30,6 @@ brief      An abstract implementation of the fit model for a single sample,
 #include <TTree.h>
 
 //fmwk
-#include "FitCore/FitModelABC.h"
 #include "FitCore/PhysHypothesis.h"
 #include "FitCore/PhysParamList.h"
 #include "FitCore/CorrelatedSystematics.h"
@@ -43,6 +42,7 @@ brief      An abstract implementation of the fit model for a single sample,
 #include "Conventions/SampleReacMode.h"
 #include "Conventions/FitParam.h"
 #include "Conventions/ArrIdx.h"
+#include "Elements/SingleSampleFitModelABC.h"
 
 namespace valor {
 
@@ -53,12 +53,11 @@ namespace valor {
 //class NuDet;  // neutrino detector model systematics
 // --------------------------------------
 
-class SingleSampleFitModelA: public FitModelABC
+class SingleSampleFitModelA: public SingleSampleFitModelABC
 {
 public:
 
   SingleSampleFitModelA();
-//SingleSampleFitModelA(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s); // not use - take, d,b,s at config
   virtual ~SingleSampleFitModelA();
 
   //
@@ -120,11 +119,6 @@ private:
 
   // Near detector fiducial mass (ktonnes)
   double fFiducialMass;
-
-  // Configuration
-  conv::Detector_t fDetector;
-  conv::BeamConf_t fBeam;
-  conv::Sample_t   fSample;
 
   // MC templates (MCT) 
   // Each template is (currently always) a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.

@@ -47,32 +47,10 @@ using namespace valor::conv;
 
 //________________________________________________________________________________________
 SingleSampleFitModelA::SingleSampleFitModelA() :
-FitModelABC()
+SingleSampleFitModelABC()
 {
   this->Init();
-
-  // incomplete
 }
-//________________________________________________________________________________________
-/*
-SingleSampleFitModelA::SingleSampleFitModelA(
-  conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s) :
-FitModelABC()
-{
-  this->Init();
-
-  fDetector = d;
-  fBeam     = b;
-  fSample   = s;
-
-  assert(fDetector != kdUndefined);
-  assert(fBeam     != kbUndefined);
-  assert(fSample   != ksUndefined);
-
-  this->Book();
-  this->Zero();
-}
-*/
 //________________________________________________________________________________________
 SingleSampleFitModelA::~SingleSampleFitModelA() 
 {
@@ -91,6 +69,11 @@ string SingleSampleFitModelA::Name(void)
 //________________________________________________________________________________________
 bool SingleSampleFitModelA::Read(string file, Option_t * opt)
 {
+  assert(fDetector != kdUndefined);
+  assert(fBeam     != kbUndefined);
+  assert(fSample   != ksUndefined);
+
+  this->Book();
   this->Zero();
   
   TString ts_opt(opt);

@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::SingleSampleDataA
+\class     valor::SingleSampleFitDataA
 
 \brief     An abstract class for storing data for a single sample, 
            in a specific beam configuration and for a specific detector.
@@ -29,7 +29,6 @@
 #include <string>
 
 //fmwk
-#include "FitCore/FitDataABC.h"
 #include "Utilities/VALORArray.h"
 //dune
 #include "Conventions/BeamConf.h"
@@ -38,6 +37,7 @@
 #include "Conventions/SampleKineBinning.h"
 #include "Conventions/SampleReacMode.h"
 #include "Conventions/ArrIdx.h"
+#include "Elements/SingleSampleFitDataABC.h"
 
 class TObjArray;
 class TH1D;
@@ -46,13 +46,11 @@ using namespace valor;
 
 namespace valor {
 
-class SingleSampleDataA: public FitDataABC
+class SingleSampleFitDataA: public SingleSampleFitDataABC
 {
 public:
-
-  SingleSampleDataA(void);
-//SingleSampleDataA(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s); // not use - take, d,b,s at config
-  virtual ~SingleSampleDataA();
+  SingleSampleFitDataA(void);
+  virtual ~SingleSampleFitDataA();
 
   //
   // Implement the FitDataABC interface
@@ -77,11 +75,6 @@ private:
   void Book  (void);
   void Clean (void);
   void Zero  (Option_t * opt);
-
-  // Configuration
-  conv::Detector_t fDetector;
-  conv::BeamConf_t fBeam;
-  conv::Sample_t   fSample;
 
   // Data distributions:
   // Each distribution is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
