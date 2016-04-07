@@ -99,6 +99,68 @@ string valor::util::nm::DSetToken(string dataset, int i)
   return "";
 }
 //________________________________________________________________________________________
+//________________________________________________________________________________________
+string valor::util::nm::MdlName(
+  string det_nm, string beam_nm, string sample_nm, string obs_nm)
+{
+  return valor::util::nm::DSetName(det_nm,beam_nm,sample_nm,obs_nm);
+}
+//________________________________________________________________________________________
+string valor::util::nm::MdlName(
+  valor::conv::Detector_t det, valor::conv::BeamConf_t beam, 
+  valor::conv::Sample_t sample, string obs_nm)
+{
+  return valor::util::nm::DSetName(det,beam,sample,obs_nm);
+}
+//________________________________________________________________________________________
+string valor::util::nm::MdlDetectorName(string dataset)
+{
+  return valor::util::nm::DSetDetectorName(dataset);
+}
+//________________________________________________________________________________________
+valor::conv::Detector_t valor::util::nm::MdlDetector(string dataset)
+{
+  return valor::util::nm::DSetDetector(dataset);
+}
+//________________________________________________________________________________________
+string valor::util::nm::MdlBeamName(string dataset)
+{
+  return valor::util::nm::DSetBeamName(dataset);
+}
+//________________________________________________________________________________________
+valor::conv::BeamConf_t valor::util::nm::MdlBeam(string dataset)
+{
+  return valor::util::nm::DSetBeam(dataset);
+}
+//________________________________________________________________________________________
+string valor::util::nm::MdlSampleName(string dataset)
+{
+  return valor::util::nm::DSetSampleName(dataset);
+}
+//________________________________________________________________________________________
+valor::conv::Sample_t valor::util::nm::MdlSample(string dataset)
+{
+  return valor::util::nm::DSetSample(dataset);
+}
+//________________________________________________________________________________________
+/*
+string valor::util::nm::MdlObsrvName(string dataset)
+{
+
+}
+//________________________________________________________________________________________
+KSpace_t? valor::util::nm::MdlObsrv(string dataset)
+{
+
+}
+//________________________________________________________________________________________
+*/
+string valor::util::nm::MdlToken(string dataset, int i)
+{
+  return valor::util::nm::DSetToken(dataset, i);
+}
+//________________________________________________________________________________________
+//________________________________________________________________________________________
 string valor::util::nm::DatumName(
   string tag, string mother_obj_name, string quantity, string format)
 {

@@ -31,7 +31,7 @@ namespace util  {
 namespace nm    {
 
   //
-  // A VALOR dataset is a colon-separated list of:
+  // A VALOR fit dataset is a colon-separated list of:
   //
   // 1) The name of the detector
   //    e.g. `sbnd'
@@ -63,6 +63,26 @@ namespace nm    {
   string                  DSetToken        (string dataset, int i);            
 
   //
+  // A VALOR fit model is currently named as the dataset it corresponds to.
+  // However using a different set of functions for naming datasets and models
+  // to decouple the two and make it easier for them to evolve differently
+  //
+  string                  MdlName         (string det_nm,  string beam_nm,  string sample_nm, string obs_nm);
+  string                  MdlName         (valor::conv::Detector_t det, valor::conv::BeamConf_t beam, valor::conv::Sample_t sample,  string obs_nm);
+  string                  MdlDetectorName (string dataset);   // 1st token
+  valor::conv::Detector_t MdlDetector     (string dataset);   // 1st token
+  string                  MdlBeamName     (string dataset);   // 2st token
+  valor::conv::BeamConf_t MdlBeam         (string dataset);   // 2st token
+  string                  MdlSampleName   (string dataset);   // 3nd token
+  valor::conv::Sample_t   MdlSample       (string dataset);   // 3nd token
+/*
+  string                  MdlObsrvName    (string dataset);   // 4th token
+  valor::conv::KSpace_t?  MdlObsrv        (string dataset);   // 4th token   
+*/
+  string                  MdlToken        (string dataset, int i);            
+
+
+  //
   // Large collection of objects in various formats (arrays, histograms, graphs).
   // can be written out by FitModelABC::Write() or FitDataABC::Write() implementations
   // These objects represent the various pieces of data, model predictions, as well as
@@ -71,7 +91,7 @@ namespace nm    {
   // 1) An optional tag 
   //    e.g. `best_fit', `toy_mc_18', ...
   // 2) The name of the dataset or model where it belongs 
-  //    e.g. `sbnd;fhc;numuCC2trkQE;Ereco_yreco'
+  //    e.g. `sbnd:fhc:numuCC2trkQE:Ereco_yreco'
   // 3) A string that further specifies the output quantity 
   //    e.g. `full_2d', `1d_slice_17', `Ereco_bin_edges',....
   // 4) A string indicating the format (the same information can be output in several formats)
