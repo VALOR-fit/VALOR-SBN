@@ -20,6 +20,8 @@
 
 #include <string>
 
+#include <TXMLEngine.h>
+
 //fmwk
 #include "FitCore/FitDataABC.h"
 #include "FitCore/FitModelABC.h"
@@ -44,6 +46,9 @@ public:
   FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name = "valor::SingleSampleFitModelA");
 
 private:
+
+  bool ReadElementList (TXMLEngine* xmleng, XMLNodePointer_t top_node);
+  bool ReadElement     (TXMLEngine* xmleng, XMLNodePointer_t top_node);
 
   void * InstantiateUsingDictionaryRegistration (string class_name);
 
