@@ -69,7 +69,7 @@ namespace util {
   vector<conv::KineVar_t> KineVarReco         (conv::KineSpace_t ks);
   vector<conv::KineVar_t> KineVarTrue         (conv::KineSpace_t ks);
   conv::KineSpace_t       KineSpaceFromInt    (int is);
-  conv::KineSpace_t       KineSPaceFromString (string s);
+  conv::KineSpace_t       KineSpaceFromString (string s);
 
 
 } // util

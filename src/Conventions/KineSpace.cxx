@@ -262,7 +262,7 @@ conv::KineSpace_t util::KineSpaceFromInt(int i_sp)
   return kspUndefined;
 }
 //________________________________________________________________________________________
-conv::KineSpace_t util::KineSPaceFromString(string str_sp)
+conv::KineSpace_t util::KineSpaceFromString(string str_sp)
 {
   string lc_str_sp = util::ToLowerCase(str_sp);
   for (int i = 0 ; i < conv::kMaxKineSpaces; i++) {
