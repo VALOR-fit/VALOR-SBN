@@ -61,9 +61,10 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
+  
   Env::Instance()->AutoSet("dune");
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
-
+  
   NDXArg arg;
   arg.SetDefaults(); 
   arg.ParseFromCmdLine(argc,argv);
@@ -73,32 +74,32 @@ int main(int argc, char ** argv)
 
   TString param_values_ts(arg.ParamValuesOption());
   TString fit_options_ts (arg.FitOption());
-
+  
   Messenger::Instance()->Configure(arg.VerbosityFile());
   
   // Set DUNE param names inside framework
   util::PopulateNameRegistry();
 
   // Create file and tree to store outputs
-  const char * outfilename = Form("%s_%d.root", arg.JobTag(), (int) arg.RunNu());
+  TString outfilename = TString::Format("%s_%ld.root", arg.JobTag().c_str(), arg.RunNu());
   StdFitNtp ntp;
-  ntp.Create(outfilename, "valor_dune_nd_ntp", "VALOR DUNE / ND-Fit n-tuple");
+  ntp.Create(outfilename.Data(), "valor_dune_nd_ntp", "VALOR DUNE / ND-Fit n-tuple");
   
   // Get ND model & configure
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit model";
   FitModelABC * model = new SDModel;
-  model->Read(arg.ConfigFile());
-
+  model->Read(arg.ConfigFile().c_str());
+  
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < arg.NToyMC(); itoymc++) {
     LOG("valor_dune", pNOTICE) << "\n\n *** Toy-MC experiment #" << itoymc;
     
     // Reset output tree variables
     ntp.Reset();
-
+    
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(arg.FitParamList());
+    FitParamList * fp = util::GetFitParameterList(arg.FitParamList().c_str());
    
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
@@ -132,7 +133,7 @@ int main(int argc, char ** argv)
     // Get fitter
     LOG("valor_dune", pNOTICE) << "Preparing the fitter";
     FitInputs * fit_inputs = new FitInputs(data,model,fp);
-    FitterABC * fitter = util::GetFitter(fit_inputs, arg.FitOption());
+    FitterABC * fitter = util::GetFitter(fit_inputs, arg.FitOption().c_str());
 
     // Do the fit
     LOG("valor_dune", pNOTICE) << "Running the fitter";
