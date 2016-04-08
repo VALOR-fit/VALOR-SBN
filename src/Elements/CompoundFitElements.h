@@ -29,6 +29,7 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
 #include "Conventions/Detector.h"
+#include "Conventions/KineSpace.h"
 
 using namespace valor;
 
@@ -54,8 +55,8 @@ private:
   bool ReadElementList (TXMLEngine* xmleng, XMLNodePointer_t top_node);
   bool ReadElement     (TXMLEngine* xmleng, XMLNodePointer_t top_node);
 
-  FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name);
-  FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name);
+  FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
+  FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
   void *        InstantiateUsingDictionaryRegistration (string class_name);
 
 //FitDataABC *  fCompoundFitData;

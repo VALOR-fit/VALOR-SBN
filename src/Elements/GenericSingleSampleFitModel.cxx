@@ -74,7 +74,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   assert(fBeam     != kbUndefined);
   assert(fSample   != ksUndefined);
 
-  fName = util::nm::MdlName(fDetector, fBeam, fSample, "");
+  fName = util::nm::MdlName(fDetector, fBeam, fSample, fKSp);
 
   this->Book();
   this->Zero();

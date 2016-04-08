@@ -50,9 +50,10 @@ bool CompoundFitElements::Read(string xmlfile)
 //         <detector>     dunend                       </detector>
 //         <beam>         fhc                          </beam>
 //         <sample>       numuccincl                   </sample>
+//         <observable>   Ereco,yreco                  </observable>
 //         <data>         data.xml                     </data>
 //         <mc>           mc_production.xml            </mc>
-//         <data_class>   valor::SingleSampleDataA     </data_class>
+//         <data_class>   valor::GenericSingleSampleData     </data_class>
 //         <model_class>  valor::GenericSingleSampleFitModel </model_class>
 //      </element>
 //
@@ -109,13 +110,14 @@ bool CompoundFitElements::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t t
 //________________________________________________________________________________________
 bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node)
 {
-  string detector_name = "";
-  string beam_name     = "";
-  string sample_name   = "";
-  string data_file     = "";
-  string mc_file       = "";
-  string data_class    = "";
-  string model_class   = "";
+  string detector_name    = "";
+  string beam_name        = "";
+  string sample_name      = "";
+  string observable_name  = "";
+  string data_file        = "";
+  string mc_file          = "";
+  string data_class       = "";
+  string model_class      = "";
 
   XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
   while(curr_node) {
@@ -123,29 +125,32 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
       if(xmleng->GetNodeContent(curr_node)) {
         string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
         LOG("CompoundFitElements", pNOTICE) << curr_node_name << " --> " << content;
-        if(curr_node_name == "detector"   ) { detector_name = content; }
-        if(curr_node_name == "beam"       ) { beam_name     = content; }
-        if(curr_node_name == "sample"     ) { sample_name   = content; }
-        if(curr_node_name == "data"       ) { data_file     = content; }
-        if(curr_node_name == "mc"         ) { mc_file       = content; }
-        if(curr_node_name == "data_class" ) { data_class    = content; }
-        if(curr_node_name == "model_class") { model_class   = content; }
+        if(curr_node_name == "detector"   ) { detector_name   = content; }
+        if(curr_node_name == "beam"       ) { beam_name       = content; }
+        if(curr_node_name == "sample"     ) { sample_name     = content; }
+        if(curr_node_name == "observable" ) { observable_name = content; }
+        if(curr_node_name == "data"       ) { data_file       = content; }
+        if(curr_node_name == "mc"         ) { mc_file         = content; }
+        if(curr_node_name == "data_class" ) { data_class      = content; }
+        if(curr_node_name == "model_class") { model_class     = content; }
       }
       curr_node = xmleng->GetNext(curr_node);
   }
 
-  conv::Detector_t detector = util::DetectorFromString(detector_name);
-  conv::BeamConf_t beam     = util::BeamConfFromString(beam_name);
-  conv::Sample_t   sample   = util::SampleFromString(sample_name);
+  conv::Detector_t  detector   = util::DetectorFromString(detector_name);
+  conv::BeamConf_t  beam       = util::BeamConfFromString(beam_name);
+  conv::Sample_t    sample     = util::SampleFromString(sample_name);
+  conv::KineSpace_t observable = util::KineSpaceFromString(observable_name);
 
-  if (detector == conv::kdUndefined) return false;
-  if (beam     == conv::kbUndefined) return false;
-  if (sample   == conv::ksUndefined) return false;
+  if (detector   == conv::kdUndefined ) return false;
+  if (beam       == conv::kbUndefined ) return false;
+  if (sample     == conv::ksUndefined ) return false;
+  if (observable == conv::kspUndefined) return false;
 
   FitDataABC *  fit_data  = 
-     this->AdoptFitData (data_file, detector, beam, sample, data_class );
+     this->AdoptFitData (data_file, detector, beam, sample, observable, data_class );
   FitModelABC * fit_model = 
-     this->AdoptFitModel(mc_file,   detector, beam, sample, model_class);
+     this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class);
 
   assert(fit_data);
   assert(fit_model);
@@ -179,11 +184,12 @@ void CompoundFitElements::Clean(void)
 //________________________________________________________________________________________
 FitDataABC * CompoundFitElements::AdoptFitData(
   string config_file, 
-  conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name)
+  conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, 
+  string class_name)
 {
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   SingleSampleFitDataABC * s_dataset = (SingleSampleFitDataABC *) (vbase);
-  s_dataset->Configure(d,b,s);
+  s_dataset->Configure(d,b,s,o);
   s_dataset->Read(config_file);
   FitDataABC * dataset = (FitDataABC *) (s_dataset);
   return dataset;
@@ -191,11 +197,12 @@ FitDataABC * CompoundFitElements::AdoptFitData(
 //________________________________________________________________________________________
 FitModelABC * CompoundFitElements::AdoptFitModel(
   string config_file, 
-  conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, string class_name)
+  conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o,
+  string class_name)
 {
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   SingleSampleFitModelABC * s_model = (SingleSampleFitModelABC *) (vbase);
-  s_model->Configure(d,b,s);
+  s_model->Configure(d,b,s,o);
   s_model->Read(config_file);
   FitModelABC * model = (FitModelABC *) (s_model);
   return model;

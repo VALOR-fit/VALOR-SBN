@@ -19,6 +19,7 @@ FitModelABC()
   fDetector = conv::kdUndefined;
   fBeam     = conv::kbUndefined;
   fSample   = conv::ksUndefined;
+  fKSp      = conv::kspUndefined;
 }
 //________________________________________________________________________________________
 SingleSampleFitModelABC::~SingleSampleFitModelABC() 
@@ -27,15 +28,18 @@ SingleSampleFitModelABC::~SingleSampleFitModelABC()
 }
 //________________________________________________________________________________________
 void SingleSampleFitModelABC::Configure(
-  conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s)
+  conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t k)
 {
   fDetector = d;
   fBeam     = b;
   fSample   = s;
+  fKSp      = k;
 
-  assert(fDetector != conv::kdUndefined);
-  assert(fBeam     != conv::kbUndefined);
-  assert(fSample   != conv::ksUndefined);
+  assert(fDetector != conv::kdUndefined );
+  assert(fBeam     != conv::kbUndefined );
+  assert(fSample   != conv::ksUndefined );
+  assert(fKSp      != conv::kspUndefined);
+
 }
 //________________________________________________________________________________________
 

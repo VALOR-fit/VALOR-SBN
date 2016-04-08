@@ -24,6 +24,7 @@
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
 #include "Conventions/Detector.h"
+#include "Conventions/KineSpace.h"
 
 namespace valor {
 
@@ -32,15 +33,16 @@ class SingleSampleFitDataABC: public FitDataABC
 public:
   virtual ~SingleSampleFitDataABC();
 
-  void Configure(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s); 
+  void Configure(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t k); 
 
 protected:
    SingleSampleFitDataABC();
 
   // Configuration
-  conv::Detector_t fDetector;
-  conv::BeamConf_t fBeam;
-  conv::Sample_t   fSample;
+  conv::Detector_t  fDetector;
+  conv::BeamConf_t  fBeam;
+  conv::Sample_t    fSample;
+  conv::KineSpace_t fKSp;
 };
 
 } // valor

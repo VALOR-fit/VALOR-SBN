@@ -52,7 +52,7 @@ bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
   assert(fBeam     != kbUndefined);
   assert(fSample   != ksUndefined);
 
-  fName = util::nm::DSetName(fDetector, fBeam, fSample, "");
+  fName = util::nm::DSetName(fDetector, fBeam, fSample, fKSp);
 
   this->Book();
 //this->Zero();
