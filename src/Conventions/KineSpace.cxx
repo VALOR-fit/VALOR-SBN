@@ -19,11 +19,11 @@ using namespace valor::conv;
 string util::AsString(KineSpace_t ks)
 {
   switch(ks) {
-    case (kspEtrue)            : return "<Etrue>";                  break;
-    case (kspEreco)            : return "<Ereco>";                  break;
-    case (kspEvis )            : return "<Evis>";                   break;
-    case (kspYreco)            : return "<yreco>";                  break;
-    case (kspErecoYreco)       : return "<Ereco,yreco>";            break;
+    case (kspEtrue)            : return "Etrue";                  break;
+    case (kspEreco)            : return "Ereco";                  break;
+    case (kspEvis )            : return "Evis";                   break;
+    case (kspYreco)            : return "yreco";                  break;
+    case (kspErecoYreco)       : return "Ereco,yreco";            break;
     default : 
      LOG("KineSpace",pERROR) 
         << "Unrecognized kinematic space: " << ks;
