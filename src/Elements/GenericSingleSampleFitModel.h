@@ -34,7 +34,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "FitCore/PhysHypothesis.h"
 #include "FitCore/PhysParamList.h"
 #include "FitCore/CorrelatedSystematics.h"
-#include "Utilities/VALORArray.h"
+#include "VArray/VALORArray.h"
 //dune
 #include "Conventions/Detector.h"
 #include "Conventions/BeamConf.h"

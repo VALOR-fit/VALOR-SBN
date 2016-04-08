@@ -40,7 +40,7 @@
 #include "FitCore/FitParamList.h"
 #include "FitCore/FitInputs.h"
 #include "Messenger/Messenger.h"
-#include "Parser/CmdLnArgParser.h"
+#include "CmdLine/CmdLnArgParser.h"
 // dune
 #include "Conventions/FitParam.h"
 
