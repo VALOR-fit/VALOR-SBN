@@ -21,10 +21,7 @@
 #include "Conventions/Detector.h"
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
-
-using valor::conv::Detector_t;
-using valor::conv::BeamConf_t;
-using valor::conv::Sample_t;
+#include "Conventions/KineSpace.h"
 
 namespace valor {
 namespace util  {
@@ -48,36 +45,36 @@ namespace nm    {
   // The following functions assemble the dataset name, or tokenize it
   // and return individual components.
   //
-  string                  DSetName         (string det_nm,  string beam_nm,  string sample_nm, string obs_nm);
-  string                  DSetName         (valor::conv::Detector_t det, valor::conv::BeamConf_t beam, valor::conv::Sample_t sample,  string obs_nm);
-  string                  DSetDetectorName (string dataset);   // 1st token
-  valor::conv::Detector_t DSetDetector     (string dataset);   // 1st token
-  string                  DSetBeamName     (string dataset);   // 2st token
-  valor::conv::BeamConf_t DSetBeam         (string dataset);   // 2st token
-  string                  DSetSampleName   (string dataset);   // 3nd token
-  valor::conv::Sample_t   DSetSample       (string dataset);   // 3nd token
+  string                   DSetName         (string det_nm,  string beam_nm,  string sample_nm, string obsrv_nm);
+  string                   DSetName         (valor::conv::Detector_t det, valor::conv::BeamConf_t beam, valor::conv::Sample_t sample, valor::conv::KineSpace_t obsrv);
+  string                   DSetDetectorName (string dataset);   // 1st token
+  valor::conv::Detector_t  DSetDetector     (string dataset);   // 1st token
+  string                   DSetBeamName     (string dataset);   // 2st token
+  valor::conv::BeamConf_t  DSetBeam         (string dataset);   // 2st token
+  string                   DSetSampleName   (string dataset);   // 3nd token
+  valor::conv::Sample_t    DSetSample       (string dataset);   // 3nd token
 /*
-  string                  DSetObsrvName    (string dataset);   // 4th token
-  valor::conv::KSpace_t?  DSetObsrv        (string dataset);   // 4th token   
+  string                   DSetObsrvName    (string dataset);   // 4th token
+  valor::conv::KineSpace_t DSetObsrv        (string dataset);   // 4th token   
 */
-  string                  DSetToken        (string dataset, int i);            
+  string                   DSetToken        (string dataset, int i);            
 
   //
   // A VALOR fit model is currently named as the dataset it corresponds to.
   // However using a different set of functions for naming datasets and models
   // to decouple the two and make it easier for them to evolve differently
   //
-  string                  MdlName         (string det_nm,  string beam_nm,  string sample_nm, string obs_nm);
-  string                  MdlName         (valor::conv::Detector_t det, valor::conv::BeamConf_t beam, valor::conv::Sample_t sample,  string obs_nm);
-  string                  MdlDetectorName (string dataset);   // 1st token
-  valor::conv::Detector_t MdlDetector     (string dataset);   // 1st token
-  string                  MdlBeamName     (string dataset);   // 2st token
-  valor::conv::BeamConf_t MdlBeam         (string dataset);   // 2st token
-  string                  MdlSampleName   (string dataset);   // 3nd token
-  valor::conv::Sample_t   MdlSample       (string dataset);   // 3nd token
+  string                   MdlName         (string det_nm,  string beam_nm,  string sample_nm, string obsrv_nm);
+  string                   MdlName         (valor::conv::Detector_t det, valor::conv::BeamConf_t beam, valor::conv::Sample_t sample, valor::conv::KineSpace_t obsrv);
+  string                   MdlDetectorName (string dataset);   // 1st token
+  valor::conv::Detector_t  MdlDetector     (string dataset);   // 1st token
+  string                   MdlBeamName     (string dataset);   // 2st token
+  valor::conv::BeamConf_t  MdlBeam         (string dataset);   // 2st token
+  string                   MdlSampleName   (string dataset);   // 3nd token
+  valor::conv::Sample_t    MdlSample       (string dataset);   // 3nd token
 /*
-  string                  MdlObsrvName    (string dataset);   // 4th token
-  valor::conv::KSpace_t?  MdlObsrv        (string dataset);   // 4th token   
+  string                   MdlObsrvName    (string dataset);   // 4th token
+  valor::conv::KineSpace_t MdlObsrv        (string dataset);   // 4th token   
 */
   string                  MdlToken        (string dataset, int i);            
 

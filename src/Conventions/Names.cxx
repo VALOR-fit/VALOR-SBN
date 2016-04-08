@@ -19,21 +19,22 @@ using std::vector;
 
 //________________________________________________________________________________________
 string valor::util::nm::DSetName(
-  string det_nm, string beam_nm, string sample_nm, string obs_nm)
+  string det_nm, string beam_nm, string sample_nm, string obsrv_nm)
 {
-  string dataset = det_nm + ":" + beam_nm + ":" + sample_nm /* + ":" + obs_nm */;
+  string dataset = det_nm + ":" + beam_nm + ":" + sample_nm /* + ":" + obsrv_nm */;
   return dataset;
 }
 //________________________________________________________________________________________
 string valor::util::nm::DSetName(
-  valor::conv::Detector_t det, valor::conv::BeamConf_t beam, 
-  valor::conv::Sample_t sample, string obs_nm)
+  valor::conv::Detector_t det,  valor::conv::BeamConf_t beam, 
+  valor::conv::Sample_t sample, valor::conv::KineSpace_t obsrv)
 {
   string det_nm    = valor::util::AsString(det);
   string beam_nm   = valor::util::AsString(beam);
   string sample_nm = valor::util::AsString(sample);
+  string obsrv_nm  = valor::util::AsString(obsrv);
 
-  string dataset = det_nm + ":" + beam_nm + ":" + sample_nm /* + ":" + obs_nm */;
+  string dataset = det_nm + ":" + beam_nm + ":" + sample_nm /* + ":" + obsrv_nm */;
   return dataset;
 }
 //________________________________________________________________________________________
@@ -101,16 +102,16 @@ string valor::util::nm::DSetToken(string dataset, int i)
 //________________________________________________________________________________________
 //________________________________________________________________________________________
 string valor::util::nm::MdlName(
-  string det_nm, string beam_nm, string sample_nm, string obs_nm)
+  string det_nm, string beam_nm, string sample_nm, string obsrv_nm)
 {
-  return valor::util::nm::DSetName(det_nm,beam_nm,sample_nm,obs_nm);
+  return valor::util::nm::DSetName(det_nm,beam_nm,sample_nm,obsrv_nm);
 }
 //________________________________________________________________________________________
 string valor::util::nm::MdlName(
-  valor::conv::Detector_t det, valor::conv::BeamConf_t beam, 
-  valor::conv::Sample_t sample, string obs_nm)
+  valor::conv::Detector_t det,  valor::conv::BeamConf_t beam, 
+  valor::conv::Sample_t sample, valor::conv::KineSpace_t obsrv)
 {
-  return valor::util::nm::DSetName(det,beam,sample,obs_nm);
+  return valor::util::nm::DSetName(det,beam,sample,obsrv);
 }
 //________________________________________________________________________________________
 string valor::util::nm::MdlDetectorName(string dataset)
