@@ -143,6 +143,36 @@ int util::NDimTrue(KineSpace_t ks)
   return 0;
 }
 //________________________________________________________________________________________
+conv::KineSpace_t util::SubSpaceReco(conv::KineSpace_t ks)
+{
+  switch(ks) {
+    case (kspEtrue)            : return kspUndefined;
+    case (kspEreco)            : return kspEreco;
+    case (kspEvis )            : return kspEvis;
+    case (kspYreco)            : return kspYreco;
+    case (kspErecoYreco)       : return kspErecoYreco;
+    default:
+     LOG("KineVar",pERROR) 
+        << "Unrecognized kinematic space: " << ks;
+  }
+  return kspUndefined;
+}
+//________________________________________________________________________________________
+conv::KineSpace_t util::SubSpaceTrue(conv::KineSpace_t ks)
+{
+  switch(ks) {
+    case (kspEtrue)            : return kspEtrue;
+    case (kspEreco)            : return kspUndefined;
+    case (kspEvis )            : return kspUndefined;
+    case (kspYreco)            : return kspUndefined;
+    case (kspErecoYreco)       : return kspUndefined;
+    default:
+     LOG("KineVar",pERROR) 
+        << "Unrecognized kinematic space: " << ks;
+  }
+  return kspUndefined;
+}
+//________________________________________________________________________________________
 vector<KineVar_t> util::KineVar(conv::KineSpace_t ks)
 {
   vector<KineVar_t> vv;
@@ -222,6 +252,28 @@ vector<KineVar_t> util::KineVarTrue(conv::KineSpace_t ks)
   }
 
   return vv;
+}
+//________________________________________________________________________________________
+conv::KineSpace_t util::KineSpaceFromInt(int i_sp)
+{
+// Cast an integer to KineSpace_t, but with boundary check
+//                [first]                   [last]
+  if(i_sp >= (int)kspEtrue && i_sp <= (int) kspErecoYreco) return (KineSpace_t)i_sp;
+  return kspUndefined;
+}
+//________________________________________________________________________________________
+conv::KineSpace_t util::KineSPaceFromString(string str_sp)
+{
+  string lc_str_sp = util::ToLowerCase(str_sp);
+  for (int i = 0 ; i < conv::kMaxKineSpaces; i++) {
+    KineSpace_t sp = (KineSpace_t)i;
+    string this_lc_str_sp = util::ToLowerCase(util::AsString(sp));
+    if(lc_str_sp==this_lc_str_sp && this_lc_str_sp!="") {
+      return sp;
+    }
+  }
+
+  return kspUndefined;
 }
 //________________________________________________________________________________________
 	

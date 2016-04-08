@@ -18,18 +18,20 @@
 #ifndef _valor_dune_kine_space_h_
 #define _valor_dune_kine_space_h_
 
-#include <TROOT.h>
-//
-#include "Conventions/KineVar.h"
-
 #include <string>
 #include <vector>
+
+#include <TROOT.h>
+
+#include "Conventions/KineVar.h"
 
 using std::string;
 using std::vector;
 
 namespace valor {
 namespace conv {
+
+static const int kMaxKineSpaces = 5;
 
 typedef enum EKineSpace
 {
@@ -53,17 +55,22 @@ KineSpace_t;
 //
 namespace util {
 
-  string                  AsString        (conv::KineSpace_t ks);
-  string                  AsStringTeX     (conv::KineSpace_t ks, bool root);
-  bool                    IsPureReco      (conv::KineSpace_t ks);
-  bool                    IsPureTrue      (conv::KineSpace_t ks);
-  bool                    IsMixedRecoTrue (conv::KineSpace_t ks);
-  int                     NDim            (conv::KineSpace_t ks);
-  int                     NDimReco        (conv::KineSpace_t ks);
-  int                     NDimTrue        (conv::KineSpace_t ks);
-  vector<conv::KineVar_t> KineVar         (conv::KineSpace_t ks);
-  vector<conv::KineVar_t> KineVarReco     (conv::KineSpace_t ks);
-  vector<conv::KineVar_t> KineVarTrue     (conv::KineSpace_t ks);
+  string                  AsString            (conv::KineSpace_t ks);
+  string                  AsStringTeX         (conv::KineSpace_t ks, bool root);
+  bool                    IsPureReco          (conv::KineSpace_t ks);
+  bool                    IsPureTrue          (conv::KineSpace_t ks);
+  bool                    IsMixedRecoTrue     (conv::KineSpace_t ks);
+  int                     NDim                (conv::KineSpace_t ks);
+  int                     NDimReco            (conv::KineSpace_t ks);
+  int                     NDimTrue            (conv::KineSpace_t ks);
+  conv::KineSpace_t       SubSpaceReco        (conv::KineSpace_t ks);
+  conv::KineSpace_t       SubSpaceTrue        (conv::KineSpace_t ks);
+  vector<conv::KineVar_t> KineVar             (conv::KineSpace_t ks);
+  vector<conv::KineVar_t> KineVarReco         (conv::KineSpace_t ks);
+  vector<conv::KineVar_t> KineVarTrue         (conv::KineSpace_t ks);
+  conv::KineSpace_t       KineSpaceFromInt    (int is);
+  conv::KineSpace_t       KineSPaceFromString (string s);
+
 
 } // util
 
