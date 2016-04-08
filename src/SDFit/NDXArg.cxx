@@ -173,7 +173,7 @@ void NDXArg::SetDefaults(Option_t * /*opt*/)
   fVerbosityFile     = "verbosity.xml";
 }
 //________________________________________________________________________________________
-const char * NDXArg::ConfigFile(Option_t * user_opt) const 
+string NDXArg::ConfigFile(Option_t * user_opt) const 
 { 
   string opt = (user_opt) ? user_opt : "";
 
@@ -195,10 +195,10 @@ const char * NDXArg::ConfigFile(Option_t * user_opt) const
     }
   }
 
-  return file.c_str();        
+  return file;
 }
 //________________________________________________________________________________________
-const char * NDXArg::VerbosityFile(Option_t * user_opt) const 
+string NDXArg::VerbosityFile(Option_t * user_opt) const 
 { 
   string opt = (user_opt) ? user_opt : "";
 
@@ -220,7 +220,7 @@ const char * NDXArg::VerbosityFile(Option_t * user_opt) const
     }
   }
 
-  return file.c_str();        
+  return file;
 }
 //________________________________________________________________________________________
 

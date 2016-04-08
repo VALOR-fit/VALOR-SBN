@@ -38,16 +38,16 @@ public:
   void SetDefaults      (Option_t * opt = 0);
   void Report           (ostream& stream)  const;
 
-  const char * JobTag            (void) const { return fJobTag.c_str();            }       
-  long         RunNu             (void) const { return fRunNu;                     }
-  int          NToyMC            (void) const { return fNToyMC;                    }
-  const char * FitParamList      (void) const { return fFitParamList.c_str();      }
-  const char * ParamValuesOption (void) const { return fParamValuesOption.c_str(); }
-  bool         StatFluct         (void) const { return fStatFluct;                 }
-  const char * FitOption         (void) const { return fFitOption.c_str();         }
-  bool         StoreSpectra      (void) const { return fStoreSpectra;              }
-  const char * ConfigFile        (Option_t * opt = "check_file_exists") const;
-  const char * VerbosityFile     (Option_t * opt = "check_file_exists") const;
+  std::string  JobTag            (void) const { return fJobTag;            }
+  long         RunNu             (void) const { return fRunNu;             }
+  int          NToyMC            (void) const { return fNToyMC;            }
+  std::string  FitParamList      (void) const { return fFitParamList;      }
+  std::string  ParamValuesOption (void) const { return fParamValuesOption; }
+  bool         StatFluct         (void) const { return fStatFluct;         }
+  std::string  FitOption         (void) const { return fFitOption;         }
+  bool         StoreSpectra      (void) const { return fStoreSpectra;      }
+  std::string  ConfigFile        (Option_t * opt = "check_file_exists") const;
+  std::string  VerbosityFile     (Option_t * opt = "check_file_exists") const;
   
   UInt_t RndSeedToyMCstat() const {return fSeedToyMCstat;}
   UInt_t RndSeedToyMCsyst() const {return fSeedToyMCsyst;}
