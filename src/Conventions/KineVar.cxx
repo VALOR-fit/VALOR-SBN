@@ -10,6 +10,7 @@ ChangeLog:
 
 //fmwk
 #include "Utilities/UtlStr.h"
+#include "Messenger/Messenger.h"
 //dune
 #include "Conventions/KineVar.h"
 
@@ -24,7 +25,8 @@ string util::AsString(KineVar_t kv)
     case (kvEreco) : return "Ereco"; break;
     case (kvEvis ) : return "Evis";  break;
     case (kvYreco) : return "yreco"; break;
-    default        : return "--";
+    default : 
+     LOG("KineVar",pERROR) << "Unrecognized kinematic variable: " << kv;
   }
   return "";
 }
@@ -38,7 +40,8 @@ string util::AsStringTeX(KineVar_t kv, bool root)
     case (kvEreco) : return "E_{reco} (GeV)"; break;
     case (kvEvis ) : return "E_{vis} (GeV)";  break;
     case (kvYreco) : return "y_{reco}";       break;
-    default        : return "--";
+    default : 
+     LOG("KineVar",pERROR) << "Unrecognized kinematic variable: " << kv;
   }
 
   if(root) return name;
@@ -46,6 +49,25 @@ string util::AsStringTeX(KineVar_t kv, bool root)
   // change # with \ -- later
 
   return name;
+}
+//________________________________________________________________________________________
+bool util::IsReco(KineVar_t kv)
+{
+  switch(kv) {
+    case (kvEtrue) : return false;
+    case (kvEreco) : return true;
+    case (kvEvis ) : return true;
+    case (kvYreco) : return true;
+    default:
+     LOG("KineVar",pERROR) << "Unrecognized kinematic variable: " << kv;
+  }
+  return false;
+}
+//________________________________________________________________________________________
+bool util::IsTrue(KineVar_t kv)
+{
+  bool is_reco = util::IsReco(kv);
+  return (!is_reco);
 }
 //________________________________________________________________________________________
 	
