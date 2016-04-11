@@ -80,7 +80,7 @@ static const int kNSamples = 9;
 // Probably could be removed once we start using the Compound* classes
 static const Sample_t kSample[kNBeamConf][kNSamples] =
 {
-   // kbFHC
+   // kbLBNF_FHC
    {
       ksNuMuCC1trkQE,
       ksNuMuCC2trkQE, 
@@ -93,7 +93,7 @@ static const Sample_t kSample[kNBeamConf][kNSamples] =
       ksNC
    },
 
-   // kbRHC 
+   // kbLBNF_RHC 
    {
       ksNuMuCC1trkQE,
       ksNuMuCC2trkQE, 

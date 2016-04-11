@@ -52,7 +52,7 @@ namespace valor{
     TSpline *           fSpline;
     
   public:
-    SplineKey(conv::BeamConf_t b = conv::kbFHC,
+    SplineKey(conv::BeamConf_t b = conv::kbLBNF_FHC,
               conv::Sample_t s = conv::ksUndefined,
               conv::ReacMode_t m = conv::kmUndefined,
               conv::PhysParamId_t p = conv::kPhypUndefined,

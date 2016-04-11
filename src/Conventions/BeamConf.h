@@ -29,13 +29,22 @@ using std::string;
 namespace valor {
 namespace conv {
 
-static const int kNBeamConf = 2;  
-
 typedef enum EBeamConf
 {
    kbUndefined = -1, 
-   kbFHC,             // forward horn current
-   kbRHC              // reverse horn current
+   //
+   // "Generic" FHC and RHC beam configurations
+   // More detailed descriptions can be added if multiple FHC or RHC
+   // beam configurations for the same facility need to used concurrently
+   //
+   kbLBNF_FHC,             // forward horn current beam @ FNAL/LBNF
+   kbLBNF_RHC,             // reverse horn current beam @ FNAL/LBNF
+   kbJPARC_FHC,            // forward horn current beam @ JPARC
+   kbJPARC_RHC,            // reverse horn current beam @ JPARC 
+   kbNuMI_FHC,             // forward horn current beam @ FNAL/NuMI 
+   kbNuMI_RHC,             // reverse horn current beam @ FNAL/NuMI 
+   kbBooster_FHC,          // forward horn current beam @ FNAL/Booster
+   kbBooster_RHC           // reverse horn current beam @ FNAL/Booster
 } 
 BeamConf_t; 
 
@@ -43,10 +52,13 @@ BeamConf_t;
 // NOTE:
 // This is used to loop over all beam configurations / samples.
 // Probably could be removed once we start using the Compound* classes
+
+static const int kNBeamConf = 2;  
+
 static const BeamConf_t kBeamConf[kNBeamConf] =
 {
-   kbFHC, 
-   kbRHC 
+   kbLBNF_FHC, 
+   kbLBNF_RHC 
 };
 // ---------------------------------------------------------------------
 

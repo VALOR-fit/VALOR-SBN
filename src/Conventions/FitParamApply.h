@@ -114,8 +114,8 @@ static const ApplyMask_t ksApplyToAll = (
 // Which masks apply to which beam modes
 // This is defined for all samples in the BeamConf_t enum.
 static const ApplyMask_t kApplyToBeamMode[kNBeamConf] = {
-  /* kbFHC */ kbApplyToFHC ,
-  /* kbRHC */ kbApplyToRHC ,
+  /* kbLBNF_FHC */ kbApplyToFHC ,
+  /* kbLBNF_RHC */ kbApplyToRHC ,
 };
 
 // Which masks apply to which samples
