@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+ <element_list name="dunend_ndtf_2ndpass">
+
+    <!--
+         FHC
+    -->
+
+
+    <element name="dunend_fhc_numucc1trkqe">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       numucc1trkqe                       </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_numucc2trkqe">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       numucc2trkqe                       </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_numucc1pic">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       numucc1pic                         </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_numucc1pi0">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       numucc1pi0                         </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_numucc1pic1pi0">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       numucc1pic1pi0                     </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_numuccoth">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       numuccoth                          </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_nueccincl">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       nueccincl                          </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_numuccinclwsgn">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       numuccinclwsgn                     </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_fhc_ncincl">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_fhc                           </beam>
+        <sample>       ncincl                             </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <!--
+        RHC
+    -->
+
+    <element name="dunend_rhc_numucc1trkqe">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       numucc1trkqe                       </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_numucc2trkqe">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       numucc2trkqe                       </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_numucc1pic">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       numucc1pic                         </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_numucc1pi0">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       numucc1pi0                         </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_numucc1pic1pi0">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       numucc1pic1pi0                     </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_numuccoth">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       numuccoth                          </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_nueccincl">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       nueccincl                          </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_numuccinclwsgn">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       numuccinclwsgn                     </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+    <element name="dunend_rhc_ncincl">
+        <detector>     dunend                             </detector>
+        <beam>         lbnf_rhc                           </beam>
+        <sample>       ncincl                             </sample>
+        <observable>   Ereco,yreco                        </observable>
+        <data>                                            </data>
+        <mc>           mcpro.xml                          </mc>
+        <data_class>   valor::GenericSingleSampleData     </data_class>   
+        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+    </element>
+
+
+ </element_list>
+
+</valor> 
