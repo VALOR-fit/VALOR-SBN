@@ -38,6 +38,7 @@
 #include "TString.h"
 #include "TVirtualFitter.h"
 // fmwk
+#include "CmdLine/CmdLnArgList.h"
 #include "FitCore/PhysParamList.h"
 #include "FitCore/FitParamList.h"
 #include "FitCore/FitModelABC.h"
@@ -53,45 +54,42 @@
 // dune
 #include "SDFit/SDModel.h"
 #include "SDFit/SDData.h"
-#include "SDFit/NDXArg.h"
 
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
 
 int main(int argc, char ** argv)
-{
-  
+{  
   Env::Instance()->AutoSet("dune");
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
-  
-  NDXArg arg;
-  arg.SetDefaults(); 
-  arg.ParseFromCmdLine(argc,argv);
+ 
+  CmdLnArgList arg;
+  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/run_nd_fit.arg:$VALOR_DUNE/config/apps/seeds.arg");
   LOG("valor_dune", pNOTICE) << arg;
-
+ 
 // LOG("valor_dune", pNOTICE) << *Rnd::Instance();
 
-  TString param_values_ts(arg.ParamValuesOption());
-  TString fit_options_ts (arg.FitOption());
+  TString param_values_ts(arg.GetString("param-values-option"));
+  TString fit_options_ts (arg.GetString("fitter"));
   
-  Messenger::Instance()->Configure(arg.VerbosityFile());
+  Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
   
   // Set DUNE param names inside framework
   util::PopulateNameRegistry();
 
   // Create file and tree to store outputs
-  TString outfilename = TString::Format("%s_%ld.root", arg.JobTag().c_str(), arg.RunNu());
+  TString outfilename = TString::Format("%s_%d.root", arg.GetString("tag").c_str(), arg.GetInt("run"));
   StdFitNtp ntp;
   ntp.Create(outfilename.Data(), "valor_dune_nd_ntp", "VALOR DUNE / ND-Fit n-tuple");
   
   // Get ND model & configure
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit model";
   FitModelABC * model = new SDModel;
-  model->Read(arg.ConfigFile().c_str());
+  model->Read(arg.GetString("config"));
   
   // Use ND model to generate toy-MC experiments & fit
-  for(int itoymc = 0; itoymc < arg.NToyMC(); itoymc++) {
+  for(int itoymc = 0; itoymc < arg.GetInt("ntoymc"); itoymc++) {
     LOG("valor_dune", pNOTICE) << "\n\n *** Toy-MC experiment #" << itoymc;
     
     // Reset output tree variables
@@ -99,7 +97,7 @@ int main(int argc, char ** argv)
     
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(arg.FitParamList().c_str());
+    FitParamList * fp = util::GetFitParameterList(arg.GetString("fit_param-list").c_str());
    
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
@@ -119,7 +117,7 @@ int main(int argc, char ** argv)
     LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
     LOG("valor_dune", pNOTICE) << "Toy-MC generation uses true parameters: " << true_params;
     FitDataABC * data = new SDData;
-    data->Generate(model,*fp,arg.StatFluct());
+    data->Generate(model,*fp,arg.GetBool("with-stat-fluct"));
 
     // The toy-MC was generated using the `current' values of the input parameter list.
     // These values will be overwritten during the fit.
@@ -133,7 +131,7 @@ int main(int argc, char ** argv)
     // Get fitter
     LOG("valor_dune", pNOTICE) << "Preparing the fitter";
     FitInputs * fit_inputs = new FitInputs(data,model,fp);
-    FitterABC * fitter = util::GetFitter(fit_inputs, arg.FitOption().c_str());
+    FitterABC * fitter = util::GetFitter(fit_inputs, arg.GetString("fitter").c_str());
 
     // Do the fit
     LOG("valor_dune", pNOTICE) << "Running the fitter";
@@ -146,7 +144,7 @@ int main(int argc, char ** argv)
     // Copy best-fit params
     ntp.BestFitParamArr()->Copy(*fp);  
 
-    if(arg.StoreSpectra()) {
+    if(arg.GetBool("store-spectra")) {
       // Copy best-fit to current values and re-generate the best-fit prediction
       // with special option (not used in the fit) to generate versions of the fit model
       // using a fine binning scheme (for plots).
@@ -178,7 +176,6 @@ int main(int argc, char ** argv)
   //~ PhysParamList ppl = ndm->OneSigmaErrors();
   //~ ppl.Write("initial_errors");
   
-
   return 0;
 }
 
