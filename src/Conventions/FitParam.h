@@ -721,7 +721,7 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
 };
 
 // Which is the true Q2 range?
-static const double kFitParamQ2Range[kNFitParams][2] = 
+static const double kFitParamQ2trueRange[kNFitParams][2] = 
 {
    // Q2 min, Q2 max
    // FHC flux
