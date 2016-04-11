@@ -44,6 +44,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "Conventions/FitParam.h"
 #include "Conventions/ArrIdx.h"
 #include "Elements/SingleSampleFitModelABC.h"
+#include "VArray/VALORArrayBin.h"
 
 using std::string;
 
@@ -181,14 +182,6 @@ private:
   bool         fPDFTotNullSb;                     // 
   VALORArray * fPDFTotSb;                         // total
   VALORArray * fPDFCompSb    [conv::kNReacModes]; // components
-  
-  // Systematics
-  //---------------- remove
-  //valor::NuFlux * fNuFlux;
-  //valor::NuInt *  fNuInt;
-  //valor::NuDet *  fNuDet;
-  //----------------
-  CorrelatedSystematics * fSyst;
 };
 
 } // valor
