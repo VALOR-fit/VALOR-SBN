@@ -20,6 +20,7 @@
 
 // fmwk
 #include "FitCore/FitModelABC.h"
+#include "FitCore/CorrelatedSystematics.h"
 // dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
@@ -34,6 +35,8 @@ public:
   virtual ~SingleSampleFitModelABC();
 
   void Configure(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t k);
+  
+  void SetSystematics(CorrelatedSystematics * syst);
 
 protected:
   SingleSampleFitModelABC();
@@ -43,6 +46,9 @@ protected:
   conv::BeamConf_t  fBeam;
   conv::Sample_t    fSample;
   conv::KineSpace_t fKSp;
+  
+  // Sytematics
+  CorrelatedSystematics * fSyst;
 };
 
 } // valor

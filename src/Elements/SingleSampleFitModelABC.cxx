@@ -42,4 +42,8 @@ void SingleSampleFitModelABC::Configure(
 
 }
 //________________________________________________________________________________________
-
+void SingleSampleFitModelABC::SetSystematics(CorrelatedSystematics * syst)
+{
+  fSyst = syst;
+}
+//________________________________________________________________________________________
