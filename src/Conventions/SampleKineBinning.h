@@ -131,6 +131,13 @@ static const double kEtrueBinEdges[kNEtrueBins+1] =
     5.500,  6.000,  7.000,  8.000, 12.000, 16.000, 20.000, 40.000, kEtrueMax
 };
 
+// Q2 bins
+static const int kNQ2trueBins = 3;
+static const double kQ2trueBinEdges[kNQ2trueBins+1] = 
+{
+  0.0,0.5,2.,30. // Dummy binning
+};
+
 
 // ...........................................................................
 //
@@ -329,7 +336,6 @@ static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] =
 
 #endif // _use_single_zone_optimized_binning_scheme_...
 
-
 } // conv
 
 
@@ -344,6 +350,8 @@ namespace util   {
    // Etrue binning
    int            NumEtrueBins    (conv::Sample_t sample);
    const double * EtrueBinEdges   (conv::Sample_t sample);
+   int            NumQ2trueBins   (conv::Sample_t sample);
+   const double * Q2trueBinEdges  (conv::Sample_t sample);
 
    // Simple binning scheme
    int            NumYrecoBinsSb  (conv::Sample_t sample);
