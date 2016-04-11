@@ -19,6 +19,7 @@ BUILD_TARGETS =    print-make-info     \
 		   copy-scripts-to-bin \
 		   build-conventions   \
 		   build-systematics   \
+		   build-utilities   \
 		   build-elements      \
 		   build-sd-fit        \
 		   copy-rootdict-to-lib \
@@ -52,6 +53,11 @@ build-systematics: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Systematics package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/Systematics;
+	
+build-utilities: make-bin-lib-dir FORCE
+	@echo " "
+	@echo "** Building DuneUtilities package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/DuneUtilities;
 
 build-elements: make-bin-lib-dir FORCE
 	@echo " "
