@@ -28,6 +28,13 @@ string util::AsString(Detector_t d, Option_t * /*opt*/)
     case (kdSBND     ) : name = "sbn_nd";     break;
     case (kdSBNuBooNE) : name = "sbn_uboone"; break;
     case (kdSBNICARUS) : name = "sbn_icarus"; break;
+    case (kdSuperK   ) : name = "superk";     break;
+    case (kdHyperK   ) : name = "hyperk";     break; 
+    case (kdND280    ) : name = "nd280";      break; 
+    case (kdND280Up  ) : name = "nd280up";    break; 
+    case (kdINGRID   ) : name = "ingrid";     break; 
+    case (kdNuPRISM  ) : name = "nuprism";    break; 
+    case (kdNuTIT    ) : name = "whatever";   break; 
     default            : name = "--";  
   }
 /*
@@ -47,7 +54,7 @@ Detector_t util::DetectorFromInt(int d)
 {
 // Cast an integer to Detector_t, but with boundary check
 //            [first]                 [last]
-  if(d >= (int)kdDUNEND && d <= (int) kdDUNEND) return (Detector_t)d;
+  if(d >= (int)kdDUNEND && d <= (int) kdNuTIT) return (Detector_t)d;
   return kdUndefined;
 }
 //________________________________________________________________________________________

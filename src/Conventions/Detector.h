@@ -29,17 +29,24 @@ using std::string;
 namespace valor {
 namespace conv {
 
-static const int kNDetectorsDefined = 6;
+static const int kNDetectorsDefined = 13;
 
 typedef enum EDetector
 {
    kdUndefined = -1, 
-   kdDUNEND,     // Generic DUNE near detector
-   kdDUNEFD1ph,  // Single-phase LArTPC DUNE far detector
-   kdDUNEFD2ph,  // Double-phase LArTPC DUNE far detector
-   kdSBND,       // SBN near detector 
-   kdSBNuBooNE,  // MicroBooNE detector in SBN
-   kdSBNICARUS   // Refurshished ICARUS detector in SBN
+   kdDUNEND,          // Generic DUNE near detector
+   kdDUNEFD1ph,       // Single-phase LArTPC DUNE far detector
+   kdDUNEFD2ph,       // Double-phase LArTPC DUNE far detector
+   kdSBND,            // SBN near detector 
+   kdSBNuBooNE,       // MicroBooNE detector in SBN
+   kdSBNICARUS,       // Refurshished ICARUS detector in SBN
+   kdSuperK,          // Super-Kamiokande
+   kdHyperK,          // Hyper-Kamiokande
+   kdND280,           // ND280
+   kdND280Up,         // Upgraded ND280
+   kdINGRID,          // INGRID
+   kdNuPRISM,         // NuPRISM
+   kdNuTIT,           // appropriate shorter name for TITUS
 } 
 Detector_t; 
 
