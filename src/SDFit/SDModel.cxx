@@ -1623,7 +1623,7 @@ void SDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNFitParams; ip++) {
             PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool enu_true_dep = kFitParamEtrueDependence[ip];
+            bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
             if(!enu_true_dep) continue;
             bool apply = util::ParamIsAppliedTo(b,s,m,p);
             if(!apply) continue;
@@ -1665,7 +1665,7 @@ void SDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNFitParams; ip++) {
              PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
-             bool enu_true_dep = kFitParamEtrueDependence[ip];
+             bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
              if(enu_true_dep) continue;
              bool apply = util::ParamIsAppliedTo(b,s,m,p);
              if(!apply) continue;
@@ -1706,7 +1706,7 @@ void SDModel::ApplyPhysics(Option_t * option)
              //-------------- error, prone need to simplify
              PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
-             bool enu_true_dep = kFitParamEtrueDependence[ip];
+             bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
              if(!enu_true_dep) continue;
              bool apply = util::ParamIsAppliedTo(b,s,m,p);
              if(!apply) continue;
@@ -1734,7 +1734,7 @@ void SDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNFitParams; ip++) {
             PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool enu_true_dep = kFitParamEtrueDependence[ip];
+            bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
             if(enu_true_dep) continue;
             bool apply = util::ParamIsAppliedTo(b,s,m,p);
             if(!apply) continue;
