@@ -1,35 +1,17 @@
 {
-  TString libs0 = gSystem->GetDynamicPath();
-  TString libs  = libs0 + ":/usr/lib:/usr/local/lib:/opt/lib:/opt/local/lib:$VALOR_FMWK/lib:$VALOR_DUNE/lib";
-  gSystem->SetDynamicPath(libs.Data());
+  TString fmwk_loadlibs = ".x $VALOR_FMWK/root/loadlibs.C";
+  gSystem->ExpandPathName(fmwk_loadlibs);
+  gROOT->ProcessLine(fmwk_loadlibs.Data());
   
-  TString features(gROOT->GetConfigFeatures());
-
-  // extra ROOT libs
-  gSystem->Load("libGpad");
-  gSystem->Load("libPhysics");
-  gSystem->Load("libMatrix");
-  gSystem->Load("libHist");
-  gSystem->Load("libGraf");
-  gSystem->Load("libTree");
-  gSystem->Load("libRIO");
-  gSystem->Load("libXMLIO");
-  gSystem->Load("libMinuit");
-  gSystem->Load("libMinuit2");
+  TString baselibs = gSystem->GetDynamicPath();
+  TString dune_libs = "$VALOR_DUNE/lib:";
+  dune_libs += baselibs;
   
-  if (features.Contains("mathmore")) {gSystem->Load("libMathMore"); }
-
-  // log4cpp lib
-  gSystem->Load("liblog4cpp");
-
-  // VALOR libs
-  gSystem->Load("libValorMesg.so");
-  gSystem->Load("libValorRegistry.so");
-  gSystem->Load("libValorConv.so");
-  gSystem->Load("libValorFitCore.so");
-  gSystem->Load("libValorUtil.so");
-  gSystem->Load("libValorParse.so");
+  gSystem->SetDynamicPath(dune_libs.Data());
+  
   gSystem->Load("libValorDuneConv.so");
+  gSystem->Load("libValorDuneElements.so");
+  gSystem->Load("libValorDuneSystematics.so");
   gSystem->Load("libValorDuneSDFit.so");
 }
 
