@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="DUNE-NDFIT" version="2015v1" detector="FGTv1">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Assumed exposure for various beam configurations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+  <exposure> 
+    <lbnf_fhc>
+      1.0000e+21 
+    </lbnf_fhc>
+    <lbnf_rhc>
+      1.0000e+21 
+    </lbnf_rhc>
+  </exposure>
+</data>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Information about the detector configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<fiducial_mass>
+ 0.005
+</fiducial_mass>
+
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Input MC templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<mc>
+  <using_dst_format> 
+     true 
+  </using_dst_format> 
+
+  <dst> 
+    <lbnf_fhc>
+       <filename> dune/ndfit/2015a/STT/FHC_LBNE_ND_Tree_v25.root </filename> 
+       <objname>  LBNETree </objname> 
+       <objtype>  TTree    </objtype> 
+    </lbnf_fhc>
+    <lbnf_rhc>
+       <filename> dune/ndfit/2015a/STT/RHC_LBNE_ND_Tree_v25.root </filename> 
+       <objname>  LBNETree  </objname> 
+       <objtype>  TTree     </objtype> 
+    </lbnf_rhc>
+  </dst>
+  
+  <template>
+    <filename> dune/ndfit/2015a/STT/LBNE_ND_v25_Templates.root</filename>
+    <tag> nd </tag>
+  </template>
+
+</mc>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Systematics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<syst>
+  <EnergyScale>
+    <Leptonic> 0.025 </Leptonic>
+    <Hadronic> 0.15 </Hadronic>
+  </EnergyScale>
+  
+  <flux>
+    <covariance_matrix>
+       <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
+       <objname>    h_flux_errors    </objname>    
+       <objtype>    TH2D             </objtype>
+    </covariance_matrix>
+  </flux>
+  
+  <interaction>
+    <covariance_matrix>
+       <filename>   test/dummy_interaction_matrices.root </filename>
+       <objname>    diag_21x21_10pct    </objname>    
+       <objtype>    TMatrixD            </objtype>
+    </covariance_matrix>
+    <!--
+    <untuned_values>
+      <filename> nosuchfile     </filename>
+      <objname > untuned_values </objname>
+      <objtype>  TVectorD       </objtype>
+    </untuned_values>
+    <initial_values>
+      <filename> nosuchfile     </filename>
+      <objname > initial_values </objname>
+      <objtype>  TVectorD       </objtype>
+    </initial_values>
+    -->
+  </interaction>
+  
+  <detector>
+    <covariance_matrix>
+       <filename>   test/dummy_detector_matrices.root </filename>
+       <objname>    diag_9x9_10pct    </objname>    
+       <objtype>    TMatrixD          </objtype>
+    </covariance_matrix>
+  </detector>
+  
+</syst>
+
+</analysis_inputs>
+
+
