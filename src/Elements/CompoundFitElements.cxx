@@ -62,6 +62,8 @@ bool CompoundFitElements::Read(string xmlfile)
 // ......................................................................
 //
 
+  this->Book();
+
   LOG("CompoundFitElements", pNOTICE) 
     << "Reading compound fit setup from XML file [" << xmlfile << "]";
 
@@ -142,26 +144,38 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
   conv::Sample_t    sample     = util::SampleFromString(sample_name);
   conv::KineSpace_t observable = util::KineSpaceFromString(observable_name);
 
-  if (detector   == conv::kdUndefined ) return false;
-  if (beam       == conv::kbUndefined ) return false;
-  if (sample     == conv::ksUndefined ) return false;
-  if (observable == conv::kspUndefined) return false;
+  bool success = true;
+  if (detector   == conv::kdUndefined ) {
+    LOG("CompoundFitElements",pERROR)<<"Unknown detector: "<<detector_name;
+    success = false;
+  }
+  if (beam       == conv::kbUndefined ) {
+    LOG("CompoundFitElements",pERROR)<<"Unknown beam conf: "<<beam_name;
+    success = false;
+  }
+  if (sample     == conv::ksUndefined ) {
+    LOG("CompoundFitElements",pERROR)<<"Unknown sample: "<<sample_name;
+    success = false;
+  }
+  if (observable == conv::kspUndefined) {
+    LOG("CompoundFitElements",pERROR)<<"Unknown observable: "<<observable_name;
+    success = false;
+  }
+  
+  if (success) {
+    FitDataABC *  fit_data  = 
+       this->AdoptFitData (data_file, detector, beam, sample, observable, data_class );
+    FitModelABC * fit_model = 
+       this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class);
 
-  FitDataABC *  fit_data  = 
-     this->AdoptFitData (data_file, detector, beam, sample, observable, data_class );
-  FitModelABC * fit_model = 
-     this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class);
+    assert(fit_data);
+    assert(fit_model);
+    
+    fCompoundFitModel->AddSubModel(fit_model);
+    //~ fCompoundFitData ->AddSubData (fit_data);
+  }
 
-  assert(fit_data);
-  assert(fit_model);
-
-  //
-  //
-  // ... add to compound fit data and fit model
-  //
-  //
-
-  return true;
+  return success;
 }
 //________________________________________________________________________________________
 void CompoundFitElements::Init(void)

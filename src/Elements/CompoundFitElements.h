@@ -24,7 +24,7 @@
 
 //fmwk
 #include "FitCore/FitDataABC.h"
-#include "FitCore/FitModelABC.h"
+#include "FitCore/CompoundFitModel.h"
 //dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
@@ -60,7 +60,8 @@ private:
   void *        InstantiateUsingDictionaryRegistration (string class_name);
 
 //FitDataABC *  fCompoundFitData;
-  FitModelABC * fCompoundFitModel;
+  CompoundFitModel * fCompoundFitModel;
+  
 };
 
 } // valor
