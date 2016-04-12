@@ -1356,6 +1356,7 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   const int n_enu_true_bins = util::NumEtrueBins(fSample);
+  const int n_q2_true_bins  = util::NumQ2trueBins(fSample);
   const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(fSample);
   for(int imode = 0; imode < kNReacModes; imode++) {
 
@@ -1370,21 +1371,22 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
             const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
             const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
             for(int iet = 0; iet < n_enu_true_bins; iet++) {
-              for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-                 for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
-                   double val  = fMCTTunOb[imode][izone]->GetEntry(ier,iyr,iet);
-                   double nmc  = fMCStatOb[imode][izone]->GetEntry(ier,iyr,iet);
-                   // Fluctuate MC statistics and get the tweak factor
-                   double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
-                   //double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+              for(int iqt = 0; iqt < n_q2_true_bins; iqt++) {
+                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+                   for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
+                     double val  = fMCTTunOb[imode][izone]->GetEntry(ier,iyr,iet,iqt);
+                     double nmc  = fMCStatOb[imode][izone]->GetEntry(ier,iyr,iet,iqt);
+                     // Fluctuate MC statistics and get the tweak factor
+                     double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
+                     //double twk  = (nmc > 0) ? nmcf/nmc ? 1;
                      double twk  = (nmc > 0) ? nmcf/nmc : 1;
-                   // Apply the tweak factor in the template, obviously a small effect for 
-                   // large MC statistics. Again noting that this is not the statistical error
-                   // for the current exposure. That one will be applied later in toy-MC generation.
-                   double valf = val * twk; 
-                   fMCTTunOb[imode][izone]->SetEntry(valf,ier,iyr,iet);
-                 }//iyr: yreco bins
-              }//ier: Ereco bins
+                     // Apply the tweak factor in the template, obviously a small effect for 
+                     // large MC statistics. Again noting that this is not the statistical error
+                     // for the current exposure. That one will be applied later in toy-MC generation.
+                     double valf = val * twk; 
+                     fMCTTunOb[imode][izone]->SetEntry(valf,ier,iyr,iet,iqt);
+                   }//iyr: yreco bins
+                }//ier: Ereco bins
             }//iet: Etrue bins
           }//izone
         }
@@ -1405,43 +1407,42 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
           // Start by fluctuation the templates using the simple binning.
           // Then map each simple bin to an optimized bin and add to its contents. 
           for(int iet = 0; iet < n_enu_true_bins; iet++) {
-            for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-               for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
-                 double val  = fMCTTunSb[imode]->GetEntry(ier,iyr,iet);
-                 double nmc  = fMCStatSb[imode]->GetEntry(ier,iyr,iet);
-                 double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
-                 //double twk  = (nmc > 0) ? nmcf/nmc ? 1;
-                   double twk  = (nmc > 0) ? nmcf/nmc : 1;
-                 double valf = val * twk; 
-                 fMCTTunSb[imode]->SetEntry(valf,ier,iyr,iet);
+            for(int iqt = 0; iqt < n_q2_true_bins; iqt++) {
+              for(int ier = 0; ier < kNErecoBinsSb; ier++) {
+                 for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
+                   double val  = fMCTTunSb[imode]->GetEntry(ier,iyr,iet,iqt);
+                   double nmc  = fMCStatSb[imode]->GetEntry(ier,iyr,iet,iqt);
+                   double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
+                   //double twk  = (nmc > 0) ? nmcf/nmc ? 1;
+                     double twk  = (nmc > 0) ? nmcf/nmc : 1;
+                   double valf = val * twk; 
+                   fMCTTunSb[imode]->SetEntry(valf,ier,iyr,iet,iqt);
 
-                 // Map to template with optimized binning
-                 const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-                 double enu_reco = kErecoBinEdgesSb[ier]   + (kErecoBinEdgesSb[ier+1]  -kErecoBinEdgesSb[ier]  )/2.;
-                 //double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
+                   // Map to template with optimized binning
+                   const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
+                   double enu_reco = kErecoBinEdgesSb[ier]   + (kErecoBinEdgesSb[ier+1]  -kErecoBinEdgesSb[ier]  )/2.;
                    double y_reco   = y_reco_bin_edges_sb[iyr] + (y_reco_bin_edges_sb[iyr+1]-y_reco_bin_edges_sb[iyr])/2.;
-                 int izone = util::BinZone(fSample, enu_reco, y_reco);
-                 if(izone < 0) {
-//                  LOG("GenericSingleSampleFitModel",pFATAL) - turn that to fatal after binning optimization is done
-                    LOG("GenericSingleSampleFitModel",pWARN)
-                       << " ** No bin zone for toy MC event (" << " (" << util::AsString(fSample) << ")"
-                       << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
-//                  exit(1);
-                 }
-                 const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-                 const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-                 const double * enu_reco_bin_edges  = util::ErecoBinEdges(fSample,izone);
-                 const double * y_reco_bin_edges    = util::YrecoBinEdges(fSample,izone);
-                 int ier2 = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
-                 //int iy2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );       
-                 int iyr2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
-                 double valf_ob = fMCTTunOb[imode][izone]->GetEntry(ier2,iyr2,iet);
-                 valf_ob += valf;
-               //fMCTTunOb[imode][izone]->SetEntry(val_ob,ier2,iyr2,iet);
-                 fMCTTunOb[imode][izone]->SetEntry(valf_ob,ier2,iyr2,iet);
-               }//iyr: yreco bins
-            }//ier: Ereco bins
-          }//iet: Etrue bins
+                   int izone = util::BinZone(fSample, enu_reco, y_reco);
+                   if(izone < 0) {
+  //                  LOG("GenericSingleSampleFitModel",pFATAL) - turn that to fatal after binning optimization is done
+                      LOG("GenericSingleSampleFitModel",pWARN)
+                         << " ** No bin zone for toy MC event (" << " (" << util::AsString(fSample) << ")"
+                         << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
+  //                  exit(1);
+                   }
+                   const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
+                   const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
+                   const double * enu_reco_bin_edges  = util::ErecoBinEdges(fSample,izone);
+                   const double * y_reco_bin_edges    = util::YrecoBinEdges(fSample,izone);
+                   int ier2 = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
+                   //int iy2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );       
+                   int iyr2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
+                   double valf_ob = fMCTTunOb[imode][izone]->GetEntry(ier2,iyr2,iet,iqt);
+                   valf_ob += valf;
+                   fMCTTunOb[imode][izone]->SetEntry(valf_ob,ier2,iyr2,iet,iqt);
+                 }//iyr: yreco bins
+              }//ier: Ereco bins
+            }//iet: Etrue bins
 
         }//update_mct_sb
 
@@ -1714,41 +1715,46 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   const int n_enu_true_bins = util::NumEtrueBins(fSample);
+  const int n_q2_true_bins  = util::NumQ2trueBins(fSample);
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kReactionModes[isample][imode];
-        if(m == kmUndefined) continue;
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
+    
+    for(int izone = 0; izone < kNMaxBinZones; izone++) {
+      bool is_null = fMCTNullOb[imode][izone];
+      if(is_null) continue;
+      const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
+      const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
+      for(int ier=0; ier < n_enu_reco_bins; ier++) {
+        for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
+           double sum = 0.;
+           for(int iet=0; iet < n_enu_true_bins; iet++) {
+             for(int iqt=0; iqt < n_enu_true_bins; iqt++) {
+               sum += fMCTFinOb[imode][izone]->GetEntry(ier,iyr,iet,iqt);
+            }//iqt
+           }//iet
+           fPDFCompOb[imode][izone]->SetEntry(sum, ier, iyr);
+        }//iyr
+      }//ier
+    }//izone
 
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          bool is_null = fMCTNullOb[imode][izone];
-          if(is_null) continue;
-          const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-          const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-          for(int ier=0; ier < n_enu_reco_bins; ier++) {
-            for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
-               double sum = 0.;
-               for(int iet=0; iet < n_enu_true_bins; iet++) {
-                 sum += fMCTFinOb[imode][izone]->GetEntry(ier,iyr,iet);
-               }//iet
-               fPDFCompOb[imode][izone]->SetEntry(sum, ier, iyr);
-            }//iyr
-          }//ier
-        }//izone
-
-        if(update_mct_sb) {
-          bool is_null = fMCTNullSb[imode];
-          if(is_null) continue;
-          for(int ier=0; ier < kNErecoBinsSb; ier++) {
-            for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
-               double sum = 0.;
-               for(int iet=0; iet < n_enu_true_bins; iet++) {
-                 sum += fMCTFinSb[imode]->GetEntry(ier,iyr,iet);
-               }//iet
-               fPDFCompSb[imode]->SetEntry(sum, ier, iyr);
-            }//iyr
-          }//ier
-        }//update_mct_sb?
+    if(update_mct_sb) {
+      bool is_null = fMCTNullSb[imode];
+      if(is_null) continue;
+      for(int ier=0; ier < kNErecoBinsSb; ier++) {
+        for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
+           double sum = 0.;
+           for(int iet=0; iet < n_enu_true_bins; iet++) {
+             for(int iqt=0; iet < n_q2_true_bins; iqt++) {
+               sum += fMCTFinSb[imode]->GetEntry(ier,iyr,iet,iqt);
+             }//iqt
+           }//iet
+           fPDFCompSb[imode]->SetEntry(sum, ier, iyr);
+        }//iyr
+      }//ier
+    }//update_mct_sb?
 
   }//imode
 
