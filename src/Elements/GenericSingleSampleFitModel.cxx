@@ -63,7 +63,7 @@ GenericSingleSampleFitModel::~GenericSingleSampleFitModel()
 // FitModelABC interface implementation:
 //
 //________________________________________________________________________________________
-string GenericSingleSampleFitModel::Name(void)
+string GenericSingleSampleFitModel::Name(void) const
 {
   return fName;
 }
@@ -229,7 +229,7 @@ void GenericSingleSampleFitModel::TweakSystematic(
   }
 }
 //________________________________________________________________________________________
-PhysParamList GenericSingleSampleFitModel::Tweaks(void)
+PhysParamList GenericSingleSampleFitModel::Tweaks(Option_t * /*opt*/) const
 {
   PhysParamList list;
 

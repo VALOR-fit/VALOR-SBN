@@ -69,7 +69,7 @@ public:
   // See FitModelABC for method decription
   //
 
-  string        Name                   (void);
+  string        Name                   (void) const;
   bool          Read                   (string file, Option_t * opt = 0);
   bool          Generate               (const PhysHypothesis & ph, Option_t * opt = 0);
   void          RandomizeSystematics   (Option_t * opt = 0);
@@ -77,7 +77,7 @@ public:
   void          TweakSystematic        (conv::PhysParamId_t syst, double twkdial=0., Option_t * opt = 0);
   void          ResetSystematics       (Option_t * opt = 0);  
   void          PrintSystematics       (ostream & stream = std::cout, Option_t * opt = 0) const;
-  PhysParamList Tweaks                 (void);
+  PhysParamList Tweaks                 (Option_t * /*opt*/) const;
   bool          Generate               (const FitParamList & fp, Option_t * opt = 0);
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
