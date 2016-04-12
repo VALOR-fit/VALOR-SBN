@@ -2,15 +2,15 @@
 
 <valor> 
 
- <element_list name="dunend_ndtf_2ndpass">
+ <element_list name="dune_nd_ndtf_2ndpass">
 
     <!--
          FHC
     -->
 
 
-    <element name="dunend_fhc_numucc1trkqe">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_numucc1trkqe">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       numucc1trkqe                       </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -21,8 +21,8 @@
     </element>
 
 
-    <element name="dunend_fhc_numucc2trkqe">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_numucc2trkqe">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       numucc2trkqe                       </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -33,8 +33,8 @@
     </element>
 
 
-    <element name="dunend_fhc_numucc1pic">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_numucc1pic">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       numucc1pic                         </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -45,8 +45,8 @@
     </element>
 
 
-    <element name="dunend_fhc_numucc1pi0">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_numucc1pi0">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       numucc1pi0                         </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -57,8 +57,8 @@
     </element>
 
 
-    <element name="dunend_fhc_numucc1pic1pi0">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_numucc1pic1pi0">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       numucc1pic1pi0                     </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -69,8 +69,8 @@
     </element>
 
 
-    <element name="dunend_fhc_numuccoth">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_numuccoth">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       numuccoth                          </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -81,8 +81,8 @@
     </element>
 
 
-    <element name="dunend_fhc_nueccincl">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_nueccincl">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       nueccincl                          </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -93,8 +93,8 @@
     </element>
 
 
-    <element name="dunend_fhc_numuccinclwsgn">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_numuccinclwsgn">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       numuccinclwsgn                     </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -105,8 +105,8 @@
     </element>
 
 
-    <element name="dunend_fhc_ncincl">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_fhc_ncincl">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_fhc                           </beam>
         <sample>       ncincl                             </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -121,8 +121,8 @@
         RHC
     -->
 
-    <element name="dunend_rhc_numucc1trkqe">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_numucc1trkqe">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       numucc1trkqe                       </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -133,8 +133,8 @@
     </element>
 
 
-    <element name="dunend_rhc_numucc2trkqe">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_numucc2trkqe">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       numucc2trkqe                       </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -145,8 +145,8 @@
     </element>
 
 
-    <element name="dunend_rhc_numucc1pic">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_numucc1pic">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       numucc1pic                         </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -157,8 +157,8 @@
     </element>
 
 
-    <element name="dunend_rhc_numucc1pi0">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_numucc1pi0">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       numucc1pi0                         </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -169,8 +169,8 @@
     </element>
 
 
-    <element name="dunend_rhc_numucc1pic1pi0">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_numucc1pic1pi0">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       numucc1pic1pi0                     </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -181,8 +181,8 @@
     </element>
 
 
-    <element name="dunend_rhc_numuccoth">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_numuccoth">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       numuccoth                          </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -193,8 +193,8 @@
     </element>
 
 
-    <element name="dunend_rhc_nueccincl">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_nueccincl">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       nueccincl                          </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -205,8 +205,8 @@
     </element>
 
 
-    <element name="dunend_rhc_numuccinclwsgn">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_numuccinclwsgn">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       numuccinclwsgn                     </sample>
         <observable>   Ereco,yreco                        </observable>
@@ -217,8 +217,8 @@
     </element>
 
 
-    <element name="dunend_rhc_ncincl">
-        <detector>     dunend                             </detector>
+    <element name="dune_nd_rhc_ncincl">
+        <detector>     dune_nd                             </detector>
         <beam>         lbnf_rhc                           </beam>
         <sample>       ncincl                             </sample>
         <observable>   Ereco,yreco                        </observable>
