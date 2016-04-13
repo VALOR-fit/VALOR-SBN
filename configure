@@ -17,7 +17,6 @@ if(($match = grep(/--help/i, @ARGV)) > 0) {
   print "    --prefix          installation location (for 'make install')                  /usr/local/\n";
   print "\n enable/disable options with either --enable- or --disable- (eg --enable-lhapdf --disable-flux-drivers)\n\n";
   print "    debug               Adds -g in the compiler options to request debug info         default: disabled \n";
-  print "    c++11               Adds -std=c++11 in the compiler options to allow ROOT 6.      default: disabled \n";
   print "    low-level-messages  Turns on error logging in speed-critical areas.               default: disabled \n";
   print "\n options for 3rd party software, prefix with --with- (eg --with-lhapdf-lib=/some/path/)\n\n";
   print "    compiler          Compiler to use (any of clang,g++)                          default: g++ \n";
@@ -109,7 +108,6 @@ if(($match = grep(/--prefix/i, @ARGV)) > 0) {
 # Default --enable/--disable config options (for a minimal genie build)
 #
 my $opt_enable_debug              = "NO";
-my $opt_enable_cxx11              = "NO";
 my $opt_enable_low_level_messages = "NO";
 
 # Check configure's command line arguments for non-default values
@@ -118,10 +116,6 @@ if(($match = grep(/--enable-debug/i, @ARGV)) > 0) { $opt_enable_debug         = 
 
 my $opt_with_cxx_debug_flag="";
 if($opt_enable_debug eq "YES") { $opt_with_cxx_debug_flag = "-g"; }
-
-if(($match = grep(/--enable-c\+\+11/i, @ARGV)) > 0) { $opt_enable_cxx11         = "YES"; }
-my $opt_with_cxx_version_flag="";
-if($opt_enable_cxx11 eq "YES") { $opt_with_cxx_version_flag = "-std=c++11"; }
 
 
 if(($match = grep(/--enable-low-level-messages/i, @ARGV)) > 0) { $opt_enable_low_level_messages = "YES"; }
@@ -274,7 +268,6 @@ print MKCONF "OPT_PREFIX=$opt_prefix\n";
 print MKCONF "OPT_WITH_COMPILER=$opt_with_compiler\n";
 print MKCONF "OPT_WITH_CXX_DEBUG_FLAG=$opt_with_cxx_debug_flag\n";
 print MKCONF "OPT_WITH_CXX_OPTIMIZ_FLAG=-$opt_with_cxx_optimiz_flag\n";
-print MKCONF "OPT_WITH_CXX_VERSION_FLAG=$opt_with_cxx_version_flag\n";
 print MKCONF "OPT_WITH_VALOR_FRAMEWORK=$opt_with_valor_framework\n";
 close(MKCONF);
 if(-e $MKCONF_FILENAME) {
