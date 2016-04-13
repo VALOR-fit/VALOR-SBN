@@ -36,8 +36,6 @@
 
 #include "DuneUtilities/KinematicBin.h"
 
-using std::ostream;
-
 namespace valor {
 namespace util {
 
@@ -52,8 +50,8 @@ public:
   // And a flat spline object
   static const TSpline * kFlatSpline; //A flat spline that we'll use if we're missing RFs in testing versions
   
-  void Print(ostream & stream) const;
-  friend ostream & operator << (ostream & stream, const DuneRFL & rfl);
+  void Print(std::ostream & stream) const;
+  friend std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
   
   const TSpline * GetSpline(
     conv::ReacMode_t m, conv::PhysParamId_t p,
@@ -65,9 +63,8 @@ public:
   
   // Get the name of the spline we're looking for
   TString BuildSplineName(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m,
-                          conv::PhysParamId_t p, int bin_zone,
-                          int true_bin1, int true_bin2,
-                          int obs1_bin, int obs2_bin) const;
+                          conv::PhysParamId_t p,
+                          const KinematicBin & kb) const;
                           
   // Read splines from config file
   bool Read (string file, Option_t * opt = 0);
@@ -75,7 +72,7 @@ public:
 private:
 
   DuneRFL();
-  DuneRFL(const DuneRFL &);
+  //~ DuneRFL(const DuneRFL &);
  ~DuneRFL();
 
   // Actual response function block
@@ -88,19 +85,27 @@ private:
   TString fSplineNamePattern;
   
   // Details of binning
-  int      kNBinsTrue1;
-  double * kBinEdgesTrue1;
-  int      kNBinsTrue2;
-  double * kBinEdgesTrue2;
-  int      kNBinsTrue3;
-  double * kBinEdgesTrue3;
-  int      kNBinsReco1;
-  double * kBinEdgesReco1;
-  int      kNBinsReco2;
-  double * kBinEdgesReco2;
-  int      kNBinsReco3;
-  double * kBinEdgesReco3;
+  int                   kNModes;        //
+  conv::ReacMode_t *    kModes;         //[kNModes]
+  int                   kNParams;       //
+  conv::PhysParamId_t * kParams;        //[kParams]
+  int                   kNBinsTrue1;    //
+  double *              kBinEdgesTrue1; //[kBinEdgesTrue1]
+  int                   kNBinsTrue2;    //
+  double *              kBinEdgesTrue2; //[kBinEdgesTrue2]
+  int                   kNBinsTrue3;    //
+  double *              kBinEdgesTrue3; //[kBinEdgesTrue3]
+  int                   kNBinsReco1;    //
+  double *              kBinEdgesReco1; //[kBinEdgesReco1]
+  int                   kNBinsReco2;    //
+  double *              kBinEdgesReco2; //[kBinEdgesReco2]
+  int                   kNBinsReco3;    //
+  double *              kBinEdgesReco3; //[kBinEdgesReco3]
+  int                   kNBinZones;     //
+  double *              kBinZones;      //[kBinZones]
 };
+
+std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
 
 }      // util namespace
 }      // valor namespace

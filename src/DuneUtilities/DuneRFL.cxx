@@ -38,14 +38,35 @@ inline int SPLINE_INDEX(const int& im, const int& ip, const util::KinematicBin &
 }
 //________________________________________________________________________________________
 namespace valor {
-  ostream & operator<<(ostream & stream, const DuneRFL & rfl)
+namespace util {
+  std::ostream & operator<<(std::ostream & stream, const DuneRFL & rfl)
   {
     rfl.Print(stream);
     return stream;
   }
 }
+}
 //________________________________________________________________________________________
 valor::util::DuneRFL::DuneRFL()
+ :
+kNModes        (0),
+kModes         (0),
+kNParams       (0),
+kParams        (0),
+kNBinsTrue1    (0),
+kBinEdgesTrue1 (0),
+kNBinsTrue2    (0),
+kBinEdgesTrue2 (0),
+kNBinsTrue3    (0),
+kBinEdgesTrue3 (0),
+kNBinsReco1    (0),
+kBinEdgesReco1 (0),
+kNBinsReco2    (0),
+kBinEdgesReco2 (0),
+kNBinsReco3    (0),
+kBinEdgesReco3 (0),
+kNBinZones     (0),
+kBinZones      (0)
 {
   fSplineNamePattern = "spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]";
   
@@ -64,9 +85,9 @@ valor::util::DuneRFL::DuneRFL()
   //~ }
 }
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL(const DuneRFL &) 
-{
-}
+//~ valor::util::DuneRFL::DuneRFL(const DuneRFL &) 
+//~ {
+//~ }
 //________________________________________________________________________________________
 valor::util::DuneRFL::~DuneRFL()
 {
@@ -93,22 +114,25 @@ const TSpline * valor::util::DuneRFL::GetSpline (
 }
 //________________________________________________________________________________________
 TString valor::util::DuneRFL::BuildSplineName (
-  conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m, conv::PhysParamId_t p,
-  int bin_zone, int true_bin1, int true_bin2, int obs1_bin, int obs2_bin) const
+  conv::BeamConf_t b, conv::Sample_t s,
+  conv::ReacMode_t m, conv::PhysParamId_t p,
+  const KinematicBin & kb) const
 {
   TString name = fSplineNamePattern;
   
   //~ name = name.ReplaceAll("[TAG]" ,tag);
-  name = name.ReplaceAll("[BEAM]"  ,util::AsString(b).c_str());
-  name = name.ReplaceAll("[SAMPLE]",util::AsString(s).c_str());
-  name = name.ReplaceAll("[MODE]"  ,util::AsString(m).c_str());
-  name = name.ReplaceAll("[PARAM]" ,util::AsString(p).c_str());
+  name = name.ReplaceAll("[BEAM]"   , util::AsString(b).c_str());
+  name = name.ReplaceAll("[SAMPLE]" , util::AsString(s).c_str());
+  name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
+  name = name.ReplaceAll("[PARAM]"  , util::AsString(p).c_str());
   
-  name = name.ReplaceAll("[ZONE]"   ,TString::Format("%d", bin_zone ));
-  name = name.ReplaceAll("[TRUE1]"  ,TString::Format("%d", true_bin1));
-  name = name.ReplaceAll("[TRUE2]"  ,TString::Format("%d", true_bin2));
-  name = name.ReplaceAll("[OBS1]"   ,TString::Format("%d", obs1_bin ));
-  name = name.ReplaceAll("[OBS2]"   ,TString::Format("%d", obs2_bin ));
+  name = name.ReplaceAll("[ZONE]"  , TString::Format("%d", kb.zone  ));
+  name = name.ReplaceAll("[TRUE1]" , TString::Format("%d", kb.true1 ));
+  name = name.ReplaceAll("[TRUE2]" , TString::Format("%d", kb.true2 ));
+  name = name.ReplaceAll("[TRUE3]" , TString::Format("%d", kb.true3 ));
+  name = name.ReplaceAll("[RECO1]" , TString::Format("%d", kb.reco1 ));
+  name = name.ReplaceAll("[RECO2]" , TString::Format("%d", kb.reco2 ));
+  name = name.ReplaceAll("[RECO3]" , TString::Format("%d", kb.reco3 ));
                          
   return name;
 }
