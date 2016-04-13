@@ -461,89 +461,115 @@ conv::ReacMode_t DetermineReactionMode(const EventRecord & event, bool use_final
   bool is_2piC     = (!is_Coherent) && (nPiC==2) && (nPi0==0) && (nK==0); 
   bool is_2pi0     = (!is_Coherent) && (nPiC==0) && (nPi0==2) && (nK==0); 
   bool is_1piC1pi0 = (!is_Coherent) && (nPiC==1) && (nPi0==1) && (nK==0); 
-
-  //
+  
+  vector<conv::ReacMode_t> modes;
+  
+  // First do exclusive modes
   if(is_numu) {
     if(is_CC) {
-      if      (is_QE)       return conv::kmNuMuCCQE;            // numu    CC QE
-      else if (is_MEC)      return conv::kmNuMuCCMEC;           // numu    CC MEC
-      else if (is_1piC)     return conv::kmNuMuCC1piC;          // numu    CC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuMuCC1pi0;          // numu    CC 1 pi0
-      else if (is_2piC)     return conv::kmNuMuCC2piC;          // numu    CC 2 pi+/-
-      else if (is_2pi0)     return conv::kmNuMuCC2pi0;          // numu    CC 2 pi0
-      else if (is_1piC1pi0) return conv::kmNuMuCCpiCpi0;        // numu    CC 1 pi0 + 1 pi+/-
-      else if (is_Coherent) return conv::kmNuMuCCcoh;           // numu    CC coherent
-      else                  return conv::kmNuMuCCoth;           // numu    CC other
+      if (is_QE)       { modes.push_back(conv::kmNuMuCCQE    ); } // numu    CC QE
+      if (is_MEC)      { modes.push_back(conv::kmNuMuCCMEC   ); } // numu    CC MEC
+      if (is_1piC)     { modes.push_back(conv::kmNuMuCC1piC  ); } // numu    CC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuMuCC1pi0  ); } // numu    CC 1 pi0
+      if (is_2piC)     { modes.push_back(conv::kmNuMuCC2piC  ); } // numu    CC 2 pi+/-
+      if (is_2pi0)     { modes.push_back(conv::kmNuMuCC2pi0  ); } // numu    CC 2 pi0
+      if (is_1piC1pi0) { modes.push_back(conv::kmNuMuCCpiCpi0); } // numu    CC 1 pi0 + 1 pi+/-
+      if (is_Coherent) { modes.push_back(conv::kmNuMuCCcoh   ); } // numu    CC coherent
     }
     if(is_NC) {
-      if      (is_1piC)     return conv::kmNuMuNC1piC;          // numu    NC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuMuNC1pi0;          // numu    NC 1 pi0
-      else if (is_Coherent) return conv::kmNuMuNCcoh;           // numu    NC coherent
-      else                  return conv::kmNuMuNCoth;           // numu    NC other
+      if (is_1piC)     { modes.push_back(conv::kmNuMuNC1piC  ); } // numu    NC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuMuNC1pi0  ); } // numu    NC 1 pi0
+      if (is_Coherent) { modes.push_back(conv::kmNuMuNCcoh   ); } // numu    NC coherent
     }
   }
 
-  //
   if(is_numubar) {
     if(is_CC) {
-      if      (is_QE)       return conv::kmNuMuBarCCQE;         // numubar CC QE
-      else if (is_MEC)      return conv::kmNuMuBarCCMEC;        // numubar CC MEC
-      else if (is_1piC)     return conv::kmNuMuBarCC1piC;       // numubar CC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuMuBarCC1pi0;       // numubar CC 1 pi0
-      else if (is_2piC)     return conv::kmNuMuBarCC2piC;       // numubar CC 2 pi+/-
-      else if (is_2pi0)     return conv::kmNuMuBarCC2pi0;       // numubar CC 2 pi0
-      else if (is_1piC1pi0) return conv::kmNuMuBarCCpiCpi0;     // numubar CC 1 pi0 + 1 pi+/-
-      else if (is_Coherent) return conv::kmNuMuBarCCcoh;        // numubar CC coherent
-      else                  return conv::kmNuMuBarCCoth;        // numubar CC other
+      if (is_QE)       { modes.push_back(conv::kmNuMuBarCCQE    ); } // numubar CC QE
+      if (is_MEC)      { modes.push_back(conv::kmNuMuBarCCMEC   ); } // numubar CC MEC
+      if (is_1piC)     { modes.push_back(conv::kmNuMuBarCC1piC  ); } // numubar CC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuMuBarCC1pi0  ); } // numubar CC 1 pi0
+      if (is_2piC)     { modes.push_back(conv::kmNuMuBarCC2piC  ); } // numubar CC 2 pi+/-
+      if (is_2pi0)     { modes.push_back(conv::kmNuMuBarCC2pi0  ); } // numubar CC 2 pi0
+      if (is_1piC1pi0) { modes.push_back(conv::kmNuMuBarCCpiCpi0); } // numubar CC 1 pi0 + 1 pi+/-
+      if (is_Coherent) { modes.push_back(conv::kmNuMuBarCCcoh   ); } // numubar CC coherent
     }
     if(is_NC) {
-      if      (is_1piC)     return conv::kmNuMuBarNC1piC;       // numubar NC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuMuBarNC1pi0;       // numubar NC 1 pi0
-      else if (is_Coherent) return conv::kmNuMuBarNCcoh;        // numubar NC coherent
-      else                  return conv::kmNuMuBarNCoth;        // numubar NC other
+      if (is_1piC)     { modes.push_back(conv::kmNuMuBarNC1piC ); } // numubar NC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuMuBarNC1pi0 ); } // numubar NC 1 pi0
+      if (is_Coherent) { modes.push_back(conv::kmNuMuBarNCcoh  ); } // numubar NC coherent
     }
   }
 
   //
   if(is_nue) {
     if(is_CC) {
-      if      (is_QE)       return conv::kmNuECCQE;             // nue     CC QE
-      else if (is_MEC)      return conv::kmNuECCMEC;            // nue     CC MEC
-      else if (is_1piC)     return conv::kmNuECC1piC;           // nue     CC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuECC1pi0;           // nue     CC 1 pi0
-      else if (is_2piC)     return conv::kmNuECC2piC;           // nue     CC 2 pi+/-
-      else if (is_2pi0)     return conv::kmNuECC2pi0;           // nue     CC 2 pi0
-      else if (is_1piC1pi0) return conv::kmNuECCpiCpi0;         // nue     CC 1 pi0 + 1 pi+/-
-      else if (is_Coherent) return conv::kmNuECCcoh;            // nue     CC coherent
-      else                  return conv::kmNuECCoth;            // nue     CC other
+      if (is_QE)       { modes.push_back(conv::kmNuECCQE       );}     // nue     CC QE
+      if (is_MEC)      { modes.push_back(conv::kmNuECCMEC      );}     // nue     CC MEC
+      if (is_1piC)     { modes.push_back(conv::kmNuECC1piC     );}     // nue     CC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuECC1pi0     );}     // nue     CC 1 pi0
+      if (is_2piC)     { modes.push_back(conv::kmNuECC2piC     );}     // nue     CC 2 pi+/-
+      if (is_2pi0)     { modes.push_back(conv::kmNuECC2pi0     );}     // nue     CC 2 pi0
+      if (is_1piC1pi0) { modes.push_back(conv::kmNuECCpiCpi0   );}     // nue     CC 1 pi0 + 1 pi+/-
+      if (is_Coherent) { modes.push_back(conv::kmNuECCcoh      );}     // nue     CC coherent
     }
     if(is_NC) {
-      if      (is_1piC)     return conv::kmNuENC1piC;           // nue     NC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuENC1pi0;           // nue     NC 1 pi0
-      else if (is_Coherent) return conv::kmNuENCcoh;            // nue     NC coherent
-      else                  return conv::kmNuENCoth;            // nue     NC other
+      if (is_1piC)     { modes.push_back(conv::kmNuENC1piC     );}     // nue     NC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuENC1pi0     );}     // nue     NC 1 pi0
+      if (is_Coherent) { modes.push_back(conv::kmNuENCcoh      );}     // nue     NC coherent
     }
   }
-
+  
   //
   if(is_nuebar) {
     if(is_CC) {
-      if      (is_QE)       return conv::kmNuEBarCCQE;          // nuebar  CC QE
-      else if (is_MEC)      return conv::kmNuEBarCCMEC;         // nuebar  CC MEC
-      else if (is_1piC)     return conv::kmNuEBarCC1piC;        // nuebar  CC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuEBarCC1pi0;        // nuebar  CC 1 pi0
-      else if (is_2piC)     return conv::kmNuEBarCC2piC;        // nuebar  CC 2 pi+/-
-      else if (is_2pi0)     return conv::kmNuEBarCC2pi0;        // nuebar  CC 2 pi0
-      else if (is_1piC1pi0) return conv::kmNuEBarCCpiCpi0;      // nuebar  CC 1 pi0 + 1 pi+/-
-      else if (is_Coherent) return conv::kmNuEBarCCcoh;         // nuebar  CC coherent
-      else                  return conv::kmNuEBarCCoth;         // nuebar  CC other
+      if (is_QE)       { modes.push_back(conv::kmNuEBarCCQE    );}     // nuebar  CC QE
+      if (is_MEC)      { modes.push_back(conv::kmNuEBarCCMEC   );}     // nuebar  CC MEC
+      if (is_1piC)     { modes.push_back(conv::kmNuEBarCC1piC  );}     // nuebar  CC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuEBarCC1pi0  );}     // nuebar  CC 1 pi0
+      if (is_2piC)     { modes.push_back(conv::kmNuEBarCC2piC  );}     // nuebar  CC 2 pi+/-
+      if (is_2pi0)     { modes.push_back(conv::kmNuEBarCC2pi0  );}     // nuebar  CC 2 pi0
+      if (is_1piC1pi0) { modes.push_back(conv::kmNuEBarCCpiCpi0);}     // nuebar  CC 1 pi0 + 1 pi+/-
+      if (is_Coherent) { modes.push_back(conv::kmNuEBarCCcoh   );}     // nuebar  CC coherent
     }
     if(is_NC) {
-      if      (is_1piC)     return conv::kmNuEBarNC1piC;        // nuebar  NC 1 pi+/-
-      else if (is_1pi0)     return conv::kmNuEBarNC1pi0;        // nuebar  NC 1 pi0
-      else if (is_Coherent) return conv::kmNuEBarNCcoh;         // nuebar  NC coherent
-      else                  return conv::kmNuEBarNCoth;         // nuebar  NC other
+      if (is_1piC)     { modes.push_back(conv::kmNuEBarNC1piC );}     // nuebar  NC 1 pi+/-
+      if (is_1pi0)     { modes.push_back(conv::kmNuEBarNC1pi0 );}     // nuebar  NC 1 pi0
+      if (is_Coherent) { modes.push_back(conv::kmNuEBarNCcoh  );}     // nuebar  NC coherent
     }
+  }
+  
+  // If we've got one exclusive mode, we did well.
+  if (modes.size() == 1) {
+    return modes[0];
+  }
+  // Otherwise look for inclusive
+  else if (modes.size() == 0) {
+    if (is_numu) {
+      if (is_CC) {return conv::kmNuMuCCoth;}
+      if (is_NC) {return conv::kmNuMuNCoth;}
+    }
+    if (is_numubar) {
+      if (is_CC) {return conv::kmNuMuBarCCoth;}
+      if (is_NC) {return conv::kmNuMuBarNCoth;}
+    }
+    if (is_nue) {
+      if (is_CC) {return conv::kmNuECCoth;}
+      if (is_NC) {return conv::kmNuENCoth;}
+    }
+    if (is_nuebar) {
+      if (is_CC) {return conv::kmNuEBarCCoth;}
+      if (is_NC) {return conv::kmNuEBarNCoth;}
+    }
+  }
+  else {
+    std::ostringstream mode_names;
+    for (unsigned int ii = 0 ; ii < modes.size(); ii++) {
+      mode_names << "\n "<<util::AsString(modes[ii]);
+    }
+    LOG("make_minidst",pERROR)<<"Event filed into multiple exclusive modes: "
+      <<mode_names
+      <<"\nFull record: "<<event;
   }
 
   return conv::kmUndefined;
