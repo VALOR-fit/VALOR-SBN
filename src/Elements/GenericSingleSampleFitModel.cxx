@@ -15,6 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TFile.h>
 #include <TObjArray.h>
 #include <TMath.h>
+#include <TSystem.h>
 #include <TH1D.h>
 #include <TH2D.h>
 
@@ -84,12 +85,28 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 
   LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
+  
+  TString tf_file = file.c_str();
+  gSystem->ExpandPathName(tf_file);
+  
+  // Check for config file.
+  // See if it works as a normal path
+  FileStat_t dummy;
+  if (gSystem->GetPathInfo(tf_file.Data(), dummy)) 
+  {
+    // If not, try the config folder
+    tf_file = TString::Format("%s/%s",Env::Instance()->TopLevelConfDir().c_str(),tf_file.Data());
+    if (gSystem->GetPathInfo(tf_file.Data(), dummy)) {
+      LOG("GenericSingleSampleFitModel",pERROR) << "Config file not found: "<<file;
+      util::Die(1); return false;
+    }
+  }
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
-  XMLDocPointer_t xmldoc = xml->ParseFile(file.c_str());
+  XMLDocPointer_t xmldoc = xml->ParseFile(tf_file.Data());
   if (xmldoc==0) {
-    LOG("GenericSingleSampleFitModel",pERROR) << "Can not parse input XML file [" << file << "]";
+    LOG("GenericSingleSampleFitModel",pERROR) << "Can not parse input XML file [" << tf_file << "]";
     delete xml;
     util::Die(1); return false;
   }
