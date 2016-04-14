@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
     
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(arg.GetString("fit_param-list").c_str());
+    FitParamList * fp = util::GetFitParameterList(arg.GetString("fit-param-list").c_str());
    
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
