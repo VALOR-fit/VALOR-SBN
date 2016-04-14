@@ -25,6 +25,7 @@
 //fmwk
 #include "FitCore/FitDataABC.h"
 #include "FitCore/CompoundFitModel.h"
+#include "FitCore/CorrelatedSystematics.h"
 //dune
 #include "Conventions/BeamConf.h"
 #include "Conventions/Sample.h"
@@ -54,6 +55,7 @@ private:
 
   bool ReadElementList (TXMLEngine* xmleng, XMLNodePointer_t top_node);
   bool ReadElement     (TXMLEngine* xmleng, XMLNodePointer_t top_node);
+  CorrelatedSystematics * ReadSystematicGroup (TXMLEngine* xmleng, XMLNodePointer_t top_node);
 
   FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
   FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
