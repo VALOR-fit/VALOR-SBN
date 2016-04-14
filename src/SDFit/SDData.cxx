@@ -40,7 +40,7 @@ SDData::~SDData()
 
 }
 //________________________________________________________________________________________
-string SDData::Name(void)
+string SDData::Name(void) const
 {
   return "DUNEND";
 }
@@ -373,7 +373,7 @@ bool SDData::Generate(FitModelABC * model_abc, bool fluctuate)
   return true;
 }
 //________________________________________________________________________________________
-int SDData::NumOfBins(void)
+int SDData::NumOfBins(Option_t * /*opt*/) const
 {
   int nbins = 0;
 
