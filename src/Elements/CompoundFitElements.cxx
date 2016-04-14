@@ -90,6 +90,8 @@ bool CompoundFitElements::Read(string xmlfile)
        string list_name = (list_name_cstr ? list_name_cstr : "NoNameFoundInXML");
        LOG("CompoundFitElements", pNOTICE) << "Found element list named: " << list_name;
        this->ReadElementList(xmleng,curr_node);
+       fCompoundFitData ->SetName(list_name);
+       fCompoundFitModel->SetName(list_name);
     }
     else if (curr_node_name == "systematics") {
       const char * syst_name_cstr = xmleng->GetAttr(curr_node,"name");

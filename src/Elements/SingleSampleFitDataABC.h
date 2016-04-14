@@ -36,7 +36,7 @@ public:
   void Configure(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t k); 
 
 protected:
-   SingleSampleFitDataABC();
+  SingleSampleFitDataABC();
 
   // Configuration
   conv::Detector_t  fDetector;
