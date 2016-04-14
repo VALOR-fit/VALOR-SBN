@@ -2,118 +2,116 @@
 
 <valor> 
 
- <element_list name="dune_nd_ndtf_2ndpass">
-
+  <element_list name="dune_nd_ndtf_2ndpass">
     <!--
-         FHC
+        FHC
     -->
 
-
     <element name="dune_nd_fhc_numucc1trkqe">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       numucc1trkqe                       </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numucc1trkqe                                         </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_numucc2trkqe">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       numucc2trkqe                       </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numucc2trkqe                                         </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_numucc1pic">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       numucc1pic                         </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numucc1pic                                           </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_numucc1pi0">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       numucc1pi0                         </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numucc1pi0                                           </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_numucc1pic1pi0">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       numucc1pic1pi0                     </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numucc1pic1pi0                                       </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_numuccoth">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       numuccoth                          </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numuccoth                                            </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_nueccincl">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       nueccincl                          </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       nueccincl                                            </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_numuccinclwsgn">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       numuccinclwsgn                     </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numuccinclwsgn                                       </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_fhc_ncincl">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_fhc                           </beam>
-        <sample>       ncincl                             </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       ncincl                                               </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
@@ -122,113 +120,143 @@
     -->
 
     <element name="dune_nd_rhc_numucc1trkqe">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       numucc1trkqe                       </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numucc1trkqe                                         </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_numucc2trkqe">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       numucc2trkqe                       </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numucc2trkqe                                         </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_numucc1pic">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       numucc1pic                         </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numucc1pic                                           </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_numucc1pi0">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       numucc1pi0                         </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numucc1pi0                                           </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_numucc1pic1pi0">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       numucc1pic1pi0                     </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numucc1pic1pi0                                       </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_numuccoth">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       numuccoth                          </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numuccoth                                            </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_nueccincl">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       nueccincl                          </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       nueccincl                                            </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_numuccinclwsgn">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       numuccinclwsgn                     </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numuccinclwsgn                                       </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
 
     <element name="dune_nd_rhc_ncincl">
-        <detector>     dune_nd                             </detector>
-        <beam>         lbnf_rhc                           </beam>
-        <sample>       ncincl                             </sample>
-        <observable>   Ereco,yreco                        </observable>
-        <data>                                            </data>
-        <mc>           mcpro.xml                          </mc>
-        <data_class>   valor::GenericSingleSampleData     </data_class>   
-        <model_class>  valor::GenericSingleSampleFitModel </model_class>   
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       ncincl                                               </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           single_sample_ndfit-2015v1-FGTv1_21x21_int_10pct.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
-
-
- </element_list>
+    
+  </element_list>
+  
+  <systematics>
+    <group name="flux">
+      <class> valor::MINERVAFlux2016a</class>
+      
+      <covariance_matrix>
+        <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
+        <objname>    h_flux_errors    </objname>    
+        <objtype>    TH2D             </objtype>
+      </covariance_matrix> 
+    </group>
+    
+    <group name="interaction">
+      <class> valor::VALORInt2016a</class>
+      <covariance_matrix>
+         <filename>   test/dummy_interaction_matrices.root </filename>
+         <objname>    diag_21x21_10pct    </objname>    
+         <objtype>    TMatrixD          </objtype>
+      </covariance_matrix>
+    </group>
+    
+    <group name="detector">
+      <class> valor::SimpleDet2016a</class>
+      <covariance_matrix>
+         <filename>   test/dummy_interaction_matrices.root </filename>
+         <objname>    diag_9x9_10pct    </objname>    
+         <objtype>    TMatrixD          </objtype>
+      </covariance_matrix>
+    </group>
+    
+  </systematics>
 
 </valor> 
