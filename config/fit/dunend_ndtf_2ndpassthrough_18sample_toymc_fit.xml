@@ -228,9 +228,9 @@
     
   </element_list>
   
-  <systematics>
+  <systematics name="DUNEND_2016a">
     <group name="flux">
-      <class> valor::MINERVAFlux2016a</class>
+      <class> valor::MINERVAFlux2016a </class>
       
       <covariance_matrix>
         <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
@@ -240,7 +240,7 @@
     </group>
     
     <group name="interaction">
-      <class> valor::VALORInt2016a</class>
+      <class> valor::VALORInt2016a </class>
       <covariance_matrix>
          <filename>   test/dummy_interaction_matrices.root </filename>
          <objname>    diag_21x21_10pct    </objname>    
@@ -249,9 +249,9 @@
     </group>
     
     <group name="detector">
-      <class> valor::SimpleDet2016a</class>
+      <class> valor::SimpleDet2016a </class>
       <covariance_matrix>
-         <filename>   test/dummy_interaction_matrices.root </filename>
+         <filename>   test/dummy_detector_matrices.root </filename>
          <objname>    diag_9x9_10pct    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
