@@ -41,7 +41,7 @@ GenericSingleSampleFitData::~GenericSingleSampleFitData()
   this->Clean();
 }
 //________________________________________________________________________________________
-string GenericSingleSampleFitData::Name(void)
+string GenericSingleSampleFitData::Name(void) const
 {  
   return fName;
 }
@@ -360,7 +360,7 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
   return true;
 }
 //________________________________________________________________________________________
-int GenericSingleSampleFitData::NumOfBins(void)
+int GenericSingleSampleFitData::NumOfBins(Option_t * /*opt*/) const
 {
   int nbins = 0;
 
