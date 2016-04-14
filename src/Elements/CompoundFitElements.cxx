@@ -24,6 +24,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Elements/SingleSampleFitModelABC.h"
 
 using namespace valor;
+using namespace std;
 
 //________________________________________________________________________________________
 CompoundFitElements::CompoundFitElements(void)
@@ -85,13 +86,15 @@ bool CompoundFitElements::Read(string xmlfile)
   while(curr_node) {
     string curr_node_name = xmleng->GetNodeName(curr_node);
     if(curr_node_name == "element_list") {
-       string list_name = xmleng->GetAttr(curr_node,"name");
+       const char * list_name_cstr = xmleng->GetAttr(curr_node,"name");
+       string list_name = (list_name_cstr ? list_name_cstr : "NoNameFoundInXML");
        LOG("CompoundFitElements", pNOTICE) << "Found element list named: " << list_name;
        this->ReadElementList(xmleng,curr_node);
     }
     else if (curr_node_name == "systematics") {
-      string list_name = xmleng->GetAttr(curr_node,"name");
-      LOG("CompoundFitElements", pNOTICE) << "Found systematic list named: " << list_name;
+      const char * syst_name_cstr = xmleng->GetAttr(curr_node,"name");
+      string syst_list_name = (syst_name_cstr ? syst_name_cstr : "NoNameFoundInXML");
+      LOG("CompoundFitElements", pNOTICE) << "Found systematic list named: " << syst_list_name;
       
       // Read the systematics
       
@@ -104,6 +107,7 @@ bool CompoundFitElements::Read(string xmlfile)
   delete xmleng;
   
   CorrelatedSystematics * syst = new CompoundCorrelatedSystematics(syst_objects);
+  fCompoundFitModel->SetSystConf(syst,"adopt");
 
   return true;
 }
@@ -194,10 +198,13 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
 //________________________________________________________________________________________
 CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (TXMLEngine* xmleng, XMLNodePointer_t top_node)
 {
+  LOG("CompoundFitElements", pNOTICE) << "Reading systematics";
+  
   string class_name  = "";
 
   XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
   while(curr_node) {
+      // NEED ANOTHER LEVEL OF LOOP HERE
       string curr_node_name = xmleng->GetNodeName(curr_node);
       if(xmleng->GetNodeContent(curr_node)) {
         string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
@@ -205,6 +212,11 @@ CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (TXMLEngine* xm
         if(curr_node_name == "class") { class_name = content; break; }
       }
       curr_node = xmleng->GetNext(curr_node);
+  }
+  if (class_name.size()==0) {
+    LOG("CompoundFitElements", pFATAL) 
+       << "Failed to get systematic group class name";
+    util::Die(-1); return NULL;
   }
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   CorrelatedSystematics * syst = (CorrelatedSystematics *) (vbase);
@@ -257,6 +269,8 @@ FitModelABC * CompoundFitElements::AdoptFitModel(
 //________________________________________________________________________________________
 void * CompoundFitElements::InstantiateUsingDictionaryRegistration(string class_name)
 {
+  LOG("CompoundFitElements", pDEBUG) 
+     << "Getting class: " << class_name;
   TClass * tclass = TClass::GetClass(class_name.c_str());
   if(!tclass) {
      LOG("CompoundFitElements", pERROR) 
