@@ -140,7 +140,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   // In the later case, the templates are pre-binned so the binning
   // can not change. Make sure the templates have the expected binning.
   //
-  fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format") | force_use_dst;
+  fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format") || force_use_dst;
   if(fUseMCDST) {
     LOG("GenericSingleSampleFitModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
     string node_name = "mc/dst/" + util::AsString(fBeam, "lowercase");
@@ -1301,23 +1301,49 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
   bool success = true;
 
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
+  BeamConf_t b = fBeam;
+  Sample_t   s = fSample;
+  
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kReactionModes[isample][imode];
-        if(m == kmUndefined) continue;
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          TString name = TString::Format("%s_%s_%s_z%d", 
-                util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), util::AsString(m).c_str(), izone);
-          TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_ob_vf", name.Data());
-          VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
-          if (arr) {
-            fMCTNomOb [imode][izone]->CopyFrom(*arr);
-            delete arr;
-          }
-          else {
-            success = false;
-            LOG("GenericSingleSampleFitModel",pERROR) << "Failed to read template "<<obj_name;
-          }
-        }//izone
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
+    for(int izone = 0; izone < kNMaxBinZones; izone++) {
+      TString name = TString::Format("%s_%s_%s_z%d", 
+            util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str(), izone);
+      TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_ob_vf", name.Data());
+      VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
+      if (arr && arr->GetSize()) {
+        fMCTNomOb [imode][izone]->CopyFrom(*arr);
+        fMCTTunOb [imode][izone]->CopyFrom(*arr);
+        fMCTSysOb [imode][izone]->CopyFrom(*arr);
+        fMCTFinOb [imode][izone]->CopyFrom(*arr);
+        fMCStatOb [imode][izone]->CopyFrom(*arr);
+        fMCStatOb [imode][izone]->SetAll(1.);  
+        delete arr;
+      }
+      else {
+        success = false;
+        LOG("SDModel",pERROR) << "Failed to read template "<<obj_name;
+      }
+    }//izone
+    // Do the Sb arrays
+    TString name = TString::Format("%s_%s_%s", 
+      util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+    TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_sb_vf", name.Data());
+    VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
+    if (arr && arr->GetSize()) {
+      fMCTNomSb [imode]->CopyFrom(*arr);
+      fMCTTunSb [imode]->CopyFrom(*arr);
+      fMCTSysSb [imode]->CopyFrom(*arr);
+      fMCTFinSb [imode]->CopyFrom(*arr);
+      fMCStatSb [imode]->CopyFrom(*arr);
+      fMCStatSb [imode]->SetAll(1.);
+      delete arr;
+    }
+    else {
+      success = false;
+      LOG("SDModel",pERROR) << "Failed to read template "<<obj_name;
+    }
   } //imode
 
   if (!success) {
