@@ -21,5 +21,12 @@
   <priority msgstream="NuInt">        NOTICE   </priority>
   <priority msgstream="InputMC">      NOTICE   </priority>
   <priority msgstream="HACK">         FATAL    </priority>
+  
+  <priority msgstream="CompoundFitElements">            NOTICE </priority>
+  <priority msgstream="CompoundFitModel">               NOTICE </priority>
+  <priority msgstream="CompoundFitData">                NOTICE </priority>
+  <priority msgstream="CompoundCorrelatedSystematics">  NOTICE </priority>
+  <priority msgstream="GenericSingleSampleFitModel">    NOTICE </priority>
+  <priority msgstream="GenericSingleSampleFitData">     NOTICE </priority>
 
 </messenger_config>
