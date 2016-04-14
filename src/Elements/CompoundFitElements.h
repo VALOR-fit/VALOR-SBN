@@ -23,7 +23,7 @@
 #include <TXMLEngine.h>
 
 //fmwk
-#include "FitCore/FitDataABC.h"
+#include "FitCore/CompoundFitData.h"
 #include "FitCore/CompoundFitModel.h"
 #include "FitCore/CorrelatedSystematics.h"
 //dune
@@ -44,7 +44,7 @@ public:
 
   bool Read(string xmlconfig);
 
-//FitDataABC *  FitData  (void) const { return fCompoundFitData;  }
+  FitDataABC *  FitData  (void) const { return fCompoundFitData;  }
   FitModelABC * FitModel (void) const { return fCompoundFitModel; }
 
 private:
@@ -61,7 +61,7 @@ private:
   FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
   void *        InstantiateUsingDictionaryRegistration (string class_name);
 
-//FitDataABC *  fCompoundFitData;
+  CompoundFitData  *  fCompoundFitData;
   CompoundFitModel * fCompoundFitModel;
   
 };

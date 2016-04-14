@@ -15,7 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "Messenger/Messenger.h"
 #include "Utilities/UtlSystem.h"
 #include "Utilities/UtlStr.h"
-//#include "FitCore/CompoundFitData.h"
+#include "FitCore/CompoundFitData.h"
 #include "FitCore/CompoundFitModel.h"
 #include "FitCore/CompoundCorrelatedSystematics.h"
 // dune
@@ -186,7 +186,7 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
     assert(fit_model);
     
     fCompoundFitModel->AddSubModel(fit_model);
-    //~ fCompoundFitData ->AddSubData (fit_data);
+    fCompoundFitData ->AddSubData (fit_data);
   }
 
   return success;
@@ -213,19 +213,19 @@ CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (TXMLEngine* xm
 }
 void CompoundFitElements::Init(void)
 {
-//fCompoundFitData  = 0;
+  fCompoundFitData  = 0;
   fCompoundFitModel = 0;
 }
 //________________________________________________________________________________________
 void CompoundFitElements::Book(void)
 {
-//fCompoundFitData  = new CompoundFitData;
+  fCompoundFitData  = new CompoundFitData;
   fCompoundFitModel = new CompoundFitModel;
 }
 //________________________________________________________________________________________
 void CompoundFitElements::Clean(void)
 {
-//if(fCompoundFitData ) delete fCompoundFitData;
+  if(fCompoundFitData ) delete fCompoundFitData;
   if(fCompoundFitModel) delete fCompoundFitModel;
 }
 //________________________________________________________________________________________
