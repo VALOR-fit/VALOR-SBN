@@ -97,8 +97,11 @@ bool CompoundFitElements::Read(string xmlfile)
       LOG("CompoundFitElements", pNOTICE) << "Found systematic list named: " << syst_list_name;
       
       // Read the systematics
-      
-      syst_objects.push_back(this->ReadSystematicGroup(xmleng,curr_node));
+      XMLNodePointer_t group_node = xmleng->GetChild(curr_node);
+      while (group_node) {
+        syst_objects.push_back(this->ReadSystematicGroup(xmleng,group_node));
+        group_node = xmleng->GetNext(group_node);
+      }
     }
     
     curr_node = xmleng->GetNext(curr_node);
@@ -198,20 +201,21 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
 //________________________________________________________________________________________
 CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (TXMLEngine* xmleng, XMLNodePointer_t top_node)
 {
-  LOG("CompoundFitElements", pNOTICE) << "Reading systematics";
+  const char * syst_name_cstr = xmleng->GetAttr(top_node,"name");
+  string syst_list_name = (syst_name_cstr ? syst_name_cstr : "NoNameFoundInXML");
+  LOG("CompoundFitElements", pNOTICE) << "Reading systematics group: "<<syst_list_name;
   
   string class_name  = "";
 
   XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
   while(curr_node) {
-      // NEED ANOTHER LEVEL OF LOOP HERE
-      string curr_node_name = xmleng->GetNodeName(curr_node);
-      if(xmleng->GetNodeContent(curr_node)) {
-        string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
-        LOG("CompoundFitElements", pNOTICE) << curr_node_name << " --> " << content;
-        if(curr_node_name == "class") { class_name = content; break; }
-      }
-      curr_node = xmleng->GetNext(curr_node);
+    string curr_node_name = xmleng->GetNodeName(curr_node);
+    if(xmleng->GetNodeContent(curr_node)) {
+      string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
+      LOG("CompoundFitElements", pNOTICE) << curr_node_name << " --> " << content;
+      if(curr_node_name == "class") { class_name = content; break; }
+    }
+    curr_node = xmleng->GetNext(curr_node);
   }
   if (class_name.size()==0) {
     LOG("CompoundFitElements", pFATAL) 
@@ -220,6 +224,7 @@ CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (TXMLEngine* xm
   }
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   CorrelatedSystematics * syst = (CorrelatedSystematics *) (vbase);
+  syst->SetXMLNodeName("");
   syst->Read(xmleng, top_node);
   return syst;
 }
