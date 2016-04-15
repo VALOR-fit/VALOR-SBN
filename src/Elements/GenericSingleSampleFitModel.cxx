@@ -1607,12 +1607,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                for(int ier = 0; ier < n_enu_reco_bins; ier++) {
                  for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
                     double & val = fMCTFinOb[imode][izone]->GetEntryRef(ier,iyr,iet);
-                    double val_old = val;
                     val *= f;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
                     LOG("GenericSingleSampleFitModel",pDEBUG) 
                       << "MCT[" << imode << ", " << izone << "] = " 
-                      << val_old << " --> " << val;
+                      << val/f << " --> " << val;
 #endif
                  }//iyr: yreco bins
                }//ier: Ereco bins
@@ -1726,39 +1725,38 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kReactionModes[isample][imode];
-        if(m == kmUndefined) continue;
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
 
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          bool is_null = fMCTNullOb[imode][izone];
-          if(is_null) continue;
-          const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-          const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-          for(int ier=0; ier < n_enu_reco_bins; ier++) {
-            for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
-               double sum = 0.;
-               for(int iet=0; iet < n_enu_true_bins; iet++) {
-                 sum += fMCTFinOb[imode][izone]->GetEntry(ier,iyr,iet);
-               }//iet
-               fPDFCompOb[imode][izone]->SetEntry(sum, ier, iyr);
-            }//iyr
-          }//ier
-        }//izone
+    for(int izone = 0; izone < kNMaxBinZones; izone++) {
+      bool is_null = fMCTNullOb[imode][izone];
+      if(is_null) continue;
+      const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
+      const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
+      for(int ier=0; ier < n_enu_reco_bins; ier++) {
+        for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
+           double sum = 0.;
+           for(int iet=0; iet < n_enu_true_bins; iet++) {
+             sum += fMCTFinOb[imode][izone]->GetEntry(ier,iyr,iet);
+           }//iet
+           fPDFCompOb[imode][izone]->SetEntry(sum, ier, iyr);
+        }//iyr
+      }//ier
+    }//izone
 
-        if(update_mct_sb) {
-          bool is_null = fMCTNullSb[imode];
-          if(is_null) continue;
-          for(int ier=0; ier < kNErecoBinsSb; ier++) {
-            for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
-               double sum = 0.;
-               for(int iet=0; iet < n_enu_true_bins; iet++) {
-                 sum += fMCTFinSb[imode]->GetEntry(ier,iyr,iet);
-               }//iet
-               fPDFCompSb[imode]->SetEntry(sum, ier, iyr);
-            }//iyr
-          }//ier
-        }//update_mct_sb?
-
+    if(update_mct_sb) {
+      bool is_null = fMCTNullSb[imode];
+      if(is_null) continue;
+      for(int ier=0; ier < kNErecoBinsSb; ier++) {
+        for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
+           double sum = 0.;
+           for(int iet=0; iet < n_enu_true_bins; iet++) {
+             sum += fMCTFinSb[imode]->GetEntry(ier,iyr,iet);
+           }//iet
+           fPDFCompSb[imode]->SetEntry(sum, ier, iyr);
+        }//iyr
+      }//ier
+    }//update_mct_sb?
   }//imode
 
   //
