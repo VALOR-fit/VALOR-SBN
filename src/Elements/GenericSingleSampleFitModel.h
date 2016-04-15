@@ -115,6 +115,9 @@ private:
   void UpdatePDFs       (Option_t * opt = 0);
 
   const util::ArrIdx * fArrIdx;
+  
+  // Cache whether or not to apply a given parameter to a given template
+  bool fParamIsAppliedTo[conv::kNReacModes][conv::kNFitParams];
 
   PhysHypothesis fPhysHypothesis;
 

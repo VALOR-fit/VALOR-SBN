@@ -286,14 +286,9 @@ bool GenericSingleSampleFitModel::Generate (const FitParamList & fp, Option_t * 
 //  LOG("GenericSingleSampleFitModel",pDEBUG)  
 //     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
 
-  // -----------------------------------  
-  // TODO
-  // Remove
-  //fNuFlux->UpdateFrom(fp);
-  //fNuDet ->UpdateFrom(fp);
-  //fNuInt ->UpdateFrom(fp);
-  // -----------------------------------  
-  fSyst ->UpdateFrom(fp);
+  if (fSyst) {
+    fSyst ->UpdateFrom(fp);
+  }
   
   // extract the values of params driving the oscillation, decoherence or decay model
   PhysHypothesis ph(fp);
@@ -809,54 +804,44 @@ void GenericSingleSampleFitModel::Init(void)
 
   for(int imode = 0; imode < kNReacModes; imode++) {
 
-       // MC templates (simple binning)
-       fMCTNullSb[imode] = true;
-       fMCTNomSb [imode] = 0;
-       fMCTTunSb [imode] = 0;
-       fMCTSysSb [imode] = 0;
-       fMCTFinSb [imode] = 0;
-       fMCStatSb [imode] = 0;
-       // PDF (simple binning)
-       fPDFCompSb[imode] = 0;
-       if(imode == 0) {
-         fPDFTotSb     = 0;
-         fPDFTotNullSb = true;
-       }
+    // MC templates (simple binning)
+    fMCTNullSb[imode] = true;
+    fMCTNomSb [imode] = 0;
+    fMCTTunSb [imode] = 0;
+    fMCTSysSb [imode] = 0;
+    fMCTFinSb [imode] = 0;
+    fMCStatSb [imode] = 0;
+    // PDF (simple binning)
+    fPDFCompSb[imode] = 0;
+    if(imode == 0) {
+      fPDFTotSb     = 0;
+      fPDFTotNullSb = true;
+    }
 
-       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-         // MC templates
-         fMCTNullOb[imode][izone] = true;
-         fMCTNomOb [imode][izone] = 0;
-         fMCTTunOb [imode][izone] = 0;
-         fMCTSysOb [imode][izone] = 0;
-         fMCTFinOb [imode][izone] = 0;
-         fMCStatOb [imode][izone] = 0;
-         // PDF
-         fPDFCompOb [imode][izone] = 0;
-         if(imode == 0) {
-           fPDFTotOb     [izone] = 0;
-           fPDFTotNullOb [izone] = true;
-         }
-       }//izone
-
+    for(int izone = 0; izone < kNMaxBinZones; izone++) {
+      // MC templates
+      fMCTNullOb[imode][izone] = true;
+      fMCTNomOb [imode][izone] = 0;
+      fMCTTunOb [imode][izone] = 0;
+      fMCTSysOb [imode][izone] = 0;
+      fMCTFinOb [imode][izone] = 0;
+      fMCStatOb [imode][izone] = 0;
+      // PDF
+      fPDFCompOb [imode][izone] = 0;
+      if(imode == 0) {
+        fPDFTotOb     [izone] = 0;
+        fPDFTotNullOb [izone] = true;
+      }
+    }//izone
+    
+    
+    for(int ip = 0; ip < conv::kNFitParams; ip++) {
+      fParamIsAppliedTo[imode][ip] = false;
+    }
   }//imode
-
-//  for(int ip = 0; ip < conv::kNFitParams; ip++) {
-//    fPhysParamCurrVal[ip] = 0;
-//    fPhysParamFracErr[ip] = 0;
-//  }
 
   fArrIdx = util::ArrIdx::Instance();
   
-/*
-  // ----------------
-  // TODO
-  // Remove
-  fNuFlux = 0;
-  fNuInt  = 0;
-  fNuDet  = 0;
-  // ----------------
-*/
   fSyst = 0;
 }
 //________________________________________________________________________________________
@@ -867,91 +852,97 @@ void GenericSingleSampleFitModel::Book(void)
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = kReactionModes[isample][imode];
-        if(m == kmUndefined) continue;
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
 
-        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-        const int n_enu_true_bins = util::NumEtrueBins(fSample);
+    const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
+    const int n_enu_true_bins = util::NumEtrueBins(fSample);
 
-        LOG("GenericSingleSampleFitModel",pDEBUG) 
-            << "Booking MC template (simple binning) for " 
-            << "beam: "     << util::AsString(fBeam) 
-            << ", sample: " << util::AsString(fSample)
-            << ", mode: "   << util::AsString(m); 
+    LOG("GenericSingleSampleFitModel",pDEBUG) 
+        << "Booking MC template (simple binning) for " 
+        << "beam: "     << util::AsString(fBeam) 
+        << ", sample: " << util::AsString(fSample)
+        << ", mode: "   << util::AsString(m); 
 
-        // >> MC templates (simple binning)
-        // (Note order of variables: reco first, true later)
-        fMCTNullSb[imode] = false;
-        fMCTNomSb [imode] = 
-          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-        fMCTTunSb [imode] = 
-          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-        fMCTSysSb [imode] = 
-          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-        fMCTFinSb [imode] = 
-          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-        fMCStatSb [imode] = 
-          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
+    // >> MC templates (simple binning)
+    // (Note order of variables: reco first, true later)
+    fMCTNullSb[imode] = false;
+    fMCTNomSb [imode] = 
+      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
+    fMCTTunSb [imode] = 
+      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
+    fMCTSysSb [imode] = 
+      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
+    fMCTFinSb [imode] = 
+      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
+    fMCStatSb [imode] = 
+      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
 
-        // >> PDF component
-        fPDFCompSb[imode] = 
-            new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);           
-        // >> PDF total
-        // should get here for at least one imode value
-        if(fPDFTotNullSb) {              
-           LOG("GenericSingleSampleFitModel",pDEBUG) 
-              << "Booking PDF (total / simple binning) for " 
-              << "beam: "     << util::AsString(fBeam) 
-              << ", sample: " << util::AsString(fSample);
-           fPDFTotNullSb = false;
-           fPDFTotSb     = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb); 
-        }
+    // >> PDF component
+    fPDFCompSb[imode] = 
+        new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);           
+    // >> PDF total
+    // should get here for at least one imode value
+    if(fPDFTotNullSb) {              
+       LOG("GenericSingleSampleFitModel",pDEBUG) 
+          << "Booking PDF (total / simple binning) for " 
+          << "beam: "     << util::AsString(fBeam) 
+          << ", sample: " << util::AsString(fSample);
+       fPDFTotNullSb = false;
+       fPDFTotSb     = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb); 
+    }
 
 
-        // Loop over zones
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-           const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-           const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-           if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+    // Loop over zones
+    for(int izone = 0; izone < kNMaxBinZones; izone++) {
+       const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
+       const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
+       if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
 
-           LOG("GenericSingleSampleFitModel",pDEBUG) 
-              << "Booking MC template for " 
-              << "beam: "     << util::AsString(fBeam) 
-              << ", sample: " << util::AsString(fSample)
-              << ", mode: "   << util::AsString(m) 
-              << ", zone: "   << izone;
+       LOG("GenericSingleSampleFitModel",pDEBUG) 
+          << "Booking MC template for " 
+          << "beam: "     << util::AsString(fBeam) 
+          << ", sample: " << util::AsString(fSample)
+          << ", mode: "   << util::AsString(m) 
+          << ", zone: "   << izone;
  
-           // >> MC templates 
-           // (Note order of variables: reco first, true later)
-           fMCTNullOb[imode][izone] = false;
-           fMCTNomOb [imode][izone] = 
-             new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-           fMCTTunOb [imode][izone] = 
-             new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-           fMCTSysOb [imode][izone] = 
-             new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-           fMCTFinOb [imode][izone] = 
-             new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-           fMCStatOb [imode][izone] = 
-             new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
+       // >> MC templates 
+       // (Note order of variables: reco first, true later)
+       fMCTNullOb[imode][izone] = false;
+       fMCTNomOb [imode][izone] = 
+         new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
+       fMCTTunOb [imode][izone] = 
+         new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
+       fMCTSysOb [imode][izone] = 
+         new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
+       fMCTFinOb [imode][izone] = 
+         new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
+       fMCStatOb [imode][izone] = 
+         new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
 
-           // >> PDF component
-           fPDFCompOb[imode][izone] = 
-               new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
-           // >> PDF total
-           // should get here for at least one imode value
-           if(fPDFTotNullOb[izone]) {              
-              LOG("GenericSingleSampleFitModel",pDEBUG) 
-                 << "Booking PDF (total) for " 
-                 << "beam: "     << util::AsString(fBeam) 
-                 << ", sample: " << util::AsString(fSample)
-                 << ", zone: "   << izone;
+       // >> PDF component
+       fPDFCompOb[imode][izone] = 
+           new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
+       // >> PDF total
+       // should get here for at least one imode value
+       if(fPDFTotNullOb[izone]) {              
+          LOG("GenericSingleSampleFitModel",pDEBUG) 
+             << "Booking PDF (total) for " 
+             << "beam: "     << util::AsString(fBeam) 
+             << ", sample: " << util::AsString(fSample)
+             << ", zone: "   << izone;
 
-              fPDFTotNullOb [izone] = false;
-              fPDFTotOb     [izone] = new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
-           }
-        }//izone
-
+          fPDFTotNullOb [izone] = false;
+          fPDFTotOb     [izone] = new VALORArray(n_enu_reco_bins,n_y_reco_bins);           
+       }
+    }//izone
+    
+    // Fill the ParamIsAppliedTo arra
+    for(int ip = 0; ip < conv::kNFitParams; ip++) {
+      PhysParamId_t p = kFitParam[ip];
+      if(p == kPhypUndefined) continue;
+      fParamIsAppliedTo[imode][ip] = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+    }
   }//imode
 }
 //________________________________________________________________________________________
@@ -1414,7 +1405,7 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
                    // Fluctuate MC statistics and get the tweak factor
                    double nmcf = rnd->RndToyMCstat().Poisson(nmc); 
                    //double twk  = (nmc > 0) ? nmcf/nmc ? 1;
-		   double twk  = (nmc > 0) ? nmcf/nmc : 1;
+                   double twk  = (nmc > 0) ? nmcf/nmc : 1;
                    // Apply the tweak factor in the template, obviously a small effect for 
                    // large MC statistics. Again noting that this is not the statistical error
                    // for the current exposure. That one will be applied later in toy-MC generation.
@@ -1585,7 +1576,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             //-------------- error, prone need to simplify
             PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+            bool apply = fParamIsAppliedTo[imode][ip];
               //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
@@ -1629,7 +1620,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
              //-------------- error, prone need to simplify
              PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
-             bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+            bool apply = fParamIsAppliedTo[imode][ip];
              //-------------- 
              if(!apply) continue;
              bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
@@ -1656,7 +1647,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             //-------------- error, prone need to simplify
             PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+            bool apply = fParamIsAppliedTo[imode][ip];
             //-------------- 
             if(!apply) continue;
             bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
@@ -1686,7 +1677,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             //-------------- error, prone need to simplify
             PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
-            bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+            bool apply = fParamIsAppliedTo[imode][ip];
             //-------------- 
             if(!apply) continue;
             bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
