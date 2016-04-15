@@ -67,8 +67,6 @@ int main(int argc, char ** argv)
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_DUNE/config/apps/run_fit.arg:$VALOR_DUNE/config/apps/seeds.arg");
   LOG("valor_dune", pNOTICE) << arg;
- 
-// LOG("valor_dune", pNOTICE) << *Rnd::Instance();
 
   TString param_values_ts(arg.GetString("param-values-option"));
   TString fit_options_ts (arg.GetString("fitter"));
@@ -77,6 +75,11 @@ int main(int argc, char ** argv)
   
   // Set DUNE param names inside framework
   util::PopulateNameRegistry();
+  
+  // Set the random seeds
+  Rnd::Instance()->SetSeeds(arg);
+  
+  LOG("valor_dune", pNOTICE) << *Rnd::Instance();
 
   // Create file and tree to store outputs
   TString outfilename = TString::Format("%s_%d.root", arg.GetString("tag").c_str(), arg.GetInt("run"));
