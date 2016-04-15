@@ -396,23 +396,23 @@ int SDData::NumOfBins(Option_t * /*opt*/) const
   return nbins;
 }
 //________________________________________________________________________________________
-double SDData::Statistic(FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
+double SDData::GetFitStatistic(FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
 {
   bool ok = model_abc->Generate(fp);
   assert(ok);
 
-  return this->Statistic(model_abc,opt);
+  return this->GetFitStatistic(model_abc,opt);
 }
 //________________________________________________________________________________________
-double SDData::Statistic(FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt)
+double SDData::GetFitStatistic(FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt)
 {
   bool ok = model_abc->Generate(ph);
   assert(ok);
 
-  return this->Statistic(model_abc,opt);  
+  return this->GetFitStatistic(model_abc,opt);  
 }
 //________________________________________________________________________________________
-double SDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/) 
+double SDData::GetFitStatistic(FitModelABC * model_abc, Option_t * /*opt*/) 
 {
   TObjArray * array = new TObjArray();
   model_abc->Write(array, "curr", "pdft_vf");
@@ -451,14 +451,10 @@ double SDData::Statistic(FitModelABC * model_abc, Option_t * /*opt*/)
   }//ibeam
   S = TMath::Max(0.,S);
 
-  double Sp   = model_abc->GetFitStatisticPenalty();
-  double Stot = S+Sp;
-
   LOG("SDData",pINFO) 
-    << "Current fit statistic = " << Stot
-    << " (stat term = " << S << ", syst term = " << Sp << ")";
+    << "Current fit statistic = " << S;
 
-  return Stot;
+  return S;
 }
 //________________________________________________________________________________________
 void SDData::Init(void)

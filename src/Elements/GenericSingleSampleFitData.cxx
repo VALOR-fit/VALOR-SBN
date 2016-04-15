@@ -375,25 +375,25 @@ int GenericSingleSampleFitData::NumOfBins(Option_t * /*opt*/) const
   return nbins;
 }
 //________________________________________________________________________________________
-double GenericSingleSampleFitData::Statistic(
+double GenericSingleSampleFitData::GetFitStatistic(
     FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
 {
   bool ok = model_abc->Generate(fp);
   assert(ok);
 
-  return this->Statistic(model_abc,opt);
+  return this->GetFitStatistic(model_abc,opt);
 }
 //________________________________________________________________________________________
-double GenericSingleSampleFitData::Statistic(
+double GenericSingleSampleFitData::GetFitStatistic(
     FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt)
 {
   bool ok = model_abc->Generate(ph);
   assert(ok);
 
-  return this->Statistic(model_abc,opt);  
+  return this->GetFitStatistic(model_abc,opt);  
 }
 //________________________________________________________________________________________
-double GenericSingleSampleFitData::Statistic(
+double GenericSingleSampleFitData::GetFitStatistic(
     FitModelABC * model_abc, Option_t * /*opt*/) 
 {
   TObjArray * array = new TObjArray();
@@ -421,14 +421,10 @@ double GenericSingleSampleFitData::Statistic(
   }//izone
   S = TMath::Max(0.,S);
 
-  double Sp   = model_abc->GetFitStatisticPenalty();
-  double Stot = S+Sp;
-
   LOG("GenericSingleSampleFitData",pINFO) 
-    << fName<<" - Current fit statistic = " << Stot
-    << " (stat term = " << S << ", syst term = " << Sp << ")";
+    << fName<<" - Current fit statistic = " << S;
 
-  return Stot;
+  return S;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Init(void)
