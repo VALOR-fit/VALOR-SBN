@@ -166,7 +166,6 @@ int main(int argc, char ** argv)
     // Write results to the output tree
     ntp.Fill();
 
-    delete data;
     delete fp;
     delete fit_inputs;
     delete fitter;
