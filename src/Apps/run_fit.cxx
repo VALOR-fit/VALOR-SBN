@@ -105,7 +105,7 @@ int main(int argc, char ** argv)
    
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
-    if (param_values_ts.Contains("randomize")) {
+    if (arg.GetBool("with-stat-fluct")) {
       model->RandomizeSystematics(param_values_ts.Data());
     }
     fp->FromPhysParamList(model->Tweaks(),"current");
