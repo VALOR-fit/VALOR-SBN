@@ -356,6 +356,8 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
       fDataOb[izone]->SetEntry(ndata_curr+ndata,ier2,iy2);
     }//iy
   }//ier
+  
+  delete array;
 
   return true;
 }
@@ -423,6 +425,8 @@ double GenericSingleSampleFitData::GetFitStatistic(
 
   LOG("GenericSingleSampleFitData",pINFO) 
     << fName<<" - Current fit statistic = " << S;
+    
+  delete array;
 
   return S;
 }

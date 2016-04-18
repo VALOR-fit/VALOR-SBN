@@ -108,7 +108,8 @@ bool CompoundFitElements::Read(string xmlfile)
     
     curr_node = xmleng->GetNext(curr_node);
   }
-
+  
+  xmleng->FreeDoc(xmldoc);
   delete xmleng;
   
   CorrelatedSystematics * syst = new CompoundCorrelatedSystematics(syst_objects);
