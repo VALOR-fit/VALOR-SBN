@@ -91,12 +91,14 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
 // 
 // Parameter ranges (same for all binning schemes)
 //
-static const double kEtrueMin = 0.;
-static const double kEtrueMax = 120.;
-static const double kErecoMin = 0.;
-static const double kErecoMax = 120.;
-static const double kYrecoMin = 0.;
-static const double kYrecoMax = 1.;
+static const double kEtrueMin  = 0.;
+static const double kEtrueMax  = 120.;
+static const double kQ2trueMin = 0;
+static const double kQ2trueMax = 1E6; //<-- should probably be changed
+static const double kErecoMin  = 0.;
+static const double kErecoMax  = 120.;
+static const double kYrecoMin  = 0.;
+static const double kYrecoMax  = 1.;
 
 // ...........................................................................
 // 
@@ -132,10 +134,36 @@ static const double kEtrueBinEdges[kNEtrueBins+1] =
 };
 
 // Q2 bins
-static const int kNQ2trueBins = 3;
+//~ static const int kNQ2trueBins = 3;
+//~ static const double kQ2trueBinEdges[kNQ2trueBins+1] = 
+static const int kNQ2trueBins = 1;
 static const double kQ2trueBinEdges[kNQ2trueBins+1] = 
 {
-  0.0,0.5,2.,30. // Dummy binning
+  0.0,kQ2trueMax // Dummy binning
+};
+
+static const int kNQ2trueBinsCCQE = 3;
+static const double kQ2trueBinEdgesCCQE[kNQ2trueBinsCCQE+1] = 
+{
+  0.0,100000.,100000.,kQ2trueMax // Dummy binning
+};
+
+static const int kNQ2trueBinsCC1piC = 3;
+static const double kQ2trueBinEdgesCC1piC[kNQ2trueBinsCC1piC+1] = 
+{
+  0.0,100000.,100000.,kQ2trueMax // Dummy binning
+};
+
+static const int kNQ2trueBinsCC1pi0 = 3;
+static const double kQ2trueBinEdgesCC1pi0[kNQ2trueBinsCC1pi0+1] = 
+{
+  0.0,100000.,100000.,kQ2trueMax // Dummy binning
+};
+
+static const int kNQ2trueBinsOther = 1;
+static const double kQ2trueBinEdgesOther[kNQ2trueBinsOther+1] = 
+{
+  0.0,kQ2trueMax // Dummy binning
 };
 
 

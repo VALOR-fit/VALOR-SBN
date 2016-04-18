@@ -562,12 +562,6 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    false   // kNuisEffNC            
 };
 
-#if INT_MODEL==2
-static const double kIntBinEdgeQ2true1 = kQ2trueBinEdges[1];
-static const double kIntBinEdgeQ2true2 = kQ2trueBinEdges[2];
-#endif
-static const double kQ2trueMax      = kQ2trueBinEdges[3];
-
 // Which is the true energy range?
 static const double kFitParamEtrueRange[kNFitParams][2] = 
 {
@@ -836,24 +830,24 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
    {  0.0, kQ2trueMax},   // kNuisNormCC1piC
    {  0.0, kQ2trueMax},   // kNuisNormCC1pi0
 #elif INT_MODEL==2
-   {  0.0               , kIntBinEdgeQ2true1}, //kNuisIntNuCCQE1       
-   {  kIntBinEdgeQ2true1, kIntBinEdgeQ2true2}, //kNuisIntNuCCQE2       
-   {  kIntBinEdgeQ2true2, kQ2trueMax        }, //kNuisIntNuCCQE3       
-   {  0.0               , kIntBinEdgeQ2true1}, //kNuisIntNuBarCCQE1    
-   {  kIntBinEdgeQ2true1, kIntBinEdgeQ2true2}, //kNuisIntNuBarCCQE2    
-   {  kIntBinEdgeQ2true2, kQ2trueMax        }, //kNuisIntNuBarCCQE3    
-   {  0.0               , kIntBinEdgeQ2true1}, //kNuisIntNuCC1piz1     
-   {  kIntBinEdgeQ2true1, kIntBinEdgeQ2true2}, //kNuisIntNuCC1piz2     
-   {  kIntBinEdgeQ2true2, kQ2trueMax        }, //kNuisIntNuCC1piz3     
-   {  0.0               , kIntBinEdgeQ2true1}, //kNuisIntNuCC1pic1     
-   {  kIntBinEdgeQ2true1, kIntBinEdgeQ2true2}, //kNuisIntNuCC1pic2     
-   {  kIntBinEdgeQ2true2, kQ2trueMax        }, //kNuisIntNuCC1pic3     
-   {  0.0               , kIntBinEdgeQ2true1}, //kNuisIntNuBarCC1piz1  
-   {  kIntBinEdgeQ2true1, kIntBinEdgeQ2true2}, //kNuisIntNuBarCC1piz2  
-   {  kIntBinEdgeQ2true2, kQ2trueMax        }, //kNuisIntNuBarCC1piz3  
-   {  0.0               , kIntBinEdgeQ2true1}, //kNuisIntNuBarCC1pic1  
-   {  kIntBinEdgeQ2true1, kIntBinEdgeQ2true2}, //kNuisIntNuBarCC1pic2  
-   {  kIntBinEdgeQ2true2, kQ2trueMax        }, //kNuisIntNuBarCC1pic3  
+   {  kQ2trueMin              , kQ2trueBinEdgesCCQE[1]  }, //kNuisIntNuCCQE1       
+   {  kQ2trueBinEdgesCCQE[1]  , kQ2trueBinEdgesCCQE[2]  }, //kNuisIntNuCCQE2       
+   {  kQ2trueBinEdgesCCQE[2]  , kQ2trueMax              }, //kNuisIntNuCCQE3       
+   {  kQ2trueMin              , kQ2trueBinEdgesCCQE[1]  }, //kNuisIntNuBarCCQE1    
+   {  kQ2trueBinEdgesCCQE[1]  , kQ2trueBinEdgesCCQE[2]  }, //kNuisIntNuBarCCQE2    
+   {  kQ2trueBinEdgesCCQE[2]  , kQ2trueMax              }, //kNuisIntNuBarCCQE3    
+   {  kQ2trueMin              , kQ2trueBinEdgesCC1pi0[1]}, //kNuisIntNuCC1piz1     
+   {  kQ2trueBinEdgesCC1pi0[1], kQ2trueBinEdgesCC1pi0[2]}, //kNuisIntNuCC1piz2     
+   {  kQ2trueBinEdgesCC1pi0[2], kQ2trueMax              }, //kNuisIntNuCC1piz3     
+   {  kQ2trueMin              , kQ2trueBinEdgesCC1piC[1]}, //kNuisIntNuCC1pic1     
+   {  kQ2trueBinEdgesCC1piC[1], kQ2trueBinEdgesCC1piC[2]}, //kNuisIntNuCC1pic2     
+   {  kQ2trueBinEdgesCC1piC[2], kQ2trueMax              }, //kNuisIntNuCC1pic3     
+   {  kQ2trueMin              , kQ2trueBinEdgesCC1pi0[1]}, //kNuisIntNuBarCC1piz1  
+   {  kQ2trueBinEdgesCC1pi0[1], kQ2trueBinEdgesCC1pi0[2]}, //kNuisIntNuBarCC1piz2  
+   {  kQ2trueBinEdgesCC1pi0[2], kQ2trueMax              }, //kNuisIntNuBarCC1piz3  
+   {  kQ2trueMin              , kQ2trueBinEdgesCC1piC[1]}, //kNuisIntNuBarCC1pic1  
+   {  kQ2trueBinEdgesCC1piC[1], kQ2trueBinEdgesCC1piC[2]}, //kNuisIntNuBarCC1pic2  
+   {  kQ2trueBinEdgesCC1piC[2], kQ2trueMax              }, //kNuisIntNuBarCC1pic3  
 #else
   static_assert(!"FitParams: INT_MODEL not supported.");
 #endif //INT_MODEL

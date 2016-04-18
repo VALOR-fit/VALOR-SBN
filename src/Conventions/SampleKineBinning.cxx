@@ -32,14 +32,37 @@ const double * util::EtrueBinEdges(Sample_t /*sample*/)
   return kEtrueBinEdges;
 }
 //________________________________________________________________________________________
-int util::NumQ2trueBins(Sample_t /*sample*/)
+int util::NumQ2trueBins(Sample_t sample)
 {
-  return kNQ2trueBins;
+  //~ return kNQ2trueBins; // DEBUG
+  
+  switch (sample) {
+    case ksNuMuCC1trkQE:
+    case ksNuMuCC2trkQE:
+      return conv::kNQ2trueBinsCCQE;
+    case ksNuMuCC1piC:
+      return kNQ2trueBinsCC1piC;
+    case ksNuMuCC1pi0:
+      return kNQ2trueBinsCC1pi0;
+    default:
+      return kNQ2trueBinsOther;
+  }
 }
 //________________________________________________________________________________________
-const double * util::Q2trueBinEdges(Sample_t /*sample*/)
+const double * util::Q2trueBinEdges(Sample_t sample)
 {
-  return kQ2trueBinEdges;
+  //~ return kNQ2trueBinEdges; // DEBUG
+  switch (sample) {
+    case ksNuMuCC1trkQE:
+    case ksNuMuCC2trkQE:
+      return kQ2trueBinEdgesCCQE;
+    case ksNuMuCC1piC:
+      return kQ2trueBinEdgesCC1piC;
+    case ksNuMuCC1pi0:
+      return kQ2trueBinEdgesCC1pi0;
+    default:
+      return kQ2trueBinEdgesOther;
+  }
 }
 //________________________________________________________________________________________
 
