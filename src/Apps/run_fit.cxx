@@ -110,7 +110,7 @@ int main(int argc, char ** argv)
     }
     fp->FromPhysParamList(model->Tweaks(),"current");
     
-    if (fit_options_ts.Contains("start-at-true")) {
+    if (arg.GetBool("start-at-true")) {
       LOG("valor_dune", pNOTICE) << "Copying current values to initial values to give the fitter some help.";
       fp->CopyCurrToInitValues();
     }
