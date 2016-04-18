@@ -28,5 +28,6 @@
   <priority msgstream="CompoundCorrelatedSystematics">  NOTICE </priority>
   <priority msgstream="GenericSingleSampleFitModel">    NOTICE </priority>
   <priority msgstream="GenericSingleSampleFitData">     NOTICE </priority>
+  <priority msgstream="FitInputs">                      NOTICE </priority>
 
 </messenger_config>

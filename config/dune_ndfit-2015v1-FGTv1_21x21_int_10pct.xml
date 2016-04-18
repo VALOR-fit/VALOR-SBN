@@ -10,12 +10,12 @@ Assumed exposure for various beam configurations
 
 <data>
   <exposure> 
-    <fhc>
+    <lbnf_fhc>
       1.0000e+21 
-    </fhc>
-    <rhc>
+    </lbnf_fhc>
+    <lbnf_rhc>
       1.0000e+21 
-    </rhc>
+    </lbnf_rhc>
   </exposure>
 </data>
 
@@ -40,20 +40,20 @@ Input MC templates
 
 <mc>
   <using_dst_format> 
-     false 
+     true 
   </using_dst_format> 
 
   <dst> 
-    <fhc>
+    <lbnf_fhc>
        <filename> dune/ndfit/2015a/STT/FHC_LBNE_ND_Tree_v25.root </filename> 
        <objname>  LBNETree </objname> 
        <objtype>  TTree    </objtype> 
-    </fhc>
-    <rhc>
+    </lbnf_fhc>
+    <lbnf_rhc>
        <filename> dune/ndfit/2015a/STT/RHC_LBNE_ND_Tree_v25.root </filename> 
        <objname>  LBNETree  </objname> 
        <objtype>  TTree     </objtype> 
-    </rhc>
+    </lbnf_rhc>
   </dst>
   
   <template>
@@ -69,7 +69,9 @@ Systematics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 
+<!--
 <syst>
+-->
   <EnergyScale>
     <Leptonic> 0.025 </Leptonic>
     <Hadronic> 0.15 </Hadronic>
@@ -99,7 +101,9 @@ Systematics
     </covariance_matrix>
   </detector>
   
+<!--
 </syst>
+-->
 
 </analysis_inputs>
 
