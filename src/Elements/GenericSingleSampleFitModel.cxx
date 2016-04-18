@@ -1070,7 +1070,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   double enu_reco      = 0;
   double y_reco        = 0;
   double wght_pot      = 0;
-  double Q2_true       = 1;
+  double Q2_true       = 0;
 
   t->SetBranchAddress("sample",       &sample);
   t->SetBranchAddress("reactionmode", &reac_mode);
@@ -1078,7 +1078,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   t->SetBranchAddress("Ev_reco",      &enu_reco);
   t->SetBranchAddress("y_reco",       &y_reco);
   t->SetBranchAddress("POTWeight",    &wght_pot);
-  //~ t->SetBranchAddress("Q2",           &Q2_true);
+  t->SetBranchAddress("Q2",           &Q2_true);
 
   /*
      bSample   -> SetAddress(&sample    );
@@ -1103,6 +1103,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   for(Long_t iev = 0; iev < nev; iev++) 
   {
     t->GetEntry(iev);
+    
+    Q2_true = TMath::Max(Q2_true,conv::kASmallNum); //DEBUG
+    Q2_true = TMath::Min(Q2_true,kQ2trueMax-conv::kASmallNum); //DEBUG
 
     if(iev%(nev/20)==0) {
       double pct = (100 * (double)(iev+1)) / (double)nev;
