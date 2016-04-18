@@ -90,15 +90,6 @@ public:
   PhysParamList OneSigmaErrors (Option_t * opt = "");
 //  TMatrixD CovarianceMatrix(Option_t * opt = "");
 
-  // ----------remove / using CorrelatedSystematics
-  // NuFlux *       GetNuFlux (void);
-  // const NuFlux * GetNuFlux (void) const;
-  // NuInt *        GetNuInt  (void);
-  // const NuInt *  GetNuInt  (void) const;
-  // NuDet *        GetNuDet  (void);
-  // const NuDet *  GetNuDet  (void) const;
-  //-----------
-
 private:
 
   void Init  (void);
