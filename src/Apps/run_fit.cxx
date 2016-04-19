@@ -140,6 +140,7 @@ int main(int argc, char ** argv)
     // Do the fit
     LOG("valor_dune", pNOTICE) << "Running the fitter";
     LOG("valor_dune", pNOTICE) << "Fit starts with the following fit parameter list: " << *fp;
+    LOG("valor_dune", pNOTICE) << "Fit starts with statistic: " << fit_inputs->Statistic();
     fitter->DoTheFit();
 
 //  migradmin = fitter->FitStatusCode("migrad_min");
