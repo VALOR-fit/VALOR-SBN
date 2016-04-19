@@ -1309,6 +1309,11 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
       TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_ob_vf", name.Data());
       VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
       if (arr && arr->GetSize()) {
+        assert(arr->GetDimensionSizes() == fMCTNomOb[imode][izone]->GetDimensionSizes());
+        assert(arr->GetDimensionSizes() == fMCTTunOb[imode][izone]->GetDimensionSizes());
+        assert(arr->GetDimensionSizes() == fMCTSysOb[imode][izone]->GetDimensionSizes());
+        assert(arr->GetDimensionSizes() == fMCTFinOb[imode][izone]->GetDimensionSizes());
+        assert(arr->GetDimensionSizes() == fMCStatOb[imode][izone]->GetDimensionSizes());
         fMCTNomOb [imode][izone]->CopyFrom(*arr);
         fMCTTunOb [imode][izone]->CopyFrom(*arr);
         fMCTSysOb [imode][izone]->CopyFrom(*arr);
@@ -1328,6 +1333,11 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
     TString obj_name = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_sb_vf", name.Data());
     VALORArray * arr = dynamic_cast<VALORArray*>(f->Get(obj_name.Data()));
     if (arr && arr->GetSize()) {
+      assert(arr->GetDimensionSizes() == fMCTNomSb[imode]->GetDimensionSizes());
+      assert(arr->GetDimensionSizes() == fMCTTunSb[imode]->GetDimensionSizes());
+      assert(arr->GetDimensionSizes() == fMCTSysSb[imode]->GetDimensionSizes());
+      assert(arr->GetDimensionSizes() == fMCTFinSb[imode]->GetDimensionSizes());
+      assert(arr->GetDimensionSizes() == fMCStatSb[imode]->GetDimensionSizes());
       fMCTNomSb [imode]->CopyFrom(*arr);
       fMCTTunSb [imode]->CopyFrom(*arr);
       fMCTSysSb [imode]->CopyFrom(*arr);
