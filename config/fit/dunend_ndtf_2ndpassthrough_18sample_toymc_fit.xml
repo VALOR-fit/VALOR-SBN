@@ -243,7 +243,7 @@
       <class> valor::VALORInt2016a </class>
       <covariance_matrix>
          <filename>   test/dummy_interaction_matrices.root </filename>
-         <objname>    diag_21x21_10pct    </objname>    
+         <objname>    diag_43x43_10pct    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
     </group>
