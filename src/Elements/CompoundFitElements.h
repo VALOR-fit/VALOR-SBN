@@ -61,7 +61,7 @@ private:
   FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
   void *        InstantiateUsingDictionaryRegistration (string class_name);
 
-  CompoundFitData  *  fCompoundFitData;
+  CompoundFitData  * fCompoundFitData;
   CompoundFitModel * fCompoundFitModel;
   
 };

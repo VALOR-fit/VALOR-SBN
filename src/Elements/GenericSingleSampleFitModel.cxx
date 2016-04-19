@@ -854,7 +854,7 @@ void GenericSingleSampleFitModel::Book(void)
 
     const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
     const int n_enu_true_bins  = util::NumEtrueBins  (fSample);
-    const int n_q2_true_bins   = util::NumQ2trueBins (fSample);
+    const int n_q2_true_bins   = util::NumQ2trueBins (fSample,m);
 
     LOG("GenericSingleSampleFitModel",pDEBUG) 
       << "Booking MC template (simple binning) for " 
@@ -1220,11 +1220,11 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     // Get enu_true, enu_reco, y_reco array indices
     const int n_enu_true_bins          = util::NumEtrueBins(s);
     const int n_enu_reco_bins          = util::NumErecoBins(s,izone);
-    const int n_q2_true_bins           = util::NumQ2trueBins(s);
+    const int n_q2_true_bins           = util::NumQ2trueBins(s,m);
     const int n_y_reco_bins            = util::NumYrecoBins(s,izone);
     const int n_y_reco_bins_sb         = util::NumYrecoBinsSb(s);
     const double * enu_true_bin_edges  = util::EtrueBinEdges(s);
-    const double * q2_true_bin_edges   = util::Q2trueBinEdges(s);
+    const double * q2_true_bin_edges   = util::Q2trueBinEdges(s,m);
     const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
     const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
     const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
@@ -1389,12 +1389,13 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   const int n_enu_true_bins = util::NumEtrueBins(fSample);
-  const int n_q2_true_bins  = util::NumQ2trueBins(fSample);
   const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(fSample);
   for(int imode = 0; imode < kNReacModes; imode++) {
 
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
+    
+    const int n_q2_true_bins  = util::NumQ2trueBins(fSample,m);
 
     // Updating only the templates using the optimized binning
     if(!update_mct_sb) {
@@ -1543,9 +1544,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   }
 
   const int n_true1_bins = util::NumEtrueBins(fSample);
-  const int n_true2_bins = util::NumQ2trueBins(fSample);
   const double * true1_bin_edges = util::EtrueBinEdges(fSample);
-  const double * true2_bin_edges = util::Q2trueBinEdges(fSample);
   const int n_reco2_bins_sb   = util::NumYrecoBinsSb(fSample);
 
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
@@ -1553,6 +1552,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
+    
+    const int n_true2_bins = util::NumQ2trueBins(fSample,m);
+    const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
     LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1750,12 +1752,13 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   const int n_enu_true_bins  = util::NumEtrueBins  (fSample);
-  const int n_q2_true_bins   = util::NumQ2trueBins (fSample);
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
+    
+    const int n_q2_true_bins   = util::NumQ2trueBins (fSample,m);
 
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
       bool is_null = fMCTNullOb[imode][izone];

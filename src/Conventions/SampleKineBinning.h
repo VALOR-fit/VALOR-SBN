@@ -29,6 +29,7 @@
 //#define _use_single_zone_optimized_binning_scheme_v2_ 
 
 #include "Conventions/KineVar.h"
+#include "Conventions/ReacMode.h"
 #include "Conventions/Sample.h"
 
 namespace valor {
@@ -134,36 +135,34 @@ static const double kEtrueBinEdges[kNEtrueBins+1] =
 };
 
 // Q2 bins
-//~ static const int kNQ2trueBins = 3;
+//~ static const int kNQ2trueBins = 1;
 //~ static const double kQ2trueBinEdges[kNQ2trueBins+1] = 
-static const int kNQ2trueBins = 1;
-static const double kQ2trueBinEdges[kNQ2trueBins+1] = 
-{
-  0.0,kQ2trueMax // Dummy binning
-};
+//~ {
+  //~ 0.0,kQ2trueMax // Dummy binning
+//~ };
 
 static const int kNQ2trueBinsCCQE = 3;
 static const double kQ2trueBinEdgesCCQE[kNQ2trueBinsCCQE+1] = 
 {
-  0.0,100000.,100000.,kQ2trueMax // Dummy binning
+  0.0,0.2,0.55,kQ2trueMax
 };
 
 static const int kNQ2trueBinsCC1piC = 3;
 static const double kQ2trueBinEdgesCC1piC[kNQ2trueBinsCC1piC+1] = 
 {
-  0.0,100000.,100000.,kQ2trueMax // Dummy binning
+  0.0,0.3,0.8,kQ2trueMax
 };
 
 static const int kNQ2trueBinsCC1pi0 = 3;
 static const double kQ2trueBinEdgesCC1pi0[kNQ2trueBinsCC1pi0+1] = 
 {
-  0.0,100000.,100000.,kQ2trueMax // Dummy binning
+  0.0,0.35,0.9,kQ2trueMax
 };
 
 static const int kNQ2trueBinsOther = 1;
 static const double kQ2trueBinEdgesOther[kNQ2trueBinsOther+1] = 
 {
-  0.0,kQ2trueMax // Dummy binning
+  0.0,kQ2trueMax
 };
 
 
@@ -378,8 +377,8 @@ namespace util   {
    // Etrue binning
    int            NumEtrueBins    (conv::Sample_t sample);
    const double * EtrueBinEdges   (conv::Sample_t sample);
-   int            NumQ2trueBins   (conv::Sample_t sample);
-   const double * Q2trueBinEdges  (conv::Sample_t sample);
+   int            NumQ2trueBins   (conv::Sample_t sample, conv::ReacMode_t mode);
+   const double * Q2trueBinEdges  (conv::Sample_t sample, conv::ReacMode_t mode);
 
    // Simple binning scheme
    int            NumYrecoBinsSb  (conv::Sample_t sample);
