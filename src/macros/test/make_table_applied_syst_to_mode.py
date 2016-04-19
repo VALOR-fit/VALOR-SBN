@@ -31,25 +31,19 @@ coln_width = 3
 def main(beam_mode_arg = None, sample_arg = None,
          output_file="syst_applied_table.tex",
          config_file = "dune_ndfit.xml",
-         skipflux=False, skipint=False, skipdet =False, include_empty = False):
+         skipflux=False, skipint=False, skipdet =False, include_empty = False, color = True):
   
-  model = valor.NDModel()
-  model.Read(base_dir+"/config/"+config_file)
+  elements = valor.CompoundFitElements();
+  elements.Read(base_dir+"/config/"+config_file)
+  model = elements.FitModel()
+  
+  syst = model.GetSystematics()
   
   
   # Some ridiculous voodoo to go around ROOT's inability to identify arrays of enums or 2D arrays of bools
   ROOT.gROOT.ProcessLine("using namespace valor;")
   ROOT.gROOT.ProcessLine("using namespace valor::util;")
   ROOT.gROOT.ProcessLine("using namespace valor::conv;")
-  
-  nd_params_array  = array.array("i",[-1]*conv.kNNDFitParams)
-  
-  root_loop  = "{ int * par_arr = (int*)%s;" % str(nd_params_array.buffer_info()[0])
-  root_loop += " for (int i = 0 ; i < kNFitParams;i++){par_arr[i]=kFitParam[i];};};"
-  ROOT.gROOT.ProcessLine(root_loop)
-  
-  params = [p for p in nd_params_array if p != conv.kPhypUndefined]
-
 
   # Start writing tex file
   tex_output = open(output_file,"w")
@@ -62,12 +56,17 @@ def main(beam_mode_arg = None, sample_arg = None,
 \\usepackage{fullpage}
 \\usepackage{rotate}  
 \\usepackage{rotating}
-\\usepackage[paperwidth=400mm,paperheight=400mm]{geometry} % This is huge - use pdfcrop
-
-\\newcommand{\ck}{$\\checkmark$}
-\\begin{document}
-
+\\usepackage[paperwidth=400mm,paperheight=600mm]{geometry} % This is huge - use pdfcrop
+\\usepackage[table]{xcolor}
+\\usepackage{nopageno}
 """)
+
+  if color:
+    tex_output.write("\\newcommand{\ck}{$\\cellcolor{green!50} \\checkmark$}\n")
+  else:
+    tex_output.write("\\newcommand{\ck}{$\\checkmark$}\n")
+  
+  tex_output.write("\\begin{document}\n")
 
   first_page = True
   
@@ -77,13 +76,13 @@ def main(beam_mode_arg = None, sample_arg = None,
     beam_modes = [beam_mode_arg]
     
   for beam_mode in beam_modes:
-    nd_samples_array = array.array("i",[-1]*conv.kNNDSamples)
+    nd_samples_array = array.array("i",[-1]*conv.kNSamples)
     root_loop  = "{ int * smp_arr = (int*)%s;" % str(nd_samples_array.buffer_info()[0])
     root_loop += " for (int i = 0 ; i < kNSamples;i++){smp_arr[i]=kSample[%s][i];};};"%str(beam_mode)
     ROOT.gROOT.ProcessLine(root_loop)
     
     if sample_arg is None:
-      samples = [s for s in nd_samples_array if s != conv.ksNDUndefined]
+      samples = [s for s in nd_samples_array if s != conv.ksUndefined]
     else:
       samples = [sample_arg]
   
@@ -117,7 +116,8 @@ def main(beam_mode_arg = None, sample_arg = None,
       tex_output.write("\\\\ \hline \n")
       
       # Write all the other rows (per param)
-      for param in params:
+      for iparam in xrange(syst.Size()):
+        param = syst.WhichParam(iparam)
         if skipflux and util.IsNuFluxRelated(param): continue
         if skipint  and util.IsNuIntRelated(param) : continue
         if skipdet  and util.IsNuDetRelated(param) : continue
@@ -132,13 +132,13 @@ def main(beam_mode_arg = None, sample_arg = None,
         if not include_row: continue
         tex_output.write("& ".join(entries) + " \\\\ \\hline ")
         # Add second line if we're at the end of a group
-        if util.GetNDParameterGroup(param)!=util.GetNDParameterGroup(param+1):
+        if util.GetParameterGroup(param)!=util.GetParameterGroup(param+1):
           tex_output.write(" \\hline ")
         tex_output.write("\n")
       
       # Close table and finalise tex document
       tex_output.write("\n\\end{tabular}\n")
-      tex_output.write("\\caption{" + util.BeamConfAsString(beam_mode) +" "+util.NDSampleAsString(sample)+ "}\n")
+      tex_output.write(("\\caption{" + util.BeamConfAsString(beam_mode) +" "+util.SampleAsString(sample)+ "}\n").replace("_"," "))
       tex_output.write("\\end{table}\n}\n")
   
   
@@ -154,7 +154,7 @@ if __name__=="__main__":
   
   parser.add_option('-o', '--outfile', dest='output_file', default="syst_applied_table.tex", help="Name for output TeX file.")
   
-  parser.add_option('-c', '--config', dest='config', default="dune_ndfit.xml", help="Configuration file")
+  parser.add_option('-c', '--config', dest='config', default="fit/dune_ndfit.xml", help="Configuration file")
   
   parser.add_option('-b', '--beam'   , dest='beam'     , default=None     , help="Beam current (FHC/RHC)")
   parser.add_option('-s', '--sample' , dest='sample'   , default=None     , help="Sample (numuCC1trkQE etc)")
@@ -162,6 +162,7 @@ if __name__=="__main__":
   parser.add_option('--skip-int'     , dest='skipint'  , action="store_true", default=False, help="Skip the interaction parameters")
   parser.add_option('--skip-det'     , dest='skipdet'  , action="store_true", default=False, help="Skip the detector parameters")
   parser.add_option('--include-empty', dest='incempty' , action="store_true", default=False, help="Write completely empty rows in the table")
+  parser.add_option('-n',"--no-color", dest='nocolor'  , action="store_true", default=False, help="Color backgrounds of ticked cells")
   
   o,other = parser.parse_args()
   
@@ -170,11 +171,11 @@ if __name__=="__main__":
   else:
     beam = None
   if o.sample is not None:
-    sample = util.NDSampleFromString(o.sample)
+    sample = util.SampleFromString(o.sample)
   else:
     sample = None
   
-  main(beam,sample,o.output_file,o.config, o.skipflux, o.skipint, o.skipdet,o.incempty)
+  main(beam,sample,o.output_file,o.config, o.skipflux, o.skipint, o.skipdet,o.incempty, not o.nocolor)
   
   if other:
     print "Warning - ignored arguments: ",other
