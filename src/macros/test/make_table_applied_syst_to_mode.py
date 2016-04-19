@@ -107,7 +107,21 @@ def main(beam_mode_arg = None, sample_arg = None,
 \\renewcommand{\\arraystretch}{1.8}\n""")
       tex_output.write("\\begin{table} \\tiny\n")
       #~ tex_output.write("\\centering\n")
-      tex_output.write("\n\n\\begin{tabular} { | c ||"+("c | "*len(modes))+" | }\n\\hline\n")
+      
+      # Build the format row - single lines between similar modes, double lines if the neutrino flavour or current charge changes
+      table_col_spec = "| c |"
+      last_flav = -1
+      last_was_cc = -1
+      for mode in modes:
+        flav  = util.ReacModeToFlavor(mode)
+        is_cc = util.ModeIsCC(mode)
+        if (flav!= last_flav or is_cc != last_was_cc):
+          table_col_spec+="|"
+        table_col_spec += " c |"
+        last_flav = flav
+        last_was_cc = is_cc
+      
+      tex_output.write("\n\n\\begin{tabular} { "+table_col_spec+" | }\n\\hline\n")
       
       #  Write the first row (mode list)
       for mode in modes:
