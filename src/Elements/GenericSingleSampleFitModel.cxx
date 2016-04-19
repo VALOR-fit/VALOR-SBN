@@ -1592,7 +1592,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         //-------------- error, prone need to simplify
         PhysParamId_t p = kFitParam[ip];
         if(p == kPhypUndefined) continue;
-        bool apply = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+        bool apply = fParamIsAppliedTo[imode][ip];
         //-------------- 
         if(!apply) continue;
         bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
