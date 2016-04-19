@@ -154,6 +154,9 @@ string util::AsString(conv::PhysParamId_t p)
     case ( kNuisIntNuBarCCQE2      ) : return "f_int_nubar_ccqe_2"; 
     case ( kNuisIntNuBarCCQE3      ) : return "f_int_nubar_ccqe_3"; 
     
+    case ( kNuisIntNuCCMEC         ) : return "f_int_nu_mec"; 
+    case ( kNuisIntNuBarCCMEC      ) : return "f_int_nubar_mec"; 
+    
     case ( kNuisIntNuCC1piz1       ) : return "f_int_nu_cc1piz_1"; 
     case ( kNuisIntNuCC1piz2       ) : return "f_int_nu_cc1piz_2"; 
     case ( kNuisIntNuCC1piz3       ) : return "f_int_nu_cc1piz_3"; 
@@ -168,25 +171,31 @@ string util::AsString(conv::PhysParamId_t p)
     case ( kNuisIntNuBarCC1pic2    ) : return "f_int_nubar_1pic_2"; 
     case ( kNuisIntNuBarCC1pic3    ) : return "f_int_nubar_1pic_3"; 
     
-    case ( kNuisIntNuMultiPi1      ) : return "f_int_nu_npi_1"; 
-    case ( kNuisIntNuMultiPi2      ) : return "f_int_nu_npi_2"; 
-    case ( kNuisIntNuMultiPi3      ) : return "f_int_nu_npi_3"; 
-    case ( kNuisIntNuBarMultiPi1   ) : return "f_int_nubar_npi_1"; 
-    case ( kNuisIntNuBarMultiPi2   ) : return "f_int_nubar_npi_2"; 
-    case ( kNuisIntNuBarMultiPi3   ) : return "f_int_nubar_npi_3"; 
+    case ( kNuisIntNuCC2Pi         ) : return "f_int_nu_2pi"; 
+    case ( kNuisIntNuBarCC2Pi      ) : return "f_int_nubar_2pi"; 
     
-    case ( kNuisIntNormMEC         ) : return "f_int_mec"; 
-    case ( kNuisIntNormCoherent    ) : return "f_int_coh"; 
-    case ( kNuisIntNormCCOther     ) : return "f_int_ccoth"; 
-    case ( kNuisIntNormNC          ) : return "f_int_nc"; 
-    case ( kNuisIntNormNuMuToNuE   ) : return "f_int_numutonue"; 
-    case ( kNuisIntNormNuBarToNu   ) : return "f_int_nubartonu"; 
-    case ( kNuisIntNucMeanFreePath ) : return "f_int_nucmfp"; 
-    case ( kNuisIntPiMeanFreePath  ) : return "f_int_pimfp"; 
-    case ( kNuisIntPiChargeExchange) : return "f_int_pichargeex"; 
-    case ( kNuisIntPiAbsorb        ) : return "f_int_piabsorb"; 
-    case ( kNuisIntPiInelastic     ) : return "f_int_piinelastic"; 
-    case ( kNuisIntHadronization   ) : return "f_int_hadron";    
+    case ( kNuisIntNuDIS1          ) : return "f_int_nu_dis_1"; 
+    case ( kNuisIntNuDIS2          ) : return "f_int_nu_dis_2"; 
+    case ( kNuisIntNuDIS3          ) : return "f_int_nu_dis_3"; 
+    case ( kNuisIntNuBarDIS1       ) : return "f_int_nubar_dis_1"; 
+    case ( kNuisIntNuBarDIS2       ) : return "f_int_nubar_dis_2"; 
+    case ( kNuisIntNuBarDIS3       ) : return "f_int_nubar_dis_3"; 
+    
+    case (kNuisIntNormNuCoherent        ) : return "f_int_nu_coh";
+    case (kNuisIntNormNuBarCoherent     ) : return "f_int_nubar_coh";
+    case (kNuisIntNuNormNC              ) : return "f_int_nu_nc";
+    case (kNuisIntNuBarNormNC           ) : return "f_int_nubar_nc";
+    case (kNuisIntNormNuMuToNuE         ) : return "f_int_nuenumu";
+    case (kNuisIntPiMeanFreePath        ) : return "f_int_pi_mfp";
+    case (kNuisIntNucMeanFreePath       ) : return "f_int_n_mfp";
+    case (kNuisIntFracPiChargeExchange  ) : return "f_int_pi_cex";
+    case (kNuisIntFracPiInelastic       ) : return "f_int_pi_inel";
+    case (kNuisIntFracPiAbsorb          ) : return "f_int_pi_abs";
+    case (kNuisIntFracPiProduction      ) : return "f_int_pi_prod";
+    case (kNuisIntFracNucChargeExchange ) : return "f_int_n_cex";
+    case (kNuisIntFracNucInelastic      ) : return "f_int_n_inel";
+    case (kNuisIntFracNucAbsorb         ) : return "f_int_n_abs";
+    case (kNuisIntFracNucProduction     ) : return "f_int_n_prod";
     
     default                       : return util::RawParamAsString(p);   
   }
@@ -328,39 +337,48 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case ( kNuisIntNuBarCCQE2      ) : name =  "f_{\\bar{\\nu} CCQE 2}";                   break;
     case ( kNuisIntNuBarCCQE3      ) : name =  "f_{\\bar{\\nu} CCQE 3}";                   break;
     
+    case ( kNuisIntNuCCMEC         ) : name =  "f_{\\nu MEC}";                             break;
+    case ( kNuisIntNuBarCCMEC      ) : name =  "f_{\\bar{\\nu} MEC}";                      break;
+    
     case ( kNuisIntNuCC1piz1       ) : name =  "f_{\\nu CC1\\pi^{0} 1}";                   break;
     case ( kNuisIntNuCC1piz2       ) : name =  "f_{\\nu CC1\\pi^{0} 2}";                   break;
     case ( kNuisIntNuCC1piz3       ) : name =  "f_{\\nu CC1\\pi^{0} 3}";                   break;
-    case ( kNuisIntNuCC1pic1       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 1}";                 break;
-    case ( kNuisIntNuCC1pic2       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 2}";                 break;
-    case ( kNuisIntNuCC1pic3       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 3}";                 break;
+    case ( kNuisIntNuCC1pic1       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 1}";                break;
+    case ( kNuisIntNuCC1pic2       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 2}";                break;
+    case ( kNuisIntNuCC1pic3       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 3}";                break;
     
-    case ( kNuisIntNuBarCC1piz1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 1}";             break;
-    case ( kNuisIntNuBarCC1piz2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 2}";             break;
-    case ( kNuisIntNuBarCC1piz3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 3}";             break;
-    case ( kNuisIntNuBarCC1pic1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 1}";           break;
-    case ( kNuisIntNuBarCC1pic2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 2}";           break;
-    case ( kNuisIntNuBarCC1pic3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 3}";           break;
+    case ( kNuisIntNuBarCC1piz1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 1}";            break;
+    case ( kNuisIntNuBarCC1piz2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 2}";            break;
+    case ( kNuisIntNuBarCC1piz3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 3}";            break;
+    case ( kNuisIntNuBarCC1pic1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 1}";         break;
+    case ( kNuisIntNuBarCC1pic2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 2}";         break;
+    case ( kNuisIntNuBarCC1pic3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 3}";         break;
     
-    case ( kNuisIntNuMultiPi1      ) : name =  "f_{\\nu n\\pi 1}";                         break;
-    case ( kNuisIntNuMultiPi2      ) : name =  "f_{\\nu n\\pi 2}";                         break;
-    case ( kNuisIntNuMultiPi3      ) : name =  "f_{\\nu n\\pi 3}";                         break;
-    case ( kNuisIntNuBarMultiPi1   ) : name =  "f_{\\bar{\\nu} n\\pi 1}";                  break;
-    case ( kNuisIntNuBarMultiPi2   ) : name =  "f_{\\bar{\\nu} n\\pi 2}";                  break;
-    case ( kNuisIntNuBarMultiPi3   ) : name =  "f_{\\bar{\\nu} n\\pi 3}";                  break;
+    case ( kNuisIntNuCC2Pi         ) : name =  "f_{\\nu 2\\pi}";                            break;
+    case ( kNuisIntNuBarCC2Pi      ) : name =  "f_{\\bar{\\nu} 2\\pi}";                     break;
     
-    case ( kNuisIntNormMEC         ) : name =  "f_{MEC}";                                  break;
-    case ( kNuisIntNormCoherent    ) : name =  "f_{Coh}";                                  break;
-    case ( kNuisIntNormCCOther     ) : name =  "f_{CC other}";                             break;
-    case ( kNuisIntNormNC          ) : name =  "f_{NC}";                                   break;
-    case ( kNuisIntNormNuMuToNuE   ) : name =  "f_{\\nu_{\\mu} \\rightarrow \\nu_{e}}";    break;
-    case ( kNuisIntNormNuBarToNu   ) : name =  "f_{\\bar{\\nu} \\rightarrow \\nu}";        break;
-    case ( kNuisIntNucMeanFreePath ) : name =  "f_{n \\lambda}";                           break;
-    case ( kNuisIntPiMeanFreePath  ) : name =  "f_{\\pi \\lambda}";                        break;
-    case ( kNuisIntPiChargeExchange) : name =  "f_{\\pi charge ex}";                       break;
-    case ( kNuisIntPiAbsorb        ) : name =  "f_{\\pi absorb}";                          break;
-    case ( kNuisIntPiInelastic     ) : name =  "f_{\\pi inelastic}";                       break;
-    case ( kNuisIntHadronization   ) : name =  "f_{\\eta}";                                break;
+    case ( kNuisIntNuDIS1          ) : name =  "f_{\\nu DIS 1}";                           break;
+    case ( kNuisIntNuDIS2          ) : name =  "f_{\\nu DIS 2}";                           break;
+    case ( kNuisIntNuDIS3          ) : name =  "f_{\\nu DIS 3}";                           break;
+    case ( kNuisIntNuBarDIS1       ) : name =  "f_{\\bar{\\nu} DIS 1}";                    break;
+    case ( kNuisIntNuBarDIS2       ) : name =  "f_{\\bar{\\nu} DIS 2}";                    break;
+    case ( kNuisIntNuBarDIS3       ) : name =  "f_{\\bar{\\nu} DIS 3}";                    break;
+    
+    case (kNuisIntNormNuCoherent        ) : name = "f_{\\nu coh}";                         break;
+    case (kNuisIntNormNuBarCoherent     ) : name = "f_{\\bar{\\nu} coh}";                  break;
+    case (kNuisIntNuNormNC              ) : name = "f_{\\nu nc}";                          break;
+    case (kNuisIntNuBarNormNC           ) : name = "f_{\\bar{\\nu} nc}";                   break;
+    case (kNuisIntNormNuMuToNuE         ) : name = "f_{\\nu_{e} / \\nu_{\\mu}}";                      break;
+    case (kNuisIntPiMeanFreePath        ) : name = "f_{\\pi mfp}";                         break;
+    case (kNuisIntNucMeanFreePath       ) : name = "f_{n_mfp}";                            break;
+    case (kNuisIntFracPiChargeExchange  ) : name = "f_{\\pi CEx}";                         break;
+    case (kNuisIntFracPiInelastic       ) : name = "f_{\\pi inel}";                        break;
+    case (kNuisIntFracPiAbsorb          ) : name = "f_{\\pi abs}";                         break;
+    case (kNuisIntFracPiProduction      ) : name = "f_{\\pi prod}";                        break;
+    case (kNuisIntFracNucChargeExchange ) : name = "f_{n CEx}";                            break;
+    case (kNuisIntFracNucInelastic      ) : name = "f_{n inel}";                           break;
+    case (kNuisIntFracNucAbsorb         ) : name = "f_{n abs}";                            break;
+    case (kNuisIntFracNucProduction     ) : name = "f_{n prod}";                           break;
 
     default                       : name = "--";    
   }

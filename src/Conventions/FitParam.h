@@ -41,19 +41,9 @@ using std::string;
 namespace valor {
 namespace conv {
 
-// If we don't have an interaction model defined, use the simple one.
-#ifndef INT_MODEL
-#define INT_MODEL 1
-#endif
-
 static const int kNFitParamsNuFlux = 104; // neutrino flux related
 static const int kNFitParamsNuDet  =   9; // neutrino detector related
-#if INT_MODEL == 1 // The simple sample normalisaation xsec model
-static const int kNFitParamsNuInt  =   6; // neutrino interactions related
-#elif INT_MODEL == 2 // The GENIE-based model with responses
-static const int kNFitParamsNuInt  =  21; // neutrino interactions related
-//~ static const int kNFitParamsNuInt  =  37; // neutrino interactions related
-#endif //INT_MODEL
+static const int kNFitParamsNuInt  =  43; // neutrino interactions related
 
 static const int kNFitParams = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet;
 
@@ -61,122 +51,122 @@ static const int kNFitParams = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuD
 //
 // FHC flux
 //
-static const PhysParamId_t kNuisFHCNuMuFlux00    = kNuis000; 
-static const PhysParamId_t kNuisFHCNuMuFlux01    = kNuis001; 
-static const PhysParamId_t kNuisFHCNuMuFlux02    = kNuis002; 
-static const PhysParamId_t kNuisFHCNuMuFlux03    = kNuis003; 
-static const PhysParamId_t kNuisFHCNuMuFlux04    = kNuis004; 
-static const PhysParamId_t kNuisFHCNuMuFlux05    = kNuis005; 
-static const PhysParamId_t kNuisFHCNuMuFlux06    = kNuis006; 
-static const PhysParamId_t kNuisFHCNuMuFlux07    = kNuis007; 
-static const PhysParamId_t kNuisFHCNuMuFlux08    = kNuis008; 
-static const PhysParamId_t kNuisFHCNuMuFlux09    = kNuis009; 
-static const PhysParamId_t kNuisFHCNuMuFlux10    = kNuis010; 
-static const PhysParamId_t kNuisFHCNuMuFlux11    = kNuis011; 
-static const PhysParamId_t kNuisFHCNuMuFlux12    = kNuis012; 
-static const PhysParamId_t kNuisFHCNuMuFlux13    = kNuis013; 
-static const PhysParamId_t kNuisFHCNuMuFlux14    = kNuis014; 
-static const PhysParamId_t kNuisFHCNuMuFlux15    = kNuis015; 
-static const PhysParamId_t kNuisFHCNuMuFlux16    = kNuis016; 
-static const PhysParamId_t kNuisFHCNuMuFlux17    = kNuis017; 
+static const PhysParamId_t kNuisFHCNuMuFlux00    = kNuis000;
+static const PhysParamId_t kNuisFHCNuMuFlux01    = kNuis001;
+static const PhysParamId_t kNuisFHCNuMuFlux02    = kNuis002;
+static const PhysParamId_t kNuisFHCNuMuFlux03    = kNuis003;
+static const PhysParamId_t kNuisFHCNuMuFlux04    = kNuis004;
+static const PhysParamId_t kNuisFHCNuMuFlux05    = kNuis005;
+static const PhysParamId_t kNuisFHCNuMuFlux06    = kNuis006;
+static const PhysParamId_t kNuisFHCNuMuFlux07    = kNuis007;
+static const PhysParamId_t kNuisFHCNuMuFlux08    = kNuis008;
+static const PhysParamId_t kNuisFHCNuMuFlux09    = kNuis009;
+static const PhysParamId_t kNuisFHCNuMuFlux10    = kNuis010;
+static const PhysParamId_t kNuisFHCNuMuFlux11    = kNuis011;
+static const PhysParamId_t kNuisFHCNuMuFlux12    = kNuis012;
+static const PhysParamId_t kNuisFHCNuMuFlux13    = kNuis013;
+static const PhysParamId_t kNuisFHCNuMuFlux14    = kNuis014;
+static const PhysParamId_t kNuisFHCNuMuFlux15    = kNuis015;
+static const PhysParamId_t kNuisFHCNuMuFlux16    = kNuis016;
+static const PhysParamId_t kNuisFHCNuMuFlux17    = kNuis017;
 static const PhysParamId_t kNuisFHCNuMuFlux18    = kNuis018;
-static const PhysParamId_t kNuisFHCNuMuBarFlux00 = kNuis019; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux01 = kNuis020; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux02 = kNuis021; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux03 = kNuis022; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux04 = kNuis023; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux05 = kNuis024; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux06 = kNuis025; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux07 = kNuis026; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux08 = kNuis027; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux09 = kNuis028; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux10 = kNuis029; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux11 = kNuis030; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux12 = kNuis031; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux13 = kNuis032; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux14 = kNuis033; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux15 = kNuis034; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux16 = kNuis035; 
-static const PhysParamId_t kNuisFHCNuMuBarFlux17 = kNuis036; 
+static const PhysParamId_t kNuisFHCNuMuBarFlux00 = kNuis019;
+static const PhysParamId_t kNuisFHCNuMuBarFlux01 = kNuis020;
+static const PhysParamId_t kNuisFHCNuMuBarFlux02 = kNuis021;
+static const PhysParamId_t kNuisFHCNuMuBarFlux03 = kNuis022;
+static const PhysParamId_t kNuisFHCNuMuBarFlux04 = kNuis023;
+static const PhysParamId_t kNuisFHCNuMuBarFlux05 = kNuis024;
+static const PhysParamId_t kNuisFHCNuMuBarFlux06 = kNuis025;
+static const PhysParamId_t kNuisFHCNuMuBarFlux07 = kNuis026;
+static const PhysParamId_t kNuisFHCNuMuBarFlux08 = kNuis027;
+static const PhysParamId_t kNuisFHCNuMuBarFlux09 = kNuis028;
+static const PhysParamId_t kNuisFHCNuMuBarFlux10 = kNuis029;
+static const PhysParamId_t kNuisFHCNuMuBarFlux11 = kNuis030;
+static const PhysParamId_t kNuisFHCNuMuBarFlux12 = kNuis031;
+static const PhysParamId_t kNuisFHCNuMuBarFlux13 = kNuis032;
+static const PhysParamId_t kNuisFHCNuMuBarFlux14 = kNuis033;
+static const PhysParamId_t kNuisFHCNuMuBarFlux15 = kNuis034;
+static const PhysParamId_t kNuisFHCNuMuBarFlux16 = kNuis035;
+static const PhysParamId_t kNuisFHCNuMuBarFlux17 = kNuis036;
 static const PhysParamId_t kNuisFHCNuMuBarFlux18 = kNuis037;
-static const PhysParamId_t kNuisFHCNuEFlux00     = kNuis038; 
-static const PhysParamId_t kNuisFHCNuEFlux01     = kNuis039; 
-static const PhysParamId_t kNuisFHCNuEFlux02     = kNuis040; 
-static const PhysParamId_t kNuisFHCNuEFlux03     = kNuis041; 
-static const PhysParamId_t kNuisFHCNuEFlux04     = kNuis042; 
-static const PhysParamId_t kNuisFHCNuEFlux05     = kNuis043; 
-static const PhysParamId_t kNuisFHCNuEFlux06     = kNuis044; 
-static const PhysParamId_t kNuisFHCNuEBarFlux00  = kNuis045; 
-static const PhysParamId_t kNuisFHCNuEBarFlux01  = kNuis046; 
-static const PhysParamId_t kNuisFHCNuEBarFlux02  = kNuis047; 
-static const PhysParamId_t kNuisFHCNuEBarFlux03  = kNuis048; 
-static const PhysParamId_t kNuisFHCNuEBarFlux04  = kNuis049; 
-static const PhysParamId_t kNuisFHCNuEBarFlux05  = kNuis050; 
-static const PhysParamId_t kNuisFHCNuEBarFlux06  = kNuis051; 
+static const PhysParamId_t kNuisFHCNuEFlux00     = kNuis038;
+static const PhysParamId_t kNuisFHCNuEFlux01     = kNuis039;
+static const PhysParamId_t kNuisFHCNuEFlux02     = kNuis040;
+static const PhysParamId_t kNuisFHCNuEFlux03     = kNuis041;
+static const PhysParamId_t kNuisFHCNuEFlux04     = kNuis042;
+static const PhysParamId_t kNuisFHCNuEFlux05     = kNuis043;
+static const PhysParamId_t kNuisFHCNuEFlux06     = kNuis044;
+static const PhysParamId_t kNuisFHCNuEBarFlux00  = kNuis045;
+static const PhysParamId_t kNuisFHCNuEBarFlux01  = kNuis046;
+static const PhysParamId_t kNuisFHCNuEBarFlux02  = kNuis047;
+static const PhysParamId_t kNuisFHCNuEBarFlux03  = kNuis048;
+static const PhysParamId_t kNuisFHCNuEBarFlux04  = kNuis049;
+static const PhysParamId_t kNuisFHCNuEBarFlux05  = kNuis050;
+static const PhysParamId_t kNuisFHCNuEBarFlux06  = kNuis051;
 //
 // RHC flux
 //
-static const PhysParamId_t kNuisRHCNuMuFlux00    = kNuis052; 
-static const PhysParamId_t kNuisRHCNuMuFlux01    = kNuis053; 
-static const PhysParamId_t kNuisRHCNuMuFlux02    = kNuis054; 
-static const PhysParamId_t kNuisRHCNuMuFlux03    = kNuis055; 
-static const PhysParamId_t kNuisRHCNuMuFlux04    = kNuis056; 
-static const PhysParamId_t kNuisRHCNuMuFlux05    = kNuis057; 
-static const PhysParamId_t kNuisRHCNuMuFlux06    = kNuis058; 
-static const PhysParamId_t kNuisRHCNuMuFlux07    = kNuis059; 
-static const PhysParamId_t kNuisRHCNuMuFlux08    = kNuis060; 
-static const PhysParamId_t kNuisRHCNuMuFlux09    = kNuis061; 
-static const PhysParamId_t kNuisRHCNuMuFlux10    = kNuis062; 
-static const PhysParamId_t kNuisRHCNuMuFlux11    = kNuis063; 
-static const PhysParamId_t kNuisRHCNuMuFlux12    = kNuis064; 
-static const PhysParamId_t kNuisRHCNuMuFlux13    = kNuis065; 
-static const PhysParamId_t kNuisRHCNuMuFlux14    = kNuis066; 
-static const PhysParamId_t kNuisRHCNuMuFlux15    = kNuis067; 
-static const PhysParamId_t kNuisRHCNuMuFlux16    = kNuis068; 
-static const PhysParamId_t kNuisRHCNuMuFlux17    = kNuis069; 
+static const PhysParamId_t kNuisRHCNuMuFlux00    = kNuis052;
+static const PhysParamId_t kNuisRHCNuMuFlux01    = kNuis053;
+static const PhysParamId_t kNuisRHCNuMuFlux02    = kNuis054;
+static const PhysParamId_t kNuisRHCNuMuFlux03    = kNuis055;
+static const PhysParamId_t kNuisRHCNuMuFlux04    = kNuis056;
+static const PhysParamId_t kNuisRHCNuMuFlux05    = kNuis057;
+static const PhysParamId_t kNuisRHCNuMuFlux06    = kNuis058;
+static const PhysParamId_t kNuisRHCNuMuFlux07    = kNuis059;
+static const PhysParamId_t kNuisRHCNuMuFlux08    = kNuis060;
+static const PhysParamId_t kNuisRHCNuMuFlux09    = kNuis061;
+static const PhysParamId_t kNuisRHCNuMuFlux10    = kNuis062;
+static const PhysParamId_t kNuisRHCNuMuFlux11    = kNuis063;
+static const PhysParamId_t kNuisRHCNuMuFlux12    = kNuis064;
+static const PhysParamId_t kNuisRHCNuMuFlux13    = kNuis065;
+static const PhysParamId_t kNuisRHCNuMuFlux14    = kNuis066;
+static const PhysParamId_t kNuisRHCNuMuFlux15    = kNuis067;
+static const PhysParamId_t kNuisRHCNuMuFlux16    = kNuis068;
+static const PhysParamId_t kNuisRHCNuMuFlux17    = kNuis069;
 static const PhysParamId_t kNuisRHCNuMuFlux18    = kNuis070;
-static const PhysParamId_t kNuisRHCNuMuBarFlux00 = kNuis071; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux01 = kNuis072; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux02 = kNuis073; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux03 = kNuis074; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux04 = kNuis075; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux05 = kNuis076; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux06 = kNuis077; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux07 = kNuis078; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux08 = kNuis079; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux09 = kNuis080; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux10 = kNuis081; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux11 = kNuis082; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux12 = kNuis083; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux13 = kNuis084; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux14 = kNuis085; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux15 = kNuis086; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux16 = kNuis087; 
-static const PhysParamId_t kNuisRHCNuMuBarFlux17 = kNuis088; 
+static const PhysParamId_t kNuisRHCNuMuBarFlux00 = kNuis071;
+static const PhysParamId_t kNuisRHCNuMuBarFlux01 = kNuis072;
+static const PhysParamId_t kNuisRHCNuMuBarFlux02 = kNuis073;
+static const PhysParamId_t kNuisRHCNuMuBarFlux03 = kNuis074;
+static const PhysParamId_t kNuisRHCNuMuBarFlux04 = kNuis075;
+static const PhysParamId_t kNuisRHCNuMuBarFlux05 = kNuis076;
+static const PhysParamId_t kNuisRHCNuMuBarFlux06 = kNuis077;
+static const PhysParamId_t kNuisRHCNuMuBarFlux07 = kNuis078;
+static const PhysParamId_t kNuisRHCNuMuBarFlux08 = kNuis079;
+static const PhysParamId_t kNuisRHCNuMuBarFlux09 = kNuis080;
+static const PhysParamId_t kNuisRHCNuMuBarFlux10 = kNuis081;
+static const PhysParamId_t kNuisRHCNuMuBarFlux11 = kNuis082;
+static const PhysParamId_t kNuisRHCNuMuBarFlux12 = kNuis083;
+static const PhysParamId_t kNuisRHCNuMuBarFlux13 = kNuis084;
+static const PhysParamId_t kNuisRHCNuMuBarFlux14 = kNuis085;
+static const PhysParamId_t kNuisRHCNuMuBarFlux15 = kNuis086;
+static const PhysParamId_t kNuisRHCNuMuBarFlux16 = kNuis087;
+static const PhysParamId_t kNuisRHCNuMuBarFlux17 = kNuis088;
 static const PhysParamId_t kNuisRHCNuMuBarFlux18 = kNuis089;
-static const PhysParamId_t kNuisRHCNuEFlux00     = kNuis090; 
-static const PhysParamId_t kNuisRHCNuEFlux01     = kNuis091; 
-static const PhysParamId_t kNuisRHCNuEFlux02     = kNuis092; 
-static const PhysParamId_t kNuisRHCNuEFlux03     = kNuis093; 
-static const PhysParamId_t kNuisRHCNuEFlux04     = kNuis094; 
-static const PhysParamId_t kNuisRHCNuEFlux05     = kNuis095; 
-static const PhysParamId_t kNuisRHCNuEFlux06     = kNuis096; 
-static const PhysParamId_t kNuisRHCNuEBarFlux00  = kNuis097; 
-static const PhysParamId_t kNuisRHCNuEBarFlux01  = kNuis098; 
-static const PhysParamId_t kNuisRHCNuEBarFlux02  = kNuis099; 
-static const PhysParamId_t kNuisRHCNuEBarFlux03  = kNuis100; 
-static const PhysParamId_t kNuisRHCNuEBarFlux04  = kNuis101; 
-static const PhysParamId_t kNuisRHCNuEBarFlux05  = kNuis102; 
-static const PhysParamId_t kNuisRHCNuEBarFlux06  = kNuis103; 
+static const PhysParamId_t kNuisRHCNuEFlux00     = kNuis090;
+static const PhysParamId_t kNuisRHCNuEFlux01     = kNuis091;
+static const PhysParamId_t kNuisRHCNuEFlux02     = kNuis092;
+static const PhysParamId_t kNuisRHCNuEFlux03     = kNuis093;
+static const PhysParamId_t kNuisRHCNuEFlux04     = kNuis094;
+static const PhysParamId_t kNuisRHCNuEFlux05     = kNuis095;
+static const PhysParamId_t kNuisRHCNuEFlux06     = kNuis096;
+static const PhysParamId_t kNuisRHCNuEBarFlux00  = kNuis097;
+static const PhysParamId_t kNuisRHCNuEBarFlux01  = kNuis098;
+static const PhysParamId_t kNuisRHCNuEBarFlux02  = kNuis099;
+static const PhysParamId_t kNuisRHCNuEBarFlux03  = kNuis100;
+static const PhysParamId_t kNuisRHCNuEBarFlux04  = kNuis101;
+static const PhysParamId_t kNuisRHCNuEBarFlux05  = kNuis102;
+static const PhysParamId_t kNuisRHCNuEBarFlux06  = kNuis103;
 //
 // Cross-section
 //
-static const PhysParamId_t kNuisNormCCQE         = kNuis104; 
-static const PhysParamId_t kNuisNormCC1piC       = kNuis105; 
-static const PhysParamId_t kNuisNormCC1pi0       = kNuis106; 
-static const PhysParamId_t kNuisNormCCoth        = kNuis107; 
-static const PhysParamId_t kNuisNormNC           = kNuis108; 
-static const PhysParamId_t kNuisRatioNuENuMu     = kNuis109; 
+static const PhysParamId_t kNuisNormCCQE         = kNuis104;
+static const PhysParamId_t kNuisNormCC1piC       = kNuis105;
+static const PhysParamId_t kNuisNormCC1pi0       = kNuis106;
+static const PhysParamId_t kNuisNormCCoth        = kNuis107;
+static const PhysParamId_t kNuisNormNC           = kNuis108;
+static const PhysParamId_t kNuisRatioNuENuMu     = kNuis109;
 //
 // Detector systematics
 //
@@ -193,59 +183,64 @@ static const PhysParamId_t kNuisEffNC            = kNuis118;
 //
 // Interaction model, more complex
 //
-static const PhysParamId_t kNuisIntNuCCQE1          = kNuis119;
-static const PhysParamId_t kNuisIntNuCCQE2          = kNuis120;
-static const PhysParamId_t kNuisIntNuCCQE3          = kNuis121;
-static const PhysParamId_t kNuisIntNuBarCCQE1       = kNuis122;
-static const PhysParamId_t kNuisIntNuBarCCQE2       = kNuis123;
-static const PhysParamId_t kNuisIntNuBarCCQE3       = kNuis124;
+static const PhysParamId_t kNuisIntNuCCQE1               = kNuis119;
+static const PhysParamId_t kNuisIntNuCCQE2               = kNuis120;
+static const PhysParamId_t kNuisIntNuCCQE3               = kNuis121;
+static const PhysParamId_t kNuisIntNuBarCCQE1            = kNuis122;
+static const PhysParamId_t kNuisIntNuBarCCQE2            = kNuis123;
+static const PhysParamId_t kNuisIntNuBarCCQE3            = kNuis124;
 
-static const PhysParamId_t kNuisIntNuCC1piz1        = kNuis125;
-static const PhysParamId_t kNuisIntNuCC1piz2        = kNuis126;
-static const PhysParamId_t kNuisIntNuCC1piz3        = kNuis127;
-static const PhysParamId_t kNuisIntNuCC1pic1        = kNuis128;
-static const PhysParamId_t kNuisIntNuCC1pic2        = kNuis129;
-static const PhysParamId_t kNuisIntNuCC1pic3        = kNuis130;
+static const PhysParamId_t kNuisIntNuCCMEC               = kNuis125;
+static const PhysParamId_t kNuisIntNuBarCCMEC            = kNuis126;
 
-static const PhysParamId_t kNuisIntNuBarCC1piz1     = kNuis131;
-static const PhysParamId_t kNuisIntNuBarCC1piz2     = kNuis132;
-static const PhysParamId_t kNuisIntNuBarCC1piz3     = kNuis133;
-static const PhysParamId_t kNuisIntNuBarCC1pic1     = kNuis134;
-static const PhysParamId_t kNuisIntNuBarCC1pic2     = kNuis135;
-static const PhysParamId_t kNuisIntNuBarCC1pic3     = kNuis136;
+static const PhysParamId_t kNuisIntNuCC1piz1             = kNuis127;
+static const PhysParamId_t kNuisIntNuCC1piz2             = kNuis128;
+static const PhysParamId_t kNuisIntNuCC1piz3             = kNuis129;
+static const PhysParamId_t kNuisIntNuCC1pic1             = kNuis130;
+static const PhysParamId_t kNuisIntNuCC1pic2             = kNuis131;
+static const PhysParamId_t kNuisIntNuCC1pic3             = kNuis132;
 
-static const PhysParamId_t kNuisIntNuMultiPi1       = kNuis137;
-static const PhysParamId_t kNuisIntNuMultiPi2       = kNuis138;
-static const PhysParamId_t kNuisIntNuMultiPi3       = kNuis139;
-static const PhysParamId_t kNuisIntNuBarMultiPi1    = kNuis140;
-static const PhysParamId_t kNuisIntNuBarMultiPi2    = kNuis141;
-static const PhysParamId_t kNuisIntNuBarMultiPi3    = kNuis142;
+static const PhysParamId_t kNuisIntNuBarCC1piz1          = kNuis133;
+static const PhysParamId_t kNuisIntNuBarCC1piz2          = kNuis134;
+static const PhysParamId_t kNuisIntNuBarCC1piz3          = kNuis135;
+static const PhysParamId_t kNuisIntNuBarCC1pic1          = kNuis136;
+static const PhysParamId_t kNuisIntNuBarCC1pic2          = kNuis137;
+static const PhysParamId_t kNuisIntNuBarCC1pic3          = kNuis138;
 
-static const PhysParamId_t kNuisIntNormMEC          = kNuis143;
-static const PhysParamId_t kNuisIntNormCoherent     = kNuis144;
-static const PhysParamId_t kNuisIntNormCCOther      = kNuis145;
-static const PhysParamId_t kNuisIntNormNC           = kNuis146;
-static const PhysParamId_t kNuisIntNormNuMuToNuE    = kNuis147;
-static const PhysParamId_t kNuisIntNormNuBarToNu    = kNuis148;
+static const PhysParamId_t kNuisIntNuCC2Pi               = kNuis139;
+static const PhysParamId_t kNuisIntNuBarCC2Pi            = kNuis140;
 
-static const PhysParamId_t kNuisIntNucMeanFreePath  = kNuis150;
-static const PhysParamId_t kNuisIntPiMeanFreePath   = kNuis151;
-static const PhysParamId_t kNuisIntPiChargeExchange = kNuis152;
-static const PhysParamId_t kNuisIntPiAbsorb         = kNuis153;
-static const PhysParamId_t kNuisIntPiInelastic      = kNuis154;
+static const PhysParamId_t kNuisIntNuDIS1                = kNuis141;
+static const PhysParamId_t kNuisIntNuDIS2                = kNuis142;
+static const PhysParamId_t kNuisIntNuDIS3                = kNuis143;
+static const PhysParamId_t kNuisIntNuBarDIS1             = kNuis144;
+static const PhysParamId_t kNuisIntNuBarDIS2             = kNuis145;
+static const PhysParamId_t kNuisIntNuBarDIS3             = kNuis146;
 
-static const PhysParamId_t kNuisIntHadronization    = kNuis155;
+static const PhysParamId_t kNuisIntNormNuCoherent        = kNuis147;
+static const PhysParamId_t kNuisIntNormNuBarCoherent     = kNuis148;
+static const PhysParamId_t kNuisIntNuNormNC              = kNuis149;
+static const PhysParamId_t kNuisIntNuBarNormNC           = kNuis150;
+static const PhysParamId_t kNuisIntNormNuMuToNuE         = kNuis151;
+
+static const PhysParamId_t kNuisIntPiMeanFreePath        = kNuis152;
+static const PhysParamId_t kNuisIntNucMeanFreePath       = kNuis153;
+static const PhysParamId_t kNuisIntFracPiChargeExchange  = kNuis154;
+static const PhysParamId_t kNuisIntFracPiInelastic       = kNuis155;
+static const PhysParamId_t kNuisIntFracPiAbsorb          = kNuis156;
+static const PhysParamId_t kNuisIntFracPiProduction      = kNuis157;
+static const PhysParamId_t kNuisIntFracNucChargeExchange = kNuis158;
+static const PhysParamId_t kNuisIntFracNucInelastic      = kNuis159;
+static const PhysParamId_t kNuisIntFracNucAbsorb         = kNuis160;
+static const PhysParamId_t kNuisIntFracNucProduction     = kNuis161;
+
+static const PhysParamId_t kNuisIntHadronization         = kNuis162;
 
 // Boundaries between parameter types
 static const PhysParamId_t kNuisFluxFirstParameter = kNuisFHCNuMuFlux00;
 static const PhysParamId_t kNuisFluxLastParameter  = kNuisRHCNuEBarFlux06;
-#if INT_MODEL == 1
-static const PhysParamId_t kNuisIntFirstParameter  = kNuisNormCCQE;
-static const PhysParamId_t kNuisIntLastParameter   = kNuisRatioNuENuMu;
-#elif INT_MODEL == 2
 static const PhysParamId_t kNuisIntFirstParameter  = kNuisIntNuCCQE1;
 static const PhysParamId_t kNuisIntLastParameter   = kNuisIntHadronization;
-#endif
 static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC1trkQE;
 static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
 
@@ -255,7 +250,7 @@ static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
 // ...........................................................................
 //
 
-static const PhysParamId_t kFitParam[kNFitParams] = 
+static const PhysParamId_t kFitParam[kNFitParams] =
 {
    // FHC flux
    kNuisFHCNuMuFlux00,
@@ -364,45 +359,59 @@ static const PhysParamId_t kFitParam[kNFitParams] =
    kNuisRHCNuEBarFlux05,
    kNuisRHCNuEBarFlux06,
    // Cross-sections
-#if INT_MODEL == 1
-   kNuisNormCCQE, 
-   kNuisNormCC1piC,
-   kNuisNormCC1pi0,
-#elif INT_MODEL == 2
-   kNuisIntNuCCQE1       ,
-   kNuisIntNuCCQE2       ,
-   kNuisIntNuCCQE3       ,
-   kNuisIntNuBarCCQE1    ,
-   kNuisIntNuBarCCQE2    ,
-   kNuisIntNuBarCCQE3    ,
-   kNuisIntNuCC1piz1     ,
-   kNuisIntNuCC1piz2     ,
-   kNuisIntNuCC1piz3     ,
-   kNuisIntNuCC1pic1     ,
-   kNuisIntNuCC1pic2     ,
-   kNuisIntNuCC1pic3     ,
-   kNuisIntNuBarCC1piz1  ,
-   kNuisIntNuBarCC1piz2  ,
-   kNuisIntNuBarCC1piz3  ,
-   kNuisIntNuBarCC1pic1  ,
-   kNuisIntNuBarCC1pic2  ,
-   kNuisIntNuBarCC1pic3  ,
-#else
-  static_assert(!"FitParams: INT_MODEL not supported.");
-#endif //INT_MODEL
-   kNuisNormCCoth, 
-   kNuisNormNC,
-   kNuisRatioNuENuMu,
+   kNuisIntNuCCQE1               ,
+   kNuisIntNuCCQE2               ,
+   kNuisIntNuCCQE3               ,
+   kNuisIntNuBarCCQE1            ,
+   kNuisIntNuBarCCQE2            ,
+   kNuisIntNuBarCCQE3            ,
+   kNuisIntNuCCMEC               ,
+   kNuisIntNuBarCCMEC            ,
+   kNuisIntNuCC1piz1             ,
+   kNuisIntNuCC1piz2             ,
+   kNuisIntNuCC1piz3             ,
+   kNuisIntNuCC1pic1             ,
+   kNuisIntNuCC1pic2             ,
+   kNuisIntNuCC1pic3             ,
+   kNuisIntNuBarCC1piz1          ,
+   kNuisIntNuBarCC1piz2          ,
+   kNuisIntNuBarCC1piz3          ,
+   kNuisIntNuBarCC1pic1          ,
+   kNuisIntNuBarCC1pic2          ,
+   kNuisIntNuBarCC1pic3          ,
+   kNuisIntNuCC2Pi               ,
+   kNuisIntNuBarCC2Pi            ,
+   kNuisIntNuDIS1                ,
+   kNuisIntNuDIS2                ,
+   kNuisIntNuDIS3                ,
+   kNuisIntNuBarDIS1             ,
+   kNuisIntNuBarDIS2             ,
+   kNuisIntNuBarDIS3             ,
+   kNuisIntNormNuCoherent        ,
+   kNuisIntNormNuBarCoherent     ,
+   kNuisIntNuNormNC              ,
+   kNuisIntNuBarNormNC           ,
+   kNuisIntNormNuMuToNuE         ,
+   kNuisIntPiMeanFreePath        ,
+   kNuisIntNucMeanFreePath       ,
+   kNuisIntFracPiChargeExchange  ,
+   kNuisIntFracPiInelastic       ,
+   kNuisIntFracPiAbsorb          ,
+   kNuisIntFracPiProduction      ,
+   kNuisIntFracNucChargeExchange ,
+   kNuisIntFracNucInelastic      ,
+   kNuisIntFracNucAbsorb         ,
+   kNuisIntFracNucProduction     ,
    // Detector systematics
    kNuisEffNuMuCC1trkQE,
    kNuisEffNuMuCC2trkQE,
    kNuisEffNuMuCC1piC,
    kNuisEffNuMuCC1pi0,
    kNuisEffNuMuCC1piC1pi0,
-   kNuisEffNuMuCCoth,  
-   kNuisEffNuECC,      
-   kNuisEffNuMuCCWSgn, 
-   kNuisEffNC            
+   kNuisEffNuMuCCoth,
+   kNuisEffNuECC,
+   kNuisEffNuMuCCWSgn,
+   kNuisEffNC
 };
 
 //
@@ -412,7 +421,7 @@ static const PhysParamId_t kFitParam[kNFitParams] =
 //
 
 // Has true kinematic dependence
-static const bool kFitParamTrueKinematicDependence[kNFitParams] = 
+static const bool kFitParamTrueKinematicDependence[kNFitParams] =
 {
    // FHC flux
    true,   // kNuisFHCNuMuFlux00
@@ -521,49 +530,63 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    true,   // kNuisRHCNuEBarFlux05
    true,   // kNuisRHCNuEBarFlux06
    // Cross-sections
-#if INT_MODEL==1
-   false,  // kNuisNormCCQE 
-   false,  // kNuisNormCC1piC
-   false,  // kNuisNormCC1pi0
-#elif INT_MODEL==2
-   true,   //kNuisIntNuCCQE1       
-   true,   //kNuisIntNuCCQE2       
-   true,   //kNuisIntNuCCQE3       
-   true,   //kNuisIntNuBarCCQE1    
-   true,   //kNuisIntNuBarCCQE2    
-   true,   //kNuisIntNuBarCCQE3    
-   true,   //kNuisIntNuCC1piz1     
-   true,   //kNuisIntNuCC1piz2     
-   true,   //kNuisIntNuCC1piz3     
-   true,   //kNuisIntNuCC1pic1     
-   true,   //kNuisIntNuCC1pic2     
-   true,   //kNuisIntNuCC1pic3     
-   true,   //kNuisIntNuBarCC1piz1  
-   true,   //kNuisIntNuBarCC1piz2  
-   true,   //kNuisIntNuBarCC1piz3  
-   true,   //kNuisIntNuBarCC1pic1  
-   true,   //kNuisIntNuBarCC1pic2  
-   true,   //kNuisIntNuBarCC1pic3  
-#else
-  static_assert(!"FitParams: INT_MODEL not supported.");
-#endif //INT_MODEL
-   false,  // kNuisNormCCoth
-   false,  // kNuisNormNC
-   false,  // kNuisRatioNuENuMu
+   false,  // kNuisIntNuCCQE1
+   false,  // kNuisIntNuCCQE2
+   false,  // kNuisIntNuCCQE3
+   false,  // kNuisIntNuBarCCQE1
+   false,  // kNuisIntNuBarCCQE2
+   false,  // kNuisIntNuBarCCQE3
+   false,  // kNuisIntNuCCMEC
+   false,  // kNuisIntNuBarCCMEC
+   false,  // kNuisIntNuCC1piz1
+   false,  // kNuisIntNuCC1piz2
+   false,  // kNuisIntNuCC1piz3
+   false,  // kNuisIntNuCC1pic1
+   false,  // kNuisIntNuCC1pic2
+   false,  // kNuisIntNuCC1pic3
+   false,  // kNuisIntNuBarCC1piz1
+   false,  // kNuisIntNuBarCC1piz2
+   false,  // kNuisIntNuBarCC1piz3
+   false,  // kNuisIntNuBarCC1pic1
+   false,  // kNuisIntNuBarCC1pic2
+   false,  // kNuisIntNuBarCC1pic3
+   false,  // kNuisIntNuCC2Pi
+   false,  // kNuisIntNuBarCC2Pi
+   true ,  // kNuisIntNuDIS1
+   true ,  // kNuisIntNuDIS2
+   true ,  // kNuisIntNuDIS3
+   true ,  // kNuisIntNuBarDIS1
+   true ,  // kNuisIntNuBarDIS2
+   true ,  // kNuisIntNuBarDIS3
+   false,  // kNuisIntNormNuCoherent
+   false,  // kNuisIntNormNuBarCoherent
+   false,  // kNuisIntNuNormNC
+   false,  // kNuisIntNuBarNormNC
+   false,  // kNuisIntNormNuMuToNuE
+   false,  // kNuisIntPiMeanFreePath
+   false,  // kNuisIntNucMeanFreePath
+   false,  // kNuisIntFracPiChargeExchange
+   false,  // kNuisIntFracPiInelastic
+   false,  // kNuisIntFracPiAbsorb
+   false,  // kNuisIntFracPiProduction
+   false,  // kNuisIntFracNucChargeExchange
+   false,  // kNuisIntFracNucInelastic
+   false,  // kNuisIntFracNucAbsorb
+   false,  // kNuisIntFracNucProduction
    // Detector systematics
    false,  // kNuisEffNuMuCC1trkQE
    false,  // kNuisEffNuMuCC2trkQE
    false,  // kNuisEffNuMuCC1piC
    false,  // kNuisEffNuMuCC1pi0
    false,  // kNuisEffNuMuCC1piC1pi0
-   false,  // kNuisEffNuMuCCoth  
-   false,  // kNuisEffNuECC      
-   false,  // kNuisEffNuMuCCWSgn 
-   false   // kNuisEffNC            
+   false,  // kNuisEffNuMuCCoth
+   false,  // kNuisEffNuECC
+   false,  // kNuisEffNuMuCCWSgn
+   false   // kNuisEffNC
 };
 
 // Which is the true energy range?
-static const double kFitParamEtrueRange[kNFitParams][2] = 
+static const double kFitParamEtrueRange[kNFitParams][2] =
 {
   // Emin, Emax
    // FHC flux
@@ -673,49 +696,63 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
    { 10.0, 20.0},        // kNuisRHCNuEBarFlux05
    { 20.0, kEtrueMax },  // kNuisRHCNuEBarFlux06
    // Cross-sections
-#if INT_MODEL==1
-   {  0.0, kEtrueMax},   // kNuisNormCCQE 
-   {  0.0, kEtrueMax},   // kNuisNormCC1piC
-   {  0.0, kEtrueMax},   // kNuisNormCC1pi0
-#elif INT_MODEL==2
-   {  0.0   , kEtrueMax }, //kNuisIntNuCCQE1       
-   {  0.0   , kEtrueMax }, //kNuisIntNuCCQE2       
-   {  0.0   , kEtrueMax }, //kNuisIntNuCCQE3       
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCCQE1    
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCCQE2    
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCCQE3    
-   {  0.0   , kEtrueMax }, //kNuisIntNuCC1piz1     
-   {  0.0   , kEtrueMax }, //kNuisIntNuCC1piz2     
-   {  0.0   , kEtrueMax }, //kNuisIntNuCC1piz3     
-   {  0.0   , kEtrueMax }, //kNuisIntNuCC1pic1     
-   {  0.0   , kEtrueMax }, //kNuisIntNuCC1pic2     
-   {  0.0   , kEtrueMax }, //kNuisIntNuCC1pic3     
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCC1piz1  
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCC1piz2  
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCC1piz3  
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCC1pic1  
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCC1pic2  
-   {  0.0   , kEtrueMax }, //kNuisIntNuBarCC1pic3  
-#else
-  static_assert(!"FitParams: INT_MODEL not supported.");
-#endif //INT_MODEL
-   {  0.0, kEtrueMax},   // kNuisNormCCoth
-   {  0.0, kEtrueMax},   // kNuisNormNC
-   {  0.0, kEtrueMax},   // kNuisRatioNuENuMu
+   {  0.0 , kEtrueMax},  // kNuisIntNuCCQE1
+   {  0.0 , kEtrueMax},  // kNuisIntNuCCQE2
+   {  0.0 , kEtrueMax},  // kNuisIntNuCCQE3
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCCQE1
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCCQE2
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCCQE3
+   {  0.0 , kEtrueMax},  // kNuisIntNuCCMEC
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCCMEC
+   {  0.0 , kEtrueMax},  // kNuisIntNuCC1piz1
+   {  0.0 , kEtrueMax},  // kNuisIntNuCC1piz2
+   {  0.0 , kEtrueMax},  // kNuisIntNuCC1piz3
+   {  0.0 , kEtrueMax},  // kNuisIntNuCC1pic1
+   {  0.0 , kEtrueMax},  // kNuisIntNuCC1pic2
+   {  0.0 , kEtrueMax},  // kNuisIntNuCC1pic3
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCC1piz1
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCC1piz2
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCC1piz3
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCC1pic1
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCC1pic2
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCC1pic3
+   {  0.0 , kEtrueMax},  // kNuisIntNuCC2Pi
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarCC2Pi
+   {  0.0 , 7.5      },  // kNuisIntNuDIS1
+   {  7.5 , 15.      },  // kNuisIntNuDIS2
+   {  15. , kEtrueMax},  // kNuisIntNuDIS3
+   {  0.0 , 7.5      },  // kNuisIntNuBarDIS1
+   {  7.5 , 15.      },  // kNuisIntNuBarDIS2
+   {  15. , kEtrueMax},  // kNuisIntNuBarDIS3
+   {  0.0 , kEtrueMax},  // kNuisIntNormNuCoherent
+   {  0.0 , kEtrueMax},  // kNuisIntNormNuBarCoherent
+   {  0.0 , kEtrueMax},  // kNuisIntNuNormNC
+   {  0.0 , kEtrueMax},  // kNuisIntNuBarNormNC
+   {  0.0 , kEtrueMax},  // kNuisIntNormNuMuToNuE
+   {  0.0 , kEtrueMax},  // kNuisIntPiMeanFreePath
+   {  0.0 , kEtrueMax},  // kNuisIntNucMeanFreePath
+   {  0.0 , kEtrueMax},  // kNuisIntFracPiChargeExchange
+   {  0.0 , kEtrueMax},  // kNuisIntFracPiInelastic
+   {  0.0 , kEtrueMax},  // kNuisIntFracPiAbsorb
+   {  0.0 , kEtrueMax},  // kNuisIntFracPiProduction
+   {  0.0 , kEtrueMax},  // kNuisIntFracNucChargeExchange
+   {  0.0 , kEtrueMax},  // kNuisIntFracNucInelastic
+   {  0.0 , kEtrueMax},  // kNuisIntFracNucAbsorb
+   {  0.0 , kEtrueMax},  // kNuisIntFracNucProduction
    // Detector systematics
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1trkQE
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC2trkQE
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1piC
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1pi0
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1piC1pi0
-   {  0.0, kEtrueMax},   // kNuisEffNuMuCCoth  
-   {  0.0, kEtrueMax},   // kNuisEffNuECC      
-   {  0.0, kEtrueMax},   // kNuisEffNuMuCCWSgn 
-   {  0.0, kEtrueMax}    // kNuisEffNC                        
+   {  0.0, kEtrueMax},   // kNuisEffNuMuCCoth
+   {  0.0, kEtrueMax},   // kNuisEffNuECC
+   {  0.0, kEtrueMax},   // kNuisEffNuMuCCWSgn
+   {  0.0, kEtrueMax}    // kNuisEffNC
 };
 
 // Which is the true Q2 range?
-static const double kFitParamQ2trueRange[kNFitParams][2] = 
+static const double kFitParamQ2trueRange[kNFitParams][2] =
 {
    // Q2 min, Q2 max
    // FHC flux
@@ -825,45 +862,59 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
    { 0.0, kQ2trueMax },  // kNuisRHCNuEBarFlux05
    { 0.0, kQ2trueMax },  // kNuisRHCNuEBarFlux06
    // Cross-sections
-#if INT_MODEL==1
-   {  0.0, kQ2trueMax},   // kNuisNormCCQE 
-   {  0.0, kQ2trueMax},   // kNuisNormCC1piC
-   {  0.0, kQ2trueMax},   // kNuisNormCC1pi0
-#elif INT_MODEL==2
-   {  kQ2trueMin              , kQ2trueBinEdgesCCQE[1]  }, //kNuisIntNuCCQE1       
-   {  kQ2trueBinEdgesCCQE[1]  , kQ2trueBinEdgesCCQE[2]  }, //kNuisIntNuCCQE2       
-   {  kQ2trueBinEdgesCCQE[2]  , kQ2trueMax              }, //kNuisIntNuCCQE3       
-   {  kQ2trueMin              , kQ2trueBinEdgesCCQE[1]  }, //kNuisIntNuBarCCQE1    
-   {  kQ2trueBinEdgesCCQE[1]  , kQ2trueBinEdgesCCQE[2]  }, //kNuisIntNuBarCCQE2    
-   {  kQ2trueBinEdgesCCQE[2]  , kQ2trueMax              }, //kNuisIntNuBarCCQE3    
-   {  kQ2trueMin              , kQ2trueBinEdgesCC1pi0[1]}, //kNuisIntNuCC1piz1     
-   {  kQ2trueBinEdgesCC1pi0[1], kQ2trueBinEdgesCC1pi0[2]}, //kNuisIntNuCC1piz2     
-   {  kQ2trueBinEdgesCC1pi0[2], kQ2trueMax              }, //kNuisIntNuCC1piz3     
-   {  kQ2trueMin              , kQ2trueBinEdgesCC1piC[1]}, //kNuisIntNuCC1pic1     
-   {  kQ2trueBinEdgesCC1piC[1], kQ2trueBinEdgesCC1piC[2]}, //kNuisIntNuCC1pic2     
-   {  kQ2trueBinEdgesCC1piC[2], kQ2trueMax              }, //kNuisIntNuCC1pic3     
-   {  kQ2trueMin              , kQ2trueBinEdgesCC1pi0[1]}, //kNuisIntNuBarCC1piz1  
-   {  kQ2trueBinEdgesCC1pi0[1], kQ2trueBinEdgesCC1pi0[2]}, //kNuisIntNuBarCC1piz2  
-   {  kQ2trueBinEdgesCC1pi0[2], kQ2trueMax              }, //kNuisIntNuBarCC1piz3  
-   {  kQ2trueMin              , kQ2trueBinEdgesCC1piC[1]}, //kNuisIntNuBarCC1pic1  
-   {  kQ2trueBinEdgesCC1piC[1], kQ2trueBinEdgesCC1piC[2]}, //kNuisIntNuBarCC1pic2  
-   {  kQ2trueBinEdgesCC1piC[2], kQ2trueMax              }, //kNuisIntNuBarCC1pic3  
-#else
-  static_assert(!"FitParams: INT_MODEL not supported.");
-#endif //INT_MODEL
-   {  0.0, kQ2trueMax},   // kNuisNormCCoth
-   {  0.0, kQ2trueMax},   // kNuisNormNC
-   {  0.0, kQ2trueMax},   // kNuisRatioNuENuMu
+   { kQ2trueBinEdgesCCQE[0] , kQ2trueBinEdgesCCQE[1] },  // kNuisIntNuCCQE1
+   { kQ2trueBinEdgesCCQE[1] , kQ2trueBinEdgesCCQE[2] },  // kNuisIntNuCCQE2
+   { kQ2trueBinEdgesCCQE[2] , kQ2trueBinEdgesCCQE[3] },  // kNuisIntNuCCQE3
+   { kQ2trueBinEdgesCCQE[0] , kQ2trueBinEdgesCCQE[1] },  // kNuisIntNuBarCCQE1
+   { kQ2trueBinEdgesCCQE[1] , kQ2trueBinEdgesCCQE[2] },  // kNuisIntNuBarCCQE2
+   { kQ2trueBinEdgesCCQE[2] , kQ2trueBinEdgesCCQE[3] },  // kNuisIntNuBarCCQE3
+   {  0.0 , kQ2trueMax},  // kNuisIntNuCCMEC
+   {  0.0 , kQ2trueMax},  // kNuisIntNuBarCCMEC
+   { kQ2trueBinEdgesCC1pi0[0] , kQ2trueBinEdgesCC1pi0[1] },  // kNuisIntNuCC1piz1
+   { kQ2trueBinEdgesCC1pi0[1] , kQ2trueBinEdgesCC1pi0[2] },  // kNuisIntNuCC1piz2
+   { kQ2trueBinEdgesCC1pi0[2] , kQ2trueBinEdgesCC1pi0[3] },  // kNuisIntNuCC1piz3
+   { kQ2trueBinEdgesCC1piC[0] , kQ2trueBinEdgesCC1piC[1] },  // kNuisIntNuCC1pic1
+   { kQ2trueBinEdgesCC1piC[1] , kQ2trueBinEdgesCC1piC[2] },  // kNuisIntNuCC1pic2
+   { kQ2trueBinEdgesCC1piC[2] , kQ2trueBinEdgesCC1piC[3] },  // kNuisIntNuCC1pic3
+   { kQ2trueBinEdgesCC1pi0[0] , kQ2trueBinEdgesCC1pi0[1] },  // kNuisIntNuBarCC1piz1
+   { kQ2trueBinEdgesCC1pi0[1] , kQ2trueBinEdgesCC1pi0[2] },  // kNuisIntNuBarCC1piz2
+   { kQ2trueBinEdgesCC1pi0[2] , kQ2trueBinEdgesCC1pi0[3] },  // kNuisIntNuBarCC1piz3
+   { kQ2trueBinEdgesCC1piC[0] , kQ2trueBinEdgesCC1piC[1] },  // kNuisIntNuBarCC1pic1
+   { kQ2trueBinEdgesCC1piC[1] , kQ2trueBinEdgesCC1piC[2] },  // kNuisIntNuBarCC1pic2
+   { kQ2trueBinEdgesCC1piC[2] , kQ2trueBinEdgesCC1piC[3] },  // kNuisIntNuBarCC1pic3
+   {  0.0 , kQ2trueMax},  // kNuisIntNuCC2Pi
+   {  0.0 , kQ2trueMax},  // kNuisIntNuBarCC2Pi
+   {  0.0 , kQ2trueMax},  // kNuisIntNuDIS1
+   {  0.0 , kQ2trueMax},  // kNuisIntNuDIS2
+   {  0.0 , kQ2trueMax},  // kNuisIntNuDIS3
+   {  0.0 , kQ2trueMax},  // kNuisIntNuBarDIS1
+   {  0.0 , kQ2trueMax},  // kNuisIntNuBarDIS2
+   {  0.0 , kQ2trueMax},  // kNuisIntNuBarDIS3
+   {  0.0 , kQ2trueMax},  // kNuisIntNormNuCoherent
+   {  0.0 , kQ2trueMax},  // kNuisIntNormNuBarCoherent
+   {  0.0 , kQ2trueMax},  // kNuisIntNuNormNC
+   {  0.0 , kQ2trueMax},  // kNuisIntNuBarNormNC
+   {  0.0 , kQ2trueMax},  // kNuisIntNormNuMuToNuE
+   {  0.0 , kQ2trueMax},  // kNuisIntPiMeanFreePath
+   {  0.0 , kQ2trueMax},  // kNuisIntNucMeanFreePath
+   {  0.0 , kQ2trueMax},  // kNuisIntFracPiChargeExchange
+   {  0.0 , kQ2trueMax},  // kNuisIntFracPiInelastic
+   {  0.0 , kQ2trueMax},  // kNuisIntFracPiAbsorb
+   {  0.0 , kQ2trueMax},  // kNuisIntFracPiProduction
+   {  0.0 , kQ2trueMax},  // kNuisIntFracNucChargeExchange
+   {  0.0 , kQ2trueMax},  // kNuisIntFracNucInelastic
+   {  0.0 , kQ2trueMax},  // kNuisIntFracNucAbsorb
+   {  0.0 , kQ2trueMax},  // kNuisIntFracNucProduction
    // Detector systematics
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1trkQE
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC2trkQE
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1piC
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1pi0
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1piC1pi0
-   {  0.0, kQ2trueMax},   // kNuisEffNuMuCCoth  
-   {  0.0, kQ2trueMax},   // kNuisEffNuECC      
-   {  0.0, kQ2trueMax},   // kNuisEffNuMuCCWSgn 
-   {  0.0, kQ2trueMax}    // kNuisEffNC                        
+   {  0.0, kQ2trueMax},   // kNuisEffNuMuCCoth
+   {  0.0, kQ2trueMax},   // kNuisEffNuECC
+   {  0.0, kQ2trueMax},   // kNuisEffNuMuCCWSgn
+   {  0.0, kQ2trueMax}    // kNuisEffNC
 };
 
 //
@@ -981,50 +1032,64 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
    kpgRHCNuEBarFlux,   // kNuisRHCNuEBarFlux05
    kpgRHCNuEBarFlux,   // kNuisRHCNuEBarFlux06
    // Cross-sections
-#if INT_MODEL==1
-   kpgXSec,            // kNuisNormCCQE 
-   kpgXSec,            // kNuisNormCC1piC
-   kpgXSec,            // kNuisNormCC1pi0
-#elif INT_MODEL==2
-   kpgXSec,            //kNuisIntNuCCQE1      
-   kpgXSec,            //kNuisIntNuCCQE2      
-   kpgXSec,            //kNuisIntNuCCQE3      
-   kpgXSec,            //kNuisIntNuBarCCQE1   
-   kpgXSec,            //kNuisIntNuBarCCQE2   
-   kpgXSec,            //kNuisIntNuBarCCQE3   
-   kpgXSec,            //kNuisIntNuCC1piz1    
-   kpgXSec,            //kNuisIntNuCC1piz2    
-   kpgXSec,            //kNuisIntNuCC1piz3    
-   kpgXSec,            //kNuisIntNuCC1pic1    
-   kpgXSec,            //kNuisIntNuCC1pic2    
-   kpgXSec,            //kNuisIntNuCC1pic3    
-   kpgXSec,            //kNuisIntNuBarCC1piz1 
-   kpgXSec,            //kNuisIntNuBarCC1piz2 
-   kpgXSec,            //kNuisIntNuBarCC1piz3 
-   kpgXSec,            //kNuisIntNuBarCC1pic1 
-   kpgXSec,            //kNuisIntNuBarCC1pic2 
-   kpgXSec,            //kNuisIntNuBarCC1pic3 
-#else
-  static_assert(!"FitParams: INT_MODEL not supported.");
-#endif //INT_MODEL
-   kpgXSec,            // kNuisNormCCoth
-   kpgXSec,            // kNuisNormNC
-   kpgXSec,            // kNuisRatioNuENuMu
+   kpgXSec,            // kNuisIntNuCCQE1
+   kpgXSec,            // kNuisIntNuCCQE2
+   kpgXSec,            // kNuisIntNuCCQE3
+   kpgXSec,            // kNuisIntNuBarCCQE1
+   kpgXSec,            // kNuisIntNuBarCCQE2
+   kpgXSec,            // kNuisIntNuBarCCQE3
+   kpgXSec,            // kNuisIntNuCCMEC
+   kpgXSec,            // kNuisIntNuBarCCMEC
+   kpgXSec,            // kNuisIntNuCC1piz1
+   kpgXSec,            // kNuisIntNuCC1piz2
+   kpgXSec,            // kNuisIntNuCC1piz3
+   kpgXSec,            // kNuisIntNuCC1pic1
+   kpgXSec,            // kNuisIntNuCC1pic2
+   kpgXSec,            // kNuisIntNuCC1pic3
+   kpgXSec,            // kNuisIntNuBarCC1piz1
+   kpgXSec,            // kNuisIntNuBarCC1piz2
+   kpgXSec,            // kNuisIntNuBarCC1piz3
+   kpgXSec,            // kNuisIntNuBarCC1pic1
+   kpgXSec,            // kNuisIntNuBarCC1pic2
+   kpgXSec,            // kNuisIntNuBarCC1pic3
+   kpgXSec,            // kNuisIntNuCC2Pi
+   kpgXSec,            // kNuisIntNuBarCC2Pi
+   kpgXSec,            // kNuisIntNuDIS1
+   kpgXSec,            // kNuisIntNuDIS2
+   kpgXSec,            // kNuisIntNuDIS3
+   kpgXSec,            // kNuisIntNuBarDIS1
+   kpgXSec,            // kNuisIntNuBarDIS2
+   kpgXSec,            // kNuisIntNuBarDIS3
+   kpgXSec,            // kNuisIntNormNuCoherent
+   kpgXSec,            // kNuisIntNormNuBarCoherent
+   kpgXSec,            // kNuisIntNuNormNC
+   kpgXSec,            // kNuisIntNuBarNormNC
+   kpgXSec,            // kNuisIntNormNuMuToNuE
+   kpgXSec,            // kNuisIntPiMeanFreePath
+   kpgXSec,            // kNuisIntNucMeanFreePath
+   kpgXSec,            // kNuisIntFracPiChargeExchange
+   kpgXSec,            // kNuisIntFracPiInelastic
+   kpgXSec,            // kNuisIntFracPiAbsorb
+   kpgXSec,            // kNuisIntFracPiProduction
+   kpgXSec,            // kNuisIntFracNucChargeExchange
+   kpgXSec,            // kNuisIntFracNucInelastic
+   kpgXSec,            // kNuisIntFracNucAbsorb
+   kpgXSec,            // kNuisIntFracNucProduction
    // Detector systematics
    kpgDetector,        // kNuisEffNuMuCC1trkQE
    kpgDetector,        // kNuisEffNuMuCC2trkQE
    kpgDetector,        // kNuisEffNuMuCC1piC
    kpgDetector,        // kNuisEffNuMuCC1pi0
    kpgDetector,        // kNuisEffNuMuCC1piC1pi0
-   kpgDetector,        // kNuisEffNuMuCCoth  
-   kpgDetector,        // kNuisEffNuECC      
-   kpgDetector,        // kNuisEffNuMuCCWSgn 
-   kpgDetector         // kNuisEffNC            
+   kpgDetector,        // kNuisEffNuMuCCoth
+   kpgDetector,        // kNuisEffNuECC
+   kpgDetector,        // kNuisEffNuMuCCWSgn
+   kpgDetector         // kNuisEffNC
 };
 
 // Is this a neutrino flux related parameter?
 //
-static const bool kFitIsNuFluxRelated[kNFitParams] = 
+static const bool kFitIsNuFluxRelated[kNFitParams] =
 {
    // FHC flux
    true,  // kNuisFHCNuMuFlux00
@@ -1133,50 +1198,64 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
    true,  // kNuisRHCNuEBarFlux05
    true,  // kNuisRHCNuEBarFlux06
    // Cross-sections
-#if INT_MODEL==1
-   false, // kNuisNormCCQE 
-   false, // kNuisNormCC1piC
-   false, // kNuisNormCC1pi0
-#elif INT_MODEL==2
-   false, //kNuisIntNuCCQE1      
-   false, //kNuisIntNuCCQE2      
-   false, //kNuisIntNuCCQE3      
-   false, //kNuisIntNuBarCCQE1   
-   false, //kNuisIntNuBarCCQE2   
-   false, //kNuisIntNuBarCCQE3   
-   false, //kNuisIntNuCC1piz1    
-   false, //kNuisIntNuCC1piz2    
-   false, //kNuisIntNuCC1piz3    
-   false, //kNuisIntNuCC1pic1    
-   false, //kNuisIntNuCC1pic2    
-   false, //kNuisIntNuCC1pic3    
-   false, //kNuisIntNuBarCC1piz1 
-   false, //kNuisIntNuBarCC1piz2 
-   false, //kNuisIntNuBarCC1piz3 
-   false, //kNuisIntNuBarCC1pic1 
-   false, //kNuisIntNuBarCC1pic2 
-   false, //kNuisIntNuBarCC1pic3 
-#else
-  static_assert(!"FitParams: INT_MODEL not supported.");
-#endif //INT_MODEL
-   false, // kNuisNormCCoth
-   false, // kNuisNormNC
-   false, // kNuisRatioNuENuMu
+   false, // kNuisIntNuCCQE1
+   false, // kNuisIntNuCCQE2
+   false, // kNuisIntNuCCQE3
+   false, // kNuisIntNuBarCCQE1
+   false, // kNuisIntNuBarCCQE2
+   false, // kNuisIntNuBarCCQE3
+   false, // kNuisIntNuCCMEC
+   false, // kNuisIntNuBarCCMEC
+   false, // kNuisIntNuCC1piz1
+   false, // kNuisIntNuCC1piz2
+   false, // kNuisIntNuCC1piz3
+   false, // kNuisIntNuCC1pic1
+   false, // kNuisIntNuCC1pic2
+   false, // kNuisIntNuCC1pic3
+   false, // kNuisIntNuBarCC1piz1
+   false, // kNuisIntNuBarCC1piz2
+   false, // kNuisIntNuBarCC1piz3
+   false, // kNuisIntNuBarCC1pic1
+   false, // kNuisIntNuBarCC1pic2
+   false, // kNuisIntNuBarCC1pic3
+   false, // kNuisIntNuCC2Pi
+   false, // kNuisIntNuBarCC2Pi
+   false, // kNuisIntNuDIS1
+   false, // kNuisIntNuDIS2
+   false, // kNuisIntNuDIS3
+   false, // kNuisIntNuBarDIS1
+   false, // kNuisIntNuBarDIS2
+   false, // kNuisIntNuBarDIS3
+   false, // kNuisIntNormNuCoherent
+   false, // kNuisIntNormNuBarCoherent
+   false, // kNuisIntNuNormNC
+   false, // kNuisIntNuBarNormNC
+   false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntPiMeanFreePath
+   false, // kNuisIntNucMeanFreePath
+   false, // kNuisIntFracPiChargeExchange
+   false, // kNuisIntFracPiInelastic
+   false, // kNuisIntFracPiAbsorb
+   false, // kNuisIntFracPiProduction
+   false, // kNuisIntFracNucChargeExchange
+   false, // kNuisIntFracNucInelastic
+   false, // kNuisIntFracNucAbsorb
+   false, // kNuisIntFracNucProduction
    // Detector systematics
    false, // kNuisEffNuMuCC1trkQE
    false, // kNuisEffNuMuCC2trkQE
    false, // kNuisEffNuMuCC1piC
    false, // kNuisEffNuMuCC1pi0
    false, // kNuisEffNuMuCC1piC1pi0
-   false, // kNuisEffNuMuCCoth  
-   false, // kNuisEffNuECC      
-   false, // kNuisEffNuMuCCWSgn 
-   false  // kNuisEffNC            
+   false, // kNuisEffNuMuCCoth
+   false, // kNuisEffNuECC
+   false, // kNuisEffNuMuCCWSgn
+   false  // kNuisEffNC
 };
 
 // Is this a neutrino interaction model related parameter?
 //
-static const bool kFitIsNuIntRelated[kNFitParams] = 
+static const bool kFitIsNuIntRelated[kNFitParams] =
 {
    // FHC flux
    false, // kNuisFHCNuMuFlux00
@@ -1285,50 +1364,64 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
    false, // kNuisRHCNuEBarFlux05
    false, // kNuisRHCNuEBarFlux06
    // Cross-sections
-#if INT_MODEL==1
-   true,  // kNuisNormCCQE 
-   true,  // kNuisNormCC1piC
-   true,  // kNuisNormCC1pi0
-#elif INT_MODEL==2
-   true,  //kNuisIntNuCCQE1     
-   true,  //kNuisIntNuCCQE2     
-   true,  //kNuisIntNuCCQE3     
-   true,  //kNuisIntNuBarCCQE1  
-   true,  //kNuisIntNuBarCCQE2  
-   true,  //kNuisIntNuBarCCQE3  
-   true,  //kNuisIntNuCC1piz1   
-   true,  //kNuisIntNuCC1piz2   
-   true,  //kNuisIntNuCC1piz3   
-   true,  //kNuisIntNuCC1pic1   
-   true,  //kNuisIntNuCC1pic2   
-   true,  //kNuisIntNuCC1pic3   
-   true,  //kNuisIntNuBarCC1piz1
-   true,  //kNuisIntNuBarCC1piz2
-   true,  //kNuisIntNuBarCC1piz3
-   true,  //kNuisIntNuBarCC1pic1
-   true,  //kNuisIntNuBarCC1pic2
-   true,  //kNuisIntNuBarCC1pic3
-#else
-  static_assert(!"AppliedConv: INT_MODEL not supported.");
-#endif //INT_MODEL
-   true,  // kNuisNormCCoth
-   true,  // kNuisNormNC
-   true,  // kNuisRatioNuENuMu
+   true, // kNuisIntNuCCQE1
+   true, // kNuisIntNuCCQE2
+   true, // kNuisIntNuCCQE3
+   true, // kNuisIntNuBarCCQE1
+   true, // kNuisIntNuBarCCQE2
+   true, // kNuisIntNuBarCCQE3
+   true, // kNuisIntNuCCMEC
+   true, // kNuisIntNuBarCCMEC
+   true, // kNuisIntNuCC1piz1
+   true, // kNuisIntNuCC1piz2
+   true, // kNuisIntNuCC1piz3
+   true, // kNuisIntNuCC1pic1
+   true, // kNuisIntNuCC1pic2
+   true, // kNuisIntNuCC1pic3
+   true, // kNuisIntNuBarCC1piz1
+   true, // kNuisIntNuBarCC1piz2
+   true, // kNuisIntNuBarCC1piz3
+   true, // kNuisIntNuBarCC1pic1
+   true, // kNuisIntNuBarCC1pic2
+   true, // kNuisIntNuBarCC1pic3
+   true, // kNuisIntNuCC2Pi
+   true, // kNuisIntNuBarCC2Pi
+   true, // kNuisIntNuDIS1
+   true, // kNuisIntNuDIS2
+   true, // kNuisIntNuDIS3
+   true, // kNuisIntNuBarDIS1
+   true, // kNuisIntNuBarDIS2
+   true, // kNuisIntNuBarDIS3
+   true, // kNuisIntNormNuCoherent
+   true, // kNuisIntNormNuBarCoherent
+   true, // kNuisIntNuNormNC
+   true, // kNuisIntNuBarNormNC
+   true, // kNuisIntNormNuMuToNuE
+   true, // kNuisIntPiMeanFreePath
+   true, // kNuisIntNucMeanFreePath
+   true, // kNuisIntFracPiChargeExchange
+   true, // kNuisIntFracPiInelastic
+   true, // kNuisIntFracPiAbsorb
+   true, // kNuisIntFracPiProduction
+   true, // kNuisIntFracNucChargeExchange
+   true, // kNuisIntFracNucInelastic
+   true, // kNuisIntFracNucAbsorb
+   true, // kNuisIntFracNucProduction
    // Detector systematics
    false, // kNuisEffNuMuCC1trkQE
    false, // kNuisEffNuMuCC2trkQE
    false, // kNuisEffNuMuCC1piC
    false, // kNuisEffNuMuCC1pi0
    false, // kNuisEffNuMuCC1piC1pi0
-   false, // kNuisEffNuMuCCoth  
-   false, // kNuisEffNuECC      
-   false, // kNuisEffNuMuCCWSgn 
-   false  // kNuisEffNC            
+   false, // kNuisEffNuMuCCoth
+   false, // kNuisEffNuECC
+   false, // kNuisEffNuMuCCWSgn
+   false  // kNuisEffNC
 };
 
 // Is this a neutrino detector related parameter?
 //
-static const bool kFitIsNuDetRelated[kNFitParams] = 
+static const bool kFitIsNuDetRelated[kNFitParams] =
 {
    // FHC flux
    false, // kNuisFHCNuMuFlux00
@@ -1437,45 +1530,59 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
    false, // kNuisRHCNuEBarFlux05
    false, // kNuisRHCNuEBarFlux06
    // Cross-sections
-#if INT_MODEL == 1
-   false, // kNuisNormCCQE 
-   false, // kNuisNormCC1piC
-   false, // kNuisNormCC1pi0
-#elif INT_MODEL == 2
-   false, //kNuisIntNuCCQE1     
-   false, //kNuisIntNuCCQE2     
-   false, //kNuisIntNuCCQE3     
-   false, //kNuisIntNuBarCCQE1  
-   false, //kNuisIntNuBarCCQE2  
-   false, //kNuisIntNuBarCCQE3  
-   false, //kNuisIntNuCC1piz1   
-   false, //kNuisIntNuCC1piz2   
-   false, //kNuisIntNuCC1piz3   
-   false, //kNuisIntNuCC1pic1   
-   false, //kNuisIntNuCC1pic2   
-   false, //kNuisIntNuCC1pic3   
-   false, //kNuisIntNuBarCC1piz1
-   false, //kNuisIntNuBarCC1piz2
-   false, //kNuisIntNuBarCC1piz3
-   false, //kNuisIntNuBarCC1pic1
-   false, //kNuisIntNuBarCC1pic2
-   false, //kNuisIntNuBarCC1pic3
-#else
-  static_assert(!"AppliedConv: INT_MODEL not supported.");
-#endif //INT_MODEL
-   false, // kNuisNormCCoth
-   false, // kNuisNormNC
-   false, // kNuisRatioNuENuMu
+   false, // kNuisIntNuCCQE1
+   false, // kNuisIntNuCCQE2
+   false, // kNuisIntNuCCQE3
+   false, // kNuisIntNuBarCCQE1
+   false, // kNuisIntNuBarCCQE2
+   false, // kNuisIntNuBarCCQE3
+   false, // kNuisIntNuCCMEC
+   false, // kNuisIntNuBarCCMEC
+   false, // kNuisIntNuCC1piz1
+   false, // kNuisIntNuCC1piz2
+   false, // kNuisIntNuCC1piz3
+   false, // kNuisIntNuCC1pic1
+   false, // kNuisIntNuCC1pic2
+   false, // kNuisIntNuCC1pic3
+   false, // kNuisIntNuBarCC1piz1
+   false, // kNuisIntNuBarCC1piz2
+   false, // kNuisIntNuBarCC1piz3
+   false, // kNuisIntNuBarCC1pic1
+   false, // kNuisIntNuBarCC1pic2
+   false, // kNuisIntNuBarCC1pic3
+   false, // kNuisIntNuCC2Pi
+   false, // kNuisIntNuBarCC2Pi
+   false, // kNuisIntNuDIS1
+   false, // kNuisIntNuDIS2
+   false, // kNuisIntNuDIS3
+   false, // kNuisIntNuBarDIS1
+   false, // kNuisIntNuBarDIS2
+   false, // kNuisIntNuBarDIS3
+   false, // kNuisIntNormNuCoherent
+   false, // kNuisIntNormNuBarCoherent
+   false, // kNuisIntNuNormNC
+   false, // kNuisIntNuBarNormNC
+   false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntPiMeanFreePath
+   false, // kNuisIntNucMeanFreePath
+   false, // kNuisIntFracPiChargeExchange
+   false, // kNuisIntFracPiInelastic
+   false, // kNuisIntFracPiAbsorb
+   false, // kNuisIntFracPiProduction
+   false, // kNuisIntFracNucChargeExchange
+   false, // kNuisIntFracNucInelastic
+   false, // kNuisIntFracNucAbsorb
+   false, // kNuisIntFracNucProduction
    // Detector systematics
    true,  // kNuisEffNuMuCC1trkQE
    true,  // kNuisEffNuMuCC2trkQE
    true,  // kNuisEffNuMuCC1piC
    true,  // kNuisEffNuMuCC1pi0
    true,  // kNuisEffNuMuCC1piC1pi0
-   true,  // kNuisEffNuMuCCoth  
-   true,  // kNuisEffNuECC      
-   true,  // kNuisEffNuMuCCWSgn 
-   true   // kNuisEffNC                       
+   true,  // kNuisEffNuMuCCoth
+   true,  // kNuisEffNuECC
+   true,  // kNuisEffNuMuCCWSgn
+   true   // kNuisEffNC
 };
 
 } // conv
@@ -1488,7 +1595,7 @@ namespace util {
 
   string  AsString    (conv::PhysParamId_t p);
   string  AsStringTeX (conv::PhysParamId_t p, bool root = false);
-  
+
   // Aliases for above
   string  ParamAsString    (conv::PhysParamId_t p) ;
   string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
@@ -1497,22 +1604,22 @@ namespace util {
 
   PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
   FitParamList * GetFitParameterList (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
-  
+
   bool IsNuFluxRelated(conv::PhysParamId_t p);
   bool IsNuIntRelated (conv::PhysParamId_t p);
   bool IsNuDetRelated (conv::PhysParamId_t p);
-  
+
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
-  
+
   bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,
                         conv::ReacMode_t m, conv::PhysParamId_t p);
-  
+
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);
 
 } //util
 
 } // valor
-  
-#endif 
+
+#endif
 
