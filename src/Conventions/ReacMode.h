@@ -309,6 +309,7 @@ namespace util {
   // Aliases for above
   std::string      ModeAsString        (conv::ReacMode_t m);
   std::string      ModeAsStringTeX     (conv::ReacMode_t m, bool root = false);
+  bool             ModeIsCC(conv::ReacMode_t m);
 
 } // util
 

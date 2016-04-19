@@ -224,8 +224,6 @@ bool util::IsCC(conv::ReacMode_t m)
     case (kmNuMuCCpiCpi0   )  : return true;
     case (kmNuMuCCcoh      )  : return true;
     case (kmNuMuCCoth      )  : return true;
-    case (kmNuMuNCcoh      )  : return true;
-    case (kmNuMuNCoth      )  : return true;
     case (kmNuMuBarCCQE    )  : return true;
     case (kmNuMuBarCCMEC   )  : return true;
     case (kmNuMuBarCC1piC  )  : return true;
@@ -254,7 +252,7 @@ bool util::IsCC(conv::ReacMode_t m)
     case (kmNuEBarCCcoh    )  : return true;
     case (kmNuEBarCCoth    )  : return true;
     
-    default                  : return false;
+    default                   : return false;
   }
 }
 //________________________________________________________________________________________
@@ -267,6 +265,7 @@ ReacMode_t util::ReacModeFromInt(int m)
 }
 //________________________________________________________________________________________
 //aliases for systems that can't overload based on enum type (eg python)
-string util::ModeAsStringTeX(ReacMode_t m, bool root) {return AsStringTeX(m,root);}
-string util::ModeAsString   (ReacMode_t m) {return AsString(m);}
+string util::ModeAsStringTeX(ReacMode_t m, bool root) {return util::AsStringTeX(m,root);}
+string util::ModeAsString   (ReacMode_t m) {return util::AsString(m);}
+bool   util::ModeIsCC       (ReacMode_t m) {return util::IsCC(m);}
 //________________________________________________________________________________________
