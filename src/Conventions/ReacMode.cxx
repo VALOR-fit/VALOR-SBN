@@ -206,6 +206,58 @@ string util::AsStringTeX(ReacMode_t m, bool root)
   return name;
 }
 //________________________________________________________________________________________
+conv::NuFlavour_t  util::ReacModeToFlavor(conv::ReacMode_t m)
+{
+  //~ int idx = ArrIdx::Instance()->ReacModeIdx(m);
+  return kReacModeToFlavour[m];
+}
+//________________________________________________________________________________________
+bool util::IsCC(conv::ReacMode_t m)
+{
+  switch (m) {
+    case (kmNuMuCCQE       )  : return true;
+    case (kmNuMuCCMEC      )  : return true;
+    case (kmNuMuCC1piC     )  : return true;
+    case (kmNuMuCC1pi0     )  : return true;
+    case (kmNuMuCC2piC     )  : return true;
+    case (kmNuMuCC2pi0     )  : return true;
+    case (kmNuMuCCpiCpi0   )  : return true;
+    case (kmNuMuCCcoh      )  : return true;
+    case (kmNuMuCCoth      )  : return true;
+    case (kmNuMuNCcoh      )  : return true;
+    case (kmNuMuNCoth      )  : return true;
+    case (kmNuMuBarCCQE    )  : return true;
+    case (kmNuMuBarCCMEC   )  : return true;
+    case (kmNuMuBarCC1piC  )  : return true;
+    case (kmNuMuBarCC1pi0  )  : return true;
+    case (kmNuMuBarCC2piC  )  : return true;
+    case (kmNuMuBarCC2pi0  )  : return true;
+    case (kmNuMuBarCCpiCpi0)  : return true;
+    case (kmNuMuBarCCcoh   )  : return true;
+    case (kmNuMuBarCCoth   )  : return true;
+    case (kmNuECCQE        )  : return true;
+    case (kmNuECCMEC       )  : return true;
+    case (kmNuECC1piC      )  : return true;
+    case (kmNuECC1pi0      )  : return true;
+    case (kmNuECC2piC      )  : return true;
+    case (kmNuECC2pi0      )  : return true;
+    case (kmNuECCpiCpi0    )  : return true;
+    case (kmNuECCcoh       )  : return true;
+    case (kmNuECCoth       )  : return true;
+    case (kmNuEBarCCQE     )  : return true;
+    case (kmNuEBarCCMEC    )  : return true;
+    case (kmNuEBarCC1piC   )  : return true;
+    case (kmNuEBarCC1pi0   )  : return true;
+    case (kmNuEBarCC2piC   )  : return true;
+    case (kmNuEBarCC2pi0   )  : return true;
+    case (kmNuEBarCCpiCpi0 )  : return true;
+    case (kmNuEBarCCcoh    )  : return true;
+    case (kmNuEBarCCoth    )  : return true;
+    
+    default                  : return false;
+  }
+}
+//________________________________________________________________________________________
 ReacMode_t util::ReacModeFromInt(int m)
 {
 // Cast an integer to ReacMode_t, but with boundary check

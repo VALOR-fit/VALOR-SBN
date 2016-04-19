@@ -300,9 +300,11 @@ static const NuFlavour_t kReacModeToFlavour[kNReacModes] =
 //
 namespace util {
 
-  std::string      AsString        (conv::ReacMode_t m);
-  std::string      AsStringTeX     (conv::ReacMode_t m, bool root = false);
-  conv::ReacMode_t ReacModeFromInt (int m);
+  std::string        AsString        (conv::ReacMode_t m);
+  std::string        AsStringTeX     (conv::ReacMode_t m, bool root = false);
+  conv::ReacMode_t   ReacModeFromInt (int m);
+  conv::NuFlavour_t  ReacModeToFlavor(conv::ReacMode_t m);
+  bool               IsCC(conv::ReacMode_t m);
   
   // Aliases for above
   std::string      ModeAsString        (conv::ReacMode_t m);
