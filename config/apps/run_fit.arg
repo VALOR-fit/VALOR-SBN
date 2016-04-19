@@ -10,4 +10,4 @@ config                             |   string       |  mandatory  |   -
 mesg-thresholds                    |   string       |  optional   |   verbosity.xml
 with-stat-fluct,without-stat-fluct |   boolean_list |  optional   |   with-stat-fluct
 store-spectra,discard-spectra      |   boolean_list |  optional   |   discard-spectra
-start-at-true,start-at-central     |   boolean_list |  optional   |   start_at_true
+start-at-true,start-at-central     |   boolean_list |  optional   |   start-at-true
