@@ -314,7 +314,7 @@ static const ApplyMask_t kApplyParamToTemplates[kNFitParams] =
   /* kNuisIntNormNuBarCoherent     */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCCcoh     ,
   /* kNuisIntNuNormNC              */ kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToAllNC     ,
   /* kNuisIntNuBarNormNC           */ kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToAllNC     ,
-  /* kNuisIntNormNuMuToNuE         */ kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAll       ,
+  /* kNuisIntNormNuMuToNuE         */ kbApplyToAll | kfApplyToNuEAny    | ksApplyToAll | ktApplyToAll       ,
   /* kNuisIntPiMeanFreePath        */ kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAll       ,
   /* kNuisIntNucMeanFreePath       */ kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAll       ,
   /* kNuisIntFracPiChargeExchange  */ kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAll       ,
