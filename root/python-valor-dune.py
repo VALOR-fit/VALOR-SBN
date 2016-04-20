@@ -48,5 +48,9 @@ for n in xrange(1,9):
 # Quick and dirty function to get every object in a file
 def fileburst(f):
   for k in f.GetListOfKeys():
-    globals()[k.GetName()] = k.ReadObj()
+    obj = k.ReadObj()
+    if (obj.ClassName()=="TTree"):
+      if obj.GetEntries():
+        obj.GetEntry(0)
+    globals()[k.GetName()] = obj
   return
