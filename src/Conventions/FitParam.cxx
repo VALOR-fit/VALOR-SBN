@@ -604,3 +604,17 @@ conv::FitParamGroup_t util::GetParameterGroup(conv::PhysParamId_t p)
   return conv::kFitParamGroup[ip];
 }
 //____________________________________________________________________________
+const double * util::EtrueRange (conv::PhysParamId_t p)
+{
+  int idx = util::ArrIdx::Instance()->FitParamIdx(p);
+  if (idx < 0 ) {return NULL;}
+  return conv::kFitParamEtrueRange[idx];
+}
+//____________________________________________________________________________
+const double * util::Q2trueRange(conv::PhysParamId_t p)
+{
+  int idx = util::ArrIdx::Instance()->FitParamIdx(p);
+  if (idx < 0 ) {return NULL;}
+  return conv::kFitParamQ2trueRange[idx];
+}
+//____________________________________________________________________________

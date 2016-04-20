@@ -1613,6 +1613,10 @@ namespace util {
 
   bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,
                         conv::ReacMode_t m, conv::PhysParamId_t p);
+  
+  // Return pointer to array of min/max                      
+  const double * EtrueRange (conv::PhysParamId_t p);
+  const double * Q2trueRange(conv::PhysParamId_t p);
 
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);
