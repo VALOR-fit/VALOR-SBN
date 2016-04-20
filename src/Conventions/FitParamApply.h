@@ -1,9 +1,9 @@
 //____________________________________________________________________________
 /*!
 
-\file      
+\file      FitParamApply.h
 
-\brief     
+\brief     Controls which parameters get applied to which beam/sample/mode bins.
 
 \author    Steve Dennis <s.r.dennis \at liverpool.ac.uk>
            University of Liverpool
@@ -17,9 +17,6 @@
 
 #ifndef _valor_dune_apply_params_h_
 #define _valor_dune_apply_params_h_
-
-// NOT IN USE YET
-// A header file designed to replace the huge arrays in FitParams.h
 
 // FMWK
 #include "Conventions/NuFlavour.h"
@@ -79,7 +76,7 @@ static const ApplyMask_t ktApplyToNCpiCpi0        = (kApplyMaskOne << 36 );
 static const ApplyMask_t ktApplyToNCcoh           = (kApplyMaskOne << 37 );
 static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 38 );
 
-// Groups of systematics - should maybe move to this for everything
+// Groups of systematics
 // Beam
 static const ApplyMask_t kbApplyToAll = kbApplyToFHC | kbApplyToRHC;
 
