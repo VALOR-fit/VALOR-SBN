@@ -7,6 +7,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 //________________________________________________________________________________________
 
 #include "TString.h"
+#include "TMath.h"
 
 #include "Messenger/Messenger.h"
 #include "Utilities/UtlSystem.h"
@@ -30,12 +31,9 @@ static Double_t flat_knots_x[5] = {-10, -5, 0, 5, 10};
 static Double_t flat_knots_y[5] = {  1,  1, 1, 1,  1};
 const TSpline * valor::util::DuneRFL::kFlatSpline = new TSpline3("flat_spline",flat_knots_x,flat_knots_y,5);
 
-//________________________________________________________________________________________
-inline int SPLINE_INDEX(const int& im, const int& ip, const util::KinematicBin & kb)
-{
-  using namespace valor::conv;
-  return 0;
-}
+// We'll never use this address to dereference - it can be passed as a flag indicating that no spline should exist.
+const TSpline * valor::util::DuneRFL::kNoSplineRequired = (TSpline*)&conv::kBadResult;
+
 //________________________________________________________________________________________
 namespace valor {
 namespace util {
@@ -49,24 +47,26 @@ namespace util {
 //________________________________________________________________________________________
 valor::util::DuneRFL::DuneRFL()
  :
-kNModes        (0),
-kModes         (0),
-kNParams       (0),
-kParams        (0),
-kNBinsTrue1    (0),
-kBinEdgesTrue1 (0),
-kNBinsTrue2    (0),
-kBinEdgesTrue2 (0),
-kNBinsTrue3    (0),
-kBinEdgesTrue3 (0),
-kNBinsReco1    (0),
-kBinEdgesReco1 (0),
-kNBinsReco2    (0),
-kBinEdgesReco2 (0),
-kNBinsReco3    (0),
-kBinEdgesReco3 (0),
-kNBinZones     (0),
-kBinZones      (0)
+fBeam          (conv::kbUndefined),
+fSample        (conv::ksUndefined),
+fNModes        (0),
+fModes         (0),
+fNParams       (0),
+fParams        (0),
+fNBinsTrue1    (1),
+fBinEdgesTrue1 (0),
+fNBinsTrue2    (1),
+fBinEdgesTrue2 (0),
+fNBinsTrue3    (1),
+fBinEdgesTrue3 (0),
+fNBinsReco1    (1),
+fBinEdgesReco1 (0),
+fNBinsReco2    (1),
+fBinEdgesReco2 (0),
+fNBinsReco3    (1),
+fBinEdgesReco3 (0),
+fNBinZones     (1),
+fBinZones      (0)
 {
   fSplineNamePattern = "spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]";
   
@@ -91,10 +91,20 @@ kBinZones      (0)
 //________________________________________________________________________________________
 valor::util::DuneRFL::~DuneRFL()
 {
-  for (int ispl = 0 ; ispl < fSplineBlockSize; ispl++) {
+  for (unsigned int ispl = 0 ; ispl < fSplineBlockSize; ispl++) {
     if (fSplines[ispl]) {delete fSplines[ispl];}
     delete[] fSplines;
   }
+  
+  if (fModes        )  {delete fModes;        }
+  if (fParams       )  {delete fParams;       }
+  if (fBinEdgesTrue1)  {delete fBinEdgesTrue1;}
+  if (fBinEdgesTrue2)  {delete fBinEdgesTrue2;}
+  if (fBinEdgesTrue3)  {delete fBinEdgesTrue3;}
+  if (fBinEdgesReco1)  {delete fBinEdgesReco1;}
+  if (fBinEdgesReco2)  {delete fBinEdgesReco2;}
+  if (fBinEdgesReco3)  {delete fBinEdgesReco3;}
+  
 }
 //________________________________________________________________________________________
 void valor::util::DuneRFL::Print(ostream & stream) const
@@ -106,23 +116,25 @@ const TSpline * valor::util::DuneRFL::GetSpline (
   conv::ReacMode_t m, conv::PhysParamId_t p,
   const KinematicBin & kb) const
 {
-  TSpline * spl = (TSpline*)-2;
-  
   static const util::ArrIdx * arr_idx = util::ArrIdx::Instance();
   
-  return spl;
+  const int im = arr_idx->ReacModeIdx(fSample,m);
+  const int ip = this->Param2Idx(p);
+  
+  const int splidx = SplineIndex(im,ip,kb);
+  
+  return fSplines[splidx];
 }
 //________________________________________________________________________________________
 TString valor::util::DuneRFL::BuildSplineName (
-  conv::BeamConf_t b, conv::Sample_t s,
   conv::ReacMode_t m, conv::PhysParamId_t p,
   const KinematicBin & kb) const
 {
   TString name = fSplineNamePattern;
   
-  //~ name = name.ReplaceAll("[TAG]" ,tag);
-  name = name.ReplaceAll("[BEAM]"   , util::AsString(b).c_str());
-  name = name.ReplaceAll("[SAMPLE]" , util::AsString(s).c_str());
+  name = name.ReplaceAll("[BEAM]"   , util::AsString(fBeam  ).c_str());
+  name = name.ReplaceAll("[SAMPLE]" , util::AsString(fSample).c_str());
+  
   name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
   name = name.ReplaceAll("[PARAM]"  , util::AsString(p).c_str());
   
@@ -151,45 +163,89 @@ bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
   
   TFile * spline_file = util::XML2TFile(xml,root_node,"splines/file");
   
-  //~ for(int ibeam = 0; ibeam < conv::kNBeamConf; ibeam++) {
-    //~ conv::BeamConf_t b = conv::kNDBeamConf[ibeam];
-    //~ if(b == conv::kbUndefined) continue;
-    //~ for(int isample = 0; isample < conv::kNNDSamples; isample++) {
-      //~ conv::NDSample_t s = conv::kNDSample[ibeam][isample];
-      //~ if(s == conv::ksNDUndefined) continue;
-      //~ for(int imode = 0; imode < conv::kNReacModes; imode++) {
-        //~ conv::ReacMode_t m = conv::kNDReactionModes[isample][imode];
-        //~ if(m == conv::kmUndefined) continue;
-        //~ for (int ip = 0 ; ip < conv::kNNDFitParams ; ip++) {
-          //~ conv::PhysParamId_t p = conv::kNDFitParam[ip];
-          //~ if(p == conv::kPhypUndefined) continue;
-          //~ 
-          //~ for (int izone = 0 ; izone < conv::kNMaxBinZones ; izone++ ) {
-            //~ const int n_true1_bins = util::NumEtrueBins(s);
-            //~ const int n_reco1_bins = util::NumErecoBins(s,izone);
-            //~ const int n_reco2_bins = util::NumYrecoBins(s,izone);
-            //~ for (int itrue1 = 0 ; itrue1 < n_true1_bins ; itrue1++) {
-              //~ for (int ireco1 = 0 ; ireco1 < n_reco1_bins ; ireco1++) {
-                //~ for (int ireco2 = 0 ; ireco2 < n_reco2_bins ; ireco2++) {
-                //~ 
-                //~ TString spl_name = this->BuildSplineName(b,s,m,p,izone,itrue1,ireco1,ireco2);
-                //~ 
-                //~ const int spline_index = SPLINE_INDEX(ibeam,isample,imode,ip,izone,itrue1,ireco1,ireco2);
-                //~ TObject * spline_obj = spline_file->Get(spl_name.Data());
-                //~ TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
-                //~ if (spline) {fSplines[spline_index] = spline;}
-                //~ else {fSplines[spline_index] = 0;}
-                //~ } //ireco2
-              //~ } //ireco1
-            //~ } //itrue1
-          //~ } //iz
-        //~ } //ip
-      //~ } //imode
-    //~ } //isample
-  //~ } //ibeam
+  int isample = ArrIdx::Instance()->SampleIdx(fBeam, fSample);
+  
+  for(int imode = 0; imode < conv::kNReacModes; imode++) {
+    conv::ReacMode_t m = conv::kReactionModes[isample][imode];
+    if(m == conv::kmUndefined) continue;
+    for (int ip = 0 ; ip < fNParams ; ip++) {
+      conv::PhysParamId_t p = fParams[ip];
+      if(p == conv::kPhypUndefined) continue;
+      
+      KinematicBin kb;
+      
+      for (int izone = 0 ; izone < conv::kNMaxBinZones ; izone++ ) {
+        kb.zone = izone;
+        for (int itrue1 = 0 ; itrue1 < fNBinsTrue1 ; itrue1++) {
+          kb.true1 = itrue1;
+          for (int itrue2 = 0 ; itrue2 < fNBinsTrue2 ; itrue2++) {
+            kb.true2 = itrue2;
+            for (int itrue3 = 0 ; itrue3 < fNBinsTrue3 ; itrue3++) {
+              kb.true3 = itrue3;
+              for (int ireco1 = 0 ; ireco1 < fNBinsReco1 ; ireco1++) {
+                kb.reco1 = ireco1;
+                for (int ireco2 = 0 ; ireco2 < fNBinsReco2 ; ireco2++) {
+                  kb.reco2 = ireco2;
+                  for (int ireco3 = 0 ; ireco3 < fNBinsReco3 ; ireco3++) {
+                    kb.reco2 = ireco2;
+                    
+                    TString spl_name = this->BuildSplineName(m,p,kb);
+                    
+                    const int spline_index = SplineIndex(imode,ip,kb);
+                    TObject * spline_obj = spline_file->Get(spl_name.Data());
+                    TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
+                    if (spline) {
+                      fSplines[spline_index] = spline;
+                    }
+                    else {
+                      LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
+                      fSplines[spline_index] = 0;
+                    }
+                  } //ireco2
+                } //ireco1
+              } //itrue1
+            } //itrue3
+          } //itrue2
+        } //itrue1
+      } //iz
+    } //ip
+  } //imode
   
   spline_file->Close();
   
   return true;
+}
+//________________________________________________________________________________________
+util::KinematicBin valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp) const
+{
+  util::KinematicBin kb_out;
+  if (fNBinsTrue1 > 1) {
+    kb_out.true1 = TMath::BinarySearch(1+(Long_t)fNBinsTrue1, fBinEdgesTrue1, kp.true1);
+  }
+  if (fNBinsTrue2 > 1) {
+    kb_out.true2 = TMath::BinarySearch(1+(Long_t)fNBinsTrue2, fBinEdgesTrue2, kp.true2);
+  }
+  if (fNBinsTrue3 > 1) {
+    kb_out.true3 = TMath::BinarySearch(1+(Long_t)fNBinsTrue3, fBinEdgesTrue3, kp.true3);
+  }
+  if (fNBinsReco1 > 1) {
+    kb_out.reco1 = TMath::BinarySearch(1+(Long_t)fNBinsReco1, fBinEdgesReco1, kp.reco1);
+  }
+  if (fNBinsReco2 > 1) {
+    kb_out.reco2 = TMath::BinarySearch(1+(Long_t)fNBinsReco2, fBinEdgesReco2, kp.reco2);
+  }
+  if (fNBinsReco3 > 1) {
+    kb_out.reco3 = TMath::BinarySearch(1+(Long_t)fNBinsReco3, fBinEdgesReco3, kp.reco3);
+  }
+  
+  return kb_out;
+}
+//________________________________________________________________________________________
+int valor::util::DuneRFL::Param2Idx(conv::PhysParamId_t p) const
+{
+  for (int ip = 0 ; ip < fNParams; ip++) {
+    if (fParams[ip]==p) {return ip;}
+  }
+  return -1;
 }
 //________________________________________________________________________________________
