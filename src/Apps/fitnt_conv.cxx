@@ -28,12 +28,14 @@
 // system
 #include <string>
 #include <sstream>
+#include <vector>
 // root
 #include <TSystem.h>
 #include <TFile.h>
-#include <TTree.h>
+#include <TChain.h>
 #include <TLeaf.h>
 #include <TVector.h>
+#include <TMatrixD.h>
 #include <TMatrixDSym.h>
 // fmwk
 #include "CmdLine/CmdLnArgParser.h"
@@ -59,13 +61,22 @@ int NDFitExtractsBareRoot(void);
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
+  util::PopulateNameRegistry();
   GetCommandLineArgs (argc, argv);
 
   if(gOptOutFormat == "ndfit_extracts_bare_root") {
     return NDFitExtractsBareRoot();
   }
+  else {
+    LOG("fitnt_conv",pFATAL) << "No output format selected. Exiting.";
+  }
 
   return 0;
+}
+//___________________________________________________________________
+bool IsMarginalised(const FitParamList * /*fparm*/, conv::PhysParamId_t p)
+{
+  return util::IsNuDetRelated(p); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.
 }
 //___________________________________________________________________
 int NDFitExtractsBareRoot(void)
@@ -87,20 +98,15 @@ int NDFitExtractsBareRoot(void)
   char   brPName [buffer_size] = {};
   double brPEmin = 0;
   double brPEmax = 0;
+  double brPQ2min = 0;
+  double brPQ2max = 0;
 
   out_metadata -> Branch("parameter_id",   &brPId,   "parameter_id/I");
   out_metadata -> Branch("parameter_name", (void*)brPName, "parameter_name/C", buffer_size);
   out_metadata -> Branch("enu_true_min",   &brPEmin, "enu_true_min/D");
   out_metadata -> Branch("enu_true_max",   &brPEmax, "enu_true_max/D");
-
-  for(int ip=0; ip < conv::kNFitParams; ip++) {
-    conv::PhysParamId_t p = conv::kFitParam[ip];
-    brPId = ip;
-    strcpy(brPName, util::AsString(p).c_str());
-    brPEmin = conv::kFitParamEtrueRange[ip][0];
-    brPEmin = conv::kFitParamEtrueRange[ip][1];
-    out_metadata->Fill();
-  }
+  out_metadata -> Branch("Q2_true_min",    &brPQ2min,"Q2_true_min/D");
+  out_metadata -> Branch("Q2_true_max",    &brPQ2max,"Q2_true_max/D");
 
   TTree * out_fitnt = new TTree(
      "valor_dune_ndfit_ntuple_extracts",
@@ -117,20 +123,48 @@ int NDFitExtractsBareRoot(void)
   //
   // Open the input file, get the VALOR fit n-tuple and prepare to read it
   //
+  
+  TChain * fitnt = new TChain("valor_dune_nd_ntp");
+  fitnt->Add(gOptInpFileName.c_str());
+  assert(fitnt->GetEntries());
 
-  TFile fin(gOptInpFileName.c_str(),"READ");
-
-  TTree * fitnt = (TTree*) fin.Get("valor_dune_nd_ntp");
-
-  PhysParamList * true_param_array     = 0; // input true params
-  FitParamList *  best_fit_param_array = 0; // best-fit params
+  PhysParamList * true_params          = 0; // input true params
+  FitParamList *  best_fit_params      = 0; // best-fit params
   TObjArray *     best_fit_model_array = 0; // an array of various best-fit model predictions for the current toy-MC experiment 
   TObjArray *     data_array           = 0; // an array of all fitted data distributions for the current toy-MC experiment
 
-  fitnt->SetBranchAddress("true_params",        &true_param_array);
-  fitnt->SetBranchAddress("best_fit_params",    &best_fit_param_array);
+  fitnt->SetBranchAddress("true_params",        &true_params);
+  fitnt->SetBranchAddress("best_fit_params",    &best_fit_params);
   fitnt->SetBranchAddress("best_fit_model",     &best_fit_model_array);
   fitnt->SetBranchAddress("data",               &data_array);
+  
+  // Make a list of parameter names using first FPL
+  fitnt->GetEntry(0);
+  int n_params_input = best_fit_params->Size();
+  //find number of parameters after marginalisation
+  std::vector<conv::PhysParamId_t> unmarginalised_parameters;
+  int n_final_params = 0;
+  for (int ip = 0 ; ip < n_params_input ; ip++) {
+    conv::PhysParamId_t p = util::PhysParamFromString(best_fit_params->NameByIndex(ip));
+    if (!IsMarginalised(best_fit_params,p)) {
+      unmarginalised_parameters.push_back(p);
+      n_final_params++;
+    }
+  }
+  // Fill the output tree
+  for(int ip = 0; ip < n_final_params; ip++) {
+    //~ conv::PhysParamId_t p = best_fit_params->WhichParam(ip); // Should work but something weird is happening
+    conv::PhysParamId_t p = util::PhysParamFromString(best_fit_params->NameByIndex(ip));
+    brPId = ip;
+    strcpy(brPName, best_fit_params->Name(p).c_str());
+    const double * erange  = util::EtrueRange (p);
+    const double * q2range = util::Q2trueRange(p);
+    brPEmin  = erange [0];
+    brPEmax  = erange [1];
+    brPQ2min = q2range[0];
+    brPQ2max = q2range[1];
+    out_metadata->Fill();
+  }
 
   //
   // Loop over toy-MC fits and extract info
@@ -149,26 +183,47 @@ int NDFitExtractsBareRoot(void)
 
     LOG("fitnt_conv", pNOTICE) 
       << "\n >> Input parameter list: \n "
-      << *true_param_array;
+      << *true_params;
 
     LOG("fitnt_conv", pNOTICE) 
       << "\n >> Best-fit parameter list: \n " 
-      << *best_fit_param_array;
-
+      << *best_fit_params;
+      
+    if (n_params_input!=best_fit_params->Size()) {
+      LOG("fitnt_conv", pFATAL) 
+        << "All FPLs given to this program must have the same parameters defined. Exiting.";
+      exit(-1);
+    }
 
     brItoy = itoymc;
-    brCovMtrx = new TMatrixDSym(*best_fit_param_array->GetCovMatrix());
+    
+    // Marginalise matrix
+    TMatrixDSym * cov = best_fit_params->GetCovMatrix();
+    brCovMtrx = new TMatrixDSym(n_final_params);
+    
+    for(int ipar1 = 0; ipar1 < n_final_params; ipar1++) 
+    {
+      conv::PhysParamId_t p1 = unmarginalised_parameters.at(ipar1);
+      assert(p1!=conv::kPhypUndefined);
+      int idx_in_orig_matrix1 = best_fit_params->Id(p1);
+      for (int ipar2 = 0 ; ipar2 < n_final_params; ipar2++) {
+        conv::PhysParamId_t p2 = unmarginalised_parameters.at(ipar2);
+        assert(p2!=conv::kPhypUndefined);
+        int idx_in_orig_matrix2 = best_fit_params->Id(p2);
+        (*brCovMtrx)[ipar1][ipar2] = (*cov)[idx_in_orig_matrix1][idx_in_orig_matrix2];
+      } //ipar2
+    } //ipar1
 
-    int np = best_fit_param_array->GetNumberParameters();
-    brBestFitP = new TVectorD(np);
-    for(int ip = 0; ip < np; ip++) {
-      (*brBestFitP)(ip) = best_fit_param_array->BestFitValueByIndex(ip);
+
+    
+    brBestFitP = new TVectorD(n_params_input);
+    for(int ip = 0; ip < n_final_params; ip++) {
+      conv::PhysParamId_t p = unmarginalised_parameters.at(ip);
+      (*brBestFitP)[ip] = best_fit_params->BestFitValue(p);
     }
 
     out_fitnt->Fill();
   }
-
-  fin.Close();
 
   LOG("fitnt_conv", pNOTICE) 
       << "*** Saving VALOR/DUNE fit n-tuple extracts to: " 
@@ -191,7 +246,7 @@ void GetCommandLineArgs(int argc, char ** argv)
   CmdLnArgParser parser(argc,argv);
 
   // get output format
-  if ( parser.OptionExists("input") ) {
+  if ( parser.OptionExists("format") ) {
     LOG("fitnt_conv", pINFO) << "Reading output format";
     gOptOutFormat = parser.ArgAsString("format");
   } else {
