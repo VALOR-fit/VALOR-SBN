@@ -26,7 +26,6 @@ endif
 
 TGT = make_nd_minidst \
       run_fit \
-      run_nd_fit \
       fitnt_conv
 
 all: $(TGT)
@@ -38,6 +37,12 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 endif
+
+# Generate GENIE response functions
+#
+make_response_functions: FORCE
+	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	
 # Run a generic fit
 #
@@ -45,17 +50,12 @@ run_fit: FORCE
 	$(CXX) $(CXXFLAGS) -c run_fit.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) run_fit.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_fit
 	
-# Run ND fit
-#
-run_nd_fit: FORCE
-	$(CXX) $(CXXFLAGS) -c run_nd_fit.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) run_nd_fit.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_nd_fit
-
 # Pick info from the VALOR fit n-tuple and convert to bare ROOT format
 #
 fitnt_conv: FORCE
 	$(CXX) $(CXXFLAGS) -c fitnt_conv.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) fitnt_conv.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
+
 
 #################### CLEANING
 
@@ -65,14 +65,14 @@ purge: FORCE
 clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_nd_fit
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 
 distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_nd_fit
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 
 FORCE:
