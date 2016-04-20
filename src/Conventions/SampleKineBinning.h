@@ -395,6 +395,12 @@ namespace util   {
    int ErecoBinContaining(conv::Sample_t s, double enu_reco, double y_reco);
    int YrecoBinContaining(conv::Sample_t s, double enu_reco, double y_reco);
    int EtrueBinContaining(conv::Sample_t s, double enu_true);
+   
+   // Cross section spline binnings
+   int            NumEtrueBinsXsec  (conv::Sample_t sample);
+   const double * EtrueBinEdgesXsec (conv::Sample_t sample);
+   int            NumQ2trueBinsXsec (conv::Sample_t sample, conv::ReacMode_t mode);
+   const double * Q2trueBinEdgesXsec(conv::Sample_t sample, conv::ReacMode_t mode);
 
 } // util
 

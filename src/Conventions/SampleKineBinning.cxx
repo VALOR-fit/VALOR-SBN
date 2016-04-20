@@ -395,3 +395,24 @@ int util::EtrueBinContaining(conv::Sample_t s, double enu_true)
   return TMath::BinarySearch(1+nbins, bin_edges, enu_true);
 }
 //________________________________________________________________________________________
+// Just using the normal binning for now
+int util::NumEtrueBinsXsec  (conv::Sample_t sample)
+{
+  return util::NumEtrueBins (sample);
+}
+//________________________________________________________________________________________
+const double * util::EtrueBinEdgesXsec (conv::Sample_t sample)
+{
+  return util::EtrueBinEdges(sample);
+}
+//________________________________________________________________________________________
+int util::NumQ2trueBinsXsec (conv::Sample_t sample, conv::ReacMode_t mode)
+{
+  return util::NumQ2trueBins (sample,mode);
+}
+//________________________________________________________________________________________
+const double * util::Q2trueBinEdgesXsec(conv::Sample_t sample, conv::ReacMode_t mode)
+{
+  return util::Q2trueBinEdges(sample,mode);
+}
+//________________________________________________________________________________________
