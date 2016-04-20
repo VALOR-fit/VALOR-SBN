@@ -9,6 +9,7 @@
 #pragma link C++ namespace valor::util;
 
 #pragma link C++ class valor::util::KinematicBin;
+#pragma link C++ class valor::util::KinematicPoint;
 #pragma link C++ class valor::util::DuneRFL;
 
 #endif
