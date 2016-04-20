@@ -66,23 +66,37 @@ fBinEdgesReco2 (0),
 fNBinsReco3    (1),
 fBinEdgesReco3 (0),
 fNBinZones     (1),
-fBinZones      (0)
+fBinZones      (0),
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]")
 {
-  fSplineNamePattern = "spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]";
   
-  //~ //DEBUG - fill with flat splines with titles
-  //~ int ibin = 0, iz=0;
-  //~ for (int ib = 0 ; ib < conv::kNBeamConf ; ib++) {
-    //~ for (int is = 0 ; is < conv::kNNDSamples; is++) {
-      //~ for (int im = 0 ; im < conv::kNReacModes ; im++) {
-        //~ for (int ip = 0 ; ip < conv::kNNDFitParams ; ip++) {
-          //~ int i = SPLINE_INDEX(ib,is,im,ip,iz,ibin,ibin,ibin);
-          //~ fSplines[i] = new TSpline3(*((TSpline3*)fFlatSpline));
-          //~ fSplines[i]->SetTitle(Form("%d",i));
-        //~ }
-      //~ }
-    //~ }
-  //~ }
+}
+//________________________________________________________________________________________
+valor::util::DuneRFL::DuneRFL(BeamConf_t b, Sample_t s, int n_params, const PhysParamId_t * param_ids)
+ :
+fBeam          (b),
+fSample        (s),
+fNModes        (0),
+fModes         (0),
+fNParams       (n_params),
+fParams        (param_ids),
+fNBinsTrue1    (1),
+fBinEdgesTrue1 (0),
+fNBinsTrue2    (1),
+fBinEdgesTrue2 (0),
+fNBinsTrue3    (1),
+fBinEdgesTrue3 (0),
+fNBinsReco1    (1),
+fBinEdgesReco1 (0),
+fNBinsReco2    (1),
+fBinEdgesReco2 (0),
+fNBinsReco3    (1),
+fBinEdgesReco3 (0),
+fNBinZones     (1),
+fBinZones      (0),
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]")
+{
+  
 }
 //________________________________________________________________________________________
 //~ valor::util::DuneRFL::DuneRFL(const DuneRFL &) 
@@ -151,6 +165,12 @@ TString valor::util::DuneRFL::BuildSplineName (
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
 {
+  // Get binning details, allocate the spline block.
+  
+  fNBinsTrue1    = util::NumEtrueBinsXsec (fSample);
+  fBinEdgesTrue1 = util::EtrueBinEdgesXsec(fSample);
+  //etc
+  
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(config_file.c_str());

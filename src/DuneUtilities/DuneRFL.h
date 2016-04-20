@@ -45,6 +45,9 @@ class DuneRFL {
 
 public:
 
+  DuneRFL();
+  DuneRFL(conv::BeamConf_t b, conv::Sample_t s, int n_params, const conv::PhysParamId_t * param_ids);
+
   // Define a dummy spline pointer to an object we know, so we can use its address as a special argument.
   static const TSpline * kNoSplineRequired;
 
@@ -75,8 +78,6 @@ public:
   
 private:
 
-  DuneRFL();
-  //~ DuneRFL(const DuneRFL &);
  ~DuneRFL();
 
   // Actual response function block
@@ -102,29 +103,29 @@ private:
   // The beam and sample (used in spline names)
   conv::BeamConf_t fBeam;
   conv::Sample_t   fSample;
-    
-  // Name for the splines (used in filename)
-  TString fSplineNamePattern;
   
   // Details of binning
-  int                   fNModes;        //
-  conv::ReacMode_t *    fModes;         //[kNModes]
-  int                   fNParams;       //
-  conv::PhysParamId_t * fParams;        //[kParams]
-  int                   fNBinsTrue1;    //
-  double *              fBinEdgesTrue1; //[kBinEdgesTrue1]
-  int                   fNBinsTrue2;    //
-  double *              fBinEdgesTrue2; //[kBinEdgesTrue2]
-  int                   fNBinsTrue3;    //
-  double *              fBinEdgesTrue3; //[kBinEdgesTrue3]
-  int                   fNBinsReco1;    //
-  double *              fBinEdgesReco1; //[kBinEdgesReco1]
-  int                   fNBinsReco2;    //
-  double *              fBinEdgesReco2; //[kBinEdgesReco2]
-  int                   fNBinsReco3;    //
-  double *              fBinEdgesReco3; //[kBinEdgesReco3]
-  int                   fNBinZones;     //
-  double *              fBinZones;      //[kBinZones]
+  int                         fNModes;        //
+  const conv::ReacMode_t *    fModes;         //[fNModes]
+  int                         fNParams;       //
+  const conv::PhysParamId_t * fParams;        //[fParams]
+  int                         fNBinsTrue1;    //
+  const double *              fBinEdgesTrue1; //[fNBinsTrue1]
+  int                         fNBinsTrue2;    //
+  const double *              fBinEdgesTrue2; //[fNBinsTrue2]
+  int                         fNBinsTrue3;    //
+  const double *              fBinEdgesTrue3; //[fNBinsTrue3]
+  int                         fNBinsReco1;    //
+  const double *              fBinEdgesReco1; //[fNBinsReco1]
+  int                         fNBinsReco2;    //
+  const double *              fBinEdgesReco2; //[fNBinsReco2]
+  int                         fNBinsReco3;    //
+  const double *              fBinEdgesReco3; //[fNBinsReco3]
+  int                         fNBinZones;     //
+  const double *              fBinZones;      //[fNBinZones]
+  
+  // Name for the splines (used in filename)
+  TString fSplineNamePattern;
 };
 
 std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
