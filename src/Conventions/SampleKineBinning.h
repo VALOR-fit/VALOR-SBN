@@ -401,6 +401,10 @@ namespace util   {
    const double * EtrueBinEdgesXsec (conv::Sample_t sample);
    int            NumQ2trueBinsXsec (conv::Sample_t sample, conv::ReacMode_t mode);
    const double * Q2trueBinEdgesXsec(conv::Sample_t sample, conv::ReacMode_t mode);
+   int            NumErecoBinsXsec  (conv::Sample_t sample, int zone);
+   const double * ErecoBinEdgesXsec (conv::Sample_t sample, int zone);
+   int            NumYrecoBinsXsec  (conv::Sample_t sample, int zone);
+   const double * YrecoBinEdgesXsec (conv::Sample_t sample, int zone);
 
 } // util
 

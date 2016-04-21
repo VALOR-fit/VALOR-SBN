@@ -416,3 +416,23 @@ const double * util::Q2trueBinEdgesXsec(conv::Sample_t sample, conv::ReacMode_t 
   return util::Q2trueBinEdges(sample,mode);
 }
 //________________________________________________________________________________________
+int util::NumErecoBinsXsec  (conv::Sample_t sample, int zone)
+{
+  return util::NumErecoBins(sample,zone);
+}
+//________________________________________________________________________________________
+const double * util::ErecoBinEdgesXsec (conv::Sample_t sample, int zone)
+{
+  return util::ErecoBinEdgesXsec(sample,zone);
+}
+//________________________________________________________________________________________
+int util::NumYrecoBinsXsec  (conv::Sample_t sample, int zone)
+{
+  return util::NumYrecoBinsXsec(sample,zone);
+}
+//________________________________________________________________________________________
+const double * util::YrecoBinEdgesXsec (conv::Sample_t sample, int zone)
+{
+  return util::YrecoBinEdgesXsec(sample,zone);
+}
+//________________________________________________________________________________________
