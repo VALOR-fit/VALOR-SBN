@@ -47,32 +47,32 @@ copy-scripts-to-bin: make-bin-lib-dir FORCE
 build-conventions: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/Conventions;
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Conventions;
 
 build-systematics: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Systematics package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/Systematics;
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Systematics;
 	
 build-utilities: make-bin-lib-dir FORCE
 	@echo " "
-	@echo "** Building DuneUtilities package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/DuneUtilities;
+	@echo "** Building DUNE Utilities package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Utilities;
 
 build-elements: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Elements package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/Elements;
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Elements;
 
 build-sd-fit: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building SDFit package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/SDFit;
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/SDFit;
 
 build-apps: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building apps..."
-	$(MAKE) -C ${VALOR_DUNE}/src/Apps;
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Apps;
 
 make-bin-lib-dir: FORCE
 	@echo " "
@@ -84,17 +84,17 @@ make-bin-lib-dir: FORCE
 copy-rootdict-to-lib: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Copying ROOT dictionary PCM files to ${VALOR_DUNE}/lib"
-	$(shell find "${VALOR_DUNE}/src/" -name "_RootDict*_rdict.pcm" | xargs -n 1 -I{} cp {} "${VALOR_DUNE}/lib/" )
+	$(shell find "${VALOR_DUNE}/src/dune/" -name "_RootDict*_rdict.pcm" | xargs -n 1 -I{} cp {} "${VALOR_DUNE}/lib/" )
 
 purge: FORCE
 	@echo " "
 	@echo "** Purging..."
-	$(MAKE) -C src/Apps          purge; \
-	$(MAKE) -C src/Conventions   purge; \
-	$(MAKE) -C src/DuneUtilities purge; \
-	$(MAKE) -C src/Elements      purge; \
-	$(MAKE) -C src/SDFit         purge; \
-	$(MAKE) -C src/Systematics   purge; \
+	$(MAKE) -C src/dune/Apps          purge && \
+	$(MAKE) -C src/dune/Conventions   purge && \
+	$(MAKE) -C src/dune/Utilities     purge && \
+	$(MAKE) -C src/dune/Elements      purge && \
+	$(MAKE) -C src/dune/SDFit         purge && \
+	$(MAKE) -C src/dune/Systematics   purge; \
 
 clean: clean-files clean-dir clean-etc
 
@@ -104,12 +104,12 @@ clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
-	$(MAKE) -C src/Apps          clean; \
-	$(MAKE) -C src/Conventions   clean; \
-	$(MAKE) -C src/DuneUtilities clean; \
-	$(MAKE) -C src/Elements      clean; \
-	$(MAKE) -C src/SDFit         clean; \
-	$(MAKE) -C src/Systematics   clean; \
+	$(MAKE) -C src/dune/Apps          clean && \
+	$(MAKE) -C src/dune/Conventions   clean && \
+	$(MAKE) -C src/dune/Utilities     clean && \
+	$(MAKE) -C src/dune/Elements      clean && \
+	$(MAKE) -C src/dune/SDFit         clean && \
+	$(MAKE) -C src/dune/Systematics   clean; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_DUNE)

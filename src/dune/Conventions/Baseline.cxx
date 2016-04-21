@@ -1,0 +1,37 @@
+//________________________________________________________________________________________
+/*
+
+Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
+
+*/
+//________________________________________________________________________________________
+
+#include "dune/Conventions/Baseline.h"
+#include "Messenger/Messenger.h"
+
+using namespace valor;
+
+//________________________________________________________________________________________
+double util::Baseline(conv::BeamConf_t b, conv::Detector_t d)
+{
+  if(b == conv::kbLBNF_FHC || b == conv::kbLBNF_RHC) {
+      if (d == conv::kdDUNEND   ) return conv::kLBNFTgt2DUNEND;
+      if (d == conv::kdDUNEFD1ph) return conv::kLBNFTgt2DUNEFD;
+      if (d == conv::kdDUNEFD2ph) return conv::kLBNFTgt2DUNEFD;
+  }
+
+  if(b == conv::kbJPARC_FHC || b == conv::kbJPARC_RHC) {
+      if (d == conv::kdSuperK ) return conv::kJPARCTgt2SuperK;
+      if (d == conv::kdHyperK ) return conv::kJPARCTgt2SuperK;
+      if (d == conv::kdND280  ) return conv::kJPARCTgt2ND280;
+      if (d == conv::kdND280Up) return conv::kJPARCTgt2ND280;
+      if (d == conv::kdINGRID ) return conv::kJPARCTgt2ND280;
+  }
+
+  LOG("Baseline", pERROR)
+     << "Undefined baseline for detector: " << util::AsString(d)
+     << " in beam: " << util::AsString(b);
+
+  return -1;
+}
+//________________________________________________________________________________________
