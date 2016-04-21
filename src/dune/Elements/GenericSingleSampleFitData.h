@@ -29,7 +29,7 @@
 #include <string>
 
 //fmwk
-#include "VArray/VALORArray.h"
+#include "valor/VArray/VALORArray.h"
 //dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

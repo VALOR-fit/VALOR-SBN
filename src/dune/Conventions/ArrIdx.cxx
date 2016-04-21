@@ -9,7 +9,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <cassert>
 
 // fmwk
-#include "Messenger/Messenger.h"
+#include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/Conventions/ArrIdx.h"
 

@@ -12,12 +12,12 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TClass.h>
 
 // fmwk
-#include "Messenger/Messenger.h"
-#include "Utilities/UtlSystem.h"
-#include "Utilities/UtlStr.h"
-#include "FitCore/CompoundFitData.h"
-#include "FitCore/CompoundFitModel.h"
-#include "FitCore/CompoundCorrelatedSystematics.h"
+#include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/UtlStr.h"
+#include "valor/FitCore/CompoundFitData.h"
+#include "valor/FitCore/CompoundFitModel.h"
+#include "valor/FitCore/CompoundCorrelatedSystematics.h"
 // dune
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitDataABC.h"

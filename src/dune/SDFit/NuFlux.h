@@ -19,7 +19,7 @@
 #ifndef _valor_dune_nu_flux_h_
 #define _valor_dune_nu_flux_h_
 
-#include <FitCore/CorrelatedSystematics.h>
+#include "valor/FitCore/CorrelatedSystematics.h"
 
 namespace valor {
 

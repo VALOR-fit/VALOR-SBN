@@ -10,10 +10,10 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include <TSystem.h>
 // fmwk
-#include "CmdLine/CmdLnArgParser.h"
-#include "Utilities/Rnd.h"
-#include "Utilities/Env.h"
-#include "Messenger/Messenger.h"
+#include "valor/CmdLine/CmdLnArgParser.h"
+#include "valor/Utilities/Rnd.h"
+#include "valor/Utilities/Env.h"
+#include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/SDFit/NDXArg.h"
 

@@ -7,7 +7,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 //________________________________________________________________________________________
 
 #include "dune/Conventions/Baseline.h"
-#include "Messenger/Messenger.h"
+#include "valor/Messenger/Messenger.h"
 
 using namespace valor;
 

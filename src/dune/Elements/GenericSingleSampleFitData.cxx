@@ -15,13 +15,13 @@
 #include <TH2D.h>
 
 // fmwk
-#include "FitCore/FitModelABC.h"
-#include "FitCore/FitParamList.h"
-#include "FitCore/PhysHypothesis.h"
-#include "Utilities/Rnd.h"
-#include "Utilities/UtlStyle.h"
-#include "Utilities/UtlNumStat.h"
-#include "Messenger/Messenger.h"
+#include "valor/FitCore/FitModelABC.h"
+#include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/PhysHypothesis.h"
+#include "valor/Utilities/Rnd.h"
+#include "valor/Utilities/UtlStyle.h"
+#include "valor/Utilities/UtlNumStat.h"
+#include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/Conventions/Names.h"
 #include "dune/Elements/GenericSingleSampleFitData.h"

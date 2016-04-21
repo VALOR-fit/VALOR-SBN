@@ -22,8 +22,8 @@
 // system
 #include <string>
 // fmwk
-#include "FitCore/FitDataABC.h"
-#include "VArray/VALORArray.h"
+#include "valor/FitCore/FitDataABC.h"
+#include "valor/VArray/VALORArray.h"
 // dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

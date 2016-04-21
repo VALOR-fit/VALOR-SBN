@@ -38,11 +38,11 @@
 #include <TMatrixD.h>
 #include <TMatrixDSym.h>
 // fmwk
-#include "CmdLine/CmdLnArgParser.h"
-#include "Messenger/Messenger.h"
-#include "FitCore/PhysParamList.h"
-#include "FitCore/FitParamList.h"
-#include "FitCore/FitInputs.h"
+#include "valor/CmdLine/CmdLnArgParser.h"
+#include "valor/Messenger/Messenger.h"
+#include "valor/FitCore/PhysParamList.h"
+#include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/FitInputs.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 

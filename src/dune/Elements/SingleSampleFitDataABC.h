@@ -19,7 +19,7 @@
 #define _valor_single_sample_fit_data_abc_h_
 
 // fmwk
-#include "FitCore/FitDataABC.h"
+#include "valor/FitCore/FitDataABC.h"
 // dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

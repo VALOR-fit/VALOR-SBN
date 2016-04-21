@@ -23,10 +23,10 @@
 #include <TTree.h>
 
 //fmwk
-#include "FitCore/FitModelABC.h"
-#include "FitCore/PhysHypothesis.h"
-#include "FitCore/PhysParamList.h"
-#include "VArray/VALORArray.h"
+#include "valor/FitCore/FitModelABC.h"
+#include "valor/FitCore/PhysHypothesis.h"
+#include "valor/FitCore/PhysParamList.h"
+#include "valor/VArray/VALORArray.h"
 //dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

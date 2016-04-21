@@ -14,13 +14,13 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TH1D.h>
 #include <TH2D.h>
 
-#include "FitCore/FitModelABC.h"
-#include "FitCore/FitParamList.h"
-#include "FitCore/PhysHypothesis.h"
-#include "Utilities/Rnd.h"
-#include "Utilities/UtlStyle.h"
-#include "Utilities/UtlNumStat.h"
-#include "Messenger/Messenger.h"
+#include "valor/FitCore/FitModelABC.h"
+#include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/PhysHypothesis.h"
+#include "valor/Utilities/Rnd.h"
+#include "valor/Utilities/UtlStyle.h"
+#include "valor/Utilities/UtlNumStat.h"
+#include "valor/Messenger/Messenger.h"
 
 #include "dune/SDFit/SDData.h"
 #include "dune/Conventions/ArrIdx.h"

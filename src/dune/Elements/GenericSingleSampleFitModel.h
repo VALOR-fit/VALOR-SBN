@@ -31,11 +31,11 @@ brief      A generic implementation of the fit model for a single sample,
 #include <TTree.h>
 
 //fmwk
-#include "FitCore/PhysHypothesis.h"
-#include "FitCore/PhysParamList.h"
-#include "FitCore/CorrelatedSystematics.h"
-#include "VArray/VALORArray.h"
-#include "VArray/VALORArrayBin.h"
+#include "valor/FitCore/PhysHypothesis.h"
+#include "valor/FitCore/PhysParamList.h"
+#include "valor/FitCore/CorrelatedSystematics.h"
+#include "valor/VArray/VALORArray.h"
+#include "valor/VArray/VALORArrayBin.h"
 
 //dune
 #include "dune/Conventions/Detector.h"

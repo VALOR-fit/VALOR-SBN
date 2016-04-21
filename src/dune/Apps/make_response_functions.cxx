@@ -33,13 +33,13 @@
 #include <TMath.h>
 
 // genie
-#include "Conventions/GBuild.h"
+#include "valor/Conventions/GBuild.h"
 #include "EVGCore/EventRecord.h"
 #include "GHEP/GHepParticle.h"
-#include "Ntuple/NtpMCFormat.h"
-#include "Ntuple/NtpMCTreeHeader.h"
-#include "Ntuple/NtpMCEventRecord.h"
-#include "Messenger/Messenger.h"
+#include "valor/Ntuple/NtpMCFormat.h"
+#include "valor/Ntuple/NtpMCTreeHeader.h"
+#include "valor/Ntuple/NtpMCEventRecord.h"
+#include "valor/Messenger/Messenger.h"
 #include "PDG/PDGCodes.h"
 #include "PDG/PDGUtils.h"
 #include "PDG/PDGLibrary.h"
@@ -52,8 +52,8 @@
 #include "ReWeight/GReWeightINuke.h"
 
 // valor
-#include "VArray/VALORArray.h"
-#include "CmdLine/CmdLnArgList.h"
+#include "valor/VArray/VALORArray.h"
+#include "valor/CmdLine/CmdLnArgList.h"
 #include "dune/Conventions/Detector.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

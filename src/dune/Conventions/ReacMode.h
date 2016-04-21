@@ -22,7 +22,7 @@
 #include <string>
 
 //FWMK
-#include "Conventions/NuFlavour.h"
+#include "valor/Conventions/NuFlavour.h"
 
 namespace valor {
 namespace conv {

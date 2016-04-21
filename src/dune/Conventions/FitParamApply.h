@@ -19,7 +19,7 @@
 #define _valor_dune_apply_params_h_
 
 // FMWK
-#include "Conventions/NuFlavour.h"
+#include "valor/Conventions/NuFlavour.h"
 
 // Dune
 #include "dune/Conventions/BeamConf.h"

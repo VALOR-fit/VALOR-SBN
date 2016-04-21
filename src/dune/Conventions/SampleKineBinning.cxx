@@ -10,7 +10,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 // root
 #include <TMath.h>
 // fmwk
-#include "Messenger/Messenger.h"
+#include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/Conventions/SampleKineBinning.h"
 

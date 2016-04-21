@@ -9,9 +9,9 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "TString.h"
 #include "TMath.h"
 
-#include "Messenger/Messenger.h"
-#include "Utilities/UtlSystem.h"
-#include "Utilities/UtlXML.h"
+#include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/UtlXML.h"
 
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Utilities/DuneRFL.h"

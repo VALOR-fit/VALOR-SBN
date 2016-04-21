@@ -19,7 +19,7 @@
 #ifndef _valor_minerva_flux_systematics_2016a_h_
 #define _valor_minerva_flux_systematics_2016a_h_
 
-#include <FitCore/CorrelatedSystematics.h>
+#include "valor/FitCore/CorrelatedSystematics.h"
 
 namespace valor {
 

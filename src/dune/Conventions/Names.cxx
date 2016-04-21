@@ -10,8 +10,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <vector>
 
 // fmwk
-#include "Utilities/UtlStr.h"
-#include "Messenger/Messenger.h"
+#include "valor/Utilities/UtlStr.h"
+#include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/Conventions/Names.h"
 

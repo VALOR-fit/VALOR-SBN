@@ -23,9 +23,9 @@
 #include <TXMLEngine.h>
 
 //fmwk
-#include "FitCore/CompoundFitData.h"
-#include "FitCore/CompoundFitModel.h"
-#include "FitCore/CorrelatedSystematics.h"
+#include "valor/FitCore/CompoundFitData.h"
+#include "valor/FitCore/CompoundFitModel.h"
+#include "valor/FitCore/CorrelatedSystematics.h"
 //dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

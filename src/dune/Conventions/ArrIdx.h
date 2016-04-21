@@ -23,7 +23,7 @@
 #ifndef _valor_dune_array_index_h_
 #define _valor_dune_array_index_h_
 
-#include "Conventions/PhysParamId.h"
+#include "valor/Conventions/PhysParamId.h"
 
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

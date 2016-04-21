@@ -19,8 +19,8 @@
 #define _valor_single_sample_fit_model_abc_h_
 
 // fmwk
-#include "FitCore/FitModelABC.h"
-#include "FitCore/CorrelatedSystematics.h"
+#include "valor/FitCore/FitModelABC.h"
+#include "valor/FitCore/CorrelatedSystematics.h"
 // dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"

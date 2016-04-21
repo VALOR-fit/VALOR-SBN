@@ -25,9 +25,9 @@
 #include <string>
 
 //fmwk
-#include "Conventions/PhysParamId.h"
-#include "FitCore/FitParamList.h"
-#include "FitCore/PhysHypothesis.h"
+#include "valor/Conventions/PhysParamId.h"
+#include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/PhysHypothesis.h"
 
 //dune
 #include "dune/Conventions/BeamConf.h"

@@ -11,9 +11,9 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <cstdlib>
 #include <iostream>
 // fmwk
-#include "Conventions/Constants.h"
-#include "Messenger/Messenger.h"
-#include "Utilities/UtlSystem.h"
+#include "valor/Conventions/Constants.h"
+#include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/UtlSystem.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 #include "dune/Systematics/MINERVAFlux2016a.h"

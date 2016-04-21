@@ -7,11 +7,11 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 //________________________________________________________________________________________
 
 // fmwk
-#include "Utilities/NameRegistry.h"
-#include "Utilities/Rnd.h"
-#include "Utilities/UtlStr.h"
-#include "Utilities/UtlSystem.h"
-#include "Messenger/Messenger.h"
+#include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/Rnd.h"
+#include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/FitParamApply.h"

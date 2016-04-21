@@ -19,7 +19,7 @@
 #ifndef _valor_neutrino_interaction_systematics_2016a_h_
 #define _valor_neutrino_interaction_systematics_2016a_h_
 
-#include <FitCore/CorrelatedSystematics.h>
+#include "valor/FitCore/CorrelatedSystematics.h"
 
 namespace valor {
 
