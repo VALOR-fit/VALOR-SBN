@@ -11,7 +11,7 @@
                --format format_of_the_input_file <hpgartpc, lartpc, fgt>
                --beam   beam_name
                --sample sample_name
-               --systematic systematic_name
+               --systematic genie_systematic_name
 
   \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
              University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -52,6 +52,7 @@
 #include "ReWeight/GReWeightINuke.h"
 
 // valor
+#include "valor/Utilities/UtlSystem.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "dune/Conventions/Detector.h"
@@ -143,6 +144,11 @@ int main(int argc, char ** argv)
   
   // Open input file and get the HPGArTPC, LArTPC or FGT event tree
   TFile fin(arg_inp_file.c_str(),"READ");
+  if (!fin.IsOpen()) {
+    LOG("make_response_func", pFATAL) 
+        << "Failed to open file "<<arg_inp_file.c_str();
+    exit(1);
+  }
   string tree_name = "";
   if(arg_format == "hpgartpc") {
     tree_name = "GasTPCTree";
@@ -181,6 +187,11 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
     analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco);
     analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco);
+  }
+  else {
+    LOG("make_response_func",pFATAL)
+      << "No recognised tree format.";
+    util::Die(-1); return(-1);
   }
 
   // GENIE event reweighting interface
