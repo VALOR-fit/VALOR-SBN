@@ -29,13 +29,13 @@
 #include <TLeaf.h>
 
 // genie
-#include "valor/Conventions/GBuild.h"
+#include "Conventions/GBuild.h"
 #include "EVGCore/EventRecord.h"
 #include "GHEP/GHepParticle.h"
-#include "valor/Ntuple/NtpMCFormat.h"
-#include "valor/Ntuple/NtpMCTreeHeader.h"
-#include "valor/Ntuple/NtpMCEventRecord.h"
-#include "valor/Messenger/Messenger.h"
+#include "Ntuple/NtpMCFormat.h"
+#include "Ntuple/NtpMCTreeHeader.h"
+#include "Ntuple/NtpMCEventRecord.h"
+#include "Messenger/Messenger.h"
 #include "PDG/PDGCodes.h"
 #include "PDG/PDGUtils.h"
 #include "PDG/PDGLibrary.h"
