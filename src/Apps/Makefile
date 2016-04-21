@@ -37,12 +37,15 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 endif
+	
 
 # Generate GENIE response functions
 #
 make_response_functions: FORCE
+ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_response_functions
+endif
 	
 # Run a generic fit
 #
