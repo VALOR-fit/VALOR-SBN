@@ -187,8 +187,22 @@ int main(int argc, char ** argv)
   GReWeight rw;
   rw.AdoptWghtCalc( "hadro_intranuke", new GReWeightINuke );
   GSystSet & syst_list = rw.Systematics();
-  syst_list.Init(syst);
 
+  // I think we need to add all fates except the ones we want to act as cushion terms
+  // So I add all mfp terms and all fates (except elastic) with nominal value
+  // Only the input one will be tweaked later on.
+//syst_list.Init(syst);
+  syst_list.Init(kINukeTwkDial_MFP_pi,      0., twk_dial_min, twk_dial_max);
+  syst_list.Init(kINukeTwkDial_MFP_N,       0., twk_dial_min, twk_dial_max);
+  syst_list.Init(kINukeTwkDial_FrCEx_pi,    0., twk_dial_min, twk_dial_max); 
+  syst_list.Init(kINukeTwkDial_FrInel_pi,   0., twk_dial_min, twk_dial_max);
+  syst_list.Init(kINukeTwkDial_FrAbs_pi,    0., twk_dial_min, twk_dial_max);
+  syst_list.Init(kINukeTwkDial_FrPiProd_pi, 0., twk_dial_min, twk_dial_max);
+  syst_list.Init(kINukeTwkDial_FrCEx_N,     0., twk_dial_min, twk_dial_max); 
+  syst_list.Init(kINukeTwkDial_FrInel_N,    0., twk_dial_min, twk_dial_max);
+  syst_list.Init(kINukeTwkDial_FrAbs_N,     0., twk_dial_min, twk_dial_max);
+  syst_list.Init(kINukeTwkDial_FrPiProd_N,  0., twk_dial_min, twk_dial_max);
+  
   // Systematic tweaks
   for(int itwk = 0; itwk < n_twks; itwk++) {
 
