@@ -99,7 +99,7 @@ int main(int argc, char ** argv)
   if(gOptInpFileFormat == "hpgartpc") {
     tree_name = "GasTPCTree";
   } 
-  else
+  else {
     if(gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
       tree_name = "dune_dst";
     }
@@ -108,6 +108,7 @@ int main(int argc, char ** argv)
         << "Unknown input file format. Please specify one of hpgartpc, lartpc or fgt";
       exit(1);
     }
+  }
 
   TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
   if(!analysis_tree) {
@@ -212,7 +213,7 @@ int main(int argc, char ** argv)
       << "\n Beam          = " << valor_minidst_beam   
       << "\n Sample        = " << valor_minidst_sample    
       << "\n Reaction mode = " << valor_minidst_reac_mode 
-      << "\n Q2 (true)     = " << valor_minidst_enu_true << " GeV^2"
+      << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV" 
       << "\n y (reco)      = " << valor_minidst_y_reco    
