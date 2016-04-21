@@ -44,7 +44,9 @@ void fit_param_sensitivity
   // Analysis configuration
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
  
-  assert(s_param_name);    
+  assert(s_param_name);
+  
+  TString param_values_ts(param_values); // TString version for useful methods
 
   PhysParamId_t sp = util::PhysParamFromString(s_param_name);
   cout << util::AsString(sp) << endl;
@@ -127,6 +129,12 @@ void fit_param_sensitivity
        cerr << "Parameter: " << s_param_name << " does not exist in list named: " << fit_param_list << endl;
        exit(1);
     }
+    
+    // Randomise the systematics in the model, and copy them to the FPL
+    if (param_values_ts.Contains("randomize")) {
+      model->RandomizeSystematics(/*param_values*/);
+    }
+    fp->FromPhysParamList(model->Tweaks(),"current");
 
     // If user wants to generate toy-MC for fixed values of a parameter 
     // (but, potentially, with all other params randomized, eg for sensitivity studies) do it here
@@ -144,7 +152,10 @@ void fit_param_sensitivity
     // Copy those values now (and they will be overwritten during the fit) to save 
     // them in the output fit file.
     true_param_array->Append(fp->AsPhysParamList("current"));
-    cout << "Toy-MC #" << itoymc << " was generated with true parameters: " << *true_param_array; 
+    cout << "Toy-MC #" << itoymc << " was generated with true parameters: " << *true_param_array;
+    
+    // Reset the parameters to their starting point
+    fp->ResetCurrToInitValues();
 
     //
     // Perform the fit several times, fixing the specified parameter to a set of values

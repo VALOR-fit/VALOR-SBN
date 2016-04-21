@@ -43,7 +43,7 @@ void plot_pulls(
   PhysParamList * initial_errors = 0;
   if (use_banff_pull_definition) {
     TFile f("initial_errors.root");
-    PhysParamList * tmp_ppl = dynamic_cast<PhysParamList*>(f.Get("NDModel_Errors"));
+    PhysParamList * tmp_ppl = dynamic_cast<PhysParamList*>(f.Get("prefit_errors"));
     initial_errors = new PhysParamList(*tmp_ppl);
     f.Close();
   }
