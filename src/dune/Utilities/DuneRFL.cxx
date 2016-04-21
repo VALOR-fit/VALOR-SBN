@@ -71,7 +71,7 @@ fSample        (s),
 fNModes        (0),
 fModes         (0),
 fNParams       (n_params),
-fParams        (param_ids),
+fParams        (NULL),
 fNBinsTrue1    (1),
 fNBinsTrue2    (1),
 fNBinsTrue3    (1),
@@ -81,7 +81,19 @@ fNBinsReco3    (1),
 fNBinZones     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]")
 {
+  fParams = new PhysParamId_t[fNParams];
+  memcpy(fParams, param_ids, n_params*sizeof(PhysParamId_t));
   
+  // Fill parameter to index
+  for (int ip = 0 ; ip < conv::knppmax ; ip++ ) {
+    conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
+    fParam2Idx[p] = -1;
+    for (int idx = 0 ; idx < fNParams; idx++) {
+      if (fParams[idx]==p) {
+        fParam2Idx[p] = idx;
+      }
+    }
+  }
 }
 //________________________________________________________________________________________
 //~ valor::util::DuneRFL::DuneRFL(const DuneRFL &) 
@@ -228,30 +240,36 @@ util::KinematicBin valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp,
   static const int zone = 0;//SHOULD BE FIXED
   util::KinematicBin kb_out;
   if (fNBinsTrue1 > 1) {
+    const Long_t n_bins = fNBinsTrue1;
     const double * bin_edges = util::EtrueBinEdgesXsec(fSample);
-    kb_out.true1 = TMath::BinarySearch(1+(Long_t)fNBinsTrue1, bin_edges, kp.true1);
+    kb_out.true1 = TMath::BinarySearch(n_bins+1, bin_edges, kp.true1);
   }
   if (fNBinsTrue2 > 1) {
+    const Long_t n_bins = util::NumQ2trueBinsXsec(fSample,m);
     const double * bin_edges = util::Q2trueBinEdgesXsec(fSample,m);
-    kb_out.true2 = TMath::BinarySearch(1+(Long_t)fNBinsTrue2, bin_edges, kp.true2);
+    kb_out.true2 = TMath::BinarySearch(n_bins+1, bin_edges, kp.true2);
   }
   if (fNBinsTrue3 > 1) {
+    const Long_t n_bins    = 1;
     const double * bin_edges = 0;
     assert(!"Not supported");
-    kb_out.true3 = TMath::BinarySearch(1+(Long_t)fNBinsTrue3, bin_edges, kp.true3);
+    kb_out.true3 = TMath::BinarySearch(n_bins+1, bin_edges, kp.true3);
   }
   if (fNBinsReco1 > 1) {
+    const Long_t n_bins    = fNBinsReco1;
     const double * bin_edges = util::ErecoBinEdgesXsec(fSample, zone);
-    kb_out.reco1 = TMath::BinarySearch(1+(Long_t)fNBinsReco1, bin_edges, kp.reco1);
+    kb_out.reco1 = TMath::BinarySearch(n_bins+1, bin_edges, kp.reco1);
   }
   if (fNBinsReco2 > 1) {
+    const Long_t n_bins    = fNBinsReco2;
     const double * bin_edges = util::YrecoBinEdgesXsec(fSample, zone);
-    kb_out.reco2 = TMath::BinarySearch(1+(Long_t)fNBinsReco2, bin_edges, kp.reco2);
+    kb_out.reco2 = TMath::BinarySearch(n_bins+1, bin_edges, kp.reco2);
   }
   if (fNBinsReco3 > 1) {
+    const Long_t n_bins    = 1;
     const double * bin_edges = 0;
     assert(!"Not supported");
-    kb_out.reco3 = TMath::BinarySearch(1+(Long_t)fNBinsReco3, bin_edges, kp.reco3);
+    kb_out.reco3 = TMath::BinarySearch(n_bins+1, bin_edges, kp.reco3);
   }
   
   return kb_out;
@@ -259,9 +277,9 @@ util::KinematicBin valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp,
 //________________________________________________________________________________________
 int valor::util::DuneRFL::Param2Idx(conv::PhysParamId_t p) const
 {
-  for (int ip = 0 ; ip < fNParams; ip++) {
-    if (fParams[ip]==p) {return ip;}
+  if (p < 0 || p > conv::knppmax) {
+    LOG("DuneRFL",pFATAL) << "Parameter out of range "<<p<<"\t"<<util::AsString(p);
   }
-  return -1;
+  return fParam2Idx[p];
 }
 //________________________________________________________________________________________

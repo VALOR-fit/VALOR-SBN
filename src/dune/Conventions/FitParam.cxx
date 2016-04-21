@@ -478,25 +478,33 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       fparm->Update(p, curr);
 
       // toggle detector related params on/off
-      bool no_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
-      if(no_detector_params && kFitIsNuDetRelated[ip]) {
-       fparm->Update(p, 1.);
-       fparm->SetInitValue(p, 1.);
-       fparm->FixParameter(p);
+      bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
+      if(fix_detector_params && kFitIsNuDetRelated[ip]) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
       }
       // toggle flux related params on/off
-      bool no_flux_params = (param_list_opt.find("fix-flux-syst") != string::npos);
-      if(no_flux_params && kFitIsNuFluxRelated[ip]) {
-       fparm->Update(p, 1.);
-       fparm->SetInitValue(p, 1.);
-       fparm->FixParameter(p);
+      bool fix_flux_params = (param_list_opt.find("fix-flux-syst") != string::npos);
+      if(fix_flux_params && kFitIsNuFluxRelated[ip]) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
       }
       // toggle int related params on/off
-      bool no_int_params = (param_list_opt.find("fix-int-syst") != string::npos);
-      if(no_int_params && kFitIsNuIntRelated[ip]) {
-       fparm->Update(p, 1.);
-       fparm->SetInitValue(p, 1.);
-       fparm->FixParameter(p);
+      bool fix_int_params = (param_list_opt.find("fix-int-syst") != string::npos);
+      if(fix_int_params && kFitIsNuIntRelated[ip]) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
+      
+      // toggle mec related params on/off
+      bool fix_mec_params = (param_list_opt.find("fix-mec-syst") != string::npos);
+      if(fix_mec_params && (p==kNuisIntNuCCMEC || p==kNuisIntNuBarCCMEC)) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
       }
 
     }//ip

@@ -25,6 +25,7 @@ ifdef GENIE
 endif
 
 TGT = make_nd_minidst \
+      make_response_functions \
       run_fit \
       fitnt_conv
 

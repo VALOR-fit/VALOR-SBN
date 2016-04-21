@@ -106,10 +106,10 @@ private:
   conv::Sample_t   fSample;
   
   // Details of binning
-  int                         fNModes;        //
-  const conv::ReacMode_t *    fModes;         //[fNModes]
-  int                         fNParams;       //
-  const conv::PhysParamId_t * fParams;        //[fParams]
+  int                   fNModes;        //
+  conv::ReacMode_t *    fModes;         //[fNModes]
+  int                   fNParams;       //
+  conv::PhysParamId_t * fParams;        //[fParams]
   
   // These numbers store the largest number of bins for any mode
   int                         fNBinsTrue1;    //
@@ -122,6 +122,9 @@ private:
   
   // Name for the splines (used in filename)
   TString fSplineNamePattern;
+  
+  // Array storing parameters mapped to indice within this object
+  int fParam2Idx[conv::knppmax];
 };
 
 std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
