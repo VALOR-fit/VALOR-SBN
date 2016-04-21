@@ -74,7 +74,7 @@ public:
   // Read splines from config file
   bool Read (string file, Option_t * opt = 0);
   
-  util::KinematicBin GetBin(const util::KinematicPoint & kp) const;
+  util::KinematicBin GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m = conv::kmUndefined) const;
   
 private:
 
@@ -109,20 +109,15 @@ private:
   const conv::ReacMode_t *    fModes;         //[fNModes]
   int                         fNParams;       //
   const conv::PhysParamId_t * fParams;        //[fParams]
+  
+  // These numbers store the largest number of bins for any mode
   int                         fNBinsTrue1;    //
-  const double *              fBinEdgesTrue1; //[fNBinsTrue1]
   int                         fNBinsTrue2;    //
-  const double *              fBinEdgesTrue2; //[fNBinsTrue2]
   int                         fNBinsTrue3;    //
-  const double *              fBinEdgesTrue3; //[fNBinsTrue3]
   int                         fNBinsReco1;    //
-  const double *              fBinEdgesReco1; //[fNBinsReco1]
   int                         fNBinsReco2;    //
-  const double *              fBinEdgesReco2; //[fNBinsReco2]
   int                         fNBinsReco3;    //
-  const double *              fBinEdgesReco3; //[fNBinsReco3]
   int                         fNBinZones;     //
-  const double *              fBinZones;      //[fNBinZones]
   
   // Name for the splines (used in filename)
   TString fSplineNamePattern;

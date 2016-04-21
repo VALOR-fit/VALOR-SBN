@@ -54,19 +54,12 @@ fModes         (0),
 fNParams       (0),
 fParams        (0),
 fNBinsTrue1    (1),
-fBinEdgesTrue1 (0),
 fNBinsTrue2    (1),
-fBinEdgesTrue2 (0),
 fNBinsTrue3    (1),
-fBinEdgesTrue3 (0),
 fNBinsReco1    (1),
-fBinEdgesReco1 (0),
 fNBinsReco2    (1),
-fBinEdgesReco2 (0),
 fNBinsReco3    (1),
-fBinEdgesReco3 (0),
 fNBinZones     (1),
-fBinZones      (0),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]")
 {
   
@@ -81,19 +74,12 @@ fModes         (0),
 fNParams       (n_params),
 fParams        (param_ids),
 fNBinsTrue1    (1),
-fBinEdgesTrue1 (0),
 fNBinsTrue2    (1),
-fBinEdgesTrue2 (0),
 fNBinsTrue3    (1),
-fBinEdgesTrue3 (0),
 fNBinsReco1    (1),
-fBinEdgesReco1 (0),
 fNBinsReco2    (1),
-fBinEdgesReco2 (0),
 fNBinsReco3    (1),
-fBinEdgesReco3 (0),
 fNBinZones     (1),
-fBinZones      (0),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]")
 {
   
@@ -112,12 +98,6 @@ valor::util::DuneRFL::~DuneRFL()
   
   if (fModes        )  {delete fModes;        }
   if (fParams       )  {delete fParams;       }
-  if (fBinEdgesTrue1)  {delete fBinEdgesTrue1;}
-  if (fBinEdgesTrue2)  {delete fBinEdgesTrue2;}
-  if (fBinEdgesTrue3)  {delete fBinEdgesTrue3;}
-  if (fBinEdgesReco1)  {delete fBinEdgesReco1;}
-  if (fBinEdgesReco2)  {delete fBinEdgesReco2;}
-  if (fBinEdgesReco3)  {delete fBinEdgesReco3;}
   
 }
 //________________________________________________________________________________________
@@ -165,12 +145,20 @@ TString valor::util::DuneRFL::BuildSplineName (
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
 {
-  // Get binning details, allocate the spline block.
-  
-  fNBinsTrue1    = util::NumEtrueBinsXsec (fSample);
-  fBinEdgesTrue1 = util::EtrueBinEdgesXsec(fSample);
-  //etc
-  
+  // Get binning details, allocate the spline block
+  fNBinsTrue1 = util::NumEtrueBinsXsec (fSample);
+  fNBinsReco1 = util::NumErecoBinsXsec (fSample, 0);
+  fNBinsReco2 = util::NumYrecoBinsXsec (fSample, 0);
+  for (int im = 0 ; im < fNModes ; im++) {
+    conv::ReacMode_t m = fModes[im];
+    fNBinsTrue2 = TMath::Max(fNBinsTrue2,util::NumQ2trueBinsXsec (fSample,m));
+  }
+  fSplineBlockSize = fNBinZones *
+    fNBinsTrue1*fNBinsTrue2*fNBinsTrue3*
+    fNBinsReco1*fNBinsReco2*fNBinsReco3;
+    
+  fSplines = new TSpline*[fSplineBlockSize]();
+
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(config_file.c_str());
@@ -236,26 +224,35 @@ bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
   return true;
 }
 //________________________________________________________________________________________
-util::KinematicBin valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp) const
+util::KinematicBin valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m) const
 {
+  static const int zone = 0;//SHOULD BE FIXED
   util::KinematicBin kb_out;
   if (fNBinsTrue1 > 1) {
-    kb_out.true1 = TMath::BinarySearch(1+(Long_t)fNBinsTrue1, fBinEdgesTrue1, kp.true1);
+    const double * bin_edges = util::EtrueBinEdgesXsec(fSample);
+    kb_out.true1 = TMath::BinarySearch(1+(Long_t)fNBinsTrue1, bin_edges, kp.true1);
   }
   if (fNBinsTrue2 > 1) {
-    kb_out.true2 = TMath::BinarySearch(1+(Long_t)fNBinsTrue2, fBinEdgesTrue2, kp.true2);
+    const double * bin_edges = util::Q2trueBinEdgesXsec(fSample,m);
+    kb_out.true2 = TMath::BinarySearch(1+(Long_t)fNBinsTrue2, bin_edges, kp.true2);
   }
   if (fNBinsTrue3 > 1) {
-    kb_out.true3 = TMath::BinarySearch(1+(Long_t)fNBinsTrue3, fBinEdgesTrue3, kp.true3);
+    const double * bin_edges = 0;
+    assert(!"Not supported");
+    kb_out.true3 = TMath::BinarySearch(1+(Long_t)fNBinsTrue3, bin_edges, kp.true3);
   }
   if (fNBinsReco1 > 1) {
-    kb_out.reco1 = TMath::BinarySearch(1+(Long_t)fNBinsReco1, fBinEdgesReco1, kp.reco1);
+    const double * bin_edges = util::ErecoBinEdgesXsec(fSample, zone);
+    kb_out.reco1 = TMath::BinarySearch(1+(Long_t)fNBinsReco1, bin_edges, kp.reco1);
   }
   if (fNBinsReco2 > 1) {
-    kb_out.reco2 = TMath::BinarySearch(1+(Long_t)fNBinsReco2, fBinEdgesReco2, kp.reco2);
+    const double * bin_edges = util::YrecoBinEdgesXsec(fSample, zone);
+    kb_out.reco2 = TMath::BinarySearch(1+(Long_t)fNBinsReco2, bin_edges, kp.reco2);
   }
   if (fNBinsReco3 > 1) {
-    kb_out.reco3 = TMath::BinarySearch(1+(Long_t)fNBinsReco3, fBinEdgesReco3, kp.reco3);
+    const double * bin_edges = 0;
+    assert(!"Not supported");
+    kb_out.reco3 = TMath::BinarySearch(1+(Long_t)fNBinsReco3, bin_edges, kp.reco3);
   }
   
   return kb_out;
