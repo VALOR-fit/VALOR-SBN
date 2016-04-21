@@ -208,7 +208,7 @@ if($have_fmwk_requirement) {
 # Read version info and automatically generate a header file with relevant flags that
 # can be used to make code conditional upon specific version numbers
 #
-$VRS_HEADER_FILENAME = "$VALOR_DUNE/src/Conventions/Version.h";
+$VRS_HEADER_FILENAME = "$VALOR_DUNE/src/dune/Conventions/Version.h";
 print "Automatically generating file: $VRS_HEADER_FILENAME \n";
 open(VRS_HEADER_FILE, ">$VRS_HEADER_FILENAME") or die("Can not write out the Version.h file!");
 print VRS_HEADER_FILE "#ifndef _VALOR_DUNE_VERSION_H_ \n";
@@ -233,7 +233,7 @@ close(VRS_HEADER_FILE);
 # Automatically generate a header file with relevant build information that
 # can be used to make code conditional upon it
 #
-$BLD_HEADER_FILENAME = "$VALOR_DUNE/src/Conventions/DuneBuild.h";
+$BLD_HEADER_FILENAME = "$VALOR_DUNE/src/dune/Conventions/DuneBuild.h";
 print "Automatically generating file: $BLD_HEADER_FILENAME \n";
 open(BLD_HEADER_FILE, ">$BLD_HEADER_FILENAME") or die("Can not write out the DuneBuild.h file!");
 print BLD_HEADER_FILE "#ifndef _VALOR_DUNE_BUILD_H_ \n";
