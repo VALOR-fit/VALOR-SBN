@@ -1,0 +1,8 @@
+# argument                         |   type         |  require?   |   default
+# .....................................................................................................
+input                              |   string       |  mandatory  |   -
+output                             |   string       |  optional   |   valor_splines.root
+format                             |   string       |  mandatory  |   -
+beam                               |   string       |  mandatory  |   -
+sample                             |   string       |  mandatory  |   -
+systematic                         |   string       |  mandatory  |   -
