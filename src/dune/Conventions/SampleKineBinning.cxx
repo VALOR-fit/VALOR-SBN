@@ -395,17 +395,19 @@ int util::EtrueBinContaining(conv::Sample_t s, double enu_true)
   return TMath::BinarySearch(1+nbins, bin_edges, enu_true);
 }
 //________________________________________________________________________________________
+// Single Etrue bin for FSI splines.
+int util::NumEtrueBinsXsec  (conv::Sample_t /*sample*/)
+{
+  return 1;
+}
+//________________________________________________________________________________________
+const double * util::EtrueBinEdgesXsec (conv::Sample_t /*sample*/)
+{
+  static const double edges[2] = {0,1E10};
+  return edges;
+}
+//________________________________________________________________________________________
 // Just using the normal binning for now
-int util::NumEtrueBinsXsec  (conv::Sample_t sample)
-{
-  return util::NumEtrueBins (sample);
-}
-//________________________________________________________________________________________
-const double * util::EtrueBinEdgesXsec (conv::Sample_t sample)
-{
-  return util::EtrueBinEdges(sample);
-}
-//________________________________________________________________________________________
 int util::NumQ2trueBinsXsec (conv::Sample_t sample, conv::ReacMode_t mode)
 {
   return util::NumQ2trueBins (sample,mode);
