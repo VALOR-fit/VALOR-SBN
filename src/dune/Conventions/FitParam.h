@@ -1585,6 +1585,22 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
    true   // kNuisEffNC
 };
 
+static const int kNFitParamsWithSplines = 10;
+static const PhysParamId_t kFitParamsWithSplines[kNFitParamsWithSplines] = 
+{
+   kNuisIntPiMeanFreePath       ,
+   kNuisIntNucMeanFreePath      ,
+   kNuisIntFracPiChargeExchange ,
+   kNuisIntFracPiInelastic      ,
+   kNuisIntFracPiAbsorb         ,
+   kNuisIntFracPiProduction     ,
+   kNuisIntFracNucChargeExchange,
+   kNuisIntFracNucInelastic     ,
+   kNuisIntFracNucAbsorb        ,
+   kNuisIntFracNucProduction    
+};
+   
+
 } // conv
 
 //
