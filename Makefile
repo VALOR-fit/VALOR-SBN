@@ -61,9 +61,14 @@ build-utilities: make-bin-lib-dir FORCE
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Utilities;
 	
 build-genie-utilities: make-bin-lib-dir FORCE
+ifdef GENIE
 	@echo " "
-	@echo "** Building DUNE Utilities package..."
+	@echo "** Building DUNE GENIE Utilities package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/GENIEUtilities;
+else
+	@echo " "
+	@echo "** GENIE not set up - skipping GENIEUtilities"
+endif
 
 build-elements: make-bin-lib-dir FORCE
 	@echo " "
