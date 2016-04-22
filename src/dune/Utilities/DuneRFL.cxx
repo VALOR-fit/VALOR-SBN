@@ -6,10 +6,15 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 */
 //________________________________________________________________________________________
 
-#include "TString.h"
+#include <iostream>
+#include <iomanip>
+
 #include "TMath.h"
+#include "TString.h"
+#include "TSystem.h"
 
 #include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
 
@@ -48,8 +53,8 @@ valor::util::DuneRFL::DuneRFL()
  :
 fBeam          (conv::kbUndefined),
 fSample        (conv::ksUndefined),
-fNModes        (0),
-fModes         (0),
+fNModes        (conv::kNReacModes),
+fModes         (conv::kReactionModes[0]), // NEEDS BETTER LOGIC
 fNParams       (0),
 fParams        (0),
 fNBinsTrue1    (1),
@@ -68,8 +73,8 @@ valor::util::DuneRFL::DuneRFL(BeamConf_t b, Sample_t s, int n_params, const Phys
  :
 fBeam          (b),
 fSample        (s),
-fNModes        (0),
-fModes         (0),
+fNModes        (conv::kNReacModes),
+fModes         (conv::kReactionModes[ArrIdx::Instance()->SampleIdx(b,s)]), // NEEDS BETTER LOGIC
 fNParams       (n_params),
 fParams        (NULL),
 fNBinsTrue1    (1),
@@ -154,7 +159,7 @@ TString valor::util::DuneRFL::BuildSplineName (
   return name;
 }
 //________________________________________________________________________________________
-bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
+bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
 {
   // Get binning details, allocate the spline block
   fNBinsTrue1 = util::NumEtrueBinsXsec (fSample);
@@ -164,25 +169,57 @@ bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
     conv::ReacMode_t m = fModes[im];
     fNBinsTrue2 = TMath::Max(fNBinsTrue2,util::NumQ2trueBinsXsec (fSample,m));
   }
-  fSplineBlockSize = fNBinZones *
+  fSplineBlockSize = fNModes * fNParams * fNBinZones *
     fNBinsTrue1*fNBinsTrue2*fNBinsTrue3*
     fNBinsReco1*fNBinsReco2*fNBinsReco3;
     
+  LOG("DuneRFL",pDEBUG) << "Spline binning for sample "<<util::AsString(fBeam)<<" "<<util::AsString(fSample)<<"\n"
+   <<std::setw(7)<<fNModes<<" modes.\n"
+   <<std::setw(7)<<fNParams<<" parameters with splines.\n"
+   <<std::setw(7)<<fNBinZones<<" bin zones.\n"
+   <<std::setw(7)<<fNBinsTrue1<<" Etrue bins.\n"
+   <<std::setw(7)<<fNBinsTrue2<<" Q^2 bins.\n"
+   <<std::setw(7)<<fNBinsTrue3<<" other truevar bins.\n"
+   <<std::setw(7)<<fNBinsReco1<<" Ereco bins.\n"
+   <<std::setw(7)<<fNBinsReco2<<" Yreco bins.\n"
+   <<std::setw(7)<<fNBinsReco2<<" other recovar bins.\n"
+   <<std::setw(7)<<fSplineBlockSize<<" total.";
+    
   fSplines = new TSpline*[fSplineBlockSize]();
 
-  // Parse the input XML configuration file
+  TString ts_file = config_file.c_str();
+  gSystem->ExpandPathName(ts_file);
+
+  // Check for config file.
+  // See if it works as a normal path
+  FileStat_t dummy;
+  if (gSystem->GetPathInfo(ts_file.Data(), dummy)) 
+  {
+    // If not, try the config folder
+    ts_file = TString::Format("%s/%s",Env::Instance()->TopLevelConfDir().c_str(),ts_file.Data());
+    if (gSystem->GetPathInfo(ts_file.Data(), dummy)) {
+      LOG("DuneRFL",pERROR) << "Config file not found: "<<ts_file;
+      util::Die(1); return false;
+    }
+  }
   TXMLEngine* xml = new TXMLEngine;   
-  XMLDocPointer_t xmldoc = xml->ParseFile(config_file.c_str());
+  XMLDocPointer_t xmldoc = xml->ParseFile(ts_file.Data());
   if (xmldoc==0) {
-    LOG("DuneRFL",pERROR) << "Can not parse input XML file [" << config_file << "]";
+    LOG("DuneRFL",pERROR) << "Can not parse input XML file [" << ts_file << "]";
     delete xml;
     util::Die(1); return false;
   }
-  XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+  //~ XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+  //~ 
+  //~ TFile * spline_file = util::XML2TFile(xml,root_node,"splines/file");
+  // DEBUG
+  TFile * spline_file = new TFile;
   
-  TFile * spline_file = util::XML2TFile(xml,root_node,"splines/file");
+  LOG("DuneRFL",pINFO) << "Reading splines from file "<<spline_file->GetName();
   
   int isample = ArrIdx::Instance()->SampleIdx(fBeam, fSample);
+  
+  int n_splines_read = 0;
   
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
@@ -193,7 +230,7 @@ bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
       
       KinematicBin kb;
       
-      for (int izone = 0 ; izone < conv::kNMaxBinZones ; izone++ ) {
+      for (int izone = 0 ; izone < fNBinZones ; izone++ ) {
         kb.zone = izone;
         for (int itrue1 = 0 ; itrue1 < fNBinsTrue1 ; itrue1++) {
           kb.true1 = itrue1;
@@ -206,23 +243,30 @@ bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
                 for (int ireco2 = 0 ; ireco2 < fNBinsReco2 ; ireco2++) {
                   kb.reco2 = ireco2;
                   for (int ireco3 = 0 ; ireco3 < fNBinsReco3 ; ireco3++) {
-                    kb.reco2 = ireco2;
+                    kb.reco3 = ireco3;
                     
                     TString spl_name = this->BuildSplineName(m,p,kb);
                     
                     const int spline_index = SplineIndex(imode,ip,kb);
-                    TObject * spline_obj = spline_file->Get(spl_name.Data());
+                    if (spline_index >= fSplineBlockSize) {
+                      LOG("DuneRFL",pFATAL) << "Bad spline index "<<spline_index; 
+                      util::Die(-1); return false;
+                    }
+                    //~ TObject * spline_obj = spline_file->Get(spl_name.Data());
+                    // DEBUG - USE FLAT SPLINES
+                    TObject * spline_obj = kFlatSpline->Clone(spl_name.Data());
                     TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
                     if (spline) {
                       fSplines[spline_index] = spline;
+                      n_splines_read++;
                     }
                     else {
                       LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
                       fSplines[spline_index] = 0;
                     }
-                  } //ireco2
-                } //ireco1
-              } //itrue1
+                  } //ireco3
+                } //ireco2
+              } //ireco1
             } //itrue3
           } //itrue2
         } //itrue1
@@ -231,6 +275,8 @@ bool valor::util::DuneRFL::Read(std::string config_file,Option_t * /*option*/)
   } //imode
   
   spline_file->Close();
+  
+  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines of "<<fSplineBlockSize<<" expected.";
   
   return true;
 }

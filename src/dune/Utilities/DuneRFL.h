@@ -4,7 +4,7 @@
 \class     valor::RFL
 
 \brief     Pre-computed response function library for non-linear parameters
-           of the VALOR/DUNE ND analysis. Implemented as a singleton
+           of the VALOR/DUNE analysis.
 
 \author    Steve Dennis <s.r.dennis \at University of Liverpool>
            University of Liverpool
@@ -48,6 +48,7 @@ public:
 
   DuneRFL();
   DuneRFL(conv::BeamConf_t b, conv::Sample_t s, int n_params, const conv::PhysParamId_t * param_ids);
+ ~DuneRFL();
 
   // Define a dummy spline pointer to an object we know, so we can use its address as a special argument.
   static const TSpline * kNoSplineRequired;
@@ -79,8 +80,6 @@ public:
   
 private:
 
- ~DuneRFL();
-
   // Actual response function block
   // This is a vector, with one entry per SingleSampleModel specified.
   // Each entry be a big block, with dimensions [conv::kNReacModes][NFitParams][NBinsTrue1][NBinsTrue2][NBinsTrue3][NBinsObs1][NBinsObs2][NBinsObs3]
@@ -107,7 +106,7 @@ private:
   
   // Details of binning
   int                   fNModes;        //
-  conv::ReacMode_t *    fModes;         //[fNModes]
+  const conv::ReacMode_t *    fModes;   //[fNModes]
   int                   fNParams;       //
   conv::PhysParamId_t * fParams;        //[fParams]
   
