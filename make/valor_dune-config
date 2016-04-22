@@ -14,14 +14,17 @@ libdir=$VALOR_DUNE/lib
 srcdir=$VALOR_DUNE/src
 
 # VALOR/DUNE libraries:
-libs="-L$libdir -lValorDuneConv -lValorDuneElements -lValorDuneSystematics -lValorDuneSDFit"
+libs="-lValorDuneConv -lValorDuneUtil -lValorDuneElements -lValorDuneSystematics -lValorDuneSDFit"
+
+#VALOR/DUNE genie-dependent libraries
+glibs="-lValorDuneGenieUtil"
 
 #
 # Usage
 #
 
 usage="\
-Usage: valor_dune-config [--libs] [--libdir] [--srcdir] [--topdir]" 
+Usage: valor_dune-config [--libs] [--libdir] [--glibs] [--srcdir] [--topdir]" 
 
 if test $# -eq 0; then
    echo "${usage}" 1>&2
@@ -47,7 +50,10 @@ while test $# -gt 0; do
       out="$out $srcdir"
       ;;
     --libs)
-      out="$out $libs"
+      out="$out -L$libdir $libs"
+      ;;
+    --glibs)
+      out="$out -L$libdir $glibs"
       ;;
   esac
   shift

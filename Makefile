@@ -15,14 +15,15 @@ include $(VALOR_DUNE)/make/Make.include
 # define composite targets
 #
 BUILD_TARGETS =    print-make-info     \
-		   make-bin-lib-dir    \
-		   copy-scripts-to-bin \
-		   build-conventions   \
-		   build-systematics   \
-		   build-utilities   \
-		   build-elements      \
-		   build-sd-fit        \
-		   copy-rootdict-to-lib \
+		   make-bin-lib-dir                \
+		   copy-scripts-to-bin             \
+		   build-conventions               \
+		   build-systematics               \
+		   build-utilities                 \
+		   build-genie-utilities           \
+		   build-elements                  \
+		   build-sd-fit                    \
+		   copy-rootdict-to-lib            \
 		   build-apps   
 
 # define targets
@@ -58,6 +59,11 @@ build-utilities: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building DUNE Utilities package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Utilities;
+	
+build-genie-utilities: make-bin-lib-dir FORCE
+	@echo " "
+	@echo "** Building DUNE Utilities package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/GENIEUtilities;
 
 build-elements: make-bin-lib-dir FORCE
 	@echo " "
@@ -89,12 +95,13 @@ copy-rootdict-to-lib: make-bin-lib-dir FORCE
 purge: FORCE
 	@echo " "
 	@echo "** Purging..."
-	$(MAKE) -C src/dune/Apps          purge && \
-	$(MAKE) -C src/dune/Conventions   purge && \
-	$(MAKE) -C src/dune/Utilities     purge && \
-	$(MAKE) -C src/dune/Elements      purge && \
-	$(MAKE) -C src/dune/SDFit         purge && \
-	$(MAKE) -C src/dune/Systematics   purge; \
+	$(MAKE) -C src/dune/Apps             purge && \
+	$(MAKE) -C src/dune/Conventions      purge && \
+	$(MAKE) -C src/dune/Utilities        purge && \
+	$(MAKE) -C src/dune/GENIEUtilities   purge && \
+	$(MAKE) -C src/dune/Elements         purge && \
+	$(MAKE) -C src/dune/SDFit            purge && \
+	$(MAKE) -C src/dune/Systematics      purge; \
 
 clean: clean-files clean-dir clean-etc
 
@@ -104,12 +111,13 @@ clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
-	$(MAKE) -C src/dune/Apps          clean && \
-	$(MAKE) -C src/dune/Conventions   clean && \
-	$(MAKE) -C src/dune/Utilities     clean && \
-	$(MAKE) -C src/dune/Elements      clean && \
-	$(MAKE) -C src/dune/SDFit         clean && \
-	$(MAKE) -C src/dune/Systematics   clean; \
+	$(MAKE) -C src/dune/Apps            clean && \
+	$(MAKE) -C src/dune/Conventions     clean && \
+	$(MAKE) -C src/dune/Utilities       clean && \
+	$(MAKE) -C src/dune/GENIEUtilities  clean && \
+	$(MAKE) -C src/dune/Elements        clean && \
+	$(MAKE) -C src/dune/SDFit           clean && \
+	$(MAKE) -C src/dune/Systematics     clean; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_DUNE)
