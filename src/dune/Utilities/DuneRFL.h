@@ -106,7 +106,7 @@ private:
   
   // Details of binning
   int                   fNModes;        //
-  const conv::ReacMode_t *    fModes;   //[fNModes]
+  conv::ReacMode_t *    fModes;         //[fNModes]
   int                   fNParams;       //
   conv::PhysParamId_t * fParams;        //[fParams]
   

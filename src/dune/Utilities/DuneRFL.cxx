@@ -51,12 +51,14 @@ namespace util {
 //________________________________________________________________________________________
 valor::util::DuneRFL::DuneRFL(void)
  :
+fSplines       (NULL),
+fSplineBlockSize(0),
 fBeam          (conv::kbUndefined),
 fSample        (conv::ksUndefined),
-fNModes        (conv::kNReacModes),
-fModes         (conv::kReactionModes[0]), // NEEDS BETTER LOGIC
+fNModes        (0),
+fModes         (NULL),
 fNParams       (0),
-fParams        (0),
+fParams        (NULL),
 fNBinsTrue1    (1),
 fNBinsTrue2    (1),
 fNBinsTrue3    (1),
@@ -64,17 +66,19 @@ fNBinsReco1    (1),
 fNBinsReco2    (1),
 fNBinsReco3    (1),
 fNBinZones     (1),
-fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]")
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]")
 {
   
 }
 //________________________________________________________________________________________
 valor::util::DuneRFL::DuneRFL(conv::BeamConf_t b, conv::Sample_t s, int n_params, const PhysParamId_t * param_ids)
  :
+fSplines       (NULL),
+fSplineBlockSize(0),
 fBeam          (b),
 fSample        (s),
 fNModes        (conv::kNReacModes),
-fModes         (conv::kReactionModes[ArrIdx::Instance()->SampleIdx(b,s)]), // NEEDS BETTER LOGIC
+fModes         (NULL),
 fNParams       (n_params),
 fParams        (NULL),
 fNBinsTrue1    (1),
@@ -84,10 +88,12 @@ fNBinsReco1    (1),
 fNBinsReco2    (1),
 fNBinsReco3    (1),
 fNBinZones     (1),
-fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[OBS1]_[OBS2]")
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]")
 {
   fParams = new PhysParamId_t[fNParams];
-  memcpy(fParams, param_ids, n_params*sizeof(PhysParamId_t));
+  memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
+  fModes = new ReacMode_t[fNModes];
+  memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(b,s)], fNParams*sizeof(ReacMode_t));
   
   // Fill parameter to index
   for (int ip = 0 ; ip < conv::knppmax ; ip++ ) {
@@ -108,13 +114,14 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[O
 valor::util::DuneRFL::~DuneRFL()
 {
   for (unsigned int ispl = 0 ; ispl < fSplineBlockSize; ispl++) {
-    if (fSplines[ispl]) {delete fSplines[ispl];}
+    if (fSplines[ispl] && fSplines[ispl]!=kFlatSpline && fSplines[ispl]!=kNoSplineRequired) {
+       delete fSplines[ispl];
+    }
     delete[] fSplines;
   }
   
   if (fModes        )  {delete fModes;        }
   if (fParams       )  {delete fParams;       }
-  
 }
 //________________________________________________________________________________________
 void valor::util::DuneRFL::Print(ostream & stream) const
@@ -209,11 +216,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     delete xml;
     util::Die(1); return false;
   }
-  //~ XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
-  //~ 
-  //~ TFile * spline_file = util::XML2TFile(xml,root_node,"splines/file");
-  // DEBUG
-  TFile * spline_file = new TFile;
+  XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+  
+  TFile * spline_file = util::XML2TFile(xml,root_node,"splines/file");
   
   LOG("DuneRFL",pINFO) << "Reading splines from file "<<spline_file->GetName();
   
@@ -257,9 +262,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                     }
                     
                     if (param_applied_to_mode) {
-                      //~ TObject * spline_obj = spline_file->Get(spl_name.Data());
-                      // DEBUG - USE FLAT SPLINES
-                      TObject * spline_obj = kFlatSpline->Clone(spl_name.Data());
+                      TObject * spline_obj = spline_file->Get(spl_name.Data());
                       TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
                       if (spline) {
                         fSplines[spline_index] = spline;
