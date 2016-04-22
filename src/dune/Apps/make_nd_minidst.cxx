@@ -206,7 +206,7 @@ int main(int argc, char ** argv)
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco; 
     valor_minidst_wght_pot  = wght_pot; 
-    valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2();
+    valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2(true);
 
     LOG("make_minidst", pNOTICE) 
       << "\n Information copied to VALOR DUNE/ND Mini-DST: "
