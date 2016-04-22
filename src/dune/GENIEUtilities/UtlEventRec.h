@@ -1,0 +1,43 @@
+//____________________________________________________________________________
+/*!
+
+\class     valor::UtlEventRec
+
+\brief     Tools for getting VALOR info out of GENIE event records.
+
+\author    Steve Dennis <s.r.dennis \at University of Liverpool>
+           University of Liverpool
+           
+           Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+           University of Liverpool & STFC Rutherford Appleton Laboratory
+
+\created   April 22, 2016
+
+\copyright (c) 2010-2016, The VALOR group.
+
+*/
+//____________________________________________________________________________
+
+#ifndef __valor_dune_genie_utlevrec__
+#define __valor_dune_genie_utlevrec__
+
+#include <iostream>
+#include <vector>
+
+#include "dune/Conventions/ReacMode.h"
+#include "dune/Conventions/DuneBuild.h"
+
+namespace genie {
+  class EventRecord;
+}
+
+namespace valor {
+namespace util {
+  
+  bool GetHadronicSystems(const genie::EventRecord * event, vector<int> & prim_had_syst, vector<int> & final_had_syst);
+  conv::ReacMode_t DetermineReactionMode(const genie::EventRecord * event, bool use_final_state = false);
+
+}      // util namespace
+}      // valor namespace
+
+#endif 
