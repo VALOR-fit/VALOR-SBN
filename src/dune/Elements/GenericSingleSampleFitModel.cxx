@@ -86,17 +86,17 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
 
-  TString tf_file = file.c_str();
-  gSystem->ExpandPathName(tf_file);
+  TString ts_file = file.c_str();
+  gSystem->ExpandPathName(ts_file);
 
   // Check for config file.
   // See if it works as a normal path
   FileStat_t dummy;
-  if (gSystem->GetPathInfo(tf_file.Data(), dummy)) 
+  if (gSystem->GetPathInfo(ts_file.Data(), dummy)) 
   {
     // If not, try the config folder
-    tf_file = TString::Format("%s/%s",Env::Instance()->TopLevelConfDir().c_str(),tf_file.Data());
-    if (gSystem->GetPathInfo(tf_file.Data(), dummy)) {
+    ts_file = TString::Format("%s/%s",Env::Instance()->TopLevelConfDir().c_str(),ts_file.Data());
+    if (gSystem->GetPathInfo(ts_file.Data(), dummy)) {
       LOG("GenericSingleSampleFitModel",pERROR) << "Config file not found: "<<file;
       util::Die(1); return false;
     }
@@ -104,9 +104,9 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
-  XMLDocPointer_t xmldoc = xml->ParseFile(tf_file.Data());
+  XMLDocPointer_t xmldoc = xml->ParseFile(ts_file.Data());
   if (xmldoc==0) {
-    LOG("GenericSingleSampleFitModel",pERROR) << "Can not parse input XML file [" << tf_file << "]";
+    LOG("GenericSingleSampleFitModel",pERROR) << "Can not parse input XML file [" << ts_file << "]";
     delete xml;
     util::Die(1); return false;
   }
@@ -166,6 +166,11 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   // Release memory
   xml->FreeDoc(xmldoc);
   delete xml;
+  
+  LOG("GenericSingleSampleFitModel",pINFO) << "Configuring the Response Function Library... \n\n";
+  // And now get the RFL
+  fRFL = new util::DuneRFL(fBeam, fSample, conv::kNFitParamsWithSplines,conv::kFitParamsWithSplines);
+  fRFL->Read(file, opt);
 
   LOG("GenericSingleSampleFitModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
 
@@ -798,6 +803,7 @@ void GenericSingleSampleFitModel::Init(void)
   fPOT          = 0;
   fUseMCDST     = false;
   fMCDST        = 0;
+  fRFL          = 0;
 
   for(int imode = 0; imode < kNReacModes; imode++) {
 
@@ -1006,17 +1012,9 @@ void GenericSingleSampleFitModel::Clean(void)
       fMCDST = 0;
     }
   }
-
-  /*
-  //---------------------
-  // TODO
-  // Remove  
-  if (fNuFlux) {delete fNuFlux;}
-  if (fNuInt ) {delete fNuInt; }
-  if (fNuInt ) {delete fNuDet; }
-  //---------------------
-  */
-  if (fSyst) { delete fSyst; }  
+  
+  if (fSyst) { delete fSyst; fSyst = 0; }
+  if (fRFL)  { delete fRFL ; fRFL  = 0; }
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Zero(void)

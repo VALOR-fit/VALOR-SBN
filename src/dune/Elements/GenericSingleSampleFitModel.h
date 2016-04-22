@@ -45,6 +45,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ArrIdx.h"
+#include "dune/Utilities/DuneRFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
 
 
@@ -178,6 +179,9 @@ private:
   bool         fPDFTotNullSb;                     // 
   VALORArray * fPDFTotSb;                         // total
   VALORArray * fPDFCompSb    [conv::kNReacModes]; // components
+  
+  // Spline library
+  util::DuneRFL * fRFL;
 };
 
 } // valor
