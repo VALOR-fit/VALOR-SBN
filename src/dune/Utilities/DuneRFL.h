@@ -83,7 +83,7 @@ private:
   // Actual response function block
   // This is a vector, with one entry per SingleSampleModel specified.
   // Each entry be a big block, with dimensions [conv::kNReacModes][NFitParams][NBinsTrue1][NBinsTrue2][NBinsTrue3][NBinsObs1][NBinsObs2][NBinsObs3]
-  TSpline** fSplines;
+  const TSpline ** fSplines;
   UInt_t    fSplineBlockSize;
   
   // The spline indices

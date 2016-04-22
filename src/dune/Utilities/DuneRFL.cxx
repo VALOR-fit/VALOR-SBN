@@ -49,7 +49,7 @@ namespace util {
 }
 }
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL()
+valor::util::DuneRFL::DuneRFL(void)
  :
 fBeam          (conv::kbUndefined),
 fSample        (conv::ksUndefined),
@@ -69,7 +69,7 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[O
   
 }
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL(BeamConf_t b, Sample_t s, int n_params, const PhysParamId_t * param_ids)
+valor::util::DuneRFL::DuneRFL(conv::BeamConf_t b, conv::Sample_t s, int n_params, const PhysParamId_t * param_ids)
  :
 fBeam          (b),
 fSample        (s),
@@ -185,7 +185,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
    <<std::setw(7)<<fNBinsReco2<<" other recovar bins.\n"
    <<std::setw(7)<<fSplineBlockSize<<" total.";
     
-  fSplines = new TSpline*[fSplineBlockSize]();
+  fSplines = new const TSpline*[fSplineBlockSize]();
 
   TString ts_file = config_file.c_str();
   gSystem->ExpandPathName(ts_file);
@@ -220,6 +220,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   int isample = ArrIdx::Instance()->SampleIdx(fBeam, fSample);
   
   int n_splines_read = 0;
+  int n_splines_expected = fSplineBlockSize;
   
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
@@ -227,6 +228,8 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     for (int ip = 0 ; ip < fNParams ; ip++) {
       conv::PhysParamId_t p = fParams[ip];
       if(p == conv::kPhypUndefined) continue;
+      
+      bool param_applied_to_mode = util::ParamIsAppliedTo(fBeam,fSample,m,p);
       
       KinematicBin kb;
       
@@ -247,22 +250,29 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                     
                     TString spl_name = this->BuildSplineName(m,p,kb);
                     
-                    const int spline_index = SplineIndex(imode,ip,kb);
+                    const UInt_t spline_index = SplineIndex(imode,ip,kb);
                     if (spline_index >= fSplineBlockSize) {
                       LOG("DuneRFL",pFATAL) << "Bad spline index "<<spline_index; 
                       util::Die(-1); return false;
                     }
-                    //~ TObject * spline_obj = spline_file->Get(spl_name.Data());
-                    // DEBUG - USE FLAT SPLINES
-                    TObject * spline_obj = kFlatSpline->Clone(spl_name.Data());
-                    TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
-                    if (spline) {
-                      fSplines[spline_index] = spline;
-                      n_splines_read++;
+                    
+                    if (param_applied_to_mode) {
+                      //~ TObject * spline_obj = spline_file->Get(spl_name.Data());
+                      // DEBUG - USE FLAT SPLINES
+                      TObject * spline_obj = kFlatSpline->Clone(spl_name.Data());
+                      TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
+                      if (spline) {
+                        fSplines[spline_index] = spline;
+                        n_splines_read++;
+                      }
+                      else {
+                        LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
+                        fSplines[spline_index] = 0;
+                      }
                     }
                     else {
-                      LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
-                      fSplines[spline_index] = 0;
+                      fSplines[spline_index] = kNoSplineRequired;
+                      n_splines_expected--;
                     }
                   } //ireco3
                 } //ireco2
@@ -276,7 +286,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   
   spline_file->Close();
   
-  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines of "<<fSplineBlockSize<<" expected.";
+  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines of "<<n_splines_expected<<" expected.";
   
   return true;
 }
