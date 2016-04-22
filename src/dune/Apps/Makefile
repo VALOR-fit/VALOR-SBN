@@ -22,6 +22,8 @@ ifdef GENIE
  GINCLUDES  = $(shell genie-config --topsrcdir)
  GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
  GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
+ 
+ VALOR_GLIBRARIES := $(shell valor_dune-config --glibs)
 endif
 
 TGT = make_nd_minidst \
@@ -36,7 +38,7 @@ all: $(TGT)
 make_nd_minidst: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
+	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES)  -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 endif
 	
 
@@ -45,7 +47,7 @@ endif
 make_response_functions: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_response_functions
+	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 endif
 	
 # Run a generic fit
