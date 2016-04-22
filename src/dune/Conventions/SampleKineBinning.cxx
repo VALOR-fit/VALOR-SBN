@@ -423,16 +423,16 @@ int util::NumErecoBinsXsec  (conv::Sample_t sample, int zone)
 //________________________________________________________________________________________
 const double * util::ErecoBinEdgesXsec (conv::Sample_t sample, int zone)
 {
-  return util::ErecoBinEdgesXsec(sample,zone);
+  return util::ErecoBinEdges(sample,zone);
 }
 //________________________________________________________________________________________
 int util::NumYrecoBinsXsec  (conv::Sample_t sample, int zone)
 {
-  return util::NumYrecoBinsXsec(sample,zone);
+  return util::NumYrecoBins(sample,zone);
 }
 //________________________________________________________________________________________
 const double * util::YrecoBinEdgesXsec (conv::Sample_t sample, int zone)
 {
-  return util::YrecoBinEdgesXsec(sample,zone);
+  return util::YrecoBinEdges(sample,zone);
 }
 //________________________________________________________________________________________
