@@ -190,7 +190,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
    <<std::setw(7)<<fNBinsReco1<<" Ereco bins.\n"
    <<std::setw(7)<<fNBinsReco2<<" Yreco bins.\n"
    <<std::setw(7)<<fNBinsReco2<<" other recovar bins.\n"
-   <<std::setw(7)<<fSplineBlockSize<<" total.";
+   <<std::setw(7)<<fSplineBlockSize<<" maximum.";
     
   fSplines = new const TSpline*[fSplineBlockSize]();
 
@@ -219,6 +219,10 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
   
   TFile * spline_file = util::XML2TFile(xml,root_node,"splines/file");
+  if (!spline_file) {
+    LOG("DuneRFL",pFATAL) << "Failed to open spline file.";
+    util::Die(-1); return false;
+  }
   
   LOG("DuneRFL",pINFO) << "Reading splines from file "<<spline_file->GetName();
   
@@ -230,6 +234,10 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
     if(m == conv::kmUndefined) continue;
+    
+    const int true1_bins = util::NumEtrueBinsXsec (fSample);
+    const int true2_bins = util::NumQ2trueBinsXsec (fSample,m);
+    
     for (int ip = 0 ; ip < fNParams ; ip++) {
       conv::PhysParamId_t p = fParams[ip];
       if(p == conv::kPhypUndefined) continue;
@@ -240,15 +248,17 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
       
       for (int izone = 0 ; izone < fNBinZones ; izone++ ) {
         kb.zone = izone;
-        for (int itrue1 = 0 ; itrue1 < fNBinsTrue1 ; itrue1++) {
+        const int reco1_bins = util::NumErecoBinsXsec (fSample, izone);
+        const int reco2_bins = util::NumYrecoBinsXsec (fSample, izone);
+        for (int itrue1 = 0 ; itrue1 < true1_bins ; itrue1++) {
           kb.true1 = itrue1;
-          for (int itrue2 = 0 ; itrue2 < fNBinsTrue2 ; itrue2++) {
+          for (int itrue2 = 0 ; itrue2 < true2_bins ; itrue2++) {
             kb.true2 = itrue2;
             for (int itrue3 = 0 ; itrue3 < fNBinsTrue3 ; itrue3++) {
               kb.true3 = itrue3;
-              for (int ireco1 = 0 ; ireco1 < fNBinsReco1 ; ireco1++) {
+              for (int ireco1 = 0 ; ireco1 < reco1_bins ; ireco1++) {
                 kb.reco1 = ireco1;
-                for (int ireco2 = 0 ; ireco2 < fNBinsReco2 ; ireco2++) {
+                for (int ireco2 = 0 ; ireco2 < reco2_bins ; ireco2++) {
                   kb.reco2 = ireco2;
                   for (int ireco3 = 0 ; ireco3 < fNBinsReco3 ; ireco3++) {
                     kb.reco3 = ireco3;
@@ -289,7 +299,10 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   
   spline_file->Close();
   
-  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines of "<<n_splines_expected<<" expected.";
+  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines.";
+  
+  xml->FreeDoc(xmldoc);
+  delete xml;
   
   return true;
 }
