@@ -355,3 +355,7 @@ int valor::util::DuneRFL::Param2Idx(conv::PhysParamId_t p) const
   return fParam2Idx[p];
 }
 //________________________________________________________________________________________
+void valor::util::DuneRFL::SetSplineNamePattern(std::string pattern) {
+  fSplineNamePattern = pattern.c_str();
+}
+//________________________________________________________________________________________

@@ -67,7 +67,7 @@ public:
                       
   
   // Pattern for spline names.
-  void SetSplineNamePattern(std::string);
+  void SetSplineNamePattern(std::string pattern);
   
   // Get the name of the spline we're looking for
   TString BuildSplineName(conv::ReacMode_t m, conv::PhysParamId_t p,
