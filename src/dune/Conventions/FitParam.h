@@ -1624,6 +1624,7 @@ namespace util {
   bool IsNuFluxRelated(conv::PhysParamId_t p);
   bool IsNuIntRelated (conv::PhysParamId_t p);
   bool IsNuDetRelated (conv::PhysParamId_t p);
+  bool IsFSI          (conv::PhysParamId_t p);
 
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
 

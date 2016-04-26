@@ -134,25 +134,25 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuMuNCcoh       ): name = "#nu_{#mu} NCcoh";                  break;        
     case (kmNuMuNCoth       ): name = "#nu_{#mu} NCoth";                  break;        
 
-    case (kmNuMuBarCCQE     ): name = "#bar{#nu_{#mu}} CCQE";             break;        
-    case (kmNuMuBarCCMEC    ): name = "#bar{#nu_{#mu}} CCMEC";            break;        
-    case (kmNuMuBarCC1piC   ): name = "#bar{#nu_{#mu}} CC1#pi^{#pm}";     break;       
-    case (kmNuMuBarCC1pi0   ): name = "#bar{#nu_{#mu}} CC1#pi^{0}";       break;       
-    case (kmNuMuBarCC2piC   ): name = "#bar{#nu_{#mu}} CC2#pi^{#pm}";     break;      
-    case (kmNuMuBarCC2pi0   ): name = "#bar{#nu_{#mu}} CC2#pi^{0}";       break;       
-    case (kmNuMuBarCCpiCpi0 ): name = "#bar{#nu_{#mu}} CC#pi^{#pm}#pi0";  break;   
-    case (kmNuMuBarCCcoh    ): name = "#bar{#nu_{#mu}} CCcoh";            break;      
-    case (kmNuMuBarCCoth    ): name = "#bar{#nu_{#mu}} CCoth";            break;    
+    case (kmNuMuBarCCQE     ): name = "#bar{#nu}_{#mu} CCQE";             break;        
+    case (kmNuMuBarCCMEC    ): name = "#bar{#nu}_{#mu} CCMEC";            break;        
+    case (kmNuMuBarCC1piC   ): name = "#bar{#nu}_{#mu} CC1#pi^{#pm}";     break;       
+    case (kmNuMuBarCC1pi0   ): name = "#bar{#nu}_{#mu} CC1#pi^{0}";       break;       
+    case (kmNuMuBarCC2piC   ): name = "#bar{#nu}_{#mu} CC2#pi^{#pm}";     break;      
+    case (kmNuMuBarCC2pi0   ): name = "#bar{#nu}_{#mu} CC2#pi^{0}";       break;       
+    case (kmNuMuBarCCpiCpi0 ): name = "#bar{#nu}_{#mu} CC#pi^{#pm}#pi0";  break;   
+    case (kmNuMuBarCCcoh    ): name = "#bar{#nu}_{#mu} CCcoh";            break;      
+    case (kmNuMuBarCCoth    ): name = "#bar{#nu}_{#mu} CCoth";            break;    
 
 //  case (kmNuMuBarNCEL     ): name = "";                                 break;    
 //  case (kmNuMuBarNCMEC    ): name = "";                                 break;    
-    case (kmNuMuBarNC1piC   ): name = "#bar{#nu_{#mu}} NC1#pi^{#pm}";     break;   
-    case (kmNuMuBarNC1pi0   ): name = "#bar{#nu_{#mu}} NC1#pi^{0}";       break;    
+    case (kmNuMuBarNC1piC   ): name = "#bar{#nu}_{#mu} NC1#pi^{#pm}";     break;   
+    case (kmNuMuBarNC1pi0   ): name = "#bar{#nu}_{#mu} NC1#pi^{0}";       break;    
 //  case (kmNuMuBarNC2piC   ): name = "";                                 break;   
 //  case (kmNuMuBarNC2pi0   ): name = "";                                 break;    
 //  case (kmNuMuBarNCpiCpi0 ): name = "";                                 break;   
-    case (kmNuMuBarNCcoh    ): name = "#bar{#nu_{#mu}} NCcoh";            break;  
-    case (kmNuMuBarNCoth    ): name = "#bar{#nu_{#mu}} NCoth";            break;       
+    case (kmNuMuBarNCcoh    ): name = "#bar{#nu}_{#mu} NCcoh";            break;  
+    case (kmNuMuBarNCoth    ): name = "#bar{#nu}_{#mu} NCoth";            break;       
 
     case (kmNuECCQE         ): name = "#nu_{e} CCQE";                     break;             
     case (kmNuECCMEC        ): name = "#nu_{e} CCMEC";                    break;         
@@ -174,25 +174,25 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuENCcoh        ): name = "#nu_{e} NCcoh";                    break; 
     case (kmNuENCoth        ): name = "#nu_{e} NCoth";                    break;    
 
-    case (kmNuEBarCCQE      ): name = "#bar{#nu_{e}} CCQE";               break;    
-    case (kmNuEBarCCMEC     ): name = "#bar{#nu_{e}} CCMEC";              break;    
-    case (kmNuEBarCC1piC    ): name = "#bar{#nu_{e}} CC1#pi^{#pm}";       break;   
-    case (kmNuEBarCC1pi0    ): name = "#bar{#nu_{e}} CC1#pi^{0}";         break;    
-    case (kmNuEBarCC2piC    ): name = "#bar{#nu_{e}} CC2#pi^{#pm}";       break;   
-    case (kmNuEBarCC2pi0    ): name = "#bar{#nu_{e}} CC2#pi^{0}";         break;    
-    case (kmNuEBarCCpiCpi0  ): name = "#bar{#nu_{e}} CC#pi^{#pm}#pi^{0}"; break;    
-    case (kmNuEBarCCcoh     ): name = "#bar{#nu_{e}} CCcoh";              break;    
-    case (kmNuEBarCCoth     ): name = "#bar{#nu_{e}} CCoth";              break;    
+    case (kmNuEBarCCQE      ): name = "#bar{#nu}_{e} CCQE";               break;    
+    case (kmNuEBarCCMEC     ): name = "#bar{#nu}_{e} CCMEC";              break;    
+    case (kmNuEBarCC1piC    ): name = "#bar{#nu}_{e} CC1#pi^{#pm}";       break;   
+    case (kmNuEBarCC1pi0    ): name = "#bar{#nu}_{e} CC1#pi^{0}";         break;    
+    case (kmNuEBarCC2piC    ): name = "#bar{#nu}_{e} CC2#pi^{#pm}";       break;   
+    case (kmNuEBarCC2pi0    ): name = "#bar{#nu}_{e} CC2#pi^{0}";         break;    
+    case (kmNuEBarCCpiCpi0  ): name = "#bar{#nu}_{e} CC#pi^{#pm}#pi^{0}"; break;    
+    case (kmNuEBarCCcoh     ): name = "#bar{#nu}_{e} CCcoh";              break;    
+    case (kmNuEBarCCoth     ): name = "#bar{#nu}_{e} CCoth";              break;    
 
 //  case (kmNuEBarNCEL      ): name = "";                                 break;   
 //  case (kmNuEBarNCMEC     ): name = "";                                 break;    
-    case (kmNuEBarNC1piC    ): name = "#bar{#nu_{e}} NC1#pi^{#pm}";       break;   
-    case (kmNuEBarNC1pi0    ): name = "#bar{#nu_{e}} NC1#pi^{0}";         break;    
+    case (kmNuEBarNC1piC    ): name = "#bar{#nu}_{e} NC1#pi^{#pm}";       break;   
+    case (kmNuEBarNC1pi0    ): name = "#bar{#nu}_{e} NC1#pi^{0}";         break;    
 //  case (kmNuEBarNC2piC    ): name = "";                                 break;   
 //  case (kmNuEBarNC2pi0    ): name = "";                                 break;    
 //  case (kmNuEBarNCpiCpi0  ): name = "";                                 break;  
-    case (kmNuEBarNCcoh     ): name = "#bar{#nu_{e}} NCcoh";              break;   
-    case (kmNuEBarNCoth     ): name = "#bar{#nu_{e}} NCoth";              break;     
+    case (kmNuEBarNCcoh     ): name = "#bar{#nu}_{e} NCcoh";              break;   
+    case (kmNuEBarNCoth     ): name = "#bar{#nu}_{e} NCoth";              break;     
 
     case (kmOther           ): name = "Other";                            break;     
     default                  : name = "--"; 

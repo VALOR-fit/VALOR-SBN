@@ -226,25 +226,25 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisFHCNuMuFlux16   ) : name = "f_{FHC;\\nu_{\\mu};16}";                        break;
     case (kNuisFHCNuMuFlux17   ) : name = "f_{FHC;\\nu_{\\mu};17}";                        break;
     case (kNuisFHCNuMuFlux18   ) : name = "f_{FHC;\\nu_{\\mu};18}";                        break;
-    case (kNuisFHCNuMuBarFlux00) : name = "f_{FHC;\\bar{\\nu_{\\mu}};00}";                 break;
-    case (kNuisFHCNuMuBarFlux01) : name = "f_{FHC;\\bar{\\nu_{\\mu}};01}";                 break;
-    case (kNuisFHCNuMuBarFlux02) : name = "f_{FHC;\\bar{\\nu_{\\mu}};02}";                 break;
-    case (kNuisFHCNuMuBarFlux03) : name = "f_{FHC;\\bar{\\nu_{\\mu}};03}";                 break;
-    case (kNuisFHCNuMuBarFlux04) : name = "f_{FHC;\\bar{\\nu_{\\mu}};04}";                 break;
-    case (kNuisFHCNuMuBarFlux05) : name = "f_{FHC;\\bar{\\nu_{\\mu}};05}";                 break;
-    case (kNuisFHCNuMuBarFlux06) : name = "f_{FHC;\\bar{\\nu_{\\mu}};06}";                 break;
-    case (kNuisFHCNuMuBarFlux07) : name = "f_{FHC;\\bar{\\nu_{\\mu}};07}";                 break;
-    case (kNuisFHCNuMuBarFlux08) : name = "f_{FHC;\\bar{\\nu_{\\mu}};08}";                 break;
-    case (kNuisFHCNuMuBarFlux09) : name = "f_{FHC;\\bar{\\nu_{\\mu}};09}";                 break;
-    case (kNuisFHCNuMuBarFlux10) : name = "f_{FHC;\\bar{\\nu_{\\mu}};10}";                 break;
-    case (kNuisFHCNuMuBarFlux11) : name = "f_{FHC;\\bar{\\nu_{\\mu}};11}";                 break;
-    case (kNuisFHCNuMuBarFlux12) : name = "f_{FHC;\\bar{\\nu_{\\mu}};12}";                 break;
-    case (kNuisFHCNuMuBarFlux13) : name = "f_{FHC;\\bar{\\nu_{\\mu}};13}";                 break;
-    case (kNuisFHCNuMuBarFlux14) : name = "f_{FHC;\\bar{\\nu_{\\mu}};14}";                 break;
-    case (kNuisFHCNuMuBarFlux15) : name = "f_{FHC;\\bar{\\nu_{\\mu}};15}";                 break;
-    case (kNuisFHCNuMuBarFlux16) : name = "f_{FHC;\\bar{\\nu_{\\mu}};16}";                 break;
-    case (kNuisFHCNuMuBarFlux17) : name = "f_{FHC;\\bar{\\nu_{\\mu}};17}";                 break;
-    case (kNuisFHCNuMuBarFlux18) : name = "f_{FHC;\\bar{\\nu_{\\mu}};18}";                 break;
+    case (kNuisFHCNuMuBarFlux00) : name = "f_{FHC;\\bar{\\nu}_{\\mu};00}";                 break;
+    case (kNuisFHCNuMuBarFlux01) : name = "f_{FHC;\\bar{\\nu}_{\\mu};01}";                 break;
+    case (kNuisFHCNuMuBarFlux02) : name = "f_{FHC;\\bar{\\nu}_{\\mu};02}";                 break;
+    case (kNuisFHCNuMuBarFlux03) : name = "f_{FHC;\\bar{\\nu}_{\\mu};03}";                 break;
+    case (kNuisFHCNuMuBarFlux04) : name = "f_{FHC;\\bar{\\nu}_{\\mu};04}";                 break;
+    case (kNuisFHCNuMuBarFlux05) : name = "f_{FHC;\\bar{\\nu}_{\\mu};05}";                 break;
+    case (kNuisFHCNuMuBarFlux06) : name = "f_{FHC;\\bar{\\nu}_{\\mu};06}";                 break;
+    case (kNuisFHCNuMuBarFlux07) : name = "f_{FHC;\\bar{\\nu}_{\\mu};07}";                 break;
+    case (kNuisFHCNuMuBarFlux08) : name = "f_{FHC;\\bar{\\nu}_{\\mu};08}";                 break;
+    case (kNuisFHCNuMuBarFlux09) : name = "f_{FHC;\\bar{\\nu}_{\\mu};09}";                 break;
+    case (kNuisFHCNuMuBarFlux10) : name = "f_{FHC;\\bar{\\nu}_{\\mu};10}";                 break;
+    case (kNuisFHCNuMuBarFlux11) : name = "f_{FHC;\\bar{\\nu}_{\\mu};11}";                 break;
+    case (kNuisFHCNuMuBarFlux12) : name = "f_{FHC;\\bar{\\nu}_{\\mu};12}";                 break;
+    case (kNuisFHCNuMuBarFlux13) : name = "f_{FHC;\\bar{\\nu}_{\\mu};13}";                 break;
+    case (kNuisFHCNuMuBarFlux14) : name = "f_{FHC;\\bar{\\nu}_{\\mu};14}";                 break;
+    case (kNuisFHCNuMuBarFlux15) : name = "f_{FHC;\\bar{\\nu}_{\\mu};15}";                 break;
+    case (kNuisFHCNuMuBarFlux16) : name = "f_{FHC;\\bar{\\nu}_{\\mu};16}";                 break;
+    case (kNuisFHCNuMuBarFlux17) : name = "f_{FHC;\\bar{\\nu}_{\\mu};17}";                 break;
+    case (kNuisFHCNuMuBarFlux18) : name = "f_{FHC;\\bar{\\nu}_{\\mu};18}";                 break;
     case (kNuisFHCNuEFlux00    ) : name = "f_{FHC;\\nu_{e};00}";                           break;
     case (kNuisFHCNuEFlux01    ) : name = "f_{FHC;\\nu_{e};01}";                           break;
     case (kNuisFHCNuEFlux02    ) : name = "f_{FHC;\\nu_{e};02}";                           break;
@@ -252,13 +252,13 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisFHCNuEFlux04    ) : name = "f_{FHC;\\nu_{e};04}";                           break;
     case (kNuisFHCNuEFlux05    ) : name = "f_{FHC;\\nu_{e};05}";                           break;
     case (kNuisFHCNuEFlux06    ) : name = "f_{FHC;\\nu_{e};06}";                           break;
-    case (kNuisFHCNuEBarFlux00 ) : name = "f_{FHC;\\bar{\\nu_{e}};00}";                    break;
-    case (kNuisFHCNuEBarFlux01 ) : name = "f_{FHC;\\bar{\\nu_{e}};01}";                    break;
-    case (kNuisFHCNuEBarFlux02 ) : name = "f_{FHC;\\bar{\\nu_{e}};02}";                    break;
-    case (kNuisFHCNuEBarFlux03 ) : name = "f_{FHC;\\bar{\\nu_{e}};03}";                    break;
-    case (kNuisFHCNuEBarFlux04 ) : name = "f_{FHC;\\bar{\\nu_{e}};04}";                    break;
-    case (kNuisFHCNuEBarFlux05 ) : name = "f_{FHC;\\bar{\\nu_{e}};05}";                    break;
-    case (kNuisFHCNuEBarFlux06 ) : name = "f_{FHC;\\bar{\\nu_{e}};06}";                    break;
+    case (kNuisFHCNuEBarFlux00 ) : name = "f_{FHC;\\bar{\\nu}_{e};00}";                    break;
+    case (kNuisFHCNuEBarFlux01 ) : name = "f_{FHC;\\bar{\\nu}_{e};01}";                    break;
+    case (kNuisFHCNuEBarFlux02 ) : name = "f_{FHC;\\bar{\\nu}_{e};02}";                    break;
+    case (kNuisFHCNuEBarFlux03 ) : name = "f_{FHC;\\bar{\\nu}_{e};03}";                    break;
+    case (kNuisFHCNuEBarFlux04 ) : name = "f_{FHC;\\bar{\\nu}_{e};04}";                    break;
+    case (kNuisFHCNuEBarFlux05 ) : name = "f_{FHC;\\bar{\\nu}_{e};05}";                    break;
+    case (kNuisFHCNuEBarFlux06 ) : name = "f_{FHC;\\bar{\\nu}_{e};06}";                    break;
     
     case (kNuisRHCNuMuFlux00   ) : name = "f_{RHC;\\nu_{\\mu};00}";                        break;
     case (kNuisRHCNuMuFlux01   ) : name = "f_{RHC;\\nu_{\\mu};01}";                        break;
@@ -279,25 +279,25 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisRHCNuMuFlux16   ) : name = "f_{RHC;\\nu_{\\mu};16}";                        break;
     case (kNuisRHCNuMuFlux17   ) : name = "f_{RHC;\\nu_{\\mu};17}";                        break;
     case (kNuisRHCNuMuFlux18   ) : name = "f_{RHC;\\nu_{\\mu};18}";                        break;
-    case (kNuisRHCNuMuBarFlux00) : name = "f_{RHC;\\bar{\\nu_{\\mu}};00}";                 break;
-    case (kNuisRHCNuMuBarFlux01) : name = "f_{RHC;\\bar{\\nu_{\\mu}};01}";                 break;
-    case (kNuisRHCNuMuBarFlux02) : name = "f_{RHC;\\bar{\\nu_{\\mu}};02}";                 break;
-    case (kNuisRHCNuMuBarFlux03) : name = "f_{RHC;\\bar{\\nu_{\\mu}};03}";                 break;
-    case (kNuisRHCNuMuBarFlux04) : name = "f_{RHC;\\bar{\\nu_{\\mu}};04}";                 break;
-    case (kNuisRHCNuMuBarFlux05) : name = "f_{RHC;\\bar{\\nu_{\\mu}};05}";                 break;
-    case (kNuisRHCNuMuBarFlux06) : name = "f_{RHC;\\bar{\\nu_{\\mu}};06}";                 break;
-    case (kNuisRHCNuMuBarFlux07) : name = "f_{RHC;\\bar{\\nu_{\\mu}};07}";                 break;
-    case (kNuisRHCNuMuBarFlux08) : name = "f_{RHC;\\bar{\\nu_{\\mu}};08}";                 break;
-    case (kNuisRHCNuMuBarFlux09) : name = "f_{RHC;\\bar{\\nu_{\\mu}};09}";                 break;
-    case (kNuisRHCNuMuBarFlux10) : name = "f_{RHC;\\bar{\\nu_{\\mu}};10}";                 break;
-    case (kNuisRHCNuMuBarFlux11) : name = "f_{RHC;\\bar{\\nu_{\\mu}};11}";                 break;
-    case (kNuisRHCNuMuBarFlux12) : name = "f_{RHC;\\bar{\\nu_{\\mu}};12}";                 break;
-    case (kNuisRHCNuMuBarFlux13) : name = "f_{RHC;\\bar{\\nu_{\\mu}};13}";                 break;
-    case (kNuisRHCNuMuBarFlux14) : name = "f_{RHC;\\bar{\\nu_{\\mu}};14}";                 break;
-    case (kNuisRHCNuMuBarFlux15) : name = "f_{RHC;\\bar{\\nu_{\\mu}};15}";                 break;
-    case (kNuisRHCNuMuBarFlux16) : name = "f_{RHC;\\bar{\\nu_{\\mu}};16}";                 break;
-    case (kNuisRHCNuMuBarFlux17) : name = "f_{RHC;\\bar{\\nu_{\\mu}};17}";                 break;
-    case (kNuisRHCNuMuBarFlux18) : name = "f_{RHC;\\bar{\\nu_{\\mu}};18}";                 break;
+    case (kNuisRHCNuMuBarFlux00) : name = "f_{RHC;\\bar{\\nu}_{\\mu};00}";                 break;
+    case (kNuisRHCNuMuBarFlux01) : name = "f_{RHC;\\bar{\\nu}_{\\mu};01}";                 break;
+    case (kNuisRHCNuMuBarFlux02) : name = "f_{RHC;\\bar{\\nu}_{\\mu};02}";                 break;
+    case (kNuisRHCNuMuBarFlux03) : name = "f_{RHC;\\bar{\\nu}_{\\mu};03}";                 break;
+    case (kNuisRHCNuMuBarFlux04) : name = "f_{RHC;\\bar{\\nu}_{\\mu};04}";                 break;
+    case (kNuisRHCNuMuBarFlux05) : name = "f_{RHC;\\bar{\\nu}_{\\mu};05}";                 break;
+    case (kNuisRHCNuMuBarFlux06) : name = "f_{RHC;\\bar{\\nu}_{\\mu};06}";                 break;
+    case (kNuisRHCNuMuBarFlux07) : name = "f_{RHC;\\bar{\\nu}_{\\mu};07}";                 break;
+    case (kNuisRHCNuMuBarFlux08) : name = "f_{RHC;\\bar{\\nu}_{\\mu};08}";                 break;
+    case (kNuisRHCNuMuBarFlux09) : name = "f_{RHC;\\bar{\\nu}_{\\mu};09}";                 break;
+    case (kNuisRHCNuMuBarFlux10) : name = "f_{RHC;\\bar{\\nu}_{\\mu};10}";                 break;
+    case (kNuisRHCNuMuBarFlux11) : name = "f_{RHC;\\bar{\\nu}_{\\mu};11}";                 break;
+    case (kNuisRHCNuMuBarFlux12) : name = "f_{RHC;\\bar{\\nu}_{\\mu};12}";                 break;
+    case (kNuisRHCNuMuBarFlux13) : name = "f_{RHC;\\bar{\\nu}_{\\mu};13}";                 break;
+    case (kNuisRHCNuMuBarFlux14) : name = "f_{RHC;\\bar{\\nu}_{\\mu};14}";                 break;
+    case (kNuisRHCNuMuBarFlux15) : name = "f_{RHC;\\bar{\\nu}_{\\mu};15}";                 break;
+    case (kNuisRHCNuMuBarFlux16) : name = "f_{RHC;\\bar{\\nu}_{\\mu};16}";                 break;
+    case (kNuisRHCNuMuBarFlux17) : name = "f_{RHC;\\bar{\\nu}_{\\mu};17}";                 break;
+    case (kNuisRHCNuMuBarFlux18) : name = "f_{RHC;\\bar{\\nu}_{\\mu};18}";                 break;
     case (kNuisRHCNuEFlux00    ) : name = "f_{RHC;\\nu_{e};00}";                           break;
     case (kNuisRHCNuEFlux01    ) : name = "f_{RHC;\\nu_{e};01}";                           break;
     case (kNuisRHCNuEFlux02    ) : name = "f_{RHC;\\nu_{e};02}";                           break;
@@ -305,13 +305,13 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisRHCNuEFlux04    ) : name = "f_{RHC;\\nu_{e};04}";                           break;
     case (kNuisRHCNuEFlux05    ) : name = "f_{RHC;\\nu_{e};05}";                           break;
     case (kNuisRHCNuEFlux06    ) : name = "f_{RHC;\\nu_{e};06}";                           break;
-    case (kNuisRHCNuEBarFlux00 ) : name = "f_{RHC;\\bar{\\nu_{e}};00}";                    break;
-    case (kNuisRHCNuEBarFlux01 ) : name = "f_{RHC;\\bar{\\nu_{e}};01}";                    break;
-    case (kNuisRHCNuEBarFlux02 ) : name = "f_{RHC;\\bar{\\nu_{e}};02}";                    break;
-    case (kNuisRHCNuEBarFlux03 ) : name = "f_{RHC;\\bar{\\nu_{e}};03}";                    break;
-    case (kNuisRHCNuEBarFlux04 ) : name = "f_{RHC;\\bar{\\nu_{e}};04}";                    break;
-    case (kNuisRHCNuEBarFlux05 ) : name = "f_{RHC;\\bar{\\nu_{e}};05}";                    break;
-    case (kNuisRHCNuEBarFlux06 ) : name = "f_{RHC;\\bar{\\nu_{e}};06}";                    break;
+    case (kNuisRHCNuEBarFlux00 ) : name = "f_{RHC;\\bar{\\nu}_{e};00}";                    break;
+    case (kNuisRHCNuEBarFlux01 ) : name = "f_{RHC;\\bar{\\nu}_{e};01}";                    break;
+    case (kNuisRHCNuEBarFlux02 ) : name = "f_{RHC;\\bar{\\nu}_{e};02}";                    break;
+    case (kNuisRHCNuEBarFlux03 ) : name = "f_{RHC;\\bar{\\nu}_{e};03}";                    break;
+    case (kNuisRHCNuEBarFlux04 ) : name = "f_{RHC;\\bar{\\nu}_{e};04}";                    break;
+    case (kNuisRHCNuEBarFlux05 ) : name = "f_{RHC;\\bar{\\nu}_{e};05}";                    break;
+    case (kNuisRHCNuEBarFlux06 ) : name = "f_{RHC;\\bar{\\nu}_{e};06}";                    break;
     
     case (kNuisNormCCQE        ) : name = "f_{CCQE}";                                      break;
     case (kNuisNormCC1piC      ) : name = "f_{CC1\\pi^{\\pm}}";                            break;
@@ -330,55 +330,55 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisEffNuMuCCWSgn    ) : name = "f_{eff;\\nu_{\\mu}CC;wsgn}";                   break;
     case (kNuisEffNC            ) : name = "f_{eff;NC}";                                   break;
     
-    case ( kNuisIntNuCCQE1         ) : name =  "f_{\\nu CCQE 1}";                          break;
-    case ( kNuisIntNuCCQE2         ) : name =  "f_{\\nu CCQE 2}";                          break;
-    case ( kNuisIntNuCCQE3         ) : name =  "f_{\\nu CCQE 3}";                          break;
-    case ( kNuisIntNuBarCCQE1      ) : name =  "f_{\\bar{\\nu} CCQE 1}";                   break;
-    case ( kNuisIntNuBarCCQE2      ) : name =  "f_{\\bar{\\nu} CCQE 2}";                   break;
-    case ( kNuisIntNuBarCCQE3      ) : name =  "f_{\\bar{\\nu} CCQE 3}";                   break;
+    case ( kNuisIntNuCCQE1         ) : name =  "f_{\\nu CCQE ; 1}";                        break;
+    case ( kNuisIntNuCCQE2         ) : name =  "f_{\\nu CCQE ; 2}";                        break;
+    case ( kNuisIntNuCCQE3         ) : name =  "f_{\\nu CCQE ; 3}";                        break;
+    case ( kNuisIntNuBarCCQE1      ) : name =  "f_{\\bar{\\nu} CCQE ; 1}";                 break;
+    case ( kNuisIntNuBarCCQE2      ) : name =  "f_{\\bar{\\nu} CCQE ; 2}";                 break;
+    case ( kNuisIntNuBarCCQE3      ) : name =  "f_{\\bar{\\nu} CCQE ; 3}";                 break;
     
-    case ( kNuisIntNuCCMEC         ) : name =  "f_{\\nu MEC}";                             break;
-    case ( kNuisIntNuBarCCMEC      ) : name =  "f_{\\bar{\\nu} MEC}";                      break;
+    case ( kNuisIntNuCCMEC         ) : name =  "f_{\\nu CC MEC}";                          break;
+    case ( kNuisIntNuBarCCMEC      ) : name =  "f_{\\bar{\\nu} CC MEC}";                   break;
     
-    case ( kNuisIntNuCC1piz1       ) : name =  "f_{\\nu CC1\\pi^{0} 1}";                   break;
-    case ( kNuisIntNuCC1piz2       ) : name =  "f_{\\nu CC1\\pi^{0} 2}";                   break;
-    case ( kNuisIntNuCC1piz3       ) : name =  "f_{\\nu CC1\\pi^{0} 3}";                   break;
-    case ( kNuisIntNuCC1pic1       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 1}";                break;
-    case ( kNuisIntNuCC1pic2       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 2}";                break;
-    case ( kNuisIntNuCC1pic3       ) : name =  "f_{\\nu CC1\\pi^{\\pm} 3}";                break;
+    case ( kNuisIntNuCC1piz1       ) : name =  "f_{\\nu CC1\\pi^{0} ; 1}";                 break;
+    case ( kNuisIntNuCC1piz2       ) : name =  "f_{\\nu CC1\\pi^{0} ; 2}";                 break;
+    case ( kNuisIntNuCC1piz3       ) : name =  "f_{\\nu CC1\\pi^{0} ; 3}";                 break;
+    case ( kNuisIntNuCC1pic1       ) : name =  "f_{\\nu CC1\\pi^{\\pm} ; 1}";              break;
+    case ( kNuisIntNuCC1pic2       ) : name =  "f_{\\nu CC1\\pi^{\\pm} ; 2}";              break;
+    case ( kNuisIntNuCC1pic3       ) : name =  "f_{\\nu CC1\\pi^{\\pm} ; 3}";              break;
     
-    case ( kNuisIntNuBarCC1piz1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 1}";            break;
-    case ( kNuisIntNuBarCC1piz2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 2}";            break;
-    case ( kNuisIntNuBarCC1piz3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} 3}";            break;
-    case ( kNuisIntNuBarCC1pic1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 1}";         break;
-    case ( kNuisIntNuBarCC1pic2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 2}";         break;
-    case ( kNuisIntNuBarCC1pic3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} 3}";         break;
+    case ( kNuisIntNuBarCC1piz1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} ; 1}";          break;
+    case ( kNuisIntNuBarCC1piz2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} ; 2}";          break;
+    case ( kNuisIntNuBarCC1piz3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{0} ; 3}";          break;
+    case ( kNuisIntNuBarCC1pic1    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} ; 1}";       break;
+    case ( kNuisIntNuBarCC1pic2    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} ; 2}";       break;
+    case ( kNuisIntNuBarCC1pic3    ) : name =  "f_{\\bar{\\nu} CC1\\pi^{\\pm} ; 3}";       break;
     
-    case ( kNuisIntNuCC2Pi         ) : name =  "f_{\\nu 2\\pi}";                            break;
-    case ( kNuisIntNuBarCC2Pi      ) : name =  "f_{\\bar{\\nu} 2\\pi}";                     break;
+    case ( kNuisIntNuCC2Pi         ) : name =  "f_{\\nu CC 2\\pi}";                        break;
+    case ( kNuisIntNuBarCC2Pi      ) : name =  "f_{\\bar{\\nu} CC 2\\pi}";                 break;
     
-    case ( kNuisIntNuDIS1          ) : name =  "f_{\\nu DIS 1}";                           break;
-    case ( kNuisIntNuDIS2          ) : name =  "f_{\\nu DIS 2}";                           break;
-    case ( kNuisIntNuDIS3          ) : name =  "f_{\\nu DIS 3}";                           break;
-    case ( kNuisIntNuBarDIS1       ) : name =  "f_{\\bar{\\nu} DIS 1}";                    break;
-    case ( kNuisIntNuBarDIS2       ) : name =  "f_{\\bar{\\nu} DIS 2}";                    break;
-    case ( kNuisIntNuBarDIS3       ) : name =  "f_{\\bar{\\nu} DIS 3}";                    break;
+    case ( kNuisIntNuDIS1          ) : name =  "f_{\\nu CC DIS ; 1}";                      break;
+    case ( kNuisIntNuDIS2          ) : name =  "f_{\\nu CC DIS ; 2}";                      break;
+    case ( kNuisIntNuDIS3          ) : name =  "f_{\\nu CC DIS ; 3}";                      break;
+    case ( kNuisIntNuBarDIS1       ) : name =  "f_{\\bar{\\nu} CC DIS ; 1}";               break;
+    case ( kNuisIntNuBarDIS2       ) : name =  "f_{\\bar{\\nu} CC DIS ; 2}";               break;
+    case ( kNuisIntNuBarDIS3       ) : name =  "f_{\\bar{\\nu} CC DIS ; 3}";               break;
     
-    case (kNuisIntNormNuCoherent        ) : name = "f_{\\nu coh}";                         break;
-    case (kNuisIntNormNuBarCoherent     ) : name = "f_{\\bar{\\nu} coh}";                  break;
-    case (kNuisIntNuNormNC              ) : name = "f_{\\nu nc}";                          break;
-    case (kNuisIntNuBarNormNC           ) : name = "f_{\\bar{\\nu} nc}";                   break;
-    case (kNuisIntNormNuMuToNuE         ) : name = "f_{\\nu_{e} / \\nu_{\\mu}}";                      break;
-    case (kNuisIntPiMeanFreePath        ) : name = "f_{\\pi mfp}";                         break;
-    case (kNuisIntNucMeanFreePath       ) : name = "f_{n_mfp}";                            break;
-    case (kNuisIntFracPiChargeExchange  ) : name = "f_{\\pi CEx}";                         break;
-    case (kNuisIntFracPiInelastic       ) : name = "f_{\\pi inel}";                        break;
-    case (kNuisIntFracPiAbsorb          ) : name = "f_{\\pi abs}";                         break;
-    case (kNuisIntFracPiProduction      ) : name = "f_{\\pi prod}";                        break;
-    case (kNuisIntFracNucChargeExchange ) : name = "f_{n CEx}";                            break;
-    case (kNuisIntFracNucInelastic      ) : name = "f_{n inel}";                           break;
-    case (kNuisIntFracNucAbsorb         ) : name = "f_{n abs}";                            break;
-    case (kNuisIntFracNucProduction     ) : name = "f_{n prod}";                           break;
+    case (kNuisIntNormNuCoherent        ) : name = "f_{\\nu CC Coh}";                      break;
+    case (kNuisIntNormNuBarCoherent     ) : name = "f_{\\bar{\\nu} CC Coh}";               break;
+    case (kNuisIntNuNormNC              ) : name = "f_{\\nu NC}";                          break;
+    case (kNuisIntNuBarNormNC           ) : name = "f_{\\bar{\\nu} NC}";                   break;
+    case (kNuisIntNormNuMuToNuE         ) : name = "f_{\\nu_{e} / \\nu_{\\mu}}";           break;
+    case (kNuisIntPiMeanFreePath        ) : name = "f_{FSI ; \\pi ; MFP}";                 break;
+    case (kNuisIntNucMeanFreePath       ) : name = "f_{FSI ; N ; MFP}";                    break;
+    case (kNuisIntFracPiChargeExchange  ) : name = "f_{FSI ; \\pi ; CEx}";                 break;
+    case (kNuisIntFracPiInelastic       ) : name = "f_{FSI ; \\pi ; Inel}";                break;
+    case (kNuisIntFracPiAbsorb          ) : name = "f_{FSI ; \\pi ; Abs}";                 break;
+    case (kNuisIntFracPiProduction      ) : name = "f_{FSI ; \\pi ; \\pi Prod}";           break;
+    case (kNuisIntFracNucChargeExchange ) : name = "f_{FSI ; N ; CEx}";                    break;
+    case (kNuisIntFracNucInelastic      ) : name = "f_{FSI ; N ; Inel}";                   break;
+    case (kNuisIntFracNucAbsorb         ) : name = "f_{FSI ; N ; Abs}";                    break;
+    case (kNuisIntFracNucProduction     ) : name = "f_{FSI ; N ; \\pi Prod}";              break;
 
     default                       : name = "--";    
   }
@@ -506,6 +506,14 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
       }
+      
+      // toggle FSI related params on/off
+      bool fix_fsi_params = (param_list_opt.find("fix-fsi-syst") != string::npos);
+      if(fix_fsi_params && util::IsFSI(p)) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
 
     }//ip
   }
@@ -556,6 +564,11 @@ bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
     return false;
   }
   return conv::kFitIsNuDetRelated[nd_index];
+}
+//____________________________________________________________________________
+bool valor::util::IsFSI(conv::PhysParamId_t p)
+{
+  return (p >= kNuisIntPiMeanFreePath && p<=kNuisIntFracNucProduction);
 }
 //____________________________________________________________________________
 bool util::ParamIsAppliedTo(
