@@ -101,7 +101,7 @@ static const ApplyMask_t ktApplyToAllNC    = ktApplyToNCElLike | ktApplyToAllNC1
 static const ApplyMask_t ktApplyToAllCoh = ktApplyToCCcoh | ktApplyToNCcoh;
 
 static const ApplyMask_t ktApplyToAll = ktApplyToAllCC | ktApplyToAllNC;
-static const ApplyMask_t ktApplyToAllButCoh = ktApplyToAll | (~ktApplyToAllCoh);
+static const ApplyMask_t ktApplyToAllButCoh = ktApplyToAll & (~ktApplyToAllCoh);
 
 // Samples
 static const ApplyMask_t ksApplyToAll = (
