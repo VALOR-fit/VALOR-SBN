@@ -25,8 +25,9 @@
 
 //
 #include <TFile.h>
+#include <TChain.h>
 #include <TTree.h>
-#include <TLeaf.h>
+#include <TSystem.h>
 
 // genie
 #include "Conventions/GBuild.h"
@@ -105,7 +106,7 @@ int main(int argc, char ** argv)
     }
     else {
       LOG("make_minidst", pFATAL) 
-        << "Unknown input file format. Please specify one of hpgartpc, lartpc or fgt";
+        << "Unknown input file format: "<<gOptInpFileFormat<<" - please specify one of hpgartpc, lartpc or fgt";
       exit(1);
     }
   }
@@ -122,36 +123,60 @@ int main(int argc, char ** argv)
   Long64_t nev = analysis_tree->GetEntries();
   LOG("make_minidst", pNOTICE) 
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
+  analysis_tree->GetEntry(0);
 
   NtpMCEventRecord * mcrec = 0;
-  int    sample        = -1;
-  int    reac_mode     = -1;
-  double enu_true      =  0.;
-  double enu_reco      =  0.;
-  double y_reco        =  0.;
-  double wght_pot      =  0.;
+  int    sample         = -1;
+  int    reac_mode      = -1;
+  double enu_true       =  0.;
+  double enu_reco       =  0.;
+  double y_reco         =  0.;
+  double wght_pot       =  0.;
+  
+  float enu_true_float =  0.;
+  float enu_reco_float =  0.;
+  float y_reco_float   =  0.;
+  
+  TBranch * branchptr = 0;
 
   if(gOptInpFileFormat == "hpgartpc") {
-    analysis_tree->SetBranchAddress("gmcrec",          &mcrec);
-    analysis_tree->SetBranchAddress("sample",          &sample);
-    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode);
-    //  analysis_tree->SetBranchAddress("Ev_All",          &enu_true);
-    analysis_tree->SetBranchAddress("Ev",              &enu_true);
-    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco);
-    analysis_tree->SetBranchAddress("y_reco",          &y_reco);
-    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot);
+    analysis_tree->SetBranchAddress("gmcrec",          &mcrec          , &branchptr);
+    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
+    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
+    //  analysis_tree->SetBranchAddress("Ev_All",          &enu_true   , &branchptr);
+    analysis_tree->SetBranchAddress("Ev",              &enu_true       , &branchptr);
+    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco       , &branchptr);
+    analysis_tree->SetBranchAddress("y_reco",          &y_reco         , &branchptr);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
   }
-  else
-    if(gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
-      analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec);
-      analysis_tree->SetBranchAddress("sample",          &sample);
-      analysis_tree->SetBranchAddress("reactionmode",    &reac_mode);
-      analysis_tree->SetBranchAddress("Ev",              &enu_true);
-      analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco);
-      analysis_tree->SetBranchAddress("y_reco",          &y_reco);
-      analysis_tree->SetBranchAddress("POTWeight",       &wght_pot);
-    }
-
+  else if (gOptInpFileFormat == "lartpc") {
+    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr);
+    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
+    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
+    analysis_tree->SetBranchAddress("Ev",              &enu_true       , &branchptr);
+    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco       , &branchptr);
+    analysis_tree->SetBranchAddress("y_reco",          &y_reco         , &branchptr);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
+  }
+  else if (gOptInpFileFormat == "fgt") {
+    analysis_tree->SetBranchStatus("*",0);
+    analysis_tree->SetBranchStatus("genie_mc_truth",1);
+    analysis_tree->SetBranchStatus("ana",1);
+    analysis_tree->SetBranchStatus("xyzzy",0);
+    analysis_tree->SetBranchStatus("trueFSParticles",0);
+    analysis_tree->SetBranchStatus("recoFSParticles",0);
+    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr);
+    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
+    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
+    analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr);
+    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr);
+    analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
+  }
+  else {
+    LOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
+  }
+  
   //
   // event loop
   //
@@ -169,7 +194,22 @@ int main(int argc, char ** argv)
       enu_true = enu_true/1000.;
       enu_reco = enu_reco/1000.;
     }
-
+    
+    // FGT output uses floats instead. Copy into the doubles we use
+    if (gOptInpFileFormat == "fgt") {
+      enu_true = enu_true_float;
+      enu_reco = enu_reco_float;
+      y_reco   = y_reco_float;
+    }
+    
+    LOG("make_minidist",pDEBUG) << "Read event: "
+      << "Sample   = "<<sample    << "; "
+      << "Etrue    = "<<enu_true  << " GeV; "
+      << "Ereco    = "<<enu_reco  << " GeV; "
+      << "Yreco    = "<<y_reco    << "; "
+      << "POTwght  = "<<wght_pot  << "; "
+      << "MCRecPtr = "<< mcrec;
+      
     if(!gOptDisableChecks) {
       //
       // ignore events that can not be used in the VALOR analysis
