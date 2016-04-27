@@ -92,9 +92,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("wght_pot",  &valor_minidst_wght_pot,  "wght_pot/D" );
 
   // open the ROOT file and get the TTree & its header
-
-  TFile fin(gOptInpFileName.c_str(),"READ");
-
+  
   string tree_name = "";
 
   if(gOptInpFileFormat == "hpgartpc") {
@@ -111,10 +109,11 @@ int main(int argc, char ** argv)
     }
   }
 
-  TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
-  if(!analysis_tree) {
+  TChain * analysis_tree = new TChain(tree_name.c_str());
+  analysis_tree->Add(gOptInpFileName.c_str());
+  if(!analysis_tree || !analysis_tree->GetEntries()) {
     LOG("make_minidst", pFATAL) 
-      << "No event tree " << tree_name 
+      << "Unable to read " << tree_name 
       << " in " << gOptInpFileFormat << "-format input file: "
       << gOptInpFileName;
     exit(1);
@@ -175,6 +174,7 @@ int main(int argc, char ** argv)
   }
   else {
     LOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
+    exit(-1);
   }
   
   //
@@ -264,10 +264,7 @@ int main(int argc, char ** argv)
 
     mcrec->Clear();
   }
-
-  LOG("make_minidst", pNOTICE) << "Closing input file";
-  fin.Close();
-
+  
   double f = 100. * (double)nev_accept / (double)nev;
   LOG("make_minidst", pNOTICE) 
     "Used " << f << "% (" << nev_accept << "/" << nev 
