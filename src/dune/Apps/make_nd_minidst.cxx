@@ -43,6 +43,7 @@
 #include "Utils/CmdLnArgParser.h"
 #include "Utils/RunOpt.h"
 // valor/dune
+#include "valor/Messenger/Messenger.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/Sample.h"
@@ -50,7 +51,6 @@
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
 using std::string;
-using namespace genie;
 using namespace valor;
 
 string gOptInpFileFormat;
@@ -63,10 +63,14 @@ void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
+  TString messenger_config("$VALOR_DUNE/config/verbosity.xml");
+  gSystem->ExpandPathName(messenger_config);
+  valor::Messenger::Instance()->Configure(messenger_config.Data());
+  
   GetCommandLineArgs (argc, argv);
 
   // Set print level
-  GHepRecord::SetPrintLevel(RunOpt::Instance()->EventRecordPrintLevel());
+  genie::GHepRecord::SetPrintLevel(genie::RunOpt::Instance()->EventRecordPrintLevel());
 
   // Create output mini-DST   
 
@@ -103,7 +107,7 @@ int main(int argc, char ** argv)
       tree_name = "dune_dst";
     }
     else {
-      LOG("make_minidst", pFATAL) 
+      VLOG("make_minidst", pFATAL) 
         << "Unknown input file format: "<<gOptInpFileFormat<<" - please specify one of hpgartpc, lartpc or fgt";
       exit(1);
     }
@@ -112,7 +116,7 @@ int main(int argc, char ** argv)
   TChain * analysis_tree = new TChain(tree_name.c_str());
   analysis_tree->Add(gOptInpFileName.c_str());
   if(!analysis_tree || !analysis_tree->GetEntries()) {
-    LOG("make_minidst", pFATAL) 
+    VLOG("make_minidst", pFATAL) 
       << "Unable to read " << tree_name 
       << " in " << gOptInpFileFormat << "-format input file: "
       << gOptInpFileName;
@@ -120,11 +124,11 @@ int main(int argc, char ** argv)
   }
 
   Long64_t nev = analysis_tree->GetEntries();
-  LOG("make_minidst", pNOTICE) 
+  VLOG("make_minidst", pNOTICE) 
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
   analysis_tree->GetEntry(0);
 
-  NtpMCEventRecord * mcrec = 0;
+  genie::NtpMCEventRecord * mcrec = 0;
   int    sample         = -1;
   int    reac_mode      = -1;
   double enu_true       =  0.;
@@ -173,7 +177,7 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
   }
   else {
-    LOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
+    VLOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
     exit(-1);
   }
   
@@ -185,7 +189,7 @@ int main(int argc, char ** argv)
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
-    LOG("make_minidst", pNOTICE) << "** Reading event: " << iev;
+    VLOG("make_minidst", pNOTICE) << "** Reading event: " << iev;
 
     analysis_tree->GetEntry(iev);
 
@@ -202,7 +206,7 @@ int main(int argc, char ** argv)
       y_reco   = y_reco_float;
     }
     
-    LOG("make_minidist",pDEBUG) << "Read event: "
+    VLOG("make_minidist",pDEBUG) << "Read event: "
       << "Sample   = "<<sample    << "; "
       << "Etrue    = "<<enu_true  << " GeV; "
       << "Ereco    = "<<enu_reco  << " GeV; "
@@ -215,29 +219,29 @@ int main(int argc, char ** argv)
       // ignore events that can not be used in the VALOR analysis
       //
       if(sample == conv::ksUndefined) {
-        LOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]";
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]";
         mcrec->Clear();
         continue;
       }
       if(enu_reco <= 0) {
-        LOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]";
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]";
         mcrec->Clear();
         continue;
       }
       if(y_reco < 0) {
-        LOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]";
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]";
         mcrec->Clear();
         continue;
       }
 
-      LOG("make_minidst", pNOTICE) << "+ Accepting event";
+      VLOG("make_minidst", pNOTICE) << "+ Accepting event";
     }
     nev_accept++;
 
     // retrieve GHEP event record and print it out.
-    NtpMCRecHeader rec_header = mcrec->hdr;
-    EventRecord &  event = *(mcrec->event);
-    LOG("make_minidst", pNOTICE) 
+    genie::NtpMCRecHeader rec_header = mcrec->hdr;
+    genie::EventRecord &  event = *(mcrec->event);
+    VLOG("make_minidst", pNOTICE) 
       << "GENIE MC truth info: " << event;
 
     valor_minidst_sample    = sample; 
@@ -249,7 +253,7 @@ int main(int argc, char ** argv)
     valor_minidst_wght_pot  = wght_pot; 
     valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2(true);
 
-    LOG("make_minidst", pNOTICE) 
+    VLOG("make_minidst", pNOTICE) 
       << "\n Information copied to VALOR DUNE/ND Mini-DST: "
       << "\n Beam          = " << valor_minidst_beam   
       << "\n Sample        = " << valor_minidst_sample    
@@ -266,55 +270,55 @@ int main(int argc, char ** argv)
   }
   
   double f = 100. * (double)nev_accept / (double)nev;
-  LOG("make_minidst", pNOTICE) 
+  VLOG("make_minidst", pNOTICE) 
     "Used " << f << "% (" << nev_accept << "/" << nev 
     << ") of input events.";
 
   // Saving VALOR mini-FST to output file 
-  LOG("make_minidst", pNOTICE) 
+  VLOG("make_minidst", pNOTICE) 
     << "Saving VALOR/DUNE mini-DST to: " << gOptOutFileName;
   TFile fout(gOptOutFileName.c_str(),"recreate");
   valor_minidst->Write();  
   fout.Close();
 
-  LOG("make_minidst", pNOTICE)  << "Done!";
+  VLOG("make_minidst", pNOTICE)  << "Done!";
 
   return 0;
 }
 //___________________________________________________________________
 void GetCommandLineArgs(int argc, char ** argv)
 {
-  //  LOG("make_minidst", pINFO) << "*** Parsing command line arguments";
+  //  VLOG("make_minidst", pINFO) << "*** Parsing command line arguments";
 
   // Common run options.
-  RunOpt::Instance()->ReadFromCommandLine(argc,argv);
+  genie::RunOpt::Instance()->ReadFromCommandLine(argc,argv);
 
   // Parse run options for this app
 
-  CmdLnArgParser parser(argc,argv);
+  genie::CmdLnArgParser parser(argc,argv);
 
   if ( parser.OptionExists("format") ) {
-    LOG("make_minidst", pNOTICE) << "Reading input format";
+    VLOG("make_minidst", pNOTICE) << "Reading input format";
     gOptInpFileFormat = parser.ArgAsString("format");
   } else {
-    LOG("make_minidst", pFATAL) 
+    VLOG("make_minidst", pFATAL) 
       << "Unspecified input file format - Exiting";
-    gAbortingInErr = true;
+    genie::gAbortingInErr = true;
     exit(1);
   }
 
   if ( parser.OptionExists("input") ) {
-    LOG("make_minidst", pNOTICE) << "Reading analysis file";
+    VLOG("make_minidst", pNOTICE) << "Reading analysis file";
     gOptInpFileName = parser.ArgAsString("input");
   } else {
-    LOG("make_minidst", pFATAL) 
+    VLOG("make_minidst", pFATAL) 
       << "Unspecified input file - Exiting";
-    gAbortingInErr = true;
+    genie::gAbortingInErr = true;
     exit(1);
   }
 
   if ( parser.OptionExists("output") ) {
-    LOG("make_minidst", pINFO) << "Reading output file name";
+    VLOG("make_minidst", pINFO) << "Reading output file name";
     gOptOutFileName = parser.ArgAsString("output");
   } else {
     gOptOutFileName = "out.root";
@@ -322,7 +326,7 @@ void GetCommandLineArgs(int argc, char ** argv)
 
   gOptDisableChecks = false;
   if ( parser.OptionExists("disable-checks") ) {
-    LOG("make_minidst", pINFO) << "Disabling checks and accepting all input events";
+    VLOG("make_minidst", pINFO) << "Disabling checks and accepting all input events";
     gOptDisableChecks = true;
   } 
 
