@@ -22,6 +22,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 // valor/dune
 #include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/UtlSystem.h"
 
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/ReacMode.h"
@@ -162,6 +163,12 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const EventRecord * event, b
   bool is_QE       = event->Summary()->ProcInfo().IsQuasiElastic() && !is_strange && !is_charm;
   bool is_MEC      = event->Summary()->ProcInfo().IsMEC();
   bool is_Coherent = event->Summary()->ProcInfo().IsCoherent();
+  bool is_NuEEl    = event->Summary()->ProcInfo().IsNuElectronElastic();
+  
+  if (is_NuEEl) {
+    LOG("UtlEventRec",pWARN)<<"Ignoring NuEEl event.";
+    return conv::kmUndefined;
+  }
   
   vector<int> primary_hadr_system;
   vector<int> final_hadr_system;
