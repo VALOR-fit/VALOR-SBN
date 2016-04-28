@@ -64,7 +64,7 @@ bool valor::util::GetHadronicSystems(const EventRecord * event, vector<int> & pr
   // (after the intranuclear rescattering step)
   //
 
-  LOG("gntpc", pDEBUG) << "Extracting final state hadronic system";
+  LOG("UtlEventRec", pDEBUG) << "Extracting final state hadronic system";
 
   while( (p = (GHepParticle *) piter.Next()) && study_hadsyst)
   {
@@ -110,7 +110,7 @@ bool valor::util::GetHadronicSystems(const EventRecord * event, vector<int> & pr
   // 'identical' with the final  state hadronic system
   //
 
-  LOG("gntpc", pDEBUG) << "Extracting primary hadronic system";
+  LOG("UtlEventRec", pDEBUG) << "Extracting primary hadronic system";
 
   ip = -1;
   TObjArrayIter piter_prim(event);
@@ -310,9 +310,10 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const EventRecord * event, b
     for (unsigned int ii = 0 ; ii < modes.size(); ii++) {
       mode_names << "\n "<<util::AsString(modes[ii]);
     }
-    LOG("make_minidst",pERROR)<<"Event filed into multiple exclusive modes: "
+    LOG("UtlEventRec",pERROR)<<"Event filed into multiple exclusive modes: "
       <<mode_names
       <<"\nFull record: "<<event;
+      util::Die(-1);
   }
 
   return conv::kmUndefined;
