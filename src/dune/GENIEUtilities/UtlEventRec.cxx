@@ -14,6 +14,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "TMath.h"
 
 #include "Conventions/GBuild.h"
+#include "Conventions/Units.h"
 #include "EVGCore/EventRecord.h"
 #include "GHEP/GHepParticle.h"
 #include "PDG/PDGCodes.h"
@@ -176,41 +177,51 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const EventRecord * event, b
   GetHadronicSystems(event,primary_hadr_system,final_hadr_system);
   
   // Set up variables for counting particles
-  int nP   = 0;
-  int nN   = 0;
-  int nPip = 0;
-  int nPim = 0;
-  int nPi0 = 0;
-  int nKp  = 0;
-  int nKm  = 0;
-  int nK0  = 0;
-  int nEM  = 0;
+  int nP        = 0;
+  int nN        = 0;
+  int nPip      = 0;
+  int nPim      = 0;
+  int nPi0      = 0;
+  int nKp       = 0;
+  int nKm       = 0;
+  int nK0       = 0;
+  int nEM       = 0;
+  int nOtherHad = 0;
+  int nNucleus  = 0;
+  int nUNKNOWN  = 0;
   
   const vector<int> & hadr_system = (use_final_state ? final_hadr_system : primary_hadr_system);
   // We exclude states with the right number of pions but other mesons.
   
   for (unsigned int ip = 0 ; ip < hadr_system.size(); ip++) {
     const GHepParticle * p = event->Particle(hadr_system[ip]);
-    if      (p->Pdg() == kPdgProton  || p->Pdg() == kPdgAntiProton)                         { nP++;   }
-    else if (p->Pdg() == kPdgNeutron || p->Pdg() == kPdgAntiNeutron)                        { nN++;   }
-    else if (p->Pdg() == kPdgPiP)                                                           { nPip++; }
-    else if (p->Pdg() == kPdgPiM)                                                           { nPim++; }
-    else if (p->Pdg() == kPdgPi0)                                                           { nPi0++; }
-    else if (p->Pdg() == kPdgKP)                                                            { nKp++;  }
-    else if (p->Pdg() == kPdgKM)                                                            { nKm++;  }
-    else if (p->Pdg() == kPdgK0    || p->Pdg() == kPdgAntiK0)                               { nK0++;  }
-    else if (p->Pdg() == kPdgGamma || p->Pdg() == kPdgElectron || p->Pdg() == kPdgPositron) { nEM++;  }
+    if      (p->Pdg() == kPdgProton  || p->Pdg() == kPdgAntiProton)                         { nP++;       }
+    else if (p->Pdg() == kPdgNeutron || p->Pdg() == kPdgAntiNeutron)                        { nN++;       }
+    else if (p->Pdg() == kPdgPiP)                                                           { nPip++;     }
+    else if (p->Pdg() == kPdgPiM)                                                           { nPim++;     }
+    else if (p->Pdg() == kPdgPi0)                                                           { nPi0++;     }
+    else if (p->Pdg() == kPdgKP)                                                            { nKp++;      }
+    else if (p->Pdg() == kPdgKM)                                                            { nKm++;      }
+    else if (p->Pdg() == kPdgK0    || p->Pdg() == kPdgAntiK0)                               { nK0++;      }
+    else if (p->Pdg() == kPdgGamma || p->Pdg() == kPdgElectron || p->Pdg() == kPdgPositron) { nEM++;      }
+    else if (genie::pdg::IsHadron(p->Pdg()))                                                { nOtherHad++;}
+    else if (genie::pdg::IsIon   (p->Pdg()))                                                { nNucleus++; }
+    else { nUNKNOWN++; }
       
+  }
+  
+  if (nUNKNOWN) {
+    LOG("UtlEventRec",pWARN)<<nUNKNOWN<<" unidentified particles in event:\n"<<event;
   }
   
   int nPiC = nPip+nPim;
   int nK   = nKp+nKm+nK0;
   
-  bool is_1piC     = (!is_Coherent) && (nPiC==1) && (nPi0==0) && (nK==0);
-  bool is_1pi0     = (!is_Coherent) && (nPiC==0) && (nPi0==1) && (nK==0); 
-  bool is_2piC     = (!is_Coherent) && (nPiC==2) && (nPi0==0) && (nK==0); 
-  bool is_2pi0     = (!is_Coherent) && (nPiC==0) && (nPi0==2) && (nK==0); 
-  bool is_1piC1pi0 = (!is_Coherent) && (nPiC==1) && (nPi0==1) && (nK==0); 
+  bool is_1piC     = (!is_Coherent) && (nPiC==1) && (nPi0==0) && (nK==0) && (nOtherHad==0);
+  bool is_1pi0     = (!is_Coherent) && (nPiC==0) && (nPi0==1) && (nK==0) && (nOtherHad==0); 
+  bool is_2piC     = (!is_Coherent) && (nPiC==2) && (nPi0==0) && (nK==0) && (nOtherHad==0); 
+  bool is_2pi0     = (!is_Coherent) && (nPiC==0) && (nPi0==2) && (nK==0) && (nOtherHad==0); 
+  bool is_1piC1pi0 = (!is_Coherent) && (nPiC==1) && (nPi0==1) && (nK==0) && (nOtherHad==0); 
   
   vector<conv::ReacMode_t> modes;
   
