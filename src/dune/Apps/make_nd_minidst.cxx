@@ -22,6 +22,8 @@
 //____________________________________________________________________________
 
 #include <string>
+#include <iostream>
+#include <sstream>
 
 //
 #include <TFile.h>
@@ -51,6 +53,7 @@
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
 using std::string;
+using std::ostringstream;
 using namespace valor;
 
 string gOptInpFileFormat;
@@ -131,14 +134,15 @@ int main(int argc, char ** argv)
   genie::NtpMCEventRecord * mcrec = 0;
   int    sample         = -1;
   int    reac_mode      = -1;
-  double enu_true       =  0.;
-  double enu_reco       =  0.;
-  double y_reco         =  0.;
-  double wght_pot       =  0.;
+  double enu_true       =  -999.;
+  double enu_reco       =  -999.;
+  double y_reco         =  -999.;
+  double wght_pot       =  -999.;
   
-  float enu_true_float =  0.;
-  float enu_reco_float =  0.;
-  float y_reco_float   =  0.;
+  float enu_true_float =  -999.;
+  float enu_reco_float =  -999.;
+  float y_reco_float   =  -999.;
+  float wght_pot_float =  -999.;
   
   TBranch * branchptr = 0;
 
@@ -152,29 +156,15 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("y_reco",          &y_reco         , &branchptr);
     analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
   }
-  else if (gOptInpFileFormat == "lartpc") {
+  else if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
     analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr);
-    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
-    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
-    analysis_tree->SetBranchAddress("Ev",              &enu_true       , &branchptr);
-    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco       , &branchptr);
-    analysis_tree->SetBranchAddress("y_reco",          &y_reco         , &branchptr);
-    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
-  }
-  else if (gOptInpFileFormat == "fgt") {
-    analysis_tree->SetBranchStatus("*",0);
-    analysis_tree->SetBranchStatus("genie_mc_truth",1);
-    analysis_tree->SetBranchStatus("ana",1);
-    analysis_tree->SetBranchStatus("xyzzy",0);
-    analysis_tree->SetBranchStatus("trueFSParticles",0);
-    analysis_tree->SetBranchStatus("recoFSParticles",0);
-    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr);
+    //~ analysis_tree->SetBranchAddress("sample_reco",          &sample         , &branchptr);
     analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
     analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
     analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr);
     analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr);
     analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr);
-    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot_float , &branchptr);
   }
   else {
     VLOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
@@ -189,7 +179,7 @@ int main(int argc, char ** argv)
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
-    VLOG("make_minidst", pNOTICE) << "** Reading event: " << iev;
+    VLOG("make_minidst", pINFO) << "** Reading event: " << iev;
 
     analysis_tree->GetEntry(iev);
 
@@ -200,10 +190,11 @@ int main(int argc, char ** argv)
     }
     
     // FGT output uses floats instead. Copy into the doubles we use
-    if (gOptInpFileFormat == "fgt") {
-      enu_true = enu_true_float;
-      enu_reco = enu_reco_float;
-      y_reco   = y_reco_float;
+    if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
+      enu_true   = enu_true_float;
+      enu_reco   = enu_reco_float;
+      y_reco     = y_reco_float;
+      wght_pot   = wght_pot_float;
     }
     
     VLOG("make_minidist",pDEBUG) << "Read event: "
@@ -234,16 +225,16 @@ int main(int argc, char ** argv)
         continue;
       }
 
-      VLOG("make_minidst", pNOTICE) << "+ Accepting event";
+      VLOG("make_minidst", pINFO) << "+ Accepting event";
     }
     nev_accept++;
 
     // retrieve GHEP event record and print it out.
     genie::NtpMCRecHeader rec_header = mcrec->hdr;
     genie::EventRecord &  event = *(mcrec->event);
-    VLOG("make_minidst", pNOTICE) 
+    VLOG("make_minidst", pDEBUG) 
       << "GENIE MC truth info: " << event;
-
+      
     valor_minidst_sample    = sample; 
     //~ valor_minidst_reac_mode = reac_mode; 
     valor_minidst_reac_mode = valor::util::DetermineReactionMode(mcrec->event);
@@ -252,8 +243,22 @@ int main(int argc, char ** argv)
     valor_minidst_y_reco    = y_reco; 
     valor_minidst_wght_pot  = wght_pot; 
     valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2(true);
+    
+    if(!gOptDisableChecks) {
+      //
+      // ignore events that can not be used in the VALOR analysis
+      //
+      if(valor_minidst_reac_mode == conv::kmUndefined) {
+        ostringstream eventlog;
+        event.Print(eventlog);
+        VLOG("make_minidst", pWARN) << "- Rejecting event [bad mode]\n";
+        VLOG("make_minidst", pINFO) << eventlog.str();
+        mcrec->Clear();
+        continue;
+      }
+    }
 
-    VLOG("make_minidst", pNOTICE) 
+    VLOG("make_minidst", pINFO) 
       << "\n Information copied to VALOR DUNE/ND Mini-DST: "
       << "\n Beam          = " << valor_minidst_beam   
       << "\n Sample        = " << valor_minidst_sample    
