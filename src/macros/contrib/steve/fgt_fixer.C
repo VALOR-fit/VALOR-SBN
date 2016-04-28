@@ -20,7 +20,11 @@ void loadlib(TString lib)
 void fgt_fixer(
   TString input_file,
   TString output_file = "dune_dst.root"
- ) {
+ )
+ {
+  TFile * f = new TFile(output_file.Data(),"RECREATE");
+  f->cd();
+  
   const char * treename = "dune_dst";
   
   loadlib("libCintex");
@@ -44,7 +48,6 @@ void fgt_fixer(
   
   int sample=-2, reactionmode=-2;
   float Ev=-9E9,Ev_reco=-9E9,y_reco=-9E9,POTWeight=0;
-  genie::NtpMCEventRecord * genie_mc_truth_out = = new genie::NtpMCEventRecord;
   
   TBranch * branchptr = NULL;
   ndtf::TaskForceAna * ana = NULL;
@@ -56,14 +59,11 @@ void fgt_fixer(
   chain.SetBranchStatus("ana",1);
   chain.SetBranchStatus("xyzzy",0);
   
-  TFile f(output_file.Data(),"RECREATE");
-  f.cd();
-  
   TTree * out_tree = new TTree(treename,treename);
   
   chain.SetBranchAddress("ana",&ana,&branchptr);
   
-  out_tree->Branch("genie_mc_truth","genie::NtpMCEventRecord", &genie_mc_truth_out, 32000, 1);
+  out_tree->Branch("genie_mc_truth","genie::NtpMCEventRecord", &genie_mc_truth, 32000, 1);
   out_tree->Branch("sample"        ,&sample        ,"sample/I"      );
   out_tree->Branch("reactionmode"  ,&reactionmode  ,"reactionmode/I");
   out_tree->Branch("Ev"            ,&Ev            ,"Ev/F"          );
@@ -81,7 +81,6 @@ void fgt_fixer(
     Ev_reco      = ana->Ev_reco;
     y_reco       = ana->y_reco;
     POTWeight    = ana->POTWeight;
-    genie_mc_truth_out->Copy(*genie_mc_truth);
     out_tree->Fill();
     if (!(i%5000)) {cout<<"Event #"<<i<<" of "<<chain.GetEntries()<<endl;}
   }
@@ -90,6 +89,6 @@ void fgt_fixer(
     
   out_tree->Write();
   cout<<"Written "<<out_tree->GetEntries()<<" events"<<endl;
-  f.Close();
+  f->Close();
   
 }
