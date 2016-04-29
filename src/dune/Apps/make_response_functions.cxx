@@ -183,29 +183,30 @@ int main(int argc, char ** argv)
     exit(1);
   }
   NtpMCEventRecord * curr_mcrec = 0;
-  Sample_t curr_sample     = ksUndefined;
-  int      curr_sample_int = -1;
-  double   curr_enu_reco   =  0.;
-  double   curr_y_reco     =  0.;
+  Sample_t curr_sample          = ksUndefined;
+  int      curr_sample_int      = -1;
+  double   curr_enu_reco        =  -999;
+  double   curr_y_reco          =  -999;
+  float    curr_enu_reco_float  =  -999;
+  float    curr_y_reco_float    =  -999;
   if(arg_format == "hpgartpc") {
     analysis_tree->SetBranchAddress("gmcrec",          &curr_mcrec);
     analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
     analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco);
     analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco);
   }
-  else
-    if(arg_format == "lartpc" || arg_format == "fgt") {
-      analysis_tree->SetBranchAddress("genie_mc_truth",  &curr_mcrec);
-      analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
-      analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco);
-      analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco);
-    }
-    else {
-      VLOG("make_response_func",pFATAL)
-        << "No recognised tree format.";
-      util::Die(-1); return(-1);
-    }
-
+  else if(arg_format == "lartpc" || arg_format == "fgt") {
+    analysis_tree->SetBranchAddress("genie_mc_truth",  &curr_mcrec);
+    analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
+    analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco_float);
+    analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco_float);
+  }
+  else {
+    VLOG("make_response_func",pFATAL)
+      << "No recognised tree format.";
+    util::Die(-1); return(-1);
+  }
+  
   // GENIE event reweighting interface
   GReWeight rw;
   rw.AdoptWghtCalc( "hadro_intranuke", new GReWeightINuke );
@@ -238,14 +239,14 @@ int main(int argc, char ** argv)
     for(Long64_t iev = 0; iev < nev; iev++) {
       VLOG("make_response_func", pNOTICE) << "** Reading event: " << iev;
       analysis_tree->GetEntry(iev);
-
+      
       // Consider only input sample
       curr_sample = util::SampleFromInt(curr_sample_int);
       if(curr_sample != sample) {
         curr_mcrec->Clear();
         continue;
       }
-
+      
       // Retrieve GHEP event record and print it out.
       NtpMCRecHeader rec_header = curr_mcrec->hdr;
       EventRecord &  event = *(curr_mcrec->event);
@@ -255,7 +256,12 @@ int main(int argc, char ** argv)
       // hpgartpc output in MeV, convert to GeV as in lartpc and fgt outputs
       if(arg_format == "hpgartpc") {
         curr_enu_reco = curr_enu_reco/1000.;
+      } // and the other two detectors are floats, not doubles
+      else if (arg_format == "lartpc" || arg_format == "fgt") {
+        curr_enu_reco = curr_enu_reco_float;
+        curr_y_reco = curr_y_reco_float;
       }
+      
       if(curr_enu_reco <= 0) {
         VLOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]";
         curr_mcrec->Clear();
@@ -266,7 +272,7 @@ int main(int argc, char ** argv)
         curr_mcrec->Clear();
         continue;
       }
-
+      
       // Get reaction mode
       ReacMode_t curr_mode = valor::util::DetermineReactionMode(&event, false);
       if(curr_mode == kmUndefined) {
@@ -322,8 +328,7 @@ int main(int argc, char ** argv)
       if (include_sb) {
         mc_templ_sb [itwk] [imode]      -> AddToEntry(wght, ienu_reco_sb, iy_reco_sb, ienu_true, iq2_true); 
       }
-      mc_templ_ob [itwk] [imode][izone] -> AddToEntry(wght, ienu_reco_ob, iy_reco_ob, ienu_true, iq2_true); 
-
+      mc_templ_ob [itwk] [imode][izone] -> AddToEntry(wght, ienu_reco_ob, iy_reco_ob, ienu_true, iq2_true);
       curr_mcrec->Clear();
     }// event loop
   }//tweaks
