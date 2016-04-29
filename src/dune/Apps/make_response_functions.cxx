@@ -54,6 +54,7 @@
 
 // valor
 #include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -77,10 +78,7 @@ using namespace valor::conv;
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
-  // Set up messenger
-  TString messenger_config("$VALOR_DUNE/config/verbosity.xml");
-  gSystem->ExpandPathName(messenger_config);
-  valor::Messenger::Instance()->Configure(messenger_config.Data());
+  Env::Instance()->AutoSet("dune");
   
   // Read command line arguments
   CmdLnArgList arg;
@@ -111,10 +109,17 @@ int main(int argc, char ** argv)
   else if (syst == kINukeTwkDial_FrInel_N   ) fit_param = kNuisIntFracNucInelastic; 
   else if (syst == kINukeTwkDial_FrAbs_N    ) fit_param = kNuisIntFracNucAbsorb; 
   else if (syst == kINukeTwkDial_FrPiProd_N ) fit_param = kNuisIntFracNucProduction; 
-
-  assert(beam      != kbUndefined   );
-  assert(sample    != ksUndefined   );
-  assert(fit_param != kPhypUndefined);
+  
+  if (beam==kbUndefined || sample == ksUndefined || fit_param != kPhypUndefined) {
+    std::cerr<<"Bad configuration."<<std::endl;
+    std::cerr<<"Beam:       "<<arg_beam       <<"\t => "<< util::AsString(beam)  <<std::endl;
+    std::cerr<<"Sample:     "<<arg_sample     <<"\t => "<< util::AsString(sample)<<std::endl;
+    std::cerr<<"GENIE Syst: "<<arg_systematic <<"\t => "<<GSyst::AsString(syst)  <<std::endl;
+    std::cerr<<" to VALOR   "<< "\t => "<<util::AsString(fit_param)<<std::endl;
+    assert(beam      != kbUndefined   );
+    assert(sample    != ksUndefined   );
+    assert(fit_param != kPhypUndefined);
+  }
 
   // Number of tweaks for the specified systematic parameter
   const int   inom          = 5;
