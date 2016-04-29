@@ -337,11 +337,14 @@ int main(int argc, char ** argv)
 
   fin.Close();
 
-  // Saving splines in specified output file 
+  // Output file - first make the substitutions for sample/parameter
+  TString ts_outfile = arg_out_file.c_str();
+  ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam     ).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample   ).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , util::AsString(fit_param).c_str());
   VLOG("make_response_func", pNOTICE) 
-    << "Saving VALOR response functions to: "
-    << arg.GetString("output");
-  TFile fout(arg_out_file.c_str(),"recreate");
+    << "Saving VALOR response functions to: "<<ts_outfile;
+  TFile fout(ts_outfile.Data(),"recreate");
   
   int n_splines_written = 0;
 
