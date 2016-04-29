@@ -110,16 +110,16 @@ int main(int argc, char ** argv)
   else if (syst == kINukeTwkDial_FrAbs_N    ) fit_param = kNuisIntFracNucAbsorb; 
   else if (syst == kINukeTwkDial_FrPiProd_N ) fit_param = kNuisIntFracNucProduction; 
   
-  if (beam==kbUndefined || sample == ksUndefined || fit_param != kPhypUndefined) {
+  if (beam==kbUndefined || sample == ksUndefined || fit_param == kPhypUndefined) {
     std::cerr<<"Bad configuration."<<std::endl;
     std::cerr<<"Beam:       "<<arg_beam       <<"\t => "<< util::AsString(beam)  <<std::endl;
     std::cerr<<"Sample:     "<<arg_sample     <<"\t => "<< util::AsString(sample)<<std::endl;
     std::cerr<<"GENIE Syst: "<<arg_systematic <<"\t => "<<GSyst::AsString(syst)  <<std::endl;
     std::cerr<<" to VALOR   "<< "\t => "<<util::AsString(fit_param)<<std::endl;
-    assert(beam      != kbUndefined   );
-    assert(sample    != ksUndefined   );
-    assert(fit_param != kPhypUndefined);
   }
+  assert(beam      != kbUndefined   );
+  assert(sample    != ksUndefined   );
+  assert(fit_param != kPhypUndefined);
 
   // Number of tweaks for the specified systematic parameter
   const int   inom          = 5;
