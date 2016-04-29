@@ -6,3 +6,4 @@ format                             |   string       |  mandatory  |   -
 beam                               |   string       |  mandatory  |   -
 sample                             |   string       |  mandatory  |   -
 systematic                         |   string       |  mandatory  |   -
+include-simple-binning             |   boolean      |  optional   |  false

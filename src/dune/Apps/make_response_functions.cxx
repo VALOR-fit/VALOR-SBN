@@ -30,6 +30,8 @@
 #include <TTree.h>
 #include <TLeaf.h>
 #include <TSpline.h>
+#include <TString.h>
+#include <TSystem.h>
 #include <TMath.h>
 
 // genie
@@ -39,7 +41,6 @@
 #include "Ntuple/NtpMCFormat.h"
 #include "Ntuple/NtpMCTreeHeader.h"
 #include "Ntuple/NtpMCEventRecord.h"
-#include "Messenger/Messenger.h"
 #include "PDG/PDGCodes.h"
 #include "PDG/PDGUtils.h"
 #include "PDG/PDGLibrary.h"
@@ -52,6 +53,7 @@
 #include "ReWeight/GReWeightINuke.h"
 
 // valor
+#include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -75,10 +77,15 @@ using namespace valor::conv;
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
+  // Set up messenger
+  TString messenger_config("$VALOR_DUNE/config/verbosity.xml");
+  gSystem->ExpandPathName(messenger_config);
+  valor::Messenger::Instance()->Configure(messenger_config.Data());
+  
   // Read command line arguments
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_DUNE/config/apps/make_response_functions.arg");
-  LOG("valor_dune", pNOTICE) << arg;
+  VLOG("valor_dune", pNOTICE) << arg;
 
   string arg_beam       = arg.GetString("beam");
   string arg_sample     = arg.GetString("sample");
@@ -87,6 +94,8 @@ int main(int argc, char ** argv)
   string arg_inp_file   = arg.GetString("input");
   string arg_out_file   = arg.GetString("output");
   
+  bool include_sb       = arg.GetBool("include-simple-binning");
+
   BeamConf_t beam      = util::BeamConfFromString (arg_beam      );
   Sample_t   sample    = util::SampleFromString   (arg_sample    );
   GSyst_t    syst      = GSyst::FromString        (arg_systematic);  
@@ -106,14 +115,14 @@ int main(int argc, char ** argv)
   assert(beam      != kbUndefined   );
   assert(sample    != ksUndefined   );
   assert(fit_param != kPhypUndefined);
-  
+
   // Number of tweaks for the specified systematic parameter
   const int   inom          = 5;
   const int   n_twks        = 11;
   const float twk_dial_min  = -5.0;
   const float twk_dial_max  =  5.0;
   const float twk_dial_step = (twk_dial_max - twk_dial_min) / (n_twks-1);
-  
+
   // Arrays to store the number of events in each MC template bin
   // for each systematic parameter tweak
   VALORArray * mc_templ_sb [n_twks] [kNReacModes]; 
@@ -126,27 +135,30 @@ int main(int argc, char ** argv)
     for(int imode = 0; imode < kNReacModes; imode++) {
       ReacMode_t m = kReactionModes[isample][imode];
       if(m == kmUndefined) continue;
-      const int n_y_reco_bins_sb = util::NumYrecoBinsSb(sample);
-      const int n_enu_true_bins  = util::NumEtrueBins(sample);
-      mc_templ_sb [itwk][imode] = 
-        new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins);
-      mc_templ_sb [itwk][imode] -> SetAll(0.);
+      const int n_y_reco_bins_sb  = util::NumYrecoBinsSb(sample);
+      const int n_enu_true_bins   = util::NumEtrueBinsXsec(sample);
+      const int n_q2_true_bins    = util::NumQ2trueBinsXsec(sample,m);
+      if (include_sb) {
+        mc_templ_sb [itwk][imode] = 
+          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
+        mc_templ_sb [itwk][imode] -> SetAll(0.);
+      }
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          const int n_enu_reco_bins = util::NumErecoBins(sample,izone);
-          const int n_y_reco_bins   = util::NumYrecoBins(sample,izone);
-          if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
-          mc_templ_ob [itwk][imode][izone] = 
-            new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins);
-          mc_templ_ob [itwk][imode][izone] -> SetAll(0.);
-       }
+        const int n_enu_reco_bins = util::NumErecoBinsXsec(sample,izone);
+        const int n_y_reco_bins   = util::NumYrecoBinsXsec(sample,izone);
+        if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
+        mc_templ_ob [itwk][imode][izone] = 
+          new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins, n_q2_true_bins);
+        mc_templ_ob [itwk][imode][izone] -> SetAll(0.);
+      }
     }
   }
-  
+
   // Open input file and get the HPGArTPC, LArTPC or FGT event tree
   TFile fin(arg_inp_file.c_str(),"READ");
   if (!fin.IsOpen()) {
-    LOG("make_response_func", pFATAL) 
-        << "Failed to open file "<<arg_inp_file.c_str();
+    VLOG("make_response_func", pFATAL) 
+      << "Failed to open file "<<arg_inp_file.c_str();
     exit(1);
   }
   string tree_name = "";
@@ -154,17 +166,17 @@ int main(int argc, char ** argv)
     tree_name = "GasTPCTree";
   } 
   else
-  if(arg_format == "lartpc" || arg_format == "fgt") {
+    if(arg_format == "lartpc" || arg_format == "fgt") {
       tree_name = "dune_dst";
-  }
-  else {
-      LOG("make_response_func", pFATAL) 
+    }
+    else {
+      VLOG("make_response_func", pFATAL) 
         << "Unknown input file format. Please specify one of hpgartpc, lartpc or fgt";
       exit(1);
-  }
+    }
   TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
   if(!analysis_tree) {
-    LOG("make_response_func", pFATAL) 
+    VLOG("make_response_func", pFATAL) 
       << "No event tree " << tree_name 
       << " in " << arg_format << "-format input file: "
       << arg.GetString("input");
@@ -182,17 +194,17 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco);
   }
   else
-  if(arg_format == "lartpc" || arg_format == "fgt") {
-    analysis_tree->SetBranchAddress("genie_mc_truth",  &curr_mcrec);
-    analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
-    analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco);
-    analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco);
-  }
-  else {
-    LOG("make_response_func",pFATAL)
-      << "No recognised tree format.";
-    util::Die(-1); return(-1);
-  }
+    if(arg_format == "lartpc" || arg_format == "fgt") {
+      analysis_tree->SetBranchAddress("genie_mc_truth",  &curr_mcrec);
+      analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
+      analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco);
+      analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco);
+    }
+    else {
+      VLOG("make_response_func",pFATAL)
+        << "No recognised tree format.";
+      util::Die(-1); return(-1);
+    }
 
   // GENIE event reweighting interface
   GReWeight rw;
@@ -202,7 +214,7 @@ int main(int argc, char ** argv)
   // I think we need to add all fates except the ones we want to act as cushion terms
   // So I add all mfp terms and all fates (except elastic) with nominal value
   // Only the input one will be tweaked later on.
-//syst_list.Init(syst);
+  //syst_list.Init(syst);
   syst_list.Init(kINukeTwkDial_MFP_pi,      0., twk_dial_min, twk_dial_max);
   syst_list.Init(kINukeTwkDial_MFP_N,       0., twk_dial_min, twk_dial_max);
   syst_list.Init(kINukeTwkDial_FrCEx_pi,    0., twk_dial_min, twk_dial_max); 
@@ -213,182 +225,199 @@ int main(int argc, char ** argv)
   syst_list.Init(kINukeTwkDial_FrInel_N,    0., twk_dial_min, twk_dial_max);
   syst_list.Init(kINukeTwkDial_FrAbs_N,     0., twk_dial_min, twk_dial_max);
   syst_list.Init(kINukeTwkDial_FrPiProd_N,  0., twk_dial_min, twk_dial_max);
-  
+
   // Systematic tweaks
   for(int itwk = 0; itwk < n_twks; itwk++) {
 
-     double twk_dial = twk_dial_min + itwk * twk_dial_step;  
-     syst_list.Set(syst, twk_dial);
-     rw.Reconfigure();
-    
-      // Event loop
-      Long64_t nev = analysis_tree->GetEntries();
-      for(Long64_t iev = 0; iev < nev; iev++) {
-        LOG("make_response_func", pNOTICE) << "** Reading event: " << iev;
-        analysis_tree->GetEntry(iev);
+    double twk_dial = twk_dial_min + itwk * twk_dial_step;  
+    syst_list.Set(syst, twk_dial);
+    rw.Reconfigure();
 
-        // Consider only input sample
-	curr_sample = util::SampleFromInt(curr_sample_int);
-        if(curr_sample != sample) {
-          curr_mcrec->Clear();
-          continue;
-        }
-    
-        // Retrieve GHEP event record and print it out.
-        NtpMCRecHeader rec_header = curr_mcrec->hdr;
-        EventRecord &  event = *(curr_mcrec->event);
-        LOG("make_response_func", pNOTICE) 
-           << "GENIE MC truth info: " << event;
+    // Event loop
+    Long64_t nev = analysis_tree->GetEntries();
+    for(Long64_t iev = 0; iev < nev; iev++) {
+      VLOG("make_response_func", pNOTICE) << "** Reading event: " << iev;
+      analysis_tree->GetEntry(iev);
 
-        // hpgartpc output in MeV, convert to GeV as in lartpc and fgt outputs
-        if(arg_format == "hpgartpc") {
-           curr_enu_reco = curr_enu_reco/1000.;
-        }
-        if(curr_enu_reco <= 0) {
-           LOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]";
-           curr_mcrec->Clear();
-           continue;
-        }
-        if(curr_y_reco < 0) {
-           LOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]";
-           curr_mcrec->Clear();
-           continue;
-        }
+      // Consider only input sample
+      curr_sample = util::SampleFromInt(curr_sample_int);
+      if(curr_sample != sample) {
+        curr_mcrec->Clear();
+        continue;
+      }
 
-	// Get reaction mode
-        ReacMode_t curr_mode = valor::util::DetermineReactionMode(&event, true);
-        if(curr_mode == kmUndefined) {
-           LOG("make_minidst", pNOTICE) << "- Rejecting event [Undefined mode]";
-           curr_mcrec->Clear();
-           continue;
-        }
-        int imode = arridx->ReacModeIdx(curr_sample, curr_mode);       
+      // Retrieve GHEP event record and print it out.
+      NtpMCRecHeader rec_header = curr_mcrec->hdr;
+      EventRecord &  event = *(curr_mcrec->event);
+      VLOG("make_response_func", pINFO) 
+        << "GENIE MC truth info: " << event;
 
-	// Get required true kinematical variables
-        double curr_enu_true = event.Particle(0)->E();
-        double curr_q2_true  = event.Summary()->KinePtr()->Q2();
-	
-        // Calculate event weight
-        double wght = rw.CalcWeight(event);
+      // hpgartpc output in MeV, convert to GeV as in lartpc and fgt outputs
+      if(arg_format == "hpgartpc") {
+        curr_enu_reco = curr_enu_reco/1000.;
+      }
+      if(curr_enu_reco <= 0) {
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]";
+        curr_mcrec->Clear();
+        continue;
+      }
+      if(curr_y_reco < 0) {
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]";
+        curr_mcrec->Clear();
+        continue;
+      }
+
+      // Get reaction mode
+      ReacMode_t curr_mode = valor::util::DetermineReactionMode(&event, false);
+      if(curr_mode == kmUndefined) {
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [Undefined mode]";
+        curr_mcrec->Clear();
+        continue;
+      }
+      int imode = arridx->ReacModeIdx(curr_sample, curr_mode);       
+
+      // Get required true kinematical variables
+      double curr_enu_true = event.Particle(0)->E();
+      double curr_q2_true  = event.Summary()->KinePtr()->Q2(true);
+
+      // Calculate event weight
+      double wght = rw.CalcWeight(event);
       //if(wght <    0) wght = 1; // needed?
       //if(wght > 9999) wght = 1; // needed?
 
-        // Get enu_true, enu_reco, y_reco array indices
-        const int izone = util::BinZone(curr_sample, curr_enu_reco, curr_y_reco);
-        if(izone < 0) {
-	  LOG("make_minidst", pNOTICE) << "- Rejecting event [Negative zone!]";
-          curr_mcrec->Clear();
-          continue;
-        }
-        const int      n_enu_true_bins       = util::NumEtrueBins(curr_sample);
-        const int      n_enu_reco_bins_ob    = util::NumErecoBins(curr_sample,izone);
-        const int      n_y_reco_bins_ob      = util::NumYrecoBins(curr_sample,izone);
-        const int      n_y_reco_bins_sb      = util::NumYrecoBinsSb(curr_sample);
-        const double * enu_true_bin_edges    = util::EtrueBinEdges(curr_sample);
-        const double * y_reco_bin_edges_sb   = util::YrecoBinEdgesSb(curr_sample);
-        const double * enu_reco_bin_edges_ob = util::ErecoBinEdges(curr_sample,izone);
-        const double * y_reco_bin_edges_ob   = util::YrecoBinEdges(curr_sample,izone);
-
-        // Protect against vars at upper limit (eg y_reco = 1, set by hand for NC events) as
-        // the binary search below will give an index out of limits
-	const double epsilon = 1E-10;
-        if(curr_enu_reco >= kErecoMax) { curr_enu_reco = curr_enu_reco - epsilon; }
-        if(curr_y_reco   >= kYrecoMax) { curr_y_reco   = curr_y_reco   - epsilon; } 
-
-        // Repeat, finding the indices for the template versions using a simple binning scheme
-        int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb,      kErecoBinEdgesSb,      curr_enu_reco);
-        int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)n_y_reco_bins_sb,   y_reco_bin_edges_sb,   curr_y_reco  );	
-        // Work-out the index using the bin-edge array defining the variable-size binning scheme
-        int ienu_true    = TMath::BinarySearch(1+(Long_t)n_enu_true_bins,    enu_true_bin_edges,    curr_enu_true);
-        int ienu_reco_ob = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins_ob, enu_reco_bin_edges_ob, curr_enu_reco);
-        int iy_reco_ob   = TMath::BinarySearch(1+(Long_t)n_y_reco_bins_ob,   y_reco_bin_edges_ob,   curr_y_reco  );
-
-        mc_templ_sb [itwk] [imode]        -> AddToEntry(wght, ienu_reco_sb, iy_reco_sb, ienu_true); 
-        mc_templ_ob [itwk] [imode][izone] -> AddToEntry(wght, ienu_reco_ob, iy_reco_ob, ienu_true); 
-	
+      // Get enu_true, enu_reco, y_reco array indices
+      const int izone = util::BinZone(curr_sample, curr_enu_reco, curr_y_reco);
+      if(izone < 0) {
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [Negative zone!]";
         curr_mcrec->Clear();
-      }// event loop
+        continue;
+      }
+      const int      n_enu_true_bins       = util::NumEtrueBinsXsec  (curr_sample);
+      const double * enu_true_bin_edges    = util::EtrueBinEdgesXsec (curr_sample);
+      const int      n_q2_true_bins        = util::NumQ2trueBinsXsec (curr_sample,curr_mode);
+      const double * q2_true_bin_edges     = util::Q2trueBinEdgesXsec(curr_sample,curr_mode);
+      
+      const int      n_enu_reco_bins_ob    = util::NumErecoBinsXsec  (curr_sample,izone);
+      const double * enu_reco_bin_edges_ob = util::ErecoBinEdgesXsec (curr_sample,izone);
+      const int      n_y_reco_bins_sb      = util::NumYrecoBinsSb    (curr_sample);
+      const double * y_reco_bin_edges_sb   = util::YrecoBinEdgesSb   (curr_sample);
+      const int      n_y_reco_bins_ob      = util::NumYrecoBinsXsec  (curr_sample,izone);
+      const double * y_reco_bin_edges_ob   = util::YrecoBinEdgesXsec (curr_sample,izone);
+
+      // Protect against vars at upper limit (eg y_reco = 1, set by hand for NC events) as
+      // the binary search below will give an index out of limits
+      const double epsilon = 1E-10;
+      if(curr_enu_reco >= kErecoMax) { curr_enu_reco = curr_enu_reco - epsilon; }
+      if(curr_y_reco   >= kYrecoMax) { curr_y_reco   = curr_y_reco   - epsilon; } 
+
+      // Repeat, finding the indices for the template versions using a simple binning scheme
+      int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb,      kErecoBinEdgesSb,      curr_enu_reco);
+      int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)n_y_reco_bins_sb,   y_reco_bin_edges_sb,   curr_y_reco  );
+      // Work-out the index using the bin-edge array defining the variable-size binning scheme
+      int ienu_true    = TMath::BinarySearch(1+(Long_t)n_enu_true_bins,    enu_true_bin_edges,    curr_enu_true);
+      int iq2_true     = TMath::BinarySearch(1+(Long_t)n_q2_true_bins ,    q2_true_bin_edges ,    curr_q2_true);
+      int ienu_reco_ob = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins_ob, enu_reco_bin_edges_ob, curr_enu_reco);
+      int iy_reco_ob   = TMath::BinarySearch(1+(Long_t)n_y_reco_bins_ob,   y_reco_bin_edges_ob,   curr_y_reco  );
+
+      if (include_sb) {
+        mc_templ_sb [itwk] [imode]      -> AddToEntry(wght, ienu_reco_sb, iy_reco_sb, ienu_true, iq2_true); 
+      }
+      mc_templ_ob [itwk] [imode][izone] -> AddToEntry(wght, ienu_reco_ob, iy_reco_ob, ienu_true, iq2_true); 
+
+      curr_mcrec->Clear();
+    }// event loop
   }//tweaks
 
-  LOG("make_response_func", pNOTICE) << "Closing input file";
+  VLOG("make_response_func", pNOTICE) << "Closing input file";
 
   fin.Close();
 
   // Saving splines in specified output file 
-  LOG("make_response_func", pNOTICE) 
+  VLOG("make_response_func", pNOTICE) 
     << "Saving VALOR response functions to: "
     << arg.GetString("output");
   TFile fout(arg_out_file.c_str(),"recreate");
+  
+  int n_splines_written = 0;
 
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
     const int n_enu_reco_bins_sb = kNErecoBinsSb;    
     const int n_y_reco_bins_sb   = util::NumYrecoBinsSb(sample);
-    const int n_enu_true_bins    = util::NumEtrueBins(sample);
-    for(int ienu_reco = 0; ienu_reco < n_enu_reco_bins_sb; ienu_reco++) {
-      for(int iy_reco = 0;  iy_reco <  n_y_reco_bins_sb; iy_reco++) {
-         for(int ienu_true = 0; ienu_true < n_enu_true_bins; ienu_true++) {
-	   int iq2_true = 0; // HERE - CONVERT TO LOOP
-	   {
-                 double y[n_twks] = { 0 };
-                 double x[n_twks] = { 0 };    
-                 for(int itwk = 0; itwk < n_twks; itwk++) {
-		    double twk_dial = twk_dial_min + itwk * twk_dial_step;  
-		    double nevents  = mc_templ_sb [itwk][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true);
-		    double nevents0 = mc_templ_sb [inom][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true);
-                    y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-                    x[itwk] = twk_dial;                   
-                 }//itwk
-	         const char * ccb   = arg_beam.c_str();
-	         const char * ccs   = arg_sample.c_str();
-	         const char * ccm   = util::ModeAsString(m).c_str();
-	         const char * ccp   = util::ParamAsString(fit_param).c_str();
-                 const char * name  = Form("spl_%s_%s_%s_%s_%d_%d_%d_%d",ccb,ccs,ccm,ccp,ienu_true,iq2_true,ienu_reco, iy_reco);
-	         const char * title = "blah";
-                 TSpline3 * spl = new TSpline3(name, x, y, n_twks, "0");
-	         spl->SetTitle(title);
-	         spl->Write();
-	    }//iq2_true
-         }//ienu_true
-      }//iy_reco
-    }//ienu_reco    
+    const int n_enu_true_bins    = util::NumEtrueBinsXsec(sample);
+    const int n_q2_true_bins     = util::NumQ2trueBinsXsec(sample, m);
+    if (include_sb) {
+      for(int ienu_reco = 0; ienu_reco < n_enu_reco_bins_sb; ienu_reco++) {
+        for(int iy_reco = 0;  iy_reco <  n_y_reco_bins_sb; iy_reco++) {
+          for(int ienu_true = 0; ienu_true < n_enu_true_bins; ienu_true++) {
+            for(int iq2_true = 0; iq2_true < n_q2_true_bins; iq2_true++) {
+              double y[n_twks] = { 0 };
+              double x[n_twks] = { 0 };    
+              for(int itwk = 0; itwk < n_twks; itwk++) {
+                double twk_dial = twk_dial_min + itwk * twk_dial_step;  
+                double nevents  = mc_templ_sb [itwk][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
+                double nevents0 = mc_templ_sb [inom][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
+                y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
+                x[itwk] = twk_dial;                   
+              }//itwk
+              const char * ccb   = arg_beam.c_str();
+              const char * ccs   = arg_sample.c_str();
+              const char * ccm   = util::ModeAsString(m).c_str();
+              const char * ccp   = util::ParamAsString(fit_param).c_str();
+              TString name = TString::Format("spl_sb_%s_%s_%s_%s_%d_%d_%d_%d",ccb,ccs,ccm,ccp,ienu_true,iq2_true,ienu_reco,iy_reco);
+              TString title = name; // Make this contain real kinematic ranges
+              TSpline3 spl(title.Data(), x, y, n_twks, "0");
+              spl.SetName(name.Data());
+              spl.Write();
+              n_splines_written++;
+              if (n_splines_written%1000==0) {
+                VLOG("make_response_func",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
+              }
+            }//iq2_true
+          }//ienu_true
+        }//iy_reco
+      }//ienu_reco
+    }//if include sb
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
-        const int n_enu_reco_bins_ob = util::NumErecoBins(sample,izone);
-        const int n_y_reco_bins_ob   = util::NumYrecoBins(sample,izone);
-        for(int ienu_reco = 0; ienu_reco < n_enu_reco_bins_ob; ienu_reco++) {
-           for(int iy_reco = 0;  iy_reco <  n_y_reco_bins_ob; iy_reco++) {
-              for(int ienu_true = 0; ienu_true < n_enu_true_bins; ienu_true++) {
-	          int iq2_true = 0; // HERE - CONVERT TO LOOP
-	          {		
-                     double y[n_twks] = { 0 };
-                     double x[n_twks] = { 0 };    
-                     for(int itwk = 0; itwk < n_twks; itwk++) {
-		         double twk_dial = twk_dial_min + itwk * twk_dial_step;  
-		         double nevents  = mc_templ_ob [itwk][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true);
-		         double nevents0 = mc_templ_ob [inom][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true);
-                         y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-                         x[itwk] = twk_dial;                   
-                     }//itwk
-	             const char * ccb   = arg_beam.c_str();
-	             const char * ccs   = arg_sample.c_str();
-	             const char * ccm   = util::ModeAsString(m).c_str();
-	             const char * ccp   = util::ParamAsString(fit_param).c_str();
-                     const char * name  = Form("spl_%s_%s_%s_%s_%d_%d_%d_%d_%d",ccb,ccs,ccm,ccp,izone,ienu_true,iq2_true,ienu_reco, iy_reco);
-                     const char * title = "blah";
-                     TSpline3 * spl = new TSpline3(name, x, y, n_twks, "0");
-		     spl->SetTitle(title);
-    	             spl->Write();
-	          }//iq2_true
-              }//ienu_true
-           }//iy_reco
-        }//ienu_reco    
+      const int n_enu_reco_bins_ob = util::NumErecoBinsXsec(sample,izone);
+      const int n_y_reco_bins_ob   = util::NumYrecoBinsXsec(sample,izone);
+      for(int ienu_reco = 0; ienu_reco < n_enu_reco_bins_ob; ienu_reco++) {
+        for(int iy_reco = 0;  iy_reco <  n_y_reco_bins_ob; iy_reco++) {
+          for(int ienu_true = 0; ienu_true < n_enu_true_bins; ienu_true++) {
+            for(int iq2_true = 0; iq2_true < n_q2_true_bins; iq2_true++) {
+              double y[n_twks] = { 0 };
+              double x[n_twks] = { 0 };    
+              for(int itwk = 0; itwk < n_twks; itwk++) {
+                double twk_dial = twk_dial_min + itwk * twk_dial_step;  
+                double nevents  = mc_templ_ob [itwk][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
+                double nevents0 = mc_templ_ob [inom][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
+                y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
+                x[itwk] = twk_dial;                   
+              }//itwk
+              const char * ccb   = arg_beam.c_str();
+              const char * ccs   = arg_sample.c_str();
+              const char * ccm   = util::ModeAsString(m).c_str();
+              const char * ccp   = util::ParamAsString(fit_param).c_str();
+              TString name  = TString::Format("spl_%s_%s_%s_%s_%d_%d_%d_%d_%d",ccb,ccs,ccm,ccp,izone,ienu_true,iq2_true,ienu_reco, iy_reco);
+              TString title = name; // Make this contain real kinematic ranges
+              TSpline3 spl(title.Data(), x, y, n_twks, "0");
+              spl.SetName(name.Data());
+              spl.Write();
+              n_splines_written++;
+              if (n_splines_written%1000==0) {
+                VLOG("make_response_func",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
+              }
+            }//iq2_true
+          }//ienu_true
+        }//iy_reco
+      }//ienu_reco    
     }//izone
   }//imode
 
   fout.Close();
 
-  LOG("make_response_func", pNOTICE)  << "Done!";
+  VLOG("make_response_func", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
 
   return 0;
 }
