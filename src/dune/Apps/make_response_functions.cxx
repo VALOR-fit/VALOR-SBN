@@ -69,6 +69,9 @@
 #include "dune/Conventions/ArrIdx.h"
 
 #include "dune/GENIEUtilities/UtlEventRec.h"
+#include "dune/Utilities/DuneRFL.h"
+#include "dune/Utilities/KinematicBin.h"
+
 
 using std::string;
 using genie::EventRecord;
@@ -120,6 +123,9 @@ int main(int argc, char ** argv)
   assert(beam      != kbUndefined   );
   assert(sample    != ksUndefined   );
   assert(fit_param != kPhypUndefined);
+  
+  // Make an RFL to generate the spline names
+  util::DuneRFL rfl(beam,sample,1,&fit_param);
 
   // Number of tweaks for the specified systematic parameter
   const int   inom          = 5;
@@ -374,11 +380,13 @@ int main(int argc, char ** argv)
                 y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
                 x[itwk] = twk_dial;                   
               }//itwk
-              const char * ccb   = arg_beam.c_str();
-              const char * ccs   = arg_sample.c_str();
-              const char * ccm   = util::ModeAsString(m).c_str();
-              const char * ccp   = util::ParamAsString(fit_param).c_str();
-              TString name = TString::Format("spl_sb_%s_%s_%s_%s_%d_%d_%d_%d",ccb,ccs,ccm,ccp,ienu_true,iq2_true,ienu_reco,iy_reco);
+              util::KinematicBin kb;
+              kb.true1 = ienu_true;
+              kb.true2 = iq2_true;
+              kb.reco1 = ienu_reco;
+              kb.reco2 = iy_reco;
+              kb.zone  = -1; // HACK - simple binning get zone -1 to avoid name collisions with normal splines. Should probably update the pattern here.
+              TString name  = rfl.BuildSplineName(m,fit_param,kb);
               TString title = name; // Make this contain real kinematic ranges
               TSpline3 spl(title.Data(), x, y, n_twks, "0");
               spl.SetName(name.Data());
@@ -408,11 +416,13 @@ int main(int argc, char ** argv)
                 y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
                 x[itwk] = twk_dial;                   
               }//itwk
-              const char * ccb   = arg_beam.c_str();
-              const char * ccs   = arg_sample.c_str();
-              const char * ccm   = util::ModeAsString(m).c_str();
-              const char * ccp   = util::ParamAsString(fit_param).c_str();
-              TString name  = TString::Format("spl_%s_%s_%s_%s_%d_%d_%d_%d_%d",ccb,ccs,ccm,ccp,izone,ienu_true,iq2_true,ienu_reco, iy_reco);
+              util::KinematicBin kb;
+              kb.true1 = ienu_true;
+              kb.true2 = iq2_true;
+              kb.reco1 = ienu_reco;
+              kb.reco2 = iy_reco;
+              kb.zone  = izone;
+              TString name  = rfl.BuildSplineName(m,fit_param,kb);
               TString title = name; // Make this contain real kinematic ranges
               TSpline3 spl(title.Data(), x, y, n_twks, "0");
               spl.SetName(name.Data());
