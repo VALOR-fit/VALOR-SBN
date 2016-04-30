@@ -112,6 +112,9 @@ private:
   
   // Cache whether or not to apply a given parameter to a given template
   bool fParamIsAppliedTo[conv::kNReacModes][conv::kNFitParams];
+  
+  // Cache whether or not a parameter uses splines
+  bool fParamHasSplines[conv::kNFitParams];
 
   PhysHypothesis fPhysHypothesis;
 
@@ -154,7 +157,13 @@ private:
   VALORArray * fMCTTunOb  [conv::kNReacModes][conv::kNMaxBinZones]; 
   VALORArray * fMCTSysOb  [conv::kNReacModes][conv::kNMaxBinZones]; 
   VALORArray * fMCTFinOb  [conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCStatOb  [conv::kNReacModes][conv::kNMaxBinZones]; // MC statistics 
+  VALORArray * fMCStatOb  [conv::kNReacModes][conv::kNMaxBinZones]; // MC statistics
+  
+  // We'll keep our response function pointers in a VALORArray of longs.
+  // If we move to C++ 11, should use intptr_t instead.
+  // This has an extra dimension above those  in the arrays above - parameter
+  VALORArrayL * fRFPtr[conv::kNReacModes][conv::kNMaxBinZones];
+  
   // Below are MCT versions the use a simple (~fine and ~regular) binning throughout the whole range.
   // These templates are not used in the fit, but mainly for the visualization of the fit results.
   // As such, they are not all filled-in in each iteration of the fit but, typically, at the end of the fit or upon request.

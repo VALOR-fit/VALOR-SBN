@@ -81,8 +81,9 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   this->Zero();
 
   TString ts_opt(opt);
-  bool force_use_dst = ts_opt.Contains("forcedst");
-
+  bool force_use_dst    = ts_opt.Contains("forcedst");
+  bool skip_spline_read = ts_opt.Contains("nosplines");
+  
   LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
 
@@ -170,7 +171,56 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   LOG("GenericSingleSampleFitModel",pINFO) << "Configuring the Response Function Library... \n\n";
   // And now get the RFL
   fRFL = new util::DuneRFL(fBeam, fSample, conv::kNFitParamsWithSplines,conv::kFitParamsWithSplines);
-  fRFL->Read(file, opt);
+  if (!skip_spline_read) {
+    fRFL->Read(file, opt);
+  
+  
+    // Fill the spline array
+    const int n_true1_bins = util::NumEtrueBins(fSample);
+    const double * true1_bin_edges = util::EtrueBinEdges(fSample);
+
+    int isample = fArrIdx->SampleIdx(fBeam,fSample);
+
+    for(int imode = 0; imode < kNReacModes; imode++) {
+      ReacMode_t m = kReactionModes[isample][imode];
+      if(m == kmUndefined) continue;
+      const int n_true2_bins = util::NumQ2trueBins(fSample,m);
+      const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
+      
+      for(int izone = 0; izone < kNMaxBinZones; izone++) {
+        util::KinematicPoint kp;
+        const int n_reco1_bins = util::NumErecoBins(fSample,izone);
+        const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
+        const double * reco1_bin_edges = util::ErecoBinEdges(fSample,izone);
+        const double * reco2_bin_edges = util::YrecoBinEdges(fSample,izone);
+        for(int it1 = 0; it1 < n_true1_bins; it1++) {
+          double true1 = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2.;
+          kp.true1 = true1;
+          for(int it2 = 0; it2 < n_true2_bins; it2++) {
+            double true2 = (true2_bin_edges[it2]+true2_bin_edges[it2+1])/2.;
+            kp.true2 = true2;
+            for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
+              double reco1 = (reco1_bin_edges[ir1]+reco1_bin_edges[ir1+1])/2.;
+              kp.reco1 = reco1;
+              for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
+                double reco2 = (reco2_bin_edges[ir2]+reco2_bin_edges[ir2+1])/2.;
+                kp.reco2 = reco2;
+                util::KinematicBin kb = fRFL->GetBin(kp,m);
+                for (int ip = 0 ; ip < kNFitParamsWithSplines ; ip++) {
+                  PhysParamId_t p = kFitParamsWithSplines[ip];
+                  const TSpline * spl = fRFL->GetSpline(m,p,kb);
+                  Long64_t spl_as_int = reinterpret_cast<Long64_t>(spl);
+                  fRFPtr[imode][izone]->SetEntry(spl_as_int,ir1,ir2,it1,it2,ip);
+                }//ip
+              }//ir2
+            }//ir1
+          }//it2
+        }//it1
+      }//izone
+    }//imode
+    LOG("GenericSingleSampleFitModel",pINFO) << "Spline array filled... \n\n";
+  }
+    
 
   LOG("GenericSingleSampleFitModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
 
@@ -823,12 +873,13 @@ void GenericSingleSampleFitModel::Init(void)
 
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
       // MC templates
-      fMCTNullOb[imode][izone] = true;
-      fMCTNomOb [imode][izone] = 0;
-      fMCTTunOb [imode][izone] = 0;
-      fMCTSysOb [imode][izone] = 0;
-      fMCTFinOb [imode][izone] = 0;
-      fMCStatOb [imode][izone] = 0;
+      fMCTNullOb [imode][izone] = true;
+      fMCTNomOb  [imode][izone] = 0;
+      fMCTTunOb  [imode][izone] = 0;
+      fMCTSysOb  [imode][izone] = 0;
+      fMCTFinOb  [imode][izone] = 0;
+      fMCStatOb  [imode][izone] = 0;
+      fRFPtr     [imode][izone] = 0;
       // PDF
       fPDFCompOb [imode][izone] = 0;
       if(imode == 0) {
@@ -842,7 +893,13 @@ void GenericSingleSampleFitModel::Init(void)
       fParamIsAppliedTo[imode][ip] = false;
     }
   }//imode
-
+  
+  // Do our parameters use splines
+  for(int ip = 0; ip < conv::kNFitParams; ip++) {
+    PhysParamId_t p = kFitParam[ip];
+    fParamHasSplines[ip] = util::ParamHasSplines(p);
+  }
+  
   fArrIdx = util::ArrIdx::Instance();
 
   fSyst = 0;
@@ -923,6 +980,10 @@ void GenericSingleSampleFitModel::Book(void)
         new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins, n_q2_true_bins);
       fMCStatOb [imode][izone] = 
         new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins, n_q2_true_bins);
+        
+      // Spline library
+      fRFPtr [imode][izone] = 
+        new VALORArrayL(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins, n_q2_true_bins, kNFitParamsWithSplines);
 
       // >> PDF component
       fPDFCompOb[imode][izone] = 
@@ -983,16 +1044,18 @@ void GenericSingleSampleFitModel::Clean(void)
       if(!fMCTNullOb[imode][izone]) {
         fMCTNullOb[imode][izone] = true;
         // MC templates
-        if ( fMCTNomOb[imode][izone] ) delete fMCTNomOb[imode][izone];
-        if ( fMCTTunOb[imode][izone] ) delete fMCTTunOb[imode][izone];
-        if ( fMCTSysOb[imode][izone] ) delete fMCTSysOb[imode][izone];
-        if ( fMCTFinOb[imode][izone] ) delete fMCTFinOb[imode][izone];
-        if ( fMCStatOb[imode][izone] ) delete fMCStatOb[imode][izone];
-        fMCTNomOb[imode][izone] = 0;
-        fMCTTunOb[imode][izone] = 0;
-        fMCTSysOb[imode][izone] = 0;
-        fMCTFinOb[imode][izone] = 0;
-        fMCStatOb[imode][izone] = 0;
+        if ( fMCTNomOb [imode][izone] ) delete fMCTNomOb [imode][izone];
+        if ( fMCTTunOb [imode][izone] ) delete fMCTTunOb [imode][izone];
+        if ( fMCTSysOb [imode][izone] ) delete fMCTSysOb [imode][izone];
+        if ( fMCTFinOb [imode][izone] ) delete fMCTFinOb [imode][izone];
+        if ( fMCStatOb [imode][izone] ) delete fMCStatOb [imode][izone];
+        if ( fRFPtr    [imode][izone] ) delete fRFPtr    [imode][izone];
+        fMCTNomOb [imode][izone] = 0;
+        fMCTTunOb [imode][izone] = 0;
+        fMCTSysOb [imode][izone] = 0;
+        fMCTFinOb [imode][izone] = 0;
+        fMCStatOb [imode][izone] = 0;
+        fRFPtr    [imode][izone] = 0;
         // PDF components
         if(fPDFCompOb[imode][izone]) delete fPDFCompOb[imode][izone];
         fPDFCompOb[imode][izone] = 0;
@@ -1070,30 +1133,31 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   double wght_pot      = 0;
   double Q2_true       = 0;
 
-  t->SetBranchAddress("sample",       &sample);
-  t->SetBranchAddress("reactionmode", &reac_mode);
-  t->SetBranchAddress("Ev",           &enu_true);
-  t->SetBranchAddress("Ev_reco",      &enu_reco);
-  t->SetBranchAddress("y_reco",       &y_reco);
-  t->SetBranchAddress("POTWeight",    &wght_pot);
-  t->SetBranchAddress("Q2",           &Q2_true);
+  //~ t->SetBranchAddress("sample",       &sample);
+  //~ t->SetBranchAddress("reactionmode", &reac_mode);
+  //~ t->SetBranchAddress("Ev",           &enu_true);
+  //~ t->SetBranchAddress("Ev_reco",      &enu_reco);
+  //~ t->SetBranchAddress("y_reco",       &y_reco);
+  //~ t->SetBranchAddress("POTWeight",    &wght_pot);
+  //~ t->SetBranchAddress("Q2",           &Q2_true);
+  
+   t->SetBranchAddress("sample",        &sample);
+   t->SetBranchAddress("reac_mode",     &reac_mode);
+   t->SetBranchAddress("enu_true",      &enu_true);
+   t->SetBranchAddress("enu_reco",      &enu_reco);
+   t->SetBranchAddress("y_reco",        &y_reco);
+   t->SetBranchAddress("wght_pot",      &wght_pot);
+   t->SetBranchAddress("Q2_true",       &Q2_true);
 
-  /*
-     bSample   -> SetAddress(&sample    );
-     bReacMode -> SetAddress(&reac_mode );
-     bEnuTrue  -> SetAddress(&enu_true  );
-     bEnuReco  -> SetAddress(&enu_reco  );
-     byReco    -> SetAddress(&y_reco    );
-     bWghtPOT  -> SetAddress(&wgt_pot   );
 
-     t->SetBranchStatus("*",             0);
-     t->SetBranchStatus("sample",        1); 
-     t->SetBranchStatus("reac_mode",     1);    
-     t->SetBranchStatus("enu_true",      1);  
-     t->SetBranchStatus("enu_reco",      1);  
-     t->SetBranchStatus("y_reco",        1);    
-     t->SetBranchStatus("wght_pot",      1);
-     */
+
+   //~ t->SetBranchStatus("*",             0);
+   //~ t->SetBranchStatus("sample",        1); 
+   //~ t->SetBranchStatus("reac_mode",     1);    
+   //~ t->SetBranchStatus("enu_true",      1);  
+   //~ t->SetBranchStatus("enu_reco",      1);  
+   //~ t->SetBranchStatus("y_reco",        1);    
+   //~ t->SetBranchStatus("wght_pot",      1);
 
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
@@ -1158,7 +1222,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       LOG("GenericSingleSampleFitModel",pFATAL) 
         << " ** Undefined reaction mode ID used in MC event: " << iev
         << " (value stored in DST: " << reac_mode << ")";
-      exit(1);
+      continue;
     }
     int imode = fArrIdx->ReacModeIdx(s, m);
     if(imode < 0) {
@@ -1248,8 +1312,8 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     assert(wght_pot>0.);
 
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
-    //double wght = data_pot/mc_pot;
-    double wght = data_pot*mc_pot;
+    double wght = data_pot/mc_pot;
+    //~ double wght = data_pot*mc_pot;
 
     if(fFiducialMass > 0) {
       wght = wght*fFiducialMass;

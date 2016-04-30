@@ -218,13 +218,34 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
   
-  TFile * spline_file = util::XML2TFile(xml,root_node,"splines/file");
-  if (!spline_file) {
-    LOG("DuneRFL",pFATAL) << "Failed to open spline file.";
+  string folder = util::XML2String(xml,root_node,"splines/folder");
+  if (!folder.size()) {
+    LOG("DuneRFL",pFATAL) << "Failed to read spline folder from XML.";
     util::Die(-1); return false;
   }
   
-  LOG("DuneRFL",pINFO) << "Reading splines from file "<<spline_file->GetName();
+  string spl_file_pattern = util::XML2String(xml,root_node,"splines/pattern");
+
+  if (!spl_file_pattern.size()) {
+    LOG("DuneRFL",pFATAL) << "Failed to open spline filename pattern from XML.";
+    util::Die(-1); return false;
+  }
+  
+  vector<TFile*> spline_files;
+  for (int ip = 0 ; ip < fNParams ; ip++) {
+    conv::PhysParamId_t p = fParams[ip];
+    if(p == conv::kPhypUndefined) continue;
+    TString filename = spl_file_pattern.c_str();
+    filename = filename.ReplaceAll("[BEAM]"   , util::AsString(fBeam  ).c_str());
+    filename = filename.ReplaceAll("[SAMPLE]" , util::AsString(fSample).c_str());
+    filename = filename.ReplaceAll("[PARAM]"  , util::AsString(p).c_str());
+    
+    TString base_dir = Env::Instance()->TopLevelDataDir().c_str();
+    
+    TFile * spline_file = new TFile((base_dir+"/"+folder.c_str()+"/"+filename).Data());
+    LOG("DuneRFL",pINFO) << "Will read splines from file "<<spline_file->GetName();
+    spline_files.push_back(spline_file);
+  }
   
   int isample = ArrIdx::Instance()->SampleIdx(fBeam, fSample);
   
@@ -272,7 +293,12 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                     }
                     
                     if (param_applied_to_mode) {
-                      TObject * spline_obj = spline_file->Get(spl_name.Data());
+                      TObject * spline_obj = NULL;
+                      for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
+                        TFile * spline_file = spline_files[ifile];
+                        spline_obj = spline_file->Get(spl_name.Data());
+                        if (spline_obj) {break;}
+                      }
                       TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
                       if (spline) {
                         fSplines[spline_index] = spline;
@@ -297,7 +323,11 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     } //ip
   } //imode
   
-  spline_file->Close();
+  for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
+    TFile * spline_file = spline_files[ifile];
+    spline_file->Close();
+    delete spline_file;
+  }
   
   LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines.";
   

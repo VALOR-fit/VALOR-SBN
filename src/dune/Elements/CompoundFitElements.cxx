@@ -37,7 +37,7 @@ CompoundFitElements::~CompoundFitElements(void)
   this->Clean();
 }
 //________________________________________________________________________________________
-bool CompoundFitElements::Read(string xmlfile)
+bool CompoundFitElements::Read(string xmlfile, Option_t * /*opt*/)
 {
 // It reads a list of fit datasets and models and setups compound datasets and fit models.
 // The following XML schema is expected.

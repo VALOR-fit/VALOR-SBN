@@ -42,7 +42,7 @@ public:
   CompoundFitElements();
  ~CompoundFitElements();
 
-  bool Read(string xmlconfig);
+  bool Read(string xmlconfig, Option_t * opt = "");
 
   FitDataABC *  FitData  (void) const { return fCompoundFitData;  }
   FitModelABC * FitModel (void) const { return fCompoundFitModel; }
