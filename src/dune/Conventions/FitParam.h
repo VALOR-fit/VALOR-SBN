@@ -1630,6 +1630,7 @@ namespace util {
 
   bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,
                         conv::ReacMode_t m, conv::PhysParamId_t p);
+  bool ParamHasSplines(conv::PhysParamId_t p);
   
   // Return pointer to array of min/max                      
   const double * EtrueRange (conv::PhysParamId_t p);
