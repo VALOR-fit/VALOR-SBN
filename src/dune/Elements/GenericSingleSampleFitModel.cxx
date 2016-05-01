@@ -206,10 +206,14 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
                 double reco2 = (reco2_bin_edges[ir2]+reco2_bin_edges[ir2+1])/2.;
                 kp.reco2 = reco2;
                 util::KinematicBin kb = fRFL->GetBin(kp,m);
-                for (int ip = 0 ; ip < kNFitParamsWithSplines ; ip++) {
-                  PhysParamId_t p = kFitParamsWithSplines[ip];
-                  const TSpline * spl = fRFL->GetSpline(m,p,kb);
-                  Long64_t spl_as_int = reinterpret_cast<Long64_t>(spl);
+                for (int ip = 0 ; ip < kNFitParams; ip++) {
+                  PhysParamId_t p = kFitParam[ip];
+                  Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
+                  if (util::ParamHasSplines(p)) {
+                    const TSpline * spl = fRFL->GetSpline(m,p,kb);
+                    spl_as_int = reinterpret_cast<Long64_t>(spl);
+                    
+                  }
                   fRFPtr[imode][izone]->SetEntry(spl_as_int,ir1,ir2,it1,it2,ip);
                 }//ip
               }//ir2
@@ -983,7 +987,7 @@ void GenericSingleSampleFitModel::Book(void)
         
       // Spline library
       fRFPtr [imode][izone] = 
-        new VALORArrayL(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins, n_q2_true_bins, kNFitParamsWithSplines);
+        new VALORArrayL(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins, n_q2_true_bins, kNFitParams);
 
       // >> PDF component
       fPDFCompOb[imode][izone] = 
@@ -1659,16 +1663,55 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       }// it1 - first true variable
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("GenericSingleSampleFitModel",pDEBUG) 
-        << "Applying Etrue-dependent params";
+        << "Applying spline-dependent params";
 #endif
-      // first apply Etrue-dependent params
+      // First apply spline parameters
+      for(int ip = 0; ip < kNFitParams; ip++) {
+        PhysParamId_t p = kFitParam[ip];
+        if (p == kPhypUndefined          ) {continue;}
+        if (!fParamHasSplines[ip]        ) {continue;}
+        if (!fParamIsAppliedTo[imode][ip]) {continue;}
+        VALORArrayBin splbin;
+        splbin.bin5 = ip;
+        double f = fPhysHypothesis.CurrValue(p);
+        for(int it1 = 0; it1 < n_true1_bins; it1++) {
+          bin   .bin3 = it1;
+          splbin.bin3 = it1;
+          for(int it2 = 0; it2 < n_true2_bins; it2++) {
+            bin   .bin4 = it2;
+            splbin.bin4 = it2;
+            for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
+              bin   .bin1 = ir1;
+              splbin.bin1 = ir1;
+              for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
+                bin.  bin2 = ir2;
+                splbin.bin2 = ir2;
+                const TSpline * spl = reinterpret_cast<TSpline*>(fRFPtr[imode][izone]->GetEntry(splbin));
+                if (spl==util::DuneRFL::kNoSplineRequired) {
+                  LOG("GenericSingleSampleFitModel",pERROR)
+                    <<"Got no spline required for bin expecting spline."
+                    <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+                    <<util::AsString(fSample)<<","<<util::AsString(m);
+                }
+                double response = spl->Eval(f);
+                double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
+                val *= response;
+              }//ir2
+            }//ir1
+          }//it2
+        }//it1
+      }
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+      LOG("GenericSingleSampleFitModel",pDEBUG) 
+        << "Applying true kinematic dependent params";
+#endif
+      // then apply kinematic-dependent params without splines
       for(int ip = 0; ip < kNFitParams; ip++) {
         //-------------- error, prone need to simplify
         PhysParamId_t p = kFitParam[ip];
-        if(p == kPhypUndefined) continue;
-        bool apply = fParamIsAppliedTo[imode][ip];
-        //-------------- 
-        if(!apply) continue;
+        if (p == kPhypUndefined          ) {continue;}
+        if (fParamHasSplines[ip]         ) {continue;}
+        if (!fParamIsAppliedTo[imode][ip]) {continue;}
         bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
         if(!enu_true_dep) continue;
         double f = fPhysHypothesis.CurrValue(p);
@@ -1719,10 +1762,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(int ip = 0; ip < kNFitParams; ip++) {
         //-------------- error, prone need to simplify
         PhysParamId_t p = kFitParam[ip];
-        if(p == kPhypUndefined) continue;
-        bool apply = fParamIsAppliedTo[imode][ip];
-        //-------------- 
-        if(!apply) continue;
+        if (p == kPhypUndefined          ) {continue;}
+        if (fParamHasSplines[ip]         ) {continue;}
+        if (!fParamIsAppliedTo[imode][ip]) {continue;}
         bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
         if(enu_true_dep) continue;
         double f = fPhysHypothesis.CurrValue(p);
@@ -1741,15 +1783,16 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       bool is_null = fMCTNullSb[imode];
       if(is_null) {continue;}
       fMCTFinSb[imode]->CopyDataOnlyFrom(*(fMCTSysSb[imode]));
+      
+      LOG("GenericSingleSampleFitModel",pWARN)<<"Not applying spines to Simple Binning templates.";
 
       // first apply Etrue-dependent params
       for(int ip = 0; ip < kNFitParams; ip++) {
         //-------------- error, prone need to simplify
         PhysParamId_t p = kFitParam[ip];
-        if(p == kPhypUndefined) continue;
-        bool apply = fParamIsAppliedTo[imode][ip];
-        //-------------- 
-        if(!apply) continue;
+        if (p == kPhypUndefined          ) {continue;}
+        if (fParamHasSplines[ip]         ) {continue;}
+        if (!fParamIsAppliedTo[imode][ip]) {continue;}
         bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
         if(!enu_true_dep) continue;
         double f = fPhysHypothesis.CurrValue(p);
