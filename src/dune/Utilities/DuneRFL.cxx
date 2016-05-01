@@ -250,6 +250,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   int isample = ArrIdx::Instance()->SampleIdx(fBeam, fSample);
   
   int n_splines_read = 0;
+  int n_splines_missing = 0;
   int n_splines_expected = fSplineBlockSize;
   
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
@@ -306,7 +307,8 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                       }
                       else {
                         LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
-                        fSplines[spline_index] = 0;
+                        fSplines[spline_index] = NULL;
+                        n_splines_missing++;
                       }
                     }
                     else {
@@ -330,6 +332,10 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   }
   
   LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines.";
+  if (n_splines_missing) {
+    LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines. Exiting.";
+    util::Die(-1);return false;
+  }
   
   xml->FreeDoc(xmldoc);
   delete xml;
