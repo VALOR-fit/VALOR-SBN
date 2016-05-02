@@ -86,6 +86,16 @@ const double * util::Q2trueBinEdges(Sample_t /*sample*/, ReacMode_t mode)
 //
 
 //________________________________________________________________________________________
+int util::NumErecoBinsSb(Sample_t /*s*/)
+{
+  return conv::kNErecoBinsSb;
+}
+//________________________________________________________________________________________
+const double * util::ErecoBinEdgesSb(Sample_t /*s*/)
+{
+  return conv::kErecoBinEdgesSb;
+}
+//________________________________________________________________________________________
 int util::NumYrecoBinsSb(Sample_t s)
 {
    LOG("KBin",pDEBUG) 

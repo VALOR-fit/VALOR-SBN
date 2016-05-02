@@ -381,6 +381,8 @@ namespace util   {
    const double * Q2trueBinEdges  (conv::Sample_t sample, conv::ReacMode_t mode);
 
    // Simple binning scheme
+   int            NumErecoBinsSb  (conv::Sample_t sample);
+   const double * ErecoBinEdgesSb (conv::Sample_t sample);
    int            NumYrecoBinsSb  (conv::Sample_t sample);
    const double * YrecoBinEdgesSb (conv::Sample_t sample);
 
