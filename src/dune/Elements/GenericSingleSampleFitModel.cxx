@@ -47,6 +47,9 @@ using std::endl;
 using namespace valor;
 using namespace valor::conv;
 
+//#define UPDATE_SB_FROM_OB
+//#define SPLINE_WEIGHTS_ARE_ONE
+
 //________________________________________________________________________________________
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC()
@@ -83,6 +86,9 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   TString ts_opt(opt);
   bool force_use_dst    = ts_opt.Contains("forcedst");
   bool skip_spline_read = ts_opt.Contains("nosplines");
+#ifdef SPLINE_WEIGHTS_ARE_ONE
+  skip_spline_read = true;
+#endif
   
   LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
@@ -1424,7 +1430,7 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
   return success;
 }
 //________________________________________________________________________________________
-void GenericSingleSampleFitModel::ApplyTuning(void)
+void GenericSingleSampleFitModel::ApplyTuning(Option_t * /*opt*/)
 {
   // This method maps nom -> tun MC templates
   // This is applied once when the model is constructed, not everytime Generate() is called.
@@ -1619,9 +1625,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     }
   }
 
-  const int n_true1_bins = util::NumEtrueBins(fSample);
-  const double * true1_bin_edges = util::EtrueBinEdges(fSample);
-  const int n_reco2_bins_sb   = util::NumYrecoBinsSb(fSample);
+  const int n_true1_bins         = util::NumEtrueBins  (fSample);
+  const double * true1_bin_edges = util::EtrueBinEdges (fSample);
 
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
@@ -1686,6 +1691,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
                 bin.  bin2 = ir2;
                 splbin.bin2 = ir2;
+#ifdef SPLINE_WEIGHTS_ARE_ONE
+                double response = 1;
+#else
                 const TSpline * spl = reinterpret_cast<TSpline*>(fRFPtr[imode][izone]->GetEntry(splbin));
                 if (spl==util::DuneRFL::kNoSplineRequired) {
                   LOG("GenericSingleSampleFitModel",pERROR)
@@ -1694,6 +1702,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                     <<util::AsString(fSample)<<","<<util::AsString(m);
                 }
                 double response = spl->Eval(f);
+#endif
                 double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
                 val *= response;
               }//ir2
@@ -1778,8 +1787,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       fMCTFinOb[imode][izone]->Scale(fnoEt);
     }//izone
 
-
+#ifndef UPDATE_SB_FROM_OB
     if(update_mct_sb) {
+      const int n_reco2_bins_sb      = util::NumYrecoBinsSb(fSample);
       bool is_null = fMCTNullSb[imode];
       if(is_null) {continue;}
       fMCTFinSb[imode]->CopyDataOnlyFrom(*(fMCTSysSb[imode]));
@@ -1845,7 +1855,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       fnoEt = TMath::Max(0.,fnoEt);
       fMCTFinSb[imode]->Scale(fnoEt);
     }//update_mct_sb?
+#endif //!UPDATE_SB_FROM_OB
   }//imode
+#ifdef UPDATE_SB_FROM_OB
+  if(update_mct_sb) {
+    this->UpdateSimpleBinning(option);
+  }
+#endif
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
@@ -1970,25 +1986,80 @@ valor::PhysParamList valor::GenericSingleSampleFitModel::OneSigmaErrors(Option_t
   return ppl;
 }
 //________________________________________________________________________________________
-
-/* 
-// -----------------------------------  
-// TODO
-// remove
-// GUESS THIS NOW DONE WITHIN THE INPUT SYSTEMATICS CLASS
-
-TMatrixD valor::GenericSingleSampleFitModel::CovarianceMatrix(Option_t * opt)
+void valor::GenericSingleSampleFitModel::UpdateSimpleBinning (Option_t * /*opt*/)
 {
-// Get cov matrices from subcomponents
-vector<const TMatrixD*> cov_vec;
-cov_vec.push_back(&(fNuFlux->CovMatrix()));
-cov_vec.push_back(&(fNuInt ->CovMatrix()));
-cov_vec.push_back(&(fNuDet ->CovMatrix()));
+  LOG("GenericSingleSampleFitModel",pINFO)<<"Updating simple binning: "<<fName;
+  const int n_true1_bins            = util::NumEtrueBins   (fSample);
+  //~ const double * true1_bin_edges    = util::EtrueBinEdges  (fSample);
+  
+  const int n_reco1_bins_sb         = util::NumErecoBinsSb (fSample);
+  const double * reco1_bin_edges_sb = util::ErecoBinEdgesSb(fSample);
+  const int n_reco2_bins_sb         = util::NumYrecoBinsSb (fSample);
+  const double * reco2_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
 
-TMatrixD total = util::ConcatenateTMatrices(cov_vec);
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
-return total;
+  for(int imode = 0; imode < kNReacModes; imode++) {
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
+    
+    // Zero it out, since we'll just be adding to elements
+    fMCTFinSb[imode]->SetAll(0.);
+    
+    const int n_true2_bins         = util::NumQ2trueBins (fSample,m);
+    //~ const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
+    
+    // We'll use two nested sets of loops - first over the simple bins, then over the optimised bins to get their content
+    VALORArrayBin sb_bin;
+    for(int irsb1 = 0; irsb1 < n_reco1_bins_sb; irsb1++) {
+      sb_bin.bin1 = irsb1;
+      for(int irsb2 = 0; irsb2 < n_reco2_bins_sb; irsb2++) {
+        sb_bin.bin2 = irsb2;
+        
+        // Now loop over the observable bins
+        VALORArrayBin ob_bin;
+        
+        for (int izone = 0 ; izone < kNMaxBinZones ; izone++) {
+          const int n_reco1_bins            = util::NumErecoBins   (fSample,izone);
+          const double * reco1_bin_edges    = util::ErecoBinEdges  (fSample,izone);
+          
+          const int n_reco2_bins            = util::NumYrecoBins   (fSample,izone);
+          const double * reco2_bin_edges    = util::YrecoBinEdges  (fSample,izone);
+  
+          for(int it1 = 0; it1 < n_true1_bins; it1++) {
+            ob_bin.bin3 = it1;
+            sb_bin.bin3 = it1;
+            for(int it2 = 0; it2 < n_true2_bins; it2++) {
+              ob_bin.bin4 = it2;
+              sb_bin.bin4 = it2;
+              for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
+                ob_bin.bin1 = ir1;
+                for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
+                  ob_bin.bin2 = ir2;
+                  
+                  // Fraction of the observable bin held in the simple bin.
+                  double frac_ob_1 = util::FractionOfBinContained(
+                    reco1_bin_edges   [ir1]  ,reco1_bin_edges   [ir1  +1],
+                    reco1_bin_edges_sb[irsb1],reco1_bin_edges_sb[irsb1+1]);
+                  double frac_ob_2 = util::FractionOfBinContained(
+                    reco2_bin_edges   [ir2]  ,reco2_bin_edges   [ir2  +1],
+                    reco2_bin_edges_sb[irsb2],reco2_bin_edges_sb[irsb2+1]);
+                  
+                  double frac_ob = frac_ob_1 * frac_ob_2;
+                  if (frac_ob < conv::kASmallNum) {
+                    continue;
+                  }
+                  double ob_content = fMCTFinOb[imode][izone]->GetEntry(ob_bin);
+                  double content_to_add = frac_ob * ob_content;
+                  fMCTFinSb[imode]->AddToEntry(content_to_add, sb_bin);
+                }//ir2
+              }//ir1
+            }//it2
+          }//it1
+        }//izone
+      }//isrsb2
+    }//irsb1
+  } //imode
+  return;
 }
-*/
-
 //________________________________________________________________________________________

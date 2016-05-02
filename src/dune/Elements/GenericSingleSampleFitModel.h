@@ -102,11 +102,12 @@ private:
   void FillFromDST  (TTree * t);
   bool FillFromTemplateFile (TFile * f, std::string tag);
 
-  void ApplyTuning      (void);
-  void FluctuateMCStat  (Option_t * opt = 0);
-  void ApplySystematics (Option_t * opt = 0);
-  void ApplyPhysics     (Option_t * opt = 0);
-  void UpdatePDFs       (Option_t * opt = 0);
+  void ApplyTuning         (Option_t * opt = 0);
+  void FluctuateMCStat     (Option_t * opt = 0);
+  void ApplySystematics    (Option_t * opt = 0);
+  void ApplyPhysics        (Option_t * opt = 0);
+  void UpdateSimpleBinning (Option_t * opt = 0);
+  void UpdatePDFs          (Option_t * opt = 0);
 
   const util::ArrIdx * fArrIdx;
   
