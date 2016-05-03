@@ -49,6 +49,7 @@
 #include "ReWeight/GReWeightI.h"
 #include "ReWeight/GSystSet.h"
 #include "ReWeight/GSyst.h"
+#include "ReWeight/GSystUncertainty.h"
 #include "ReWeight/GReWeight.h"
 #include "ReWeight/GReWeightINuke.h"
 
@@ -378,7 +379,7 @@ int main(int argc, char ** argv)
                 double nevents  = mc_templ_sb [itwk][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
                 double nevents0 = mc_templ_sb [inom][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
                 y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-                x[itwk] = twk_dial;                   
+                x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
               }//itwk
               util::KinematicBin kb;
               kb.true1 = ienu_true;
@@ -414,7 +415,7 @@ int main(int argc, char ** argv)
                 double nevents  = mc_templ_ob [itwk][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
                 double nevents0 = mc_templ_ob [inom][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
                 y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-                x[itwk] = twk_dial;                   
+                x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
               }//itwk
               util::KinematicBin kb;
               kb.true1 = ienu_true;
