@@ -6,7 +6,10 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-void plot_pdf(const char * filename, const char * tag = "valor")
+void plot_pdf(
+  const char * filename,
+  const char * tag = "valor",
+  TString   option = "")
 {
   using namespace std;
   using namespace valor;
@@ -21,6 +24,8 @@ void plot_pdf(const char * filename, const char * tag = "valor")
   };
 
   TFile * fin = new TFile(filename, "read");
+  
+  const char * binning = (option.Contains("OB")?"ob":"sb");
 
   //
   // Read-in and plot 2-D PDFs
@@ -33,22 +38,22 @@ void plot_pdf(const char * filename, const char * tag = "valor")
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
     conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
-    const char * c_name = Form("c_pdf_tot_%s", util::AsString(b).c_str());
-    c_pdf_tot[ibeam] = new TCanvas(c_name,"",20,20,600,600);
+    TString c_name = TString::Format("c_pdf_tot_%s", util::AsString(b).c_str());
+    c_pdf_tot[ibeam] = new TCanvas(c_name.Data(),"",20,20,600,600);
     c_pdf_tot[ibeam] -> Divide(3,3);
     int ic=0;
     for(int isample = 0; isample < conv::kNSamples; isample++) {
       conv::Sample_t s = conv::kSample[ibeam][isample];
       if(s == conv::ksUndefined) continue;
 //    for(int izone = 0; izone < conv::kNMaxBinZones; izone++) {
-//       const char * name = Form("%s_%s_%s_%s_z%d", 
+//       TString name = TString::Format("%s_%s_%s_%s_z%d", 
 //           tag, "pdft_ob_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
-//       pdf_tot[ibeam][isample][izone] = (TH2D*) fin->Get(name); 
+//       pdf_tot[ibeam][isample][izone] = (TH2D*) fin->Get(name.Data()); 
 //    }//izone
 
-      const char * name = Form("%s_%s_%s_%s", 
-           tag, "pdft_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str());
-      pdf_tot[ibeam][isample] = (TH2D*) fin->Get(name);
+      TString name = TString::Format("%s_%s_%s_%s_%s_%s", 
+           tag, "pdft",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str());
+      pdf_tot[ibeam][isample] = (TH2D*) fin->Get(name.Data());
       ic++;
       c_pdf_tot[ibeam]->cd(ic);
       TH1F * hframe = (TH1F*)c_pdf_tot[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1);
@@ -70,8 +75,8 @@ void plot_pdf(const char * filename, const char * tag = "valor")
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
     conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
-    const char * c_name  = Form("c_pdf_slice_%s", util::AsString(b).c_str());
-    c_pdf_slice[ibeam] = new TCanvas(c_name,"",20,20,700,700);
+    TString c_name  = TString::Format("c_pdf_slice_%s", util::AsString(b).c_str());
+    c_pdf_slice[ibeam] = new TCanvas(c_name.Data(),"",20,20,700,700);
   //c_pdf_slice[ibeam]->Divide(conv::kNSamples);
     c_pdf_slice[ibeam]->Divide(3,3);
     double max[conv::kNSamples] = { -999 };
@@ -83,8 +88,8 @@ void plot_pdf(const char * filename, const char * tag = "valor")
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       TH1D * pdf_slice[n_pdf_slices] = {0};
       for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-             const char * name = Form("%s_%s_%s_%s_y%d",
-                tag, "pdfts_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
+        TString name = TString::Format("%s_%s_%s_%s_%s_%s_y%d",
+                tag, "pdfts",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
              cout << "getting TH1D * object: " << name << endl;
              pdf_slice[iy] = (TH1D*) fin->Get(name);
       }//iy
@@ -115,8 +120,8 @@ void plot_pdf(const char * filename, const char * tag = "valor")
        c_pdf_slice[ibeam]->cd(ic);
        TH1F * hframe = (TH1F*)c_pdf_slice[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
        hframe->Draw();
-       const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-       TLatex * title = new TLatex(1,1.07*max[isample],title_str);
+       TString title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
+       TLatex * title = new TLatex(1,1.07*max[isample],title_str.Data());
        title->Draw(); 
        if(util::IsCC(s)) {
          hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
@@ -139,8 +144,8 @@ void plot_pdf(const char * filename, const char * tag = "valor")
   for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
     conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
-    const char * c_name = Form("c_pdf_contrib_%s", util::AsString(b).c_str());
-    c_pdf_contrib[ibeam] = new TCanvas(c_name,"",20,20,700,700);
+    TString c_name = TString::Format("c_pdf_contrib_%s", util::AsString(b).c_str());
+    c_pdf_contrib[ibeam] = new TCanvas(c_name.Data(),"",20,20,700,700);
   //c_pdf_contrib[ibeam]->Divide(conv::kNSamples);
     c_pdf_contrib[ibeam]->Divide(3,3);
     int ic = 0;
@@ -153,43 +158,43 @@ void plot_pdf(const char * filename, const char * tag = "valor")
       TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };
       TH1D * pdf_contrib_coarse [conv::kNReacModesCoarse] = { 0 };
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
-            conv::ReacMode_t m = conv::kReactionModes[isample][imode];
-            if(m == conv::kmUndefined) continue;
-            cout << "Taking mode: " << util::AsString(m) << endl;
-            cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
-            const char * name = Form("%s_%s_%s_%s_%s",
-              tag, "pdfcs_sb_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
-            pdf_contrib[imode] = (TH1D*) fin->Get(name);
-            if(pdf_contrib[imode]) {
-                conv::ReacModeCoarse_t mc = conv::kMappingToCoarseModes[ibeam][isample][imode];
-                if(mc == conv::kmcUndefined) continue; 
-                cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
-                bool found = false;
-                for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-                  if(mc == conv::kReactionModesCoarse[ibeam][isample][imodec]) {
-                      found = true;
-                      break;
-                  }
-                }           
-                if(!found) {
-                  cout << "WTF! Plot type (coarse reaction mode): " << util::AsString(mc) 
-                       << " not in the list of modes considered for"
-                       << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
-                  exit(1);
-                }                  
-                for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-                  cout << "imodec = " << imodec << endl;
-                  if(mc != conv::kReactionModesCoarse[ibeam][isample][imodec]) continue;
-                  if(pdf_contrib_coarse[imodec] == 0) {
-                     pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
-                  } else {
-                     pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
-                  }           
-                }//imodec
-            }//!null
-            else {
-              cerr << "Null [" << name << "]" << endl;
-            }
+        conv::ReacMode_t m = conv::kReactionModes[isample][imode];
+        if(m == conv::kmUndefined) continue;
+        cout << "Taking mode: " << util::AsString(m) << endl;
+        cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
+        TString name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
+          tag, "pdfcs",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+        pdf_contrib[imode] = (TH1D*) fin->Get(name.Data());
+        if(pdf_contrib[imode]) {
+            conv::ReacModeCoarse_t mc = conv::kMappingToCoarseModes[ibeam][isample][imode];
+            if(mc == conv::kmcUndefined) continue; 
+            cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
+            bool found = false;
+            for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+              if(mc == conv::kReactionModesCoarse[ibeam][isample][imodec]) {
+                  found = true;
+                  break;
+              }
+            }           
+            if(!found) {
+              cout << "WTF! Plot type (coarse reaction mode): " << util::AsString(mc) 
+                   << " not in the list of modes considered for"
+                   << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
+              exit(1);
+            }                  
+            for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+              cout << "imodec = " << imodec << endl;
+              if(mc != conv::kReactionModesCoarse[ibeam][isample][imodec]) continue;
+              if(pdf_contrib_coarse[imodec] == 0) {
+                 pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
+              } else {
+                 pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
+              }           
+            }//imodec
+        }//!null
+        else {
+          cerr << "Null [" << name << "]" << endl;
+        }
       }//imode
       // Scan for max in desired Erange
       for(int ebin = 1; ebin <= pdf_contrib[0]->GetNbinsX(); ebin++) {
@@ -219,8 +224,8 @@ void plot_pdf(const char * filename, const char * tag = "valor")
       c_pdf_contrib[ibeam]->cd(ic);
       TH1F * hframe = (TH1F*)c_pdf_contrib[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
       hframe->Draw();
-      const char * title_str = Form("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-      TLatex * title = new TLatex(1,1.07*max[isample],title_str);
+      TString title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
+      TLatex * title = new TLatex(1,1.07*max[isample],title_str.Data());
       title->Draw(); 
       if(util::IsCC(s)) {  
          hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
