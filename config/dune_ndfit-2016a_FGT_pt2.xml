@@ -26,7 +26,7 @@ Information about the detector configuration
 -->
 
 <fiducial_mass>
- 0.005
+ -999
 </fiducial_mass>
 
 
@@ -43,12 +43,12 @@ Input MC templates
 
   <dst> 
     <lbnf_fhc>
-       <filename> dune/ndfit/2016a/fgt/fgt_nu_minidst_pt2.root </filename> 
+       <filename> dune/ndfit/2016a/fgt/fgt_nu_minidst_reco_pt2.root </filename> 
        <objname>  valor_dune_nd_mini_dst </objname> 
        <objtype>  TTree    </objtype> 
     </lbnf_fhc>
     <lbnf_rhc>
-       <filename> dune/ndfit/2016a/fgt/fgt_nubar_minidst_pt2.root </filename> 
+       <filename> dune/ndfit/2016a/fgt/fgt_nubar_minidst_reco_pt2.root </filename> 
        <objname>  valor_dune_nd_mini_dst  </objname> 
        <objtype>  TTree     </objtype> 
     </lbnf_rhc>
@@ -62,9 +62,8 @@ Input MC templates
 </mc>
 
 <splines>
-  <file> 
-    <filename>test/fake_splines_2016v0.root </filename>
-  </file>
+  <folder>  dune/ndfit/2016a/fgt/orig_splines </folder>
+  <pattern> valor_splines_[BEAM]_[SAMPLE]_[PARAM].root    </pattern>
 </splines>
 
 </analysis_inputs>

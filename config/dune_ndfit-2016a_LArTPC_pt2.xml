@@ -11,10 +11,10 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <lbnf_fhc>
-      1.0000e+21 
+      1.0000e+17
     </lbnf_fhc>
     <lbnf_rhc>
-      1.0000e+21 
+      1.0000e+17
     </lbnf_rhc>
   </exposure>
 </data>
@@ -26,7 +26,7 @@ Information about the detector configuration
 -->
 
 <fiducial_mass>
- 0.005
+ -999
 </fiducial_mass>
 
 
@@ -62,9 +62,8 @@ Input MC templates
 </mc>
 
 <splines>
-  <file> 
-    <filename>test/fake_splines_2016v0.root </filename>
-  </file>
+  <folder>  dune/ndfit/2016a/lartpc/orig_splines </folder>
+  <pattern> valor_splines_[BEAM]_[SAMPLE]_[PARAM].root    </pattern>
 </splines>
 
 </analysis_inputs>
