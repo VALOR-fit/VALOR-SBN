@@ -48,7 +48,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //#define UPDATE_SB_FROM_OB
-//#define SPLINE_WEIGHTS_ARE_ONE
+#define SPLINE_WEIGHTS_ARE_ONE
 
 //________________________________________________________________________________________
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
@@ -193,6 +193,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
       const int n_true2_bins = util::NumQ2trueBins(fSample,m);
       const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
       
+      // Optimised binning
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
         util::KinematicPoint kp;
         const int n_reco1_bins = util::NumErecoBins(fSample,izone);
@@ -889,6 +890,7 @@ void GenericSingleSampleFitModel::Init(void)
       fMCTSysOb  [imode][izone] = 0;
       fMCTFinOb  [imode][izone] = 0;
       fMCStatOb  [imode][izone] = 0;
+      // Splines
       fRFPtr     [imode][izone] = 0;
       // PDF
       fPDFCompOb [imode][izone] = 0;
@@ -925,6 +927,7 @@ void GenericSingleSampleFitModel::Book(void)
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
 
+    const int n_e_reco_bins_sb = util::NumErecoBinsSb(fSample);
     const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
     const int n_enu_true_bins  = util::NumEtrueBins  (fSample);
     const int n_q2_true_bins   = util::NumQ2trueBins (fSample,m);
@@ -939,15 +942,15 @@ void GenericSingleSampleFitModel::Book(void)
     // (Note order of variables: reco first, true later)
     fMCTNullSb[imode] = false;
     fMCTNomSb [imode] = 
-      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
+      new VALORArray(n_e_reco_bins_sb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
     fMCTTunSb [imode] = 
-      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
+      new VALORArray(n_e_reco_bins_sb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
     fMCTSysSb [imode] = 
-      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
+      new VALORArray(n_e_reco_bins_sb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
     fMCTFinSb [imode] = 
-      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
+      new VALORArray(n_e_reco_bins_sb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
     fMCStatSb [imode] = 
-      new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
+      new VALORArray(n_e_reco_bins_sb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
 
     // >> PDF component
     fPDFCompSb[imode] = 
@@ -1134,6 +1137,8 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     << "Filling-in MC templates for beam configuration: " << util::AsString(fBeam);
 
   if(!t) return;
+  
+  bool old_format = false;
 
   int    sample        = 0;
   int    reac_mode     = 0;
@@ -1142,23 +1147,41 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   double y_reco        = 0;
   double wght_pot      = 0;
   double Q2_true       = 0;
-
-  //~ t->SetBranchAddress("sample",       &sample);
-  //~ t->SetBranchAddress("reactionmode", &reac_mode);
-  //~ t->SetBranchAddress("Ev",           &enu_true);
-  //~ t->SetBranchAddress("Ev_reco",      &enu_reco);
-  //~ t->SetBranchAddress("y_reco",       &y_reco);
-  //~ t->SetBranchAddress("POTWeight",    &wght_pot);
-  //~ t->SetBranchAddress("Q2",           &Q2_true);
   
-   t->SetBranchAddress("sample",        &sample);
-   t->SetBranchAddress("reac_mode",     &reac_mode);
-   t->SetBranchAddress("enu_true",      &enu_true);
-   t->SetBranchAddress("enu_reco",      &enu_reco);
-   t->SetBranchAddress("y_reco",        &y_reco);
-   t->SetBranchAddress("wght_pot",      &wght_pot);
-   t->SetBranchAddress("Q2_true",       &Q2_true);
-
+  int bstat_sample    = 0; 
+  int bstat_reac_mode = 0; 
+  int bstat_enu_true  = 0; 
+  int bstat_enu_reco  = 0; 
+  int bstat_y_reco    = 0; 
+  int bstat_wght_pot  = 0; 
+  int bstat_Q2_true   = 0;   
+  
+   bstat_sample    = t->SetBranchAddress("sample",    &sample);
+   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
+   bstat_enu_true  = t->SetBranchAddress("enu_true",  &enu_true);
+   bstat_enu_reco  = t->SetBranchAddress("enu_reco",  &enu_reco);
+   bstat_y_reco    = t->SetBranchAddress("y_reco",    &y_reco);
+   bstat_wght_pot  = t->SetBranchAddress("wght_pot",  &wght_pot);
+   bstat_Q2_true   = t->SetBranchAddress("Q2_true",   &Q2_true);
+   
+   bool any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
+     bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
+  
+  if (any_bad_status) {
+    LOG("GenericSingleSampleFitModel",pWARN)<<"MiniDST branches not found. Attempting to fall back to 2014a LBNETree format.";
+    bstat_sample    = t->SetBranchAddress("sample",       &sample);
+    bstat_reac_mode = t->SetBranchAddress("reactionmode", &reac_mode);
+    bstat_enu_true  = t->SetBranchAddress("Ev",           &enu_true);
+    bstat_enu_reco  = t->SetBranchAddress("Ev_reco",      &enu_reco);
+    bstat_y_reco    = t->SetBranchAddress("y_reco",       &y_reco);
+    bstat_wght_pot  = t->SetBranchAddress("POTWeight",    &wght_pot);
+    bstat_Q2_true   = t->SetBranchAddress("Q2",           &Q2_true);
+    
+    any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
+      bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
+    assert(!any_bad_status);
+    old_format = true;
+  }
 
 
    //~ t->SetBranchStatus("*",             0);
@@ -1229,9 +1252,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     // Get reaction mode index
     ReacMode_t m = util::ReacModeFromInt(reac_mode); 
     if(m == kmUndefined) {
-      LOG("GenericSingleSampleFitModel",pFATAL) 
+      LOG("GenericSingleSampleFitModel",pWARN) 
         << " ** Undefined reaction mode ID used in MC event: " << iev
-        << " (value stored in DST: " << reac_mode << ")";
+        << " (value stored in DST: " << reac_mode << "). Ignoring event.";
       continue;
     }
     int imode = fArrIdx->ReacModeIdx(s, m);
@@ -1318,12 +1341,17 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     // Exposure for assumed data - Weight MC templates to that exposure
     double data_pot = fPOT;
 
-    double mc_pot = wght_pot;
-    assert(wght_pot>0.);
+    //~ assert(wght_pot>0.);
+    double mc_pot = (wght_pot>0 ? wght_pot : 1);
 
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
-    double wght = data_pot/mc_pot;
-    //~ double wght = data_pot*mc_pot;
+    double wght;
+    if (old_format) {
+      wght = data_pot*mc_pot;
+    }
+    else {
+      wght = data_pot/mc_pot;
+    }
 
     if(fFiducialMass > 0) {
       wght = wght*fFiducialMass;
@@ -1676,9 +1704,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (p == kPhypUndefined          ) {continue;}
         if (!fParamHasSplines[ip]        ) {continue;}
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
+        
+        double f = fPhysHypothesis.CurrValue(p);
+        //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
+        
         VALORArrayBin splbin;
         splbin.bin5 = ip;
-        double f = fPhysHypothesis.CurrValue(p);
         for(int it1 = 0; it1 < n_true1_bins; it1++) {
           bin   .bin3 = it1;
           splbin.bin3 = it1;
@@ -1789,14 +1820,60 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
 #ifndef UPDATE_SB_FROM_OB
     if(update_mct_sb) {
-      const int n_reco2_bins_sb      = util::NumYrecoBinsSb(fSample);
+      const int      n_reco1_bins_sb      = util::NumErecoBinsSb (fSample);
+      const double * reco1_bin_edges_sb   = util::ErecoBinEdgesSb(fSample);
+      const int      n_reco2_bins_sb      = util::NumYrecoBinsSb (fSample);
+      const double * reco2_bin_edges_sb   = util::YrecoBinEdgesSb(fSample);
       bool is_null = fMCTNullSb[imode];
       if(is_null) {continue;}
       fMCTFinSb[imode]->CopyDataOnlyFrom(*(fMCTSysSb[imode]));
       
-      LOG("GenericSingleSampleFitModel",pWARN)<<"Not applying spines to Simple Binning templates.";
-
-      // first apply Etrue-dependent params
+      // first apply spline parameters
+      for(int ip = 0; ip < kNFitParams; ip++) {
+        PhysParamId_t p = kFitParam[ip];
+        if (p == kPhypUndefined          ) {continue;}
+        if (!fParamHasSplines[ip]        ) {continue;}
+        if (!fParamIsAppliedTo[imode][ip]) {continue;}
+        
+        double f = fPhysHypothesis.CurrValue(p);
+        //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
+        
+        VALORArrayBin sbin;
+        util::KinematicPoint kp;
+        for(int it1 = 0; it1 < n_true1_bins; it1++) {
+          sbin.bin3 = it1;
+          kp.true1 = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2;
+          for(int it2 = 0; it2 < n_true2_bins; it2++) {
+            sbin.bin4 = it2;
+            kp.true2 = (true2_bin_edges[it1]+true2_bin_edges[it1+1])/2;
+            for(int ir1 = 0; ir1 < n_reco1_bins_sb; ir1++) {
+              sbin.bin1 = ir1;
+              kp.reco1 = (reco1_bin_edges_sb[it1]+reco1_bin_edges_sb[it1+1])/2;
+              for(int ir2 = 0; ir2 < n_reco2_bins_sb; ir2++) {
+                sbin.bin2 = ir2;
+                kp.reco2 = (reco2_bin_edges_sb[it1]+reco2_bin_edges_sb[it1+1])/2;
+#ifdef SPLINE_WEIGHTS_ARE_ONE
+                double response = 1;
+#else
+                util::KinematicBin kb = fRFL->GetBin(kp,m);
+                const TSpline * spl = fRFL->GetSpline(m,p,kb);
+                if (spl==util::DuneRFL::kNoSplineRequired) {
+                  LOG("GenericSingleSampleFitModel",pERROR)
+                    <<"Got no spline required for simple bin expecting spline."
+                    <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+                    <<util::AsString(fSample)<<","<<util::AsString(m);
+                }
+                double response = spl->Eval(f);
+#endif
+                double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
+                val *= response;
+              }//ir2
+            }//ir1
+          }//it2
+        }//it1
+      }//iparams
+        
+      // then apply kinematic-dependent params
       for(int ip = 0; ip < kNFitParams; ip++) {
         //-------------- error, prone need to simplify
         PhysParamId_t p = kFitParam[ip];
