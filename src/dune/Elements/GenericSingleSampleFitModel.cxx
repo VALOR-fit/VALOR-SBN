@@ -47,8 +47,8 @@ using std::endl;
 using namespace valor;
 using namespace valor::conv;
 
-//#define UPDATE_SB_FROM_OB
-#define SPLINE_WEIGHTS_ARE_ONE
+//~ #define UPDATE_SB_FROM_OB
+//~ #define SPLINE_WEIGHTS_ARE_ONE
 
 //________________________________________________________________________________________
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
