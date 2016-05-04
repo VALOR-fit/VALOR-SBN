@@ -33,6 +33,7 @@ foreach (@ARGV) {
   elsif($_ eq '--output'                 ) { $output              = $ARGV[$iarg+1]; }
   elsif($_ eq '--input'                  ) { $input               = $ARGV[$iarg+1]; }
   elsif($_ eq '--beam'                   ) { $beam                = $ARGV[$iarg+1]; }
+  elsif($_ eq '--format'                 ) { $format              = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-list'         ) { $fitparamlist        = $ARGV[$iarg+1]; }
   elsif($_ eq '--job-dir'                ) { $job_dir             = $ARGV[$iarg+1]; }
