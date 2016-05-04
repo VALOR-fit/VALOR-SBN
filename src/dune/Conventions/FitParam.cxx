@@ -472,6 +472,18 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       double step = 1E-4;
       bool   fix  = false;
       bool   nuis = true;
+      
+      // Set hardcoded limits for FSI params - HACK - 2 sigma ranges
+      if (p==kNuisIntPiMeanFreePath       ){ min = 0.6 ; max = 1.4; }
+      if (p==kNuisIntNucMeanFreePath      ){ min = 0.6 ; max = 1.4; }
+      if (p==kNuisIntFracPiChargeExchange ){ min = 0.0 ; max = 2.0; }
+      if (p==kNuisIntFracPiInelastic      ){ min = 0.2 ; max = 1.8; }
+      if (p==kNuisIntFracPiAbsorb         ){ min = 0.4 ; max = 1.6; }
+      if (p==kNuisIntFracPiProduction     ){ min = 0.6 ; max = 1.4; }
+      if (p==kNuisIntFracNucChargeExchange){ min = 0.0 ; max = 2.0; }
+      if (p==kNuisIntFracNucInelastic     ){ min = 0.2 ; max = 1.8; }
+      if (p==kNuisIntFracNucAbsorb        ){ min = 0.6 ; max = 1.4; }
+      if (p==kNuisIntFracNucProduction    ){ min = 0.6 ; max = 1.4; }
 
       fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
       ipc++; 
