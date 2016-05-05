@@ -62,7 +62,7 @@ Input MC templates
 </mc>
 
 <splines>
-  <folder>  dune/ndfit/2016a/fgt/orig_splines </folder>
+  <folder>  dune/ndfit/2016a/fgt/splines </folder>
   <pattern> valor_splines_[BEAM]_[SAMPLE]_[PARAM].root    </pattern>
 </splines>
 

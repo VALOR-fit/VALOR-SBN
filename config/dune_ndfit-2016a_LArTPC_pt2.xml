@@ -11,10 +11,10 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <lbnf_fhc>
-      1.0000e+17
+      1.0000e+21
     </lbnf_fhc>
     <lbnf_rhc>
-      1.0000e+17
+      1.0000e+21
     </lbnf_rhc>
   </exposure>
 </data>
@@ -62,7 +62,7 @@ Input MC templates
 </mc>
 
 <splines>
-  <folder>  dune/ndfit/2016a/lartpc/orig_splines </folder>
+  <folder>  dune/ndfit/2016a/lartpc/splines </folder>
   <pattern> valor_splines_[BEAM]_[SAMPLE]_[PARAM].root    </pattern>
 </splines>
 
