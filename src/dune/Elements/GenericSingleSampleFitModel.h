@@ -93,6 +93,9 @@ public:
   PhysParamList OneSigmaErrors (Option_t * opt = "");
 //  TMatrixD CovarianceMatrix(Option_t * opt = "");
 
+  // Calculate the OB manually from the content of the simple bins. Can be used to verify the spectra are the same for SB/OB
+  void UpdateObservableBinningFromSimple (Option_t * opt = 0);
+
 private:
 
   void Init  (void);
@@ -102,12 +105,11 @@ private:
   void FillFromDST  (TTree * t);
   bool FillFromTemplateFile (TFile * f, std::string tag);
 
-  void ApplyTuning         (Option_t * opt = 0);
-  void FluctuateMCStat     (Option_t * opt = 0);
-  void ApplySystematics    (Option_t * opt = 0);
-  void ApplyPhysics        (Option_t * opt = 0);
-  void UpdateSimpleBinning (Option_t * opt = 0);
-  void UpdatePDFs          (Option_t * opt = 0);
+  void ApplyTuning                       (Option_t * opt = 0);
+  void FluctuateMCStat                   (Option_t * opt = 0);
+  void ApplySystematics                  (Option_t * opt = 0);
+  void ApplyPhysics                      (Option_t * opt = 0);
+  void UpdatePDFs                        (Option_t * opt = 0);
 
   const util::ArrIdx * fArrIdx;
   

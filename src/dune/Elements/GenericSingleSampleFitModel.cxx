@@ -47,7 +47,6 @@ using std::endl;
 using namespace valor;
 using namespace valor::conv;
 
-//~ #define UPDATE_SB_FROM_OB
 //~ #define SPLINE_WEIGHTS_ARE_ONE
 
 //________________________________________________________________________________________
@@ -1817,9 +1816,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       fnoEt = TMath::Max(0.,fnoEt);
       fMCTFinOb[imode][izone]->Scale(fnoEt);
     }//izone
-
-#ifndef UPDATE_SB_FROM_OB
+    
     if(update_mct_sb) {
+      if (!imode) {
+        LOG("GenericSingleSampleSitSample",pNOTICE) << "Updating simple binning templates for "<<fName<<".";
+      }
       const int      n_reco1_bins_sb      = util::NumErecoBinsSb (fSample);
       const double * reco1_bin_edges_sb   = util::ErecoBinEdgesSb(fSample);
       const int      n_reco2_bins_sb      = util::NumYrecoBinsSb (fSample);
@@ -1932,13 +1933,10 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       fnoEt = TMath::Max(0.,fnoEt);
       fMCTFinSb[imode]->Scale(fnoEt);
     }//update_mct_sb?
-#endif //!UPDATE_SB_FROM_OB
   }//imode
-#ifdef UPDATE_SB_FROM_OB
-  if(update_mct_sb) {
-    this->UpdateSimpleBinning(option);
+  if (update_mct_sb) {
+    LOG("GenericSingleSampleSitSample",pNOTICE) << "Simple binning update completed.";
   }
-#endif
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
@@ -2063,9 +2061,9 @@ valor::PhysParamList valor::GenericSingleSampleFitModel::OneSigmaErrors(Option_t
   return ppl;
 }
 //________________________________________________________________________________________
-void valor::GenericSingleSampleFitModel::UpdateSimpleBinning (Option_t * /*opt*/)
+void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Option_t * /*opt*/)
 {
-  LOG("GenericSingleSampleFitModel",pINFO)<<"Updating simple binning: "<<fName;
+  LOG("GenericSingleSampleFitModel",pINFO)<<"Updating observable binning from simple: "<<fName;
   const int n_true1_bins            = util::NumEtrueBins   (fSample);
   //~ const double * true1_bin_edges    = util::EtrueBinEdges  (fSample);
   
@@ -2079,9 +2077,6 @@ void valor::GenericSingleSampleFitModel::UpdateSimpleBinning (Option_t * /*opt*/
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
-    
-    // Zero it out, since we'll just be adding to elements
-    fMCTFinSb[imode]->SetAll(0.);
     
     const int n_true2_bins         = util::NumQ2trueBins (fSample,m);
     //~ const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
@@ -2097,6 +2092,10 @@ void valor::GenericSingleSampleFitModel::UpdateSimpleBinning (Option_t * /*opt*/
         VALORArrayBin ob_bin;
         
         for (int izone = 0 ; izone < kNMaxBinZones ; izone++) {
+          
+          // Zero it out, since we'll just be adding to elements
+          fMCTFinOb[imode][izone]->SetAll(0.);
+    
           const int n_reco1_bins            = util::NumErecoBins   (fSample,izone);
           const double * reco1_bin_edges    = util::ErecoBinEdges  (fSample,izone);
           
@@ -2115,20 +2114,20 @@ void valor::GenericSingleSampleFitModel::UpdateSimpleBinning (Option_t * /*opt*/
                   ob_bin.bin2 = ir2;
                   
                   // Fraction of the observable bin held in the simple bin.
-                  double frac_ob_1 = util::FractionOfBinContained(
-                    reco1_bin_edges   [ir1]  ,reco1_bin_edges   [ir1  +1],
-                    reco1_bin_edges_sb[irsb1],reco1_bin_edges_sb[irsb1+1]);
-                  double frac_ob_2 = util::FractionOfBinContained(
-                    reco2_bin_edges   [ir2]  ,reco2_bin_edges   [ir2  +1],
-                    reco2_bin_edges_sb[irsb2],reco2_bin_edges_sb[irsb2+1]);
+                  double frac_sb_1 = util::FractionOfBinContained(
+                    reco1_bin_edges_sb[irsb1],reco1_bin_edges_sb[irsb1+1],
+                    reco1_bin_edges   [ir1]  ,reco1_bin_edges   [ir1  +1]);
+                  double frac_sb_2 = util::FractionOfBinContained(
+                    reco2_bin_edges_sb[irsb2],reco2_bin_edges_sb[irsb2+1],
+                    reco2_bin_edges   [ir2]  ,reco2_bin_edges   [ir2  +1]);
                   
-                  double frac_ob = frac_ob_1 * frac_ob_2;
-                  if (frac_ob < conv::kASmallNum) {
+                  double frac_sb = frac_sb_1 * frac_sb_2;
+                  if (frac_sb < conv::kASmallNum) {
                     continue;
                   }
-                  double ob_content = fMCTFinOb[imode][izone]->GetEntry(ob_bin);
-                  double content_to_add = frac_ob * ob_content;
-                  fMCTFinSb[imode]->AddToEntry(content_to_add, sb_bin);
+                  double sb_content = fMCTFinSb[imode]->GetEntry(sb_bin);
+                  double content_to_add = frac_sb * sb_content;
+                  fMCTFinOb[imode][izone]->AddToEntry(content_to_add,ob_bin);
                 }//ir2
               }//ir1
             }//it2
