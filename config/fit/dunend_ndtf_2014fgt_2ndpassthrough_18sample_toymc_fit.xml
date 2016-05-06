@@ -243,7 +243,7 @@
       <class> valor::VALORInt2016a </class>
       <covariance_matrix>
          <filename>   dune/ndfit/2016a/xsec/xsec_covariance_2016a_gevgen.root </filename>
-         <objname>    cov    </objname>    
+         <objname>    frac_cov    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
     </group>
