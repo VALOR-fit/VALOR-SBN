@@ -7,18 +7,19 @@
 // Costas Andreopoulos
 // ------------------------------------------------------------------------------------------------
 //
-	
+
 void tweak_pdf_N
 (
   const char * model_param_list   = "standard",                            /* list of params included in model, see FitParam.cxx */
-  const char * config_file        = "fit/dune_ndfit.xml"    /* analysis configuration file */
+  const char * config_file        = "fit/dune_ndfit.xml",    /* analysis configuration file */
+  const char * output_rootfile    = "",                      /* Optionally write envelope histograms to file */
+  const int ntoys                 = 200                      /* Number of toys to throw */
 )
 {
   using namespace std;
   using namespace valor;
   using namespace valor::conv;
-
-  const int    ntoys        = 10;
+  
   const double enu_reco_max = 10;
 
   // Analysis configuration
@@ -72,7 +73,6 @@ void tweak_pdf_N
 
     // Write stuff out
     model->Write(array,"curr","pdfts_rf +SB");
-    array->Print();
 
     // Pick results wanted 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
@@ -81,11 +81,9 @@ void tweak_pdf_N
       for(int isample = 0; isample < kNSamples; isample++) {
         Sample_t s = conv::kSample[ibeam][isample];
         if(s == ksUndefined) continue;
-        cerr<<s<<endl;
         TString name = TString::Format("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
         TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
-        cerr<<name<<endl;
         assert(curr_pdf);       
         if(itoy < 0) {
            nom_pdf_werr [ibeam][isample] = new TH1D(*curr_pdf);
@@ -126,9 +124,14 @@ void tweak_pdf_N
       }//ebin
     }//isample
   }//ibeam   
-
-
-  // Draw
+  
+  
+  // Draw and (if necessary), write to file
+  TFile * outfile = NULL;
+  if (output_rootfile) {
+    outfile = new TFile(output_rootfile,"RECREATE");
+  }
+    
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kBeamConf[ibeam];
     if(b == kbUndefined) continue;
@@ -161,8 +164,20 @@ void tweak_pdf_N
       leg->AddEntry(nom_pdf     [ibeam][isample], "nominal",        "L");
       leg->AddEntry(nom_pdf_werr[ibeam][isample], "a-priori error", "F");
       leg->Draw();
+      
+      if (outfile->IsOpen()) {
+        TString name = TString::Format("env_sb_%s_%s",
+           util::AsString(b).c_str(), util::AsString(s).c_str() );
+        nom_pdf[ibeam][isample]   ->Write((name+"_nom").Data());
+        err    [ibeam][isample][0]->Write((name+"_p1" ).Data());
+        err    [ibeam][isample][1]->Write((name+"_m1" ).Data());
+      }
     }//isample
     c[ibeam]->Update();
   }//ibeam   
-
+  
+  if (outfile) {
+    outfile->Close();
+    delete outfile;
+  }
 }
