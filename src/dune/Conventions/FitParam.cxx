@@ -6,6 +6,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 */
 //________________________________________________________________________________________
 
+#include <algorithm>
+
 // fmwk
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/Rnd.h"
@@ -16,6 +18,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/ArrIdx.h"
+#include "dune/Conventions/PhysicalParameterLimits.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -473,17 +476,9 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       bool   fix  = false;
       bool   nuis = true;
       
-      // Set hardcoded limits for FSI params - HACK - 2 sigma ranges
-      if (p==kNuisIntPiMeanFreePath       ){ min = 0.6 ; max = 1.4; }
-      if (p==kNuisIntNucMeanFreePath      ){ min = 0.6 ; max = 1.4; }
-      if (p==kNuisIntFracPiChargeExchange ){ min = 0.0 ; max = 2.0; }
-      if (p==kNuisIntFracPiInelastic      ){ min = 0.2 ; max = 1.8; }
-      if (p==kNuisIntFracPiAbsorb         ){ min = 0.4 ; max = 1.6; }
-      if (p==kNuisIntFracPiProduction     ){ min = 0.6 ; max = 1.4; }
-      if (p==kNuisIntFracNucChargeExchange){ min = 0.0 ; max = 2.0; }
-      if (p==kNuisIntFracNucInelastic     ){ min = 0.2 ; max = 1.8; }
-      if (p==kNuisIntFracNucAbsorb        ){ min = 0.6 ; max = 1.4; }
-      if (p==kNuisIntFracNucProduction    ){ min = 0.6 ; max = 1.4; }
+      // Check we're not going behind physical region
+      min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
+      max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
 
       fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
       ipc++; 
