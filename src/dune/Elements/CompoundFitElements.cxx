@@ -77,7 +77,6 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * /*opt*/)
   if (xmldoc==0) {
     LOG("CompoundFitElements", pERROR) 
       << "Can not parse input XML file [" << xmlfile << "]";
-    delete xmleng;
     util::Die(1); return false;
   }
   XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);
