@@ -131,8 +131,7 @@ foreach my $sample (@samples) {
       print BATCH_SCRIPT "Arguments                = $arguments \n";
       print BATCH_SCRIPT "initialdir               = $job_dir \n";
       print BATCH_SCRIPT "Error                    = ${jobname}_\$\(Process\).err \n";
-      print BATCH_SCRIPT "Output                   = /dev/null \n"; # We produce way too much output
-      #~ print BATCH_SCRIPT "Output                   = ${jobname}_\$\(Process\).out \n";
+      print BATCH_SCRIPT "Output                   = ${jobname}_\$\(Process\).out \n";
       print BATCH_SCRIPT "Universe                 = vanilla \n";
       print BATCH_SCRIPT "Getenv                   = True \n";
       print BATCH_SCRIPT "should_transfer_files    = YES \n";

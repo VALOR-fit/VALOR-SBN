@@ -44,6 +44,7 @@
 #include "PDG/PDGCodes.h"
 #include "PDG/PDGUtils.h"
 #include "PDG/PDGLibrary.h"
+#include "Utils/AppInit.h"
 #include "Utils/CmdLnArgParser.h"
 #include "Utils/RunOpt.h"
 #include "ReWeight/GReWeightI.h"
@@ -82,6 +83,11 @@ using namespace valor::conv;
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
+  // Make GENIE quiet - intranuke spams with default messenger
+  TString gmesg_path = "$GENIE/config/Messenger_laconic.xml";
+  gSystem->ExpandPathName(gmesg_path);
+  genie::utils::app_init::MesgThresholds(gmesg_path.Data());
+  
   Env::Instance()->AutoSet("dune");
   
   // Read command line arguments
@@ -249,7 +255,9 @@ int main(int argc, char ** argv)
     // Event loop
     Long64_t nev = analysis_tree->GetEntries();
     for(Long64_t iev = 0; iev < nev; iev++) {
-      VLOG("make_response_func", pNOTICE) << "** Reading event: " << iev;
+      if (iev%1000==0) {
+        VLOG("make_response_func", pNOTICE) << "** Reading event: " << iev;
+      }
       analysis_tree->GetEntry(iev);
       
       // Consider only input sample
