@@ -389,7 +389,8 @@ int main(int argc, char ** argv)
               kb.zone  = -1; // HACK - simple binning get zone -1 to avoid name collisions with normal splines. Should probably update the pattern here.
               TString name  = rfl.BuildSplineName(m,fit_param,kb);
               TString title = name; // Make this contain real kinematic ranges
-              TSpline3 spl(title.Data(), x, y, n_twks, "0");
+              //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
+              TSpline3 spl(title.Data(), x[0], x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
               spl.SetName(name.Data());
               spl.Write();
               n_splines_written++;
@@ -425,7 +426,8 @@ int main(int argc, char ** argv)
               kb.zone  = izone;
               TString name  = rfl.BuildSplineName(m,fit_param,kb);
               TString title = name; // Make this contain real kinematic ranges
-              TSpline3 spl(title.Data(), x, y, n_twks, "0");
+              //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
+              TSpline3 spl(title.Data(), x[0],x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
               spl.SetName(name.Data());
               spl.Write();
               n_splines_written++;
