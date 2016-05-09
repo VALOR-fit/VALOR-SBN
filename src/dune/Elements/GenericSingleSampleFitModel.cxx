@@ -1721,9 +1721,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
                 bin.  bin2 = ir2;
                 splbin.bin2 = ir2;
-#ifdef SPLINE_WEIGHTS_ARE_ONE
                 double response = 1;
-#else
+#ifndef SPLINE_WEIGHTS_ARE_ONE
                 const TSpline * spl = reinterpret_cast<TSpline*>(fRFPtr[imode][izone]->GetEntry(splbin));
                 if (spl==util::DuneRFL::kNoSplineRequired) {
                   LOG("GenericSingleSampleFitModel",pERROR)
@@ -1731,7 +1730,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                     <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
                     <<util::AsString(fSample)<<","<<util::AsString(m);
                 }
-                double response = spl->Eval(f);
+                if (spl!=util::DuneRFL::kFlatSpline) {
+                  response = spl->Eval(f);
+                }
 #endif
                 double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
                 val *= response;
@@ -2063,7 +2064,7 @@ valor::PhysParamList valor::GenericSingleSampleFitModel::OneSigmaErrors(Option_t
 //________________________________________________________________________________________
 void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Option_t * /*opt*/)
 {
-  LOG("GenericSingleSampleFitModel",pINFO)<<"Updating observable binning from simple: "<<fName;
+  LOG("GenericSingleSampleFitModel",pNOTICE)<<"Updating observable binning from simple: "<<fName;
   const int n_true1_bins            = util::NumEtrueBins   (fSample);
   //~ const double * true1_bin_edges    = util::EtrueBinEdges  (fSample);
   
