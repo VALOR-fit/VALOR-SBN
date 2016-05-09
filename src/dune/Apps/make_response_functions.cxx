@@ -248,7 +248,8 @@ int main(int argc, char ** argv)
   // Systematic tweaks
   for(int itwk = 0; itwk < n_twks; itwk++) {
 
-    double twk_dial = twk_dial_min + itwk * twk_dial_step;  
+    double twk_dial = twk_dial_min + itwk * twk_dial_step;
+    VLOG("make_response_func", pNOTICE) << "Doing tweak: " << twk_dial << " ("<<itwk+1 << " of "<<n_twks<<")";
     syst_list.Set(syst, twk_dial);
     rw.Reconfigure();
 
