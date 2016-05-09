@@ -15,6 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
+#include "valor/Utilities/UtlNumStat.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
 
@@ -31,9 +32,8 @@ using namespace valor::conv;
 using namespace valor::util;
 
 // Initialise the flat spline
-static Double_t flat_knots_x[5] = {-10, -5, 0, 5, 10};
 static Double_t flat_knots_y[5] = {  1,  1, 1, 1,  1};
-const TSpline * valor::util::DuneRFL::kFlatSpline = new TSpline3("flat_spline",flat_knots_x,flat_knots_y,5);
+const TSpline * valor::util::DuneRFL::kFlatSpline = new TSpline3("flat_spline",-100,100,flat_knots_y,5);
 
 // We'll never use this address to dereference - it can be passed as a flag indicating that no spline should exist.
 const TSpline * valor::util::DuneRFL::kNoSplineRequired = (TSpline*)&conv::kBadResult;
@@ -252,6 +252,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   int n_splines_read = 0;
   int n_splines_missing = 0;
   int n_splines_expected = fSplineBlockSize;
+  int n_splines_flat = 0;
   
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
@@ -302,8 +303,16 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                       }
                       TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
                       if (spline) {
-                        fSplines[spline_index] = spline;
-                        n_splines_read++;
+                        if (util::SplineIsFlat(spline)) {
+                          delete spline;
+                          fSplines[spline_index] = kFlatSpline;
+                          n_splines_flat++;
+                          n_splines_read++;
+                        }
+                        else {
+                          fSplines[spline_index] = spline;
+                          n_splines_read++;
+                        }
                       }
                       else {
                         LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
@@ -331,7 +340,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     delete spline_file;
   }
   
-  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines.";
+  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines, of which "<<n_splines_flat<<" were flat.";
   if (n_splines_missing) {
     LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines. Exiting.";
     util::Die(-1);return false;
