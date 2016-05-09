@@ -1,12 +1,21 @@
-print "\n=============================="
-print   "Loading python with VALOR DUNE"
-print   "==============================\n"
-
 import ROOT
 import sys
 import os
 import glob
 import math
+
+print "\n=============================="
+print   "Loading python with VALOR DUNE"
+
+# If GENIE available, load that too
+try:
+  genv = os.environ["GENIE"]
+  ROOT.gROOT.ProcessLine(".x ${GENIE}/src/scripts/gcint/loadlibs.C");
+  print "          and GENIE"
+except KeyError:
+  pass
+print   "==============================\n"
+
 try:
   import numpy as np
 except:
