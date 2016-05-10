@@ -51,8 +51,11 @@ color = ROOT.kBlack
 
 img_format = "png"
 
-def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks = False):
+def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks = False, reset = False, spline_only = False, seed = 0):
   
+  if (seed):
+    rnd.SetSeeds(seed,seed+1,seed+2,seed+3,seed+4)
+    
   # Set up model and read config file
   config =  os.environ[env_var]+"/config/"+config_file
   if not os.path.exists(config):
@@ -75,12 +78,23 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
   if fparm.Exists(conv.kPhypCPV         ) : fparm.SetInitValue(conv.kPhypCPV        , input_deltacp);
   if fparm.Exists(conv.kPhypDm12sq      ) : fparm.SetInitValue(conv.kPhypDm12sq     , input_dm12sq);
   if fparm.Exists(conv.kPhypDm23sq      ) : fparm.SetInitValue(conv.kPhypDm23sq     , input_dm23sq);
+  
+  true_values = model.Tweaks()
+  
+  #~ for p in xrange(conv.knppmax):
+    #~ if util.IsFSI(p) and true_values.Contains(p):
+      #~ true_values.SetValue(p,1)
+    
+  fparm.FromPhysParamList(true_values,"current")
       
   data = elements.FitData()
-  print model,data,fparm,stat_fluctuations
   applied_negevents_condition = data.Generate(model, fparm, stat_fluctuations)
   
-  model.ResetSystematics();
+  if not reset:
+    fparm.CopyCurrToInitValues()
+    
+  model.ResetSystematics()
+  fparm.ResetCurrToInitValues()
   
   outfile = ROOT.TFile("chisq_output.root","RECREATE")
   
@@ -106,6 +120,9 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
       except:
         print "Failed to get param ",param_name
         continue
+    
+    if spline_only and not util.ParamHasSplines(param):
+      continue
       
     if not fparm.Exists(param):
       print "Param ",param,"=",util.ParamAsString(param)," not found in FitParamList ",fit_param_list
@@ -130,10 +147,20 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
       chisq = fit_inputs.Statistic()
       h.Fill(par_value , chisq )
       
+    ymin = 0.
+    ymax = h.GetMaximum()*1.1
+    
+    true_val = true_values.Value(param)
+    truth_line = ROOT.TLine(true_val,ymin,true_val,ymax)
+    truth_line.SetLineColor(ROOT.kBlue)
+    truth_line.SetLineWidth(2)
+    truth_line.SetLineStyle(7)
+      
     hists.append(h)
-    h.GetYaxis().SetRangeUser(0,h.GetMaximum()*1.1)
+    h.GetYaxis().SetRangeUser(ymin,ymax)
     h.Write(hname)
-    h.Draw("c")
+    h.Draw()
+    truth_line.Draw()
     canv.Update()
     canv.Print(h.GetName()+"."+img_format)
     
@@ -151,7 +178,10 @@ if __name__=="__main__":
   parser.add_option('-c', '--config'        , dest='config' , default="analysis_configuration.xml", help="Configuration file")
   parser.add_option('--stat', dest='stat_fluct',default=False,action='store_true',help="Statistical fluctuations")
   parser.add_option('--syst', dest='syst_fluct',default=False, action='store_true',help="Randomise systematics")
+  parser.add_option('--reset', dest='reset',default=False, action='store_true',help="Chisq around nominal, not true.")
+  parser.add_option('--spline-only', dest='spline_only',default=False, action='store_true',help="Only draw spline parameters")
+  parser.add_option('--seed', dest='seed',default=0, type=int,help="Random seed")
   
   opt,params = parser.parse_args()
   
-  main(params,opt.config,opt.fpl,opt.stat_fluct,opt.syst_fluct)
+  main(params,opt.config,opt.fpl,opt.stat_fluct,opt.syst_fluct,opt.reset,opt.spline_only,opt.seed)
