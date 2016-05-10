@@ -47,11 +47,13 @@ using std::endl;
 using namespace valor;
 using namespace valor::conv;
 
-//~ #define SPLINE_WEIGHTS_ARE_ONE
+#define SPLINE_WEIGHTS_ARE_ONE
 
 //________________________________________________________________________________________
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
-  SingleSampleFitModelABC()
+  SingleSampleFitModelABC(),
+  fParamIsAppliedTo(),
+  fParamHasSplines()
 {
   this->Init();
 }
@@ -898,17 +900,17 @@ void GenericSingleSampleFitModel::Init(void)
         fPDFTotNullOb [izone] = true;
       }
     }//izone
-
-
+    
+    // Initialise the param is applied to to false
     for(int ip = 0; ip < conv::kNFitParams; ip++) {
-      fParamIsAppliedTo[imode][ip] = false;
+      const_cast<bool&>(fParamIsAppliedTo[imode][ip]) = false;
     }
   }//imode
   
   // Do our parameters use splines
   for(int ip = 0; ip < conv::kNFitParams; ip++) {
     PhysParamId_t p = kFitParam[ip];
-    fParamHasSplines[ip] = util::ParamHasSplines(p);
+    const_cast<bool&>(fParamHasSplines[ip]) = util::ParamHasSplines(p);
   }
   
   fArrIdx = util::ArrIdx::Instance();
@@ -1018,7 +1020,7 @@ void GenericSingleSampleFitModel::Book(void)
     for(int ip = 0; ip < conv::kNFitParams; ip++) {
       PhysParamId_t p = kFitParam[ip];
       if(p == kPhypUndefined) continue;
-      fParamIsAppliedTo[imode][ip] = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+      const_cast<bool&>(fParamIsAppliedTo[imode][ip]) = util::ParamIsAppliedTo(fBeam,fSample,m,p);
     }
   }//imode
 }
@@ -1155,17 +1157,17 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   int bstat_wght_pot  = 0; 
   int bstat_Q2_true   = 0;   
   
-   bstat_sample    = t->SetBranchAddress("sample",    &sample);
-   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
-   bstat_enu_true  = t->SetBranchAddress("enu_true",  &enu_true);
-   bstat_enu_reco  = t->SetBranchAddress("enu_reco",  &enu_reco);
-   bstat_y_reco    = t->SetBranchAddress("y_reco",    &y_reco);
-   bstat_wght_pot  = t->SetBranchAddress("wght_pot",  &wght_pot);
-   bstat_Q2_true   = t->SetBranchAddress("Q2_true",   &Q2_true);
-   
-   bool any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
-     bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
+  bstat_sample    = t->SetBranchAddress("sample",    &sample);
+  bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
+  bstat_enu_true  = t->SetBranchAddress("enu_true",  &enu_true);
+  bstat_enu_reco  = t->SetBranchAddress("enu_reco",  &enu_reco);
+  bstat_y_reco    = t->SetBranchAddress("y_reco",    &y_reco);
+  bstat_wght_pot  = t->SetBranchAddress("wght_pot",  &wght_pot);
+  bstat_Q2_true   = t->SetBranchAddress("Q2_true",   &Q2_true);
   
+  bool any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
+      bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
+
   if (any_bad_status) {
     LOG("GenericSingleSampleFitModel",pWARN)<<"MiniDST branches not found. Attempting to fall back to 2014a LBNETree format.";
     bstat_sample    = t->SetBranchAddress("sample",       &sample);
@@ -1177,19 +1179,19 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     bstat_Q2_true   = t->SetBranchAddress("Q2",           &Q2_true);
     
     any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
-      bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
+        bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
     assert(!any_bad_status);
     old_format = true;
   }
 
 
-   //~ t->SetBranchStatus("*",             0);
-   //~ t->SetBranchStatus("sample",        1); 
-   //~ t->SetBranchStatus("reac_mode",     1);    
-   //~ t->SetBranchStatus("enu_true",      1);  
-   //~ t->SetBranchStatus("enu_reco",      1);  
-   //~ t->SetBranchStatus("y_reco",        1);    
-   //~ t->SetBranchStatus("wght_pot",      1);
+  //~ t->SetBranchStatus("*",             0);
+  //~ t->SetBranchStatus("sample",        1); 
+  //~ t->SetBranchStatus("reac_mode",     1);    
+  //~ t->SetBranchStatus("enu_true",      1);  
+  //~ t->SetBranchStatus("enu_reco",      1);  
+  //~ t->SetBranchStatus("y_reco",        1);    
+  //~ t->SetBranchStatus("wght_pot",      1);
 
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
@@ -1679,143 +1681,115 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       const int n_reco1_bins = util::NumErecoBins(fSample,izone);
       const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
       // copy sys -> fin MC templates
-      for(int it1 = 0; it1 < n_true1_bins; it1++) {
-        bin.bin3 = it1;
-        for(int it2 = 0; it2 < n_true2_bins; it2++) {
-          bin.bin4 = it2;
-          for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-            bin.bin1 = ir1;
-            for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-              bin.bin2 = ir2;
-              double val = fMCTSysOb[imode][izone]->GetEntry(bin);
-              fMCTFinOb[imode][izone]->SetEntry(val,bin);
-            }// ir2 - second reco variable
-          }// ir1 - first reco variable
-        }// it2 - second true variable
-      }// it1 - first true variable
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-      LOG("GenericSingleSampleFitModel",pDEBUG) 
-        << "Applying spline-dependent params";
-#endif
+      fMCTFinOb[imode][izone]->CopyDataOnlyFrom(*fMCTSysOb[imode][izone]);
+      for(int ip = 0; ip < kNFitParams; ip++) {
+        PhysParamId_t p = kFitParam[ip];
+        if (p == kPhypUndefined          ) {continue;}
+        if (!fParamIsAppliedTo[imode][ip]) {continue;}
+        
+        bool has_splines = fParamHasSplines[ip];
+        //~ bool has_splines = false;
+        bool has_kinematic_dependence = kFitParamTrueKinematicDependence[ip];
+        
+        double f = fPhysHypothesis.CurrValue(p);
+        
       // First apply spline parameters
-      for(int ip = 0; ip < kNFitParams; ip++) {
-        PhysParamId_t p = kFitParam[ip];
-        if (p == kPhypUndefined          ) {continue;}
-        if (!fParamHasSplines[ip]        ) {continue;}
-        if (!fParamIsAppliedTo[imode][ip]) {continue;}
-        
-        double f = fPhysHypothesis.CurrValue(p);
-        //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
-        
-        VALORArrayBin splbin;
-        splbin.bin5 = ip;
-        for(int it1 = 0; it1 < n_true1_bins; it1++) {
-          bin   .bin3 = it1;
-          splbin.bin3 = it1;
-          for(int it2 = 0; it2 < n_true2_bins; it2++) {
-            bin   .bin4 = it2;
-            splbin.bin4 = it2;
-            for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-              bin   .bin1 = ir1;
-              splbin.bin1 = ir1;
-              for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                bin.  bin2 = ir2;
-                splbin.bin2 = ir2;
-                double response = 1;
+        if (has_splines) {
 #ifndef SPLINE_WEIGHTS_ARE_ONE
-                const TSpline * spl = reinterpret_cast<TSpline*>(fRFPtr[imode][izone]->GetEntry(splbin));
-                if (spl==util::DuneRFL::kNoSplineRequired) {
-                  LOG("GenericSingleSampleFitModel",pERROR)
-                    <<"Got no spline required for bin expecting spline."
-                    <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
-                    <<util::AsString(fSample)<<","<<util::AsString(m);
-                }
-                if (spl!=util::DuneRFL::kFlatSpline) {
-                  response = spl->Eval(f);
-                }
-#endif
-                double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
-                val *= response;
-              }//ir2
-            }//ir1
-          }//it2
-        }//it1
-      }
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-      LOG("GenericSingleSampleFitModel",pDEBUG) 
-        << "Applying true kinematic dependent params";
+          LOG("GenericSingleSampleFitModel",pDEBUG) 
+            << "Applying parameter: " << util::AsString(p) << " with value = " << f 
+            << " using splines.";
 #endif
-      // then apply kinematic-dependent params without splines
-      for(int ip = 0; ip < kNFitParams; ip++) {
-        //-------------- error, prone need to simplify
-        PhysParamId_t p = kFitParam[ip];
-        if (p == kPhypUndefined          ) {continue;}
-        if (fParamHasSplines[ip]         ) {continue;}
-        if (!fParamIsAppliedTo[imode][ip]) {continue;}
-        bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
-        if(!enu_true_dep) continue;
-        double f = fPhysHypothesis.CurrValue(p);
-        f = TMath::Max(0.,f);
-        bool tweaked = TMath::Abs(f-1) > kASmallNum;
-        if(!tweaked) continue;
-        const double true1_min  = kFitParamEtrueRange [ip][0];
-        const double true1_max  = kFitParamEtrueRange [ip][1];     
-        const double true2_min  = kFitParamQ2trueRange[ip][0];
-        const double true2_max  = kFitParamQ2trueRange[ip][1];     
-        int i_true1_min = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_min+kASmallNum);
-        int i_true1_max = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_max-kASmallNum);
-        int i_true2_min = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_min+kASmallNum);
-        int i_true2_max = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_max-kASmallNum);
+          //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
+        
+          VALORArrayBin splbin;
+          splbin.bin5 = ip;
+          for(int it1 = 0; it1 < n_true1_bins; it1++) {
+            bin   .bin3 = it1;
+            splbin.bin3 = it1;
+            for(int it2 = 0; it2 < n_true2_bins; it2++) {
+              bin   .bin4 = it2;
+              splbin.bin4 = it2;
+              for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
+                bin   .bin1 = ir1;
+                splbin.bin1 = ir1;
+                for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
+                  bin.  bin2 = ir2;
+                  splbin.bin2 = ir2;
+                  double response = 1;
+                  const TSpline * spl = reinterpret_cast<TSpline*>(fRFPtr[imode][izone]->GetEntry(splbin));
+                  if (spl==util::DuneRFL::kNoSplineRequired) {
+                    LOG("GenericSingleSampleFitModel",pERROR)
+                      <<"Got no spline required for bin expecting spline."
+                      <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+                      <<util::AsString(fSample)<<","<<util::AsString(m);
+                  }
+                  if (spl!=util::DuneRFL::kFlatSpline) {
+                    response = spl->Eval(f);
+                    assert(response>=0);
+                  }
+                  double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
+                  val *= response;
+                }//ir2
+              }//ir1
+            }//it2
+          }//it1
+#endif //SPLINE_WEIGHTS_ARE_ONE
+        } // has_splines
+        else if (has_kinematic_dependence) {
+          f = TMath::Max(0.,f);
+          bool tweaked = TMath::Abs(f-1) > kASmallNum;
+          if(!tweaked) continue;
+          const double true1_min  = kFitParamEtrueRange [ip][0];
+          const double true1_max  = kFitParamEtrueRange [ip][1];     
+          const double true2_min  = kFitParamQ2trueRange[ip][0];
+          const double true2_max  = kFitParamQ2trueRange[ip][1];     
+          int i_true1_min = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_min+kASmallNum);
+          int i_true1_max = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_max-kASmallNum);
+          int i_true2_min = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_min+kASmallNum);
+          int i_true2_max = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_max-kASmallNum);
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-        LOG("GenericSingleSampleFitModel",pDEBUG) 
-          << "Applying parameter: " << util::AsString(p) << " with value = " << f 
-          << " in Etrue bin range: [" << ienu_true_min << ", " << ienu_true_max << "]";
+          LOG("GenericSingleSampleFitModel",pINFO) 
+            << fName <<": "
+            << "Applying parameter: " << util::AsString(p) << " with value = " << f 
+            << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
+            << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
 #endif
-        for(int it1 = i_true1_min; it1 <= i_true1_max; it1++) {
-          bin.bin3 = it1;
-          for(int it2 = i_true2_min; it2 <= i_true2_max; it2++) {
-            bin.bin4 = it2;
-            for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-              bin.bin1 = ir1;
-              for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                bin.bin2 = ir2;
-                double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
-                val *= f;
+          for(int it1 = i_true1_min; it1 <= i_true1_max; it1++) {
+            bin.bin3 = it1;
+            for(int it2 = i_true2_min; it2 <= i_true2_max; it2++) {
+              bin.bin4 = it2;
+              for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
+                bin.bin1 = ir1;
+                for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
+                  bin.bin2 = ir2;
+                  double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
+                  val *= f;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-                LOG("GenericSingleSampleFitModel",pDEBUG) 
-                  << "MCT[" << imode << ", " << izone << "] = " 
-                  << val/f << " --> " << val;
+                  LOG("GenericSingleSampleFitModel",pDEBUG) 
+                    << "MCT[" << imode << ", " << izone << "] = " 
+                    << val/f << " --> " << val;
 #endif
-              }//iyr: yreco bins
-            }//ier: Ereco bins
-          }//it2: Q2 true bins
-        }//it1: Etrue bins
-      }//ip - end of Etrue dependent parameter loop
+                }//iyr: yreco bins
+              }//ier: Ereco bins
+            }//it2: Q2 true bins
+          }//it1: Etrue bins
+        }// has kinematic dependence
 
+        // then apply the non-Etrue-dependent factors (use scale - not loop)
+        else {
+          double noEt = 1 ;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-      LOG("GenericSingleSampleFitModel",pDEBUG) 
-        << "Applying Etrue-independent params";
+          LOG("GenericSingleSampleFitModel",pINFO)
+            << fName <<": "
+            << "Applying parameter: " << util::AsString(p) << " with value = " << f << " to whole mode "<<util::AsString(m);
 #endif
-      // then apply the non-Etrue-dependent factors (bundle them together to loop over the
-      // Ereco,yreco,Etrue bins just once)
-      double fnoEt = 1.;
-      for(int ip = 0; ip < kNFitParams; ip++) {
-        //-------------- error, prone need to simplify
-        PhysParamId_t p = kFitParam[ip];
-        if (p == kPhypUndefined          ) {continue;}
-        if (fParamHasSplines[ip]         ) {continue;}
-        if (!fParamIsAppliedTo[imode][ip]) {continue;}
-        bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
-        if(enu_true_dep) continue;
-        double f = fPhysHypothesis.CurrValue(p);
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-        LOG("GenericSingleSampleFitModel",pDEBUG) 
-          << "Applying parameter: " << util::AsString(p) << " with value = " << f;
-#endif
-        fnoEt *= f;
-      }//ip
-      fnoEt = TMath::Max(0.,fnoEt);
-      fMCTFinOb[imode][izone]->Scale(fnoEt);
+          noEt *= f;
+          noEt = TMath::Max(0.,noEt);
+          fMCTFinOb[imode][izone]->Scale(noEt);
+        } // No spline, no kin dependence
+      } //iparam
     }//izone
     
     if(update_mct_sb) {
@@ -1837,7 +1811,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (!fParamHasSplines[ip]        ) {continue;}
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
         
-        double f = fPhysHypothesis.CurrValue(p);
         //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
         
         VALORArrayBin sbin;
