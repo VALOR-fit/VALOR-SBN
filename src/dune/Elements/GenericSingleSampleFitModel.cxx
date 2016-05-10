@@ -47,7 +47,7 @@ using std::endl;
 using namespace valor;
 using namespace valor::conv;
 
-#define SPLINE_WEIGHTS_ARE_ONE
+//~ #define SPLINE_WEIGHTS_ARE_ONE
 
 //________________________________________________________________________________________
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
@@ -1811,101 +1811,89 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (!fParamHasSplines[ip]        ) {continue;}
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
         
-        //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
-        
-        VALORArrayBin sbin;
-        util::KinematicPoint kp;
-        for(int it1 = 0; it1 < n_true1_bins; it1++) {
-          sbin.bin3 = it1;
-          kp.true1 = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2;
-          for(int it2 = 0; it2 < n_true2_bins; it2++) {
-            sbin.bin4 = it2;
-            kp.true2 = (true2_bin_edges[it1]+true2_bin_edges[it1+1])/2;
-            for(int ir1 = 0; ir1 < n_reco1_bins_sb; ir1++) {
-              sbin.bin1 = ir1;
-              kp.reco1 = (reco1_bin_edges_sb[it1]+reco1_bin_edges_sb[it1+1])/2;
-              for(int ir2 = 0; ir2 < n_reco2_bins_sb; ir2++) {
-                sbin.bin2 = ir2;
-                kp.reco2 = (reco2_bin_edges_sb[it1]+reco2_bin_edges_sb[it1+1])/2;
-#ifdef SPLINE_WEIGHTS_ARE_ONE
-                double response = 1;
-#else
-                util::KinematicBin kb = fRFL->GetBin(kp,m);
-                const TSpline * spl = fRFL->GetSpline(m,p,kb);
-                if (spl==util::DuneRFL::kNoSplineRequired) {
-                  LOG("GenericSingleSampleFitModel",pERROR)
-                    <<"Got no spline required for simple bin expecting spline."
-                    <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
-                    <<util::AsString(fSample)<<","<<util::AsString(m);
-                }
-                double response = spl->Eval(f);
-#endif
-                double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
-                val *= response;
-              }//ir2
-            }//ir1
-          }//it2
-        }//it1
-      }//iparams
-        
-      // then apply kinematic-dependent params
-      for(int ip = 0; ip < kNFitParams; ip++) {
-        //-------------- error, prone need to simplify
-        PhysParamId_t p = kFitParam[ip];
-        if (p == kPhypUndefined          ) {continue;}
-        if (fParamHasSplines[ip]         ) {continue;}
-        if (!fParamIsAppliedTo[imode][ip]) {continue;}
-        bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
-        if(!enu_true_dep) continue;
         double f = fPhysHypothesis.CurrValue(p);
-        f = TMath::Max(0.,f);
-        bool tweaked = TMath::Abs(f-1) > kASmallNum;
-        if(!tweaked) continue;
-        const double true1_min = kFitParamEtrueRange[ip][0];
-        const double true1_max = kFitParamEtrueRange[ip][1];     
-        int itrue1_min = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_min+kASmallNum);
-        int itrue1_max = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_max-kASmallNum);
-        const double true2_min = kFitParamQ2trueRange[ip][0];
-        const double true2_max = kFitParamQ2trueRange[ip][1];
-        int itrue2_min = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_min+kASmallNum);
-        int itrue2_max = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_max-kASmallNum);
+        
+        bool has_splines = fParamHasSplines[ip];
+        bool has_kinematic_dependence = kFitParamTrueKinematicDependence[ip];
+        
+        if (has_splines) {
+          //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
+          VALORArrayBin sbin;
+          util::KinematicPoint kp;
+          for(int it1 = 0; it1 < n_true1_bins; it1++) {
+            sbin.bin3 = it1;
+            kp.true1 = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2;
+            for(int it2 = 0; it2 < n_true2_bins; it2++) {
+              sbin.bin4 = it2;
+              kp.true2 = (true2_bin_edges[it1]+true2_bin_edges[it1+1])/2;
+              for(int ir1 = 0; ir1 < n_reco1_bins_sb; ir1++) {
+                sbin.bin1 = ir1;
+                kp.reco1 = (reco1_bin_edges_sb[it1]+reco1_bin_edges_sb[it1+1])/2;
+                for(int ir2 = 0; ir2 < n_reco2_bins_sb; ir2++) {
+                  sbin.bin2 = ir2;
+                  kp.reco2 = (reco2_bin_edges_sb[it1]+reco2_bin_edges_sb[it1+1])/2;
+  #ifdef SPLINE_WEIGHTS_ARE_ONE
+                  double response = 1;
+  #else
+                  util::KinematicBin kb = fRFL->GetBin(kp,m);
+                  const TSpline * spl = fRFL->GetSpline(m,p,kb);
+                  if (spl==util::DuneRFL::kNoSplineRequired) {
+                    LOG("GenericSingleSampleFitModel",pERROR)
+                      <<"Got no spline required for simple bin expecting spline."
+                      <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+                      <<util::AsString(fSample)<<","<<util::AsString(m);
+                  }
+                  double response = spl->Eval(f);
+  #endif
+                  double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
+                  val *= response;
+                }//ir2
+              }//ir1
+            }//it2
+          }//it1
+        }//has splines
+        
+        else if (has_kinematic_dependence) {
+          f = TMath::Max(0.,f);
+          bool tweaked = TMath::Abs(f-1) > kASmallNum;
+          if(!tweaked) continue;
+          const double true1_min = kFitParamEtrueRange[ip][0];
+          const double true1_max = kFitParamEtrueRange[ip][1];     
+          int itrue1_min = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_min+kASmallNum);
+          int itrue1_max = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_max-kASmallNum);
+          const double true2_min = kFitParamQ2trueRange[ip][0];
+          const double true2_max = kFitParamQ2trueRange[ip][1];
+          int itrue2_min = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_min+kASmallNum);
+          int itrue2_max = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_max-kASmallNum);
 
-        for(int it1 = itrue1_min; it1 <= itrue1_max; it1++) {
-          bin.bin3 = it1;
-          for(int it2 = itrue2_min; it2 <= itrue2_max; it2++) {
-            bin.bin4 = it2;
-            for(int ir1 = 0; ir1 < kNErecoBinsSb; ir1++) {
-              bin.bin1 = ir1;
-              for(int ir2 = 0; ir2 < n_reco2_bins_sb; ir2++) {
-                bin.bin2 = ir2;
-                double & val = fMCTFinSb[imode]->GetEntryRef(bin);
-                val *= f;
-              }//ir2: yreco bins
-            }//ir1: Ereco bins
-          }//it2: Q2 bins
-        }//it1: Etrue bins
-      }//ip
+          for(int it1 = itrue1_min; it1 <= itrue1_max; it1++) {
+            bin.bin3 = it1;
+            for(int it2 = itrue2_min; it2 <= itrue2_max; it2++) {
+              bin.bin4 = it2;
+              for(int ir1 = 0; ir1 < kNErecoBinsSb; ir1++) {
+                bin.bin1 = ir1;
+                for(int ir2 = 0; ir2 < n_reco2_bins_sb; ir2++) {
+                  bin.bin2 = ir2;
+                  double & val = fMCTFinSb[imode]->GetEntryRef(bin);
+                  val *= f;
+                }//ir2: yreco bins
+              }//ir1: Ereco bins
+            }//it2: Q2 bins
+          }//it1: Etrue bins
+        }// has kinematic dependence
+        else {
+          // then apply the non-Etrue-dependent factors (bundle them together to loop over the
+          // Ereco,yreco,Etrue bins just once)
+          double fnoEt = 1.;
 
-      // then apply the non-Etrue-dependent factors (bundle them together to loop over the
-      // Ereco,yreco,Etrue bins just once)
-      double fnoEt = 1.;
-      for(int ip = 0; ip < kNFitParams; ip++) {
-        //-------------- error, prone need to simplify
-        PhysParamId_t p = kFitParam[ip];
-        if(p == kPhypUndefined) continue;
-        bool apply = fParamIsAppliedTo[imode][ip];
-        //-------------- 
-        if(!apply) continue;
-        bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
-        if(enu_true_dep) continue;
-        double f = fPhysHypothesis.CurrValue(p);
-        f = TMath::Max(0.,f);
-        bool tweaked = TMath::Abs(f-1) > kASmallNum;
-        if(!tweaked) continue;
-        fnoEt *= f;
+          f = TMath::Max(0.,f);
+          bool tweaked = TMath::Abs(f-1) > kASmallNum;
+          if(!tweaked) continue;
+          fnoEt *= f;
+          fnoEt = TMath::Max(0.,fnoEt);
+          fMCTFinSb[imode]->Scale(fnoEt);
+        }// normalisations
       }//ip
-      fnoEt = TMath::Max(0.,fnoEt);
-      fMCTFinSb[imode]->Scale(fnoEt);
     }//update_mct_sb?
   }//imode
   if (update_mct_sb) {
