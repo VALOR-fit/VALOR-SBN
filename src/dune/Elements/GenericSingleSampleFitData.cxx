@@ -406,9 +406,9 @@ double GenericSingleSampleFitData::GetFitStatistic(
 
   for(int izone = 0; izone < kNMaxBinZones; izone++) {
     if(fDataObNull[izone]) continue;
-    const char * name = Form("curr_pdft_ob_vf_%s_%s_z%d", 
+    TString name = TString::Format("curr_pdft_ob_vf_%s_%s_z%d", 
         util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(),izone);
-    VALORArray * pdf = (VALORArray*) array->FindObject(name);
+    VALORArray * pdf = (VALORArray*) array->FindObject(name.Data());
     assert(pdf);           
     const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
     const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
