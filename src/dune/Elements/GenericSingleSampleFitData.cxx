@@ -211,22 +211,23 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
     }//izone
 
     if(opt.find("+SB") != string::npos) {
-      const char * name = Form("%s_%s",
+      TString name = TString::Format("%s_%s",
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
       // create slices of the total PDF (function of Ereco, for given yreco bin)
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
       const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
       TH1D * htot = new TH1D("htot",
           "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
-      htot->SetName(Form("%s_%s_%s",tag, "data_slice_sb_rf",name) );
+      TString hname = TString::Format("%s_%s_%s",tag, "data_slice_sb_rf",name.Data());
+      htot->SetName(hname.Data());
       htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
       htot->GetYaxis()->SetTitle("Number of events /bin");
       for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-        TH1D * h = new TH1D("h",
-            Form("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
-              y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
+        TString htitle = TString::Format("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
+              y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]);
+        TH1D * h = new TH1D("h",htitle.Data(),
             kNErecoBinsSb, kErecoBinEdgesSb);
-        h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_sb_rf",name,iy) );
+        h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_sb_rf",name.Data(),iy) );
         h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
         h->GetYaxis()->SetTitle("Number of events /bin /%f POT");
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {
@@ -274,7 +275,7 @@ bool GenericSingleSampleFitData::Generate(
     << "Generating a toy-MC expt with the following params: " << fp;
   LOG("GenericSingleSampleFitData",pINFO)
     << "Stat. fluctuations are turned-" << ((fluctuate)? "ON" : "OFF");
-
+  
   bool ok = model_abc->Generate(fp,"+SB");
   if(!ok) {
     LOG("GenericSingleSampleFitData",pERROR) 
@@ -282,7 +283,7 @@ bool GenericSingleSampleFitData::Generate(
       << " and input params: " << fp;
     return false;
   }
-
+  
   return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
@@ -308,8 +309,8 @@ bool GenericSingleSampleFitData::Generate(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
-  TObjArray * array = new TObjArray();
-  model_abc->Write(array, "curr", "pdft_vf +SB");
+  TObjArray array;
+  model_abc->Write(&array, "curr", "pdft_vf +SB");
 
   this->Zero("all");
 
@@ -318,11 +319,12 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     << util::AsString(fBeam) << " / " << util::AsString(fSample);
 
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-
-  const char * name = Form("curr_pdft_sb_vf_%s_%s", 
+    
+  TString sb_name = TString::Format("curr_pdft_sb_vf_%s_%s", 
       util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
-  VALORArray * pdf = (VALORArray*) array->FindObject(name);
-  assert(pdf);           
+  VALORArray * pdf = (VALORArray*) array.FindObject(sb_name.Data());
+  assert(pdf);
+  
   for(int ier = 0; ier < kNErecoBinsSb; ier++) {
     for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
       double nmc   = pdf->GetEntry(ier,iy);
@@ -332,7 +334,7 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
       LOG("GenericSingleSampleFitData",pDEBUG) 
         << "(E_reco idx = " << ier << ", y_reco idx = " << iy 
         << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
-
+        
       // Map to distributions with optimized binning
       //
       const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
@@ -357,7 +359,6 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     }//iy
   }//ier
   
-  delete array;
 
   return true;
 }
