@@ -29,5 +29,10 @@
   <priority msgstream="GenericSingleSampleFitModel">    NOTICE </priority>
   <priority msgstream="GenericSingleSampleFitData">     NOTICE </priority>
   <priority msgstream="FitInputs">                      NOTICE </priority>
+  <priority msgstream="fitnt_conv">                     NOTICE </priority>
+  
+  <priority msgstream="make_minidst">                   NOTICE  </priority>
+  <priority msgstream="make_response_func">             NOTICE </priority>
+  <priority msgstream="DuneRFL">                        NOTICE   </priority>
 
 </messenger_config>
