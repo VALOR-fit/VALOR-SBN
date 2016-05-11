@@ -53,6 +53,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
 #include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 
 using namespace std;
@@ -70,6 +71,13 @@ int main(int argc, char ** argv)
 
   TString param_values_ts(arg.GetString("param-values-option"));
   TString fit_options_ts (arg.GetString("fitter"));
+  
+  bool with_stat_fluct    = arg.GetBool("with-stat-fluct");
+  bool start_at_true      = arg.GetBool("start-at-true");
+  bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
+  int  ntoymc             = arg.GetInt("ntoymc");
+  string fplname          = arg.GetString("fit-param-list");
+  string fittername       = arg.GetString("fitter");
   
   Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
   
@@ -93,7 +101,7 @@ int main(int argc, char ** argv)
   FitModelABC * model = elements->FitModel();
   
   // Use ND model to generate toy-MC experiments & fit
-  for(int itoymc = 0; itoymc < arg.GetInt("ntoymc"); itoymc++) {
+  for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
     LOG("valor_dune", pNOTICE) << "\n\n *** Toy-MC experiment #" << itoymc;
     
     // Reset output tree variables
@@ -101,32 +109,60 @@ int main(int argc, char ** argv)
     
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(arg.GetString("fit-param-list").c_str());
+    FitParamList * fp = util::GetFitParameterList(fplname.c_str());
    
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
     if (param_values_ts.Contains("randomize")) {
       model->RandomizeSystematics(param_values_ts.Data());
     }
-    fp->FromPhysParamList(model->Tweaks(),"current");
     
-    if (arg.GetBool("start-at-true")) {
-      LOG("valor_dune", pNOTICE) << "Copying current values to initial values to give the fitter some help.";
-      fp->CopyCurrToInitValues();
+    PhysParamList tweaks = model->Tweaks();
+    
+    //~ // Don't randomise fixed parameters
+    //~ for (int ip = 0; ip < conv::knppmax ; ip++) {
+      //~ PhysParamId_t p = (PhysParamId_t)ip;
+      //~ if (tweaks.Contains(p) and fp->IsFixed(p) ) {
+        //~ double init = fp->InitValue(p);
+        //~ tweaks.SetValue(p,init);
+      //~ }
+    //~ }
+    
+    fp->FromPhysParamList(tweaks,"current");
+    
+    // Check parameter name, maybe rethrow
+    if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp)) {
+      LOG("valor_dune", pNOTICE) << "At least one parameter thrown outside expected limits.";
+      if (rethrow_unphysical) {
+        LOG("valor_dune", pNOTICE) << "Regenerating...";
+        itoymc--;
+        continue;
+      }
     }
     
     PhysParamList true_params = fp->AsPhysParamList("current");
-
+    
     // Generate a toy-MC experiment 
     LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
     LOG("valor_dune", pNOTICE) << "Toy-MC generation uses true parameters: " << true_params;
     FitDataABC * data = elements->FitData();
-    data->Generate(model,*fp,arg.GetBool("with-stat-fluct"));
-
+    data->Generate(model,*fp,with_stat_fluct);
+    
     // The toy-MC was generated using the `current' values of the input parameter list.
     // These values will be overwritten during the fit.
     // Copy those values now so as to save them later in the output tree.
     ntp.TrueParamArr()->Append(true_params);
+    
+    if (start_at_true) {
+      // Before we do our start-at-true, we'll reset our fixed parameters to 1.
+      for (int ip = 0 ; ip < fp->GetNumberParameters() ; ip++) {
+        if (fp->IsFixedByIndex(ip)) {
+          fp->SetCurrentValueByIndex(ip,fp->InitValueByIndex(ip));
+        }
+      }
+      LOG("valor_dune", pNOTICE) << "Copying current values to initial values to give the fitter some help.";
+      fp->CopyCurrToInitValues();
+    }
     
     // Set our current values back to the fitter start point.
     // This will be central values unless start-at-true is defined.
@@ -135,7 +171,7 @@ int main(int argc, char ** argv)
     // Get fitter
     LOG("valor_dune", pNOTICE) << "Preparing the fitter";
     FitInputs * fit_inputs = new FitInputs(data,model,fp);
-    FitterABC * fitter = util::GetFitter(fit_inputs, arg.GetString("fitter").c_str());
+    FitterABC * fitter = util::GetFitter(fit_inputs, fittername.c_str());
 
     // Do the fit
     LOG("valor_dune", pNOTICE) << "Running the fitter";
