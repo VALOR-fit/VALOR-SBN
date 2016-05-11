@@ -1493,7 +1493,7 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
       update_mct_sb = true;
     }
   }
-
+  
   //Rnd * rnd = Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
   Rnd * rnd = Rnd::Instance();
 
@@ -1653,7 +1653,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       update_mct_sb = true;
     }
   }
-
+  
   const int n_true1_bins         = util::NumEtrueBins  (fSample);
   const double * true1_bin_edges = util::EtrueBinEdges (fSample);
 
@@ -1688,7 +1688,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
         
         bool has_splines = fParamHasSplines[ip];
-        //~ bool has_splines = false;
         bool has_kinematic_dependence = kFitParamTrueKinematicDependence[ip];
         
         double f = fPhysHypothesis.CurrValue(p);
@@ -1727,7 +1726,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   }
                   if (spl!=util::DuneRFL::kFlatSpline) {
                     response = spl->Eval(f);
-                    assert(response>=0);
+                    if (response<0) {
+                      LOG("GenericSingleSampleFitModel",pERROR)
+                       <<"Negative response from spline (OB) "<<spl->GetName()
+                       <<" evaluated at "<<f<<" with result "<<response
+                       <<". Using 0 instead.";
+                      response = 0;
+                    }
                   }
                   double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
                   val *= response;
@@ -1804,11 +1809,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       if(is_null) {continue;}
       fMCTFinSb[imode]->CopyDataOnlyFrom(*(fMCTSysSb[imode]));
       
-      // first apply spline parameters
       for(int ip = 0; ip < kNFitParams; ip++) {
         PhysParamId_t p = kFitParam[ip];
         if (p == kPhypUndefined          ) {continue;}
-        if (!fParamHasSplines[ip]        ) {continue;}
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
         
         double f = fPhysHypothesis.CurrValue(p);
@@ -1816,7 +1819,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         bool has_splines = fParamHasSplines[ip];
         bool has_kinematic_dependence = kFitParamTrueKinematicDependence[ip];
         
+        // first apply spline parameters
         if (has_splines) {
+#ifndef SPLINE_WEIGHTS_ARE_ONE
           //~ if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
           VALORArrayBin sbin;
           util::KinematicPoint kp;
@@ -1825,16 +1830,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             kp.true1 = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2;
             for(int it2 = 0; it2 < n_true2_bins; it2++) {
               sbin.bin4 = it2;
-              kp.true2 = (true2_bin_edges[it1]+true2_bin_edges[it1+1])/2;
-              for(int ir1 = 0; ir1 < n_reco1_bins_sb; ir1++) {
-                sbin.bin1 = ir1;
-                kp.reco1 = (reco1_bin_edges_sb[it1]+reco1_bin_edges_sb[it1+1])/2;
-                for(int ir2 = 0; ir2 < n_reco2_bins_sb; ir2++) {
-                  sbin.bin2 = ir2;
-                  kp.reco2 = (reco2_bin_edges_sb[it1]+reco2_bin_edges_sb[it1+1])/2;
-  #ifdef SPLINE_WEIGHTS_ARE_ONE
-                  double response = 1;
-  #else
+              kp.true2 = (true2_bin_edges[it2]+true2_bin_edges[it2+1])/2;
+              for(int irsb1 = 0; irsb1 < n_reco1_bins_sb; irsb1++) {
+                sbin.bin1 = irsb1;
+                kp.reco1 = (reco1_bin_edges_sb[irsb1]+reco1_bin_edges_sb[irsb1+1])/2;
+                for(int irsb2 = 0; irsb2 < n_reco2_bins_sb; irsb2++) {
+                  sbin.bin2 = irsb2;
+                  kp.reco2 = (reco2_bin_edges_sb[irsb2]+reco2_bin_edges_sb[irsb2+1])/2;
                   util::KinematicBin kb = fRFL->GetBin(kp,m);
                   const TSpline * spl = fRFL->GetSpline(m,p,kb);
                   if (spl==util::DuneRFL::kNoSplineRequired) {
@@ -1844,13 +1846,20 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                       <<util::AsString(fSample)<<","<<util::AsString(m);
                   }
                   double response = spl->Eval(f);
-  #endif
+                  if (response<0) {
+                    LOG("GenericSingleSampleFitModel",pERROR)
+                     <<"Negative response from spline (SB) "<<spl->GetName()
+                     <<" evaluated at "<<f<<" with result "<<response
+                     <<". Using 0 instead.";
+                    response = 0;
+                  }
                   double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
                   val *= response;
                 }//ir2
               }//ir1
             }//it2
           }//it1
+#endif
         }//has splines
         
         else if (has_kinematic_dependence) {
@@ -1870,10 +1879,10 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             bin.bin3 = it1;
             for(int it2 = itrue2_min; it2 <= itrue2_max; it2++) {
               bin.bin4 = it2;
-              for(int ir1 = 0; ir1 < kNErecoBinsSb; ir1++) {
-                bin.bin1 = ir1;
-                for(int ir2 = 0; ir2 < n_reco2_bins_sb; ir2++) {
-                  bin.bin2 = ir2;
+              for(int irsb1 = 0; irsb1 < kNErecoBinsSb; irsb1++) {
+                bin.bin1 = irsb1;
+                for(int irsb2 = 0; irsb2 < n_reco2_bins_sb; irsb2++) {
+                  bin.bin2 = irsb2;
                   double & val = fMCTFinSb[imode]->GetEntryRef(bin);
                   val *= f;
                 }//ir2: yreco bins
@@ -2040,6 +2049,11 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
     
+    for (int izone = 0 ; izone < kNMaxBinZones ; izone++) {
+      // Zero it out, since we'll just be adding to elements
+      fMCTFinOb[imode][izone]->SetAll(0.);
+    }
+    
     const int n_true2_bins         = util::NumQ2trueBins (fSample,m);
     //~ const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
     
@@ -2055,9 +2069,6 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
         
         for (int izone = 0 ; izone < kNMaxBinZones ; izone++) {
           
-          // Zero it out, since we'll just be adding to elements
-          fMCTFinOb[imode][izone]->SetAll(0.);
-    
           const int n_reco1_bins            = util::NumErecoBins   (fSample,izone);
           const double * reco1_bin_edges    = util::ErecoBinEdges  (fSample,izone);
           
