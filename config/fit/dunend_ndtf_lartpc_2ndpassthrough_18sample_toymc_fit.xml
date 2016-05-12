@@ -43,6 +43,7 @@
     </element>
 
 
+<!--
     <element name="dune_nd_fhc_numucc1pi0">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
@@ -53,8 +54,10 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
+-->
 
 
+<!--
     <element name="dune_nd_fhc_numucc1pic1pi0">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
@@ -65,6 +68,7 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
+-->
 
 
     <element name="dune_nd_fhc_numuccoth">
@@ -154,7 +158,7 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-
+<!--
     <element name="dune_nd_rhc_numucc1pi0">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
@@ -165,8 +169,10 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
+-->
 
 
+<!--
     <element name="dune_nd_rhc_numucc1pic1pi0">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
@@ -177,6 +183,7 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
+-->
 
 
     <element name="dune_nd_rhc_numuccoth">
@@ -242,7 +249,7 @@
     <group name="interaction">
       <class> valor::VALORInt2016a </class>
       <covariance_matrix>
-         <filename>   dune/ndfit/2016a/xsec/xsec_covariance_2016a_gevgen.root </filename>
+         <filename>   dune/ndfit/2016a/xsec/xsec_covariance_2016a_gevgen_plus_mec50pct.root </filename>
          <objname>    frac_cov    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
