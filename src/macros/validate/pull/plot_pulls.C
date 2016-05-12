@@ -73,7 +73,7 @@ void plot_pulls(
   // Get the number of unfixed parameters in the first FPL
   toymcchain->GetEntry(0);
   const int nParams = best_fit_param_array->GetNumberFreeParameters();
-  PhysParamId_t * params_to_fit = new PhysParamId_t[nParams];
+  PhysParamId_t * params_to_fit = (PhysParamId_t *)calloc(nParams,sizeof(PhysParamId_t));
   FitParamList * free_params = best_fit_param_array->FreeParameterSubset();
   for (int ip = 0 ; ip < nParams; ip++) {
     params_to_fit[ip] = free_params->WhichParam(ip);
@@ -84,18 +84,18 @@ void plot_pulls(
     nParamsPerPage = nParams;
   }
   
-  double * pull_mean          = new double[nParams];
-  double * pull_mean_err      = new double[nParams];
-  double * pull_sigma         = new double[nParams];
-  double * pull_sigma_err     = new double[nParams];
-  double * pull_const         = new double[nParams];
-  double * pull_const_err     = new double[nParams];
-  double * residual_mean      = new double[nParams];
-  double * residual_mean_err  = new double[nParams];
-  double * residual_sigma     = new double[nParams];
-  double * residual_sigma_err = new double[nParams];
-  double * residual_const     = new double[nParams];
-  double * residual_const_err = new double[nParams];
+  double * pull_mean          = new double[nParams]();
+  double * pull_mean_err      = new double[nParams]();
+  double * pull_sigma         = new double[nParams]();
+  double * pull_sigma_err     = new double[nParams]();
+  double * pull_const         = new double[nParams]();
+  double * pull_const_err     = new double[nParams]();
+  double * residual_mean      = new double[nParams]();
+  double * residual_mean_err  = new double[nParams]();
+  double * residual_sigma     = new double[nParams]();
+  double * residual_sigma_err = new double[nParams]();
+  double * residual_const     = new double[nParams]();
+  double * residual_const_err = new double[nParams]();
   //~ toymcchain->SetBranchAddress("migradmin",          &migradmin);
   //~ toymcchain->SetBranchAddress("migraderr",          &migraderr);
   
@@ -178,7 +178,7 @@ void plot_pulls(
         PhysParamId_t p = params_to_fit[ip];
         
         // Select our fitted error
-        double fitted_error = (using_hesse_error ? fitted_error = best_fit_param_array->HesseError(p) : best_fit_param_array->MigradError(p));
+        double fitted_error = (using_hesse_error ? best_fit_param_array->HesseError(p) : best_fit_param_array->MigradError(p));
         
         double pull_numerator,pull_denominator;
         if (use_banff_pull_definition) {
@@ -198,8 +198,13 @@ void plot_pulls(
   }
     
   TF1 *gauss = new TF1("mygaus", "gaus(0)", -nsigma, +nsigma);
+  gauss.SetParLimits(1,-2*nsigma,2*nsigma);
+  gauss.SetParLimits(2,-2*nsigma,2*nsigma);
   for(int iparam=0; iparam<nParams; iparam++)
   {
+    gauss.SetParameter(0,300./sqrt(TMath::TwoPi()));
+    gauss.SetParameter(1,0);
+    gauss.SetParameter(2,1);
     hPull[iparam]->Fit(gauss, "RM0");
     pull_const    [iparam] = gauss->GetParameter(0);
     pull_mean     [iparam] = gauss->GetParameter(1);
@@ -241,12 +246,12 @@ void plot_pulls(
   
   for (int ipage = 0 ; ipage < npages ; ipage++) {
     
-    double * param_x              = new double[nParamsPerPage];
-    double * param_x_err          = new double[nParamsPerPage];
-    double * graph_pull_mean      = new double[nParamsPerPage];
-    double * graph_pull_sigma     = new double[nParamsPerPage];
-    double * graph_pull_mean_err  = new double[nParamsPerPage];
-    double * graph_pull_sigma_err = new double[nParamsPerPage];
+    double * param_x              = new double[nParamsPerPage]();
+    double * param_x_err          = new double[nParamsPerPage]();
+    double * graph_pull_mean      = new double[nParamsPerPage]();
+    double * graph_pull_sigma     = new double[nParamsPerPage]();
+    double * graph_pull_mean_err  = new double[nParamsPerPage]();
+    double * graph_pull_sigma_err = new double[nParamsPerPage]();
     
     TH1D * label_hist    = new TH1D("label_hist","label_hist",nParamsPerPage,0,nParamsPerPage);
     
@@ -290,8 +295,8 @@ void plot_pulls(
       }
       
       if (save_all_plotted_histograms) {
-        TCanvas c("pull_canv_tmp","pull_canv_tmp");
-        c.cd();
+        TCanvas * c = new TCanvas("pull_canv_tmp","pull_canv_tmp");
+        c->cd();
         TPaveText * stats = new TPaveText(0.65,0.7,0.85,0.9,"NDC");
         TString  mean_label = TString::Format("Mean  = %.3lf",pull_mean [iparam]);
         TString sigma_label = TString::Format("Sigma = %.3lf",pull_sigma[iparam]);
@@ -302,7 +307,8 @@ void plot_pulls(
         hPull[iparam]->Draw();
         fitPull[iparam]->Draw("LSAME");
         stats->Draw();
-        c.SaveAs(TString::Format("PullFitted_%s.%s",label.c_str(),img_format));
+        c->SaveAs(TString::Format("PullFitted_%s.%s",label.c_str(),img_format));
+        delete c;
       }
     }
       
@@ -362,17 +368,17 @@ void plot_pulls(
     //~ lpull->SetBorderSize(0);
     //~ lpull->Draw();
     
-    TLatex * mean_label  = new TLatex(nParamsPerPage+0.3, 0., "Mean" );
-    TLatex * sigma_label = new TLatex(nParamsPerPage+0.3, 1., "Sigma");
+    TLatex * mean_leg  = new TLatex(nParamsPerPage+0.3, 0., "Mean" );
+    TLatex * sigma_leg = new TLatex(nParamsPerPage+0.3, 1., "Sigma");
     
-    mean_label ->SetTextColor(g_pull_mean ->GetMarkerColor());
-    sigma_label->SetTextColor(g_pull_sigma->GetMarkerColor());
+    mean_leg ->SetTextColor(g_pull_mean ->GetMarkerColor());
+    sigma_leg->SetTextColor(g_pull_sigma->GetMarkerColor());
     
-    mean_label ->SetTextSize(0.05);
-    sigma_label->SetTextSize(0.05);
+    mean_leg ->SetTextSize(0.05);
+    sigma_leg->SetTextSize(0.05);
     
-    mean_label ->Draw();
-    sigma_label->Draw();
+    mean_leg ->Draw();
+    sigma_leg->Draw();
     
     PullSummary->SaveAs(imgname_summary);
   }
