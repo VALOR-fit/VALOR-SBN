@@ -119,6 +119,7 @@ namespace util {
   bool           IsNC             (conv::Sample_t s);
   conv::Sample_t SampleFromInt    (int s);
   conv::Sample_t SampleFromString (std::string s);
+  conv::Sample_t GetActiveSample  (int ibeam, int isample);
   
   // aliases AsString methods
   string  SampleAsString    (conv::Sample_t s);

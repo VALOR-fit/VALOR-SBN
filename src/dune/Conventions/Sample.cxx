@@ -141,3 +141,13 @@ Sample_t util::SampleFromString(string sample)
 string valor::util::SampleAsString        (conv::Sample_t s)            { return util::AsString(s);}
 string valor::util::SampleAsStringTeX     (conv::Sample_t s, bool root) { return util::AsStringTeX(s,root);}
 //________________________________________________________________________________________
+Sample_t util::GetActiveSample(int ibeam, int isample)
+{
+// Cast an integer to Sample_t, but with boundary check
+//             [first]                  [last]
+  if (ibeam >= 0 && ibeam < conv::kNBeamConf && isample >= 0 && isample < conv::kNSamples) {
+    return conv::kSample[ibeam][isample];
+  }
+  return ksUndefined;
+}
+//________________________________________________________________________________________
