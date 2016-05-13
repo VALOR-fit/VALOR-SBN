@@ -25,6 +25,13 @@ use_log_plots = False
 title_size = 0.08
 label_size = 0.07
 
+prefit_color  = ROOT.kGray+1
+postfit_color = ROOT.kRed
+
+#~ prefit_style = 3244 # hatched
+prefit_style = 1001 # hatched
+postfit_style = 1001 # Solid
+
 to3dp = "{0:.3f}"
 
 default_prefit_input_file = (
@@ -36,7 +43,7 @@ ROOT.gROOT.SetBatch(1)
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
-colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kMagenta+1,  ROOT.kGreen+2, ROOT.kOrange+7, ROOT.kCyan+2,]
+colors = [ROOT.kBlack, prefit_color, postfit_color, ROOT.kMagenta+1,  ROOT.kGreen+2, ROOT.kOrange+7, ROOT.kCyan+2,]
 
 plot_opt = ""
 
@@ -78,13 +85,14 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       hname_m1  = hname_prefix + "_m1"
       
       prefit_nom = get_hist(prefit_file,hname_nom)
-      prefit_nom.SetLineColor(ROOT.kBlack)
+      prefit_nom.SetLineColor(prefit_color)
       prefit_nom.SetLineStyle(1)
       prefit_nom.SetLineWidth(linewidth)
       
       postfit_nom = get_hist(postfit_file,hname_nom)
       postfit_nom.SetLineStyle(1)
       postfit_nom.SetLineWidth(linewidth)
+      postfit_nom.SetLineColor(ROOT.kBlack)
       
       hplus_prefit   = get_hist(prefit_file,hname_p1)
       hminus_prefit  = get_hist(prefit_file,hname_p1)
@@ -108,7 +116,7 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
         h.GetYaxis().SetTitleOffset(title_offset)
       
       for h in [hplus_prefit,hminus_prefit]:
-        #~ h.SetLineColor(ROOT.kBlue)
+        #~ h.SetLineColor(postfit_color)
         h.SetLineStyle(0)
         h.SetLineWidth(0)
         h.GetXaxis().SetRangeUser(0.,max_energy)
@@ -158,31 +166,31 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
         g.GetXaxis().SetRangeUser(0,max_energy)
         CopyHistAxisFormatting(hplus_prefit,g)
         g.GetYaxis().SetTitle("Ratio of # Total Events")
-        g.SetFillColor(R.kBlue)
+        g.SetFillColor(postfit_color)
         
       hplus_prefit.GetYaxis().SetTitleOffset(title_offset)
-      hplus_prefit.SetLineColor(ROOT.kRed)
-      hplus_prefit.SetFillColor(ROOT.kRed)
-      hplus_prefit.SetFillStyle(1001)
+      #~ hplus_prefit.SetLineColor(prefit_color)
+      #~ hplus_prefit.SetFillColor(prefit_color)
+      #~ hplus_prefit.SetFillStyle(prefit_style)
       
       hplus_prefit.Draw("AXIS")
-      hplus_postfit.SetFillColor(ROOT.kBlue)
-      hplus_postfit.SetFillStyle(3244)
-      hminus_postfit.SetFillColor(10) #white
-      hminus_postfit.SetFillStyle(1001)
+      #~ hplus_postfit.SetFillColor(postfit_color)
+      #~ hplus_postfit.SetFillStyle(postfit_style)
+      #~ hminus_postfit.SetFillStyle(postfit_style)
       
-      env_graph_prefit.SetFillStyle(1001)
-      env_graph_prefit.SetFillColor(ROOT.kRed)
+      env_graph_prefit.SetFillStyle(prefit_style)
+      env_graph_prefit.SetFillColor(prefit_color)
       env_graph_prefit.Draw("same2")
       
-      env_graph_postfit.SetFillStyle(3244)
+      env_graph_postfit.SetFillStyle(postfit_style)
       env_graph_postfit.SetLineStyle(0)
       env_graph_postfit.SetLineWidth(0)
       env_graph_postfit.SetMarkerStyle(ROOT.kFullSquare)
-      env_graph_postfit.SetMarkerColor(ROOT.kBlue)
+      env_graph_postfit.SetMarkerColor(postfit_color)
       env_graph_postfit.Draw("same2p")
       
       prefit_nom.Draw("same")
+      postfit_nom.Draw("same")
       
       #~ hplus_postfit.Draw("same")
       #~ prefit_nom.Draw("same")
@@ -191,25 +199,24 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       
       canv.RedrawAxis()
       
-      legend_prefit = ROOT.TH1D(hminus_prefit)
-      legend_prefit.SetFillStyle(hplus_prefit.GetFillStyle())
-      legend_prefit.SetFillColor(hplus_prefit.GetFillColor())
+      legend_prefit = ROOT.TH1D(prefit_nom)
+      legend_prefit.SetFillStyle(env_graph_prefit.GetFillStyle())
+      legend_prefit.SetFillColor(env_graph_prefit.GetFillColor())
       legend_prefit.SetLineStyle(prefit_nom.GetLineStyle())
       legend_prefit.SetLineColor(prefit_nom.GetLineColor())
       legend_prefit.SetLineWidth(prefit_nom.GetLineWidth())
       
-      legend_postfit = ROOT.TH1D(hplus_postfit)
-      legend_postfit.SetLineStyle(env_graph_postfit.GetLineStyle())
-      legend_postfit.SetLineColor(env_graph_postfit.GetLineColor())
-      legend_postfit.SetLineWidth(env_graph_postfit.GetLineWidth())
+      legend_postfit = ROOT.TH1D(postfit_nom)
+      legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
+      legend_postfit.SetFillColor(env_graph_postfit.GetFillColor())
       legend_postfit.SetMarkerStyle(env_graph_postfit.GetMarkerStyle())
       legend_postfit.SetMarkerColor(env_graph_postfit.GetMarkerColor())
       legend_postfit.SetMarkerSize (env_graph_postfit.GetMarkerSize())
       
       all_hists.extend([legend_prefit,legend_postfit])
       
-      legend.AddEntry(legend_prefit   ,"Prefit" ,"FL")
-      legend.AddEntry(legend_postfit  ,"Postfit","FP")
+      legend.AddEntry(legend_prefit   ,"Prefit" ,"FP")
+      legend.AddEntry(legend_postfit  ,"Postfit","FL")
       
       legend.Draw()
       
@@ -259,10 +266,10 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
         CopyHistAxisFormatting(hplus_prefit,g)
         g.GetYaxis().SetTitle("Ratio of # Total Events")
         
-      ratio_graph_prefit .SetFillColor(R.kRed)
-      ratio_graph_postfit.SetFillColor(R.kBlue)
-      ratio_graph_prefit .SetLineColor(R.kRed)
-      ratio_graph_postfit.SetLineColor(R.kBlue)
+      ratio_graph_prefit .SetFillColor(prefit_color)
+      ratio_graph_postfit.SetFillColor(postfit_color)
+      ratio_graph_prefit .SetLineColor(prefit_color)
+      ratio_graph_postfit.SetLineColor(postfit_color)
       
       ratio_graph_prefit .SetLineWidth(3)
       ratio_graph_postfit.SetLineWidth(3)
@@ -290,11 +297,12 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       legend2.SetBorderSize(0);
       legend2.SetNColumns(2)
       legend2.AddEntry(ratio_graph_prefit  ,"Prefit" ,"F")
-      legend2.AddEntry(ratio_graph_postfit ,"Postfit","F")
+      legend2.AddEntry(ratio_graph_postfit ,"Postfit","FL")
       
       legend2.Draw("same")
+      canv2.Update() # Need to update here so line gets right maximum
       
-      line_at_1 = ROOT.TLine(0,1,max_energy,1)
+      line_at_1 = ROOT.TLine(0,1,canv2.GetUxmax(),1)
       line_at_1.SetLineWidth(2)
       line_at_1.Draw("same")
       
