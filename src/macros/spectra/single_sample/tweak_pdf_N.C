@@ -13,6 +13,8 @@ void tweak_pdf_N
   const char * model_param_list   = "standard",                            /* list of params included in model, see FitParam.cxx */
   const char * config_file        = "fit/dune_ndfit.xml",    /* analysis configuration file */
   const char * output_rootfile    = "",                      /* Optionally write envelope histograms to file */
+  const char * fit_file           = "",                      /* File to get postfit matrix from. If not given, uses prefit. */
+  int  fit_number                 = 0,                       /* If we're using a postfit matrix, which fit in the file to get it from */
   const int ntoys                 = 200                      /* Number of toys to throw */
 )
 {
@@ -40,13 +42,44 @@ void tweak_pdf_N
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config.Data());
   FitModelABC * model = elements->FitModel();
+  
+  TFile postfit_matrix_file(fit_file);
+  if (postfit_matrix_file.IsOpen()) {
+    FitParamList * fp = new FitParamList;
+    cout << "Using postfit matrix "<<fit_number<<" from file."<<endl;
+    TTree * fit_tree = (TTree*)postfit_matrix_file.Get("valor_dune_nd_ntp");
+    assert(fit_tree);
+    fit_tree->SetBranchAddress("best_fit_params",&fp);
+    fit_tree->GetEntry(fit_number);
+    TMatrixD * cov_m = new TMatrixD(*(fp->GetCovMatrix()));
+    CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
+    //~ cm->GetSystematics()->SetCovMatrix(*cov_m);
+    cout<<"Read postfit matrix."<<endl;
+  }
+  else {
+    cout << "Using prefit"<<endl;
+  }
 
   // Arrays to store the spectra for the default, +1 sigma and -1 sigma variations
-  TH1D * nom_pdf_werr [kNBeamConf][kNSamples]        = { 0 };
-  TH1D * nom_pdf      [kNBeamConf][kNSamples]        = { 0 };
-  TH1D * twk_pdf      [kNBeamConf][kNSamples][ntoys] = { 0 };
-  TH1D * err          [kNBeamConf][kNSamples][2]     = { 0 };
-  double max          [kNBeamConf][kNSamples]        = { -999 };
+  TH1D * nom_pdf_werr [kNBeamConf][kNSamples]       ;
+  TH1D * nom_pdf      [kNBeamConf][kNSamples]       ;
+  TH1D * twk_pdf      [kNBeamConf][kNSamples][ntoys];
+  TH1D * err          [kNBeamConf][kNSamples][2]    ;
+  double max          [kNBeamConf][kNSamples]       ;
+  
+  for (int ib = 0 ; ib < kNBeamConf ; ib++) {
+    for (int is = 0 ; is < kNSamples ; is++) {
+      nom_pdf_werr[ib][is] = NULL;
+      nom_pdf     [ib][is] = NULL;
+      for (int itoy = 0 ; itoy < ntoys ; itoy++ ) {
+        twk_pdf[ib][is][itoy] = NULL;
+      }
+      err[ib][is][0] = NULL;
+      err[ib][is][1] = NULL;
+      max[ib][is] = -999 ;
+    }
+  }
+      
 
   // Generate pdfs
   for(int itoy = -1; itoy < ntoys; itoy++) {
@@ -73,7 +106,7 @@ void tweak_pdf_N
 
     // Write stuff out
     model->Write(array,"curr","pdfts_rf +SB");
-
+    
     // Pick results wanted 
     for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
       BeamConf_t b = kBeamConf[ibeam];
@@ -84,7 +117,11 @@ void tweak_pdf_N
         TString name = TString::Format("curr_pdfts_sb_rf_%s_%s",
            util::AsString(b).c_str(), util::AsString(s).c_str());
         TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
-        assert(curr_pdf);       
+        if (!curr_pdf) {
+          // NEED LOGIC TO HANDLE SAMPLES NOT IN XML
+          cerr<<"Could not find histogram "<<name<<endl;
+          exit(-1);
+        }
         if(itoy < 0) {
            nom_pdf_werr [ibeam][isample] = new TH1D(*curr_pdf);
            nom_pdf      [ibeam][isample] = new TH1D(*curr_pdf);
