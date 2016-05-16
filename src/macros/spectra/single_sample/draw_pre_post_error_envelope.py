@@ -24,6 +24,7 @@ right_margin  = 0.05
 use_log_plots = False
 title_size = 0.08
 label_size = 0.07
+font = 132 # Times Medium, scalable rotatable
 
 prefit_color  = ROOT.kGray+1
 postfit_color = ROOT.kRed
@@ -43,7 +44,7 @@ ROOT.gROOT.SetBatch(1)
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
-colors = [ROOT.kBlack, prefit_color, postfit_color, ROOT.kMagenta+1,  ROOT.kGreen+2, ROOT.kOrange+7, ROOT.kCyan+2,]
+colors = [ROOT.kBlack, R.kRed, R.kBlue, ROOT.kMagenta+1,  ROOT.kGreen+2, ROOT.kOrange+7, ROOT.kCyan+2,]
 
 plot_opt = ""
 
@@ -58,7 +59,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(prefit_fn, postfit_fn,img_format):
+def main(prefit_fn, postfit_fn, tag, write_tex, img_format):
   f_prefit = ROOT.TFile(prefit_fn)
   if not f_prefit:
     raise DUNEAnaError("Could not open prefit input file")
@@ -66,12 +67,17 @@ def main(prefit_fn, postfit_fn,img_format):
   if not f_postfit:
     raise DUNEAnaError("Could not open postfit input file")
     
-  pre_and_postfit_envelope(f_prefit,f_postfit, img_format)
+  pre_and_postfit_envelope(f_prefit,f_postfit, tag, write_tex, img_format)
   
 
-def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
+def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format):
   
   all_hists = []
+    
+  envelope_images = []
+  ratio_images = []
+  envelope_captions = []
+  ratio_captions = []
   
   for ibeam in xrange(conv.kNBeamConf):
     b = util.BeamConfFromInt(ibeam)
@@ -84,6 +90,8 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       hname_p1  = hname_prefix + "_p1"
       hname_m1  = hname_prefix + "_m1"
       
+      out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
+      
       prefit_nom = get_hist(prefit_file,hname_nom)
       prefit_nom.SetLineColor(prefit_color)
       prefit_nom.SetLineStyle(1)
@@ -95,15 +103,16 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       postfit_nom.SetLineColor(ROOT.kBlack)
       
       hplus_prefit   = get_hist(prefit_file,hname_p1)
-      hminus_prefit  = get_hist(prefit_file,hname_p1)
+      hminus_prefit  = get_hist(prefit_file,hname_m1)
       hplus_postfit  = get_hist(postfit_file,hname_p1)
-      hminus_postfit = get_hist(postfit_file,hname_p1)
+      hminus_postfit = get_hist(postfit_file,hname_m1)
       
       hists = [prefit_nom, postfit_nom, hplus_prefit,hminus_prefit,hplus_postfit,hminus_postfit]
     
       for h in hists:
         samp_hists.append(h)
         all_hists.append(h)
+        h.UseCurrentStyle()
         
         h.GetXaxis().SetTitleSize(title_size)
         h.GetYaxis().SetTitleSize(title_size)
@@ -126,7 +135,7 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
         h.SetLineWidth(0)
         h.GetXaxis().SetRangeUser(0.,max_energy)
         
-      legend = ROOT.TLegend(0.7,0.6,0.93,0.92);
+      legend = ROOT.TLegend(0.7,0.7,0.93,0.92);
       legend.SetFillStyle(0);
       legend.SetBorderSize(0);
       #~ legend.SetTextSize(0.04);
@@ -143,8 +152,8 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
         h.SetMinimum(0.)
         h.SetMaximum(1.05*limit)
         
-      env_hists = [(hplus_prefit  , hminus_prefit ) ,
-                   (hplus_postfit , hminus_postfit)]
+      env_hists = [(prefit_nom, hplus_prefit  , hminus_prefit ) ,
+                   (postfit_nom, hplus_postfit , hminus_postfit)]
       
       env_graph_prefit  = ROOT.TGraphAsymmErrors(hplus_prefit  .GetXaxis().GetNbins())
       env_graph_postfit = ROOT.TGraphAsymmErrors(hplus_postfit .GetXaxis().GetNbins())
@@ -152,21 +161,20 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       env_graphs = [env_graph_prefit  ,
                     env_graph_postfit , ]
       
-      for (hp,hm),g in zip(env_hists,env_graphs):
-        for i in xrange(h.GetXaxis().GetNbins()):
-          low_edge  = hplus_prefit.GetBinLowEdge(i+1)
-          high_edge = low_edge + hplus_prefit.GetBinWidth(i+1)
-          centre = prefit_nom.GetBinContent(i+1)
-          g.SetPoint      (i,hplus_prefit.GetBinCenter(i+1),centre)
+      for (hn,hp,hm),g in zip(env_hists,env_graphs):
+        for i in xrange(hp.GetXaxis().GetNbins()):
+          low_edge  = hp.GetBinLowEdge(i+1)
+          high_edge = low_edge + hp.GetBinWidth(i+1)
+          centre = hn.GetBinContent(i+1)
+          g.SetPoint      (i,hp.GetBinCenter(i+1),centre)
           g.SetPointEYlow (i,abs(hm.GetBinContent(i+1)-centre))
           g.SetPointEYhigh(i,abs(hp.GetBinContent(i+1)-centre))
-          g.SetPointEXlow (i,hplus_prefit.GetBinWidth(i+1)*0.5)
-          g.SetPointEXhigh(i,hplus_prefit.GetBinWidth(i+1)*0.5)
+          g.SetPointEXlow (i,hp.GetBinWidth(i+1)*0.5)
+          g.SetPointEXhigh(i,hp.GetBinWidth(i+1)*0.5)
           
         g.GetXaxis().SetRangeUser(0,max_energy)
-        CopyHistAxisFormatting(hplus_prefit,g)
+        CopyHistAxisFormatting(hp,g)
         g.GetYaxis().SetTitle("Ratio of # Total Events")
-        g.SetFillColor(postfit_color)
         
       hplus_prefit.GetYaxis().SetTitleOffset(title_offset)
       #~ hplus_prefit.SetLineColor(prefit_color)
@@ -183,11 +191,15 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       env_graph_prefit.Draw("same2")
       
       env_graph_postfit.SetFillStyle(postfit_style)
+      env_graph_postfit.SetFillColor(postfit_color)
+      env_graph_postfit.SetLineWidth(0)
       env_graph_postfit.SetLineStyle(0)
       env_graph_postfit.SetLineWidth(0)
       env_graph_postfit.SetMarkerStyle(ROOT.kFullSquare)
       env_graph_postfit.SetMarkerColor(postfit_color)
-      env_graph_postfit.Draw("same2p")
+      env_graph_postfit.Draw("same2")
+      
+      prefit_nom.SetLineStyle(R.kDashed)
       
       prefit_nom.Draw("same")
       postfit_nom.Draw("same")
@@ -215,12 +227,15 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       
       all_hists.extend([legend_prefit,legend_postfit])
       
-      legend.AddEntry(legend_prefit   ,"Prefit" ,"FP")
+      legend.AddEntry(legend_prefit   ,"Prefit" ,"F")
       legend.AddEntry(legend_postfit  ,"Postfit","FL")
       
       legend.Draw()
-      
-      canv.Print(hname_prefix+"_envelope."+img_format)
+      envelope_fn = out_prefix+"_envelope."+img_format
+      canv.Print(envelope_fn)
+      envelope_images.append(envelope_fn)
+      cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
+      envelope_captions.append(cap.replace("_"," "))
       
       # Now do it with ratios
       ratio_plus_prefit   = R.TH1D(hplus_prefit)
@@ -307,9 +322,11 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       line_at_1.Draw("same")
       
       canv2.Update()
-      
-      canv2.Print(hname_prefix+"_envelope_ratio."+img_format)
-      
+      ratio_fn = out_prefix+"_envelope_ratio."+img_format
+      canv2.Print(ratio_fn)
+      ratio_images.append(ratio_fn)
+      cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
+      ratio_captions.append(cap.replace("_"," "))
       
       #~ # Print out some event rates
       #~ nom_events     = prefit_nom  .Integral()
@@ -329,7 +346,13 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,img_format):
       #~ items.append(to3dp.format(p1_events_post) +" ("+to3dp.format(p1_percent_post)+"%)")
       #~ items.append(to3dp.format(m1_events_post) +" ("+to3dp.format(m1_percent_post)+"%)")
       #~ print "\t".join(items)
-      
+  if (write_tex):
+    tex = start_latex_file("%s_envelopes.tex"%(tag))
+    add_figures_to_tex(tex,envelope_images,envelope_captions)
+    tex.write("\n\n\\clearpage\n\n")
+    add_figures_to_tex(tex,ratio_images,ratio_captions)
+    end_latex_file(tex)
+    
   return
 
 class DUNEAnaError(Exception):
@@ -351,6 +374,52 @@ def get_hist(rootfile,hname):
   if not h:
     print "Failed to get histogram: ",hname ; exit()
   return ROOT.TH1D( h )
+  
+def start_latex_file(name):
+  f = open(name,"w")
+  f.write(r"""\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{setspace}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\begin{doublespacing}
+
+""")
+  return f
+  
+def end_latex_file(f):
+  f.write(r"""
+\end{doublespacing}
+\end{document}""")
+  f.close()
+
+def add_figures_to_tex(f,figure_names,captions,plots_per_row=2):
+  figure_width  = str(0.99/float(plots_per_row))+"\\textwidth"
+  
+  n_figs = len(figure_names)
+  for i in xrange(n_figs):
+    if (i%plots_per_row == 0): 
+      f.write(" \\begin{figure*}\n")
+    image = figure_names[i]
+    caption = captions[i]
+    label =  "fig:"+image.split("/")[-1].rsplit(".",1)[0]
+    f.write("\n \\begin{minipage}[t]{"+figure_width+"}\n")
+    f.write("  \\includegraphics[width=0.95\\textwidth]{"+image+"}\n")
+    f.write("  \\caption{"+caption+"}\n")
+    f.write("  \\label{"+label+"}\n")
+    f.write("\\end{minipage}")
+    if i%plots_per_row or i==n_figs-1:
+      f.write("\\end{figure*}\n")
+  return
 
 if __name__=="__main__":
   import optparse
@@ -359,6 +428,8 @@ if __name__=="__main__":
   parser.add_option('-a','--prefit', dest='prefit'  ,default=default_prefit_input_file  ,help='The prefit input ROOT file')
   parser.add_option('-b','--postfit', dest='postfit',default=default_postfit_input_file,help='The postfit input ROOT file')
   parser.add_option('-f','--format', dest='imgformat',default='eps',help='The image format')
+  parser.add_option('-t','--tag', dest='tag',default='env',help='Prefix for output filenames')
+  parser.add_option('-w','--write-tex', dest='tex',action="store_true",default=False,help='Write TeX file with images in.')
   
   options,other = parser.parse_args()
   
@@ -366,4 +437,4 @@ if __name__=="__main__":
     print "Bad arguments: ",other
     exit(-1)
   
-  main(options.prefit,options.postfit,options.imgformat)
+  main(options.prefit,options.postfit,options.tag,options.tex,options.imgformat)
