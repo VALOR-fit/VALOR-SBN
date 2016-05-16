@@ -20,6 +20,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlXML.h"
 
 #include "dune/Conventions/DuneBuild.h"
+#include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Utilities/KinematicBin.h"
 
@@ -253,6 +254,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   int n_splines_missing = 0;
   int n_splines_expected = fSplineBlockSize;
   int n_splines_flat = 0;
+  int n_splines_neg = 0;
   
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
@@ -309,6 +311,12 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                           n_splines_flat++;
                           n_splines_read++;
                         }
+                        else if (this->CheckForNegativeValues(spline,p)) {
+                          delete spline;
+                          fSplines[spline_index] = kFlatSpline;
+                          n_splines_neg++;
+                          n_splines_read++;
+                        }
                         else {
                           fSplines[spline_index] = spline;
                           n_splines_read++;
@@ -341,6 +349,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   }
   
   LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines, of which "<<n_splines_flat<<" were flat.";
+  if (n_splines_neg) {
+    LOG("DuneRFL",pWARN) << "Skipped "<<n_splines_neg<<" splines due to negative values. Fix this!";
+  }
   if (n_splines_missing) {
     LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines. Exiting.";
     util::Die(-1);return false;
@@ -402,5 +413,17 @@ int valor::util::DuneRFL::Param2Idx(conv::PhysParamId_t p) const
 //________________________________________________________________________________________
 void valor::util::DuneRFL::SetSplineNamePattern(std::string pattern) {
   fSplineNamePattern = pattern.c_str();
+}
+//________________________________________________________________________________________
+bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const
+{
+  double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
+  double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
+  static const int evaluations = 30;
+  for (int i = 0 ; i < evaluations; i++) {
+    double x = min_val + (i+0.5)*(max_val-min_val)/evaluations;
+    if (spl->Eval(x) < 0) {return true;}
+  }
+  return false;
 }
 //________________________________________________________________________________________

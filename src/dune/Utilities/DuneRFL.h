@@ -124,6 +124,9 @@ private:
   
   // Array storing parameters mapped to indice within this object
   int fParam2Idx[conv::knppmax];
+  
+  // Check spline is positive
+  bool CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const;
 };
 
 std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
