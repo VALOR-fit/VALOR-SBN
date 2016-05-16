@@ -48,6 +48,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/Utilities/UtlStyle.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
@@ -95,7 +96,7 @@ int main(int argc, char ** argv)
   
   // Check if we have a PParm to read from file containing true values
   PhysParamList * true_values_from_file = 0;
-  if (true_values_file.size() && true_values_file!="-") {
+  if (true_values_file.size() && util::ToLowerCase(true_values_file)!="none") {
     TFile tvf(true_values_file.c_str());
     if (!tvf.IsOpen()) {
       LOG("valor_dune", pERROR)<<"Could not read true values file "<<true_values_file;
@@ -149,9 +150,6 @@ int main(int argc, char ** argv)
     
     fp->FromPhysParamList(tweaks,"current");
     
-    // If we have a set of true values read from file, use those.
-    fp->FromPhysParamList(*true_values_from_file,"current");
-    
     // Check parameter name, maybe rethrow
     if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp)) {
       LOG("valor_dune", pNOTICE) << "At least one parameter thrown outside expected limits.";
@@ -160,6 +158,11 @@ int main(int argc, char ** argv)
         itoymc--;
         continue;
       }
+    }
+    
+    // If we have a set of true values read from file, use those.
+    if (true_values_from_file) {
+      fp->FromPhysParamList(*true_values_from_file,"current");
     }
     
     PhysParamList true_params = fp->AsPhysParamList("current");
