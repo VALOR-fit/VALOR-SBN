@@ -33,6 +33,7 @@
 //____________________________________________________________________________
 
 // root
+#include "TFile.h"
 #include "TSystem.h"
 #include "TObjArray.h"
 #include "TString.h"
@@ -47,6 +48,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/Utilities/UtlStyle.h"
+#include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Messenger/Messenger.h"
@@ -78,6 +80,8 @@ int main(int argc, char ** argv)
   int  ntoymc             = arg.GetInt("ntoymc");
   string fplname          = arg.GetString("fit-param-list");
   string fittername       = arg.GetString("fitter");
+  string true_values_file = arg.GetString("true-from-filename");
+  string true_values_obj  = arg.GetString("true-from-objname"); // a physparamlist
   
   Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
   
@@ -88,6 +92,21 @@ int main(int argc, char ** argv)
   Rnd::Instance()->SetSeeds(arg);
   
   LOG("valor_dune", pNOTICE) << *Rnd::Instance();
+  
+  // Check if we have a PParm to read from file containing true values
+  PhysParamList * true_values_from_file = 0;
+  if (true_values_file.size() && true_values_file!="-") {
+    TFile tvf(true_values_file.c_str());
+    if (!tvf.IsOpen()) {
+      LOG("valor_dune", pERROR)<<"Could not read true values file "<<true_values_file;
+      util::Die(-1);
+    }
+    true_values_from_file = dynamic_cast<PhysParamList*>(tvf.Get(true_values_obj.c_str()));
+    if (!true_values_from_file) {
+      LOG("valor_dune", pERROR)<<"Could not read true values object "<<true_values_obj<<" from file "<<true_values_file;
+      util::Die(-1);
+    }
+  }
 
   // Create file and tree to store outputs
   TString outfilename = TString::Format("%s_%d.root", arg.GetString("tag").c_str(), arg.GetInt("run"));
@@ -129,6 +148,9 @@ int main(int argc, char ** argv)
     //~ }
     
     fp->FromPhysParamList(tweaks,"current");
+    
+    // If we have a set of true values read from file, use those.
+    fp->FromPhysParamList(*true_values_from_file,"current");
     
     // Check parameter name, maybe rethrow
     if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp)) {
