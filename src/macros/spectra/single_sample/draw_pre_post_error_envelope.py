@@ -59,7 +59,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(prefit_fn, postfit_fn, tag, write_tex, img_format):
+def main(prefit_fn, postfit_fn, tag, write_tex, img_format,ratio_mult):
   f_prefit = ROOT.TFile(prefit_fn)
   if not f_prefit:
     raise DUNEAnaError("Could not open prefit input file")
@@ -67,10 +67,10 @@ def main(prefit_fn, postfit_fn, tag, write_tex, img_format):
   if not f_postfit:
     raise DUNEAnaError("Could not open postfit input file")
     
-  pre_and_postfit_envelope(f_prefit,f_postfit, tag, write_tex, img_format)
+  pre_and_postfit_envelope(f_prefit,f_postfit, tag, write_tex, img_format,ratio_mult)
   
 
-def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format):
+def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format, ratio_mult):
   
   all_hists = []
     
@@ -247,6 +247,7 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format):
       ratio_minus_prefit .Divide(prefit_nom)
       ratio_plus_postfit .Divide(prefit_nom)
       ratio_minus_postfit.Divide(prefit_nom)
+        
       for i in xrange(prefit_nom.GetXaxis().GetNbins()):
         if abs(prefit_nom.GetBinContent(i+1))<conv.kASmallNum:
           ratio_plus_postfit .SetBinContent(i+1,1)
@@ -264,22 +265,13 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format):
       ratio_graphs = [ratio_graph_prefit  ,
                       ratio_graph_postfit , ]
       
-      for (hp,hm),g in zip(ratio_hists,ratio_graphs):
-        for i in xrange(h.GetXaxis().GetNbins()):
-          low_edge  = ratio_plus_prefit.GetBinLowEdge(i+1)
-          high_edge = low_edge + ratio_plus_prefit.GetBinWidth(i+1)
-          g.SetPoint      (i,ratio_plus_prefit.GetBinCenter(i+1),1)
-          g.SetPointEYlow (i,abs(hm.GetBinContent(i+1)-1))
-          g.SetPointEYhigh(i,abs(hp.GetBinContent(i+1)-1))
-          g.SetPointEXlow (i,ratio_plus_prefit.GetBinWidth(i+1)*0.5 - 0.005)
-          g.SetPointEXhigh(i,ratio_plus_prefit.GetBinWidth(i+1)*0.5 - 0.005)
-          
-        g.SetFillStyle(1001)
-        g.SetLineStyle(0)
-        g.SetLineWidth(0)
-        g.GetXaxis().SetRangeUser(0,max_energy)
-        CopyHistAxisFormatting(hplus_prefit,g)
-        g.GetYaxis().SetTitle("Ratio of # Total Events")
+      if ratio_mult is not None:
+        eff_mult = ratio_mult
+      else:
+        eff_mult = 1.
+        
+      fill_ratio_graph_from_hist(ratio_graph_prefit , ratio_minus_prefit , ratio_plus_prefit , 1.)
+      fill_ratio_graph_from_hist(ratio_graph_postfit, ratio_minus_postfit, ratio_plus_postfit, eff_mult)
         
       ratio_graph_prefit .SetFillColor(prefit_color)
       ratio_graph_postfit.SetFillColor(postfit_color)
@@ -300,8 +292,10 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format):
       
       ratio_max = 1.3*ratio_plus_prefit .GetMaximum()
       
-      ratio_graph_postfit.SetMaximum(ratio_max)
-      ratio_graph_postfit.SetMinimum(2-ratio_max)
+      #~ ratio_graph_postfit.SetMaximum(ratio_max)
+      #~ ratio_graph_postfit.SetMinimum(2-ratio_max)
+      ratio_graph_postfit.SetMaximum(0.)
+      ratio_graph_postfit.SetMinimum(2.5)
       
       ratio_graph_prefit .Draw("a2")
       ratio_graph_postfit.Draw("2")
@@ -312,7 +306,11 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format):
       legend2.SetBorderSize(0);
       legend2.SetNColumns(2)
       legend2.AddEntry(ratio_graph_prefit  ,"Prefit" ,"F")
-      legend2.AddEntry(ratio_graph_postfit ,"Postfit","FL")
+      if ratio_mult is not None:
+        legend2.AddEntry(ratio_graph_postfit ,"Postfit*%g"%eff_mult,"FL")
+      else:
+        legend2.AddEntry(ratio_graph_postfit ,"Postfit","FL")
+      
       
       legend2.Draw("same")
       canv2.Update() # Need to update here so line gets right maximum
@@ -420,6 +418,24 @@ def add_figures_to_tex(f,figure_names,captions,plots_per_row=2):
     if i%plots_per_row or i==n_figs-1:
       f.write("\\end{figure*}\n")
   return
+  
+def fill_ratio_graph_from_hist(g,hm,hp,multiplier=1.):
+  for i in xrange(hp.GetXaxis().GetNbins()):
+    low_edge  = hm.GetBinLowEdge(i+1)
+    high_edge = low_edge + hm.GetBinWidth(i+1)
+    g.SetPoint      (i,hm.GetBinCenter(i+1),1)
+    g.SetPointEYlow (i,multiplier*abs(hm.GetBinContent(i+1)-1))
+    g.SetPointEYhigh(i,multiplier*abs(hp.GetBinContent(i+1)-1))
+    g.SetPointEXlow (i,hm.GetBinWidth(i+1)*0.5 - 0.005)
+    g.SetPointEXhigh(i,hm.GetBinWidth(i+1)*0.5 - 0.005)
+          
+  g.SetFillStyle(1001)
+  g.SetLineStyle(0)
+  g.SetLineWidth(0)
+  g.GetXaxis().SetRangeUser(0,max_energy)
+  CopyHistAxisFormatting(hp,g)
+  g.GetYaxis().SetTitle("Ratio of # Total Events")
+  return
 
 if __name__=="__main__":
   import optparse
@@ -430,6 +446,7 @@ if __name__=="__main__":
   parser.add_option('-f','--format', dest='imgformat',default='eps',help='The image format')
   parser.add_option('-t','--tag', dest='tag',default='env',help='Prefix for output filenames')
   parser.add_option('-w','--write-tex', dest='tex',action="store_true",default=False,help='Write TeX file with images in.')
+  parser.add_option('-r','--ratio-mult', dest='ratiomult',type=float,default=None,help='Multiply the postfit envelope size in the ratio plots by this number.')
   
   options,other = parser.parse_args()
   
@@ -437,4 +454,4 @@ if __name__=="__main__":
     print "Bad arguments: ",other
     exit(-1)
   
-  main(options.prefit,options.postfit,options.tag,options.tex,options.imgformat)
+  main(options.prefit,options.postfit,options.tag,options.tex,options.imgformat,options.ratiomult)
