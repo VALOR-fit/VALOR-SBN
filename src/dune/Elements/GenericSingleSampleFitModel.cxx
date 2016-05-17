@@ -87,6 +87,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   TString ts_opt(opt);
   bool force_use_dst    = ts_opt.Contains("forcedst");
   bool skip_spline_read = ts_opt.Contains("nosplines");
+  bool skip_mc_read     = ts_opt.Contains("nomc");
 #ifdef SPLINE_WEIGHTS_ARE_ONE
   skip_spline_read = true;
 #endif
@@ -149,7 +150,10 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   // can not change. Make sure the templates have the expected binning.
   //
   fUseMCDST = util::XML2Bool(xml,root_node,"mc/using_dst_format") || force_use_dst;
-  if(fUseMCDST) {
+  if (skip_mc_read) {
+    LOG("GenericSingleSampleFitModel",pWARN) << "Skipping MC read.";
+  }
+  else if(fUseMCDST) {
     LOG("GenericSingleSampleFitModel",pINFO) << "Filling in VALOR MC templates using VALOR DSTs";
     string node_name = "mc/dst/" + util::AsString(fBeam, "lowercase");
     fMCDST = util::XML2TTree (xml,root_node,node_name);
@@ -1642,7 +1646,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   // Applying correlated flux and cross-section systematics
 
   LOG("GenericSingleSampleFitModel",pINFO) 
-    << "Applying physics params (option: " 
+    << fName
+    << " - Applying physics params (option: " 
     << ((option) ? option : "")
     << ")";
 
