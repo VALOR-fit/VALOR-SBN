@@ -46,7 +46,7 @@ ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
 colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kMagenta+1,  ROOT.kGreen+2, ROOT.kOrange+7, ROOT.kCyan+2,]
-markers = [R.kFullCircle,R.kFullSquare, R.kFullTriangleUp, R.kFullStar,R.kFullDiamond,R.kFullCross]
+markers = [R.kFullCircle,R.kFullSquare, R.kFullTriangleUp, R.kFullCross, R.kFullDiamond, R.kFullStar, R.kFullTriangleDown]
 
 plot_opt = ""
 
@@ -121,7 +121,7 @@ def main(config, postfit_fns, postfit_labels,output,img_format,entry):
   
   legend = R.TLegend(left_margin,0.95-top_margin,left_margin+0.8,1.-top_margin)
   legend.SetNColumns(1+len(postfit_labels))
-  legend.AddEntry(prefit_g, "Prefit")
+  legend.AddEntry(prefit_g, "Prefit", "P")
   prefit_g.Draw("AP")
   
   for label in postfit_labels:
