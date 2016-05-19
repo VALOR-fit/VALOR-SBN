@@ -53,12 +53,12 @@ private:
   void Book  (void);
   void Clean (void);
 
-  bool ReadElementList (TXMLEngine* xmleng, XMLNodePointer_t top_node);
-  bool ReadElement     (TXMLEngine* xmleng, XMLNodePointer_t top_node);
-  CorrelatedSystematics * ReadSystematicGroup (TXMLEngine* xmleng, XMLNodePointer_t top_node);
+  bool ReadElementList (TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = "");
+  bool ReadElement     (TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = "");
+  CorrelatedSystematics * ReadSystematicGroup (TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = "");
 
-  FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
-  FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name);
+  FitDataABC *  AdoptFitData  (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name, Option_t * opt = "");
+  FitModelABC * AdoptFitModel (string config_file, conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, string class_name, Option_t * opt = "");
   void *        InstantiateUsingDictionaryRegistration (string class_name);
 
   CompoundFitData  * fCompoundFitData;

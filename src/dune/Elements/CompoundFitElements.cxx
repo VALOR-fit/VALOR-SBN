@@ -37,7 +37,7 @@ CompoundFitElements::~CompoundFitElements(void)
   this->Clean();
 }
 //________________________________________________________________________________________
-bool CompoundFitElements::Read(string xmlfile, Option_t * /*opt*/)
+bool CompoundFitElements::Read(string xmlfile, Option_t * opt)
 {
 // It reads a list of fit datasets and models and setups compound datasets and fit models.
 // The following XML schema is expected.
@@ -88,7 +88,7 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * /*opt*/)
        const char * list_name_cstr = xmleng->GetAttr(curr_node,"name");
        string list_name = (list_name_cstr ? list_name_cstr : "NoNameFoundInXML");
        LOG("CompoundFitElements", pNOTICE) << "Found element list named: " << list_name;
-       this->ReadElementList(xmleng,curr_node);
+       this->ReadElementList(xmleng,curr_node,opt);
        fCompoundFitData ->SetName(list_name);
        fCompoundFitModel->SetName(list_name);
     }
@@ -100,7 +100,7 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * /*opt*/)
       // Read the systematics
       XMLNodePointer_t group_node = xmleng->GetChild(curr_node);
       while (group_node) {
-        syst_objects.push_back(this->ReadSystematicGroup(xmleng,group_node));
+        syst_objects.push_back(this->ReadSystematicGroup(xmleng,group_node,opt));
         group_node = xmleng->GetNext(group_node);
       }
     }
@@ -117,7 +117,7 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
-bool CompoundFitElements::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t top_node)
+bool CompoundFitElements::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt)
 {
   XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
   while(curr_node) {
@@ -125,7 +125,7 @@ bool CompoundFitElements::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t t
       if(curr_node_name == "element") {
         string element_name = xmleng->GetAttr(curr_node,"name");
         LOG("CompoundFitElements", pNOTICE) << "Found element named: " << element_name;	
-        bool ok = this->ReadElement(xmleng,curr_node);
+        bool ok = this->ReadElement(xmleng,curr_node, opt);
         if(!ok) return false;
       }
       curr_node = xmleng->GetNext(curr_node);
@@ -133,7 +133,7 @@ bool CompoundFitElements::ReadElementList(TXMLEngine* xmleng, XMLNodePointer_t t
   return true;
 }
 //________________________________________________________________________________________
-bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node)
+bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt)
 {
   string detector_name    = "";
   string beam_name        = "";
@@ -187,9 +187,9 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
   
   if (success) {
     FitDataABC *  fit_data  = 
-       this->AdoptFitData (data_file, detector, beam, sample, observable, data_class );
+       this->AdoptFitData (data_file, detector, beam, sample, observable, data_class , opt);
     FitModelABC * fit_model = 
-       this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class);
+       this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class, opt);
 
     assert(fit_data);
     assert(fit_model);
@@ -201,7 +201,8 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
   return success;
 }
 //________________________________________________________________________________________
-CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (TXMLEngine* xmleng, XMLNodePointer_t top_node)
+CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (
+ TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * /*opt*/)
 {
   const char * syst_name_cstr = xmleng->GetAttr(top_node,"name");
   string syst_list_name = (syst_name_cstr ? syst_name_cstr : "NoNameFoundInXML");
@@ -251,12 +252,13 @@ void CompoundFitElements::Clean(void)
 FitDataABC * CompoundFitElements::AdoptFitData(
   string config_file, 
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, 
-  string class_name)
+  string class_name,
+  Option_t * opt)
 {
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   SingleSampleFitDataABC * s_dataset = (SingleSampleFitDataABC *) (vbase);
   s_dataset->Configure(d,b,s,o);
-  s_dataset->Read(config_file);
+  s_dataset->Read(config_file, opt);
   FitDataABC * dataset = (FitDataABC *) (s_dataset);
   return dataset;
 }
@@ -264,12 +266,13 @@ FitDataABC * CompoundFitElements::AdoptFitData(
 FitModelABC * CompoundFitElements::AdoptFitModel(
   string config_file, 
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o,
-  string class_name)
+  string class_name,
+  Option_t * opt)
 {
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   SingleSampleFitModelABC * s_model = (SingleSampleFitModelABC *) (vbase);
   s_model->Configure(d,b,s,o);
-  s_model->Read(config_file);
+  s_model->Read(config_file, opt);
   FitModelABC * model = (FitModelABC *) (s_model);
   return model;
 }
