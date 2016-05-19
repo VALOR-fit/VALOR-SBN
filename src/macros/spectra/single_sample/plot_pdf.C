@@ -9,7 +9,12 @@
 void plot_pdf(
   const char * filename,
   const char * tag = "valor",
-  TString   option = "")
+  TString   option = "",
+  const char * out_tag = "valor",
+  const char * image_save_format = "",
+  int canv_size_x = 700,
+  int canv_size_y = 700
+)
 {
   using namespace std;
   using namespace valor;
@@ -22,6 +27,8 @@ void plot_pdf(
   {
      kRed+1,   kOrange+7,   kYellow, kGreen+2,  kAzure+1, kViolet-1
   };
+  
+  bool write_image(image_save_format[0]);
 
   TFile * fin = new TFile(filename, "read");
   
@@ -39,7 +46,7 @@ void plot_pdf(
     conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     TString c_name = TString::Format("c_pdf_tot_%s", util::AsString(b).c_str());
-    c_pdf_tot[ibeam] = new TCanvas(c_name.Data(),"",20,20,600,600);
+    c_pdf_tot[ibeam] = new TCanvas(c_name.Data(),"",20,20,canv_size_x,canv_size_y);
     c_pdf_tot[ibeam] -> Divide(3,3);
     int ic=0;
     for(int isample = 0; isample < conv::kNSamples; isample++) {
@@ -76,7 +83,7 @@ void plot_pdf(
     conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     TString c_name  = TString::Format("c_pdf_slice_%s", util::AsString(b).c_str());
-    c_pdf_slice[ibeam] = new TCanvas(c_name.Data(),"",20,20,700,700);
+    c_pdf_slice[ibeam] = new TCanvas(c_name.Data(),"",20,20,canv_size_x,canv_size_y);
   //c_pdf_slice[ibeam]->Divide(conv::kNSamples);
     c_pdf_slice[ibeam]->Divide(3,3);
     double max[conv::kNSamples] = { -999 };
@@ -116,22 +123,28 @@ void plot_pdf(
                stack->Add(pdf_slice[iy]);
                leg->AddEntry(pdf_slice[iy],Form("y = [%.2f,%.2f]", y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),"LF");
           }
-       }
-       c_pdf_slice[ibeam]->cd(ic);
-       TH1F * hframe = (TH1F*)c_pdf_slice[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
-       hframe->Draw();
-       TString title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-       TLatex * title = new TLatex(1,1.07*max[isample],title_str.Data());
-       title->Draw(); 
-       if(util::IsCC(s)) {
-         hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
-       } else {
-         hframe->GetXaxis()->SetTitle("Visible Energy (GeV)");
-       }
-       hframe->GetYaxis()->SetTitle("Events /bin");
-       stack->Draw("same");
-       leg->Draw();
+      }
+      c_pdf_slice[ibeam]->cd(ic);
+      TH1F * hframe = (TH1F*)c_pdf_slice[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
+      hframe->Draw();
+      TString title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
+      TLatex * title = new TLatex(1,1.07*max[isample],title_str.Data());
+      title->Draw(); 
+      if(util::IsCC(s)) {
+        hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+      } else {
+        hframe->GetXaxis()->SetTitle("Visible Energy (GeV)");
+      }
+      hframe->GetYaxis()->SetTitle("Events /bin");
+      stack->Draw("same");
+      leg->Draw();
+       
     }//isample
+    if (write_image) {
+      TString imgname = TString::Format("%s_spectrum_%s_y.%s",
+        out_tag, util::AsString(b).c_str(),image_save_format);
+      c_pdf_slice[ibeam]->Print(imgname.Data());
+    }
   }//ibeam
 
 
@@ -145,7 +158,7 @@ void plot_pdf(
     conv::BeamConf_t b = conv::kBeamConf[ibeam];
     if(b == conv::kbUndefined) continue;
     TString c_name = TString::Format("c_pdf_contrib_%s", util::AsString(b).c_str());
-    c_pdf_contrib[ibeam] = new TCanvas(c_name.Data(),"",20,20,700,700);
+    c_pdf_contrib[ibeam] = new TCanvas(c_name.Data(),"",20,20,canv_size_x,canv_size_y);
   //c_pdf_contrib[ibeam]->Divide(conv::kNSamples);
     c_pdf_contrib[ibeam]->Divide(3,3);
     int ic = 0;
@@ -235,6 +248,7 @@ void plot_pdf(
       hframe->GetYaxis()->SetTitle("Events /bin");
       stack->Draw("same");
       leg->Draw();
+      
       //
       // Now write out tables
       //  
@@ -254,6 +268,11 @@ void plot_pdf(
       }
 
     }//isample
+    if (write_image) {
+      TString imgname = TString::Format("%s_spectrum_%s_modes.%s",
+        out_tag, util::AsString(b).c_str(),image_save_format);
+      c_pdf_contrib[ibeam]->Print(imgname.Data());
+    }
   }//ibeam
 
 }
