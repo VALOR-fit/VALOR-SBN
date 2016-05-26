@@ -29,6 +29,9 @@ void write_prefit_ntp(
   PhysParamList true_params = fp->AsPhysParamList("current");
   ntp.TrueParamArr()->Append(true_params);
   
+  // Copy bestfit
+  fp->CopyCurrToBestFitValues();
+  
   // Copy prior errors
   const CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
   assert(cm);

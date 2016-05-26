@@ -23,8 +23,6 @@ TSpline3 * RandomSpline (double low_knot, double high_knot, double sigma)
 void make_fake_splines(const char * version_number = "2016v0")
 {
 
-  DuneRFL rfl;
-
   int n_splines = 0;
   TFile f(Form("fake_splines_%s.root",version_number),"RECREATE");
 
@@ -32,21 +30,24 @@ void make_fake_splines(const char * version_number = "2016v0")
   int itrue3 = 0;
   int ireco3 = 0;
 
-  for (int ip = 0 ; ip < kNFitParamsWithSplines; ip++ ) {
-    PhysParamId_t p = kFitParamsWithSplines[ip];
-    cout<<util::AsString(p)<<endl;
-    assert(p != kPhypUndefined);
-  
-    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
-      BeamConf_t b = kBeamConf[ibeam];
-      assert(b != kbUndefined);
-      for(int isample = 0; isample < kNSamples; isample++) {
-        Sample_t s = kSample[ibeam][isample];
-        assert(s != ksUndefined);
+  for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+    BeamConf_t b = kBeamConf[ibeam];
+    assert(b != kbUndefined);
+    for(int isample = 0; isample < kNSamples; isample++) {
+      Sample_t s = kSample[ibeam][isample];
+      assert(s != ksUndefined);
+      
+      cout<<util::AsString(b)<<"\t"<<util::AsString(s)<<endl;
+        
+      DuneRFL rfl(b,s,kNFitParamsWithSplines,kFitParamsWithSplines);
 
-        const int n_enu_true_bins = util::NumEtrueBinsXsec (s);
-        const int n_enu_reco_bins = util::NumErecoBinsXsec (s, 0);
-        const int n_y_reco_bins   = util::NumYrecoBinsXsec (s, 0);
+      const int n_enu_true_bins = util::NumEtrueBinsXsec (s);
+      const int n_enu_reco_bins = util::NumErecoBinsXsec (s, 0);
+      const int n_y_reco_bins   = util::NumYrecoBinsXsec (s, 0);
+        
+      for (int ip = 0 ; ip < kNFitParamsWithSplines; ip++ ) {
+        PhysParamId_t p = kFitParamsWithSplines[ip];
+        assert(p != kPhypUndefined);
 
         for(int imode = 0; imode < kNReacModes; imode++) {
           ReacMode_t m = kReactionModes[isample][imode];
