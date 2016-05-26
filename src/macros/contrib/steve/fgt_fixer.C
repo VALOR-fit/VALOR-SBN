@@ -71,6 +71,9 @@ void fgt_fixer(
   out_tree->Branch("y_reco"        ,&y_reco        ,"y_reco/F"      );
   out_tree->Branch("POTWeight"     ,&POTWeight     ,"POTWeight/F"   );
   
+  int sample_reco = -3;
+  out_tree->Branch("sample_reco"        ,&sample_reco        ,"sample_reco/I"      );
+  
   //~ out_tree->SetBranchStatus("ana",0);
 
   for (int i = 0 ; i < chain.GetEntries(); i++) {
@@ -81,6 +84,7 @@ void fgt_fixer(
     Ev_reco      = ana->Ev_reco;
     y_reco       = ana->y_reco;
     POTWeight    = ana->POTWeight;
+    sample_reco  = ana->sample_reco;
     out_tree->Fill();
     if (!(i%5000)) {cout<<"Event #"<<i<<" of "<<chain.GetEntries()<<endl;}
   }

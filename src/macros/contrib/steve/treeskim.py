@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-import os
 import ROOT as R
 
 R.gROOT.ProcessLine(".x $GENIE/src/scripts/gcint/loadlibs.C");
@@ -14,20 +13,22 @@ def accept_event(ev):
   return False
 
 def main(infiles,outfile_pattern,events_per_file,treename):
-  
   chain = R.TChain(treename)
   for f in infiles:
     chain.Add(f)
   
   assert(chain.GetEntries())
+  print "Tree has ",chain.GetEntries," entries."
   
   output_file = None
   output_file_number = 0
   
   out_tree = None
   
+  events_written = 0
+  
   for i,event in enumerate(chain):
-    if (i%events_per_file==0):
+    if (events_written%events_per_file==0):
       outfile_name = outfile_pattern.replace("[T]",treename).replace("[N]",str(output_file_number))
       if output_file is None or "[N]" in outfile_pattern:
         if out_tree and output_file: out_tree.Write()
@@ -37,6 +38,9 @@ def main(infiles,outfile_pattern,events_per_file,treename):
         out_tree = chain.CloneTree(0)
     if accept_event(event):
       out_tree.Fill()
+      events_written += 1
+    if i%1000==0:
+      print "Studied",i+1," events. Selected",events_written
   
   out_tree.Write()
     
