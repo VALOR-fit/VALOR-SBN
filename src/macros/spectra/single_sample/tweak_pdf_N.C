@@ -53,7 +53,7 @@ void tweak_pdf_N
     fit_tree->GetEntry(fit_number);
     TMatrixD * cov_m = new TMatrixD(*(fp->GetCovMatrix()));
     CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
-    //~ cm->GetSystematics()->SetCovMatrix(*cov_m);
+    cm->GetSystematics()->SetCovMatrix(*cov_m);
     cout<<"Read postfit matrix."<<endl;
   }
   else {

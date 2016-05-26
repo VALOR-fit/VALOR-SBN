@@ -294,8 +294,7 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format, 
       
       #~ ratio_graph_postfit.SetMaximum(ratio_max)
       #~ ratio_graph_postfit.SetMinimum(2-ratio_max)
-      ratio_graph_postfit.SetMaximum(0.)
-      ratio_graph_postfit.SetMinimum(2.5)
+      ratio_graph_prefit.GetYaxis().SetRangeUser(0.,2.5)
       
       ratio_graph_prefit .Draw("a2")
       ratio_graph_postfit.Draw("2")
