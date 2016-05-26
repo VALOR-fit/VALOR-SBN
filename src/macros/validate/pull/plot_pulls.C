@@ -18,6 +18,16 @@ int resolution_y = 768;
 double range_y_min = -1.;
 double range_y_max =  3.;
 
+
+void FixMEC(valor::FitParamList & fp)
+{
+  fp.FixParameter(conv::kNuisIntNuCCMEC);
+  fp.FixParameter(conv::kNuisIntNuBarCCMEC);
+  cout<< "Fixing MEC"<<endl;
+}
+
+
+
 void plot_pulls(
   const char * input_pattern = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root",
   int nParamsPerPage = -999,
@@ -198,13 +208,13 @@ void plot_pulls(
   }
     
   TF1 *gauss = new TF1("mygaus", "gaus(0)", -nsigma, +nsigma);
-  gauss.SetParLimits(1,-2*nsigma,2*nsigma);
-  gauss.SetParLimits(2,-2*nsigma,2*nsigma);
+  gauss->SetParLimits(1,-2*nsigma,2*nsigma);
+  gauss->SetParLimits(2,-2*nsigma,2*nsigma);
   for(int iparam=0; iparam<nParams; iparam++)
   {
-    gauss.SetParameter(0,300./sqrt(TMath::TwoPi()));
-    gauss.SetParameter(1,0);
-    gauss.SetParameter(2,1);
+    gauss->SetParameter(0,300./sqrt(TMath::TwoPi()));
+    gauss->SetParameter(1,0);
+    gauss->SetParameter(2,1);
     hPull[iparam]->Fit(gauss, "RM0");
     pull_const    [iparam] = gauss->GetParameter(0);
     pull_mean     [iparam] = gauss->GetParameter(1);
