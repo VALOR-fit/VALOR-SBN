@@ -619,7 +619,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         h2 -> SetName( Form("%s_%s_%s",tag, "pdft_sb_rf",name) );
         h2->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
         h2->GetYaxis()->SetTitle("y");
-        h2->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+        h2->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
         // fill from corresponding VALOR array
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {
           for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
@@ -665,7 +665,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
             "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)", n_enu_reco_bins, enu_reco_bins);
         htot->SetName(Form("%s_%s_%s",tag, "pdfcs_ob_rf",name) );
         htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+        htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
         for(int iy = 0; iy < n_y_reco_bins; iy++) {
           TH1D * h = new TH1D("h",
               Form("VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
@@ -673,7 +673,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
               n_enu_reco_bins, enu_reco_bins);
           h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_ob_rf",name,iy) );
           h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-          h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+          h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
           for(int ier = 0; ier < n_enu_reco_bins; ier++) {
             double val = fPDFCompOb[imode][izone]->GetEntry(ier,iy);
             h->SetBinContent(ier+1, val);
@@ -699,7 +699,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
             "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode)", kNErecoBinsSb, kErecoBinEdgesSb);
         htot->SetName(Form("%s_%s_%s",tag, "pdfcs_sb_rf",name) );
         htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+        htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
         for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
           TH1D * h = new TH1D("h",
               Form("VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
@@ -707,7 +707,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
               kNErecoBinsSb, kErecoBinEdgesSb);
           h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_sb_rf",name,iy) );
           h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-          h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+          h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
           for(int ier = 0; ier < kNErecoBinsSb; ier++) {
             double val = fPDFCompSb[imode]->GetEntry(ier,iy);
             h->SetBinContent(ier+1, val);
@@ -751,7 +751,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
           "VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
       htot->SetName(Form("%s_%s_%s",tag, "pdfts_ob_rf",name) );
       htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+      htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
       for(int iy = 0; iy < n_y_reco_bins; iy++) {
         TH1D * h = new TH1D("h",
             Form("VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]", 
@@ -759,7 +759,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
             n_enu_reco_bins, enu_reco_bins);
         h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_ob_rf",name,iy) );
         h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+        h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
         for(int ier = 0; ier < n_enu_reco_bins; ier++) {
           double val = fPDFTotOb[izone]->GetEntry(ier,iy);
           h->SetBinContent(ier+1, val);
@@ -785,7 +785,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
           "VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
       htot->SetName(Form("%s_%s_%s",tag, "pdfts_sb_rf",name) );
       htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+      htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
       for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
         TH1D * h = new TH1D("h",
             Form("VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
@@ -793,7 +793,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
             kNErecoBinsSb, kErecoBinEdgesSb);
         h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_sb_rf",name,iy) );
         h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle(Form("Number of events /bin /%f POT", fPOT));
+        h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {
           double val = fPDFTotSb->GetEntry(ier,iy);
           h->SetBinContent(ier+1, val);
@@ -1199,7 +1199,17 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
-
+  
+  double total_mc_pot = 0.;
+  for(Long_t iev = 0; iev < nev; iev++) 
+  {
+    t->GetEntry(iev);
+    total_mc_pot += wght_pot;
+  }
+  //~ assert(mc_pot>0.);
+  total_mc_pot = (total_mc_pot>0 ? total_mc_pot : 1);
+  LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST contains "<<total_mc_pot<<" POT.";
+  
   for(Long_t iev = 0; iev < nev; iev++) 
   {
     t->GetEntry(iev);
@@ -1346,18 +1356,15 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     // Exposure for assumed data - Weight MC templates to that exposure
     double data_pot = fPOT;
 
-    //~ assert(wght_pot>0.);
-    double mc_pot = (wght_pot>0 ? wght_pot : 1);
-
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
     double wght;
     if (old_format) {
-      wght = data_pot*mc_pot;
+      wght = data_pot*total_mc_pot;
     }
     else {
-      wght = data_pot/mc_pot;
+      wght = data_pot/total_mc_pot;
     }
-
+    
     if(fFiducialMass > 0) {
       wght = wght*fFiducialMass;
     }
