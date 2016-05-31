@@ -58,10 +58,11 @@ def main(config, postfit_fn,output_tag,img_format,entry):
   postfit_cov = R.TMatrixD(postfit_chain.best_fit_params.GetCovMatrix())
   postfit_err = util.CovarianceMatrixToErrorVector(postfit_cov)
   
-  fp = postfit_chain.best_fit_params.FreeParameterSubset()
+  fp = postfit_chain.best_fit_params
+  nfp = fp.FreeParameterSubset()
   truepar = postfit_chain.true_params
   
-  npar = fp.Size()
+  npar = nfp.Size()
   
   h_prefit  = R.TH1D("prefit" ,"Prefit",npar,0,npar)
   h_postfit = R.TH1D("postfit","Postfit",npar,0,npar)
@@ -71,7 +72,7 @@ def main(config, postfit_fn,output_tag,img_format,entry):
   h_prefit.GetYaxis().SetTitle("Value")
   
   for ii in xrange(npar):
-    p = fp.WhichParam(ii)
+    p = nfp.WhichParam(ii)
     trueval    = truepar.Value(p)
     prefit_err = model.GetSystematics().OneSigmaError(p)
     
@@ -81,7 +82,7 @@ def main(config, postfit_fn,output_tag,img_format,entry):
     h_prefit.Fill(ii+0.5,trueval)
     h_prefit.SetBinError(ii+1,prefit_err)
     
-    h_postfit.Fill(ii+0.5,trueval)
+    h_postfit.Fill(ii+0.5,fitval)
     h_postfit.SetBinError(ii+1,postfit_err[ii])
   
   h_prefit.SetMarkerStyle(conv.kOpenSquare)
