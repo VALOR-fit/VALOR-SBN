@@ -107,9 +107,11 @@ int main(int argc, char ** argv)
   // open the ROOT file and get the TTree & its header
   
   string tree_name = "";
+  bool gar_format = false;
 
   if(gOptInpFileFormat == "hpgartpc") {
     tree_name = "GasTPCTree";
+    bool gar_format = true;
   } 
   else {
     if(gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
@@ -154,30 +156,43 @@ int main(int argc, char ** argv)
   double total_pot_read = 0.;
   
   TBranch * branchptr = 0;
-
+  
+  vector<TBranch*> active_branches;
   if(gOptInpFileFormat == "hpgartpc") {
-    analysis_tree->SetBranchAddress("gmcrec",          &mcrec          , &branchptr);
-    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
-    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
-    //  analysis_tree->SetBranchAddress("Ev_All",          &enu_true   , &branchptr);
-    analysis_tree->SetBranchAddress("Ev",              &enu_true       , &branchptr);
-    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco       , &branchptr);
-    analysis_tree->SetBranchAddress("y_reco",          &y_reco         , &branchptr);
-    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr);
+    analysis_tree->SetBranchAddress("gmcrec",          &mcrec          , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
+    //  analysis_tree->SetBranchAddress("Ev_All",          &enu_true   , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("Ev",              &enu_true       , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco       , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("y_reco",          &y_reco         , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr); active_branches.push_back(branchptr);
   }
   else if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
-    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr);
-    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
-    analysis_tree->SetBranchAddress("sample_reco",     &sample_reco    , &branchptr);
-    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
-    analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr);
-    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr);
-    analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr);
-    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot_float , &branchptr);
+    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("sample_reco",     &sample_reco    , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot_float , &branchptr); active_branches.push_back(branchptr);
   }
   else {
     VLOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
     exit(-1);
+  }
+  
+  // Only read the branches we're using and their sub-branches
+  analysis_tree->SetBranchStatus("*",0);
+  for (unsigned int ib = 0 ; ib < active_branches.size(); ib++) {
+    active_branches[ib]->SetStatus(1);
+    TObjArray * bar = active_branches[ib]->GetListOfBranches();
+    for (int ie = 0 ; ie < bar->GetEntries(); ie++) {
+      TBranch * b = dynamic_cast<TBranch*>(bar->At(ie));
+      assert(b);
+      b->SetStatus(1);
+    }
   }
   
   //
@@ -295,7 +310,7 @@ int main(int argc, char ** argv)
   VLOG("make_minidst", pNOTICE) <<
     "Total POT read: "<<total_pot_read;
   
-  if (total_pot_read>1) {
+  if (total_pot_read>1 && !gar_format) {
     valor_minidst->SetWeight(1./total_pot_read);
   }
 
