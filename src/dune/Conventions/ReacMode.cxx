@@ -212,6 +212,12 @@ conv::NuFlavour_t  util::ReacModeToFlavor(conv::ReacMode_t m)
   return kReacModeToFlavour[m];
 }
 //________________________________________________________________________________________
+conv::ReacType_t  util::ReacModeToType(conv::ReacMode_t m)
+{
+  //~ int idx = ArrIdx::Instance()->ReacModeIdx(m);
+  return kReacModeToType[m];
+}
+//________________________________________________________________________________________
 bool util::IsCC(conv::ReacMode_t m)
 {
   switch (m) {
