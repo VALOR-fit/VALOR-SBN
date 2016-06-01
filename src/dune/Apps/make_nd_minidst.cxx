@@ -111,7 +111,7 @@ int main(int argc, char ** argv)
 
   if(gOptInpFileFormat == "hpgartpc") {
     tree_name = "GasTPCTree";
-    bool gar_format = true;
+    gar_format = true;
   } 
   else {
     if(gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
