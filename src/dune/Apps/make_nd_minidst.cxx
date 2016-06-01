@@ -44,6 +44,7 @@
 #include "PDG/PDGLibrary.h"
 #include "Utils/CmdLnArgParser.h"
 #include "Utils/RunOpt.h"
+
 // valor/dune
 #include "valor/Messenger/Messenger.h"
 #include "dune/Conventions/BeamConf.h"
@@ -54,7 +55,6 @@
 
 using std::string;
 using std::ostringstream;
-using namespace valor;
 
 string gOptInpFileFormat;
 string gOptInpFileName;
@@ -89,14 +89,20 @@ int main(int argc, char ** argv)
   TTree * valor_minidst = 
     new TTree("valor_dune_nd_mini_dst","Mini-DST input for VALOR/DUNE ND Fit");
 
-  valor_minidst->Branch("beam",      &valor_minidst_beam,      "beam/I"     );
-  valor_minidst->Branch("sample",    &valor_minidst_sample,    "sample/I"   );
-  valor_minidst->Branch("reac_mode", &valor_minidst_reac_mode, "reac_mode/I");
-  valor_minidst->Branch("enu_true",  &valor_minidst_enu_true,  "enu_true/D" );
-  valor_minidst->Branch("Q2_true" ,  &valor_minidst_Q2_true,   "q2_true/D"  );
-  valor_minidst->Branch("enu_reco",  &valor_minidst_enu_reco,  "enu_reco/D" );
-  valor_minidst->Branch("y_reco",    &valor_minidst_y_reco,    "y_reco/D"   );
-  valor_minidst->Branch("wght_pot",  &valor_minidst_wght_pot,  "wght_pot/D" );
+  valor_minidst->Branch("beam"       , &valor_minidst_beam,      "beam/I"     );
+  valor_minidst->Branch("sample"     , &valor_minidst_sample,    "sample/I"   );
+  valor_minidst->Branch("reac_mode"  , &valor_minidst_reac_mode, "reac_mode/I");
+  valor_minidst->Branch("enu_true"   , &valor_minidst_enu_true,  "enu_true/D" );
+  valor_minidst->Branch("Q2_true"    , &valor_minidst_Q2_true,   "q2_true/D"  );
+  valor_minidst->Branch("enu_reco"   , &valor_minidst_enu_reco,  "enu_reco/D" );
+  valor_minidst->Branch("y_reco"     , &valor_minidst_y_reco,    "y_reco/D"   );
+  valor_minidst->Branch("wght_pot"   , &valor_minidst_wght_pot,  "wght_pot/D" );
+  
+  // Tmp - while we still have 2 reco variables, save both
+  int    valor_minidst_sample_o    = -999; // see SDFit/NDSample.h 
+  int    valor_minidst_sample_r    = -999; // see SDFit/NDSample.h 
+  valor_minidst->Branch("sample_orig", &valor_minidst_sample_o,    "sample_orig/I");
+  valor_minidst->Branch("sample_reco", &valor_minidst_sample_r,    "sample_reco/I");
 
   // open the ROOT file and get the TTree & its header
   
@@ -133,6 +139,7 @@ int main(int argc, char ** argv)
 
   genie::NtpMCEventRecord * mcrec = 0;
   int    sample         = -1;
+  int    sample_reco    = -1;
   int    reac_mode      = -1;
   double enu_true       =  -999.;
   double enu_reco       =  -999.;
@@ -143,6 +150,8 @@ int main(int argc, char ** argv)
   float enu_reco_float =  -999.;
   float y_reco_float   =  -999.;
   float wght_pot_float =  -999.;
+  
+  double total_pot_read = 0.;
   
   TBranch * branchptr = 0;
 
@@ -158,8 +167,8 @@ int main(int argc, char ** argv)
   }
   else if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
     analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr);
-    //~ analysis_tree->SetBranchAddress("sample_reco",          &sample         , &branchptr);
     analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr);
+    analysis_tree->SetBranchAddress("sample_reco",     &sample_reco    , &branchptr);
     analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr);
     analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr);
     analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr);
@@ -204,12 +213,15 @@ int main(int argc, char ** argv)
       << "Yreco    = "<<y_reco    << "; "
       << "POTwght  = "<<wght_pot  << "; "
       << "MCRecPtr = "<< mcrec;
+    
+    // Add to total POT - currently doing this BEFORE checks
+    total_pot_read += valor_minidst_wght_pot;
       
     if(!gOptDisableChecks) {
       //
       // ignore events that can not be used in the VALOR analysis
       //
-      if(sample == conv::ksUndefined) {
+      if(sample == valor::conv::ksUndefined) {
         VLOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]";
         mcrec->Clear();
         continue;
@@ -237,22 +249,23 @@ int main(int argc, char ** argv)
       
     valor_minidst_sample    = sample; 
     //~ valor_minidst_reac_mode = reac_mode; 
-    valor_minidst_reac_mode = valor::util::DetermineReactionMode(mcrec->event);
+    valor_minidst_reac_mode = valor::util::DetermineReactionMode(mcrec->event, false);
     valor_minidst_enu_true  = enu_true; 
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco; 
     valor_minidst_wght_pot  = wght_pot; 
     valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2(true);
     
+    valor_minidst_sample_o  = sample; 
+    valor_minidst_sample_r  = sample_reco; 
+    
     if(!gOptDisableChecks) {
       //
       // ignore events that can not be used in the VALOR analysis
       //
-      if(valor_minidst_reac_mode == conv::kmUndefined) {
-        ostringstream eventlog;
-        event.Print(eventlog);
-        VLOG("make_minidst", pWARN) << "- Rejecting event [bad mode]\n";
-        VLOG("make_minidst", pINFO) << eventlog.str();
+      if(valor_minidst_reac_mode == valor::conv::kmUndefined) {
+        VLOG("make_minidst", pWARN) << "- Rejecting event [bad mode]";
+        VLOG("make_minidst", pINFO) << event;
         mcrec->Clear();
         continue;
       }
@@ -268,16 +281,23 @@ int main(int argc, char ** argv)
       << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV" 
       << "\n y (reco)      = " << valor_minidst_y_reco    
       << "\n weight        = " << valor_minidst_wght_pot;
-
+    
     valor_minidst->Fill();
 
     mcrec->Clear();
   }
   
   double f = 100. * (double)nev_accept / (double)nev;
-  VLOG("make_minidst", pNOTICE) 
+  VLOG("make_minidst", pNOTICE) <<
     "Used " << f << "% (" << nev_accept << "/" << nev 
     << ") of input events.";
+    
+  VLOG("make_minidst", pNOTICE) <<
+    "Total POT read: "<<total_pot_read;
+  
+  if (total_pot_read>1) {
+    valor_minidst->SetWeight(1./total_pot_read);
+  }
 
   // Saving VALOR mini-FST to output file 
   VLOG("make_minidst", pNOTICE) 
