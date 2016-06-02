@@ -58,6 +58,11 @@ Input MC templates
     <filename> dune/ndfit/2015a/STT/SS_NDv25_Templates_FAKEQ2.root</filename>
     <tag> pass2 </tag>
   </template>
+  
+  <!-- in kg, for calculating CCinc xsec-->
+  <interaction_mass> 
+    85115 
+  </interaction_mass>
 
 </mc>
 

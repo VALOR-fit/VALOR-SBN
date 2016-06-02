@@ -22,6 +22,8 @@
   <priority msgstream="InputMC">      NOTICE   </priority>
   <priority msgstream="HACK">         FATAL    </priority>
   
+  <priority msgstream="Minuit">                         NOTICE </priority>
+  <priority msgstream="Minuit2">                          INFO </priority>
   <priority msgstream="CompoundFitElements">            NOTICE </priority>
   <priority msgstream="CompoundFitModel">               NOTICE </priority>
   <priority msgstream="CompoundFitData">                NOTICE </priority>

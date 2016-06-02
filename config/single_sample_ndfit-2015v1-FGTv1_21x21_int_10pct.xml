@@ -38,7 +38,7 @@ Input MC templates
 
 <mc>
   <using_dst_format> 
-     false 
+     true 
   </using_dst_format> 
 
   <dst> 
@@ -61,55 +61,11 @@ Input MC templates
 
 </mc>
 
-<!--
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Systematics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-
-<syst>
-  <EnergyScale>
-    <Leptonic> 0.025 </Leptonic>
-    <Hadronic> 0.15 </Hadronic>
-  </EnergyScale>
-  
-  <flux>
-    <covariance_matrix>
-       <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
-       <objname>    h_flux_errors    </objname>    
-       <objtype>    TH2D             </objtype>
-    </covariance_matrix>
-  </flux>
-  
-  <interaction>
-    <covariance_matrix>
-       <filename>   test/dummy_interaction_matrices.root </filename>
-       <objname>    diag_21x21_10pct    </objname>    
-       <objtype>    TMatrixD            </objtype>
-    </covariance_matrix>
-    <!--
-    <untuned_values>
-      <filename> nosuchfile     </filename>
-      <objname > untuned_values </objname>
-      <objtype>  TVectorD       </objtype>
-    </untuned_values>
-    <initial_values>
-      <filename> nosuchfile     </filename>
-      <objname > initial_values </objname>
-      <objtype>  TVectorD       </objtype>
-    </initial_values>
-    -->
-  </interaction>
-  
-  <detector>
-    <covariance_matrix>
-       <filename>   test/dummy_detector_matrices.root </filename>
-       <objname>    diag_9x9_10pct    </objname>    
-       <objtype>    TMatrixD          </objtype>
-    </covariance_matrix>
-  </detector>
-  
-</syst>
+<splines>
+  <file> 
+    <filename>test/fake_splines_2016v0.root </filename>
+  </file>
+</splines>
 
 </analysis_inputs>
 
