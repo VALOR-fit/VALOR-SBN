@@ -1200,15 +1200,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
   
-  double total_mc_pot = 0.;
-  for(Long_t iev = 0; iev < nev; iev++) 
-  {
-    t->GetEntry(iev);
-    total_mc_pot += wght_pot;
-  }
-  //~ assert(mc_pot>0.);
-  total_mc_pot = (total_mc_pot>0 ? total_mc_pot : 1);
-  LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST contains "<<total_mc_pot<<" POT.";
+  double mc_pot_weight = t->GetWeight();
+  
+  LOG("GenericSingleSampleFitModel",pNOTICE) << "Input VALOR DST contains "<<1./mc_pot_weight<<" POT.";
   
   for(Long_t iev = 0; iev < nev; iev++) 
   {
@@ -1357,13 +1351,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     double data_pot = fPOT;
 
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
-    double wght;
-    if (old_format) {
-      wght = data_pot*total_mc_pot;
-    }
-    else {
-      wght = data_pot/total_mc_pot;
-    }
+    double wght = data_pot * mc_pot_weight;
     
     if(fFiducialMass > 0) {
       wght = wght*fFiducialMass;
