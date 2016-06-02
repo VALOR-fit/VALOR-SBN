@@ -1,0 +1,97 @@
+//____________________________________________________________________________ 
+/*!
+
+\class     valor::KineBinningEdge2Edge
+
+\brief     Multi-dimensional kinematical binning 
+           Adjacent bins share one full side (as in `edge-to-edge tiling',
+           https://en.wikipedia.org/wiki/Tessellation)
+
+           The binning is read from XML files.
+           Th eXML schema is given by the following example:
+           ...............................................................
+           <?xml version="1.0" encoding="ISO-8859-1"?>
+
+           <binning>
+              <type> edge-to-edge </type>
+              <ndimensions> 5 </ndimensions>
+              <dimension_0>
+                 <bin_size> fixed </bin_size>
+                 <nbins> 20 </nbins>
+                 <range> 0.,40. </range>
+              </dimension_0>
+              <dimension_1>
+                 <bin_size> variable </bin_size>
+                 <nbins> 11 </nbins>
+                 <bin_edges>
+                     0.0,  1.2,   1.6,   2.0,   3.0,   5.0,
+                    10.0, 20.0, 100.0, 110.0, 125.0, 200.0
+                 </bin_edges>
+              </dimension_1>
+              ...
+              ...
+           </binning>
+           ...............................................................
+
+\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+           University of Liverpool & STFC Rutherford Appleton Laboratory
+
+           Steve Dennis <s.r.dennis@liverpool.ac.uk>
+           University of Liverpool
+
+\created   May 27, 2016
+
+\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
+
+*/
+//____________________________________________________________________________
+
+#ifndef _valor_kinematical_binning_edge_to_edge_h_
+#define _valor_kinematical_binning_edge_to_edge_h_
+
+#include <TNamed.h>
+
+#include "valor/VArray/VALORArray.h"
+#include "valor/VArray/VALORArrayBin.h"
+#include "dune/Conventions/KineSpace.h"
+
+namespace valor {
+
+class KineBinningEdge2Edge: public TNamed
+{
+public:
+  KineBinningEdge2Edge();
+  KineBinningEdge2Edge(string name, string title, conv::KineSpace_t ksp);
+  virtual ~KineBinningEdge2Edge();
+
+  // Read binning from file
+  bool Read(string file);
+
+  // Number of bins by dimension or kinematical variable
+  int NBins (int dimension     ) const;
+  int NBins (conv::KineVar_t kv) const;
+
+  // Bin edge arrays by dimension or kinematical variable
+  const double *      BinEdgeArr  (int dimension     ) const;
+  const double *      BinEdgeArr  (conv::KineVar_t kv) const;
+  const VALORArray *  BinEdgeVArr (int dimension     ) const;
+  const VALORArray *  BinEdgeVArr (conv::KineVar_t kv) const;  
+
+  // Find bin
+  int         FindBin (double x, int dimension);
+  int         FindBin (double x, conv::KineVar_t kv);
+  vector<int> FindBin (vector<double> & x);
+
+protected:
+
+  conv::KineSpace_t       fKineSpace;    // kinematical space
+  int                     fNDimensions;  // number of dimensions
+  vector<conv::KineVar_t> fKineVars;     // kinematical variables in given space
+
+
+};
+
+} // valor
+
+#endif
+

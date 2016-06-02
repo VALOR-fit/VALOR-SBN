@@ -7,7 +7,7 @@
 #pragma link C++ namespace valor;
 #pragma link C++ namespace valor::conv;
 
-#pragma link C++ class valor::SimpleKineBinning;
+#pragma link C++ class valor::KineBinningEdge2Edge;
 #pragma link C++ class valor::LinearizedKineBinning;
 
 #endif
