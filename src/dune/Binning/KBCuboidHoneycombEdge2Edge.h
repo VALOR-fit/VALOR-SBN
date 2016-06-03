@@ -1,7 +1,7 @@
 //____________________________________________________________________________ 
 /*!
 
-\class     valor::KineBinningEdge2Edge
+\class     valor::KBCuboidHoneycombEdge2Edge
 
 \brief     Multi-dimensional kinematical binning 
            Adjacent bins share one full side (as in `edge-to-edge tiling',
@@ -47,8 +47,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_kinematical_binning_edge_to_edge_h_
-#define _valor_kinematical_binning_edge_to_edge_h_
+#ifndef _valor_kinematical_binning_cuboid_honeycomb_edge_to_edge_h_
+#define _valor_kinematical_binning_cuboid_honeycomb_edge_to_edge_h_
 
 #include <vector>
 #include <map>
@@ -64,12 +64,12 @@ using std::map;
 
 namespace valor {
 
-class KineBinningEdge2Edge: public TNamed
+class KBCuboidHoneycombEdge2Edge: public TNamed
 {
 public:
-  KineBinningEdge2Edge();
-  KineBinningEdge2Edge(string name, string title, conv::KineSpace_t ksp);
-  virtual ~KineBinningEdge2Edge();
+  KBCuboidHoneycombEdge2Edge();
+  KBCuboidHoneycombEdge2Edge(string name, string title, conv::KineSpace_t ksp);
+  virtual ~KBCuboidHoneycombEdge2Edge();
 
   // Read binning from file
   bool Read(string file);

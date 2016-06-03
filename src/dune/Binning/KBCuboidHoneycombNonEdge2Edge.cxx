@@ -8,51 +8,52 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Messenger/Messenger.h"
 #include "valor/VArray/VALORArray.h"
-#include "dune/Binning/LinearizedKineBinning.h"
+#include "dune/Binning/KBCuboidHoneycombEdge2Edge.h"
+#include "dune/Binning/KBCuboidHoneycombNonEdge2Edge.h"
 
 using namespace valor;
 
 //________________________________________________________________________________________
-LinearizedKineBinning::LinearizedKineBinning() :
+KBCuboidHoneycombNonEdge2Edge::KBCuboidHoneycombNonEdge2Edge() :
 TNamed()
 {
 
 }
 //________________________________________________________________________________________
-LinearizedKineBinning::LinearizedKineBinning(
+KBCuboidHoneycombNonEdge2Edge::KBCuboidHoneycombNonEdge2Edge(
   string name, string title, conv::KineSpace_t ksp) :
 TNamed(name.c_str(), title.c_str())
 {
 
 }
 //________________________________________________________________________________________
-LinearizedKineBinning::~LinearizedKineBinning() 
+KBCuboidHoneycombNonEdge2Edge::~KBCuboidHoneycombNonEdge2Edge() 
 {
 
 }
 //________________________________________________________________________________________
-bool LinearizedKineBinning::Read(string file)
+bool KBCuboidHoneycombNonEdge2Edge::Read(string file)
 {
   return false;
 }
 //________________________________________________________________________________________
-int LinearizedKineBinning::NBins(void) const
+int KBCuboidHoneycombNonEdge2Edge::NBins(void) const
 {
   return 0;
 }
 //________________________________________________________________________________________
-int LinearizedKineBinning::FindBin(vector<double> & xarr)
+int KBCuboidHoneycombNonEdge2Edge::FindBin(vector<double> & xarr)
 {
   return -1;
 }
 //________________________________________________________________________________________
-void LinearizedKineBinning::UsingAlternativeSimpleBinningScheme(
-  const KineBinningEdge2Edge * alt_simple_scheme)
+void KBCuboidHoneycombNonEdge2Edge::AlternativeEdge2EdgeBinning(
+  const KBCuboidHoneycombEdge2Edge * kbe2e)
 {
-  fAltSimpleKineBinning = alt_simple_scheme;
+  fKBE2E = kbe2e;
 }
 //________________________________________________________________________________________
-int LinearizedKineBinning::BinMapping(vector<int> & bin_in_alt_simple_scheme)
+int KBCuboidHoneycombNonEdge2Edge::BinMapping(vector<int> & bin_in_alt_simple_scheme)
 {
   return -1;
 }
