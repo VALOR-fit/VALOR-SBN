@@ -9,7 +9,8 @@
 
            The binning is read from XML files.
            Th eXML schema is given by the following example:
-           ...............................................................
+
+           ...............................................
            <?xml version="1.0" encoding="ISO-8859-1"?>
 
            <binning>
@@ -31,7 +32,7 @@
               ...
               ...
            </binning>
-           ...............................................................
+           ...............................................
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -49,11 +50,17 @@
 #ifndef _valor_kinematical_binning_edge_to_edge_h_
 #define _valor_kinematical_binning_edge_to_edge_h_
 
+#include <vector>
+#include <map>
+
 #include <TNamed.h>
 
 #include "valor/VArray/VALORArray.h"
 #include "valor/VArray/VALORArrayBin.h"
 #include "dune/Conventions/KineSpace.h"
+
+using std::vector;
+using std::map;
 
 namespace valor {
 
@@ -68,27 +75,29 @@ public:
   bool Read(string file);
 
   // Number of bins by dimension or kinematical variable
-  int NBins (int dimension     ) const;
-  int NBins (conv::KineVar_t kv) const;
+  unsigned int NBins (unsigned int dimension ) const;
+  unsigned int NBins (conv::KineVar_t kv     ) const;
 
   // Bin edge arrays by dimension or kinematical variable
-  const double *      BinEdgeArr  (int dimension     ) const;
-  const double *      BinEdgeArr  (conv::KineVar_t kv) const;
-  const VALORArray *  BinEdgeVArr (int dimension     ) const;
-  const VALORArray *  BinEdgeVArr (conv::KineVar_t kv) const;  
+  const double *      BinEdgeArr  (unsigned int dimension ) const;
+  const double *      BinEdgeArr  (conv::KineVar_t kv     ) const;
+  const VALORArray *  BinEdgeVArr (unsigned int dimension ) const;
+  const VALORArray *  BinEdgeVArr (conv::KineVar_t kv     ) const;  
 
   // Find bin
-  int         FindBin (double x, int dimension);
-  int         FindBin (double x, conv::KineVar_t kv);
-  vector<int> FindBin (vector<double> & x);
+  unsigned int         FindBin (double x, unsigned int dimension);
+  unsigned int         FindBin (double x, conv::KineVar_t kv);
+  vector<unsigned int> FindBin (vector<double> & x);
+
+  unsigned int Dimension(conv::KineVar_t kv) const;
 
 protected:
 
-  conv::KineSpace_t       fKineSpace;    // kinematical space
-  int                     fNDimensions;  // number of dimensions
-  vector<conv::KineVar_t> fKineVars;     // kinematical variables in given space
-
-
+  conv::KineSpace_t                  fKineSpace;    // kinematical space
+  unsigned int                       fNDimensions;  // number of dimensions
+  vector<conv::KineVar_t>            fKineVars;     // kinematical variables in given space
+  map<conv::KineVar_t, unsigned int> fKineVar2Dim;  // kinematical variable -> dimension
+  vector<VALORArray*>                fBinEdges;     // bin edges
 };
 
 } // valor

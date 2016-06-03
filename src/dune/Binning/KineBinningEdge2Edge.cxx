@@ -9,6 +9,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <cassert>
 
 #include <TSystem.h>
+#include <TMath.h>
 
 #include "valor/Utilities/UtlXML.h"
 #include "valor/Messenger/Messenger.h"
@@ -26,6 +27,7 @@ TNamed()
   fKineSpace   = conv::kspUndefined;
   fNDimensions = 0; 
   fKineVars.clear();
+  fBinEdges.clear();
 }
 //________________________________________________________________________________________
 KineBinningEdge2Edge::KineBinningEdge2Edge(
@@ -35,7 +37,10 @@ TNamed(name.c_str(), title.c_str())
   fKineSpace   = ksp;
   fNDimensions = util::NDim(ksp); 
   fKineVars    = util::KineVar(ksp); 
-
+  for(unsigned int i = 0; i < fNDimensions; i++) {
+    conv::KineVar_t kv = fKineVars[i];
+    fKineVar2Dim[kv] = i;
+  }
 }
 //________________________________________________________________________________________
 KineBinningEdge2Edge::~KineBinningEdge2Edge() 
@@ -74,31 +79,67 @@ bool KineBinningEdge2Edge::Read(string file)
 
   string type = util::XML2String(xml,root_node,"binning/type");
   if(type != "edge-to-edge") {
-    // complain
+    LOG("Binning", pERROR) 
+      << "Input binning scheme [" << type << "] not `edge-to-edge'";
     return false;
   }
 
-  int ndim = util::XML2Int(xml,root_node,"binning/ndimensions");
+  unsigned int ndim = (unsigned int) 
+      util::XML2Int(xml,root_node,"binning/ndimensions");
   if(fNDimensions != ndim) {
-    // complain
+    LOG("Binning", pERROR) 
+       << "Input binning scheme for " << ndim 
+       << " dimensions not suitable for the specified " << fNDimensions
+       << "-dimensional space: " << util::AsString(fKineSpace);
     return false;
   }
 
-  for(int idim = 0; idim < ndim; idim++) {
+  fBinEdges.reserve(ndim);
+
+  for(unsigned int idim = 0; idim < ndim; idim++) {
     string bin_size = util::XML2String(
        xml,root_node,Form("binning/dimension_%d/bin_size",idim));
-    int nbins = util::XML2Int(
-       xml,root_node,Form("binning/dimension_%d/nbins",idim));
+    unsigned int nbins = (unsigned int) 
+        util::XML2Int(xml,root_node,Form("binning/dimension_%d/nbins",idim));
+    //
+    //
     if(bin_size == "fixed") {
       vector<double> range = util::XML2DblArray(
          xml,root_node,Form("binning/dimension_%d/range",idim));
+      if(range.size() != 2) {
+         LOG("Binning", pERROR) 
+           << "No range `min,max' was specified for dimension: " << idim;
+         return false;
+      }
+      VALORArray * arr = new VALORArray(nbins+1);
+      double dx = (range[1] - range[0]) / nbins;
+      double x = range[0];
+      for(unsigned int i = 0; i < nbins+1; i++) {
+         arr->SetEntry(x,i);
+         x += dx;
+      }
+      fBinEdges[idim] = arr;
     } 
+    //
+    //
     if(bin_size == "variable") {
       vector<double> bin_edges = util::XML2DblArray(
          xml,root_node,Form("binning/dimension_%d/bin_edges",idim));
+      if(bin_edges.size() != nbins+1) {
+         LOG("Binning", pERROR) 
+           << bin_edges.size() << " bin edges were specified for the " 
+           << nbins << " bins in dimension " << idim;
+         return false;
+      }
+      VALORArray * arr = new VALORArray(nbins+1);
+      for(unsigned int i = 0; i < nbins+1; i++) {
+         arr->SetEntry(bin_edges[i],i);
+      }
+      fBinEdges[idim] = arr;
     } 
     else {
-      // complain
+      LOG("Binning", pERROR) 
+         << "Bin size is neither `fixed' nor `variable'";
       return false;
     }
 
@@ -108,51 +149,70 @@ bool KineBinningEdge2Edge::Read(string file)
   return true;
 }
 //________________________________________________________________________________________
-int KineBinningEdge2Edge::NBins(int dimension) const
+unsigned int KineBinningEdge2Edge::NBins(unsigned int dimension) const
 {
-  return 0;
+  return (fBinEdges[dimension]->GetSize() - 1);
 }
 //________________________________________________________________________________________
-int KineBinningEdge2Edge::NBins(conv::KineVar_t kv) const
+unsigned int KineBinningEdge2Edge::NBins(conv::KineVar_t kv) const
 {
-  return 0;
+  unsigned int dimension = this->Dimension(kv);
+  return this->NBins(dimension);
 }
 //________________________________________________________________________________________
-const double * KineBinningEdge2Edge::BinEdgeArr(int dimension) const
+const double * KineBinningEdge2Edge::BinEdgeArr(unsigned int dimension) const
 {
-  return 0;
+  return fBinEdges[dimension]->GetArray();
 }
 //________________________________________________________________________________________
 const double * KineBinningEdge2Edge::BinEdgeArr(conv::KineVar_t kv) const
 {
-  return 0;
+  unsigned int dimension = this->Dimension(kv);
+  return this->BinEdgeArr(dimension);
 }
 //________________________________________________________________________________________
-const VALORArray * KineBinningEdge2Edge::BinEdgeVArr(int dimension) const
+const VALORArray * KineBinningEdge2Edge::BinEdgeVArr(unsigned int dimension) const
 {
-  return 0;
+  return fBinEdges[dimension];
 }
 //________________________________________________________________________________________
 const VALORArray * KineBinningEdge2Edge::BinEdgeVArr(conv::KineVar_t kv) const
 {
-  return 0;
+  unsigned int dimension = this->Dimension(kv);
+  return this->BinEdgeVArr(dimension);
 }
 //________________________________________________________________________________________
-int KineBinningEdge2Edge::FindBin(double x, int dimension)
+unsigned int KineBinningEdge2Edge::FindBin(double x, unsigned int dimension)
 {
-  return 0;
+  unsigned int n = 1 + this->NBins(dimension);
+  const double * arr = this->BinEdgeArr(dimension);
+  return TMath::BinarySearch(n,arr,x);
 }
 //________________________________________________________________________________________
-int KineBinningEdge2Edge::FindBin(double x, conv::KineVar_t kv)
+unsigned int KineBinningEdge2Edge::FindBin(double x, conv::KineVar_t kv)
 {
-  return -1;
+  unsigned int dimension = this->Dimension(kv);
+  return this->FindBin(x,dimension);
 }
 //________________________________________________________________________________________
-vector<int> KineBinningEdge2Edge::FindBin(vector<double> & xarr)
+vector<unsigned int> KineBinningEdge2Edge::FindBin(vector<double> & xarr)
 {
-  vector<int> binarr;
-
+  assert(xarr.size() == fNDimensions);
+  vector<unsigned int> binarr;
+  binarr.reserve(fNDimensions);
+  for(unsigned int i = 0; i < fNDimensions; i++) {
+    double x = xarr[i];
+    binarr[i] = this->FindBin(x,i);
+  }
   return binarr;
+}
+//________________________________________________________________________________________
+unsigned int KineBinningEdge2Edge::Dimension(conv::KineVar_t kv) const
+{
+  map<conv::KineVar_t,unsigned int>::const_iterator it = fKineVar2Dim.find(kv);
+  assert(it != fKineVar2Dim.end());
+  int dimension = it->second;
+  return dimension;
 }
 //________________________________________________________________________________________
 
