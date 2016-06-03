@@ -20,6 +20,12 @@ double util::Baseline(conv::BeamConf_t b, conv::Detector_t d)
       if (d == conv::kdDUNEFD2ph) return conv::kLBNFTgt2DUNEFD;
   }
 
+  if(b == conv::kbBNB_FHC || b == conv::kbBNB_RHC) {
+      if (d == conv::kdSBND     ) return conv::kBNBTgt2SBND;
+      if (d == conv::kdSBNuBooNE) return conv::kBNBTgt2uBooNE;
+      if (d == conv::kdSBNICARUS) return conv::kBNBTgt2ICARUS;
+  }
+
   if(b == conv::kbJPARC_FHC || b == conv::kbJPARC_RHC) {
       if (d == conv::kdSuperK ) return conv::kJPARCTgt2SuperK;
       if (d == conv::kdHyperK ) return conv::kJPARCTgt2SuperK;
