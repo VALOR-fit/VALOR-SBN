@@ -222,7 +222,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
                   PhysParamId_t p = kFitParam[ip];
                   Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
                   if (util::ParamHasSplines(p)) {
-                    const TSpline * spl = fRFL->GetSpline(m,p,kb);
+                    const ROOT::Math::Interpolator * spl = fRFL->GetSpline(m,p,kb);
                     spl_as_int = reinterpret_cast<Long64_t>(spl);
                     
                   }
@@ -1717,7 +1717,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   bin.  bin2 = ir2;
                   splbin.bin2 = ir2;
                   double response = 1;
-                  const TSpline * spl = reinterpret_cast<TSpline*>(fRFPtr[imode][izone]->GetEntry(splbin));
+                  const ROOT::Math::Interpolator * spl = reinterpret_cast<ROOT::Math::Interpolator*>(fRFPtr[imode][izone]->GetEntry(splbin));
                   if (spl==util::DuneRFL::kNoSplineRequired) {
                     LOG("GenericSingleSampleFitModel",pERROR)
                       <<"Got no spline required for bin expecting spline."
@@ -1728,7 +1728,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                     response = spl->Eval(f);
                     if (response<0) {
                       LOG("GenericSingleSampleFitModel",pERROR)
-                       <<"Negative response from spline (OB) "<<spl->GetName()
+                       <<"Negative response from spline (OB) "//<<spl->GetName()
                        <<" evaluated at "<<f<<" with result "<<response
                        <<". Using 0 instead.";
                       response = 0;
@@ -1838,7 +1838,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   sbin.bin2 = irsb2;
                   kp.reco2 = (reco2_bin_edges_sb[irsb2]+reco2_bin_edges_sb[irsb2+1])/2;
                   util::KinematicBin kb = fRFL->GetBin(kp,m);
-                  const TSpline * spl = fRFL->GetSpline(m,p,kb);
+                  const ROOT::Math::Interpolator * spl = fRFL->GetSpline(m,p,kb);
                   if (spl==util::DuneRFL::kNoSplineRequired) {
                     LOG("GenericSingleSampleFitModel",pERROR)
                       <<"Got no spline required for simple bin expecting spline."
@@ -1848,7 +1848,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   double response = spl->Eval(f);
                   if (response<0) {
                     LOG("GenericSingleSampleFitModel",pERROR)
-                     <<"Negative response from spline (SB) "<<spl->GetName()
+                     <<"Negative response from spline (SB) "//<<spl->GetName()
                      <<" evaluated at "<<f<<" with result "<<response
                      <<". Using 0 instead.";
                     response = 0;

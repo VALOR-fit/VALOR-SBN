@@ -24,7 +24,8 @@
 
 #include <iostream>
 
-#include <TSpline.h>
+#include "TSpline.h"
+#include "Math/Interpolator.h"
 
 // FMWK
 #include "valor/Conventions/Constants.h"
@@ -51,15 +52,15 @@ public:
  ~DuneRFL();
 
   // Define a dummy spline pointer to an object we know, so we can use its address as a special argument.
-  static const TSpline * kNoSplineRequired;
+  static const ROOT::Math::Interpolator * kNoSplineRequired;
 
   // And a flat spline object
-  static const TSpline * kFlatSpline; //A flat spline that we'll use if we're missing RFs in testing versions
+  static const ROOT::Math::Interpolator * kFlatSpline; //A flat spline that we'll use if we're missing RFs in testing versions
   
   void Print(std::ostream & stream) const;
   friend std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
   
-  const TSpline * GetSpline(
+  const ROOT::Math::Interpolator * GetSpline(
     conv::ReacMode_t m, conv::PhysParamId_t p,
     const util::KinematicBin & kb ) const;
     
@@ -83,7 +84,7 @@ private:
   // Actual response function block
   // This is a vector, with one entry per SingleSampleModel specified.
   // Each entry be a big block, with dimensions [conv::kNReacModes][NFitParams][NBinsTrue1][NBinsTrue2][NBinsTrue3][NBinsObs1][NBinsObs2][NBinsObs3]
-  const TSpline ** fSplines;
+  const ROOT::Math::Interpolator ** fSplines;
   UInt_t    fSplineBlockSize;
   
   // The spline indices

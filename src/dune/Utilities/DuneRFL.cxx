@@ -34,10 +34,10 @@ using namespace valor::util;
 
 // Initialise the flat spline
 static Double_t flat_knots_y[5] = {  1,  1, 1, 1,  1};
-const TSpline * valor::util::DuneRFL::kFlatSpline = new TSpline3("flat_spline",-100,100,flat_knots_y,5);
+const ROOT::Math::Interpolator* valor::util::DuneRFL::kFlatSpline = util::ConvertTSplineToGSL(TSpline3("flat_spline",-100,100,flat_knots_y,5));
 
 // We'll never use this address to dereference - it can be passed as a flag indicating that no spline should exist.
-const TSpline * valor::util::DuneRFL::kNoSplineRequired = (TSpline*)&conv::kBadResult;
+const ROOT::Math::Interpolator* valor::util::DuneRFL::kNoSplineRequired = (ROOT::Math::Interpolator*)&conv::kBadResult;
 
 //________________________________________________________________________________________
 namespace valor {
@@ -130,7 +130,7 @@ void valor::util::DuneRFL::Print(ostream & stream) const
   stream << "[response functions]" << endl;
 }
 //________________________________________________________________________________________
-const TSpline * valor::util::DuneRFL::GetSpline (
+const ROOT::Math::Interpolator* valor::util::DuneRFL::GetSpline (
   conv::ReacMode_t m, conv::PhysParamId_t p,
   const KinematicBin & kb) const
 {
@@ -193,7 +193,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
    <<std::setw(7)<<fNBinsReco2<<" other recovar bins.\n"
    <<std::setw(7)<<fSplineBlockSize<<" maximum.";
     
-  fSplines = new const TSpline*[fSplineBlockSize]();
+  fSplines = new const ROOT::Math::Interpolator*[fSplineBlockSize]();
 
   TString ts_file = config_file.c_str();
   gSystem->ExpandPathName(ts_file);
@@ -303,7 +303,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                         spline_obj = spline_file->Get(spl_name.Data());
                         if (spline_obj) {break;}
                       }
-                      TSpline * spline = dynamic_cast<TSpline*>(spline_obj);
+                      TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
                       if (spline) {
                         if (util::SplineIsFlat(spline)) {
                           delete spline;
@@ -318,7 +318,8 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                           n_splines_read++;
                         }
                         else {
-                          fSplines[spline_index] = spline;
+                          fSplines[spline_index] = util::ConvertTSplineToGSL(*spline);
+                          delete spline;
                           n_splines_read++;
                         }
                       }
