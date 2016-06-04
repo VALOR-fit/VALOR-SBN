@@ -26,7 +26,7 @@
 // NOTE: Do not remove this, unless you also make sure that all functions defined
 // here handle all samples currently installed in the fit. Last I looked they weren't.
 #define _use_single_zone_optimized_binning_scheme_v1_ 
-//#define _use_single_zone_optimized_binning_scheme_v2_ 
+//~ #define _use_single_zone_optimized_binning_scheme_v2_ 
 
 #include "dune/Conventions/KineVar.h"
 #include "dune/Conventions/ReacMode.h"
@@ -190,18 +190,18 @@ static const double kErecoBinEdgesSb [kNErecoBinsSb+1] =
   20.0, kErecoMax
 };
 
-static const int kNYrecoBinsCCSb = 6;
+static const int kNYrecoBinsCCSb = 8;
 static const int kNYrecoBinsNCSb = 1;
 
 // yreco binning for CC QE-like samples
 static const double kYrecoBinEdgesQELikeSb [kNYrecoBinsCCSb+1] =
 {
-   0.000, 0.010, 0.020, 0.040, 0.070, 0.200, 1.000 
+  0.00, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.00
 };
 // yreco binning for other CC samples
 static const double kYrecoBinEdgesMiscSb [kNYrecoBinsCCSb+1] =
 {
-   0.000, 0.050, 0.100, 0.200, 0.400, 0.600, 1.000 
+  0.00, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 1.00
 };
 // yreco binning for NC samples - yreco not defined so use [0,1]
 static const double kYrecoBinEdgesNCSb [kNYrecoBinsNCSb+1] =
@@ -232,9 +232,16 @@ static const int kNMaxBinZones     = 1;
 static const int kNErecoBinsOb1Z   = 5;
 static const int kNYrecoBinsCCOb1Z = 1;
 static const int kNYrecoBinsNCOb1Z = 1;
-static const double kErecoBinEdgesOb1Z[kNErecoBinsOb1Z+1] = { kErecoMin, 1.4, 3.0, 5.0, 10.0, kErecoMax };
+static const double kErecoBinEdgesOb1Z  [kNErecoBinsOb1Z  +1] = { kErecoMin, 1.4, 3.0, 5.0, 10.0, kErecoMax };
 static const double kYrecoBinEdgesCCOb1Z[kNYrecoBinsCCOb1Z+1] = { kYrecoMin, kYrecoMax };
 static const double kYrecoBinEdgesNCOb1Z[kNYrecoBinsNCOb1Z+1] = { kYrecoMin, kYrecoMax };
+
+static const int kNErecoBinsOb1ZXsec   = 5;
+static const int kNYrecoBinsCCOb1ZXsec = 1;
+static const int kNYrecoBinsNCOb1ZXsec = 1;
+static const double kErecoBinEdgesOb1ZXsec  [kNErecoBinsOb1ZXsec  +1] = { kErecoMin, 1.4, 3.0, 5.0, 10.0, kErecoMax };
+static const double kYrecoBinEdgesCCOb1ZXsec[kNYrecoBinsCCOb1ZXsec+1] = { kYrecoMin, kYrecoMax };
+static const double kYrecoBinEdgesNCOb1ZXsec[kNYrecoBinsNCOb1ZXsec+1] = { kYrecoMin, kYrecoMax };
 
 
 #elif defined (_use_single_zone_optimized_binning_scheme_v2_)
@@ -243,9 +250,16 @@ static const int kNMaxBinZones     = 1;
 static const int kNErecoBinsOb1Z   = 10;
 static const int kNYrecoBinsCCOb1Z =  8;
 static const int kNYrecoBinsNCOb1Z =  1;
-static const double kErecoBinEdgesOb1Z[kNErecoBinsOb1Z+1] = { kErecoMin, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 7.5, 10.0, 15.0, kErecoMax  };
+static const double kErecoBinEdgesOb1Z  [kNErecoBinsOb1Z  +1] = { kErecoMin, 1.0, 1.4, 2.0, 3.0, 4.0, 5.0, 7.0, 10.0, 15.0, kErecoMax  };
 static const double kYrecoBinEdgesCCOb1Z[kNYrecoBinsCCOb1Z+1] = { kYrecoMin, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 0.7, kYrecoMax };
 static const double kYrecoBinEdgesNCOb1Z[kNYrecoBinsNCOb1Z+1] = { kYrecoMin, kYrecoMax };
+
+static const int kNErecoBinsOb1ZXsec   = 5;
+static const int kNYrecoBinsCCOb1ZXsec = 1;
+static const int kNYrecoBinsNCOb1ZXsec = 1;
+static const double kErecoBinEdgesOb1ZXsec  [kNErecoBinsOb1ZXsec  +1] = { kErecoMin, 1.4, 3.0, 5.0, 10.0, kErecoMax };
+static const double kYrecoBinEdgesCCOb1ZXsec[kNYrecoBinsCCOb1ZXsec+1] = { kYrecoMin, kYrecoMax };
+static const double kYrecoBinEdgesNCOb1ZXsec[kNYrecoBinsNCOb1ZXsec+1] = { kYrecoMin, kYrecoMax };
 
 #else
 
@@ -341,25 +355,6 @@ static const double kYrecoBinEdgesCCoth[kNErecoZonesCCoth][kNYrecoBinsCCoth+1] =
     //zone 3 in Ev_reco
     {0,  0.0942,  0.197,  0.317,  0.466,  0.702,  1}
   };
-
-// 
-// Simple, unoptimized binning in (Ereco,yreco) space 
-//
-static const int kNErecoBinsSimple = 38;
-static const double kErecoBinEdgesSimple[kNErecoBinsSimple+1] = 
-{
-    0.000,  0.400, 
-    0.800,  1.000,  1.200,  1.400,  1.600,  1.800,  1.900,  2.000,  2.100,  2.200,  
-    2.300,  2.400,  2.500,  2.600,  2.700,  2.800,  2.900,  3.000,  3.100,  3.200,  
-    3.300,  3.400,  3.600,  3.800,  4.000,  4.200,  4.400,  4.600,  5.000,
-    6.000,  7.000,  8.000,  9.000, 10.000, 15.000, 20.000, 50.000
-};
-static const int kNYrecoBinsSimple = 10;
-static const double kYrecoBinEdgesSimple[kNYrecoBinsSimple+1] = 
-{
-    0.000,  0.100,  0.200,  0.300,  0.400,  0.500,  0.600,  0.700,  0.800,  0.900,
-    1.000
-};
 
 #endif // _use_single_zone_optimized_binning_scheme_...
 

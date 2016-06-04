@@ -430,21 +430,61 @@ const double * util::Q2trueBinEdgesXsec(conv::Sample_t sample, conv::ReacMode_t 
 //________________________________________________________________________________________
 int util::NumErecoBinsXsec  (conv::Sample_t sample, int zone)
 {
-  return util::NumErecoBins(sample,zone);
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+   LOG("KBin",pDEBUG) 
+     << "Getting # Ereco xsec bins for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
+
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+  return kNErecoBinsOb1ZXsec;
+#else
+  return 0;
+#endif
 }
 //________________________________________________________________________________________
 const double * util::ErecoBinEdgesXsec (conv::Sample_t sample, int zone)
 {
-  return util::ErecoBinEdges(sample,zone);
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+   LOG("KBin",pDEBUG) 
+     << "Getting Ereco xsec bin edges for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
+
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+  return kErecoBinEdgesOb1ZXsec;
+#else
+  return 0;
+#endif
 }
 //________________________________________________________________________________________
 int util::NumYrecoBinsXsec  (conv::Sample_t sample, int zone)
 {
-  return util::NumYrecoBins(sample,zone);
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+   LOG("KBin",pDEBUG) 
+     << "Getting # yreco xsec bins for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
+
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+  if      (util::IsCC(sample)) return kNYrecoBinsCCOb1ZXsec;
+  else if (util::IsNC(sample)) return kNYrecoBinsNCOb1ZXsec;
+  else                         return 0;
+#else
+  return 0;
+#endif
 }
 //________________________________________________________________________________________
 const double * util::YrecoBinEdgesXsec (conv::Sample_t sample, int zone)
 {
-  return util::YrecoBinEdges(sample,zone);
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+   LOG("KBin",pDEBUG) 
+     << "Getting yreco xsec bin edges for sample " << util::AsString(s) << ", zone = " << zone;
+#endif
+
+#if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
+  if      (util::IsCC(sample)) return kYrecoBinEdgesCCOb1ZXsec;
+  else if (util::IsNC(sample)) return kYrecoBinEdgesNCOb1ZXsec;
+  else                         return 0;
+#else
+  return 0;
+#endif
 }
 //________________________________________________________________________________________
