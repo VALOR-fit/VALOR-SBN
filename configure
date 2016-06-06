@@ -18,6 +18,8 @@ if(($match = grep(/--help/i, @ARGV)) > 0) {
   print "\n enable/disable options with either --enable- or --disable- (eg --enable-lhapdf --disable-flux-drivers)\n\n";
   print "    debug               Adds -g in the compiler options to request debug info         default: disabled \n";
   print "    low-level-messages  Turns on error logging in speed-critical areas.               default: disabled \n";
+  print "    third-pass-through  Defines selections, etc. for the 3rd pass through.            default: enabled \n";
+  print "    dune-far-detector   Includes DUNE far detector.                                   default: enabled \n";
   print "\n options for 3rd party software, prefix with --with- (eg --with-lhapdf-lib=/some/path/)\n\n";
   print "    compiler          Compiler to use (any of clang,g++)                          default: use what the framework uses \n";
   print "    optimiz-level     Compiler optimization (any of O,O2,O3,OO,Os)                default: O2 \n";
@@ -109,6 +111,8 @@ if(($match = grep(/--prefix/i, @ARGV)) > 0) {
 #
 my $opt_enable_debug              = "NO";
 my $opt_enable_low_level_messages = "NO";
+my $opt_enable_third_pass_through = "YES";
+my $opt_enable_dune_far_detector  = "YES";
 
 # Check configure's command line arguments for non-default values
 #
@@ -119,6 +123,8 @@ if($opt_enable_debug eq "YES") { $opt_with_cxx_debug_flag = "-g"; }
 
 
 if(($match = grep(/--enable-low-level-messages/i, @ARGV)) > 0) { $opt_enable_low_level_messages = "YES"; }
+if(($match = grep(/--disable-third-pass-through/i, @ARGV))> 0) { $opt_enable_third_pass_through = "NO"; }
+if(($match = grep(/--disable-dune-far-detector/i, @ARGV)) > 0) { $opt_enable_dune_far_detector  = "NO"; }
 
 
 # Check compiler optimization level
@@ -244,6 +250,14 @@ print BLD_HEADER_FILE " */ \n\n\n\n";
 
 if ($opt_enable_low_level_messages eq "YES") {
   print BLD_HEADER_FILE "#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED\n\n";
+}
+
+if ($opt_enable_third_pass_through eq "YES") {
+  print BLD_HEADER_FILE "#define VALOR_DUNE_THIRD_PASS_THROUGH\n\n";
+}
+
+if ($opt_enable_dune_far_detector eq "YES") {
+  print BLD_HEADER_FILE "#define VALOR_DUNE_FAR_DETECTOR\n\n";
 }
 
 print BLD_HEADER_FILE "\n\n#endif //_VALOR_DUNE_BUILD_H_ \n\n";
