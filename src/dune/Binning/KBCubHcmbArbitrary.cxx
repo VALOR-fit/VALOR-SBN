@@ -8,52 +8,52 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Messenger/Messenger.h"
 #include "valor/VArray/VALORArray.h"
-#include "dune/Binning/KBCuboidHoneycombEdge2Edge.h"
-#include "dune/Binning/KBCuboidHoneycombNonEdge2Edge.h"
+#include "dune/Binning/KBCubHcmbEdge2Edge.h"
+#include "dune/Binning/KBCubHcmbArbitrary.h"
 
 using namespace valor;
 
 //________________________________________________________________________________________
-KBCuboidHoneycombNonEdge2Edge::KBCuboidHoneycombNonEdge2Edge() :
+KBCubHcmbArbitrary::KBCubHcmbArbitrary() :
 TNamed()
 {
 
 }
 //________________________________________________________________________________________
-KBCuboidHoneycombNonEdge2Edge::KBCuboidHoneycombNonEdge2Edge(
+KBCubHcmbArbitrary::KBCubHcmbArbitrary(
   string name, string title, conv::KineSpace_t ksp) :
 TNamed(name.c_str(), title.c_str())
 {
 
 }
 //________________________________________________________________________________________
-KBCuboidHoneycombNonEdge2Edge::~KBCuboidHoneycombNonEdge2Edge() 
+KBCubHcmbArbitrary::~KBCubHcmbArbitrary() 
 {
 
 }
 //________________________________________________________________________________________
-bool KBCuboidHoneycombNonEdge2Edge::Read(string file)
+bool KBCubHcmbArbitrary::Read(string file)
 {
   return false;
 }
 //________________________________________________________________________________________
-int KBCuboidHoneycombNonEdge2Edge::NBins(void) const
+int KBCubHcmbArbitrary::NBins(void) const
 {
   return 0;
 }
 //________________________________________________________________________________________
-int KBCuboidHoneycombNonEdge2Edge::FindBin(vector<double> & xarr)
+int KBCubHcmbArbitrary::FindBin(vector<double> & xarr)
 {
   return -1;
 }
 //________________________________________________________________________________________
-void KBCuboidHoneycombNonEdge2Edge::AlternativeEdge2EdgeBinning(
-  const KBCuboidHoneycombEdge2Edge * kbe2e)
+void KBCubHcmbArbitrary::UseEdge2EdgeBinning(
+  const KBCubHcmbEdge2Edge * kbe2e)
 {
   fKBE2E = kbe2e;
 }
 //________________________________________________________________________________________
-int KBCuboidHoneycombNonEdge2Edge::BinMapping(vector<int> & bin_in_alt_simple_scheme)
+int KBCubHcmbArbitrary::BinMapping(vector<int> & bin_in_alt_simple_scheme)
 {
   return -1;
 }

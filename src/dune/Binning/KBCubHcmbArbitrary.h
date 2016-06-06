@@ -1,7 +1,7 @@
 //____________________________________________________________________________ 
 /*!
 
-\class     valor::KBCuboidHoneycombNonEdge2Edge
+\class     valor::KBCubHcmbArbitrary
 
 \brief     Linearized multi-dimensional kinematical binning 
 
@@ -29,14 +29,14 @@
 
 namespace valor {
 
-class KBCuboidHoneycombEdge2Edge;
+class KBCubHcmbEdge2Edge;
 
-class KBCuboidHoneycombNonEdge2Edge: public TNamed
+class KBCubHcmbArbitrary: public TNamed
 {
 public:
-  KBCuboidHoneycombNonEdge2Edge();
-  KBCuboidHoneycombNonEdge2Edge(string name, string title, conv::KineSpace_t ksp);
-  virtual ~KBCuboidHoneycombNonEdge2Edge();
+  KBCubHcmbArbitrary();
+  KBCubHcmbArbitrary(string name, string title, conv::KineSpace_t ksp);
+  virtual ~KBCubHcmbArbitrary();
 
   // Read binning from file
   bool Read(string file);
@@ -50,12 +50,12 @@ public:
   // An alternative simple binning of the same kinematical space.
   // If given, a mapping will be worked out between the `simple' and `linearized' binning schemes
 
-  void AlternativeEdge2EdgeBinning(const KBCuboidHoneycombEdge2Edge * alt_simple_scheme);
+  void UseEdge2EdgeBinning(const KBCubHcmbEdge2Edge * kbe2e);
   int BinMapping (vector<int> & bin_in_alt_simple_scheme);
 
 protected:
 
-  const KBCuboidHoneycombEdge2Edge * fKBE2E;
+  const KBCubHcmbEdge2Edge * fKBE2E;
 };
 
 } // valor

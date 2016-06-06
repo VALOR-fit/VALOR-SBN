@@ -7,7 +7,7 @@
 #pragma link C++ namespace valor;
 #pragma link C++ namespace valor::conv;
 
-#pragma link C++ class valor::KBCuboidHoneycombEdge2Edge
-#pragma link C++ class valor::KBCuboidHoneycombNonEdge2Edge
+#pragma link C++ class valor::KBCubHcmbEdge2Edge
+#pragma link C++ class valor::KBCubHcmbArbitrary
 
 #endif

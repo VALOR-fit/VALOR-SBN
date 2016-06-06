@@ -16,12 +16,12 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/VArray/VALORArray.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Env.h"
-#include "dune/Binning/KBCuboidHoneycombEdge2Edge.h"
+#include "dune/Binning/KBCubHcmbEdge2Edge.h"
 
 using namespace valor;
 
 //________________________________________________________________________________________
-KBCuboidHoneycombEdge2Edge::KBCuboidHoneycombEdge2Edge() :
+KBCubHcmbEdge2Edge::KBCubHcmbEdge2Edge() :
 TNamed()
 {
   fKineSpace   = conv::kspUndefined;
@@ -30,7 +30,7 @@ TNamed()
   fBinEdges.clear();
 }
 //________________________________________________________________________________________
-KBCuboidHoneycombEdge2Edge::KBCuboidHoneycombEdge2Edge(
+KBCubHcmbEdge2Edge::KBCubHcmbEdge2Edge(
   string name, string title, conv::KineSpace_t ksp) :
 TNamed(name.c_str(), title.c_str())
 {
@@ -43,12 +43,12 @@ TNamed(name.c_str(), title.c_str())
   }
 }
 //________________________________________________________________________________________
-KBCuboidHoneycombEdge2Edge::~KBCuboidHoneycombEdge2Edge() 
+KBCubHcmbEdge2Edge::~KBCubHcmbEdge2Edge() 
 {
 
 }
 //________________________________________________________________________________________
-bool KBCuboidHoneycombEdge2Edge::Read(string file)
+bool KBCubHcmbEdge2Edge::Read(string file)
 {
   TString ts_file = file.c_str();
   gSystem->ExpandPathName(ts_file);
@@ -149,53 +149,53 @@ bool KBCuboidHoneycombEdge2Edge::Read(string file)
   return true;
 }
 //________________________________________________________________________________________
-unsigned int KBCuboidHoneycombEdge2Edge::NBins(unsigned int dimension) const
+unsigned int KBCubHcmbEdge2Edge::NBins(unsigned int dimension) const
 {
   return (fBinEdges[dimension]->GetSize() - 1);
 }
 //________________________________________________________________________________________
-unsigned int KBCuboidHoneycombEdge2Edge::NBins(conv::KineVar_t kv) const
+unsigned int KBCubHcmbEdge2Edge::NBins(conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->NBins(dimension);
 }
 //________________________________________________________________________________________
-const double * KBCuboidHoneycombEdge2Edge::BinEdgeArr(unsigned int dimension) const
+const double * KBCubHcmbEdge2Edge::BinEdgeArr(unsigned int dimension) const
 {
   return fBinEdges[dimension]->GetArray();
 }
 //________________________________________________________________________________________
-const double * KBCuboidHoneycombEdge2Edge::BinEdgeArr(conv::KineVar_t kv) const
+const double * KBCubHcmbEdge2Edge::BinEdgeArr(conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->BinEdgeArr(dimension);
 }
 //________________________________________________________________________________________
-const VALORArray * KBCuboidHoneycombEdge2Edge::BinEdgeVArr(unsigned int dimension) const
+const VALORArray * KBCubHcmbEdge2Edge::BinEdgeVArr(unsigned int dimension) const
 {
   return fBinEdges[dimension];
 }
 //________________________________________________________________________________________
-const VALORArray * KBCuboidHoneycombEdge2Edge::BinEdgeVArr(conv::KineVar_t kv) const
+const VALORArray * KBCubHcmbEdge2Edge::BinEdgeVArr(conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->BinEdgeVArr(dimension);
 }
 //________________________________________________________________________________________
-unsigned int KBCuboidHoneycombEdge2Edge::FindBin(double x, unsigned int dimension)
+unsigned int KBCubHcmbEdge2Edge::FindBin(double x, unsigned int dimension)
 {
   unsigned int n = 1 + this->NBins(dimension);
   const double * arr = this->BinEdgeArr(dimension);
   return TMath::BinarySearch(n,arr,x);
 }
 //________________________________________________________________________________________
-unsigned int KBCuboidHoneycombEdge2Edge::FindBin(double x, conv::KineVar_t kv)
+unsigned int KBCubHcmbEdge2Edge::FindBin(double x, conv::KineVar_t kv)
 {
   unsigned int dimension = this->Dimension(kv);
   return this->FindBin(x,dimension);
 }
 //________________________________________________________________________________________
-vector<unsigned int> KBCuboidHoneycombEdge2Edge::FindBin(vector<double> & xarr)
+vector<unsigned int> KBCubHcmbEdge2Edge::FindBin(vector<double> & xarr)
 {
   assert(xarr.size() == fNDimensions);
   vector<unsigned int> binarr;
@@ -207,7 +207,7 @@ vector<unsigned int> KBCuboidHoneycombEdge2Edge::FindBin(vector<double> & xarr)
   return binarr;
 }
 //________________________________________________________________________________________
-unsigned int KBCuboidHoneycombEdge2Edge::Dimension(conv::KineVar_t kv) const
+unsigned int KBCubHcmbEdge2Edge::Dimension(conv::KineVar_t kv) const
 {
   map<conv::KineVar_t,unsigned int>::const_iterator it = fKineVar2Dim.find(kv);
   assert(it != fKineVar2Dim.end());
