@@ -91,6 +91,26 @@ endif
 LOG_INCLUDES  := -I$(LOG_INC_DIR)
 LOG_LIBRARIES := -L$(LOG_LIB_DIR) -llog4cpp
 
+
+
+#-------------------------------------------------------------------
+#                             GSL
+#-------------------------------------------------------------------
+
+# GSL libraries and headers
+
+ifeq ($(strip $(OPT_WITH_GSL_INC)),undefined)
+  GSL_INCLUDES  := -I$(OPT_WITH_GSL_INC)
+else
+  GSL_INCLUDES  := 
+endif
+
+ifeq ($(strip $(OPT_WITH_GSL_LIB)),undefined)
+  GSL_LIBRARIES  := -L$(OPT_WITH_GSL_LIB)
+else
+  GSL_LIBRARIES  := 
+endif
+
 #-------------------------------------------------------------------
 #                   PROFILING / DEBUGING OPTIONS
 #-------------------------------------------------------------------
@@ -327,6 +347,7 @@ INCLUDES  := $(VALOR_APP_INCLUDES) \
              $(VALOR_FMWK_INCLUDES) \
              $(LOG_INCLUDES) \
              $(ROOT_INCLUDES) \
+             $(GSL_INCLUDES) \
              $(LINUX_SYS_INCLUDES)
 
 LIBRARIES := $(SYSLIBS) \
@@ -334,6 +355,7 @@ LIBRARIES := $(SYSLIBS) \
              $(VALOR_FMWK_LIBRARIES) \
              $(LOG_LIBRARIES) \
              $(ROOT_LIBRARIES) \
+             $(GSL_LIBRARIES) \
              $(GPROF_LIBRARIES) \
              $(OPT_WITH_MISC_LIBS)
              
