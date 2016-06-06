@@ -101,23 +101,57 @@ int util::NumYrecoBinsSb(Sample_t s)
    LOG("KBin",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s);
 
+   if      (util::IsCC(s)) return kNYrecoBinsCCSb;
+   else if (util::IsNC(s)) return kNYrecoBinsNCSb;
+   else                    return 0;
+
+   /*
   switch(s) 
   {
-    case (ksNuMuCC1trkQE  ) :
-    case (ksNuMuCC2trkQE  ) :
+    case (ksNuMuCC1trk0pi ) :
+    case (ksNuMuCC2trk0pi ) :
     case (ksNuMuCC1piC    ) :
     case (ksNuMuCC1pi0    ) :
     case (ksNuMuCC1piC1pi0) :
     case (ksNuMuCCoth     ) :
+#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
+    case (ksNuMuCCNtrk0pi ) :
+    case (ksNuMuCC3trkDelta):
+    case (ksNuMuCCWSgn0pi ) :   
+    case (ksNuMuCCWSgn1piC) :   
+    case (ksNuMuCCWSgn1pi0) :   
+    case (ksNuMuCCWSgnoth ) :   
+    case (ksNuECC0pi      ) : 
+    case (ksNuECC1piC     ) : 
+    case (ksNuECC1pi0     ) : 
+    case (ksNuECCoth      ) : 
+#else
     case (ksNuECC         ) : 
     case (ksNuMuCCWSgn    ) : 
+#endif
+#ifdef VALOR_DUNE_FAR_DETECTOR
+    case (ksNuMuCClow      ) :
+    case (ksNuMuCChigh     ) :
+    case (ksNuMuBarCClow   ) :
+    case (ksNuMuBarCChigh  ) :
+    case (ksNuECClow       ) :
+    case (ksNuECChigh      ) :
+    case (ksNuEBarCClow    ) :
+    case (ksNuEBarCChigh   ) :
+    case (ksNuTauCClow     ) :
+    case (ksNuTauCChigh    ) :
+    case (ksNuTauBarCClow  ) :
+    case (ksNuTauBarCChigh ) :
+#endif
       return kNYrecoBinsCCSb; 
       break;
-
-    case (ksNC            ) :
+#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
     case (ksNC1piC        ) :
     case (ksNC1pi0        ) :
     case (ksNCoth         ) :
+#else
+    case (ksNC            ) :
+#endif
       return kNYrecoBinsNCSb; 
       break;
 
@@ -126,6 +160,7 @@ int util::NumYrecoBinsSb(Sample_t s)
   }//s
 
   return 0;
+   */
 }
 //________________________________________________________________________________________
 const double * util::YrecoBinEdgesSb(Sample_t s)
@@ -133,10 +168,23 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
    LOG("KBin",pDEBUG) 
      << "Getting yreco bin edges (simple binning) for sample " << util::AsString(s);
 
+   if (util::IsCC(s))
+     {
+       if (util::IsELike(s))
+	 return kYrecoBinEdgesQELikeSb;
+       else
+	 return kYrecoBinEdgesMiscSb;
+     }
+   else if (util::IsNC(s)) 
+     return kYrecoBinEdgesNCSb;
+   else                    
+     return 0;
+   
+   /*
   switch(s) 
   {
-    case (ksNuMuCC1trkQE) : 
-    case (ksNuMuCC2trkQE) : 
+    case (ksNuMuCC1trk0pi) : 
+    case (ksNuMuCC2trk0pi) : 
     {
       return kYrecoBinEdgesQELikeSb; 
       break;
@@ -160,8 +208,9 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
     default: 
       return 0;
   }//s
-
+   
   return 0;
+   */
 }
 //________________________________________________________________________________________
 
@@ -188,7 +237,7 @@ int util::NumErecoBins(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trkQE) : 
+    case (ksNuMuCC1trk0pi) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNErecoBinsQELike[zone]; 
@@ -227,7 +276,7 @@ const double * util::ErecoBinEdges(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trkQE) : 
+    case (ksNuMuCC1trk0pi) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kErecoBinEdgesQELike[zone]; 
@@ -268,7 +317,7 @@ int util::NumYrecoBins(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trkQE) : 
+    case (ksNuMuCC1trk0pi) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNYrecoBinsQELike[zone]; 
@@ -309,7 +358,7 @@ const double * util::YrecoBinEdges(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trkQE) : 
+    case (ksNuMuCC1trk0pi) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kYrecoBinEdgesQELike[zone]; 

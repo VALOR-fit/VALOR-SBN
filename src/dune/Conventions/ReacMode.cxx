@@ -31,7 +31,6 @@ string util::AsString(ReacMode_t m)
     case (kmNuMuCCpiCpi0    ): return "numuCCpiCpi0"; break;         
     case (kmNuMuCCcoh       ): return "numuCCcoh";    break;       
     case (kmNuMuCCoth       ): return "numuCCoth";    break;        
-
 //  case (kmNuMuNCEL        ): return ""; break;        
 //  case (kmNuMuNCMEC       ): return ""; break;        
     case (kmNuMuNC1piC      ): return "numuNC1piC"; break;        
@@ -51,7 +50,6 @@ string util::AsString(ReacMode_t m)
     case (kmNuMuBarCCpiCpi0 ): return "numubarCCpiCpi0"; break;   
     case (kmNuMuBarCCcoh    ): return "numubarCCcoh";    break;      
     case (kmNuMuBarCCoth    ): return "numubarCCoth";    break;    
-
 //  case (kmNuMuBarNCEL     ): return ""; break;    
 //  case (kmNuMuBarNCMEC    ): return ""; break;    
     case (kmNuMuBarNC1piC   ): return "numubarNC1piC"; break;   
@@ -71,7 +69,6 @@ string util::AsString(ReacMode_t m)
     case (kmNuECCpiCpi0     ): return "nueCCpiCpi0"; break;  
     case (kmNuECCcoh        ): return "nueCCcoh";    break;  
     case (kmNuECCoth        ): return "nueCCoth";    break;    
-
 //  case (kmNuENCEL         ): return ""; break;    
 //  case (kmNuENCMEC        ): return ""; break;    
     case (kmNuENC1piC       ): return "nueNC1piC"; break;    
@@ -91,7 +88,6 @@ string util::AsString(ReacMode_t m)
     case (kmNuEBarCCpiCpi0  ): return "nuebarCCpiCpi0"; break;    
     case (kmNuEBarCCcoh     ): return "nuebarCCcoh";    break;    
     case (kmNuEBarCCoth     ): return "nuebarCCoth";    break;    
-
 //  case (kmNuEBarNCEL      ): return ""; break;   
 //  case (kmNuEBarNCMEC     ): return ""; break;    
     case (kmNuEBarNC1piC    ): return "nuebarNC1piC"; break;   
@@ -102,6 +98,88 @@ string util::AsString(ReacMode_t m)
     case (kmNuEBarNCcoh     ): return "nuebarNCcoh";  break;   
     case (kmNuEBarNCoth     ): return "nuebarNCoth";  break;     
 
+#ifdef VALOR_DUNE_FAR_DETECTOR
+  case (kmNuMuToNuECCQE        ): return "numutonueCCQE";     break;
+  case (kmNuMuToNuECCMEC       ): return "numutonueCCMEC";    break;        
+  case (kmNuMuToNuECC1piC      ): return "numutonueCC1piC";   break;        
+  case (kmNuMuToNuECC1pi0      ): return "numutonueCC1pi0";   break;        
+  case (kmNuMuToNuECC2piC      ): return "numutonueCC2piC";   break;        
+  case (kmNuMuToNuECC2pi0      ): return "numutonueCC2pi0";   break;        
+  case (kmNuMuToNuECCpiCpi0    ): return "numutonueCCpiCpi0"; break;         
+  case (kmNuMuToNuECCcoh       ): return "numutonueCCcoh";    break;       
+  case (kmNuMuToNuECCoth       ): return "numutonueCCoth";    break;        
+
+  case (kmNuMuToNuTauCCQE        ): return "numutonutauCCQE";     break;
+  case (kmNuMuToNuTauCCMEC       ): return "numutonutauCCMEC";    break;        
+  case (kmNuMuToNuTauCC1piC      ): return "numutonutauCC1piC";   break;        
+  case (kmNuMuToNuTauCC1pi0      ): return "numutonutauCC1pi0";   break;        
+  case (kmNuMuToNuTauCC2piC      ): return "numutonutauCC2piC";   break;        
+  case (kmNuMuToNuTauCC2pi0      ): return "numutonutauCC2pi0";   break;        
+  case (kmNuMuToNuTauCCpiCpi0    ): return "numutonutauCCpiCpi0"; break;         
+  case (kmNuMuToNuTauCCcoh       ): return "numutonutauCCcoh";    break;       
+  case (kmNuMuToNuTauCCoth       ): return "numutonutauCCoth";    break;        
+
+  case (kmNuEToNuMuCCQE         ): return "nuetonumuCCQE";     break;             
+  case (kmNuEToNuMuCCMEC        ): return "nuetonumuCCMEC";    break;         
+  case (kmNuEToNuMuCC1piC       ): return "nuetonumuCC1piC";   break; 
+  case (kmNuEToNuMuCC1pi0       ): return "nuetonumuCC1pi0";   break;    
+  case (kmNuEToNuMuCC2piC       ): return "nuetonumuCC2piC";   break;    
+  case (kmNuEToNuMuCC2pi0       ): return "nuetonumuCC2pi0";   break;    
+  case (kmNuEToNuMuCCpiCpi0     ): return "nuetonumuCCpiCpi0"; break;  
+  case (kmNuEToNuMuCCcoh        ): return "nuetonumuCCcoh";    break;  
+  case (kmNuEToNuMuCCoth        ): return "nuetonumuCCoth";    break;    
+
+  case (kmNuEToNuTauCCQE         ): return "nuetonutauCCQE";     break;             
+  case (kmNuEToNuTauCCMEC        ): return "nuetonutauCCMEC";    break;         
+  case (kmNuEToNuTauCC1piC       ): return "nuetonutauCC1piC";   break; 
+  case (kmNuEToNuTauCC1pi0       ): return "nuetonutauCC1pi0";   break;    
+  case (kmNuEToNuTauCC2piC       ): return "nuetonutauCC2piC";   break;    
+  case (kmNuEToNuTauCC2pi0       ): return "nuetonutauCC2pi0";   break;    
+  case (kmNuEToNuTauCCpiCpi0     ): return "nuetonutauCCpiCpi0"; break;  
+  case (kmNuEToNuTauCCcoh        ): return "nuetonutauCCcoh";    break;  
+  case (kmNuEToNuTauCCoth        ): return "nuetonutauCCoth";    break;    
+    
+  case (kmNuMuBarToNuEBarCCQE        ): return "numubartonuebarCCQE";     break;
+  case (kmNuMuBarToNuEBarCCMEC       ): return "numubartonuebarCCMEC";    break;        
+  case (kmNuMuBarToNuEBarCC1piC      ): return "numubartonuebarCC1piC";   break;        
+  case (kmNuMuBarToNuEBarCC1pi0      ): return "numubartonuebarCC1pi0";   break;        
+  case (kmNuMuBarToNuEBarCC2piC      ): return "numubartonuebarCC2piC";   break;        
+  case (kmNuMuBarToNuEBarCC2pi0      ): return "numubartonuebarCC2pi0";   break;        
+  case (kmNuMuBarToNuEBarCCpiCpi0    ): return "numubartonuebarCCpiCpi0"; break;         
+  case (kmNuMuBarToNuEBarCCcoh       ): return "numubartonuebarCCcoh";    break;       
+  case (kmNuMuBarToNuEBarCCoth       ): return "numubartonuebarCCoth";    break;        
+
+  case (kmNuMuBarToNuTauBarCCQE        ): return "numubartonutaubarCCQE";     break;
+  case (kmNuMuBarToNuTauBarCCMEC       ): return "numubartonutaubarCCMEC";    break;        
+  case (kmNuMuBarToNuTauBarCC1piC      ): return "numubartonutaubarCC1piC";   break;        
+  case (kmNuMuBarToNuTauBarCC1pi0      ): return "numubartonutaubarCC1pi0";   break;        
+  case (kmNuMuBarToNuTauBarCC2piC      ): return "numubartonutaubarCC2piC";   break;        
+  case (kmNuMuBarToNuTauBarCC2pi0      ): return "numubartonutaubarCC2pi0";   break;        
+  case (kmNuMuBarToNuTauBarCCpiCpi0    ): return "numubartonutaubarCCpiCpi0"; break;         
+  case (kmNuMuBarToNuTauBarCCcoh       ): return "numubartonutaubarCCcoh";    break;       
+  case (kmNuMuBarToNuTauBarCCoth       ): return "numubartonutaubarCCoth";    break;        
+
+  case (kmNuEBarToNuMuBarCCQE         ): return "nuebartonumubarCCQE";     break;             
+  case (kmNuEBarToNuMuBarCCMEC        ): return "nuebartonumubarCCMEC";    break;         
+  case (kmNuEBarToNuMuBarCC1piC       ): return "nuebartonumubarCC1piC";   break; 
+  case (kmNuEBarToNuMuBarCC1pi0       ): return "nuebartonumubarCC1pi0";   break;    
+  case (kmNuEBarToNuMuBarCC2piC       ): return "nuebartonumubarCC2piC";   break;    
+  case (kmNuEBarToNuMuBarCC2pi0       ): return "nuebartonumubarCC2pi0";   break;    
+  case (kmNuEBarToNuMuBarCCpiCpi0     ): return "nuebartonumubarCCpiCpi0"; break;  
+  case (kmNuEBarToNuMuBarCCcoh        ): return "nuebartonumubarCCcoh";    break;  
+  case (kmNuEBarToNuMuBarCCoth        ): return "nuebartonumubarCCoth";    break;    
+
+  case (kmNuEBarToNuTauBarCCQE         ): return "nuebartonutaubarCCQE";     break;             
+  case (kmNuEBarToNuTauBarCCMEC        ): return "nuebartonutaubarCCMEC";    break;         
+  case (kmNuEBarToNuTauBarCC1piC       ): return "nuebartonutaubarCC1piC";   break; 
+  case (kmNuEBarToNuTauBarCC1pi0       ): return "nuebartonutaubarCC1pi0";   break;    
+  case (kmNuEBarToNuTauBarCC2piC       ): return "nuebartonutaubarCC2piC";   break;    
+  case (kmNuEBarToNuTauBarCC2pi0       ): return "nuebartonutaubarCC2pi0";   break;    
+  case (kmNuEBarToNuTauBarCCpiCpi0     ): return "nuebartonutaubarCCpiCpi0"; break;  
+  case (kmNuEBarToNuTauBarCCcoh        ): return "nuebartonutaubarCCcoh";    break;  
+  case (kmNuEBarToNuTauBarCCoth        ): return "nuebartonutaubarCCoth";    break;    
+
+#endif
     case (kmOther           ): return "other";  break;     
     default                  : return "--"; 
   }
@@ -123,7 +201,6 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuMuCCpiCpi0    ): name = "#nu_{#mu} CC#pi^{#pm}#pi^{0}";     break;         
     case (kmNuMuCCcoh       ): name = "#nu_{#mu} CCcoh";                  break;       
     case (kmNuMuCCoth       ): name = "#nu_{#mu} CCoth";                  break;        
-
 //  case (kmNuMuNCEL        ): name = "";                                 break;        
 //  case (kmNuMuNCMEC       ): name = "";                                 break;        
     case (kmNuMuNC1piC      ): name = "#nu_{#mu} NC1#pi^{#pm}";           break;        
@@ -194,6 +271,89 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuEBarNCcoh     ): name = "#bar{#nu}_{e} NCcoh";              break;   
     case (kmNuEBarNCoth     ): name = "#bar{#nu}_{e} NCoth";              break;     
 
+#ifdef VALOR_DUNE_FAR_DETECTOR
+    case (kmNuMuToNuECCQE        ): name = "#nu_{#mu} #rightarrow #nu_{e} CCQE";                   break;
+    case (kmNuMuToNuECCMEC       ): name = "#nu_{#mu} #rightarrow #nu_{e} CCMEC";                  break;        
+    case (kmNuMuToNuECC1piC      ): name = "#nu_{#mu} #rightarrow #nu_{e} CC1#pi^{#pm}";           break;        
+    case (kmNuMuToNuECC1pi0      ): name = "#nu_{#mu} #rightarrow #nu_{e} CC1#pi^{0}";             break;        
+    case (kmNuMuToNuECC2piC      ): name = "#nu_{#mu} #rightarrow #nu_{e} CC2#pi^{#pm}";           break;        
+    case (kmNuMuToNuECC2pi0      ): name = "#nu_{#mu} #rightarrow #nu_{e} CC2#pi^{0}";             break;        
+    case (kmNuMuToNuECCpiCpi0    ): name = "#nu_{#mu} #rightarrow #nu_{e} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuMuToNuECCcoh       ): name = "#nu_{#mu} #rightarrow #nu_{e} CCcoh";                  break;       
+    case (kmNuMuToNuECCoth       ): name = "#nu_{#mu} #rightarrow #nu_{e} CCoth";                  break;        
+
+    case (kmNuMuToNuTauCCQE        ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CCQE";                   break;
+    case (kmNuMuToNuTauCCMEC       ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CCMEC";                  break;        
+    case (kmNuMuToNuTauCC1piC      ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CC1#pi^{#pm}";           break;        
+    case (kmNuMuToNuTauCC1pi0      ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CC1#pi^{0}";             break;        
+    case (kmNuMuToNuTauCC2piC      ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CC2#pi^{#pm}";           break;        
+    case (kmNuMuToNuTauCC2pi0      ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CC2#pi^{0}";             break;        
+    case (kmNuMuToNuTauCCpiCpi0    ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuMuToNuTauCCcoh       ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CCcoh";                  break;       
+    case (kmNuMuToNuTauCCoth       ): name = "#nu_{#mu} #rightarrow #nu_{#tau} CCoth";                  break;   
+
+    case (kmNuEToNuMuCCQE        ): name = "#nu_{e} #rightarrow #nu_{#mu} CCQE";                   break;
+    case (kmNuEToNuMuCCMEC       ): name = "#nu_{e} #rightarrow #nu_{#mu} CCMEC";                  break;        
+    case (kmNuEToNuMuCC1piC      ): name = "#nu_{e} #rightarrow #nu_{#mu} CC1#pi^{#pm}";           break;        
+    case (kmNuEToNuMuCC1pi0      ): name = "#nu_{e} #rightarrow #nu_{#mu} CC1#pi^{0}";             break;        
+    case (kmNuEToNuMuCC2piC      ): name = "#nu_{e} #rightarrow #nu_{#mu} CC2#pi^{#pm}";           break;        
+    case (kmNuEToNuMuCC2pi0      ): name = "#nu_{e} #rightarrow #nu_{#mu} CC2#pi^{0}";             break;        
+    case (kmNuEToNuMuCCpiCpi0    ): name = "#nu_{e} #rightarrow #nu_{#mu} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuEToNuMuCCcoh       ): name = "#nu_{e} #rightarrow #nu_{#mu} CCcoh";                  break;       
+    case (kmNuEToNuMuCCoth       ): name = "#nu_{e} #rightarrow #nu_{#mu} CCoth";                  break;             
+
+    case (kmNuEToNuTauCCQE        ): name = "#nu_{e} #rightarrow #nu_{#tau} CCQE";                   break;
+    case (kmNuEToNuTauCCMEC       ): name = "#nu_{e} #rightarrow #nu_{#tau} CCMEC";                  break;        
+    case (kmNuEToNuTauCC1piC      ): name = "#nu_{e} #rightarrow #nu_{#tau} CC1#pi^{#pm}";           break;        
+    case (kmNuEToNuTauCC1pi0      ): name = "#nu_{e} #rightarrow #nu_{#tau} CC1#pi^{0}";             break;        
+    case (kmNuEToNuTauCC2piC      ): name = "#nu_{e} #rightarrow #nu_{#tau} CC2#pi^{#pm}";           break;        
+    case (kmNuEToNuTauCC2pi0      ): name = "#nu_{e} #rightarrow #nu_{#tau} CC2#pi^{0}";             break;        
+    case (kmNuEToNuTauCCpiCpi0    ): name = "#nu_{e} #rightarrow #nu_{#tau} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuEToNuTauCCcoh       ): name = "#nu_{e} #rightarrow #nu_{#tau} CCcoh";                  break;       
+    case (kmNuEToNuTauCCoth       ): name = "#nu_{e} #rightarrow #nu_{#tau} CCoth";                  break;             
+
+    case (kmNuMuBarToNuEBarCCQE        ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CCQE";                   break;
+    case (kmNuMuBarToNuEBarCCMEC       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CCMEC";                  break;        
+    case (kmNuMuBarToNuEBarCC1piC      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC1#pi^{#pm}";           break;        
+    case (kmNuMuBarToNuEBarCC1pi0      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC1#pi^{0}";             break;        
+    case (kmNuMuBarToNuEBarCC2piC      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC2#pi^{#pm}";           break;        
+    case (kmNuMuBarToNuEBarCC2pi0      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC2#pi^{0}";             break;        
+    case (kmNuMuBarToNuEBarCCpiCpi0    ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuMuBarToNuEBarCCcoh       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CCcoh";                  break;       
+    case (kmNuMuBarToNuEBarCCoth       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CCoth";                  break;        
+
+    case (kmNuMuBarToNuTauBarCCQE        ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CCQE";                   break;
+    case (kmNuMuBarToNuTauBarCCMEC       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CCMEC";                  break;        
+    case (kmNuMuBarToNuTauBarCC1piC      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CC1#pi^{#pm}";           break;        
+    case (kmNuMuBarToNuTauBarCC1pi0      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CC1#pi^{0}";             break;        
+    case (kmNuMuBarToNuTauBarCC2piC      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CC2#pi^{#pm}";           break;        
+    case (kmNuMuBarToNuTauBarCC2pi0      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CC2#pi^{0}";             break;        
+    case (kmNuMuBarToNuTauBarCCpiCpi0    ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuMuBarToNuTauBarCCcoh       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CCcoh";                  break;       
+    case (kmNuMuBarToNuTauBarCCoth       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{#tau} CCoth";                  break;   
+
+    case (kmNuEBarToNuMuBarCCQE        ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CCQE";                   break;
+    case (kmNuEBarToNuMuBarCCMEC       ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CCMEC";                  break;        
+    case (kmNuEBarToNuMuBarCC1piC      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CC1#pi^{#pm}";           break;        
+    case (kmNuEBarToNuMuBarCC1pi0      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CC1#pi^{0}";             break;        
+    case (kmNuEBarToNuMuBarCC2piC      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CC2#pi^{#pm}";           break;        
+    case (kmNuEBarToNuMuBarCC2pi0      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CC2#pi^{0}";             break;        
+    case (kmNuEBarToNuMuBarCCpiCpi0    ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuEBarToNuMuBarCCcoh       ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CCcoh";                  break;       
+    case (kmNuEBarToNuMuBarCCoth       ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#mu} CCoth";                  break;             
+
+    case (kmNuEBarToNuTauBarCCQE        ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CCQE";                   break;
+    case (kmNuEBarToNuTauBarCCMEC       ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CCMEC";                  break;        
+    case (kmNuEBarToNuTauBarCC1piC      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CC1#pi^{#pm}";           break;        
+    case (kmNuEBarToNuTauBarCC1pi0      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CC1#pi^{0}";             break;        
+    case (kmNuEBarToNuTauBarCC2piC      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CC2#pi^{#pm}";           break;        
+    case (kmNuEBarToNuTauBarCC2pi0      ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CC2#pi^{0}";             break;        
+    case (kmNuEBarToNuTauBarCCpiCpi0    ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CC#pi^{#pm}#pi^{0}";     break;         
+    case (kmNuEBarToNuTauBarCCcoh       ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CCcoh";                  break;       
+    case (kmNuEBarToNuTauBarCCoth       ): name = "#bar{#nu}_{e} #rightarrow #bar{#nu}_{#tau} CCoth";                  break;  
+
+#endif
+
     case (kmOther           ): name = "Other";                            break;     
     default                  : name = "--"; 
   }
@@ -257,9 +417,98 @@ bool util::IsCC(conv::ReacMode_t m)
     case (kmNuEBarCCpiCpi0 )  : return true;
     case (kmNuEBarCCcoh    )  : return true;
     case (kmNuEBarCCoth    )  : return true;
-    
+#ifdef VALOR_DUNE_FAR_DETECTOR
+  case (kmNuMuToNuECCQE       )  : return true;
+  case (kmNuMuToNuECCMEC      )  : return true;
+  case (kmNuMuToNuECC1piC     )  : return true;
+  case (kmNuMuToNuECC1pi0     )  : return true;
+  case (kmNuMuToNuECC2piC     )  : return true;
+  case (kmNuMuToNuECC2pi0     )  : return true;
+  case (kmNuMuToNuECCpiCpi0   )  : return true;
+  case (kmNuMuToNuECCcoh      )  : return true;
+  case (kmNuMuToNuECCoth      )  : return true;
+  case (kmNuMuToNuTauCCQE       )  : return true;
+  case (kmNuMuToNuTauCCMEC      )  : return true;
+  case (kmNuMuToNuTauCC1piC     )  : return true;
+  case (kmNuMuToNuTauCC1pi0     )  : return true;
+  case (kmNuMuToNuTauCC2piC     )  : return true;
+  case (kmNuMuToNuTauCC2pi0     )  : return true;
+  case (kmNuMuToNuTauCCpiCpi0   )  : return true;
+  case (kmNuMuToNuTauCCcoh      )  : return true;
+  case (kmNuMuToNuTauCCoth      )  : return true;
+  case (kmNuEToNuMuCCQE       )  : return true;
+  case (kmNuEToNuMuCCMEC      )  : return true;
+  case (kmNuEToNuMuCC1piC     )  : return true;
+  case (kmNuEToNuMuCC1pi0     )  : return true;
+  case (kmNuEToNuMuCC2piC     )  : return true;
+  case (kmNuEToNuMuCC2pi0     )  : return true;
+  case (kmNuEToNuMuCCpiCpi0   )  : return true;
+  case (kmNuEToNuMuCCcoh      )  : return true;
+  case (kmNuEToNuMuCCoth      )  : return true;
+  case (kmNuEToNuTauCCQE       )  : return true;
+  case (kmNuEToNuTauCCMEC      )  : return true;
+  case (kmNuEToNuTauCC1piC     )  : return true;
+  case (kmNuEToNuTauCC1pi0     )  : return true;
+  case (kmNuEToNuTauCC2piC     )  : return true;
+  case (kmNuEToNuTauCC2pi0     )  : return true;
+  case (kmNuEToNuTauCCpiCpi0   )  : return true;
+  case (kmNuEToNuTauCCcoh      )  : return true;
+  case (kmNuEToNuTauCCoth      )  : return true;
+  case (kmNuMuBarToNuEBarCCQE       )  : return true;
+  case (kmNuMuBarToNuEBarCCMEC      )  : return true;
+  case (kmNuMuBarToNuEBarCC1piC     )  : return true;
+  case (kmNuMuBarToNuEBarCC1pi0     )  : return true;
+  case (kmNuMuBarToNuEBarCC2piC     )  : return true;
+  case (kmNuMuBarToNuEBarCC2pi0     )  : return true;
+  case (kmNuMuBarToNuEBarCCpiCpi0   )  : return true;
+  case (kmNuMuBarToNuEBarCCcoh      )  : return true;
+  case (kmNuMuBarToNuEBarCCoth      )  : return true;
+  case (kmNuMuBarToNuTauBarCCQE       )  : return true;
+  case (kmNuMuBarToNuTauBarCCMEC      )  : return true;
+  case (kmNuMuBarToNuTauBarCC1piC     )  : return true;
+  case (kmNuMuBarToNuTauBarCC1pi0     )  : return true;
+  case (kmNuMuBarToNuTauBarCC2piC     )  : return true;
+  case (kmNuMuBarToNuTauBarCC2pi0     )  : return true;
+  case (kmNuMuBarToNuTauBarCCpiCpi0   )  : return true;
+  case (kmNuMuBarToNuTauBarCCcoh      )  : return true;
+  case (kmNuMuBarToNuTauBarCCoth      )  : return true;
+  case (kmNuEBarToNuMuBarCCQE       )  : return true;
+  case (kmNuEBarToNuMuBarCCMEC      )  : return true;
+  case (kmNuEBarToNuMuBarCC1piC     )  : return true;
+  case (kmNuEBarToNuMuBarCC1pi0     )  : return true;
+  case (kmNuEBarToNuMuBarCC2piC     )  : return true;
+  case (kmNuEBarToNuMuBarCC2pi0     )  : return true;
+  case (kmNuEBarToNuMuBarCCpiCpi0   )  : return true;
+  case (kmNuEBarToNuMuBarCCcoh      )  : return true;
+  case (kmNuEBarToNuMuBarCCoth      )  : return true;
+  case (kmNuEBarToNuTauBarCCQE       )  : return true;
+  case (kmNuEBarToNuTauBarCCMEC      )  : return true;
+  case (kmNuEBarToNuTauBarCC1piC     )  : return true;
+  case (kmNuEBarToNuTauBarCC1pi0     )  : return true;
+  case (kmNuEBarToNuTauBarCC2piC     )  : return true;
+  case (kmNuEBarToNuTauBarCC2pi0     )  : return true;
+  case (kmNuEBarToNuTauBarCCpiCpi0   )  : return true;
+  case (kmNuEBarToNuTauBarCCcoh      )  : return true;
+  case (kmNuEBarToNuTauBarCCoth      )  : return true;
+#endif    
     default                   : return false;
   }
+}
+//________________________________________________________________________________________
+ReacMode_t util::ReacModeFromInt(int s, int m)
+{
+  //Lorena - this class should contain any difference dependent on the sample
+  //for the moment, the only difference is the extra modes (oscillated) for the far detector
+
+#ifdef VALOR_DUNE_FAR_DETECTOR
+  if((!util::IsFar(int s))&&(m >(int) kmNuEBarNCoth))
+    {
+      return kmUndefined;
+    }
+  else 
+    return util::ReacModeFromInt(m);
+#endif
+  return util::ReacModeFromInt(m);
 }
 //________________________________________________________________________________________
 ReacMode_t util::ReacModeFromInt(int m)

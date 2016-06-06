@@ -140,8 +140,8 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisNormNC          ) : return "f_nc";                 break;
     case (kNuisRatioNuENuMu    ) : return "f_nuecc_numucc";       break;
 
-    case (kNuisEffNuMuCC1trkQE  ) : return "f_eff_numucc1trkqe";   break;
-    case (kNuisEffNuMuCC2trkQE  ) : return "f_eff_numucc2trkqe";   break;
+    case (kNuisEffNuMuCC1trk0pi ) : return "f_eff_numucc1trk0pi";  break;
+    case (kNuisEffNuMuCC2trk0pi ) : return "f_eff_numucc2trk0pi";  break;
     case (kNuisEffNuMuCC1piC    ) : return "f_eff_numucc1pic";     break;
     case (kNuisEffNuMuCC1pi0    ) : return "f_eff_numucc1pi0";     break;
     case (kNuisEffNuMuCC1piC1pi0) : return "f_eff_numucc1pic1pi0"; break;
@@ -323,8 +323,8 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisNormNC          ) : name = "f_{NC}";                                        break;
     case (kNuisRatioNuENuMu    ) : name = "f_{\\nu_{e}/\\nu_{\\mu}}";                      break;
     
-    case (kNuisEffNuMuCC1trkQE  ) : name = "f_{eff;\\nu_{\\mu}CC;1trkQE}";                 break;
-    case (kNuisEffNuMuCC2trkQE  ) : name = "f_{eff;\\nu_{\\mu}CC;2trkQE}";                 break;
+    case (kNuisEffNuMuCC1trk0pi ) : name = "f_{eff;\\nu_{\\mu}CC;1trk0pi}";                break;
+    case (kNuisEffNuMuCC2trk0pi ) : name = "f_{eff;\\nu_{\\mu}CC;2trk0pi}";                break;
     case (kNuisEffNuMuCC1piC    ) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{\\pm}}";           break;
     case (kNuisEffNuMuCC1pi0    ) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{0}}";              break;
     case (kNuisEffNuMuCC1piC1pi0) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{\\pm}1\\pi^{0}}";  break;

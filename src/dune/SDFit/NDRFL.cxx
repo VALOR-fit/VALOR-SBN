@@ -287,7 +287,7 @@ bool valor::NDRFL::Read(std::string config_file,Option_t * /*option*/)
       conv::Sample_t s = conv::kSample[ibeam][isample];
       if(s == conv::ksUndefined) continue;
       for(int imode = 0; imode < conv::kNReacModes; imode++) {
-        conv::ReacMode_t m = conv::kReactionModes[isample][imode];
+        conv::ReacMode_t m = util::ReacModeFromInt(isample,imode);
         if(m == conv::kmUndefined) continue;
         for (int ip = 0 ; ip < conv::kNFitParams ; ip++) {
           conv::PhysParamId_t p = conv::kFitParam[ip];

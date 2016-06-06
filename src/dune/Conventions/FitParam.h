@@ -170,8 +170,8 @@ static const PhysParamId_t kNuisRatioNuENuMu     = kNuis109;
 //
 // Detector systematics
 //
-static const PhysParamId_t kNuisEffNuMuCC1trkQE  = kNuis110;
-static const PhysParamId_t kNuisEffNuMuCC2trkQE  = kNuis111;
+static const PhysParamId_t kNuisEffNuMuCC1trk0pi = kNuis110;
+static const PhysParamId_t kNuisEffNuMuCC2trk0pi = kNuis111;
 static const PhysParamId_t kNuisEffNuMuCC1piC    = kNuis112;
 static const PhysParamId_t kNuisEffNuMuCC1pi0    = kNuis113;
 static const PhysParamId_t kNuisEffNuMuCC1piC1pi0= kNuis114;
@@ -241,7 +241,7 @@ static const PhysParamId_t kNuisFluxFirstParameter = kNuisFHCNuMuFlux00;
 static const PhysParamId_t kNuisFluxLastParameter  = kNuisRHCNuEBarFlux06;
 static const PhysParamId_t kNuisIntFirstParameter  = kNuisIntNuCCQE1;
 static const PhysParamId_t kNuisIntLastParameter   = kNuisIntHadronization;
-static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC1trkQE;
+static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC1trk0pi;
 static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
 
 
@@ -403,8 +403,8 @@ static const PhysParamId_t kFitParam[kNFitParams] =
    kNuisIntFracNucAbsorb         ,
    kNuisIntFracNucProduction     ,
    // Detector systematics
-   kNuisEffNuMuCC1trkQE,
-   kNuisEffNuMuCC2trkQE,
+   kNuisEffNuMuCC1trk0pi,
+   kNuisEffNuMuCC2trk0pi,
    kNuisEffNuMuCC1piC,
    kNuisEffNuMuCC1pi0,
    kNuisEffNuMuCC1piC1pi0,
@@ -574,8 +574,8 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    false,  // kNuisIntFracNucAbsorb
    false,  // kNuisIntFracNucProduction
    // Detector systematics
-   false,  // kNuisEffNuMuCC1trkQE
-   false,  // kNuisEffNuMuCC2trkQE
+   false,  // kNuisEffNuMuCC1trk0pi
+   false,  // kNuisEffNuMuCC2trk0pi
    false,  // kNuisEffNuMuCC1piC
    false,  // kNuisEffNuMuCC1pi0
    false,  // kNuisEffNuMuCC1piC1pi0
@@ -740,8 +740,8 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
    {  0.0 , kEtrueMax},  // kNuisIntFracNucAbsorb
    {  0.0 , kEtrueMax},  // kNuisIntFracNucProduction
    // Detector systematics
-   {  0.0, kEtrueMax},   // kNuisEffNuMuCC1trkQE
-   {  0.0, kEtrueMax},   // kNuisEffNuMuCC2trkQE
+   {  0.0, kEtrueMax},   // kNuisEffNuMuCC1trk0pi
+   {  0.0, kEtrueMax},   // kNuisEffNuMuCC2trk0pi
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1piC
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1pi0
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1piC1pi0
@@ -906,8 +906,8 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
    {  0.0 , kQ2trueMax},  // kNuisIntFracNucAbsorb
    {  0.0 , kQ2trueMax},  // kNuisIntFracNucProduction
    // Detector systematics
-   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1trkQE
-   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC2trkQE
+   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1trk0pi
+   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC2trk0pi
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1piC
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1pi0
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1piC1pi0
@@ -1076,8 +1076,8 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
    kpgXSec,            // kNuisIntFracNucAbsorb
    kpgXSec,            // kNuisIntFracNucProduction
    // Detector systematics
-   kpgDetector,        // kNuisEffNuMuCC1trkQE
-   kpgDetector,        // kNuisEffNuMuCC2trkQE
+   kpgDetector,        // kNuisEffNuMuCC1trk0pi
+   kpgDetector,        // kNuisEffNuMuCC2trk0pi
    kpgDetector,        // kNuisEffNuMuCC1piC
    kpgDetector,        // kNuisEffNuMuCC1pi0
    kpgDetector,        // kNuisEffNuMuCC1piC1pi0
@@ -1242,8 +1242,8 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
    false, // kNuisIntFracNucAbsorb
    false, // kNuisIntFracNucProduction
    // Detector systematics
-   false, // kNuisEffNuMuCC1trkQE
-   false, // kNuisEffNuMuCC2trkQE
+   false, // kNuisEffNuMuCC1trk0pi
+   false, // kNuisEffNuMuCC2trk0pi
    false, // kNuisEffNuMuCC1piC
    false, // kNuisEffNuMuCC1pi0
    false, // kNuisEffNuMuCC1piC1pi0
@@ -1408,8 +1408,8 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
    true, // kNuisIntFracNucAbsorb
    true, // kNuisIntFracNucProduction
    // Detector systematics
-   false, // kNuisEffNuMuCC1trkQE
-   false, // kNuisEffNuMuCC2trkQE
+   false, // kNuisEffNuMuCC1trk0pi
+   false, // kNuisEffNuMuCC2trk0pi
    false, // kNuisEffNuMuCC1piC
    false, // kNuisEffNuMuCC1pi0
    false, // kNuisEffNuMuCC1piC1pi0
@@ -1574,8 +1574,8 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
    false, // kNuisIntFracNucAbsorb
    false, // kNuisIntFracNucProduction
    // Detector systematics
-   true,  // kNuisEffNuMuCC1trkQE
-   true,  // kNuisEffNuMuCC2trkQE
+   true,  // kNuisEffNuMuCC1trk0pi
+   true,  // kNuisEffNuMuCC2trk0pi
    true,  // kNuisEffNuMuCC1piC
    true,  // kNuisEffNuMuCC1pi0
    true,  // kNuisEffNuMuCC1piC1pi0

@@ -151,7 +151,7 @@ int main(int argc, char ** argv)
 
   for(int itwk = 0; itwk < n_twks; itwk++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kReactionModes[isample][imode];
+      ReacMode_t m = util::ReacModeFromInt(isample,imode);
       if(m == kmUndefined) continue;
       const int n_y_reco_bins_sb  = util::NumYrecoBinsSb(sample);
       const int n_enu_true_bins   = util::NumEtrueBinsXsec(sample);
@@ -370,7 +370,7 @@ int main(int argc, char ** argv)
   int n_splines_written = 0;
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-    ReacMode_t m = kReactionModes[isample][imode];
+    ReacMode_t m = util::ReacModeFromInt(isample,imode);
     if(m == kmUndefined) continue;
     const int n_enu_reco_bins_sb = kNErecoBinsSb;    
     const int n_y_reco_bins_sb   = util::NumYrecoBinsSb(sample);

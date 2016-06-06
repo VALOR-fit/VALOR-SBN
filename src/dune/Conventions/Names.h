@@ -35,12 +35,12 @@ namespace nm    {
   // 2) The name of the beam configuration
   //    e.g. `fhc' 
   // 3) The name of the sample
-  //    e.g. `numuCC2trkQE'
+  //    e.g. `numuCC2trk0pi'
   // 4) The name of the observable distribution --- CURRENTLY UNUSED ---
   //    e.g. `Ereco_yreco'
   //
   // Therefore the unique name is a `detector:beam:sample:observable' string
-  //    e.g `sbnd:fhc:numuCC2trkQE:Ereco_yreco'
+  //    e.g `sbnd:fhc:numuCC2trk0pi:Ereco_yreco'
   //
   // The following functions assemble the dataset name, or tokenize it
   // and return individual components.
@@ -88,13 +88,13 @@ namespace nm    {
   // 1) An optional tag 
   //    e.g. `best_fit', `toy_mc_18', ...
   // 2) The name of the dataset or model where it belongs 
-  //    e.g. `sbnd:fhc:numuCC2trkQE:Ereco_yreco'
+  //    e.g. `sbnd:fhc:numuCC2trk0pi:Ereco_yreco'
   // 3) A string that further specifies the output quantity 
   //    e.g. `full_2d', `1d_slice_17', `Ereco_bin_edges',....
   // 4) A string indicating the format (the same information can be output in several formats)
   //    e.g. `arr1d', `arr2d', `th1d', `th2d',...
   // So the unique name of an output object name may look like
-  // `toy_mc_18:sbnd:fhc:numuCC2trkQE:Ereco_yreco:full_2d:arr2d'
+  // `toy_mc_18:sbnd:fhc:numuCC2trk0pi:Ereco_yreco:full_2d:arr2d'
   //
   string DatumName (string tag, string mother_obj_name, string quantity, string format);
 

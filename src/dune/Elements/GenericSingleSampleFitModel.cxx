@@ -193,7 +193,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
     for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kReactionModes[isample][imode];
+      ReacMode_t m = util::ReacModeFromInt(isample,imode);
       if(m == kmUndefined) continue;
       const int n_true2_bins = util::NumQ2trueBins(fSample,m);
       const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
@@ -419,7 +419,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   if(opt.find("mct_vf") != string::npos) {
 
     for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kReactionModes[isample][imode];
+      ReacMode_t m = util::ReacModeFromInt(isample,imode);
       if(m == kmUndefined) continue;
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -468,7 +468,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   if(opt.find("pdfc_vf") != string::npos || opt.find("pdfc_rf") != string::npos) {
 
     for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kReactionModes[isample][imode];
+      ReacMode_t m = util::ReacModeFromInt(isample,imode);
       if(m == kmUndefined) continue;
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -648,7 +648,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   if(opt.find("pdfcs_rf") != string::npos) {
 
     for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kReactionModes[isample][imode];
+      ReacMode_t m = util::ReacModeFromInt(isample,imode);
       if(m == kmUndefined) continue;
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -929,7 +929,7 @@ void GenericSingleSampleFitModel::Book(void)
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-    ReacMode_t m = kReactionModes[isample][imode];
+    ReacMode_t m = util::ReacModeFromInt(isample,imode);
     if(m == kmUndefined) continue;
 
     const int n_e_reco_bins_sb = util::NumErecoBinsSb(fSample);
@@ -1226,6 +1226,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     }
 
     //  ================ NOTE - HACKS ================
+#ifndef VALOR_DUNE_THIRD_PASS_THROUGH    
     if(s == ksNuMuCC2piC) {
       LOG("HACK",pNOTICE) 
         << "MC event: " << iev << " belongs to sample: " << util::AsString(s) 
@@ -1238,6 +1239,8 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " Bundling it in sample: " << util::AsString(ksNC);
       s = ksNC;
     }
+#endif
+
     //  ==============================================
 
     if(s != fSample) {
@@ -1401,7 +1404,7 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
   Sample_t   s = fSample;
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-    ReacMode_t m = kReactionModes[isample][imode];
+    ReacMode_t m = util::ReacModeFromInt(isample,imode);
     if(m == kmUndefined) continue;
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
       TString name = TString::Format("%s_%s_%s_z%d", 
@@ -1502,7 +1505,7 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
   const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(fSample);
   for(int imode = 0; imode < kNReacModes; imode++) {
 
-    ReacMode_t m = kReactionModes[isample][imode];
+    ReacMode_t m = util::ReacModeFromInt(isample,imode);
     if(m == kmUndefined) continue;
     
     const int n_q2_true_bins  = util::NumQ2trueBins(fSample,m);
@@ -1660,7 +1663,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-    ReacMode_t m = kReactionModes[isample][imode];
+    ReacMode_t m = util::ReacModeFromInt(isample,imode);
     if(m == kmUndefined) continue;
     
     const int n_true2_bins = util::NumQ2trueBins(fSample,m);
@@ -1932,7 +1935,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-    ReacMode_t m = kReactionModes[isample][imode];
+    ReacMode_t m = util::ReacModeFromInt(isample,imode);
     if(m == kmUndefined) continue;
     
     const int n_q2_true_bins   = util::NumQ2trueBins (fSample,m);
@@ -1985,7 +1988,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
       for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
         double sum = 0.;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kReactionModes[isample][imode];
+          ReacMode_t m = util::ReacModeFromInt(isample,imode);
           if(m == kmUndefined) continue;
           bool is_null = fMCTNullOb[imode][izone];
           if(is_null) continue;
@@ -2001,7 +2004,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
       for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
         double sum = 0.;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = kReactionModes[isample][imode];
+          ReacMode_t m = util::ReacModeFromInt(isample,imode);
           if(m == kmUndefined) continue;
           bool is_null = fMCTNullSb[imode];
           if(is_null) continue;
@@ -2046,7 +2049,7 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   for(int imode = 0; imode < kNReacModes; imode++) {
-    ReacMode_t m = kReactionModes[isample][imode];
+    ReacMode_t m = util::ReacModeFromInt(isample,imode);
     if(m == kmUndefined) continue;
     
     for (int izone = 0 ; izone < kNMaxBinZones ; izone++) {

@@ -47,8 +47,48 @@ const int kFitSpectrumNdimMax = 2; // (current) maximum dimensionality for fit d
 // Define dimensionality of MC templates
 static const int kMCTemplateNdim[kNSamples] =
 {
-   3, // ksNuMuCC1trkQE
-   3, // ksNuMuCC2trkQE
+#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
+  3, // ksNuMuCC1trk0pi,
+  3, // ksNuMuCC2trk0pi,
+  3, // ksNuMuCCNtrk0pi,
+  3, // ksNuMuCC3trkDelta,
+  3, // ksNuMuCC1piC,
+  3, // ksNuMuCC1pi0,
+  3, // ksNuMuCC1piC1pi0,
+  3, // ksNuMuCCoth,
+  3, // ksNuMuCCWSgn0pi,
+  3, // ksNuMuCCWSgn1piC,
+  3, // ksNuMuCCWSgn1pi0,
+  3, // ksNuMuCCWSgnoth,
+  3, // ksNuECC0pi,
+  3, // ksNuECC1piC,
+  3, // ksNuECC1pi0,
+  3, // ksNuECCoth,
+  2, // ksNC0pi,
+  2, // ksNC1piC,
+  2, // ksNC1pi0,
+  2, // ksNCoth,
+  3, // ksNuEEL,
+#ifndef VALOR_DUNE_FAR_DETECTOR
+  3  // ksInvMuDecay
+#else
+  3, // ksInvMuDecay
+  3, // ksNuMuCClow,
+  3, // ksNuMuCChigh,
+  3, // ksNuMuBarCClow,
+  3, // ksNuMuBarCChigh,
+  3, // ksNuECClow,
+  3, // ksNuECChigh,
+  3, // ksNuEBarCClow,
+  3, // ksNuEBarCChigh,
+  3, // ksNuTauCClow,
+  3, // ksNuTauCChigh,
+  3, // ksNuTauBarCClow,
+  3  // ksNuTauBarCChigh
+#endif
+#else
+   3, // ksNuMuCC1trk0pi
+   3, // ksNuMuCC2trk0pi
    3, // ksNuMuCC1piC
    3, // ksNuMuCC1pi0
    3, // ksNuMuCC1piC1pi0
@@ -56,28 +96,111 @@ static const int kMCTemplateNdim[kNSamples] =
    3, // ksNuECC
    3, // ksNuMuCCWSgn
    2  // ksNC
+#endif
 };
 
 // Define dimensionality of fit distributions
 static const int kFitSpectrumNdim[kNSamples] =
-{
-   2, // ksNuMuCC1trkQE
-   2, // ksNuMuCC2trkQE
-   2, // ksNuMuCC1piC
-   2, // ksNuMuCC1pi0
-   2, // ksNuMuCC1piC1pi0
-   2, // ksNuMuCCoth
-   2, // ksNuECC
-   2, // ksNuMuCCWSgn
-   1  // ksNC
+  {
+#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
+    2, // ksNuMuCC1trk0pi,
+    2, // ksNuMuCC2trk0pi,
+    2, // ksNuMuCCNtrk0pi,
+    2, // ksNuMuCC3trkDelta,
+    2, // ksNuMuCC1piC,
+    2, // ksNuMuCC1pi0,
+    2, // ksNuMuCC1piC1pi0,
+    2, // ksNuMuCCoth,
+    2, // ksNuMuCCWSgn0pi,
+    2, // ksNuMuCCWSgn1piC,
+    2, // ksNuMuCCWSgn1pi0,
+    2, // ksNuMuCCWSgnoth,
+    2, // ksNuECC0pi,
+    2, // ksNuECC1piC,
+    2, // ksNuECC1pi0,
+    2, // ksNuECCoth,
+    1, // ksNC0pi,
+    1, // ksNC1piC,
+    1, // ksNC1pi0,
+    1, // ksNCoth,
+    2, // ksNuEEL,
+#ifndef VALOR_DUNE_FAR_DETECTOR
+    2  // ksInvMuDecay
+#else
+    2, // ksInvMuDecay
+    2, // ksNuMuCClow,
+    2, // ksNuMuCChigh,
+    2, // ksNuMuBarCClow,
+    2, // ksNuMuBarCChigh,
+    2, // ksNuECClow,
+    2, // ksNuECChigh,
+    2, // ksNuEBarCClow,
+    2, // ksNuEBarCChigh,
+    2, // ksNuTauCClow,
+    2, // ksNuTauCChigh,
+    2, // ksNuTauBarCClow,
+    2  // ksNuTauBarCChigh
+#endif
+#else
+    2, // ksNuMuCC1trk0pi
+    2, // ksNuMuCC2trk0pi
+    2, // ksNuMuCC1piC
+    2, // ksNuMuCC1pi0
+    2, // ksNuMuCC1piC1pi0
+    2, // ksNuMuCCoth
+    2, // ksNuECC
+    2, // ksNuMuCCWSgn
+    1  // ksNC
+#endif
 };
 
 // Define variables entering in MC template definitions.
 // Variable subset {0 -> kFitSpectrumNdim[isample]} is the one entering in PDF definitions.
 static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
 {
-   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1trkQE
-   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC2trkQE
+#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1trk0pi,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC2trk0pi,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCNtrk0pi,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC3trkDelta,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1piC,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1pi0,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1piC1pi0,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCoth,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgn0pi,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgn1piC,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgn1pi0,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgnoth,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECC0pi,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECC1piC,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECC1pi0,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECCoth,
+  { kvEvis,  kvEtrue, kvUndefined }, //   ksNC0pi,
+  { kvEvis,  kvEtrue, kvUndefined }, //   ksNC1piC,
+  { kvEvis,  kvEtrue, kvUndefined }, //   ksNC1pi0,
+  { kvEvis,  kvEtrue, kvUndefined }, //   ksNCoth,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuEEL,
+#ifndef VALOR_DUNE_FAR_DETECTOR
+  { kvEreco, kvYreco, kvEtrue }      //   ksInvMuDecay
+#else
+  { kvEreco, kvYreco, kvEtrue },     //   ksInvMuDecay,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCClow,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCChigh,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuBarCClow,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuBarCChigh,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECClow,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECChigh,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuEBarCClow,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuEBarCChigh,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuTauCClow,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuTauCChigh,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuTauBarCClow,
+  { kvEreco, kvYreco, kvEtrue }      //   ksNuTauBarCChigh
+#endif
+
+#else
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1trk0pi
+   { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC2trk0pi
    { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1piC
    { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1pi0
    { kvEreco, kvYreco, kvEtrue },     // ksNuMuCC1piC1pi0
@@ -85,6 +208,7 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
    { kvEreco, kvYreco, kvEtrue },     // ksNuECC
    { kvEreco, kvYreco, kvEtrue },     // ksNuMuCCWSgn
    { kvEvis,  kvEtrue, kvUndefined }  // ksNC
+#endif
 };
 
 
