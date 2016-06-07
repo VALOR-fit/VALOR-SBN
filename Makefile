@@ -56,6 +56,11 @@ build-binning: make-bin-lib-dir FORCE
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Binning;
 
+build-binning: make-bin-lib-dir FORCE
+	@echo " "
+	@echo "** Building Binning package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Binning;
+
 build-systematics: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Systematics package..."
@@ -109,6 +114,7 @@ purge: FORCE
 	$(MAKE) -C src/dune/Apps             purge && \
 	$(MAKE) -C src/dune/Binning          purge && \
 	$(MAKE) -C src/dune/Conventions      purge && \
+	$(MAKE) -C src/dune/Binning          purge && \
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
 	$(MAKE) -C src/dune/Elements         purge && \
@@ -126,6 +132,7 @@ clean-files: FORCE
 	$(MAKE) -C src/dune/Apps            clean && \
 	$(MAKE) -C src/dune/Binning         clean && \
 	$(MAKE) -C src/dune/Conventions     clean && \
+	$(MAKE) -C src/dune/Binning         clean && \
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
 	$(MAKE) -C src/dune/Elements        clean && \
