@@ -18,6 +18,7 @@ BUILD_TARGETS =    print-make-info     \
 		   make-bin-lib-dir                \
 		   copy-scripts-to-bin             \
 		   build-conventions               \
+		   build-binning                   \
 		   build-systematics               \
 		   build-utilities                 \
 		   build-genie-utilities           \
@@ -49,6 +50,11 @@ build-conventions: make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Conventions;
+	
+build-binning: make-bin-lib-dir FORCE
+	@echo " "
+	@echo "** Building Conventions package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Binning;
 
 build-systematics: make-bin-lib-dir FORCE
 	@echo " "
@@ -101,6 +107,7 @@ purge: FORCE
 	@echo " "
 	@echo "** Purging..."
 	$(MAKE) -C src/dune/Apps             purge && \
+	$(MAKE) -C src/dune/Binning          purge && \
 	$(MAKE) -C src/dune/Conventions      purge && \
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
@@ -117,6 +124,7 @@ clean-files: FORCE
 	@echo "** Cleaning..."
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
 	$(MAKE) -C src/dune/Apps            clean && \
+	$(MAKE) -C src/dune/Binning         clean && \
 	$(MAKE) -C src/dune/Conventions     clean && \
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
