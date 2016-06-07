@@ -150,10 +150,10 @@ bool util::IsFar(Sample_t s)
   case (ksNuTauCChigh    ) :
   case (ksNuTauBarCClow  ) :
   case (ksNuTauBarCChigh ) : return true; break;
-#endif
   default: return false;
   }
   return false; 
+#endif
 }
 
 //________________________________________________________________________________________
