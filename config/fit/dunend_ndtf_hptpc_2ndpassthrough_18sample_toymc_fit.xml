@@ -7,10 +7,10 @@
         FHC
     -->
 
-    <element name="dune_nd_fhc_numucc1trkqe">
+    <element name="dune_nd_fhc_numucc1trk0pi">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numucc1trkqe                                         </sample>
+      <sample>       numucc1trk0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -19,10 +19,10 @@
     </element>
 
 
-    <element name="dune_nd_fhc_numucc2trkqe">
+    <element name="dune_nd_fhc_numucc2trk0pi">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numucc2trkqe                                         </sample>
+      <sample>       numucc2trk0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -119,10 +119,10 @@
         RHC
     -->
 
-    <element name="dune_nd_rhc_numucc1trkqe">
+    <element name="dune_nd_rhc_numucc1trk0pi">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numucc1trkqe                                         </sample>
+      <sample>       numucc1trk0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -131,10 +131,10 @@
     </element>
 
 
-    <element name="dune_nd_rhc_numucc2trkqe">
+    <element name="dune_nd_rhc_numucc2trk0pi">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numucc2trkqe                                         </sample>
+      <sample>       numucc2trk0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
