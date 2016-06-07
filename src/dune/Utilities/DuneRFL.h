@@ -128,6 +128,7 @@ private:
   
   // Check spline is positive
   bool CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const;
+  bool CheckForNegativeValues(const ROOT::Math::Interpolator * spl, conv::PhysParamId_t p) const;
 };
 
 std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);

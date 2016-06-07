@@ -307,21 +307,24 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                       }
                       TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
                       if (spline) {
-                        if (util::SplineIsFlat(spline)) {
-                          delete spline;
+                        ROOT::Math::Interpolator * gsl_spline = util::ConvertTSplineToGSL(*spline,"akima");
+                        delete spline;
+                        if (util::SplineIsFlat(gsl_spline)) {
+                          delete gsl_spline;
                           fSplines[spline_index] = kFlatSpline;
                           n_splines_flat++;
                           n_splines_read++;
                         }
-                        else if (this->CheckForNegativeValues(spline,p)) {
-                          delete spline;
+                        else if (this->CheckForNegativeValues(gsl_spline,p)) {
+                          LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name;
+                          delete gsl_spline;
                           fSplines[spline_index] = kFlatSpline;
                           n_splines_neg++;
                           n_splines_read++;
                         }
                         else {
                           fSplines[spline_index] = util::ConvertTSplineToGSL(*spline);
-                          delete spline;
+                          delete gsl_spline;
                           n_splines_read++;
                         }
                       }
@@ -419,6 +422,18 @@ void valor::util::DuneRFL::SetSplineNamePattern(std::string pattern) {
 }
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const
+{
+  double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
+  double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
+  static const int evaluations = 30;
+  for (int i = 0 ; i < evaluations; i++) {
+    double x = min_val + (i+0.5)*(max_val-min_val)/evaluations;
+    if (spl->Eval(x) < 0) {return true;}
+  }
+  return false;
+}
+//________________________________________________________________________________________
+bool valor::util::DuneRFL::CheckForNegativeValues(const ROOT::Math::Interpolator * spl, conv::PhysParamId_t p) const
 {
   double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
   double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
