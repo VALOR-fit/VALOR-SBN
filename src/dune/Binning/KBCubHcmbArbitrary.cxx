@@ -6,44 +6,210 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 */
 //________________________________________________________________________________________
 
+#include <cassert>
+
+#include <TSystem.h>
+#include <TMath.h>
+
+#include "valor/Utilities/UtlXML.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/VArray/VALORArray.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/Env.h"
 #include "dune/Binning/KBCubHcmbEdge2Edge.h"
 #include "dune/Binning/KBCubHcmbArbitrary.h"
 
 using namespace valor;
 
+ClassImp(KBCubHcmbArbitrary)
+
 //________________________________________________________________________________________
 KBCubHcmbArbitrary::KBCubHcmbArbitrary() :
 TNamed()
 {
-
+  this->Init();
 }
 //________________________________________________________________________________________
-KBCubHcmbArbitrary::KBCubHcmbArbitrary(
-  string name, string title, conv::KineSpace_t ksp) :
+KBCubHcmbArbitrary::KBCubHcmbArbitrary(string name, string title) :
 TNamed(name.c_str(), title.c_str())
 {
-
+  this->Init();
 }
 //________________________________________________________________________________________
 KBCubHcmbArbitrary::~KBCubHcmbArbitrary() 
 {
-
+  this->CleanUp();
 }
 //________________________________________________________________________________________
 bool KBCubHcmbArbitrary::Read(string file)
 {
-  return false;
+  this->CleanUp();
+
+  TString ts_file = file.c_str();
+  gSystem->ExpandPathName(ts_file);
+
+  // See if it works as a normal path
+  FileStat_t dummy;
+  if (gSystem->GetPathInfo(ts_file.Data(), dummy))
+  {
+    // If not, try the config folder
+    ts_file = TString::Format("%s/%s",
+       Env::Instance()->TopLevelConfDir().c_str(),ts_file.Data());
+    if (gSystem->GetPathInfo(ts_file.Data(), dummy)) {
+      LOG("Binning", pERROR) << "Binning file not found: " << file;
+      util::Die(1); return false;
+    }
+  }
+
+  // Parse the input binning configuration XML file
+  TXMLEngine* xml = new TXMLEngine;
+  XMLDocPointer_t xmldoc = xml->ParseFile(ts_file.Data());
+  if (xmldoc==0) {
+    LOG("Binning",pERROR)
+        << "Can not parse input XML file [" << ts_file << "]";
+    delete xml;
+    util::Die(1); return false;
+  }
+  XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+
+  //
+  string space = util::XML2String(xml,root_node,"space");
+  fKineSpace = util::KineSpaceFromString(space);
+  if(fKineSpace == conv::kspUndefined) {
+    LOG("Binning", pERROR)
+      << "Undefined kinematical space: " << space;
+    return false;
+  }
+  //
+  fNDimensions = util::NDim(fKineSpace);
+  fKineVars    = util::KineVar(fKineSpace);
+  for(unsigned int i = 0; i < fNDimensions; i++) {
+    conv::KineVar_t kv = fKineVars[i];
+    fKineVar2Dim[kv] = i;
+  }
+  fMinimum.reserve(fNDimensions);
+  fMaximum.reserve(fNDimensions);
+  std::fill(fMinimum.begin(), fMinimum.end(), +9999999);
+  std::fill(fMaximum.begin(), fMaximum.end(), -9999999);
+
+  //
+  string type = util::XML2String(xml,root_node,"type");
+  if(type != "arbitrary") {
+    LOG("Binning", pERROR)
+      << "Input binning scheme [" << type << "] not `arbitrary'";
+    return false;
+  }
+
+  //
+  int nbins = util::XML2Int(xml,root_node,"nbins");
+  if(nbins <= 0) {
+    LOG("Binning", pERROR) << "Invalid number of bins";
+    return false;
+  }
+  fNBins = (unsigned int) nbins;
+  LOG("Binning", pNOTICE) << "Number of bins = " << fNBins;
+
+  //
+  for(unsigned int ibin = 0; ibin < fNBins; ibin++) {
+     LOG("Binning", pNOTICE) << "Reading edges of bin: " << ibin;
+     vector<double> edges = util::XML2DblArray(
+                 xml,root_node,Form("bin_%d",ibin));
+      if(edges.size() != 2*fNDimensions) {
+         LOG("Binning", pERROR)
+           << edges.size() << " edges were specified for "
+           << "a cuboid bin in " << fNDimensions << " dimensions";
+         return false;
+      }
+      vector<double> min;
+      vector<double> max;
+      min.reserve(fNDimensions);
+      max.reserve(fNDimensions);
+      unsigned int k = 0;
+      for(unsigned int idim = 0; idim < fNDimensions; idim++) {
+         min[idim] = edges[k++];
+         max[idim] = edges[k++];
+         LOG("Binning", pNOTICE) 
+            << "\t Dimension: " << idim 
+            << " -> [" << min[idim] << ", " << max[idim] << "]";
+         fMinimum[idim] = TMath::Min(fMinimum[idim], min[idim]);
+         fMaximum[idim] = TMath::Max(fMaximum[idim], max[idim]);
+      }
+      fBinMinimum[ibin] = min;
+      fBinMaximum[ibin] = max;
+  }
+
+  return true;
 }
 //________________________________________________________________________________________
-int KBCubHcmbArbitrary::NBins(void) const
+double KBCubHcmbArbitrary::Minimum(unsigned int dimension) const
 {
-  return 0;
+  return fMinimum[dimension];
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::Minimum(conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->Minimum(dimension);
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::Maximum(unsigned int dimension) const
+{
+  assert(dimension < fNDimensions);
+  return fMaximum[dimension];
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::Maximum(conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->Maximum(dimension);
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, unsigned int dimension) const
+{
+  map<unsigned int, vector<double> >::const_iterator it = fBinMinimum.find(bin);
+  assert(it != fBinMaximum.end());
+  assert(dimension < fNDimensions);
+  return (it->second)[dimension];
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->BinMinimum(bin,dimension);
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, unsigned int dimension) const
+{
+  map<unsigned int, vector<double> >::const_iterator it = fBinMaximum.find(bin);
+  assert(it != fBinMaximum.end());
+  assert(dimension < fNDimensions);
+  return (it->second)[dimension];
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->BinMaximum(bin,dimension);
 }
 //________________________________________________________________________________________
 int KBCubHcmbArbitrary::FindBin(vector<double> & xarr)
 {
+  assert(xarr.size() == fNDimensions);
+
+  for(unsigned int ibin = 0; ibin < fNBins; ibin++) {
+     bool inside = true;     
+     for(unsigned int idim = 0; idim < fNDimensions; idim++) {
+        double x   = xarr[idim];
+        double min = fBinMinimum[ibin][idim];
+        double max = fBinMaximum[ibin][idim];
+        inside = inside && (x >= min && x < max);
+        if(!inside) break;
+     }  
+     if(inside) {
+       return ibin;
+     }
+  }
+
   return -1;
 }
 //________________________________________________________________________________________
@@ -58,4 +224,39 @@ int KBCubHcmbArbitrary::BinMapping(vector<int> & bin_in_alt_simple_scheme)
   return -1;
 }
 //________________________________________________________________________________________
+unsigned int KBCubHcmbArbitrary::Dimension(conv::KineVar_t kv) const
+{
+  map<conv::KineVar_t,unsigned int>::const_iterator it = fKineVar2Dim.find(kv);
+  assert(it != fKineVar2Dim.end());
+  int dimension = it->second;
+  return dimension;
+}
+//________________________________________________________________________________________
+conv::KineVar_t KBCubHcmbArbitrary::KineVar(unsigned int dimension)
+{
+  if(dimension < fNDimensions) return fKineVars[dimension];
+
+  return conv::kvUndefined;
+}
+//________________________________________________________________________________________
+void KBCubHcmbArbitrary::Init(void)
+{
+  fKineSpace = conv::kspUndefined;
+  fNDimensions = 0;
+  fKineVars.clear();
+  fKineVar2Dim.clear();
+  fNBins = 0;
+  fMinimum.clear();
+  fMaximum.clear();
+  fBinMinimum.clear();
+  fBinMaximum.clear();
+}
+//________________________________________________________________________________________
+void KBCubHcmbArbitrary::CleanUp(void)
+{
+
+  this->Init();
+}
+//________________________________________________________________________________________
+
 

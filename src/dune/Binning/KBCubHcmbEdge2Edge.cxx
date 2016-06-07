@@ -20,36 +20,30 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 using namespace valor;
 
+ClassImp(KBCubHcmbEdge2Edge)
+
 //________________________________________________________________________________________
 KBCubHcmbEdge2Edge::KBCubHcmbEdge2Edge() :
 TNamed()
 {
-  fKineSpace   = conv::kspUndefined;
-  fNDimensions = 0; 
-  fKineVars.clear();
-  fBinEdges.clear();
+  this->Init();
 }
 //________________________________________________________________________________________
-KBCubHcmbEdge2Edge::KBCubHcmbEdge2Edge(
-  string name, string title, conv::KineSpace_t ksp) :
+KBCubHcmbEdge2Edge::KBCubHcmbEdge2Edge(string name, string title) :
 TNamed(name.c_str(), title.c_str())
 {
-  fKineSpace   = ksp;
-  fNDimensions = util::NDim(ksp); 
-  fKineVars    = util::KineVar(ksp); 
-  for(unsigned int i = 0; i < fNDimensions; i++) {
-    conv::KineVar_t kv = fKineVars[i];
-    fKineVar2Dim[kv] = i;
-  }
+  this->Init();
 }
 //________________________________________________________________________________________
 KBCubHcmbEdge2Edge::~KBCubHcmbEdge2Edge() 
 {
-
+  this->CleanUp();
 }
 //________________________________________________________________________________________
 bool KBCubHcmbEdge2Edge::Read(string file)
 {
+  this->CleanUp();
+
   TString ts_file = file.c_str();
   gSystem->ExpandPathName(ts_file);
 
@@ -77,35 +71,55 @@ bool KBCubHcmbEdge2Edge::Read(string file)
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
 
-  string type = util::XML2String(xml,root_node,"binning/type");
+  //
+  string space = util::XML2String(xml,root_node,"space");
+  fKineSpace = util::KineSpaceFromString(space);
+  if(fKineSpace == conv::kspUndefined) {
+    LOG("Binning", pERROR) 
+      << "Undefined kinematical space: " << space;
+    return false;
+  }
+
+  //
+  fNDimensions = util::NDim(fKineSpace); 
+  fKineVars    = util::KineVar(fKineSpace); 
+  for(unsigned int i = 0; i < fNDimensions; i++) {
+    conv::KineVar_t kv = fKineVars[i];
+    fKineVar2Dim[kv] = i;
+  }
+  fFixedWidth . reserve(fNDimensions);
+  fMinimum    . reserve(fNDimensions);
+  fMaximum    . reserve(fNDimensions);
+  fBinEdges   . reserve(fNDimensions);
+
+  //
+  string type = util::XML2String(xml,root_node,"type");
   if(type != "edge-to-edge") {
     LOG("Binning", pERROR) 
       << "Input binning scheme [" << type << "] not `edge-to-edge'";
     return false;
   }
 
-  unsigned int ndim = (unsigned int) 
-      util::XML2Int(xml,root_node,"binning/ndimensions");
-  if(fNDimensions != ndim) {
-    LOG("Binning", pERROR) 
-       << "Input binning scheme for " << ndim 
-       << " dimensions not suitable for the specified " << fNDimensions
-       << "-dimensional space: " << util::AsString(fKineSpace);
-    return false;
-  }
+  for(unsigned int idim = 0; idim < fNDimensions; idim++) {
 
-  fBinEdges.reserve(ndim);
+    conv::KineVar_t kine_var = fKineVars[idim];    
+    string kine_var_str = util::AsString(kine_var);
+    const char * kine_var_ccs = kine_var_str.c_str();
 
-  for(unsigned int idim = 0; idim < ndim; idim++) {
     string bin_size = util::XML2String(
-       xml,root_node,Form("binning/dimension_%d/bin_size",idim));
+       xml,root_node,Form("%s_binning/bin_size",kine_var_ccs));
     unsigned int nbins = (unsigned int) 
-        util::XML2Int(xml,root_node,Form("binning/dimension_%d/nbins",idim));
+        util::XML2Int(xml,root_node,Form("%s_binning/nbins",kine_var_ccs));
+
+    LOG("Binning", pINFO) 
+        << "Dimension: " << idim << " (variable: " 
+        << kine_var_str << ") -> bin size: `" << bin_size << "'";
+
     //
     //
     if(bin_size == "fixed") {
       vector<double> range = util::XML2DblArray(
-         xml,root_node,Form("binning/dimension_%d/range",idim));
+         xml,root_node,Form("%s_binning/range",kine_var_ccs));
       if(range.size() != 2) {
          LOG("Binning", pERROR) 
            << "No range `min,max' was specified for dimension: " << idim;
@@ -118,13 +132,17 @@ bool KBCubHcmbEdge2Edge::Read(string file)
          arr->SetEntry(x,i);
          x += dx;
       }
-      fBinEdges[idim] = arr;
+      fBinEdges  [idim] = arr;
+      fFixedWidth[idim] = true;
+      fMinimum   [idim] = range[0];
+      fMaximum   [idim] = range[1];
     } 
+
     //
-    //
+    else
     if(bin_size == "variable") {
       vector<double> bin_edges = util::XML2DblArray(
-         xml,root_node,Form("binning/dimension_%d/bin_edges",idim));
+         xml,root_node,Form("%s_binning/bin_edges",kine_var_ccs));
       if(bin_edges.size() != nbins+1) {
          LOG("Binning", pERROR) 
            << bin_edges.size() << " bin edges were specified for the " 
@@ -135,8 +153,12 @@ bool KBCubHcmbEdge2Edge::Read(string file)
       for(unsigned int i = 0; i < nbins+1; i++) {
          arr->SetEntry(bin_edges[i],i);
       }
-      fBinEdges[idim] = arr;
+      fBinEdges  [idim] = arr;
+      fFixedWidth[idim] = false;
+      fMinimum   [idim] = bin_edges[0];
+      fMaximum   [idim] = bin_edges[nbins];
     } 
+
     else {
       LOG("Binning", pERROR) 
          << "Bin size is neither `fixed' nor `variable'";
@@ -160,8 +182,54 @@ unsigned int KBCubHcmbEdge2Edge::NBins(conv::KineVar_t kv) const
   return this->NBins(dimension);
 }
 //________________________________________________________________________________________
+bool KBCubHcmbEdge2Edge::FixedWidth(unsigned int dimension) const
+{
+  assert(dimension < fNDimensions);
+  return fFixedWidth[dimension];
+}
+//________________________________________________________________________________________
+bool KBCubHcmbEdge2Edge::FixedWidth(conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->FixedWidth(dimension);
+}
+//________________________________________________________________________________________
+bool KBCubHcmbEdge2Edge::VariableWidth(unsigned int dimension) const
+{
+  return (! this->FixedWidth(dimension));
+}
+//________________________________________________________________________________________
+bool KBCubHcmbEdge2Edge::VariableWidth(conv::KineVar_t kv) const
+{
+  return (! this->FixedWidth(kv));
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::Minimum(unsigned int dimension) const
+{
+  return fMinimum[dimension];
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::Minimum(conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->Minimum(dimension);
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::Maximum(unsigned int dimension) const
+{
+  assert(dimension < fNDimensions);
+  return fMaximum[dimension];
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::Maximum(conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->Maximum(dimension);
+}
+//________________________________________________________________________________________
 const double * KBCubHcmbEdge2Edge::BinEdgeArr(unsigned int dimension) const
 {
+  assert(dimension < fNDimensions);
   return fBinEdges[dimension]->GetArray();
 }
 //________________________________________________________________________________________
@@ -173,6 +241,7 @@ const double * KBCubHcmbEdge2Edge::BinEdgeArr(conv::KineVar_t kv) const
 //________________________________________________________________________________________
 const VALORArray * KBCubHcmbEdge2Edge::BinEdgeVArr(unsigned int dimension) const
 {
+  assert(dimension < fNDimensions);
   return fBinEdges[dimension];
 }
 //________________________________________________________________________________________
@@ -215,4 +284,35 @@ unsigned int KBCubHcmbEdge2Edge::Dimension(conv::KineVar_t kv) const
   return dimension;
 }
 //________________________________________________________________________________________
+conv::KineVar_t KBCubHcmbEdge2Edge::KineVar(unsigned int dimension)
+{
+  if(dimension < fNDimensions) return fKineVars[dimension];
+
+  return conv::kvUndefined;
+}
+//________________________________________________________________________________________
+void KBCubHcmbEdge2Edge::Init(void)
+{
+  fKineSpace = conv::kspUndefined;
+  fNDimensions = 0;
+  fKineVars.clear();
+  fKineVar2Dim.clear();
+  fFixedWidth.clear();
+  fMinimum.clear();
+  fMaximum.clear();
+  fBinEdges.clear();
+}
+//________________________________________________________________________________________
+void KBCubHcmbEdge2Edge::CleanUp(void)
+{
+  vector<VALORArray*>::iterator it = fBinEdges.begin();
+  for( ; it != fBinEdges.end(); ++it) {
+    VALORArray * arr = *it;
+    if(arr) delete arr;
+    arr = 0;
+  }
+  this->Init();
+}
+//________________________________________________________________________________________
+
 

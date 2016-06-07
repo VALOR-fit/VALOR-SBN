@@ -11,7 +11,7 @@ MAKEFILE = Makefile
 include $(VALOR_DUNE)/make/Make.include
 
 PACKAGE           = ValorDuneBinning
-DICTIONARY        = undefined
+DICTIONARY        = _RootDict_$(PACKAGE)
 LIBNAME           = lib$(PACKAGE)
 
 all : lib lib-link

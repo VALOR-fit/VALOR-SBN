@@ -3,34 +3,39 @@
 
 \class     valor::KBCubHcmbEdge2Edge
 
-\brief     Multi-dimensional kinematical binning 
-           Adjacent bins share one full side (as in `edge-to-edge tiling',
-           https://en.wikipedia.org/wiki/Tessellation)
+\brief     Multi-dimensional kinematical binning class.           
+           Binning in each dimension can be of fixed or variable width, but
+           independent of the other dimensions.
+           Each bin is a `cuboid'.
+           (In 2D, adjacent bins share one full side, hence the name.
+            See `edge-to-edge tiling' in https://en.wikipedia.org/wiki/Tessellation)
 
            The binning is read from XML files.
-           Th eXML schema is given by the following example:
+           The XML schema is given by the following example:
 
            ...............................................
            <?xml version="1.0" encoding="ISO-8859-1"?>
 
            <binning>
-              <type> edge-to-edge </type>
-              <ndimensions> 5 </ndimensions>
-              <dimension_0>
+              <space>
+                 Ereco,yreco      <!- all KineSpace_t enums are supported -->
+              </space>
+              <type> 
+                 edge-to-edge 
+              </type>
+              <Ereco_binning>     
                  <bin_size> fixed </bin_size>
                  <nbins> 20 </nbins>
                  <range> 0.,40. </range>
-              </dimension_0>
-              <dimension_1>
+              </Ereco_binning>
+              <yreco_binning>
                  <bin_size> variable </bin_size>
                  <nbins> 11 </nbins>
                  <bin_edges>
                      0.0,  1.2,   1.6,   2.0,   3.0,   5.0,
                     10.0, 20.0, 100.0, 110.0, 125.0, 200.0
                  </bin_edges>
-              </dimension_1>
-              ...
-              ...
+              </yreco_binning>
            </binning>
            ...............................................
 
@@ -57,6 +62,7 @@
 
 #include "valor/VArray/VALORArray.h"
 #include "valor/VArray/VALORArrayBin.h"
+#include "dune/Conventions/KineVar.h"
 #include "dune/Conventions/KineSpace.h"
 
 using std::vector;
@@ -68,36 +74,69 @@ class KBCubHcmbEdge2Edge: public TNamed
 {
 public:
   KBCubHcmbEdge2Edge();
-  KBCubHcmbEdge2Edge(string name, string title, conv::KineSpace_t ksp);
+  KBCubHcmbEdge2Edge(string name, string title);
   virtual ~KBCubHcmbEdge2Edge();
 
   // Read binning from file
   bool Read(string file);
 
+  // Get the corresponding kinematical space
+  conv::KineSpace_t KineSpace(void) const { return fKineSpace; }
+
+  // Number of dimensions
+  unsigned int NDimensions (void) const { return fNDimensions; }
+
+  // List of kinematical variables
+  const vector<valor::conv::KineVar_t> & KineVars (void) const { return fKineVars; }
+
+  // Dimension -> Variable
+  conv::KineVar_t KineVar(unsigned int dimension);
+
+  // Variable -> Dimension
+  unsigned int Dimension(conv::KineVar_t kv) const;
+
   // Number of bins by dimension or kinematical variable
   unsigned int NBins (unsigned int dimension ) const;
   unsigned int NBins (conv::KineVar_t kv     ) const;
 
+  // Fixed or variable width?
+  bool FixedWidth    (unsigned int dimension ) const;
+  bool FixedWidth    (conv::KineVar_t kv     ) const;
+  bool VariableWidth (unsigned int dimension ) const;
+  bool VariableWidth (conv::KineVar_t kv     ) const;
+
+  // Global min and max values
+  double Minimum (unsigned int dimension ) const;
+  double Minimum (conv::KineVar_t kv     ) const;
+  double Maximum (unsigned int dimension ) const;
+  double Maximum (conv::KineVar_t kv     ) const;
+
   // Bin edge arrays by dimension or kinematical variable
-  const double *      BinEdgeArr  (unsigned int dimension ) const;
-  const double *      BinEdgeArr  (conv::KineVar_t kv     ) const;
-  const VALORArray *  BinEdgeVArr (unsigned int dimension ) const;
-  const VALORArray *  BinEdgeVArr (conv::KineVar_t kv     ) const;  
+  const double *      BinEdgeArr    (unsigned int dimension ) const;
+  const double *      BinEdgeArr    (conv::KineVar_t kv     ) const;
+  const VALORArray *  BinEdgeVArr   (unsigned int dimension ) const;
+  const VALORArray *  BinEdgeVArr   (conv::KineVar_t kv     ) const;  
 
   // Find bin
   unsigned int         FindBin (double x, unsigned int dimension);
   unsigned int         FindBin (double x, conv::KineVar_t kv);
   vector<unsigned int> FindBin (vector<double> & x);
 
-  unsigned int Dimension(conv::KineVar_t kv) const;
-
 protected:
+
+  void Init    (void);
+  void CleanUp (void);
 
   conv::KineSpace_t                  fKineSpace;    // kinematical space
   unsigned int                       fNDimensions;  // number of dimensions
   vector<conv::KineVar_t>            fKineVars;     // kinematical variables in given space
   map<conv::KineVar_t, unsigned int> fKineVar2Dim;  // kinematical variable -> dimension
+  vector<bool>                       fFixedWidth;   // fixed or variable bin width?
+  vector<double>                     fMinimum;      // 
+  vector<double>                     fMaximum;      //
   vector<VALORArray*>                fBinEdges;     // bin edges
+  
+ClassDef(KBCubHcmbEdge2Edge, 1)
 };
 
 } // valor

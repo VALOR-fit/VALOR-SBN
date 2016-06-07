@@ -3,7 +3,45 @@
 
 \class     valor::KBCubHcmbArbitrary
 
-\brief     Linearized multi-dimensional kinematical binning 
+\brief     Multi-dimensional kinematical binning 
+           Each bin is a `cuboid'.
+           The size of each cuboid bin is completely arbitrary and it is set
+           individually for each bin.
+           The only requirement is that the set of bins spans the entire space
+           without overlaps or gaps.
+
+           The binning is read from XML files.
+           The XML schema is given by the following example:
+
+           ...............................................
+           <?xml version="1.0" encoding="ISO-8859-1"?>
+
+           <binning>
+              <space>
+                 Ereco,yreco  <!- all KineSpace_t enums are supported -->
+              </space>
+              <type>
+                 arbitrary
+              </type>
+              <nbins> 
+                 12 
+              </nbins>
+
+              <!- Ereco min, Ereco max, yreco min, yreco max -->
+              <bin_0>    0.0,   40.0,   0.00,   0.58 </bin_0>
+              <bin_1>    0.0,   40.0,   0.58,   1.00 </bin_1>
+              <bin_2>   40.0,  150.0,   0.00,   0.40 </bin_2>
+              <bin_3>   40.0,  150.0,   0.40,   0.80 </bin_3>
+              <bin_4>   40.0,  180.0,   0.80,   0.95 </bin_4>
+              <bin_5>   40.0,  180.0,   0.95,   1.00 </bin_5>
+              <bin_6>  150.0,  200.0,   0.00,   0.10 </bin_6>
+              <bin_7>  150.0,  200.0,   0.10,   0.35 </bin_7>
+              <bin_8>  150.0,  200.0,   0.35,   0.52 </bin_8>
+              <bin_9>  150.0,  200.0,   0.52,   0.70 </bin_9>
+              <bin_10> 150.0,  200.0,   0.70,   0.80 </bin_10>
+              <bin_11> 180.0,  200.0,   0.80,   1.00 </bin_11>
+           </binning>
+           ...............................................
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -18,14 +56,20 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_kinematical_binning_cuboid_honeycomb_non_edge_to_edge_h_
-#define _valor_kinematical_binning_cuboid_honeycomb_non_edge_to_edge_h_
+#ifndef _valor_kinematical_binning_cuboid_honeycomb_arbitrary_h_
+#define _valor_kinematical_binning_cuboid_honeycomb_arbitrary_h_
+
+#include <vector>
+#include <map>
 
 #include <TNamed.h>
 
 #include "valor/VArray/VALORArray.h"
 #include "valor/VArray/VALORArrayBin.h"
 #include "dune/Conventions/KineSpace.h"
+
+using std::vector;
+using std::map;
 
 namespace valor {
 
@@ -35,27 +79,68 @@ class KBCubHcmbArbitrary: public TNamed
 {
 public:
   KBCubHcmbArbitrary();
-  KBCubHcmbArbitrary(string name, string title, conv::KineSpace_t ksp);
+  KBCubHcmbArbitrary(string name, string title);
   virtual ~KBCubHcmbArbitrary();
 
   // Read binning from file
   bool Read(string file);
 
+  // Get the corresponding kinematical space
+  conv::KineSpace_t KineSpace(void) const { return fKineSpace; }
+
+  // Number of dimensions
+  unsigned int NDimensions (void) const { return fNDimensions; }
+
+  // List of kinematical variables
+  const vector<valor::conv::KineVar_t> & KineVars (void) const { return fKineVars; }
+
+  // Dimension -> Variable
+  conv::KineVar_t KineVar(unsigned int dimension);
+
+  // Variable -> Dimension
+  unsigned int Dimension(conv::KineVar_t kv) const;
+
   // Number of multi-dimensional bins 
-  int NBins (void) const;
+  int NBins (void) const { return fNBins; }
+
+  // Global bin and max values
+  double Minimum (unsigned int dimension ) const;
+  double Minimum (conv::KineVar_t kv     ) const;
+  double Maximum (unsigned int dimension ) const;
+  double Maximum (conv::KineVar_t kv     ) const;
+
+  // Bin min and max values
+  double BinMinimum (unsigned int bin, unsigned int dimension ) const;
+  double BinMinimum (unsigned int bin, conv::KineVar_t kv     ) const;
+  double BinMaximum (unsigned int bin, unsigned int dimension ) const;
+  double BinMaximum (unsigned int bin, conv::KineVar_t kv     ) const;
 
   // Find bin
   int FindBin (vector<double> & xarr);
 
   // An alternative simple binning of the same kinematical space.
   // If given, a mapping will be worked out between the `simple' and `linearized' binning schemes
-
   void UseEdge2EdgeBinning(const KBCubHcmbEdge2Edge * kbe2e);
   int BinMapping (vector<int> & bin_in_alt_simple_scheme);
 
 protected:
 
-  const KBCubHcmbEdge2Edge * fKBE2E;
+  void Init    (void);
+  void CleanUp (void);
+
+  conv::KineSpace_t                  fKineSpace;    // kinematical space
+  unsigned int                       fNDimensions;  // number of dimensions
+  vector<conv::KineVar_t>            fKineVars;     // kinematical variables in given space
+  map<conv::KineVar_t, unsigned int> fKineVar2Dim;  // kinematical variable -> dimension
+  unsigned int                       fNBins;        // number of bins
+  map<unsigned int, vector<double> > fBinMinimum;   // xmin,ymin,zmin,... for each bin
+  map<unsigned int, vector<double> > fBinMaximum;   // xmax,ymax,zmax,... for each bin
+  vector<double>                     fMinimum;      //
+  vector<double>                     fMaximum;      //
+  const KBCubHcmbEdge2Edge *         fKBE2E;        //
+
+ClassDef(KBCubHcmbArbitrary, 1)
+
 };
 
 } // valor
