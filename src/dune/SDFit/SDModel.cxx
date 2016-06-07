@@ -327,7 +327,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
         Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = util::ReacModeFromInt(isample,imode);
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -385,7 +385,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
         Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = util::ReacModeFromInt(isample,imode);
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -582,7 +582,7 @@ bool SDModel::Write(TObjArray * array, const char * tag, Option_t * write_opt)
         Sample_t s = kSample[ibeam][isample];
         if(s == ksUndefined) continue;
         for(int imode = 0; imode < kNReacModes; imode++) {
-          ReacMode_t m = util::ReacModeFromInt(isample,imode);
+          ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
           for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -871,7 +871,7 @@ void SDModel::Book(void)
       Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = util::ReacModeFromInt(isample,imode);
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
@@ -1156,7 +1156,6 @@ void SDModel::FillFromDST(TTree * t, int ibeam)
      }
 
      //  ================ NOTE - HACKS ================
-#ifndef VALOR_DUNE_THIRD_PASS_THROUGH
      if(s == ksNuMuCC2piC) {
        LOG("HACK",pNOTICE) 
          << "MC event: " << iev << " belongs to sample: " << util::AsString(s) 
@@ -1169,7 +1168,7 @@ void SDModel::FillFromDST(TTree * t, int ibeam)
          << " Bundling it in sample: " << util::AsString(ksNC);
        s = ksNC;
      }
-#endif
+
      //  ==============================================
 
      int isample = fArrIdx->SampleIdx(b,s);
@@ -1329,7 +1328,7 @@ bool SDModel::FillFromTemplateFile (TFile * f, string tag)
       Sample_t s = kSample[ibeam][isample];
       if(s == ksUndefined) continue;
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = util::ReacModeFromInt(isample,imode);
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
           TString name = TString::Format("%s_%s_%s_z%d", 
@@ -1424,7 +1423,7 @@ void SDModel::FluctuateMCStat(Option_t * option)
       const int n_enu_true_bins = util::NumEtrueBins(s);
       const int n_y_reco_bin_edges_sb = util::NumYrecoBinsSb(s);
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = util::ReacModeFromInt(isample,imode);
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         // Updating only the templates using the optimized binning
@@ -1589,7 +1588,7 @@ void SDModel::ApplyPhysics(Option_t * option)
       const int n_y_reco_bin_edges_sb   = util::NumYrecoBinsSb(s);
         
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = util::ReacModeFromInt(isample,imode);
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
         
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1784,7 +1783,7 @@ void SDModel::UpdatePDFs(Option_t * option)
       const int n_enu_true_bins = util::NumEtrueBins(s);
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
       for(int imode = 0; imode < kNReacModes; imode++) {
-        ReacMode_t m = util::ReacModeFromInt(isample,imode);
+        ReacMode_t m = kReactionModes[isample][imode];
         if(m == kmUndefined) continue;
 
         for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -1841,7 +1840,7 @@ void SDModel::UpdatePDFs(Option_t * option)
            for(int iyr=0; iyr < n_y_reco_bins; iyr++) {
               double sum = 0.;
               for(int imode = 0; imode < kNReacModes; imode++) {
-		ReacMode_t m = util::ReacModeFromInt(isample,imode);
+		ReacMode_t m = kReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
                  bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
                  if(is_null) continue;
@@ -1857,7 +1856,7 @@ void SDModel::UpdatePDFs(Option_t * option)
            for(int iyr=0; iyr < n_y_reco_bins_sb; iyr++) {
               double sum = 0.;
               for(int imode = 0; imode < kNReacModes; imode++) {
-		ReacMode_t m = util::ReacModeFromInt(isample,imode);
+		ReacMode_t m = kReactionModes[isample][imode];
                  if(m == kmUndefined) continue;
                  bool is_null = fMCTNullSb[ibeam][isample][imode];
                  if(is_null) continue;

@@ -114,7 +114,6 @@ int util::NumYrecoBinsSb(Sample_t s)
     case (ksNuMuCC1pi0    ) :
     case (ksNuMuCC1piC1pi0) :
     case (ksNuMuCCoth     ) :
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
     case (ksNuMuCCNtrk0pi ) :
     case (ksNuMuCC3trkDelta):
     case (ksNuMuCCWSgn0pi ) :   
@@ -125,11 +124,8 @@ int util::NumYrecoBinsSb(Sample_t s)
     case (ksNuECC1piC     ) : 
     case (ksNuECC1pi0     ) : 
     case (ksNuECCoth      ) : 
-#else
     case (ksNuECC         ) : 
     case (ksNuMuCCWSgn    ) : 
-#endif
-#ifdef VALOR_DUNE_FAR_DETECTOR
     case (ksNuMuCClow      ) :
     case (ksNuMuCChigh     ) :
     case (ksNuMuBarCClow   ) :
@@ -142,16 +138,13 @@ int util::NumYrecoBinsSb(Sample_t s)
     case (ksNuTauCChigh    ) :
     case (ksNuTauBarCClow  ) :
     case (ksNuTauBarCChigh ) :
-#endif
-      return kNYrecoBinsCCSb; 
-      break;
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
+       return kNYrecoBinsCCSb; 
+       break;
+
     case (ksNC1piC        ) :
     case (ksNC1pi0        ) :
     case (ksNCoth         ) :
-#else
     case (ksNC            ) :
-#endif
       return kNYrecoBinsNCSb; 
       break;
 
@@ -170,7 +163,7 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
 
    if (util::IsCC(s))
      {
-       if (util::IsELike(s))
+       if (util::IsQELike(s))
 	 return kYrecoBinEdgesQELikeSb;
        else
 	 return kYrecoBinEdgesMiscSb;

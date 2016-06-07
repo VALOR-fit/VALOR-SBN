@@ -35,8 +35,7 @@ namespace conv {
 //
 typedef enum ESample 
 {
-
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
+   //2016b near detector selections
    ksUndefined       = -1,
    ksNuMuCC          =  0, // numu CC inclusive 
    ksNuMuCC1trk0pi   =  1, // numu CC - 1 track QE-enhanced - 0 pions  (mu)
@@ -59,11 +58,14 @@ typedef enum ESample
    ksNC1piC          = 18, // NC - 1pi charge (1 pi+/-)
    ksNC1pi0          = 19, // NC - 1pi0 (1 pi0)
    ksNCoth           = 20, // NC - other
-   ksNuEEL           = 21, // NuE elastic nue + e (kinematics to differentiate from ksNuECC0pi)
-#ifndef VALOR_DUNE_FAR_DETECTOR
-   ksInvMuDecay      = 22  // Inverse muon decay (nuebar + e -> mu + numubar)
-#else
+   ksNuEELScat       = 21, // NuE elastic scattering nue + e (kinematics to differentiate from ksNuECC0pi)
    ksInvMuDecay      = 22, // Inverse muon decay (nuebar + e -> mu + numubar)
+   //2016a near detector selections
+   ksNuMuCC2piC,           // numu CC - 3 track (mu + 2 pi+/-)
+   ksNuECC,                // nue CC
+   ksNuMuCCWSgn,           // wrong sign numu CC inclusive
+   ksNC,                   // NC inclusive
+   //2016b far detector selections
    ksNuMuCClow,            // beam intrinsic numu 
    ksNuMuCChigh,           // beam intrinsic anti-numu 
    ksNuMuBarCClow,         // beam intrinsic numu 
@@ -76,28 +78,10 @@ typedef enum ESample
    ksNuTauCChigh,          // beam intrinsic anti-numu 
    ksNuTauBarCClow,        // beam intrinsic numu 
    ksNuTauBarCChigh       // beam intrinsic anti-numu 
-#endif
-#else
-   ksUndefined       = -1, 
-   ksNuMuCC          =  0, // numu CC inclusive
-   ksNuMuCC1trk0pi   =  1, // numu CC - 1 track QE-enhanced - 0 pions  (mu)
-   ksNuMuCC2trk0pi   =  2, // numu CC - 2 track QE-enhanched - 0 pions (mu + proton)
-   ksNuMuCC1piC      =  3, // numu CC - 2 track (mu + 1 pi+/-)
-   ksNuMuCC2piC      =  4, // numu CC - 3 track (mu + 2 pi+/-)
-   ksNuMuCC1pi0      =  5, // numu CC - 2 track (mu + 1 pi0)
-   ksNuMuCC1piC1pi0  =  6, // numu CC - 3 track (mu + 1 pi+/- + 1pi0)
-   ksNuMuCCoth       =  7, // numu CC - other
-   ksNuECC           =  8, // nue CC
-   ksNuMuCCWSgn      =  9, // wrong sign numu CC inclusive
-   ksNC              = 10, // NC inclusive
-   ksNC1piC,               // NC - 1pi+/-
-   ksNC1pi0,               // NC - 1pi0
-   ksNCoth                 // NC - other
-#endif
 } 
 Sample_t; 
 
-static const int kMaxNSamples = 35;
+static const int kMaxNSamples = 40;
 
 // 
 // ...........................................................................
@@ -116,13 +100,9 @@ static const int kMaxNSamples = 35;
 // - Edit FitParams.h: Add instructions on how to apply systematics for the new sample 
 // -
  
-#ifdef VALOR_DUNE_FAR_DETECTOR
- static const int kNSamples = 34;
-#elif defined(VALOR_DUNE_THIRD_PASS_THROUGH)
- static const int kNSamples = 22;
-#else
- static const int kNSamples = 9;
-#endif
+//this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
+// i.e. undefined, 2piC, NuMuInclusive
+ static const int kNSamples = 37;
 
 // ---------------------------------------------------------------------
 // NOTE:
@@ -132,8 +112,8 @@ static const int kMaxNSamples = 35;
 {
    // kbLBNF_FHC
    {
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
-     ksNuMuCC1trk0pi,
+     //2016b near detector selections
+     ksNuMuCC1trk0pi, 
      ksNuMuCC2trk0pi,
      ksNuMuCCNtrk0pi,
      ksNuMuCC3trkDelta,
@@ -153,11 +133,13 @@ static const int kMaxNSamples = 35;
      ksNC1piC,
      ksNC1pi0,
      ksNCoth,
-     ksNuEEL,
-#ifndef VALOR_DUNE_FAR_DETECTOR
-     ksInvMuDecay
-#else
+     ksNuEELScat,
      ksInvMuDecay,
+     //2016a near detector selections (different from above)
+     ksNuECC,
+     ksNuMuCCWSgn,
+     ksNC,     
+     //2016b far detector selections
      ksNuMuCClow,  
      ksNuMuCChigh,  
      ksNuMuBarCClow,  
@@ -170,23 +152,11 @@ static const int kMaxNSamples = 35;
      ksNuTauCChigh,       
      ksNuTauBarCClow,     
      ksNuTauBarCChigh    
-#endif
-#else
-     ksNuMuCC1trk0pi,
-     ksNuMuCC2trk0pi,
-     ksNuMuCC1piC,
-     ksNuMuCC1pi0,
-     ksNuMuCC1piC1pi0,
-     ksNuMuCCoth,
-     ksNuECC,
-     ksNuMuCCWSgn,
-     ksNC
-#endif
    },
 
    {
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
-     ksNuMuCC1trk0pi,
+     //2016b near detector selections
+     ksNuMuCC1trk0pi, 
      ksNuMuCC2trk0pi,
      ksNuMuCCNtrk0pi,
      ksNuMuCC3trkDelta,
@@ -206,11 +176,13 @@ static const int kMaxNSamples = 35;
      ksNC1piC,
      ksNC1pi0,
      ksNCoth,
-     ksNuEEL,
-#ifndef VALOR_DUNE_FAR_DETECTOR
-   ksInvMuDecay
-#else
+     ksNuEELScat,
      ksInvMuDecay,
+     //2016a near detector selections (different from above)
+     ksNuECC,
+     ksNuMuCCWSgn,
+     ksNC,     
+     //2016b far detector selections
      ksNuMuCClow,  
      ksNuMuCChigh,  
      ksNuMuBarCClow,  
@@ -223,18 +195,6 @@ static const int kMaxNSamples = 35;
      ksNuTauCChigh,       
      ksNuTauBarCClow,     
      ksNuTauBarCChigh    
-#endif
-#else
-     ksNuMuCC1trk0pi,
-     ksNuMuCC2trk0pi,
-     ksNuMuCC1piC,
-     ksNuMuCC1pi0,
-     ksNuMuCC1piC1pi0,
-     ksNuMuCCoth,
-     ksNuECC,
-     ksNuMuCCWSgn,
-     ksNC
-#endif
    }
 };
 // ---------------------------------------------------------------------
@@ -247,7 +207,7 @@ namespace util {
   string         AsString         (conv::Sample_t s);
   string         AsStringTeX      (conv::Sample_t s, bool root = false);
   bool           IsCC             (conv::Sample_t s);
-  bool           IsELike          (conv::Sample_t s);
+  bool           IsQELike         (conv::Sample_t s);
   bool           IsNC             (conv::Sample_t s);
   bool           IsFar            (conv::Sample_t s);
   bool           IsFar            (int s);

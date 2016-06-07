@@ -21,13 +21,12 @@ string util::AsString(Sample_t s)
     case (ksNuMuCC         ) : return "numuCCincl";      break; 
     case (ksNuMuCC1trk0pi  ) : return "numuCC1trk0pi";   break; 
     case (ksNuMuCC2trk0pi  ) : return "numuCC2trk0pi";   break; 
+    case (ksNuMuCCNtrk0pi  ) : return "numuCCNtrk0pi";   break;
+    case (ksNuMuCC3trkDelta) : return "numuCC3trkDelta"; break;
     case (ksNuMuCC1piC     ) : return "numuCC1piC";      break; 
     case (ksNuMuCC1pi0     ) : return "numuCC1pi0";      break; 
     case (ksNuMuCC1piC1pi0 ) : return "numuCC1piC1pi0";  break; 
     case (ksNuMuCCoth      ) : return "numuCCoth";       break; 
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
-    case (ksNuMuCCNtrk0pi  ) : return "numuCCNtrk0pi";   break;
-    case (ksNuMuCC3trkDelta) : return "numuCC3trkDelta"; break;
     case (ksNuECC0pi       ) : return "nueCC0pi";        break;
     case (ksNuECC1piC      ) : return "nueCC1piC";       break;
     case (ksNuECC1pi0      ) : return "nueCC1pi0";       break;
@@ -40,15 +39,12 @@ string util::AsString(Sample_t s)
     case (ksNC1piC         ) : return "NC1piC";          break; 
     case (ksNC1pi0         ) : return "NC1pi0";          break; 
     case (ksNCoth          ) : return "NCoth";           break; 
-    case (ksNuEEL          ) : return "nueEL";           break;
+    case (ksNuEELScat      ) : return "nueEL";           break;
     case (ksInvMuDecay     ) : return "invMuDecay";      break;
-#else
     case (ksNuMuCC2piC     ) : return "numuCC2piC";      break; 
     case (ksNuECC          ) : return "nueCCincl";       break;
     case (ksNC             ) : return "NCincl";          break; 
     case (ksNuMuCCWSgn     ) : return "numuCCinclWSgn";  break;
-#endif
-#ifdef VALOR_DUNE_FAR_DETECTOR
     case (ksNuMuCClow      ) : return "numuCClow";       break;
     case (ksNuMuCChigh     ) : return "numuCChigh";      break;
     case (ksNuMuBarCClow   ) : return "numubarCClow";    break;
@@ -61,7 +57,6 @@ string util::AsString(Sample_t s)
     case (ksNuTauCChigh    ) : return "nutauCChigh";     break;
     case (ksNuTauBarCClow  ) : return "nutaubarCClow";   break;
     case (ksNuTauBarCChigh ) : return "nutaubarCChigh";  break;
-#endif
     default                    : return "--"; 
   }
   return "";
@@ -75,13 +70,12 @@ string util::AsStringTeX(Sample_t s, bool root)
     case (ksNuMuCC         ) : name = "#nu_{#mu} CC inclusive";               break; 
     case (ksNuMuCC1trk0pi  ) : name = "#nu_{#mu} CC 1-track 0#pi";            break; 
     case (ksNuMuCC2trk0pi  ) : name = "#nu_{#mu} CC 2-track 0#pi";            break; 
+    case (ksNuMuCCNtrk0pi  ) : name = "#nu_{#mu} CC N-track 0#pi";            break; 
+    case (ksNuMuCC3trkDelta) : name = "#nu_{#mu} CC 3-track #Delta-enchanced";break; 
     case (ksNuMuCC1piC     ) : name = "#nu_{#mu} CC 1#pi^{#pm}";              break; 
     case (ksNuMuCC1pi0     ) : name = "#nu_{#mu} CC 1#pi^{0}";                break; 
     case (ksNuMuCC1piC1pi0 ) : name = "#nu_{#mu} CC 1#pi^{#pm} + 1#pi^{0}";   break; 
     case (ksNuMuCCoth      ) : name = "#nu_{#mu} CC other";                   break; 
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
-    case (ksNuMuCCNtrk0pi  ) : name = "#nu_{#mu} CC N-track 0#pi";            break; 
-    case (ksNuMuCC3trkDelta) : name = "#nu_{#mu} CC 3-track #Delta-enchanced";break; 
     case (ksNuECC0pi       ) : name = "#nu_{e} CC 0#pi";                      break;
     case (ksNuECC1piC      ) : name = "#nu_{e} CC 1#pi^{#pm}";                break;
     case (ksNuECC1pi0      ) : name = "#nu_{e} CC 1#pi^{0}";                  break;
@@ -94,15 +88,12 @@ string util::AsStringTeX(Sample_t s, bool root)
     case (ksNC1piC         ) : name = "NC 1#pi^{#pm}";                        break; 
     case (ksNC1pi0         ) : name = "NC 1#pi^{0}";                          break; 
     case (ksNCoth          ) : name = "NC other";                             break; 
-    case (ksNuEEL          ) : name = "#nu_{e} electron elastic scattering";  break; 
+    case (ksNuEELScat      ) : name = "#nu_{e} electron elastic scattering";  break; 
     case (ksInvMuDecay     ) : name = "Inverse muon decay" ;                  break;
-#else
     case (ksNuMuCC2piC     ) : name = "#nu_{#mu} CC 2#pi^{#pm}";              break; 
     case (ksNuECC          ) : name = "#nu_{e} CC inclusive";                 break;
     case (ksNuMuCCWSgn     ) : name = "Wrong sign #nu_{#mu} CC inclusive";    break;
     case (ksNC             ) : name = "NC inclusive";                         break; 
-#endif
-#ifdef VALOR_DUNE_FAR_DETECTOR
     case (ksNuMuCClow      ) : name = "#nu_{#mu} CC low-resolution";          break;
     case (ksNuMuCChigh     ) : name = "#nu_{#mu} CC high-resolution";         break;
     case (ksNuMuBarCClow   ) : name = "#bar{#nu}_{#mu} CC low-resolution";    break;
@@ -115,7 +106,6 @@ string util::AsStringTeX(Sample_t s, bool root)
     case (ksNuTauCChigh    ) : name = "#nu_{#tau} CC high-resolution";        break;
     case (ksNuTauBarCClow  ) : name = "#bar{#nu}_{#tau} CC low-resolution";   break;
     case (ksNuTauBarCChigh ) : name = "#bar{#nu}_{#tau} CC high-resolution";  break;
-#endif
     default                    : name = "--"; 
   }
 
@@ -134,9 +124,6 @@ bool util::IsFar(int is)
 //________________________________________________________________________________________
 bool util::IsFar(Sample_t s)
 {
-#ifndef VALOR_DUNE_FAR_DETECTOR
-  return false;
-#else
   switch(s) {
   case (ksNuMuCClow      ) :
   case (ksNuMuCChigh     ) :
@@ -153,7 +140,6 @@ bool util::IsFar(Sample_t s)
   default: return false;
   }
   return false; 
-#endif
 }
 
 //________________________________________________________________________________________
@@ -163,12 +149,11 @@ bool util::IsCC(Sample_t s)
     case (ksNuMuCC         ) :
     case (ksNuMuCC1trk0pi  ) :
     case (ksNuMuCC2trk0pi  ) :
+    case (ksNuMuCCNtrk0pi  ) :
+    case (ksNuMuCC3trkDelta) :
     case (ksNuMuCC1piC     ) :
     case (ksNuMuCC1pi0     ) :
     case (ksNuMuCC1piC1pi0 ) :
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH    
-    case (ksNuMuCCNtrk0pi  ) :
-    case (ksNuMuCC3trkDelta) :
     case (ksNuECC0pi       ) : 
     case (ksNuECC1piC      ) : 
     case (ksNuECC1pi0      ) : 
@@ -177,14 +162,11 @@ bool util::IsCC(Sample_t s)
     case (ksNuMuCCWSgn1piC ) : 
     case (ksNuMuCCWSgn1pi0 ) : 
     case (ksNuMuCCWSgnoth  ) : 
-    case (ksNuEEL          ) :
+    case (ksNuEELScat      ) :
     case (ksInvMuDecay     ) : 
-#else
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWSgn     ) : 
-#endif
-#ifdef VALOR_DUNE_FAR_DETECTOR
     case (ksNuMuCClow      ) : 
     case (ksNuMuCChigh     ) : 
     case (ksNuMuBarCClow   ) : 
@@ -197,43 +179,34 @@ bool util::IsCC(Sample_t s)
     case (ksNuTauCChigh    ) : 
     case (ksNuTauBarCClow  ) : 
     case (ksNuTauBarCChigh ) : 
-#endif
     case (ksNuMuCCoth      ) : return true; break;
 
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
     case (ksNC0pi          ) : 
     case (ksNC1piC         ) : 
     case (ksNC1pi0         ) : 
-    case (ksNCoth          ) : return false; break;
-#else
+    case (ksNCoth          ) : 
     case (ksNC             ) : return false; break;
-#endif
     default: return false; 
   }
   return false;
 }
 //________________________________________________________________________________________
-bool util::IsELike(Sample_t s)
+bool util::IsQELike(Sample_t s)
 {
   switch(s) {
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH    
     case (ksNuMuCCNtrk0pi  ) :
     case (ksNuECC0pi       ) : 
     case (ksNuMuCCWSgn0pi  ) : 
-    case (ksNuEEL          ) :
-#endif
-#ifdef VALOR_DUNE_FAR_DETECTOR
+    case (ksNuEELScat      ) :
     case (ksNuMuCChigh     ) : 
     case (ksNuMuBarCChigh  ) : 
     case (ksNuECChigh      ) : 
     case (ksNuEBarCChigh   ) : 
     case (ksNuTauCChigh    ) : 
     case (ksNuTauBarCChigh ) : 
-#endif
     case (ksNuMuCC1trk0pi  ) :
     case (ksNuMuCC2trk0pi  ) : return true; break;
 
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
     case (ksNuMuCC3trkDelta) :
     case (ksInvMuDecay     ) : 
     case (ksNuECC1piC      ) : 
@@ -246,20 +219,16 @@ bool util::IsELike(Sample_t s)
     case (ksNC1piC         ) : 
     case (ksNC1pi0         ) : 
     case (ksNCoth          ) : 
-#else
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWSgn     ) : 
     case (ksNC             ) : 
-#endif
-#ifdef VALOR_DUNE_FAR_DETECTOR
     case (ksNuMuCClow      ) : 
     case (ksNuMuBarCClow   ) : 
     case (ksNuECClow       ) : 
     case (ksNuEBarCClow    ) : 
     case (ksNuTauCClow     ) : 
     case (ksNuTauBarCClow  ) : 
-#endif
     case (ksNuMuCC         ) :
     case (ksNuMuCC1piC     ) :
     case (ksNuMuCC1pi0     ) :
@@ -280,7 +249,6 @@ bool util::IsNC(Sample_t s)
     case (ksNuMuCC1piC     ) :
     case (ksNuMuCC1pi0     ) :
     case (ksNuMuCC1piC1pi0 ) :
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH    
     case (ksNuMuCCNtrk0pi  ) :
     case (ksNuMuCC3trkDelta) :
     case (ksNuECC0pi       ) : 
@@ -291,14 +259,11 @@ bool util::IsNC(Sample_t s)
     case (ksNuMuCCWSgn1piC ) : 
     case (ksNuMuCCWSgn1pi0 ) : 
     case (ksNuMuCCWSgnoth  ) : 
-    case (ksNuEEL          ) :
+    case (ksNuEELScat      ) :
     case (ksInvMuDecay     ) : 
-#else
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWSgn     ) : 
-#endif
-#ifdef VALOR_DUNE_FAR_DETECTOR
     case (ksNuMuCClow      ) : 
     case (ksNuMuCChigh     ) : 
     case (ksNuMuBarCClow   ) : 
@@ -311,18 +276,13 @@ bool util::IsNC(Sample_t s)
     case (ksNuTauCChigh    ) : 
     case (ksNuTauBarCClow  ) : 
     case (ksNuTauBarCChigh ) : 
-#endif
     case (ksNuMuCCoth      ) : return false; break;
 
-#ifdef VALOR_DUNE_THIRD_PASS_THROUGH
     case (ksNC0pi          ) : 
     case (ksNC1piC         ) : 
     case (ksNC1pi0         ) : 
-    case (ksNCoth          ) : return true; break;
-#else
+    case (ksNCoth          ) : 
     case (ksNC             ) : return true; break;
-#endif
-
     default: return false; 
   }
   return false;
@@ -332,7 +292,7 @@ Sample_t util::SampleFromInt(int s)
 {
 // Cast an integer to Sample_t, but with boundary check
 //             [first]                  [last]
-  if(s >= (int)ksNuMuCC && s <= (int) ksNCoth) return (Sample_t)s;
+  if(s >= (int)ksNuMuCC && s <= (int) ksNuTauBarCChigh) return (Sample_t)s;
   return ksUndefined;
 }
 //________________________________________________________________________________________

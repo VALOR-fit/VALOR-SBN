@@ -95,7 +95,7 @@ void valor::util::ArrIdx::Init(void)
     Sample_t s = kSample[ib][is];
     if(s == ksUndefined) continue;
     for(int im = 0; im < kNReacModes; im++) {
-      ReacMode_t m = util::ReacModeFromInt(is,im);
+      ReacMode_t m = kReactionModes[is][im];
         if(m == kmUndefined) continue;
         fReacModeIdx [s][m] = im;
         LOG("ArrIdx",pINFO)
