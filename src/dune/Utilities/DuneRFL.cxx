@@ -94,10 +94,8 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[R
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
   fModes = new ReacMode_t[fNModes];
-  for (int i = 0; i < fNModes; i++)
-    fModes[i] = util::ReacModeFromInt(ArrIdx::Instance()->SampleIdx(b,s), i);
-  //  memcpy(fModes,util::ReacModeFromInt(ArrIdx::Instance()->SampleIdx(b,s)), fNParams*sizeof(ReacMode_t));
-  
+  memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(b,s)], fNParams*sizeof(ReacMode_t));
+    
   // Fill parameter to index
   for (int ip = 0 ; ip < conv::knppmax ; ip++ ) {
     conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
@@ -259,7 +257,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   int n_splines_neg = 0;
   
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
-    conv::ReacMode_t m = util::ReacModeFromInt(isample,imode);
+    conv::ReacMode_t m = conv::kReactionModes[isample][imode];
     if(m == conv::kmUndefined) continue;
     
     const int true1_bins = util::NumEtrueBinsXsec (fSample);
