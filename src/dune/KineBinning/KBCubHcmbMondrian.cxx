@@ -16,32 +16,32 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/VArray/VALORArray.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Env.h"
-#include "dune/Binning/KBCubHcmbEdge2Edge.h"
-#include "dune/Binning/KBCubHcmbArbitrary.h"
+#include "dune/KineBinning/KBCubHcmbEdge2Edge.h"
+#include "dune/KineBinning/KBCubHcmbMondrian.h"
 
 using namespace valor;
 
-ClassImp(KBCubHcmbArbitrary)
+ClassImp(KBCubHcmbMondrian)
 
 //________________________________________________________________________________________
-KBCubHcmbArbitrary::KBCubHcmbArbitrary() :
+KBCubHcmbMondrian::KBCubHcmbMondrian() :
 TNamed()
 {
   this->Init();
 }
 //________________________________________________________________________________________
-KBCubHcmbArbitrary::KBCubHcmbArbitrary(string name, string title) :
+KBCubHcmbMondrian::KBCubHcmbMondrian(string name, string title) :
 TNamed(name.c_str(), title.c_str())
 {
   this->Init();
 }
 //________________________________________________________________________________________
-KBCubHcmbArbitrary::~KBCubHcmbArbitrary() 
+KBCubHcmbMondrian::~KBCubHcmbMondrian() 
 {
   this->CleanUp();
 }
 //________________________________________________________________________________________
-bool KBCubHcmbArbitrary::Read(string file)
+bool KBCubHcmbMondrian::Read(string file)
 {
   this->CleanUp();
 
@@ -97,9 +97,9 @@ bool KBCubHcmbArbitrary::Read(string file)
 
   //
   string type = util::XML2String(xml,root_node,"type");
-  if(type != "arbitrary") {
+  if(type != "mondrian") {
     LOG("Binning", pERROR)
-      << "Input binning scheme [" << type << "] not `arbitrary'";
+      << "Input binning scheme [" << type << "] not `mondrian'";
     return false;
   }
 
@@ -147,30 +147,30 @@ bool KBCubHcmbArbitrary::Read(string file)
   return true;
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::Minimum(unsigned int dimension) const
+double KBCubHcmbMondrian::Minimum(unsigned int dimension) const
 {
   return fMinimum[dimension];
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::Minimum(conv::KineVar_t kv) const
+double KBCubHcmbMondrian::Minimum(conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->Minimum(dimension);
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::Maximum(unsigned int dimension) const
+double KBCubHcmbMondrian::Maximum(unsigned int dimension) const
 {
   assert(dimension < fNDimensions);
   return fMaximum[dimension];
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::Maximum(conv::KineVar_t kv) const
+double KBCubHcmbMondrian::Maximum(conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->Maximum(dimension);
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, unsigned int dimension) const
+double KBCubHcmbMondrian::BinMinimum(unsigned int bin, unsigned int dimension) const
 {
   assert(bin < fNBins);
   assert(dimension < fNDimensions);
@@ -178,13 +178,13 @@ double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, unsigned int dimension) 
   return fBinEdges[idx];
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, conv::KineVar_t kv) const
+double KBCubHcmbMondrian::BinMinimum(unsigned int bin, conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->BinMinimum(bin,dimension);
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, unsigned int dimension) const
+double KBCubHcmbMondrian::BinMaximum(unsigned int bin, unsigned int dimension) const
 {
   assert(bin < fNBins);
   assert(dimension < fNDimensions);
@@ -192,13 +192,13 @@ double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, unsigned int dimension) 
   return fBinEdges[idx];
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, conv::KineVar_t kv) const
+double KBCubHcmbMondrian::BinMaximum(unsigned int bin, conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->BinMaximum(bin,dimension);
 }
 //________________________________________________________________________________________
-vector<double> KBCubHcmbArbitrary::BinRange(
+vector<double> KBCubHcmbMondrian::BinRange(
   unsigned int bin, unsigned int dimension) const
 {
   vector<double> range(2);
@@ -210,40 +210,40 @@ vector<double> KBCubHcmbArbitrary::BinRange(
   return range;
 }
 //________________________________________________________________________________________
-vector<double> KBCubHcmbArbitrary::BinRange(
+vector<double> KBCubHcmbMondrian::BinRange(
   unsigned int bin, conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->BinRange(bin,dimension);
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinWidth(unsigned int bin, unsigned int dimension) const
+double KBCubHcmbMondrian::BinWidth(unsigned int bin, unsigned int dimension) const
 {
   vector<double> range = this->BinRange(bin,dimension);
   double width = range[1] - range[0];
   return width;
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinWidth(unsigned int bin, conv::KineVar_t kv) const
+double KBCubHcmbMondrian::BinWidth(unsigned int bin, conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->BinWidth(bin,dimension);
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinCentre(unsigned int bin, unsigned int dimension) const
+double KBCubHcmbMondrian::BinCentre(unsigned int bin, unsigned int dimension) const
 {
   vector<double> range = this->BinRange(bin,dimension);
   double centre = 0.5 * (range[1] + range[0]);
   return centre;
 }
 //________________________________________________________________________________________
-double KBCubHcmbArbitrary::BinCentre(unsigned int bin, conv::KineVar_t kv) const
+double KBCubHcmbMondrian::BinCentre(unsigned int bin, conv::KineVar_t kv) const
 {
   unsigned int dimension = this->Dimension(kv);
   return this->BinCentre(bin,dimension);
 }
 //________________________________________________________________________________________
-int KBCubHcmbArbitrary::FindBin(vector<double> & xarr)
+int KBCubHcmbMondrian::FindBin(vector<double> & xarr)
 {
   assert(xarr.size() == fNDimensions);
 
@@ -265,18 +265,18 @@ int KBCubHcmbArbitrary::FindBin(vector<double> & xarr)
   return -1;
 }
 //________________________________________________________________________________________
-void KBCubHcmbArbitrary::UseEdge2EdgeBinning(
+void KBCubHcmbMondrian::UseEdge2EdgeBinning(
   const KBCubHcmbEdge2Edge * kbe2e)
 {
   fKBE2E = kbe2e;
 }
 //________________________________________________________________________________________
-int KBCubHcmbArbitrary::BinMapping(vector<int> & bin_in_alt_simple_scheme)
+int KBCubHcmbMondrian::BinMapping(vector<int> & bin_in_alt_simple_scheme)
 {
   return -1;
 }
 //________________________________________________________________________________________
-unsigned int KBCubHcmbArbitrary::Dimension(conv::KineVar_t kv) const
+unsigned int KBCubHcmbMondrian::Dimension(conv::KineVar_t kv) const
 {
   map<conv::KineVar_t,unsigned int>::const_iterator it = fKineVar2Dim.find(kv);
   assert(it != fKineVar2Dim.end());
@@ -284,14 +284,14 @@ unsigned int KBCubHcmbArbitrary::Dimension(conv::KineVar_t kv) const
   return dimension;
 }
 //________________________________________________________________________________________
-conv::KineVar_t KBCubHcmbArbitrary::KineVar(unsigned int dimension)
+conv::KineVar_t KBCubHcmbMondrian::KineVar(unsigned int dimension)
 {
   if(dimension < fNDimensions) return fKineVars[dimension];
 
   return conv::kvUndefined;
 }
 //________________________________________________________________________________________
-void KBCubHcmbArbitrary::Init(void)
+void KBCubHcmbMondrian::Init(void)
 {
   fKineSpace = conv::kspUndefined;
   fNDimensions = 0;
@@ -303,7 +303,7 @@ void KBCubHcmbArbitrary::Init(void)
   fMaximum.clear();
 }
 //________________________________________________________________________________________
-void KBCubHcmbArbitrary::CleanUp(void)
+void KBCubHcmbMondrian::CleanUp(void)
 {
 
 

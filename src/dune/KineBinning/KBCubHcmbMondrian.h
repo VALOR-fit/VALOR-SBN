@@ -1,7 +1,7 @@
 //____________________________________________________________________________ 
 /*!
 
-\class     valor::KBCubHcmbArbitrary
+\class     valor::KBCubHcmbMondrian
 
 \brief     Multi-dimensional kinematical binning 
            Each bin is a `cuboid'.
@@ -9,6 +9,7 @@
            individually for each bin.
            The only requirement is that the set of bins spans the entire space
            without overlaps or gaps.
+           See Mondrian, https://en.wikipedia.org/wiki/Piet_Mondrian
 
            The binning is read from XML files.
            The XML schema is given by the following example:
@@ -21,7 +22,7 @@
                  Ereco,yreco  <!-- all KineSpace_t enums are supported -->
               </space>
               <type>
-                 arbitrary
+                 mondrian
               </type>
               <nbins> 
                  12 
@@ -58,8 +59,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_kinematical_binning_cuboid_honeycomb_arbitrary_h_
-#define _valor_kinematical_binning_cuboid_honeycomb_arbitrary_h_
+#ifndef _valor_kinematical_binning_cuboid_honeycomb_mondrian_h_
+#define _valor_kinematical_binning_cuboid_honeycomb_mondrian_h_
 
 #include <vector>
 #include <map>
@@ -77,12 +78,12 @@ namespace valor {
 
 class KBCubHcmbEdge2Edge;
 
-class KBCubHcmbArbitrary: public TNamed
+class KBCubHcmbMondrian: public TNamed
 {
 public:
-  KBCubHcmbArbitrary();
-  KBCubHcmbArbitrary(string name, string title);
-  virtual ~KBCubHcmbArbitrary();
+  KBCubHcmbMondrian();
+  KBCubHcmbMondrian(string name, string title);
+  virtual ~KBCubHcmbMondrian();
 
   // Read binning from file
   bool Read(string file);
@@ -152,7 +153,7 @@ protected:
   vector<double>                      fMaximum;      //
   const KBCubHcmbEdge2Edge *          fKBE2E;        //
 
-ClassDef(KBCubHcmbArbitrary, 1)
+ClassDef(KBCubHcmbMondrian, 1)
 
 };
 

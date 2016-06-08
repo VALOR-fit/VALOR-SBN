@@ -7,8 +7,8 @@
            Binning in each dimension can be of fixed or variable width, but
            independent of the other dimensions.
            Each bin is a `cuboid'.
-           (In 2D, adjacent bins share one full side, hence the name.
-            See `edge-to-edge tiling' in https://en.wikipedia.org/wiki/Tessellation)
+           In 2D, adjacent bins share one full side, hence the name.
+           See `edge-to-edge tiling', https://en.wikipedia.org/wiki/Tessellation
 
            The binning is read from XML files.
            The XML schema is given by the following example:

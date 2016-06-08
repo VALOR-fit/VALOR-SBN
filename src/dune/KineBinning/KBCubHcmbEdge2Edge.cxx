@@ -16,7 +16,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/VArray/VALORArray.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Env.h"
-#include "dune/Binning/KBCubHcmbEdge2Edge.h"
+#include "dune/KineBinning/KBCubHcmbEdge2Edge.h"
 
 using namespace valor;
 
