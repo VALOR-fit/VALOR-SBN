@@ -277,6 +277,65 @@ double KBCubHcmbEdge2Edge::BinMaximum(
   return bin_edges[bin+1];
 }
 //________________________________________________________________________________________
+vector<double> KBCubHcmbEdge2Edge::BinRange(
+  unsigned int linearized_bin, unsigned int dimension) const
+{
+  vector<double> range(2);
+  assert(dimension < fNDimensions);
+  vector<unsigned int> binarr = this->BinArr(linearized_bin);
+  unsigned int bin = binarr[dimension];
+  const double * bin_edges = this->BinEdgeArr(dimension);
+  range[0] = bin_edges[bin];
+  range[1] = bin_edges[bin+1];
+  return range;
+}
+//________________________________________________________________________________________
+vector<double> KBCubHcmbEdge2Edge::BinRange(
+  unsigned int linearized_bin, conv::KineVar_t kv) const
+{
+  vector<double> range(2);
+  unsigned int dimension = this->Dimension(kv);
+  assert(dimension < fNDimensions);
+  vector<unsigned int> binarr = this->BinArr(linearized_bin);
+  unsigned int bin = binarr[dimension];
+  const double * bin_edges = this->BinEdgeArr(dimension);
+  range[0] = bin_edges[bin];
+  range[1] = bin_edges[bin+1];
+  return range;
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::BinWidth(
+  unsigned int linearized_bin, unsigned int dimension) const
+{
+  vector<double> range = this->BinRange(linearized_bin, dimension);
+  double width = range[1] - range[0];
+  return width;
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::BinWidth(
+  unsigned int linearized_bin, conv::KineVar_t kv) const
+{
+  vector<double> range = this->BinRange(linearized_bin, kv);
+  double width = range[1] - range[0];
+  return width;
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::BinCentre(
+  unsigned int linearized_bin, unsigned int dimension) const
+{
+  vector<double> range = this->BinRange(linearized_bin, dimension);
+  double centre = 0.5 * (range[1] + range[0]);
+  return centre;
+}
+//________________________________________________________________________________________
+double KBCubHcmbEdge2Edge::BinCentre(
+  unsigned int linearized_bin, conv::KineVar_t kv) const
+{
+  vector<double> range = this->BinRange(linearized_bin, kv);
+  double centre = 0.5 * (range[1] + range[0]);
+  return centre;
+}
+//________________________________________________________________________________________
 const double * KBCubHcmbEdge2Edge::BinEdgeArr(unsigned int dimension) const
 {
   assert(dimension < fNDimensions);
