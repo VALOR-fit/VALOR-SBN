@@ -94,8 +94,6 @@ bool KBCubHcmbArbitrary::Read(string file)
   }
   fMinimum.reserve(fNDimensions);
   fMaximum.reserve(fNDimensions);
-  std::fill(fMinimum.begin(), fMinimum.end(), +9999999);
-  std::fill(fMaximum.begin(), fMaximum.end(), -9999999);
 
   //
   string type = util::XML2String(xml,root_node,"type");
@@ -136,8 +134,13 @@ bool KBCubHcmbArbitrary::Read(string file)
          LOG("Binning", pNOTICE) 
             << "\t Dimension: " << idim 
             << " -> [" << min << ", " << max << "]";
-         fMinimum[idim] = TMath::Min(fMinimum[idim], min);
-         fMaximum[idim] = TMath::Max(fMaximum[idim], max);
+         if(ibin == 0) {
+           fMinimum[idim] = min;
+           fMaximum[idim] = max;
+         } else {
+           fMinimum[idim] = TMath::Min(fMinimum[idim], min);
+           fMaximum[idim] = TMath::Max(fMaximum[idim], max);
+         }
      }
   }
 
@@ -257,6 +260,7 @@ void KBCubHcmbArbitrary::Init(void)
 //________________________________________________________________________________________
 void KBCubHcmbArbitrary::CleanUp(void)
 {
+
 
   this->Init();
 }
