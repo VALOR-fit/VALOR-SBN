@@ -128,16 +128,15 @@ protected:
   void Init    (void);
   void CleanUp (void);
 
-  conv::KineSpace_t                  fKineSpace;    // kinematical space
-  unsigned int                       fNDimensions;  // number of dimensions
-  vector<conv::KineVar_t>            fKineVars;     // kinematical variables in given space
-  map<conv::KineVar_t, unsigned int> fKineVar2Dim;  // kinematical variable -> dimension
-  unsigned int                       fNBins;        // number of bins
-  map<unsigned int, vector<double> > fBinMinimum;   // xmin,ymin,zmin,... for each bin
-  map<unsigned int, vector<double> > fBinMaximum;   // xmax,ymax,zmax,... for each bin
-  vector<double>                     fMinimum;      //
-  vector<double>                     fMaximum;      //
-  const KBCubHcmbEdge2Edge *         fKBE2E;        //
+  conv::KineSpace_t                   fKineSpace;    // kinematical space
+  unsigned int                        fNDimensions;  // number of dimensions
+  vector<conv::KineVar_t>             fKineVars;     // kinematical variables in given space
+  map<conv::KineVar_t, unsigned int>  fKineVar2Dim;  // kinematical variable -> dimension
+  unsigned int                        fNBins;        // number of bins
+  vector<double>                      fBinEdges;     // (xmin,xmax,ymin,ymax,...)_bin0,(xmin,xmax,ymin,ymax,...)_bin1,... 
+  vector<double>                      fMinimum;      //
+  vector<double>                      fMaximum;      //
+  const KBCubHcmbEdge2Edge *          fKBE2E;        //
 
 ClassDef(KBCubHcmbArbitrary, 1)
 

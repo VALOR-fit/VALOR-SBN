@@ -80,8 +80,13 @@ bool KBCubHcmbArbitrary::Read(string file)
       << "Undefined kinematical space: " << space;
     return false;
   }
+  LOG("Binning", pNOTICE) 
+    << "Kinematic space: " << util::AsString(fKineSpace);
+
   //
   fNDimensions = util::NDim(fKineSpace);
+  LOG("Binning", pNOTICE) 
+     << "Number of dimensions = " << fNDimensions;
   fKineVars    = util::KineVar(fKineSpace);
   for(unsigned int i = 0; i < fNDimensions; i++) {
     conv::KineVar_t kv = fKineVars[i];
@@ -109,33 +114,31 @@ bool KBCubHcmbArbitrary::Read(string file)
   fNBins = (unsigned int) nbins;
   LOG("Binning", pNOTICE) << "Number of bins = " << fNBins;
 
-  //
+  fBinEdges.reserve(fNBins * fNDimensions * 2);
+
+  unsigned int l = 0;
   for(unsigned int ibin = 0; ibin < fNBins; ibin++) {
      LOG("Binning", pNOTICE) << "Reading edges of bin: " << ibin;
      vector<double> edges = util::XML2DblArray(
                  xml,root_node,Form("bin_%d",ibin));
-      if(edges.size() != 2*fNDimensions) {
+     if(edges.size() != 2*fNDimensions) {
          LOG("Binning", pERROR)
            << edges.size() << " edges were specified for "
            << "a cuboid bin in " << fNDimensions << " dimensions";
          return false;
-      }
-      vector<double> min;
-      vector<double> max;
-      min.reserve(fNDimensions);
-      max.reserve(fNDimensions);
-      unsigned int k = 0;
-      for(unsigned int idim = 0; idim < fNDimensions; idim++) {
-         min[idim] = edges[k++];
-         max[idim] = edges[k++];
+     }
+     unsigned int k = 0;
+     for(unsigned int idim = 0; idim < fNDimensions; idim++) {
+         double min = edges[k++];
+         double max = edges[k++];
+         fBinEdges[l++] = min;
+         fBinEdges[l++] = max;
          LOG("Binning", pNOTICE) 
             << "\t Dimension: " << idim 
-            << " -> [" << min[idim] << ", " << max[idim] << "]";
-         fMinimum[idim] = TMath::Min(fMinimum[idim], min[idim]);
-         fMaximum[idim] = TMath::Max(fMaximum[idim], max[idim]);
-      }
-      fBinMinimum[ibin] = min;
-      fBinMaximum[ibin] = max;
+            << " -> [" << min << ", " << max << "]";
+         fMinimum[idim] = TMath::Min(fMinimum[idim], min);
+         fMaximum[idim] = TMath::Max(fMaximum[idim], max);
+     }
   }
 
   return true;
@@ -166,10 +169,10 @@ double KBCubHcmbArbitrary::Maximum(conv::KineVar_t kv) const
 //________________________________________________________________________________________
 double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, unsigned int dimension) const
 {
-  map<unsigned int, vector<double> >::const_iterator it = fBinMinimum.find(bin);
-  assert(it != fBinMaximum.end());
+  assert(bin < fNBins);
   assert(dimension < fNDimensions);
-  return (it->second)[dimension];
+  unsigned int idx = (2 * fNDimensions * bin) + (2 * dimension);
+  return fBinEdges[idx];
 }
 //________________________________________________________________________________________
 double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, conv::KineVar_t kv) const
@@ -180,10 +183,10 @@ double KBCubHcmbArbitrary::BinMinimum(unsigned int bin, conv::KineVar_t kv) cons
 //________________________________________________________________________________________
 double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, unsigned int dimension) const
 {
-  map<unsigned int, vector<double> >::const_iterator it = fBinMaximum.find(bin);
-  assert(it != fBinMaximum.end());
+  assert(bin < fNBins);
   assert(dimension < fNDimensions);
-  return (it->second)[dimension];
+  unsigned int idx = (2 * fNDimensions * bin) + (2 * dimension) + 1;
+  return fBinEdges[idx];
 }
 //________________________________________________________________________________________
 double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, conv::KineVar_t kv) const
@@ -200,8 +203,9 @@ int KBCubHcmbArbitrary::FindBin(vector<double> & xarr)
      bool inside = true;     
      for(unsigned int idim = 0; idim < fNDimensions; idim++) {
         double x   = xarr[idim];
-        double min = fBinMinimum[ibin][idim];
-        double max = fBinMaximum[ibin][idim];
+        unsigned int idx = (2 * fNDimensions * ibin) + (2 * idim);
+        double min = fBinEdges[idx];
+        double max = fBinEdges[idx+1];
         inside = inside && (x >= min && x < max);
         if(!inside) break;
      }  
@@ -246,10 +250,9 @@ void KBCubHcmbArbitrary::Init(void)
   fKineVars.clear();
   fKineVar2Dim.clear();
   fNBins = 0;
+  fBinEdges.clear();
   fMinimum.clear();
   fMaximum.clear();
-  fBinMinimum.clear();
-  fBinMaximum.clear();
 }
 //________________________________________________________________________________________
 void KBCubHcmbArbitrary::CleanUp(void)
