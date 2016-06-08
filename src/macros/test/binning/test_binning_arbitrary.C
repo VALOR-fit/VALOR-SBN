@@ -33,17 +33,10 @@ void test_binning_arbitrary(const char * binning_file)
        if(idim == 0) cout << "\t\t Edges: ";
        cout << util::AsString(kv) << " = [" 
             << binning.BinMinimum(ibin,idim) << ", " 
-            << binning.BinMaximum(ibin,idim) << "] "
+            << binning.BinMaximum(ibin,idim) << "] ";
        if(idim < ndim-1) cout << " - ";
      }
      cout << endl;
-  }
-
-/*
-     unsigned int idim_test = binning.Dimension(kv);
-     assert(idim == idim_test);
-     unsigned int nbins_test = binning.NBins(kv);
-     assert(nbins == nbins_test);
   }
 
   cout << "Testing bin finding: " << endl;
@@ -51,15 +44,50 @@ void test_binning_arbitrary(const char * binning_file)
   TRandom3 rand(0);
   for(unsigned int ip = 0; ip < np; ip++) {
      cout << "\t Random point = " << ip << endl;
+     vector<double> xarr(ndim);
      for(unsigned int idim = 0; idim < ndim; idim++) {
         conv::KineVar_t kv = binning.KineVar(idim);
         double min = binning.Minimum(idim);
         double max = binning.Maximum(idim);
         double x = min + (max - min) * rand.Uniform();
-        unsigned int bin = binning.FindBin(x,idim);
-        cout << "\t\t " << util::AsString(kv) << " = " << x << " --> bin = " << bin << endl;
+        xarr[idim] = x;
+        if(idim == 0) cout << "\t\t (";
+        cout << util::AsString(kv) << " = " << x;
+        if(idim < ndim-1) cout << ", ";        
+     }
+     cout << ") --> bin = ";
+     unsigned int bin = binning.FindBin(xarr);
+     cout << bin << endl;
+  }
+
+  // visualize binning in some usual casesø
+  if(ndim == 2) {
+     double xmin = binning.Minimum(0);
+     double xmax = binning.Maximum(0);
+     double ymin = binning.Minimum(1);
+     double ymax = binning.Maximum(1);
+     TCanvas * c = new TCanvas;     
+     TH2F * h = (TH2F*)c->DrawFrame(xmin,ymin,xmax,ymax);
+     h->GetXaxis()->SetTitle( util::AsString(binning.KineVar(0)).c_str() );
+     h->GetYaxis()->SetTitle( util::AsString(binning.KineVar(1)).c_str() );
+     h->Draw();
+     for(unsigned int ibin = 0; ibin < nbin; ibin++) {
+        double x0 = binning.BinMinimum(ibin,0);
+        double x1 = binning.BinMaximum(ibin,0);
+        double y0 = binning.BinMinimum(ibin,1);
+        double y1 = binning.BinMaximum(ibin,1);
+        TLine * lxl = new TLine(x0,y0,x1,y0);
+        TLine * lxh = new TLine(x0,y1,x1,y1);
+        TLine * lyl = new TLine(x0,y0,x0,y1);
+        TLine * lyh = new TLine(x1,y0,x1,y1);
+        lxl->Draw();
+        lxh->Draw();
+        lyl->Draw();
+        lyh->Draw();
+        TLatex * label = new TLatex(x0,y0,Form("%d",ibin));
+        label->SetTextSize(0.05);
+        label->SetTextColor(kRed);
+        label->Draw();
      }
   }
-*/
-
 }
