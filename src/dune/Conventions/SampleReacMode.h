@@ -36,7 +36,7 @@ namespace conv {
 // included in the analysis
 // ---------------------------------------------------------------------------
 //
-   
+  
   static const ReacMode_t kReactionModes[kNSamples][kNReacModes]  = 
     {
       // sample: ksNuMuCC1trk0pi
@@ -724,7 +724,7 @@ namespace conv {
   }
 
 };
-
+  
 
 //
 // ---------------------------------------------------------------------------
