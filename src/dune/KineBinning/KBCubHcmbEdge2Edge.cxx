@@ -320,6 +320,15 @@ double KBCubHcmbEdge2Edge::BinWidth(
   return width;
 }
 //________________________________________________________________________________________
+vector<double> KBCubHcmbEdge2Edge::BinWidth(unsigned int linearized_bin) const
+{
+  vector<double> bwidth(fNDimensions);
+  for(unsigned int idim = 0; idim < fNDimensions; idim++) {
+    bwidth[idim] = this->BinWidth(linearized_bin, idim);
+  }
+  return bwidth;
+}
+//________________________________________________________________________________________
 double KBCubHcmbEdge2Edge::BinCentre(
   unsigned int linearized_bin, unsigned int dimension) const
 {
@@ -333,6 +342,15 @@ double KBCubHcmbEdge2Edge::BinCentre(
 {
   vector<double> range = this->BinRange(linearized_bin, kv);
   double centre = 0.5 * (range[1] + range[0]);
+  return centre;
+}
+//________________________________________________________________________________________
+vector<double> KBCubHcmbEdge2Edge::BinCentre(unsigned int linearized_bin) const
+{
+  vector<double> centre(fNDimensions);
+  for(unsigned int idim = 0; idim < fNDimensions; idim++) {
+    centre[idim] = this->BinCentre(linearized_bin, idim);
+  }
   return centre;
 }
 //________________________________________________________________________________________

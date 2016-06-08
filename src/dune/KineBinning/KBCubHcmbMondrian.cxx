@@ -19,6 +19,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "dune/KineBinning/KBCubHcmbEdge2Edge.h"
 #include "dune/KineBinning/KBCubHcmbMondrian.h"
 
+using std::pair;
 using namespace valor;
 
 ClassImp(KBCubHcmbMondrian)
@@ -230,6 +231,15 @@ double KBCubHcmbMondrian::BinWidth(unsigned int bin, conv::KineVar_t kv) const
   return this->BinWidth(bin,dimension);
 }
 //________________________________________________________________________________________
+vector<double> KBCubHcmbMondrian::BinWidth(unsigned int bin) const
+{
+ vector<double> bwidth(fNDimensions);
+  for(unsigned int idim = 0; idim < fNDimensions; idim++) {
+    bwidth[idim] = this->BinWidth(bin, idim);
+  }
+  return bwidth;
+}
+//________________________________________________________________________________________
 double KBCubHcmbMondrian::BinCentre(unsigned int bin, unsigned int dimension) const
 {
   vector<double> range = this->BinRange(bin,dimension);
@@ -243,7 +253,16 @@ double KBCubHcmbMondrian::BinCentre(unsigned int bin, conv::KineVar_t kv) const
   return this->BinCentre(bin,dimension);
 }
 //________________________________________________________________________________________
-int KBCubHcmbMondrian::FindBin(vector<double> & xarr)
+vector<double> KBCubHcmbMondrian::BinCentre(unsigned int bin) const
+{
+ vector<double> centre(fNDimensions);
+  for(unsigned int idim = 0; idim < fNDimensions; idim++) {
+    centre[idim] = this->BinCentre(bin, idim);
+  }
+  return centre;
+}
+//________________________________________________________________________________________
+unsigned int KBCubHcmbMondrian::FindBin(vector<double> & xarr)
 {
   assert(xarr.size() == fNDimensions);
 
@@ -262,18 +281,34 @@ int KBCubHcmbMondrian::FindBin(vector<double> & xarr)
      }
   }
 
-  return -1;
+  LOG("Binning", pERROR) << "Mondrian binning doesn't span all space?";
+  exit(1);
 }
 //________________________________________________________________________________________
 void KBCubHcmbMondrian::UseEdge2EdgeBinning(
   const KBCubHcmbEdge2Edge * kbe2e)
 {
   fKBE2E = kbe2e;
+
+  // Start working out the mapping between the mondrian <-> edge-to-edge schemes
+  unsigned int ne2ebins = fKBE2E->NBins();
+  for(unsigned int e2e_lin_bin = 0; e2e_lin_bin < ne2ebins; e2e_lin_bin++) {
+    vector<double> xarr = fKBE2E->BinCentre(e2e_lin_bin);
+    unsigned int mondrian_bin = this->FindBin(xarr);
+
+    fBinMondrianFromE2E.insert( 
+       pair<unsigned int,unsigned int>(e2e_lin_bin, mondrian_bin) );
+    fBinMondrianToE2E.insert(
+       pair<unsigned int,unsigned int>(mondrian_bin, e2e_lin_bin) );
+  }
+
 }
 //________________________________________________________________________________________
-int KBCubHcmbMondrian::BinMapping(vector<int> & bin_in_alt_simple_scheme)
+unsigned int KBCubHcmbMondrian::MapFromLinearizedE2E(unsigned int e2e_lin_bin) const
 {
-  return -1;
+  map<unsigned int, unsigned int>::const_iterator it = fBinMondrianFromE2E.find(e2e_lin_bin);
+  assert(it != fBinMondrianFromE2E.end());
+  return it->second;
 }
 //________________________________________________________________________________________
 unsigned int KBCubHcmbMondrian::Dimension(conv::KineVar_t kv) const
@@ -301,6 +336,8 @@ void KBCubHcmbMondrian::Init(void)
   fBinEdges.clear();
   fMinimum.clear();
   fMaximum.clear();
+  fBinMondrianFromE2E.clear();
+  fBinMondrianToE2E.clear();
 }
 //________________________________________________________________________________________
 void KBCubHcmbMondrian::CleanUp(void)

@@ -125,12 +125,14 @@ public:
   vector<double> BinRange (unsigned int linearized_bin, conv::KineVar_t kv     ) const;
 
   // Bin width
-  double BinWidth (unsigned int linearized_bin, unsigned int dimension ) const;
-  double BinWidth (unsigned int linearized_bin, conv::KineVar_t kv     ) const;
+  double         BinWidth (unsigned int linearized_bin, unsigned int dimension ) const;
+  double         BinWidth (unsigned int linearized_bin, conv::KineVar_t kv     ) const;
+  vector<double> BinWidth (unsigned int linearized_bin                         ) const;
 
   // Bin centre values
-  double BinCentre (unsigned int linearized_bin, unsigned int dimension ) const;
-  double BinCentre (unsigned int linearized_bin, conv::KineVar_t kv     ) const;
+  double         BinCentre (unsigned int linearized_bin, unsigned int dimension ) const;
+  double         BinCentre (unsigned int linearized_bin, conv::KineVar_t kv     ) const;
+  vector<double> BinCentre (unsigned int linearized_bin                         ) const;
 
   // Bin edge arrays by dimension or kinematical variable
   const double *      BinEdgeArr    (unsigned int dimension ) const;
