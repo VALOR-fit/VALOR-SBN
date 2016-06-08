@@ -115,6 +115,18 @@ public:
   double BinMaximum (unsigned int bin, unsigned int dimension ) const;
   double BinMaximum (unsigned int bin, conv::KineVar_t kv     ) const;
 
+  // Bin range
+  vector<double> BinRange (unsigned int bin, unsigned int dimension ) const;
+  vector<double> BinRange (unsigned int bin, conv::KineVar_t kv     ) const;
+
+  // Bin width
+  double BinWidth (unsigned int bin, unsigned int dimension ) const;
+  double BinWidth (unsigned int bin, conv::KineVar_t kv     ) const;
+
+  // Bin centre
+  double BinCentre (unsigned int bin, unsigned int dimension ) const;
+  double BinCentre (unsigned int bin, conv::KineVar_t kv     ) const;
+
   // Find bin
   int FindBin (vector<double> & xarr);
 

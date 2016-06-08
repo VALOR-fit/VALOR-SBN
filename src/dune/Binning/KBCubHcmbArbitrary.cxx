@@ -198,6 +198,51 @@ double KBCubHcmbArbitrary::BinMaximum(unsigned int bin, conv::KineVar_t kv) cons
   return this->BinMaximum(bin,dimension);
 }
 //________________________________________________________________________________________
+vector<double> KBCubHcmbArbitrary::BinRange(
+  unsigned int bin, unsigned int dimension) const
+{
+  vector<double> range(2);
+  assert(bin < fNBins);
+  assert(dimension < fNDimensions);
+  unsigned int idx_base = (2 * fNDimensions * bin) + (2 * dimension);
+  range[0] = fBinEdges[idx_base];
+  range[1] = fBinEdges[idx_base+1];
+  return range;
+}
+//________________________________________________________________________________________
+vector<double> KBCubHcmbArbitrary::BinRange(
+  unsigned int bin, conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->BinRange(bin,dimension);
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinWidth(unsigned int bin, unsigned int dimension) const
+{
+  vector<double> range = this->BinRange(bin,dimension);
+  double width = range[1] - range[0];
+  return width;
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinWidth(unsigned int bin, conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->BinWidth(bin,dimension);
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinCentre(unsigned int bin, unsigned int dimension) const
+{
+  vector<double> range = this->BinRange(bin,dimension);
+  double centre = 0.5 * (range[1] + range[0]);
+  return centre;
+}
+//________________________________________________________________________________________
+double KBCubHcmbArbitrary::BinCentre(unsigned int bin, conv::KineVar_t kv) const
+{
+  unsigned int dimension = this->Dimension(kv);
+  return this->BinCentre(bin,dimension);
+}
+//________________________________________________________________________________________
 int KBCubHcmbArbitrary::FindBin(vector<double> & xarr)
 {
   assert(xarr.size() == fNDimensions);
