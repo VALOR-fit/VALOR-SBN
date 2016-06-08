@@ -307,15 +307,16 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                       }
                       TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
                       if (spline) {
-                        ROOT::Math::Interpolator * gsl_spline = util::ConvertTSplineToGSL(*spline,"akima");
-                        delete spline;
-                        if (util::SplineIsFlat(gsl_spline)) {
-                          delete gsl_spline;
+                        if (util::SplineIsFlat(spline)) {
                           fSplines[spline_index] = kFlatSpline;
                           n_splines_flat++;
                           n_splines_read++;
+                          delete spline;
+                          continue;
                         }
-                        else if (this->CheckForNegativeValues(gsl_spline,p)) {
+                        ROOT::Math::Interpolator * gsl_spline = util::ConvertTSplineToGSL(*spline,"akima");
+                        delete spline;
+                        if (this->CheckForNegativeValues(gsl_spline,p)) {
                           LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name;
                           delete gsl_spline;
                           fSplines[spline_index] = kFlatSpline;
@@ -323,8 +324,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                           n_splines_read++;
                         }
                         else {
-                          fSplines[spline_index] = util::ConvertTSplineToGSL(*spline);
-                          delete gsl_spline;
+                          fSplines[spline_index] = gsl_spline;
                           n_splines_read++;
                         }
                       }
