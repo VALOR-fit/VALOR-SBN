@@ -18,7 +18,7 @@
 
            <binning>
               <space>
-                 Ereco,yreco  <!- all KineSpace_t enums are supported -->
+                 Ereco,yreco  <!-- all KineSpace_t enums are supported -->
               </space>
               <type>
                  arbitrary
@@ -27,7 +27,9 @@
                  12 
               </nbins>
 
-              <!- Ereco min, Ereco max, yreco min, yreco max -->
+              <!-- Min,max for each kinematical variable -->
+              <!-- Variables in the order listed in space name above -->
+              <!-- Ereco min, Ereco max, yreco min, yreco max -->
               <bin_0>    0.0,   40.0,   0.00,   0.58 </bin_0>
               <bin_1>    0.0,   40.0,   0.58,   1.00 </bin_1>
               <bin_2>   40.0,  150.0,   0.00,   0.40 </bin_2>
