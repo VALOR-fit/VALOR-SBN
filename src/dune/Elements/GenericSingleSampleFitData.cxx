@@ -91,11 +91,11 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
       if(fDataObNull[izone]) continue;
       // Add data in VALOR array format
-      const char * name = Form("%s_%s_z%d",
+      TString name = TString::Format("%s_%s_z%d",
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), izone);
       if(opt.find("data_vf") != string::npos) {
         assert(fDataOb[izone]);
-        fDataOb[izone]->SetName(Form("%s_%s_%s",tag,"data_ob_vf",name));
+        fDataOb[izone]->SetName(TString::Format("%s_%s_%s",tag,"data_ob_vf",name.Data()).Data());
         LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataOb[izone]->GetName();
         array->Add(fDataOb[izone]);
       }
@@ -112,7 +112,7 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
         const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
         TH2D * h2 = new TH2D("h2", "VALOR/DUNE ND (Ereco,yreco) data = f(beam,sample,zone)",
             n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-        h2->SetName(Form("%s_%s_%s",tag,"data_ob_rf",name));
+        h2->SetName(TString::Format("%s_%s_%s",tag,"data_ob_rf",name.Data()).Data());
         for(int ier = 0; ier < n_enu_reco_bins; ier++) {
           for(int iy = 0; iy < n_y_reco_bins; iy++) {
             double val = fDataOb[izone]->GetEntry(ier,iy);
@@ -128,13 +128,13 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
 
     // regular/fine binning for plotting
     if(opt.find("+SB") != string::npos) {
-      const char * name = Form("%s_%s",
+      TString name = TString::Format("%s_%s",
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
       assert(!fDataSbNull);
       // Add data in VALOR array format
       if(opt.find("data_vf") != string::npos) {
         assert(fDataSb);
-        fDataSb->SetName(Form("%s_%s_%s",tag,"data_sb_vf",name));
+        fDataSb->SetName(TString::Format("%s_%s_%s",tag,"data_sb_vf",name.Data()));
         LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataSb->GetName();
         array->Add(fDataSb);
       }//data_vf
@@ -148,7 +148,7 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
         const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
         TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) data = f(beam,sample)",
             kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
-        h2->SetName(Form("%s_%s_%s",tag,"data_sb_rf",name));
+        h2->SetName(TString::Format("%s_%s_%s",tag,"data_sb_rf",name.Data()).Data());
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {
           for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
             double val = fDataSb->GetEntry(ier,iy);
@@ -173,7 +173,7 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
   if(opt.find("+slices") != string::npos) {
 
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
-      const char * name = Form("%s_%s_z%d",
+      TString name = TString::Format("%s_%s_z%d",
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), izone);
       // get binning
       const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
@@ -184,15 +184,14 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
       // create slices of the data (function of Ereco, for given yreco bin)
       TH1D * htot = new TH1D("htot",
           "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
-      htot->SetName(Form("%s_%s_%s",tag, "data_slice_ob_rf",name) );
+      htot->SetName(TString::Format("%s_%s_%s",tag, "data_slice_ob_rf",name.Data()).Data());
       htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
       htot->GetYaxis()->SetTitle("Number of events /bin");
       for(int iy = 0; iy < n_y_reco_bins; iy++) {
-        TH1D * h = new TH1D("h",
-            Form("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",
-              y_reco_bins[iy],y_reco_bins[iy+1]),
-            n_enu_reco_bins, enu_reco_bins);
-        h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_ob_rf",name,iy) );
+        TString hname  = TString::Format("%s_%s_%s_y%d",tag, "data_slice_ob_rf",name.Data(),iy);
+        TString htitle = TString::Format(
+          "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",y_reco_bins[iy],y_reco_bins[iy+1]);
+        TH1D * h = new TH1D(hname.Data(),htitle.Data(),n_enu_reco_bins, enu_reco_bins);
         h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
         h->GetYaxis()->SetTitle("Number of events /bin");
         for(int ier = 0; ier < n_enu_reco_bins; ier++) {
@@ -216,18 +215,18 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
       // create slices of the total PDF (function of Ereco, for given yreco bin)
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
       const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-      TH1D * htot = new TH1D("htot",
-          "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
       TString hname = TString::Format("%s_%s_%s",tag, "data_slice_sb_rf",name.Data());
-      htot->SetName(hname.Data());
+      TString htitle = "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample)";
+      TH1D * htot = new TH1D(hname.Data(),htitle.Data(),
+        kNErecoBinsSb, kErecoBinEdgesSb);
       htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
       htot->GetYaxis()->SetTitle("Number of events /bin");
       for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-        TString htitle = TString::Format("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
+        TString hname_s = TString::Format("%s_%s_%s_y%d",tag, "data_slice_sb_rf",name.Data(),iy);
+        TString htitle_s = TString::Format("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
               y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]);
-        TH1D * h = new TH1D("h",htitle.Data(),
+        TH1D * h = new TH1D(hname_s.Data(),htitle_s.Data(),
             kNErecoBinsSb, kErecoBinEdgesSb);
-        h->SetName(Form("%s_%s_%s_y%d",tag, "data_slice_sb_rf",name.Data(),iy) );
         h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
         h->GetYaxis()->SetTitle("Number of events /bin /%f POT");
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {

@@ -424,12 +424,12 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
         if(fMCTNullOb[imode][izone]) continue;
-        const char * name = Form("%s_%s_%s_z%d", 
+         TString name = TString::Format("%s_%s_%s_z%d", 
             util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), util::AsString(m).c_str(), izone);
-        fMCTNomOb [imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctnom_ob_vf", name) );
-        fMCTTunOb [imode][izone] -> SetName( Form("%s_%s_%s", tag, "mcttun_ob_vf", name) );
-        fMCTSysOb [imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctsys_ob_vf", name) );
-        fMCTFinOb [imode][izone] -> SetName( Form("%s_%s_%s", tag, "mctfin_ob_vf", name) );
+        fMCTNomOb [imode][izone] -> SetName( TString::Format("%s_%s_%s", tag, "mctnom_ob_vf", name.Data()).Data() );
+        fMCTTunOb [imode][izone] -> SetName( TString::Format("%s_%s_%s", tag, "mcttun_ob_vf", name.Data()).Data() );
+        fMCTSysOb [imode][izone] -> SetName( TString::Format("%s_%s_%s", tag, "mctsys_ob_vf", name.Data()).Data() );
+        fMCTFinOb [imode][izone] -> SetName( TString::Format("%s_%s_%s", tag, "mctfin_ob_vf", name.Data()).Data() );
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTNomOb [imode][izone]->GetName();
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTTunOb [imode][izone]->GetName();
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTSysOb [imode][izone]->GetName();
@@ -442,12 +442,12 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
 
       if(opt.find("+SB") != string::npos) {
         if(fMCTNullSb[imode]) continue;
-        const char * name = Form("%s_%s_%s", 
+        TString name = TString::Format("%s_%s_%s", 
             util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), util::AsString(m).c_str());
-        fMCTNomSb [imode] -> SetName( Form("%s_%s_%s", tag, "mctnom_sb_vf", name) );
-        fMCTTunSb [imode] -> SetName( Form("%s_%s_%s", tag, "mcttun_sb_vf", name) );
-        fMCTSysSb [imode] -> SetName( Form("%s_%s_%s", tag, "mctsys_sb_vf", name) );
-        fMCTFinSb [imode] -> SetName( Form("%s_%s_%s", tag, "mctfin_sb_vf", name) );
+        fMCTNomSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctnom_sb_vf", name.Data()).Data() );
+        fMCTTunSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mcttun_sb_vf", name.Data()).Data() );
+        fMCTSysSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctsys_sb_vf", name.Data()).Data() );
+        fMCTFinSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctfin_sb_vf", name.Data()).Data() );
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTNomSb [imode]->GetName();
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTTunSb [imode]->GetName();
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTSysSb [imode]->GetName();
@@ -473,11 +473,11 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
         if(fMCTNullOb[imode][izone]) continue;
-        const char * name = Form("%s_%s_%s_z%d", 
+        TString name = TString::Format("%s_%s_%s_z%d", 
             util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), util::AsString(m).c_str(), izone);
         // in VALORArray format
         if (opt.find("pdfc_vf") != string::npos) {
-          fPDFCompOb [imode][izone]->SetName(Form("%s_%s_%s",tag,"pdfc_ob_vf",name));
+          fPDFCompOb [imode][izone]->SetName(TString::Format("%s_%s_%s",tag,"pdfc_ob_vf",name.Data()).Data());
           LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompOb[imode][izone]->GetName();
           array->Add(fPDFCompOb[imode][izone]);
         }
@@ -494,9 +494,10 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
           const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
           const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
           // book histogram
-          TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode,zone)",
+          TString hname = TString::Format("%s_%s_%s",tag, "pdfc_ob_rf",name.Data());
+          TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode,zone)";
+          TH2D * h2 = new TH2D(hname.Data(),htitle.Data(),
               n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-          h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_ob_rf",name) );
           // fill from corresponding VALOR array
           for(int ier = 0; ier < n_enu_reco_bins; ier++) {
             for(int iy = 0; iy < n_y_reco_bins; iy++) {
@@ -513,11 +514,11 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
 
       if(opt.find("+SB") != string::npos) {
         if(fMCTNullSb[imode]) continue;
-        const char * name = Form("%s_%s_%s", 
+        TString name = TString::Format("%s_%s_%s", 
             util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), util::AsString(m).c_str());
         // in VALORArray format
         if (opt.find("pdfc_vf") != string::npos) {
-          fPDFCompSb[imode]->SetName(Form("%s_%s_%s",tag,"pdfc_sb_vf",name));
+          fPDFCompSb[imode]->SetName(TString::Format("%s_%s_%s",tag,"pdfc_sb_vf",name.Data()));
           LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompSb[imode]->GetName();
           array->Add(fPDFCompSb[imode]);
         }
@@ -530,9 +531,10 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
           // book histogram
           const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
           const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-          TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode)",
+          TString hname = TString::Format("%s_%s_%s",tag, "pdfc_sb_rf",name.Data());
+          TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode)";
+          TH2D * h2 = new TH2D(hname.Data(),htitle.Data(),
               kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
-          h2 -> SetName( Form("%s_%s_%s",tag, "pdfc_sb_rf",name) );
           // fill from corresponding VALOR array
           for(int ier = 0; ier < kNErecoBinsSb; ier++) {
             for(int iy = 0; iy <  n_y_reco_bins_sb; iy++) {
@@ -558,11 +560,11 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   if(opt.find("pdft_vf") != string::npos || opt.find("pdft_rf") != string::npos) {
 
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
-      const char * name = Form("%s_%s_z%d", 
+      TString name = TString::Format("%s_%s_z%d", 
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), izone);
       // in VALORArray format
       if (opt.find("pdft_vf") != string::npos) {
-        fPDFTotOb[izone]->SetName(Form("%s_%s_%s",tag,"pdft_ob_vf",name));
+        fPDFTotOb[izone]->SetName(TString::Format("%s_%s_%s",tag,"pdft_ob_vf",name.Data()));
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotOb[izone]->GetName();
         array->Add(fPDFTotOb[izone]);
       }
@@ -579,9 +581,10 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
         const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
         // book histogram
-        TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample,zone)",
+        TString hname = TString::Format("%s_%s_%s",tag, "pdft_ob_rf",name.Data()); 
+        TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample,zone)";
+        TH2D * h2 = new TH2D(hname.Data(), htitle.Data(),
             n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-        h2 -> SetName( Form("%s_%s_%s",tag, "pdft_ob_rf",name) );
         // fill from corresponding VALOR array
         for(int ier = 0; ier < n_enu_reco_bins; ier++) {
           for(int iy = 0; iy < n_y_reco_bins; iy++) {
@@ -597,11 +600,11 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
     }//izone
 
     if(opt.find("+SB") != string::npos) {
-      const char * name = Form("%s_%s", 
+      TString name = TString::Format("%s_%s", 
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
       // in VALORArray format
       if (opt.find("pdft_vf") != string::npos) {
-        fPDFTotSb->SetName(Form("%s_%s_%s",tag,"pdft_sb_vf",name));
+        fPDFTotSb->SetName(TString::Format("%s_%s_%s",tag,"pdft_sb_vf",name.Data()));
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotSb->GetName();
         array->Add(fPDFTotSb);
       }
@@ -614,12 +617,13 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         // book histogram
         const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
         const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-        TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample)",
+        TString hname = TString::Format("%s_%s_%s",tag, "pdft_sb_rf",name.Data());
+        TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample)";
+        TH2D * h2 = new TH2D(hname,htitle,
             kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
-        h2 -> SetName( Form("%s_%s_%s",tag, "pdft_sb_rf",name) );
         h2->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
         h2->GetYaxis()->SetTitle("y");
-        h2->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+        h2->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
         // fill from corresponding VALOR array
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {
           for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
@@ -652,7 +656,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       if(m == kmUndefined) continue;
 
       for(int izone = 0; izone < kNMaxBinZones; izone++) {
-        const char * name = Form("%s_%s_%s_z%d", 
+        TString name = TString::Format("%s_%s_%s_z%d", 
             util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), util::AsString(m).c_str(), izone);
         // get binning
         const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
@@ -661,19 +665,20 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
         const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
         // create slices of the PDF components (function of Ereco, for given yreco bin)
-        TH1D * htot = new TH1D("htot", 
-            "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)", n_enu_reco_bins, enu_reco_bins);
-        htot->SetName(Form("%s_%s_%s",tag, "pdfcs_ob_rf",name) );
+        TString hname = TString::Format("%s_%s_%s",tag, "pdfcs_ob_rf",name.Data()) ;
+        TString htitle = "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)";
+        TH1D * htot = new TH1D(hname.Data(),htitle.Data(),n_enu_reco_bins, enu_reco_bins);
         htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+        htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
         for(int iy = 0; iy < n_y_reco_bins; iy++) {
-          TH1D * h = new TH1D("h",
-              Form("VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
-                y_reco_bins[iy],y_reco_bins[iy+1]),
+          TString hname_s  = TString::Format("%s_%s_%s_y%d",tag, "pdfcs_ob_rf",name.Data(),iy);
+          TString htitle_s = TString::Format(
+            "VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
+            y_reco_bins[iy],y_reco_bins[iy+1]);
+          TH1D * h = new TH1D(hname_s.Data(),htitle_s.Data(),
               n_enu_reco_bins, enu_reco_bins);
-          h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_ob_rf",name,iy) );
           h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-          h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+          h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
           for(int ier = 0; ier < n_enu_reco_bins; ier++) {
             double val = fPDFCompOb[imode][izone]->GetEntry(ier,iy);
             h->SetBinContent(ier+1, val);
@@ -690,24 +695,24 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       }//izone
 
       if(opt.find("+SB") != string::npos) {
-        const char * name = Form("%s_%s_%s", 
+        TString name = TString::Format("%s_%s_%s", 
             util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), util::AsString(m).c_str());
         // create slices of the PDF components (function of Ereco, for given yreco bin)
         const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
         const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-        TH1D * htot = new TH1D("htot", 
-            "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode)", kNErecoBinsSb, kErecoBinEdgesSb);
-        htot->SetName(Form("%s_%s_%s",tag, "pdfcs_sb_rf",name) );
+        TString hname = TString::Format( "%s_%s_%s",tag, "pdfcs_sb_rf",name.Data());
+        TString htitle = "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode)";
+        TH1D * htot = new TH1D(hname.Data(), htitle.Data(), kNErecoBinsSb, kErecoBinEdgesSb);
         htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+        htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
         for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-          TH1D * h = new TH1D("h",
-              Form("VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
-                y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
-              kNErecoBinsSb, kErecoBinEdgesSb);
-          h->SetName(Form("%s_%s_%s_y%d",tag, "pdfcs_sb_rf",name,iy) );
+          TString hname_s = TString::Format("%s_%s_%s_y%d",tag, "pdfcs_sb_rf",name.Data(),iy);
+          TString htitle_s = TString::Format(
+            "VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
+            y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]);
+          TH1D * h = new TH1D(hname_s.Data(), htitle_s.Data(),kNErecoBinsSb, kErecoBinEdgesSb);
           h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-          h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+          h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
           for(int ier = 0; ier < kNErecoBinsSb; ier++) {
             double val = fPDFCompSb[imode]->GetEntry(ier,iy);
             h->SetBinContent(ier+1, val);
@@ -738,7 +743,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   if(opt.find("pdfts_rf") != string::npos) {
 
     for(int izone = 0; izone < kNMaxBinZones; izone++) {
-      const char * name = Form("%s_%s_z%d", 
+      TString name = TString::Format("%s_%s_z%d", 
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), izone);
       // get binning
       const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
@@ -747,19 +752,21 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
       const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
       // create slices of the total PDF (function of Ereco, for given yreco bin)
-      TH1D * htot = new TH1D("htot", 
-          "VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
-      htot->SetName(Form("%s_%s_%s",tag, "pdfts_ob_rf",name) );
+      TString hname  = TString::Format("%s_%s_%s",tag, "pdfts_ob_rf",name.Data());
+      TString htitle = TString::Format("VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample,zone)");
+      TH1D * htot = new TH1D(hname.Data(), htitle.Data(),
+        n_enu_reco_bins, enu_reco_bins);
       htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+      htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT));
       for(int iy = 0; iy < n_y_reco_bins; iy++) {
-        TH1D * h = new TH1D("h",
-            Form("VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]", 
-              y_reco_bins[iy],y_reco_bins[iy+1]),
+        TString hname_s = TString::Format("%s_%s_%s_y%d",tag, "pdfts_ob_rf",name.Data(),iy);
+        TString htitle_s = TString::Format(
+          "VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",
+          y_reco_bins[iy],y_reco_bins[iy+1]);
+        TH1D * h = new TH1D(hname_s.Data(), htitle_s.Data(),
             n_enu_reco_bins, enu_reco_bins);
-        h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_ob_rf",name,iy) );
         h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+        h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
         for(int ier = 0; ier < n_enu_reco_bins; ier++) {
           double val = fPDFTotOb[izone]->GetEntry(ier,iy);
           h->SetBinContent(ier+1, val);
@@ -776,24 +783,24 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
     }//izone
 
     if(opt.find("+SB") != string::npos) {
-      const char * name = Form("%s_%s", 
+      TString name = TString::Format("%s_%s", 
           util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
       // create slices of the total PDF (function of Ereco, for given yreco bin)
       const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
       const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-      TH1D * htot = new TH1D("htot", 
-          "VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample)", kNErecoBinsSb, kErecoBinEdgesSb);
-      htot->SetName(Form("%s_%s_%s",tag, "pdfts_sb_rf",name) );
+      TH1D * htot = new TH1D("htot", "htot", kNErecoBinsSb, kErecoBinEdgesSb);
+      htot->SetName(TString::Format("%s_%s_%s",tag, "pdfts_sb_rf",name.Data()).Data() );
       htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+      htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
       for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-        TH1D * h = new TH1D("h",
-            Form("VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
-              y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),
+        TString hname = TString::Format("%s_%s_%s_y%d",tag, "pdfts_sb_rf",name.Data(),iy);
+        TString htitle = TString::Format(
+          "VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
+          y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]);
+        TH1D * h = new TH1D(hname.Data(),htitle.Data(),
             kNErecoBinsSb, kErecoBinEdgesSb);
-        h->SetName(Form("%s_%s_%s_y%d",tag, "pdfts_sb_rf",name,iy) );
         h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle(Form("Number of events /bin /%lg POT", fPOT));
+        h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
         for(int ier = 0; ier < kNErecoBinsSb; ier++) {
           double val = fPDFTotSb->GetEntry(ier,iy);
           h->SetBinContent(ier+1, val);
