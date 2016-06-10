@@ -34,7 +34,7 @@ using namespace valor::util;
 
 // Initialise the flat spline
 static Double_t flat_knots_y[5] = {  1,  1, 1, 1,  1};
-const ROOT::Math::Interpolator* valor::util::DuneRFL::kFlatSpline = util::ConvertTSplineToGSL(TSpline3("flat_spline",-100,100,flat_knots_y,5));
+const ROOT::Math::Interpolator* valor::util::DuneRFL::kFlatSpline = util::ConvertTSplineToGSL(TSpline3("flat_spline",-9E0,9E9,flat_knots_y,5));
 
 // We'll never use this address to dereference - it can be passed as a flag indicating that no spline should exist.
 const ROOT::Math::Interpolator* valor::util::DuneRFL::kNoSplineRequired = (ROOT::Math::Interpolator*)&conv::kBadResult;
@@ -95,7 +95,7 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[R
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
   fModes = new ReacMode_t[fNModes];
   memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(b,s)], fNParams*sizeof(ReacMode_t));
-    
+  
   // Fill parameter to index
   for (int ip = 0 ; ip < conv::knppmax ; ip++ ) {
     conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
@@ -312,7 +312,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                           delete spline;
                           continue;
                         }
-                        ROOT::Math::Interpolator * gsl_spline = util::ConvertTSplineToGSL(*spline,"akima");
+                        ROOT::Math::Interpolator * gsl_spline = util::ConvertTSplineToGSL(*spline,-5,5,"akima");
                         delete spline;
                         if (this->CheckForNegativeValues(gsl_spline,p)) {
                           LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name;
