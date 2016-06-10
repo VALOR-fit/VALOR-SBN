@@ -16,13 +16,13 @@
                <!--
                  Single Mondrian binning scheme for reco quantities -->
                <reco_optimized>
-                  /path/to/mondrian_binning_scheme.xml
+                  mondrian_binning_scheme.xml
                </reco_optimized>
 
                <!--
                  Single edge-to-edge binning scheme for reco quantities -->
                <reco_simple>
-                  /path/to/edge_to_edge_binning_scheme.xml
+                  edge_to_edge_binning_scheme.xml
                </reco_simple>
 
                <!--
@@ -34,12 +34,12 @@
                      Applies to all modes unless a mode binning scheme
                      is specified explicitly below -->
                    <default>
-                      /path/to/another_edge_to_edge_binning_scheme.xml
+                      another_edge_to_edge_binning_scheme.xml
                    <default>
                    <!--
                      Exception for specific modes (optional) -->
                    <a_weird_mode>
-                      /path/to/yet_another_edge_to_edge_binning_scheme.xml
+                      yet_another_edge_to_edge_binning_scheme.xml
                    </a_weird_mode>
                </true_simple>
 
