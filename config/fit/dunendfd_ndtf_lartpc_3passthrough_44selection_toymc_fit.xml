@@ -228,10 +228,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_fhc_nueelscat">
+    <element name="dune_nd_fhc_neutrinoelec">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       nueelscat                                             </sample>
+      <sample>       neutrinoelec                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
@@ -612,10 +612,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_rhc_nueelscat">
+    <element name="dune_nd_rhc_neutrinoelec">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       nueelscat                                             </sample>
+      <sample>       neutrinoelec                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
