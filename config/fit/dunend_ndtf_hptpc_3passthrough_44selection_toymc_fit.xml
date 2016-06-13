@@ -7,10 +7,10 @@
         FHC
     -->
 
-    <element name="dune_nd_fhc_numucc1trk0pi">
+    <element name="dune_nd_fhc_numucc0pi1trk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numucc1trk0pi                                         </sample>
+      <sample>       numucc0pi1trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -19,10 +19,10 @@
     </element>
 
 
-    <element name="dune_nd_fhc_numucc2trk0pi">
+    <element name="dune_nd_fhc_numucc0pi2trk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numucc2trk0pi                                         </sample>
+      <sample>       numucc0pi2trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -30,10 +30,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_fhc_numuccntrk0pi">
+    <element name="dune_nd_fhc_numucc0pintrk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numuccntrk0pi                                         </sample>
+      <sample>       numucc0pintrk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -96,10 +96,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_fhc_numuccwsgn0pi">
+    <element name="dune_nd_fhc_numuccws0pi">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numuccwsgn0pi                                         </sample>
+      <sample>       numuccws0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -107,10 +107,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_fhc_numuccwsgn1piC">
+    <element name="dune_nd_fhc_numuccws1piC">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numuccwsgn1piC                                         </sample>
+      <sample>       numuccws1piC                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -118,10 +118,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_fhc_numuccwsgn1pi0">
+    <element name="dune_nd_fhc_numuccws1pi0">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numuccwsgn1pi0                                         </sample>
+      <sample>       numuccws1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -129,10 +129,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_fhc_numuccwsgnoth">
+    <element name="dune_nd_fhc_numuccwsoth">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
-      <sample>       numuccwsgnoth                                         </sample>
+      <sample>       numuccwsoth                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -255,10 +255,10 @@
         RHC
     -->
 
-    <element name="dune_nd_rhc_numucc1trk0pi">
+    <element name="dune_nd_rhc_numucc0pi1trk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numucc1trk0pi                                         </sample>
+      <sample>       numucc0pi1trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -267,10 +267,10 @@
     </element>
 
 
-    <element name="dune_nd_rhc_numucc2trk0pi">
+    <element name="dune_nd_rhc_numucc0pi2trk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numucc2trk0pi                                         </sample>
+      <sample>       numucc0pi2trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -278,10 +278,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_rhc_numuccntrk0pi">
+    <element name="dune_nd_rhc_numucc0pintrk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numuccntrk0pi                                         </sample>
+      <sample>       numucc0pintrk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -344,10 +344,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_rhc_numuccwsgn0pi">
+    <element name="dune_nd_rhc_numuccws0pi">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numuccwsgn0pi                                         </sample>
+      <sample>       numuccws0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -355,10 +355,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_rhc_numuccwsgn1piC">
+    <element name="dune_nd_rhc_numuccws1piC">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numuccwsgn1piC                                         </sample>
+      <sample>       numuccws1piC                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -366,10 +366,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_rhc_numuccwsgn1pi0">
+    <element name="dune_nd_rhc_numuccws1pi0">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numuccwsgn1pi0                                         </sample>
+      <sample>       numuccws1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
@@ -377,10 +377,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_nd_rhc_numuccwsgnoth">
+    <element name="dune_nd_rhc_numuccwsoth">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numuccwsgnoth                                         </sample>
+      <sample>       numuccwsoth                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
