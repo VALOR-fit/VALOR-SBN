@@ -246,14 +246,14 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisNormNC          ) : return "f_nc";                 break;
     case (kNuisRatioNuENuMu    ) : return "f_nuecc_numucc";       break;
 
-    case (kNuisEffNuMuCC1trk0pi ) : return "f_eff_numucc1trk0pi";  break;
-    case (kNuisEffNuMuCC2trk0pi ) : return "f_eff_numucc2trk0pi";  break;
+    case (kNuisEffNuMuCC0pi1trk ) : return "f_eff_numucc0pi1trk";  break;
+    case (kNuisEffNuMuCC0pi2trk ) : return "f_eff_numucc0pi2trk";  break;
     case (kNuisEffNuMuCC1piC    ) : return "f_eff_numucc1pic";     break;
     case (kNuisEffNuMuCC1pi0    ) : return "f_eff_numucc1pi0";     break;
     case (kNuisEffNuMuCC1piC1pi0) : return "f_eff_numucc1pic1pi0"; break;
     case (kNuisEffNuMuCCoth     ) : return "f_eff_numuccoth";      break;
     case (kNuisEffNuECC         ) : return "f_eff_nuecc";          break;
-    case (kNuisEffNuMuCCWSgn    ) : return "f_eff_numuccwsgn";     break;
+    case (kNuisEffNuMuCCWS    ) : return "f_eff_numuccwsgn";     break;
     case (kNuisEffNC            ) : return "f_eff_nc";             break;
     
     case ( kNuisIntNuCCQE1         ) : return "f_int_nu_ccqe_1"; 
@@ -535,14 +535,14 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisNormNC          ) : name = "f_{NC}";                                        break;
     case (kNuisRatioNuENuMu    ) : name = "f_{\\nu_{e}/\\nu_{\\mu}}";                      break;
     
-    case (kNuisEffNuMuCC1trk0pi ) : name = "f_{eff;\\nu_{\\mu}CC;1trk0pi}";                break;
-    case (kNuisEffNuMuCC2trk0pi ) : name = "f_{eff;\\nu_{\\mu}CC;2trk0pi}";                break;
+    case (kNuisEffNuMuCC0pi1trk ) : name = "f_{eff;\\nu_{\\mu}CC;0pi1trk}";                break;
+    case (kNuisEffNuMuCC0pi2trk ) : name = "f_{eff;\\nu_{\\mu}CC;0pi2trk}";                break;
     case (kNuisEffNuMuCC1piC    ) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{\\pm}}";           break;
     case (kNuisEffNuMuCC1pi0    ) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{0}}";              break;
     case (kNuisEffNuMuCC1piC1pi0) : name = "f_{eff;\\nu_{\\mu}CC;1\\pi^{\\pm}1\\pi^{0}}";  break;
     case (kNuisEffNuMuCCoth     ) : name = "f_{eff;\\nu_{\\mu}CC;other}";                  break;
     case (kNuisEffNuECC         ) : name = "f_{eff;\\nu_{e}CC}";                           break;
-    case (kNuisEffNuMuCCWSgn    ) : name = "f_{eff;\\nu_{\\mu}CC;wsgn}";                   break;
+    case (kNuisEffNuMuCCWS      ) : name = "f_{eff;\\nu_{\\mu}CC;wsgn}";                   break;
     case (kNuisEffNC            ) : name = "f_{eff;NC}";                                   break;
     
     case ( kNuisIntNuCCQE1         ) : name =  "f_{\\nu CCQE ; 1}";                        break;

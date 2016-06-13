@@ -108,24 +108,24 @@ int util::NumYrecoBinsSb(Sample_t s)
    /*
   switch(s) 
   {
-    case (ksNuMuCC1trk0pi ) :
-    case (ksNuMuCC2trk0pi ) :
+    case (ksNuMuCC0pi1trk ) :
+    case (ksNuMuCC0pi2trk ) :
     case (ksNuMuCC1piC    ) :
     case (ksNuMuCC1pi0    ) :
     case (ksNuMuCC1piC1pi0) :
     case (ksNuMuCCoth     ) :
-    case (ksNuMuCCNtrk0pi ) :
+    case (ksNuMuCC0piNtrk ) :
     case (ksNuMuCC3trkDelta):
-    case (ksNuMuCCWSgn0pi ) :   
-    case (ksNuMuCCWSgn1piC) :   
-    case (ksNuMuCCWSgn1pi0) :   
-    case (ksNuMuCCWSgnoth ) :   
+    case (ksNuMuCCWS0pi ) :   
+    case (ksNuMuCCWS1piC) :   
+    case (ksNuMuCCWS1pi0) :   
+    case (ksNuMuCCWSoth ) :   
     case (ksNuECC0pi      ) : 
     case (ksNuECC1piC     ) : 
     case (ksNuECC1pi0     ) : 
     case (ksNuECCoth      ) : 
     case (ksNuECC         ) : 
-    case (ksNuMuCCWSgn    ) : 
+    case (ksNuMuCCWS    ) : 
     case (ksNuMuCClow      ) :
     case (ksNuMuCChigh     ) :
     case (ksNuMuBarCClow   ) :
@@ -176,8 +176,8 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
    /*
   switch(s) 
   {
-    case (ksNuMuCC1trk0pi) : 
-    case (ksNuMuCC2trk0pi) : 
+    case (ksNuMuCC0pi1trk) : 
+    case (ksNuMuCC0pi2trk) : 
     {
       return kYrecoBinEdgesQELikeSb; 
       break;
@@ -187,7 +187,7 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
     case (ksNuMuCC1piC1pi0) :
     case (ksNuMuCCoth     ) :
     case (ksNuECC         ) : 
-    case (ksNuMuCCWSgn    ) : 
+    case (ksNuMuCCWS    ) : 
       return kYrecoBinEdgesMiscSb;  
       break;
 
@@ -230,7 +230,7 @@ int util::NumErecoBins(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trk0pi) : 
+    case (ksNuMuCC0pi1trk) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNErecoBinsQELike[zone]; 
@@ -269,7 +269,7 @@ const double * util::ErecoBinEdges(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trk0pi) : 
+    case (ksNuMuCC0pi1trk) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kErecoBinEdgesQELike[zone]; 
@@ -310,7 +310,7 @@ int util::NumYrecoBins(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trk0pi) : 
+    case (ksNuMuCC0pi1trk) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kNYrecoBinsQELike[zone]; 
@@ -351,7 +351,7 @@ const double * util::YrecoBinEdges(Sample_t s, int zone)
 /*
   switch(s) 
   {
-    case (ksNuMuCC1trk0pi) : 
+    case (ksNuMuCC0pi1trk) : 
     {
       if(zone >=0 && zone < kNBinZonesQELike) 
         return kYrecoBinEdgesQELike[zone]; 

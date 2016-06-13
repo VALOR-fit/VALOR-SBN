@@ -47,18 +47,18 @@ const int kFitSpectrumNdimMax = 2; // (current) maximum dimensionality for fit d
 // Define dimensionality of MC templates
 static const int kMCTemplateNdim[kNSamples] =
 {
-  3, // ksNuMuCC1trk0pi,
-  3, // ksNuMuCC2trk0pi,
-  3, // ksNuMuCCNtrk0pi,
+  3, // ksNuMuCC0pi1trk,
+  3, // ksNuMuCC0pi2trk,
+  3, // ksNuMuCC0piNtrk,
   3, // ksNuMuCC3trkDelta,
   3, // ksNuMuCC1piC,
   3, // ksNuMuCC1pi0,
   3, // ksNuMuCC1piC1pi0,
   3, // ksNuMuCCoth,
-  3, // ksNuMuCCWSgn0pi,
-  3, // ksNuMuCCWSgn1piC,
-  3, // ksNuMuCCWSgn1pi0,
-  3, // ksNuMuCCWSgnoth,
+  3, // ksNuMuCCWS0pi,
+  3, // ksNuMuCCWS1piC,
+  3, // ksNuMuCCWS1pi0,
+  3, // ksNuMuCCWSoth,
   3, // ksNuECC0pi,
   3, // ksNuECC1piC,
   3, // ksNuECC1pi0,
@@ -69,9 +69,9 @@ static const int kMCTemplateNdim[kNSamples] =
   2, // ksNCoth,
   3, // ksNuEEL,
   3, // ksInvMuDecay
-  3, // ksNuECC
-  3, // ksNuMuCCWSgn
-  2, // ksNC
+  //  3, // ksNuECC
+  //3, // ksNuMuCCWS
+  //2, // ksNC
   3, // ksNuMuCClow,
   3, // ksNuMuCChigh,
   3, // ksNuMuBarCClow,
@@ -89,18 +89,18 @@ static const int kMCTemplateNdim[kNSamples] =
 // Define dimensionality of fit distributions
 static const int kFitSpectrumNdim[kNSamples] =
   {
-    2, // ksNuMuCC1trk0pi,
-    2, // ksNuMuCC2trk0pi,
-    2, // ksNuMuCCNtrk0pi,
+    2, // ksNuMuCC0pi1trk,
+    2, // ksNuMuCC0pi2trk,
+    2, // ksNuMuCC0piNtrk,
     2, // ksNuMuCC3trkDelta,
     2, // ksNuMuCC1piC,
     2, // ksNuMuCC1pi0,
     2, // ksNuMuCC1piC1pi0,
     2, // ksNuMuCCoth,
-    2, // ksNuMuCCWSgn0pi,
-    2, // ksNuMuCCWSgn1piC,
-    2, // ksNuMuCCWSgn1pi0,
-    2, // ksNuMuCCWSgnoth,
+    2, // ksNuMuCCWS0pi,
+    2, // ksNuMuCCWS1piC,
+    2, // ksNuMuCCWS1pi0,
+    2, // ksNuMuCCWSoth,
     2, // ksNuECC0pi,
     2, // ksNuECC1piC,
     2, // ksNuECC1pi0,
@@ -111,9 +111,9 @@ static const int kFitSpectrumNdim[kNSamples] =
     1, // ksNCoth,
     2, // ksNuEEL,
     2, // ksInvMuDecay
-    2, // ksNuECC
-    2, // ksNuMuCCWSgn
-    1, // ksNC
+    //    2, // ksNuECC
+    //2, // ksNuMuCCWS
+    //1, // ksNC
     2, // ksNuMuCClow,
     2, // ksNuMuCChigh,
     2, // ksNuMuBarCClow,
@@ -132,18 +132,18 @@ static const int kFitSpectrumNdim[kNSamples] =
 // Variable subset {0 -> kFitSpectrumNdim[isample]} is the one entering in PDF definitions.
 static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
 {
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1trk0pi,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC2trk0pi,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCNtrk0pi,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC0pi1trk,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC0pi2trk,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC0piNtrk,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC3trkDelta,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1piC,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1pi0,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC1piC1pi0,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCoth,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgn0pi,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgn1piC,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgn1pi0,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgnoth,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWS0pi,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWS1piC,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWS1pi0,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSoth,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuECC0pi,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuECC1piC,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuECC1pi0,
@@ -154,9 +154,9 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
   { kvEvis,  kvEtrue, kvUndefined }, //   ksNCoth,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuEEL,
   { kvEreco, kvYreco, kvEtrue },     //   ksInvMuDecay,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuECC
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWSgn
-  { kvEvis,  kvEtrue, kvUndefined }, //   ksNC
+  //  { kvEreco, kvYreco, kvEtrue },     //   ksNuECC
+  //{ kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWS
+  //{ kvEvis,  kvEtrue, kvUndefined }, //   ksNC
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCClow,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCChigh,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuBarCClow,

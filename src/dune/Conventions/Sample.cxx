@@ -19,9 +19,9 @@ string util::AsString(Sample_t s)
 {
   switch(s) {
     case (ksNuMuCC         ) : return "numuCCincl";      break; 
-    case (ksNuMuCC1trk0pi  ) : return "numuCC1trk0pi";   break; 
-    case (ksNuMuCC2trk0pi  ) : return "numuCC2trk0pi";   break; 
-    case (ksNuMuCCNtrk0pi  ) : return "numuCCNtrk0pi";   break;
+    case (ksNuMuCC0pi1trk  ) : return "numuCC0pi1trk";   break; 
+    case (ksNuMuCC0pi2trk  ) : return "numuCC0pi2trk";   break; 
+    case (ksNuMuCC0piNtrk  ) : return "numuCC0piNtrk";   break;
     case (ksNuMuCC3trkDelta) : return "numuCC3trkDelta"; break;
     case (ksNuMuCC1piC     ) : return "numuCC1piC";      break; 
     case (ksNuMuCC1pi0     ) : return "numuCC1pi0";      break; 
@@ -31,20 +31,20 @@ string util::AsString(Sample_t s)
     case (ksNuECC1piC      ) : return "nueCC1piC";       break;
     case (ksNuECC1pi0      ) : return "nueCC1pi0";       break;
     case (ksNuECCoth       ) : return "nueCCoth";        break;
-    case (ksNuMuCCWSgn0pi  ) : return "numuCCWSgn0pi";   break;
-    case (ksNuMuCCWSgn1piC ) : return "numuCCWSgn1piC";  break;
-    case (ksNuMuCCWSgn1pi0 ) : return "numuCCWSgn1pi0";  break;
-    case (ksNuMuCCWSgnoth  ) : return "numuCCWSgnoth";   break;
+    case (ksNuMuCCWS0pi  ) : return "numuCCWS0pi";   break;
+    case (ksNuMuCCWS1piC ) : return "numuCCWS1piC";  break;
+    case (ksNuMuCCWS1pi0 ) : return "numuCCWS1pi0";  break;
+    case (ksNuMuCCWSoth  ) : return "numuCCWSoth";   break;
     case (ksNC0pi          ) : return "NC0pi";           break; 
     case (ksNC1piC         ) : return "NC1piC";          break; 
     case (ksNC1pi0         ) : return "NC1pi0";          break; 
     case (ksNCoth          ) : return "NCoth";           break; 
-    case (ksNuEELScat      ) : return "nueEL";           break;
+    case (ksNeutrinoElec   ) : return "NeutrinoElec";    break;
     case (ksInvMuDecay     ) : return "invMuDecay";      break;
     case (ksNuMuCC2piC     ) : return "numuCC2piC";      break; 
     case (ksNuECC          ) : return "nueCCincl";       break;
     case (ksNC             ) : return "NCincl";          break; 
-    case (ksNuMuCCWSgn     ) : return "numuCCinclWSgn";  break;
+    case (ksNuMuCCWS     ) : return "numuCCinclWS";  break;
     case (ksNuMuCClow      ) : return "numuCClow";       break;
     case (ksNuMuCChigh     ) : return "numuCChigh";      break;
     case (ksNuMuBarCClow   ) : return "numubarCClow";    break;
@@ -68,9 +68,9 @@ string util::AsStringTeX(Sample_t s, bool root)
 
   switch(s) {
     case (ksNuMuCC         ) : name = "#nu_{#mu} CC inclusive";               break; 
-    case (ksNuMuCC1trk0pi  ) : name = "#nu_{#mu} CC 1-track 0#pi";            break; 
-    case (ksNuMuCC2trk0pi  ) : name = "#nu_{#mu} CC 2-track 0#pi";            break; 
-    case (ksNuMuCCNtrk0pi  ) : name = "#nu_{#mu} CC N-track 0#pi";            break; 
+    case (ksNuMuCC0pi1trk  ) : name = "#nu_{#mu} CC 1-track 0#pi";            break; 
+    case (ksNuMuCC0pi2trk  ) : name = "#nu_{#mu} CC 2-track 0#pi";            break; 
+    case (ksNuMuCC0piNtrk  ) : name = "#nu_{#mu} CC N-track 0#pi";            break; 
     case (ksNuMuCC3trkDelta) : name = "#nu_{#mu} CC 3-track #Delta-enchanced";break; 
     case (ksNuMuCC1piC     ) : name = "#nu_{#mu} CC 1#pi^{#pm}";              break; 
     case (ksNuMuCC1pi0     ) : name = "#nu_{#mu} CC 1#pi^{0}";                break; 
@@ -80,19 +80,19 @@ string util::AsStringTeX(Sample_t s, bool root)
     case (ksNuECC1piC      ) : name = "#nu_{e} CC 1#pi^{#pm}";                break;
     case (ksNuECC1pi0      ) : name = "#nu_{e} CC 1#pi^{0}";                  break;
     case (ksNuECCoth       ) : name = "#nu_{e} CC other";                     break;
-    case (ksNuMuCCWSgn0pi  ) : name = "Wrong sign #nu_{#mu} CC 0#pi";         break;
-    case (ksNuMuCCWSgn1piC ) : name = "Wrong sign #nu_{#mu} CC 1#pi^{#pm}";   break;
-    case (ksNuMuCCWSgn1pi0 ) : name = "Wrong sign #nu_{#mu} CC 1#pi^{0}";     break;
-    case (ksNuMuCCWSgnoth  ) : name = "Wrong sign #nu_{#mu} CC other";        break;
+    case (ksNuMuCCWS0pi  ) : name = "Wrong sign #nu_{#mu} CC 0#pi";         break;
+    case (ksNuMuCCWS1piC ) : name = "Wrong sign #nu_{#mu} CC 1#pi^{#pm}";   break;
+    case (ksNuMuCCWS1pi0 ) : name = "Wrong sign #nu_{#mu} CC 1#pi^{0}";     break;
+    case (ksNuMuCCWSoth  ) : name = "Wrong sign #nu_{#mu} CC other";        break;
     case (ksNC0pi          ) : name = "NC 0#pi";                              break; 
     case (ksNC1piC         ) : name = "NC 1#pi^{#pm}";                        break; 
     case (ksNC1pi0         ) : name = "NC 1#pi^{0}";                          break; 
     case (ksNCoth          ) : name = "NC other";                             break; 
-    case (ksNuEELScat      ) : name = "#nu_{e} electron elastic scattering";  break; 
+    case (ksNeutrinoElec   ) : name = "#nu electron elastic scattering";      break; 
     case (ksInvMuDecay     ) : name = "Inverse muon decay" ;                  break;
     case (ksNuMuCC2piC     ) : name = "#nu_{#mu} CC 2#pi^{#pm}";              break; 
     case (ksNuECC          ) : name = "#nu_{e} CC inclusive";                 break;
-    case (ksNuMuCCWSgn     ) : name = "Wrong sign #nu_{#mu} CC inclusive";    break;
+    case (ksNuMuCCWS     ) : name = "Wrong sign #nu_{#mu} CC inclusive";    break;
     case (ksNC             ) : name = "NC inclusive";                         break; 
     case (ksNuMuCClow      ) : name = "#nu_{#mu} CC low-resolution";          break;
     case (ksNuMuCChigh     ) : name = "#nu_{#mu} CC high-resolution";         break;
@@ -147,9 +147,9 @@ bool util::IsCC(Sample_t s)
 {
   switch(s) {
     case (ksNuMuCC         ) :
-    case (ksNuMuCC1trk0pi  ) :
-    case (ksNuMuCC2trk0pi  ) :
-    case (ksNuMuCCNtrk0pi  ) :
+    case (ksNuMuCC0pi1trk  ) :
+    case (ksNuMuCC0pi2trk  ) :
+    case (ksNuMuCC0piNtrk  ) :
     case (ksNuMuCC3trkDelta) :
     case (ksNuMuCC1piC     ) :
     case (ksNuMuCC1pi0     ) :
@@ -158,15 +158,15 @@ bool util::IsCC(Sample_t s)
     case (ksNuECC1piC      ) : 
     case (ksNuECC1pi0      ) : 
     case (ksNuECCoth       ) : 
-    case (ksNuMuCCWSgn0pi  ) : 
-    case (ksNuMuCCWSgn1piC ) : 
-    case (ksNuMuCCWSgn1pi0 ) : 
-    case (ksNuMuCCWSgnoth  ) : 
-    case (ksNuEELScat      ) :
+    case (ksNuMuCCWS0pi  ) : 
+    case (ksNuMuCCWS1piC ) : 
+    case (ksNuMuCCWS1pi0 ) : 
+    case (ksNuMuCCWSoth  ) : 
+    case (ksNeutrinoElec   ) :
     case (ksInvMuDecay     ) : 
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
-    case (ksNuMuCCWSgn     ) : 
+    case (ksNuMuCCWS     ) : 
     case (ksNuMuCClow      ) : 
     case (ksNuMuCChigh     ) : 
     case (ksNuMuBarCClow   ) : 
@@ -194,34 +194,34 @@ bool util::IsCC(Sample_t s)
 bool util::IsQELike(Sample_t s)
 {
   switch(s) {
-    case (ksNuMuCCNtrk0pi  ) :
+    case (ksNuMuCC0piNtrk  ) :
     case (ksNuECC0pi       ) : 
-    case (ksNuMuCCWSgn0pi  ) : 
-    case (ksNuEELScat      ) :
+    case (ksNuMuCCWS0pi  ) : 
+    case (ksNeutrinoElec   ) :
     case (ksNuMuCChigh     ) : 
     case (ksNuMuBarCChigh  ) : 
     case (ksNuECChigh      ) : 
     case (ksNuEBarCChigh   ) : 
     case (ksNuTauCChigh    ) : 
     case (ksNuTauBarCChigh ) : 
-    case (ksNuMuCC1trk0pi  ) :
-    case (ksNuMuCC2trk0pi  ) : return true; break;
+    case (ksNuMuCC0pi1trk  ) :
+    case (ksNuMuCC0pi2trk  ) : return true; break;
 
     case (ksNuMuCC3trkDelta) :
     case (ksInvMuDecay     ) : 
     case (ksNuECC1piC      ) : 
     case (ksNuECC1pi0      ) : 
     case (ksNuECCoth       ) : 
-    case (ksNuMuCCWSgn1piC ) : 
-    case (ksNuMuCCWSgn1pi0 ) : 
-    case (ksNuMuCCWSgnoth  ) : 
+    case (ksNuMuCCWS1piC ) : 
+    case (ksNuMuCCWS1pi0 ) : 
+    case (ksNuMuCCWSoth  ) : 
     case (ksNC0pi          ) : 
     case (ksNC1piC         ) : 
     case (ksNC1pi0         ) : 
     case (ksNCoth          ) : 
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
-    case (ksNuMuCCWSgn     ) : 
+    case (ksNuMuCCWS     ) : 
     case (ksNC             ) : 
     case (ksNuMuCClow      ) : 
     case (ksNuMuBarCClow   ) : 
@@ -244,26 +244,26 @@ bool util::IsNC(Sample_t s)
 {
   switch(s) {
     case (ksNuMuCC         ) :
-    case (ksNuMuCC1trk0pi  ) :
-    case (ksNuMuCC2trk0pi  ) :
+    case (ksNuMuCC0pi1trk  ) :
+    case (ksNuMuCC0pi2trk  ) :
     case (ksNuMuCC1piC     ) :
     case (ksNuMuCC1pi0     ) :
     case (ksNuMuCC1piC1pi0 ) :
-    case (ksNuMuCCNtrk0pi  ) :
+    case (ksNuMuCC0piNtrk  ) :
     case (ksNuMuCC3trkDelta) :
     case (ksNuECC0pi       ) : 
     case (ksNuECC1piC      ) : 
     case (ksNuECC1pi0      ) : 
     case (ksNuECCoth       ) : 
-    case (ksNuMuCCWSgn0pi  ) : 
-    case (ksNuMuCCWSgn1piC ) : 
-    case (ksNuMuCCWSgn1pi0 ) : 
-    case (ksNuMuCCWSgnoth  ) : 
-    case (ksNuEELScat      ) :
+    case (ksNuMuCCWS0pi  ) : 
+    case (ksNuMuCCWS1piC ) : 
+    case (ksNuMuCCWS1pi0 ) : 
+    case (ksNuMuCCWSoth  ) : 
+    case (ksNeutrinoElec   ) :
     case (ksInvMuDecay     ) : 
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
-    case (ksNuMuCCWSgn     ) : 
+    case (ksNuMuCCWS       ) : 
     case (ksNuMuCClow      ) : 
     case (ksNuMuCChigh     ) : 
     case (ksNuMuBarCClow   ) : 

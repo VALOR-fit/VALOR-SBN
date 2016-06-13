@@ -37,34 +37,33 @@ typedef enum ESample
 {
    //2016b near detector selections
    ksUndefined       = -1,
-   ksNuMuCC          =  0, // numu CC inclusive 
-   ksNuMuCC1trk0pi   =  1, // numu CC - 1 track QE-enhanced - 0 pions  (mu)
-   ksNuMuCC2trk0pi   =  2, // numu CC - 2 track QE-enhanched - 0 pions (mu + proton)
-   ksNuMuCCNtrk0pi   =  3, // numu CC - N track QE-enhanched - 0 pions (mu + >1 nucleons)
-   ksNuMuCC3trkDelta =  4, // numu CC - 3 track Delta-enhanched (mu + proton + pi+, Wreco ~1.2 GeV)
-   ksNuMuCC1piC      =  5, // numu CC - 2 track (mu + 1 pi+/-)
-   ksNuMuCC1pi0      =  6, // numu CC - 2 track (mu + 1 pi0)
-   ksNuMuCC1piC1pi0  =  7, // numu CC - 3 track (mu + 1 pi+/- + 1pi0)
-   ksNuMuCCoth       =  8, // numu CC - other
-   ksNuMuCCWSgn0pi   =  9, // wrong sign numu CC - 0 pions (mu+)
-   ksNuMuCCWSgn1piC  = 10, // wrong sign numu CC - 1 pion charged (mu+ + 1 pi+/-)
-   ksNuMuCCWSgn1pi0  = 11, // wrong sign numu CC - 1 pion neutral (mu+ + 1 pi0)
-   ksNuMuCCWSgnoth   = 12, // wrong sign numu CC - other
-   ksNuECC0pi        = 13, // nue CC - 0 pions (e)
-   ksNuECC1piC       = 14, // nue CC - 0 pions (e + 1 pi+/-)
-   ksNuECC1pi0       = 15, // nue CC - 0 pions (e + 1 pi0)
-   ksNuECCoth        = 16, // nue CC - other
-   ksNC0pi           = 17, // NC - 0 pions (nucleons)
-   ksNC1piC          = 18, // NC - 1pi charge (1 pi+/-)
-   ksNC1pi0          = 19, // NC - 1pi0 (1 pi0)
-   ksNCoth           = 20, // NC - other
-   ksNuEELScat       = 21, // NuE elastic scattering nue + e (kinematics to differentiate from ksNuECC0pi)
-   ksInvMuDecay      = 22, // Inverse muon decay (nuebar + e -> mu + numubar)
-   //2016a near detector selections
-   ksNuMuCC2piC,           // numu CC - 3 track (mu + 2 pi+/-)
-   ksNuECC,                // nue CC
-   ksNuMuCCWSgn,           // wrong sign numu CC inclusive
-   ksNC,                   // NC inclusive
+   ksNuMuCC          =  0, // numu CC inclusive - disabled in the current run 
+   ksNuMuCC0pi1trk   =  1, // numu CC 0 pions - 1 track (mu)
+   ksNuMuCC0pi2trk   =  2, // numu CC 0 pions - 2 tracks (mu + proton)
+   ksNuMuCC1piC      =  3, // numu CC 1 pion+/-  (mu + 1 pi+/- + X) and not included in the Delta enhanced selection (code 12)
+   ksNuMuCC2piC      =  4, // numu CC 2 pions+/- (mu + 2 pi+/- + X) - disabled in the current run
+   ksNuMuCC1pi0      =  5, // numu CC 1 pion0  (mu + 1 pi0 + X)
+   ksNuMuCC1piC1pi0  =  6, // numu CC 1 pion+/- & 1 pion0 (mu + 1 pi+/- + 1pi0 + X)
+   ksNuMuCCoth       =  7, // numu CC - other 
+   ksNuECC           =  8, // nue CC inclusive - disabled in the current run
+   ksNuMuCCWS        =  9, // wrong sign numu CC inclusive
+   ksNC              = 10, // NC inclusive - disabled in the current run
+   ksNuMuCC0piNtrk   = 11, // numu CC - 0 pions - N tracks (mu + >1 nucleons)
+   ksNuMuCC3trkDelta = 12, // numu CC - 3 track Delta-enhanched (mu + proton + pi+, Wreco ~1.2 GeV)
+   ksNuMuCCWS0pi     = 13, // wrong sign numu CC - 0 pions (mu+ + X )
+   ksNuMuCCWS1piC    = 14, // wrong sign numu CC - 1 pion+/- (mu+ + 1 pi+/- + X)
+   ksNuMuCCWS1pi0    = 15, // wrong sign numu CC - 1 pion0 (mu+ + 1 pi0 + X)
+   ksNuMuCCWSoth     = 16, // wrong sign numu CC - other
+   ksNuECC0pi        = 17, // nue CC - 0 pions (e + X)
+   ksNuECC1piC       = 18, // nue CC - 1 pion+/- (e + 1 pi+/- + X)
+   ksNuECC1pi0       = 19, // nue CC - 1 pion0 (e + 1 pi0 + X)
+   ksNuECCoth        = 20, // nue CC - other
+   ksNC0pi           = 21, // NC - 0 pions (nucleons)
+   ksNC1piC          = 22, // NC - 1 pion+/- (1 pi+/- + X)
+   ksNC1pi0          = 23, // NC - 1 pion0 (1 pi0 + X)
+   ksNCoth           = 24, // NC - other
+   ksNeutrinoElec    = 25, // Neutrino-electron elastic scattering nu + e 
+   ksInvMuDecay      = 26, // Inverse muon decay (nuebar + e -> mu + numubar)
    //2016b far detector selections
    ksNuMuCClow,            // beam intrinsic numu 
    ksNuMuCChigh,           // beam intrinsic anti-numu 
@@ -102,7 +101,7 @@ static const int kMaxNSamples = 40;
  
 //this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
 // i.e. undefined, 2piC, NuMuInclusive
- static const int kNSamples = 37;
+ static const int kNSamples = 34;
 
 // ---------------------------------------------------------------------
 // NOTE:
@@ -113,18 +112,18 @@ static const int kMaxNSamples = 40;
    // kbLBNF_FHC
    {
      //2016b near detector selections
-     ksNuMuCC1trk0pi, 
-     ksNuMuCC2trk0pi,
-     ksNuMuCCNtrk0pi,
+     ksNuMuCC0pi1trk, 
+     ksNuMuCC0pi2trk,
+     ksNuMuCC0piNtrk,
      ksNuMuCC3trkDelta,
      ksNuMuCC1piC,
      ksNuMuCC1pi0,
      ksNuMuCC1piC1pi0,
      ksNuMuCCoth,
-     ksNuMuCCWSgn0pi,
-     ksNuMuCCWSgn1piC,
-     ksNuMuCCWSgn1pi0,
-     ksNuMuCCWSgnoth,
+     ksNuMuCCWS0pi,
+     ksNuMuCCWS1piC,
+     ksNuMuCCWS1pi0,
+     ksNuMuCCWSoth,
      ksNuECC0pi,
      ksNuECC1piC,
      ksNuECC1pi0,
@@ -133,12 +132,12 @@ static const int kMaxNSamples = 40;
      ksNC1piC,
      ksNC1pi0,
      ksNCoth,
-     ksNuEELScat,
+     ksNeutrinoElec,
      ksInvMuDecay,
-     //2016a near detector selections (different from above)
-     ksNuECC,
-     ksNuMuCCWSgn,
-     ksNC,     
+     //2016a near detector selections 
+     //     ksNuECC,
+     //ksNuMuCCWSgn,
+     //ksNC,     
      //2016b far detector selections
      ksNuMuCClow,  
      ksNuMuCChigh,  
@@ -156,18 +155,18 @@ static const int kMaxNSamples = 40;
 
    {
      //2016b near detector selections
-     ksNuMuCC1trk0pi, 
-     ksNuMuCC2trk0pi,
-     ksNuMuCCNtrk0pi,
+     ksNuMuCC0pi1trk, 
+     ksNuMuCC0pi2trk,
+     ksNuMuCC0piNtrk,
      ksNuMuCC3trkDelta,
      ksNuMuCC1piC,
      ksNuMuCC1pi0,
      ksNuMuCC1piC1pi0,
      ksNuMuCCoth,
-     ksNuMuCCWSgn0pi,
-     ksNuMuCCWSgn1piC,
-     ksNuMuCCWSgn1pi0,
-     ksNuMuCCWSgnoth,
+     ksNuMuCCWS0pi,
+     ksNuMuCCWS1piC,
+     ksNuMuCCWS1pi0,
+     ksNuMuCCWSoth,
      ksNuECC0pi,
      ksNuECC1piC,
      ksNuECC1pi0,
@@ -176,12 +175,12 @@ static const int kMaxNSamples = 40;
      ksNC1piC,
      ksNC1pi0,
      ksNCoth,
-     ksNuEELScat,
+     ksNeutrinoElec,
      ksInvMuDecay,
      //2016a near detector selections (different from above)
-     ksNuECC,
-     ksNuMuCCWSgn,
-     ksNC,     
+     //ksNuECC,
+     //ksNuMuCCWSgn,
+     //ksNC,     
      //2016b far detector selections
      ksNuMuCClow,  
      ksNuMuCChigh,  

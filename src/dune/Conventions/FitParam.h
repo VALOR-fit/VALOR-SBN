@@ -283,14 +283,14 @@ static const PhysParamId_t kNuisRatioNuENuMu     = kNuis213;
 //
 // Detector systematics
 //
-static const PhysParamId_t kNuisEffNuMuCC1trk0pi = kNuis214;
-static const PhysParamId_t kNuisEffNuMuCC2trk0pi = kNuis215;
+static const PhysParamId_t kNuisEffNuMuCC0pi1trk = kNuis214;
+static const PhysParamId_t kNuisEffNuMuCC0pi2trk = kNuis215;
 static const PhysParamId_t kNuisEffNuMuCC1piC    = kNuis216;
 static const PhysParamId_t kNuisEffNuMuCC1pi0    = kNuis217;
 static const PhysParamId_t kNuisEffNuMuCC1piC1pi0= kNuis218;
 static const PhysParamId_t kNuisEffNuMuCCoth     = kNuis219;
 static const PhysParamId_t kNuisEffNuECC         = kNuis220;
-static const PhysParamId_t kNuisEffNuMuCCWSgn    = kNuis221;
+static const PhysParamId_t kNuisEffNuMuCCWS    = kNuis221;
 static const PhysParamId_t kNuisEffNC            = kNuis222;
 
 //
@@ -358,7 +358,7 @@ static const PhysParamId_t kNuisFDFluxFirstParameter = kNuisFHCNuMuFDFlux00;
 static const PhysParamId_t kNuisFDFluxLastParameter  = kNuisRHCNuEBarFDFlux06;
 static const PhysParamId_t kNuisIntFirstParameter  = kNuisIntNuCCQE1;
 static const PhysParamId_t kNuisIntLastParameter   = kNuisIntHadronization;
-static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC1trk0pi;
+static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC0pi1trk;
 static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
 
 
@@ -627,14 +627,14 @@ static const PhysParamId_t kFitParam[kNFitParams] =
    kNuisIntFracNucAbsorb         ,
    kNuisIntFracNucProduction     ,
    // Detector systematics
-   kNuisEffNuMuCC1trk0pi,
-   kNuisEffNuMuCC2trk0pi,
+   kNuisEffNuMuCC0pi1trk,
+   kNuisEffNuMuCC0pi2trk,
    kNuisEffNuMuCC1piC,
    kNuisEffNuMuCC1pi0,
    kNuisEffNuMuCC1piC1pi0,
    kNuisEffNuMuCCoth,
    kNuisEffNuECC,
-   kNuisEffNuMuCCWSgn,
+   kNuisEffNuMuCCWS,
    kNuisEffNC
 };
 
@@ -905,14 +905,14 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    false,  // kNuisIntFracNucAbsorb
    false,  // kNuisIntFracNucProduction
    // Detector systematics
-   false,  // kNuisEffNuMuCC1trk0pi
-   false,  // kNuisEffNuMuCC2trk0pi
+   false,  // kNuisEffNuMuCC0pi1trk
+   false,  // kNuisEffNuMuCC0pi2trk
    false,  // kNuisEffNuMuCC1piC
    false,  // kNuisEffNuMuCC1pi0
    false,  // kNuisEffNuMuCC1piC1pi0
    false,  // kNuisEffNuMuCCoth
    false,  // kNuisEffNuECC
-   false,  // kNuisEffNuMuCCWSgn
+   false,  // kNuisEffNuMuCCWS
    false   // kNuisEffNC
 };
 
@@ -1178,14 +1178,14 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
    {  0.0 , kEtrueMax},  // kNuisIntFracNucAbsorb
    {  0.0 , kEtrueMax},  // kNuisIntFracNucProduction
    // Detector systematics
-   {  0.0, kEtrueMax},   // kNuisEffNuMuCC1trk0pi
-   {  0.0, kEtrueMax},   // kNuisEffNuMuCC2trk0pi
+   {  0.0, kEtrueMax},   // kNuisEffNuMuCC0pi1trk
+   {  0.0, kEtrueMax},   // kNuisEffNuMuCC0pi2trk
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1piC
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1pi0
    {  0.0, kEtrueMax},   // kNuisEffNuMuCC1piC1pi0
    {  0.0, kEtrueMax},   // kNuisEffNuMuCCoth
    {  0.0, kEtrueMax},   // kNuisEffNuECC
-   {  0.0, kEtrueMax},   // kNuisEffNuMuCCWSgn
+   {  0.0, kEtrueMax},   // kNuisEffNuMuCCWS
    {  0.0, kEtrueMax}    // kNuisEffNC
 };
 
@@ -1451,14 +1451,14 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
    {  0.0 , kQ2trueMax},  // kNuisIntFracNucAbsorb
    {  0.0 , kQ2trueMax},  // kNuisIntFracNucProduction
    // Detector systematics
-   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1trk0pi
-   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC2trk0pi
+   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC0pi1trk
+   {  0.0, kQ2trueMax},   // kNuisEffNuMuCC0pi2trk
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1piC
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1pi0
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCC1piC1pi0
    {  0.0, kQ2trueMax},   // kNuisEffNuMuCCoth
    {  0.0, kQ2trueMax},   // kNuisEffNuECC
-   {  0.0, kQ2trueMax},   // kNuisEffNuMuCCWSgn
+   {  0.0, kQ2trueMax},   // kNuisEffNuMuCCWS
    {  0.0, kQ2trueMax}    // kNuisEffNC
 };
 
@@ -1728,14 +1728,14 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
    kpgXSec,            // kNuisIntFracNucAbsorb
    kpgXSec,            // kNuisIntFracNucProduction
    // Detector systematics
-   kpgDetector,        // kNuisEffNuMuCC1trk0pi
-   kpgDetector,        // kNuisEffNuMuCC2trk0pi
+   kpgDetector,        // kNuisEffNuMuCC0pi1trk
+   kpgDetector,        // kNuisEffNuMuCC0pi2trk
    kpgDetector,        // kNuisEffNuMuCC1piC
    kpgDetector,        // kNuisEffNuMuCC1pi0
    kpgDetector,        // kNuisEffNuMuCC1piC1pi0
    kpgDetector,        // kNuisEffNuMuCCoth
    kpgDetector,        // kNuisEffNuECC
-   kpgDetector,        // kNuisEffNuMuCCWSgn
+   kpgDetector,        // kNuisEffNuMuCCWS
    kpgDetector         // kNuisEffNC
 };
 
@@ -2000,14 +2000,14 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
    false, // kNuisIntFracNucAbsorb
    false, // kNuisIntFracNucProduction
    // Detector systematics
-   false, // kNuisEffNuMuCC1trk0pi
-   false, // kNuisEffNuMuCC2trk0pi
+   false, // kNuisEffNuMuCC0pi1trk
+   false, // kNuisEffNuMuCC0pi2trk
    false, // kNuisEffNuMuCC1piC
    false, // kNuisEffNuMuCC1pi0
    false, // kNuisEffNuMuCC1piC1pi0
    false, // kNuisEffNuMuCCoth
    false, // kNuisEffNuECC
-   false, // kNuisEffNuMuCCWSgn
+   false, // kNuisEffNuMuCCWS
    false  // kNuisEffNC
 };
 
@@ -2272,14 +2272,14 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
    true, // kNuisIntFracNucAbsorb
    true, // kNuisIntFracNucProduction
    // Detector systematics
-   false, // kNuisEffNuMuCC1trk0pi
-   false, // kNuisEffNuMuCC2trk0pi
+   false, // kNuisEffNuMuCC0pi1trk
+   false, // kNuisEffNuMuCC0pi2trk
    false, // kNuisEffNuMuCC1piC
    false, // kNuisEffNuMuCC1pi0
    false, // kNuisEffNuMuCC1piC1pi0
    false, // kNuisEffNuMuCCoth
    false, // kNuisEffNuECC
-   false, // kNuisEffNuMuCCWSgn
+   false, // kNuisEffNuMuCCWS
    false  // kNuisEffNC
 };
 
@@ -2544,14 +2544,14 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
    false, // kNuisIntFracNucAbsorb
    false, // kNuisIntFracNucProduction
    // Detector systematics
-   true,  // kNuisEffNuMuCC1trk0pi
-   true,  // kNuisEffNuMuCC2trk0pi
+   true,  // kNuisEffNuMuCC0pi1trk
+   true,  // kNuisEffNuMuCC0pi2trk
    true,  // kNuisEffNuMuCC1piC
    true,  // kNuisEffNuMuCC1pi0
    true,  // kNuisEffNuMuCC1piC1pi0
    true,  // kNuisEffNuMuCCoth
    true,  // kNuisEffNuECC
-   true,  // kNuisEffNuMuCCWSgn
+   true,  // kNuisEffNuMuCCWS
    true   // kNuisEffNC
 };
 
