@@ -165,11 +165,13 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
   bool is_MEC      = event->Summary()->ProcInfo().IsMEC();
   bool is_Coherent = event->Summary()->ProcInfo().IsCoherent();
   bool is_NuEEl    = event->Summary()->ProcInfo().IsNuElectronElastic();
-  
-  if (is_NuEEl) {
+  bool is_IMD      = event->Summary()->ProcInfo().IsInverseMuDecay();
+  bool is_IMDanh   = event->Summary()->ProcInfo().IsIMDAnnihilation();
+
+  /*  if (is_NuEEl) {
     LOG("UtlEventRec",pWARN)<<"Ignoring NuEEl event.";
     return conv::kmUndefined;
-  }
+    }*/
   
   vector<int> primary_hadr_system;
   vector<int> final_hadr_system;
@@ -223,6 +225,9 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
   bool is_2pi0     = (!is_Coherent) && (nPiC==0) && (nPi0==2) && (nK==0) && (nOtherHad==0); 
   bool is_1piC1pi0 = (!is_Coherent) && (nPiC==1) && (nPi0==1) && (nK==0) && (nOtherHad==0); 
   
+  bool is_ccnuel   = (is_IMD || is_IMDanh || (is_NuEEl && is_CC));
+  bool is_ncnuel   = (is_NuEEl && is_NC);
+  
   vector<conv::ReacMode_t> modes;
   
   // First do exclusive modes
@@ -242,6 +247,8 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
       if (is_1pi0)     { modes.push_back(conv::kmNuMuNC1pi0  ); } // numu    NC 1 pi0
       if (is_Coherent) { modes.push_back(conv::kmNuMuNCcoh   ); } // numu    NC coherent
     }
+    if (is_ccnuel) { modes.push_back(conv::kmNuMuCCELScat   ); } // numu + electron CC
+    if (is_ncnuel) { modes.push_back(conv::kmNuMuNCELScat   ); } // numu + electron NC
   }
 
   if(is_numubar) {
@@ -260,6 +267,8 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
       if (is_1pi0)     { modes.push_back(conv::kmNuMuBarNC1pi0 ); } // numubar NC 1 pi0
       if (is_Coherent) { modes.push_back(conv::kmNuMuBarNCcoh  ); } // numubar NC coherent
     }
+    if (is_ccnuel) { modes.push_back(conv::kmNuMuBarCCELScat   ); } // numubar + electron CC                                                 
+    if (is_ncnuel) { modes.push_back(conv::kmNuMuBarNCELScat   ); } // numubar + electron NC    
   }
 
   //
@@ -279,6 +288,7 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
       if (is_1pi0)     { modes.push_back(conv::kmNuENC1pi0     );}     // nue     NC 1 pi0
       if (is_Coherent) { modes.push_back(conv::kmNuENCcoh      );}     // nue     NC coherent
     }
+    if(is_NuEEl) { modes.push_back(conv::kmNuEELScat     );}     // nue + electron scattering (NC + CC + interference)
   }
   
   //
@@ -298,6 +308,7 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
       if (is_1pi0)     { modes.push_back(conv::kmNuEBarNC1pi0 );}     // nuebar  NC 1 pi0
       if (is_Coherent) { modes.push_back(conv::kmNuEBarNCcoh  );}     // nuebar  NC coherent
     }
+    if(is_NuEEl) { modes.push_back(conv::kmNuEBarELScat     );}     // nuebar + electron scattering (NC + CC + interference)
   }
   
   // If we've got one exclusive mode, we did well.
