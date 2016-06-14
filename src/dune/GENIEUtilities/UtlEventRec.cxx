@@ -225,7 +225,7 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
   bool is_2pi0     = (!is_Coherent) && (nPiC==0) && (nPi0==2) && (nK==0) && (nOtherHad==0); 
   bool is_1piC1pi0 = (!is_Coherent) && (nPiC==1) && (nPi0==1) && (nK==0) && (nOtherHad==0); 
   
-  bool is_ccnuel   = (is_IMD || is_IMDanh || (is_NuEEl && is_CC));
+  bool is_ccnuel   = (is_IMD || (is_NuEEl && is_CC));
   bool is_ncnuel   = (is_NuEEl && is_NC);
   
   vector<conv::ReacMode_t> modes;
@@ -308,7 +308,7 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
       if (is_1pi0)     { modes.push_back(conv::kmNuEBarNC1pi0 );}     // nuebar  NC 1 pi0
       if (is_Coherent) { modes.push_back(conv::kmNuEBarNCcoh  );}     // nuebar  NC coherent
     }
-    if(is_NuEEl) { modes.push_back(conv::kmNuEBarELScat     );}     // nuebar + electron scattering (NC + CC + interference)
+    if(is_NuEEl || is_IMDanh) { modes.push_back(conv::kmNuEBarELScat     );}     // nuebar + electron scattering (NC + CC + interference)
   }
   
   // If we've got one exclusive mode, we did well.
