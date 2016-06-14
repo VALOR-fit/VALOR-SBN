@@ -63,6 +63,8 @@ bool   gOptDisableChecks;
 
 void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
 
+static const int gPrintEveryNEvents = 50000;
+
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -200,10 +202,20 @@ int main(int argc, char ** argv)
   //
 
   Long64_t nev_accept = 0;
+  
+  std::vector<int> nev_accept_by_mode;
+  for (int im = 0 ; im < valor::conv::kNReacModes; im++) {
+    nev_accept_by_mode.push_back(0);
+  }
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
-    VLOG("make_minidst", pINFO) << "** Reading event: " << iev;
+    if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
+      VLOG("make_minidst", pNOTICE) << "** Reading event: " << iev;
+    }
+    else {
+      VLOG("make_minidst", pINFO) << "** Reading event: " << iev;
+    }
 
     analysis_tree->GetEntry(iev);
 
@@ -254,7 +266,11 @@ int main(int argc, char ** argv)
 
       VLOG("make_minidst", pINFO) << "+ Accepting event";
     }
+    
+    valor::conv::ReacMode_t reac_mode = valor::util::DetermineReactionMode(mcrec->event, false);
+    
     nev_accept++;
+    nev_accept_by_mode[reac_mode]++;
 
     // retrieve GHEP event record and print it out.
     genie::NtpMCRecHeader rec_header = mcrec->hdr;
@@ -263,8 +279,7 @@ int main(int argc, char ** argv)
       << "GENIE MC truth info: " << event;
       
     valor_minidst_sample    = sample; 
-    //~ valor_minidst_reac_mode = reac_mode; 
-    valor_minidst_reac_mode = valor::util::DetermineReactionMode(mcrec->event, false);
+    valor_minidst_reac_mode = reac_mode; 
     valor_minidst_enu_true  = enu_true; 
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco; 
@@ -300,6 +315,11 @@ int main(int argc, char ** argv)
     valor_minidst->Fill();
 
     mcrec->Clear();
+  }
+  
+  for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
+    valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
+    VLOG("make_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
   }
   
   double f = 100. * (double)nev_accept / (double)nev;
