@@ -787,12 +787,12 @@ bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
 //____________________________________________________________________________
 bool valor::util::IsNDFluxRelated(conv::PhysParamId_t p)
 {
-  return (p >= kNuisFHCNuMuFlux00 && p<=kNuisRHCNuEBarFlux06);
+  return (p >= kNuisNDFluxFirstParameter && p<=kNuisNDFluxLastParameter);
 }
 //____________________________________________________________________________
 bool valor::util::IsFDFluxRelated(conv::PhysParamId_t p)
 {
-  return (p >= kNuisFHCNuMuFDFlux00 && p<=kNuisRHCNuEBarFDFlux06);
+  return (p >= kNuisFDFluxFirstParameter && p<=kNuisFDFluxLastParameter);
 }
 //____________________________________________________________________________
 bool valor::util::IsFSI(conv::PhysParamId_t p)
