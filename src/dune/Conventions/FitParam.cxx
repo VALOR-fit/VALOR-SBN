@@ -785,6 +785,16 @@ bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
   return conv::kFitIsNuDetRelated[nd_index];
 }
 //____________________________________________________________________________
+bool valor::util::IsNDFluxRelated(conv::PhysParamId_t p)
+{
+  return (p >= kNuisFHCNuMuFlux00 && p<=kNuisRHCNuEBarFlux06);
+}
+//____________________________________________________________________________
+bool valor::util::IsFDFluxRelated(conv::PhysParamId_t p)
+{
+  return (p >= kNuisFHCNuMuFDFlux00 && p<=kNuisRHCNuEBarFDFlux06);
+}
+//____________________________________________________________________________
 bool valor::util::IsFSI(conv::PhysParamId_t p)
 {
   return (p >= kNuisIntPiMeanFreePath && p<=kNuisIntFracNucProduction);

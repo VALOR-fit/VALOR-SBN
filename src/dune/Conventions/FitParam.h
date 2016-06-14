@@ -2595,7 +2595,10 @@ namespace util {
   bool IsNuIntRelated (conv::PhysParamId_t p);
   bool IsNuDetRelated (conv::PhysParamId_t p);
   bool IsFSI          (conv::PhysParamId_t p);
-
+  
+  bool IsNDFluxRelated(conv::PhysParamId_t p);
+  bool IsFDFluxRelated(conv::PhysParamId_t p);
+  
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
 
   bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,
