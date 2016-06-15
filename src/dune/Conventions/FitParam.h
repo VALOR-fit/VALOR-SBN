@@ -44,8 +44,9 @@ namespace conv {
 static const int kNFitParamsNuFlux = 208;//104; // neutrino flux related 104 ND + 104 FD
 static const int kNFitParamsNuDet  =   9; // neutrino detector related
 static const int kNFitParamsNuInt  =  43; // neutrino interactions related
+static const int kNFitParamsNuOsc  =   6;
 
-static const int kNFitParams = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet;
+static const int kNFitParams = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet+kNFitParamsNuOsc;
 
 
 //
@@ -350,6 +351,8 @@ static const PhysParamId_t kNuisIntFracNucProduction     = kNuis265;
 static const PhysParamId_t kNuisIntHadronization         = kNuis266;
 
 // Boundaries between parameter types
+static const PhysParamId_t kOscFirstParam          = kPhypMixing23; 
+static const PhysParamId_t kOscLastParam           = kPhypDm12sq;
 static const PhysParamId_t kNuisFluxFirstParameter = kNuisFHCNuMuFlux00;
 static const PhysParamId_t kNuisFluxLastParameter  = kNuisRHCNuEBarFDFlux06;
 static const PhysParamId_t kNuisNDFluxFirstParameter = kNuisFHCNuMuFlux00;
@@ -369,6 +372,13 @@ static const PhysParamId_t kNuisDetLastParameter   = kNuisEffNC;
 
 static const PhysParamId_t kFitParam[kNFitParams] =
 {
+  //Oscillation parameters
+  kPhypMixing23,
+  kPhypMixing13,
+  kPhypMixing12,
+  kPhypCPV,
+  kPhypDm23sq,
+  kPhypDm12sq,
    // FHC flux
    kNuisFHCNuMuFlux00,
    kNuisFHCNuMuFlux01,
@@ -647,6 +657,13 @@ static const PhysParamId_t kFitParam[kNFitParams] =
 // Has true kinematic dependence
 static const bool kFitParamTrueKinematicDependence[kNFitParams] =
 {
+  //oscillation parameters
+  true,
+  true,
+  true,
+  true,
+  true,
+  true,
    // FHC flux
    true,   // kNuisFHCNuMuFlux00
    true,   // kNuisFHCNuMuFlux01
@@ -919,6 +936,13 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
 // Which is the true energy range?
 static const double kFitParamEtrueRange[kNFitParams][2] =
 {
+  //oscillation parameters
+  {0.0, kEtrueMax },
+  {0.0, kEtrueMax },
+  {0.0, kEtrueMax },
+  {0.0, kEtrueMax },
+  {0.0, kEtrueMax },
+  {0.0, kEtrueMax },
   // Emin, Emax
    // FHC flux
    {  0.0,  0.5},        // kNuisFHCNuMuFlux00
@@ -1193,6 +1217,13 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
 static const double kFitParamQ2trueRange[kNFitParams][2] =
 {
    // Q2 min, Q2 max
+  //oscillation parameters
+  { 0.0, kQ2trueMax },
+  { 0.0, kQ2trueMax },
+  { 0.0, kQ2trueMax },
+  { 0.0, kQ2trueMax },
+  { 0.0, kQ2trueMax },
+  { 0.0, kQ2trueMax },
    // FHC flux
    { 0.0, kQ2trueMax }, // kNuisFHCNuMuFlux00
    { 0.0, kQ2trueMax }, // kNuisFHCNuMuFlux01
@@ -1470,6 +1501,13 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
 
 static const FitParamGroup_t kFitParamGroup[kNFitParams] =
 {
+  //oscillation parameters
+  kpgOscillations,
+  kpgOscillations,
+  kpgOscillations,
+  kpgOscillations,
+  kpgOscillations,
+  kpgOscillations,
    // FHC flux
    kpgFHCNuMuFlux,     // kNuisFHCNuMuFlux00
    kpgFHCNuMuFlux,     // kNuisFHCNuMuFlux01
@@ -1743,6 +1781,13 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
 //
 static const bool kFitIsNuFluxRelated[kNFitParams] =
 {
+  //oscillation parameters
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
    // FHC flux
    true,  // kNuisFHCNuMuFlux00
    true,  // kNuisFHCNuMuFlux01
@@ -2011,10 +2056,575 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
    false  // kNuisEffNC
 };
 
+// Is this a neutrino flux related parameter?
+//
+static const bool kFitIsNDNuFluxRelated[kNFitParams] =
+{
+  //oscillation parameters
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+   // FHC flux
+   true,  // kNuisFHCNuMuFlux00
+   true,  // kNuisFHCNuMuFlux01
+   true,  // kNuisFHCNuMuFlux02
+   true,  // kNuisFHCNuMuFlux03
+   true,  // kNuisFHCNuMuFlux04
+   true,  // kNuisFHCNuMuFlux05
+   true,  // kNuisFHCNuMuFlux06
+   true,  // kNuisFHCNuMuFlux07
+   true,  // kNuisFHCNuMuFlux08
+   true,  // kNuisFHCNuMuFlux09
+   true,  // kNuisFHCNuMuFlux10
+   true,  // kNuisFHCNuMuFlux11
+   true,  // kNuisFHCNuMuFlux12
+   true,  // kNuisFHCNuMuFlux13
+   true,  // kNuisFHCNuMuFlux14
+   true,  // kNuisFHCNuMuFlux15
+   true,  // kNuisFHCNuMuFlux16
+   true,  // kNuisFHCNuMuFlux17
+   true,  // kNuisFHCNuMuFlux18
+   true,  // kNuisFHCNuMuBarFlux00
+   true,  // kNuisFHCNuMuBarFlux01
+   true,  // kNuisFHCNuMuBarFlux02
+   true,  // kNuisFHCNuMuBarFlux03
+   true,  // kNuisFHCNuMuBarFlux04
+   true,  // kNuisFHCNuMuBarFlux05
+   true,  // kNuisFHCNuMuBarFlux06
+   true,  // kNuisFHCNuMuBarFlux07
+   true,  // kNuisFHCNuMuBarFlux08
+   true,  // kNuisFHCNuMuBarFlux09
+   true,  // kNuisFHCNuMuBarFlux10
+   true,  // kNuisFHCNuMuBarFlux11
+   true,  // kNuisFHCNuMuBarFlux12
+   true,  // kNuisFHCNuMuBarFlux13
+   true,  // kNuisFHCNuMuBarFlux14
+   true,  // kNuisFHCNuMuBarFlux15
+   true,  // kNuisFHCNuMuBarFlux16
+   true,  // kNuisFHCNuMuBarFlux17
+   true,  // kNuisFHCNuMuBarFlux18
+   true,  // kNuisFHCNuEFlux00
+   true,  // kNuisFHCNuEFlux01
+   true,  // kNuisFHCNuEFlux02
+   true,  // kNuisFHCNuEFlux03
+   true,  // kNuisFHCNuEFlux04
+   true,  // kNuisFHCNuEFlux05
+   true,  // kNuisFHCNuEFlux06
+   true,  // kNuisFHCNuEBarFlux00
+   true,  // kNuisFHCNuEBarFlux01
+   true,  // kNuisFHCNuEBarFlux02
+   true,  // kNuisFHCNuEBarFlux03
+   true,  // kNuisFHCNuEBarFlux04
+   true,  // kNuisFHCNuEBarFlux05
+   true,  // kNuisFHCNuEBarFlux06
+   // RHC flux
+   true,  // kNuisRHCNuMuFlux00
+   true,  // kNuisRHCNuMuFlux01
+   true,  // kNuisRHCNuMuFlux02
+   true,  // kNuisRHCNuMuFlux03
+   true,  // kNuisRHCNuMuFlux04
+   true,  // kNuisRHCNuMuFlux05
+   true,  // kNuisRHCNuMuFlux06
+   true,  // kNuisRHCNuMuFlux07
+   true,  // kNuisRHCNuMuFlux08
+   true,  // kNuisRHCNuMuFlux09
+   true,  // kNuisRHCNuMuFlux10
+   true,  // kNuisRHCNuMuFlux11
+   true,  // kNuisRHCNuMuFlux12
+   true,  // kNuisRHCNuMuFlux13
+   true,  // kNuisRHCNuMuFlux14
+   true,  // kNuisRHCNuMuFlux15
+   true,  // kNuisRHCNuMuFlux16
+   true,  // kNuisRHCNuMuFlux17
+   true,  // kNuisRHCNuMuFlux18
+   true,  // kNuisRHCNuMuBarFlux00
+   true,  // kNuisRHCNuMuBarFlux01
+   true,  // kNuisRHCNuMuBarFlux02
+   true,  // kNuisRHCNuMuBarFlux03
+   true,  // kNuisRHCNuMuBarFlux04
+   true,  // kNuisRHCNuMuBarFlux05
+   true,  // kNuisRHCNuMuBarFlux06
+   true,  // kNuisRHCNuMuBarFlux07
+   true,  // kNuisRHCNuMuBarFlux08
+   true,  // kNuisRHCNuMuBarFlux09
+   true,  // kNuisRHCNuMuBarFlux10
+   true,  // kNuisRHCNuMuBarFlux11
+   true,  // kNuisRHCNuMuBarFlux12
+   true,  // kNuisRHCNuMuBarFlux13
+   true,  // kNuisRHCNuMuBarFlux14
+   true,  // kNuisRHCNuMuBarFlux15
+   true,  // kNuisRHCNuMuBarFlux16
+   true,  // kNuisRHCNuMuBarFlux17
+   true,  // kNuisRHCNuMuBarFlux18
+   true,  // kNuisRHCNuEFlux00
+   true,  // kNuisRHCNuEFlux01
+   true,  // kNuisRHCNuEFlux02
+   true,  // kNuisRHCNuEFlux03
+   true,  // kNuisRHCNuEFlux04
+   true,  // kNuisRHCNuEFlux05
+   true,  // kNuisRHCNuEFlux06
+   true,  // kNuisRHCNuEBarFlux00
+   true,  // kNuisRHCNuEBarFlux01
+   true,  // kNuisRHCNuEBarFlux02
+   true,  // kNuisRHCNuEBarFlux03
+   true,  // kNuisRHCNuEBarFlux04
+   true,  // kNuisRHCNuEBarFlux05
+   true,  // kNuisRHCNuEBarFlux06
+   // FHC flux
+   false,  // kNuisFHCNuMuFDFlux00
+   false,  // kNuisFHCNuMuFDFlux01
+   false,  // kNuisFHCNuMuFDFlux02
+   false,  // kNuisFHCNuMuFDFlux03
+   false,  // kNuisFHCNuMuFDFlux04
+   false,  // kNuisFHCNuMuFDFlux05
+   false,  // kNuisFHCNuMuFDFlux06
+   false,  // kNuisFHCNuMuFDFlux07
+   false,  // kNuisFHCNuMuFDFlux08
+   false,  // kNuisFHCNuMuFDFlux09
+   false,  // kNuisFHCNuMuFDFlux10
+   false,  // kNuisFHCNuMuFDFlux11
+   false,  // kNuisFHCNuMuFDFlux12
+   false,  // kNuisFHCNuMuFDFlux13
+   false,  // kNuisFHCNuMuFDFlux14
+   false,  // kNuisFHCNuMuFDFlux15
+   false,  // kNuisFHCNuMuFDFlux16
+   false,  // kNuisFHCNuMuFDFlux17
+   false,  // kNuisFHCNuMuFDFlux18
+   false,  // kNuisFHCNuMuBarFDFlux00
+   false,  // kNuisFHCNuMuBarFDFlux01
+   false,  // kNuisFHCNuMuBarFDFlux02
+   false,  // kNuisFHCNuMuBarFDFlux03
+   false,  // kNuisFHCNuMuBarFDFlux04
+   false,  // kNuisFHCNuMuBarFDFlux05
+   false,  // kNuisFHCNuMuBarFDFlux06
+   false,  // kNuisFHCNuMuBarFDFlux07
+   false,  // kNuisFHCNuMuBarFDFlux08
+   false,  // kNuisFHCNuMuBarFDFlux09
+   false,  // kNuisFHCNuMuBarFDFlux10
+   false,  // kNuisFHCNuMuBarFDFlux11
+   false,  // kNuisFHCNuMuBarFDFlux12
+   false,  // kNuisFHCNuMuBarFDFlux13
+   false,  // kNuisFHCNuMuBarFDFlux14
+   false,  // kNuisFHCNuMuBarFDFlux15
+   false,  // kNuisFHCNuMuBarFDFlux16
+   false,  // kNuisFHCNuMuBarFDFlux17
+   false,  // kNuisFHCNuMuBarFDFlux18
+   false,  // kNuisFHCNuEFDFlux00
+   false,  // kNuisFHCNuEFDFlux01
+   false,  // kNuisFHCNuEFDFlux02
+   false,  // kNuisFHCNuEFDFlux03
+   false,  // kNuisFHCNuEFDFlux04
+   false,  // kNuisFHCNuEFDFlux05
+   false,  // kNuisFHCNuEFDFlux06
+   false,  // kNuisFHCNuEBarFDFlux00
+   false,  // kNuisFHCNuEBarFDFlux01
+   false,  // kNuisFHCNuEBarFDFlux02
+   false,  // kNuisFHCNuEBarFDFlux03
+   false,  // kNuisFHCNuEBarFDFlux04
+   false,  // kNuisFHCNuEBarFDFlux05
+   false,  // kNuisFHCNuEBarFDFlux06
+   // RHC flux
+   false,  // kNuisRHCNuMuFDFlux00
+   false,  // kNuisRHCNuMuFDFlux01
+   false,  // kNuisRHCNuMuFDFlux02
+   false,  // kNuisRHCNuMuFDFlux03
+   false,  // kNuisRHCNuMuFDFlux04
+   false,  // kNuisRHCNuMuFDFlux05
+   false,  // kNuisRHCNuMuFDFlux06
+   false,  // kNuisRHCNuMuFDFlux07
+   false,  // kNuisRHCNuMuFDFlux08
+   false,  // kNuisRHCNuMuFDFlux09
+   false,  // kNuisRHCNuMuFDFlux10
+   false,  // kNuisRHCNuMuFDFlux11
+   false,  // kNuisRHCNuMuFDFlux12
+   false,  // kNuisRHCNuMuFDFlux13
+   false,  // kNuisRHCNuMuFDFlux14
+   false,  // kNuisRHCNuMuFDFlux15
+   false,  // kNuisRHCNuMuFDFlux16
+   false,  // kNuisRHCNuMuFDFlux17
+   false,  // kNuisRHCNuMuFDFlux18
+   false,  // kNuisRHCNuMuBarFDFlux00
+   false,  // kNuisRHCNuMuBarFDFlux01
+   false,  // kNuisRHCNuMuBarFDFlux02
+   false,  // kNuisRHCNuMuBarFDFlux03
+   false,  // kNuisRHCNuMuBarFDFlux04
+   false,  // kNuisRHCNuMuBarFDFlux05
+   false,  // kNuisRHCNuMuBarFDFlux06
+   false,  // kNuisRHCNuMuBarFDFlux07
+   false,  // kNuisRHCNuMuBarFDFlux08
+   false,  // kNuisRHCNuMuBarFDFlux09
+   false,  // kNuisRHCNuMuBarFDFlux10
+   false,  // kNuisRHCNuMuBarFDFlux11
+   false,  // kNuisRHCNuMuBarFDFlux12
+   false,  // kNuisRHCNuMuBarFDFlux13
+   false,  // kNuisRHCNuMuBarFDFlux14
+   false,  // kNuisRHCNuMuBarFDFlux15
+   false,  // kNuisRHCNuMuBarFDFlux16
+   false,  // kNuisRHCNuMuBarFDFlux17
+   false,  // kNuisRHCNuMuBarFDFlux18
+   false,  // kNuisRHCNuEFDFlux00
+   false,  // kNuisRHCNuEFDFlux01
+   false,  // kNuisRHCNuEFDFlux02
+   false,  // kNuisRHCNuEFDFlux03
+   false,  // kNuisRHCNuEFDFlux04
+   false,  // kNuisRHCNuEFDFlux05
+   false,  // kNuisRHCNuEFDFlux06
+   false,  // kNuisRHCNuEBarFDFlux00
+   false,  // kNuisRHCNuEBarFDFlux01
+   false,  // kNuisRHCNuEBarFDFlux02
+   false,  // kNuisRHCNuEBarFDFlux03
+   false,  // kNuisRHCNuEBarFDFlux04
+   false,  // kNuisRHCNuEBarFDFlux05
+   false,  // kNuisRHCNuEBarFDFlux06
+   // Cross-sections
+   false, // kNuisIntNuCCQE1
+   false, // kNuisIntNuCCQE2
+   false, // kNuisIntNuCCQE3
+   false, // kNuisIntNuBarCCQE1
+   false, // kNuisIntNuBarCCQE2
+   false, // kNuisIntNuBarCCQE3
+   false, // kNuisIntNuCCMEC
+   false, // kNuisIntNuBarCCMEC
+   false, // kNuisIntNuCC1piz1
+   false, // kNuisIntNuCC1piz2
+   false, // kNuisIntNuCC1piz3
+   false, // kNuisIntNuCC1pic1
+   false, // kNuisIntNuCC1pic2
+   false, // kNuisIntNuCC1pic3
+   false, // kNuisIntNuBarCC1piz1
+   false, // kNuisIntNuBarCC1piz2
+   false, // kNuisIntNuBarCC1piz3
+   false, // kNuisIntNuBarCC1pic1
+   false, // kNuisIntNuBarCC1pic2
+   false, // kNuisIntNuBarCC1pic3
+   false, // kNuisIntNuCC2Pi
+   false, // kNuisIntNuBarCC2Pi
+   false, // kNuisIntNuDIS1
+   false, // kNuisIntNuDIS2
+   false, // kNuisIntNuDIS3
+   false, // kNuisIntNuBarDIS1
+   false, // kNuisIntNuBarDIS2
+   false, // kNuisIntNuBarDIS3
+   false, // kNuisIntNormNuCoherent
+   false, // kNuisIntNormNuBarCoherent
+   false, // kNuisIntNuNormNC
+   false, // kNuisIntNuBarNormNC
+   false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntPiMeanFreePath
+   false, // kNuisIntNucMeanFreePath
+   false, // kNuisIntFracPiChargeExchange
+   false, // kNuisIntFracPiInelastic
+   false, // kNuisIntFracPiAbsorb
+   false, // kNuisIntFracPiProduction
+   false, // kNuisIntFracNucChargeExchange
+   false, // kNuisIntFracNucInelastic
+   false, // kNuisIntFracNucAbsorb
+   false, // kNuisIntFracNucProduction
+   // Detector systematics
+   false, // kNuisEffNuMuCC0pi1trk
+   false, // kNuisEffNuMuCC0pi2trk
+   false, // kNuisEffNuMuCC1piC
+   false, // kNuisEffNuMuCC1pi0
+   false, // kNuisEffNuMuCC1piC1pi0
+   false, // kNuisEffNuMuCCoth
+   false, // kNuisEffNuECC
+   false, // kNuisEffNuMuCCWS
+   false  // kNuisEffNC
+};
+
+// Is this a neutrino flux related parameter?
+//
+static const bool kFitIsFDNuFluxRelated[kNFitParams] =
+{
+  //oscillation parameters
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
+   // FHC flux
+   false,  // kNuisFHCNuMuFlux00
+   false,  // kNuisFHCNuMuFlux01
+   false,  // kNuisFHCNuMuFlux02
+   false,  // kNuisFHCNuMuFlux03
+   false,  // kNuisFHCNuMuFlux04
+   false,  // kNuisFHCNuMuFlux05
+   false,  // kNuisFHCNuMuFlux06
+   false,  // kNuisFHCNuMuFlux07
+   false,  // kNuisFHCNuMuFlux08
+   false,  // kNuisFHCNuMuFlux09
+   false,  // kNuisFHCNuMuFlux10
+   false,  // kNuisFHCNuMuFlux11
+   false,  // kNuisFHCNuMuFlux12
+   false,  // kNuisFHCNuMuFlux13
+   false,  // kNuisFHCNuMuFlux14
+   false,  // kNuisFHCNuMuFlux15
+   false,  // kNuisFHCNuMuFlux16
+   false,  // kNuisFHCNuMuFlux17
+   false,  // kNuisFHCNuMuFlux18
+   false,  // kNuisFHCNuMuBarFlux00
+   false,  // kNuisFHCNuMuBarFlux01
+   false,  // kNuisFHCNuMuBarFlux02
+   false,  // kNuisFHCNuMuBarFlux03
+   false,  // kNuisFHCNuMuBarFlux04
+   false,  // kNuisFHCNuMuBarFlux05
+   false,  // kNuisFHCNuMuBarFlux06
+   false,  // kNuisFHCNuMuBarFlux07
+   false,  // kNuisFHCNuMuBarFlux08
+   false,  // kNuisFHCNuMuBarFlux09
+   false,  // kNuisFHCNuMuBarFlux10
+   false,  // kNuisFHCNuMuBarFlux11
+   false,  // kNuisFHCNuMuBarFlux12
+   false,  // kNuisFHCNuMuBarFlux13
+   false,  // kNuisFHCNuMuBarFlux14
+   false,  // kNuisFHCNuMuBarFlux15
+   false,  // kNuisFHCNuMuBarFlux16
+   false,  // kNuisFHCNuMuBarFlux17
+   false,  // kNuisFHCNuMuBarFlux18
+   false,  // kNuisFHCNuEFlux00
+   false,  // kNuisFHCNuEFlux01
+   false,  // kNuisFHCNuEFlux02
+   false,  // kNuisFHCNuEFlux03
+   false,  // kNuisFHCNuEFlux04
+   false,  // kNuisFHCNuEFlux05
+   false,  // kNuisFHCNuEFlux06
+   false,  // kNuisFHCNuEBarFlux00
+   false,  // kNuisFHCNuEBarFlux01
+   false,  // kNuisFHCNuEBarFlux02
+   false,  // kNuisFHCNuEBarFlux03
+   false,  // kNuisFHCNuEBarFlux04
+   false,  // kNuisFHCNuEBarFlux05
+   false,  // kNuisFHCNuEBarFlux06
+   // RHC flux
+   false,  // kNuisRHCNuMuFlux00
+   false,  // kNuisRHCNuMuFlux01
+   false,  // kNuisRHCNuMuFlux02
+   false,  // kNuisRHCNuMuFlux03
+   false,  // kNuisRHCNuMuFlux04
+   false,  // kNuisRHCNuMuFlux05
+   false,  // kNuisRHCNuMuFlux06
+   false,  // kNuisRHCNuMuFlux07
+   false,  // kNuisRHCNuMuFlux08
+   false,  // kNuisRHCNuMuFlux09
+   false,  // kNuisRHCNuMuFlux10
+   false,  // kNuisRHCNuMuFlux11
+   false,  // kNuisRHCNuMuFlux12
+   false,  // kNuisRHCNuMuFlux13
+   false,  // kNuisRHCNuMuFlux14
+   false,  // kNuisRHCNuMuFlux15
+   false,  // kNuisRHCNuMuFlux16
+   false,  // kNuisRHCNuMuFlux17
+   false,  // kNuisRHCNuMuFlux18
+   false,  // kNuisRHCNuMuBarFlux00
+   false,  // kNuisRHCNuMuBarFlux01
+   false,  // kNuisRHCNuMuBarFlux02
+   false,  // kNuisRHCNuMuBarFlux03
+   false,  // kNuisRHCNuMuBarFlux04
+   false,  // kNuisRHCNuMuBarFlux05
+   false,  // kNuisRHCNuMuBarFlux06
+   false,  // kNuisRHCNuMuBarFlux07
+   false,  // kNuisRHCNuMuBarFlux08
+   false,  // kNuisRHCNuMuBarFlux09
+   false,  // kNuisRHCNuMuBarFlux10
+   false,  // kNuisRHCNuMuBarFlux11
+   false,  // kNuisRHCNuMuBarFlux12
+   false,  // kNuisRHCNuMuBarFlux13
+   false,  // kNuisRHCNuMuBarFlux14
+   false,  // kNuisRHCNuMuBarFlux15
+   false,  // kNuisRHCNuMuBarFlux16
+   false,  // kNuisRHCNuMuBarFlux17
+   false,  // kNuisRHCNuMuBarFlux18
+   false,  // kNuisRHCNuEFlux00
+   false,  // kNuisRHCNuEFlux01
+   false,  // kNuisRHCNuEFlux02
+   false,  // kNuisRHCNuEFlux03
+   false,  // kNuisRHCNuEFlux04
+   false,  // kNuisRHCNuEFlux05
+   false,  // kNuisRHCNuEFlux06
+   false,  // kNuisRHCNuEBarFlux00
+   false,  // kNuisRHCNuEBarFlux01
+   false,  // kNuisRHCNuEBarFlux02
+   false,  // kNuisRHCNuEBarFlux03
+   false,  // kNuisRHCNuEBarFlux04
+   false,  // kNuisRHCNuEBarFlux05
+   false,  // kNuisRHCNuEBarFlux06
+   // FHC flux
+   true,  // kNuisFHCNuMuFDFlux00
+   true,  // kNuisFHCNuMuFDFlux01
+   true,  // kNuisFHCNuMuFDFlux02
+   true,  // kNuisFHCNuMuFDFlux03
+   true,  // kNuisFHCNuMuFDFlux04
+   true,  // kNuisFHCNuMuFDFlux05
+   true,  // kNuisFHCNuMuFDFlux06
+   true,  // kNuisFHCNuMuFDFlux07
+   true,  // kNuisFHCNuMuFDFlux08
+   true,  // kNuisFHCNuMuFDFlux09
+   true,  // kNuisFHCNuMuFDFlux10
+   true,  // kNuisFHCNuMuFDFlux11
+   true,  // kNuisFHCNuMuFDFlux12
+   true,  // kNuisFHCNuMuFDFlux13
+   true,  // kNuisFHCNuMuFDFlux14
+   true,  // kNuisFHCNuMuFDFlux15
+   true,  // kNuisFHCNuMuFDFlux16
+   true,  // kNuisFHCNuMuFDFlux17
+   true,  // kNuisFHCNuMuFDFlux18
+   true,  // kNuisFHCNuMuBarFDFlux00
+   true,  // kNuisFHCNuMuBarFDFlux01
+   true,  // kNuisFHCNuMuBarFDFlux02
+   true,  // kNuisFHCNuMuBarFDFlux03
+   true,  // kNuisFHCNuMuBarFDFlux04
+   true,  // kNuisFHCNuMuBarFDFlux05
+   true,  // kNuisFHCNuMuBarFDFlux06
+   true,  // kNuisFHCNuMuBarFDFlux07
+   true,  // kNuisFHCNuMuBarFDFlux08
+   true,  // kNuisFHCNuMuBarFDFlux09
+   true,  // kNuisFHCNuMuBarFDFlux10
+   true,  // kNuisFHCNuMuBarFDFlux11
+   true,  // kNuisFHCNuMuBarFDFlux12
+   true,  // kNuisFHCNuMuBarFDFlux13
+   true,  // kNuisFHCNuMuBarFDFlux14
+   true,  // kNuisFHCNuMuBarFDFlux15
+   true,  // kNuisFHCNuMuBarFDFlux16
+   true,  // kNuisFHCNuMuBarFDFlux17
+   true,  // kNuisFHCNuMuBarFDFlux18
+   true,  // kNuisFHCNuEFDFlux00
+   true,  // kNuisFHCNuEFDFlux01
+   true,  // kNuisFHCNuEFDFlux02
+   true,  // kNuisFHCNuEFDFlux03
+   true,  // kNuisFHCNuEFDFlux04
+   true,  // kNuisFHCNuEFDFlux05
+   true,  // kNuisFHCNuEFDFlux06
+   true,  // kNuisFHCNuEBarFDFlux00
+   true,  // kNuisFHCNuEBarFDFlux01
+   true,  // kNuisFHCNuEBarFDFlux02
+   true,  // kNuisFHCNuEBarFDFlux03
+   true,  // kNuisFHCNuEBarFDFlux04
+   true,  // kNuisFHCNuEBarFDFlux05
+   true,  // kNuisFHCNuEBarFDFlux06
+   // RHC flux
+   true,  // kNuisRHCNuMuFDFlux00
+   true,  // kNuisRHCNuMuFDFlux01
+   true,  // kNuisRHCNuMuFDFlux02
+   true,  // kNuisRHCNuMuFDFlux03
+   true,  // kNuisRHCNuMuFDFlux04
+   true,  // kNuisRHCNuMuFDFlux05
+   true,  // kNuisRHCNuMuFDFlux06
+   true,  // kNuisRHCNuMuFDFlux07
+   true,  // kNuisRHCNuMuFDFlux08
+   true,  // kNuisRHCNuMuFDFlux09
+   true,  // kNuisRHCNuMuFDFlux10
+   true,  // kNuisRHCNuMuFDFlux11
+   true,  // kNuisRHCNuMuFDFlux12
+   true,  // kNuisRHCNuMuFDFlux13
+   true,  // kNuisRHCNuMuFDFlux14
+   true,  // kNuisRHCNuMuFDFlux15
+   true,  // kNuisRHCNuMuFDFlux16
+   true,  // kNuisRHCNuMuFDFlux17
+   true,  // kNuisRHCNuMuFDFlux18
+   true,  // kNuisRHCNuMuBarFDFlux00
+   true,  // kNuisRHCNuMuBarFDFlux01
+   true,  // kNuisRHCNuMuBarFDFlux02
+   true,  // kNuisRHCNuMuBarFDFlux03
+   true,  // kNuisRHCNuMuBarFDFlux04
+   true,  // kNuisRHCNuMuBarFDFlux05
+   true,  // kNuisRHCNuMuBarFDFlux06
+   true,  // kNuisRHCNuMuBarFDFlux07
+   true,  // kNuisRHCNuMuBarFDFlux08
+   true,  // kNuisRHCNuMuBarFDFlux09
+   true,  // kNuisRHCNuMuBarFDFlux10
+   true,  // kNuisRHCNuMuBarFDFlux11
+   true,  // kNuisRHCNuMuBarFDFlux12
+   true,  // kNuisRHCNuMuBarFDFlux13
+   true,  // kNuisRHCNuMuBarFDFlux14
+   true,  // kNuisRHCNuMuBarFDFlux15
+   true,  // kNuisRHCNuMuBarFDFlux16
+   true,  // kNuisRHCNuMuBarFDFlux17
+   true,  // kNuisRHCNuMuBarFDFlux18
+   true,  // kNuisRHCNuEFDFlux00
+   true,  // kNuisRHCNuEFDFlux01
+   true,  // kNuisRHCNuEFDFlux02
+   true,  // kNuisRHCNuEFDFlux03
+   true,  // kNuisRHCNuEFDFlux04
+   true,  // kNuisRHCNuEFDFlux05
+   true,  // kNuisRHCNuEFDFlux06
+   true,  // kNuisRHCNuEBarFDFlux00
+   true,  // kNuisRHCNuEBarFDFlux01
+   true,  // kNuisRHCNuEBarFDFlux02
+   true,  // kNuisRHCNuEBarFDFlux03
+   true,  // kNuisRHCNuEBarFDFlux04
+   true,  // kNuisRHCNuEBarFDFlux05
+   true,  // kNuisRHCNuEBarFDFlux06
+   // Cross-sections
+   false, // kNuisIntNuCCQE1
+   false, // kNuisIntNuCCQE2
+   false, // kNuisIntNuCCQE3
+   false, // kNuisIntNuBarCCQE1
+   false, // kNuisIntNuBarCCQE2
+   false, // kNuisIntNuBarCCQE3
+   false, // kNuisIntNuCCMEC
+   false, // kNuisIntNuBarCCMEC
+   false, // kNuisIntNuCC1piz1
+   false, // kNuisIntNuCC1piz2
+   false, // kNuisIntNuCC1piz3
+   false, // kNuisIntNuCC1pic1
+   false, // kNuisIntNuCC1pic2
+   false, // kNuisIntNuCC1pic3
+   false, // kNuisIntNuBarCC1piz1
+   false, // kNuisIntNuBarCC1piz2
+   false, // kNuisIntNuBarCC1piz3
+   false, // kNuisIntNuBarCC1pic1
+   false, // kNuisIntNuBarCC1pic2
+   false, // kNuisIntNuBarCC1pic3
+   false, // kNuisIntNuCC2Pi
+   false, // kNuisIntNuBarCC2Pi
+   false, // kNuisIntNuDIS1
+   false, // kNuisIntNuDIS2
+   false, // kNuisIntNuDIS3
+   false, // kNuisIntNuBarDIS1
+   false, // kNuisIntNuBarDIS2
+   false, // kNuisIntNuBarDIS3
+   false, // kNuisIntNormNuCoherent
+   false, // kNuisIntNormNuBarCoherent
+   false, // kNuisIntNuNormNC
+   false, // kNuisIntNuBarNormNC
+   false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntPiMeanFreePath
+   false, // kNuisIntNucMeanFreePath
+   false, // kNuisIntFracPiChargeExchange
+   false, // kNuisIntFracPiInelastic
+   false, // kNuisIntFracPiAbsorb
+   false, // kNuisIntFracPiProduction
+   false, // kNuisIntFracNucChargeExchange
+   false, // kNuisIntFracNucInelastic
+   false, // kNuisIntFracNucAbsorb
+   false, // kNuisIntFracNucProduction
+   // Detector systematics
+   false, // kNuisEffNuMuCC0pi1trk
+   false, // kNuisEffNuMuCC0pi2trk
+   false, // kNuisEffNuMuCC1piC
+   false, // kNuisEffNuMuCC1pi0
+   false, // kNuisEffNuMuCC1piC1pi0
+   false, // kNuisEffNuMuCCoth
+   false, // kNuisEffNuECC
+   false, // kNuisEffNuMuCCWS
+   false  // kNuisEffNC
+};
+
 // Is this a neutrino interaction model related parameter?
 //
 static const bool kFitIsNuIntRelated[kNFitParams] =
 {
+  //oscillation parameters
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
    // FHC flux
    false, // kNuisFHCNuMuFlux00
    false, // kNuisFHCNuMuFlux01
@@ -2287,6 +2897,13 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
 //
 static const bool kFitIsNuDetRelated[kNFitParams] =
 {
+  //oscillation parameters
+  false,
+  false,
+  false,
+  false,
+  false,
+  false,
    // FHC flux
    false, // kNuisFHCNuMuFlux00
    false, // kNuisFHCNuMuFlux01
@@ -2591,6 +3208,9 @@ namespace util {
   PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
   FitParamList * GetFitParameterList (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
 
+  bool IsOscParam(conv::PhysParamId_t p);
+  bool IsSystematic(conv::PhysParamId_t p);
+
   bool IsNuFluxRelated(conv::PhysParamId_t p);
   bool IsNuIntRelated (conv::PhysParamId_t p);
   bool IsNuDetRelated (conv::PhysParamId_t p);
@@ -2603,6 +3223,7 @@ namespace util {
 
   bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,
                         conv::ReacMode_t m, conv::PhysParamId_t p);
+  bool OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,	conv::ReacMode_t m);
   bool ParamHasSplines(conv::PhysParamId_t p);
   
   // Return pointer to array of min/max                      

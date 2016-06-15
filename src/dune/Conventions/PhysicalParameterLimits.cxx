@@ -159,6 +159,7 @@ void valor::PhysicalParameterLimits::SetDefaults(void)
     if (p==kNuisIntFracNucInelastic     ){ fParamMinima[p] = 0.2 ; fParamMaxima[p] = 1.8; }
     if (p==kNuisIntFracNucAbsorb        ){ fParamMinima[p] = 0.6 ; fParamMaxima[p] = 1.4; }
     if (p==kNuisIntFracNucProduction    ){ fParamMinima[p] = 0.6 ; fParamMaxima[p] = 1.4; }    
+    
   }
   
   

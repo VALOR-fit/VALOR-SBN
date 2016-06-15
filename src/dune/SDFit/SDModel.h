@@ -25,6 +25,7 @@
 //fmwk
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/PhysHypothesis.h"
+#include "valor/Oscillation/NuOsc3Flavour.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/VArray/VALORArray.h"
 //dune
@@ -93,10 +94,12 @@ private:
   void FluctuateMCStat  (Option_t * opt = 0);
   void ApplySystematics (Option_t * opt = 0);
   void ApplyPhysics     (Option_t * opt = 0);
+  void ApplyOscProb     (Option_t * opt = 0);
   void UpdatePDFs       (Option_t * opt = 0);
 
   const util::ArrIdx * fArrIdx;
 
+  NuOsc3Flavour  fNuOsc3Flavour;
   PhysHypothesis fPhysHypothesis;
   
   std::string fName;

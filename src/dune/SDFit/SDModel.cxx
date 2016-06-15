@@ -180,6 +180,7 @@ bool SDModel::Generate(const PhysHypothesis & ph, Option_t * opt)
   this->FluctuateMCStat(opt);   // `tun' MC templates --> `tun' MC templates (NOTE: if important effect, will need to add a new type of templates
 //this->ApplySystematics(opt);  // `tun' MC templates --> `sys' MC templates
   this->ApplyPhysics(opt);      // `sys' MC templates --> `fin' MC templates
+  this->ApplyOscProb(opt);      // `fin' MC templates --> `fin' MC templates
   this->UpdatePDFs(opt);        // `fin' MC templates --> p.d.f
 
   LOG("SDModel",pINFO) << "Done generating predictions";
@@ -1622,6 +1623,7 @@ void SDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNFitParams; ip++) {
             PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
+	    if(util::IsOscParam(p)) continue; 
             bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
             if(!enu_true_dep) continue;
             bool apply = util::ParamIsAppliedTo(b,s,m,p);
@@ -1664,6 +1666,7 @@ void SDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNFitParams; ip++) {
              PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
+	     if(util::IsOscParam(p)) continue;
              bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
              if(enu_true_dep) continue;
              bool apply = util::ParamIsAppliedTo(b,s,m,p);
@@ -1705,6 +1708,7 @@ void SDModel::ApplyPhysics(Option_t * option)
              //-------------- error, prone need to simplify
              PhysParamId_t p = kFitParam[ip];
              if(p == kPhypUndefined) continue;
+	     if(util::IsOscParam(p)) continue;
              bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
              if(!enu_true_dep) continue;
              bool apply = util::ParamIsAppliedTo(b,s,m,p);
@@ -1733,6 +1737,7 @@ void SDModel::ApplyPhysics(Option_t * option)
           for(int ip = 0; ip < kNFitParams; ip++) {
             PhysParamId_t p = kFitParam[ip];
             if(p == kPhypUndefined) continue;
+	    if(util::IsOscParam(p)) continue;
             bool enu_true_dep = kFitParamTrueKinematicDependence[ip];
             if(enu_true_dep) continue;
             bool apply = util::ParamIsAppliedTo(b,s,m,p);
@@ -1757,6 +1762,239 @@ void SDModel::ApplyPhysics(Option_t * option)
       }//imode
     }//isample
   }//ibeam
+}
+//________________________________________________________________________________________                                                       
+void SDModel::ApplyOscProb(Option_t * option)
+{
+  // This method applies oscillation probabilities
+  // from fin to fin templates 
+  // following SuperKMC
+
+  //first, check that there are actually osc params in the fit params list
+  bool apply_osc_prob = false;
+  for(int ip = 0; ip < kNFitParams; ip++) {
+    PhysParamId_t p = kFitParam[ip];
+    if(util::IsOscParam(p)) apply_osc_prob = true;
+  }
+
+  if(apply_osc_prob){
+    LOG("SDModel",pINFO)
+      << "Applying oscillation probabilities (option: "
+      << ((option) ? option : "")
+      << ")";
+    
+    bool update_mct_sb = false;
+    if(option) {
+      string opt = option;
+      if(opt.find("+SB") != string::npos) {
+	update_mct_sb = true;
+      }
+    }
+    
+    // set oscillation parameters to the oscillation probability calculation code                                                              
+    double mixing12 = fPhysHypothesis.CurrValue(kPhypMixing12);
+    double mixing13 = fPhysHypothesis.CurrValue(kPhypMixing13);
+    double mixing23 = fPhysHypothesis.CurrValue(kPhypMixing23);
+    //    double dm12sq   = fPhysHypothesis.CurrValue(kPhypDm12sq);                                                                           
+      //double dm23sq   = fPhysHypothesis.CurrValue(kPhypDm23sq);                                                                              
+    double dmsq     = fPhysHypothesis.CurrValue(kPhypDm12sq);
+    double Dmsq     = fPhysHypothesis.CurrValue(kPhypDm23sq);
+    double delta_cp = fPhysHypothesis.CurrValue(kPhypCPV    );
+    
+    NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
+    NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
+    
+    double p_osc[3][3];
+    double p_osc_bar[3][3];
+    
+    // mixing params are: sin^2(2*theta)                                                                                                      
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                                          
+    if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsq2Theta)
+      {
+	fNuOsc3Flavour.SetOscParameters(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+      }
+    // mixing params are: sin^2(theta)                                                                                                       
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                                         
+    else if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsqTheta)
+      {
+	fNuOsc3Flavour.SetOscParametersSinSqTAll(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+      }
+    // mixing params are: sin^2(2*theta)                                                                                                     
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                                    
+    else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsq2Theta)
+      {
+	fNuOsc3Flavour.SetOscParametersSSq2TDmAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+      }
+    // mixing params are: sin^2(theta)                                                                                                        
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                                   
+    else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsqTheta)
+      {
+	fNuOsc3Flavour.SetOscParametersDmsqAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+      }
+    // mixing paras are: sin^2(2*theta)                                                                                                      
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                                         
+    else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsq2Theta)
+      {
+	fNuOsc3Flavour.SetOscParametersSSq2TDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+      }
+    // mixing paras are: sin^2(theta)                                                                                                          
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                                          
+    else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsqTheta)
+      {
+	fNuOsc3Flavour.SetOscParametersDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+      }
+    //unknown                                                                                                                                   
+    else {
+      cerr << "**  SDModel >> Can't handle choice of "
+	   << "\n oscillation mixing params: " << util::AsString(omp)
+	   << "\n and independent squared mass-splittings: " << util::AsString(dmsqscheme)
+	   << endl;
+	std::exit(1);
+    }
+    
+    for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
+      BeamConf_t b = kBeamConf[ibeam];
+      if(b == kbUndefined) continue;
+      for(int isample = 0; isample < kNSamples; isample++) {
+	Sample_t s = kSample[ibeam][isample];
+	if(s == ksUndefined) continue;
+	
+	const int n_enu_true_bins         = util::NumEtrueBins(s);
+	const double * enu_true_bin_edges = util::EtrueBinEdges(s);
+	const int n_y_reco_bin_edges_sb   = util::NumYrecoBinsSb(s);
+	
+	for(int imode = 0; imode < kNReacModes; imode++) {
+	  ReacMode_t m = kReactionModes[isample][imode];
+	  if(m == kmUndefined) continue;
+	  
+	  //check if beam+sample+mode should be applied oscillation probabilities
+	  if(!util::OscProbIsAppliedTo(b,s,m)) continue;
+	  
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+	  LOG("SDModel",pDEBUG) 
+	    << "Handing templates for: " 
+	    << util::AsString(b) << ", " << util::AsString(s) << ", " << util::AsString(m);
+	  
+	  LOG("SDModel",pDEBUG) 
+	    << "Initializing `fin' templates to the `sys' ones";
+#endif
+	  
+	  for(int izone = 0; izone < kNMaxBinZones; izone++) {
+	    bool is_null = fMCTNullOb[ibeam][isample][imode][izone];
+	    if(is_null) continue;
+	    const int n_enu_true_bins = util::NumEtrueBins(s);
+	    const int n_enu_reco_bins = util::NumErecoBins(s,izone);
+	    const int n_y_reco_bins   = util::NumYrecoBins(s,izone);
+	    
+	    for(int iet = 0; iet <= n_enu_true_bins; iet++) {
+	      
+	      double Etrue = (util::EtrueBinEdges(s,iet) + util::EtrueBinEdges(s,iet+1) ) / 2;
+	      
+	      fNuOsc3Flavour.CalcMatterOscProbAll(false, Etrue, p_osc    );
+	      fNuOsc3Flavour.CalcMatterOscProbAll(true , Etrue, p_osc_bar);
+	      double p_numu_numu       = p_osc    [1][1];
+	      double p_numu_nue        = p_osc    [1][0];
+	      double p_numu_nutau      = p_osc    [1][2];
+	      double p_numubar_numubar = p_osc_bar[1][1];
+	      double p_numubar_nuebar  = p_osc_bar[1][0];
+	      double p_numubar_nutaubar= p_osc_bar[1][2];
+	      double p_nue_nue         = p_osc    [0][0];
+	      double p_nue_numu        = p_osc    [0][1];
+	      double p_nue_nutau       = p_osc    [0][2];
+	      double p_nuebar_nuebar   = p_osc_bar[0][0];
+	      double p_nuebar_numubar  = p_osc_bar[0][1];
+	      double p_nuebar_nutaubar = p_osc_bar[0][2];
+	      
+	      double posc = 1.;
+	      if(util::IsCC(m))
+		{
+		  if     ( util::IsNuMu(m)       ) { posc = p_numu_numu;       }
+		  else if( util::IsNuMuBar(m)    ) { posc = p_numubar_numubar; }
+		  else if( util::IsNuE(m)        ) { posc = p_nue_nue;         }
+		  else if( util::IsNuEBar(m)     ) { posc = p_nuebar_nuebar;   }
+		  
+		  else if( util::IsNuMuToNuE(m)  ) { posc = p_numu_nue;        }
+		  else if( util::IsNuMuToNuTau(m)) { posc = p_numu_nutau;      }
+		  else if( util::IsNuEToNuMu(m)  ) { posc = p_nue_numu;        }
+		  else if( util::IsNuEToNuTau(m) ) { posc = p_nue_nutau;       }
+		  
+		  else if( util::IsNuMuBarToNuEBar(m)  ) { posc = p_numubar_nuebar;        }
+		  else if( util::IsNuMuBarToNuTauBar(m)) { posc = p_numubar_nutaubar;      }
+		  else if( util::IsNuEBarToNuMuBar(m)  ) { posc = p_nuebar_numubar;        }
+		  else if( util::IsNuEBarToNuTauBar(m) ) { posc = p_nuebar_nutaubar;       }
+		}
+	      
+
+	      for(int ier = 0; ier < n_enu_reco_bins; ier++) {
+		for(int iyr = 0; iyr < n_y_reco_bins; iyr++) {
+		  double & val = fMCTFinOb[ibeam][isample][imode][izone]->GetEntryRef(ier,iyr,iet);
+		  val *= posc;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+		  LOG("SDModel",pDEBUG)
+		    << "MCT[" << ibeam << ", " << isample << ", " << imode << ", " << izone << "] = "
+		    << val/posc << " --> " << val;
+#endif
+		}//iyr: yreco bins                 
+	      }//ier: Ereco bins                                                                                                              
+	    }//iet: Etrue bins   
+	  }//zone
+
+	  if(update_mct_sb){
+	    const int n_enu_true_bins = util::NumEtrueBins(s);
+	    const int n_y_reco_bin_edges_sb   = util::NumYrecoBinsSb(s);
+
+	    for(int iet = 0; iet <= n_enu_true_bins; iet++) {
+	      
+	      double Etrue = (util::EtrueBinEdges(s,iet) + util::EtrueBinEdges(s,iet+1) ) / 2;
+	      
+	      fNuOsc3Flavour.CalcMatterOscProbAll(false, Etrue, p_osc    );
+	      fNuOsc3Flavour.CalcMatterOscProbAll(true , Etrue, p_osc_bar);
+	      double p_numu_numu       = p_osc    [1][1];
+	      double p_numu_nue        = p_osc    [1][0];
+	      double p_numu_nutau      = p_osc    [1][2];
+	      double p_numubar_numubar = p_osc_bar[1][1];
+	      double p_numubar_nuebar  = p_osc_bar[1][0];
+	      double p_numubar_nutaubar= p_osc_bar[1][2];
+	      double p_nue_nue         = p_osc    [0][0];
+	      double p_nue_numu        = p_osc    [0][1];
+	      double p_nue_nutau       = p_osc    [0][2];
+	      double p_nuebar_nuebar   = p_osc_bar[0][0];
+	      double p_nuebar_numubar  = p_osc_bar[0][1];
+	      double p_nuebar_nutaubar = p_osc_bar[0][2];
+	      
+	      double posc = 1.;
+	      if(util::IsCC(m))
+		{
+		  if     ( util::IsNuMu(m)       ) { posc = p_numu_numu;       }
+		  else if( util::IsNuMuBar(m)    ) { posc = p_numubar_numubar; }
+		  else if( util::IsNuE(m)        ) { posc = p_nue_nue;         }
+		  else if( util::IsNuEBar(m)     ) { posc = p_nuebar_nuebar;   }
+		  
+		  else if( util::IsNuMuToNuE(m)  ) { posc = p_numu_nue;        }
+		  else if( util::IsNuMuToNuTau(m)) { posc = p_numu_nutau;      }
+		  else if( util::IsNuEToNuMu(m)  ) { posc = p_nue_numu;        }
+		  else if( util::IsNuEToNuTau(m) ) { posc = p_nue_nutau;       }
+		  
+		  else if( util::IsNuMuBarToNuEBar(m)  ) { posc = p_numubar_nuebar;        }
+		  else if( util::IsNuMuBarToNuTauBar(m)) { posc = p_numubar_nutaubar;      }
+		  else if( util::IsNuEBarToNuMuBar(m)  ) { posc = p_nuebar_numubar;        }
+		  else if( util::IsNuEBarToNuTauBar(m) ) { posc = p_nuebar_nutaubar;       }
+		}
+	      
+	      
+	      for(int ier = 0; ier < kNErecoBinsSb; ier++) {
+		for(int iyr = 0; iyr < n_y_reco_bin_edges_sb; iyr++) {
+		    double & val_sb = fMCTFinSb[ibeam][isample][imode]->GetEntryRef(ier,iyr,iet);
+		    val_sb *= posc;
+		}
+	      }
+	    }
+	  }//update_sb
+
+	}
+      }
+    }
+  }
 }
 //________________________________________________________________________________________
 void SDModel::UpdatePDFs(Option_t * option)

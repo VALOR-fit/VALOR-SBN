@@ -39,7 +39,8 @@ typedef enum EFitParamGroup
    kpgXSec,            //
    kpgHadronization,   //
    kpgFSI,             //
-   kpgDetector         //
+   kpgDetector,        //
+   kpgOscillations
 } 
 FitParamGroup_t; 
 

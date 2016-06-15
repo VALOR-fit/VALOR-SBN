@@ -391,8 +391,171 @@ static const ReacType_t kReacModeToType[kNReacModes] =
 // /*   kmOther             */ kmtOther 
 };
 
-// Map the reaction modes to their initial neutrino flavour 
-static const NuFlavour_t kReacModeToFlavour[kNReacModes] =
+// Map the reaction modes to their final neutrino flavour 
+static const NuFlavour_t kReacModeToFinalFlavour[kNReacModes] =
+{
+   /*   kmNuMuCCQE          */ kNuMu    ,
+   /*   kmNuMuCCMEC         */ kNuMu    ,
+   /*   kmNuMuCC1piC        */ kNuMu    ,
+   /*   kmNuMuCC1pi0        */ kNuMu    ,
+   /*   kmNuMuCC2piC        */ kNuMu    ,
+   /*   kmNuMuCC2pi0        */ kNuMu    ,
+   /*   kmNuMuCCpiCpi0      */ kNuMu    ,
+   /*   kmNuMuCCcoh         */ kNuMu    ,
+   /*   kmNuMuCCoth         */ kNuMu    ,
+   /*   kmNuMuCCELScat      */ kNuMu    ,
+// /*   kmNuMuNCEL          */ kNuMu    ,
+// /*   kmNuMuNCMEC         */ kNuMu    ,
+   /*   kmNuMuNC1piC        */ kNuMu    ,
+   /*   kmNuMuNC1pi0        */ kNuMu    ,
+// /*   kmNuMuNC2piC        */ kNuMu    ,
+// /*   kmNuMuNC2pi0        */ kNuMu    ,
+// /*   kmNuMuNCpiCpi0      */ kNuMu    ,
+   /*   kmNuMuNCcoh         */ kNuMu    ,
+   /*   kmNuMuNCoth         */ kNuMu    ,
+   /*   kmNuMuNCELScat      */ kNuMu    ,
+   /*   kmNuMuBarCCQE       */ kNuMuBar ,
+   /*   kmNuMuBarCCMEC      */ kNuMuBar ,
+   /*   kmNuMuBarCC1piC     */ kNuMuBar ,
+   /*   kmNuMuBarCC1pi0     */ kNuMuBar ,
+   /*   kmNuMuBarCC2piC     */ kNuMuBar ,
+   /*   kmNuMuBarCC2pi0     */ kNuMuBar ,
+   /*   kmNuMuBarCCpiCpi0   */ kNuMuBar ,
+   /*   kmNuMuBarCCcoh      */ kNuMuBar ,
+   /*   kmNuMuBarCCoth      */ kNuMuBar ,
+   /*   kmNuMuBarCCELScat   */ kNuMuBar ,
+// /*   kmNuMuBarNCEL       */ kNuMuBar ,
+// /*   kmNuMuBarNCMEC      */ kNuMuBar ,
+   /*   kmNuMuBarNC1piC     */ kNuMuBar ,
+   /*   kmNuMuBarNC1pi0     */ kNuMuBar ,
+// /*   kmNuMuBarNC2piC     */ kNuMuBar ,
+// /*   kmNuMuBarNC2pi0     */ kNuMuBar ,
+// /*   kmNuMuBarNCpiCpi0   */ kNuMuBar ,
+   /*   kmNuMuBarNCcoh      */ kNuMuBar ,
+   /*   kmNuMuBarNCoth      */ kNuMuBar ,
+   /*   kmNuMuBarNCELScat   */ kNuMuBar ,
+   /*   kmNuECCQE           */ kNuE     , 
+   /*   kmNuECCMEC          */ kNuE     , 
+   /*   kmNuECC1piC         */ kNuE     , 
+   /*   kmNuECC1pi0         */ kNuE     , 
+   /*   kmNuECC2piC         */ kNuE     , 
+   /*   kmNuECC2pi0         */ kNuE     , 
+   /*   kmNuECCpiCpi0       */ kNuE     , 
+   /*   kmNuECCcoh          */ kNuE     , 
+   /*   kmNuECCoth          */ kNuE     , 
+// /*   kmNuENCEL           */ kNuE     , 
+// /*   kmNuENCMEC          */ kNuE     , 
+   /*   kmNuENC1piC         */ kNuE     , 
+   /*   kmNuENC1pi0         */ kNuE     , 
+// /*   kmNuENC2piC         */ kNuE     , 
+// /*   kmNuENC2pi0         */ kNuE     , 
+// /*   kmNuENCpiCpi0       */ kNuE     , 
+   /*   kmNuENCcoh          */ kNuE     , 
+   /*   kmNuENCoth          */ kNuE     , 
+   /*   kmNuEELScat         */ kNuE     ,
+   /*   kmNuEBarCCQE        */ kNuEBar  , 
+   /*   kmNuEBarCCMEC       */ kNuEBar  , 
+   /*   kmNuEBarCC1piC      */ kNuEBar  , 
+   /*   kmNuEBarCC1pi0      */ kNuEBar  , 
+   /*   kmNuEBarCC2piC      */ kNuEBar  , 
+   /*   kmNuEBarCC2pi0      */ kNuEBar  , 
+   /*   kmNuEBarCCpiCpi0    */ kNuEBar  , 
+   /*   kmNuEBarCCcoh       */ kNuEBar  , 
+   /*   kmNuEBarCCoth       */ kNuEBar  , 
+// /*   kmNuEBarNCEL        */ kNuEBar  , 
+// /*   kmNuEBarNCMEC       */ kNuEBar  , 
+   /*   kmNuEBarNC1piC      */ kNuEBar  , 
+   /*   kmNuEBarNC1pi0      */ kNuEBar  , 
+// /*   kmNuEBarNC2piC      */ kNuEBar  , 
+// /*   kmNuEBarNC2pi0      */ kNuEBar  , 
+// /*   kmNuEBarNCpiCpi0    */ kNuEBar  , 
+   /*   kmNuEBarNCcoh       */ kNuEBar  , 
+   /*   kmNuEBarNCoth       */ kNuEBar  ,
+   /*   kmNuEBarELScat      */ kNuEBar  , 
+   /*   kmNuMuToNuECCQE          */ kNuE    ,
+   /*   kmNuMuToNuECCMEC         */ kNuE    ,
+   /*   kmNuMuToNuECC1piC        */ kNuE    ,
+   /*   kmNuMuToNuECC1pi0        */ kNuE    ,
+   /*   kmNuMuToNuECC2piC        */ kNuE    ,
+   /*   kmNuMuToNuECC2pi0        */ kNuE    ,
+   /*   kmNuMuToNuECCpiCpi0      */ kNuE    ,
+   /*   kmNuMuToNuECCcoh         */ kNuE    ,
+   /*   kmNuMuToNuECCoth         */ kNuE    ,
+   /*   kmNuMuToNuEELScat        */ kNuE    ,
+   /*   kmNuMuToNuTauCCQE          */ kNuTau    ,
+   /*   kmNuMuToNuTauCCMEC         */ kNuTau    ,
+   /*   kmNuMuToNuTauCC1piC        */ kNuTau    ,
+   /*   kmNuMuToNuTauCC1pi0        */ kNuTau    ,
+   /*   kmNuMuToNuTauCC2piC        */ kNuTau    ,
+   /*   kmNuMuToNuTauCC2pi0        */ kNuTau    ,
+   /*   kmNuMuToNuTauCCpiCpi0      */ kNuTau    ,
+   /*   kmNuMuToNuTauCCcoh         */ kNuTau    ,
+   /*   kmNuMuToNuTauCCoth         */ kNuTau    ,
+   /*   kmNuMuToNuTauCCELScat      */ kNuTau    ,
+   /*   kmNuEToNuMuCCQE          */ kNuMu    ,
+   /*   kmNuEToNuMuCCMEC         */ kNuMu    ,
+   /*   kmNuEToNuMuCC1piC        */ kNuMu    ,
+   /*   kmNuEToNuMuCC1pi0        */ kNuMu    ,
+   /*   kmNuEToNuMuCC2piC        */ kNuMu    ,
+   /*   kmNuEToNuMuCC2pi0        */ kNuMu    ,
+   /*   kmNuEToNuMuCCpiCpi0      */ kNuMu    ,
+   /*   kmNuEToNuMuCCcoh         */ kNuMu    ,
+   /*   kmNuEToNuMuCCoth         */ kNuMu    ,
+   /*   kmNuEToNuMuCCELScat      */ kNuMu    ,
+   /*   kmNuEToNuTauCCQE          */ kNuTau    ,
+   /*   kmNuEToNuTauCCMEC         */ kNuTau    ,
+   /*   kmNuEToNuTauCC1piC        */ kNuTau    ,
+   /*   kmNuEToNuTauCC1pi0        */ kNuTau    ,
+   /*   kmNuEToNuTauCC2piC        */ kNuTau    ,
+   /*   kmNuEToNuTauCC2pi0        */ kNuTau    ,
+   /*   kmNuEToNuTauCCpiCpi0      */ kNuTau    ,
+   /*   kmNuEToNuTauCCcoh         */ kNuTau    ,
+   /*   kmNuEToNuTauCCoth         */ kNuTau    ,
+   /*   kmNuEToNuTauCCELScat      */ kNuTau    ,
+   /*   kmNuMuBarToNuEBarCCQE          */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCCMEC         */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCC1piC        */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCC1pi0        */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCC2piC        */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCC2pi0        */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCCpiCpi0      */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCCcoh         */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCCoth         */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarELScat        */ kNuEBar    ,
+   /*   kmNuMuBarToNuTauBarCCQE          */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCCMEC         */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCC1piC        */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCC1pi0        */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCC2piC        */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCC2pi0        */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCCpiCpi0      */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCCcoh         */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCCoth         */ kNuTauBar    ,
+   /*   kmNuMuBarToNuTauBarCCELScat      */ kNuTauBar    ,
+   /*   kmNuEBarToNuMuBarCCQE          */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCCMEC         */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCC1piC        */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCC1pi0        */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCC2piC        */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCC2pi0        */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCCpiCpi0      */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCCcoh         */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCCoth         */ kNuMuBar    ,
+   /*   kmNuEBarToNuMuBarCCELScat      */ kNuMuBar    ,
+   /*   kmNuEBarToNuTauBarCCQE          */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCCMEC         */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCC1piC        */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCC1pi0        */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCC2piC        */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCC2pi0        */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCCpiCpi0      */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCCcoh         */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCCoth         */ kNuTauBar    ,
+   /*   kmNuEBarToNuTauBarCCELScat      */ kNuTauBar    ,
+// /*   kmOther             */ kNuFlavourUndefined
+};
+
+static const NuFlavour_t kReacModeToInitFlavour[kNReacModes] =
 {
    /*   kmNuMuCCQE          */ kNuMu    ,
    /*   kmNuMuCCMEC         */ kNuMu    ,
@@ -555,6 +718,7 @@ static const NuFlavour_t kReacModeToFlavour[kNReacModes] =
 // /*   kmOther             */ kNuFlavourUndefined
 };
 
+
 } // conv
 
 
@@ -566,10 +730,24 @@ namespace util {
   std::string        AsString        (conv::ReacMode_t m);
   std::string        AsStringTeX     (conv::ReacMode_t m, bool root = false);
   conv::ReacMode_t   ReacModeFromInt (int m);
-  conv::NuFlavour_t  ReacModeToFlavor(conv::ReacMode_t m);
+  conv::NuFlavour_t  ReacModeToInitFlavor(conv::ReacMode_t m);
+  conv::NuFlavour_t  ReacModeToFinalFlavor(conv::ReacMode_t m);
   conv::ReacType_t   ReacModeToType  (conv::ReacMode_t m);
   bool               IsCC(conv::ReacMode_t m);
-  
+  bool               IsNuMu(conv::ReacMode_t m);
+  bool               IsNuMuBar(conv::ReacMode_t m);
+  bool               IsNuE(conv::ReacMode_t m);
+  bool               IsNuEBar(conv::ReacMode_t m);
+  bool               IsNuMuToNuE(conv::ReacMode_t m);
+  bool               IsNuMuToNuTau(conv::ReacMode_t m);
+  bool               IsNuEToNuMu(conv::ReacMode_t m);
+  bool               IsNuEToNuTau(conv::ReacMode_t m);
+  bool               IsNuEToNuMu(conv::ReacMode_t m);
+  bool               IsNuMuBarToNuEBar(conv::ReacMode_t m);
+  bool               IsNuMuBarToNuTauBar(conv::ReacMode_t m);
+  bool               IsNuEBarToNuMuBar(conv::ReacMode_t m);
+  bool               IsNuEBarToNuTauBar(conv::ReacMode_t m);
+
   // Aliases for above
   std::string      ModeAsString        (conv::ReacMode_t m);
   std::string      ModeAsStringTeX     (conv::ReacMode_t m, bool root = false);

@@ -243,6 +243,13 @@ static const ApplyMask_t kApplyToReacType[kNReacType] = {
 static const ApplyMask_t kApplyParamToTemplates[kNFitParams] = 
 { 
   //                               Detector   | Beam Current | True Nu Flavour  | Sample       | Interaction type
+  // oscillation params
+  /* kPhypMixing23         */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToAll     | ksApplyToAllFD|ktApplyToAllCC,
+  /* kPhypMixing13         */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToAll     | ksApplyToAllFD|ktApplyToAllCC,
+  /* kPhypMixing12         */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToAll     | ksApplyToAllFD|ktApplyToAllCC,
+  /* kPhypCPV              */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToAll     | ksApplyToAllFD|ktApplyToAllCC,
+  /* kPhypDm23sq           */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToAll     | ksApplyToAllFD|ktApplyToAllCC,
+  /* kPhypDm12sq           */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToAll     | ksApplyToAllFD|ktApplyToAllCC,
   // FHC flux
   /* kNuisFHCNuMuFlux00    */ kdApplyToDUNEND | kbApplyToFHC | kfApplyToNuMu    | ksApplyToAll | ktApplyToAll ,
   /* kNuisFHCNuMuFlux01    */ kdApplyToDUNEND | kbApplyToFHC | kfApplyToNuMu    | ksApplyToAll | ktApplyToAll ,

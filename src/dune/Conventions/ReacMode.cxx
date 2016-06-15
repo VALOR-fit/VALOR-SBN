@@ -386,16 +386,118 @@ string util::AsStringTeX(ReacMode_t m, bool root)
   return name;
 }
 //________________________________________________________________________________________
-conv::NuFlavour_t  util::ReacModeToFlavor(conv::ReacMode_t m)
+conv::NuFlavour_t  util::ReacModeToInitFlavor(conv::ReacMode_t m)
 {
   //~ int idx = ArrIdx::Instance()->ReacModeIdx(m);
-  return kReacModeToFlavour[m];
+  return kReacModeToInitFlavour[m];
+}
+//________________________________________________________________________________________
+conv::NuFlavour_t  util::ReacModeToFinalFlavor(conv::ReacMode_t m)
+{
+  //~ int idx = ArrIdx::Instance()->ReacModeIdx(m);
+  return kReacModeToFinalFlavour[m];
 }
 //________________________________________________________________________________________
 conv::ReacType_t  util::ReacModeToType(conv::ReacMode_t m)
 {
   //~ int idx = ArrIdx::Instance()->ReacModeIdx(m);
   return kReacModeToType[m];
+}
+//________________________________________________________________________________________
+bool util::IsNuMu(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuMu && kReacModeToFinalFlavour[m]==kNuMu)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuMuBar(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuMuBar && kReacModeToFinalFlavour[m]==kNuMuBar)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuE(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuE && kReacModeToFinalFlavour[m]==kNuE)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuEBar(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuEBar && kReacModeToFinalFlavour[m]==kNuEBar)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuMuToNuE(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuMu && kReacModeToFinalFlavour[m]==kNuE)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuMuToNuTau(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuMu && kReacModeToFinalFlavour[m]==kNuTau)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuEToNuMu(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuE && kReacModeToFinalFlavour[m]==kNuMu)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuEToNuTau(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuE && kReacModeToFinalFlavour[m]==kNuTau)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuMuBarToNuEBar(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuMuBar && kReacModeToFinalFlavour[m]==kNuEBar)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuMuBarToNuTauBar(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuMuBar && kReacModeToFinalFlavour[m]==kNuTauBar)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuEBarToNuMuBar(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuEBar && kReacModeToFinalFlavour[m]==kNuMuBar)
+    return true;
+  else
+    return false; 
+}
+//________________________________________________________________________________________
+bool util::IsNuEBarToNuTauBar(conv::ReacMode_t m)
+{
+  if (kReacModeToInitFlavour[m]==kNuEBar && kReacModeToFinalFlavour[m]==kNuTauBar)
+    return true;
+  else
+    return false; 
 }
 //________________________________________________________________________________________
 bool util::IsCC(conv::ReacMode_t m)

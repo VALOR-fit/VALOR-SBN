@@ -27,6 +27,11 @@ int util::NumEtrueBins(Sample_t /*sample*/)
   return kNEtrueBins;
 }
 //________________________________________________________________________________________
+const double util::EtrueBinEdges(Sample_t /*sample*/, int i)
+{
+  return kEtrueBinEdges[i];
+}
+//________________________________________________________________________________________
 const double * util::EtrueBinEdges(Sample_t /*sample*/)
 {
   return kEtrueBinEdges;

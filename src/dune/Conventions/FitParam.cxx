@@ -26,6 +26,8 @@ using namespace valor::conv;
 //________________________________________________________________________________________
 string util::AsString(conv::PhysParamId_t p)
 {
+  if (!util::IsSystematic(p)) return util::RawParamAsString(p);
+
   switch(p) {
     case (kNuisFHCNuMuFlux00   ) : return "f_fhc_flux_numu00";    break;
     case (kNuisFHCNuMuFlux01   ) : return "f_fhc_flux_numu01";    break;
@@ -314,7 +316,7 @@ string util::AsString(conv::PhysParamId_t p)
 string util::AsStringTeX(conv::PhysParamId_t p, bool root)
 {
   string name = "";
-
+  if (!util::IsSystematic(p)) return RawParamAsStringTex(p);
   switch(p) {
     case (kNuisFHCNuMuFlux00   ) : name = "f_{FHC;\\nu_{\\mu};00}";                        break;
     case (kNuisFHCNuMuFlux01   ) : name = "f_{FHC;\\nu_{\\mu};01}";                        break;
@@ -647,6 +649,26 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list)
       bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
       if(skip_detector_params && kFitIsNuDetRelated[ip]) continue;
 
+      // skip int params?
+      bool skip_int_params = (param_list_opt.find("no-int-systematics") != string::npos);
+      if(skip_int_params && kFitIsNuIntRelated[ip]) continue;
+
+      // skip flux params?
+      bool skip_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
+      if(skip_flux_params && kFitIsNuFluxRelated[ip]) continue;
+
+      // skip nd flux params?
+      bool skip_nd_flux_params = (param_list_opt.find("no-nd-flux-systematics") != string::npos);
+      if(skip_nd_flux_params && kFitIsNDNuFluxRelated[ip]) continue;
+
+      // skip fd flux params?
+      bool skip_fd_flux_params = (param_list_opt.find("no-fd-flux-systematics") != string::npos);
+      if(skip_fd_flux_params && kFitIsFDNuFluxRelated[ip]) continue;
+
+      // skip osc params?
+      bool skip_osc_params = (param_list_opt.find("no-osc-params") != string::npos);
+      if(skip_osc_params && IsOscParam(p)) continue;
+
     }//ip
   }
 
@@ -688,14 +710,22 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       bool   fix  = false;
       bool   nuis = true;
       
-      // Check we're not going behind physical region
-      min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
-      max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
-
-      fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
-      ipc++; 
-      fparm->Update(p, curr);
-
+      //      if(IsSystematic(p)){
+	  // Check we're not going behind physical region
+	  min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
+	  max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
+	  
+	  fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
+	  ipc++; 
+	  fparm->Update(p, curr);
+	  //}
+	// toggle oscillation params on/off
+      bool fix_osc_params = (param_list_opt.find("fix-osc-params") != string::npos);
+      if(fix_osc_params && IsOscParam(p)){
+	//        fparm->Update(p, 1.);
+	//fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }     
       // toggle detector related params on/off
       bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
       if(fix_detector_params && kFitIsNuDetRelated[ip]) {
@@ -710,6 +740,20 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
       }
+      // toggle nd flux related params on/off
+      bool fix_nd_flux_params = (param_list_opt.find("fix-nd-flux-syst") != string::npos);
+	if(fix_nd_flux_params && kFitIsNDNuFluxRelated[ip]){
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
+      // toggle fd flux related params on/off
+      bool fix_fd_flux_params = (param_list_opt.find("fix-fd-flux-syst") != string::npos);
+	if(fix_fd_flux_params && kFitIsFDNuFluxRelated[ip]){
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
       // toggle int related params on/off
       bool fix_int_params = (param_list_opt.find("fix-int-syst") != string::npos);
       if(fix_int_params && kFitIsNuIntRelated[ip]) {
@@ -717,8 +761,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
       }
-      
-      // toggle mec related params on/off
+	// toggle mec related params on/off
       bool fix_mec_params = (param_list_opt.find("fix-mec-syst") != string::npos);
       if(fix_mec_params && (p==kNuisIntNuCCMEC || p==kNuisIntNuBarCCMEC)) {
         fparm->Update(p, 1.);
@@ -756,6 +799,17 @@ void valor::util::PopulateNameRegistry(void)
     nr->fParamNamesSimple[p] = util::AsString(p); // If we start using proper names, will change this.
   }
   return;
+}
+//____________________________________________________________________________
+bool valor::util::IsOscParam(conv::PhysParamId_t p)
+{
+  if(util::IsMixingAngle(p) || util::IsMassSplitting(p) || util::IsPhase(p)) return true;
+  else return false;
+}
+//____________________________________________________________________________
+bool valor::util::IsSystematic(conv::PhysParamId_t p)
+{
+  return (!util::IsOscParam(p));
 }
 //____________________________________________________________________________
 bool valor::util::IsNuFluxRelated(conv::PhysParamId_t p)
@@ -799,6 +853,28 @@ bool valor::util::IsFSI(conv::PhysParamId_t p)
 {
   return (p >= kNuisIntPiMeanFreePath && p<=kNuisIntFracNucProduction);
 }
+//____________________________________________________________________________        
+bool util::OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m)
+{
+  static const ArrIdx * arridx = ArrIdx::Instance();
+
+  if (b==conv::kbUndefined   ) {return false;}
+  if (m==conv::kmUndefined   ) {return false;}
+  if (s==conv::ksUndefined   ) {return false;}
+
+  // loop over osc param ids - check if any is applied to the sample+mode+beam
+  // this is for the moment unnecessary, but might be re-used later if we have 
+  // different sets of oscillation parameters
+  int ip_min = arridx->FitParamIdx(kOscFirstParam);
+  int ip_max = arridx->FitParamIdx(kOscLastParam);
+  bool apply = false;
+  for(int ip = ip_min; ip<=ip_max; ip++){
+    conv::ApplyMask_t pmask = conv::kApplyParamToTemplates[ip];
+    
+    if(pmask) apply = true;
+  }
+  return apply;
+}
 //____________________________________________________________________________
 bool util::ParamIsAppliedTo(
   conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m, conv::PhysParamId_t p)
@@ -825,7 +901,7 @@ bool util::ParamIsAppliedTo(
   //~ return apply_db;
   //~ //END DEBUG
   
-  NuFlavour_t f = conv::kReacModeToFlavour[m];
+  NuFlavour_t f = conv::kReacModeToInitFlavour[m];
   ReacType_t  t = conv::kReacModeToType[m];
   
   // Check whether or not to apply the param to this
