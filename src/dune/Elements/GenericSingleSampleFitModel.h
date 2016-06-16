@@ -32,6 +32,7 @@ brief      A generic implementation of the fit model for a single sample,
 
 //fmwk
 #include "valor/FitCore/PhysHypothesis.h"
+#include "valor/Oscillation/NuOsc3Flavour.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/VArray/VALORArray.h"
@@ -109,6 +110,7 @@ private:
   void FluctuateMCStat                   (Option_t * opt = 0);
   void ApplySystematics                  (Option_t * opt = 0);
   void ApplyPhysics                      (Option_t * opt = 0);
+  void ApplyOscProb                      (Option_t * opt = 0);
   void UpdatePDFs                        (Option_t * opt = 0);
 
   const util::ArrIdx * fArrIdx;
@@ -119,6 +121,7 @@ private:
   // Cache whether or not a parameter uses splines
   bool fParamHasSplines[conv::kNFitParams];
 
+  NuOsc3Flavour  fNuOsc3Flavour;
   PhysHypothesis fPhysHypothesis;
 
   // Name of this VALOR fit model (see Conventions/Names.h)
