@@ -102,7 +102,7 @@ static const int kMaxNSamples = 41;
  
 //this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
 // i.e. undefined, 2piC, NuMuInclusive
- static const int kNSamples = 35;
+ static const int kNSamples = 38;
 
 // ---------------------------------------------------------------------
 // NOTE:
@@ -137,9 +137,9 @@ static const int kMaxNSamples = 41;
      ksInvMuDecay,
      ksNuECCWS,
      //2016a near detector selections 
-     //     ksNuECC,
-     //ksNuMuCCWSgn,
-     //ksNC,     
+     ksNuECC,
+     ksNuMuCCWS,
+     ksNC,     
      //2016b far detector selections
      ksNuMuCClow,  
      ksNuMuCChigh,  
@@ -181,9 +181,9 @@ static const int kMaxNSamples = 41;
      ksInvMuDecay,
      ksNuECCWS,
      //2016a near detector selections (different from above)
-     //ksNuECC,
-     //ksNuMuCCWSgn,
-     //ksNC,     
+     ksNuECC,
+     ksNuMuCCWS,
+     ksNC,     
      //2016b far detector selections
      ksNuMuCClow,  
      ksNuMuCChigh,  
