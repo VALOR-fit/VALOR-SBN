@@ -69,6 +69,7 @@ static const int kMCTemplateNdim[kNSamples] =
   2, // ksNCoth,
   3, // ksNuEEL,
   3, // ksInvMuDecay
+  3, // ksNuECCWS
   //  3, // ksNuECC
   //3, // ksNuMuCCWS
   //2, // ksNC
@@ -111,6 +112,7 @@ static const int kFitSpectrumNdim[kNSamples] =
     1, // ksNCoth,
     2, // ksNuEEL,
     2, // ksInvMuDecay
+    2, // ksNuECCWS
     //    2, // ksNuECC
     //2, // ksNuMuCCWS
     //1, // ksNC
@@ -154,6 +156,7 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
   { kvEvis,  kvEtrue, kvUndefined }, //   ksNCoth,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuEEL,
   { kvEreco, kvYreco, kvEtrue },     //   ksInvMuDecay,
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECCWS,
   //  { kvEreco, kvYreco, kvEtrue },     //   ksNuECC
   //{ kvEreco, kvYreco, kvEtrue },     //   ksNuMuCCWS
   //{ kvEvis,  kvEtrue, kvUndefined }, //   ksNC

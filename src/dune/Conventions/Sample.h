@@ -64,6 +64,7 @@ typedef enum ESample
    ksNCoth           = 24, // NC - other
    ksNeutrinoElec    = 25, // Neutrino-electron elastic scattering nu + e 
    ksInvMuDecay      = 26, // Inverse muon decay (nuebar + e -> mu + numubar)
+   ksNuECCWS         = 27, // wrong sign nue CC inclusive 
    //2016b far detector selections
    ksNuMuCClow,            // beam intrinsic numu 
    ksNuMuCChigh,           // beam intrinsic anti-numu 
@@ -80,7 +81,7 @@ typedef enum ESample
 } 
 Sample_t; 
 
-static const int kMaxNSamples = 40;
+static const int kMaxNSamples = 41;
 
 // 
 // ...........................................................................
@@ -101,7 +102,7 @@ static const int kMaxNSamples = 40;
  
 //this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
 // i.e. undefined, 2piC, NuMuInclusive
- static const int kNSamples = 34;
+ static const int kNSamples = 35;
 
 // ---------------------------------------------------------------------
 // NOTE:
@@ -134,6 +135,7 @@ static const int kMaxNSamples = 40;
      ksNCoth,
      ksNeutrinoElec,
      ksInvMuDecay,
+     ksNuECCWS,
      //2016a near detector selections 
      //     ksNuECC,
      //ksNuMuCCWSgn,
@@ -177,6 +179,7 @@ static const int kMaxNSamples = 40;
      ksNCoth,
      ksNeutrinoElec,
      ksInvMuDecay,
+     ksNuECCWS,
      //2016a near detector selections (different from above)
      //ksNuECC,
      //ksNuMuCCWSgn,

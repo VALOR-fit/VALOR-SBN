@@ -32,7 +32,7 @@ namespace conv {
 // A bitmask to control which parameters are applied to which modes
 // If we move to C++11, we should use an enum class here instead
 // But in older versions we can't use an enum and be guaranteed we have the 64 bits we need.
-// Warning: already using 62 items 
+// Warning: already using 63 items 
 typedef ULong64_t ApplyMask_t;
 
 static const ApplyMask_t kApplyMaskOne = 1ul;
@@ -68,37 +68,38 @@ static const ApplyMask_t ksApplyToNC1pi0          = (kApplyMaskOne << 27 );
 static const ApplyMask_t ksApplyToNCoth           = (kApplyMaskOne << 28 );
 static const ApplyMask_t ksApplyToNeutrinoElec    = (kApplyMaskOne << 29 );
 static const ApplyMask_t ksApplyToInvMuDecay      = (kApplyMaskOne << 30 );
-static const ApplyMask_t ksApplyToNuECC           = (kApplyMaskOne << 31 );
-static const ApplyMask_t ksApplyToNuMuCCWS      = (kApplyMaskOne << 32 );
-static const ApplyMask_t ksApplyToNC              = (kApplyMaskOne << 33 );
-static const ApplyMask_t ksApplyToLowRes          = (kApplyMaskOne << 34 ); // Far detector selections
-static const ApplyMask_t ksApplyToHighRes         = (kApplyMaskOne << 35 ); // Far detector selections
-static const ApplyMask_t ktApplyToCCQE            = (kApplyMaskOne << 36 ); // Reaction type
-static const ApplyMask_t ktApplyToCCMEC           = (kApplyMaskOne << 37 );
-static const ApplyMask_t ktApplyToCC1piC          = (kApplyMaskOne << 38 );
-static const ApplyMask_t ktApplyToCC1pi0          = (kApplyMaskOne << 39 );
-static const ApplyMask_t ktApplyToCC2piC          = (kApplyMaskOne << 40 );
-static const ApplyMask_t ktApplyToCC2pi0          = (kApplyMaskOne << 41 );
-static const ApplyMask_t ktApplyToCCpiCpi0        = (kApplyMaskOne << 42 );
-static const ApplyMask_t ktApplyToCCcoh           = (kApplyMaskOne << 43 );
-static const ApplyMask_t ktApplyToCCoth           = (kApplyMaskOne << 44 );
-static const ApplyMask_t ktApplyToCCELScat        = (kApplyMaskOne << 45 );
-static const ApplyMask_t ktApplyToNCEL            = (kApplyMaskOne << 46 );
-static const ApplyMask_t ktApplyToNCMEC           = (kApplyMaskOne << 47 );
-static const ApplyMask_t ktApplyToNC1piC          = (kApplyMaskOne << 48 );
-static const ApplyMask_t ktApplyToNC1pi0          = (kApplyMaskOne << 49 );
-static const ApplyMask_t ktApplyToNC2piC          = (kApplyMaskOne << 50 );
-static const ApplyMask_t ktApplyToNC2pi0          = (kApplyMaskOne << 51 );
-static const ApplyMask_t ktApplyToNCpiCpi0        = (kApplyMaskOne << 52 );
-static const ApplyMask_t ktApplyToNCcoh           = (kApplyMaskOne << 53 );
-static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 54 );
-static const ApplyMask_t ktApplyToNCELScat        = (kApplyMaskOne << 55 );
-static const ApplyMask_t ktApplyToNuEELScat       = (kApplyMaskOne << 56 ); //only for nue: CC + NC + interference
-static const ApplyMask_t kdApplyToDUNEND          = (kApplyMaskOne << 57 ); // Dectectors
-static const ApplyMask_t kdApplyToDUNEFD          = (kApplyMaskOne << 58 );
-static const ApplyMask_t kdApplyToSBN1            = (kApplyMaskOne << 59 );
-static const ApplyMask_t kdApplyToSBN2            = (kApplyMaskOne << 60 );
-static const ApplyMask_t kdApplyToSBN3            = (kApplyMaskOne << 61 );
+static const ApplyMask_t ksApplyToNuECCWS         = (kApplyMaskOne << 31 );
+static const ApplyMask_t ksApplyToNuECC           = (kApplyMaskOne << 32 );
+static const ApplyMask_t ksApplyToNuMuCCWS        = (kApplyMaskOne << 33 );
+static const ApplyMask_t ksApplyToNC              = (kApplyMaskOne << 34 );
+static const ApplyMask_t ksApplyToLowRes          = (kApplyMaskOne << 35 ); // Far detector selections
+static const ApplyMask_t ksApplyToHighRes         = (kApplyMaskOne << 36 ); // Far detector selections
+static const ApplyMask_t ktApplyToCCQE            = (kApplyMaskOne << 37 ); // Reaction type
+static const ApplyMask_t ktApplyToCCMEC           = (kApplyMaskOne << 38 );
+static const ApplyMask_t ktApplyToCC1piC          = (kApplyMaskOne << 39 );
+static const ApplyMask_t ktApplyToCC1pi0          = (kApplyMaskOne << 40 );
+static const ApplyMask_t ktApplyToCC2piC          = (kApplyMaskOne << 41 );
+static const ApplyMask_t ktApplyToCC2pi0          = (kApplyMaskOne << 42 );
+static const ApplyMask_t ktApplyToCCpiCpi0        = (kApplyMaskOne << 43 );
+static const ApplyMask_t ktApplyToCCcoh           = (kApplyMaskOne << 44 );
+static const ApplyMask_t ktApplyToCCoth           = (kApplyMaskOne << 45 );
+static const ApplyMask_t ktApplyToCCELScat        = (kApplyMaskOne << 46 );
+static const ApplyMask_t ktApplyToNCEL            = (kApplyMaskOne << 47 );
+static const ApplyMask_t ktApplyToNCMEC           = (kApplyMaskOne << 48 );
+static const ApplyMask_t ktApplyToNC1piC          = (kApplyMaskOne << 49 );
+static const ApplyMask_t ktApplyToNC1pi0          = (kApplyMaskOne << 50 );
+static const ApplyMask_t ktApplyToNC2piC          = (kApplyMaskOne << 51 );
+static const ApplyMask_t ktApplyToNC2pi0          = (kApplyMaskOne << 52 );
+static const ApplyMask_t ktApplyToNCpiCpi0        = (kApplyMaskOne << 53 );
+static const ApplyMask_t ktApplyToNCcoh           = (kApplyMaskOne << 54 );
+static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 55 );
+static const ApplyMask_t ktApplyToNCELScat        = (kApplyMaskOne << 56 );
+static const ApplyMask_t ktApplyToNuEELScat       = (kApplyMaskOne << 57 ); //only for nue: CC + NC + interference
+static const ApplyMask_t kdApplyToDUNEND          = (kApplyMaskOne << 58 ); // Dectectors
+static const ApplyMask_t kdApplyToDUNEFD          = (kApplyMaskOne << 59 );
+static const ApplyMask_t kdApplyToSBN1            = (kApplyMaskOne << 60 );
+static const ApplyMask_t kdApplyToSBN2            = (kApplyMaskOne << 61 );
+static const ApplyMask_t kdApplyToSBN3            = (kApplyMaskOne << 62 );
 
 // Groups of systematics
 // Beam
@@ -144,7 +145,7 @@ static const ApplyMask_t ksApplyToAllND = (
  ksApplyToNuMuCCWS0pi | ksApplyToNuMuCCWS1piC | ksApplyToNuMuCCWS1pi0 | ksApplyToNuMuCCWSoth |
  ksApplyToNuECC0pi   | ksApplyToNuECC1piC    | ksApplyToNuECC1pi0      | ksApplyToNuECCoth       |
  ksApplyToNC0pi      | ksApplyToNC1piC       | ksApplyToNC1pi0         | ksApplyToNCoth          |
- ksApplyToNeutrinoElec  | ksApplyToInvMuDecay   | ksApplyToNuECC          | ksApplyToNuMuCCWS     | ksApplyToNC);
+ ksApplyToNeutrinoElec  | ksApplyToInvMuDecay   | ksApplyToNuECCWS | ksApplyToNuECC          | ksApplyToNuMuCCWS     | ksApplyToNC);
 
 static const ApplyMask_t ksApplyToAllFD =  ksApplyToLowRes | ksApplyToHighRes;
 
@@ -188,6 +189,7 @@ static const ApplyMask_t kApplyToSample[kMaxNSamples] = {
  /* ksNCoth          */ ksApplyToNCoth           ,
  /* ksNeutrinoElec   */ ksApplyToNeutrinoElec    ,
  /* ksInvMuDecay     */ ksApplyToInvMuDecay      ,
+ /* ksNuECCWS        */ ksApplyToNuECCWS         ,
  /* ksNuMuCClow      */ ksApplyToLowRes          ,
  /* ksNuMuCChigh     */ ksApplyToHighRes         ,
  /* ksNuMuBarCClow   */ ksApplyToLowRes          ,

@@ -40,7 +40,8 @@ string util::AsString(Sample_t s)
     case (ksNC1pi0         ) : return "NC1pi0";          break; 
     case (ksNCoth          ) : return "NCoth";           break; 
     case (ksNeutrinoElec   ) : return "NeutrinoElec";    break;
-    case (ksInvMuDecay     ) : return "invMuDecay";      break;
+    case (ksInvMuDecay     ) : return "InvMuDecay";      break;
+    case (ksNuECCWS        ) : return "nueCCinclWS";      break;
     case (ksNuMuCC2piC     ) : return "numuCC2piC";      break; 
     case (ksNuECC          ) : return "nueCCincl";       break;
     case (ksNC             ) : return "NCincl";          break; 
@@ -90,9 +91,10 @@ string util::AsStringTeX(Sample_t s, bool root)
     case (ksNCoth          ) : name = "NC other";                             break; 
     case (ksNeutrinoElec   ) : name = "#nu electron elastic scattering";      break; 
     case (ksInvMuDecay     ) : name = "Inverse muon decay" ;                  break;
+    case (ksNuECCWS        ) : name = "Wrong sign #nu_{e} CC inclusive" ;     break;
     case (ksNuMuCC2piC     ) : name = "#nu_{#mu} CC 2#pi^{#pm}";              break; 
     case (ksNuECC          ) : name = "#nu_{e} CC inclusive";                 break;
-    case (ksNuMuCCWS     ) : name = "Wrong sign #nu_{#mu} CC inclusive";    break;
+    case (ksNuMuCCWS       ) : name = "Wrong sign #nu_{#mu} CC inclusive";    break;
     case (ksNC             ) : name = "NC inclusive";                         break; 
     case (ksNuMuCClow      ) : name = "#nu_{#mu} CC low-resolution";          break;
     case (ksNuMuCChigh     ) : name = "#nu_{#mu} CC high-resolution";         break;
@@ -164,6 +166,7 @@ bool util::IsCC(Sample_t s)
     case (ksNuMuCCWSoth  ) : 
     case (ksNeutrinoElec   ) :
     case (ksInvMuDecay     ) : 
+    case (ksNuECCWS        ) :
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWS     ) : 
@@ -222,6 +225,7 @@ bool util::IsQELike(Sample_t s)
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWS     ) : 
+    case (ksNuECCWS        ) :
     case (ksNC             ) : 
     case (ksNuMuCClow      ) : 
     case (ksNuMuBarCClow   ) : 
@@ -261,6 +265,7 @@ bool util::IsNC(Sample_t s)
     case (ksNuMuCCWSoth  ) : 
     case (ksNeutrinoElec   ) :
     case (ksInvMuDecay     ) : 
+    case (ksNuECCWS        ) :
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWS       ) : 
