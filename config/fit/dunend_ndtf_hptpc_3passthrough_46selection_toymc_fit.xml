@@ -2,7 +2,7 @@
 
 <valor> 
 
-  <element_list name="dune_nd_ndtf_3rdpass">
+  <element_list name="dune_nd_fd_ndtf_3rdpass">
     <!--
         FHC
     -->
@@ -250,6 +250,16 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
+    <element name="dune_nd_fhc_nueccinclws">
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       nueccinclws                                           </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+    </element>
 
     <!--
         RHC
@@ -491,6 +501,17 @@
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
       <sample>       invmudecay                                           </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+    </element>
+
+    <element name="dune_nd_rhc_nueccinclws">
+      <detector>     dune_nd                                              </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       nueccinclws                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_HPTPC_pt2.xml </mc>
