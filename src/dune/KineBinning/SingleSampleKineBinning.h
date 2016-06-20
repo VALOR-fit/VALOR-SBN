@@ -5,9 +5,13 @@
 
 \brief     Kinematic binning choices for a single sample
 
-\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
-           University of Liverpool & STFC Rutherford Appleton Laboratory
-
+           It specifies:
+           - a single optimized binning for reco kine quantities (Mondrian type)
+           - a corresponding simple binning for reco kine quantities (E2E type)
+           - a simple binning for true kine quantities (E2E type) with reaction
+             mode granuarity
+           
+           Configured using an XML file with the following schema:
            ..................................................................
            <?xml version="1.0" encoding="ISO-8859-1"?>
 
@@ -46,6 +50,8 @@
            </sample_binning>
            ..................................................................
 
+\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+           University of Liverpool & STFC Rutherford Appleton Laboratory
 
 \created   April 7, 2016
 
@@ -59,6 +65,8 @@
 
 #include <string>
 
+#include "dune/Conventions/BeamConf.h"
+#include "dune/Conventions/Sample.h"
 #include "dune/Conventions/SampleReacMode.h"
 
 namespace valor {
@@ -69,7 +77,7 @@ class KBCubHcmbEdge2Edge;
 class SingleSampleKineBinning {
 
 public:
-  SingleSampleKineBinning();
+  SingleSampleKineBinning(conv::BeamConf_t b, conv::Sample_t s);
  ~SingleSampleKineBinning();
 
   bool Read(string file);
@@ -77,15 +85,19 @@ public:
   KBCubHcmbMondrian *  RecoOptBinning(void)   const { return fRecoOptimizedBinning;    }
   KBCubHcmbEdge2Edge * RecoSmpBinning(void)   const { return fRecoSimpleBinning;       }
   KBCubHcmbEdge2Edge * TrueSmpBinning(int im) const { return fTrueSimpleBinning [im];  }
+  KBCubHcmbEdge2Edge * TrueSmpBinning(conv::ReacMode_t m) const;
 
 private:
 
   void Init    (void);
   void CleanUp (void);
 
-  KBCubHcmbMondrian *  fRecoOptimizedBinning;
-  KBCubHcmbEdge2Edge * fRecoSimpleBinning; 
-  KBCubHcmbEdge2Edge * fTrueSimpleBinning [conv::kNReacModes]; 
+  conv::BeamConf_t             fBeamConf;
+  conv::Sample_t               fSample;
+  KBCubHcmbMondrian *          fRecoOptimizedBinning;                   //
+  KBCubHcmbEdge2Edge *         fRecoSimpleBinning;                      //
+  KBCubHcmbEdge2Edge *         fTrueSimpleBinning [conv::kNReacModes];  //
+  vector<KBCubHcmbEdge2Edge *> fTrueSimpleBinningUnique;                //
 };
 
 } // valor namespace
