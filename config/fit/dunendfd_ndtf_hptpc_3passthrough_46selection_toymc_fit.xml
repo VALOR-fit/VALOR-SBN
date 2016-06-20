@@ -799,7 +799,7 @@
       <class> valor::MINERVAFlux2016a </class>
       
       <covariance_matrix>
-        <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
+        <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors_ext.root </filename>
         <objname>    h_flux_errors    </objname>    
         <objtype>    TH2D             </objtype>
       </covariance_matrix> 

@@ -523,7 +523,7 @@
   
   <systematics name="DUNEND_2016a">
     <group name="flux">
-      <class> valor::MINERVAFlux2016a </class>
+      <class> valor::MINERVAFlux2016aND </class>
       
       <covariance_matrix>
         <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
