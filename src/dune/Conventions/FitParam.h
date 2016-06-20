@@ -41,7 +41,9 @@ using std::string;
 namespace valor {
 namespace conv {
 
-static const int kNFitParamsNuFlux = 208;//104; // neutrino flux related 104 ND + 104 FD
+static const int kNFitParamsNuFluxND = 104; // neutrino flux related 104 ND 
+static const int kNFitParamsNuFluxFD = 104; // neutrino flux related 104 FD 
+static const int kNFitParamsNuFlux   = kNFitParamsNuFluxND + kNFitParamsNuFluxFD;
 static const int kNFitParamsNuDet  =   9; // neutrino detector related
 static const int kNFitParamsNuInt  =  43; // neutrino interactions related
 static const int kNFitParamsNuOsc  =   6;

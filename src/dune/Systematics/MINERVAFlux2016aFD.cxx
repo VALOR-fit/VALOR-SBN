@@ -28,7 +28,7 @@ ClassImp(MINERVAFlux2016aFD)
 MINERVAFlux2016aFD::MINERVAFlux2016aFD() :
 CorrelatedSystematics()
 {
-  int nparams = kNFitParamsNuFlux;
+  int nparams = kNFitParamsNuFluxFD;
   PhysParamId_t params[nparams];
   bool (*is_relevant)(conv::PhysParamId_t) = util::IsFDFluxRelated;
   
@@ -43,7 +43,7 @@ CorrelatedSystematics()
   
   // Check we have the right number of parameters labelled as related to this class
   if (nparams-i_params) {
-    LOG("MINERVAFlux2016aFD",pFATAL)<<"kNFitParamsNuFlux does not match kFitIsNuFluxRelated";
+    LOG("MINERVAFlux2016aFD",pFATAL)<<"kNFitParamsNuFluxFD does not match kFitIsNuFluxRelated";
     util::Die(-1); return;
   }
   

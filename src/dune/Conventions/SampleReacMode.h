@@ -1913,7 +1913,7 @@ namespace conv {
       },
       //2016a near detector
       // selection: ksNuECC
-      /*{
+      {
 	kmNuMuCCQE,            
 	kmNuMuCCMEC,           
 	kmNuMuCC1piC,          
@@ -2154,7 +2154,7 @@ namespace conv {
 	kmNuEBarNCcoh,         
 	kmNuEBarNCoth,
 	kmNuEBarELScat
-	},*/
+	},
       //far detector
       // selection: ksNuMuCClow
       {
