@@ -31,6 +31,7 @@ typedef enum EKineVar
 {
    kvUndefined = -1, 
    kvEtrue,           // true neutrino energy
+   kvQ2true,          // true momentum transfer
    kvEreco,           // reconstructed neutrino energy
    kvEvis,            // visible neutrino energy
    kvYreco            // reconstructed inelasticity (y)

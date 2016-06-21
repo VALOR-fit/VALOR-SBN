@@ -40,7 +40,8 @@ typedef enum EKineSpace
    kspEreco,           // 1D: reconstructed neutrino energy
    kspEvis,            // 1D: visible neutrino energy
    kspYreco,           // 1D: reconstructed inelasticity (y)
-   kspErecoYreco       // 2D: reconstructed energy, inelasticity
+   kspErecoYreco,      // 2D: reconstructed energy, inelasticity
+   kspEtrueQ2true      // 2D: true neutrino energy, true momentum transfer
    // ...
    // ...
    // ...
