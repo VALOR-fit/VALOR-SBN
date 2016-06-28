@@ -31,7 +31,7 @@ using std::vector;
 namespace valor {
 namespace conv {
 
-static const int kMaxKineSpaces = 5;
+static const int kMaxKineSpaces = 7;
 
 typedef enum EKineSpace
 {
