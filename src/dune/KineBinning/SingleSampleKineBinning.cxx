@@ -87,13 +87,15 @@ bool SingleSampleKineBinning::Read(string file)
      return false;
   }
   string reco_opt_binning_file = util::XML2String(xml,root_node,"reco_optimized");
-  LOG("SampleBinning", pINFO)
-    << "Reading optimized reco binning from: " << reco_opt_binning_file;
+  LOG("SampleBinning", pNOTICE)
+    << "\n ** Reading optimized reco binning ** " 
+    << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
+    << "\n    From file: " << reco_opt_binning_file;
 
   fRecoOptimizedBinning = new KBCubHcmbMondrian;
   bool read_ok = fRecoOptimizedBinning->Read(reco_opt_binning_file);
   if(!read_ok) {
-     LOG("SampleBinning", pINFO)
+     LOG("SampleBinning", pERROR)
        << "Could not read optimized reco binning from: " << reco_opt_binning_file;
      return false;
   }
@@ -109,7 +111,9 @@ bool SingleSampleKineBinning::Read(string file)
   }
   string reco_smp_binning_file = util::XML2String(xml,root_node,"reco_simple");
   LOG("SampleBinning", pINFO)
-    << "Reading simple reco binning from: " << reco_smp_binning_file;
+    << "\n ** Reading simple reco binning ** " 
+    << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
+    << "\n    From file: " << reco_smp_binning_file;
 
   fRecoSimpleBinning = new KBCubHcmbEdge2Edge;
   read_ok = fRecoSimpleBinning->Read(reco_smp_binning_file);
@@ -133,8 +137,9 @@ bool SingleSampleKineBinning::Read(string file)
   if(def_true_smp_exists) {
      string def_true_smp_binning_file = util::XML2String(xml,root_node,"true_simple/default");
      LOG("SampleBinning", pINFO)
-        << "Reading default simple true binning from: " << def_true_smp_binning_file;
-
+        << "\n ** Reading `default' simple true binning ** " 
+        << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
+        << "\n    From file: " << def_true_smp_binning_file;
      KBCubHcmbEdge2Edge * def_true_smp_binning = new KBCubHcmbEdge2Edge;
      read_ok = def_true_smp_binning->Read(def_true_smp_binning_file);
      if(!read_ok) {
@@ -153,6 +158,8 @@ bool SingleSampleKineBinning::Read(string file)
   //
 
   int is = util::ArrIdx::Instance()->SampleIdx(fBeamConf,fSample);
+  LOG("SampleBinning", pDEBUG) << "Sample idx = " << is;
+
   for(int im = 0; im < conv::kNReacModes; im++) {
     conv::ReacMode_t m = conv::kReactionModes[is][im];
     if(m == conv::kmUndefined) continue;
@@ -161,8 +168,9 @@ bool SingleSampleKineBinning::Read(string file)
     if(mode_true_smp_exists) {
       string mode_true_smp_binning_file = util::XML2String(xml,root_node,node_path);
       LOG("SampleBinning", pINFO)
-         << "Reading default simple true binning from: " << mode_true_smp_binning_file;
-
+        << "\n ** Overriding default / Reading simple true binning ** " 
+        << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample) << " / mode: " <<  util::AsString(m)
+        << "\n    From file: " << mode_true_smp_binning_file;
       KBCubHcmbEdge2Edge * mode_true_smp_binning = new KBCubHcmbEdge2Edge;
       read_ok = mode_true_smp_binning->Read(mode_true_smp_binning_file);
       if(!read_ok) {
@@ -205,13 +213,20 @@ void SingleSampleKineBinning::CleanUp(void)
   if (fRecoOptimizedBinning) delete fRecoOptimizedBinning;
   if (fRecoSimpleBinning   ) delete fRecoSimpleBinning;
 
+  fRecoOptimizedBinning = 0;
+  fRecoSimpleBinning    = 0;
+
   vector<KBCubHcmbEdge2Edge *>::iterator it = fTrueSimpleBinningUnique.begin();
   for( ; it != fTrueSimpleBinningUnique.end(); ++it) {
     KBCubHcmbEdge2Edge * binning = *it;
     if(binning) { delete binning; }
   }
+  fTrueSimpleBinningUnique.clear();
 
-  this->Init();
+  for(int im = 0; im < conv::kNReacModes; im++) {
+     fTrueSimpleBinning [im] = 0;
+  }
+
 }
 //________________________________________________________________________________________
 
