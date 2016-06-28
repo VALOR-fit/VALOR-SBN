@@ -1,3 +1,17 @@
+/*
+// ---------------------------------------------------------------------------------------------
+// Test edge-to-edge binning specified in the input XML file.
+// Several example binning files are provided. 
+//
+// Run as:
+// % valor_dune 'test_binning_e2e.C("example_binning-Ereco,yreco-e2e_01.xml")'
+// % valor_dune 'test_binning_e2e.C("example_binning-Etrue,Q2true-e2e_01.xml")'
+// % valor_dune 'test_binning_e2e.C("example_binning-Etrue,Q2true-e2e_02.xml")'
+//
+// C.Andreopoulos
+// ---------------------------------------------------------------------------------------------
+*/
+
 void test_binning_e2e(const char * binning_file)
 {
   using namespace std;
