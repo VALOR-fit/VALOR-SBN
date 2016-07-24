@@ -34,7 +34,7 @@ string util::AsString(Detector_t d, Option_t * /*opt*/)
     case (kdND280Up  ) : name = "nd280up";    break; 
     case (kdINGRID   ) : name = "ingrid";     break; 
     case (kdNuPRISM  ) : name = "nuprism";    break; 
-    case (kdNuTIT    ) : name = "whatever";   break; 
+    case (kdNuTIT    ) : name = "titus";      break; 
     default            : name = "--";  
   }
 /*

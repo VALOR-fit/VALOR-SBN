@@ -42,7 +42,13 @@ valor::util::ArrIdx * valor::util::ArrIdx::MutableInstance()
 //________________________________________________________________________________________
 void valor::util::ArrIdx::Init(void)
 {
-  assert(kNFitParams==kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet);
+  std::cout << " kNFitParams = " << kNFitParams << std::endl;
+  std::cout << " kNFitParamsNuFlux = " << kNFitParamsNuFlux << std::endl;
+  std::cout << " kNFitParamsNuInt = " << kNFitParamsNuInt << std::endl;
+  std::cout << " kNFitParamsNuDet = " << kNFitParamsNuDet << std::endl;
+  
+  assert((kNFitParams==kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet+kNFitParamsNuOsc) || 
+	 (kNFitParamsND == kNFitParamsNuFluxND+kNFitParamsNuInt+kNFitParamsNuDetND));
   
   // Init to -1
   for(int i = 0; i < 2*kNBeamConf; i++) {

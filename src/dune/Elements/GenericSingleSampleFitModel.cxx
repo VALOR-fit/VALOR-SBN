@@ -1715,16 +1715,16 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           VALORArrayBin splbin;
           splbin.bin5 = ip;
           for(int it1 = 0; it1 < n_true1_bins; it1++) {
-            bin   .bin3 = it1;
+            bin.bin3 = it1;
             splbin.bin3 = it1;
             for(int it2 = 0; it2 < n_true2_bins; it2++) {
-              bin   .bin4 = it2;
+              bin.bin4 = it2;
               splbin.bin4 = it2;
               for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-                bin   .bin1 = ir1;
+                bin.bin1 = ir1;
                 splbin.bin1 = ir1;
                 for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                  bin.  bin2 = ir2;
+                  bin.bin2 = ir2;
                   splbin.bin2 = ir2;
                   double response = 1;
                   const ROOT::Math::Interpolator * spl = reinterpret_cast<ROOT::Math::Interpolator*>(fRFPtr[imode][izone]->GetEntry(splbin));
@@ -1920,10 +1920,10 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     LOG("GenericSingleSampleFitModel",pNOTICE) << "Simple binning update completed.";
   }
 }
-//________________________________________________________________________________________                                                            
+//________________________________________________________________________________________                                      
 void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
 {
-  // This method applies oscillation probabilities                                                                                                   
+  // This method applies oscillation probabilities                                                                              
   // from fin to fin templates                       
   // a la SuperKMC
 
@@ -1963,43 +1963,43 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     double p_osc[3][3];
     double p_osc_bar[3][3];
 
-    // mixing params are: sin^2(2*theta)                                                                                                       
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                                               
+    // mixing params are: sin^2(2*theta)                                                                                        
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                            
     if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsq2Theta)
       {
         fNuOsc3Flavour.SetOscParameters(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
       }
-    // mixing params are: sin^2(theta)                                                                                                             
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                                              
+    // mixing params are: sin^2(theta)                                                                                     
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                          
     else if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsqTheta)
       {
         fNuOsc3Flavour.SetOscParametersSinSqTAll(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
       }
-    // mixing params are: sin^2(2*theta)                                                                                                            
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                                          
+    // mixing params are: sin^2(2*theta)                                                                                      
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                   
     else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsq2Theta)
       {
         fNuOsc3Flavour.SetOscParametersSSq2TDmAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
       }
-    // mixing params are: sin^2(theta)                                                                                                                
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                                        
+    // mixing params are: sin^2(theta)                                                                                        
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                    
     else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsqTheta)
       {
         fNuOsc3Flavour.SetOscParametersDmsqAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
       }
-    // mixing paras are: sin^2(2*theta)                                                                                                              
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                                              
+    // mixing paras are: sin^2(2*theta)                                                                                     
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                       
     else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsq2Theta)
       {
         fNuOsc3Flavour.SetOscParametersSSq2TDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
       }
-    // mixing paras are: sin^2(theta)                                                                                                                
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                                               
+    // mixing paras are: sin^2(theta)                                                                                        
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                           
     else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsqTheta)
       {
         fNuOsc3Flavour.SetOscParametersDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
       }
-    //unknown                                                                                                                                      
+    //unknown                                                                                                                    
     else {
       std::cerr << "**  GenericSingleSampleFitModel >> Can't handle choice of "
            << "\n oscillation mixing params: " << util::AsString(omp)
@@ -2017,7 +2017,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
       ReacMode_t m = kReactionModes[isample][imode];
       if(m == kmUndefined) continue;
       
-      //check if beam+sample+mode should be applied oscillation probabilities                                                                        
+      //check if beam+sample+mode should be applied oscillation probabilities                                                
       if(!util::OscProbIsAppliedTo(fBeam,fSample,m)) continue;
       
       const int n_true2_bins = util::NumQ2trueBins(fSample,m);
@@ -2077,9 +2077,9 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
 	    const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
 	    
               for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-                bin   .bin1 = ir1;
+                bin.bin1 = ir1;
 		for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                  bin.  bin2 = ir2;
+                  bin.bin2 = ir2;
 		  
                   double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
                   val *= posc;

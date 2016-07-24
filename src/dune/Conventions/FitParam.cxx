@@ -15,6 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Messenger/Messenger.h"
 // dune
+#include "dune/Conventions/OscParams.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/ArrIdx.h"
@@ -240,7 +241,7 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisRHCNuEBarFDFlux04 ) : return "f_rhc_fd_flux_nuebar04";  break;
     case (kNuisRHCNuEBarFDFlux05 ) : return "f_rhc_fd_flux_nuebar05";  break;
     case (kNuisRHCNuEBarFDFlux06 ) : return "f_rhc_fd_flux_nuebar06";  break;
-
+      
     case (kNuisNormCCQE        ) : return "f_ccqe";               break;
     case (kNuisNormCC1piC      ) : return "f_cc1pic";             break;
     case (kNuisNormCC1pi0      ) : return "f_cc1pi0";             break;
@@ -255,9 +256,22 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisEffNuMuCC1piC1pi0) : return "f_eff_numucc1pic1pi0"; break;
     case (kNuisEffNuMuCCoth     ) : return "f_eff_numuccoth";      break;
     case (kNuisEffNuECC         ) : return "f_eff_nuecc";          break;
-    case (kNuisEffNuMuCCWS    ) : return "f_eff_numuccwsgn";     break;
+    case (kNuisEffNuMuCCWS      ) : return "f_eff_numuccwsgn";     break;
     case (kNuisEffNC            ) : return "f_eff_nc";             break;
-    
+  
+    case (kNuisEffFDNuMuCCHigh     ) : return "f_eff_fd_numu_cchigh";     break;  
+    case (kNuisEffFDNuMuCCLow      ) : return "f_eff_fd_numu_cclow";      break;  
+    case (kNuisEffFDNuMuBarCCHigh  ) : return "f_eff_fd_numubar_cchigh";  break;  
+    case (kNuisEffFDNuMuBarCCLow   ) : return "f_eff_fd_numubar_cclow";   break;  
+    case (kNuisEffFDNuECCHigh      ) : return "f_eff_fd_nue_cchigh";      break;  
+    case (kNuisEffFDNuECCLow       ) : return "f_eff_fd_nue_cclow";       break;  
+    case (kNuisEffFDNuEBarCCHigh   ) : return "f_eff_fd_nuebar_cchigh";   break;  
+    case (kNuisEffFDNuEBarCCLow    ) : return "f_eff_fd_nuebar_cclow";    break;  
+    case (kNuisEffFDNuTauCCHigh    ) : return "f_eff_fd_nutau_cchigh";    break;  
+    case (kNuisEffFDNuTauCCLow     ) : return "f_eff_fd_nutau_cclow";     break;  
+    case (kNuisEffFDNuTauBarCCHigh ) : return "f_eff_fd_nutaubar_cchigh"; break;  
+    case (kNuisEffFDNuTauBarCCLow  ) : return "f_eff_fd_nutaubar_cclow";  break;  
+
     case ( kNuisIntNuCCQE1         ) : return "f_int_nu_ccqe_1"; 
     case ( kNuisIntNuCCQE2         ) : return "f_int_nu_ccqe_2"; 
     case ( kNuisIntNuCCQE3         ) : return "f_int_nu_ccqe_3"; 
@@ -423,7 +437,7 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisRHCNuEBarFlux04 ) : name = "f_{RHC;\\bar{\\nu}_{e};04}";                    break;
     case (kNuisRHCNuEBarFlux05 ) : name = "f_{RHC;\\bar{\\nu}_{e};05}";                    break;
     case (kNuisRHCNuEBarFlux06 ) : name = "f_{RHC;\\bar{\\nu}_{e};06}";                    break;
-
+      
     case (kNuisFHCNuMuFDFlux00   ) : name = "f_{FHC;FD;\\nu_{\\mu};00}";                        break;
     case (kNuisFHCNuMuFDFlux01   ) : name = "f_{FHC;FD;\\nu_{\\mu};01}";                        break;
     case (kNuisFHCNuMuFDFlux02   ) : name = "f_{FHC;FD;\\nu_{\\mu};02}";                        break;
@@ -529,7 +543,7 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisRHCNuEBarFDFlux04 ) : name = "f_{RHC;FD;\\bar{\\nu}_{e};04}";                    break;
     case (kNuisRHCNuEBarFDFlux05 ) : name = "f_{RHC;FD;\\bar{\\nu}_{e};05}";                    break;
     case (kNuisRHCNuEBarFDFlux06 ) : name = "f_{RHC;FD;\\bar{\\nu}_{e};06}";                    break;
-    
+          
     case (kNuisNormCCQE        ) : name = "f_{CCQE}";                                      break;
     case (kNuisNormCC1piC      ) : name = "f_{CC1\\pi^{\\pm}}";                            break;
     case (kNuisNormCC1pi0      ) : name = "f_{CC1\\pi^{0}}";                               break;
@@ -547,6 +561,19 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisEffNuMuCCWS      ) : name = "f_{eff;\\nu_{\\mu}CC;wsgn}";                   break;
     case (kNuisEffNC            ) : name = "f_{eff;NC}";                                   break;
     
+    case (kNuisEffFDNuMuCCHigh  ) : name = "f_{eff;FD;\\nu_{\\mu}CC;high}";                break;  
+    case (kNuisEffFDNuMuCCLow   ) : name = "f_{eff;FD;\\nu_{\\mu}CC;low}";                 break;  
+    case (kNuisEffFDNuMuBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{\\mu}CC;high}";      break;  
+    case (kNuisEffFDNuMuBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{\\mu}CC;low}";       break;  
+    case (kNuisEffFDNuECCHigh  ) : name = "f_{eff;FD;\\nu_{e}CC;high}";                break;  
+    case (kNuisEffFDNuECCLow   ) : name = "f_{eff;FD;\\nu_{e}CC;low}";                 break;  
+    case (kNuisEffFDNuEBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{e}CC;high}";      break;  
+    case (kNuisEffFDNuEBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{e}CC;low}";       break;  
+    case (kNuisEffFDNuTauCCHigh  ) : name = "f_{eff;FD;\\nu_{\\tau}CC;high}";                break;  
+    case (kNuisEffFDNuTauCCLow   ) : name = "f_{eff;FD;\\nu_{\\tau}CC;low}";                 break;  
+    case (kNuisEffFDNuTauBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{\\tau}CC;high}";      break;  
+    case (kNuisEffFDNuTauBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{\\tau}CC;low}";       break;  
+
     case ( kNuisIntNuCCQE1         ) : name =  "f_{\\nu CCQE ; 1}";                        break;
     case ( kNuisIntNuCCQE2         ) : name =  "f_{\\nu CCQE ; 2}";                        break;
     case ( kNuisIntNuCCQE3         ) : name =  "f_{\\nu CCQE ; 3}";                        break;
@@ -649,6 +676,14 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list)
       bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
       if(skip_detector_params && kFitIsNuDetRelated[ip]) continue;
 
+      // skip nd detector params?
+      bool skip_nd_detector_params = (param_list_opt.find("no-nd-detector-systematics") != string::npos);
+      if(skip_nd_detector_params && kFitIsNuNDDetRelated[ip]) continue;
+
+      // skip fd detector params?
+      bool skip_fd_detector_params = (param_list_opt.find("no-fd-detector-systematics") != string::npos);
+      if(skip_fd_detector_params && kFitIsNuFDDetRelated[ip]) continue;
+
       // skip int params?
       bool skip_int_params = (param_list_opt.find("no-int-systematics") != string::npos);
       if(skip_int_params && kFitIsNuIntRelated[ip]) continue;
@@ -670,6 +705,24 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list)
       if(skip_osc_params && IsOscParam(p)) continue;
 
     }//ip
+  }
+  //now we also defined a ND only fit params list
+  else if (param_list_opt.find("only-nd") != string::npos) {
+    for(int ip = 0; ip < kNFitParamsND; ip++) {
+      PhysParamId_t p = kFitParamND[ip];
+      if(p == kPhypUndefined) continue;
+
+      bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
+      if(skip_detector_params && kFitIsNuDetRelated[ip]) continue;
+
+      // skip int params?                                                                                                       
+      bool skip_int_params = (param_list_opt.find("no-int-systematics") != string::npos);
+      if(skip_int_params && kFitIsNuIntRelated[ip]) continue;
+
+      bool skip_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
+      if(skip_flux_params && kFitIsNuFluxRelated[ip]) continue;
+
+    }
   }
 
   return ph;
@@ -695,7 +748,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
   if(param_list_opt.find("standard") != string::npos) {
 
     fparm = new FitParamList(kNFitParams); // NOTE: If params are undefined, we initialize the array with more elements than used --- 
-
     int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
     for(int ip = 0; ip < kNFitParams; ip++) {
       PhysParamId_t p = kFitParam[ip];
@@ -719,13 +771,14 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
 	  ipc++; 
 	  fparm->Update(p, curr);
 	  //}
-	// toggle oscillation params on/off
-      bool fix_osc_params = (param_list_opt.find("fix-osc-params") != string::npos);
-      if(fix_osc_params && IsOscParam(p)){
-	//        fparm->Update(p, 1.);
-	//fparm->SetInitValue(p, 1.);
-        fparm->FixParameter(p);
-      }     
+	  // toggle oscillation params on/off
+	  bool fix_osc_params = (param_list_opt.find("fix-osc-params") != string::npos);
+	  if(fix_osc_params && IsOscParam(p)){
+	    double init_value = util::OscParamInitValue(p);
+	    fparm->Update(p, init_value);
+	    fparm->SetInitValue(p, init_value);
+	    fparm->FixParameter(p);
+	}     
       // toggle detector related params on/off
       bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
       if(fix_detector_params && kFitIsNuDetRelated[ip]) {
@@ -779,7 +832,73 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
 
     }//ip
   }
+  //now we also defined a ND only fit params list
+  else  if(param_list_opt.find("only-nd") != string::npos) {
+    fparm = new FitParamList(kNFitParamsND); // NOTE: If params are undefined, we initialize the array with more elements than used 
+
+    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params                                                     
+    for(int ip = 0; ip < kNFitParamsND; ip++) {
+      PhysParamId_t p = kFitParamND[ip];
+      if(p == kPhypUndefined) continue;
+
+      // set parameter range, current and init value, etc                                                                     
+      double init = 1.0;
+      double curr = 1.0;
+      double min  = 0.0;
+      double max  = 2.0;
+      double step = 1E-4;
+      bool   fix  = false;
+      bool   nuis = true;
+
+      //      if(IsSystematic(p)){                                                                                             
+      // Check we're not going behind physical region                                                                             
+      min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
+      max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
+
+      fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
+      ipc++;
+      fparm->Update(p, curr);
+
+      // toggle detector params on/off
+      bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
+      if(fix_detector_params && kFitIsNuDetRelated[ip]) {
+	fparm->Update(p, 1.);
+	fparm->SetInitValue(p, 1.);
+	fparm->FixParameter(p);
+      }
+      // toggle flux related params on/off
+      bool fix_flux_params = (param_list_opt.find("fix-flux-syst") != string::npos);
+      if(fix_flux_params && kFitIsNuFluxRelated[ip]) {
+	fparm->Update(p, 1.);
+	fparm->SetInitValue(p, 1.);
+	fparm->FixParameter(p);
+      }
+      // toggle int related params on/off                                                                                        
+      bool fix_int_params = (param_list_opt.find("fix-int-syst") != string::npos);
+      if(fix_int_params && kFitIsNuIntRelated[ip]) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
+      // toggle mec related params on/off                                                                                           
+      bool fix_mec_params = (param_list_opt.find("fix-mec-syst") != string::npos);
+      if(fix_mec_params && (p==kNuisIntNuCCMEC || p==kNuisIntNuBarCCMEC)) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
+      // toggle FSI related params on/off                                                                                      
+      bool fix_fsi_params = (param_list_opt.find("fix-fsi-syst") != string::npos);
+      if(fix_fsi_params && util::IsFSI(p)) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
+
+    }//ip
   
+  }
+
   if(!fparm->IsComplete()) {
     LOG("FitParams",pERROR)<<"Fit parameter list is not complete";
     fparm->Print();
@@ -839,6 +958,24 @@ bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
   return conv::kFitIsNuDetRelated[nd_index];
 }
 //____________________________________________________________________________
+bool valor::util::IsNuNDDetRelated(conv::PhysParamId_t p)
+{
+  int nd_index = ArrIdx::Instance()->FitParamIdx(p);
+  if (nd_index==-1) {
+    return false;
+  }
+  return conv::kFitIsNuNDDetRelated[nd_index];
+}
+//____________________________________________________________________________
+bool valor::util::IsNuFDDetRelated(conv::PhysParamId_t p)
+{
+  int nd_index = ArrIdx::Instance()->FitParamIdx(p);
+  if (nd_index==-1) {
+    return false;
+  }
+  return conv::kFitIsNuFDDetRelated[nd_index];
+}
+//____________________________________________________________________________
 bool valor::util::IsNDFluxRelated(conv::PhysParamId_t p)
 {
   return (p >= kNuisNDFluxFirstParameter && p<=kNuisNDFluxLastParameter);
@@ -847,7 +984,7 @@ bool valor::util::IsNDFluxRelated(conv::PhysParamId_t p)
 bool valor::util::IsFDFluxRelated(conv::PhysParamId_t p)
 {
   return (p >= kNuisFDFluxFirstParameter && p<=kNuisFDFluxLastParameter);
-}
+  }
 //____________________________________________________________________________
 bool valor::util::IsFSI(conv::PhysParamId_t p)
 {
@@ -863,8 +1000,7 @@ bool util::OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMo
   if (s==conv::ksUndefined   ) {return false;}
 
   // loop over osc param ids - check if any is applied to the sample+mode+beam
-  // this is for the moment unnecessary, but might be re-used later if we have 
-  // different sets of oscillation parameters
+ 
   int ip_min = arridx->FitParamIdx(kOscFirstParam);
   int ip_max = arridx->FitParamIdx(kOscLastParam);
   bool apply = false;

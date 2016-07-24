@@ -72,8 +72,8 @@ static const ApplyMask_t ksApplyToNuECCWS         = (kApplyMaskOne << 31 );
 static const ApplyMask_t ksApplyToNuECC           = (kApplyMaskOne << 32 );
 static const ApplyMask_t ksApplyToNuMuCCWS        = (kApplyMaskOne << 33 );
 static const ApplyMask_t ksApplyToNC              = (kApplyMaskOne << 34 );
-static const ApplyMask_t ksApplyToLowRes          = (kApplyMaskOne << 35 ); // Far detector selections
-static const ApplyMask_t ksApplyToHighRes         = (kApplyMaskOne << 36 ); // Far detector selections
+static const ApplyMask_t ksApplyToHighRes         = (kApplyMaskOne << 35 ); // Far detector selections
+static const ApplyMask_t ksApplyToLowRes          = (kApplyMaskOne << 36 ); // Far detector selections
 static const ApplyMask_t ktApplyToCCQE            = (kApplyMaskOne << 37 ); // Reaction type
 static const ApplyMask_t ktApplyToCCMEC           = (kApplyMaskOne << 38 );
 static const ApplyMask_t ktApplyToCC1piC          = (kApplyMaskOne << 39 );
@@ -82,8 +82,8 @@ static const ApplyMask_t ktApplyToCC2piC          = (kApplyMaskOne << 41 );
 static const ApplyMask_t ktApplyToCC2pi0          = (kApplyMaskOne << 42 );
 static const ApplyMask_t ktApplyToCCpiCpi0        = (kApplyMaskOne << 43 );
 static const ApplyMask_t ktApplyToCCcoh           = (kApplyMaskOne << 44 );
-static const ApplyMask_t ktApplyToCCoth           = (kApplyMaskOne << 45 );
-static const ApplyMask_t ktApplyToCCELScat        = (kApplyMaskOne << 46 );
+static const ApplyMask_t ktApplyToCCELScat        = (kApplyMaskOne << 45 );
+static const ApplyMask_t ktApplyToCCoth           = (kApplyMaskOne << 46 );
 static const ApplyMask_t ktApplyToNCEL            = (kApplyMaskOne << 47 );
 static const ApplyMask_t ktApplyToNCMEC           = (kApplyMaskOne << 48 );
 static const ApplyMask_t ktApplyToNC1piC          = (kApplyMaskOne << 49 );
@@ -92,14 +92,14 @@ static const ApplyMask_t ktApplyToNC2piC          = (kApplyMaskOne << 51 );
 static const ApplyMask_t ktApplyToNC2pi0          = (kApplyMaskOne << 52 );
 static const ApplyMask_t ktApplyToNCpiCpi0        = (kApplyMaskOne << 53 );
 static const ApplyMask_t ktApplyToNCcoh           = (kApplyMaskOne << 54 );
-static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 55 );
-static const ApplyMask_t ktApplyToNCELScat        = (kApplyMaskOne << 56 );
+static const ApplyMask_t ktApplyToNCELScat        = (kApplyMaskOne << 55 );
+static const ApplyMask_t ktApplyToNCoth           = (kApplyMaskOne << 56 );
 static const ApplyMask_t ktApplyToNuEELScat       = (kApplyMaskOne << 57 ); //only for nue: CC + NC + interference
 static const ApplyMask_t kdApplyToDUNEND          = (kApplyMaskOne << 58 ); // Dectectors
 static const ApplyMask_t kdApplyToDUNEFD          = (kApplyMaskOne << 59 );
-static const ApplyMask_t kdApplyToSBN1            = (kApplyMaskOne << 60 );
-static const ApplyMask_t kdApplyToSBN2            = (kApplyMaskOne << 61 );
-static const ApplyMask_t kdApplyToSBN3            = (kApplyMaskOne << 62 );
+static const ApplyMask_t kdApplyToSBND            = (kApplyMaskOne << 60 );
+static const ApplyMask_t kdApplyToMicroBooNE      = (kApplyMaskOne << 61 );
+static const ApplyMask_t kdApplyToICARUS          = (kApplyMaskOne << 62 );
 
 // Groups of systematics
 // Beam
@@ -119,7 +119,7 @@ static const ApplyMask_t ktApplyToAllCC1pi = ktApplyToCC1piC | ktApplyToCC1pi0;
 static const ApplyMask_t ktApplyToAllCC2pi = ktApplyToCC2piC | ktApplyToCC2pi0 | ktApplyToCCpiCpi0;
 static const ApplyMask_t ktApplyToAllCC    = ktApplyToCCQELike | ktApplyToAllCC1pi | ktApplyToAllCC2pi | ktApplyToCCcoh | ktApplyToCCoth | ktApplyToCCELScat;
 
-static const ApplyMask_t ktApplyToNCElLike = ktApplyToNCEL   | ktApplyToNCMEC;
+static const ApplyMask_t ktApplyToNCElLike = ktApplyToNCEL   | ktApplyToNCMEC; //this is not used, modes disabled
 static const ApplyMask_t ktApplyToAllNCELScat = ktApplyToNCELScat | ktApplyToNuEELScat; //nu+e NC elastic scattering 
 static const ApplyMask_t ktApplyToAllNC1pi = ktApplyToNC1piC | ktApplyToNC1pi0;
 static const ApplyMask_t ktApplyToAllNC2pi = ktApplyToNC2piC | ktApplyToNC2pi0 | ktApplyToNCpiCpi0;
@@ -134,9 +134,11 @@ static const ApplyMask_t ktApplyToAllButELScat = ktApplyToAll & (~ktApplyToAllEL
 
 // Detectors
 static const ApplyMask_t kdApplyToAllDUNE = kdApplyToDUNEND | kdApplyToDUNEFD;
-static const ApplyMask_t kdApplyToAllSBN  = kdApplyToSBN1 | kdApplyToSBN2 | kdApplyToSBN3;
-static const ApplyMask_t kdApplyToAllND  = kdApplyToDUNEND | kdApplyToSBN1 | kdApplyToSBN2 | kdApplyToSBN3;
-static const ApplyMask_t kdApplyToAll = kdApplyToAllDUNE | kdApplyToAllSBN;
+static const ApplyMask_t kdApplyToAllSBN  = kdApplyToSBND | kdApplyToMicroBooNE | kdApplyToICARUS;
+static const ApplyMask_t kdApplyToAllSBN2Det  = kdApplyToSBND | kdApplyToMicroBooNE;
+static const ApplyMask_t kdApplyToAllND  = kdApplyToDUNEND | kdApplyToSBND | kdApplyToMicroBooNE | kdApplyToICARUS;
+static const ApplyMask_t kdApplyToAll    = kdApplyToAllND | kdApplyToAllSBN;
+
 
 // Samples
 static const ApplyMask_t ksApplyToAllND = (
@@ -190,18 +192,18 @@ static const ApplyMask_t kApplyToSample[kMaxNSamples] = {
  /* ksNeutrinoElec   */ ksApplyToNeutrinoElec    ,
  /* ksInvMuDecay     */ ksApplyToInvMuDecay      ,
  /* ksNuECCWS        */ ksApplyToNuECCWS         ,
+ /* ksNuMuCChigh     */ ksApplyToHighRes         , 
  /* ksNuMuCClow      */ ksApplyToLowRes          ,
- /* ksNuMuCChigh     */ ksApplyToHighRes         ,
+ /* ksNuMuBarCChigh  */ ksApplyToHighRes         , 
  /* ksNuMuBarCClow   */ ksApplyToLowRes          ,
- /* ksNuMuBarCChigh  */ ksApplyToHighRes         ,
- /* ksNuECClow       */ ksApplyToLowRes          ,
  /* ksNuECChigh      */ ksApplyToHighRes         ,
- /* ksNuEBarCClow    */ ksApplyToLowRes          ,
+ /* ksNuECClow       */ ksApplyToLowRes          ,
  /* ksNuEBarCChigh   */ ksApplyToHighRes         ,
- /* ksNuTauCClow     */ ksApplyToLowRes          ,
+ /* ksNuEBarCClow    */ ksApplyToLowRes          ,
  /* ksNuTauCChigh    */ ksApplyToHighRes         ,
- /* ksNuTauBarCClow  */ ksApplyToLowRes          ,
- /* ksNuTauBarCChigh */ ksApplyToHighRes         
+ /* ksNuTauCClow     */ ksApplyToLowRes          ,
+ /* ksNuTauBarCChigh */ ksApplyToHighRes         ,
+ /* ksNuTauBarCClow  */ ksApplyToLowRes          
 };
 
 // Which masks apply to which parent particle flavour
@@ -224,18 +226,18 @@ static const ApplyMask_t kApplyToReacType[kNReacType] = {
   /* kmtCC2pi0,   */ ktApplyToCC2pi0  ,
   /* kmtCCpiCpi0, */ ktApplyToCCpiCpi0,
   /* kmtCCcoh,    */ ktApplyToCCcoh   ,
-  /* kmtCCoth,    */ ktApplyToCCoth,
   /* kmtCCELScat, */ ktApplyToCCELScat,
+  /* kmtCCoth,    */ ktApplyToCCoth,
   /* kmtNCEL,     */ ktApplyToNCEL    , 
   /* kmtNCMEC,    */ ktApplyToNCMEC   | ktApplyToNCEL,
-  /* kmtNC1piC,   */ ktApplyToNC1piC  | ktApplyToNCoth,
+  /* kmtNC1piC,   */ ktApplyToNC1piC  | ktApplyToNCoth, //why | ktApplyToNCoth ?
   /* kmtNC1pi0,   */ ktApplyToNC1pi0  | ktApplyToNCoth,
   /* kmtNC2piC,   */ ktApplyToNC2piC  | ktApplyToNCoth,
   /* kmtNC2pi0,   */ ktApplyToNC2pi0  | ktApplyToNCoth,
   /* kmtNCpiCpi0, */ ktApplyToNCpiCpi0| ktApplyToNCoth,
   /* kmtNCcoh,    */ ktApplyToNCcoh   | ktApplyToNCoth,
-  /* kmtNCoth,    */ ktApplyToNCoth   ,
   /* kmtNCELScat, */ ktApplyToNCELScat,
+  /* kmtNCoth,    */ ktApplyToNCoth   ,
   /* kmtELScat  , */ ktApplyToNuEELScat,
   /* kmtOther     */ 0
 };
@@ -519,6 +521,19 @@ static const ApplyMask_t kApplyParamToTemplates[kNFitParams] =
   /* kNuisEffNuECC         */ kdApplyToAllND | kbApplyToAll | kfApplyToAll | ksApplyToNuECC          | ktApplyToAll ,
   /* kNuisEffNuMuCCWS    */ kdApplyToAllND | kbApplyToAll | kfApplyToAll | ksApplyToNuMuCCWS     | ktApplyToAll ,
   /* kNuisEffNC            */ kdApplyToAllND | kbApplyToAll | kfApplyToAll | ksApplyToNC             | ktApplyToAll ,
+  // Far detector systematics 
+  /* kNuisEffFDNuMuCCHigh     */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMu     | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuMuCCLow      */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMu     | ksApplyToLowRes  | ktApplyToAll ,
+  /* kNuisEffFDNuMuBarCCHigh  */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMuBar  | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuMuBarCCLow   */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMuBar  | ksApplyToLowRes  | ktApplyToAll ,
+  /* kNuisEffFDNuECCHigh      */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuE      | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuECCLow       */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuE      | ksApplyToLowRes  | ktApplyToAll ,
+  /* kNuisEffFDNuEBarCCHigh   */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuEBar   | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuEBarCCLow    */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuEBar   | ksApplyToLowRes  | ktApplyToAll ,
+  /* kNuisEffFDNuTauCCHigh    */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuAny    | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuTauCCLow     */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuAny    | ksApplyToLowRes  | ktApplyToAll ,
+  /* kNuisEffFDNuTauBarCCHigh */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuBarAny | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuTauBarCCLow  */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuBarAny | ksApplyToLowRes  | ktApplyToAll ,
 };
 
 } //conv

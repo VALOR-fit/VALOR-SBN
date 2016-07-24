@@ -168,7 +168,7 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
 
    if (util::IsCC(s))
      {
-       if (util::IsQELike(s))
+       if (util::IsCCQELike(s))
 	 return kYrecoBinEdgesQELikeSb;
        else
 	 return kYrecoBinEdgesMiscSb;

@@ -37,17 +37,17 @@ typedef enum ESample
 {
    //2016b near detector selections
    ksUndefined       = -1,
-   ksNuMuCC          =  0, // numu CC inclusive - disabled in the current run 
+   ksNuMuCC          =  0, // numu CC inclusive - disabled in 2016b, split in subsamples
    ksNuMuCC0pi1trk   =  1, // numu CC 0 pions - 1 track (mu)
    ksNuMuCC0pi2trk   =  2, // numu CC 0 pions - 2 tracks (mu + proton)
    ksNuMuCC1piC      =  3, // numu CC 1 pion+/-  (mu + 1 pi+/- + X) and not included in the Delta enhanced selection (code 12)
-   ksNuMuCC2piC      =  4, // numu CC 2 pions+/- (mu + 2 pi+/- + X) - disabled in the current run
+   ksNuMuCC2piC      =  4, // numu CC 2 pions+/- (mu + 2 pi+/- + X) - disabled in 2016b
    ksNuMuCC1pi0      =  5, // numu CC 1 pion0  (mu + 1 pi0 + X)
    ksNuMuCC1piC1pi0  =  6, // numu CC 1 pion+/- & 1 pion0 (mu + 1 pi+/- + 1pi0 + X)
    ksNuMuCCoth       =  7, // numu CC - other 
-   ksNuECC           =  8, // nue CC inclusive - disabled in the current run
-   ksNuMuCCWS        =  9, // wrong sign numu CC inclusive
-   ksNC              = 10, // NC inclusive - disabled in the current run
+   ksNuECC           =  8, // nue CC inclusive - disabled in 2016b, split in subsamples
+   ksNuMuCCWS        =  9, // wrong sign numu CC inclusive - disabled in 2016b, split in subsamples
+   ksNC              = 10, // NC inclusive - disabled in 2016b, split in subsamples
    ksNuMuCC0piNtrk   = 11, // numu CC - 0 pions - N tracks (mu + >1 nucleons)
    ksNuMuCC3trkDelta = 12, // numu CC - 3 track Delta-enhanched (mu + proton + pi+, Wreco ~1.2 GeV)
    ksNuMuCCWS0pi     = 13, // wrong sign numu CC - 0 pions (mu+ + X )
@@ -63,21 +63,21 @@ typedef enum ESample
    ksNC1pi0          = 23, // NC - 1 pion0 (1 pi0 + X)
    ksNCoth           = 24, // NC - other
    ksNeutrinoElec    = 25, // Neutrino-electron elastic scattering nu + e 
-   ksInvMuDecay      = 26, // Inverse muon decay (nuebar + e -> mu + numubar)
+   ksInvMuDecay      = 26, // Inverse muon decay (nuebar + e -> mu + numubar or numu + e -> mu + nue)
    ksNuECCWS         = 27, // wrong sign nue CC inclusive 
    //2016b far detector selections
-   ksNuMuCClow,            // beam intrinsic numu 
-   ksNuMuCChigh,           // beam intrinsic anti-numu 
-   ksNuMuBarCClow,         // beam intrinsic numu 
-   ksNuMuBarCChigh,        // beam intrinsic anti-numu 
-   ksNuECClow,             // beam intrinsic numu 
-   ksNuECChigh,            // beam intrinsic anti-numu 
-   ksNuEBarCClow,          // beam intrinsic numu 
-   ksNuEBarCChigh,         // beam intrinsic anti-numu 
-   ksNuTauCClow,           // beam intrinsic numu 
-   ksNuTauCChigh,          // beam intrinsic anti-numu 
-   ksNuTauBarCClow,        // beam intrinsic numu 
-   ksNuTauBarCChigh       // beam intrinsic anti-numu 
+   ksNuMuCChigh,           // numu, high resolution (CCQE-like)
+   ksNuMuCClow,            // numu, low resolution (nonCCQE-like)
+   ksNuMuBarCChigh,        // numubar, high resolution (CCQE-like)   
+   ksNuMuBarCClow,         // numubar, low resolution (nonCCQE-like) 
+   ksNuECChigh,            // nue, high resolution (CCQE-like)
+   ksNuECClow,             // nue, low resolution (nonCCQE-like)   
+   ksNuEBarCChigh,         // nuebar, high resolution (CCQE-like)
+   ksNuEBarCClow,          // nuebar, low resolution (nonCCQE-like)   
+   ksNuTauCChigh,          // nutau, high resolution (CCQE-like)
+   ksNuTauCClow,           // nutau, low resolution (nonCCQE-like)   
+   ksNuTauBarCChigh,       // nutaubar, high resolution (CCQE-like)
+   ksNuTauBarCClow         // nutaubar, low resolution (nonCCQE-like)   
 } 
 Sample_t; 
 
@@ -101,13 +101,14 @@ static const int kMaxNSamples = 41;
 // -
  
 //this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
-// i.e. undefined, 2piC, NuMuInclusive
- static const int kNSamples = 38;
+// For 2016b = total except: undefined, numuCC, 2piC, nueCC, NC, wrong numu
+ static const int kNSamples = 35;
 
 // ---------------------------------------------------------------------
 // NOTE:
 // This is used to loop over all beam configurations / samples.
 // Probably could be removed once we start using the Compound* classes
+// This is now for 2016b, should include only the kNSamples above
  static const Sample_t kSample[kNBeamConf][kNSamples] =
 {
    // kbLBNF_FHC
@@ -136,23 +137,19 @@ static const int kMaxNSamples = 41;
      ksNeutrinoElec,
      ksInvMuDecay,
      ksNuECCWS,
-     //2016a near detector selections 
-     ksNuECC,
-     ksNuMuCCWS,
-     ksNC,     
      //2016b far detector selections
-     ksNuMuCClow,  
      ksNuMuCChigh,  
-     ksNuMuBarCClow,  
+     ksNuMuCClow,  
      ksNuMuBarCChigh,   
-     ksNuECClow,          
+     ksNuMuBarCClow,  
      ksNuECChigh,           
-     ksNuEBarCClow,        
+     ksNuECClow,          
      ksNuEBarCChigh,     
-     ksNuTauCClow,       
+     ksNuEBarCClow,        
      ksNuTauCChigh,       
-     ksNuTauBarCClow,     
-     ksNuTauBarCChigh    
+     ksNuTauCClow,       
+     ksNuTauBarCChigh,
+     ksNuTauBarCClow     
    },
 
    {
@@ -180,23 +177,19 @@ static const int kMaxNSamples = 41;
      ksNeutrinoElec,
      ksInvMuDecay,
      ksNuECCWS,
-     //2016a near detector selections (different from above)
-     ksNuECC,
-     ksNuMuCCWS,
-     ksNC,     
      //2016b far detector selections
-     ksNuMuCClow,  
      ksNuMuCChigh,  
-     ksNuMuBarCClow,  
+     ksNuMuCClow,  
      ksNuMuBarCChigh,   
-     ksNuECClow,          
+     ksNuMuBarCClow,  
      ksNuECChigh,           
-     ksNuEBarCClow,        
+     ksNuECClow,          
      ksNuEBarCChigh,     
-     ksNuTauCClow,       
+     ksNuEBarCClow,        
      ksNuTauCChigh,       
-     ksNuTauBarCClow,     
-     ksNuTauBarCChigh    
+     ksNuTauCClow,       
+     ksNuTauBarCChigh,
+     ksNuTauBarCClow     
    }
 };
 // ---------------------------------------------------------------------
@@ -209,7 +202,7 @@ namespace util {
   string         AsString         (conv::Sample_t s);
   string         AsStringTeX      (conv::Sample_t s, bool root = false);
   bool           IsCC             (conv::Sample_t s);
-  bool           IsQELike         (conv::Sample_t s);
+  bool           IsCCQELike       (conv::Sample_t s);
   bool           IsNC             (conv::Sample_t s);
   bool           IsFar            (conv::Sample_t s);
   bool           IsFar            (int s);
