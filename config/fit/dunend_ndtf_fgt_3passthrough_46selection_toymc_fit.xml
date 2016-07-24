@@ -542,7 +542,7 @@
     </group>
     
     <group name="detector">
-      <class> valor::SimpleDet2016a </class>
+      <class> valor::SimpleDet2016bND </class>
       <covariance_matrix>
          <filename>   test/dummy_detector_matrices.root </filename>
          <objname>    diag_9x9_10pct    </objname>    
