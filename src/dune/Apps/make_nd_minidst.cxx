@@ -267,7 +267,7 @@ int main(int argc, char ** argv)
       VLOG("make_minidst", pINFO) << "+ Accepting event";
     }
     
-    valor::conv::ReacMode_t reac_mode = valor::util::DetermineReactionMode(mcrec->event, false);
+    //    valor::conv::ReacMode_t reac_mode = valor::util::DetermineReactionMode(mcrec->event, false);
     
     nev_accept++;
     nev_accept_by_mode[reac_mode]++;
@@ -279,7 +279,8 @@ int main(int argc, char ** argv)
       << "GENIE MC truth info: " << event;
       
     valor_minidst_sample    = sample; 
-    valor_minidst_reac_mode = reac_mode; 
+    //    valor_minidst_reac_mode = reac_mode;
+    valor_minidst_reac_mode = valor::util::DetermineReactionMode(mcrec->event, false); 
     valor_minidst_enu_true  = enu_true; 
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco; 
