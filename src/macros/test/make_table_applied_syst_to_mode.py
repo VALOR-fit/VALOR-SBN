@@ -17,11 +17,13 @@ except:
 ROOT.gROOT.SetBatch(1)
   
 valor = ROOT.valor
-util =  valor.util
-conv =  valor.conv
-opt  =  valor.Opt.Instance()
-env  =  valor.Env.Instance()
-rnd  =  valor.Rnd.Instance()
+util  = valor.util
+conv  = valor.conv
+opt   = valor.Opt.Instance()
+env   = valor.Env.Instance()
+rnd   = valor.Rnd.Instance()
+
+arridx = util.ArrIdx.Instance()
 
 col1_width = 30
 coln_width = 3
@@ -34,7 +36,7 @@ def main(beam_mode_arg = None, sample_arg = None,
          skipflux=False, skipint=False, skipdet =False, include_empty = False, color = True):
   
   elements = valor.CompoundFitElements();
-  elements.Read(base_dir+"/config/"+config_file)
+  elements.Read(base_dir+"/config/"+config_file,"nosplines")
   model = elements.FitModel()
   
   syst = model.GetSystematics()
@@ -90,9 +92,9 @@ def main(beam_mode_arg = None, sample_arg = None,
     for sample in samples:
       # Get the mode list for this sample
       modes_array      = array.array("i",[-1]*conv.kNReacModes)
+      isamp = arridx.SampleIdx(beam_mode,sample)
       root_loop  = "{ int * mode_arr = (int*)%s;" % str(modes_array.buffer_info()[0])
-      root_loop += "int is = ArrIdx::Instance()->SampleIdx((BeamConf_t)%s,(Sample_t)%s);"%(str(beam_mode),str(sample))
-      root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kReactionModes[is][i];};};"
+      root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kReactionModes[%s][i];};};"%(str(isamp))
       ROOT.gROOT.ProcessLine(root_loop)
       modes  = [m for m in modes_array     if m != conv.kmUndefined]
       
@@ -113,7 +115,7 @@ def main(beam_mode_arg = None, sample_arg = None,
       last_flav = -1
       last_was_cc = -1
       for mode in modes:
-        flav  = util.ReacModeToFlavor(mode)
+        flav  = util.ReacModeToInitFlavor(mode)
         is_cc = util.ModeIsCC(mode)
         if (flav!= last_flav or is_cc != last_was_cc):
           table_col_spec+="|"
