@@ -70,18 +70,10 @@ static const int kMCTemplateNdim[kNSamples] =
   3, // ksNuEEL,
   3, // ksInvMuDecay
   3, // ksNuECCWS
-  3, // ksNuMuCChigh,
-  3, // ksNuMuCClow,
-  3, // ksNuMuBarCChigh,
-  3, // ksNuMuBarCClow,
-  3, // ksNuECChigh,
-  3, // ksNuECClow,
-  3, // ksNuEBarCChigh,
-  3, // ksNuEBarCClow,
-  3, // ksNuTauCChigh,
-  3, // ksNuTauCClow,
-  3,  // ksNuTauBarCChigh
-  3 // ksNuTauBarCClow
+  3, // ksNuMuCChigh/ksNuMuBarCChigh
+  3, // ksNuMuCClow/ksNuMuBarCClow
+  3, // ksNuECChigh/ksNuEBarCChigh
+  3 // ksNuECClow/ksNuEBarCClow
 };
 
 // Define dimensionality of fit distributions
@@ -110,18 +102,10 @@ static const int kFitSpectrumNdim[kNSamples] =
     2, // ksNuEEL,
     2, // ksInvMuDecay
     2, // ksNuECCWS
-    2, // ksNuMuCChigh,
-    2, // ksNuMuCClow,
-    2, // ksNuMuBarCChigh,
-    2, // ksNuMuBarCClow,
-    2, // ksNuECChigh,
-    2, // ksNuECClow,
-    2, // ksNuEBarCChigh,
-    2, // ksNuEBarCClow,
-    2, // ksNuTauCChigh,
-    2, // ksNuTauCClow,
-    2,  // ksNuTauBarCChigh
-    2 // ksNuTauBarCClow,
+    2, // ksNuMuCChigh/ksNuMuBarCChigh
+    2, // ksNuMuCClow/ksNuMuBarCClow
+    2, // ksNuECChigh/ksNuEBarCChigh
+    2 // ksNuECClow/ksNuEBarCClow
 };
 
 // Define variables entering in MC template definitions.
@@ -151,18 +135,10 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
   { kvEreco, kvYreco, kvEtrue },     //   ksNuEEL,
   { kvEreco, kvYreco, kvEtrue },     //   ksInvMuDecay,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuECCWS,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCChigh,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCClow,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuBarCChigh,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuBarCClow,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuECChigh,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuECClow,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuEBarCChigh,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuEBarCClow,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuTauCChigh,
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuTauCClow,
-  { kvEreco, kvYreco, kvEtrue },      //   ksNuTauBarCChigh
-  { kvEreco, kvYreco, kvEtrue }     //   ksNuTauBarCClow
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCChigh/ksNuMuBarCChigh
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCClow/ksNuMuBarCClow
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECChigh/ksNuEBarCChigh
+  { kvEreco, kvYreco, kvEtrue }      //   ksNuECClow/ksNuEBarCClow
 };
 
 

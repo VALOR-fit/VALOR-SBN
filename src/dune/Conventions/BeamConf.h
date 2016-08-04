@@ -43,8 +43,8 @@ typedef enum EBeamConf
    kbJPARC_RHC,            // reverse horn current beam @ JPARC 
    kbNuMI_FHC,             // forward horn current beam @ FNAL/NuMI 
    kbNuMI_RHC,             // reverse horn current beam @ FNAL/NuMI 
-   kbBNB_FHC,             // forward horn current beam @ FNAL/Booster
-   kbBNB_RHC              // reverse horn current beam @ FNAL/Booster
+   kbBNB_FHC,              // forward horn current beam @ FNAL/Booster
+   kbBNB_RHC               // reverse horn current beam @ FNAL/Booster
 } 
 BeamConf_t; 
 

@@ -45,7 +45,7 @@ static const int kNFitParamsNuFluxND = 104; // neutrino flux related 104 ND
 static const int kNFitParamsNuFluxFD = 104; // neutrino flux related 104 FD 
 static const int kNFitParamsNuFlux   = kNFitParamsNuFluxND + kNFitParamsNuFluxFD;
 static const int kNFitParamsNuDetND  =   9; // near detector related: cc1trk, cc2trk, 1pic, 1pi0, 1pic1pi0, ccoth, nuecc, wscc, nc
-static const int kNFitParamsNuDetFD  =  12; // far detector related: one per sample for now
+static const int kNFitParamsNuDetFD  =  4; // far detector related: one per sample for now
 static const int kNFitParamsNuDet    = kNFitParamsNuDetND+ kNFitParamsNuDetFD;
 static const int kNFitParamsNuInt  =  43; // neutrino interactions related
 static const int kNFitParamsNuOsc  =   6; //usual 3-flavour suspects
@@ -675,16 +675,8 @@ static const PhysParamId_t kFitParam[kNFitParams] =
   // Far detector systematics
   kNuisEffFDNuMuCCHigh,
   kNuisEffFDNuMuCCLow,
-  kNuisEffFDNuMuBarCCHigh,
-  kNuisEffFDNuMuBarCCLow,
   kNuisEffFDNuECCHigh,
-  kNuisEffFDNuECCLow,
-  kNuisEffFDNuEBarCCHigh,
-  kNuisEffFDNuEBarCCLow,
-  kNuisEffFDNuTauCCHigh,
-  kNuisEffFDNuTauCCLow,
-  kNuisEffFDNuTauBarCCHigh,
-  kNuisEffFDNuTauBarCCLow
+  kNuisEffFDNuECCLow
 };
 
 
@@ -1144,16 +1136,8 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
   // Far detector systematics
    false,  // kNuisEffFDNuMuCCHigh
    false,  // kNuisEffFDNuMuCCLow
-   false,  // kNuisEffFDNuMuBarCCHigh
-   false,  // kNuisEffFDNuMuBarCCLow
    false,  // kNuisEffFDNuECCHigh
-   false,  // kNuisEffFDNuECCLow
-   false,  // kNuisEffFDNuEBarCCHigh
-   false,  // kNuisEffFDNuEBarCCLow
-   false,  // kNuisEffFDNuTauCCHigh
-   false,  // kNuisEffFDNuTauCCLow
-   false,  // kNuisEffFDNuTauBarCCHigh
-   false   // kNuisEffFDNuTauBarCCLow
+   false  // kNuisEffFDNuECCLow
 };
 
 // Which is the true energy range?
@@ -1437,16 +1421,8 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
   // Far detector systematics
    {  0.0, kEtrueMax},   // kNuisEffFDNuMuCCHigh
    {  0.0, kEtrueMax},   // kNuisEffFDNuMuCCLow
-   {  0.0, kEtrueMax},   // kNuisEffFDNuMuBarCCHigh
-   {  0.0, kEtrueMax},   // kNuisEffFDNuMuBarCCLow
    {  0.0, kEtrueMax},   // kNuisEffFDNuECCHigh
-   {  0.0, kEtrueMax},   // kNuisEffFDNuECCLow
-   {  0.0, kEtrueMax},   // kNuisEffFDNuEBarCCHigh
-   {  0.0, kEtrueMax},   // kNuisEffFDNuEBarCCLow
-   {  0.0, kEtrueMax},   // kNuisEffFDNuTauCCHigh
-   {  0.0, kEtrueMax},   // kNuisEffFDNuTauCCLow
-   {  0.0, kEtrueMax},   // kNuisEffFDNuTauBarCCHigh
-   {  0.0, kEtrueMax}    // kNuisEffFDNuTauBarCCLow
+   {  0.0, kEtrueMax}   // kNuisEffFDNuECCLow
 };
 
 // Which is the true Q2 range?
@@ -1730,16 +1706,8 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
   // Far detector systematics
    {  0.0, kQ2trueMax},   // kNuisEffFDNuMuCCHigh
    {  0.0, kQ2trueMax},   // kNuisEffFDNuMuCCLow
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuMuBarCCHigh
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuMuBarCCLow
    {  0.0, kQ2trueMax},   // kNuisEffFDNuECCHigh
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuECCLow
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuEBarCCHigh
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuEBarCCLow
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuTauCCHigh
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuTauCCLow
-   {  0.0, kQ2trueMax},   // kNuisEffFDNuTauBarCCHigh
-   {  0.0, kQ2trueMax}    // kNuisEffFDNuTauBarCCLow
+   {  0.0, kQ2trueMax}    // kNuisEffFDNuECCLow
 };
 
 //
@@ -2027,16 +1995,8 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
   // Far detector systematics
    kpgDetector,        //  kNuisEffFDNuMuCCHigh
    kpgDetector,        //  kNuisEffFDNuMuCCLow
-   kpgDetector,        //  kNuisEffFDNuMuBarCCHigh
-   kpgDetector,        //  kNuisEffFDNuMuBarCCLow
    kpgDetector,        //  kNuisEffFDNuECCHigh
-   kpgDetector,        //  kNuisEffFDNuECCLow
-   kpgDetector,        //  kNuisEffFDNuEBarCCHigh
-   kpgDetector,        //  kNuisEffFDNuEBarCCLow
-   kpgDetector,        //  kNuisEffFDNuTauCCHigh
-   kpgDetector,        //  kNuisEffFDNuTauCCLow
-   kpgDetector,        //  kNuisEffFDNuTauBarCCHigh
-   kpgDetector         //  kNuisEffFDNuTauBarCCLow
+   kpgDetector        //  kNuisEffFDNuECCLow
 };
 
 // Is this a neutrino flux related parameter?
@@ -2319,16 +2279,8 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
   // far detector systematics
    false, //kNuisEffFDNuMuCCHigh  
    false, //kNuisEffFDNuMuCCLow  
-   false, //kNuisEffFDNuMuBarCCHigh  
-   false, //kNuisEffFDNuMuBarCCLow  
    false, //kNuisEffFDNuECCHigh  
-   false, //kNuisEffFDNuECCLow  
-   false, //kNuisEffFDNuEBarCCHigh  
-   false, //kNuisEffFDNuEBarCCLow  
-   false, //kNuisEffFDNuTauCCHigh  
-   false, //kNuisEffFDNuTauCCLow  
-   false, //kNuisEffFDNuTauBarCCHigh  
-   false  //kNuisEffFDNuTauBarCCLow  
+   false  //kNuisEffFDNuECCLow  
 };
 
 // Is this a neutrino flux related parameter?
@@ -2611,16 +2563,8 @@ static const bool kFitIsNDNuFluxRelated[kNFitParams] =
   // far detector systematics
    false, //kNuisEffFDNuMuCCHigh  
    false, //kNuisEffFDNuMuCCLow
-   false, //kNuisEffFDNuMuBarCCHigh  
-   false, //kNuisEffFDNuMuBarCCLow
    false, //kNuisEffFDNuECCHigh  
-   false, //kNuisEffFDNuECCLow
-   false, //kNuisEffFDNuEBarCCHigh  
-   false, //kNuisEffFDNuEBarCCLow
-   false, //kNuisEffFDNuTauCCHigh  
-   false, //kNuisEffFDNuTauCCLow
-   false, //kNuisEffFDNuTauBarCCHigh  
-   false  //kNuisEffFDNuTauBarCCLow
+   false //kNuisEffFDNuECCLow
 };
 
 // Is this a neutrino flux related parameter?
@@ -2903,16 +2847,8 @@ static const bool kFitIsFDNuFluxRelated[kNFitParams] =
   //far detector systematics
    false, //kNuisEffFDNuMuCCHigh  
    false, //kNuisEffFDNuMuCCLow
-   false, //kNuisEffFDNuMuBarCCHigh  
-   false, //kNuisEffFDNuMuBarCCLow
    false, //kNuisEffFDNuECCHigh  
-   false, //kNuisEffFDNuECCLow
-   false, //kNuisEffFDNuEBarCCHigh  
-   false, //kNuisEffFDNuEBarCCLow
-   false, //kNuisEffFDNuTauCCHigh  
-   false, //kNuisEffFDNuTauCCLow
-   false, //kNuisEffFDNuTauBarCCHigh  
-   false //kNuisEffFDNuTauBarCCLow
+   false //kNuisEffFDNuECCLow
 };
 
 // Is this a neutrino interaction model related parameter?
@@ -3195,16 +3131,8 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
   //Far detector systematics
    false, //kNuisEffFDNuMuCCHigh  
    false, //kNuisEffFDNuMuCCLow  
-   false, //kNuisEffFDNuMuBarCCHigh  
-   false, //kNuisEffFDNuMuBarCCLow  
    false, //kNuisEffFDNuECCHigh  
-   false, //kNuisEffFDNuECCLow  
-   false, //kNuisEffFDNuEBarCCHigh  
-   false, //kNuisEffFDNuEBarCCLow  
-   false, //kNuisEffFDNuTauCCHigh  
-   false, //kNuisEffFDNuTauCCLow  
-   false, //kNuisEffFDNuTauBarCCHigh  
-   false //kNuisEffFDNuTauBarCCLow  
+   false //kNuisEffFDNuECCLow  
 };
 
 // Is this a neutrino detector related parameter?
@@ -3487,16 +3415,8 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
   //far detector systematics
    true, //kNuisEffFDNuMuCCHigh  
    true, //kNuisEffFDNuMuCCLow  
-   true, //kNuisEffFDNuMuBarCCHigh  
-   true, //kNuisEffFDNuMuBarCCLow  
    true, //kNuisEffFDNuECCHigh  
-   true, //kNuisEffFDNuECCLow  
-   true, //kNuisEffFDNuEBarCCHigh  
-   true, //kNuisEffFDNuEBarCCLow  
-   true, //kNuisEffFDNuTauCCHigh  
-   true, //kNuisEffFDNuTauCCLow  
-   true, //kNuisEffFDNuTauBarCCHigh  
-   true //kNuisEffFDNuTauBarCCLow  
+   true //kNuisEffFDNuECCLow  
 };
 
 // Is this a neutrino detector related parameter?
@@ -3779,16 +3699,8 @@ static const bool kFitIsNuNDDetRelated[kNFitParams] =
   //far detector systematics
    false, //kNuisEffFDNuMuCCHigh  
    false, //kNuisEffFDNuMuCCLow  
-   false, //kNuisEffFDNuMuBarCCHigh  
-   false, //kNuisEffFDNuMuBarCCLow  
    false, //kNuisEffFDNuECCHigh  
-   false, //kNuisEffFDNuECCLow  
-   false, //kNuisEffFDNuEBarCCHigh  
-   false, //kNuisEffFDNuEBarCCLow  
-   false, //kNuisEffFDNuTauCCHigh  
-   false, //kNuisEffFDNuTauCCLow  
-   false, //kNuisEffFDNuTauBarCCHigh  
-   false //kNuisEffFDNuTauBarCCLow  
+   false //kNuisEffFDNuECCLow  
 };
 
 // Is this a neutrino detector related parameter?
@@ -4071,16 +3983,8 @@ static const bool kFitIsNuFDDetRelated[kNFitParams] =
   //far detector systematics
    true, //kNuisEffFDNuMuCCHigh  
    true, //kNuisEffFDNuMuCCLow  
-   true, //kNuisEffFDNuMuBarCCHigh  
-   true, //kNuisEffFDNuMuBarCCLow  
    true, //kNuisEffFDNuECCHigh  
-   true, //kNuisEffFDNuECCLow  
-   true, //kNuisEffFDNuEBarCCHigh  
-   true, //kNuisEffFDNuEBarCCLow  
-   true, //kNuisEffFDNuTauCCHigh  
-   true, //kNuisEffFDNuTauCCLow  
-   true, //kNuisEffFDNuTauBarCCHigh  
-   true //kNuisEffFDNuTauBarCCLow  
+   true //kNuisEffFDNuECCLow  
 };
 
 static const int kNFitParamsWithSplines = 10;

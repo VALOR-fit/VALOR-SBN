@@ -139,10 +139,6 @@ int util::NumYrecoBinsSb(Sample_t s)
     case (ksNuECChigh      ) :
     case (ksNuEBarCClow    ) :
     case (ksNuEBarCChigh   ) :
-    case (ksNuTauCClow     ) :
-    case (ksNuTauCChigh    ) :
-    case (ksNuTauBarCClow  ) :
-    case (ksNuTauBarCChigh ) :
        return kNYrecoBinsCCSb; 
        break;
 

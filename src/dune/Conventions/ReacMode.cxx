@@ -30,6 +30,7 @@ string util::AsString(ReacMode_t m)
     case (kmNuMuCC2pi0      ): return "numuCC2pi0";   break;        
     case (kmNuMuCCpiCpi0    ): return "numuCCpiCpi0"; break;         
     case (kmNuMuCCcoh       ): return "numuCCcoh";    break;       
+    case (kmNuMuCCIMD       ): return "numuCCIMD";    break;
     case (kmNuMuCCELScat    ): return "numuCCELscat"; break;        
     case (kmNuMuCCoth       ): return "numuCCoth";    break;        
 //  case (kmNuMuNCEL        ): return ""; break;        
@@ -92,6 +93,7 @@ string util::AsString(ReacMode_t m)
     case (kmNuEBarCC2pi0    ): return "nuebarCC2pi0";   break;    
     case (kmNuEBarCCpiCpi0  ): return "nuebarCCpiCpi0"; break;    
     case (kmNuEBarCCcoh     ): return "nuebarCCcoh";    break;    
+    case (kmNuEBarCCIMD     ): return "nuebarCCIMD";    break;
     case (kmNuEBarCCoth     ): return "nuebarCCoth";    break;    
 //  case (kmNuEBarNCEL      ): return ""; break;   
 //  case (kmNuEBarNCMEC     ): return ""; break;    
@@ -134,6 +136,7 @@ string util::AsString(ReacMode_t m)
   case (kmNuEToNuMuCC2pi0       ): return "nuetonumuCC2pi0";   break;    
   case (kmNuEToNuMuCCpiCpi0     ): return "nuetonumuCCpiCpi0"; break;  
   case (kmNuEToNuMuCCcoh        ): return "nuetonumuCCcoh";    break;  
+  case (kmNuEToNuMuCCIMD        ): return "nuetonumuCCIMD";    break;
   case (kmNuEToNuMuCCELScat     ): return "nuetonumuCCELscat"; break;  
   case (kmNuEToNuMuCCoth        ): return "nuetonumuCCoth";    break;    
 
@@ -156,6 +159,7 @@ string util::AsString(ReacMode_t m)
   case (kmNuMuBarToNuEBarCC2pi0      ): return "numubartonuebarCC2pi0";   break;        
   case (kmNuMuBarToNuEBarCCpiCpi0    ): return "numubartonuebarCCpiCpi0"; break;         
   case (kmNuMuBarToNuEBarCCcoh       ): return "numubartonuebarCCcoh";    break;       
+  case (kmNuMuBarToNuEBarCCIMD       ): return "numubartonuebarCCIMD";    break;  
   case (kmNuMuBarToNuEBarELScat      ): return "numubartonuebarELscat";   break;  
   case (kmNuMuBarToNuEBarCCoth       ): return "numubartonuebarCCoth";    break;        
 
@@ -211,7 +215,8 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuMuCC2piC      ): name = "#nu_{#mu} CC2#pi^{#pm}";           break;        
     case (kmNuMuCC2pi0      ): name = "#nu_{#mu} CC2#pi^{0}";             break;        
     case (kmNuMuCCpiCpi0    ): name = "#nu_{#mu} CC#pi^{#pm}#pi^{0}";     break;         
-    case (kmNuMuCCcoh       ): name = "#nu_{#mu} CCcoh";                  break;       
+    case (kmNuMuCCcoh       ): name = "#nu_{#mu} CCcoh";                  break;
+    case (kmNuMuCCIMD       ): name = "#nu_{#mu} CC IMD";                 break;
     case (kmNuMuCCELScat    ): name = "#nu_{#mu} CC e^{-} elastic scat";  break;        
     case (kmNuMuCCoth       ): name = "#nu_{#mu} CCoth";                  break;        
 //  case (kmNuMuNCEL        ): name = "";                                 break;        
@@ -274,6 +279,7 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuEBarCC2pi0    ): name = "#bar{#nu}_{e} CC2#pi^{0}";         break;    
     case (kmNuEBarCCpiCpi0  ): name = "#bar{#nu}_{e} CC#pi^{#pm}#pi^{0}"; break;    
     case (kmNuEBarCCcoh     ): name = "#bar{#nu}_{e} CCcoh";              break;    
+    case (kmNuEBarCCIMD     ): name = "#bar{#nu}_{e} CC IMD";             break;  
     case (kmNuEBarCCoth     ): name = "#bar{#nu}_{e} CCoth";              break;    
 //  case (kmNuEBarNCEL      ): name = "";                                 break;   
 //  case (kmNuEBarNCMEC     ): name = "";                                 break;    
@@ -316,6 +322,7 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuEToNuMuCC2pi0      ): name = "#nu_{e} #rightarrow #nu_{#mu} CC2#pi^{0}";             break;        
     case (kmNuEToNuMuCCpiCpi0    ): name = "#nu_{e} #rightarrow #nu_{#mu} CC#pi^{#pm}#pi^{0}";     break;         
     case (kmNuEToNuMuCCcoh       ): name = "#nu_{e} #rightarrow #nu_{#mu} CCcoh";                  break;       
+    case (kmNuEToNuMuCCIMD       ): name = "#nu_{e} #rightarrow #nu_{#mu} CC IMD";                 break;  
     case (kmNuEToNuMuCCELScat    ): name = "#nu_{e} #rightarrow #nu_{#mu} CC e^{-} elastic scat";  break;        
     case (kmNuEToNuMuCCoth       ): name = "#nu_{e} #rightarrow #nu_{#mu} CCoth";                  break;             
 
@@ -338,6 +345,7 @@ string util::AsStringTeX(ReacMode_t m, bool root)
     case (kmNuMuBarToNuEBarCC2pi0      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC2#pi^{0}";             break;        
     case (kmNuMuBarToNuEBarCCpiCpi0    ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC#pi^{#pm}#pi^{0}";     break;         
     case (kmNuMuBarToNuEBarCCcoh       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CCcoh";                  break;       
+    case (kmNuMuBarToNuEBarCCIMD       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CC IMD";                 break;  
     case (kmNuMuBarToNuEBarELScat      ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} e^{-} elastic scat";     break;        
     case (kmNuMuBarToNuEBarCCoth       ): name = "#bar{#nu}_{#mu} #rightarrow #bar{#nu}_{e} CCoth";                  break;        
 
@@ -511,6 +519,7 @@ bool util::IsCC(conv::ReacMode_t m)
     case (kmNuMuCC2pi0     )  : return true;
     case (kmNuMuCCpiCpi0   )  : return true;
     case (kmNuMuCCcoh      )  : return true;
+    case (kmNuMuCCIMD      )  : return true;
     case (kmNuMuCCELScat   )  : return true;    
     case (kmNuMuCCoth      )  : return true;
     case (kmNuMuBarCCQE    )  : return true;
@@ -541,6 +550,7 @@ bool util::IsCC(conv::ReacMode_t m)
     case (kmNuEBarCC2pi0   )  : return true;
     case (kmNuEBarCCpiCpi0 )  : return true;
     case (kmNuEBarCCcoh    )  : return true;
+    case (kmNuEBarCCIMD    )  : return true;  
     case (kmNuEBarELScat   )  : return true; // CAVEAT: this one is also added as it is CC+NC
     case (kmNuEBarCCoth    )  : return true;
     case (kmNuMuToNuECCQE       )  : return true;
@@ -571,6 +581,7 @@ bool util::IsCC(conv::ReacMode_t m)
     case (kmNuEToNuMuCC2pi0     )  : return true;
     case (kmNuEToNuMuCCpiCpi0   )  : return true;
     case (kmNuEToNuMuCCcoh      )  : return true;
+    case (kmNuEToNuMuCCIMD      )  : return true;  
     case (kmNuEToNuMuCCELScat   )  : return true;
     case (kmNuEToNuMuCCoth      )  : return true;
     case (kmNuEToNuTauCCQE       )  : return true;
@@ -591,6 +602,7 @@ bool util::IsCC(conv::ReacMode_t m)
     case (kmNuMuBarToNuEBarCC2pi0     )  : return true;
     case (kmNuMuBarToNuEBarCCpiCpi0   )  : return true;
     case (kmNuMuBarToNuEBarCCcoh      )  : return true;
+    case (kmNuMuBarToNuEBarCCIMD      )  : return true;
     case (kmNuMuBarToNuEBarELScat     )  : return true; // CAVEAT: this one is also added as it is CC+NC
     case (kmNuMuBarToNuEBarCCoth      )  : return true;
     case (kmNuMuBarToNuTauBarCCQE       )  : return true;

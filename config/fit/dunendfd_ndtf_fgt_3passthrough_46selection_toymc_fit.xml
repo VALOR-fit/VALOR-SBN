@@ -571,10 +571,10 @@
    Far detector selections
 -->
 
-    <element name="dune_fd_rhc_numucchigh">
+    <element name="dune_fd_rhc_numubarcchigh">
       <detector>     dune_fd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numucchigh                                           </sample>
+      <sample>       numubarcchigh                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_FGT_pt2.xml </mc>
@@ -582,10 +582,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_fd_rhc_numucclow">
+    <element name="dune_fd_rhc_numubarcclow">
       <detector>     dune_fd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numucclow                                           </sample>
+      <sample>       numubarcclow                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_FGT_pt2.xml </mc>
@@ -593,10 +593,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_fd_rhc_nuecchigh">
+    <element name="dune_fd_rhc_nuebarcchigh">
       <detector>     dune_fd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       nuecchigh                                           </sample>
+      <sample>       nuebarcchigh                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_FGT_pt2.xml </mc>
@@ -604,10 +604,10 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
-    <element name="dune_fd_rhc_nuecclow">
+    <element name="dune_fd_rhc_nuebarcclow">
       <detector>     dune_fd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       nuecclow                                           </sample>
+      <sample>       nuebarcclow                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_ndfit-2016a_FGT_pt2.xml </mc>
@@ -622,8 +622,8 @@
       <class> valor::MINERVAFlux2016a </class>
       
       <covariance_matrix>
-        <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors_ext.root </filename>
-        <objname>    h_flux_errors    </objname>    
+        <filename>   data/dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
+        <objname>    Flux_Covariance    </objname>    
         <objtype>    TH2D             </objtype>
       </covariance_matrix> 
     </group>
@@ -641,7 +641,7 @@
       <class> valor::SimpleDet2016b </class>
       <covariance_matrix>
          <filename>   test/dummy_detector_matrices_ext.root </filename>
-         <objname>    diag_21x21_10pct    </objname>    
+         <objname>    diag_13x13_10pct    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
     </group>

@@ -28,7 +28,7 @@
 namespace valor {
 namespace conv {
 
-  static const int kNReacModes = 138; //excluding undefined and other  
+  static const int kNReacModes = 142; //excluding undefined and other  
 
 typedef enum EReacMode 
 {
@@ -41,7 +41,8 @@ typedef enum EReacMode
    kmNuMuCC2pi0,          // numu    CC 2 pi0
    kmNuMuCCpiCpi0,        // numu    CC 1 pi0 + 1 pi+/-
    kmNuMuCCcoh,           // numu    CC coherent
-   kmNuMuCCELScat,        // numu + e- -> mu + nue inverse muon decay (IMD) 
+   kmNuMuCCIMD,           // numu + e- -> mu + nue inverse muon decay (IMD) 
+   kmNuMuCCELScat,        // numu + e- -> numu + e- CC elastic scattering 
    kmNuMuCCoth,           // numu    CC other
 //   kmNuMuNCEL,            // numu    NC EL
 //   kmNuMuNCMEC,           // numu    NC MEC
@@ -61,7 +62,7 @@ typedef enum EReacMode
    kmNuMuBarCC2pi0,       // numubar CC 2 pi0
    kmNuMuBarCCpiCpi0,     // numubar CC 1 pi0 + 1 pi+/-
    kmNuMuBarCCcoh,        // numubar CC coherent
-   kmNuMuBarCCELScat,     // numubar + e- -> mu + nuebar inverse muon decay (IMD) 
+   kmNuMuBarCCELScat,     // numubar + e- -> numubar + e- CC elastic scattering
    kmNuMuBarCCoth,        // numubar CC other
 //   kmNuMuBarNCEL,         // numubar NC EL
 //   kmNuMuBarNCMEC,        // numubar NC MEC
@@ -100,6 +101,7 @@ typedef enum EReacMode
    kmNuEBarCC2pi0,        // nuebar  CC 2 pi0
    kmNuEBarCCpiCpi0,      // nuebar  CC 1 pi0 + 1 pi+/-
    kmNuEBarCCcoh,         // nuebar  CC coherent
+   kmNuEBarCCIMD,         // nuebar + e- -> mu + numubar (IMD) 
    kmNuEBarCCoth,         // nuebar  CC other
 //   kmNuEBarNCEL,          // nuebar  NC EL
 //   kmNuEBarNCMEC,         // nuebar  NC MEC
@@ -130,7 +132,7 @@ typedef enum EReacMode
    kmNuMuToNuTauCC2pi0,   // numu to nutau    CC 2 pi0
    kmNuMuToNuTauCCpiCpi0, // numu to nutau    CC 1 pi0 + 1 pi+/-
    kmNuMuToNuTauCCcoh,    // numu to nutau    CC coherent
-   kmNuMuToNuTauCCELScat, // numu to nutau: nutau + e- -> tau + nue inverse tau decay (IMD)
+   kmNuMuToNuTauCCELScat, // numu to nutau: nutau + e- elastic scattering
    kmNuMuToNuTauCCoth,    // numu to nutau    CC other
    kmNuEToNuMuCCQE,       // nue to numu    CC QE
    kmNuEToNuMuCCMEC,      // nue to numu    CC MEC
@@ -140,7 +142,8 @@ typedef enum EReacMode
    kmNuEToNuMuCC2pi0,     // nue to numu    CC 2 pi0
    kmNuEToNuMuCCpiCpi0,   // nue to numu    CC 1 pi0 + 1 pi+/-
    kmNuEToNuMuCCcoh,      // nue to numu    CC coherent
-   kmNuEToNuMuCCELScat,   // nue to numu: numu + e- -> mu + nue inverse muon decay (IMD) 
+   kmNuEToNuMuCCIMD,      // nue to numu: numu + e- -> mu + nue inverse muon decay (IMD) 
+   kmNuEToNuMuCCELScat,   // nue to numu: numu + e- CC elastic scattering
    kmNuEToNuMuCCoth,      // nue to numu    CC other
    kmNuEToNuTauCCQE,      // nue to nutau    CC QE
    kmNuEToNuTauCCMEC,     // nue to nutau    CC MEC
@@ -150,7 +153,7 @@ typedef enum EReacMode
    kmNuEToNuTauCC2pi0,    // nue to nutau    CC 2 pi0
    kmNuEToNuTauCCpiCpi0,  // nue to nutau    CC 1 pi0 + 1 pi+/-
    kmNuEToNuTauCCcoh,     // nue to nutau    CC coherent
-   kmNuEToNuTauCCELScat,  // ne to nutau: nutau + e- -> tau + nue inverse tau decay (IMD)
+   kmNuEToNuTauCCELScat,  // ne to nutau: nutau + e- elastic scattering
    kmNuEToNuTauCCoth,     // nue to nutau    CC other
    kmNuMuBarToNuEBarCCQE,            // numubar to nuebar    CC QE
    kmNuMuBarToNuEBarCCMEC,           // numubar to nuebar    CC MEC
@@ -160,6 +163,7 @@ typedef enum EReacMode
    kmNuMuBarToNuEBarCC2pi0,          // numubar to nuebar    CC 2 pi0
    kmNuMuBarToNuEBarCCpiCpi0,        // numubar to nuebar    CC 1 pi0 + 1 pi+/-
    kmNuMuBarToNuEBarCCcoh,           // numubar to nuebar    CC coherent
+   kmNuMuBarToNuEBarCCIMD,           // numubar to nuebar:  nuebar + e- -> mu + numubar (IMD)
    kmNuMuBarToNuEBarELScat,          // numubar to nuebar:  nuebar + e- -> nuebar + e- NC+CC+interference elastic scattering 
    kmNuMuBarToNuEBarCCoth,           // numubar to nuebar    CC other
    kmNuMuBarToNuTauBarCCQE,          // numubar to nutaubar    CC QE
@@ -170,7 +174,7 @@ typedef enum EReacMode
    kmNuMuBarToNuTauBarCC2pi0,        // numubar to nutaubar    CC 2 pi0
    kmNuMuBarToNuTauBarCCpiCpi0,      // numubar to nutaubar    CC 1 pi0 + 1 pi+/-
    kmNuMuBarToNuTauBarCCcoh,         // numubar to nutaubar    CC coherent
-   kmNuMuBarToNuTauBarCCELScat,      // numubar to nutaubar: nutaubar + e- -> tau + nuebar inverse tau decay (IMD)
+   kmNuMuBarToNuTauBarCCELScat,      // numubar to nutaubar: nutaubar + e- elastic scattering
    kmNuMuBarToNuTauBarCCoth,         // numubar to nutaubar    CC other
    kmNuEBarToNuMuBarCCQE,            // nuebar to numubar    CC QE
    kmNuEBarToNuMuBarCCMEC,           // nuebar to numubar    CC MEC
@@ -180,7 +184,7 @@ typedef enum EReacMode
    kmNuEBarToNuMuBarCC2pi0,          // nuebar to numubar    CC 2 pi0
    kmNuEBarToNuMuBarCCpiCpi0,        // nuebar to numubar    CC 1 pi0 + 1 pi+/-
    kmNuEBarToNuMuBarCCcoh,           // nuebar to numubar    CC coherent
-   kmNuEBarToNuMuBarCCELScat,        // numubar + e- -> mu + nuebar inverse muon decay (IMD) 
+   kmNuEBarToNuMuBarCCELScat,        // nuebar to numubar: numubar + e- elastic scattering
    kmNuEBarToNuMuBarCCoth,           // nuebar to numubar    CC other
    kmNuEBarToNuTauBarCCQE,           // nuebar to nutaubar    CC QE
    kmNuEBarToNuTauBarCCMEC,          // nuebar to nutaubar    CC MEC
@@ -190,7 +194,7 @@ typedef enum EReacMode
    kmNuEBarToNuTauBarCC2pi0,         // nuebar to nutaubar    CC 2 pi0
    kmNuEBarToNuTauBarCCpiCpi0,       // nuebar to nutaubar    CC 1 pi0 + 1 pi+/-
    kmNuEBarToNuTauBarCCcoh,          // nuebar to nutaubar    CC coherent
-   kmNuEBarToNuTauBarCCELScat,       // nuebar to nutaubar: nutaubar + e- -> tau + nuebar inverse tau decay (IMD)
+   kmNuEBarToNuTauBarCCELScat,       // nuebar to nutaubar: nutaubar + e- elastic scattering
    kmNuEBarToNuTauBarCCoth,          // nuebar to nutaubar    CC other
    kmOther                // other, eg contributions from interactions outside the fiducial etc
 } 
@@ -209,6 +213,7 @@ typedef enum EReacType
   kmtCC2pi0,      // CC 2 pi0
   kmtCCpiCpi0,    // CC 1 pi0 + 1 pi+/-
   kmtCCcoh,       // CC coherent
+  kmtCCIMD,       // CC IMD
   kmtCCELScat,    // CC nu + e elastic scattering (not nue)
   kmtCCoth,       // CC other
   kmtNCEL,        // NC EL - not used! 
@@ -226,7 +231,7 @@ typedef enum EReacType
 }
 ReacType_t;
 
-static const int kNReacType = 23;
+static const int kNReacType = 24;
 
 // Map the reaction modes to their type
 static const ReacType_t kReacModeToType[kNReacModes] =
@@ -239,6 +244,7 @@ static const ReacType_t kReacModeToType[kNReacModes] =
    /*   kmNuMuCC2pi0        */ kmtCC2pi0   ,
    /*   kmNuMuCCpiCpi0      */ kmtCCpiCpi0 ,
    /*   kmNuMuCCcoh         */ kmtCCcoh    ,
+   /*   kmNuMuCCIMD         */ kmtCCIMD    ,  
    /*   kmNuMuCCELScat      */ kmtCCELScat ,
    /*   kmNuMuCCoth         */ kmtCCoth    ,
 // /*   kmNuMuNCEL          */ kmtNCEL     ,
@@ -298,6 +304,7 @@ static const ReacType_t kReacModeToType[kNReacModes] =
    /*   kmNuEBarCC2pi0      */ kmtCC2pi0   , 
    /*   kmNuEBarCCpiCpi0    */ kmtCCpiCpi0 , 
    /*   kmNuEBarCCcoh       */ kmtCCcoh    , 
+   /*   kmNuEBarCCIMD       */ kmtCCIMD    ,
    /*   kmNuEBarCCoth       */ kmtCCoth    , 
 // /*   kmNuEBarNCEL        */ kmtNCEL     , 
 // /*   kmNuEBarNCMEC       */ kmtNCMEC    , 
@@ -337,6 +344,7 @@ static const ReacType_t kReacModeToType[kNReacModes] =
    /*   kmNuEToNuMuCC2pi0        */ kmtCC2pi0   ,
    /*   kmNuEToNuMuCCpiCpi0      */ kmtCCpiCpi0 ,
    /*   kmNuEToNuMuCCcoh         */ kmtCCcoh    ,
+   /*   kmNuEToNuMuCCIMD         */ kmtCCIMD    ,
    /*   kmNuEToNuMuELScat        */ kmtCCELScat ,
    /*   kmNuEToNuMuCCoth         */ kmtCCoth    ,
    /*   kmNuEToNuTauCCQE         */ kmtCCQE     ,
@@ -357,6 +365,7 @@ static const ReacType_t kReacModeToType[kNReacModes] =
    /*   kmNuMuBarToNuEBarCC2pi0        */ kmtCC2pi0   ,
    /*   kmNuMuBarToNuEBarCCpiCpi0      */ kmtCCpiCpi0 ,
    /*   kmNuMuBarToNuEBarCCcoh         */ kmtCCcoh    ,
+   /*   kmNuMuBarToNuEBarCCIMD         */ kmtCCIMD    ,
    /*   kmNuMuBarToNuEBarELScat        */ kmtELScat   ,
    /*   kmNuMuBarToNuEBarCCoth         */ kmtCCoth    ,
    /*   kmNuMuBarToNuTauBarCCQE        */ kmtCCQE     ,
@@ -403,6 +412,7 @@ static const NuFlavour_t kReacModeToFinalFlavour[kNReacModes] =
    /*   kmNuMuCC2pi0        */ kNuMu    ,
    /*   kmNuMuCCpiCpi0      */ kNuMu    ,
    /*   kmNuMuCCcoh         */ kNuMu    ,
+   /*   kmNuMuCCIMD         */ kNuMu    ,
    /*   kmNuMuCCELScat      */ kNuMu    ,
    /*   kmNuMuCCoth         */ kNuMu    ,
 // /*   kmNuMuNCEL          */ kNuMu    ,
@@ -462,6 +472,7 @@ static const NuFlavour_t kReacModeToFinalFlavour[kNReacModes] =
    /*   kmNuEBarCC2pi0      */ kNuEBar  , 
    /*   kmNuEBarCCpiCpi0    */ kNuEBar  , 
    /*   kmNuEBarCCcoh       */ kNuEBar  , 
+   /*   kmNuEBarCCIMD       */ kNuEBar  ,
    /*   kmNuEBarCCoth       */ kNuEBar  , 
 // /*   kmNuEBarNCEL        */ kNuEBar  , 
 // /*   kmNuEBarNCMEC       */ kNuEBar  , 
@@ -501,6 +512,7 @@ static const NuFlavour_t kReacModeToFinalFlavour[kNReacModes] =
    /*   kmNuEToNuMuCC2pi0        */ kNuMu    ,
    /*   kmNuEToNuMuCCpiCpi0      */ kNuMu    ,
    /*   kmNuEToNuMuCCcoh         */ kNuMu    ,
+   /*   kmNuEToNuMuCCIMD         */ kNuMu    ,
    /*   kmNuEToNuMuCCELScat      */ kNuMu    ,
    /*   kmNuEToNuMuCCoth         */ kNuMu    ,
    /*   kmNuEToNuTauCCQE         */ kNuTau    ,
@@ -521,6 +533,7 @@ static const NuFlavour_t kReacModeToFinalFlavour[kNReacModes] =
    /*   kmNuMuBarToNuEBarCC2pi0        */ kNuEBar    ,
    /*   kmNuMuBarToNuEBarCCpiCpi0      */ kNuEBar    ,
    /*   kmNuMuBarToNuEBarCCcoh         */ kNuEBar    ,
+   /*   kmNuMuBarToNuEBarCCIMD         */ kNuEBar    ,
    /*   kmNuMuBarToNuEBarELScat        */ kNuEBar    ,
    /*   kmNuMuBarToNuEBarCCoth         */ kNuEBar    ,
    /*   kmNuMuBarToNuTauBarCCQE        */ kNuTauBar    ,
@@ -566,6 +579,7 @@ static const NuFlavour_t kReacModeToInitFlavour[kNReacModes] =
    /*   kmNuMuCC2pi0        */ kNuMu    ,
    /*   kmNuMuCCpiCpi0      */ kNuMu    ,
    /*   kmNuMuCCcoh         */ kNuMu    ,
+   /*   kmNuMuCCIMD         */ kNuMu    ,
    /*   kmNuMuCCELScat      */ kNuMu    ,
    /*   kmNuMuCCoth         */ kNuMu    ,
 // /*   kmNuMuNCEL          */ kNuMu    ,
@@ -625,6 +639,7 @@ static const NuFlavour_t kReacModeToInitFlavour[kNReacModes] =
    /*   kmNuEBarCC2pi0      */ kNuEBar  , 
    /*   kmNuEBarCCpiCpi0    */ kNuEBar  , 
    /*   kmNuEBarCCcoh       */ kNuEBar  , 
+   /*   kmNuEBarCCIMD       */ kNuEBar  ,
    /*   kmNuEBarCCoth       */ kNuEBar  , 
 // /*   kmNuEBarNCEL        */ kNuEBar  , 
 // /*   kmNuEBarNCMEC       */ kNuEBar  , 
@@ -664,6 +679,7 @@ static const NuFlavour_t kReacModeToInitFlavour[kNReacModes] =
    /*   kmNuEToNuMuCC2pi0        */ kNuE    ,
    /*   kmNuEToNuMuCCpiCpi0      */ kNuE    ,
    /*   kmNuEToNuMuCCcoh         */ kNuE    ,
+   /*   kmNuEToNuMuCCIMD         */ kNuE    ,
    /*   kmNuEToNuMuCCELScat      */ kNuE    ,
    /*   kmNuEToNuMuCCoth         */ kNuE    ,
    /*   kmNuEToNuTauCCQE         */ kNuE    ,
@@ -684,6 +700,7 @@ static const NuFlavour_t kReacModeToInitFlavour[kNReacModes] =
    /*   kmNuMuBarToNuEBarCC2pi0        */ kNuMuBar    ,
    /*   kmNuMuBarToNuEBarCCpiCpi0      */ kNuMuBar    ,
    /*   kmNuMuBarToNuEBarCCcoh         */ kNuMuBar    ,
+   /*   kmNuMuBarToNuEBarCCIMD         */ kNuMuBar    ,
    /*   kmNuMuBarToNuEBarELScat        */ kNuMuBar    ,
    /*   kmNuMuBarToNuEBarCCoth         */ kNuMuBar    ,
    /*   kmNuMuBarToNuTauBarCCQE        */ kNuMuBar    ,

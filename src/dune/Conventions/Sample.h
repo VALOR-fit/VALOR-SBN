@@ -73,15 +73,11 @@ typedef enum ESample
    ksNuECChigh,            // nue, high resolution (CCQE-like)
    ksNuECClow,             // nue, low resolution (nonCCQE-like)   
    ksNuEBarCChigh,         // nuebar, high resolution (CCQE-like)
-   ksNuEBarCClow,          // nuebar, low resolution (nonCCQE-like)   
-   ksNuTauCChigh,          // nutau, high resolution (CCQE-like)
-   ksNuTauCClow,           // nutau, low resolution (nonCCQE-like)   
-   ksNuTauBarCChigh,       // nutaubar, high resolution (CCQE-like)
-   ksNuTauBarCClow         // nutaubar, low resolution (nonCCQE-like)   
+   ksNuEBarCClow          // nuebar, low resolution (nonCCQE-like)   
 } 
 Sample_t; 
 
-static const int kMaxNSamples = 41;
+static const int kMaxNSamples = 37;
 
 // 
 // ...........................................................................
@@ -101,8 +97,8 @@ static const int kMaxNSamples = 41;
 // -
  
 //this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
-// For 2016b = total except: undefined, numuCC, 2piC, nueCC, NC, wrong numu
- static const int kNSamples = 35;
+// For 2016b = total except: undefined, numuCC, 2piC, nueCC, NC, wrong numu, and only 4 for FD (either nu in FHC or nubar in RHC)
+ static const int kNSamples = 27;
 
 // ---------------------------------------------------------------------
 // NOTE:
@@ -140,16 +136,8 @@ static const int kMaxNSamples = 41;
      //2016b far detector selections
      ksNuMuCChigh,  
      ksNuMuCClow,  
-     ksNuMuBarCChigh,   
-     ksNuMuBarCClow,  
      ksNuECChigh,           
-     ksNuECClow,          
-     ksNuEBarCChigh,     
-     ksNuEBarCClow,        
-     ksNuTauCChigh,       
-     ksNuTauCClow,       
-     ksNuTauBarCChigh,
-     ksNuTauBarCClow     
+     ksNuECClow          
    },
 
    {
@@ -178,18 +166,10 @@ static const int kMaxNSamples = 41;
      ksInvMuDecay,
      ksNuECCWS,
      //2016b far detector selections
-     ksNuMuCChigh,  
-     ksNuMuCClow,  
      ksNuMuBarCChigh,   
      ksNuMuBarCClow,  
-     ksNuECChigh,           
-     ksNuECClow,          
      ksNuEBarCChigh,     
-     ksNuEBarCClow,        
-     ksNuTauCChigh,       
-     ksNuTauCClow,       
-     ksNuTauBarCChigh,
-     ksNuTauBarCClow     
+     ksNuEBarCClow        
    }
 };
 // ---------------------------------------------------------------------

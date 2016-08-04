@@ -526,9 +526,9 @@
       <class> valor::MINERVAFlux2016aND </class>
       
       <covariance_matrix>
-        <filename>   dune/ndfit/2015a/flux/MINERvA_Flux_Errors.root </filename>
-        <objname>    h_flux_errors    </objname>    
-        <objtype>    TH2D             </objtype>
+        <filename>   dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
+        <objname>    near_only    </objname>    
+        <objtype>    TMatrixD             </objtype>
       </covariance_matrix> 
     </group>
     

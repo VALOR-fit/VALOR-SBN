@@ -199,11 +199,7 @@ static const ApplyMask_t kApplyToSample[kMaxNSamples] = {
  /* ksNuECChigh      */ ksApplyToHighRes         ,
  /* ksNuECClow       */ ksApplyToLowRes          ,
  /* ksNuEBarCChigh   */ ksApplyToHighRes         ,
- /* ksNuEBarCClow    */ ksApplyToLowRes          ,
- /* ksNuTauCChigh    */ ksApplyToHighRes         ,
- /* ksNuTauCClow     */ ksApplyToLowRes          ,
- /* ksNuTauBarCChigh */ ksApplyToHighRes         ,
- /* ksNuTauBarCClow  */ ksApplyToLowRes          
+ /* ksNuEBarCClow    */ ksApplyToLowRes          
 };
 
 // Which masks apply to which parent particle flavour
@@ -226,6 +222,7 @@ static const ApplyMask_t kApplyToReacType[kNReacType] = {
   /* kmtCC2pi0,   */ ktApplyToCC2pi0  ,
   /* kmtCCpiCpi0, */ ktApplyToCCpiCpi0,
   /* kmtCCcoh,    */ ktApplyToCCcoh   ,
+  /* kmtCCIMD,    */ ktApplyToCCELScat,
   /* kmtCCELScat, */ ktApplyToCCELScat,
   /* kmtCCoth,    */ ktApplyToCCoth,
   /* kmtNCEL,     */ ktApplyToNCEL    , 
@@ -522,18 +519,10 @@ static const ApplyMask_t kApplyParamToTemplates[kNFitParams] =
   /* kNuisEffNuMuCCWS    */ kdApplyToAllND | kbApplyToAll | kfApplyToAll | ksApplyToNuMuCCWS     | ktApplyToAll ,
   /* kNuisEffNC            */ kdApplyToAllND | kbApplyToAll | kfApplyToAll | ksApplyToNC             | ktApplyToAll ,
   // Far detector systematics 
-  /* kNuisEffFDNuMuCCHigh     */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMu     | ksApplyToHighRes | ktApplyToAll ,
-  /* kNuisEffFDNuMuCCLow      */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMu     | ksApplyToLowRes  | ktApplyToAll ,
-  /* kNuisEffFDNuMuBarCCHigh  */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMuBar  | ksApplyToHighRes | ktApplyToAll ,
-  /* kNuisEffFDNuMuBarCCLow   */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMuBar  | ksApplyToLowRes  | ktApplyToAll ,
-  /* kNuisEffFDNuECCHigh      */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuE      | ksApplyToHighRes | ktApplyToAll ,
-  /* kNuisEffFDNuECCLow       */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuE      | ksApplyToLowRes  | ktApplyToAll ,
-  /* kNuisEffFDNuEBarCCHigh   */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuEBar   | ksApplyToHighRes | ktApplyToAll ,
-  /* kNuisEffFDNuEBarCCLow    */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuEBar   | ksApplyToLowRes  | ktApplyToAll ,
-  /* kNuisEffFDNuTauCCHigh    */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuAny    | ksApplyToHighRes | ktApplyToAll ,
-  /* kNuisEffFDNuTauCCLow     */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuAny    | ksApplyToLowRes  | ktApplyToAll ,
-  /* kNuisEffFDNuTauBarCCHigh */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuBarAny | ksApplyToHighRes | ktApplyToAll ,
-  /* kNuisEffFDNuTauBarCCLow  */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuBarAny | ksApplyToLowRes  | ktApplyToAll ,
+  /* kNuisEffFDNuMuCCHigh     */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMuAny     | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuMuCCLow      */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuMuAny     | ksApplyToLowRes  | ktApplyToAll ,
+  /* kNuisEffFDNuECCHigh      */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuEAny      | ksApplyToHighRes | ktApplyToAll ,
+  /* kNuisEffFDNuECCLow       */ kdApplyToDUNEFD | kbApplyToAll | kfApplyToNuEAny      | ksApplyToLowRes  | ktApplyToAll 
 };
 
 } //conv
