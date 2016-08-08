@@ -106,8 +106,8 @@ int util::NumYrecoBinsSb(Sample_t s)
    LOG("KBin",pDEBUG) 
      << "Getting # yreco bins for sample " << util::AsString(s);
 
-   if      (util::IsCC(s)) return kNYrecoBinsCCSb;
-   else if (util::IsNC(s)) return kNYrecoBinsNCSb;
+   if      (util::IsNC(s) || util::IsFar(s)) return kNYrecoBinsNCSb;
+   else if (util::IsCC(s)) return kNYrecoBinsCCSb;
    else                    return 0;
 
    /*
@@ -162,15 +162,16 @@ const double * util::YrecoBinEdgesSb(Sample_t s)
    LOG("KBin",pDEBUG) 
      << "Getting yreco bin edges (simple binning) for sample " << util::AsString(s);
 
-   if (util::IsCC(s))
+   if (util::IsNC(s)||util::IsFar(s)) 
+     return kYrecoBinEdgesNCSb;
+
+   else if (util::IsCC(s))
      {
        if (util::IsCCQELike(s))
 	 return kYrecoBinEdgesQELikeSb;
        else
 	 return kYrecoBinEdgesMiscSb;
      }
-   else if (util::IsNC(s)) 
-     return kYrecoBinEdgesNCSb;
    else                    
      return 0;
    
@@ -302,8 +303,8 @@ int util::NumYrecoBins(Sample_t s, int zone)
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 
-  if      (util::IsCC(s)) return kNYrecoBinsCCOb1Z;
-  else if (util::IsNC(s)) return kNYrecoBinsNCOb1Z;
+  if      (util::IsNC(s)||util::IsFar(s)) return kNYrecoBinsNCOb1Z;
+  else if (util::IsCC(s)) return kNYrecoBinsCCOb1Z;
   else                    return 0;
 
 #else
@@ -343,9 +344,9 @@ const double * util::YrecoBinEdges(Sample_t s, int zone)
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 
-  if      (util::IsCC(s)) return kYrecoBinEdgesCCOb1Z;
-  else if (util::IsNC(s)) return kYrecoBinEdgesNCOb1Z;
-  else                    return 0;
+   if          (util::IsNC(s)||util::IsFar(s)) return kYrecoBinEdgesNCOb1Z;
+   else if     (util::IsCC(s)) return kYrecoBinEdgesCCOb1Z;
+   else           return 0;
 
 #else
 
@@ -507,9 +508,9 @@ int util::NumYrecoBinsXsec  (conv::Sample_t sample, int zone)
 #endif
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
-  if      (util::IsCC(sample)) return kNYrecoBinsCCOb1ZXsec;
-  else if (util::IsNC(sample)) return kNYrecoBinsNCOb1ZXsec;
-  else                         return 0;
+   if (util::IsNC(sample) || util::IsFar(sample)) return kNYrecoBinsNCOb1ZXsec;
+   else if      (util::IsCC(sample)) return kNYrecoBinsCCOb1ZXsec; 
+   else                         return 0;
 #else
   return 0;
 #endif
@@ -523,9 +524,9 @@ const double * util::YrecoBinEdgesXsec (conv::Sample_t sample, int zone)
 #endif
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
-  if      (util::IsCC(sample)) return kYrecoBinEdgesCCOb1ZXsec;
-  else if (util::IsNC(sample)) return kYrecoBinEdgesNCOb1ZXsec;
-  else                         return 0;
+   if (util::IsNC(sample)||util::IsFar(sample)) return kYrecoBinEdgesNCOb1ZXsec;
+   else if      (util::IsCC(sample)) return kYrecoBinEdgesCCOb1ZXsec; 
+   else                         return 0;
 #else
   return 0;
 #endif
