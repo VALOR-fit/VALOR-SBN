@@ -328,7 +328,11 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                       }
                       else {
                         LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
+#ifdef USE_FLAT_SPLINE_FOR_MISSING
+                        fSplines[spline_index] = kFlatSpline;
+#else
                         fSplines[spline_index] = NULL;
+#endif
                         n_splines_missing++;
                       }
                     }
@@ -356,9 +360,14 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   if (n_splines_neg) {
     LOG("DuneRFL",pWARN) << "Skipped "<<n_splines_neg<<" splines due to negative values. Fix this!";
   }
+
   if (n_splines_missing) {
+#ifdef USE_FLAT_SPLINE_FOR_MISSING
+    LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines. Continuing.";
+#else
     LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines. Exiting.";
     util::Die(-1);return false;
+#endif
   }
   
   xml->FreeDoc(xmldoc);
