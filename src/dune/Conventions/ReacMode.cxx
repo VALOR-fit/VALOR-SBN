@@ -653,3 +653,31 @@ string util::ModeAsStringTeX(ReacMode_t m, bool root) {return util::AsStringTeX(
 string util::ModeAsString   (ReacMode_t m) {return util::AsString(m);}
 bool   util::ModeIsCC       (ReacMode_t m) {return util::IsCC(m);}
 //________________________________________________________________________________________
+ReacMode_t util::NuEModeToOscNuEMode(ReacMode_t m)
+{
+  switch (m) {
+    case kmNuECCQE        : return kmNuMuToNuECCQE           ;
+    case kmNuECCMEC       : return kmNuMuToNuECCMEC          ;
+    case kmNuECC1piC      : return kmNuMuToNuECC1piC         ;
+    case kmNuECC1pi0      : return kmNuMuToNuECC1pi0         ;
+    case kmNuECC2piC      : return kmNuMuToNuECC2piC         ;
+    case kmNuECC2pi0      : return kmNuMuToNuECC2pi0         ;
+    case kmNuECCpiCpi0    : return kmNuMuToNuECCpiCpi0       ;
+    case kmNuECCcoh       : return kmNuMuToNuECCcoh          ;
+    case kmNuECCoth       : return kmNuMuToNuECCoth          ;
+    case kmNuEELScat      : return kmNuMuToNuEELScat         ;
+    case kmNuEBarCCQE     : return kmNuMuBarToNuEBarCCQE     ;
+    case kmNuEBarCCMEC    : return kmNuMuBarToNuEBarCCMEC    ;
+    case kmNuEBarCC1piC   : return kmNuMuBarToNuEBarCC1piC   ;
+    case kmNuEBarCC1pi0   : return kmNuMuBarToNuEBarCC1pi0   ;
+    case kmNuEBarCC2piC   : return kmNuMuBarToNuEBarCC2piC   ;
+    case kmNuEBarCC2pi0   : return kmNuMuBarToNuEBarCC2pi0   ;
+    case kmNuEBarCCpiCpi0 : return kmNuMuBarToNuEBarCCpiCpi0 ;
+    case kmNuEBarCCcoh    : return kmNuMuBarToNuEBarCCcoh    ;
+    case kmNuEBarCCIMD    : return kmNuMuBarToNuEBarCCIMD    ;
+    case kmNuEBarCCoth    : return kmNuMuBarToNuEBarCCoth    ;
+    case kmNuEBarELScat   : return kmNuMuBarToNuEBarELScat   ;
+    
+    default: return kmUndefined;
+  }
+}

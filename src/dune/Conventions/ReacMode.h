@@ -765,6 +765,8 @@ namespace util {
   bool               IsNuMuBarToNuTauBar(conv::ReacMode_t m);
   bool               IsNuEBarToNuMuBar(conv::ReacMode_t m);
   bool               IsNuEBarToNuTauBar(conv::ReacMode_t m);
+  
+  conv::ReacMode_t   NuEModeToOscNuEMode(conv::ReacMode_t m);
 
   // Aliases for above
   std::string      ModeAsString        (conv::ReacMode_t m);
