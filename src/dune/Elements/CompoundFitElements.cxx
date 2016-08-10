@@ -88,7 +88,12 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * opt)
        const char * list_name_cstr = xmleng->GetAttr(curr_node,"name");
        string list_name = (list_name_cstr ? list_name_cstr : "NoNameFoundInXML");
        LOG("CompoundFitElements", pNOTICE) << "Found element list named: " << list_name;
-       this->ReadElementList(xmleng,curr_node,opt);
+       bool success = this->ReadElementList(xmleng,curr_node,opt);
+       if (!success) {
+         LOG("CompoundFitElements", pERROR) 
+            << "Failed to read all elements in list. Exiting.";
+            util::Die(1); return false;
+       }
        fCompoundFitData ->SetName(list_name);
        fCompoundFitModel->SetName(list_name);
     }
@@ -110,6 +115,10 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * opt)
   
   xmleng->FreeDoc(xmldoc);
   delete xmleng;
+  
+  if (syst_objects.size() == 0 ) {
+    LOG("CompoundFitElements", pNOTICE) << "No systematics found in config file.";
+  }
   
   CorrelatedSystematics * syst = new CompoundCorrelatedSystematics(syst_objects);
   fCompoundFitModel->SetSystConf(syst,"adopt");
