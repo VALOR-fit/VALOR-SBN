@@ -834,6 +834,7 @@ bool GenericSingleSampleFitModel::Write(
   TFile f(filename, used_file_opt);
   array->Write();
   f.Close();
+  delete array;
 
   return true;
 }
@@ -1155,11 +1156,12 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 
   int    sample        = 0;
   int    reac_mode     = 0;
-  double enu_true      = 0;
-  double enu_reco      = 0;
-  double y_reco        = 0;
-  double wght_pot      = 0;
-  double Q2_true       = 0;
+  double enu_true      = 0.;
+  double enu_reco      = 0.;
+  double y_reco        = 0.;
+  double wght_pot      = 0.;
+  double Q2_true       = 0.;
+  double wght          = 1.;
   
   int bstat_sample    = 0; 
   int bstat_reac_mode = 0; 
@@ -1168,6 +1170,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   int bstat_y_reco    = 0; 
   int bstat_wght_pot  = 0; 
   int bstat_Q2_true   = 0;   
+  int bstat_wght      = 0;   
   
   bstat_sample    = t->SetBranchAddress("sample",    &sample);
   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
@@ -1176,6 +1179,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   bstat_y_reco    = t->SetBranchAddress("y_reco",    &y_reco);
   bstat_wght_pot  = t->SetBranchAddress("wght_pot",  &wght_pot);
   bstat_Q2_true   = t->SetBranchAddress("Q2_true",   &Q2_true);
+  
+  // Weight is not required - use one if failed
+  bstat_wght      = t->SetBranchAddress("wght"   ,   &wght);
   
   bool any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
       bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
@@ -1204,6 +1210,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   //~ t->SetBranchStatus("enu_reco",      1);  
   //~ t->SetBranchStatus("y_reco",        1);    
   //~ t->SetBranchStatus("wght_pot",      1);
+  //~ t->SetBranchStatus("wght",          1);
 
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
@@ -1360,10 +1367,10 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     double data_pot = fPOT;
 
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
-    double wght = data_pot * mc_pot_weight;
+    double pot_wght = data_pot * mc_pot_weight;
     
     if(fFiducialMass > 0) {
-      wght = wght*fFiducialMass;
+      pot_wght = pot_wght*fFiducialMass;
     }
 
     LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1371,6 +1378,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       << "\n imode     = " << imode    << " (" << util::AsString(m) << ")"
       << "\n izone     = " << izone   
       << "\n wght      = " << wght 
+      << "\n pot_wght  = " << pot_wght 
       << "\n ienu_reco = " << ienu_reco  << " (Enu_reco = " << enu_reco <<   " GeV), allowed idx range: [" << 0 << " -> " << n_enu_reco_bins-1 << "], " << n_enu_reco_bins <<" bins"
       << "\n iy_reco   = " << iy_reco    << " (y_reco   = " << y_reco   <<       "), allowed idx range: [" << 0 << " -> " << n_y_reco_bins  -1 << "], " << n_y_reco_bins   <<" bins"
       << "\n ienu_true = " << ienu_true  << " (Enu_true = " << enu_true <<   " GeV), allowed idx range: [" << 0 << " -> " << n_enu_true_bins-1 << "], " << n_enu_true_bins <<" bins"
@@ -1381,10 +1389,16 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     assert(iy_reco   >= 0 && iy_reco   < n_y_reco_bins  );
     assert(ienu_true >= 0 && ienu_true < n_enu_true_bins);
     assert(iq2_true  >= 0 && iq2_true  < n_q2_true_bins);
+    
+    
+    double this_entry = pot_wght;
+    if (!bstat_wght) {
+      this_entry *= wght;
+    }
 
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
-    curr_wght += wght;
+    curr_wght += this_entry;
     fMCTNomOb [imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true, iq2_true);
     fMCTTunOb [imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true, iq2_true);
     fMCTSysOb [imode][izone]->SetEntry(curr_wght, ienu_reco, iy_reco, ienu_true, iq2_true);
@@ -1392,7 +1406,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     fMCStatOb [imode][izone]->SetEntry(        1, ienu_reco, iy_reco, ienu_true, iq2_true);
 
     double curr_wght_sb = fMCTNomSb[imode]->GetEntry(ienu_reco_sb, iy_reco_sb, ienu_true, iq2_true);
-    curr_wght_sb += wght;
+    curr_wght_sb += this_entry;
     fMCTNomSb [imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true, iq2_true);
     fMCTTunSb [imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true, iq2_true);
     fMCTSysSb [imode]->SetEntry(curr_wght_sb, ienu_reco_sb, iy_reco_sb, ienu_true, iq2_true);
