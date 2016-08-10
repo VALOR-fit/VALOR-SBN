@@ -184,6 +184,8 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   fRFL = new util::DuneRFL(fBeam, fSample, conv::kNFitParamsWithSplines,conv::kFitParamsWithSplines);
   if (!skip_spline_read) {
     fRFL->Read(file, opt);
+    
+    bool null_warning = false;
   
   
     // Fill the spline array
@@ -223,6 +225,10 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
                   Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
                   if (util::ParamHasSplines(p)) {
                     const ROOT::Math::Interpolator * spl = fRFL->GetSpline(m,p,kb);
+                    if (spl == NULL) {
+                      LOG("GenericSingleSampleFitModel",pINFO) << "Got null spline.\n";
+                      null_warning = true;
+                    }
                     spl_as_int = reinterpret_cast<Long64_t>(spl);
                     
                   }
@@ -234,6 +240,10 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
         }//it1
       }//izone
     }//imode
+    if (null_warning) {
+      LOG("GenericSingleSampleFitModel",pFATAL) << "Null splines found - giving up.";
+      util::Die(-1);return false;
+    }
     LOG("GenericSingleSampleFitModel",pINFO) << "Spline array filled... \n\n";
   }
     
