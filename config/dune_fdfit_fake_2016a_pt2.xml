@@ -24,9 +24,10 @@ Assumed exposure for various beam configurations
 Information about the detector configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<!-- Completely made up number - just to get the normalisation somewhere close -->
+<!-- Completely made up number - just to get the normalisation somewhere close.
+ Should probably actually be the ratio of detector cross-section for 10kt to LArND-->
 <fiducial_mass>
- 2.5E5
+ 1.5E3
 </fiducial_mass>
 
 
