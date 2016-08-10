@@ -185,7 +185,8 @@ namespace util {
   bool           IsCCQELike       (conv::Sample_t s);
   bool           IsNC             (conv::Sample_t s);
   bool           IsFar            (conv::Sample_t s);
-  bool           IsFar            (int s);
+  bool           IsMuLike         (conv::Sample_t s);
+  bool           IsELike          (conv::Sample_t s);
   conv::Sample_t SampleFromInt    (int s);
   conv::Sample_t SampleFromString (std::string s);
   conv::Sample_t GetActiveSample  (int ibeam, int isample);

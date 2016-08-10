@@ -110,24 +110,18 @@ string util::AsStringTeX(Sample_t s, bool root)
   return name;
 }
 //________________________________________________________________________________________
-bool util::IsFar(int is)
-{
-  Sample_t s = util::SampleFromInt(is);
-  return util::IsFar(s);
-}
-//________________________________________________________________________________________
 bool util::IsFar(Sample_t s)
 {
   switch(s) {
-  case (ksNuMuCClow      ) :
-  case (ksNuMuCChigh     ) :
-  case (ksNuMuBarCClow   ) :
-  case (ksNuMuBarCChigh  ) :
-  case (ksNuECClow       ) :
-  case (ksNuECChigh      ) :
-  case (ksNuEBarCClow    ) :
-  case (ksNuEBarCChigh   ) : return true; break;
-  default: return false;
+    case (ksNuMuCClow      ) :
+    case (ksNuMuCChigh     ) :
+    case (ksNuMuBarCClow   ) :
+    case (ksNuMuBarCChigh  ) :
+    case (ksNuECClow       ) :
+    case (ksNuECChigh      ) :
+    case (ksNuEBarCClow    ) :
+    case (ksNuEBarCChigh   ) : return true; break;
+    default: return false;
   }
   return false; 
 }
@@ -305,5 +299,91 @@ Sample_t util::GetActiveSample(int ibeam, int isample)
     return conv::kSample[ibeam][isample];
   }
   return ksUndefined;
+}
+//________________________________________________________________________________________
+bool util::IsMuLike(Sample_t s)
+{
+  switch (s) {
+    case ksUndefined       : return false ;
+    case ksNuMuCC          : return true  ;
+    case ksNuMuCC0pi1trk   : return true  ;
+    case ksNuMuCC0pi2trk   : return true  ;
+    case ksNuMuCC1piC      : return true  ;
+    case ksNuMuCC2piC      : return true  ;
+    case ksNuMuCC1pi0      : return true  ;
+    case ksNuMuCC1piC1pi0  : return true  ;
+    case ksNuMuCCoth       : return true  ;
+    case ksNuECC           : return false ;
+    case ksNuMuCCWS        : return true  ;
+    case ksNC              : return false ;
+    case ksNuMuCC0piNtrk   : return true  ;
+    case ksNuMuCC3trkDelta : return true  ;
+    case ksNuMuCCWS0pi     : return true  ;
+    case ksNuMuCCWS1piC    : return true  ;
+    case ksNuMuCCWS1pi0    : return true  ;
+    case ksNuMuCCWSoth     : return true  ;
+    case ksNuECC0pi        : return false ;
+    case ksNuECC1piC       : return false ;
+    case ksNuECC1pi0       : return false ;
+    case ksNuECCoth        : return false ;
+    case ksNC0pi           : return false ;
+    case ksNC1piC          : return false ;
+    case ksNC1pi0          : return false ;
+    case ksNCoth           : return false ;
+    case ksNeutrinoElec    : return false ;
+    case ksInvMuDecay      : return true  ;
+    case ksNuECCWS         : return false ;
+    case ksNuMuCChigh      : return true  ;
+    case ksNuMuCClow       : return true  ;
+    case ksNuMuBarCChigh   : return true  ;
+    case ksNuMuBarCClow    : return true  ;
+    case ksNuECChigh       : return false ;
+    case ksNuECClow        : return false ;
+    case ksNuEBarCChigh    : return false ;
+    case ksNuEBarCClow     : return false ;
+  }
+}
+//________________________________________________________________________________________
+bool util::IsELike(Sample_t s)
+{
+  switch (s) {
+    case ksUndefined       : return false ;
+    case ksNuMuCC          : return false ;
+    case ksNuMuCC0pi1trk   : return false ;
+    case ksNuMuCC0pi2trk   : return false ;
+    case ksNuMuCC1piC      : return false ;
+    case ksNuMuCC2piC      : return false ;
+    case ksNuMuCC1pi0      : return false ;
+    case ksNuMuCC1piC1pi0  : return false ;
+    case ksNuMuCCoth       : return false ;
+    case ksNuECC           : return true  ;
+    case ksNuMuCCWS        : return false ;
+    case ksNC              : return false ;
+    case ksNuMuCC0piNtrk   : return false ;
+    case ksNuMuCC3trkDelta : return false ;
+    case ksNuMuCCWS0pi     : return false ;
+    case ksNuMuCCWS1piC    : return false ;
+    case ksNuMuCCWS1pi0    : return false ;
+    case ksNuMuCCWSoth     : return false ;
+    case ksNuECC0pi        : return true  ;
+    case ksNuECC1piC       : return true  ;
+    case ksNuECC1pi0       : return true  ;
+    case ksNuECCoth        : return true  ;
+    case ksNC0pi           : return false ;
+    case ksNC1piC          : return false ;
+    case ksNC1pi0          : return false ;
+    case ksNCoth           : return false ;
+    case ksNeutrinoElec    : return true  ;
+    case ksInvMuDecay      : return false ;
+    case ksNuECCWS         : return true  ;
+    case ksNuMuCChigh      : return false ;
+    case ksNuMuCClow       : return false ;
+    case ksNuMuBarCChigh   : return false ;
+    case ksNuMuBarCClow    : return false ;
+    case ksNuECChigh       : return true  ;
+    case ksNuECClow        : return true  ;
+    case ksNuEBarCChigh    : return true  ;
+    case ksNuEBarCClow     : return true  ;
+  }
 }
 //________________________________________________________________________________________
