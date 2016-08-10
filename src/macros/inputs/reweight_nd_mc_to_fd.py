@@ -13,18 +13,48 @@ conv = R.valor.conv
 base = os.environ["VALOR_DUNE"]
 
 files_fhc = (
+ "fhc",
  base+"data/dune/ndfit/2016a/lartpc/lartpc_nu_minidst_pt2.root",
  base+"data/dune/ndfit/2016a/flux/flux_histos/histos_g4lbne_v3r4p2_QGSP_BERT_Nominal_80GeV_neutrino_LBNEND.root",
  base+"data/dune/ndfit/2016a/flux/flux_histos/histos_g4lbne_v3r4p2_QGSP_BERT_Nominal_80GeV_neutrino_LBNEFD.root"
 )
 
 files_rhc = (
+ "rhc",
  base+"data/dune/ndfit/2016a/lartpc/lartpc_nubar_minidst_pt2.root",
  base+"data/dune/ndfit/2016a/flux/flux_histos/histos_g4lbne_v3r4p2_QGSP_BERT_Nominal_80GeV_antineutrino_LBNEND.root",
  base+"data/dune/ndfit/2016a/flux/flux_histos/histos_g4lbne_v3r4p2_QGSP_BERT_Nominal_80GeV_antineutrino_LBNEFD.root"
 )
 
-def do_reweight(input_minidst_file, input_nd_hist_file, input_fd_hist_file):
+def convert_selection(selection, bar):
+  if (not bar) :
+    if util.IsMuLike(selection):
+      if util.IsCCQELike(selection):
+        return conv.ksNuMuCChigh
+      else:
+        return conv.ksNuMuCClow
+        
+    if util.IsELike(selection):
+      if util.IsCCQELike(selection):
+        return conv.ksNuECChigh
+      else:
+        return conv.ksNuECClow
+  else:
+    if util.IsMuLike(selection):
+      if util.IsCCQELike(selection):
+        return conv.ksNuMuBarCChigh
+      else:
+        return conv.ksNuMuBarCClow
+        
+    if util.IsELike(selection):
+      if util.IsCCQELike(selection):
+        return conv.ksNuEBarCChigh
+      else:
+        return conv.ksNuEBarCClow
+  
+  return conv.ksUndefined
+  
+def do_reweight(current,input_minidst_file, input_nd_hist_file, input_fd_hist_file):
   
   tf_dst = R.TFile(input_minidst_file)
   assert(tf_dst)
@@ -47,9 +77,11 @@ def do_reweight(input_minidst_file, input_nd_hist_file, input_fd_hist_file):
   
   out_weight = array.array("d",[1.])
   out_mode   = array.array("i",[-1])
+  out_sample = array.array("i",[-1])
   
   out_tree.Branch("wght",out_weight,"wght/D")
   out_tree.SetBranchAddress("reac_mode",out_mode)
+  out_tree.SetBranchAddress("sample",out_sample)
   
   for iev,event in enumerate(tree):
     try:
@@ -73,7 +105,8 @@ def do_reweight(input_minidst_file, input_nd_hist_file, input_fd_hist_file):
     
     flux_reweight = fd_flux/nd_flux
     out_weight[0] = old_weight * flux_reweight
-    out_mode[0] = event.reac_mode
+    out_mode  [0] = event.reac_mode
+    out_sample[0] = convert_selection(event.sample, current=="rhc")
     out_tree.Fill()
     
     # Fill the version with oscillation, if needed
