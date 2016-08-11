@@ -23,6 +23,7 @@
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/PhysHypothesisId.h"
 #include "valor/Conventions/PhysParamId.h"
+#include "valor/Conventions/NuFlavour.h"
 #include "valor/Conventions/NuOscMixParam.h"
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/Opt.h"
@@ -1950,193 +1951,213 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   // This method applies oscillation probabilities                                                                              
   // from fin to fin templates                       
   // a la SuperKMC
+  
+  LOG("GenericSingleSampleFitModel",pINFO)
+    << "Applying oscillation probabilities (option: "
+    << ((option) ? option : "")
+    << ")";
+  
+  bool update_mct_sb = false;
+  if(option) {
+    string opt = option;
+    if(opt.find("+SB") != string::npos) {
+      update_mct_sb = true;
+    }
+  }
+  
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   //first, check that there are actually osc params in the fit params list 
   bool apply_osc_prob = false;
   for(int ip = 0; ip < kNFitParams; ip++) {
     PhysParamId_t p = kFitParam[ip];
-    if(util::IsOscParam(p)) apply_osc_prob = true;
+    if(util::IsOscParam(p)) {apply_osc_prob = true;}
   }
   
-  if(apply_osc_prob){
-    
-    LOG("GenericSingleSampleFitModel",pINFO)
-      << "Applying oscillation probabilities (option: "
-      << ((option) ? option : "")
-      << ")";
-    
-    bool update_mct_sb = false;
-    if(option) {
-      string opt = option;
-      if(opt.find("+SB") != string::npos) {
-        update_mct_sb = true;
-      }
-    }
-    
-    // set oscillation parameters to the oscillation probability calculation code
-    double mixing12 = fPhysHypothesis.CurrValue(kPhypMixing12);
-    double mixing13 = fPhysHypothesis.CurrValue(kPhypMixing13);
-    double mixing23 = fPhysHypothesis.CurrValue(kPhypMixing23);
-    double dmsq     = fPhysHypothesis.CurrValue(kPhypDm12sq);
-    double Dmsq     = fPhysHypothesis.CurrValue(kPhypDm23sq);
-    double delta_cp = fPhysHypothesis.CurrValue(kPhypCPV    );
-
-    NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
-    NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
-
-    double p_osc[3][3];
-    double p_osc_bar[3][3];
-
-    // mixing params are: sin^2(2*theta)                                                                                        
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                            
-    if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsq2Theta)
-      {
-        fNuOsc3Flavour.SetOscParameters(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-      }
-    // mixing params are: sin^2(theta)                                                                                     
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                          
-    else if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsqTheta)
-      {
-        fNuOsc3Flavour.SetOscParametersSinSqTAll(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-      }
-    // mixing params are: sin^2(2*theta)                                                                                      
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                   
-    else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsq2Theta)
-      {
-        fNuOsc3Flavour.SetOscParametersSSq2TDmAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-      }
-    // mixing params are: sin^2(theta)                                                                                        
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                    
-    else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsqTheta)
-      {
-        fNuOsc3Flavour.SetOscParametersDmsqAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-      }
-    // mixing paras are: sin^2(2*theta)                                                                                     
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                       
-    else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsq2Theta)
-      {
-        fNuOsc3Flavour.SetOscParametersSSq2TDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-      }
-    // mixing paras are: sin^2(theta)                                                                                        
-    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                           
-    else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsqTheta)
-      {
-        fNuOsc3Flavour.SetOscParametersDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-      }
-    //unknown                                                                                                                    
-    else {
-      std::cerr << "**  GenericSingleSampleFitModel >> Can't handle choice of "
-           << "\n oscillation mixing params: " << util::AsString(omp)
-           << "\n and independent squared mass-splittings: " << util::AsString(dmsqscheme)
-           << endl;
-      std::exit(1);
-    }
-
-    const int n_true1_bins         = util::NumEtrueBins  (fSample);
-    const double * true1_bin_edges = util::EtrueBinEdges (fSample);
-
-    int isample = fArrIdx->SampleIdx(fBeam,fSample);
-
+  apply_osc_prob = false;
+  
+  // If not, just set the oscillated modes to zero and move on
+  if (!apply_osc_prob) {
     for(int imode = 0; imode < kNReacModes; imode++) {
       ReacMode_t m = kReactionModes[isample][imode];
-      if(m == kmUndefined) continue;
-      
-      //check if beam+sample+mode should be applied oscillation probabilities                                                
-      if(!util::OscProbIsAppliedTo(fBeam,fSample,m)) continue;
-      
-      const int n_true2_bins = util::NumQ2trueBins(fSample,m);
-      const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
-      
-      VALORArrayBin bin;
-      VALORArrayBin sbin;
+      if(m == kmUndefined) {continue;}
+      conv::NuFlavour_t init_flav   = util::ReacModeToInitFlavor(m);
+      conv::NuFlavour_t final_flav  = util::ReacModeToFinalFlavor(m);
+      if (init_flav != final_flav) {
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          fMCTFinOb[imode][izone]->SetAll(0.);
+        }
+        if (update_mct_sb) {fMCTFinSb[imode]->SetAll(0.);}
+      }
+    }
+    return;
+  }
+  
+  // Otherwise actually do the oscillation calculation
+  
+  // set oscillation parameters to the oscillation probability calculation code
+  double mixing12 = fPhysHypothesis.CurrValue(kPhypMixing12);
+  double mixing13 = fPhysHypothesis.CurrValue(kPhypMixing13);
+  double mixing23 = fPhysHypothesis.CurrValue(kPhypMixing23);
+  double dmsq     = fPhysHypothesis.CurrValue(kPhypDm12sq);
+  double Dmsq     = fPhysHypothesis.CurrValue(kPhypDm23sq);
+  double delta_cp = fPhysHypothesis.CurrValue(kPhypCPV    );
 
-      for(int it1 = 0; it1 < n_true1_bins; it1++) {
-	bin.bin3 = it1;
-	//get the true energy to calculate osc prob 
-	double Etrue = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2; 
+  NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
+  NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
 
-	fNuOsc3Flavour.CalcMatterOscProbAll(false, Etrue, p_osc    );
-	fNuOsc3Flavour.CalcMatterOscProbAll(true , Etrue, p_osc_bar);
+  double p_osc[3][3];
+  double p_osc_bar[3][3];
 
-	double p_numu_numu       = p_osc    [1][1];
-	double p_numu_nue        = p_osc    [1][0];
-	double p_numu_nutau      = p_osc    [1][2];
-	double p_numubar_numubar = p_osc_bar[1][1];
-	double p_numubar_nuebar  = p_osc_bar[1][0];
-	double p_numubar_nutaubar= p_osc_bar[1][2];
-	double p_nue_nue         = p_osc    [0][0];
-	double p_nue_numu        = p_osc    [0][1];
-	double p_nue_nutau       = p_osc    [0][2];
-	double p_nuebar_nuebar   = p_osc_bar[0][0];
-	double p_nuebar_numubar  = p_osc_bar[0][1];
-	double p_nuebar_nutaubar = p_osc_bar[0][2];
+  // mixing params are: sin^2(2*theta)                                                                                        
+  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                            
+  if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsq2Theta)
+  {
+    fNuOsc3Flavour.SetOscParameters(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+  }
+  // mixing params are: sin^2(theta)                                                                                     
+  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                          
+  else if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsqTheta)
+  {
+    fNuOsc3Flavour.SetOscParametersSinSqTAll(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+  }
+  // mixing params are: sin^2(2*theta)                                                                                      
+  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                   
+  else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsq2Theta)
+  {
+    fNuOsc3Flavour.SetOscParametersSSq2TDmAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+  }
+  // mixing params are: sin^2(theta)                                                                                        
+  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                    
+  else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsqTheta)
+  {
+    fNuOsc3Flavour.SetOscParametersDmsqAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+  }
+  // mixing paras are: sin^2(2*theta)                                                                                     
+  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                       
+  else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsq2Theta)
+  {
+    fNuOsc3Flavour.SetOscParametersSSq2TDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+  }
+  // mixing paras are: sin^2(theta)                                                                                        
+  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                           
+  else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsqTheta)
+  {
+    fNuOsc3Flavour.SetOscParametersDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+  }
+  //unknown                                                                                                                    
+  else {
+    std::cerr << "**  GenericSingleSampleFitModel >> Can't handle choice of "
+         << "\n oscillation mixing params: " << util::AsString(omp)
+         << "\n and independent squared mass-splittings: " << util::AsString(dmsqscheme)
+         << endl;
+    std::exit(1);
+  }
 
-	double posc = 1.;
-	if(util::IsCC(m))
-	  {
-	    if     ( util::IsNuMu(m)       ) { posc = p_numu_numu;       }
-	    else if( util::IsNuMuBar(m)    ) { posc = p_numubar_numubar; }
-	    else if( util::IsNuE(m)        ) { posc = p_nue_nue;         }
-	    else if( util::IsNuEBar(m)     ) { posc = p_nuebar_nuebar;   }
+  const int n_true1_bins         = util::NumEtrueBins  (fSample);
+  const double * true1_bin_edges = util::EtrueBinEdges (fSample);
 
-	    else if( util::IsNuMuToNuE(m)  ) { posc = p_numu_nue;        }
-	    else if( util::IsNuMuToNuTau(m)) { posc = p_numu_nutau;      }
-	    else if( util::IsNuEToNuMu(m)  ) { posc = p_nue_numu;        }
-	    else if( util::IsNuEToNuTau(m) ) { posc = p_nue_nutau;       }
+  for(int imode = 0; imode < kNReacModes; imode++) {
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
+    
+    //check if beam+sample+mode should be applied oscillation probabilities                                                
+    if(!util::OscProbIsAppliedTo(fBeam,fSample,m)) {continue; }
+    
+    const int n_true2_bins = util::NumQ2trueBins(fSample,m);
+    const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
+    
+    VALORArrayBin bin;
+    VALORArrayBin sbin;
 
-	    else if( util::IsNuMuBarToNuEBar(m)  ) { posc = p_numubar_nuebar;        }
-	    else if( util::IsNuMuBarToNuTauBar(m)) { posc = p_numubar_nutaubar;      }
-	    else if( util::IsNuEBarToNuMuBar(m)  ) { posc = p_nuebar_numubar;        }
-	    else if( util::IsNuEBarToNuTauBar(m) ) { posc = p_nuebar_nutaubar;       }
-	  }
+    for(int it1 = 0; it1 < n_true1_bins; it1++) {
+      bin .bin3 = it1;
+      sbin.bin3 = it1;
+      //get the true energy to calculate osc prob 
+      double Etrue = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2; 
+
+      fNuOsc3Flavour.CalcMatterOscProbAll(false, Etrue, p_osc    );
+      fNuOsc3Flavour.CalcMatterOscProbAll(true , Etrue, p_osc_bar);
+
+      double p_numu_numu       = p_osc    [1][1];
+      double p_numu_nue        = p_osc    [1][0];
+      double p_numu_nutau      = p_osc    [1][2];
+      double p_numubar_numubar = p_osc_bar[1][1];
+      double p_numubar_nuebar  = p_osc_bar[1][0];
+      double p_numubar_nutaubar= p_osc_bar[1][2];
+      double p_nue_nue         = p_osc    [0][0];
+      double p_nue_numu        = p_osc    [0][1];
+      double p_nue_nutau       = p_osc    [0][2];
+      double p_nuebar_nuebar   = p_osc_bar[0][0];
+      double p_nuebar_numubar  = p_osc_bar[0][1];
+      double p_nuebar_nutaubar = p_osc_bar[0][2];
+
+      double posc = 1.;
+      if(util::IsCC(m))
+      {
+        if     ( util::IsNuMu(m)       ) { posc = p_numu_numu;       }
+        else if( util::IsNuMuBar(m)    ) { posc = p_numubar_numubar; }
+        else if( util::IsNuE(m)        ) { posc = p_nue_nue;         }
+        else if( util::IsNuEBar(m)     ) { posc = p_nuebar_nuebar;   }
+
+        else if( util::IsNuMuToNuE(m)  ) { posc = p_numu_nue;        }
+        else if( util::IsNuMuToNuTau(m)) { posc = p_numu_nutau;      }
+        else if( util::IsNuEToNuMu(m)  ) { posc = p_nue_numu;        }
+        else if( util::IsNuEToNuTau(m) ) { posc = p_nue_nutau;       }
+
+        else if( util::IsNuMuBarToNuEBar(m)  ) { posc = p_numubar_nuebar;        }
+        else if( util::IsNuMuBarToNuTauBar(m)) { posc = p_numubar_nutaubar;      }
+        else if( util::IsNuEBarToNuMuBar(m)  ) { posc = p_nuebar_numubar;        }
+        else if( util::IsNuEBarToNuTauBar(m) ) { posc = p_nuebar_nutaubar;       }
+      }
 
 
-	for(int it2 = 0; it2 < n_true2_bins; it2++) {
-	  bin.bin4 = it2;
-	  
-	  for(int izone = 0; izone < kNMaxBinZones; izone++) {
-	    bool is_null = fMCTNullOb[imode][izone];
-	    if(is_null) {continue;}
-	    const int n_reco1_bins = util::NumErecoBins(fSample,izone);
-	    const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
-	    
-              for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-                bin.bin1 = ir1;
-		for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                  bin.bin2 = ir2;
-		  
-                  double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
-                  val *= posc;
+      for(int it2 = 0; it2 < n_true2_bins; it2++) {
+        bin .bin4 = it2;
+        sbin.bin4 = it2;
+        
+        for(int izone = 0; izone < kNMaxBinZones; izone++) {
+          bool is_null = fMCTNullOb[imode][izone];
+          if(is_null) {continue;}
+          const int n_reco1_bins = util::NumErecoBins(fSample,izone);
+          const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
+          
+            for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
+              bin.bin1 = ir1;
+              for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
+                bin.bin2 = ir2;
+                
+                double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
+                val *= posc;
 
-		}//ir2
-	      }//ir1
-	  }
-	  
-	  if(update_mct_sb) {
-	    const int      n_reco1_bins_sb      = util::NumErecoBinsSb (fSample);
-	    const double * reco1_bin_edges_sb   = util::ErecoBinEdgesSb(fSample);
-	    const int      n_reco2_bins_sb      = util::NumYrecoBinsSb (fSample);
-	    const double * reco2_bin_edges_sb   = util::YrecoBinEdgesSb(fSample);
-	    bool is_null = fMCTNullSb[imode];
-	    if(is_null) {continue;}
-	    
-	    
-	    for(int irsb1 = 0; irsb1 < n_reco1_bins_sb; irsb1++) {
-	      sbin.bin1 = irsb1;
-	      for(int irsb2 = 0; irsb2 < n_reco2_bins_sb; irsb2++) {
-		sbin.bin2 = irsb2;
-		
-		double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
-		val *= posc;
-		
-	      }//it2
-	    }//it1
-	  }//update_mct_sb
-	  
-	}//it2
-      }//it1
-    }//imode
-  }//apply osc prob
+              }//ir2
+            }//ir1
+        }
+        
+        if(update_mct_sb) {
+          const int      n_reco1_bins_sb      = util::NumErecoBinsSb (fSample);
+          const int      n_reco2_bins_sb      = util::NumYrecoBinsSb (fSample);
+          //~ const double * reco1_bin_edges_sb   = util::ErecoBinEdgesSb(fSample);
+          //~ const double * reco2_bin_edges_sb   = util::YrecoBinEdgesSb(fSample);
+          bool is_null = fMCTNullSb[imode];
+          if(is_null) {continue;}
+          
+          
+          for(int irsb1 = 0; irsb1 < n_reco1_bins_sb; irsb1++) {
+            sbin.bin1 = irsb1;
+            for(int irsb2 = 0; irsb2 < n_reco2_bins_sb; irsb2++) {
+              sbin.bin2 = irsb2;
+              
+              double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
+              val *= posc;
+              
+            }//irsb2
+          }//irsb1
+        }//update_mct_sb
+        
+      }//it2
+    }//it1
+  }//imode
 
 }
 //________________________________________________________________________________________
