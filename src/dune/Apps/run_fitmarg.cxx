@@ -1,0 +1,256 @@
+//____________________________________________________________________________
+/*!
+
+\app       valor_dune-run_nd_fitmarg
+
+\brief     Generate and fit ensembles of toy-MC experiments.
+
+\options     --tag                 : Tag for output file [def: "toymc"]
+             --run                 : Run # [def: 0]
+             --ntoymc              : Number of toy-MC experiments [def: 1]
+             --fit-param-list      : Fit parameter list (see FitParam.cxx) 
+                                     [def: "standard"]
+             --param-values-option : Decide how to set the values of physics 
+                                     params used for toy-MC generation 
+                                    [def:"randomize-all;prefit-errors"]
+             --fit-opt             : Fitter option [def: "minuit"]
+             --config              : Analysis configuration file [required]
+             --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
+            [--with-stat-fluct |   : Include statistical fluctuation in toy 
+                                     MC generation? [def: yes]
+             --without-stat-fluct] 
+            [--store-spectra   |   : Store toy-MC/best-fit spectra? [def: no]
+             --discard-spectra   ] 
+
+\author    Andy Chappell <A.Chappell \at warwick.ac.uk>
+           University of Warwick
+
+\created   July 28, 2016
+
+\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
+
+*/
+//____________________________________________________________________________
+
+// root
+#include "TFile.h"
+#include "TSystem.h"
+#include "TObjArray.h"
+#include "TString.h"
+#include "TVirtualFitter.h"
+#include "TMath.h"
+// fmwk
+#include "valor/CmdLine/CmdLnArgList.h"
+#include "valor/FitCore/PhysParamList.h"
+#include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/FitModelABC.h"
+#include "valor/FitCore/FitDataABC.h"
+#include "valor/FitCore/FitInputs.h"
+#include "valor/FitCore/FitterABC.h"
+#include "valor/FitCore/UtlFit.h"
+#include "valor/Utilities/UtlStyle.h"
+#include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/Rnd.h"
+#include "valor/Utilities/Env.h"
+#include "valor/Messenger/Messenger.h"
+#include "valor/Ntuple/StdFitNtp.h"
+#include "valor/Marginalisation/MCMarginaliser.h"
+// dune
+#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/PhysicalParameterLimits.h"
+#include "dune/Elements/CompoundFitElements.h"
+
+#include "valor/FitCore/CompoundFitData.h"
+#include "valor/FitCore/CompoundFitModel.h"
+#include "valor/Conventions/Opt.h"
+
+using namespace valor;
+using namespace valor::conv;
+using namespace valor::marginalisation;
+
+PhysParamList* GetPhysParamList(const CmdLnArgList&);
+void Fit1D(const CmdLnArgList&, FitInputs*, PhysParamId_t);
+void Fit2D(const CmdLnArgList&, FitInputs*, PhysParamId_t, PhysParamId_t);
+PhysParamId_t GetPhysParamId(const std::string&);
+void SetPriors(FitParamList& fp);
+void SetFlatPrior(FitParamList& fp, conv::PhysParamId_t p,
+      double min, double max);
+void SetGausPrior(FitParamList& fp, conv::PhysParamId_t p,
+      double mean, double sigma);
+void SetUserPrior(FitParamList& fp, conv::PhysParamId_t p, TH1D* h);
+
+int main(int argc, char** argv)
+{  
+   Env::Instance()->AutoSet("dune");
+//   valor::util::PrintBanner(Env::Instance()->Banner(),500);
+ 
+   CmdLnArgList arg;
+   arg.Read(argc,argv,
+      "$VALOR_DUNE/config/apps/run_fitmarg.arg"
+      ":$VALOR_DUNE/config/apps/seeds.arg");
+   LOG("valor_dune", pNOTICE) << arg;
+
+   Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
+
+   Opt::Instance()->gMassHierarchyAssumed = util::HierarchyFromString("normal");
+   Opt::Instance()->gOscDmsqScheme = util::DmsqSchemeFromString("abs23");
+   Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
+         "sinsq2theta");
+   Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
+
+   // Set DUNE param names inside framework
+   util::PopulateNameRegistry();
+
+   // Set the random seeds
+   Rnd::Instance()->SetSeeds(arg);
+
+   LOG("valor_dune", pNOTICE) << *Rnd::Instance();
+
+   // Check if we have a PParm to read from file containing true values
+   PhysParamList* trueValuesFromFile = GetPhysParamList(arg);
+
+   // Create file and tree to store outputs
+   TString outfilename = TString::Format("%s_%d.root",
+      arg.GetString("tag").c_str(), arg.GetInt("run"));
+   StdFitNtp ntp;
+   ntp.Create(outfilename.Data(), "valor_dune_nd_ntp",
+      "VALOR DUNE / ND-Fit n-tuple");
+  
+   // Get model & configure
+   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit elements";
+   CompoundFitElements * elements = new CompoundFitElements();
+   elements->Read(arg.GetString("config"));
+   FitDataABC* data = elements->FitData();
+   FitModelABC* model = elements->FitModel();
+
+   // Get the specified fit parameter list
+   FitParamList* fp = util::GetFitParameterList(
+      arg.GetString("fit-param-list").c_str());
+
+   // Set oscillation parameter priors
+   LOG("valor_dune", pNOTICE) << "Setting oscillation parameter priors";
+   SetPriors(*fp);
+
+   // Fit/Marginalisation here
+   LOG("valor_dune", pNOTICE) << "Preparing the fitter";
+   FitInputs* fitInputs = new FitInputs(data, model, fp);
+/*   FitterABC* fitter = util::GetFitter(fit_inputs,
+      arg.GetString("fitter").c_str());*/
+
+   MarginaliserABC* marginaliser = new MCMarginaliser(fitInputs);
+   marginaliser->Configure(arg);
+   marginaliser->Marginalise();
+
+   ntp.Save();
+
+   delete marginaliser;
+  
+   return 0;
+}
+
+PhysParamList* GetPhysParamList(const CmdLnArgList& arg)
+{
+   std::string trueValuesFile = arg.GetString("true-from-filename");
+   std::string trueValuesObj = arg.GetString("true-from-objname");
+   
+   PhysParamList* trueValues = 0;
+   if (trueValuesFile.size() && util::ToLowerCase(trueValuesFile) != "none")
+   {
+      TFile tvf(trueValuesFile.c_str());
+      if(!tvf.IsOpen())
+      {
+         LOG("valor_dune", pERROR) << "Could not read true values file " <<
+            trueValuesFile;
+         util::Die(-1);
+      }
+
+      trueValues = dynamic_cast<PhysParamList*>(tvf.Get(
+         trueValuesObj.c_str()));
+
+      if (!trueValues)
+      {
+         LOG("valor_dune", pERROR) << "Could not read true values object " <<
+            trueValuesObj << " from file " << trueValuesFile;
+         util::Die(-1);
+      }
+   }
+
+   return trueValues;
+}
+
+void SetPriors(FitParamList& fp)
+{
+   if(fp.Exists(conv::kPhypCPV))
+   {
+      SetFlatPrior(fp, conv::kPhypCPV, -TMath::Pi(), TMath::Pi());
+   }
+   if(fp.Exists(conv::kPhypMixing23))
+   {
+      SetFlatPrior(fp, conv::kPhypMixing23, 0.888, 1.0);
+   }
+   if(fp.Exists(conv::kPhypMixing13))
+   {
+      SetGausPrior(fp, conv::kPhypMixing13, 0.093, 0.008);
+   }
+   if(fp.Exists(conv::kPhypDm23sq))
+   {
+      SetFlatPrior(fp, conv::kPhypDm23sq, 2e-3, 3e-3);
+   }
+   if(fp.Exists(conv::kPhypDm12sq))
+   {
+      SetGausPrior(fp, conv::kPhypDm12sq, 7.53e-5, 1.8e-6);
+   }
+   if(fp.Exists(conv::kPhypMixing12))
+   {
+      SetGausPrior(fp, conv::kPhypMixing12, 0.846, 0.021);
+   }
+   if(fp.Exists(conv::kPhypCPVBar))
+   {
+      SetFlatPrior(fp, conv::kPhypCPVBar, -TMath::Pi(), TMath::Pi());
+   }
+   if(fp.Exists(conv::kPhypMixing23Bar))
+   {
+      SetFlatPrior(fp, conv::kPhypMixing23Bar, 0.888, 1.0);
+   }
+   if(fp.Exists(conv::kPhypMixing13Bar))
+   {
+      SetGausPrior(fp, conv::kPhypMixing13Bar, 0.093, 0.008);
+   }
+   if(fp.Exists(conv::kPhypDm23sqBar))
+   {
+      SetFlatPrior(fp, conv::kPhypDm23sqBar, 2e-3, 3e-3);
+   }
+   if(fp.Exists(conv::kPhypDm12sqBar))
+   {
+      SetGausPrior(fp, conv::kPhypDm12sqBar, 7.53e-5, 1.8e-6);
+   }
+   if(fp.Exists(conv::kPhypMixing12Bar))
+   {
+      SetGausPrior(fp, conv::kPhypMixing12Bar, 0.846, 0.021);
+   }
+}
+
+void SetFlatPrior(FitParamList& fp, conv::PhysParamId_t p,
+      double min, double max)
+{
+   fp.SetPriorMode(p, "flat");
+   fp.SetMinValueFlat(p, min);
+   fp.SetMaxValueFlat(p, max);
+}
+
+void SetGausPrior(FitParamList& fp, conv::PhysParamId_t p,
+      double mean, double sigma)
+{
+   fp.SetPriorMode(p, "gaus");
+   fp.SetMeanGaus(p, mean);
+   fp.SetSigmaGaus(p, sigma);
+}
+
+void SetUserPrior(FitParamList& fp, conv::PhysParamId_t p, TH1D* h)
+{
+   fp.SetPriorMode(p, "user");
+   fp.SetPriorHisto(p, h);
+   fp.SetToyHisto(p, h);
+}
+
