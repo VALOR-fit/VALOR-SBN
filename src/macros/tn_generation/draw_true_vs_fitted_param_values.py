@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Script to make plots of true values vs fitted values for DUNE
 

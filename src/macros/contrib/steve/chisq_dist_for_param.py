@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Plots chi-square distribution for physics parameters at DUNE
 # Steve Dennis, May 2016 (based off T2K script, June 2014)

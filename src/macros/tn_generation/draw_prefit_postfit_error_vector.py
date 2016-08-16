@@ -1,10 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-# Script to make plots of relative error envelope sizes
-# eg plots 9-12 in TN-183
-# Takes output of macros/spectrum/test_sk_ereco_spectrum_twk_sys_throw_runAll.py
+# Script to make plot of relative error magnitude, per parameter for prefit and N postfit results
+# Eg fig 39 in DUNE-doc-1291-v2 (docs/internal_notes/dune/v2016a)
 
-#Steve Dennis, October 2013
+# Steve Dennis, May 2016
 
 import ROOT
 import math
@@ -46,7 +45,7 @@ ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
 colors = [ROOT.kBlack, ROOT.kRed, ROOT.kBlue, ROOT.kMagenta+1,  ROOT.kGreen+2, ROOT.kOrange+7, ROOT.kCyan+2,]
-markers = [R.kFullCircle,R.kFullSquare, R.kFullTriangleUp, R.kFullCross, R.kFullDiamond, R.kFullStar, R.kFullTriangleDown]
+markers = [R.kFullSquare, R.kFullCircle, R.kFullTriangleUp, R.kFullCross, R.kFullDiamond, R.kFullStar, R.kFullTriangleDown]
 
 plot_opt = ""
 
@@ -141,11 +140,17 @@ class DUNEAnaError(Exception):
   pass
   
 def log10_floor(x):
-  n = math.log10(x)
+  try:
+    n = math.log10(x)
+  except ValueError:
+    n = -5
   return 10**(math.floor(n))
   
 def log10_ceil(x):
-  n = math.log10(x)
+  try:
+    n = math.log10(x)
+  except ValueError:
+    n = 0
   return 10**(math.ceil(n))
   
 def get_hist(rootfile,hname):
@@ -171,6 +176,7 @@ def label_bins(h,fp,div = 1):
   for ii in xrange(fp.Size()):
     if (ii%div==0):
       h.GetXaxis().SetBinLabel(ii+1,fp.NameByIndex(ii))
+      print ii+1,fp.NameByIndex(ii)
   return
 
 if __name__=="__main__":
