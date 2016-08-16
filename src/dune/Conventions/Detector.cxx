@@ -50,6 +50,8 @@ string util::AsString(Detector_t d, Option_t * /*opt*/)
   return name;
 }
 //________________________________________________________________________________________
+string util::DetectorAsString(Detector_t d, Option_t * opt) {return util::AsString(d,opt);}
+//________________________________________________________________________________________
 Detector_t util::DetectorFromInt(int d)
 {
 // Cast an integer to Detector_t, but with boundary check
