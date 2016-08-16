@@ -28,6 +28,7 @@
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/Conventions/PDG.h"
+#include "valor/Utilities/Interpolator.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlNumStat.h"
@@ -225,7 +226,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
                   PhysParamId_t p = kFitParam[ip];
                   Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
                   if (util::ParamHasSplines(p)) {
-                    const ROOT::Math::Interpolator * spl = fRFL->GetSpline(m,p,kb);
+                    const util::Interpolator * spl = fRFL->GetSpline(m,p,kb);
                     if (spl == NULL) {
                       LOG("GenericSingleSampleFitModel",pINFO) << "Got null spline.\n";
                       null_warning = true;
@@ -1719,7 +1720,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(int ip = 0; ip < kNFitParams; ip++) {
         PhysParamId_t p = kFitParam[ip];
         if (p == kPhypUndefined          ) {continue;}
-	if (util::IsOscParam(p)          ) {continue;} 
+        if (util::IsOscParam(p)          ) {continue;} 
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
         
         bool has_splines = fParamHasSplines[ip];
@@ -1752,7 +1753,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   bin.bin2 = ir2;
                   splbin.bin2 = ir2;
                   double response = 1;
-                  const ROOT::Math::Interpolator * spl = reinterpret_cast<ROOT::Math::Interpolator*>(fRFPtr[imode][izone]->GetEntry(splbin));
+                  const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(fRFPtr[imode][izone]->GetEntry(splbin));
                   if (spl==util::DuneRFL::kNoSplineRequired) {
                     LOG("GenericSingleSampleFitModel",pERROR)
                       <<"Got no spline required for bin expecting spline."
@@ -1760,7 +1761,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                       <<util::AsString(fSample)<<","<<util::AsString(m);
                   }
                   if (spl!=util::DuneRFL::kFlatSpline) {
-                    response = spl->Eval(f);
+                    response = spl->EvalWithLimits(f);
                     if (response<0) {
                       LOG("GenericSingleSampleFitModel",pERROR)
                        <<"Negative response from spline (OB) "//<<spl->GetName()
@@ -1847,7 +1848,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(int ip = 0; ip < kNFitParams; ip++) {
         PhysParamId_t p = kFitParam[ip];
         if (p == kPhypUndefined          ) {continue;}
-	if (util::IsOscParam(p)          ) {continue;}
+        if (util::IsOscParam(p)          ) {continue;}
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
         
         double f = fPhysHypothesis.CurrValue(p);
@@ -1874,14 +1875,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   sbin.bin2 = irsb2;
                   kp.reco2 = (reco2_bin_edges_sb[irsb2]+reco2_bin_edges_sb[irsb2+1])/2;
                   util::KinematicBin kb = fRFL->GetBin(kp,m);
-                  const ROOT::Math::Interpolator * spl = fRFL->GetSpline(m,p,kb);
+                  const util::Interpolator * spl = fRFL->GetSpline(m,p,kb);
                   if (spl==util::DuneRFL::kNoSplineRequired) {
                     LOG("GenericSingleSampleFitModel",pERROR)
                       <<"Got no spline required for simple bin expecting spline."
                       <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
                       <<util::AsString(fSample)<<","<<util::AsString(m);
                   }
-                  double response = spl->Eval(f);
+                  double response = spl->EvalWithLimits(f);
                   if (response<0) {
                     LOG("GenericSingleSampleFitModel",pERROR)
                      <<"Negative response from spline (SB) "//<<spl->GetName()

@@ -34,10 +34,11 @@ using namespace valor::util;
 
 // Initialise the flat spline
 static Double_t flat_knots_y[5] = {  1,  1, 1, 1,  1};
-const ROOT::Math::Interpolator* valor::util::DuneRFL::kFlatSpline = util::ConvertTSplineToGSL(TSpline3("flat_spline",-9E0,9E9,flat_knots_y,5));
+const util::Interpolator * valor::util::DuneRFL::kFlatSpline =
+  new util::Interpolator(TSpline3("flat_spline",-9E9,9E9,flat_knots_y,5));
 
 // We'll never use this address to dereference - it can be passed as a flag indicating that no spline should exist.
-const ROOT::Math::Interpolator* valor::util::DuneRFL::kNoSplineRequired = (ROOT::Math::Interpolator*)&conv::kBadResult;
+const util::Interpolator* valor::util::DuneRFL::kNoSplineRequired = (util::Interpolator*)&conv::kBadResult;
 
 //________________________________________________________________________________________
 namespace valor {
@@ -130,7 +131,7 @@ void valor::util::DuneRFL::Print(ostream & stream) const
   stream << "[response functions]" << endl;
 }
 //________________________________________________________________________________________
-const ROOT::Math::Interpolator* valor::util::DuneRFL::GetSpline (
+const util::Interpolator* valor::util::DuneRFL::GetSpline (
   conv::ReacMode_t m, conv::PhysParamId_t p,
   const KinematicBin & kb) const
 {
@@ -193,7 +194,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
    <<std::setw(7)<<fNBinsReco2<<" other recovar bins.\n"
    <<std::setw(7)<<fSplineBlockSize<<" maximum.";
     
-  fSplines = new const ROOT::Math::Interpolator*[fSplineBlockSize]();
+  fSplines = new const util::Interpolator*[fSplineBlockSize]();
 
   TString ts_file = config_file.c_str();
   gSystem->ExpandPathName(ts_file);
@@ -312,7 +313,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                           delete spline;
                           continue;
                         }
-                        ROOT::Math::Interpolator * gsl_spline = util::ConvertTSplineToGSL(*spline,-5,5,"akima");
+                        util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
                         delete spline;
                         if (this->CheckForNegativeValues(gsl_spline,p)) {
                           LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name;
@@ -440,7 +441,7 @@ bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::Phy
   return false;
 }
 //________________________________________________________________________________________
-bool valor::util::DuneRFL::CheckForNegativeValues(const ROOT::Math::Interpolator * spl, conv::PhysParamId_t p) const
+bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl, conv::PhysParamId_t p) const
 {
   double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
   double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
