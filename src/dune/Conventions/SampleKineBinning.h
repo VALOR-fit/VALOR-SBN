@@ -426,7 +426,6 @@ namespace util   {
    // Etrue binning
    int            NumEtrueBins    (conv::Sample_t sample);
    const double * EtrueBinEdges   (conv::Sample_t sample);
-   const double   EtrueBinEdges   (conv::Sample_t sample, int i);
    int            NumQ2trueBins   (conv::Sample_t sample, conv::ReacMode_t mode);
    const double * Q2trueBinEdges  (conv::Sample_t sample, conv::ReacMode_t mode);
 
