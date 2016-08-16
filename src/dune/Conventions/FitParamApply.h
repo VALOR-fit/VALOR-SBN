@@ -113,17 +113,17 @@ static const ApplyMask_t kfApplyToNuMuAny  = kfApplyToNuMu    | kfApplyToNuMuBar
 static const ApplyMask_t kfApplyToAll      = kfApplyToNuAny   | kfApplyToNuBarAny;
 
 // Reaction type
-static const ApplyMask_t ktApplyToCCQELike = ktApplyToCCQE   | ktApplyToCCMEC;
+static const ApplyMask_t ktApplyToCCQELike    = ktApplyToCCQE     | ktApplyToCCMEC;
 static const ApplyMask_t ktApplyToAllCCELScat = ktApplyToCCELScat | ktApplyToNuEELScat; // nu + e CC elastic scattering (inverse muon/tau decay) and nue+e
-static const ApplyMask_t ktApplyToAllCC1pi = ktApplyToCC1piC | ktApplyToCC1pi0;
-static const ApplyMask_t ktApplyToAllCC2pi = ktApplyToCC2piC | ktApplyToCC2pi0 | ktApplyToCCpiCpi0;
-static const ApplyMask_t ktApplyToAllCC    = ktApplyToCCQELike | ktApplyToAllCC1pi | ktApplyToAllCC2pi | ktApplyToCCcoh | ktApplyToCCoth | ktApplyToCCELScat;
+static const ApplyMask_t ktApplyToAllCC1pi    = ktApplyToCC1piC   | ktApplyToCC1pi0;
+static const ApplyMask_t ktApplyToAllCC2pi    = ktApplyToCC2piC   | ktApplyToCC2pi0 | ktApplyToCCpiCpi0;
+static const ApplyMask_t ktApplyToAllCC       = ktApplyToCCQELike | ktApplyToAllCC1pi | ktApplyToAllCC2pi | ktApplyToCCcoh | ktApplyToCCoth | ktApplyToCCELScat;
 
-static const ApplyMask_t ktApplyToNCElLike = ktApplyToNCEL   | ktApplyToNCMEC; //this is not used, modes disabled
+static const ApplyMask_t ktApplyToNCElLike    = ktApplyToNCEL     | ktApplyToNCMEC; //this is not used, modes disabled
 static const ApplyMask_t ktApplyToAllNCELScat = ktApplyToNCELScat | ktApplyToNuEELScat; //nu+e NC elastic scattering 
-static const ApplyMask_t ktApplyToAllNC1pi = ktApplyToNC1piC | ktApplyToNC1pi0;
-static const ApplyMask_t ktApplyToAllNC2pi = ktApplyToNC2piC | ktApplyToNC2pi0 | ktApplyToNCpiCpi0;
-static const ApplyMask_t ktApplyToAllNC    = ktApplyToNCElLike | ktApplyToAllNC1pi | ktApplyToAllNC2pi | ktApplyToNCcoh | ktApplyToNCoth | ktApplyToNCELScat;
+static const ApplyMask_t ktApplyToAllNC1pi    = ktApplyToNC1piC   | ktApplyToNC1pi0;
+static const ApplyMask_t ktApplyToAllNC2pi    = ktApplyToNC2piC   | ktApplyToNC2pi0   | ktApplyToNCpiCpi0;
+static const ApplyMask_t ktApplyToAllNC       = ktApplyToNCElLike | ktApplyToAllNC1pi | ktApplyToAllNC2pi | ktApplyToNCcoh | ktApplyToNCoth | ktApplyToNCELScat;
 
 static const ApplyMask_t ktApplyToAllCoh = ktApplyToCCcoh | ktApplyToNCcoh;
 static const ApplyMask_t ktApplyToAllELScat = ktApplyToCCELScat | ktApplyToNuEELScat | ktApplyToNCELScat;
@@ -200,6 +200,23 @@ static const ApplyMask_t kApplyToSample[kMaxNSamples] = {
  /* ksNuECClow       */ ksApplyToLowRes          ,
  /* ksNuEBarCChigh   */ ksApplyToHighRes         ,
  /* ksNuEBarCClow    */ ksApplyToLowRes          
+};
+
+// Which masks apply to which parent particle flavour
+static const ApplyMask_t kApplyToDetector[conv::kNDetectorsDefined] = {
+  /* kdDUNEND    */  kdApplyToDUNEND,
+  /* kdDUNEFD1ph */  kdApplyToDUNEFD,
+  /* kdDUNEFD2ph */  kdApplyToDUNEFD,
+  /* kdSBND      */  kdApplyToSBND,
+  /* kdSBNuBooNE */  kdApplyToMicroBooNE,
+  /* kdSBNICARUS */  kdApplyToICARUS,
+  /* kdSuperK    */  0,
+  /* kdHyperK    */  0,
+  /* kdND280     */  0,
+  /* kdND280Up   */  0,
+  /* kdINGRID    */  0,
+  /* kdNuPRISM   */  0,
+  /* kdNuTIT     */  0
 };
 
 // Which masks apply to which parent particle flavour

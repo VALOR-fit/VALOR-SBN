@@ -1017,13 +1017,14 @@ bool util::OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMo
 }
 //____________________________________________________________________________
 bool util::ParamIsAppliedTo(
-  conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m, conv::PhysParamId_t p)
+  conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, conv::ReacMode_t m, conv::PhysParamId_t p)
 {
   static const ArrIdx * arridx = ArrIdx::Instance();
   
   if (b==conv::kbUndefined   ) {return false;}
   if (m==conv::kmUndefined   ) {return false;}
   if (s==conv::ksUndefined   ) {return false;}
+  if (d==conv::kdUndefined   ) {return false;}
   if (p==conv::kPhypUndefined) {return false;}
   
   // Get parameter mask
@@ -1045,18 +1046,20 @@ bool util::ParamIsAppliedTo(
   ReacType_t  t = conv::kReacModeToType[m];
   
   // Check whether or not to apply the param to this
-  bool apply_to_beam    = (kApplyToBeamMode [b] & pmask);
-  bool apply_to_sample  = (kApplyToSample   [s] & pmask);
-  bool apply_to_flavour = (kApplyToFlavour  [f] & pmask);
-  bool apply_to_type    = (kApplyToReacType [t] & pmask);
+  bool apply_to_beam     = (kApplyToBeamMode [b] & pmask);
+  bool apply_to_sample   = (kApplyToSample   [s] & pmask);
+  bool apply_to_flavour  = (kApplyToFlavour  [f] & pmask);
+  bool apply_to_type     = (kApplyToReacType [t] & pmask);
+  bool apply_to_detector = (kApplyToDetector [d] & pmask);
   
   bool apply_to_mode = apply_to_flavour && apply_to_type;
-  bool apply = (apply_to_beam && apply_to_sample && apply_to_mode);
+  bool apply = (apply_to_beam && apply_to_sample && apply_to_mode && apply_to_detector);
   
   //~ std::cerr<<"Param    : "  <<util::AsString(p)<<std::endl;
-  //~ std::cerr<<"Beam     : "  <<apply_to_beam  <<"\t("<<util::AsString(b)<<")"<<std::endl;
-  //~ std::cerr<<"Sample   : "  <<apply_to_sample<<"\t("<<util::AsString(s)<<")"<<std::endl;
-  //~ std::cerr<<"Mode     : "  <<apply_to_mode  <<"\t("<<util::AsString(m)<<")"<<std::endl;
+  //~ std::cerr<<"Beam     : "  <<apply_to_beam    <<"\t("<<util::AsString(b)<<")"<<std::endl;
+  //~ std::cerr<<"Sample   : "  <<apply_to_sample  <<"\t("<<util::AsString(s)<<")"<<std::endl;
+  //~ std::cerr<<"Detector : "  <<apply_to_detector<<"\t("<<util::AsString(d)<<")"<<std::endl;
+  //~ std::cerr<<"Mode     : "  <<apply_to_mode    <<"\t("<<util::AsString(m)<<")"<<std::endl;
   //~ std::cerr<<"Returning: "  <<(apply?"true":"false")<<std::endl;
   
   return apply;

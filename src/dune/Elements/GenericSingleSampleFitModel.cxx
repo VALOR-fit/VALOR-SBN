@@ -80,6 +80,13 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   assert(fDetector != kdUndefined);
   assert(fBeam     != kbUndefined);
   assert(fSample   != ksUndefined);
+  
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
+  if (isample == -1) {
+    LOG("GenericSingleSampleFitModel",pFATAL)
+      << "Sample not included in analysis build: "<<util::AsString(fBeam)<<" "<<util::AsString(fSample);
+    util::Die(-1);
+  }
 
   fName = util::nm::MdlName(fDetector, fBeam, fSample, fKSp);
 
@@ -183,7 +190,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   
   LOG("GenericSingleSampleFitModel",pINFO) << "Configuring the Response Function Library... \n\n";
   // And now get the RFL
-  fRFL = new util::DuneRFL(fBeam, fSample, conv::kNFitParamsWithSplines,conv::kFitParamsWithSplines);
+  fRFL = new util::DuneRFL(fBeam, fSample, fDetector, conv::kNFitParamsWithSplines,conv::kFitParamsWithSplines);
   if (!skip_spline_read) {
     fRFL->Read(file, opt);
     
@@ -193,8 +200,6 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     // Fill the spline array
     const int n_true1_bins = util::NumEtrueBins(fSample);
     const double * true1_bin_edges = util::EtrueBinEdges(fSample);
-
-    int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
     for(int imode = 0; imode < kNReacModes; imode++) {
       ReacMode_t m = kReactionModes[isample][imode];
@@ -928,7 +933,7 @@ void GenericSingleSampleFitModel::Init(void)
     
     // Initialise the param is applied to to false
     for(int ip = 0; ip < conv::kNFitParams; ip++) {
-      const_cast<bool&>(fParamIsAppliedTo[imode][ip]) = false;
+      fParamIsAppliedTo[imode][ip] = false;
     }
   }//imode
   
@@ -945,7 +950,7 @@ void GenericSingleSampleFitModel::Init(void)
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Book(void)
 {
-  LOG("GenericSingleSampleFitModel",pDEBUG) << "Booking...";
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "Booking "<<util::AsString(fBeam)<<" "<<util::AsString(fSample);
 
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
@@ -1041,11 +1046,11 @@ void GenericSingleSampleFitModel::Book(void)
       }
     }//izone
 
-    // Fill the ParamIsAppliedTo arra
+    // Fill the ParamIsAppliedTo array
     for(int ip = 0; ip < conv::kNFitParams; ip++) {
       PhysParamId_t p = kFitParam[ip];
       if(p == kPhypUndefined) continue;
-      const_cast<bool&>(fParamIsAppliedTo[imode][ip]) = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+      fParamIsAppliedTo[imode][ip] = util::ParamIsAppliedTo(fBeam,fSample,fDetector,m,p);
     }
   }//imode
 }
@@ -1249,7 +1254,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       LOG("GenericSingleSampleFitModel",pWARN) 
         << " ** Undefined sample ID used in MC event: " << iev
         << " (value stored in DST: " << sample << ")";
-      //exit(1);
+      //util::Die(-1);return;
     }
 
     //  ================ NOTE - HACKS ================
@@ -1302,7 +1307,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       LOG("GenericSingleSampleFitModel",pFATAL) 
         << " ** Ignoring MC event: " << iev 
         << " (ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
-      exit(1);
+      util::Die(-1);return;
     }
 
     // Get bin zone index
@@ -1313,7 +1318,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " ** No bin zone for MC event: " << iev 
         << " (" << util::AsString(s) << "/" << util::AsString(m) 
         << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
-      //     exit(1);
+      //     util::Die(-1);return;
       continue;
     }
 
@@ -1322,14 +1327,14 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       LOG("GenericSingleSampleFitModel",pFATAL) 
         << "** Null MC template for sample: " << util::AsString(s) 
         << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
-      exit(1);
+      util::Die(-1);return;
     }
     bool is_null_sb = fMCTNullSb[imode];
     if(is_null_sb) {
       LOG("GenericSingleSampleFitModel",pFATAL) 
         << "** Null MC template (simple binning) for sample: " << util::AsString(s) 
         << ", mode: " << util::AsString(m) << " ??";
-      exit(1);
+      util::Die(-1);return;
     }
 
     // check Ereco, yreco and Etrue values against built-in limits
@@ -1608,7 +1613,7 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
                 LOG("GenericSingleSampleFitModel",pWARN)
                   << " ** No bin zone for toy MC event (" << " (" << util::AsString(fSample) << ")"
                   << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
-                //                  exit(1);
+                //util::Die(-1);return;
               }
               const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
               const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
@@ -1717,6 +1722,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
       // copy sys -> fin MC templates
       fMCTFinOb[imode][izone]->CopyDataOnlyFrom(*fMCTSysOb[imode][izone]);
+      
+      
       for(int ip = 0; ip < kNFitParams; ip++) {
         PhysParamId_t p = kFitParam[ip];
         if (p == kPhypUndefined          ) {continue;}
@@ -2052,7 +2059,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
          << "\n oscillation mixing params: " << util::AsString(omp)
          << "\n and independent squared mass-splittings: " << util::AsString(dmsqscheme)
          << endl;
-    std::exit(1);
+    util::Die(-1);return;
   }
 
   const int n_true1_bins         = util::NumEtrueBins  (fSample);

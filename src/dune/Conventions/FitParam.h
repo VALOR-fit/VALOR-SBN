@@ -30,6 +30,7 @@
 #include "valor/FitCore/PhysHypothesis.h"
 
 //dune
+#include "dune/Conventions/Detector.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
@@ -4037,7 +4038,7 @@ namespace util {
 
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
 
-  bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,
+  bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, 
                         conv::ReacMode_t m, conv::PhysParamId_t p);
   bool OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,	conv::ReacMode_t m);
   bool ParamHasSplines(conv::PhysParamId_t p);

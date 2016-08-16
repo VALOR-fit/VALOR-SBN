@@ -48,7 +48,7 @@ class DuneRFL {
 public:
 
   DuneRFL();
-  DuneRFL(conv::BeamConf_t b, conv::Sample_t s, int n_params, const conv::PhysParamId_t * param_ids);
+  DuneRFL(conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, int n_params, const conv::PhysParamId_t * param_ids);
  ~DuneRFL();
 
   // Define a dummy spline pointer to an object we know, so we can use its address as a special argument.
@@ -104,6 +104,7 @@ private:
   // The beam and sample (used in spline names)
   conv::BeamConf_t fBeam;
   conv::Sample_t   fSample;
+  conv::Detector_t fDetector;
   
   // Details of binning
   int                   fNModes;        //

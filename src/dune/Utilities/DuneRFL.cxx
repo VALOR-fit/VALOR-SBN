@@ -57,6 +57,7 @@ fSplines       (NULL),
 fSplineBlockSize(0),
 fBeam          (conv::kbUndefined),
 fSample        (conv::ksUndefined),
+fDetector      (conv::kdUndefined),
 fNModes        (0),
 fModes         (NULL),
 fNParams       (0),
@@ -73,12 +74,13 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[R
   
 }
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL(conv::BeamConf_t b, conv::Sample_t s, int n_params, const PhysParamId_t * param_ids)
+valor::util::DuneRFL::DuneRFL(conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, int n_params, const PhysParamId_t * param_ids)
  :
 fSplines       (NULL),
 fSplineBlockSize(0),
 fBeam          (b),
 fSample        (s),
+fDetector      (d),
 fNModes        (conv::kNReacModes),
 fModes         (NULL),
 fNParams       (n_params),
@@ -238,8 +240,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     conv::PhysParamId_t p = fParams[ip];
     if(p == conv::kPhypUndefined) continue;
     TString filename = spl_file_pattern.c_str();
-    filename = filename.ReplaceAll("[BEAM]"   , util::AsString(fBeam  ).c_str());
-    filename = filename.ReplaceAll("[SAMPLE]" , util::AsString(fSample).c_str());
+    filename = filename.ReplaceAll("[BEAM]"   , util::AsString(fBeam    ).c_str());
+    filename = filename.ReplaceAll("[SAMPLE]" , util::AsString(fSample  ).c_str());
+    filename = filename.ReplaceAll("[DET]"    , util::AsString(fDetector).c_str());
     filename = filename.ReplaceAll("[PARAM]"  , util::AsString(p).c_str());
     
     TString base_dir = Env::Instance()->TopLevelDataDir().c_str();
@@ -268,7 +271,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
       conv::PhysParamId_t p = fParams[ip];
       if(p == conv::kPhypUndefined) continue;
       
-      bool param_applied_to_mode = util::ParamIsAppliedTo(fBeam,fSample,m,p);
+      bool param_applied_to_mode = util::ParamIsAppliedTo(fBeam,fSample,fDetector,m,p);
       
       KinematicBin kb;
       

@@ -97,6 +97,7 @@ int main(int argc, char ** argv)
 
   string arg_beam       = arg.GetString("beam");
   string arg_sample     = arg.GetString("sample");
+  string arg_detector   = arg.GetString("detector");
   string arg_systematic = arg.GetString("systematic");
   string arg_format     = arg.GetString("format");  
   string arg_inp_file   = arg.GetString("input");
@@ -106,8 +107,9 @@ int main(int argc, char ** argv)
 
   BeamConf_t beam      = util::BeamConfFromString (arg_beam      );
   Sample_t   sample    = util::SampleFromString   (arg_sample    );
-  GSyst_t    syst      = GSyst::FromString        (arg_systematic);  
-
+  Detector_t detector  = util::DetectorFromString (arg_detector  );
+  GSyst_t    syst      = GSyst::FromString        (arg_systematic);
+  
   PhysParamId_t fit_param = kPhypUndefined;
   if      (syst == kINukeTwkDial_MFP_pi     ) fit_param = kNuisIntPiMeanFreePath; 
   else if (syst == kINukeTwkDial_MFP_N      ) fit_param = kNuisIntNucMeanFreePath;
@@ -122,17 +124,19 @@ int main(int argc, char ** argv)
   
   if (beam==kbUndefined || sample == ksUndefined || fit_param == kPhypUndefined) {
     std::cerr<<"Bad configuration."<<std::endl;
-    std::cerr<<"Beam:       "<<arg_beam       <<"\t => "<< util::AsString(beam)  <<std::endl;
-    std::cerr<<"Sample:     "<<arg_sample     <<"\t => "<< util::AsString(sample)<<std::endl;
-    std::cerr<<"GENIE Syst: "<<arg_systematic <<"\t => "<<GSyst::AsString(syst)  <<std::endl;
+    std::cerr<<"Beam:       "<<arg_beam       <<"\t => "<< util::AsString(beam)    <<std::endl;
+    std::cerr<<"Sample:     "<<arg_sample     <<"\t => "<< util::AsString(sample)  <<std::endl;
+    std::cerr<<"Detector:   "<<arg_detector   <<"\t => "<< util::AsString(detector)<<std::endl;
+    std::cerr<<"GENIE Syst: "<<arg_systematic <<"\t => "<<GSyst::AsString(syst)    <<std::endl;
     std::cerr<<" to VALOR   "<< "\t => "<<util::AsString(fit_param)<<std::endl;
   }
   assert(beam      != kbUndefined   );
   assert(sample    != ksUndefined   );
+  assert(detector  != kdUndefined   );
   assert(fit_param != kPhypUndefined);
   
   // Make an RFL to generate the spline names
-  util::DuneRFL rfl(beam,sample,1,&fit_param);
+  util::DuneRFL rfl(beam,sample,detector,1,&fit_param);
 
   // Number of tweaks for the specified systematic parameter
   const int   inom          = 5;
@@ -244,10 +248,10 @@ int main(int argc, char ** argv)
   syst_list.Init(kINukeTwkDial_FrInel_N,    0., twk_dial_min, twk_dial_max);
   syst_list.Init(kINukeTwkDial_FrAbs_N,     0., twk_dial_min, twk_dial_max);
   syst_list.Init(kINukeTwkDial_FrPiProd_N,  0., twk_dial_min, twk_dial_max);
-
+  
   // Systematic tweaks
   for(int itwk = 0; itwk < n_twks; itwk++) {
-
+    
     double twk_dial = twk_dial_min + itwk * twk_dial_step;
     VLOG("make_response_func", pNOTICE) << "Doing tweak: " << twk_dial << " ("<<itwk+1 << " of "<<n_twks<<")";
     syst_list.Set(syst, twk_dial);
