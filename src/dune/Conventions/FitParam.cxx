@@ -763,22 +763,22 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       bool   nuis = true;
       
       //      if(IsSystematic(p)){
-	  // Check we're not going behind physical region
-	  min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
-	  max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
-	  
-	  fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
-	  ipc++; 
-	  fparm->Update(p, curr);
-	  //}
-	  // toggle oscillation params on/off
-	  bool fix_osc_params = (param_list_opt.find("fix-osc-params") != string::npos);
-	  if(fix_osc_params && IsOscParam(p)){
-	    double init_value = util::OscParamInitValue(p);
-	    fparm->Update(p, init_value);
-	    fparm->SetInitValue(p, init_value);
-	    fparm->FixParameter(p);
-	}     
+          // Check we're not going behind physical region
+          min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
+          max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
+          
+          fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
+          ipc++; 
+          fparm->Update(p, curr);
+          //}
+          // toggle oscillation params on/off
+          bool fix_osc_params = (param_list_opt.find("fix-osc-params") != string::npos);
+          if(fix_osc_params && IsOscParam(p)){
+            double init_value = util::OscParamInitValue(p);
+            fparm->Update(p, init_value);
+            fparm->SetInitValue(p, init_value);
+            fparm->FixParameter(p);
+        }     
       // toggle detector related params on/off
       bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
       if(fix_detector_params && kFitIsNuDetRelated[ip]) {
@@ -795,14 +795,14 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       }
       // toggle nd flux related params on/off
       bool fix_nd_flux_params = (param_list_opt.find("fix-nd-flux-syst") != string::npos);
-	if(fix_nd_flux_params && kFitIsNDNuFluxRelated[ip]){
+        if(fix_nd_flux_params && kFitIsNDNuFluxRelated[ip]){
         fparm->Update(p, 1.);
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
       }
       // toggle fd flux related params on/off
       bool fix_fd_flux_params = (param_list_opt.find("fix-fd-flux-syst") != string::npos);
-	if(fix_fd_flux_params && kFitIsFDNuFluxRelated[ip]){
+        if(fix_fd_flux_params && kFitIsFDNuFluxRelated[ip]){
         fparm->Update(p, 1.);
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
@@ -814,7 +814,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
       }
-	// toggle mec related params on/off
+        // toggle mec related params on/off
       bool fix_mec_params = (param_list_opt.find("fix-mec-syst") != string::npos);
       if(fix_mec_params && (p==kNuisIntNuCCMEC || p==kNuisIntNuBarCCMEC)) {
         fparm->Update(p, 1.);
@@ -862,16 +862,16 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       // toggle detector params on/off
       bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
       if(fix_detector_params && kFitIsNuDetRelated[ip]) {
-	fparm->Update(p, 1.);
-	fparm->SetInitValue(p, 1.);
-	fparm->FixParameter(p);
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
       }
       // toggle flux related params on/off
       bool fix_flux_params = (param_list_opt.find("fix-flux-syst") != string::npos);
       if(fix_flux_params && kFitIsNuFluxRelated[ip]) {
-	fparm->Update(p, 1.);
-	fparm->SetInitValue(p, 1.);
-	fparm->FixParameter(p);
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
       }
       // toggle int related params on/off                                                                                        
       bool fix_int_params = (param_list_opt.find("fix-int-syst") != string::npos);
@@ -898,11 +898,15 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
     }//ip
   
   }
+  else {
+    LOG("FitParams",pERROR)<<"Unrecognised fit parameter list name: "<<param_list_opt;
+    util::Die(-1); return fparm;
+  }
 
   if(!fparm->IsComplete()) {
     LOG("FitParams",pERROR)<<"Fit parameter list is not complete";
     fparm->Print();
-    util::Die(-1);
+    util::Die(-1); return fparm;
   }
 
   return fparm;
