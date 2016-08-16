@@ -58,7 +58,7 @@ def main(beam_mode_arg = None, sample_arg = None,
 \\usepackage{fullpage}
 \\usepackage{rotate}  
 \\usepackage{rotating}
-\\usepackage[paperwidth=400mm,paperheight=600mm]{geometry} % This is huge - use pdfcrop
+\\usepackage[paperwidth=400mm,paperheight=1800mm]{geometry} % This is huge - use pdfcrop
 \\usepackage[table]{xcolor}
 \\usepackage{nopageno}
 """)
@@ -72,91 +72,79 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   first_page = True
   
-  if beam_mode_arg is None:
-    beam_modes = list(range(conv.kNBeamConf))
-  else:
-    beam_modes = [beam_mode_arg]
-    
-  for beam_mode in beam_modes:
-    nd_samples_array = array.array("i",[-1]*conv.kNSamples)
-    root_loop  = "{ int * smp_arr = (int*)%s;" % str(nd_samples_array.buffer_info()[0])
-    root_loop += " for (int i = 0 ; i < kNSamples;i++){smp_arr[i]=kSample[%s][i];};};"%str(beam_mode)
+  for isubmodel in xrange(model.GetNSubModels()):
+    submodel  = model.GetSubModel(isubmodel)
+    sample    = submodel.GetSample()
+    beam_mode = submodel.GetBeam()
+    detector  = submodel.GetDetector()
+    # Get the mode list for this sample
+    modes_array      = array.array("i",[-1]*conv.kNReacModes)
+    isamp = arridx.SampleIdx(beam_mode,sample)
+    root_loop  = "{ int * mode_arr = (int*)%s;" % str(modes_array.buffer_info()[0])
+    root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kReactionModes[%s][i];};};"%(str(isamp))
     ROOT.gROOT.ProcessLine(root_loop)
+    modes  = [m for m in modes_array     if m != conv.kmUndefined]
     
-    if sample_arg is None:
-      samples = [s for s in nd_samples_array if s != conv.ksUndefined]
+    if first_page:
+      first_page = False
     else:
-      samples = [sample_arg]
-  
+      tex_output.write("\n\\clearpage\n")
       
-    for sample in samples:
-      # Get the mode list for this sample
-      modes_array      = array.array("i",[-1]*conv.kNReacModes)
-      isamp = arridx.SampleIdx(beam_mode,sample)
-      root_loop  = "{ int * mode_arr = (int*)%s;" % str(modes_array.buffer_info()[0])
-      root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kReactionModes[%s][i];};};"%(str(isamp))
-      ROOT.gROOT.ProcessLine(root_loop)
-      modes  = [m for m in modes_array     if m != conv.kmUndefined]
-      
-      if first_page:
-        first_page = False
-      else:
-        tex_output.write("\n\\clearpage\n")
-        
-      # Begin the table
-      tex_output.write("""{
+    # Begin the table
+    tex_output.write("""{
 \\setlength{\\tabcolsep}{3pt}
 \\renewcommand{\\arraystretch}{1.8}\n""")
-      tex_output.write("\\begin{table} \\tiny\n")
-      #~ tex_output.write("\\centering\n")
-      
-      # Build the format row - single lines between similar modes, double lines if the neutrino flavour or current charge changes
-      table_col_spec = "| c |"
-      last_flav = -1
-      last_was_cc = -1
-      for mode in modes:
-        flav  = util.ReacModeToInitFlavor(mode)
-        is_cc = util.ModeIsCC(mode)
-        if (flav!= last_flav or is_cc != last_was_cc):
-          table_col_spec+="|"
-        table_col_spec += " c |"
-        last_flav = flav
-        last_was_cc = is_cc
-      
-      tex_output.write("\n\n\\begin{tabular} { "+table_col_spec+" | }\n\\hline\n")
-      
-      #  Write the first row (mode list)
-      for mode in modes:
-        tex_output.write(" & \\begin{sideways} $"+util.ModeAsStringTeX(mode)+"$ \\end{sideways} \n")
-      
-      tex_output.write("\\\\ \hline \n")
-      
-      # Write all the other rows (per param)
-      for iparam in xrange(syst.Size()):
-        param = syst.WhichParam(iparam)
-        if skipflux and util.IsNuFluxRelated(param): continue
-        if skipint  and util.IsNuIntRelated(param) : continue
-        if skipdet  and util.IsNuDetRelated(param) : continue
-        entries = ["$"+util.ParamAsStringTeX(param,0).ljust(col1_width)+"$"]
-        include_row = include_empty
-        for m in modes:
-          if util.ParamIsAppliedTo(beam_mode,sample,m,param):
-            entries.append("\\ck".ljust(coln_width))
-            include_row = True
-          else:
-            entries.append("".ljust(coln_width))
-        if not include_row: continue
-        tex_output.write("& ".join(entries) + " \\\\ \\hline ")
-        # Add second line if we're at the end of a group
-        if util.GetParameterGroup(param)!=util.GetParameterGroup(param+1):
-          tex_output.write(" \\hline ")
-        tex_output.write("\n")
-      
-      # Close table and finalise tex document
-      tex_output.write("\n\\end{tabular}\n")
-      tex_output.write(("\\caption{" + util.BeamConfAsString(beam_mode) +" "+util.SampleAsString(sample)+ "}\n").replace("_"," "))
-      tex_output.write("\\end{table}\n}\n")
+    tex_output.write("\\begin{table} \\tiny\n")
+    #~ tex_output.write("\\centering\n")
+    
+    # Build the format row - single lines between similar modes, double lines if the neutrino flavour or current charge changes
+    table_col_spec = "| c |"
+    last_flav = -1
+    last_was_cc = -1
+    for mode in modes:
+      flav  = util.ReacModeToInitFlavor(mode)
+      is_cc = util.ModeIsCC(mode)
+      if (flav!= last_flav or is_cc != last_was_cc):
+        table_col_spec+="|"
+      table_col_spec += " c |"
+      last_flav = flav
+      last_was_cc = is_cc
+    
+    tex_output.write("\n\n\\begin{tabular} { "+table_col_spec+" | }\n\\hline\n")
+    
+    #  Write the first row (mode list)
+    for mode in modes:
+      tex_output.write(" & \\begin{sideways} $"+util.ModeAsStringTeX(mode)+"$ \\end{sideways} \n")
+    
+    tex_output.write("\\\\ \hline \n")
+    
+    # Write all the other rows (per param)
+    for iparam in xrange(syst.Size()):
+      param = syst.WhichParam(iparam)
+      if skipflux and util.IsNuFluxRelated(param): continue
+      if skipint  and util.IsNuIntRelated(param) : continue
+      if skipdet  and util.IsNuDetRelated(param) : continue
+      entries = ["$"+util.ParamAsStringTeX(param,0).ljust(col1_width)+"$"]
+      include_row = include_empty
+      for m in modes:
+        if util.ParamIsAppliedTo(beam_mode,sample,detector,m,param):
+          entries.append("\\ck".ljust(coln_width))
+          include_row = True
+        else:
+          entries.append("".ljust(coln_width))
+      if not include_row: continue
+      tex_output.write("& ".join(entries) + " \\\\ \\hline ")
+      # Add second line if we're at the end of a group
+      if util.GetParameterGroup(param)!=util.GetParameterGroup(param+1):
+        tex_output.write(" \\hline ")
+      tex_output.write("\n")
+    
+    # Close table and finalise tex document
+    tex_output.write("\n\\end{tabular}\n")
+    tex_output.write(("\\caption{" + util.DetectorAsString(detector)+" "+util.BeamConfAsString(beam_mode)+" "+util.SampleAsString(sample)+ "}\n").replace("_"," "))
+    tex_output.write("\\end{table}\n}\n")
   
+  # End of submodel loop
   
   
   tex_output.write("\\end{document}\n")
