@@ -68,20 +68,22 @@ static const int gPrintEveryNEvents = 50000;
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
+  // Set GENIE print level
+  genie::Messenger::Instance();
+  genie::GHepRecord::SetPrintLevel(genie::RunOpt::Instance()->EventRecordPrintLevel());
+  
   TString messenger_config("$VALOR_DUNE/config/verbosity.xml");
   gSystem->ExpandPathName(messenger_config);
   valor::Messenger::Instance()->Configure(messenger_config.Data());
   
   GetCommandLineArgs (argc, argv);
 
-  // Set print level
-  genie::GHepRecord::SetPrintLevel(genie::RunOpt::Instance()->EventRecordPrintLevel());
-
   // Create output mini-DST   
 
   int    valor_minidst_beam      = -1; // see Conventions/BeamConf.h 
   int    valor_minidst_sample    = -1; // see SDFit/NDSample.h 
   int    valor_minidst_reac_mode = -1; // see Conventions/ReacMode.h 
+  int valor_minidst_target       = -1; // nuclear target -  GENIE PDG convention
   double valor_minidst_enu_true  = -1; // true neutrino energy, in GeV
   double valor_minidst_Q2_true   = -1; // true neutrino energy, in GeV
   double valor_minidst_enu_reco  = -1; // reco neutrino energy, in GeV
@@ -94,6 +96,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("beam"       , &valor_minidst_beam,      "beam/I"     );
   valor_minidst->Branch("sample"     , &valor_minidst_sample,    "sample/I"   );
   valor_minidst->Branch("reac_mode"  , &valor_minidst_reac_mode, "reac_mode/I");
+  valor_minidst->Branch("target"     , &valor_minidst_target,    "target/I"   );
   valor_minidst->Branch("enu_true"   , &valor_minidst_enu_true,  "enu_true/D" );
   valor_minidst->Branch("Q2_true"    , &valor_minidst_Q2_true,   "q2_true/D"  );
   valor_minidst->Branch("enu_reco"   , &valor_minidst_enu_reco,  "enu_reco/D" );
@@ -249,17 +252,17 @@ int main(int argc, char ** argv)
       // ignore events that can not be used in the VALOR analysis
       //
       if(sample == valor::conv::ksUndefined) {
-        VLOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]";
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]: "<<sample;
         mcrec->Clear();
         continue;
       }
       if(enu_reco <= 0) {
-        VLOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]";
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
         mcrec->Clear();
         continue;
       }
       if(y_reco < 0) {
-        VLOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]";
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]: "<<y_reco;
         mcrec->Clear();
         continue;
       }
@@ -286,6 +289,7 @@ int main(int argc, char ** argv)
     valor_minidst_y_reco    = y_reco; 
     valor_minidst_wght_pot  = wght_pot; 
     valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2(true);
+    valor_minidst_target    = mcrec->event->Summary()->InitState().TgtPdg();
     
     valor_minidst_sample_o  = sample; 
     valor_minidst_sample_r  = sample_reco; 
@@ -307,6 +311,7 @@ int main(int argc, char ** argv)
       << "\n Beam          = " << valor_minidst_beam   
       << "\n Sample        = " << valor_minidst_sample    
       << "\n Reaction mode = " << valor_minidst_reac_mode 
+      << "\n Target        = " << valor_minidst_target
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV" 
