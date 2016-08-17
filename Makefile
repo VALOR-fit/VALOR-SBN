@@ -23,7 +23,6 @@ BUILD_TARGETS =    print-make-info     \
 		   build-utilities                 \
 		   build-genie-utilities           \
 		   build-elements                  \
-		   build-sd-fit                    \
 		   copy-rootdict-to-lib            \
 		   build-apps   
 
@@ -112,9 +111,8 @@ purge: FORCE
 	@echo " "
 	@echo "** Purging..."
 	$(MAKE) -C src/dune/Apps             purge && \
-	$(MAKE) -C src/dune/KineBinning          purge && \
 	$(MAKE) -C src/dune/Conventions      purge && \
-	$(MAKE) -C src/dune/KineBinning          purge && \
+	$(MAKE) -C src/dune/KineBinning      purge && \
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
 	$(MAKE) -C src/dune/Elements         purge && \
@@ -130,9 +128,8 @@ clean-files: FORCE
 	@echo "** Cleaning..."
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
 	$(MAKE) -C src/dune/Apps            clean && \
-	$(MAKE) -C src/dune/KineBinning         clean && \
 	$(MAKE) -C src/dune/Conventions     clean && \
-	$(MAKE) -C src/dune/KineBinning         clean && \
+	$(MAKE) -C src/dune/KineBinning     clean && \
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
 	$(MAKE) -C src/dune/Elements        clean && \
