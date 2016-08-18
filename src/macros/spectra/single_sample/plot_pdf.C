@@ -332,12 +332,12 @@ void plot_pdf(
       TString pdf_tot_filename = TString(c_pdf_tot->GetName())+"."+image_save_format;
       c_pdf_tot->SaveAs(pdf_tot_filename.Data());
       
-      TString slice_filename = TString::Format("%s_spectrum_%s_y.%s",
-          out_tag, util::AsString(b).c_str(),image_save_format);
+      TString slice_filename = TString::Format("%s_spectrum_%s_%s_%u_y.%s",
+          out_tag, util::AsString(d).c_str(), util::AsString(b).c_str(),icanvas,image_save_format);
       c_pdf_slice->Print(slice_filename.Data());
       
-      TString contrib_filename = TString::Format("%s_spectrum_%s_modes.%s",
-        out_tag, util::AsString(b).c_str(),image_save_format);
+      TString contrib_filename = TString::Format("%s_spectrum_%s_%s_%u_modes.%s",
+        out_tag, util::AsString(d).c_str(), util::AsString(b).c_str(),icanvas, image_save_format);
       c_pdf_contrib->Print(contrib_filename.Data());
     } //write_image
       
