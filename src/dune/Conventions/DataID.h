@@ -39,6 +39,9 @@ struct DataID
     DataID(conv::Detector_t d = conv::kdUndefined, conv::BeamConf_t b = conv::kbUndefined, conv::Sample_t s = conv::ksUndefined);
 };
 
+// Comparison
+bool operator==(const DataID& lhs, const DataID& rhc);
+
 namespace util {
   std::string AsString      (const DataID & obj);
   std::string DataIDAsString(const DataID & obj);

@@ -35,3 +35,10 @@ std::string util::AsString(const DataID & o)
 std::string util::DataIDAsString(const DataID & o)
 {return util::AsString(o);}
 //________________________________________________________________________________________
+bool valor::operator==(const DataID & lhs, const DataID & rhs)
+{
+  return ( (lhs.detector == rhs.detector) && 
+           (lhs.beamconf == rhs.beamconf) && 
+           (lhs.sample   == rhs.sample  ) );
+}
+//________________________________________________________________________________________
