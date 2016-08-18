@@ -96,13 +96,29 @@ void plot_pdf(
       else {ncols++;}
     }
     
-    // make a canvas
-    TString c_name = TString::Format("c_pdf_tot_%s_%s_%u",
+    // make a canvas for the 2d plots
+    TString c_name_pdf_tot = TString::Format("c_pdf_tot_%s_%s_%u",
       util::AsString(d),util::AsString(b).c_str(),icanvas);
-    TCanvas * c_pdf_tot = new TCanvas(c_name.Data(),"",20,20,canv_size_x,canv_size_y);
+    TCanvas * c_pdf_tot = new TCanvas(c_name_pdf_tot.Data(),"",20,20,canv_size_x,canv_size_y);
     c_pdf_tot->Divide(nrows,ncols);
     all_canvases.push_back(c_pdf_tot);
     
+    // Make a canvas for the 1D y-sliced plots
+    TString c_name_pdf_slice = TString::Format("c_pdf_slice_%s_%s_%u",
+      util::AsString(d),util::AsString(b).c_str(),icanvas);
+    TCanvas * c_pdf_slice = new TCanvas(c_name_pdf_slice.Data(),"",20,20,canv_size_x,canv_size_y);
+    c_pdf_slice->Divide(nrows,ncols);
+    all_canvases.push_back(c_pdf_slice);
+    
+    // Make a canvas for the mode plots
+    TString c_name_contrib = TString::Format("c_pdf_contrib_%s_%s_%u",
+      util::AsString(d),util::AsString(b).c_str(),icanvas);
+    c_pdf_contrib = new TCanvas(c_name_contrib.Data(),"",20,20,canv_size_x,canv_size_y);
+    c_pdf_contrib->Divide(nrows,ncols);
+    all_canvases.push_back(c_pdf_contrib);
+    
+    
+    // Actually read the PDFs
     for (int iplot = 0 ; iplot < canvas_content[icanvas].size() ; iplot++) {
       int isubmodel = canvas_content[icanvas][iplot];
       GenericSingleSampleFitData & submodel = *(model.GetSubModel(isubmodel));
@@ -110,253 +126,189 @@ void plot_pdf(
       conv::BeamConf_t b = submodel.GetBeam();
       conv::Sample_t   s = submodel.GetSample();
       
-      TString pdf_tot_name = TString::Format("%s_%s_%s_%s_%s_%s", 
-         tag, "pdft",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str());
-      TObject * tmp_obj = fin->Get(pdf_tot_name.Data());
-      assert(tmp_obj);
-      TH2D * pdf_tot = new TH2D(*((TH2D*)tmp_obj));
-      all_hists.push_back(pdf_tot);
+      int isample = util::ArrIdx::Instance()->SampleIdx(b, s);
+      int ibeam   = util::ArrIdx::Instance()->BeamConfIdx(b);
       
-      TVirtualPad * this_pad = c_pdf_tot->cd(iplot+1); // Pad for this plot
-      TH1F * hframe = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1);
-      hframe->Draw();
-      pdf_tot->Draw("colzsame");
-    }
+      { // 2D PDF
+        TString pdf_tot_name = TString::Format("%s_%s_%s_%s_%s_%s", 
+           tag, "pdft",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str());
+           
+        TObject * tmp_obj = fin->Get(pdf_tot_name.Data());
+        assert(tmp_obj);
+        TH2D * pdf_tot = new TH2D(*((TH2D*)tmp_obj));
+        all_hists.push_back(pdf_tot);
+        
+        // Draw the 2D plots
+        TVirtualPad * this_pad = c_pdf_tot->cd(iplot+1); // Pad for this plot
+        TH1F * pdf_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1);
+        pdf_frame->Draw();
+        pdf_tot->Draw("colzsame");
+      }
+      
+      
+      { // Sliced in Y
+        THStack * slice_stack = new THStack("stack","spectrum contributions");
+        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
+        const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
+        vector<TH1*> pdf_slice;
+        for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
+          TString slice_name = TString::Format("%s_%s_%s_%s_%s_%s_y%d",
+            tag, "pdfts",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
+            TObject * tmp_obj = fin->Get( slice_name );
+            pdf_slice.push_back((TH1D*)tmp_obj);
+        }//iy
+        
+        double max_n = 0.;
+        // Scan for max in desired Erange
+        for(int ebin = 1; ebin <= pdf_slice[0]->GetNbinsX(); ebin++) {
+           if(pdf_slice[0]->GetBinCenter(ebin) < enu_reco_max ) {
+             double sum = 0;
+             for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
+                double val = pdf_slice[iy]->GetBinContent(ebin);
+                sum += val;
+             }
+             max_n = TMath::Max(max_n, sum);           
+            }//<emax
+        }//ebin
+        
+        // Make slice legend
+        TLegend * slice_legend = new TLegend(0.50,0.40,0.88,0.80);
+        slice_legend->SetFillColor(0);
+        for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
+          pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
+          pdf_slice[iy]->SetLineWidth(1); 
+          slice_stack->Add(pdf_slice[iy]);
+          slice_legend->AddEntry(pdf_slice[iy],Form("y = [%.2f,%.2f]", y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),"LF");
+        }
+        
+        // Draw the slice plots
+        TVirtualPad * this_pad = c_pdf_tot->cd(iplot+1); // Pad for this plot
+        TH1F * slice_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*max_n);
+        slice_frame->Draw();
+        TString slice_title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
+        TLatex * slice_title = new TLatex(1,1.07*max_n,slice_title_str.Data());
+        slice_title->Draw(); 
+        if(util::IsCC(s)) {
+          slice_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+        } else {
+          slice_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
+        }
+        slice_frame->GetYaxis()->SetTitle("Events /bin");
+        slice_stack->Draw("same");
+        slice_legend->Draw();
+      } // end slice in y
+      
+      //~ 
+      //~ { // Divided by mode
+        //~ THStack * contrib_stack = new THStack("stack","spectrum contributions");
+        //~ TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };
+        //~ TH1D * pdf_contrib_coarse [conv::kNReacModesCoarse] = { 0 };
+        //~ for(int imode = 0; imode < conv::kNReacModes; imode++) {
+          //~ conv::ReacMode_t m = conv::kReactionModes[isample][imode];
+          //~ if(m == conv::kmUndefined) continue;
+          //~ cout << "Taking mode: " << util::AsString(m) << endl;
+          //~ cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
+          //~ TString contrib_name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
+            //~ tag, "pdfcs",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+          //~ TObject * tmp_obj = fin->Get(contrib_name.Data());
+          //~ pdf_contrib[imode] = (TH1D*) tmp_obj;
+          //~ if(pdf_contrib[imode]) {
+              //~ conv::ReacModeCoarse_t mc = conv::kMappingToCoarseModes[ibeam][isample][imode];
+              //~ if(mc == conv::kmcUndefined) continue; 
+              //~ cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
+              //~ bool found = false;
+              //~ for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+                //~ if(mc == conv::kReactionModesCoarse[ibeam][isample][imodec]) {
+                    //~ found = true;
+                    //~ break;
+                //~ }
+              //~ }           
+              //~ if(!found) {
+                //~ cout << "WTF! Plot type (coarse reaction mode): " << util::AsString(mc) 
+                     //~ << " not in the list of modes considered for"
+                     //~ << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
+                //~ exit(1);
+              //~ }                  
+              //~ for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+                //~ cout << "imodec = " << imodec << endl;
+                //~ if(mc != conv::kReactionModesCoarse[ibeam][isample][imodec]) continue;
+                //~ if(pdf_contrib_coarse[imodec] == 0) {
+                   //~ pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
+                //~ } else {
+                   //~ pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
+                //~ }           
+              //~ }//imodec
+          //~ }//!null
+          //~ else {
+            //~ cerr << "Null [" << name << "]" << endl;
+          //~ }
+        //~ }//imode
+        //~ 
+        //~ // Scan for max in desired Erange
+        //~ double max_n = 0.;
+        //~ for(int ebin = 1; ebin <= pdf_contrib[0]->GetNbinsX(); ebin++) {
+           //~ if(pdf_contrib[0]->GetBinCenter(ebin) < enu_reco_max ) {
+             //~ double sum = 0;
+             //~ for(int imode = 0; imode < conv::kNReacModes; imode++) {
+                //~ double val = pdf_contrib[imode]->GetBinContent(ebin);
+                //~ sum += val;
+             //~ }
+             //~ max_n = TMath::Max(max_n, sum);           
+           //~ }//<emax
+        //~ }//ebin
+        //~ 
+        //~ // Start drawing
+        //~ TLegend * contrib_legend = new TLegend(0.5,0.3,0.9,0.8);  
+        //~ contrib_legend->SetFillColor(0);
+        //~ for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+            //~ conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
+            //~ if(mc == conv::kmcUndefined) continue;
+            //~ pdf_contrib_coarse[imodec]->SetLineWidth(1); 
+            //~ pdf_contrib_coarse[imodec]->SetLineColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][0]); 
+            //~ pdf_contrib_coarse[imodec]->SetFillColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][1]); 
+            //~ pdf_contrib_coarse[imodec]->SetFillStyle(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][2]); 
+            //~ stack->Add(pdf_contrib_coarse[imodec]);
+            //~ contrib_legend->AddEntry(pdf_contrib_coarse[imodec],Form("%s",util::AsStringTex(mc,true).c_str()), "LF");
+        //~ }//imodec
+        //~ 
+        //~ TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
+        //~ TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*max_n);
+        //~ contrib_frame->Draw();
+        //~ TString contrib_title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
+        //~ TLatex * contrib_title = new TLatex(1,1.07*max_n,contrib_title_str.Data());
+        //~ contrib_title->Draw(); 
+        //~ if(util::IsCC(s)) {  
+           //~ contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+        //~ } else {
+           //~ contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
+        //~ }
+        //~ contrib_frame->GetYaxis()->SetTitle("Events /bin");
+        //~ contrib_stack->Draw("same");
+        //~ contrib_legend->Draw();
+      //~ }
+      
     
-    c_pdf_tot->Update();
+    } //iplot
+    
+    // Update the canvases
+    c_pdf_tot    ->Update();
+    c_pdf_slice  ->Update();
+    c_pdf_contrib->Update();
+    
+    // And write to files if needed
     if (write_image) {
-      TString pdf_tot_filename = c_name+"."+image_save_format;
-      c_pdf_tot->Write(pdf_tot_filename.Data());
-    }
-  }
+      TString pdf_tot_filename = TString(c_pdf_tot->GetName())+"."+image_save_format;
+      c_pdf_tot->SaveAs(pdf_tot_filename.Data());
+      
+      TString slice_filename = TString::Format("%s_spectrum_%s_y.%s",
+          out_tag, util::AsString(b).c_str(),image_save_format);
+      c_pdf_slice->Print(slice_filename.Data());
+      
+      TString contrib_filename = TString::Format("%s_spectrum_%s_modes.%s",
+        out_tag, util::AsString(b).c_str(),image_save_format);
+      c_pdf_contrib->Print(contrib_filename.Data());
+    } //write_image
+      
+  } // icanvas
   return;
 }
-    //~ 
-    //~ int ic=0;
-    //~ for(int isample = 0; isample < conv::kNSamples; isample++) {
-      //~ conv::Sample_t s = conv::kSample[ibeam][isample];
-      //~ if(s == conv::ksUndefined) continue;
-//~ //    for(int izone = 0; izone < conv::kNMaxBinZones; izone++) {
-//~ //       TString name = TString::Format("%s_%s_%s_%s_z%d", 
-//~ //           tag, "pdft_ob_rf", util::AsString(b).c_str(), util::AsString(s).c_str(), izone);
-//~ //       pdf_tot[ibeam][isample][izone] = (TH2D*) fin->Get(name.Data()); 
-//~ //    }//izone
-//~ 
-      //~ TString name = TString::Format("%s_%s_%s_%s_%s_%s", 
-           //~ tag, "pdft",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str());
-      //~ pdf_tot[ibeam][isample] = (TH2D*) fin->Get(name.Data());
-      //~ ic++;
-      //~ c_pdf_tot[ibeam]->cd(ic);
-      //~ TH1F * hframe = (TH1F*)c_pdf_tot[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1);
-      //~ hframe->Draw();
-//~ //    for(int izone = 0; izone < conv::kNMaxBinZones; izone++) {
-//~ //       if(!pdf_tot[ibeam][isample][izone]) continue;
-//~ //       pdf_tot[ibeam][isample][izone]->Draw("colzsame");
-//~ //    }//izone
-      //~ pdf_tot[ibeam][isample]->Draw("colzsame");
-    //~ }//isample
-  //~ }//ibeam
-//~ 
-  //~ //
-  //~ // Read-in and plot 1-D PDFs slices for different y ranges
-  //~ //..............................................................................................
-  //~ //
-//~ 
-  //~ TCanvas * c_pdf_slice[conv::kNBeamConf];
-  //~ for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
-    //~ conv::BeamConf_t b = conv::kBeamConf[ibeam];
-    //~ if(b == conv::kbUndefined) continue;
-    //~ TString c_name  = TString::Format("c_pdf_slice_%s", util::AsString(b).c_str());
-    //~ c_pdf_slice[ibeam] = new TCanvas(c_name.Data(),"",20,20,canv_size_x,canv_size_y);
-  //~ //c_pdf_slice[ibeam]->Divide(conv::kNSamples);
-    //~ c_pdf_slice[ibeam]->Divide(3,3);
-    //~ double max[conv::kNSamples] = { -999 };
-    //~ int ic = 0;   
-    //~ for(int isample = 0; isample < conv::kNSamples; isample++) {
-      //~ conv::Sample_t s = conv::kSample[ibeam][isample];
-      //~ if(s == conv::ksUndefined) continue;
-      //~ THStack * stack = new THStack("stack","spectrum contributions");
-      //~ const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
-      //~ TH1D * pdf_slice[n_pdf_slices] = {0};
-      //~ for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-        //~ TString name = TString::Format("%s_%s_%s_%s_%s_%s_y%d",
-                //~ tag, "pdfts",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
-             //~ cout << "getting TH1D * object: " << name << endl;
-             //~ pdf_slice[iy] = (TH1D*) fin->Get(name);
-      //~ }//iy
-      //~ // Scan for max in desired Erange
-      //~ for(int ebin = 1; ebin <= pdf_slice[0]->GetNbinsX(); ebin++) {
-         //~ if(pdf_slice[0]->GetBinCenter(ebin) < enu_reco_max ) {
-           //~ double sum = 0;
-           //~ for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-              //~ double val = pdf_slice[iy]->GetBinContent(ebin);
-              //~ sum += val;
-           //~ }
-           //~ max[isample] = TMath::Max(max[isample], sum);           
-         //~ }//<emax
-      //~ }//ebin
-      //~ // Start drawing
-      //~ ic++;
-      //~ const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
-      //~ TLegend * leg = new TLegend(0.50,0.40,0.88,0.80);  
-      //~ leg->SetFillColor(0);
-      //~ for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-          //~ if(pdf_slice[iy]) {
-               //~ pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
-               //~ pdf_slice[iy]->SetLineWidth(1); 
-               //~ stack->Add(pdf_slice[iy]);
-               //~ leg->AddEntry(pdf_slice[iy],Form("y = [%.2f,%.2f]", y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),"LF");
-          //~ }
-      //~ }
-      //~ c_pdf_slice[ibeam]->cd(ic);
-      //~ TH1F * hframe = (TH1F*)c_pdf_slice[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
-      //~ hframe->Draw();
-      //~ TString title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-      //~ TLatex * title = new TLatex(1,1.07*max[isample],title_str.Data());
-      //~ title->Draw(); 
-      //~ if(util::IsCC(s)) {
-        //~ hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
-      //~ } else {
-        //~ hframe->GetXaxis()->SetTitle("Visible Energy (GeV)");
-      //~ }
-      //~ hframe->GetYaxis()->SetTitle("Events /bin");
-      //~ stack->Draw("same");
-      //~ leg->Draw();
-       //~ 
-    //~ }//isample
-    //~ if (write_image) {
-      //~ TString imgname = TString::Format("%s_spectrum_%s_y.%s",
-        //~ out_tag, util::AsString(b).c_str(),image_save_format);
-      //~ c_pdf_slice[ibeam]->Print(imgname.Data());
-    //~ }
-  //~ }//ibeam
-//~ 
-//~ 
-  //~ //
-  //~ // Read-in and plot Ereco spectra and contributions from various modes
-  //~ //..............................................................................................
-  //~ //
-//~ 
-  //~ TCanvas * c_pdf_contrib[conv::kNBeamConf];
-  //~ for(int ibeam = 0; ibeam <conv::kNBeamConf; ibeam++) {
-    //~ conv::BeamConf_t b = conv::kBeamConf[ibeam];
-    //~ if(b == conv::kbUndefined) continue;
-    //~ TString c_name = TString::Format("c_pdf_contrib_%s", util::AsString(b).c_str());
-    //~ c_pdf_contrib[ibeam] = new TCanvas(c_name.Data(),"",20,20,canv_size_x,canv_size_y);
-  //~ //c_pdf_contrib[ibeam]->Divide(conv::kNSamples);
-    //~ c_pdf_contrib[ibeam]->Divide(3,3);
-    //~ int ic = 0;
-    //~ double max[conv::kNSamples] = { -999 };
-    //~ for(int isample = 0; isample < conv::kNSamples; isample++) {
-      //~ conv::Sample_t s = conv::kSample[ibeam][isample];
-      //~ if(s == conv::ksUndefined) continue;
-      //~ cout << "Creating stack for beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
-      //~ THStack * stack = new THStack("stack","spectrum contributions");
-      //~ TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };
-      //~ TH1D * pdf_contrib_coarse [conv::kNReacModesCoarse] = { 0 };
-      //~ for(int imode = 0; imode < conv::kNReacModes; imode++) {
-        //~ conv::ReacMode_t m = conv::kReactionModes[isample][imode];
-        //~ if(m == conv::kmUndefined) continue;
-        //~ cout << "Taking mode: " << util::AsString(m) << endl;
-        //~ cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
-        //~ TString name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
-          //~ tag, "pdfcs",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
-        //~ pdf_contrib[imode] = (TH1D*) fin->Get(name.Data());
-        //~ if(pdf_contrib[imode]) {
-            //~ conv::ReacModeCoarse_t mc = conv::kMappingToCoarseModes[ibeam][isample][imode];
-            //~ if(mc == conv::kmcUndefined) continue; 
-            //~ cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
-            //~ bool found = false;
-            //~ for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-              //~ if(mc == conv::kReactionModesCoarse[ibeam][isample][imodec]) {
-                  //~ found = true;
-                  //~ break;
-              //~ }
-            //~ }           
-            //~ if(!found) {
-              //~ cout << "WTF! Plot type (coarse reaction mode): " << util::AsString(mc) 
-                   //~ << " not in the list of modes considered for"
-                   //~ << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
-              //~ exit(1);
-            //~ }                  
-            //~ for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-              //~ cout << "imodec = " << imodec << endl;
-              //~ if(mc != conv::kReactionModesCoarse[ibeam][isample][imodec]) continue;
-              //~ if(pdf_contrib_coarse[imodec] == 0) {
-                 //~ pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
-              //~ } else {
-                 //~ pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
-              //~ }           
-            //~ }//imodec
-        //~ }//!null
-        //~ else {
-          //~ cerr << "Null [" << name << "]" << endl;
-        //~ }
-      //~ }//imode
-      //~ // Scan for max in desired Erange
-      //~ for(int ebin = 1; ebin <= pdf_contrib[0]->GetNbinsX(); ebin++) {
-         //~ if(pdf_contrib[0]->GetBinCenter(ebin) < enu_reco_max ) {
-           //~ double sum = 0;
-           //~ for(int imode = 0; imode < conv::kNReacModes; imode++) {
-              //~ double val = pdf_contrib[imode]->GetBinContent(ebin);
-              //~ sum += val;
-           //~ }
-           //~ max[isample] = TMath::Max(max[isample], sum);           
-         //~ }//<emax
-      //~ }//ebin
-      //~ // Start drawing
-      //~ ic++;
-      //~ TLegend * leg = new TLegend(0.5,0.3,0.9,0.8);  
-      //~ leg->SetFillColor(0);
-      //~ for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-          //~ conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
-          //~ if(mc == conv::kmcUndefined) continue;
-          //~ pdf_contrib_coarse[imodec]->SetLineWidth(1); 
-          //~ pdf_contrib_coarse[imodec]->SetLineColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][0]); 
-          //~ pdf_contrib_coarse[imodec]->SetFillColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][1]); 
-          //~ pdf_contrib_coarse[imodec]->SetFillStyle(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][2]); 
-          //~ stack->Add(pdf_contrib_coarse[imodec]);
-          //~ leg->AddEntry(pdf_contrib_coarse[imodec],Form("%s",util::AsStringTex(mc,true).c_str()), "LF");
-      //~ }//imodec
-      //~ c_pdf_contrib[ibeam]->cd(ic);
-      //~ TH1F * hframe = (TH1F*)c_pdf_contrib[ibeam]->GetPad(ic)->DrawFrame(0,0,enu_reco_max,1.2*max[isample]);
-      //~ hframe->Draw();
-      //~ TString title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-      //~ TLatex * title = new TLatex(1,1.07*max[isample],title_str.Data());
-      //~ title->Draw(); 
-      //~ if(util::IsCC(s)) {  
-         //~ hframe->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
-      //~ } else {
-         //~ hframe->GetXaxis()->SetTitle("Visible Energy (GeV)");
-      //~ }
-      //~ hframe->GetYaxis()->SetTitle("Events /bin");
-      //~ stack->Draw("same");
-      //~ leg->Draw();
-      //~ 
-      //~ //
-      //~ // Now write out tables
-      //~ //  
-      //~ double ntot_sample = 0;
-      //~ for(int imode = 0; imode < conv::kNReacModes; imode++) {
-         //~ conv::ReacMode_t m = conv::kReactionModes[isample][imode];
-         //~ if(m == conv::kmUndefined) continue;
-            //~ cout << "Taking mode: " << util::AsString(m) << endl;
-         //~ ntot_sample += pdf_contrib[imode]->Integral();
-      //~ }
-      //~ for(int imode = 0; imode < conv::kNReacModes; imode++) {
-         //~ conv::ReacMode_t m = conv::kReactionModes[isample][imode];
-         //~ if(m == conv::kmUndefined) continue;
-         //~ double ntot = pdf_contrib[imode]->Integral();
-         //~ double frac = 100*ntot/ntot_sample;
-         //~ cout << util::AsStringTeX(m,false) << "\t & " << frac << "\\" << endl;
-      //~ }
-//~ 
-    //~ }//isample
-    //~ if (write_image) {
-      //~ TString imgname = TString::Format("%s_spectrum_%s_modes.%s",
-        //~ out_tag, util::AsString(b).c_str(),image_save_format);
-      //~ c_pdf_contrib[ibeam]->Print(imgname.Data());
-    //~ }
-  //~ }//ibeam
-//~ 
-//~ }
