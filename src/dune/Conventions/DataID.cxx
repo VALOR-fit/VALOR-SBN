@@ -15,6 +15,8 @@ ChangeLog:
 using namespace valor;
 using namespace valor::conv;
 
+ClassImp(DataID);
+
 //________________________________________________________________________________________
 valor::DataID::DataID(Detector_t d, BeamConf_t b, Sample_t s)
  : detector(d),beamconf(b),sample(s)

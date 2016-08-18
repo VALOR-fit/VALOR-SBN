@@ -21,6 +21,8 @@
 
 #include <string>
 
+#include <TObject.h>
+
 #include "dune/Conventions/DuneBuild.h"
 
 #include "dune/Conventions/Sample.h"
@@ -37,6 +39,8 @@ struct DataID
     conv::Sample_t   sample;
     
     DataID(conv::Detector_t d = conv::kdUndefined, conv::BeamConf_t b = conv::kbUndefined, conv::Sample_t s = conv::ksUndefined);
+    
+  ClassDef(DataID,1);
 };
 
 // Comparison
