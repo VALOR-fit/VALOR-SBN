@@ -4704,9 +4704,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     // sample: ksNC1piC
@@ -4715,9 +4715,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     // sample: ksNC1pi0
@@ -4726,9 +4726,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     // sample: ksNCoth
@@ -4737,9 +4737,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     //TODO: revisit ksNeutrinoElec and ksInvMuDecay
@@ -4827,135 +4827,135 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
   {
     // sample: ksNuMuCC0pi1trk
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
-      kmcNC           
+      kmcNuMuBarCCQE,
+      kmcNuMuBarCCMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
+      kmcNC
     },
     // sample: ksNuMuCC0pi2trk
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
-      kmcNC           
+      kmcNuMuBarCCQE,
+      kmcNuMuBarCCMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
+      kmcNC
     },
     // sample: ksNuMuCC0piNtrk
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
-      kmcNC           
+      kmcNuMuBarCCQE,
+      kmcNuMuBarCCMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
+      kmcNC
     },
     // sample: ksNuMuCC0pi3trkDelta
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
-      kmcNC           
+      kmcNuMuBarCCQE,
+      kmcNuMuBarCCMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
+      kmcNC
     },
     // sample: ksNuMuCC1piC
     {
-      kmcNuMuCCQEMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuBarCCQEMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
       kmcNC,
       kmcUndefined
     },
     // sample: ksNuMuCC1pi0
     {
-      kmcNuMuCCQEMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuBarCCQEMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
       kmcNC,
-      kmcUndefined           
+      kmcUndefined
     },
     // sample: ksNuMuCC1piC1pi0
     {
-      kmcNuMuCCQEMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuBarCCQEMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
       kmcNC,
-      kmcUndefined           
+      kmcUndefined
     },
     // sample: ksNuMuCCoth
     {
-      kmcNuMuCCQEMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuBarCCQEMEC,
+      kmcNuMuBarCC1pi,
+      kmcNuMuBarCC2pi,
+      kmcNuMuBarCCoth,
+      kmcNuMuCC,
+      kmcNuENuEBarCC,
       kmcNC,
-      kmcUndefined          
+      kmcUndefined
     },
     // sample: ksNuMuCCWS0pi
     {
-      kmcNuMuBarCCQEMEC,    
-      kmcNuMuBarCC1pi,   
-      kmcNuMuBarCC2pi,   
-      kmcNuMuBarCCoth,   
-      kmcNuMuCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuCCQEMEC,
+      kmcNuMuCC1pi,
+      kmcNuMuCC2pi,
+      kmcNuMuCCoth,
+      kmcNuMuBarCC,
+      kmcNuENuEBarCC,
       kmcNC,
-      kmcUndefined           
+      kmcUndefined
     },
     // sample: ksNuMuCCWS1piC
     {
-      kmcNuMuBarCCQEMEC,    
-      kmcNuMuBarCC1pi,   
-      kmcNuMuBarCC2pi,   
-      kmcNuMuBarCCoth,   
-      kmcNuMuCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuCCQEMEC,
+      kmcNuMuCC1pi,
+      kmcNuMuCC2pi,
+      kmcNuMuCCoth,
+      kmcNuMuBarCC,
+      kmcNuENuEBarCC,
       kmcNC,
-      kmcUndefined           
+      kmcUndefined
     },
     // sample: ksNuMuCCWS1pi0
     {
-      kmcNuMuBarCCQEMEC,    
-      kmcNuMuBarCC1pi,   
-      kmcNuMuBarCC2pi,   
-      kmcNuMuBarCCoth,   
-      kmcNuMuCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuCCQEMEC,
+      kmcNuMuCC1pi,
+      kmcNuMuCC2pi,
+      kmcNuMuCCoth,
+      kmcNuMuBarCC,
+      kmcNuENuEBarCC,
       kmcNC,
-      kmcUndefined           
+      kmcUndefined
     },
     // sample: ksNuMuCCWSoth
     {
-      kmcNuMuBarCCQEMEC,    
-      kmcNuMuBarCC1pi,   
-      kmcNuMuBarCC2pi,   
-      kmcNuMuBarCCoth,   
-      kmcNuMuCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuCCQEMEC,
+      kmcNuMuCC1pi,
+      kmcNuMuCC2pi,
+      kmcNuMuCCoth,
+      kmcNuMuBarCC,
+      kmcNuENuEBarCC,
       kmcNC,
-      kmcUndefined           
+      kmcUndefined
     },
     // sample: ksNuECC0pi
     {
@@ -5007,9 +5007,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     // sample: ksNC1piC
@@ -5018,9 +5018,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     // sample: ksNC1pi0
@@ -5029,9 +5029,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     // sample: ksNCoth
@@ -5040,9 +5040,9 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuECC,   
       kmcNuEBarCC,   
+      kmcNC1piC,   
       kmcNC1pi0,   
       kmcNCoth,   
-      kmcUndefined,
       kmcUndefined          
     },
     //TODO: revisit ksNeutrinoElec and ksInvMuDecay
@@ -5318,9 +5318,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
       {0,0,0}  
     },
     // sample: ksNC1piC
@@ -5329,9 +5329,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
       {0,0,0}  
     },
     // sample: ksNC1pi0
@@ -5340,9 +5340,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
       {0,0,0}  
     },
     // sample: ksNCoth
@@ -5351,9 +5351,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
-      { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
+      { kBlack, kRed,      3001 }, // kmcNCoth   
       {0,0,0}  
     },
     // sample: ksNeutrinoElec
@@ -5619,9 +5619,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
       {0,0,0}  
     },
     // sample: ksNC1piC
@@ -5630,9 +5630,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
       {0,0,0}  
     },
     // sample: ksNC1pi0
@@ -5641,9 +5641,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
-      { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
+      { kBlack, kRed,      3001 }, // kmcNCoth   
       {0,0,0}  
     },
     // sample: ksNCoth
@@ -5652,9 +5652,9 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
       { kBlack, kWhite,    3544 }, // kmcNuECC
       { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kRed,      3022 }, // kmcNC1piC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
-      {0,0,0},        
       {0,0,0}  
     },
     // sample: ksNeutrinoElec
@@ -8410,8 +8410,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNC1piC,      // kmNuMuNC1piC          
+      kmcNC1pi0,      // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -8430,14 +8430,14 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNCoth,          // kmNuMuBarNCcoh        
-      kmcNCoth,          // kmNuMuBarNCoth        
-      kmcNCoth,          // kmNuMuBarNCELScat 
+      kmcNCoth,       // kmNuMuBarNCcoh        
+      kmcNCoth,       // kmNuMuBarNCoth        
+      kmcNCoth,       // kmNuMuBarNCELScat 
       kmcNuECC, // kmNuECCQE             
       kmcNuECC, // kmNuECCMEC            
       kmcNuECC, // kmNuECC1piC           
@@ -8448,9 +8448,9 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuECC, // kmNuECCcoh            
       kmcNuECC, // kmNuECCoth
       //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNCoth,          // kmNuENC1piC           
-      kmcNC1pi0,          // kmNuENC1pi0           
+     //kmcNC,          // kmNuENCMEC           
+      kmcNC1piC,     // kmNuENC1piC           
+      kmcNC1pi0,     // kmNuENC1pi0           
     //kmcNC,          // kmNuENC2piC           
     //kmcNC,          // kmNuENC2pi0           
     //kmcNC,          // kmNuENCpiCpi0         
@@ -8469,8 +8469,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuEBarCC, // kmNuEBarCCoth         
     //kmcNC,          // kmNuEBarNCEL          
     //kmcNC,          // kmNuEBarNCMEC         
-      kmcNCoth,          // kmNuEBarNC1piC        
-      kmcNC1pi0,          // kmNuEBarNC1pi0        
+      kmcNC1piC,      // kmNuEBarNC1piC        
+      kmcNC1pi0,      // kmNuEBarNC1pi0        
     //kmcNC,          // kmNuEBarNC2piC        
     //kmcNC,          // kmNuEBarNC2pi0        
     //kmcNC,          // kmNuEBarNCpiCpi0      
@@ -8576,8 +8576,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNC1piC,       // kmNuMuNC1piC          
+      kmcNC1pi0,       // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -8596,8 +8596,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
@@ -8615,7 +8615,7 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuECC, // kmNuECCoth
       //kmcNC,          // kmNuENCEL             
     //kmcNC,          // kmNuENCMEC           
-      kmcNCoth,          // kmNuENC1piC           
+      kmcNC1piC,          // kmNuENC1piC           
       kmcNC1pi0,          // kmNuENC1pi0           
     //kmcNC,          // kmNuENC2piC           
     //kmcNC,          // kmNuENC2pi0           
@@ -8635,8 +8635,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuEBarCC, // kmNuEBarCCoth         
     //kmcNC,          // kmNuEBarNCEL          
     //kmcNC,          // kmNuEBarNCMEC         
-      kmcNCoth,          // kmNuEBarNC1piC        
-      kmcNC1pi0,          // kmNuEBarNC1pi0        
+      kmcNC1piC,      // kmNuEBarNC1piC        
+      kmcNC1pi0,      // kmNuEBarNC1pi0        
     //kmcNC,          // kmNuEBarNC2piC        
     //kmcNC,          // kmNuEBarNC2pi0        
     //kmcNC,          // kmNuEBarNCpiCpi0      
@@ -8742,8 +8742,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNC1piC,      // kmNuMuNC1piC          
+      kmcNC1pi0,      // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -8762,8 +8762,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
@@ -8801,8 +8801,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuEBarCC, // kmNuEBarCCoth         
     //kmcNC,          // kmNuEBarNCEL          
     //kmcNC,          // kmNuEBarNCMEC         
-      kmcNCoth,          // kmNuEBarNC1piC        
-      kmcNC1pi0,          // kmNuEBarNC1pi0        
+      kmcNC1piC,      // kmNuEBarNC1piC        
+      kmcNC1pi0,      // kmNuEBarNC1pi0        
     //kmcNC,          // kmNuEBarNC2piC        
     //kmcNC,          // kmNuEBarNC2pi0        
     //kmcNC,          // kmNuEBarNCpiCpi0      
@@ -8928,8 +8928,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
@@ -8947,8 +8947,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuECC, // kmNuECCoth
       //kmcNC,          // kmNuENCEL             
     //kmcNC,          // kmNuENCMEC           
-      kmcNCoth,          // kmNuENC1piC           
-      kmcNC1pi0,          // kmNuENC1pi0           
+      kmcNC1piC,      // kmNuENC1piC           
+      kmcNC1pi0,      // kmNuENC1pi0           
     //kmcNC,          // kmNuENC2piC           
     //kmcNC,          // kmNuENC2pi0           
     //kmcNC,          // kmNuENCpiCpi0         
@@ -8967,8 +8967,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuEBarCC, // kmNuEBarCCoth         
     //kmcNC,          // kmNuEBarNCEL          
     //kmcNC,          // kmNuEBarNCMEC         
-      kmcNCoth,          // kmNuEBarNC1piC        
-      kmcNC1pi0,          // kmNuEBarNC1pi0        
+      kmcNC1piC,      // kmNuEBarNC1piC        
+      kmcNC1pi0,      // kmNuEBarNC1pi0        
     //kmcNC,          // kmNuEBarNC2piC        
     //kmcNC,          // kmNuEBarNC2pi0        
     //kmcNC,          // kmNuEBarNCpiCpi0      
@@ -10215,89 +10215,89 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuTauNuTauBarCC,       //kmNuEBarToNuTauBarCCQE
       kmcNuTauNuTauBarCC       //kmNuEBarToNuTauBarCCQE
     }
-      },//end of FHC
+    },//end of FHC
   {  //RHC
     // selection: ksNuMuCC0pi1trk
     {
-      kmcNuMuCCQE,    // kmNuMuCCQE            
-      kmcNuMuCCMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQE, // kmNuMuBarCCQE
+      kmcNuMuBarCCMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -10312,157 +10312,157 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcUndefined,
       kmcUndefined,
       kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
-	kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
+      kmcUndefined,
       kmcUndefined
     },
     // selection: ksNuMuCC0pi2trk
     {
-      kmcNuMuCCQE,    // kmNuMuCCQE            
-      kmcNuMuCCMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQE, // kmNuMuBarCCQE
+      kmcNuMuBarCCMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -10549,85 +10549,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
     },
     // selection: ksNuMuCC0piNtrk
     {
-      kmcNuMuCCQE,    // kmNuMuCCQE            
-      kmcNuMuCCMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQE, // kmNuMuBarCCQE
+      kmcNuMuBarCCMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -10714,85 +10714,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
     },
     // selection: ksNuMuCC3trkDelta
     {
-      kmcNuMuCCQE,    // kmNuMuCCQE            
-      kmcNuMuCCMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQE, // kmNuMuBarCCQE
+      kmcNuMuBarCCMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -10879,85 +10879,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
     },
     // selection: ksNuMuCC1piC
     {
-      kmcNuMuCCQEMEC,   // kmNuMuCCQE            
-      kmcNuMuCCQEMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQEMEC, // kmNuMuBarCCQE
+      kmcNuMuBarCCQEMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -11044,85 +11044,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
     },
     // selection: ksNuMuCC1pi0
     {
-      kmcNuMuCCQEMEC,    // kmNuMuCCQE            
-      kmcNuMuCCQEMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQEMEC, // kmNuMuBarCCQE
+      kmcNuMuBarCCQEMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -11209,85 +11209,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
     },
     // selection: ksNuMuCC1piC1pi0
     {
-      kmcNuMuCCQEMEC,    // kmNuMuCCQE            
-      kmcNuMuCCQEMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQEMEC, // kmNuMuBarCCQE
+      kmcNuMuBarCCQEMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -11374,85 +11374,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
     },
     // selection: ksNuMuCCoth
     {
-      kmcNuMuCCQEMEC,    // kmNuMuCCQE            
-      kmcNuMuCCQEMEC,   // kmNuMuCCMEC           
-      kmcNuMuCC1pi,   // kmNuMuCC1piC          
-      kmcNuMuCC1pi,   // kmNuMuCC1pi0          
-      kmcNuMuCC2pi,   // kmNuMuCC2piC          
-      kmcNuMuCC2pi,   // kmNuMuCC2pi0          
-      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0        
-      kmcNuMuCCoth,   // kmNuMuCCcoh           
-      kmcNuMuCCoth,   // kmNuMuCCIMD           
-      kmcNuMuCCoth,   // kmNuMuCCoth 
-      kmcNuMuCCoth,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCC,      // kmNuMuCCQE
+      kmcNuMuCC,      // kmNuMuCCMEC
+      kmcNuMuCC,      // kmNuMuCC1piC
+      kmcNuMuCC,      // kmNuMuCC1pi0
+      kmcNuMuCC,      // kmNuMuCC2piC
+      kmcNuMuCC,      // kmNuMuCC2pi0
+      kmcNuMuCC,      // kmNuMuCCpiCpi0
+      kmcNuMuCC,      // kmNuMuCCcoh
+      kmcNuMuCC,      // kmNuMuCCIMD
+      kmcNuMuCC,      // kmNuMuCCoth
+      kmcNuMuCC,      // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCC,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCC,   // kmNuMuBarCCoth
-      kmcNuMuBarCC,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCCQEMEC, // kmNuMuBarCCQE
+      kmcNuMuBarCCQEMEC,// kmNuMuBarCCMEC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1piC
+      kmcNuMuBarCC1pi,// kmNuMuBarCC1pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2piC
+      kmcNuMuBarCC2pi,// kmNuMuBarCC2pi0
+      kmcNuMuBarCC2pi,// kmNuMuBarCCpiCpi0
+      kmcNuMuBarCCoth,// kmNuMuBarCCcoh
+      kmcNuMuBarCCoth,// kmNuMuBarCCoth
+      kmcNuMuBarCCoth,// kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,          // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -11539,85 +11539,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
     },
     // selection: ksNuMuCCWS0pi
     {
-      kmcNuMuCC,    // kmNuMuCCQE            
-      kmcNuMuCC,   // kmNuMuCCMEC           
-      kmcNuMuCC,   // kmNuMuCC1piC          
-      kmcNuMuCC,   // kmNuMuCC1pi0          
-      kmcNuMuCC,   // kmNuMuCC2piC          
-      kmcNuMuCC,   // kmNuMuCC2pi0          
-      kmcNuMuCC,   // kmNuMuCCpiCpi0        
-      kmcNuMuCC,   // kmNuMuCCcoh           
-      kmcNuMuCC,   // kmNuMuCCIMD           
-      kmcNuMuCC,   // kmNuMuCCoth 
-      kmcNuMuCC,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCCQEMEC, // kmNuMuCCQE
+      kmcNuMuCCQEMEC, // kmNuMuCCMEC
+      kmcNuMuCC1pi,   // kmNuMuCC1piC
+      kmcNuMuCC1pi,   // kmNuMuCC1pi0
+      kmcNuMuCC2pi,   // kmNuMuCC2piC
+      kmcNuMuCC2pi,   // kmNuMuCC2pi0
+      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0
+      kmcNuMuCCoth,   // kmNuMuCCcoh
+      kmcNuMuCCoth,   // kmNuMuCCIMD
+      kmcNuMuCCoth,   // kmNuMuCCoth
+      kmcNuMuCCoth,   // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCCoth,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCCoth,   // kmNuMuBarCCoth
-      kmcNuMuBarCCoth,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCC,   // kmNuMuBarCCQE
+      kmcNuMuBarCC,   // kmNuMuBarCCMEC
+      kmcNuMuBarCC,   // kmNuMuBarCC1piC
+      kmcNuMuBarCC,   // kmNuMuBarCC1pi0
+      kmcNuMuBarCC,   // kmNuMuBarCC2piC
+      kmcNuMuBarCC,   // kmNuMuBarCC2pi0
+      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0
+      kmcNuMuBarCC,   // kmNuMuBarCCcoh
+      kmcNuMuBarCC,   // kmNuMuBarCCoth
+      kmcNuMuBarCC,   // kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,           // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -11705,85 +11705,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
 
     // selection: ksNuMuCCWS1piC
     {
-      kmcNuMuCC,    // kmNuMuCCQE            
-      kmcNuMuCC,   // kmNuMuCCMEC           
-      kmcNuMuCC,   // kmNuMuCC1piC          
-      kmcNuMuCC,   // kmNuMuCC1pi0          
-      kmcNuMuCC,   // kmNuMuCC2piC          
-      kmcNuMuCC,   // kmNuMuCC2pi0          
-      kmcNuMuCC,   // kmNuMuCCpiCpi0        
-      kmcNuMuCC,   // kmNuMuCCcoh           
-      kmcNuMuCC,   // kmNuMuCCIMD           
-      kmcNuMuCC,   // kmNuMuCCoth 
-      kmcNuMuCC,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCCQEMEC, // kmNuMuCCQE
+      kmcNuMuCCQEMEC, // kmNuMuCCMEC
+      kmcNuMuCC1pi,   // kmNuMuCC1piC
+      kmcNuMuCC1pi,   // kmNuMuCC1pi0
+      kmcNuMuCC2pi,   // kmNuMuCC2piC
+      kmcNuMuCC2pi,   // kmNuMuCC2pi0
+      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0
+      kmcNuMuCCoth,   // kmNuMuCCcoh
+      kmcNuMuCCoth,   // kmNuMuCCIMD
+      kmcNuMuCCoth,   // kmNuMuCCoth
+      kmcNuMuCCoth,   // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCCoth,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCCoth,   // kmNuMuBarCCoth
-      kmcNuMuBarCCoth,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCC,   // kmNuMuBarCCQE
+      kmcNuMuBarCC,   // kmNuMuBarCCMEC
+      kmcNuMuBarCC,   // kmNuMuBarCC1piC
+      kmcNuMuBarCC,   // kmNuMuBarCC1pi0
+      kmcNuMuBarCC,   // kmNuMuBarCC2piC
+      kmcNuMuBarCC,   // kmNuMuBarCC2pi0
+      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0
+      kmcNuMuBarCC,   // kmNuMuBarCCcoh
+      kmcNuMuBarCC,   // kmNuMuBarCCoth
+      kmcNuMuBarCC,   // kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,           // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -11871,85 +11871,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
 
     // selection: ksNuMuCCWS1pi0
     {
-      kmcNuMuCC,    // kmNuMuCCQE            
-      kmcNuMuCC,   // kmNuMuCCMEC           
-      kmcNuMuCC,   // kmNuMuCC1piC          
-      kmcNuMuCC,   // kmNuMuCC1pi0          
-      kmcNuMuCC,   // kmNuMuCC2piC          
-      kmcNuMuCC,   // kmNuMuCC2pi0          
-      kmcNuMuCC,   // kmNuMuCCpiCpi0        
-      kmcNuMuCC,   // kmNuMuCCcoh           
-      kmcNuMuCC,   // kmNuMuCCIMD           
-      kmcNuMuCC,   // kmNuMuCCoth 
-      kmcNuMuCC,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCCQEMEC, // kmNuMuCCQE
+      kmcNuMuCCQEMEC, // kmNuMuCCMEC
+      kmcNuMuCC1pi,   // kmNuMuCC1piC
+      kmcNuMuCC1pi,   // kmNuMuCC1pi0
+      kmcNuMuCC2pi,   // kmNuMuCC2piC
+      kmcNuMuCC2pi,   // kmNuMuCC2pi0
+      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0
+      kmcNuMuCCoth,   // kmNuMuCCcoh
+      kmcNuMuCCoth,   // kmNuMuCCIMD
+      kmcNuMuCCoth,   // kmNuMuCCoth
+      kmcNuMuCCoth,   // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCCoth,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCCoth,   // kmNuMuBarCCoth
-      kmcNuMuBarCCoth,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCC,   // kmNuMuBarCCQE
+      kmcNuMuBarCC,   // kmNuMuBarCCMEC
+      kmcNuMuBarCC,   // kmNuMuBarCC1piC
+      kmcNuMuBarCC,   // kmNuMuBarCC1pi0
+      kmcNuMuBarCC,   // kmNuMuBarCC2piC
+      kmcNuMuBarCC,   // kmNuMuBarCC2pi0
+      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0
+      kmcNuMuBarCC,   // kmNuMuBarCCcoh
+      kmcNuMuBarCC,   // kmNuMuBarCCoth
+      kmcNuMuBarCC,   // kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,           // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -12037,85 +12037,85 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
 
     // selection: ksNuMuCCWSoth
     {
-      kmcNuMuCC,    // kmNuMuCCQE            
-      kmcNuMuCC,   // kmNuMuCCMEC           
-      kmcNuMuCC,   // kmNuMuCC1piC          
-      kmcNuMuCC,   // kmNuMuCC1pi0          
-      kmcNuMuCC,   // kmNuMuCC2piC          
-      kmcNuMuCC,   // kmNuMuCC2pi0          
-      kmcNuMuCC,   // kmNuMuCCpiCpi0        
-      kmcNuMuCC,   // kmNuMuCCcoh           
-      kmcNuMuCC,   // kmNuMuCCIMD           
-      kmcNuMuCC,   // kmNuMuCCoth 
-      kmcNuMuCC,   // kmNuMuCCELScat
-    //kmcNC,          // kmNuMuNCEL            
-    //kmcNC,          // kmNuMuNCMEC           
-      kmcNC,          // kmNuMuNC1piC          
-      kmcNC,          // kmNuMuNC1pi0          
-    //kmcNC,          // kmNuMuNC2piC          
-    //kmcNC,          // kmNuMuNC2pi0          
-    //kmcNC,          // kmNuMuNCpiCpi0        
-      kmcNC,          // kmNuMuNCcoh           
-      kmcNC,          // kmNuMuNCoth   
+      kmcNuMuCCQEMEC, // kmNuMuCCQE
+      kmcNuMuCCQEMEC, // kmNuMuCCMEC
+      kmcNuMuCC1pi,   // kmNuMuCC1piC
+      kmcNuMuCC1pi,   // kmNuMuCC1pi0
+      kmcNuMuCC2pi,   // kmNuMuCC2piC
+      kmcNuMuCC2pi,   // kmNuMuCC2pi0
+      kmcNuMuCC2pi,   // kmNuMuCCpiCpi0
+      kmcNuMuCCoth,   // kmNuMuCCcoh
+      kmcNuMuCCoth,   // kmNuMuCCIMD
+      kmcNuMuCCoth,   // kmNuMuCCoth
+      kmcNuMuCCoth,   // kmNuMuCCELScat
+    //kmcNC,          // kmNuMuNCEL
+    //kmcNC,          // kmNuMuNCMEC
+      kmcNC,          // kmNuMuNC1piC
+      kmcNC,          // kmNuMuNC1pi0
+    //kmcNC,          // kmNuMuNC2piC
+    //kmcNC,          // kmNuMuNC2pi0
+    //kmcNC,          // kmNuMuNCpiCpi0
+      kmcNC,          // kmNuMuNCcoh
+      kmcNC,          // kmNuMuNCoth
       kmcNC,          // kmNuMuNCELScat
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCQE         
-      kmcNuMuBarCCQEMEC,   // kmNuMuBarCCMEC        
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1piC       
-      kmcNuMuBarCC1pi,   // kmNuMuBarCC1pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2piC       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCC2pi0       
-      kmcNuMuBarCC2pi,   // kmNuMuBarCCpiCpi0     
-      kmcNuMuBarCCoth,   // kmNuMuBarCCcoh        
-      kmcNuMuBarCCoth,   // kmNuMuBarCCoth
-      kmcNuMuBarCCoth,   // kmNuMuBarCCELScat 
-    //kmcNC,          // kmNuMuBarNCEL         
-    //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNC,          // kmNuMuBarNC1piC       
-      kmcNC,          // kmNuMuBarNC1pi0       
-    //kmcNC,          // kmNuMuBarNC2piC       
-    //kmcNC,          // kmNuMuBarNC2pi0       
-    //kmcNC,          // kmNuMuBarNCpiCpi0     
-      kmcNC,          // kmNuMuBarNCcoh        
-      kmcNC,          // kmNuMuBarNCoth        
-      kmcNC,          // kmNuMuBarNCELScat 
-      kmcNuENuEBarCC, // kmNuECCQE             
-      kmcNuENuEBarCC, // kmNuECCMEC            
-      kmcNuENuEBarCC, // kmNuECC1piC           
-      kmcNuENuEBarCC, // kmNuECC1pi0           
-      kmcNuENuEBarCC, // kmNuECC2piC           
-      kmcNuENuEBarCC, // kmNuECC2pi0           
-      kmcNuENuEBarCC, // kmNuECCpiCpi0         
-      kmcNuENuEBarCC, // kmNuECCcoh            
+      kmcNuMuBarCC,   // kmNuMuBarCCQE
+      kmcNuMuBarCC,   // kmNuMuBarCCMEC
+      kmcNuMuBarCC,   // kmNuMuBarCC1piC
+      kmcNuMuBarCC,   // kmNuMuBarCC1pi0
+      kmcNuMuBarCC,   // kmNuMuBarCC2piC
+      kmcNuMuBarCC,   // kmNuMuBarCC2pi0
+      kmcNuMuBarCC,   // kmNuMuBarCCpiCpi0
+      kmcNuMuBarCC,   // kmNuMuBarCCcoh
+      kmcNuMuBarCC,   // kmNuMuBarCCoth
+      kmcNuMuBarCC,   // kmNuMuBarCCELScat
+    //kmcNC,          // kmNuMuBarNCEL
+    //kmcNC,          // kmNuMuBarNCMEC
+      kmcNC,          // kmNuMuBarNC1piC
+      kmcNC,          // kmNuMuBarNC1pi0
+    //kmcNC,          // kmNuMuBarNC2piC
+    //kmcNC,          // kmNuMuBarNC2pi0
+    //kmcNC,          // kmNuMuBarNCpiCpi0
+      kmcNC,          // kmNuMuBarNCcoh
+      kmcNC,          // kmNuMuBarNCoth
+      kmcNC,          // kmNuMuBarNCELScat
+      kmcNuENuEBarCC, // kmNuECCQE
+      kmcNuENuEBarCC, // kmNuECCMEC
+      kmcNuENuEBarCC, // kmNuECC1piC
+      kmcNuENuEBarCC, // kmNuECC1pi0
+      kmcNuENuEBarCC, // kmNuECC2piC
+      kmcNuENuEBarCC, // kmNuECC2pi0
+      kmcNuENuEBarCC, // kmNuECCpiCpi0
+      kmcNuENuEBarCC, // kmNuECCcoh
       kmcNuENuEBarCC, // kmNuECCoth
-      //kmcNC,          // kmNuENCEL             
-    //kmcNC,          // kmNuENCMEC           
-      kmcNC,          // kmNuENC1piC           
-      kmcNC,          // kmNuENC1pi0           
-    //kmcNC,          // kmNuENC2piC           
-    //kmcNC,          // kmNuENC2pi0           
-    //kmcNC,          // kmNuENCpiCpi0         
-      kmcNC,          // kmNuENCcoh            
-      kmcNC,          // kmNuENCoth            
+      //kmcNC,          // kmNuENCEL
+    //kmcNC,          // kmNuENCMEC
+      kmcNC,          // kmNuENC1piC
+      kmcNC,          // kmNuENC1pi0
+    //kmcNC,          // kmNuENC2piC
+    //kmcNC,          // kmNuENC2pi0
+    //kmcNC,          // kmNuENCpiCpi0
+      kmcNC,          // kmNuENCcoh
+      kmcNC,          // kmNuENCoth
       kmcNC,          // kmNuEELScat - caveat! this one contains both CC and NC contributions
-      kmcNuENuEBarCC, // kmNuEBarCCQE          
-      kmcNuENuEBarCC, // kmNuEBarCCMEC         
-      kmcNuENuEBarCC, // kmNuEBarCC1piC        
-      kmcNuENuEBarCC, // kmNuEBarCC1pi0        
-      kmcNuENuEBarCC, // kmNuEBarCC2piC        
-      kmcNuENuEBarCC, // kmNuEBarCC2pi0        
-      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0      
+      kmcNuENuEBarCC, // kmNuEBarCCQE
+      kmcNuENuEBarCC, // kmNuEBarCCMEC
+      kmcNuENuEBarCC, // kmNuEBarCC1piC
+      kmcNuENuEBarCC, // kmNuEBarCC1pi0
+      kmcNuENuEBarCC, // kmNuEBarCC2piC
+      kmcNuENuEBarCC, // kmNuEBarCC2pi0
+      kmcNuENuEBarCC, // kmNuEBarCCpiCpi0
       kmcNuENuEBarCC, // kmNuEBarCCcoh
       kmcNuENuEBarCC, // kmNuEBarCCIMD
-      kmcNuENuEBarCC, // kmNuEBarCCoth         
-    //kmcNC,          // kmNuEBarNCEL          
-    //kmcNC,          // kmNuEBarNCMEC         
-      kmcNC,          // kmNuEBarNC1piC        
-      kmcNC,          // kmNuEBarNC1pi0        
-    //kmcNC,          // kmNuEBarNC2piC        
-    //kmcNC,          // kmNuEBarNC2pi0        
-    //kmcNC,          // kmNuEBarNCpiCpi0      
-      kmcNC,          // kmNuEBarNCcoh         
-      kmcNC,           // kmNuEBarNCoth          
+      kmcNuENuEBarCC, // kmNuEBarCCoth
+    //kmcNC,          // kmNuEBarNCEL
+    //kmcNC,          // kmNuEBarNCMEC
+      kmcNC,          // kmNuEBarNC1piC
+      kmcNC,          // kmNuEBarNC1pi0
+    //kmcNC,          // kmNuEBarNC2piC
+    //kmcNC,          // kmNuEBarNC2pi0
+    //kmcNC,          // kmNuEBarNCpiCpi0
+      kmcNC,          // kmNuEBarNCcoh
+      kmcNC,           // kmNuEBarNCoth
       kmcNC,          // kmNuEBarELScat - caveat! this one contains both CC and NC contributions
       kmcUndefined,
       kmcUndefined,
@@ -12548,8 +12548,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNCoth,       // kmNuMuNC1piC          
+      kmcNC1pi0,      // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -12879,8 +12879,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNC1piC,      // kmNuMuNC1piC          
+      kmcNC1pi0,      // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -12899,8 +12899,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
@@ -12918,8 +12918,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuECC, // kmNuECCoth
       //kmcNC,          // kmNuENCEL             
     //kmcNC,          // kmNuENCMEC           
-      kmcNCoth,          // kmNuENC1piC           
-      kmcNC1pi0,          // kmNuENC1pi0           
+      kmcNC1piC,      // kmNuENC1piC           
+      kmcNC1pi0,      // kmNuENC1pi0           
     //kmcNC,          // kmNuENC2piC           
     //kmcNC,          // kmNuENC2pi0           
     //kmcNC,          // kmNuENCpiCpi0         
@@ -13045,8 +13045,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNC1piC,      // kmNuMuNC1piC          
+      kmcNC1pi0,      // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -13065,8 +13065,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
@@ -13084,8 +13084,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuECC, // kmNuECCoth
       //kmcNC,          // kmNuENCEL             
     //kmcNC,          // kmNuENCMEC           
-      kmcNCoth,          // kmNuENC1piC           
-      kmcNC1pi0,          // kmNuENC1pi0           
+      kmcNC1piC,      // kmNuENC1piC           
+      kmcNC1pi0,      // kmNuENC1pi0           
     //kmcNC,          // kmNuENC2piC           
     //kmcNC,          // kmNuENC2pi0           
     //kmcNC,          // kmNuENCpiCpi0         
@@ -13104,8 +13104,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuEBarCC, // kmNuEBarCCoth         
     //kmcNC,          // kmNuEBarNCEL          
     //kmcNC,          // kmNuEBarNCMEC         
-      kmcNCoth,          // kmNuEBarNC1piC        
-      kmcNC1pi0,          // kmNuEBarNC1pi0        
+      kmcNC1piC,      // kmNuEBarNC1piC        
+      kmcNC1pi0,      // kmNuEBarNC1pi0        
     //kmcNC,          // kmNuEBarNC2piC        
     //kmcNC,          // kmNuEBarNC2pi0        
     //kmcNC,          // kmNuEBarNCpiCpi0      
@@ -13211,8 +13211,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNC1piC,      // kmNuMuNC1piC          
+      kmcNC1pi0,      // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -13231,8 +13231,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
@@ -13250,8 +13250,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuECC, // kmNuECCoth
       //kmcNC,          // kmNuENCEL             
     //kmcNC,          // kmNuENCMEC           
-      kmcNCoth,          // kmNuENC1piC           
-      kmcNC1pi0,          // kmNuENC1pi0           
+      kmcNC1piC,      // kmNuENC1piC           
+      kmcNC1pi0,      // kmNuENC1pi0           
     //kmcNC,          // kmNuENC2piC           
     //kmcNC,          // kmNuENC2pi0           
     //kmcNC,          // kmNuENCpiCpi0         
@@ -13270,8 +13270,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuEBarCC, // kmNuEBarCCoth         
     //kmcNC,          // kmNuEBarNCEL          
     //kmcNC,          // kmNuEBarNCMEC         
-      kmcNCoth,          // kmNuEBarNC1piC        
-      kmcNC1pi0,          // kmNuEBarNC1pi0        
+      kmcNC1piC,      // kmNuEBarNC1piC        
+      kmcNC1pi0,      // kmNuEBarNC1pi0        
     //kmcNC,          // kmNuEBarNC2piC        
     //kmcNC,          // kmNuEBarNC2pi0        
     //kmcNC,          // kmNuEBarNCpiCpi0      
@@ -13376,8 +13376,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuCC,   // kmNuMuCCELScat
     //kmcNC,          // kmNuMuNCEL            
     //kmcNC,          // kmNuMuNCMEC           
-      kmcNCoth,          // kmNuMuNC1piC          
-      kmcNC1pi0,          // kmNuMuNC1pi0          
+      kmcNC1piC,      // kmNuMuNC1piC          
+      kmcNC1pi0,      // kmNuMuNC1pi0          
     //kmcNC,          // kmNuMuNC2piC          
     //kmcNC,          // kmNuMuNC2pi0          
     //kmcNC,          // kmNuMuNCpiCpi0        
@@ -13396,8 +13396,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuMuBarCC,   // kmNuMuBarCCELScat 
     //kmcNC,          // kmNuMuBarNCEL         
     //kmcNC,          // kmNuMuBarNCMEC        
-      kmcNCoth,          // kmNuMuBarNC1piC       
-      kmcNC1pi0,          // kmNuMuBarNC1pi0       
+      kmcNC1piC,      // kmNuMuBarNC1piC       
+      kmcNC1pi0,      // kmNuMuBarNC1pi0       
     //kmcNC,          // kmNuMuBarNC2piC       
     //kmcNC,          // kmNuMuBarNC2pi0       
     //kmcNC,          // kmNuMuBarNCpiCpi0     
@@ -13415,8 +13415,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuECC, // kmNuECCoth
       //kmcNC,          // kmNuENCEL             
     //kmcNC,          // kmNuENCMEC           
-      kmcNCoth,          // kmNuENC1piC           
-      kmcNC1pi0,          // kmNuENC1pi0           
+      kmcNC1piC,      // kmNuENC1piC           
+      kmcNC1pi0,      // kmNuENC1pi0           
     //kmcNC,          // kmNuENC2piC           
     //kmcNC,          // kmNuENC2pi0           
     //kmcNC,          // kmNuENCpiCpi0         
@@ -13435,8 +13435,8 @@ static const ReacModeCoarse_t kMappingToCoarseModes[kNBeamConf][kNSamples][kNRea
       kmcNuEBarCC, // kmNuEBarCCoth         
     //kmcNC,          // kmNuEBarNCEL          
     //kmcNC,          // kmNuEBarNCMEC         
-      kmcNCoth,          // kmNuEBarNC1piC        
-      kmcNC1pi0,          // kmNuEBarNC1pi0        
+      kmcNC1piC,      // kmNuEBarNC1piC        
+      kmcNC1pi0,      // kmNuEBarNC1pi0        
     //kmcNC,          // kmNuEBarNC2piC        
     //kmcNC,          // kmNuEBarNC2pi0        
     //kmcNC,          // kmNuEBarNCpiCpi0      
