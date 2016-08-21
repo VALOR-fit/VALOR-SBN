@@ -62,6 +62,7 @@ typedef enum EReacModeCoarse
    kmcNuEBarCCoth,        // nuebar   CC other
    kmcNuTauNuTauBarCC,    // nutau(bar) CC all
    kmcNC,                 // NC all
+   kmcNC1piC,             // NC 1 piC
    kmcNC1pi0,             // NC 1 pi0
    kmcNCoth               // NC other
 } 
