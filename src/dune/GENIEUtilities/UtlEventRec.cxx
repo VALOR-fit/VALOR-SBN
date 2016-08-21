@@ -149,6 +149,31 @@ bool valor::util::GetHadronicSystems(const genie::EventRecord * event, vector<in
   return study_hadsyst;
 }
 //_________________________________________________________________________________
+bool valor::util::EventContainsQuarkFlavour(const genie::EventRecord * event, int quark_pdg)
+{
+  //
+  TObjArrayIter piter(event);
+  genie::GHepParticle * p = 0;
+  
+  bool result = false;
+  
+  while( (p = (genie::GHepParticle *) piter.Next())) {
+    int pdg = std::abs(p->Pdg());
+    pdg = std::abs(pdg);
+    
+    // Check if PDG code contains the quark PDG
+    if (genie::pdg::IsHadron(pdg)) {
+      int magnitude = 1000;
+      while(magnitude) {
+        int digit = (pdg / magnitude) % 10;
+        if (digit==std::abs(quark_pdg)) {result = true;}
+        magnitude/=10;
+      }
+    }
+  } //piter
+  return result;
+}
+//_________________________________________________________________________________
 conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * event, bool use_final_state)
 {
   int  nupdg       = event->Probe()->Pdg();
@@ -159,8 +184,8 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
 
   bool is_CC       = event->Summary()->ProcInfo().IsWeakCC();
   bool is_NC       = event->Summary()->ProcInfo().IsWeakNC();
-  bool is_strange  = false;
-  bool is_charm    = false;
+  bool is_charm   = util::EventContainsQuarkFlavour(event, genie::kPdgCQuark);
+  bool is_strange = util::EventContainsQuarkFlavour(event, genie::kPdgSQuark);
   bool is_QE       = event->Summary()->ProcInfo().IsQuasiElastic() && !is_strange && !is_charm;
   bool is_MEC      = event->Summary()->ProcInfo().IsMEC();
   bool is_Coherent = event->Summary()->ProcInfo().IsCoherent();
@@ -190,30 +215,39 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
   int nEM       = 0;
   int nOtherHad = 0;
   int nNucleus  = 0;
-  int nUNKNOWN  = 0;
+  
+  std::vector<const genie::GHepParticle*> unknown_particles;
   
   const vector<int> & hadr_system = (use_final_state ? final_hadr_system : primary_hadr_system);
   // We exclude states with the right number of pions but other mesons.
   
+
+  
   for (unsigned int ip = 0 ; ip < hadr_system.size(); ip++) {
     const genie::GHepParticle * p = event->Particle(hadr_system[ip]);
-    if      (p->Pdg() == genie::kPdgProton  || p->Pdg() == genie::kPdgAntiProton)                                { nP++;       }
-    else if (p->Pdg() == genie::kPdgNeutron || p->Pdg() == genie::kPdgAntiNeutron)                               { nN++;       }
-    else if (p->Pdg() == genie::kPdgPiP)                                                                         { nPip++;     }
-    else if (p->Pdg() == genie::kPdgPiM)                                                                         { nPim++;     }
-    else if (p->Pdg() == genie::kPdgPi0)                                                                         { nPi0++;     }
-    else if (p->Pdg() == genie::kPdgKP)                                                                          { nKp++;      }
-    else if (p->Pdg() == genie::kPdgKM)                                                                          { nKm++;      }
-    else if (p->Pdg() == genie::kPdgK0    || p->Pdg() == genie::kPdgAntiK0)                                      { nK0++;      }
-    else if (p->Pdg() == genie::kPdgGamma || p->Pdg() == genie::kPdgElectron || p->Pdg() == genie::kPdgPositron) { nEM++;      }
-    else if (genie::pdg::IsHadron(p->Pdg()))                                                                     { nOtherHad++;}
-    else if (genie::pdg::IsIon   (p->Pdg()))                                                                     { nNucleus++; }
-    else { nUNKNOWN++; }
-      
+    int pdg = p->Pdg();
+    if      (pdg == genie::kPdgProton  || pdg == genie::kPdgAntiProton)                           { nP++;       }
+    else if (pdg == genie::kPdgNeutron || pdg == genie::kPdgAntiNeutron)                          { nN++;       }
+    else if (pdg == genie::kPdgPiP)                                                               { nPip++;     }
+    else if (pdg == genie::kPdgPiM)                                                               { nPim++;     }
+    else if (pdg == genie::kPdgPi0)                                                               { nPi0++;     }
+    else if (pdg == genie::kPdgKP)                                                                { nKp++;      }
+    else if (pdg == genie::kPdgKM)                                                                { nKm++;      }
+    else if (pdg == genie::kPdgK0    || pdg == genie::kPdgAntiK0)                                 { nK0++;      }
+    else if (pdg == genie::kPdgGamma || pdg == genie::kPdgElectron || pdg == genie::kPdgPositron) { nEM++;      }
+    else if (genie::pdg::IsHadron(pdg))                                                           { nOtherHad++;}
+    else if (genie::pdg::IsIon   (pdg))                                                           { nNucleus++; }
+    else { unknown_particles.push_back(p); }
+    
   }
   
-  if (nUNKNOWN) {
-    LOG("UtlEventRec",pWARN)<<nUNKNOWN<<" unidentified particles in event:\n"<<event;
+  if (unknown_particles.size()) {
+    std::ostringstream s;
+    for (unsigned int ip = 0 ; ip < unknown_particles.size() ; ip++) {
+      const genie::GHepParticle * p = unknown_particles[ip];
+      s<<*p<<std::endl;
+    }
+    LOG("UtlEventRec",pWARN)<<unknown_particles.size()<<" unidentified particles in event:\n"<<s.str();
   }
   
   int nPiC = nPip+nPim;
@@ -342,8 +376,8 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
       mode_names << "\n "<<util::AsString(modes[ii]);
     }
     LOG("UtlEventRec",pERROR)<<"Event filed into multiple exclusive modes: "
-      <<mode_names
-      <<"\nFull record: "<<event;
+      <<mode_names.str()
+      <<"\nFull record: "<<*event;
       util::Die(-1);
   }
 

@@ -36,6 +36,9 @@ namespace util {
   
   bool GetHadronicSystems(const genie::EventRecord * event, vector<int> & prim_had_syst, vector<int> & final_had_syst);
   conv::ReacMode_t DetermineReactionMode(const genie::EventRecord * event, bool use_final_state = false);
+  
+  // Does not respect bar/nonbar
+  bool EventContainsQuarkFlavour(const genie::EventRecord * event, int quark_pdg);
 
 }      // util namespace
 }      // valor namespace
