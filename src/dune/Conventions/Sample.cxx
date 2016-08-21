@@ -288,8 +288,15 @@ Sample_t util::SampleFromString(string sample)
   return ksUndefined;
 }
 //________________________________________________________________________________________
+// aliases
 string valor::util::SampleAsString        (conv::Sample_t s)            { return util::AsString(s);}
 string valor::util::SampleAsStringTeX     (conv::Sample_t s, bool root) { return util::AsStringTeX(s,root);}
+bool valor::util::SampleIsCC       (conv::Sample_t s) {return util::IsCC      (s);};
+bool valor::util::SampleIsCCQELike (conv::Sample_t s) {return util::IsCCQELike(s);};
+bool valor::util::SampleIsNC       (conv::Sample_t s) {return util::IsNC      (s);};
+bool valor::util::SampleIsFar      (conv::Sample_t s) {return util::IsFar     (s);};
+bool valor::util::SampleIsMuLike   (conv::Sample_t s) {return util::IsMuLike  (s);};
+bool valor::util::SampleIsELike    (conv::Sample_t s) {return util::IsELike   (s);};
 //________________________________________________________________________________________
 Sample_t util::GetActiveSample(int ibeam, int isample)
 {

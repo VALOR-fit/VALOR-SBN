@@ -191,9 +191,16 @@ namespace util {
   conv::Sample_t SampleFromString (std::string s);
   conv::Sample_t GetActiveSample  (int ibeam, int isample);
   
-  // aliases AsString methods
+  // aliases methods
   string  SampleAsString    (conv::Sample_t s);
   string  SampleAsStringTeX (conv::Sample_t s, bool root = false);
+  
+  bool SampleIsCC       (conv::Sample_t s);
+  bool SampleIsCCQELike (conv::Sample_t s);
+  bool SampleIsNC       (conv::Sample_t s);
+  bool SampleIsFar      (conv::Sample_t s);
+  bool SampleIsMuLike   (conv::Sample_t s);
+  bool SampleIsELike    (conv::Sample_t s);
 } // util
 } // valor
   
