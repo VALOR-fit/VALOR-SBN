@@ -32,6 +32,7 @@ foreach (@ARGV) {
   if   ($_ eq '--resource'               ) { $resource            = $ARGV[$iarg+1]; }
   elsif($_ eq '--output'                 ) { $output              = $ARGV[$iarg+1]; }
   elsif($_ eq '--input'                  ) { $input               = $ARGV[$iarg+1]; }
+  elsif($_ eq '--detector'               ) { $detector            = $ARGV[$iarg+1]; }
   elsif($_ eq '--beam'                   ) { $beam                = $ARGV[$iarg+1]; }
   elsif($_ eq '--format'                 ) { $format              = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                = $ARGV[$iarg+1]; }
@@ -55,6 +56,7 @@ $format                 = "lartpc"                                              
 $job_dir                = `pwd`                                                   unless defined $job_dir;
 $dune_softw_dir         = $ENV{'VALOR_DUNE'}                                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                                      unless defined $fmwk_softw_dir;
+$detector               = "dune_nd"                                               unless defined $detector;
 
 chomp($job_dir);
 
@@ -129,7 +131,7 @@ foreach my $sample (@samples) {
 
     $program = "valor_dune-make_response_functions";
     
-    $arguments   = " --systematic $param --sample $sample --beam $beam --input $input --output $output --format $format";
+    $arguments   = " --systematic $param --sample $sample --beam $beam --detector $detector --input $input --output $output --format $format";
     
     $command = $program." ".$arguments;
     print "Running: $command \n";
