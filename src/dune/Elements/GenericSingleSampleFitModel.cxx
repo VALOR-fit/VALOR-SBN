@@ -144,8 +144,14 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 
   // Get assumed exposure for each beam configuration
   {
-    string node_name = "data/exposure/" + util::AsString(fBeam, "lowercase");
-    fPOT = util::XML2Dbl(xml,root_node,node_name);
+    // Optionally over-ride the POT
+    if (Opt::Instance()->GlobalRegistry().Exists("pot_override")) {
+      fPOT = Opt::Instance()->GlobalRegistry().GetDouble("pot_override");
+    }
+    else {
+      string node_name = "data/exposure/" + util::AsString(fBeam, "lowercase");
+      fPOT = util::XML2Dbl(xml,root_node,node_name);
+    }
     LOG("GenericSingleSampleFitModel",pINFO) 
       << "Beam config: " << util::AsString(fBeam) 
       << " -> Exposure = " << fPOT << " POT.";

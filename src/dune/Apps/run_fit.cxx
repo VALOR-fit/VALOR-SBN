@@ -39,6 +39,7 @@
 #include "TString.h"
 #include "TVirtualFitter.h"
 // fmwk
+#include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
@@ -83,6 +84,12 @@ int main(int argc, char ** argv)
   string fittername       = arg.GetString("fitter");
   string true_values_file = arg.GetString("true-from-filename");
   string true_values_obj  = arg.GetString("true-from-objname"); // a physparamlist
+  
+  // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
+  double pot_override     = arg.GetDouble("pot-override");
+  if (pot_override > 0 ) {
+    Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
+  }
   
   Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
   
@@ -240,6 +247,8 @@ int main(int argc, char ** argv)
   //~ SDModel * ndm =  dynamic_cast<SDModel*>(model);
   //~ PhysParamList ppl = ndm->OneSigmaErrors();
   //~ ppl.Write("initial_errors");
+  
+  std::cout<<"Done."<<std::endl;
   
   return 0;
 }

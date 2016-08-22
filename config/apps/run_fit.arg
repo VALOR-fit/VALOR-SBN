@@ -14,3 +14,4 @@ start-at-true,start-at-central       |   boolean_list |  optional   |   start-at
 rethrow-unphysical,accept-unphysical |   boolean_list |  optional   |   rethrow-unphysical
 true-from-filename                   |   string       |  optional   |   NONE 
 true-from-objname                    |   string       |  optional   |   central_values 
+pot-override                         |   double       |  optional   |   -999
