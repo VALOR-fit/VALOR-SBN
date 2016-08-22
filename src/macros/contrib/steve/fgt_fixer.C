@@ -21,9 +21,7 @@ void fgt_fixer(
   TString input_file,
   TString output_file = "dune_dst.root"
  )
- {
-  TFile * f = new TFile(output_file.Data(),"RECREATE");
-  f->cd();
+{
   
   const char * treename = "dune_dst";
   
@@ -59,6 +57,9 @@ void fgt_fixer(
   chain.SetBranchStatus("ana",1);
   chain.SetBranchStatus("xyzzy",0);
   
+  TFile * f = new TFile(output_file.Data(),"RECREATE");
+  f->cd();
+  
   TTree * out_tree = new TTree(treename,treename);
   
   chain.SetBranchAddress("ana",&ana,&branchptr);
@@ -86,7 +87,11 @@ void fgt_fixer(
     POTWeight    = ana->POTWeight;
     sample_reco  = ana->sample_reco;
     out_tree->Fill();
-    if (!(i%5000)) {cout<<"Event #"<<i<<" of "<<chain.GetEntries()<<endl;}
+    if (!(i%5000)) {
+      cout<<"Event #"<<i<<" of "<<chain.GetEntries()<<endl;
+      out_tree->AutoSave();
+    }
+    genie_mc_truth->Clear();
   }
   
   cout<<"Last sample: "<<sample<<endl;
