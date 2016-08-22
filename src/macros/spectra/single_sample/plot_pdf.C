@@ -332,7 +332,8 @@ void plot_pdf(
     
     // And write to files if needed
     if (write_image) {
-      TString pdf_tot_filename = TString(c_pdf_tot->GetName())+"."+image_save_format;
+      TString pdf_tot_filename = TString::Format("%s_spectrum_%s_%s_%u_2D.%s",
+          out_tag, util::AsString(d).c_str(), util::AsString(b).c_str(),icanvas,image_save_format);
       c_pdf_tot->SaveAs(pdf_tot_filename.Data());
       
       TString slice_filename = TString::Format("%s_spectrum_%s_%s_%u_y.%s",
