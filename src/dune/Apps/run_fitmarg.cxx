@@ -59,7 +59,6 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/Marginalisation/MCMarginaliser.h"
-#include "valor/Marginalisation/NormInv.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
@@ -275,58 +274,5 @@ void SetUserPrior(FitParamList& fp, conv::PhysParamId_t p, TH1D* h)
    fp.SetPriorMode(p, "user");
    fp.SetPriorHisto(p, h);
    fp.SetToyHisto(p, h);
-}
-
-TVectorD CholeskyGenerateTruncatedParams(double sigma)
-{
-   int n = 3;
-   TVectorD g(n);
-   TVectorD cor_upp(n);
-   cor_upp[0] = NormInvCDF::NormalDistribution(TMath::Abs(sigma), 0, 1);
-   cor_upp[1] = cor_upp[0];
-   cor_upp[2] = cor_upp[0] ;
-   TVectorD cor_low(n);
-   cor_low[0] = 1 - cor_upp[0];
-   cor_low[1] = 1 - cor_upp[1];
-   cor_low[2] = 1 - cor_upp[2];
-
-   double mat[9] =
-   {
-      1.0, 0.1, 0.2,
-      0.1, 1.0, 0.4,
-      0.2, 0.4, 1.0
-   };
-  
-   TVectorD uncor_low(cor_low);
-   TVectorD uncor_upp(cor_upp);
-   TMatrixD chol(n, n, mat);
-   TMatrixD chol_inv = TMatrixD(chol);
-   chol_inv.Invert();
-   uncor_low *= chol_inv;
-   uncor_upp *= chol_inv;
-
-/*   for (int k = 0; k < n; ++k)
-   {
-      uncorrelated_bounds(k) =
-         NormInvCDF::NormalDistribution(uncorrelated_bounds(k), 0, 1);
-   }*/
-
-   for (int k = 0; k < n; ++k)
-   {
-      g(k) = 1;//Rnd::Instance()->RndOther().Uniform();
-      // Normalise to bounds
-      g(k) *= (uncor_upp(k) - uncor_low(k));
-      g(k) += uncor_low(k);
-   }
-   g *= chol;
-   for (int k = 0; k < n; ++k)
-   {
-      g(k) = NormInvCDF::NormInv(g[k]);
-   }
-   // Having retrieved the z value of the random throw, multiply this value by
-   // the square root of the diagonal covariance values and perturb the mean
-   // value of the systematic by this quantity.
-
-   return g;
 }
 
