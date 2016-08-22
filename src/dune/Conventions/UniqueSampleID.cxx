@@ -10,21 +10,21 @@ ChangeLog:
 
 #include "TString.h"
 //dune
-#include "dune/Conventions/DataID.h"
+#include "dune/Conventions/UniqueSampleID.h"
 
 using namespace valor;
 using namespace valor::conv;
 
-ClassImp(DataID);
+ClassImp(UniqueSampleID);
 
 //________________________________________________________________________________________
-valor::DataID::DataID(Detector_t d, BeamConf_t b, Sample_t s)
+valor::UniqueSampleID::UniqueSampleID(Detector_t d, BeamConf_t b, Sample_t s)
  : detector(d),beamconf(b),sample(s)
 {
   
 }
 //________________________________________________________________________________________
-std::string util::AsString(const DataID & o)
+std::string util::AsString(const UniqueSampleID & o)
 {
   TString total = TString::Format("%s_%s_%s",
     util::AsString(o.detector).c_str(),
@@ -34,10 +34,10 @@ std::string util::AsString(const DataID & o)
   return std::string(total.Data());
 }
 //________________________________________________________________________________________
-std::string util::DataIDAsString(const DataID & o)
+std::string util::UniqueSampleIDAsString(const UniqueSampleID & o)
 {return util::AsString(o);}
 //________________________________________________________________________________________
-bool valor::operator==(const DataID & lhs, const DataID & rhs)
+bool valor::operator==(const UniqueSampleID & lhs, const UniqueSampleID & rhs)
 {
   return ( (lhs.detector == rhs.detector) && 
            (lhs.beamconf == rhs.beamconf) && 

@@ -20,8 +20,8 @@
 #pragma link C++ enum valor::conv::ReacType_t;
 #pragma link C++ enum valor::conv::FitParamGroup_t;
 
-#pragma link C++ struct valor::DataID;
-#pragma link C++ class std::vector<valor::DataID>+;
+#pragma link C++ struct valor::UniqueSampleID;
+#pragma link C++ class std::vector<valor::UniqueSampleID>+;
 
 #pragma link C++ class valor::util::ArrIdx+;
 #pragma link C++ class valor::util::PhysicalParameterLimits+;

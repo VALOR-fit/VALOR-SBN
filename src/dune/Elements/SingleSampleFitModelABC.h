@@ -26,6 +26,7 @@
 #include "dune/Conventions/Sample.h"
 #include "dune/Conventions/Detector.h"
 #include "dune/Conventions/KineSpace.h"
+#include "dune/Conventions/UniqueSampleID.h"
 
 namespace valor {
 
@@ -42,6 +43,8 @@ public:
   conv::BeamConf_t  GetBeam     () const { return fBeam;    }
   conv::Sample_t    GetSample   () const { return fSample;  }
   conv::KineSpace_t GetKineSpace() const { return fKSp;     }
+  
+  UniqueSampleID GetUniqueSampleID() const { return UniqueSampleID(fDetector,fBeam,fSample); }
 
 protected:
   SingleSampleFitModelABC();

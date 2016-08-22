@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\class     valor::DataID
+\class     valor::UniqueSampleID
 
 \brief     Simple struct, to bundle together the information needed identify a fitted sample: detector+beam+selection
            I am far from wedded to that name - we can update it when we have a better idea.
@@ -16,8 +16,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef _valor_dune_dataid_h_
-#define _valor_dune_dataid_h_
+#ifndef _valor_dune_usampleid_h_
+#define _valor_dune_usampleid_h_
 
 #include <string>
 
@@ -31,24 +31,26 @@
 
 namespace valor {
   
-struct DataID
+struct UniqueSampleID
 {
   public:
     conv::Detector_t detector;
     conv::BeamConf_t beamconf;
     conv::Sample_t   sample;
     
-    DataID(conv::Detector_t d = conv::kdUndefined, conv::BeamConf_t b = conv::kbUndefined, conv::Sample_t s = conv::ksUndefined);
+    UniqueSampleID(conv::Detector_t d = conv::kdUndefined, conv::BeamConf_t b = conv::kbUndefined, conv::Sample_t s = conv::ksUndefined);
     
-  ClassDef(DataID,1);
+    virtual ~UniqueSampleID() {};
+    
+  ClassDef(UniqueSampleID,1);
 };
 
 // Comparison
-bool operator==(const DataID& lhs, const DataID& rhc);
+bool operator==(const UniqueSampleID& lhs, const UniqueSampleID& rhc);
 
 namespace util {
-  std::string AsString      (const DataID & obj);
-  std::string DataIDAsString(const DataID & obj);
+  std::string AsString      (const UniqueSampleID & obj);
+  std::string UniqueSampleIDAsString(const UniqueSampleID & obj);
 }
 
 } // valor
