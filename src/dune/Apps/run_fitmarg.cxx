@@ -133,14 +133,22 @@ int main(int argc, char** argv)
    FitParamList* fp = util::GetFitParameterList(
       arg.GetString("fit-param-list").c_str());
 
-   // Restrict systematics to narrow range - temporary
+   // Restrict systematics to N sigma range
    CorrelatedSystematics* syst =
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-   for(int i = 0; i < syst->Size(); ++i)
+   bool rethrowUnphysical = arg.GetBool("rethrow-unphysical");
+   if(rethrowUnphysical)
    {
-      conv::PhysParamId_t p = syst->Idx2Param(i);
-      fp->SetMinValue(p, 1 - 2 * syst->OneSigmaError(p));
-      fp->SetMaxValue(p, 1 + 2 * syst->OneSigmaError(p));
+      double nSigma = arg.GetDouble("n-sigma-limit");
+      LOG("valor_dune", pNOTICE) << "Rethrowing to " << nSigma << "-sigma";
+      syst->SetRethrowUnphysical(true);
+      syst->SetNSigmaLimit(nSigma);
+      for(int i = 0; i < syst->Size(); ++i)
+      {
+         conv::PhysParamId_t p = syst->Idx2Param(i);
+         fp->SetMinValue(p, 1 - nSigma * syst->OneSigmaError(p));
+         fp->SetMaxValue(p, 1 + nSigma * syst->OneSigmaError(p));
+      }
    }
 
    // Set oscillation parameter priors
@@ -152,9 +160,6 @@ int main(int argc, char** argv)
    FitInputs* fitInputs = new FitInputs(data, model, fp);
 /*   FitterABC* fitter = util::GetFitter(fit_inputs,
       arg.GetString("fitter").c_str());*/
-   TVectorD randSyst = CholeskyGenerateTruncatedParams(2);
-   LOG("valor_dune", pNOTICE) << "Rand syst: " << randSyst(0) << " " <<
-      randSyst(1) << " " << randSyst(2);
 
    MarginaliserABC* marginaliser = new MCMarginaliser(fitInputs);
    marginaliser->Configure(arg);
