@@ -5573,8 +5573,8 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
-      { kBlack, kWhite,    3544 }, // kmcNuECC
-      { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kViolet-1, 3001 }, // kmcNuECC
+      { kBlack, kWhite,    3544 }, // kmcNuEBarCC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
       {0,0,0},        
@@ -5584,8 +5584,8 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
-      { kBlack, kWhite,    3544 }, // kmcNuECC
-      { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kViolet-1, 3001 }, // kmcNuECC
+      { kBlack, kWhite,    3544 }, // kmcNuEBarCC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
       {0,0,0},        
@@ -5595,8 +5595,8 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
-      { kBlack, kWhite,    3544 }, // kmcNuECC
-      { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kViolet-1, 3001 }, // kmcNuECC
+      { kBlack, kWhite,    3544 }, // kmcNuEBarCC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
       {0,0,0},        
@@ -5606,8 +5606,8 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     {
       { kBlack, kBlue,     3001 }, // kmcNuMuCC   
       { kBlack, kGreen,    3001 }, // kmcNuMuBarCC
-      { kBlack, kWhite,    3544 }, // kmcNuECC
-      { kBlack, kViolet-1, 3001 }, // kmcNuEBarCC
+      { kBlack, kViolet-1, 3001 }, // kmcNuECC
+      { kBlack, kWhite,    3544 }, // kmcNuEBarCC
       { kBlack, kRed,      3004 }, // kmcNC1pi0
       { kBlack, kRed,      3001 }, // kmcNCoth
       {0,0,0},        
