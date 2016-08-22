@@ -1264,21 +1264,24 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " not considered separately. Bundle in sample: " << util::AsString(ksNuMuCCoth);
       s = ksNuMuCCoth;
     }
+    
+#ifdef FORCE_NC_INCLUSIVE
     if(util::IsNC(s)) {
       LOG("HACK",pNOTICE) 
         << "MC event: " << iev << " belongs to NC sample: " << util::AsString(s) 
         << " Bundling it in sample: " << util::AsString(ksNC);
       s = ksNC;
     }
+#endif
 
     //  ==============================================
 
     if(s != fSample) {
       LOG("GenericSingleSampleFitModel",pDEBUG) 
         << "Ignoring MC event: " << iev 
-        << " (sample ID: " << util::AsString(s) 
+        << " (sample ID: " << s << " "<< util::AsString(s) 
         << " not matching one used for configuring model: " 
-        << util::AsString(fSample) << ")";
+        << s<<" "<<util::AsString(fSample) << ")";
       continue;  
     }
 
