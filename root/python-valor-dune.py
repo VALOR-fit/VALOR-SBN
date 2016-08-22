@@ -27,14 +27,6 @@ ROOT.gROOT.ProcessLine("using namespace valor;");
 ROOT.gROOT.ProcessLine("using namespace valor::util;");
 ROOT.gROOT.ProcessLine("using namespace valor::conv;");
 
-rootargs = [x for x in sys.argv if x.endswith(".root")]
-i=0
-for f in rootargs:
-  varname = "_file"+`i`
-  print "Attaching file ",f," as ",varname
-  globals()[varname] = ROOT.TFile(f)
-  i+=1
-
 R = ROOT
 
 valor = ROOT.valor
@@ -63,3 +55,15 @@ def fileburst(f):
         obj.GetEntry(0)
     globals()[k.GetName()] = obj
   return
+  
+rootargs = [x for x in sys.argv if x.endswith(".root")]
+i=0
+for f in rootargs:
+  varname = "_file"+`i`
+  print "Attaching file ",f," as ",varname
+  globals()[varname] = ROOT.TFile(f)
+  i+=1
+  if i > 999: break
+
+if (i==1):
+  fileburst(_file0)
