@@ -243,31 +243,33 @@ void plot_pdf(
           TObject * tmp_obj = fin->Get(contrib_name.Data());
           pdf_contrib[imode] = (TH1D*) tmp_obj;
           if(pdf_contrib[imode]) {
-              conv::ReacModeCoarse_t mc = conv::kMappingToCoarseModes[ibeam][isample][imode];
+            conv::ReacModeCoarse_t mc = conv::kmcUndefined;
+            bool found = false;
+            for (int imcp = 0 ; imcp < conv::kMaxCoarseReacOptions ; imcp++) {
+              conv::ReacModeCoarse_t mc = conv::kCoarseReacPriority[m][imcp];;
               if(mc == conv::kmcUndefined) continue; 
-              cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
-              bool found = false;
               for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
                 if(mc == conv::kReactionModesCoarse[ibeam][isample][imodec]) {
                     found = true;
+                    cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
                     break;
                 }
+              }
+              if (found) break;
+            }
+            if(!found) {
+              cout << "WTF! Did not find coarse reaction mode for mode: " << util::AsString(m) 
+                   << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
+              exit(1);
+            }                  
+            for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+              if(mc != conv::kReactionModesCoarse[ibeam][isample][imodec]) continue;
+              if(pdf_contrib_coarse[imodec] == 0) {
+                 pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
+              } else {
+                 pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
               }           
-              if(!found) {
-                cout << "WTF! Plot type (coarse reaction mode): " << util::AsString(mc) 
-                     << " not in the list of modes considered for"
-                     << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
-                exit(1);
-              }                  
-              for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-                cout << "imodec = " << imodec << endl;
-                if(mc != conv::kReactionModesCoarse[ibeam][isample][imodec]) continue;
-                if(pdf_contrib_coarse[imodec] == 0) {
-                   pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
-                } else {
-                   pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
-                }           
-              }//imodec
+            }//imodec
           }//!null
           else {
             cerr << "Null [" << contrib_name << "]" << endl;
@@ -294,6 +296,7 @@ void plot_pdf(
         contrib_legend->SetFillColor(0);
         for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
             conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
+            //~ cout<<"Drawing: "<<util::AsString(b)<<" "<<util::AsString(s)<<"\t"<<imodec<<"\t"<<util::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
             if(mc == conv::kmcUndefined) continue;
             pdf_contrib_coarse[imodec]->SetLineWidth(1); 
             pdf_contrib_coarse[imodec]->SetLineColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][0]); 
