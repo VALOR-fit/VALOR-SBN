@@ -51,6 +51,12 @@ string util::AsString(ReacModeCoarse_t m)
     case (kmcNC1piC         ) : return "NC1piC";          break;
     case (kmcNC1pi0         ) : return "NC1pi0";          break;
     case (kmcNCoth          ) : return "NCoth";           break;
+    case (kmcOscNuMuCC      ) : return "oscnumuCC";       break;
+    case (kmcOscNuMuBarCC   ) : return "oscnumubarCC";    break;
+    case (kmcOscNuECC       ) : return "oscnueCC";        break;
+    case (kmcOscNuEBarCC    ) : return "oscnuebarCC";     break;
+    case (kmcNuTauCC        ) : return "nutauCC";         break;
+    case (kmcNuTauBarCC     ) : return "nutaubarCC";      break;
     default                   : return "--";           
   }
   return "";
@@ -68,14 +74,14 @@ string util::AsStringTex(ReacModeCoarse_t m, bool root)
     case (kmcNuMuCC1pi      ) : name = "#nu_{#mu} CC 1#pi";           break;
     case (kmcNuMuCC2pi      ) : name = "#nu_{#mu} CC 2#pi";           break;
     case (kmcNuMuCCoth      ) : name = "#nu_{#mu} CC other";          break;
-    case (kmcNuMuBarCC      ) : name = "#bar{#nu_{#mu}} CC";          break;
-    case (kmcNuMuBarCCQEMEC ) : name = "#bar{#nu_{#mu}} CC QE+MEC";   break;
-    case (kmcNuMuBarCCQE    ) : name = "#bar{#nu_{#mu}} CC QE";       break;
-    case (kmcNuMuBarCCMEC   ) : name = "#bar{#nu_{#mu}} CC MEC";      break;
-    case (kmcNuMuBarCC1pi   ) : name = "#bar{#nu_{#mu}} CC 1#pi";     break;
-    case (kmcNuMuBarCC2pi   ) : name = "#bar{#nu_{#mu}} CC 2#pi";     break;
-    case (kmcNuMuBarCCoth   ) : name = "#bar{#nu_{#mu}} CC other";    break;
-    case (kmcNuENuEBarCC    ) : name = "#nu_{e}/#bar{#nu_{e}} CC";    break;
+    case (kmcNuMuBarCC      ) : name = "#bar{#nu}_{#mu} CC";          break;
+    case (kmcNuMuBarCCQEMEC ) : name = "#bar{#nu}_{#mu} CC QE+MEC";   break;
+    case (kmcNuMuBarCCQE    ) : name = "#bar{#nu}_{#mu} CC QE";       break;
+    case (kmcNuMuBarCCMEC   ) : name = "#bar{#nu}_{#mu} CC MEC";      break;
+    case (kmcNuMuBarCC1pi   ) : name = "#bar{#nu}_{#mu} CC 1#pi";     break;
+    case (kmcNuMuBarCC2pi   ) : name = "#bar{#nu}_{#mu} CC 2#pi";     break;
+    case (kmcNuMuBarCCoth   ) : name = "#bar{#nu}_{#mu} CC other";    break;
+    case (kmcNuENuEBarCC    ) : name = "#nu_{e}/#bar{#nu}_{e} CC";    break;
     case (kmcNuECC          ) : name = "#nu_{e} CC";                  break;
     case (kmcNuECCQEMEC     ) : name = "#nu_{e} CC QE+MEC";           break;
     case (kmcNuECCQE        ) : name = "#nu_{e} CC QE";               break;
@@ -83,18 +89,24 @@ string util::AsStringTex(ReacModeCoarse_t m, bool root)
     case (kmcNuECC1pi       ) : name = "#nu_{e} CC 1#pi";             break;
     case (kmcNuECC2pi       ) : name = "#nu_{e} CC 2#pi";             break;
     case (kmcNuECCoth       ) : name = "#nu_{e} CC other";            break;
-    case (kmcNuEBarCC       ) : name = "#bar{#nu_{e}} CC";            break;
-    case (kmcNuEBarCCQEMEC  ) : name = "#bar{#nu_{e}} CC QE+MEC";     break;
-    case (kmcNuEBarCCQE     ) : name = "#bar{#nu_{e}} CC QE";         break;
-    case (kmcNuEBarCCMEC    ) : name = "#bar{#nu_{e}} CC MEC";        break;
-    case (kmcNuEBarCC1pi    ) : name = "#bar{#nu_{e}} CC 1#pi";       break;
-    case (kmcNuEBarCC2pi    ) : name = "#bar{#nu_{e}} CC 2#pi";       break;
-    case (kmcNuEBarCCoth    ) : name = "#bar{#nu_{e}} CC other";      break;
-    case (kmcNuTauNuTauBarCC) : name = "#nu_{#tau}/#bar{#nu_{#tau}} CC";  break;
+    case (kmcNuEBarCC       ) : name = "#bar{#nu}_{e} CC";            break;
+    case (kmcNuEBarCCQEMEC  ) : name = "#bar{#nu}_{e} CC QE+MEC";     break;
+    case (kmcNuEBarCCQE     ) : name = "#bar{#nu}_{e} CC QE";         break;
+    case (kmcNuEBarCCMEC    ) : name = "#bar{#nu}_{e} CC MEC";        break;
+    case (kmcNuEBarCC1pi    ) : name = "#bar{#nu}_{e} CC 1#pi";       break;
+    case (kmcNuEBarCC2pi    ) : name = "#bar{#nu}_{e} CC 2#pi";       break;
+    case (kmcNuEBarCCoth    ) : name = "#bar{#nu}_{e} CC other";      break;
+    case (kmcNuTauNuTauBarCC) : name = "#nu_{#tau}/#bar{#nu}_{#tau} CC";  break;
     case (kmcNC             ) : name = "NC";                          break;
     case (kmcNC1piC         ) : name = "NC 1#pi^{#pm}";               break;
     case (kmcNC1pi0         ) : name = "NC 1#pi^{0}";                 break;
     case (kmcNCoth          ) : name = "NC other";                    break;
+    case (kmcOscNuMuCC      ) : name = "osc #nu_{#mu} CC";            break;
+    case (kmcOscNuMuBarCC   ) : name = "osc #bar{#nu}_{#mu} CC";      break;
+    case (kmcOscNuECC       ) : name = "osc #nu_{e} CC";              break;
+    case (kmcOscNuEBarCC    ) : name = "osc #bar{#nu}_{e} CC";        break;
+    case (kmcNuTauCC        ) : name = "#nu_{#tau} CC";               break;
+    case (kmcNuTauBarCC     ) : name = "#bar{#nu}_{#tau} CC";         break;
     default                   : name = "--"; 
   }
 
