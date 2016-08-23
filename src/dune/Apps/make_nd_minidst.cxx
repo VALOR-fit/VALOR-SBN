@@ -115,7 +115,7 @@ int main(int argc, char ** argv)
   bool gar_format = false;
 
   if(gOptInpFileFormat == "hpgartpc") {
-    tree_name = "GasTPCTree";
+    tree_name = "NdtfDst";
     gar_format = true;
   } 
   else {
@@ -165,19 +165,19 @@ int main(int argc, char ** argv)
   vector<TBranch*> active_branches;
   if(gOptInpFileFormat == "hpgartpc") {
     analysis_tree->SetBranchAddress("gmcrec",          &mcrec          , &branchptr); active_branches.push_back(branchptr);
-    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr); active_branches.push_back(branchptr);
-    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("Sample",          &sample         , &branchptr); active_branches.push_back(branchptr);
+    //~ analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
     //  analysis_tree->SetBranchAddress("Ev_All",          &enu_true   , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev",              &enu_true       , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco       , &branchptr); active_branches.push_back(branchptr);
-    analysis_tree->SetBranchAddress("y_reco",          &y_reco         , &branchptr); active_branches.push_back(branchptr);
-    analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("Y",          &y_reco         , &branchptr); active_branches.push_back(branchptr);
+    //~ analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr); active_branches.push_back(branchptr);
   }
   else if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
     analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("sample_reco",     &sample_reco    , &branchptr); active_branches.push_back(branchptr);
-    analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
+    //~ analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr); active_branches.push_back(branchptr);
@@ -210,6 +210,8 @@ int main(int argc, char ** argv)
   for (int im = 0 ; im < valor::conv::kNReacModes; im++) {
     nev_accept_by_mode.push_back(0);
   }
+  
+  int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
@@ -245,7 +247,15 @@ int main(int argc, char ** argv)
       << "MCRecPtr = "<< mcrec;
     
     // Add to total POT - currently doing this BEFORE checks
-    total_pot_read += valor_minidst_wght_pot;
+    if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
+      total_pot_read += valor_minidst_wght_pot;
+    }
+    else {
+      if (last_tree_number!=analysis_tree->GetTreeNumber()) {
+        total_pot_read+=analysis_tree->GetWeight();
+      }
+    }
+    last_tree_number = analysis_tree->GetTreeNumber();
       
     if(!gOptDisableChecks) {
       //
@@ -336,7 +346,7 @@ int main(int argc, char ** argv)
   VLOG("make_minidst", pNOTICE) <<
     "Total POT read: "<<total_pot_read;
   
-  if (total_pot_read>1 && !gar_format) {
+  if (total_pot_read>1) {
     valor_minidst->SetWeight(1./total_pot_read);
   }
 
