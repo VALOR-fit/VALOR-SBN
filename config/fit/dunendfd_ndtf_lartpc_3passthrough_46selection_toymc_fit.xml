@@ -640,7 +640,7 @@
     <group name="detector">
       <class> valor::SimpleDet2016b </class>
       <covariance_matrix>
-         <filename>   test/dummy_detector_matrices_ext.root </filename>
+         <filename>   test/dummy_detector_matrices.root </filename>
          <objname>    diag_13x13_10pct    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
