@@ -89,6 +89,7 @@ int main(int argc, char ** argv)
   double valor_minidst_enu_reco  = -1; // reco neutrino energy, in GeV
   double valor_minidst_y_reco    = -1; // inelasticity, in GeV
   double valor_minidst_wght_pot  = -1; // POT weight 
+  double valor_minidst_wght      = -1; // misc weight 
 
   TTree * valor_minidst = 
     new TTree("valor_dune_nd_mini_dst","Mini-DST input for VALOR/DUNE ND Fit");
@@ -102,6 +103,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("enu_reco"   , &valor_minidst_enu_reco,  "enu_reco/D" );
   valor_minidst->Branch("y_reco"     , &valor_minidst_y_reco,    "y_reco/D"   );
   valor_minidst->Branch("wght_pot"   , &valor_minidst_wght_pot,  "wght_pot/D" );
+  valor_minidst->Branch("wght"       , &valor_minidst_wght_pot,  "wght/D" );
   
   // Tmp - while we still have 2 reco variables, save both
   int    valor_minidst_sample_o    = -999; // see SDFit/NDSample.h 
@@ -146,12 +148,14 @@ int main(int argc, char ** argv)
 
   genie::NtpMCEventRecord * mcrec = 0;
   int    sample         = -1;
+  int    sample_orig    = -1;
   int    sample_reco    = -1;
   int    reac_mode      = -1;
   double enu_true       =  -999.;
   double enu_reco       =  -999.;
   double y_reco         =  -999.;
   double wght_pot       =  -999.;
+  double wght           =  1.;
   
   float enu_true_float =  -999.;
   float enu_reco_float =  -999.;
@@ -165,7 +169,7 @@ int main(int argc, char ** argv)
   vector<TBranch*> active_branches;
   if(gOptInpFileFormat == "hpgartpc") {
     analysis_tree->SetBranchAddress("gmcrec",          &mcrec          , &branchptr); active_branches.push_back(branchptr);
-    analysis_tree->SetBranchAddress("Sample",          &sample         , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("Sample",          &sample_orig    , &branchptr); active_branches.push_back(branchptr);
     //~ analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
     //  analysis_tree->SetBranchAddress("Ev_All",          &enu_true   , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev",              &enu_true       , &branchptr); active_branches.push_back(branchptr);
@@ -175,7 +179,7 @@ int main(int argc, char ** argv)
   }
   else if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
     analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr); active_branches.push_back(branchptr);
-    analysis_tree->SetBranchAddress("sample",          &sample         , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("sample",          &sample_orig    , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("sample_reco",     &sample_reco    , &branchptr); active_branches.push_back(branchptr);
     //~ analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr); active_branches.push_back(branchptr);
@@ -228,6 +232,7 @@ int main(int argc, char ** argv)
     if(gOptInpFileFormat == "hpgartpc") {
       enu_true = enu_true/1000.;
       enu_reco = enu_reco/1000.;
+      sample = sample_orig;
     }
     
     // FGT output uses floats instead. Copy into the doubles we use
@@ -236,6 +241,7 @@ int main(int argc, char ** argv)
       enu_reco   = enu_reco_float;
       y_reco     = y_reco_float;
       wght_pot   = wght_pot_float;
+      sample = sample_reco;
     }
     
     VLOG("make_minidist",pDEBUG) << "Read event: "
@@ -258,6 +264,13 @@ int main(int argc, char ** argv)
     last_tree_number = analysis_tree->GetTreeNumber();
       
     if(!gOptDisableChecks) {
+      
+      if(mcrec->event == NULL) {
+        VLOG("make_minidst", pNOTICE) << "- Rejecting event [null GENIE record]";
+        mcrec->Clear();
+        continue;
+      }
+      
       //
       // ignore events that can not be used in the VALOR analysis
       //
@@ -301,7 +314,7 @@ int main(int argc, char ** argv)
     valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2(true);
     valor_minidst_target    = mcrec->event->Summary()->InitState().TgtPdg();
     
-    valor_minidst_sample_o  = sample; 
+    valor_minidst_sample_o  = sample_orig; 
     valor_minidst_sample_r  = sample_reco; 
     
     if(!gOptDisableChecks) {

@@ -219,7 +219,7 @@ int main(int argc, char ** argv)
   }
   else if(arg_format == "lartpc" || arg_format == "fgt") {
     analysis_tree->SetBranchAddress("genie_mc_truth",  &curr_mcrec);
-    analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
+    analysis_tree->SetBranchAddress("sample_reco",     &curr_sample_int);
     analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco_float);
     analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco_float);
   }
