@@ -17,6 +17,7 @@ DUNE_LIBRARIES =
 TGT = make_nd_minidst \
       make_response_functions \
       run_fit \
+      write_pdf \
       fitnt_conv \
       adaptive_mcmc
 
@@ -29,7 +30,7 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(DUNE_LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 endif
-	
+
 
 # Generate GENIE response functions
 #
@@ -38,19 +39,25 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 endif
-	
+
 # Run a generic fit
 #
 run_fit: FORCE
 	$(CXX) $(CXXFLAGS) -c run_fit.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) run_fit.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_fit
-	
+
+# Write out pdf
+# 
+write_pdf: FORCE
+	$(CXX) $(CXXFLAGS) -c write_pdf.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) write_pdf.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-write_pdf
+
 # Run an Adaptive Metropolis Hastings around the results of a fit
 #
 adaptive_mcmc: FORCE
 	$(CXX) $(CXXFLAGS) -c adaptive_mcmc.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) adaptive_mcmc.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
-	
+
 # Pick info from the VALOR fit n-tuple and convert to bare ROOT format
 #
 fitnt_conv: FORCE
@@ -68,6 +75,7 @@ clean: FORCE
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-write_pdf
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
 
@@ -75,6 +83,7 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/write_pdf
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
 

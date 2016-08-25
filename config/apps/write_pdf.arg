@@ -1,0 +1,9 @@
+# argument                           |   type         |  require?   |   default
+# .......................................................................................................
+fit-param-list                       |   string       |  optional   |   standard
+config                               |   string       |  mandatory  |   -
+write-opt                            |   string       |  optional   |   all
+output-name                          |   string       |  optional   |   test_app
+mesg-thresholds                      |   string       |  optional   |   verbosity.xml
+
+
