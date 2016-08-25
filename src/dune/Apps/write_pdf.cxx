@@ -12,8 +12,10 @@
 	   --write-opt           : Options defining what to write-out [def:pdft_vf]
 	   --output-name         : Output file name [def:test]
 	   --mesg-thresholds     : Message thresholds [def: "verbosity.xml"] 
+	   --input               : Input values of the oscillation parameters
+	   --fix                 : Oscillation parameters to be fixed 
 
-\author    Lorena Escudero
+\author    VALOR DUNE people, aka Costas, Steve, Lorena
 \created   March 27, 2014                                                                                                     
                                                                                                                                    
 \copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved                                                              
@@ -91,6 +93,59 @@ int main(int argc, char ** argv)
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
   // parameter limits, initial values etc).                                                                                           
   FitParamList * fp = util::GetFitParameterList(fplname.c_str());
+
+  // Update values of oscillation parameters 
+  if(fplname != "only-nd"){
+    double mixing12 = arg.GetDouble("input-mixing12");
+    PhysParamId_t p = util::PhysParamFromString("mixing12");
+    fp->Update(p, mixing12);
+    fp->SetInitValue(p, mixing12);
+
+    double mixing23 = arg.GetDouble("input-mixing23");
+    p = util::PhysParamFromString("mixing23");
+    fp->Update(p, mixing23);
+    fp->SetInitValue(p, mixing23);
+
+    double mixing13 = arg.GetDouble("input-mixing13");
+    p = util::PhysParamFromString("mixing13");
+    fp->Update(p, mixing13);
+    fp->SetInitValue(p, mixing13);
+
+    double dm23sq = arg.GetDouble("input-dm23sq");
+    p = util::PhysParamFromString("dm23sq");
+    fp->Update(p, dm23sq);
+    fp->SetInitValue(p, dm23sq);
+
+    double dm12sq = arg.GetDouble("input-dm12sq");
+    p = util::PhysParamFromString("dm12sq");
+    fp->Update(p, dm12sq);
+    fp->SetInitValue(p, dm12sq);
+
+    double deltacp = arg.GetDouble("input-deltaCP");
+    p = util::PhysParamFromString("cpv");
+    fp->Update(p, deltacp);
+    fp->SetInitValue(p, deltacp);
+
+    // fix them? 
+    bool fix_mixing12 = arg.GetBool("fix-mixing12");
+    if(fix_mixing12) fp->FixParameter(util::PhysParamFromString("mixing12"));
+
+    bool fix_mixing13 = arg.GetBool("fix-mixing13");
+    if(fix_mixing13) fp->FixParameter(util::PhysParamFromString("mixing13"));
+    
+    bool fix_mixing23 = arg.GetBool("fix-mixing23");
+    if(fix_mixing23) fp->FixParameter(util::PhysParamFromString("mixing23"));
+
+    bool fix_dm23sq = arg.GetBool("fix-dm23sq");
+    if(fix_dm23sq) fp->FixParameter(util::PhysParamFromString("dm23sq"));
+
+    bool fix_dm12sq = arg.GetBool("fix-dm12sq");
+    if(fix_dm12sq) fp->FixParameter(util::PhysParamFromString("dm12sq"));
+
+    bool fix_cpv = arg.GetBool("fix-deltaCP");
+    if(fix_cpv) fp->FixParameter(util::PhysParamFromString("cpv"));
+
+  }
 
   // Generate predictions                                                                                                         
   Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                 

@@ -24,10 +24,29 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 using namespace valor;
 using namespace valor::conv;
 
+
+//________________________________________________________________________________________
+string util::AsStringSimple(conv::PhysParamId_t p)
+{
+  switch(p) {
+
+     case (kPhypMixing12                 ) : return "mixing12";
+     case (kPhypMixing23                 ) : return "mixing23";
+     case (kPhypMixing13                 ) : return "mixing13";
+     case (kPhypDm23sq                   ) : return "dm23sq";  
+     case (kPhypDm12sq                   ) : return "dm12sq"; 
+     case (kPhypCPV                      ) : return "cpv";  
+    
+    default                       : return util::RawParamAsString(p);   
+  }
+  return "";
+
+}
+
 //________________________________________________________________________________________
 string util::AsString(conv::PhysParamId_t p)
 {
-  if (!util::IsSystematic(p)) return util::RawParamAsString(p);
+  //  if (!util::IsSystematic(p)) return util::RawParamAsString(p);
 
   switch(p) {
     case (kNuisFHCNuMuFlux00   ) : return "f_fhc_flux_numu00";    break;
@@ -321,6 +340,13 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisIntFracNucInelastic      ) : return "f_int_n_inel";
     case (kNuisIntFracNucAbsorb         ) : return "f_int_n_abs";
     case (kNuisIntFracNucProduction     ) : return "f_int_n_prod";
+
+    case (kPhypMixing12                 ) : return "f_osc_mixing12";
+    case (kPhypMixing23                 ) : return "f_osc_mixing23";
+    case (kPhypMixing13                 ) : return "f_osc_mixing13";
+    case (kPhypDm23sq                   ) : return "f_osc_dm23sq";  
+    case (kPhypDm12sq                   ) : return "f_osc_dm12sq"; 
+    case (kPhypCPV                      ) : return "f_osc_cpv";  
     
     default                       : return util::RawParamAsString(p);   
   }
@@ -646,7 +672,15 @@ PhysParamId_t util::PhysParamFromString(string inp_name)
   for(int ip = 0; ip < kNFitParams; ip++) {
      PhysParamId_t p = kFitParam[ip];
      string name = util::AsString(p);
-     if(name == inp_name) return p;
+     if(IsOscParam(p)){  
+       string name_simple = util::AsStringSimple(p);
+       if((name == inp_name) || (name_simple == inp_name))
+	 return p;
+       }
+     else{
+       if(name == inp_name) 
+	 return p;
+     }
   }
   return kPhypUndefined;
 }
@@ -762,11 +796,18 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       bool   fix  = false;
       bool   nuis = true;
       
+      if(IsOscParam(p)){
+	init = util::OscParamInitValue(p);
+	curr = util::OscParamInitValue(p);
+	min  = util::OscParamMinValue(p);
+	max  = util::OscParamMaxValue(p);
+      }
+      
       //      if(IsSystematic(p)){
           // Check we're not going behind physical region
           min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
           max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
-          
+
           fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
           ipc++; 
           fparm->Update(p, curr);

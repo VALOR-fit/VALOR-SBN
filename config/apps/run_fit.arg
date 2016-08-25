@@ -15,3 +15,15 @@ rethrow-unphysical,accept-unphysical |   boolean_list |  optional   |   rethrow-
 true-from-filename                   |   string       |  optional   |   NONE 
 true-from-objname                    |   string       |  optional   |   central_values 
 pot-override                         |   double       |  optional   |   -999
+input-mixing12                       |   double       |  optional   |   0.304
+input-mixing13                       |   double       |  optional   |   0.0217
+input-mixing23                       |   double       |  optional   |	0.528
+input-dm12sq                         |   double       |  optional   |   0.000075
+input-dm23sq                         |   double       |  optional   |   0.002509
+input-deltaCP                        |   double       |  optional   |   0.0
+fix-mixing12                         |   boolean      |  optional   |   false
+fix-mixing13                         |   boolean      |  optional   |   false
+fix-mixing23                         |   boolean      |  optional   |   false
+fix-dm12sq                           |   boolean      |  optional   |   false
+fix-dm23sq                           |   boolean      |  optional   |   false
+fix-deltaCP                          |   boolean      |  optional   |   false

@@ -32,6 +32,8 @@ namespace conv {
 
 // Dm^2 global fit results                                               
   static const double kInitDm12sq    = 7.5E-5;
+  static const double kMinDm12sq     = 1.0E-5;
+  static const double kMaxDm12sq     = 15.0E-5;
   static const double kInitErrDm12sq = 0.024; // ~2.4% (PDG 2014)
   static const double kInitSinsqTheta12  = 0.304;
   static const double kInitSinsq2Theta12  = 0.8463; // (PDG 2014)
@@ -39,6 +41,8 @@ namespace conv {
   static const double kInitErrSinsqTheta12  = 0.025; // ~2.5% (PDG 2014) 
 
   static const double kInitDm23sq    = 2.509E-3;
+  static const double kMinDm23sq     = 1.0E-3;
+  static const double kMaxDm23sq     = 5.0E-3;
   static const double kInitErrDm23sq = 0.04; // ~4% (T2K Run1-4 NH)   
   static const double kInitDmFL      = 2.36E-3;
   static const double kInitSinsqTheta23  = 0.528;
@@ -62,6 +66,8 @@ namespace conv {
 namespace util {
 
   double OscParamInitValue(conv::PhysParamId_t p);
+  double OscParamMaxValue (conv::PhysParamId_t p);
+  double OscParamMinValue (conv::PhysParamId_t p);
 
 } // util
 

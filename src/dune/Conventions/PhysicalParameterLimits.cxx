@@ -145,7 +145,7 @@ void valor::PhysicalParameterLimits::SetDefaults(void)
     
     if (util::IsNormalization(p)) {fParamMinima[p] = 0;}
     //~ if (util::IsEnergyScale  (p)) {fParamMinima[p] = 0;}
-    if (util::IsMixingAngle  (p)) {fParamMinima[p] = 0; fParamMaxima[p] = 1;}
+    if (util::IsMixingAngle  (p)) {fParamMinima[p] = -1; fParamMaxima[p] = 1;}
     
     
     // FSI 2 sigma
