@@ -36,15 +36,23 @@ typedef enum EReacModeCoarse
    kmcNuMuCCQEMEC,        // numu     CC QE+MEC
    kmcNuMuCCQE,           // numu     CC QE
    kmcNuMuCCMEC,          // numu     CC MEC
-   kmcNuMuCC1pi,          // numu     CC 1 pi
+   kmcNuMuCC1piC,         // numu     CC 1 pipm
+   kmcNuMuCC1pi0,         // numu     CC 1 pi0
+   kmcNuMuCC1pi,          // numu     CC 1 pi any
    kmcNuMuCC2pi,          // numu     CC 2 pi
+   kmcNuMuCCIMD,          // numu     IMD
+   kmcNuMuCCElScat,       // numu     elastic
    kmcNuMuCCoth,          // numu     CC other
    kmcNuMuBarCC,          // numubar  CC all
    kmcNuMuBarCCQEMEC,     // numubar  CC QE+MEC
    kmcNuMuBarCCQE,        // numubar  CC QE
    kmcNuMuBarCCMEC,       // numubar  CC MEC
-   kmcNuMuBarCC1pi,       // numubar  CC 1 pi
+   kmcNuMuBarCC1piC,      // numubar  CC 1 pipm
+   kmcNuMuBarCC1pi0,      // numubar  CC 1 pi0
+   kmcNuMuBarCC1pi,       // numubar  CC 1 pi any
    kmcNuMuBarCC2pi,       // numubar  CC 2 pi
+   kmcNuMuBarCCIMD,       // numubar  IMD
+   kmcNuMuBarCCElScat,    // numubar  elastic
    kmcNuMuBarCCoth,       // numubar  CC other
    kmcNuENuEBarCC,        // nue(bar) CC all
    kmcNuECC,              // nue      CC all
@@ -84,38 +92,38 @@ static const int kMaxCoarseReacOptions = 5;
 
 static const ReacModeCoarse_t kCoarseReacPriority[kNReacModes][kMaxCoarseReacOptions] = 
 {
-   /* kmNuMuCCQE                   */ {kmcNuMuCCQE , kmcNuMuCCQEMEC, kmcNuMuCCoth, kmcNuMuCC  , kmcUndefined},
-   /* kmNuMuCCMEC                  */ {kmcNuMuCCMEC, kmcNuMuCCQEMEC, kmcNuMuCCoth, kmcNuMuCC  , kmcUndefined},
-   /* kmNuMuCC1piC                 */ {kmcNuMuCC1pi, kmcNuMuCCoth  , kmcNuMuCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuCC1pi0                 */ {kmcNuMuCC1pi, kmcNuMuCCoth  , kmcNuMuCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuCC2piC                 */ {kmcNuMuCC2pi, kmcNuMuCCoth  , kmcNuMuCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuCC2pi0                 */ {kmcNuMuCC2pi, kmcNuMuCCoth  , kmcNuMuCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuCCpiCpi0               */ {kmcNuMuCC2pi, kmcNuMuCCoth  , kmcNuMuCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuCCcoh                  */ {kmcNuMuCC1pi, kmcNuMuCCoth  , kmcNuMuCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuCCIMD                  */ {kmcNuMuCCoth, kmcNuMuCC     , kmcUndefined , kmcUndefined, kmcUndefined},
-   /* kmNuMuCCELScat               */ {kmcNuMuCCoth, kmcNuMuCC     , kmcUndefined , kmcUndefined, kmcUndefined},
-   /* kmNuMuCCoth                  */ {kmcNuMuCCoth, kmcNuMuCC     , kmcUndefined , kmcUndefined, kmcUndefined},
-// /* kmNuMuNCEL                   */ {kmcNC0pi    , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-// /* kmNuMuNCMEC                  */ {kmcNC0pi    , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-   /* kmNuMuNC1piC                 */ {kmcNC1piC   , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-   /* kmNuMuNC1pi0                 */ {kmcNC1pi0   , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-// /* kmNuMuNC2piC                 */ {kmcNC2pi    , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-// /* kmNuMuNC2pi0                 */ {kmcNC2pi    , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-// /* kmNuMuNCpiCpi0               */ {kmcNC2pi    , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-   /* kmNuMuNCcoh                  */ {kmcNC1pi0   , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
-   /* kmNuMuNCELScat               */ {kmcNCoth    , kmcNC         , kmcUndefined , kmcUndefined, kmcUndefined},
-   /* kmNuMuNCoth                  */ {kmcNCoth    , kmcNC         , kmcUndefined , kmcUndefined, kmcUndefined},
+   /* kmNuMuCCQE                   */ {kmcNuMuCCQE    , kmcNuMuCCQEMEC, kmcNuMuCCoth , kmcNuMuCC   , kmcUndefined},
+   /* kmNuMuCCMEC                  */ {kmcNuMuCCMEC   , kmcNuMuCCQEMEC, kmcNuMuCCoth , kmcNuMuCC   , kmcUndefined},
+   /* kmNuMuCC1piC                 */ {kmcNuMuCC1piC  , kmcNuMuCC1pi  , kmcNuMuCCoth , kmcNuMuCC   , kmcUndefined},
+   /* kmNuMuCC1pi0                 */ {kmcNuMuCC1pi0  , kmcNuMuCC1pi  , kmcNuMuCCoth , kmcNuMuCC   , kmcUndefined},
+   /* kmNuMuCC2piC                 */ {kmcNuMuCC2pi   , kmcNuMuCCoth  , kmcNuMuCC    , kmcUndefined, kmcUndefined},
+   /* kmNuMuCC2pi0                 */ {kmcNuMuCC2pi   , kmcNuMuCCoth  , kmcNuMuCC    , kmcUndefined, kmcUndefined},
+   /* kmNuMuCCpiCpi0               */ {kmcNuMuCC2pi   , kmcNuMuCCoth  , kmcNuMuCC    , kmcUndefined, kmcUndefined},
+   /* kmNuMuCCcoh                  */ {kmcNuMuCC1pi   , kmcNuMuCCoth  , kmcNuMuCC    , kmcUndefined, kmcUndefined},
+   /* kmNuMuCCIMD                  */ {kmcNuMuCCIMD   , kmcNuMuCCoth  , kmcNuMuCC    , kmcUndefined, kmcUndefined},
+   /* kmNuMuCCELScat               */ {kmcNuMuCCElScat, kmcNuMuCCoth  , kmcNuMuCC    , kmcUndefined, kmcUndefined},
+   /* kmNuMuCCoth                  */ {kmcNuMuCCoth   , kmcNuMuCC     , kmcUndefined , kmcUndefined, kmcUndefined},
+// /* kmNuMuNCEL                   */ {kmcNC0pi       , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+// /* kmNuMuNCMEC                  */ {kmcNC0pi       , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+   /* kmNuMuNC1piC                 */ {kmcNC1piC      , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+   /* kmNuMuNC1pi0                 */ {kmcNC1pi0      , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+// /* kmNuMuNC2piC                 */ {kmcNC2pi       , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+// /* kmNuMuNC2pi0                 */ {kmcNC2pi       , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+// /* kmNuMuNCpiCpi0               */ {kmcNC2pi       , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+   /* kmNuMuNCcoh                  */ {kmcNC1pi0      , kmcNCoth      , kmcNC        , kmcUndefined, kmcUndefined},
+   /* kmNuMuNCELScat               */ {kmcNCoth       , kmcNC         , kmcUndefined , kmcUndefined, kmcUndefined},
+   /* kmNuMuNCoth                  */ {kmcNCoth       , kmcNC         , kmcUndefined , kmcUndefined, kmcUndefined},
    
-   /* kmNuMuBarCCQE                */ {kmcNuMuBarCCQE , kmcNuMuBarCCQEMEC, kmcNuMuBarCCoth, kmcNuMuBarCC  , kmcUndefined},
-   /* kmNuMuBarCCMEC               */ {kmcNuMuBarCCMEC, kmcNuMuBarCCQEMEC, kmcNuMuBarCCoth, kmcNuMuBarCC  , kmcUndefined},
-   /* kmNuMuBarCC1piC              */ {kmcNuMuBarCC1pi, kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuBarCC1pi0              */ {kmcNuMuBarCC1pi, kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuBarCC2piC              */ {kmcNuMuBarCC2pi, kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuBarCC2pi0              */ {kmcNuMuBarCC2pi, kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuBarCCpiCpi0            */ {kmcNuMuBarCC2pi, kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuBarCCcoh               */ {kmcNuMuBarCC1pi, kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuBarCCELScat            */ {kmcNuMuBarCCoth, kmcNuMuBarCC     , kmcUndefined , kmcUndefined, kmcUndefined},
-   /* kmNuMuBarCCoth               */ {kmcNuMuBarCCoth, kmcNuMuBarCC     , kmcUndefined , kmcUndefined, kmcUndefined},
+   /* kmNuMuBarCCQE                */ {kmcNuMuBarCCQE    , kmcNuMuBarCCQEMEC, kmcNuMuBarCCoth, kmcNuMuBarCC, kmcUndefined},
+   /* kmNuMuBarCCMEC               */ {kmcNuMuBarCCMEC   , kmcNuMuBarCCQEMEC, kmcNuMuBarCCoth, kmcNuMuBarCC, kmcUndefined},
+   /* kmNuMuBarCC1piC              */ {kmcNuMuBarCC1piC  , kmcNuMuBarCC1pi  , kmcNuMuBarCCoth, kmcNuMuBarCC, kmcUndefined},
+   /* kmNuMuBarCC1pi0              */ {kmcNuMuBarCC1pi0  , kmcNuMuBarCC1pi  , kmcNuMuBarCCoth, kmcNuMuBarCC, kmcUndefined},
+   /* kmNuMuBarCC2piC              */ {kmcNuMuBarCC2pi   , kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
+   /* kmNuMuBarCC2pi0              */ {kmcNuMuBarCC2pi   , kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
+   /* kmNuMuBarCCpiCpi0            */ {kmcNuMuBarCC2pi   , kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
+   /* kmNuMuBarCCcoh               */ {kmcNuMuBarCC1pi   , kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
+   /* kmNuMuBarCCELScat            */ {kmcNuMuBarCCElScat, kmcNuMuBarCCoth  , kmcNuMuBarCC   , kmcUndefined, kmcUndefined},
+   /* kmNuMuBarCCoth               */ {kmcNuMuBarCCoth   , kmcNuMuBarCC     , kmcUndefined   , kmcUndefined, kmcUndefined},
 // /* kmNuMuBarNCEL                */ {kmcNC0pi    , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
 // /* kmNuMuBarNCMEC               */ {kmcNC0pi    , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
    /* kmNuMuBarNC1piC              */ {kmcNC1piC   , kmcNCoth      , kmcNC       , kmcUndefined, kmcUndefined},
