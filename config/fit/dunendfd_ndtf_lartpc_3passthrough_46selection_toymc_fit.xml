@@ -13,7 +13,7 @@
       <sample>       numucc0pi1trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -25,7 +25,7 @@
       <sample>       numucc0pi2trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -36,7 +36,7 @@
       <sample>       numucc0pintrk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -47,7 +47,7 @@
       <sample>       numucc3trkdelta                                      </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -58,7 +58,7 @@
       <sample>       numucc1pic                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -69,7 +69,7 @@
       <sample>       numucc1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -80,7 +80,7 @@
       <sample>       numucc1pic1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -91,7 +91,7 @@
       <sample>       numuccoth                                            </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -102,7 +102,7 @@
       <sample>       numuccws0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -113,7 +113,7 @@
       <sample>       numuccws1piC                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -124,7 +124,7 @@
       <sample>       numuccws1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -135,7 +135,7 @@
       <sample>       numuccwsoth                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -146,7 +146,7 @@
       <sample>       nuecc0pi                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -157,7 +157,7 @@
       <sample>       nuecc1piC                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -168,7 +168,7 @@
       <sample>       nuecc1pi0                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -179,7 +179,7 @@
       <sample>       nueccoth                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -190,7 +190,7 @@
       <sample>       nc0pi                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -201,7 +201,7 @@
       <sample>       nc1piC                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -212,7 +212,7 @@
       <sample>       nc1pi0                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -223,7 +223,7 @@
       <sample>       ncoth                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -234,7 +234,7 @@
       <sample>       neutrinoelec                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -245,7 +245,7 @@
       <sample>       invmudecay                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -256,7 +256,7 @@
       <sample>       nueccinclws                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -271,7 +271,7 @@
       <sample>       numucchigh                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -282,7 +282,7 @@
       <sample>       numucclow                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -293,7 +293,7 @@
       <sample>       nuecchigh                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -304,7 +304,7 @@
       <sample>       nuecclow                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -319,7 +319,7 @@
       <sample>       numucc0pi1trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -331,7 +331,7 @@
       <sample>       numucc0pi2trk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -342,7 +342,7 @@
       <sample>       numucc0pintrk                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -353,7 +353,7 @@
       <sample>       numucc3trkdelta                                      </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -364,7 +364,7 @@
       <sample>       numucc1pic                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -375,7 +375,7 @@
       <sample>       numucc1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -386,7 +386,7 @@
       <sample>       numucc1pic1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -397,7 +397,7 @@
       <sample>       numuccoth                                            </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -408,7 +408,7 @@
       <sample>       numuccws0pi                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -419,7 +419,7 @@
       <sample>       numuccws1piC                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -430,7 +430,7 @@
       <sample>       numuccws1pi0                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -441,7 +441,7 @@
       <sample>       numuccwsoth                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -452,7 +452,7 @@
       <sample>       nuecc0pi                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -463,7 +463,7 @@
       <sample>       nuecc1piC                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -474,7 +474,7 @@
       <sample>       nuecc1pi0                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -485,7 +485,7 @@
       <sample>       nueccoth                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -496,7 +496,7 @@
       <sample>       nc0pi                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -507,7 +507,7 @@
       <sample>       nc1piC                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -518,7 +518,7 @@
       <sample>       nc1pi0                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -529,7 +529,7 @@
       <sample>       ncoth                                             </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -540,7 +540,7 @@
       <sample>       neutrinoelec                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -551,7 +551,7 @@
       <sample>       invmudecay                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -562,7 +562,7 @@
       <sample>       nueccinclws                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_ndfit_2016b_LArTPC_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -577,7 +577,7 @@
       <sample>       numubarcchigh                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -588,7 +588,7 @@
       <sample>       numubarcclow                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -599,7 +599,7 @@
       <sample>       nuebarcchigh                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -610,7 +610,7 @@
       <sample>       nuebarcclow                                           </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           dune_ndfit-2016a_LArTPC_pt2.xml </mc>
+      <mc>           dune_2016b_fd_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
@@ -622,7 +622,7 @@
       <class> valor::MINERVAFlux2016a </class>
       
       <covariance_matrix>
-        <filename>   data/dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
+        <filename>   dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
         <objname>    Flux_Covariance    </objname>    
         <objtype>    TH2D             </objtype>
       </covariance_matrix> 
