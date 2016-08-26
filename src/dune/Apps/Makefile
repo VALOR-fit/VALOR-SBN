@@ -28,7 +28,9 @@ all: $(TGT)
 make_nd_minidst: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(DUNE_LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
+	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
+else
+	@echo "Skipping make_nd_minidst due to no GENIE"
 endif
 
 
@@ -38,6 +40,8 @@ make_response_functions: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_response_functions
+else
+	@echo "Skipping make_response_functions due to no GENIE"
 endif
 
 # Run a generic fit
@@ -88,5 +92,5 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
 
 FORCE:
-
+	
 # DO NOT DELETE
