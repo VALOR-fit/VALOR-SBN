@@ -131,10 +131,44 @@ int main(int argc, char** argv)
    // Get the specified fit parameter list
    FitParamList* fp = util::GetFitParameterList(
       arg.GetString("fit-param-list").c_str());
-
-   // Restrict systematics to N sigma range
    CorrelatedSystematics* syst =
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
+/*   FitParamList* fp = new FitParamList(syst->Size() + 6);
+   fp->AddParam(0, conv::kPhypMixing23, 0, 0, 1, 0.0001);
+   fp->AddParam(1, conv::kPhypMixing13, 0, 0, 1, 0.0001);
+   fp->AddParam(2, conv::kPhypMixing12, 0, 0, 1, 0.0001);
+   fp->AddParam(3, conv::kPhypCPV, 0, 0, 1, 0.0001);
+   fp->AddParam(4, conv::kPhypDm23sq, 0, 0, 1, 0.0001);
+   fp->AddParam(5, conv::kPhypDm12sq, 0, 0, 1, 0.0001);
+   for(int i = 0; i < syst->Size(); ++i)
+   {
+      fp->AddParam(6 + i, syst->Idx2Param(i), 1, 0, 2, 0.0001);
+   }*/
+
+   conv::PhysParamId_t param0 = MCMarginaliser::GetPhysParamId(arg.GetString(
+            "fit-param-0"));
+   conv::PhysParamId_t param1 = MCMarginaliser::GetPhysParamId(arg.GetString(
+            "fit-param-1"));
+   // Temporary hack to set a systematic as the free parameter
+   param0 = fp->WhichParam(159);        // eff_nuecc
+   int numDimensions = (param1 == conv::kPhypUndefined) ? 1 : 2;
+   for(int i = 0; i < fp->Size(); ++i)
+   {
+       conv::PhysParamId_t p = fp->WhichParam(i);
+      if(p == param0 || (numDimensions == 2 && p == param1))
+      {
+         fp->SetNuisance(p, false);
+         fp->FreeParameter(p);
+      }
+      else
+      {
+         fp->SetNuisance(p, true);
+         fp->SetDoMarg(p, true);
+         fp->FixParameter(p);
+      }
+  }
+
+   // Restrict systematics to N sigma range
    bool rethrowUnphysical = arg.GetBool("rethrow-unphysical");
    if(rethrowUnphysical)
    {
@@ -153,16 +187,26 @@ int main(int argc, char** argv)
    // Set oscillation parameter priors
    LOG("valor_dune", pNOTICE) << "Setting oscillation parameter priors";
    SetPriors(*fp);
+   LOG("valor_dune", pNOTICE) << "FP:\n" << *fp;
 
    // Fit/Marginalisation here
    LOG("valor_dune", pNOTICE) << "Preparing the fitter";
-   FitInputs* fitInputs = new FitInputs(data, model, fp);
-/*   FitterABC* fitter = util::GetFitter(fit_inputs,
-      arg.GetString("fitter").c_str());*/
 
-   MarginaliserABC* marginaliser = new MCMarginaliser(fitInputs);
+   MarginaliserABC* marginaliser = new MCMarginaliser(data, model, fp);
    marginaliser->Configure(arg);
+   // Perform marginalisation
+   LOG("valor_dune", pNOTICE) << "Retrieving marginaliser";
    marginaliser->Marginalise();
+   LOG("Minuit", pNOTICE) << "Done marginalising";
+  
+
+   LOG("valor_dune", pNOTICE) << "Setting inputs";
+   FitInputs* fitInputs = new FitInputs(data, model, fp, marginaliser);
+   LOG("valor_dune", pNOTICE) << "Creating fitter";
+   FitterABC* fitter = util::GetFitter(fitInputs,
+         arg.GetString("fitter").c_str());
+   LOG("valor_dune", pNOTICE) << "Fitting";
+   fitter->DoTheFit();
 
    ntp.Save();
 

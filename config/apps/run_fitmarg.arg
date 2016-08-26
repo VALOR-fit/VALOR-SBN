@@ -15,5 +15,6 @@ with-stat-fluct,without-stat-fluct   |   boolean_list |  optional   |   with-sta
 store-spectra,discard-spectra        |   boolean_list |  optional   |   discard-spectra
 start-at-true,start-at-central       |   boolean_list |  optional   |   start-at-true
 rethrow-unphysical,accept-unphysical |   boolean_list |  optional   |   rethrow-unphysical
+n-sigma-limit                        |   double       |  optional   |   0.0
 true-from-filename                   |   string       |  optional   |   NONE 
 true-from-objname                    |   string       |  optional   |   central_values 
