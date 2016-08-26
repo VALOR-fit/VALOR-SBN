@@ -47,7 +47,6 @@
 
 // valor/dune
 #include "valor/Messenger/Messenger.h"
-#include "valor/Registry/Registry.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/Sample.h"
