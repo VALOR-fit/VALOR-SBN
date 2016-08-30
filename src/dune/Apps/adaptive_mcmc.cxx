@@ -236,7 +236,7 @@ int main(int argc, char ** argv)
     // Every N steps, print out a status
     // And redo the Chol matrix if we're adapting
     if (istep%recalc_chol_every == 0 && istep) {
-      std::cout<<istep<<"\t"<<clock.RealTime()<<"\t"<<std::endl;
+      LOG("adaptive_mcmc",pNOTICE)<<istep<<"\t"<<clock.RealTime()<<"\t";
       //~ std::cout<<proposal_step<<std::endl;
       out_tr->AutoSave();
       
@@ -303,7 +303,7 @@ int main(int argc, char ** argv)
   TVectorD total(npar);
   
   // Then do the PCA
-  std::cout<<"Steps complete. Doing PCA."<<std::endl;
+  LOG("adaptive_mcmc",pNOTICE)<<"Steps complete. Doing PCA.";
   TPrincipal pca(npar);
   for (int i = burn_in ; i < out_tr->GetEntries() ; i++) {
     out_tr->GetEntry(i);
@@ -316,11 +316,13 @@ int main(int argc, char ** argv)
   prefit_cov.Write("cov_in");
   
   // Write out the ratio of mean to best_fit
-  cout<<"\n\n"<<"Mean from chain / best fit: "<<endl;
+  ostringstream summary;
+  summary<<"Mean from chain / best fit: "<<std::endl;;
   for (int ip = 0 ; ip < npar; ip++ ) {
     double mean = total[ip] / (out_tr->GetEntries()-burn_in);
-    cout<<best_fit_params->NameByIndex(ip)<<"\t"<< mean / best_fit_params->BestFitValueByIndex(ip)<<endl;
+    summary<<best_fit_params->NameByIndex(ip)<<"\t"<< mean / best_fit_params->BestFitValueByIndex(ip)<<endl;
   }
+  LOG("adaptive_mcmc",pNOTICE)<<summary.str();
   
   return 0;
 }
