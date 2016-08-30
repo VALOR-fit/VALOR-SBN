@@ -94,7 +94,7 @@ $use_prefit_correlations = 0       unless defined $use_prefit_correlations;
 $use_no_correlations     = 0       unless defined $use_no_correlations;
 $use_prefit_errors       = 0       unless defined $use_prefit_errors;
 $write_expanded_tree     = 0       unless defined $write_expanded_tree;
-$write_expanded_tree     = -999    unless defined $pot_override;
+$pot_override            = -999    unless defined $pot_override;
 
 
 chomp($job_dir);
