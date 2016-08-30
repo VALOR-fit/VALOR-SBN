@@ -46,6 +46,7 @@ foreach (@ARGV) {
   elsif($_ eq '--fmwk-softw-dir'         ) { $fmwk_softw_dir      = $ARGV[$iarg+1]; }
   elsif($_ eq '--njobs'                  ) { $njobs               = $ARGV[$iarg+1]; }
   elsif($_ eq '--cputime'                ) { $cputime             = $ARGV[$iarg+1]; }
+  elsif($_ eq '--memory'                 ) { $memory              = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                    ) { $tag                 = $ARGV[$iarg+1]; }
   
   elsif($_ eq '--input'                     ) { $input                   = $ARGV[$iarg+1]; }
@@ -80,6 +81,7 @@ $dune_softw_dir         = $ENV{'VALOR_DUNE'} unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'} unless defined $fmwk_softw_dir;
 $njobs                  = 1                  unless defined $njobs;
 $tag                    = "run"              unless defined $tag;
+$memory                 = "4G"               unless defined $memory;
 
 $config                 = "fit/dunend_ndtf_2ndpassthrough_18sample_toymc_fit.xml" unless defined $config;
 $mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
@@ -157,6 +159,7 @@ while($irun < $njobs) {
     print BATCH_SCRIPT "Getenv                   = True \n";
     print BATCH_SCRIPT "should_transfer_files    = YES \n";
     print BATCH_SCRIPT "when_to_transfer_output  = ON_EXIT \n";
+    print BATCH_SCRIPT "request_memory           = $memory \n";
     print BATCH_SCRIPT "\nqueue\n";    
     close(BATCH_SCRIPT);
     system("condor_submit",$cndfn);
