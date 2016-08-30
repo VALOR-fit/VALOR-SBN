@@ -12,5 +12,6 @@ disable-adaptive,enable-adaptive     |   boolean_list |  optional   |   enable-a
 use-prefit-errors                    |   boolean      |  optional   |   use-postfit-errors
 start-at-bestfit                     |   boolean      |  optional   |   start-at-thrown
 write-expanded-tree                  |   boolean      |  optional   |   no-write-expanded-tree
+pot-override                         |   double       |  optional   |   -999
 
 use-postfit-correlations,use-prefit-correlations,use-no-correlations|   boolean_list |  optional   |   use-postfit-correlations

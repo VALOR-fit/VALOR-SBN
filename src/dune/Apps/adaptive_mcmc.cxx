@@ -19,6 +19,7 @@
            [--use-no-correlations]     : Use diagonal matrix for proposals
            [--use-prefit-errors]       : Use errors from prefit rather than postfit matrix for proposal
            [--write-expanded-tree]     : Write each parameter value in its own branch. No extra info, just easier to browse.
+           [--pot-override ]           : Use this POT for every sample (ignoring the one in config) [off]
 
 \author    Steve Dennis <s.r.dennis \at liverpool.ac.uk>
            University of Liverpool
@@ -39,6 +40,7 @@
 #include "TPrincipal.h"
 #include "TStopwatch.h"
 // fmwk
+#include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
@@ -89,6 +91,12 @@ int main(int argc, char ** argv)
   bool use_prefit_correlations = arg.GetBool("use-prefit-correlations");
   bool use_no_correlations     = arg.GetBool("use-no-correlations");
   bool use_prefit_errors       = arg.GetBool("use-prefit-errors");
+  
+  // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
+  double pot_override     = arg.GetDouble("pot-override");
+  if (pot_override > 0 ) {
+    Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
+  }
   
   int target_n_attempts = 5;
   int recalc_chol_every = 500;
