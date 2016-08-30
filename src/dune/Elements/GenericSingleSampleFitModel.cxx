@@ -152,7 +152,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
       string node_name = "data/exposure/" + util::AsString(fBeam, "lowercase");
       fPOT = util::XML2Dbl(xml,root_node,node_name);
     }
-    LOG("GenericSingleSampleFitModel",pINFO) 
+    LOG("GenericSingleSampleFitModel",pNOTICE) 
       << "Beam config: " << util::AsString(fBeam) 
       << " -> Exposure = " << fPOT << " POT.";
   }
@@ -184,6 +184,14 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     template_file->Close();
     delete template_file;
   }
+  
+  double n_events = 0.;
+  for(int imode = 0; imode < kNReacModes; imode++) {
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
+    n_events+=fMCTNomSb[imode]->Integral();
+  }
+  LOG("GenericSingleSampleFitModel",pNOTICE) << "Untuned template contains "<<n_events<<" events.";
 
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.
@@ -1240,7 +1248,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   
   double mc_pot_weight = t->GetWeight();
   
-  LOG("GenericSingleSampleFitModel",pNOTICE) << "Input VALOR DST contains "<<1./mc_pot_weight<<" POT.";
+  LOG("GenericSingleSampleFitModel",pNOTICE) << "Input VALOR DST contains "<<1./mc_pot_weight<<" POT. Weighting to "<<fPOT<<" data POT.";
   
   for(Long_t iev = 0; iev < nev; iev++) 
   {
@@ -1251,7 +1259,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 
     if(iev%(nev/20)==0) {
       double pct = (100 * (double)(iev+1)) / (double)nev;
-      LOG("GenericSingleSampleFitModel",pNOTICE) << "Reading "<< util::AsString(fBeam)<<" MC DST: "<< TMath::Nint(pct) << "% done";
+      LOG("GenericSingleSampleFitModel",pINFO) << "Reading "<< util::AsString(fBeam)<<" MC DST: "<< TMath::Nint(pct) << "% done";
     }
 
     // Get sample index
@@ -1287,7 +1295,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << "Ignoring MC event: " << iev 
         << " (sample ID: " << s << " "<< util::AsString(s) 
         << " not matching one used for configuring model: " 
-        << s<<" "<<util::AsString(fSample) << ")";
+        << fSample <<" "<<util::AsString(fSample) << ")";
       continue;  
     }
 
@@ -1418,9 +1426,10 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     
     
     double this_entry = pot_wght;
-    if (!bstat_wght) {
-      this_entry *= wght;
-    }
+    // We're not using this weight variable yet. But we could...
+    //~ if (!bstat_wght) {
+      //~ this_entry *= wght;
+    //~ }
 
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
