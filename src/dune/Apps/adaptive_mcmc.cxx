@@ -270,7 +270,8 @@ int main(int argc, char ** argv)
     
     if (!success) {
       if (!disable_adaptive) {
-        proposal_step /= 0.1; // If we failed, do smaller steps
+        proposal_step *= 0.1; // If we failed, do smaller steps
+        LOG("adaptive_mcmc",pNOTICE)<<"New proposal step is "<<proposal_step;
       }
       continue;
     }
