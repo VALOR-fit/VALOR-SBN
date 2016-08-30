@@ -1788,7 +1788,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   if (spl!=util::DuneRFL::kFlatSpline) {
                     response = spl->EvalWithLimits(f);
                     if (response<0) {
-                      LOG("GenericSingleSampleFitModel",pERROR)
+                      LOG("GenericSingleSampleFitModel",pINFO)
                        <<"Negative response from spline (OB) "//<<spl->GetName()
                        <<" evaluated at "<<f<<" with result "<<response
                        <<". Using 0 instead.";
@@ -1909,7 +1909,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   }
                   double response = spl->EvalWithLimits(f);
                   if (response<0) {
-                    LOG("GenericSingleSampleFitModel",pERROR)
+                    LOG("GenericSingleSampleFitModel",pINFO)
                      <<"Negative response from spline (SB) "//<<spl->GetName()
                      <<" evaluated at "<<f<<" with result "<<response
                      <<". Using 0 instead.";
