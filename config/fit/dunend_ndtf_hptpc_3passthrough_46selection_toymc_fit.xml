@@ -521,13 +521,13 @@
     
   </element_list>
   
-  <systematics name="DUNEND_2016a">
+  <systematics name="DUNEND_2016b">
     <group name="flux">
       <class> valor::MINERVAFlux2016aND </class>
       
       <covariance_matrix>
-        <filename>   dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
-        <objname>    near_only    </objname>    
+        <filename>   dune/ndfit/2016b/flux/2016b_flux_DUNE_optimised.root </filename>
+        <objname>    nd_covariance    </objname>    
         <objtype>    TMatrixD             </objtype>
       </covariance_matrix> 
     </group>
@@ -535,7 +535,7 @@
     <group name="interaction">
       <class> valor::VALORInt2016a </class>
       <covariance_matrix>
-         <filename>   dune/ndfit/2016a/xsec/xsec_covariance_2016a_gevgen_v2.root </filename>
+         <filename>   dune/ndfit/2016b/xsec/xsec_covariance_2016b_LBNEND.root </filename>
          <objname>    frac_cov_max    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
