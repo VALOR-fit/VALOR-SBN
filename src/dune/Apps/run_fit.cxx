@@ -22,6 +22,10 @@
             [--store-spectra   |   : Store toy-MC/best-fit spectra? [def: no]
              --discard-spectra   ] 
 
+	     --input-mixing12,etc  : Option to give input values to osc params (in .arg)
+	     --fix-mixing12,etc    : Option to fix osc params (in .arg)
+	     --fix-at-mixing12,etc : Option to fix osc params to a different value than true/central for the fit
+
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
@@ -175,55 +179,44 @@ int main(int argc, char ** argv)
     // Update values of oscillation parameters 
     if(fplname != "only-nd"){
 
+      //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)
+      Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted-mh"))  ? conv::kNmhInverted      : conv::kNmhNormal);
+      Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
+      Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
+      Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+      
       double mixing12 = arg.GetDouble("input-mixing12");
-      PhysParamId_t p = util::PhysParamFromString("mixing12");
-      fp->Update(p, mixing12);
-      fp->SetInitValue(p, mixing12);
+      fp->Update(util::PhysParamFromString("mixing12"), mixing12);
+      fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
 
       double mixing23 = arg.GetDouble("input-mixing23");
-      p = util::PhysParamFromString("mixing23");
-      fp->Update(p, mixing23);
-      fp->SetInitValue(p, mixing23);
+      fp->Update(util::PhysParamFromString("mixing23"), mixing23);
+      fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
 
       double mixing13 = arg.GetDouble("input-mixing13");
-      p = util::PhysParamFromString("mixing13");
-      fp->Update(p, mixing13);
-      fp->SetInitValue(p, mixing13);
+      fp->Update(util::PhysParamFromString("mixing13"), mixing13);
+      fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
 
       double dm23sq = arg.GetDouble("input-dm23sq");
-      p = util::PhysParamFromString("dm23sq");
-      fp->Update(p, dm23sq);
-      fp->SetInitValue(p, dm23sq);
+      fp->Update(util::PhysParamFromString("dm23sq"), dm23sq);
+      fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
 
       double dm12sq = arg.GetDouble("input-dm12sq");
-      p = util::PhysParamFromString("dm12sq");
-      fp->Update(p, dm12sq);
-      fp->SetInitValue(p, dm12sq);
+      fp->Update(util::PhysParamFromString("dm12sq"), dm12sq);
+      fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
 
       double deltacp = arg.GetDouble("input-deltaCP");
-      p = util::PhysParamFromString("cpv");
-      fp->Update(p, deltacp);
-      fp->SetInitValue(p, deltacp);
+      fp->Update(util::PhysParamFromString("cpv"), deltacp);
+      fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
 
-      // fix them?                                                                                                                           
-      bool fix_mixing12 = arg.GetBool("fix-mixing12");
-      if(fix_mixing12) fp->FixParameter(util::PhysParamFromString("mixing12"));
-
-      bool fix_mixing13 = arg.GetBool("fix-mixing13");
-      if(fix_mixing13) fp->FixParameter(util::PhysParamFromString("mixing13"));
-
-      bool fix_mixing23 = arg.GetBool("fix-mixing23");
-      if(fix_mixing23) fp->FixParameter(util::PhysParamFromString("mixing23"));
+      // fix them?                                                                       
+      if(arg.GetBool("fix-mixing12")) fp->FixParameter(util::PhysParamFromString("mixing12"));
+      if(arg.GetBool("fix-mixing13")) fp->FixParameter(util::PhysParamFromString("mixing13"));
+      if(arg.GetBool("fix-mixing23")) fp->FixParameter(util::PhysParamFromString("mixing23"));
+      if(arg.GetBool("fix-dm23sq"))   fp->FixParameter(util::PhysParamFromString("dm23sq"));
+      if(arg.GetBool("fix-dm12sq"))   fp->FixParameter(util::PhysParamFromString("dm12sq"));
+      if(arg.GetBool("fix-deltaCP"))  fp->FixParameter(util::PhysParamFromString("cpv"));
       
-      bool fix_dm23sq = arg.GetBool("fix-dm23sq");
-      if(fix_dm23sq) fp->FixParameter(util::PhysParamFromString("dm23sq"));
-
-      bool fix_dm12sq = arg.GetBool("fix-dm12sq");
-      if(fix_dm12sq) fp->FixParameter(util::PhysParamFromString("dm12sq"));
-
-      bool fix_cpv = arg.GetBool("fix-deltaCP");
-      if(fix_cpv) fp->FixParameter(util::PhysParamFromString("cpv"));
-
     }
 
     PhysParamList true_params = fp->AsPhysParamList("current");
@@ -250,6 +243,11 @@ int main(int argc, char ** argv)
       fp->CopyCurrToInitValues();
     }
            
+    
+    //before reset for the fit, fix to a different value? 
+    double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
+    fp->Update(util::PhysParamFromString("cpv"), fix_deltacp);
+    fp->SetInitValue(util::PhysParamFromString("cpv"), fix_deltacp);
 
     // Set our current values back to the fitter start point.
     // This will be central values unless start-at-true is defined.

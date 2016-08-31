@@ -94,6 +94,12 @@ int main(int argc, char ** argv)
   // parameter limits, initial values etc).                                                                                           
   FitParamList * fp = util::GetFitParameterList(fplname.c_str());
 
+  //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
+  Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted-mh"))  ? conv::kNmhInverted      : conv::kNmhNormal);
+  Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
+  Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
+  Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
   // Update values of oscillation parameters 
   if(fplname != "only-nd"){
     double mixing12 = arg.GetDouble("input-mixing12");
@@ -127,24 +133,12 @@ int main(int argc, char ** argv)
     fp->SetInitValue(p, deltacp);
 
     // fix them? 
-    bool fix_mixing12 = arg.GetBool("fix-mixing12");
-    if(fix_mixing12) fp->FixParameter(util::PhysParamFromString("mixing12"));
-
-    bool fix_mixing13 = arg.GetBool("fix-mixing13");
-    if(fix_mixing13) fp->FixParameter(util::PhysParamFromString("mixing13"));
-    
-    bool fix_mixing23 = arg.GetBool("fix-mixing23");
-    if(fix_mixing23) fp->FixParameter(util::PhysParamFromString("mixing23"));
-
-    bool fix_dm23sq = arg.GetBool("fix-dm23sq");
-    if(fix_dm23sq) fp->FixParameter(util::PhysParamFromString("dm23sq"));
-
-    bool fix_dm12sq = arg.GetBool("fix-dm12sq");
-    if(fix_dm12sq) fp->FixParameter(util::PhysParamFromString("dm12sq"));
-
-    bool fix_cpv = arg.GetBool("fix-deltaCP");
-    if(fix_cpv) fp->FixParameter(util::PhysParamFromString("cpv"));
-
+    if(arg.GetBool("fix-mixing12")) fp->FixParameter(util::PhysParamFromString("mixing12"));
+    if(arg.GetBool("fix-mixing13")) fp->FixParameter(util::PhysParamFromString("mixing13"));
+    if(arg.GetBool("fix-mixing23")) fp->FixParameter(util::PhysParamFromString("mixing23"));
+    if(arg.GetBool("fix-dm23sq"))   fp->FixParameter(util::PhysParamFromString("dm23sq"));
+    if(arg.GetBool("fix-dm12sq"))   fp->FixParameter(util::PhysParamFromString("dm12sq"));
+    if(arg.GetBool("fix-deltaCP"))  fp->FixParameter(util::PhysParamFromString("cpv"));
   }
 
   // Generate predictions                                                                                                         
