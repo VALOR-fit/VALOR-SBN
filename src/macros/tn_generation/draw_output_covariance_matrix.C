@@ -34,91 +34,54 @@ void draw_output_covariance_matrix(
   cov.Draw("colz");
 
   TCanvas *c1 = new TCanvas("c1","c1",750,750);
+  double xy_margin = 0.174;
   c1->SetLogz();
-  c1->SetLeftMargin(0.15);
+  c1->SetLeftMargin(xy_margin);
   c1->SetRightMargin(0.15);
-  c1->SetBottomMargin(0.15);
+  c1->SetBottomMargin(xy_margin);
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
  
+  for (int iaxis = 0; iaxis < 2 ; iaxis++) {
+    TAxis * axis = (iaxis ? h->GetYaxis() : h->GetXaxis() );
+    axis->SetBinLabel(10 ,"FHC #nu_{#mu}");
+    axis->SetBinLabel(30 ,"FHC #bar{#nu}_{#mu}");
+    axis->SetBinLabel(42 ,"FHC #nu_{e}");
+    axis->SetBinLabel(49 ,"FHC #bar{#nu}_{e}");
+    axis->SetBinLabel(63 ,"RHC #nu_{#mu}");
+    axis->SetBinLabel(82 ,"RHC #bar{#nu}_{#mu}");
+    axis->SetBinLabel(95 ,"RHC #nu_{e}");
+    axis->SetBinLabel(101,"RHC #bar{#nu}_{e}");
 
+    axis->SetBinLabel(4+104,"CCQE");
+    //~ axis->SetBinLabel(4+104,"#bar{#nu}_{#mu} CCQE");
+    axis->SetBinLabel(8+104,"MEC         ");
+    //~ axis->SetBinLabel(8+104,"#bar{#nu}_{#mu} MEC");
+    axis->SetBinLabel(12+104,"CC1#pi^{#pm}");
+    //~ axis->SetBinLabel(12+104,"#bar{#nu}_{#mu} CC1#pi^{#pm}");
+    axis->SetBinLabel(18+104,"CC1#pi^{0}");
+    //~ axis->SetBinLabel(18+104,"#bar{#nu}_{#mu} CC1#pi^{0}");
+    axis->SetBinLabel(21+104,"CC2#pi         ");
+    axis->SetBinLabel(26+104,"DIS");
+    //~ axis->SetBinLabel(26+104,"#bar{#nu}_{#mu} DIS");
+    axis->SetBinLabel(30+104,"CC coh       ");
+    axis->SetBinLabel(32+104,"NC");
+    //~ axis->SetBinLabel(33+104,"CC #nu_{e}/#nu_{#mu}");
+    //~ axis->SetBinLabel(34+104,"MFP #pi");
+    //~ axis->SetBinLabel(35+104,"MFP N");
+    axis->SetBinLabel(38+104,"#pi FSI");
+    //~ axis->SetBinLabel(37+104,"FrInel #pi");
+    //~ axis->SetBinLabel(38+104,"FrAbs #pi");
+    //~ axis->SetBinLabel(39+104,"FrPiProd #pi");
+    axis->SetBinLabel(43+104,"N FSI");
+    //~ axis->SetBinLabel(41+104,"FrInel N");
+    //~ axis->SetBinLabel(42+104,"FrAbs N");
+    //~ axis->SetBinLabel(43+104,"FrPiProd N");
+    //~ axis->LabelsOption("v");
 
-  h->GetXaxis()->SetBinLabel(10,"FHC #nu_{#mu}");
-  h->GetXaxis()->SetBinLabel(30,"FHC #bar{#nu}_{#mu}");
-  h->GetXaxis()->SetBinLabel(42,"FHC #nu_{e}");
-  h->GetXaxis()->SetBinLabel(49,"FHC #bar{#nu}_{e}");
-  h->GetXaxis()->SetBinLabel(63,"RHC #nu_{#mu}");
-  h->GetXaxis()->SetBinLabel(82,"RHC #bar{#nu}_{#mu}");
-  h->GetXaxis()->SetBinLabel(95,"RHC #nu_{e}");
-  h->GetXaxis()->SetBinLabel(101,"RHC #bar{#nu}_{e}");
+    axis->SetTickLength(0.);
+  }
 
-  h->GetXaxis()->SetBinLabel(4+104,"CCQE");
-  //  h->GetXaxis()->SetBinLabel(4+104,"#bar{#nu}_{#mu} CCQE");
-  h->GetXaxis()->SetBinLabel(8+104,"MEC");
-  //  h->GetXaxis()->SetBinLabel(8+104,"#bar{#nu}_{#mu} MEC");
-  h->GetXaxis()->SetBinLabel(12+104,"CC1#pi^{#pm}");
-  //  h->GetXaxis()->SetBinLabel(12+104,"#bar{#nu}_{#mu} CC1#pi^{#pm}");
-  h->GetXaxis()->SetBinLabel(18+104,"CC1#pi^{0}");
-  //  h->GetXaxis()->SetBinLabel(18+104,"#bar{#nu}_{#mu} CC1#pi^{0}");
-  h->GetXaxis()->SetBinLabel(22+104,"CC2#pi");
-  h->GetXaxis()->SetBinLabel(26+104,"DIS");
-  //  h->GetXaxis()->SetBinLabel(26+104,"#bar{#nu}_{#mu} DIS");
-  h->GetXaxis()->SetBinLabel(30+104,"CC coh");
-  h->GetXaxis()->SetBinLabel(32+104,"NC");
-  //  h->GetXaxis()->SetBinLabel(33+104,"CC #nu_{e}/#nu_{#mu}");
-  //  h->GetXaxis()->SetBinLabel(34+104,"MFP #pi");
-  // h->GetXaxis()->SetBinLabel(35+104,"MFP N");
-  h->GetXaxis()->SetBinLabel(38+104,"#pi FSI");
-  //  h->GetXaxis()->SetBinLabel(37+104,"FrInel #pi");
-  //h->GetXaxis()->SetBinLabel(38+104,"FrAbs #pi");
-  //h->GetXaxis()->SetBinLabel(39+104,"FrPiProd #pi");
-  h->GetXaxis()->SetBinLabel(42+104,"N FSI");
-  //  h->GetXaxis()->SetBinLabel(41+104,"FrInel N");
-  //h->GetXaxis()->SetBinLabel(42+104,"FrAbs N");
-  //h->GetXaxis()->SetBinLabel(43+104,"FrPiProd N");
-  //h->GetXaxis()->LabelsOption("v");
-
-  h->GetXaxis()->SetTickLength(0.);
-  h->GetYaxis()->LabelsOption("v");
-
-
-  //Y AXIS
-  h->GetYaxis()->SetBinLabel(10,"FHC #nu_{#mu}");
-  h->GetYaxis()->SetBinLabel(30,"FHC #bar{#nu}_{#mu}");
-  h->GetYaxis()->SetBinLabel(42,"FHC #nu_{e}");
-  h->GetYaxis()->SetBinLabel(49,"FHC #bar{#nu}_{e}");
-  h->GetYaxis()->SetBinLabel(63,"RHC #nu_{#mu}");
-  h->GetYaxis()->SetBinLabel(82,"RHC #bar{#nu}_{#mu}");
-  h->GetYaxis()->SetBinLabel(95,"RHC #nu_{e}");
-  h->GetYaxis()->SetBinLabel(101,"RHC #bar{#nu}_{e}");
-
-  h->GetYaxis()->SetBinLabel(4+104,"CCQE");
-  //  h->GetYaxis()->SetBinLabel(4+104,"#bar{#nu}_{#mu} CCQE");
-  h->GetYaxis()->SetBinLabel(8+104,"MEC");
-  //  h->GetYaxis()->SetBinLabel(8+104,"#bar{#nu}_{#mu} MEC");
-  h->GetYaxis()->SetBinLabel(12+104,"CC1#pi^{#pm}");
-  //  h->GetYaxis()->SetBinLabel(12+104,"#bar{#nu}_{#mu} CC1#pi^{#pm}");
-  h->GetYaxis()->SetBinLabel(18+104,"CC1#pi^{0}");
-  //  h->GetYaxis()->SetBinLabel(18+104,"#bar{#nu}_{#mu} CC1#pi^{0}");
-  h->GetYaxis()->SetBinLabel(22+104,"CC2#pi");
-  h->GetYaxis()->SetBinLabel(26+104,"DIS");
-  //  h->GetYaxis()->SetBinLabel(26+104,"#bar{#nu}_{#mu} DIS");
-  h->GetYaxis()->SetBinLabel(30+104,"CC coh");
-  h->GetYaxis()->SetBinLabel(32+104,"NC");
-  //  h->GetYaxis()->SetBinLabel(33+104,"CC #nu_{e}/#nu_{#mu}");
-  //  h->GetYaxis()->SetBinLabel(34+104,"MFP #pi");
-  // h->GetYaxis()->SetBinLabel(35+104,"MFP N");
-  h->GetYaxis()->SetBinLabel(38+104,"#pi FSI");
-  //  h->GetYaxis()->SetBinLabel(37+104,"FrInel #pi");
-  //h->GetYaxis()->SetBinLabel(38+104,"FrAbs #pi");
-  //h->GetYaxis()->SetBinLabel(39+104,"FrPiProd #pi");
-  h->GetYaxis()->SetBinLabel(42+104,"N FSI");
-  //  h->GetYaxis()->SetBinLabel(41+104,"FrInel N");
-  //h->GetYaxis()->SetBinLabel(42+104,"FrAbs N");
-  //h->GetYaxis()->SetBinLabel(43+104,"FrPiProd N");
-  //h->GetYaxis()->LabelsOption("v");
-
-  h->GetYaxis()->SetTickLength(0.);
   h->GetYaxis()->LabelsOption("v");
 
 
@@ -297,9 +260,9 @@ void draw_output_covariance_matrix(
   
   TMatrixD corr = valor::util::CovarianceMatrixToCorrelationMatrix(cov);
   TCanvas * corr_canv = new TCanvas("corrcanv","corrcanv",750,750);
-  corr_canv->SetLeftMargin(0.15);
+  corr_canv->SetLeftMargin(xy_margin);
   corr_canv->SetRightMargin(0.15);
-  corr_canv->SetBottomMargin(0.15);
+  corr_canv->SetBottomMargin(xy_margin);
   TH2D * corr_hist = new TH2D(*h);
   for(int i=0; i<147; i++){
     for(int j=0; j<147; j++){
