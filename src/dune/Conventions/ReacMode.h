@@ -745,33 +745,37 @@ static const NuFlavour_t kReacModeToInitFlavour[kNReacModes] =
 //
 namespace util {
 
-  std::string        AsString        (conv::ReacMode_t m);
-  std::string        AsStringTeX     (conv::ReacMode_t m, bool root = false);
-  conv::ReacMode_t   ReacModeFromInt (int m);
+  std::string        AsString             (conv::ReacMode_t m);
+  std::string        AsStringTeX          (conv::ReacMode_t m, bool root = false);
+  std::string        AsString             (conv::ReacType_t t);
+  conv::ReacMode_t   ReacModeFromInt      (int m);
   conv::NuFlavour_t  ReacModeToInitFlavor (conv::ReacMode_t m);
   conv::NuFlavour_t  ReacModeToFinalFlavor(conv::ReacMode_t m);
-  conv::ReacType_t   ReacModeToType  (conv::ReacMode_t m);
-  bool               IsCC(conv::ReacMode_t m);
-  bool               IsNuMu(conv::ReacMode_t m);
-  bool               IsNuMuBar(conv::ReacMode_t m);
-  bool               IsNuE(conv::ReacMode_t m);
-  bool               IsNuEBar(conv::ReacMode_t m);
-  bool               IsNuMuToNuE(conv::ReacMode_t m);
-  bool               IsNuMuToNuTau(conv::ReacMode_t m);
-  bool               IsNuEToNuMu(conv::ReacMode_t m);
-  bool               IsNuEToNuTau(conv::ReacMode_t m);
-  bool               IsNuEToNuMu(conv::ReacMode_t m);
-  bool               IsNuMuBarToNuEBar(conv::ReacMode_t m);
+  conv::ReacType_t   ReacModeToType       (conv::ReacMode_t m);
+  conv::ReacMode_t   ReacTypeToMode       (conv::ReacType_t t, conv::NuFlavour_t nu_init, conv::NuFlavour_t nu_final);
+  
+  bool               IsCC               (conv::ReacMode_t m);
+  bool               IsNuMu             (conv::ReacMode_t m);
+  bool               IsNuMuBar          (conv::ReacMode_t m);
+  bool               IsNuE              (conv::ReacMode_t m);
+  bool               IsNuEBar           (conv::ReacMode_t m);
+  bool               IsNuMuToNuE        (conv::ReacMode_t m);
+  bool               IsNuMuToNuTau      (conv::ReacMode_t m);
+  bool               IsNuEToNuMu        (conv::ReacMode_t m);
+  bool               IsNuEToNuTau       (conv::ReacMode_t m);
+  bool               IsNuEToNuMu        (conv::ReacMode_t m);
+  bool               IsNuMuBarToNuEBar  (conv::ReacMode_t m);
   bool               IsNuMuBarToNuTauBar(conv::ReacMode_t m);
-  bool               IsNuEBarToNuMuBar(conv::ReacMode_t m);
-  bool               IsNuEBarToNuTauBar(conv::ReacMode_t m);
+  bool               IsNuEBarToNuMuBar  (conv::ReacMode_t m);
+  bool               IsNuEBarToNuTauBar (conv::ReacMode_t m);
   
   conv::ReacMode_t   NuEModeToOscNuEMode(conv::ReacMode_t m);
 
   // Aliases for above
   std::string      ModeAsString        (conv::ReacMode_t m);
   std::string      ModeAsStringTeX     (conv::ReacMode_t m, bool root = false);
-  bool             ModeIsCC(conv::ReacMode_t m);  
+  bool             ModeIsCC            (conv::ReacMode_t m);  
+  std::string      ReacTypeAsString    (conv::ReacType_t t);
 
 } // util
 

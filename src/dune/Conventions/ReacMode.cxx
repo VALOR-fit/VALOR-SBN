@@ -9,6 +9,7 @@ ChangeLog:
 //________________________________________________________________________________________
 
 #include <algorithm>
+#include <iostream>
 
 #include "dune/Conventions/ReacMode.h"
 
@@ -394,6 +395,37 @@ string util::AsStringTeX(ReacMode_t m, bool root)
   return name;
 }
 //________________________________________________________________________________________
+std::string util::AsString(conv::ReacType_t t)
+{
+  switch (t) {
+    case (kmtCCQE     ) : return "CCQE";
+    case (kmtCCMEC    ) : return "CCMEC";
+    case (kmtCC1piC   ) : return "CC1piC";
+    case (kmtCC1pi0   ) : return "CC1pi0";
+    case (kmtCC2piC   ) : return "CC2piC";
+    case (kmtCC2pi0   ) : return "CC2pi0";
+    case (kmtCCpiCpi0 ) : return "CC1pi01piC";
+    case (kmtCCcoh    ) : return "CCcoherent";
+    case (kmtCCIMD    ) : return "CCIMD";
+    case (kmtCCELScat ) : return "CCnuEEl";
+    case (kmtCCoth    ) : return "CCother";
+    case (kmtNCEL     ) : return "NCEL";
+    case (kmtNCMEC    ) : return "NCMEC";
+    case (kmtNC1piC   ) : return "NC1piC";
+    case (kmtNC1pi0   ) : return "NC1pi0";
+    case (kmtNC2piC   ) : return "NC2piC";
+    case (kmtNC2pi0   ) : return "NC2pi0";
+    case (kmtNCpiCpi0 ) : return "NC1pi01piC";
+    case (kmtNCcoh    ) : return "NCcoherent";
+    case (kmtNCELScat ) : return "NCnuEEl";
+    case (kmtNCoth    ) : return "NCother";
+    case (kmtELScat   ) : return "nuEEl";
+    case (kmtOther    ) : return "misc";
+    default             : return "--";
+  }
+  return "--";
+}
+//________________________________________________________________________________________
 conv::NuFlavour_t  util::ReacModeToInitFlavor(conv::ReacMode_t m)
 {
   //~ int idx = ArrIdx::Instance()->ReacModeIdx(m);
@@ -649,9 +681,10 @@ ReacMode_t util::ReacModeFromInt(int m)
 }
 //________________________________________________________________________________________
 //aliases for systems that can't overload based on enum type (eg python)
-string util::ModeAsStringTeX(ReacMode_t m, bool root) {return util::AsStringTeX(m,root);}
-string util::ModeAsString   (ReacMode_t m) {return util::AsString(m);}
-bool   util::ModeIsCC       (ReacMode_t m) {return util::IsCC(m);}
+string    util::ModeAsStringTeX (ReacMode_t m, bool root) {return util::AsStringTeX(m,root);}
+string    util::ModeAsString    (ReacMode_t m) {return util::AsString(m);}
+bool      util::ModeIsCC        (ReacMode_t m) {return util::IsCC(m);}
+string    util::ReacTypeAsString(ReacType_t t) {return util::AsString(t);}
 //________________________________________________________________________________________
 ReacMode_t util::NuEModeToOscNuEMode(ReacMode_t m)
 {
@@ -681,3 +714,19 @@ ReacMode_t util::NuEModeToOscNuEMode(ReacMode_t m)
     default: return kmUndefined;
   }
 }
+//________________________________________________________________________________________
+conv::ReacMode_t util::ReacTypeToMode (conv::ReacType_t t, conv::NuFlavour_t nu_init, conv::NuFlavour_t nu_final)
+{
+  using namespace util;
+  for (int im = 0 ; im < kNReacModes ; im++) {
+    conv::ReacMode_t  m       =  util::ReacModeFromInt(im);
+    conv::ReacType_t  m_t     =  util::ReacModeToType       (m);
+    conv::NuFlavour_t m_init  =  util::ReacModeToInitFlavor (m);
+    conv::NuFlavour_t m_final =  util::ReacModeToFinalFlavor(m);
+    if (m_t == t && m_init == nu_init && nu_final == m_final) {
+      return m;
+    }
+  }
+  return conv::kmUndefined;
+}
+//________________________________________________________________________________________
