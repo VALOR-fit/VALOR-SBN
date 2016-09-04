@@ -103,7 +103,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("enu_reco"   , &valor_minidst_enu_reco,  "enu_reco/D" );
   valor_minidst->Branch("y_reco"     , &valor_minidst_y_reco,    "y_reco/D"   );
   valor_minidst->Branch("wght_pot"   , &valor_minidst_wght_pot,  "wght_pot/D" );
-  valor_minidst->Branch("wght"       , &valor_minidst_wght_pot,  "wght/D" );
+  valor_minidst->Branch("wght"       , &valor_minidst_wght,      "wght/D" );
   
   // Tmp - while we still have 2 reco variables, save both
   int    valor_minidst_sample_o    = -999; // see SDFit/NDSample.h 
