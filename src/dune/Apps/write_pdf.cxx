@@ -146,7 +146,7 @@ int main(int argc, char ** argv)
   model->Generate(*fp,generate_opt);
 
   CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
-  for (int i = 0 ; i < cmodel->GetNSubModels() ; i++) {
+  for (unsigned int i = 0 ; i < cmodel->GetNSubModels() ; i++) {
     GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
     gmodel->UpdateObservableBinningFromSimple();
   }
