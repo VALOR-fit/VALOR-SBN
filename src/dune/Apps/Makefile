@@ -15,6 +15,7 @@ include $(VALOR_DUNE)/make/Make.include
 DUNE_LIBRARIES = 
 
 TGT = make_nd_minidst \
+      make_fd_minidst \
       make_response_functions \
       run_fit \
       write_pdf \
@@ -31,6 +32,16 @@ ifdef GENIE
 	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 else
 	@echo "Skipping make_nd_minidst due to no GENIE"
+endif
+
+# Generate DSTs for FD fit
+#
+make_fd_minidst: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_fd_minidst.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_fd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_fd_minidst
+else
+	@echo "Skipping make_fd_minidst due to no GENIE"
 endif
 
 
@@ -77,6 +88,7 @@ purge: FORCE
 clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fd_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-write_pdf
@@ -85,6 +97,7 @@ clean: FORCE
 
 distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fd_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/write_pdf
