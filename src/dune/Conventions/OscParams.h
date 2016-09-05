@@ -60,7 +60,7 @@ namespace conv {
   //  static const double kInitDeltaCP = -1.601;
   static const double kInitErrDeltaCP = 1.0; // ~100%  
   //  static const double kInitErrDeltaCP = 0.10; // ~10%  
-    
+
 } // conv
 
 //
@@ -69,8 +69,11 @@ namespace conv {
 namespace util {
 
   double OscParamInitValue(conv::PhysParamId_t p);
+  double OscParamInitError(conv::PhysParamId_t p);
   double OscParamMaxValue (conv::PhysParamId_t p);
   double OscParamMinValue (conv::PhysParamId_t p);
+
+  double GetRandomizedOscParam (conv::PhysParamId_t p, string mode);
 
 } // util
 

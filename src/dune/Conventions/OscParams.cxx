@@ -10,6 +10,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Conventions/NuOscMixParam.h"
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Utilities/Rnd.h"
 
 //dune
 #include "dune/Conventions/FitParam.h"
@@ -51,6 +52,37 @@ double util::OscParamInitValue(conv::PhysParamId_t p)
   return -1;
 }
 //________________________________________________________________________________________
+double util::OscParamInitError(conv::PhysParamId_t p)
+{
+
+  NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
+
+  switch (p) 
+    {
+    case(kPhypMixing23):
+      return ( (omp==kNuMixSinsq2Theta) ? kInitErrSinsq2Theta23 : kInitErrSinsqTheta23); 
+    case(kPhypMixing13):
+      return ( (omp==kNuMixSinsq2Theta) ? kInitErrSinsq2Theta13 : kInitErrSinsqTheta13); 
+    case(kPhypMixing12):
+      return ( (omp==kNuMixSinsq2Theta) ? kInitErrSinsq2Theta12 : kInitErrSinsqTheta12); 
+
+    case(kPhypDm23sq):
+      return kInitErrDm23sq;
+
+    case(kPhypDm12sq):
+      return kInitErrDm12sq;
+      
+    case (kPhypCPV):
+      return kInitErrDeltaCP;
+
+    default: 
+      return -1; 
+
+    }
+
+  return -1;
+}
+//________________________________________________________________________________________
 double util::OscParamMaxValue(conv::PhysParamId_t p)
 {
   switch (p) 
@@ -82,11 +114,11 @@ double util::OscParamMinValue(conv::PhysParamId_t p)
   switch (p) 
     {
     case(kPhypMixing23):
-      return -1.0;
+      return 0.0;
     case(kPhypMixing13):
-      return -1.0;
+      return 0.0;
     case(kPhypMixing12):
-      return -1.0;
+      return 0.0;
 
     case(kPhypDm23sq):
       return kMinDm23sq;
@@ -102,4 +134,28 @@ double util::OscParamMinValue(conv::PhysParamId_t p)
 
   return -1;
 }
+
+//________________________________________________________________________________________                                                             
+double util::GetRandomizedOscParam(conv::PhysParamId_t p, string mode)
+{
+
+  double min = util::OscParamMinValue(p);
+  double max = util::OscParamMaxValue(p);
+  double rndm = min-1;
+  while((rndm<min)||(rndm>max)){ //keep throwing a random number if outside limits
+    if((p==kPhypCPV) || (mode == "flat")) 
+      rndm = Rnd::Instance()->RndToyMCosc().Uniform(min,max);
+    else if(mode == "gaus"){
+      double mean  = util::OscParamInitValue(p);
+      double sigma = mean * util::OscParamInitError(p);
+      rndm = Rnd::Instance()->RndToyMCosc().Gaus(mean,sigma);//This does not work for deltaCP, mean = 0
+    }
+  }
+  return rndm;
+}
+
+
+
 //________________________________________________________________________________________
+
+
