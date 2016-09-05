@@ -1190,29 +1190,32 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   double enu_true      = 0.;
   double enu_reco      = 0.;
   double y_reco        = 0.;
-  double wght_pot      = 0.;
   double Q2_true       = 0.;
   double wght          = 1.;
+  double wght_pot      = 1.;
+  double wght_smear    = 1.;
   
-  int bstat_sample    = 0; 
-  int bstat_reac_mode = 0; 
-  int bstat_enu_true  = 0; 
-  int bstat_enu_reco  = 0; 
-  int bstat_y_reco    = 0; 
-  int bstat_wght_pot  = 0; 
-  int bstat_Q2_true   = 0;   
-  int bstat_wght      = 0;   
+  int bstat_sample     = 0; 
+  int bstat_reac_mode  = 0; 
+  int bstat_enu_true   = 0; 
+  int bstat_enu_reco   = 0; 
+  int bstat_y_reco     = 0; 
+  int bstat_Q2_true    = 0;   
+  int bstat_wght       = 0;   
+  int bstat_wght_pot   = 0; 
+  int bstat_wght_smear = 0; 
   
   bstat_sample    = t->SetBranchAddress("sample",    &sample);
   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
   bstat_enu_true  = t->SetBranchAddress("enu_true",  &enu_true);
   bstat_enu_reco  = t->SetBranchAddress("enu_reco",  &enu_reco);
   bstat_y_reco    = t->SetBranchAddress("y_reco",    &y_reco);
-  bstat_wght_pot  = t->SetBranchAddress("wght_pot",  &wght_pot);
   bstat_Q2_true   = t->SetBranchAddress("Q2_true",   &Q2_true);
   
   // Weight is not required - use one if failed
-  bstat_wght      = t->SetBranchAddress("wght"   ,   &wght);
+  bstat_wght       = t->SetBranchAddress("wght"       , &wght);
+  bstat_wght_pot   = t->SetBranchAddress("wght_pot"   , &wght_pot);
+  bstat_wght_smear = t->SetBranchAddress("wght_smear" , &wght_smear);
   
   bool any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
       bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
@@ -1246,9 +1249,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
   
-  double mc_pot_weight = t->GetWeight();
+  double tree_weight = t->GetWeight();
   
-  LOG("GenericSingleSampleFitModel",pNOTICE) << "Input VALOR DST contains "<<1./mc_pot_weight<<" POT. Weighting to "<<fPOT<<" data POT.";
+  LOG("GenericSingleSampleFitModel",pNOTICE) << "Input VALOR DST has weight "<<tree_weight;
   
   for(Long_t iev = 0; iev < nev; iev++) 
   {
@@ -1401,7 +1404,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     double data_pot = fPOT;
 
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
-    double pot_wght = data_pot * mc_pot_weight;
+    double pot_wght = wght_pot * data_pot * tree_weight;
     
     if(fFiducialMass > 0) {
       pot_wght = pot_wght*fFiducialMass;
@@ -1425,11 +1428,10 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     assert(iq2_true  >= 0 && iq2_true  < n_q2_true_bins);
     
     
-    double this_entry = pot_wght;
-    // We're not using this weight variable yet. But we could...
-    //~ if (!bstat_wght) {
-      //~ this_entry *= wght;
-    //~ }
+    double this_entry = wght;
+    
+    this_entry *= pot_wght;
+    this_entry *= wght_smear;
 
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode][izone]->GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
