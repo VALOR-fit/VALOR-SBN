@@ -115,6 +115,7 @@ int main(int argc, char ** argv)
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(thresholds);
   
+  string opt_beam_name         = arg.GetString("beam");
   string opt_sample_name       = arg.GetString("sample");
   string opt_output_name       = arg.GetString("output");
   string opt_input_name        = arg.GetString("input");
@@ -127,12 +128,14 @@ int main(int argc, char ** argv)
   TString smearing_path = "$VALOR_DUNE/data/dune/fdfit/2016b/smearing_histograms.root";
   gSystem->ExpandPathName(smearing_path);
   TFile smearing_file(smearing_path.Data());
-  TObject * obj = smearing_file.Get(Form("smearing_NC_%s",opt_sample_name.c_str()));
+  TString hname = TString::Format("smearing_%s_NC_%s",opt_beam_name.c_str(),opt_sample_name.c_str());
+  TObject * obj = smearing_file.Get(hname.Data());
   TH2D * nc_smearing = new TH2D(*(TH2D*)obj);
   TH2D * cc_smearing[6];
   for (int i = 0 ; i < 6; i++) {
     conv::NuFlavour_t flav = (conv::NuFlavour_t)i;
-    obj = smearing_file.Get(Form("smearing_%s_%s",util::AsString(flav).c_str(),opt_sample_name.c_str()));
+    hname = TString::Format("smearing_%s_%s_%s",opt_beam_name.c_str(),util::AsString(flav).c_str(),opt_sample_name.c_str());
+    obj = smearing_file.Get(hname.Data());
     cc_smearing[flav] = new TH2D(*(TH2D*)obj);
   }
    

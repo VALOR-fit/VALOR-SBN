@@ -45,12 +45,11 @@ for f in files:
   
   if d_beam == "nu" :
     beam = conv.kbLBNF_FHC
-    if d_ana=="app": sample = "nueCChigh"
-    if d_ana=="dis": sample = "numuCChigh"
-  if d_beam == "anu" :
+  elif d_beam == "anu":
     beam = conv.kbLBNF_RHC
-    if d_ana=="app": sample = "nuebarCChigh"
-    if d_ana=="dis": sample = "numubarCChigh"
+    
+  if d_ana=="app": sample = "nueCChigh"
+  if d_ana=="dis": sample = "numuCChigh"
     
   tf = R.TFile(f)
   canv = tf.GetListOfKeys()[0].ReadObj()

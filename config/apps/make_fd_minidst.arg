@@ -5,3 +5,4 @@ output                             |   string       |  mandatory  |  valor_fd_mi
 sample                             |   string       |  mandatory  |   -
 disable-checks                     |   boolean      |  optional   |  false
 mesg-thresholds                    |   string       |  optional   |  verbosity.xml
+beam                               |   string       |  mandotory  | -
