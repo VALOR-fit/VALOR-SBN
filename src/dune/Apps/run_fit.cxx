@@ -147,9 +147,9 @@ int main(int argc, char ** argv)
     if (param_values_ts.Contains("randomize")) {
       model->RandomizeSystematics(param_values_ts.Data());
     }
-    
+
     PhysParamList tweaks = model->Tweaks();
-    
+
     //~ // Don't randomise fixed parameters
     //~ for (int ip = 0; ip < conv::knppmax ; ip++) {
       //~ PhysParamId_t p = (PhysParamId_t)ip;
@@ -160,7 +160,7 @@ int main(int argc, char ** argv)
     //~ }
     
     fp->FromPhysParamList(tweaks,"current");
-    
+
     // Check parameter name, maybe rethrow
     if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp)) {
       LOG("valor_dune", pNOTICE) << "At least one parameter thrown outside expected limits.";
@@ -180,7 +180,7 @@ int main(int argc, char ** argv)
     if(fplname != "only-nd"){
 
       //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)
-      Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted-mh"))  ? conv::kNmhInverted      : conv::kNmhNormal);
+      Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
       Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
       Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
       Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);

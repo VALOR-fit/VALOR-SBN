@@ -302,74 +302,74 @@ static const PhysParamId_t kNuisEffNC            = kNuis222;
 //
 // Far detector systematics
 //
-static const PhysParamId_t kNuisEffFDNuMuCCHigh     = kNuis223;
-static const PhysParamId_t kNuisEffFDNuMuCCLow      = kNuis224;
-static const PhysParamId_t kNuisEffFDNuMuBarCCHigh  = kNuis225;
-static const PhysParamId_t kNuisEffFDNuMuBarCCLow   = kNuis226;
-static const PhysParamId_t kNuisEffFDNuECCHigh      = kNuis227;
-static const PhysParamId_t kNuisEffFDNuECCLow       = kNuis228;
-static const PhysParamId_t kNuisEffFDNuEBarCCHigh   = kNuis229;
+static const PhysParamId_t kNuisEffFDNuMuLikeCCHigh     = kNuis223;
+static const PhysParamId_t kNuisEffFDNuMuLikeCCLow      = kNuis224;
+//static const PhysParamId_t kNuisEffFDNuMuBarCCHigh  = kNuis225;
+//static const PhysParamId_t kNuisEffFDNuMuBarCCLow   = kNuis226;
+static const PhysParamId_t kNuisEffFDNuELikeCCHigh      = kNuis225;
+static const PhysParamId_t kNuisEffFDNuELikeCCLow       = kNuis226;
+/*static const PhysParamId_t kNuisEffFDNuEBarCCHigh   = kNuis229;
 static const PhysParamId_t kNuisEffFDNuEBarCCLow    = kNuis230;
 static const PhysParamId_t kNuisEffFDNuTauCCHigh    = kNuis231;
 static const PhysParamId_t kNuisEffFDNuTauCCLow     = kNuis232;
 static const PhysParamId_t kNuisEffFDNuTauBarCCHigh = kNuis233;
-static const PhysParamId_t kNuisEffFDNuTauBarCCLow  = kNuis234;
+static const PhysParamId_t kNuisEffFDNuTauBarCCLow  = kNuis234;*/
 
 //
 // Interaction model, more complex
 //
-static const PhysParamId_t kNuisIntNuCCQE1               = kNuis235;
-static const PhysParamId_t kNuisIntNuCCQE2               = kNuis236;
-static const PhysParamId_t kNuisIntNuCCQE3               = kNuis237;
-static const PhysParamId_t kNuisIntNuBarCCQE1            = kNuis238;
-static const PhysParamId_t kNuisIntNuBarCCQE2            = kNuis239;
-static const PhysParamId_t kNuisIntNuBarCCQE3            = kNuis240;
+static const PhysParamId_t kNuisIntNuCCQE1               = kNuis227;
+static const PhysParamId_t kNuisIntNuCCQE2               = kNuis228;
+static const PhysParamId_t kNuisIntNuCCQE3               = kNuis229;
+static const PhysParamId_t kNuisIntNuBarCCQE1            = kNuis230;
+static const PhysParamId_t kNuisIntNuBarCCQE2            = kNuis231;
+static const PhysParamId_t kNuisIntNuBarCCQE3            = kNuis232;
 
-static const PhysParamId_t kNuisIntNuCCMEC               = kNuis241;
-static const PhysParamId_t kNuisIntNuBarCCMEC            = kNuis242;
+static const PhysParamId_t kNuisIntNuCCMEC               = kNuis233;
+static const PhysParamId_t kNuisIntNuBarCCMEC            = kNuis234;
 
-static const PhysParamId_t kNuisIntNuCC1piz1             = kNuis243;
-static const PhysParamId_t kNuisIntNuCC1piz2             = kNuis244;
-static const PhysParamId_t kNuisIntNuCC1piz3             = kNuis245;
-static const PhysParamId_t kNuisIntNuCC1pic1             = kNuis246;
-static const PhysParamId_t kNuisIntNuCC1pic2             = kNuis247;
-static const PhysParamId_t kNuisIntNuCC1pic3             = kNuis248;
+static const PhysParamId_t kNuisIntNuCC1piz1             = kNuis235;
+static const PhysParamId_t kNuisIntNuCC1piz2             = kNuis236;
+static const PhysParamId_t kNuisIntNuCC1piz3             = kNuis237;
+static const PhysParamId_t kNuisIntNuCC1pic1             = kNuis238;
+static const PhysParamId_t kNuisIntNuCC1pic2             = kNuis239;
+static const PhysParamId_t kNuisIntNuCC1pic3             = kNuis240;
 
-static const PhysParamId_t kNuisIntNuBarCC1piz1          = kNuis249;
-static const PhysParamId_t kNuisIntNuBarCC1piz2          = kNuis250;
-static const PhysParamId_t kNuisIntNuBarCC1piz3          = kNuis251;
-static const PhysParamId_t kNuisIntNuBarCC1pic1          = kNuis252;
-static const PhysParamId_t kNuisIntNuBarCC1pic2          = kNuis253;
-static const PhysParamId_t kNuisIntNuBarCC1pic3          = kNuis254;
+static const PhysParamId_t kNuisIntNuBarCC1piz1          = kNuis241;
+static const PhysParamId_t kNuisIntNuBarCC1piz2          = kNuis242;
+static const PhysParamId_t kNuisIntNuBarCC1piz3          = kNuis243;
+static const PhysParamId_t kNuisIntNuBarCC1pic1          = kNuis244;
+static const PhysParamId_t kNuisIntNuBarCC1pic2          = kNuis245;
+static const PhysParamId_t kNuisIntNuBarCC1pic3          = kNuis246;
 
-static const PhysParamId_t kNuisIntNuCC2Pi               = kNuis255;
-static const PhysParamId_t kNuisIntNuBarCC2Pi            = kNuis256;
+static const PhysParamId_t kNuisIntNuCC2Pi               = kNuis247;
+static const PhysParamId_t kNuisIntNuBarCC2Pi            = kNuis248;
 
-static const PhysParamId_t kNuisIntNuDIS1                = kNuis257;
-static const PhysParamId_t kNuisIntNuDIS2                = kNuis258;
-static const PhysParamId_t kNuisIntNuDIS3                = kNuis259;
-static const PhysParamId_t kNuisIntNuBarDIS1             = kNuis260;
-static const PhysParamId_t kNuisIntNuBarDIS2             = kNuis261;
-static const PhysParamId_t kNuisIntNuBarDIS3             = kNuis262;
+static const PhysParamId_t kNuisIntNuDIS1                = kNuis249;
+static const PhysParamId_t kNuisIntNuDIS2                = kNuis250;
+static const PhysParamId_t kNuisIntNuDIS3                = kNuis251;
+static const PhysParamId_t kNuisIntNuBarDIS1             = kNuis252;
+static const PhysParamId_t kNuisIntNuBarDIS2             = kNuis253;
+static const PhysParamId_t kNuisIntNuBarDIS3             = kNuis254;
 
-static const PhysParamId_t kNuisIntNormNuCoherent        = kNuis263;
-static const PhysParamId_t kNuisIntNormNuBarCoherent     = kNuis264;
-static const PhysParamId_t kNuisIntNuNormNC              = kNuis265;
-static const PhysParamId_t kNuisIntNuBarNormNC           = kNuis266;
-static const PhysParamId_t kNuisIntNormNuMuToNuE         = kNuis267;
+static const PhysParamId_t kNuisIntNormNuCoherent        = kNuis255;
+static const PhysParamId_t kNuisIntNormNuBarCoherent     = kNuis256;
+static const PhysParamId_t kNuisIntNuNormNC              = kNuis257;
+static const PhysParamId_t kNuisIntNuBarNormNC           = kNuis258;
+static const PhysParamId_t kNuisIntNormNuMuToNuE         = kNuis259;
 
-static const PhysParamId_t kNuisIntPiMeanFreePath        = kNuis268;
-static const PhysParamId_t kNuisIntNucMeanFreePath       = kNuis269;
-static const PhysParamId_t kNuisIntFracPiChargeExchange  = kNuis270;
-static const PhysParamId_t kNuisIntFracPiInelastic       = kNuis271;
-static const PhysParamId_t kNuisIntFracPiAbsorb          = kNuis272;
-static const PhysParamId_t kNuisIntFracPiProduction      = kNuis273;
-static const PhysParamId_t kNuisIntFracNucChargeExchange = kNuis274;
-static const PhysParamId_t kNuisIntFracNucInelastic      = kNuis275;
-static const PhysParamId_t kNuisIntFracNucAbsorb         = kNuis276;
-static const PhysParamId_t kNuisIntFracNucProduction     = kNuis277;
+static const PhysParamId_t kNuisIntPiMeanFreePath        = kNuis260;
+static const PhysParamId_t kNuisIntNucMeanFreePath       = kNuis261;
+static const PhysParamId_t kNuisIntFracPiChargeExchange  = kNuis262;
+static const PhysParamId_t kNuisIntFracPiInelastic       = kNuis263;
+static const PhysParamId_t kNuisIntFracPiAbsorb          = kNuis264;
+static const PhysParamId_t kNuisIntFracPiProduction      = kNuis265;
+static const PhysParamId_t kNuisIntFracNucChargeExchange = kNuis266;
+static const PhysParamId_t kNuisIntFracNucInelastic      = kNuis267;
+static const PhysParamId_t kNuisIntFracNucAbsorb         = kNuis268;
+static const PhysParamId_t kNuisIntFracNucProduction     = kNuis269;
 
-static const PhysParamId_t kNuisIntHadronization         = kNuis278;
+static const PhysParamId_t kNuisIntHadronization         = kNuis270;
 
 // Boundaries between parameter types
 static const PhysParamId_t kOscFirstParam          = kPhypMixing23; 
@@ -383,11 +383,11 @@ static const PhysParamId_t kNuisFDFluxLastParameter  = kNuisRHCNuEBarFDFlux06;
 static const PhysParamId_t kNuisIntFirstParameter  = kNuisIntNuCCQE1;
 static const PhysParamId_t kNuisIntLastParameter   = kNuisIntHadronization;
 static const PhysParamId_t kNuisDetFirstParameter  = kNuisEffNuMuCC0pi1trk;
-static const PhysParamId_t kNuisDetLastParameter   = kNuisEffFDNuTauBarCCLow;
+static const PhysParamId_t kNuisDetLastParameter   = kNuisEffFDNuELikeCCLow;
 static const PhysParamId_t kNuisNDDetFirstParameter= kNuisEffNuMuCC0pi1trk;
 static const PhysParamId_t kNuisNDDetLastParameter = kNuisEffNC;
-static const PhysParamId_t kNuisFDDetFirstParameter= kNuisEffFDNuMuCCHigh;
-static const PhysParamId_t kNuisFDDetLastParameter = kNuisEffFDNuTauBarCCLow;
+static const PhysParamId_t kNuisFDDetFirstParameter= kNuisEffFDNuMuLikeCCHigh;
+static const PhysParamId_t kNuisFDDetLastParameter = kNuisEffFDNuELikeCCLow;
 
 
 // ...........................................................................
@@ -674,10 +674,10 @@ static const PhysParamId_t kFitParam[kNFitParams] =
    kNuisEffNuMuCCWS,
    kNuisEffNC,
   // Far detector systematics
-  kNuisEffFDNuMuCCHigh,
-  kNuisEffFDNuMuCCLow,
-  kNuisEffFDNuECCHigh,
-  kNuisEffFDNuECCLow
+  kNuisEffFDNuMuLikeCCHigh,
+  kNuisEffFDNuMuLikeCCLow,
+  kNuisEffFDNuELikeCCHigh,
+  kNuisEffFDNuELikeCCLow
 };
 
 

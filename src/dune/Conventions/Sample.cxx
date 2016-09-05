@@ -46,14 +46,14 @@ string util::AsString(Sample_t s)
     case (ksNuECC          ) : return "nueCCincl";       break;
     case (ksNC             ) : return "NCincl";          break; 
     case (ksNuMuCCWS       ) : return "numuCCinclWS";    break;
-    case (ksNuMuCClow      ) : return "numuCClow";       break;
-    case (ksNuMuCChigh     ) : return "numuCChigh";      break;
-    case (ksNuMuBarCClow   ) : return "numubarCClow";    break;
-    case (ksNuMuBarCChigh  ) : return "numubarCChigh";   break;
-    case (ksNuECClow       ) : return "nueCClow";        break;
-    case (ksNuECChigh      ) : return "nueCChigh";       break;
-    case (ksNuEBarCClow    ) : return "nuebarCClow";     break;
-    case (ksNuEBarCChigh   ) : return "nuebarCChigh";    break;
+    case (ksNuMuLikeCClow      ) : return "numulikeCClow";       break;
+    case (ksNuMuLikeCChigh     ) : return "numulikeCChigh";      break;
+      //    case (ksNuMuBarCClow   ) : return "numubarCClow";    break;
+      //    case (ksNuMuBarCChigh  ) : return "numubarCChigh";   break;
+    case (ksNuELikeCClow       ) : return "nuelikeCClow";        break;
+    case (ksNuELikeCChigh      ) : return "nuelikeCChigh";       break;
+      //    case (ksNuEBarCClow    ) : return "nuebarCClow";     break;
+      //    case (ksNuEBarCChigh   ) : return "nuebarCChigh";    break;
     default                    : return "--"; 
   }
   return "";
@@ -92,14 +92,14 @@ string util::AsStringTeX(Sample_t s, bool root)
     case (ksNuECC          ) : name = "#nu_{e} CC inclusive";                 break;
     case (ksNuMuCCWS       ) : name = "Wrong sign #nu_{#mu} CC inclusive";    break;
     case (ksNC             ) : name = "NC inclusive";                         break; 
-    case (ksNuMuCClow      ) : name = "#nu_{#mu} CC low-resolution";          break;
-    case (ksNuMuCChigh     ) : name = "#nu_{#mu} CC high-resolution";         break;
-    case (ksNuMuBarCClow   ) : name = "#bar{#nu}_{#mu} CC low-resolution";    break;
-    case (ksNuMuBarCChigh  ) : name = "#bar{#nu}_{#mu} CC high-resolution";   break;
-    case (ksNuECClow       ) : name = "#nu_{e} CC low-resolution";            break;
-    case (ksNuECChigh      ) : name = "#nu_{e} CC high-resolution";           break;
-    case (ksNuEBarCClow    ) : name = "#bar{#nu}_{e} CC low-resolution";      break;
-    case (ksNuEBarCChigh   ) : name = "#bar{#nu}_{e} CC high-resolution";     break;
+    case (ksNuMuLikeCClow      ) : name = "#nu_{#mu} CC low-resolution";          break;
+    case (ksNuMuLikeCChigh     ) : name = "#nu_{#mu} CC high-resolution";         break;
+      //    case (ksNuMuBarCClow   ) : name = "#bar{#nu}_{#mu} CC low-resolution";    break;
+      //    case (ksNuMuBarCChigh  ) : name = "#bar{#nu}_{#mu} CC high-resolution";   break;
+    case (ksNuELikeCClow       ) : name = "#nu_{e} CC low-resolution";            break;
+    case (ksNuELikeCChigh      ) : name = "#nu_{e} CC high-resolution";           break;
+      //    case (ksNuEBarCClow    ) : name = "#bar{#nu}_{e} CC low-resolution";      break;
+      //    case (ksNuEBarCChigh   ) : name = "#bar{#nu}_{e} CC high-resolution";     break;
     default                    : name = "--"; 
   }
 
@@ -113,14 +113,14 @@ string util::AsStringTeX(Sample_t s, bool root)
 bool util::IsFar(Sample_t s)
 {
   switch(s) {
-    case (ksNuMuCClow      ) :
-    case (ksNuMuCChigh     ) :
-    case (ksNuMuBarCClow   ) :
-    case (ksNuMuBarCChigh  ) :
-    case (ksNuECClow       ) :
-    case (ksNuECChigh      ) :
-    case (ksNuEBarCClow    ) :
-    case (ksNuEBarCChigh   ) : return true; break;
+    case (ksNuMuLikeCClow      ) :
+    case (ksNuMuLikeCChigh     ) :
+      //  case (ksNuMuBarCClow   ) :
+      //    case (ksNuMuBarCChigh  ) :
+    case (ksNuELikeCClow       ) :
+    case (ksNuELikeCChigh      ) : return true; break;
+      //    case (ksNuEBarCClow    ) :
+    //    case (ksNuEBarCChigh   ) : 
     default: return false;
   }
   return false; 
@@ -152,14 +152,14 @@ bool util::IsCC(Sample_t s)
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWS       ) : 
-    case (ksNuMuCClow      ) : 
-    case (ksNuMuCChigh     ) : 
-    case (ksNuMuBarCClow   ) : 
-    case (ksNuMuBarCChigh  ) : 
-    case (ksNuECClow       ) : 
-    case (ksNuECChigh      ) : 
-    case (ksNuEBarCClow    ) : 
-    case (ksNuEBarCChigh   ) : 
+    case (ksNuMuLikeCClow  ) : 
+    case (ksNuMuLikeCChigh ) : 
+      //    case (ksNuMuBarCClow   ) : 
+      //    case (ksNuMuBarCChigh  ) : 
+    case (ksNuELikeCClow   ) : 
+    case (ksNuELikeCChigh  ) : 
+      //    case (ksNuEBarCClow    ) : 
+      //    case (ksNuEBarCChigh   ) : 
     case (ksNuMuCCoth      ) : return true; break;
 
     case (ksNC0pi          ) : 
@@ -184,10 +184,10 @@ bool util::IsCCQELike(Sample_t s)
     case (ksNuMuCCWS0pi    ) : 
     case (ksNeutrinoElec   ) :
     case (ksInvMuDecay     ) : 
-    case (ksNuMuCChigh     ) : 
-    case (ksNuMuBarCChigh  ) : 
-    case (ksNuECChigh      ) : 
-    case (ksNuEBarCChigh   ) : return true; break;
+    case (ksNuMuLikeCChigh ) : 
+      //    case (ksNuMuBarCChigh  ) : 
+    case (ksNuELikeCChigh  ) : return true; break;
+    //    case (ksNuEBarCChigh   ) : 
 
     case (ksNuMuCC         ) :
     case (ksNuMuCC1piC     ) :
@@ -210,10 +210,10 @@ bool util::IsCCQELike(Sample_t s)
     case (ksNuMuCCWS       ) : 
     case (ksNuECCWS        ) :
     case (ksNC             ) : 
-    case (ksNuMuCClow      ) : 
-    case (ksNuMuBarCClow   ) : 
-    case (ksNuECClow       ) : 
-    case (ksNuEBarCClow    ) : return false; break;
+    case (ksNuMuLikeCClow  ) : 
+      //    case (ksNuMuBarCClow   ) : 
+    case (ksNuELikeCClow   ) : return false; break;
+    //    case (ksNuEBarCClow    ) : 
     default: return false; 
   }
   return false;
@@ -245,14 +245,14 @@ bool util::IsNC(Sample_t s)
     case (ksNuMuCC2piC     ) :
     case (ksNuECC          ) : 
     case (ksNuMuCCWS       ) : 
-    case (ksNuMuCClow      ) : 
-    case (ksNuMuCChigh     ) : 
-    case (ksNuMuBarCClow   ) : 
-    case (ksNuMuBarCChigh  ) : 
-    case (ksNuECClow       ) : 
-    case (ksNuECChigh      ) : 
-    case (ksNuEBarCClow    ) : 
-    case (ksNuEBarCChigh   ) : return false; break;
+    case (ksNuMuLikeCClow  ) : 
+    case (ksNuMuLikeCChigh ) : 
+      //    case (ksNuMuBarCClow   ) : 
+      //    case (ksNuMuBarCChigh  ) : 
+    case (ksNuELikeCClow   ) : 
+    case (ksNuELikeCChigh  ) : return false; break;
+      //    case (ksNuEBarCClow    ) : 
+    //    case (ksNuEBarCChigh   ) : 
 
     case (ksNC0pi          ) : 
     case (ksNC1piC         ) : 
@@ -268,8 +268,7 @@ Sample_t util::SampleFromInt(int s)
 {
 // Cast an integer to Sample_t, but with boundary check
 //             [first]                  [last]
-  if((s >= (int)ksNuMuCC && s <= (int) ksNuEBarCClow)|| //RHC
-     (s >= (int)ksNuMuCC && s <= (int) ksNuECClow)) //FHC
+  if((s >= (int)ksNuMuCC && s <= (int) ksNuELikeCClow)) //RHC
     return (Sample_t)s;
   return ksUndefined;
 }
@@ -340,14 +339,14 @@ bool util::IsMuLike(Sample_t s)
     case ksNeutrinoElec    : return false ;
     case ksInvMuDecay      : return true  ;
     case ksNuECCWS         : return false ;
-    case ksNuMuCChigh      : return true  ;
-    case ksNuMuCClow       : return true  ;
-    case ksNuMuBarCChigh   : return true  ;
-    case ksNuMuBarCClow    : return true  ;
-    case ksNuECChigh       : return false ;
-    case ksNuECClow        : return false ;
-    case ksNuEBarCChigh    : return false ;
-    case ksNuEBarCClow     : return false ;
+    case ksNuMuLikeCChigh  : return true  ;
+    case ksNuMuLikeCClow   : return true  ;
+      //    case ksNuMuBarCChigh   : return true  ;
+      //    case ksNuMuBarCClow    : return true  ;
+    case ksNuELikeCChigh   : return false ;
+    case ksNuELikeCClow    : return false ;
+      //    case ksNuEBarCChigh    : return false ;
+      //    case ksNuEBarCClow     : return false ;
   }
 }
 //________________________________________________________________________________________
@@ -383,14 +382,14 @@ bool util::IsELike(Sample_t s)
     case ksNeutrinoElec    : return true  ;
     case ksInvMuDecay      : return false ;
     case ksNuECCWS         : return true  ;
-    case ksNuMuCChigh      : return false ;
-    case ksNuMuCClow       : return false ;
-    case ksNuMuBarCChigh   : return false ;
-    case ksNuMuBarCClow    : return false ;
-    case ksNuECChigh       : return true  ;
-    case ksNuECClow        : return true  ;
-    case ksNuEBarCChigh    : return true  ;
-    case ksNuEBarCClow     : return true  ;
+    case ksNuMuLikeCChigh  : return false ;
+    case ksNuMuLikeCClow   : return false ;
+      //    case ksNuMuBarCChigh   : return false ;
+      //    case ksNuMuBarCClow    : return false ;
+    case ksNuELikeCChigh   : return true  ;
+    case ksNuELikeCClow    : return true  ;
+      //    case ksNuEBarCChigh    : return true  ;
+      //    case ksNuEBarCClow     : return true  ;
   }
 }
 //________________________________________________________________________________________

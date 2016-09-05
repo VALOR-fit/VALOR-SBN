@@ -299,18 +299,18 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisEffNuMuCCWS      ) : return "f_eff_numuccwsgn";     break;
     case (kNuisEffNC            ) : return "f_eff_nc";             break;
   
-    case (kNuisEffFDNuMuCCHigh     ) : return "f_eff_fd_numu_cchigh";     break;  
-    case (kNuisEffFDNuMuCCLow      ) : return "f_eff_fd_numu_cclow";      break;  
-    case (kNuisEffFDNuMuBarCCHigh  ) : return "f_eff_fd_numubar_cchigh";  break;  
-    case (kNuisEffFDNuMuBarCCLow   ) : return "f_eff_fd_numubar_cclow";   break;  
-    case (kNuisEffFDNuECCHigh      ) : return "f_eff_fd_nue_cchigh";      break;  
-    case (kNuisEffFDNuECCLow       ) : return "f_eff_fd_nue_cclow";       break;  
-    case (kNuisEffFDNuEBarCCHigh   ) : return "f_eff_fd_nuebar_cchigh";   break;  
-    case (kNuisEffFDNuEBarCCLow    ) : return "f_eff_fd_nuebar_cclow";    break;  
-    case (kNuisEffFDNuTauCCHigh    ) : return "f_eff_fd_nutau_cchigh";    break;  
-    case (kNuisEffFDNuTauCCLow     ) : return "f_eff_fd_nutau_cclow";     break;  
-    case (kNuisEffFDNuTauBarCCHigh ) : return "f_eff_fd_nutaubar_cchigh"; break;  
-    case (kNuisEffFDNuTauBarCCLow  ) : return "f_eff_fd_nutaubar_cclow";  break;  
+    case (kNuisEffFDNuMuLikeCCHigh ) : return "f_eff_fd_numulike_cchigh";     break;  
+    case (kNuisEffFDNuMuLikeCCLow  ) : return "f_eff_fd_numulike_cclow";      break;  
+      //    case (kNuisEffFDNuMuBarCCHigh  ) : return "f_eff_fd_numubar_cchigh";  break;  
+      //    case (kNuisEffFDNuMuBarCCLow   ) : return "f_eff_fd_numubar_cclow";   break;  
+    case (kNuisEffFDNuELikeCCHigh  ) : return "f_eff_fd_nuelike_cchigh";      break;  
+    case (kNuisEffFDNuELikeCCLow   ) : return "f_eff_fd_nuelike_cclow";       break;  
+      //    case (kNuisEffFDNuEBarCCHigh   ) : return "f_eff_fd_nuebar_cchigh";   break;  
+      //    case (kNuisEffFDNuEBarCCLow    ) : return "f_eff_fd_nuebar_cclow";    break;  
+      //    case (kNuisEffFDNuTauCCHigh    ) : return "f_eff_fd_nutau_cchigh";    break;  
+      //    case (kNuisEffFDNuTauCCLow     ) : return "f_eff_fd_nutau_cclow";     break;  
+      //    case (kNuisEffFDNuTauBarCCHigh ) : return "f_eff_fd_nutaubar_cchigh"; break;  
+      //    case (kNuisEffFDNuTauBarCCLow  ) : return "f_eff_fd_nutaubar_cclow";  break;  
 
     case ( kNuisIntNuCCQE1         ) : return "f_int_nu_ccqe_1"; 
     case ( kNuisIntNuCCQE2         ) : return "f_int_nu_ccqe_2"; 
@@ -608,18 +608,18 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisEffNuMuCCWS      ) : name = "f_{eff;\\nu_{\\mu}CC;wsgn}";                   break;
     case (kNuisEffNC            ) : name = "f_{eff;NC}";                                   break;
     
-    case (kNuisEffFDNuMuCCHigh  ) : name = "f_{eff;FD;\\nu_{\\mu}CC;high}";                break;  
-    case (kNuisEffFDNuMuCCLow   ) : name = "f_{eff;FD;\\nu_{\\mu}CC;low}";                 break;  
-    case (kNuisEffFDNuMuBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{\\mu}CC;high}";      break;  
-    case (kNuisEffFDNuMuBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{\\mu}CC;low}";       break;  
-    case (kNuisEffFDNuECCHigh  ) : name = "f_{eff;FD;\\nu_{e}CC;high}";                break;  
-    case (kNuisEffFDNuECCLow   ) : name = "f_{eff;FD;\\nu_{e}CC;low}";                 break;  
-    case (kNuisEffFDNuEBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{e}CC;high}";      break;  
-    case (kNuisEffFDNuEBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{e}CC;low}";       break;  
-    case (kNuisEffFDNuTauCCHigh  ) : name = "f_{eff;FD;\\nu_{\\tau}CC;high}";                break;  
-    case (kNuisEffFDNuTauCCLow   ) : name = "f_{eff;FD;\\nu_{\\tau}CC;low}";                 break;  
-    case (kNuisEffFDNuTauBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{\\tau}CC;high}";      break;  
-    case (kNuisEffFDNuTauBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{\\tau}CC;low}";       break;  
+    case (kNuisEffFDNuMuLikeCCHigh  ) : name = "f_{eff;FD;\\nu_{\\mu}CC;high}";                break;  
+    case (kNuisEffFDNuMuLikeCCLow   ) : name = "f_{eff;FD;\\nu_{\\mu}CC;low}";                 break;  
+      //    case (kNuisEffFDNuMuBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{\\mu}CC;high}";      break;  
+      //    case (kNuisEffFDNuMuBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{\\mu}CC;low}";       break;  
+    case (kNuisEffFDNuELikeCCHigh  ) : name = "f_{eff;FD;\\nu_{e}CC;high}";                break;  
+    case (kNuisEffFDNuELikeCCLow   ) : name = "f_{eff;FD;\\nu_{e}CC;low}";                 break;  
+      //    case (kNuisEffFDNuEBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{e}CC;high}";      break;  
+      //    case (kNuisEffFDNuEBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{e}CC;low}";       break;  
+      //    case (kNuisEffFDNuTauCCHigh  ) : name = "f_{eff;FD;\\nu_{\\tau}CC;high}";                break;  
+      //    case (kNuisEffFDNuTauCCLow   ) : name = "f_{eff;FD;\\nu_{\\tau}CC;low}";                 break;  
+      //    case (kNuisEffFDNuTauBarCCHigh  ) : name = "f_{eff;FD;\\bar{\\nu}_{\\tau}CC;high}";      break;  
+      //    case (kNuisEffFDNuTauBarCCLow   ) : name = "f_{eff;FD;\\bar{\\nu}_{\\tau}CC;low}";       break;  
 
     case ( kNuisIntNuCCQE1         ) : name =  "f_{\\nu CCQE ; 1}";                        break;
     case ( kNuisIntNuCCQE2         ) : name =  "f_{\\nu CCQE ; 2}";                        break;

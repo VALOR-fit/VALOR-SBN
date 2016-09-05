@@ -7,10 +7,10 @@
    Far detector selections
 -->
 
-    <element name="dune_fd_rhc_numubarcchigh">
+    <element name="dune_fd_rhc_numulikecchigh">
       <detector>     dune_fd1ph                                           </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numubarcchigh                                        </sample>
+      <sample>       numulikecchigh                                       </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_2016b_fd_mulike_pt3.xml </mc>
@@ -19,10 +19,10 @@
     </element>
 
 <!--
-    <element name="dune_fd_rhc_numubarcclow">
+    <element name="dune_fd_rhc_numulikecclow">
       <detector>     dune_fd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       numubarcclow                                           </sample>
+      <sample>       numulikecclow                                        </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_2016b_fd_pt3.xml </mc>
@@ -31,10 +31,10 @@
     </element>
 -->
 
-    <element name="dune_fd_rhc_nuebarcchigh">
+    <element name="dune_fd_rhc_nuelikecchigh">
       <detector>     dune_fd1ph                                           </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       nuebarcchigh                                           </sample>
+      <sample>       nuelikecchigh                                        </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_2016b_fd_elike_pt3.xml </mc>
@@ -43,10 +43,10 @@
     </element>
 
 <!--
-    <element name="dune_fd_rhc_nuebarcclow">
+    <element name="dune_fd_rhc_nuelikecclow">
       <detector>     dune_fd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
-      <sample>       nuebarcclow                                           </sample>
+      <sample>       nuelikecclow                                         </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
       <mc>           dune_2016b_fd_pt3.xml </mc>

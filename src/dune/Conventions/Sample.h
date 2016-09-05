@@ -66,18 +66,18 @@ typedef enum ESample
    ksInvMuDecay      = 26, // Inverse muon decay (nuebar + e -> mu + numubar or numu + e -> mu + nue)
    ksNuECCWS         = 27, // wrong sign nue CC inclusive 
    //2016b far detector selections
-   ksNuMuCChigh,           // numu, high resolution (CCQE-like)
-   ksNuMuCClow,            // numu, low resolution (nonCCQE-like)
-   ksNuMuBarCChigh,        // numubar, high resolution (CCQE-like)   
-   ksNuMuBarCClow,         // numubar, low resolution (nonCCQE-like) 
-   ksNuECChigh,            // nue, high resolution (CCQE-like)
-   ksNuECClow,             // nue, low resolution (nonCCQE-like)   
-   ksNuEBarCChigh,         // nuebar, high resolution (CCQE-like)
-   ksNuEBarCClow          // nuebar, low resolution (nonCCQE-like)   
+   ksNuMuLikeCChigh,       // numu-like (for the moment both numu and numubar), high resolution (CCQE-like)
+   ksNuMuLikeCClow,        // numu-like (for the moment both numu and numubar), low resolution (nonCCQE-like)
+   //   ksNuMuBarCChigh,        // numubar, high resolution (CCQE-like)   
+   //   ksNuMuBarCClow,         // numubar, low resolution (nonCCQE-like) 
+   ksNuELikeCChigh,         // nue-like (for the moment both nue and nuebar), high resolution (CCQE-like)
+   ksNuELikeCClow//,        // nue-like (for the moment both nue and nuebar), low resolution (nonCCQE-like)   
+   //   ksNuEBarCChigh,         // nuebar, high resolution (CCQE-like)
+   //ksNuEBarCClow          // nuebar, low resolution (nonCCQE-like)   
 } 
 Sample_t; 
 
-static const int kMaxNSamples = 37;
+static const int kMaxNSamples = 33;
 
 // 
 // ...........................................................................
@@ -134,10 +134,10 @@ static const int kMaxNSamples = 37;
      ksInvMuDecay,
      ksNuECCWS,
      //2016b far detector selections
-     ksNuMuCChigh,  
-     ksNuMuCClow,  
-     ksNuECChigh,           
-     ksNuECClow          
+     ksNuMuLikeCChigh,  
+     ksNuMuLikeCClow,  
+     ksNuELikeCChigh,           
+     ksNuELikeCClow          
    },
 
    {
@@ -165,11 +165,11 @@ static const int kMaxNSamples = 37;
      ksNeutrinoElec,
      ksInvMuDecay,
      ksNuECCWS,
-     //2016b far detector selections
-     ksNuMuBarCChigh,   
-     ksNuMuBarCClow,  
-     ksNuEBarCChigh,     
-     ksNuEBarCClow        
+     //2016b far detector selections //LORENA
+     ksNuMuLikeCChigh,   
+     ksNuMuLikeCClow,  
+     ksNuELikeCChigh,     
+     ksNuELikeCClow        
    }
 };
 // ---------------------------------------------------------------------

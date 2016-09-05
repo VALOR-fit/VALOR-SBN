@@ -192,14 +192,14 @@ static const ApplyMask_t kApplyToSample[kMaxNSamples] = {
  /* ksNeutrinoElec   */ ksApplyToNuECC           , // ksApplyToNeutrinoElec    , 
  /* ksInvMuDecay     */ ksApplyToNuMuCCoth       , // ksApplyToInvMuDecay      ,
  /* ksNuECCWS        */ ksApplyToNuECC           , // ksApplyToNuECCWS         ,
- /* ksNuMuCChigh     */ ksApplyToHighRes         , 
- /* ksNuMuCClow      */ ksApplyToLowRes          ,
- /* ksNuMuBarCChigh  */ ksApplyToHighRes         , 
- /* ksNuMuBarCClow   */ ksApplyToLowRes          ,
- /* ksNuECChigh      */ ksApplyToHighRes         ,
- /* ksNuECClow       */ ksApplyToLowRes          ,
- /* ksNuEBarCChigh   */ ksApplyToHighRes         ,
- /* ksNuEBarCClow    */ ksApplyToLowRes          
+ /* ksNuMuLikeCChigh     */ ksApplyToHighRes         , 
+ /* ksNuMuLikeCClow      */ ksApplyToLowRes          ,
+ // /* ksNuMuBarCChigh  */ ksApplyToHighRes         , 
+ // /* ksNuMuBarCClow   */ ksApplyToLowRes          ,
+ /* ksNuELikeCChigh      */ ksApplyToHighRes         ,
+ /* ksNuELikeCClow       */ ksApplyToLowRes          //,
+ // /* ksNuEBarCChigh   */ ksApplyToHighRes         ,
+ // /* ksNuEBarCClow    */ ksApplyToLowRes          
 };
 
 // Which masks apply to which parent particle flavour

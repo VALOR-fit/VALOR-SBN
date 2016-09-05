@@ -95,7 +95,7 @@ int main(int argc, char ** argv)
   FitParamList * fp = util::GetFitParameterList(fplname.c_str());
 
   //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
-  Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted-mh"))  ? conv::kNmhInverted      : conv::kNmhNormal);
+  Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
   Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
   Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
   Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
