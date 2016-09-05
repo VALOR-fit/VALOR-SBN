@@ -24,6 +24,8 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <map>
+#include <utility>
 
 //
 #include <TFile.h>
@@ -46,6 +48,7 @@
 #include "Utils/RunOpt.h"
 
 // valor/dune
+#include "valor/Conventions/Constants.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -66,6 +69,7 @@ using std::ostringstream;
 
 static const double gMVACut = 0.8;
 static const string gTreeName = "mvaselect/MVASelection";
+//~ static const string gTreeName = "MVASelection";
 
 void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
 
@@ -91,7 +95,7 @@ typedef enum ELarMode{
 } LArMode_t; 
 
 // Function to add up the POT
-double GetTotalPOT(std::string filename);
+double GetTotalPOT(std::string filename, int runno);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -118,6 +122,20 @@ int main(int argc, char ** argv)
   
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
   assert(sample != conv::ksUndefined);
+  
+  // Read the smearing histograms - ugly hack for now, but best option while we're still using these files of Dan's.
+  TString smearing_path = "$VALOR_DUNE/data/dune/fdfit/2016b/smearing_histograms.root";
+  gSystem->ExpandPathName(smearing_path);
+  TFile smearing_file(smearing_path.Data());
+  TObject * obj = smearing_file.Get(Form("smearing_NC_%s",opt_sample_name.c_str()));
+  TH2D * nc_smearing = new TH2D(*(TH2D*)obj);
+  TH2D * cc_smearing[6];
+  for (int i = 0 ; i < 6; i++) {
+    conv::NuFlavour_t flav = (conv::NuFlavour_t)i;
+    obj = smearing_file.Get(Form("smearing_%s_%s",util::AsString(flav).c_str(),opt_sample_name.c_str()));
+    cc_smearing[flav] = new TH2D(*(TH2D*)obj);
+  }
+   
 
   int    valor_minidst_beam         = -1; // see Conventions/BeamConf.h 
   int    valor_minidst_sample       = sample;
@@ -130,6 +148,9 @@ int main(int argc, char ** argv)
   double valor_minidst_wght_pot     = -1; // POT weight 
   double valor_minidst_wght         = -1.; // misc weight 
   double valor_minidst_wght_smear   = -1; // energy smearing weight 
+  
+  TFile fout(opt_output_name.c_str(),"recreate");
+  fout.cd();
 
   TTree * valor_minidst = 
     new TTree("valor_dune_nd_mini_dst","Mini-DST input for VALOR/DUNE FD Fit");
@@ -162,7 +183,7 @@ int main(int argc, char ** argv)
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
   analysis_tree->GetEntry(0);
   
-  
+  int run = -1;
   int iscc   = false;
   int isnc   = false;
   double enu_true       =  -999.;
@@ -185,12 +206,21 @@ int main(int argc, char ** argv)
   int niother  = -1;
   
   int larsoft_mode = -1;
-
-  double total_pot_read = GetTotalPOT(opt_input_name);
+  
+  // The POT weighting scheme here seems insane...
+  // Just ask me on Slack if you need it explained - this should be temporary I hope - Steve
+  std::map<int,double> total_pot_read_per_run;
+  total_pot_read_per_run.insert( std::make_pair(20000001, GetTotalPOT(opt_input_name, 20000001)));
+  total_pot_read_per_run.insert( std::make_pair(20000002, GetTotalPOT(opt_input_name, 20000002)));
+  total_pot_read_per_run.insert( std::make_pair(20000003, GetTotalPOT(opt_input_name, 20000003)));
+  total_pot_read_per_run.insert( std::make_pair(20000004, GetTotalPOT(opt_input_name, 20000004)));
+  total_pot_read_per_run.insert( std::make_pair(20000005, GetTotalPOT(opt_input_name, 20000005)));
+  total_pot_read_per_run.insert( std::make_pair(20000006, GetTotalPOT(opt_input_name, 20000006)));
   
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
     
+  analysis_tree->SetBranchAddress("run"      ,  &run         , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("Ev"       ,  &enu_true    , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("Q2"       ,  &Q2s         , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("beamPdg"  ,  &init_pdg    , &branchptr); active_branches.push_back(branchptr);
@@ -306,8 +336,19 @@ int main(int argc, char ** argv)
       final_flav = init_flav;
     }
     
+    // Only have the combination mode for final state nues
+    if (t == conv::kmtCCELScat && (final_flav == conv::kNuE || final_flav == conv::kNuEBar)) {
+      t = conv::kmtELScat;
+    }
     // NCel is not in play yet
-    if (t == conv::kmtNCEL) { t = conv::kmtNCoth;};
+    if (t == conv::kmtNCEL) {
+      if (final_flav == conv::kNuE || final_flav == conv::kNuEBar) {
+        t = conv::kmtELScat;
+      }
+      else {
+        t = conv::kmtNCoth;
+      }
+    }
     
     // Get the real valor mode
     conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(t,init_flav,final_flav);
@@ -319,61 +360,84 @@ int main(int argc, char ** argv)
       if(reac_mode == valor::conv::kmUndefined) {
         VLOG("make_fd_minidst", pWARN) << "- Rejecting event [bad mode]\n"
         << util::AsString(init_flav)<<" -> "<<util::AsString(final_flav)<<"\t"<<util::AsString(t);
-        std::cout<<iscc<<"\t"<<isnc<<"\t"<<"\t"<<larsoft_mode<<std::endl;
+        //~ std::cout<<iscc<<"\t"<<isnc<<"\t"<<"\t"<<larsoft_mode<<std::endl;
         continue;
       }
     }
     
     last_tree_number = analysis_tree->GetTreeNumber();
     
-    // Do ereco smearing here!
-    // DEBUG
-    enu_reco = Rnd::Instance()->RndOther().Gaus(1,0.1) * enu_true;
-      
-    if(!opt_disable_checks) {
-      
-      //
-      // ignore events that can not be used in the VALOR analysis
-      //
-      if(enu_reco <= 0) {
-        VLOG("make_fd_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
-        continue;
-      }
-
-      VLOG("make_fd_minidst", pINFO) << "+ Accepting event";
+    // Do ereco smearing here
+    TH2D * smearing_hist = nc_smearing;
+    if (iscc) {
+      smearing_hist = cc_smearing[final_flav];
     }
     
-    nev_accept++;
-    nev_accept_by_mode[reac_mode]++;
-
-    //~ VLOG("make_fd_minidst", pDEBUG) 
-      //~ << "GENIE MC truth info: " << event;
+    // The regime for smearing is that we fill the tree once for every ereco bin in the smearing histogram
+    // These are weighted by the entry in the histogram, so the N entries add up to a single weighted event
+    // Spread across all the ereco bins
+    TAxis * true_axis = smearing_hist->GetXaxis();
+    TAxis * reco_axis = smearing_hist->GetYaxis();
+    int true_energy_bin = true_axis->FindBin(enu_true);
+    
+    for (int irecobin = 1 ; irecobin <= reco_axis->GetNbins(); irecobin++) {
       
-    valor_minidst_sample    = sample; 
-    valor_minidst_reac_mode = reac_mode;
-    valor_minidst_enu_true  = enu_true; 
-    valor_minidst_enu_reco  = enu_reco; 
-    valor_minidst_wght_pot  = -1; 
-    valor_minidst_Q2_true   = Q2s;
-    
-    valor_minidst_target    = 1000180400; // FORCE ARGON40 FOR NOW
-    valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
-    
-    VLOG("make_fd_minidst", pINFO) 
-      << "\n Information copied to VALOR DUNE/ND Mini-DST: "
-      << "\n Beam          = " << valor_minidst_beam   
-      << "\n Sample        = " << valor_minidst_sample    
-      << "\n Reaction mode = " << valor_minidst_reac_mode 
-      << "\n Target        = " << valor_minidst_target
-      << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
-      << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
-      << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV" 
-      << "\n y (reco)      = " << valor_minidst_y_reco    
-      << "\n POT weight    = " << valor_minidst_wght_pot
-      << "\n Smear weight  = " << valor_minidst_wght_smear;
-    
-    valor_minidst->Fill();
-  }
+      double reco_low_edge  = reco_axis->GetBinLowEdge(irecobin);
+      double reco_high_edge = reco_low_edge + reco_axis->GetBinWidth(irecobin);
+      enu_reco = Rnd::Instance()->RndOther().Uniform(reco_low_edge,reco_high_edge);
+      
+      valor_minidst_wght_smear = smearing_hist->GetBinContent(true_energy_bin,irecobin);
+      
+      if (valor_minidst_wght_smear < conv::kASmallNum) {continue;}
+      
+      //~ std::cout<<reco_axis->GetBinWidth(irecobin)<<"\t"<<reco_low_edge<<"\t"<<reco_high_edge<<"\t"<<enu_reco<<"\t"<<std::endl;
+      //~ std::cout<<enu_true<<"\t"<<enu_reco<<"\t"<<valor_minidst_wght_smear<<std::endl;
+      
+      if(!opt_disable_checks) {
+        
+        //
+        // ignore events that can not be used in the VALOR analysis
+        //
+        if(enu_reco <= 0) {
+          VLOG("make_fd_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
+          continue;
+        }
+
+        VLOG("make_fd_minidst", pINFO) << "+ Accepting event";
+      }
+      
+      nev_accept++;
+      nev_accept_by_mode[reac_mode]++;
+
+      //~ VLOG("make_fd_minidst", pDEBUG) 
+        //~ << "GENIE MC truth info: " << event;
+        
+      valor_minidst_sample    = sample; 
+      valor_minidst_reac_mode = reac_mode;
+      valor_minidst_enu_true  = enu_true; 
+      valor_minidst_enu_reco  = enu_reco; 
+      valor_minidst_wght_pot  = 1./total_pot_read_per_run[run]; 
+      valor_minidst_Q2_true   = Q2s;
+      
+      valor_minidst_target    = 1000180400; // FORCE ARGON40 FOR NOW
+      valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
+      
+      VLOG("make_fd_minidst", pINFO) 
+        << "\n Information copied to VALOR DUNE/ND Mini-DST: "
+        << "\n Beam          = " << valor_minidst_beam   
+        << "\n Sample        = " << valor_minidst_sample    
+        << "\n Reaction mode = " << valor_minidst_reac_mode 
+        << "\n Target        = " << valor_minidst_target
+        << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
+        << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
+        << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV" 
+        << "\n y (reco)      = " << valor_minidst_y_reco    
+        << "\n POT weight    = " << valor_minidst_wght_pot
+        << "\n Smear weight  = " << valor_minidst_wght_smear;
+      
+      valor_minidst->Fill();
+    }//smearing histogram loop
+  } // event loop
   
   for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
     valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
@@ -385,17 +449,12 @@ int main(int argc, char ** argv)
     "Used " << f << "% (" << nev_accept << "/" << nev 
     << ") of input events.";
     
-  VLOG("make_fd_minidst", pNOTICE) <<
-    "Total POT read: "<<total_pot_read;
-  
-  if (total_pot_read>1) {
-    valor_minidst->SetWeight(1./total_pot_read);
-  }
+  //~ VLOG("make_fd_minidst", pNOTICE) <<
+    //~ "Total POT read: "<<total_pot_read;
 
   // Saving VALOR mini-FST to output file 
   VLOG("make_fd_minidst", pNOTICE) 
     << "Saving VALOR/DUNE mini-DST to: " << opt_output_name;
-  TFile fout(opt_output_name.c_str(),"recreate");
   valor_minidst->Write();  
   fout.Close();
 
@@ -404,16 +463,20 @@ int main(int argc, char ** argv)
   return 0;
 }
 //___________________________________________________________________
-double GetTotalPOT(std::string filename)
+double GetTotalPOT(std::string filename, int runno)
 {
   TChain pot_tree("mvaselect/pottree");
   double totpot = 0.;
   double thispot = -9E99;
+  int this_runno = -1;
   pot_tree.Add(filename.c_str());
   pot_tree.SetBranchAddress("pot",&thispot);
+  pot_tree.SetBranchAddress("run",&this_runno);
   for (int iev = 0 ; iev < pot_tree.GetEntries() ; iev++) {
     pot_tree.GetEntry(iev);
-    totpot += thispot;
+    if (this_runno == runno) {
+      totpot += thispot;
+    }
   }
   return totpot;
 }
