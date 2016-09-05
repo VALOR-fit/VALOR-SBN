@@ -80,30 +80,34 @@ int main(int argc, char ** argv)
 
   // Create output mini-DST   
 
-  int    valor_minidst_beam      = -1; // see Conventions/BeamConf.h 
-  int    valor_minidst_sample    = -1; // see SDFit/NDSample.h 
-  int    valor_minidst_reac_mode = -1; // see Conventions/ReacMode.h 
-  int valor_minidst_target       = -1; // nuclear target -  GENIE PDG convention
-  double valor_minidst_enu_true  = -1; // true neutrino energy, in GeV
-  double valor_minidst_Q2_true   = -1; // true neutrino energy, in GeV
-  double valor_minidst_enu_reco  = -1; // reco neutrino energy, in GeV
-  double valor_minidst_y_reco    = -1; // inelasticity, in GeV
-  double valor_minidst_wght_pot  = -1; // POT weight 
-  double valor_minidst_wght      = -1; // misc weight 
-
+  int    valor_minidst_beam       = -1; // see Conventions/BeamConf.h 
+  int    valor_minidst_sample     = -1; // see SDFit/NDSample.h 
+  int    valor_minidst_reac_mode  = -1; // see Conventions/ReacMode.h 
+  int valor_minidst_target        = -1; // nuclear target -  GENIE PDG convention
+  double valor_minidst_enu_true   = -1; // true neutrino energy, in GeV
+  double valor_minidst_Q2_true    = -1; // true neutrino energy, in GeV
+  double valor_minidst_enu_reco   = -1; // reco neutrino energy, in GeV
+  double valor_minidst_y_reco     = -1; // inelasticity, in GeV
+  double valor_minidst_wght       = 1.; // misc weight 
+  double valor_minidst_wght_pot   = 1.; // POT weight 
+  double valor_minidst_wght_smear = 1.; // Kinematic smearing weight (always 1 in the ND since our files are already smeared)
+  
+  TFile fout(gOptOutFileName.c_str(),"recreate");
+  fout.cd();
   TTree * valor_minidst = 
     new TTree("valor_dune_nd_mini_dst","Mini-DST input for VALOR/DUNE ND Fit");
 
-  valor_minidst->Branch("beam"       , &valor_minidst_beam,      "beam/I"     );
-  valor_minidst->Branch("sample"     , &valor_minidst_sample,    "sample/I"   );
-  valor_minidst->Branch("reac_mode"  , &valor_minidst_reac_mode, "reac_mode/I");
-  valor_minidst->Branch("target"     , &valor_minidst_target,    "target/I"   );
-  valor_minidst->Branch("enu_true"   , &valor_minidst_enu_true,  "enu_true/D" );
-  valor_minidst->Branch("Q2_true"    , &valor_minidst_Q2_true,   "q2_true/D"  );
-  valor_minidst->Branch("enu_reco"   , &valor_minidst_enu_reco,  "enu_reco/D" );
-  valor_minidst->Branch("y_reco"     , &valor_minidst_y_reco,    "y_reco/D"   );
-  valor_minidst->Branch("wght_pot"   , &valor_minidst_wght_pot,  "wght_pot/D" );
-  valor_minidst->Branch("wght"       , &valor_minidst_wght,      "wght/D" );
+  valor_minidst->Branch("beam"        , &valor_minidst_beam,       "beam/I"      );
+  valor_minidst->Branch("sample"      , &valor_minidst_sample,     "sample/I"    );
+  valor_minidst->Branch("reac_mode"   , &valor_minidst_reac_mode,  "reac_mode/I" );
+  valor_minidst->Branch("target"      , &valor_minidst_target,     "target/I"    );
+  valor_minidst->Branch("enu_true"    , &valor_minidst_enu_true,   "enu_true/D"  );
+  valor_minidst->Branch("Q2_true"     , &valor_minidst_Q2_true,    "q2_true/D"   );
+  valor_minidst->Branch("enu_reco"    , &valor_minidst_enu_reco,   "enu_reco/D"  );
+  valor_minidst->Branch("y_reco"      , &valor_minidst_y_reco,     "y_reco/D"    );
+  valor_minidst->Branch("wght"        , &valor_minidst_wght,       "wght/D"      );
+  valor_minidst->Branch("wght_pot"    , &valor_minidst_wght_pot,   "wght_pot/D"  );
+  valor_minidst->Branch("wght_smear"  , &valor_minidst_wght_smear, "wght_smear/D");
   
   // Tmp - while we still have 2 reco variables, save both
   int    valor_minidst_sample_o    = -999; // see SDFit/NDSample.h 
@@ -154,8 +158,8 @@ int main(int argc, char ** argv)
   double enu_true       =  -999.;
   double enu_reco       =  -999.;
   double y_reco         =  -999.;
-  double wght_pot       =  -999.;
   double wght           =  1.;
+  double wght_pot       =  1.;
   
   float enu_true_float =  -999.;
   float enu_reco_float =  -999.;
@@ -203,10 +207,7 @@ int main(int argc, char ** argv)
       b->SetStatus(1);
     }
   }
-  
-  //
-  // event loop
-  //
+
 
   Long64_t nev_accept = 0;
   
@@ -215,8 +216,35 @@ int main(int argc, char ** argv)
     nev_accept_by_mode.push_back(0);
   }
   
+  
+    
+  //
+  // event loop to get total POT
+  //
+  VLOG("make_minidst", pNOTICE) << "Doing loop to calculate total POT";
   int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
-
+  for(Long64_t iev = 0; iev < nev; iev++) {
+    analysis_tree->GetEntry(iev);
+    if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
+      VLOG("make_minidst", pNOTICE) << "** Reading event: " << iev;
+    }
+    // Add to total POT - currently doing this BEFORE checks
+    if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
+      total_pot_read += wght_pot_float;
+    }
+    else {
+      if (last_tree_number!=analysis_tree->GetTreeNumber()) {
+        total_pot_read+=analysis_tree->GetWeight();
+      }
+    }
+    last_tree_number = analysis_tree->GetTreeNumber();
+  }
+  VLOG("make_minidst", pNOTICE) << "Total POT read: "<<total_pot_read;
+  
+  
+  //
+  // event loop to fill my output tree
+  //
   for(Long64_t iev = 0; iev < nev; iev++) {
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
@@ -251,17 +279,6 @@ int main(int argc, char ** argv)
       << "Yreco    = "<<y_reco    << "; "
       << "POTwght  = "<<wght_pot  << "; "
       << "MCRecPtr = "<< mcrec;
-    
-    // Add to total POT - currently doing this BEFORE checks
-    if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
-      total_pot_read += valor_minidst_wght_pot;
-    }
-    else {
-      if (last_tree_number!=analysis_tree->GetTreeNumber()) {
-        total_pot_read+=analysis_tree->GetWeight();
-      }
-    }
-    last_tree_number = analysis_tree->GetTreeNumber();
       
     if(!gOptDisableChecks) {
       
@@ -310,7 +327,7 @@ int main(int argc, char ** argv)
     valor_minidst_enu_true  = enu_true; 
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco; 
-    valor_minidst_wght_pot  = wght_pot; 
+    valor_minidst_wght_pot  = 1./total_pot_read; 
     valor_minidst_Q2_true   = mcrec->event->Summary()->KinePtr()->Q2(true);
     valor_minidst_target    = mcrec->event->Summary()->InitState().TgtPdg();
     
@@ -359,14 +376,14 @@ int main(int argc, char ** argv)
   VLOG("make_minidst", pNOTICE) <<
     "Total POT read: "<<total_pot_read;
   
-  if (total_pot_read>1) {
-    valor_minidst->SetWeight(1./total_pot_read);
-  }
+  //~ if (total_pot_read>1) {
+    //~ valor_minidst->SetWeight(1./total_pot_read);
+  //~ }
 
   // Saving VALOR mini-FST to output file 
   VLOG("make_minidst", pNOTICE) 
-    << "Saving VALOR/DUNE mini-DST to: " << gOptOutFileName;
-  TFile fout(gOptOutFileName.c_str(),"recreate");
+    << "Saving VALOR/DUNE mini-DST to: " << fout.GetName();
+  fout.cd();
   valor_minidst->Write();  
   fout.Close();
 
