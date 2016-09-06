@@ -260,6 +260,10 @@ void plot_pdf(
             if(!found) {
               cout << "WTF! Did not find coarse reaction mode for mode: " << util::AsString(m) 
                    << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
+              cout << "Options were: "<<std::endl;
+              for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+                cout<<"\t"<<util::AsString(conv::kReactionModesCoarse[ibeam][isample][imodec])<<std::endl;
+              }
               exit(1);
             }                  
             for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
