@@ -5489,10 +5489,10 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     },
     // sample: ksNuECChigh/ksNuEBarCChigh
     {
-      { kBlack, kAzure,    3004 }, // kmcOscNuECC                                                                                                     
-      { kBlack, kBlue,     3005 }, // kmcOscNuEBarCC 
+      { kBlack, kCyan,     1001 }, // kmcOscNuECC                                                                                                     
+      { kBlack, kBlue,     1001 }, // kmcOscNuEBarCC 
       { kBlack, kGreen,    3007 }, // kmcNuECC                                                                                                           
-      { kBlack, kMagenta,  3001 }, // kmcNuEBarCC
+      { kBlack, kMagenta,  3004 }, // kmcNuEBarCC
       { kBlack, kWhite,    3544 }, // kmcNuMuCC                                                                                                          
       { kBlack, kYellow,   3001 }, // kmcNuMuBarCC  
       { kBlack, kViolet-1, 3001 }, // kmcNuTauCC 
@@ -5501,10 +5501,10 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     },
     // sample: ksNuECClow/ksNuEBarCClow
     {
-      { kBlack, kAzure,    3004 }, // kmcOscNuECC                                                                                                     
-      { kBlack, kBlue,     3005 }, // kmcOscNuEBarCC 
+      { kBlack, kCyan,     1001 }, // kmcOscNuECC                                                                                                     
+      { kBlack, kBlue,     1001 }, // kmcOscNuEBarCC 
       { kBlack, kGreen,    3007 }, // kmcNuECC                                                                                                           
-      { kBlack, kMagenta,  3001 }, // kmcNuEBarCC
+      { kBlack, kMagenta,  3004 }, // kmcNuEBarCC
       { kBlack, kWhite,    3544 }, // kmcNuMuCC                                                                                                          
       { kBlack, kYellow,   3001 }, // kmcNuMuBarCC  
       { kBlack, kViolet-1, 3001 }, // kmcNuTauCC 
@@ -5794,10 +5794,10 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     },
     // sample: ksNuECChigh/ksNuEBarCChigh
     {
-      { kBlack, kAzure,    3004 }, // kmcOscNuECC                                                                                                     
-      { kBlack, kBlue,     3005 }, // kmcOscNuEBarCC 
+      { kBlack, kCyan,     1001 }, // kmcOscNuECC                                                                                                     
+      { kBlack, kBlue,     1001 }, // kmcOscNuEBarCC 
       { kBlack, kGreen,    3007 }, // kmcNuECC                                                                                                           
-      { kBlack, kMagenta,  3001 }, // kmcNuEBarCC
+      { kBlack, kMagenta,  3004 }, // kmcNuEBarCC
       { kBlack, kWhite,    3544 }, // kmcNuMuCC                                                                                                          
       { kBlack, kYellow,   3001 }, // kmcNuMuBarCC  
       { kBlack, kViolet-1, 3001 }, // kmcNuTauCC 
@@ -5806,10 +5806,10 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     },
     // sample: ksNuECClow/ksNuEBarCClow
     {
-      { kBlack, kAzure,    3004 }, // kmcOscNuECC                                                                                                     
-      { kBlack, kBlue,     3005 }, // kmcOscNuEBarCC 
+      { kBlack, kCyan,     1001 }, // kmcOscNuECC                                                                                                     
+      { kBlack, kBlue,     1001 }, // kmcOscNuEBarCC 
       { kBlack, kGreen,    3007 }, // kmcNuECC                                                                                                           
-      { kBlack, kMagenta,  3001 }, // kmcNuEBarCC
+      { kBlack, kMagenta,  3004 }, // kmcNuEBarCC
       { kBlack, kWhite,    3544 }, // kmcNuMuCC                                                                                                          
       { kBlack, kYellow,   3001 }, // kmcNuMuBarCC  
       { kBlack, kViolet-1, 3001 }, // kmcNuTauCC 
