@@ -5,25 +5,25 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 options for the fit param list:
         - standard: all nd + fd + osc parameters
-	- only-nd:  only nd parameters
+        - only-nd:  only nd parameters
 
 additional options
-	- no-int-systematics: skipping neutrino interaction systematics in the list construction
-	- no-flux-systematics, no-nd-flux-systematics, no-fd-flux-systematics: as above for flux
-	- no-detector-systematics, no-nd-detector-systematics, no-fd-detector-systematics: as above for efficiencies
-	- no-osc-params: skipping oscillation parameters in the list construction
+        - no-int-systematics: skipping neutrino interaction systematics in the list construction
+        - no-flux-systematics, no-nd-flux-systematics, no-fd-flux-systematics: as above for flux
+        - no-detector-systematics, no-nd-detector-systematics, no-fd-detector-systematics: as above for efficiencies
+        - no-osc-params: skipping oscillation parameters in the list construction
 
 options after list construction
         - fix-osc-param: fix all oscillation parameters
-	- cons_osc_params: set all osc params as nuisance - Note: to constrain only one (i.e. theta13, usual reactor)
-	                   use this one and fix other osc params independently (see run_fit options)
-	- fix_detector_params: fix all detector params included in the list
-	- fix_flux_params:     fix all flux params included in the list
-	- fix_nd_flux_params:  as above, only nd flux params
-	- fix_fd_flux_params:  as above, only fd flux params
-	- fix_int_params:      fix all neutrino interaction systematic parameters
-	- fix_mec_params:      fix mec params
-	- fix_fsi_params:      fix the FSI params
+        - cons_osc_params: set all osc params as nuisance - Note: to constrain only one (i.e. theta13, usual reactor)
+                           use this one and fix other osc params independently (see run_fit options)
+        - fix_detector_params: fix all detector params included in the list
+        - fix_flux_params:     fix all flux params included in the list
+        - fix_nd_flux_params:  as above, only nd flux params
+        - fix_fd_flux_params:  as above, only fd flux params
+        - fix_int_params:      fix all neutrino interaction systematic parameters
+        - fix_mec_params:      fix mec params
+        - fix_fsi_params:      fix the FSI params
 */
 //____________________________________________________________________________________________________________________
 
@@ -696,11 +696,11 @@ PhysParamId_t util::PhysParamFromString(string inp_name)
      if(IsOscParam(p)){  
        string name_simple = util::AsStringSimple(p);
        if((name == inp_name) || (name_simple == inp_name))
-	 return p;
+         return p;
        }
      else{
        if(name == inp_name) 
-	 return p;
+         return p;
      }
   }
   return kPhypUndefined;
@@ -806,15 +806,17 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
     int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
     
     //get the extra options here:
-    bool fix_osc_params      = (param_list_opt.find("fix-osc-params") != string::npos);
-    bool cons_osc_params     = (param_list_opt.find("cons-osc-params") != string::npos);
-    bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
-    bool fix_flux_params     = (param_list_opt.find("fix-flux-syst") != string::npos);
-    bool fix_nd_flux_params  = (param_list_opt.find("fix-nd-flux-syst") != string::npos);
-    bool fix_fd_flux_params  = (param_list_opt.find("fix-fd-flux-syst") != string::npos);
-    bool fix_int_params      = (param_list_opt.find("fix-int-syst") != string::npos);
-    bool fix_mec_params      = (param_list_opt.find("fix-mec-syst") != string::npos);
-    bool fix_fsi_params      = (param_list_opt.find("fix-fsi-syst") != string::npos);
+    bool fix_osc_params         = (param_list_opt.find("fix-osc-params"   ) != string::npos);
+    bool cons_osc_params        = (param_list_opt.find("cons-osc-params"  ) != string::npos);
+    bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
+    bool fix_nd_detector_params = (param_list_opt.find("fix-nd-det-syst"  ) != string::npos);
+    bool fix_fd_detector_params = (param_list_opt.find("fix-fd-det-syst"  ) != string::npos);
+    bool fix_flux_params        = (param_list_opt.find("fix-flux-syst"    ) != string::npos);
+    bool fix_nd_flux_params     = (param_list_opt.find("fix-nd-flux-syst" ) != string::npos);
+    bool fix_fd_flux_params     = (param_list_opt.find("fix-fd-flux-syst" ) != string::npos);
+    bool fix_int_params         = (param_list_opt.find("fix-int-syst"     ) != string::npos);
+    bool fix_mec_params         = (param_list_opt.find("fix-mec-syst"     ) != string::npos);
+    bool fix_fsi_params         = (param_list_opt.find("fix-fsi-syst"     ) != string::npos);
 
     //now loop over parameters
     for(int ip = 0; ip < kNFitParams; ip++) {
@@ -830,15 +832,16 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       bool   fix  = false;
       bool   nuis = true;
       
-      if(IsOscParam(p)){
-	init = util::OscParamInitValue(p);
-	curr = util::OscParamInitValue(p);
-	min  = util::OscParamMinValue(p);
-	max  = util::OscParamMaxValue(p);
-	nuis = false;
+      if(IsOscParam(p)) {
+        init = util::OscParamInitValue(p);
+        curr = util::OscParamInitValue(p);
+        min  = util::OscParamMinValue(p);
+        max  = util::OscParamMaxValue(p);
+        nuis = false;
       }
       
-      //      if(IsSystematic(p)){
+      //~ if(IsSystematic(p)) {
+      if(true) {
           // Check we're not going behind physical region
           min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
           max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
@@ -846,22 +849,33 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
           fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
           ipc++; 
           fparm->Update(p, curr);
-          //}
-          // toggle oscillation params on/off
-	  if(fix_osc_params && IsOscParam(p)){
-            double init_value = util::OscParamInitValue(p);
-            fparm->Update(p, init_value);
-            fparm->SetInitValue(p, init_value);
-            fparm->FixParameter(p);
-	  }     
-	  
-	  //constrain osc params
-	  if(cons_osc_params && IsOscParam(p)){
-	    fparm->SetNuisance(p,true);
-	  }
+      }
+      
+      // toggle oscillation params on/off
+      if(fix_osc_params && IsOscParam(p)){
+        double init_value = util::OscParamInitValue(p);
+        fparm->Update(p, init_value);
+        fparm->SetInitValue(p, init_value);
+        fparm->FixParameter(p);
+      }     
+          
+          //constrain osc params
+          if(cons_osc_params && IsOscParam(p)){
+            fparm->SetNuisance(p,true);
+          }
 
       // toggle detector related params on/off
       if(fix_detector_params && kFitIsNuDetRelated[ip]) {
+        fparm->Update(p, 1.);
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
+      if(fix_nd_detector_params && util::IsNuNDDetRelated(p)) {
+        fparm->Update(p, 1.);      
+        fparm->SetInitValue(p, 1.);
+        fparm->FixParameter(p);
+      }
+      if(fix_fd_detector_params && util::IsNuFDDetRelated(p)) {
         fparm->Update(p, 1.);
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
@@ -918,12 +932,12 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
     bool fix_fsi_params = (param_list_opt.find("fix-fsi-syst") != string::npos);
 
     //now loop over parameters
-    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params                                                     
+    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
     for(int ip = 0; ip < kNFitParamsND; ip++) {
       PhysParamId_t p = kFitParamND[ip];
       if(p == kPhypUndefined) continue;
 
-      // set parameter range, current and init value, etc                                                                     
+      // set parameter range, current and init value, etc
       double init = 1.0;
       double curr = 1.0;
       double min  = 0.0;
@@ -932,8 +946,8 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       bool   fix  = false;
       bool   nuis = true;
 
-      //      if(IsSystematic(p)){                                                                                             
-      // Check we're not going behind physical region                                                                             
+      //~ if(IsSystematic(p) {
+      // Check we're not going behind physical region
       min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
       max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
 
