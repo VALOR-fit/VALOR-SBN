@@ -26,7 +26,7 @@ Information about the detector configuration
 -->
 
 <fiducial_mass>
- -999
+  35.09 <!-- simulated mass was 1.14kt. Desired mass is 40kt -->
 </fiducial_mass>
 
 
