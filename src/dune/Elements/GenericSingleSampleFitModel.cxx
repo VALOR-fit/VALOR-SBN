@@ -39,6 +39,7 @@
 //dune
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
+#include "dune/Conventions/Baseline.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/Names.h"
@@ -372,7 +373,6 @@ void GenericSingleSampleFitModel::ResetSystematics(Option_t * /*opt*/)
   //fNuInt  -> Tweak(true, 0);
   //fNuDet  -> Tweak(true, 0);
   // -----------------------------------  
-
   fSyst -> Tweak(true, 0);
 }
 //________________________________________________________________________________________
@@ -1329,7 +1329,6 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " (ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
       util::Die(-1);return;
     }
-
     // Get bin zone index
     int izone = util::BinZone(s, enu_reco, y_reco);
     if(izone < 0) {
@@ -2020,6 +2019,9 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   }
   
   // Otherwise actually do the oscillation calculation
+  //first find the baseline to be applied
+  double baseline = util::Baseline(fBeam,fDetector);
+  fNuOsc3Flavour.SetBaseline(baseline);
   
   // set oscillation parameters to the oscillation probability calculation code
   double mixing12 = fPhysHypothesis.CurrValue(kPhypMixing12);
@@ -2137,7 +2139,6 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
         else if( util::IsNuEBarToNuTauBar(m) ) { posc = p_nuebar_nutaubar;       }
       }
 
-
       for(int it2 = 0; it2 < n_true2_bins; it2++) {
         bin .bin4 = it2;
         sbin.bin4 = it2;
@@ -2154,7 +2155,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
                 bin.bin2 = ir2;
                 
                 double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
-                val *= posc;
+		val *= posc;
 
               }//ir2
             }//ir1
