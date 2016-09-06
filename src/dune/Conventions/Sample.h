@@ -25,8 +25,6 @@
 
 #include "dune/Conventions/BeamConf.h"
 
-using std::string;
-
 namespace valor {
 namespace conv {
 
@@ -66,14 +64,14 @@ typedef enum ESample
    ksInvMuDecay      = 26, // Inverse muon decay (nuebar + e -> mu + numubar or numu + e -> mu + nue)
    ksNuECCWS         = 27, // wrong sign nue CC inclusive 
    //2016b far detector selections
-   ksNuMuLikeCChigh,       // numu-like (for the moment both numu and numubar), high resolution (CCQE-like)
-   ksNuMuLikeCClow,        // numu-like (for the moment both numu and numubar), low resolution (nonCCQE-like)
-   //   ksNuMuBarCChigh,        // numubar, high resolution (CCQE-like)   
-   //   ksNuMuBarCClow,         // numubar, low resolution (nonCCQE-like) 
-   ksNuELikeCChigh,         // nue-like (for the moment both nue and nuebar), high resolution (CCQE-like)
-   ksNuELikeCClow//,        // nue-like (for the moment both nue and nuebar), low resolution (nonCCQE-like)   
-   //   ksNuEBarCChigh,         // nuebar, high resolution (CCQE-like)
-   //ksNuEBarCClow          // nuebar, low resolution (nonCCQE-like)   
+   ksNuMuLikeCChigh      , // numu-like (for the moment both numu and numubar), high resolution (CCQE-like)
+   ksNuMuLikeCClow       , // numu-like (for the moment both numu and numubar), low resolution (nonCCQE-like)
+   ksNuMuBarCChigh       , // numubar, high resolution (CCQE-like)   - CURRENTLY UNUSED
+   ksNuMuBarCClow        , // numubar, low resolution (nonCCQE-like) - CURRENTLY UNUSED
+   ksNuELikeCChigh       , // nue-like (for the moment both nue and nuebar), high resolution (CCQE-like)
+   ksNuELikeCClow        , // nue-like (for the moment both nue and nuebar), low resolution (nonCCQE-like)   
+   ksNuEBarCChigh        , // nuebar, high resolution (CCQE-like)    - CURRENTLY UNUSED
+   ksNuEBarCClow           // nuebar, low resolution (nonCCQE-like)  - CURRENTLY UNUSED
 } 
 Sample_t; 
 
@@ -179,8 +177,8 @@ static const int kMaxNSamples = 33;
 
 namespace util {
 
-  string         AsString         (conv::Sample_t s);
-  string         AsStringTeX      (conv::Sample_t s, bool root = false);
+  std::string    AsString         (conv::Sample_t s);
+  std::string    AsStringTeX      (conv::Sample_t s, bool root = false);
   bool           IsCC             (conv::Sample_t s);
   bool           IsCCQELike       (conv::Sample_t s);
   bool           IsNC             (conv::Sample_t s);
@@ -192,8 +190,8 @@ namespace util {
   conv::Sample_t GetActiveSample  (int ibeam, int isample);
   
   // aliases methods
-  string  SampleAsString    (conv::Sample_t s);
-  string  SampleAsStringTeX (conv::Sample_t s, bool root = false);
+  std::string  SampleAsString    (conv::Sample_t s);
+  std::string  SampleAsStringTeX (conv::Sample_t s, bool root = false);
   
   bool SampleIsCC       (conv::Sample_t s);
   bool SampleIsCCQELike (conv::Sample_t s);
