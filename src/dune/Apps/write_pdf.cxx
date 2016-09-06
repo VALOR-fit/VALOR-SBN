@@ -9,11 +9,11 @@
            --fit-param-list      : Fit parameter list (see FitParam.cxx)                                                              
                                      [def: "standard"]    				     
            --config              : Analysis configuration file [required]
-	   --write-opt           : Options defining what to write-out [def:pdft_vf]
-	   --output-name         : Output file name [def:test]
-	   --mesg-thresholds     : Message thresholds [def: "verbosity.xml"] 
-	   --input               : Input values of the oscillation parameters
-	   --fix                 : Oscillation parameters to be fixed 
+           --write-opt           : Options defining what to write-out [def:pdft_vf]
+           --output-name         : Output file name [def:test]
+           --mesg-thresholds     : Message thresholds [def: "verbosity.xml"] 
+           --input               : Input values of the oscillation parameters
+           --fix                 : Oscillation parameters to be fixed 
 
 \author    VALOR DUNE people, aka Costas, Steve, Lorena
 \created   March 27, 2014                                                                                                     
@@ -71,8 +71,8 @@ int main(int argc, char ** argv)
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string output_name      = arg.GetString("output-name");
   string config_file      = arg.GetString("config");
-
-  Messenger::Instance()->Configure(mesg_thresholds);
+  
+  Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
   // Set DUNE param names inside framework       
   util::PopulateNameRegistry();
