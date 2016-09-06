@@ -2002,8 +2002,6 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     if(util::IsOscParam(p)) {apply_osc_prob = true;}
   }
   
-  apply_osc_prob = false;
-  
   // If not, just set the oscillated modes to zero and move on
   if (!apply_osc_prob) {
     for(int imode = 0; imode < kNReacModes; imode++) {
