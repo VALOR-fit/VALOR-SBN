@@ -57,14 +57,14 @@
 
   </element_list>
   
-  <systematics name="DUNE_2016b">
+  <systematics name="DUNE_2016bFD">
     <group name="flux">
-      <class> valor::MINERVAFlux2016a </class>
+      <class> valor::MINERVAFlux2016aFD </class>
       
       <covariance_matrix>
         <filename>   dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
-        <objname>    Flux_Covariance    </objname>    
-        <objtype>    TH2D             </objtype>
+        <objname>    far_only             </objname>    
+        <objtype>    TMatrixD             </objtype>
       </covariance_matrix> 
     </group>
     
@@ -78,10 +78,10 @@
     </group>
     
     <group name="detector">
-      <class> valor::SimpleDet2016b </class>
+      <class> valor::SimpleDet2016bFD </class>
       <covariance_matrix>
          <filename>   test/dummy_detector_matrices.root </filename>
-         <objname>    diag_13x13_10pct    </objname>    
+         <objname>    diag_4x4_10pct    </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
     </group>
