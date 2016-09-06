@@ -139,18 +139,17 @@ int main(int argc, char ** argv)
     cc_smearing[flav] = new TH2D(*(TH2D*)obj);
   }
    
-
-  int    valor_minidst_beam         = -1; // see Conventions/BeamConf.h 
   int    valor_minidst_sample       = sample;
-  int    valor_minidst_reac_mode    = -1; // see Conventions/ReacMode.h 
-  int    valor_minidst_target       = -1; // nuclear target -  GENIE PDG convention
-  double valor_minidst_enu_true     = -1; // true neutrino energy, in GeV
-  double valor_minidst_Q2_true      = -1; // true neutrino energy, in GeV
-  double valor_minidst_enu_reco     = -1; // reco neutrino energy, in GeV
-  double valor_minidst_y_reco       = -1; // inelasticity
-  double valor_minidst_wght_pot     = -1; // POT weight 
+  int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h 
+  int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h 
+  int    valor_minidst_target       = -1;  // nuclear target -  GENIE PDG convention
+  double valor_minidst_enu_true     = -1.; // true neutrino energy, in GeV
+  double valor_minidst_Q2_true      = -1.; // true neutrino energy, in GeV
+  double valor_minidst_enu_reco     = -1.; // reco neutrino energy, in GeV
+  double valor_minidst_y_reco       = -1.; // inelasticity
+  double valor_minidst_wght_pot     = -1.; // POT weight 
   double valor_minidst_wght         = -1.; // misc weight 
-  double valor_minidst_wght_smear   = -1; // energy smearing weight 
+  double valor_minidst_wght_smear   = -1.; // energy smearing weight 
   
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -419,6 +418,7 @@ int main(int argc, char ** argv)
       valor_minidst_reac_mode = reac_mode;
       valor_minidst_enu_true  = enu_true; 
       valor_minidst_enu_reco  = enu_reco; 
+      valor_minidst_wght      = 1.;
       valor_minidst_wght_pot  = 1./total_pot_read_per_run[run]; 
       valor_minidst_Q2_true   = Q2s;
       
