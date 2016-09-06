@@ -74,7 +74,8 @@ $job_dir                = `pwd`                                   unless defined
 $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dunendfd_ndtf_fgt_3passthrough_46selection_toymc_fit.xml"           unless defined $config_file;
-$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
+#$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
+$mesg_thresholds        = "/opt/ppd/t2k/users/lorena/OscAna/valor/softw/dune/trunk/config/verbosity.xml"              unless defined $mesg_thresholds;
 
 $param_values    = "prefit-errors"; #not randomized-all now, Asimov dataset! 
 
@@ -109,16 +110,16 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
     $program   = "valor_dune-run_fit";
     
     #first fit in first octanct, deltacp 0
-    $arguments1 = "--tag $tag --run 1 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --first-octant";
+    $arguments1 = "--tag $tag --run 1 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --first-octant";
 
     #second fit in second octanct, deltacp 0
-    $arguments2 = "--tag $tag --run 2 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --second-octant";
+    $arguments2 = "--tag $tag --run 2 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --second-octant";
 
     #third fit in first octanct, deltacp pi
-    $arguments3 = "--tag $tag --run 3 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --first-octant";
+    $arguments3 = "--tag $tag --run 3 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --first-octant";
 
     #forth fit in second octanct, deltacp pi
-    $arguments4 = "--tag $tag --run 4 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --second-octant";
+    $arguments4 = "--tag $tag --run 4 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --second-octant";
 
 
     $command1 = $program." ".$arguments1;
