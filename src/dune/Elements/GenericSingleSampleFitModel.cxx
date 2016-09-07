@@ -1067,6 +1067,10 @@ void GenericSingleSampleFitModel::Book(void)
       fParamIsAppliedTo[imode][ip] = util::ParamIsAppliedTo(fBeam,fSample,fDetector,m,p);
     }
   }//imode
+  
+  // Write will initialise the names of the arrays - useful for debugging in read
+  TObjArray tmp_array;
+  this->Write(&tmp_array,"valor","mct_vf+SB");
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Clean(void)
@@ -1292,13 +1296,14 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 #endif
 
     //  ==============================================
-
     if(s != fSample) {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("GenericSingleSampleFitModel",pDEBUG) 
         << "Ignoring MC event: " << iev 
         << " (sample ID: " << s << " "<< util::AsString(s) 
         << " not matching one used for configuring model: " 
         << fSample <<" "<<util::AsString(fSample) << ")";
+#endif
       continue;  
     }
 
@@ -1373,17 +1378,19 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " GeV, range used: [" << kEtrueMin << ", " << kEtrueMax << "] GeV";
     }
 
-    // Get enu_true, enu_reco, y_reco array indices
-    const int n_enu_true_bins          = util::NumEtrueBins(s);
-    const int n_enu_reco_bins          = util::NumErecoBins(s,izone);
-    const int n_q2_true_bins           = util::NumQ2trueBins(s,m);
-    const int n_y_reco_bins            = util::NumYrecoBins(s,izone);
-    const int n_y_reco_bins_sb         = util::NumYrecoBinsSb(s);
-    const double * enu_true_bin_edges  = util::EtrueBinEdges(s);
-    const double * q2_true_bin_edges   = util::Q2trueBinEdges(s,m);
-    const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
-    const double * enu_reco_bin_edges  = util::ErecoBinEdges(s,izone);
-    const double * y_reco_bin_edges    = util::YrecoBinEdges(s,izone);
+    // Get appropriate bin
+    const int n_enu_reco_bins          = util::NumErecoBins   (fSample,izone);
+    const double * enu_reco_bin_edges  = util::ErecoBinEdges  (fSample,izone);
+    const int n_y_reco_bins            = util::NumYrecoBins   (fSample,izone);
+    const double * y_reco_bin_edges    = util::YrecoBinEdges  (fSample,izone);
+    const int n_y_reco_bins_sb         = util::NumYrecoBinsSb (fSample);
+    const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
+    
+    const int n_enu_true_bins          = util::NumEtrueBins   (fSample);
+    const double * enu_true_bin_edges  = util::EtrueBinEdges  (fSample);
+    
+    const int n_q2_true_bins           = util::NumQ2trueBins  (fSample,m);
+    const double * q2_true_bin_edges   = util::Q2trueBinEdges (fSample,m);
 
     // protect against vars at upper limit (eg y_reco = 1, set by hand for NC events) as
     // the binary search below will give an index out of limits
@@ -1411,6 +1418,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 
     LOG("GenericSingleSampleFitModel",pDEBUG) 
       << "Inserting to MC teplates --> MC event #" << iev 
+      << "\n sample    = " << s        << " (" << util::AsString(s) << ")"
       << "\n imode     = " << imode    << " (" << util::AsString(m) << ")"
       << "\n izone     = " << izone   
       << "\n wght      = " << wght 
@@ -1421,10 +1429,12 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       << "\n iQ2_true  = " << iq2_true   << " (Q2_true  = " << Q2_true  << " GeV^2), allowed idx range: [" << 0 << " -> " << n_q2_true_bins -1 << "], " << n_q2_true_bins  <<" bins";
 
     // Believe that such a check is not performed in VALORArray, so check here just in case something went wrong in binary search above
-    assert(ienu_reco >= 0 && ienu_reco < n_enu_reco_bins);
-    assert(iy_reco   >= 0 && iy_reco   < n_y_reco_bins  );
-    assert(ienu_true >= 0 && ienu_true < n_enu_true_bins);
-    assert(iq2_true  >= 0 && iq2_true  < n_q2_true_bins);
+    assert(ienu_reco     >= 0 && ienu_reco     < n_enu_reco_bins   );
+    assert(iy_reco       >= 0 && iy_reco       < n_y_reco_bins     );
+    assert(ienu_true     >= 0 && ienu_true     < n_enu_true_bins   );
+    assert(iq2_true      >= 0 && iq2_true      < n_q2_true_bins    );
+    assert(iy_reco_sb    >= 0 && iy_reco_sb    < n_y_reco_bins_sb  );
+    assert(ienu_reco_sb  >= 0 && ienu_reco_sb  < kNErecoBinsSb     );
     
     
     double this_entry = wght;
@@ -1722,7 +1732,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
     
-    const int n_true2_bins = util::NumQ2trueBins(fSample,m);
+    const int n_true2_bins         = util::NumQ2trueBins(fSample,m);
     const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1741,7 +1751,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
       // copy sys -> fin MC templates
       fMCTFinOb[imode][izone]->CopyDataOnlyFrom(*fMCTSysOb[imode][izone]);
-      
       
       for(int ip = 0; ip < kNFitParams; ip++) {
         PhysParamId_t p = kFitParam[ip];
@@ -1996,9 +2005,9 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
 
   //first, check that there are actually osc params in the fit params list 
   bool apply_osc_prob = false;
-  for(int ip = 0; ip < kNFitParams; ip++) {
-    PhysParamId_t p = kFitParam[ip];
-    if(util::IsOscParam(p)) {apply_osc_prob = true;}
+  for(int ip = 0; ip < conv::kNuis000; ip++) {
+    PhysParamId_t p = (PhysParamId_t) ip;
+    if(fPhysHypothesis.Contains(p)) {apply_osc_prob = true;}
   }
   
   // If not, just set the oscillated modes to zero and move on
