@@ -1081,26 +1081,26 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    true,   // kNuisRHCNuEBarFDFlux05
    true,   // kNuisRHCNuEBarFDFlux06
      // Cross-sections
-   false,  // kNuisIntNuCCQE1
-   false,  // kNuisIntNuCCQE2
-   false,  // kNuisIntNuCCQE3
-   false,  // kNuisIntNuBarCCQE1
-   false,  // kNuisIntNuBarCCQE2
-   false,  // kNuisIntNuBarCCQE3
+   true ,  // kNuisIntNuCCQE1
+   true ,  // kNuisIntNuCCQE2
+   true ,  // kNuisIntNuCCQE3
+   true ,  // kNuisIntNuBarCCQE1
+   true ,  // kNuisIntNuBarCCQE2
+   true ,  // kNuisIntNuBarCCQE3
    false,  // kNuisIntNuCCMEC
    false,  // kNuisIntNuBarCCMEC
-   false,  // kNuisIntNuCC1piz1
-   false,  // kNuisIntNuCC1piz2
-   false,  // kNuisIntNuCC1piz3
-   false,  // kNuisIntNuCC1pic1
-   false,  // kNuisIntNuCC1pic2
-   false,  // kNuisIntNuCC1pic3
-   false,  // kNuisIntNuBarCC1piz1
-   false,  // kNuisIntNuBarCC1piz2
-   false,  // kNuisIntNuBarCC1piz3
-   false,  // kNuisIntNuBarCC1pic1
-   false,  // kNuisIntNuBarCC1pic2
-   false,  // kNuisIntNuBarCC1pic3
+   true ,  // kNuisIntNuCC1piz1
+   true ,  // kNuisIntNuCC1piz2
+   true ,  // kNuisIntNuCC1piz3
+   true ,  // kNuisIntNuCC1pic1
+   true ,  // kNuisIntNuCC1pic2
+   true ,  // kNuisIntNuCC1pic3
+   true ,  // kNuisIntNuBarCC1piz1
+   true ,  // kNuisIntNuBarCC1piz2
+   true ,  // kNuisIntNuBarCC1piz3
+   true ,  // kNuisIntNuBarCC1pic1
+   true ,  // kNuisIntNuBarCC1pic2
+   true ,  // kNuisIntNuBarCC1pic3
    false,  // kNuisIntNuCC2Pi
    false,  // kNuisIntNuBarCC2Pi
    true ,  // kNuisIntNuDIS1
@@ -1138,7 +1138,7 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    false,  // kNuisEffFDNuMuCCHigh
    false,  // kNuisEffFDNuMuCCLow
    false,  // kNuisEffFDNuECCHigh
-   false  // kNuisEffFDNuECCLow
+   false   // kNuisEffFDNuECCLow
 };
 
 // Which is the true energy range?
