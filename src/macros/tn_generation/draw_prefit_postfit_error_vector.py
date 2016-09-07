@@ -111,17 +111,19 @@ def main(config, postfit_fns, postfit_labels,output,img_format,entry):
                 
   miny = min(map(log10_floor,[min_,max_]))
   maxy = max(map(log10_ceil ,[min_,max_]))
-  prefit_g.GetXaxis().SetRangeUser(0,n_params)
-  prefit_g.GetYaxis().SetRangeUser(miny,maxy)
-  prefit_g.GetYaxis().SetTitle("Fractional Error")
-  prefit_g.GetXaxis().SetTitle("")
-  label_bins(prefit_g,postfit_chain.best_fit_params,4)
+  axis_hist = R.TH1D("axis","",n_params,0,n_params)
+  axis_hist.GetXaxis().SetRangeUser(0,n_params)
+  axis_hist.GetYaxis().SetRangeUser(miny,maxy)
+  axis_hist.GetYaxis().SetTitle("Fractional Error")
+  axis_hist.GetXaxis().SetTitle("")
+  label_bins(axis_hist,postfit_chain.best_fit_params,4)
   dividing_lines = get_dividing_lines(postfit_chain.best_fit_params, miny, maxy)
   
-  legend = R.TLegend(left_margin,0.95-top_margin,left_margin+0.8,1.-top_margin)
+  legend = R.TLegend(left_margin,0.95-top_margin,1.-right_margin,1.-top_margin)
   legend.SetNColumns(1+len(postfit_labels))
   legend.AddEntry(prefit_g, "Prefit", "P")
-  prefit_g.Draw("AP")
+  axis_hist.Draw("axis")
+  prefit_g.Draw("P")
   
   for label in postfit_labels:
     postfit_g = all_postfit_graphs[label]
@@ -176,7 +178,6 @@ def label_bins(h,fp,div = 1):
   for ii in xrange(fp.Size()):
     if (ii%div==0):
       h.GetXaxis().SetBinLabel(ii+1,fp.NameByIndex(ii))
-      print ii+1,fp.NameByIndex(ii)
   return
 
 if __name__=="__main__":
