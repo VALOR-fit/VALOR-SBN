@@ -96,7 +96,8 @@ int main(int argc, char ** argv)
     Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
   }
   
-  Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
+  std::string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
+  Messenger::Instance()->Configure(mesg_thresholds);
   
   // Set DUNE param names inside framework
   util::PopulateNameRegistry();
@@ -129,7 +130,8 @@ int main(int argc, char ** argv)
   // Get ND model & configure
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit elements";
   CompoundFitElements * elements = new CompoundFitElements();
-  elements->Read(arg.GetString("config"));
+  std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
+  elements->Read(config_path);
   FitModelABC * model = elements->FitModel();
   
   // Use ND model to generate toy-MC experiments & fit
