@@ -154,21 +154,24 @@ int util::NumYrecoBinsSb(Sample_t s)
 //________________________________________________________________________________________
 const double * util::YrecoBinEdgesSb(Sample_t s)
 {
-   LOG("KBin",pDEBUG) 
-     << "Getting yreco bin edges (simple binning) for sample " << util::AsString(s);
+  LOG("KBin",pDEBUG) 
+    << "Getting yreco bin edges (simple binning) for sample " << util::AsString(s);
 
-   if (util::IsNC(s)||util::IsFar(s)) 
-     return kYrecoBinEdgesNCSb;
+  if (util::IsNC(s) || util::IsFar(s)) {
+    return kYrecoBinEdgesNCSb;
+  }
 
-   else if (util::IsCC(s))
-     {
-       if (util::IsCCQELike(s))
-	 return kYrecoBinEdgesQELikeSb;
-       else
-	 return kYrecoBinEdgesMiscSb;
-     }
-   else                    
-     return 0;
+  else if (util::IsCC(s)) {
+    if (util::IsCCQELike(s)) {
+      return kYrecoBinEdgesQELikeSb;
+    }
+    else {
+      return kYrecoBinEdgesMiscSb;
+    }
+  }
+  else {
+    assert(!"YrecoBinEdgesSb not defined for sample"); return NULL;
+  }
    
    /*
   switch(s) 
