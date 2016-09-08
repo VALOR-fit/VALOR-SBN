@@ -801,8 +801,15 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
 
   // include params 
   if(param_list_opt.find("standard") != string::npos) {
+    
+    int nparams = 0;
+    for(int ip = 0; ip < kNFitParams; ip++) {
+      PhysParamId_t p = kFitParam[ip];
+      if(p == kPhypUndefined) continue;
+      nparams++;
+    }
 
-    fparm = new FitParamList(kNFitParams); // NOTE: If params are undefined, we initialize the array with more elements than used --- 
+    fparm = new FitParamList(nparams);
     int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
     
     //get the extra options here:
@@ -837,6 +844,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
         curr = util::OscParamInitValue(p);
         min  = util::OscParamMinValue(p);
         max  = util::OscParamMaxValue(p);
+        step = util::OscParamStepSize(p);
         nuis = false;
       }
       
@@ -859,10 +867,10 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
         fparm->FixParameter(p);
       }     
           
-          //constrain osc params
-          if(cons_osc_params && IsOscParam(p)){
-            fparm->SetNuisance(p,true);
-          }
+      //constrain osc params
+      if(cons_osc_params && IsOscParam(p)){
+        fparm->SetNuisance(p,true);
+      }
 
       // toggle detector related params on/off
       if(fix_detector_params && kFitIsNuDetRelated[ip]) {

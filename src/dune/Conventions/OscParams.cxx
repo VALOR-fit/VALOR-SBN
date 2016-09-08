@@ -7,10 +7,12 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 //________________________________________________________________________________________
 
 //fmw
+#include "valor/Messenger/Messenger.h"
 #include "valor/Conventions/NuOscMixParam.h"
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/Utilities/Rnd.h"
+#include "valor/Utilities/UtlSystem.h"
 
 //dune
 #include "dune/Conventions/FitParam.h"
@@ -27,7 +29,7 @@ double util::OscParamInitValue(conv::PhysParamId_t p)
   NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
 
   switch (p) 
-    {
+  {
     case(kPhypMixing23):
       return ( (omp==kNuMixSinsq2Theta) ? kInitSinsq2Theta23 : kInitSinsqTheta23); 
     case(kPhypMixing13):
@@ -40,14 +42,14 @@ double util::OscParamInitValue(conv::PhysParamId_t p)
 
     case(kPhypDm12sq):
       return kInitDm12sq;
-      
+
     case (kPhypCPV):
       return kInitDeltaCP;
 
     default: 
       return -1; 
 
-    }
+  }
 
   return -1;
 }
@@ -58,7 +60,7 @@ double util::OscParamInitError(conv::PhysParamId_t p)
   NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
 
   switch (p) 
-    {
+  {
     case(kPhypMixing23):
       return ( (omp==kNuMixSinsq2Theta) ? kInitErrSinsq2Theta23 : kInitErrSinsqTheta23); 
     case(kPhypMixing13):
@@ -71,14 +73,14 @@ double util::OscParamInitError(conv::PhysParamId_t p)
 
     case(kPhypDm12sq):
       return kInitErrDm12sq;
-      
+
     case (kPhypCPV):
       return kInitErrDeltaCP;
 
     default: 
       return -1; 
 
-    }
+  }
 
   return -1;
 }
@@ -86,7 +88,7 @@ double util::OscParamInitError(conv::PhysParamId_t p)
 double util::OscParamMaxValue(conv::PhysParamId_t p)
 {
   switch (p) 
-    {
+  {
     case(kPhypMixing23):
       return 1.0;
     case(kPhypMixing13):
@@ -98,13 +100,13 @@ double util::OscParamMaxValue(conv::PhysParamId_t p)
       return kMaxDm23sq;
     case(kPhypDm12sq):
       return kMaxDm12sq;
-      
+
     case (kPhypCPV):
-	return 3.1416;
+      return 3.1416;
 
     default: 
       return -1; 
-    }
+  }
 
   return -1;
 }
@@ -112,7 +114,7 @@ double util::OscParamMaxValue(conv::PhysParamId_t p)
 double util::OscParamMinValue(conv::PhysParamId_t p)
 {
   switch (p) 
-    {
+  {
     case(kPhypMixing23):
       return 0.0;
     case(kPhypMixing13):
@@ -124,18 +126,45 @@ double util::OscParamMinValue(conv::PhysParamId_t p)
       return kMinDm23sq;
     case(kPhypDm12sq):
       return kMinDm12sq;
-      
+
     case (kPhypCPV):
-	return -3.1416;
+      return -3.1416;
 
     default: 
       return -1; 
-    }
+  }
 
   return -1;
 }
+//________________________________________________________________________________________
+double util::OscParamStepSize (conv::PhysParamId_t p)
+{
+  NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
+  switch (p) 
+  {
+    case(kPhypMixing23):
+      return ( (omp==kNuMixSinsq2Theta) ? kStepSinsq2Theta23 : kStepSinsqTheta23); 
+    case(kPhypMixing13):
+      return ( (omp==kNuMixSinsq2Theta) ? kStepSinsq2Theta13 : kStepSinsqTheta13); 
+    case(kPhypMixing12):
+      return ( (omp==kNuMixSinsq2Theta) ? kStepSinsq2Theta12 : kStepSinsqTheta12); 
 
-//________________________________________________________________________________________                                                             
+    case(kPhypDm23sq):
+      return kStepDm23sq;
+
+    case(kPhypDm12sq):
+      return kStepDm12sq;
+
+    case (kPhypCPV):
+      return kStepDeltaCP;
+
+    default: 
+      LOG("Failed to get OA parameter step size",pFATAL);
+      util::Die(-1);
+  }
+  return -1;
+}
+//________________________________________________________________________________________
 double util::GetRandomizedOscParam(conv::PhysParamId_t p, string mode)
 {
 
@@ -153,9 +182,4 @@ double util::GetRandomizedOscParam(conv::PhysParamId_t p, string mode)
   }
   return rndm;
 }
-
-
-
 //________________________________________________________________________________________
-
-
