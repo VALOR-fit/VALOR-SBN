@@ -65,7 +65,7 @@ $resource               = "interactive"                           unless defined
 $tag                    = "deltaCP_discovery_sens_FGT"            unless defined $tag;
 $npoints                = 24                                      unless defined $npoints;
 $min_value              = -3.141592653589793                      unless defined $min_value;
-$max_value              = 3.141592653589793                       unless defined $min_value;
+$max_value              = 3.141592653589793                       unless defined $max_value;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
 $mhchoice               = "normal"                                unless defined $mhchoice;
 $fitoption              = "minuit"                                unless defined $fitoption;
@@ -110,21 +110,21 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
     $program   = "valor_dune-run_fit";
     
     #first fit in first octanct, deltacp 0
-    $arguments1 = "--tag $tag --run 1 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --first-octant";
+    $arguments1 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --first-octant";
 
     #second fit in second octanct, deltacp 0
-    $arguments2 = "--tag $tag --run 2 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --second-octant";
+    $arguments2 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --second-octant";
 
     #third fit in first octanct, deltacp pi
-    $arguments3 = "--tag $tag --run 3 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --first-octant";
+    $arguments3 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --first-octant";
 
     #forth fit in second octanct, deltacp pi
-    $arguments4 = "--tag $tag --run 4 --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --second-octant";
+    $arguments4 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --second-octant";
 
 
     $command1 = $program." ".$arguments1;
-#    $command2 = $program." ".$arguments2;
-  #  $command3 = $program." ".$arguments3;
+   # $command2 = $program." ".$arguments2;
+   # $command3 = $program." ".$arguments3;
    # $command4 = $program." ".$arguments4;
     print "Running: $command1 \n";
     
@@ -162,14 +162,14 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        close(CND);
        system("condor_submit",$cndfn);
 
-    #   $jobname = "ndsens-${tag}-${jobID}-2";
-     #  $cndfn = "$job_dir/${jobname}.condor";
-      # open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-      # print CND "Executable               = $fullprogram \n";
-      # print CND "Arguments                = $arguments2 \n";
-      # print CND "initialdir               = $job_dir \n";
-      # print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-      # print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+       #$jobname = "ndsens-${tag}-${jobID}-2";
+       #$cndfn = "$job_dir/${jobname}.condor";
+       #open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+       #print CND "Executable               = $fullprogram \n";
+       #print CND "Arguments                = $arguments2 \n";
+       #print CND "initialdir               = $job_dir \n";
+       #print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+       #print CND "Output                   = ${jobname}_\$\(Process\).out \n";
       # print CND "Universe                 = vanilla \n";
       # print CND "Getenv                   = True \n";
       # print CND "should_transfer_files    = YES \n";
