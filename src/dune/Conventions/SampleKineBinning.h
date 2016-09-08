@@ -267,13 +267,14 @@ static const double kYrecoBinEdgesNCSb [kNYrecoBinsNCSb+1] =
 // Far detector binning scheme
 // ...........................................................................
 
-static const int    kNErecoBinsFarELike  = 24;
+static const int    kNErecoBinsFarELike  = 26;
 static const double kErecoBinEdgesFarELike [kNErecoBinsFarELike+1] =
 {
+0.0,
 0.40,   0.60,   0.80,   1.00,   1.20,   1.40,   1.60,  1.80,
 2.00,   2.20,   2.40,   2.60,   2.80,   3.00,   3.20,  3.40,
 3.60,   3.80,   4.00,   4.20,   4.40,   4.60,   4.80,  5.00,
-8.00
+8.00 , kErecoMax
 };
 
 static const int    kNErecoBinsFarMuLike  = 47;
