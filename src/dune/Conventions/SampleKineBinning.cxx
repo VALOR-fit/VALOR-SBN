@@ -221,6 +221,11 @@ int util::NumErecoBins(Sample_t s, int zone)
      << "Getting # Ereco bins for sample " << util::AsString(s) << ", zone = " << zone;
 #endif
 
+  if (util::IsFar(s)) {
+    if (util::IsELike(s)) {return conv::kNErecoBinsFarELike ;}
+    else                  {return conv::kNErecoBinsFarMuLike;}
+  }
+
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 
   return kNErecoBinsOb1Z;
@@ -259,6 +264,11 @@ const double * util::ErecoBinEdges(Sample_t s, int zone)
    LOG("KBin",pDEBUG) 
      << "Getting Ereco bin edges for sample " << util::AsString(s) << ", zone = " << zone;
 #endif
+
+  if (util::IsFar(s)) {
+    if (util::IsELike(s)) {return conv::kErecoBinEdgesFarELike ;}
+    else                  {return conv::kErecoBinEdgesFarMuLike;}
+  }
 
 #if defined _use_single_zone_optimized_binning_scheme_v1_ || defined _use_single_zone_optimized_binning_scheme_v2_
 

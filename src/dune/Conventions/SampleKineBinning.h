@@ -263,6 +263,29 @@ static const double kYrecoBinEdgesNCSb [kNYrecoBinsNCSb+1] =
    0.000, 1.000 
 };
 
+
+// Far detector binning scheme
+// ...........................................................................
+
+static const int    kNErecoBinsFarELike  = 24;
+static const double kErecoBinEdgesFarELike [kNErecoBinsFarELike+1] =
+{
+0.40,   0.60,   0.80,   1.00,   1.20,   1.40,   1.60,  1.80,
+2.00,   2.20,   2.40,   2.60,   2.80,   3.00,   3.20,  3.40,
+3.60,   3.80,   4.00,   4.20,   4.40,   4.60,   4.80,  5.00,
+8.00
+};
+
+static const int    kNErecoBinsFarMuLike  = 47;
+static const double kErecoBinEdgesFarMuLike [kNErecoBinsFarMuLike+1] =
+{
+   0.0,   0.2,   0.4,   0.6,   0.8,   1.0,   1.2,   1.4,   1.6,   1.8, 
+   2.0,   2.2,   2.4,   2.6,   2.8,   3.0,   3.2,   3.4,   3.6,   3.8, 
+   4.0,   4.2,   4.4,   4.6,   4.8,   5.0,   5.2,   5.4,   5.6,   5.8,
+   6.0,   6.2,   6.4,   6.6,   6.8,   7.0,   7.2,   7.4,   7.6,   7.8,
+   8.0,   9.0,   10.,  12.0,  14.0,  16.0,  20.0, kErecoMax
+};
+
 // ...........................................................................
 //
 // Variable binning schemes in (Ereco,yreco) space optimised to reduce the 
