@@ -16,6 +16,7 @@ DUNE_LIBRARIES =
 
 TGT = make_nd_minidst \
       make_fd_minidst \
+      make_fastmc_minidst \
       make_response_functions \
       run_fit \
       write_pdf \
@@ -43,6 +44,12 @@ ifdef GENIE
 else
 	@echo "Skipping make_fd_minidst due to no GENIE"
 endif
+
+# Generate DSTs for fast MC FD fit
+#
+make_fastmc_minidst: FORCE
+	$(CXX) $(CXXFLAGS) -c make_fastmc_minidst.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) make_fastmc_minidst.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
 
 
 # Generate GENIE response functions
@@ -89,6 +96,7 @@ clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fd_minidst
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-write_pdf
@@ -98,6 +106,7 @@ clean: FORCE
 distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fd_minidst
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/write_pdf
