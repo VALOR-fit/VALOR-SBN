@@ -440,8 +440,6 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
     return false;
   }
 
-  valor::util::SetDefaultStyle();
-
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
   //

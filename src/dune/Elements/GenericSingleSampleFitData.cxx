@@ -78,9 +78,7 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
     LOG("GenericSingleSampleFitData", pERROR) << "Null input object array.";
     return false;
   }
-
-  valor::util::SetDefaultStyle();
-
+  
   //
   // Write out data distributions (VALORArray or bare ROOT format)
   //
