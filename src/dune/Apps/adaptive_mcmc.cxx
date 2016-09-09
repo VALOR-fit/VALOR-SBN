@@ -33,6 +33,7 @@
 
 // root
 #include "TFile.h"
+#include "TMath.h"
 #include "TSystem.h"
 #include "TObjArray.h"
 #include "TString.h"
@@ -40,6 +41,7 @@
 #include "TPrincipal.h"
 #include "TStopwatch.h"
 // fmwk
+#include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -98,7 +100,7 @@ int main(int argc, char ** argv)
     Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
   }
   
-  int target_n_attempts = 5;
+  int target_n_attempts = 10;
   int recalc_chol_every = 500;
   int recalculate_step_every = 10;
   
@@ -114,6 +116,7 @@ int main(int argc, char ** argv)
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit elements";
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config);
+  LOG("valor_dune", pNOTICE) << "FitElements read complete.";
   FitDataABC  * data     = elements->FitData();
   FitModelABC * modelabc = elements->FitModel();
   CompoundFitModel * model = dynamic_cast<CompoundFitModel*>(modelabc); assert(model);
@@ -126,11 +129,22 @@ int main(int argc, char ** argv)
   assert(in_tr->GetEntries() > fitnumber);
   in_tr->GetEntry(fitnumber); assert(best_fit_params);
   best_fit_params->CopyBestFitToCurrValues();
+  LOG("valor_dune", pNOTICE) << "Read input FPL.";
+  LOG("valor_dune", pNOTICE) << *best_fit_params;
   
   // Param list size
-  const int npar = best_fit_params->Size();
+  const int npar      = best_fit_params->GetNumberParameters();
+  const int npar_free = best_fit_params->GetNumberFreeParameters();
+  
+  conv::PhysParamId_t * free_parameters = new PhysParamId_t[npar_free];
+  int free_counter = 0;
+  for (int ip = 0 ; ip < npar ; ip++) {
+    if (best_fit_params->IsFixedByIndex(ip)) {continue;}
+    free_parameters[free_counter] = best_fit_params->WhichParam(ip);
+  }
   
   // Make the BF data
+  LOG("valor_dune", pNOTICE) << "Generating data";
   data->Generate(model,*best_fit_params,false);
   
   // Setup the output tree
@@ -148,31 +162,62 @@ int main(int argc, char ** argv)
       out_tr->Branch(pname.c_str(),&(o_params[ip]),pnameD.c_str());
     }
   }
+  LOG("valor_dune", pNOTICE) << "Output tree built";
   
   // Build a Cholesky matrix we can use for throws
   CorrelatedSystematics * syst = model->GetSystematics();
   const TMatrixD & prefit_cov = syst->CovMatrix();
   assert(best_fit_params);
-  assert(best_fit_params->Size()==(int)syst->Size());
-  const TMatrixD fitted_cov(*best_fit_params->GetCovMatrix());
+  TMatrixD fitted_cov(*best_fit_params->GetCovMatrix());
   
-  TMatrixD corr(util::CovarianceMatrixToCorrelationMatrix(fitted_cov));
-  TVectorD err (util::CovarianceMatrixToErrorVector(fitted_cov));
-  if (use_prefit_errors) {
-    err = util::CovarianceMatrixToErrorVector(prefit_cov);
-  }
-  if (use_prefit_correlations) {
-    corr = util::CovarianceMatrixToCorrelationMatrix(prefit_cov);
-  }
-  else if (use_no_correlations) {
-    for (int i = 0 ; i < npar ; i++) {
-      for (int j = 0 ; j < npar ; j++ ) {
-        corr[i][j] = (i==j);
+  for (int ip = 0 ; ip < fitted_cov.GetNrows() ; ip++) {
+    for (int jp = 0 ; jp < fitted_cov.GetNcols() ; jp++) {
+      double val = fitted_cov(ip,jp);
+      if (!TMath::Finite(val) || std::fabs(val) < conv::kAVerySmallNum) {
+        fitted_cov(ip,jp) = (ip==jp);
       }
     }
   }
   
-  TMatrixD init_proposal_cov(util::CorrelationAndErrorToCovarianceMatrix(corr,err));
+  TMatrixD prop_corr(util::CovarianceMatrixToCorrelationMatrix(fitted_cov));
+  TVectorD prop_err (util::CovarianceMatrixToErrorVector(fitted_cov));
+  
+  if (use_prefit_errors) {
+    TVectorD tmp_err = util::CovarianceMatrixToErrorVector(prefit_cov);
+    for (int ip = 0 ; ip < npar; ip++) {
+      PhysParamId_t p = best_fit_params->WhichParam(ip);
+      if (syst->Contains(p)) {
+        int idx = syst->Param2Idx(p);
+        prop_err[ip] = tmp_err[idx];
+      }
+    }
+  }
+  if (use_prefit_correlations) {
+    TMatrixD tmp_corr = util::CovarianceMatrixToCorrelationMatrix(prefit_cov);
+    for (int ip = 0 ; ip < npar; ip++) {
+      PhysParamId_t p1 = best_fit_params->WhichParam(ip);
+      if (syst->Contains(p1)) {
+        int idx1 = syst->Param2Idx(p1);
+        for (int jp = 0 ; jp < npar; jp++) {
+          PhysParamId_t p2 = best_fit_params->WhichParam(jp);
+          if (syst->Contains(p2)) {
+            int idx2 = syst->Param2Idx(p2);
+            prop_corr(ip,jp) = tmp_corr[idx1][idx2];
+          }
+        }
+      }
+    }
+  }
+  else if (use_no_correlations) {
+    for (int i = 0 ; i < npar ; i++) {
+      for (int j = 0 ; j < npar ; j++ ) {
+        prop_corr[i][j] = (i==j);
+      }
+    }
+  }
+  
+  TMatrixD init_proposal_cov(util::CorrelationAndErrorToCovarianceMatrix(prop_corr,prop_err));
+  LOG("valor_dune", pNOTICE) << "Proposal covariance built.";
   
   TMatrixD chol_matrix(util::CholeskyDecomposition(init_proposal_cov));
   
@@ -191,15 +236,17 @@ int main(int argc, char ** argv)
       // Check they're valid, then copy into FPL
       for (int ip = 0 ; ip < npar ; ip++) {
         if (best_fit_params->IsFixedByIndex(ip)) {continue;}
-        double min   = best_fit_params->MinValueByIndex(ip);
-        double start = best_fit_params->BestFitValueByIndex(ip);
-        double max   = best_fit_params->MaxValueByIndex(ip);
+        PhysParamId_t p = best_fit_params->WhichParam(ip);
+        assert(p!=conv::kPhypUndefined);
+        double min   = best_fit_params->MinValue(p);
+        double start = best_fit_params->BestFitValue(p);
+        double max   = best_fit_params->MaxValue(p);
         double val  = start+throwvec[ip];
         if (val > max || val < min) {
           bad_throw=true;
           break;
         }
-        best_fit_params->SetCurrentValueByIndex(ip,val);
+        best_fit_params->SetCurrentValue(p,val);
       }
     }
   }
