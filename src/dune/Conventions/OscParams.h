@@ -27,7 +27,7 @@ namespace valor {
 namespace conv {
 namespace duneosc{
 //
-// Default values of oscillation parameters - same as used in fmw (global)
+// Default values of oscillation parameters - updated from PDG 2016, except dcp, bf from T2K reactor
 //
 
 // Dm^2 global fit results                                               
@@ -67,10 +67,9 @@ namespace duneosc{
   static const double kStepSinsqTheta13     = 1.0E-3;
   static const double kStepSinsq2Theta13    = 1.0E-3;
 
-  static const double kInitDeltaCP = 0.0;
-  //  static const double kInitDeltaCP = -1.601;
-  static const double kInitErrDeltaCP = 3.14159; // ~100%  
-  //  static const double kInitErrDeltaCP = 0.10; // ~10%  
+  static const double kInitDeltaCP = -1.55; // T2K BF NH with reactor
+  //  static const double kInitDeltaCP = 0.0;
+    static const double kInitErrDeltaCP = 0.10; // ~10%  
   static const double kStepDeltaCP = 1.0E-2;
 
 } // duneosc
