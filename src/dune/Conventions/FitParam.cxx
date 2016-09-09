@@ -825,6 +825,10 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
     bool fix_mec_params         = (param_list_opt.find("fix-mec-syst"     ) != string::npos);
     bool fix_fsi_params         = (param_list_opt.find("fix-fsi-syst"     ) != string::npos);
 
+    //if osc params constrained, set priors
+    if(cons_osc_params)
+      util::InitializeOAPriors();
+
     //now loop over parameters
     for(int ip = 0; ip < kNFitParams; ip++) {
       PhysParamId_t p = kFitParam[ip];

@@ -25,7 +25,7 @@
 
 namespace valor {
 namespace conv {
-
+namespace duneosc{
 //
 // Default values of oscillation parameters - same as used in fmw (global)
 //
@@ -69,10 +69,11 @@ namespace conv {
 
   static const double kInitDeltaCP = 0.0;
   //  static const double kInitDeltaCP = -1.601;
-  static const double kInitErrDeltaCP = 1.0; // ~100%  
+  static const double kInitErrDeltaCP = 3.14159; // ~100%  
   //  static const double kInitErrDeltaCP = 0.10; // ~10%  
   static const double kStepDeltaCP = 1.0E-2;
 
+} // duneosc
 } // conv
 
 //
@@ -87,6 +88,8 @@ namespace util {
   double OscParamStepSize (conv::PhysParamId_t p);
 
   double GetRandomizedOscParam (conv::PhysParamId_t p, string mode);
+
+  void InitializeOAPriors();
 
 } // util
 

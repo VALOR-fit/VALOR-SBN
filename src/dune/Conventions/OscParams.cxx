@@ -31,20 +31,20 @@ double util::OscParamInitValue(conv::PhysParamId_t p)
   switch (p) 
   {
     case(kPhypMixing23):
-      return ( (omp==kNuMixSinsq2Theta) ? kInitSinsq2Theta23 : kInitSinsqTheta23); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kInitSinsq2Theta23 : valor::conv::duneosc::kInitSinsqTheta23); 
     case(kPhypMixing13):
-      return ( (omp==kNuMixSinsq2Theta) ? kInitSinsq2Theta13 : kInitSinsqTheta13); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kInitSinsq2Theta13 : valor::conv::duneosc::kInitSinsqTheta13); 
     case(kPhypMixing12):
-      return ( (omp==kNuMixSinsq2Theta) ? kInitSinsq2Theta12 : kInitSinsqTheta12); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kInitSinsq2Theta12 : valor::conv::duneosc::kInitSinsqTheta12); 
 
     case(kPhypDm23sq):
-      return ( (dmsqscheme==kNuDmsqFogliLisi) ? kInitDmFL : kInitDm23sq);
+      return ( (dmsqscheme==kNuDmsqFogliLisi) ? valor::conv::duneosc::kInitDmFL : valor::conv::duneosc::kInitDm23sq);
 
     case(kPhypDm12sq):
-      return kInitDm12sq;
+      return valor::conv::duneosc::kInitDm12sq;
 
     case (kPhypCPV):
-      return kInitDeltaCP;
+      return valor::conv::duneosc::kInitDeltaCP;
 
     default: 
       return -1; 
@@ -62,20 +62,20 @@ double util::OscParamInitError(conv::PhysParamId_t p)
   switch (p) 
   {
     case(kPhypMixing23):
-      return ( (omp==kNuMixSinsq2Theta) ? kInitErrSinsq2Theta23 : kInitErrSinsqTheta23); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kInitErrSinsq2Theta23 : valor::conv::duneosc::kInitErrSinsqTheta23); 
     case(kPhypMixing13):
-      return ( (omp==kNuMixSinsq2Theta) ? kInitErrSinsq2Theta13 : kInitErrSinsqTheta13); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kInitErrSinsq2Theta13 : valor::conv::duneosc::kInitErrSinsqTheta13); 
     case(kPhypMixing12):
-      return ( (omp==kNuMixSinsq2Theta) ? kInitErrSinsq2Theta12 : kInitErrSinsqTheta12); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kInitErrSinsq2Theta12 : valor::conv::duneosc::kInitErrSinsqTheta12); 
 
     case(kPhypDm23sq):
-      return kInitErrDm23sq;
+      return valor::conv::duneosc::kInitErrDm23sq;
 
     case(kPhypDm12sq):
-      return kInitErrDm12sq;
+      return valor::conv::duneosc::kInitErrDm12sq;
 
     case (kPhypCPV):
-      return kInitErrDeltaCP;
+      return valor::conv::duneosc::kInitErrDeltaCP;
 
     default: 
       return -1; 
@@ -97,9 +97,9 @@ double util::OscParamMaxValue(conv::PhysParamId_t p)
       return 1.0;
 
     case(kPhypDm23sq):
-      return kMaxDm23sq;
+      return valor::conv::duneosc::kMaxDm23sq;
     case(kPhypDm12sq):
-      return kMaxDm12sq;
+      return valor::conv::duneosc::kMaxDm12sq;
 
     case (kPhypCPV):
       return 3.1416;
@@ -123,9 +123,9 @@ double util::OscParamMinValue(conv::PhysParamId_t p)
       return 0.0;
 
     case(kPhypDm23sq):
-      return kMinDm23sq;
+      return valor::conv::duneosc::kMinDm23sq;
     case(kPhypDm12sq):
-      return kMinDm12sq;
+      return valor::conv::duneosc::kMinDm12sq;
 
     case (kPhypCPV):
       return -3.1416;
@@ -143,20 +143,20 @@ double util::OscParamStepSize (conv::PhysParamId_t p)
   switch (p) 
   {
     case(kPhypMixing23):
-      return ( (omp==kNuMixSinsq2Theta) ? kStepSinsq2Theta23 : kStepSinsqTheta23); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kStepSinsq2Theta23 : valor::conv::duneosc::kStepSinsqTheta23); 
     case(kPhypMixing13):
-      return ( (omp==kNuMixSinsq2Theta) ? kStepSinsq2Theta13 : kStepSinsqTheta13); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kStepSinsq2Theta13 : valor::conv::duneosc::kStepSinsqTheta13); 
     case(kPhypMixing12):
-      return ( (omp==kNuMixSinsq2Theta) ? kStepSinsq2Theta12 : kStepSinsqTheta12); 
+      return ( (omp==kNuMixSinsq2Theta) ? valor::conv::duneosc::kStepSinsq2Theta12 : valor::conv::duneosc::kStepSinsqTheta12); 
 
     case(kPhypDm23sq):
-      return kStepDm23sq;
+      return valor::conv::duneosc::kStepDm23sq;
 
     case(kPhypDm12sq):
-      return kStepDm12sq;
+      return valor::conv::duneosc::kStepDm12sq;
 
     case (kPhypCPV):
-      return kStepDeltaCP;
+      return valor::conv::duneosc::kStepDeltaCP;
 
     default: 
       LOG("Failed to get OA parameter step size",pFATAL);
@@ -183,3 +183,44 @@ double util::GetRandomizedOscParam(conv::PhysParamId_t p, string mode)
   return rndm;
 }
 //________________________________________________________________________________________
+void util::InitializeOAPriors()
+{
+  NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
+  NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
+
+  Opt::Instance()->SetGlobalBestFit (kPhypDm12sq,valor::conv::duneosc::kInitDm12sq);
+  Opt::Instance()->SetGlobalFitError(kPhypDm12sq,valor::conv::duneosc::kInitErrDm12sq);
+
+  Opt::Instance()->SetGlobalBestFit (kPhypCPV,valor::conv::duneosc::kInitDeltaCP);
+  Opt::Instance()->SetGlobalFitError(kPhypCPV,valor::conv::duneosc::kInitErrDeltaCP);
+
+  if(omp==kNuMixSinsq2Theta){
+    Opt::Instance()->SetGlobalBestFit (kPhypMixing23,valor::conv::duneosc::kInitSinsq2Theta23);
+    Opt::Instance()->SetGlobalFitError(kPhypMixing23,valor::conv::duneosc::kInitErrSinsq2Theta23);
+
+    Opt::Instance()->SetGlobalBestFit (kPhypMixing12,valor::conv::duneosc::kInitSinsq2Theta12);
+    Opt::Instance()->SetGlobalFitError(kPhypMixing12,valor::conv::duneosc::kInitErrSinsq2Theta12);
+
+    Opt::Instance()->SetGlobalBestFit (kPhypMixing13,valor::conv::duneosc::kInitSinsq2Theta13);
+    Opt::Instance()->SetGlobalFitError(kPhypMixing13,valor::conv::duneosc::kInitErrSinsq2Theta13);
+  }
+  else{
+    Opt::Instance()->SetGlobalBestFit (kPhypMixing23,valor::conv::duneosc::kInitSinsqTheta23);
+    Opt::Instance()->SetGlobalFitError(kPhypMixing23,valor::conv::duneosc::kInitErrSinsqTheta23);
+
+    Opt::Instance()->SetGlobalBestFit (kPhypMixing12,valor::conv::duneosc::kInitSinsqTheta12);
+    Opt::Instance()->SetGlobalFitError(kPhypMixing12,valor::conv::duneosc::kInitErrSinsqTheta12);
+
+    Opt::Instance()->SetGlobalBestFit (kPhypMixing13,valor::conv::duneosc::kInitSinsqTheta13);
+    Opt::Instance()->SetGlobalFitError(kPhypMixing13,valor::conv::duneosc::kInitErrSinsqTheta13);
+  }
+
+  if(dmsqscheme==kNuDmsqFogliLisi)
+    Opt::Instance()->SetGlobalBestFit (kPhypDm23sq,valor::conv::duneosc::kInitDmFL);
+  else
+    Opt::Instance()->SetGlobalBestFit (kPhypDm23sq,valor::conv::duneosc::kInitDm23sq);
+
+  Opt::Instance()->SetGlobalFitError(kPhypDm23sq,valor::conv::duneosc::kInitErrDm23sq);
+
+}
+//________________________________________________________________________________________                                                                  
