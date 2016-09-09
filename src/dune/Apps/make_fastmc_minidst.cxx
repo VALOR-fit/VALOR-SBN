@@ -348,7 +348,7 @@ int main(int argc, char ** argv)
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco;
     valor_minidst_wght      = 1.;
-    valor_minidst_wght_pot  = POTweight; 
+    valor_minidst_wght_pot  = POTweight/nev; 
     valor_minidst_wght_smear= 1.; 
     valor_minidst_Q2_true   = Q2s;
       
