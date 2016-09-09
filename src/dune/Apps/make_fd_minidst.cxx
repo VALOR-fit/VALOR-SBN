@@ -333,9 +333,9 @@ int main(int argc, char ** argv)
     conv::NuFlavour_t init_flav  = valor::util::FlavourFromPDG(init_pdg);
     conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(final_pdg);
     
-    // If it's NC, we'll treat all events as unoscillated
+    // If it's NC, we'll ignore oscillated events (to avoid triple counting)
     if (isnc) {
-      final_flav = init_flav;
+      if (final_flav != init_flav) {continue;}
     }
     
     // Only have the combination mode for final state nues
