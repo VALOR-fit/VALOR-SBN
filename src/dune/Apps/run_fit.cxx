@@ -265,6 +265,7 @@ int main(int argc, char ** argv)
 
       if(arg.GetBool("fix-deltaCP")) {
 	fp->FixParameter(util::PhysParamFromString("cpv"));
+	fp->SetNuisance(util::PhysParamFromString("cpv"),false); //HACK
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-deltaCP")) ? "flat" : "gaus" );
