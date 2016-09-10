@@ -879,8 +879,8 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
       // And update their limits
       for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
         conv::PhysParamId_t p = syst->WhichParam(ip);
-        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,fparm->MinValue(p)));
-        fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,fparm->MaxValue(p)));
+        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));
+        fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,2.));
       }
     }
     
