@@ -4041,7 +4041,8 @@ namespace util {
 
   bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, 
                         conv::ReacMode_t m, conv::PhysParamId_t p);
-  bool OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s,	conv::ReacMode_t m);
+  bool OscProbIsAppliedTo(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s,
+                          conv::ReacMode_t m);
   bool ParamHasSplines(conv::PhysParamId_t p);
   
   // Return pointer to array of min/max                      

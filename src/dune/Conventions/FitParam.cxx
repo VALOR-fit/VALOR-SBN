@@ -1098,10 +1098,11 @@ bool valor::util::IsFSI(conv::PhysParamId_t p)
   return (p >= kNuisIntPiMeanFreePath && p<=kNuisIntFracNucProduction);
 }
 //____________________________________________________________________________        
-bool util::OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m)
+bool util::OscProbIsAppliedTo(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m)
 {
   static const ArrIdx * arridx = ArrIdx::Instance();
 
+  if (d==conv::kdUndefined   ) {return false;}
   if (b==conv::kbUndefined   ) {return false;}
   if (m==conv::kmUndefined   ) {return false;}
   if (s==conv::ksUndefined   ) {return false;}
@@ -1113,8 +1114,8 @@ bool util::OscProbIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::ReacMo
   bool apply = false;
   for(int ip = ip_min; ip<=ip_max; ip++){
     conv::ApplyMask_t pmask = conv::kApplyParamToTemplates[ip];
-    
-    if(pmask) apply = true;
+    bool apply_to_detector = (kApplyToDetector [d] & pmask);
+    if(apply_to_detector) apply = true;
   }
   return apply;
 }
