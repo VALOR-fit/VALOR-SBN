@@ -22,9 +22,9 @@
             [--store-spectra   |   : Store toy-MC/best-fit spectra? [def: no]
              --discard-spectra   ] 
 
-	     --input-mixing12,etc  : Option to give input values to osc params (in .arg)
-	     --fix-mixing12,etc    : Option to fix osc params (in .arg)
-	     --fix-at-mixing12,etc : Option to fix osc params to a different value than true/central for the fit
+             --input-mixing12,etc  : Option to give input values to osc params (in .arg)
+             --fix-mixing12,etc    : Option to fix osc params (in .arg)
+             --fix-at-mixing12,etc : Option to fix osc params to a different value than true/central for the fit
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -45,6 +45,7 @@
 // fmwk
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
+#include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
@@ -134,6 +135,10 @@ int main(int argc, char ** argv)
   elements->Read(config_path);
   FitModelABC * model = elements->FitModel();
   
+  // Hack until we move GetSystematics() into FitModelABC
+  const CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
+  const CorrelatedSystematics * syst = cm->GetSystematics();
+  
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
     LOG("valor_dune", pNOTICE) << "\n\n *** Toy-MC experiment #" << itoymc;
@@ -143,7 +148,7 @@ int main(int argc, char ** argv)
     
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str());
+    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), syst);
 
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
@@ -180,7 +185,7 @@ int main(int argc, char ** argv)
     }
     
     // Update values of oscillation parameters 
-    if(fplname != "only-nd"){
+    if(fplname.find("only-nd") == string::npos && fplname.find("no-osc-params")==string::npos){
 
       //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)
       Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
@@ -214,27 +219,27 @@ int main(int argc, char ** argv)
 
       // fix them? randomize them? 
       if(arg.GetBool("fix-mixing12")){
-	fp->FixParameter(util::PhysParamFromString("mixing12"));
+        fp->FixParameter(util::PhysParamFromString("mixing12"));
       }
       else if(param_values_ts.Contains("randomize-all")){
-	string mode = ( (arg.GetBool("flat-prior-mixing12")) ? "flat" : "gaus" );
-	double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("mixing12"),mode);
-	fp->Update(util::PhysParamFromString("mixing12"), rnd_value);
-	fp->SetInitValue(util::PhysParamFromString("mixing12"), rnd_value);
+        string mode = ( (arg.GetBool("flat-prior-mixing12")) ? "flat" : "gaus" );
+        double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("mixing12"),mode);
+        fp->Update(util::PhysParamFromString("mixing12"), rnd_value);
+        fp->SetInitValue(util::PhysParamFromString("mixing12"), rnd_value);
       }
-	
+        
       if(arg.GetBool("fix-mixing13")) {
-	fp->FixParameter(util::PhysParamFromString("mixing13"));
+        fp->FixParameter(util::PhysParamFromString("mixing13"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-mixing13")) ? "flat" : "gaus" );
         double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("mixing13"),mode);
-	fp->Update(util::PhysParamFromString("mixing13"), rnd_value);
+        fp->Update(util::PhysParamFromString("mixing13"), rnd_value);
         fp->SetInitValue(util::PhysParamFromString("mixing13"), rnd_value);
       }
 
       if(arg.GetBool("fix-mixing23")) {
-	fp->FixParameter(util::PhysParamFromString("mixing23"));
+        fp->FixParameter(util::PhysParamFromString("mixing23"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-mixing23")) ? "flat" : "gaus" );
@@ -244,7 +249,7 @@ int main(int argc, char ** argv)
       }
 
       if(arg.GetBool("fix-dm23sq")){
-	fp->FixParameter(util::PhysParamFromString("dm23sq"));
+        fp->FixParameter(util::PhysParamFromString("dm23sq"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-dm23sq")) ? "flat" : "gaus" );
@@ -254,7 +259,7 @@ int main(int argc, char ** argv)
       }
 
       if(arg.GetBool("fix-dm12sq")) {
-	fp->FixParameter(util::PhysParamFromString("dm12sq"));
+        fp->FixParameter(util::PhysParamFromString("dm12sq"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-dm12sq")) ? "flat" : "gaus" );
@@ -264,8 +269,8 @@ int main(int argc, char ** argv)
       }
 
       if(arg.GetBool("fix-deltaCP")) {
-	fp->FixParameter(util::PhysParamFromString("cpv"));
-	fp->SetNuisance(util::PhysParamFromString("cpv"),false); //HACK
+        fp->FixParameter(util::PhysParamFromString("cpv"));
+        fp->SetNuisance(util::PhysParamFromString("cpv"),false); //HACK
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-deltaCP")) ? "flat" : "gaus" );
@@ -305,10 +310,10 @@ int main(int argc, char ** argv)
     double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
     if((fix_deltacp > util::OscParamMinValue(util::PhysParamFromString("cpv"))) && 
        (fix_deltacp < util::OscParamMaxValue(util::PhysParamFromString("cpv"))))
-      {
-	fp->Update(util::PhysParamFromString("cpv"), fix_deltacp);
-	fp->SetInitValue(util::PhysParamFromString("cpv"), fix_deltacp);
-      }
+    {
+      fp->Update(util::PhysParamFromString("cpv"), fix_deltacp);
+      fp->SetInitValue(util::PhysParamFromString("cpv"), fix_deltacp);
+    }
     // Set our current values back to the fitter start point.
     // This will be central values unless start-at-true is defined.
     fp->ResetCurrToInitValues();
