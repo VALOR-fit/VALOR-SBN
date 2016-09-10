@@ -356,6 +356,10 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     }//iy
   }//ier
   
+  
+  LOG("GenericSingleSampleFitData",pNOTICE) 
+    << fName<< ": N_{Data} SB = " << fDataSb->Integral()
+    <<" ; N_{Data} OB[0] = "<<fDataOb[0]->Integral();
 
   return true;
 }
