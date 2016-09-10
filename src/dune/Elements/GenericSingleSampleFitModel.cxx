@@ -1315,7 +1315,8 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     }
 
     // Get reaction mode index
-    ReacMode_t m = util::ReacModeFromInt(reac_mode); 
+    ReacMode_t m = util::ReacModeFromInt(reac_mode);
+ 
     if(m == kmUndefined) {
       LOG("GenericSingleSampleFitModel",pWARN) 
         << " ** Undefined reaction mode ID used in MC event: " << iev
@@ -2001,13 +2002,17 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
 
+
   //first, check that there are actually osc params in the fit params list 
   bool apply_osc_prob = false;
-  for(int ip = 0; ip < conv::kNuis000; ip++) {
-    PhysParamId_t p = (PhysParamId_t) ip;
-    if(fPhysHypothesis.Contains(p)) {apply_osc_prob = true;}
+  for(int imode = 0; imode < kNReacModes; imode++) {
+    for(int ip = 0; ip < conv::kNuis000; ip++) {
+      PhysParamId_t p = (PhysParamId_t) ip;
+      if(fPhysHypothesis.Contains(p))
+	{apply_osc_prob = true;}
+    }
   }
-  
+
   // If not, just set the oscillated modes to zero and move on
   if (!apply_osc_prob) {
     for(int imode = 0; imode < kNReacModes; imode++) {
@@ -2097,8 +2102,8 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     if(m == kmUndefined) continue;
     
     //check if beam+sample+mode should be applied oscillation probabilities                                                
-    if(!util::OscProbIsAppliedTo(fBeam,fSample,m)) {continue; }
-    
+    if(!util::OscProbIsAppliedTo(fDetector,fBeam,fSample,m)) {continue; }
+
     const int n_true2_bins = util::NumQ2trueBins(fSample,m);
     const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
     
