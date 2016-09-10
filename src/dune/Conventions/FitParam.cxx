@@ -863,19 +863,25 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
       }
       
       if(not (util::IsSystematic(p)&&syst) ) {
-          // Check we're not going behind physical region
-          min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
-          max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
-
-          fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
-          ipc++; 
-          fparm->Update(p, curr);
+        // Check we're not going behind physical region
+        min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
+        max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
+        
+        fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);    
+        ipc++; 
+        fparm->Update(p, curr);
       }
     } //ip
     
     // If necessary, add the systematics from the model
     if (syst) {
       syst->AppendParamsTo(*fparm);
+      // And update their limits
+      for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
+        conv::PhysParamId_t p = syst->WhichParam(ip);
+        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,fparm->MinValue(p)));
+        fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,fparm->MaxValue(p)));
+      }
     }
     
     // Fix/set parameters as necessary
