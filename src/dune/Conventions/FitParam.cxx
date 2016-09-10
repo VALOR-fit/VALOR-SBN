@@ -783,7 +783,7 @@ PhysHypothesis util::GetPhysHypothesis(Option_t * param_list)
   return ph;
 }
 //________________________________________________________________________________________
-FitParamList * util::GetFitParameterList (Option_t * param_list)
+FitParamList * util::GetFitParameterList (Option_t * param_list, const CorrelatedSystematics * syst)
 {
 // Create a FitParamList object, adding all physics + nuisance params.
 // The input option specifies both the set of parameters (eg "standard") 
@@ -802,17 +802,8 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
   // include params 
   if(param_list_opt.find("standard") != string::npos) {
     
-    int nparams = 0;
-    for(int ip = 0; ip < kNFitParams; ip++) {
-      PhysParamId_t p = kFitParam[ip];
-      if(p == kPhypUndefined) continue;
-      nparams++;
-    }
-
-    fparm = new FitParamList(nparams);
-    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
-    
     //get the extra options here:
+    bool no_osc                 = (param_list_opt.find("no-osc-params"    ) != string::npos);
     bool fix_osc_params         = (param_list_opt.find("fix-osc-params"   ) != string::npos);
     bool cons_osc_params        = (param_list_opt.find("cons-osc-params"  ) != string::npos);
     bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
@@ -824,12 +815,30 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
     bool fix_int_params         = (param_list_opt.find("fix-int-syst"     ) != string::npos);
     bool fix_mec_params         = (param_list_opt.find("fix-mec-syst"     ) != string::npos);
     bool fix_fsi_params         = (param_list_opt.find("fix-fsi-syst"     ) != string::npos);
+    
+    int nparams = 0;
+    if (syst) {
+      nparams = syst->Size(); 
+      if (!no_osc) {nparams+=6;} //3fosc
+    }
+    else{
+      for(int ip = 0; ip < kNFitParams; ip++) {
+        PhysParamId_t p = kFitParam[ip];
+        if (p == kPhypUndefined) {continue;}
+        if (no_osc && util::IsOscParam(p)) {continue;}
+        nparams++;
+      }
+    }
+
+    fparm = new FitParamList(nparams);
+    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
 
     //if osc params constrained, set priors
-    if(cons_osc_params)
+    if(cons_osc_params) {
       util::InitializeOAPriors();
+    }
 
-    //now loop over parameters
+    //now loop over parameters to add them to the list
     for(int ip = 0; ip < kNFitParams; ip++) {
       PhysParamId_t p = kFitParam[ip];
       if(p == kPhypUndefined) continue;
@@ -844,6 +853,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
       bool   nuis = true;
       
       if(IsOscParam(p)) {
+        if (no_osc) {continue;}
         init = util::OscParamInitValue(p);
         curr = util::OscParamInitValue(p);
         min  = util::OscParamMinValue(p);
@@ -852,8 +862,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
         nuis = false;
       }
       
-      //~ if(IsSystematic(p)) {
-      if(true) {
+      if(not (util::IsSystematic(p)&&syst) ) {
           // Check we're not going behind physical region
           min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
           max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
@@ -862,7 +871,16 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
           ipc++; 
           fparm->Update(p, curr);
       }
-      
+    } //ip
+    
+    // If necessary, add the systematics from the model
+    if (syst) {
+      syst->AppendParamsTo(*fparm);
+    }
+    
+    // Fix/set parameters as necessary
+    for(int ip = 0; ip < nparams; ip++) {
+      conv::PhysParamId_t p = fparm->WhichParam(ip);
       // toggle oscillation params on/off
       if(fix_osc_params && IsOscParam(p)){
         double init_value = util::OscParamInitValue(p);
@@ -937,11 +955,11 @@ FitParamList * util::GetFitParameterList (Option_t * param_list)
     fparm = new FitParamList(kNFitParamsND); // NOTE: If params are undefined, we initialize the array with more elements than used 
 
     //get other options
-    bool fix_detector_params = (param_list_opt.find("fix-det-syst") != string::npos);
-    bool fix_flux_params = (param_list_opt.find("fix-flux-syst") != string::npos);
-    bool fix_int_params = (param_list_opt.find("fix-int-syst") != string::npos);
-    bool fix_mec_params = (param_list_opt.find("fix-mec-syst") != string::npos);
-    bool fix_fsi_params = (param_list_opt.find("fix-fsi-syst") != string::npos);
+    bool fix_detector_params = (param_list_opt.find("fix-det-syst")  != string::npos);
+    bool fix_flux_params     = (param_list_opt.find("fix-flux-syst") != string::npos);
+    bool fix_int_params      = (param_list_opt.find("fix-int-syst")  != string::npos);
+    bool fix_mec_params      = (param_list_opt.find("fix-mec-syst")  != string::npos);
+    bool fix_fsi_params      = (param_list_opt.find("fix-fsi-syst")  != string::npos);
 
     //now loop over parameters
     int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params

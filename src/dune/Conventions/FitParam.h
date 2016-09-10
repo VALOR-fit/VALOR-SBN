@@ -26,6 +26,7 @@
 
 //fmwk
 #include "valor/Conventions/PhysParamId.h"
+#include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/PhysHypothesis.h"
 
@@ -4021,8 +4022,9 @@ namespace util {
 
   conv::PhysParamId_t PhysParamFromString(string p);
 
+  // If you give a CorrelatedSystematics object, it'll ignore your list's standard systematics and use this set instead
   PhysHypothesis GetPhysHypothesis   (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
-  FitParamList * GetFitParameterList (Option_t * param_list = "standard" /*, Option_t * param_values = "nominal"*/);
+  FitParamList * GetFitParameterList (Option_t * param_list = "standard", const CorrelatedSystematics * syst = 0);
 
   bool IsOscParam  (conv::PhysParamId_t p);
   bool IsSystematic(conv::PhysParamId_t p);
