@@ -48,8 +48,8 @@ void plot_pdf(
   
   bool write_image(image_save_format[0]);
 
-  TFile * fin = new TFile(filename, "read");
-  assert(fin);
+  TFile * fin = new TFile(filename);
+  assert(fin); assert(fin->IsOpen());
   
   const char * binning = (option.Contains("OB")?"ob":"sb");
   
@@ -72,6 +72,9 @@ void plot_pdf(
   
   conv::Detector_t last_det  = conv::kdUndefined;
   conv::BeamConf_t last_beam = conv::kbUndefined;
+  
+  // A buffer to write our event rates too
+  std::ostringstream event_rates;
   
   // First loop over our selections to work out how many canvases we're drawing
   // We'll do a new canvas every time the detector changes, the beam current changes or we go above max_plots_per_canv
@@ -110,7 +113,6 @@ void plot_pdf(
       if (nrows < ncols) {nrows++;}
       else {ncols++;}
     }
-    
     // Get the first submodel so we can get beam/detector info
     unsigned int isubmodel = canvas_content[icanvas][0];
     FitModelABC * submodelabc = model.GetSubModel(isubmodel);
@@ -145,7 +147,6 @@ void plot_pdf(
     TCanvas * c_pdf_contrib = new TCanvas(c_name_contrib.Data(),c_title_contrib.Data(),20,20,canv_size_x,canv_size_y);
     c_pdf_contrib->Divide(nrows,ncols);
     all_canvases.push_back(c_pdf_contrib);
-    
     
     // Actually read the PDFs
     for (unsigned int iplot = 0 ; iplot < canvas_content[icanvas].size() ; iplot++) {
@@ -202,7 +203,7 @@ void plot_pdf(
         }//ebin
         
         // Make slice legend
-        TLegend * slice_legend = new TLegend(0.50,0.40,0.88,0.80);
+        TLegend * slice_legend = new TLegend(0.70,0.40,0.88,0.80);
         slice_legend->SetFillColor(0);
         for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
           pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
@@ -246,7 +247,7 @@ void plot_pdf(
             conv::ReacModeCoarse_t mc = conv::kmcUndefined;
             bool found = false;
             for (int imcp = 0 ; imcp < conv::kMaxCoarseReacOptions ; imcp++) {
-              conv::ReacModeCoarse_t mc = conv::kCoarseReacPriority[m][imcp];;
+              mc = conv::kCoarseReacPriority[m][imcp];;
               if(mc == conv::kmcUndefined) continue; 
               for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
                 if(mc == conv::kReactionModesCoarse[ibeam][isample][imodec]) {
@@ -296,7 +297,7 @@ void plot_pdf(
         }//ebin
         
         // Start drawing
-        TLegend * contrib_legend = new TLegend(0.5,0.3,0.9,0.8);  
+        TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
         contrib_legend->SetFillColor(0);
         for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
             conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
@@ -324,7 +325,24 @@ void plot_pdf(
         contrib_frame->GetYaxis()->SetTitle("Events /bin");
         contrib_stack->Draw("same");
         contrib_legend->Draw();
-      }
+        
+        double tot_event_rate = 0.;
+        std::ostringstream sample_event_rates;
+        // Write the event rates to the output stream
+        for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
+          conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
+          if (mc == conv::kmcUndefined) {continue;}
+          TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
+          tmphist->GetXaxis()->SetRangeUser(0.5,20.);
+          double rate = tmphist->Integral();
+          sample_event_rates<<"    "<<util::AsString(mc)<<": "<<rate<<std::endl;
+          tot_event_rate += rate;
+          delete tmphist;
+        }
+        event_rates<<util::AsString(b)<<" "<<util::AsString(d)<<" "<<util::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
+        event_rates<<sample_event_rates.str()<<std::endl;
+        
+      } // imodec
       
     
     } //iplot
@@ -350,12 +368,16 @@ void plot_pdf(
     } //write_image
       
   } // icanvas
+  
+  std::cout<<event_rates.str();
+    
   return;
 }
 
 #ifndef __CINT__
 int main() {
-  plot_pdf("fit/dunend_ndtf_lartpc_3passthrough_46selection_toymc_fit.xml","lar_pdfs.root");
+  //~ plot_pdf("fit/dunend_ndtf_lartpc_3passthrough_46selection_toymc_fit.xml","lar_pdfs.root");
+  plot_pdf("fit/dunefd_testing.xml","fd_osc_pdfs.root");
   return 0;
 }
 #endif
