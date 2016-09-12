@@ -185,7 +185,8 @@ int main(int argc, char ** argv)
   }
   string tree_name = "";
   if(arg_format == "hpgartpc") {
-    tree_name = "GasTPCTree";
+    //~ tree_name = "GasTPCTree";
+    tree_name = "NdtfDst";
   } 
   else
     if(arg_format == "lartpc" || arg_format == "fgt") {
@@ -213,9 +214,9 @@ int main(int argc, char ** argv)
   float    curr_y_reco_float    =  -999;
   if(arg_format == "hpgartpc") {
     analysis_tree->SetBranchAddress("gmcrec",          &curr_mcrec);
-    analysis_tree->SetBranchAddress("sample",          &curr_sample_int);
+    analysis_tree->SetBranchAddress("Sample",          &curr_sample_int);
     analysis_tree->SetBranchAddress("Ev_reco",         &curr_enu_reco);
-    analysis_tree->SetBranchAddress("y_reco",          &curr_y_reco);
+    analysis_tree->SetBranchAddress("Y",          &curr_y_reco);
   }
   else if(arg_format == "lartpc" || arg_format == "fgt") {
     analysis_tree->SetBranchAddress("genie_mc_truth",  &curr_mcrec);
