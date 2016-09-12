@@ -301,10 +301,15 @@ int main(int argc, char ** argv)
         mcrec->Clear();
         continue;
       }
-      if(y_reco < 0) {
-        VLOG("make_minidst", pNOTICE) << "- Rejecting event [y (reco) < 0]: "<<y_reco;
-        mcrec->Clear();
-        continue;
+      if( (y_reco < 0 || y_reco > 1) ) {
+        if (valor::util::IsCC((valor::conv::Sample_t)sample)) {
+          VLOG("make_minidst", pNOTICE) << "- Rejecting CC event [y (reco) < 0]: "<<y_reco;
+          mcrec->Clear();
+          continue;
+        }
+        else {
+          y_reco = 0.5; //arbitary value for samples without y defined
+        }
       }
 
       VLOG("make_minidst", pINFO) << "+ Accepting event";
