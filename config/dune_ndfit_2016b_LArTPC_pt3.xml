@@ -11,10 +11,10 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <lbnf_fhc>
-     5.1518e+21 
+     1.5288e+22
     </lbnf_fhc>
     <lbnf_rhc>
-     5.1518e+21 
+     1.5288e+22
     </lbnf_rhc>
   </exposure>
 </data>
@@ -72,5 +72,3 @@ Input MC templates
 </splines>
 
 </analysis_inputs>
-
-
