@@ -81,7 +81,10 @@ def main(input_fpl_file, fit_number, output_file, mcmc_files, burnin = 1000, mak
       for ip in xrange(npar):
         var_mins[ip] = min(var_mins[ip],par[ip])
         var_maxs[ip] = max(var_maxs[ip],par[ip])
+    #end event loop
+    del steptree
     mcfile.Close()
+    del mcfile
           
     print "Finished reading",f,"for",n_entries_so_far," steps (ignored",burnin,"for burn-in)"
   
@@ -136,6 +139,9 @@ def main(input_fpl_file, fit_number, output_file, mcmc_files, burnin = 1000, mak
         for ip in xrange(npar):
           hists[ip].Fill(par[ip])
       # End tree loop
+      del steptree
+      mcfile.Close()
+      del mcfile
     # End file loop
         
     canv = R.TCanvas("c","c",1000,1000)
