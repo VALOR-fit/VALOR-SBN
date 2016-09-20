@@ -17,12 +17,7 @@ include $(VALOR_DUNE)/make/Make.include
 BUILD_TARGETS =    print-make-info     \
 		   make-bin-lib-dir                \
 		   copy-scripts-to-bin             \
-		   build-conventions               \
-		   build-binning                   \
-		   build-systematics               \
-		   build-utilities                 \
-		   build-genie-utilities           \
-		   build-elements                  \
+		   build-libs                      \
 		   copy-rootdict-to-lib            \
 		   build-apps   
 
@@ -90,7 +85,10 @@ build-sd-fit: make-bin-lib-dir FORCE
 	@echo "** Building SDFit package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/SDFit;
 
-build-apps: make-bin-lib-dir FORCE
+build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions build-binning \
+  build-systematics build-utilities build-genie-utilities build-elements
+ 
+build-apps: make-bin-lib-dir build-libs FORCE
 	@echo " "
 	@echo "** Building apps..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Apps;
@@ -102,7 +100,7 @@ make-bin-lib-dir: FORCE
 	[ -d bin ] || mkdir bin; chmod 755 bin;\
 	[ -d lib ] || mkdir lib; chmod 755 lib;
 
-copy-rootdict-to-lib: make-bin-lib-dir FORCE
+copy-rootdict-to-lib: make-bin-lib-dir build-libs FORCE
 	@echo " "
 	@echo "** Copying ROOT dictionary PCM files to ${VALOR_DUNE}/lib"
 	$(shell find "${VALOR_DUNE}/src/dune/" -name "_RootDict*_rdict.pcm" | xargs -n 1 -I{} cp {} "${VALOR_DUNE}/lib/" )
