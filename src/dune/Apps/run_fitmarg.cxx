@@ -72,6 +72,8 @@ using namespace valor;
 using namespace valor::conv;
 using namespace valor::marginalisation;
 
+void Validate(CmdLnArgList& arg);
+void Fit(CmdLnArgList& arg);
 PhysParamList* GetPhysParamList(const CmdLnArgList&);
 void Fit1D(const CmdLnArgList&, FitInputs*, PhysParamId_t);
 void Fit2D(const CmdLnArgList&, FitInputs*, PhysParamId_t, PhysParamId_t);
@@ -85,16 +87,23 @@ void SetUserPrior(FitParamList& fp, conv::PhysParamId_t p, TH1D* h);
 TVectorD CholeskyGenerateTruncatedParams(double sigma);
 
 int main(int argc, char** argv)
-{  
+{
    Env::Instance()->AutoSet("dune");
-//   valor::util::PrintBanner(Env::Instance()->Banner(),500);
- 
    CmdLnArgList arg;
    arg.Read(argc,argv,
       "$VALOR_DUNE/config/apps/run_fitmarg.arg"
       ":$VALOR_DUNE/config/apps/seeds.arg");
-   LOG("valor_dune", pNOTICE) << arg;
+   LOG("valor_dune", pNOTICE) << arg;  
+   //Fit(arg);
+   Validate(arg);
+  
+   return 0;
+}
 
+void Fit(CmdLnArgList& arg)
+{
+   //   valor::util::PrintBanner(Env::Instance()->Banner(),500);
+ 
    Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
 
    Opt::Instance()->gMassHierarchyAssumed = util::HierarchyFromString("normal");
@@ -129,11 +138,12 @@ int main(int argc, char** argv)
    FitModelABC* model = elements->FitModel();
 
    // Get the specified fit parameter list
-   FitParamList* fp = util::GetFitParameterList(
-      arg.GetString("fit-param-list").c_str());
+/*   FitParamList* fp = util::GetFitParameterList(
+      arg.GetString("fit-param-list").c_str());*/
    CorrelatedSystematics* syst =
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-/*   FitParamList* fp = new FitParamList(syst->Size() + 6);
+   int numOscParams = 6;
+   FitParamList* fp = new FitParamList(syst->Size() + numOscParams);
    fp->AddParam(0, conv::kPhypMixing23, 0, 0, 1, 0.0001);
    fp->AddParam(1, conv::kPhypMixing13, 0, 0, 1, 0.0001);
    fp->AddParam(2, conv::kPhypMixing12, 0, 0, 1, 0.0001);
@@ -142,15 +152,15 @@ int main(int argc, char** argv)
    fp->AddParam(5, conv::kPhypDm12sq, 0, 0, 1, 0.0001);
    for(int i = 0; i < syst->Size(); ++i)
    {
-      fp->AddParam(6 + i, syst->Idx2Param(i), 1, 0, 2, 0.0001);
-   }*/
+      fp->AddParam(numOscParams + i, syst->Idx2Param(i), 1, 0, 2, 0.0001);
+   }
 
    conv::PhysParamId_t param0 = MCMarginaliser::GetPhysParamId(arg.GetString(
             "fit-param-0"));
    conv::PhysParamId_t param1 = MCMarginaliser::GetPhysParamId(arg.GetString(
             "fit-param-1"));
    // Temporary hack to set a systematic as the free parameter
-   param0 = fp->WhichParam(159);        // eff_nuecc
+//   param0 = fp->WhichParam(numOscParams + 151);        // fhc_flux_nue00
    int numDimensions = (param1 == conv::kPhypUndefined) ? 1 : 2;
    for(int i = 0; i < fp->Size(); ++i)
    {
@@ -189,6 +199,11 @@ int main(int argc, char** argv)
    SetPriors(*fp);
    LOG("valor_dune", pNOTICE) << "FP:\n" << *fp;
 
+   // Generate fake data
+   fp->SetCurrentValue(param0, 1.2);
+   Rnd::Instance()->SetSeeds(arg);
+   data->Generate(model, *fp, false);
+
    // Fit/Marginalisation here
    LOG("valor_dune", pNOTICE) << "Preparing the fitter";
 
@@ -208,11 +223,120 @@ int main(int argc, char** argv)
    LOG("valor_dune", pNOTICE) << "Fitting";
    fitter->DoTheFit();
 
-   ntp.Save();
+//   ntp.Save();
 
    delete marginaliser;
+}
+
+void Validate(CmdLnArgList& arg)
+{
+//   valor::util::PrintBanner(Env::Instance()->Banner(),500);
+
+
+   Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
+
+   Opt::Instance()->gMassHierarchyAssumed = util::HierarchyFromString("normal");
+   Opt::Instance()->gOscDmsqScheme = util::DmsqSchemeFromString("abs23");
+   Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
+         "sinsq2theta");
+   Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
+
+   // Set DUNE param names inside framework
+   util::PopulateNameRegistry();
+
+   // Set the random seeds
+   Rnd::Instance()->SetSeeds(arg);
+
+   // Get model & configure
+   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit elements";
+   CompoundFitElements * elements = new CompoundFitElements();
+   elements->Read(arg.GetString("config"));
+   FitDataABC* data = elements->FitData();
+   FitModelABC* model = elements->FitModel();
+
+   // Get the specified fit parameter list
+   CorrelatedSystematics* syst =
+      dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
+   int numOscParams = 6;
+   FitParamList* fp = new FitParamList(syst->Size() + numOscParams);
+   fp->AddParam(0, conv::kPhypMixing23, 0, 0, 1, 0.0001);
+   fp->AddParam(1, conv::kPhypMixing13, 0, 0, 1, 0.0001);
+   fp->AddParam(2, conv::kPhypMixing12, 0, 0, 1, 0.0001);
+   fp->AddParam(3, conv::kPhypCPV, 0, 0, 1, 0.0001);
+   fp->AddParam(4, conv::kPhypDm23sq, 0, 0, 1, 0.0001);
+   fp->AddParam(5, conv::kPhypDm12sq, 0, 0, 1, 0.0001);
+   for(int i = 0; i < syst->Size(); ++i)
+   {
+      fp->AddParam(numOscParams + i, syst->Idx2Param(i), 1, 0, 2, 0.0001);
+   }
+
+   conv::PhysParamId_t param0 = MCMarginaliser::GetPhysParamId(arg.GetString(
+            "fit-param-0"));
+   conv::PhysParamId_t param1 = MCMarginaliser::GetPhysParamId(arg.GetString(
+            "fit-param-1"));
+   int numDimensions = (param1 == conv::kPhypUndefined) ? 1 : 2;
+   for(int i = 0; i < fp->Size(); ++i)
+   {
+       conv::PhysParamId_t p = fp->WhichParam(i);
+      if(p == param0 || (numDimensions == 2 && p == param1))
+      {
+         fp->SetNuisance(p, false);
+         fp->FreeParameter(p);
+      }
+      else
+      {
+         fp->SetNuisance(p, true);
+         fp->SetDoMarg(p, true);
+         fp->FixParameter(p);
+      }
+  }
+
+   // Restrict systematics to N sigma range
+   bool rethrowUnphysical = arg.GetBool("rethrow-unphysical");
+   if(rethrowUnphysical)
+   {
+      double nSigma = arg.GetDouble("n-sigma-limit");
+      LOG("valor_dune", pNOTICE) << "Rethrowing to " << nSigma << "-sigma";
+      syst->SetRethrowUnphysical(true);
+      syst->SetNSigmaLimit(nSigma);
+      for(int i = 0; i < syst->Size(); ++i)
+      {
+         conv::PhysParamId_t p = syst->Idx2Param(i);
+         fp->SetMinValue(p, 1 - nSigma * syst->OneSigmaError(p));
+         fp->SetMaxValue(p, 1 + nSigma * syst->OneSigmaError(p));
+      }
+   }
+
+   // Set oscillation parameter priors
+   LOG("valor_dune", pNOTICE) << "Setting oscillation parameter priors";
+   SetPriors(*fp);
+   LOG("valor_dune", pNOTICE) << "FP:\n" << *fp;
+
+   // Generate fake data
+   fp->SetCurrentValue(param0, 1.2);
+   Rnd::Instance()->SetSeeds(arg);
+   data->Generate(model, *fp, false);
+
+   // Fit/Marginalisation here
+   LOG("valor_dune", pNOTICE) << "Preparing the fitter";
+
+   MarginaliserABC* marginaliser = new MCMarginaliser(data, model, fp);
+   marginaliser->Configure(arg);
+   // Perform marginalisation
+   LOG("valor_dune", pNOTICE) << "Retrieving marginaliser";
+   marginaliser->Marginalise();
+   LOG("Minuit", pNOTICE) << "Done marginalising";
   
-   return 0;
+
+   LOG("valor_dune", pNOTICE) << "Setting inputs";
+   FitInputs* fitInputs = new FitInputs(data, model, fp, marginaliser);
+   LOG("valor_dune", pNOTICE) << "Creating fitter";
+   FitterABC* fitter = util::GetFitter(fitInputs,
+         arg.GetString("fitter").c_str());
+   LOG("valor_dune", pNOTICE) << "Fitting";
+   fitter->DoTheFit();
+
+   delete marginaliser;
 }
 
 PhysParamList* GetPhysParamList(const CmdLnArgList& arg)
