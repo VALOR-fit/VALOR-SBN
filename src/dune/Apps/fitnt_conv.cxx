@@ -74,8 +74,14 @@ int main(int argc, char ** argv)
   return 0;
 }
 //___________________________________________________________________
-bool IsMarginalised(const FitParamList * /*fparm*/, conv::PhysParamId_t p)
+bool IsMarginalised(const FitParamList * fparm, conv::PhysParamId_t p)
 {
+  // Marginalise ND fluxes if FD fluxes present
+  if (fparm->Exists(conv::kNuisFHCNuMuFDFlux00) || fparm->Exists(conv::kNuisRHCNuMuFDFlux00)) {
+    if (util::IsNDFluxRelated(p)) {return true;}
+  }
+  // Marginalise physics params
+  if (p < conv::kNuis000) {return true;}
   return util::IsNuDetRelated(p); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.
 }
 //___________________________________________________________________
