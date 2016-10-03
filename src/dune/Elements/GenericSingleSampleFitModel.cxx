@@ -291,11 +291,13 @@ bool GenericSingleSampleFitModel::Generate(const PhysHypothesis & ph, Option_t *
     << "Generating model predictions for the input hypothesis: " 
     << fPhysHypothesis;
 
+#ifndef __VALOR_FMWK_PENALTY_ONLY__
   this->FluctuateMCStat(opt);   // `tun' MC templates --> `tun' MC templates (NOTE: if important effect, will need to add a new type of templates
   //this->ApplySystematics(opt);  // `tun' MC templates --> `sys' MC templates
   this->ApplyPhysics(opt);      // `sys' MC templates --> `fin' MC templates
   this->ApplyOscProb(opt);      // `fin' MC templates --> `fin' MC templates
   this->UpdatePDFs(opt);        // `fin' MC templates --> p.d.f
+#endif //__VALOR_FMWK_PENALTY_ONLY__
 
   LOG("GenericSingleSampleFitModel",pINFO) << "Done generating predictions";
 

@@ -310,7 +310,7 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
   model_abc->Write(&array, "curr", "pdft_vf +SB");
 
   this->Zero("all");
-
+#ifndef __VALOR_FMWK_PENALTY_ONLY__
   LOG("GenericSingleSampleFitData",pINFO) 
     << "Generating toy-MC for: " 
     << util::AsString(fBeam) << " / " << util::AsString(fSample);
@@ -355,7 +355,7 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
       fDataOb[izone]->SetEntry(ndata_curr+ndata,ier2,iy2);
     }//iy
   }//ier
-  
+#endif //__VALOR_FMWK_PENALTY_ONLY__
   
   LOG("GenericSingleSampleFitData",pNOTICE) 
     << fName<< ": N_{Data} SB = " << fDataSb->Integral()
