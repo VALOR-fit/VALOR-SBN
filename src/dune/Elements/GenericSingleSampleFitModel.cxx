@@ -1179,6 +1179,11 @@ void GenericSingleSampleFitModel::Zero(void)
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 {
+  
+#ifdef __VALOR_FMWK_PENALTY_ONLY__
+  return;
+#endif
+
   // Fill MC templates from the input VALOR/DUNE DST TTree
   // We use a single tree for all samples for a single beam configuration.
 
