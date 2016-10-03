@@ -17,8 +17,8 @@
 #   --config                   : Analysis configuration
 #  [--nsteps ]                 : Number of steps to process [ 30000 ]
 #  [--fit-number ]             : Entry in the input tree to use [ 0 ]
-#  [--disable-adaptive]        : Do not update the proposal function over time
 #  [--proposal-step]           : Proposal step size factor. Smaller makes it it more likely to accept a given step, but slows mixing. [0.3]
+#  [--enable-adaptive]         : Automatically tune the proposal step over time
 #  [--burn-in]                 : Number of iterations to ignore in final covariance
 #  [--start-at-bestfit]        : Don't throw a random start point
 #  [--use-prefit-correlations] : Use correlations from prefit rather than postfit matrix for proposal
@@ -26,6 +26,7 @@
 #  [--use-prefit-errors]       : Use errors from prefit rather than postfit matrix for proposal
 #  [--write-expanded-tree]     : Write each parameter value in its own branch. No extra info, just easier to browse.
 #  [--mesg-thresholds]         : Versbosity file [ "verbosity.xml" ]
+#  [--ncores ]                 : Number of cores-per-job to request and thus threads to use (requires C++11) [ 1 ]
 #
 # S. Dennis
 # University of Liverpool
@@ -45,6 +46,7 @@ foreach (@ARGV) {
   elsif($_ eq '--dune-softw-dir'         ) { $dune_softw_dir      = $ARGV[$iarg+1]; }
   elsif($_ eq '--fmwk-softw-dir'         ) { $fmwk_softw_dir      = $ARGV[$iarg+1]; }
   elsif($_ eq '--njobs'                  ) { $njobs               = $ARGV[$iarg+1]; }
+  elsif($_ eq '--ncores'                 ) { $ncores               = $ARGV[$iarg+1]; }
   elsif($_ eq '--cputime'                ) { $cputime             = $ARGV[$iarg+1]; }
   elsif($_ eq '--memory'                 ) { $memory              = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                    ) { $tag                 = $ARGV[$iarg+1]; }
@@ -54,7 +56,7 @@ foreach (@ARGV) {
   elsif($_ eq '--config'                    ) { $config                  = $ARGV[$iarg+1]; }
   elsif($_ eq '--nsteps'                    ) { $nsteps                  = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-number'                ) { $fit_number              = $ARGV[$iarg+1]; }
-  elsif($_ eq '--disable-adaptive'          ) { $disable_adaptive        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--enable-adaptive'           ) { $enable_adaptive         = $ARGV[$iarg+1]; }
   elsif($_ eq '--proposal-step'             ) { $proposal_step           = $ARGV[$iarg+1]; }
   elsif($_ eq '--burn-in'                   ) { $burn_in                 = $ARGV[$iarg+1]; }
   elsif($_ eq '--start-at-bestfit'          ) { $start_at_bestfit        = $ARGV[$iarg+1]; }
@@ -87,8 +89,9 @@ $config                 = "fit/dunend_ndtf_2ndpassthrough_18sample_toymc_fit.xml
 $mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
 
 $nsteps                  = 50000   unless defined $nsteps;
+$ncores                  = 1       unless defined $ncores;
 $fit_number              = 0       unless defined $fit_number;
-$disable_adaptive        = 0       unless defined $disable_adaptive;
+$enable_adaptive         = 0       unless defined $enable_adaptive;
 $proposal_step           = 0.3     unless defined $proposal_step;
 $burn_in                 = 1000    unless defined $burn_in;
 $start_at_bestfit        = 0       unless defined $start_at_bestfit;
@@ -127,9 +130,9 @@ while($irun < $njobs) {
   
   $arguments   = "--config $config --mesg-thresholds $mesg_thresholds " .
     " --nsteps $nsteps --fit-number $fit_number --proposal-step $proposal_step ".
-    " --burn-in $burn_in --input $input --output $full_output ";  
+    " --burn-in $burn_in --input $input --output $full_output --nthreads $ncores";  
  
-  if ( $disable_adaptive        ) {$arguments = $arguments." --disable-adaptive"          ;}
+  if ( $enable_adaptive         ) {$arguments = $arguments." --enable-adaptive"          ;}
   if ( $start_at_bestfit        ) {$arguments = $arguments." --start-at-bestfit"          ;}
   if ( $use_prefit_correlations ) {$arguments = $arguments." --use-prefit-correlations"   ;}
   if ( $use_no_correlations     ) {$arguments = $arguments." --use-no-correlations"       ;}
@@ -160,6 +163,7 @@ while($irun < $njobs) {
     print BATCH_SCRIPT "should_transfer_files    = YES \n";
     print BATCH_SCRIPT "when_to_transfer_output  = ON_EXIT \n";
     print BATCH_SCRIPT "request_memory           = $memory \n";
+    print BATCH_SCRIPT "request_cpus             = $ncores \n";
     print BATCH_SCRIPT "\nqueue\n";    
     close(BATCH_SCRIPT);
     system("condor_submit",$cndfn);

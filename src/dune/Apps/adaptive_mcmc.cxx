@@ -10,7 +10,7 @@
             --config                   : Analysis configuration
            [--nsteps ]                 : Number of steps to process [ 30000 ]
            [--fit-number ]             : Entry in the input tree to use [ 0 ]
-           [--disable-adaptive]        : Do not update the proposal function over time
+           [--enable-adaptive]         : Modify the size of the steps in the proposal function over time
            [--proposal-step]           : Proposal step size factor. Smaller makes it it more likely to accept a given step, but slows mixing. [0.3]
            [--burn-in]                 : Number of iterations to ignore in final covariance
            [--start-at-bestfit]        : Don't throw a random start point
@@ -30,6 +30,10 @@
 
 */
 //____________________________________________________________________________
+
+#include <cstdlib>
+#include <algorithm>
+#include <iostream>
 
 // root
 #include "TFile.h"
@@ -57,6 +61,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
+#include "valor/Utilities/VThreadPool.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
@@ -86,6 +91,7 @@ int main(int argc, char ** argv)
   int nsteps                   = arg.GetInt("nsteps");
   int fitnumber                = arg.GetInt("fit-number");
   int burn_in                  = arg.GetInt("burn-in");
+  int n_threads                = arg.GetInt("nthreads");
   double proposal_step         = arg.GetDouble("proposal-step");
   bool start_at_bestfit        = arg.GetBool("start-at-bestfit");
   bool write_expanded_tree     = arg.GetBool("write-expanded-tree");
@@ -100,9 +106,9 @@ int main(int argc, char ** argv)
     Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
   }
   
-  int target_n_attempts = 10;
-  int recalc_chol_every = 500;
-  int recalculate_step_every = 10;
+  const double target_n_attempts = 3;
+  const int recalculate_step_every = 50;
+  const int print_step_every = 500;
   
   // Set DUNE param names inside framework
   util::PopulateNameRegistry();
@@ -110,6 +116,10 @@ int main(int argc, char ** argv)
   // Set the random seeds
   Rnd::Instance()->SetSeeds(arg);
   LOG("valor_dune", pNOTICE) << *Rnd::Instance();
+  
+  // Set up the thread pool
+  assert(n_threads>0);
+  util::VThreadPool::Instance()->SetNThreads(n_threads);
   
   // Set up the model
   config = util::CompleteConfigPath(config);
@@ -151,10 +161,13 @@ int main(int argc, char ** argv)
   TFile * output_file = new TFile(output_filename.c_str(),"RECREATE");
   output_file->cd();
   TTree * out_tr = new TTree("mcsteps","mcsteps");
+  int o_npar = npar;
   double o_chisq = -999;
-  TVectorD o_params(npar);
-  out_tr->Branch("params",&o_params);
-  out_tr->Branch("chisq" ,&o_chisq,"chisq/D");
+  double * o_params = new double[npar];
+  
+  out_tr->Branch("npar"  ,&o_npar  ,"npar/I");
+  out_tr->Branch("params",o_params,"o_params[npar]/D");
+  out_tr->Branch("chisq" ,&o_chisq ,"chisq/D");
   if (write_expanded_tree) {
     for (int ip = 0 ; ip < npar ; ip++) {
       std::string pname  = best_fit_params->NameByIndex(ip);
@@ -219,7 +232,7 @@ int main(int argc, char ** argv)
   TMatrixD init_proposal_cov(util::CorrelationAndErrorToCovarianceMatrix(prop_corr,prop_err));
   LOG("valor_dune", pNOTICE) << "Proposal covariance built.";
   
-  TMatrixD chol_matrix(util::CholeskyDecomposition(init_proposal_cov));
+  const TMatrixD chol_matrix(util::CholeskyDecomposition(init_proposal_cov));
   
   // Throw a random start point, unless told not to
   if (!start_at_bestfit) {
@@ -263,34 +276,27 @@ int main(int argc, char ** argv)
     assert(std::fabs(current_chisq - best_fit_params->GetBestFitStatistic()) < 1E-5);
   }
   
-  // Make the covariance matrix we'll update as we go along (to be used for adaptive)
-  TVectorD parameter_means(best_fit_params->AsTVector());
-  TMatrixD adaptive_covariance(npar,npar);
-  int n_entries_in_matrix = 1;
-  
   // Write start point
   o_chisq = current_chisq;
-  o_params.SetSub(0,best_fit_params->AsTVector());
+  TVectorD bf_vec = best_fit_params->AsTVector();
+  std::copy(bf_vec.GetMatrixArray(),bf_vec.GetMatrixArray()+npar, o_params);
   out_tr->Fill();
   
   double mean_n_attempts = 0;
   int n_steps_in_mean = 0;
+  
+  // PCA class to easily calculate the covariance
+  TPrincipal pca(npar);
   
   // Record time
   TStopwatch clock;
   
   for (int istep = 1 ; istep < nsteps ; istep++) {
     // Every N steps, print out a status
-    // And redo the Chol matrix if we're adapting
-    if (istep%recalc_chol_every == 0 && istep) {
+    if (istep%print_step_every == 0 && istep) {
       LOG("adaptive_mcmc",pNOTICE)<<istep<<"\t"<<clock.RealTime()<<"\t";
       //~ std::cout<<proposal_step<<std::endl;
       out_tr->AutoSave();
-      
-      if (!disable_adaptive) {
-        // Make a new cholesky matrix from the fit results so far
-        chol_matrix = util::CholeskyDecomposition(util::LowerTriangularMatrixToSymMatrix(adaptive_covariance));
-      }
       
       clock.Start();
     }
@@ -323,22 +329,14 @@ int main(int argc, char ** argv)
       continue;
     }
     o_chisq = current_chisq;
-    o_params.SetSub(0,best_fit_params->AsTVector());
+    TVectorD par_vec = best_fit_params->AsTVector();
+    std::copy(par_vec.GetMatrixArray(),par_vec.GetMatrixArray()+npar, o_params);
     out_tr->Fill();
     
-    // Update the adaptive covariance
-    n_entries_in_matrix ++;
-    double cor = 1. - 1./n_entries_in_matrix;
-    for (int ip = 0; ip < npar; ip++) {
-      parameter_means[ip] *= cor;
-      parameter_means[ip] += o_params[ip] / n_entries_in_matrix;
-      double t1 = (o_params[ip] - parameter_means[ip]) / (n_entries_in_matrix - 1);
-      // Setting Matrix (lower triangle) elements
-      for (int jp = 0; jp < ip + 1; jp++) {
-        adaptive_covariance(ip,jp) *= cor;
-        adaptive_covariance(ip,jp) += t1 * (o_params[jp] - parameter_means[jp]);
-      }//j
-    } //ip
+    if (istep > burn_in) {
+      pca.AddRow(o_params);
+    }
+    
   } //istep
   
   
@@ -346,30 +344,28 @@ int main(int argc, char ** argv)
   output_file->cd();
   out_tr->Write();
   
-  // Variable to store the total value in
-  TVectorD total(npar);
-  
-  // Then do the PCA
-  LOG("adaptive_mcmc",pNOTICE)<<"Steps complete. Doing PCA.";
-  TPrincipal pca(npar);
-  for (int i = burn_in ; i < out_tr->GetEntries() ; i++) {
-    out_tr->GetEntry(i);
-    pca.AddRow(o_params.GetMatrixArray());
-    total += o_params;
-  }
+  // Get the covariance back
   TMatrixD cov_out(util::LowerTriangularMatrixToSymMatrix(*(pca.GetCovarianceMatrix())));
   cov_out.Write("cov");
   
   prefit_cov.Write("cov_in");
   
+  const TVectorD mean_values(*(pca.GetMeanValues()));
+  
   // Write out the ratio of mean to best_fit
   ostringstream summary;
   summary<<"Mean from chain / best fit: "<<std::endl;;
   for (int ip = 0 ; ip < npar; ip++ ) {
-    double mean = total[ip] / (out_tr->GetEntries()-burn_in);
-    summary<<best_fit_params->NameByIndex(ip)<<"\t"<< mean / best_fit_params->BestFitValueByIndex(ip)<<endl;
+    double mean = mean_values[ip];
+    double bf = best_fit_params->BestFitValueByIndex(ip);
+    summary<<best_fit_params->NameByIndex(ip)<<"\t"<< mean / bf<<endl;
   }
   LOG("adaptive_mcmc",pNOTICE)<<summary.str();
+
+  LOG("mcmc_step",pNOTICE)<<"Final step size was: "<<proposal_step;
+  
+  output_file->Close();
+  delete[] o_params;
   
   return 0;
 }
