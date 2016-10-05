@@ -163,7 +163,9 @@ while($irun < $njobs) {
     print BATCH_SCRIPT "should_transfer_files    = YES \n";
     print BATCH_SCRIPT "when_to_transfer_output  = ON_EXIT \n";
     print BATCH_SCRIPT "request_memory           = $memory \n";
-    print BATCH_SCRIPT "request_cpus             = $ncores \n";
+    if ($ncores > 0) {
+      print BATCH_SCRIPT "request_cpus             = $ncores \n";
+    }
     print BATCH_SCRIPT "\nqueue\n";    
     close(BATCH_SCRIPT);
     system("condor_submit",$cndfn);
