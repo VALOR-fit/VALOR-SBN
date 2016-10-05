@@ -13,6 +13,6 @@ use-prefit-errors                    |   boolean      |  optional   |   use-post
 start-at-bestfit                     |   boolean      |  optional   |   start-at-thrown
 write-expanded-tree                  |   boolean      |  optional   |   no-write-expanded-tree
 pot-override                         |   double       |  optional   |   -999
-nthreads                             |   integer      |  optional   |   1
+nthreads                             |   integer      |  optional   |   -1
 
 use-postfit-correlations,use-prefit-correlations,use-no-correlations|   boolean_list |  optional   |   use-postfit-correlations

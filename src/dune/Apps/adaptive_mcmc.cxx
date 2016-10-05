@@ -118,8 +118,9 @@ int main(int argc, char ** argv)
   LOG("valor_dune", pNOTICE) << *Rnd::Instance();
   
   // Set up the thread pool
-  assert(n_threads>0);
-  util::VThreadPool::Instance()->SetNThreads(n_threads);
+  if(n_threads>0) {//without n-cores specified, use as many as the host has
+    util::VThreadPool::Instance()->SetNThreads(n_threads);
+  }
   
   // Set up the model
   config = util::CompleteConfigPath(config);
