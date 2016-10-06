@@ -124,20 +124,20 @@ int main(int argc, char ** argv)
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
   assert(sample != conv::ksUndefined);
   
-  // Read the smearing histograms - ugly hack for now, but best option while we're still using these files of Dan's.
-  TString smearing_path = "$VALOR_DUNE/data/dune/fdfit/2016b/smearing_histograms.root";
-  gSystem->ExpandPathName(smearing_path);
-  TFile smearing_file(smearing_path.Data());
-  TString hname = TString::Format("smearing_%s_NC_%s",opt_beam_name.c_str(),opt_sample_name.c_str());
-  TObject * obj = smearing_file.Get(hname.Data());
-  TH2D * nc_smearing = new TH2D(*(TH2D*)obj);
-  TH2D * cc_smearing[6];
-  for (int i = 0 ; i < 6; i++) {
-    conv::NuFlavour_t flav = (conv::NuFlavour_t)i;
-    hname = TString::Format("smearing_%s_%s_%s",opt_beam_name.c_str(),util::AsString(flav).c_str(),opt_sample_name.c_str());
-    obj = smearing_file.Get(hname.Data());
-    cc_smearing[flav] = new TH2D(*(TH2D*)obj);
-  }
+  //~ // Read the smearing histograms - ugly hack for now, but best option while we're still using these files of Dan's.
+  //~ TString smearing_path = "$VALOR_DUNE/data/dune/fdfit/2016b/smearing_histograms.root";
+  //~ gSystem->ExpandPathName(smearing_path);
+  //~ TFile smearing_file(smearing_path.Data());
+  //~ TString hname = TString::Format("smearing_%s_NC_%s",opt_beam_name.c_str(),opt_sample_name.c_str());
+  //~ TObject * obj = smearing_file.Get(hname.Data());
+  //~ TH2D * nc_smearing = new TH2D(*(TH2D*)obj);
+  //~ TH2D * cc_smearing[6];
+  //~ for (int i = 0 ; i < 6; i++) {
+    //~ conv::NuFlavour_t flav = (conv::NuFlavour_t)i;
+    //~ hname = TString::Format("smearing_%s_%s_%s",opt_beam_name.c_str(),util::AsString(flav).c_str(),opt_sample_name.c_str());
+    //~ obj = smearing_file.Get(hname.Data());
+    //~ cc_smearing[flav] = new TH2D(*(TH2D*)obj);
+  //~ }
    
   int    valor_minidst_sample       = sample;
   int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h 
@@ -362,38 +362,37 @@ int main(int argc, char ** argv)
       if(reac_mode == valor::conv::kmUndefined) {
         VLOG("make_fd_minidst", pWARN) << "- Rejecting event [bad mode]\n"
         << util::AsString(init_flav)<<" -> "<<util::AsString(final_flav)<<"\t"<<util::AsString(t);
-        //~ std::cout<<iscc<<"\t"<<isnc<<"\t"<<"\t"<<larsoft_mode<<std::endl;
         continue;
       }
     }
     
     last_tree_number = analysis_tree->GetTreeNumber();
     
-    // Do ereco smearing here
-    TH2D * smearing_hist = nc_smearing;
-    if (iscc) {
-      smearing_hist = cc_smearing[final_flav];
-    }
+    //~ // Do ereco smearing here
+    //~ TH2D * smearing_hist = nc_smearing;
+    //~ if (iscc) {
+      //~ smearing_hist = cc_smearing[final_flav];
+    //~ }
     
-    // The regime for smearing is that we fill the tree once for every ereco bin in the smearing histogram
-    // These are weighted by the entry in the histogram, so the N entries add up to a single weighted event
-    // Spread across all the ereco bins
-    TAxis * true_axis = smearing_hist->GetXaxis();
-    TAxis * reco_axis = smearing_hist->GetYaxis();
-    int true_energy_bin = true_axis->FindBin(enu_true);
+    //~ // The regime for smearing is that we fill the tree once for every ereco bin in the smearing histogram
+    //~ // These are weighted by the entry in the histogram, so the N entries add up to a single weighted event
+    //~ // Spread across all the ereco bins
+    //~ TAxis * true_axis = smearing_hist->GetXaxis();
+    //~ TAxis * reco_axis = smearing_hist->GetYaxis();
+    //~ int true_energy_bin = true_axis->FindBin(enu_true);
     
-    for (int irecobin = 1 ; irecobin <= reco_axis->GetNbins(); irecobin++) {
+    //~ for (int irecobin = 1 ; irecobin <= reco_axis->GetNbins(); irecobin++) {
       
-      double reco_low_edge  = reco_axis->GetBinLowEdge(irecobin);
-      double reco_high_edge = reco_low_edge + reco_axis->GetBinWidth(irecobin);
-      enu_reco = Rnd::Instance()->RndOther().Uniform(reco_low_edge,reco_high_edge);
+      //~ double reco_low_edge  = reco_axis->GetBinLowEdge(irecobin);
+      //~ double reco_high_edge = reco_low_edge + reco_axis->GetBinWidth(irecobin);
+      //~ enu_reco = Rnd::Instance()->RndOther().Uniform(reco_low_edge,reco_high_edge);
       
-      valor_minidst_wght_smear = smearing_hist->GetBinContent(true_energy_bin,irecobin);
+      //~ valor_minidst_wght_smear = smearing_hist->GetBinContent(true_energy_bin,irecobin);
       
-      if (valor_minidst_wght_smear < conv::kASmallNum) {continue;}
-      
-      //~ std::cout<<reco_axis->GetBinWidth(irecobin)<<"\t"<<reco_low_edge<<"\t"<<reco_high_edge<<"\t"<<enu_reco<<"\t"<<std::endl;
-      //~ std::cout<<enu_true<<"\t"<<enu_reco<<"\t"<<valor_minidst_wght_smear<<std::endl;
+      //~ if (valor_minidst_wght_smear < conv::kASmallNum) {continue;}
+    
+    for (int irecobin = 1 ; irecobin <= 1; irecobin++) {
+      valor_minidst_wght_smear = 1.;
       
       if(!opt_disable_checks) {
         
