@@ -1764,6 +1764,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (util::IsOscParam(p)          ) {continue;} 
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
         
+        if (!fPhysHypothesis.Contains(p)) {
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+          continue;
+        }
+        
         bool has_splines = fParamHasSplines[ip];
         bool has_kinematic_dependence = kFitParamTrueKinematicDependence[ip];
         
@@ -1891,6 +1896,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (p == kPhypUndefined          ) {continue;}
         if (util::IsOscParam(p)          ) {continue;}
         if (!fParamIsAppliedTo[imode][ip]) {continue;}
+        
+        if (!fPhysHypothesis.Contains(p)) {
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+          continue;
+        }
+        
         
         double f = fPhysHypothesis.CurrValue(p);
         
