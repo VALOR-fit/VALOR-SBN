@@ -75,7 +75,7 @@ $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dunendfd_ndtf_fgt_3passthrough_46selection_toymc_fit.xml"           unless defined $config_file;
 #$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
-$mesg_thresholds        = "/opt/ppd/t2k/users/lorena/OscAna/valor/softw/dune/trunk/config/verbosity.xml"              unless defined $mesg_thresholds;
+$mesg_thresholds        = "verbosity.xml"                         unless defined $mesg_thresholds;
 
 $param_values    = "prefit-errors"; #not randomized-all now, Asimov dataset! 
 
@@ -110,23 +110,26 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
     $program   = "valor_dune-run_fit";
     
     #first fit in first octanct, deltacp 0
-    $arguments1 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --first-octant";
+    $arguments1 = "--tag $tag-cp=0-octant=1 --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --first-octant";
 
     #second fit in second octanct, deltacp 0
-    $arguments2 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --second-octant";
+    $arguments2 = "--tag $tag-cp=0-octant=2 --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0 --$mhchoice --second-octant";
 
     #third fit in first octanct, deltacp pi
-    $arguments3 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --first-octant";
+    $arguments3 = "--tag $tag-cp=pi-octant=1 --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --first-octant";
 
     #forth fit in second octanct, deltacp pi
-    $arguments4 = "--tag $tag --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --second-octant";
+    $arguments4 = "--tag $tag-cp=pi-octant=1 --run $ipoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value --$mhchoice --second-octant";
 
 
     $command1 = $program." ".$arguments1;
-   # $command2 = $program." ".$arguments2;
-   # $command3 = $program." ".$arguments3;
-   # $command4 = $program." ".$arguments4;
+    $command2 = $program." ".$arguments2;
+    $command3 = $program." ".$arguments3;
+    $command4 = $program." ".$arguments4;
     print "Running: $command1 \n";
+    print "Running: $command2 \n";
+    print "Running: $command3 \n";
+    print "Running: $command4 \n";
     
     $jobID = $ipoint;
     
@@ -145,7 +148,7 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        $fullprogram = abs_path(`which $program`);
        $arguments =~ s/\"/\\\"/g;        # All double quotes must be escaped for Condor
        $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
-       $jobname = "ndsens-${tag}-${jobID}-1";
+       $jobname = "${tag}-cp=0-octant=1-${jobID}";
        $cndfn = "$job_dir/${jobname}.condor";
        open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
        print CND "Executable               = $fullprogram \n";
@@ -162,56 +165,56 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        close(CND);
        system("condor_submit",$cndfn);
 
-       #$jobname = "ndsens-${tag}-${jobID}-2";
-       #$cndfn = "$job_dir/${jobname}.condor";
-       #open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-       #print CND "Executable               = $fullprogram \n";
-       #print CND "Arguments                = $arguments2 \n";
-       #print CND "initialdir               = $job_dir \n";
-       #print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-       #print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-      # print CND "Universe                 = vanilla \n";
-      # print CND "Getenv                   = True \n";
-      # print CND "should_transfer_files    = YES \n";
-      # print CND "when_to_transfer_output  = ON_EXIT \n";
-      # print CND "\nqueue\n";
+       $jobname = "${tag}-cp=0-octant=2-${jobID}";
+       $cndfn = "$job_dir/${jobname}.condor";
+       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+       print CND "Executable               = $fullprogram \n";
+       print CND "Arguments                = $arguments2 \n";
+       print CND "initialdir               = $job_dir \n";
+       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+       print CND "Universe                 = vanilla \n";
+       print CND "Getenv                   = True \n";
+       print CND "should_transfer_files    = YES \n";
+       print CND "when_to_transfer_output  = ON_EXIT \n";
+       print CND "\nqueue\n";
        
-       #close(CND);
-       #system("condor_submit",$cndfn);
+       close(CND);
+       system("condor_submit",$cndfn);
 
-      # $jobname = "ndsens-${tag}-${jobID}-3";
-      # $cndfn = "$job_dir/${jobname}.condor";
-      # open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-      # print CND "Executable               = $fullprogram \n";
-       #print CND "Arguments                = $arguments3 \n";
-       #print CND "initialdir               = $job_dir \n";
-       #print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-       #print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-       #print CND "Universe                 = vanilla \n";
-       #print CND "Getenv                   = True \n";
-       #print CND "should_transfer_files    = YES \n";
-       #print CND "when_to_transfer_output  = ON_EXIT \n";
-       #print CND "\nqueue\n";
+       $jobname = "${tag}-cp=pi-octant=1-${jobID}";
+       $cndfn = "$job_dir/${jobname}.condor";
+       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+       print CND "Executable               = $fullprogram \n";
+       print CND "Arguments                = $arguments3 \n";
+       print CND "initialdir               = $job_dir \n";
+       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+       print CND "Universe                 = vanilla \n";
+       print CND "Getenv                   = True \n";
+       print CND "should_transfer_files    = YES \n";
+       print CND "when_to_transfer_output  = ON_EXIT \n";
+       print CND "\nqueue\n";
        
-       #close(CND);
-       #system("condor_submit",$cndfn);
+       close(CND);
+       system("condor_submit",$cndfn);
 
-      # $jobname = "ndsens-${tag}-${jobID}-4";
-      # $cndfn = "$job_dir/${jobname}.condor";
-      # open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-      # print CND "Executable               = $fullprogram \n";
-      # print CND "Arguments                = $arguments4 \n";
-       #print CND "initialdir               = $job_dir \n";
-       #print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-       #print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-       #print CND "Universe                 = vanilla \n";
-       #print CND "Getenv                   = True \n";
-       #print CND "should_transfer_files    = YES \n";
-       #print CND "when_to_transfer_output  = ON_EXIT \n";
-       #print CND "\nqueue\n";
+       $jobname = "${tag}-cp=pi-octant=2-${jobID}";
+       $cndfn = "$job_dir/${jobname}.condor";
+       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+       print CND "Executable               = $fullprogram \n";
+       print CND "Arguments                = $arguments4 \n";
+       print CND "initialdir               = $job_dir \n";
+       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+       print CND "Universe                 = vanilla \n";
+       print CND "Getenv                   = True \n";
+       print CND "should_transfer_files    = YES \n";
+       print CND "when_to_transfer_output  = ON_EXIT \n";
+       print CND "\nqueue\n";
        
-       #close(CND);
-       #system("condor_submit",$cndfn);
+       close(CND);
+       system("condor_submit",$cndfn);
 
     }
   
@@ -274,9 +277,9 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
     #
     if($resource eq "interactive") {
        system($command1);
- #      system($command2);
- #      system($command3);
- #      system($command4);
+       system($command2);
+       system($command3);
+       system($command4);
     }
 
 }
