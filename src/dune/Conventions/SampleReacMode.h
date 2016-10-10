@@ -5823,7 +5823,3 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
 } // valor
 
 #endif 
-
-
-/*  LocalWords:  kmNuEToNuTauCCQE
- */

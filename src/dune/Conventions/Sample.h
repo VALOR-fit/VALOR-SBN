@@ -75,7 +75,7 @@ typedef enum ESample
 } 
 Sample_t; 
 
-static const int kMaxNSamples = 33;
+static const int kMaxNSamples = 37;
 
 // 
 // ...........................................................................
