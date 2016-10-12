@@ -8,6 +8,8 @@ param-values-option                  |   string       |  optional   |   randomiz
 fitter                               |   string       |  optional   |   minuit
 config                               |   string       |  mandatory  |   -
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
+nthreads                             |   integer      |  optional   |   -1
+#
 with-stat-fluct,without-stat-fluct   |   boolean_list |  optional   |   with-stat-fluct
 store-spectra,discard-spectra        |   boolean_list |  optional   |   discard-spectra
 start-at-true,start-at-central       |   boolean_list |  optional   |   start-at-true
@@ -15,9 +17,12 @@ rethrow-unphysical,accept-unphysical |   boolean_list |  optional   |   rethrow-
 true-from-filename                   |   string       |  optional   |   NONE 
 true-from-objname                    |   string       |  optional   |   central_values 
 pot-override                         |   double       |  optional   |   -999
+load-prior-from-file                 |   string       |  optional   |   -
+prior-fit-number                     |   integer      |  optional   |   0
+#
 input-mixing12                       |   double       |  optional   |   0.304
 input-mixing13                       |   double       |  optional   |   0.0219
-input-mixing23                       |   double       |  optional   |	0.514
+input-mixing23                       |   double       |  optional   |   0.514
 input-dm12sq                         |   double       |  optional   |   0.000075
 input-dm23sq                         |   double       |  optional   |   0.00244
 input-deltaCP                        |   double       |  optional   |   0.0
@@ -28,13 +33,14 @@ fix-dm12sq                           |   boolean      |  optional   |   false
 fix-dm23sq                           |   boolean      |  optional   |   false
 fix-deltaCP                          |   boolean      |  optional   |   false
 fix-at-deltaCP                       |   double       |  optional   |   -999
-flat-prior-mixing12                  |   boolean      |  optional   |   false				     
-flat-prior-mixing13                  |   boolean      |  optional   |   false				     
-flat-prior-mixing23                  |   boolean      |  optional   |   false				     
-flat-prior-dm12sq                    |   boolean      |  optional   |   false				     
-flat-prior-dm23sq                    |   boolean      |  optional   |   false				     
-flat-prior-deltaCP                   |   boolean      |  optional   |   false				     
+flat-prior-mixing12                  |   boolean      |  optional   |   false
+flat-prior-mixing13                  |   boolean      |  optional   |   false
+flat-prior-mixing23                  |   boolean      |  optional   |   false
+flat-prior-dm12sq                    |   boolean      |  optional   |   false
+flat-prior-dm23sq                    |   boolean      |  optional   |   false
+flat-prior-deltaCP                   |   boolean      |  optional   |   false
 normal,inverted                      |   boolean_list |  optional   |   normal
 first-octant,second-octant           |   boolean_list |  optional   |   first-octant
 sinsqtheta, sinsq2theta              |   boolean_list |  optional   |   sinsqtheta
 dmsq12abs23,foglilisi                |   boolean_list |  optional   |   dmsq12abs23           
+nthreads                             |   integer      |  optional   |   -1

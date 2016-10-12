@@ -26,6 +26,11 @@
              --fix-mixing12,etc    : Option to fix osc params (in .arg)
              --fix-at-mixing12,etc : Option to fix osc params to a different value than true/central for the fit
 
+             --load-prior-from-file : Option for file to give constrained prior matrix [ use default prior ]
+             --prior-fit-number     : Option to specify the entry in the tree for above file [ 0 ]
+             
+             [--nthreads ]         : Number of CPU threads to use [ std::thread::hardware_concurrency ]
+
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
@@ -58,6 +63,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
+#include "valor/Utilities/VThreadPool.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
@@ -69,6 +75,8 @@
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
+
+const char * fit_result_tree_name = "valor_dune_nd_ntp";
 
 int main(int argc, char ** argv)
 {  
@@ -86,10 +94,14 @@ int main(int argc, char ** argv)
   bool start_at_true      = arg.GetBool("start-at-true");
   bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
   int  ntoymc             = arg.GetInt("ntoymc");
+  int n_threads           = arg.GetInt("nthreads");
   string fplname          = arg.GetString("fit-param-list");
   string fittername       = arg.GetString("fitter");
   string true_values_file = arg.GetString("true-from-filename");
   string true_values_obj  = arg.GetString("true-from-objname"); // a physparamlist
+  
+  string read_prior_from_file = arg.GetString("load-prior-from-file");
+  int prior_fit_number = arg.GetInt("prior-fit-number");
   
   // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
   double pot_override     = arg.GetDouble("pot-override");
@@ -99,6 +111,11 @@ int main(int argc, char ** argv)
   
   std::string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(mesg_thresholds);
+  
+    // Set up the thread pool
+  if(n_threads>0) {//without n-cores specified, use as many as the host has
+    util::VThreadPool::Instance()->SetNThreads(n_threads);
+  }
   
   // Set DUNE param names inside framework
   util::PopulateNameRegistry();
@@ -126,7 +143,7 @@ int main(int argc, char ** argv)
   // Create file and tree to store outputs
   TString outfilename = TString::Format("%s_%d.root", arg.GetString("tag").c_str(), arg.GetInt("run"));
   StdFitNtp ntp;
-  ntp.Create(outfilename.Data(), "valor_dune_nd_ntp", "VALOR DUNE / ND-Fit n-tuple");
+  ntp.Create(outfilename.Data(), fit_result_tree_name, "VALOR DUNE / ND-Fit n-tuple");
   
   // Get ND model & configure
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit elements";
@@ -136,8 +153,21 @@ int main(int argc, char ** argv)
   FitModelABC * model = elements->FitModel();
   
   // Hack until we move GetSystematics() into FitModelABC
-  const CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
-  const CorrelatedSystematics * syst = cm->GetSystematics();
+  CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
+  CorrelatedSystematics * syst = cm->GetSystematics();
+  
+  // If necessary, update the systematics prior from a previous fit
+  if (read_prior_from_file!="-") {
+    TFile prior_file(read_prior_from_file.c_str());
+    TTree * prior_tree = dynamic_cast<TTree*>(prior_file.Get(fit_result_tree_name));
+    assert(prior_tree);
+    FitParamList prior_fpl;
+    prior_tree->SetBranchAddress("best_fit_params",&prior_fpl);
+    prior_tree->GetEntry(prior_fit_number);
+    syst->UpdateCentralValuesAndCovarianceFromFPL(prior_fpl);
+    delete prior_tree;
+    prior_file.Close();
+  }
   
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
