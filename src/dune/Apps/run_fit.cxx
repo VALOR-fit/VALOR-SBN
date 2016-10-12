@@ -161,10 +161,10 @@ int main(int argc, char ** argv)
     TFile prior_file(read_prior_from_file.c_str());
     TTree * prior_tree = dynamic_cast<TTree*>(prior_file.Get(fit_result_tree_name));
     assert(prior_tree);
-    FitParamList prior_fpl;
+    FitParamList * prior_fpl = NULL;
     prior_tree->SetBranchAddress("best_fit_params",&prior_fpl);
     prior_tree->GetEntry(prior_fit_number);
-    syst->UpdateCentralValuesAndCovarianceFromFPL(prior_fpl);
+    syst->UpdateCentralValuesAndCovarianceFromFPL(*prior_fpl);
     delete prior_tree;
     prior_file.Close();
   }
