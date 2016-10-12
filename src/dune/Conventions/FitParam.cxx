@@ -1138,7 +1138,7 @@ bool util::OscProbIsAppliedTo(conv::Detector_t d, conv::BeamConf_t b, conv::Samp
   bool apply = false;
   for(int ip = ip_min; ip<=ip_max; ip++){
     conv::ApplyMask_t pmask = conv::kApplyParamToTemplates[ip];
-    bool apply_to_detector = (kApplyToDetector [d] & pmask);
+    bool apply_to_detector = (kApplyToDetector [d] & pmask.detector).any();
     if(apply_to_detector) apply = true;
   }
   return apply;
@@ -1160,25 +1160,15 @@ bool util::ParamIsAppliedTo(
   if (ip<0) {return false;}
   conv::ApplyMask_t pmask = conv::kApplyParamToTemplates[ip];
   
-  //~ // DEBUG TESTING - old method.
-  //~ int ibeam   = ArrIdx::Instance()->BeamConfIdx(b);
-  //~ int imode   = ArrIdx::Instance()->ReacModeIdx(s,m);
-  //~ int isample = ArrIdx::Instance()->SampleIdx  (b,s);
-  //~ bool apply_db;
-  //~ if(ip < kNFitParamsNuFlux){ apply_db = kApplyToTemplateFitParamsNuFlux[ibeam][imode][ip];}
-  //~ else {apply_db = kApplyToTemplateFitParamsNonNuFlux[ibeam][isample][imode][ip-kNFitParamsNuFlux];}
-  //~ return apply_db;
-  //~ //END DEBUG
-  
   NuFlavour_t f = conv::kReacModeToInitFlavour[m];
   ReacType_t  t = conv::kReacModeToType[m];
   
   // Check whether or not to apply the param to this
-  bool apply_to_beam     = (kApplyToBeamMode [b] & pmask);
-  bool apply_to_sample   = (kApplyToSample   [s] & pmask);
-  bool apply_to_flavour  = (kApplyToFlavour  [f] & pmask);
-  bool apply_to_type     = (kApplyToReacType [t] & pmask);
-  bool apply_to_detector = (kApplyToDetector [d] & pmask);
+  bool apply_to_beam     = (kApplyToBeamMode [b] & pmask.beam    ).any();
+  bool apply_to_sample   = (kApplyToSample   [s] & pmask.selec   ).any();
+  bool apply_to_flavour  = (kApplyToFlavour  [f] & pmask.flav    ).any();
+  bool apply_to_type     = (kApplyToReacType [t] & pmask.reactype).any();
+  bool apply_to_detector = (kApplyToDetector [d] & pmask.detector).any();
   
   bool apply_to_mode = apply_to_flavour && apply_to_type;
   bool apply = (apply_to_beam && apply_to_sample && apply_to_mode && apply_to_detector);
