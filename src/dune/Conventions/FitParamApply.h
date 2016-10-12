@@ -128,9 +128,10 @@ static const ApplyMask_t ktApplyToAllNC       = ktApplyToNCElLike | ktApplyToAll
 static const ApplyMask_t ktApplyToAllCoh = ktApplyToCCcoh | ktApplyToNCcoh;
 static const ApplyMask_t ktApplyToAllELScat = ktApplyToCCELScat | ktApplyToNuEELScat | ktApplyToNCELScat;
 
-static const ApplyMask_t ktApplyToAll = ktApplyToAllCC | ktApplyToAllNC;
-static const ApplyMask_t ktApplyToAllButCoh = ktApplyToAll & (~ktApplyToAllCoh);
-static const ApplyMask_t ktApplyToAllButELScat = ktApplyToAll & (~ktApplyToAllELScat);//in case its necessary
+static const ApplyMask_t ktApplyToAll = ktApplyToAllCC | ktApplyToAllNC | ktApplyToAllELScat;
+static const ApplyMask_t ktApplyToAllButCoh    = ktApplyToAll & (~ktApplyToAllCoh);
+static const ApplyMask_t ktApplyToAllButELScat = ktApplyToAll & (~ktApplyToAllELScat);
+static const ApplyMask_t ktApplyToAllWithFSI   = ktApplyToAll & (~ktApplyToAllCoh) & (~ktApplyToAllELScat);
 
 // Detectors
 static const ApplyMask_t kdApplyToAllDUNE = kdApplyToDUNEND | kdApplyToDUNEFD;
@@ -514,17 +515,17 @@ static const ApplyMask_t kApplyParamToTemplates[kNFitParams] =
   /* kNuisIntNormNuBarCoherent     */ kdApplyToAll | kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToCCcoh     ,
   /* kNuisIntNuNormNC              */ kdApplyToAll | kbApplyToAll | kfApplyToNuAny     | ksApplyToAll | ktApplyToAllNC     ,
   /* kNuisIntNuBarNormNC           */ kdApplyToAll | kbApplyToAll | kfApplyToNuBarAny  | ksApplyToAll | ktApplyToAllNC     ,
-  /* kNuisIntNormNuMuToNuE         */ kdApplyToAll | kbApplyToAll | kfApplyToNuEAny    | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntPiMeanFreePath        */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntNucMeanFreePath       */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracPiChargeExchange  */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracPiInelastic       */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracPiAbsorb          */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracPiProduction      */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracNucChargeExchange */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracNucInelastic      */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracNucAbsorb         */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
-  /* kNuisIntFracNucProduction     */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllButCoh ,
+  /* kNuisIntNormNuMuToNuE         */ kdApplyToAll | kbApplyToAll | kfApplyToNuEAny    | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntPiMeanFreePath        */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntNucMeanFreePath       */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracPiChargeExchange  */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracPiInelastic       */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracPiAbsorb          */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracPiProduction      */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracNucChargeExchange */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracNucInelastic      */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracNucAbsorb         */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
+  /* kNuisIntFracNucProduction     */ kdApplyToAll | kbApplyToAll | kfApplyToAll       | ksApplyToAll | ktApplyToAllWithFSI ,
   // Detector systematics
   /* kNuisEffNuMuCC0pi1trk */ kdApplyToAllND | kbApplyToAll | kfApplyToAll | ksApplyToNuMuCC0pi1trk  | ktApplyToAll ,
   /* kNuisEffNuMuCC0pi2trk */ kdApplyToAllND | kbApplyToAll | kfApplyToAll | ksApplyToNuMuCC0pi2trk  | ktApplyToAll ,
