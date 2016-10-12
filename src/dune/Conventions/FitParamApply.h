@@ -138,7 +138,7 @@ static const ApplyMask_t kdApplyToAllDUNE = kdApplyToDUNEND | kdApplyToDUNEFD;
 static const ApplyMask_t kdApplyToAllSBN  = kdApplyToSBND | kdApplyToMicroBooNE | kdApplyToICARUS;
 static const ApplyMask_t kdApplyToAllSBN2Det  = kdApplyToSBND | kdApplyToMicroBooNE;
 static const ApplyMask_t kdApplyToAllND  = kdApplyToDUNEND | kdApplyToSBND | kdApplyToMicroBooNE | kdApplyToICARUS;
-static const ApplyMask_t kdApplyToAll    = kdApplyToAllND | kdApplyToAllSBN;
+static const ApplyMask_t kdApplyToAll    = kdApplyToAllDUNE | kdApplyToAllSBN;
 
 
 // Samples
