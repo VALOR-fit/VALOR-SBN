@@ -27,6 +27,7 @@
   <priority msgstream="CompoundFitElements">            NOTICE </priority>
   <priority msgstream="CompoundFitModel">               NOTICE </priority>
   <priority msgstream="CompoundFitData">                NOTICE </priority>
+  <priority msgstream="CorrelatedSystematics">          NOTICE </priority>
   <priority msgstream="CompoundCorrelatedSystematics">  NOTICE </priority>
   <priority msgstream="GenericSingleSampleFitModel">    NOTICE </priority>
   <priority msgstream="GenericSingleSampleFitData">     NOTICE </priority>
