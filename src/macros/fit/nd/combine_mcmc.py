@@ -76,7 +76,7 @@ def main(input_fpl_file, fit_number, output_file, mcmc_files, burnin = 1000, mak
       if n_entries_so_far % 1000 == 0:
         print "Reading step ",n_entries_so_far
       
-      pca.AddRow(par.GetMatrixArray())
+      pca.AddRow(par)
       
       for ip in xrange(npar):
         var_mins[ip] = min(var_mins[ip],par[ip])
