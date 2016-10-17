@@ -57,6 +57,12 @@ void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
 
 static const int gPrintEveryNEvents = 50000;
 
+// Cuts from Dan Cherdack for extra rejection
+double NC_Prob_numu_cut  = 0.20;
+double Tau_Prob_numu_cut = 0.20;
+double NC_Prob_nue_cut   = 0.75;
+double Tau_Prob_nue_cut  = 0.60;
+
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -77,6 +83,7 @@ int main(int argc, char ** argv)
   string opt_input_name        = arg.GetString("input");
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
   int    opt_beam_pdg          = arg.GetInt("beam-pdg");
+  bool   disable_extra_cuts    = arg.GetBool("disable-extra-cuts");
    
   int    valor_minidst_sample       = -1;
   int    valor_minidst_beam         = util::BeamConfFromString(opt_beam_name);  // see Conventions/BeamConf.h 
@@ -158,6 +165,11 @@ int main(int argc, char ** argv)
   
   int EvClass_reco = -1;
   
+  double NC_Prob_numu  = -1;
+  double Tau_Prob_numu = -1;
+  double NC_Prob_nue   = -1;
+  double Tau_Prob_nue  = -1;
+  
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
     
@@ -188,6 +200,11 @@ int main(int argc, char ** argv)
   analysis_tree->SetBranchAddress("tgt"          ,  &tgt         , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("EvClass_reco" ,  &EvClass_reco, &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("POTWeight"    ,  &POTweight   , &branchptr); active_branches.push_back(branchptr);
+  
+  analysis_tree->SetBranchAddress("NC_Prob_numu" ,  &NC_Prob_numu  , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Tau_Prob_numu", &Tau_Prob_numu  , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("NC_Prob_nue"  ,  &NC_Prob_nue   , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Tau_Prob_nue" , &Tau_Prob_nue   , &branchptr); active_branches.push_back(branchptr);
   
   // Only read the branches we're using and their sub-branches
   analysis_tree->SetBranchStatus("*",0);
@@ -313,9 +330,25 @@ int main(int argc, char ** argv)
     conv::Sample_t sample = conv::ksUndefined;
     if (EvClass_reco == 0) {
       sample = conv::ksNuMuLikeCChigh;
+      
+      if (!disable_extra_cuts) {
+        if ( (NC_Prob_numu  <= NC_Prob_numu_cut ) ||
+             (Tau_Prob_numu <= Tau_Prob_numu_cut) ) {
+          continue;
+        }
+      }
+
+        
     }
     else if (EvClass_reco == 1) {
       sample = conv::ksNuELikeCChigh;
+      
+      if (!disable_extra_cuts) {
+        if ( (NC_Prob_nue   <= NC_Prob_nue_cut  ) ||
+             (Tau_Prob_nue  <= Tau_Prob_nue_cut ) ) {
+          continue;
+        }
+      }
     }
     
     if(!opt_disable_checks) {

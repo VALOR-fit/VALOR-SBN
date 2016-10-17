@@ -6,3 +6,4 @@ beam                               |   string       |  mandatory  | -
 beam-pdg                           |   integer     |  mandatory  | -
 disable-checks                     |   boolean      |  optional   |  false
 mesg-thresholds                    |   string       |  optional   |  verbosity.xml
+disable-extra-cuts                 |   boolean      |  optional   |  false
