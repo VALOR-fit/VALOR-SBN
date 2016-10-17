@@ -224,6 +224,7 @@ int main(int argc, char ** argv)
     
   analysis_tree->SetBranchAddress("run"      ,  &run         , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("Ev"       ,  &enu_true    , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Ev_reco"  ,  &enu_reco    , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("Q2"       ,  &Q2s         , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("beamPdg"  ,  &init_pdg    , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("neu"      ,  &final_pdg   , &branchptr); active_branches.push_back(branchptr);
