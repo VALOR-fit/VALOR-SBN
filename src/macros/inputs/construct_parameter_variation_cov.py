@@ -60,12 +60,12 @@ def main(prefit_file, postfit_file, output_file, scale, params, prefit_num=0, po
         selected_params.append(p)
   
   for p in selected_params:
-    i = prefit_fp.Id(p)
-    assert(i == postfit_fp.Id(p))
-    final_err[i] = prefit_err[i] * scale
-    print "Setting value of",util.ParamAsString(p),"error to",final_err[i]
+    ip = prefit_fp.Id(p)
+    assert(ip == postfit_fp.Id(p))
+    final_err[ip] = prefit_err[ip] * scale
+    print "Setting value of",util.ParamAsString(p),"error to",final_err[ip]
     
-  final_cov = util.CorrelationAndErrorToCovarianceMatrix(prefit_cov,final_err)
+  final_cov = util.CorrelationAndErrorToCovarianceMatrix(prefit_corr,final_err)
   
   output_tf = R.TFile(output_file,"RECREATE")
   output_tree = prefit_tree.CloneTree(0)
