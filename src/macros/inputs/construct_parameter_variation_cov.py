@@ -25,18 +25,6 @@ env  =  valor.Env.Instance()
 
 def main(prefit_file, postfit_file, output_file, scale, params, prefit_num=0, postfit_num=0):
   
-  selected_params = []
-  if ("ccqe") in params:
-    selected_params.extend (
-     [conv.kNuisIntNuBarCCQE1 ,
-      conv.kNuisIntNuBarCCQE2 ,
-      conv.kNuisIntNuBarCCQE3 ,
-      conv.kNuisIntNuCCQE1    ,
-      conv.kNuisIntNuCCQE2    ,
-      conv.kNuisIntNuCCQE3    ]
-    )
-      
-  
   prefit_tf = R.TFile(prefit_file)
   prefit_tree = prefit_tf.Get("valor_dune_nd_ntp")
   
@@ -62,6 +50,14 @@ def main(prefit_file, postfit_file, output_file, scale, params, prefit_num=0, po
   postfit_err  = util.CovarianceMatrixToErrorVector(postfit_cov)
   
   final_err = R.TVectorD(postfit_err)
+  
+  # Pick the matching parameters
+  selected_params = []
+  for ip in xrange(prefit_fp.Size()):
+    p = prefit_fp.WhichParam(ip)
+    for sel_p in params.split(","):
+      if sel_p.lower() in util.ParamAsString(p).lower():
+        selected_params.append(p)
   
   for p in selected_params:
     i = prefit_fp.Id(p)
