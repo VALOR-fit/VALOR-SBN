@@ -29,9 +29,9 @@ markers = [R.kFullSquare, R.kFullCircle, R.kFullTriangleUp, R.kFullCross, R.kFul
 def GetGraph(filename):
   chain = R.TChain("valor_dune_nd_ntp")
   chain.Add(filename)
-  chain.GetEntry(0)
-
   print "Reading ",chain.GetEntries()," fits"
+  assert(chain.GetEntries())
+  chain.GetEntry(0)
 
   values = dict()
   for ev in chain:
@@ -43,6 +43,10 @@ def GetGraph(filename):
       values[dcp] = min(values[dcp],stat)
     except KeyError:
       values[dcp] = stat
+      
+  # Mirror the highest dcp point (for dcp=pi)
+  dcp_max = max(values.iterkeys())
+  values[dcp_max-2.] = values[dcp_max]
 
   xl = sorted(values.iterkeys())
   yl = [values[dcp] for dcp in xl]
@@ -56,11 +60,13 @@ def main(files,labels):
   
   graphs = [GetGraph(f) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
+  canv.SetTopMargin(0.03)
+  canv.SetRightMargin(0.03)
 
   frame = R.TH1D("f","f",1,-1,1)
   frame.GetXaxis().SetTitle("#delta_{CP} / #pi")
   frame.GetYaxis().SetTitle("#sigma")
-  frame.GetYaxis().SetRangeUser(0,10)
+  frame.GetYaxis().SetRangeUser(0,7)
   frame.Draw()
 
   #~ cdr_file = R.TFile(os.environ[env_var]+"/data/test/CDR_sinsq23_05.root")
@@ -69,11 +75,15 @@ def main(files,labels):
   #~ cdr_graph.SetLineColor(R.kBlack)
   #~ cdr_graph.Draw("C")
   
-  legend = R.TLegend(0.75,0.75,0.9,0.9)
+  print
+  
+  legend = R.TLegend(0.45,0.70,0.68,0.97)
   for i,g in enumerate(graphs):
     g.SetLineColor(colors[i])
     g.Draw("C")
     legend.AddEntry(g,labels[i],"L")
+    
+    print labels[i],"\t:","Max =",R.TMath.MaxElement(g.GetN(),g.GetY())
     
   legend.Draw()
     
