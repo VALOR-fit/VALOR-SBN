@@ -78,11 +78,11 @@ PhysParamList* GetPhysParamList(const CmdLnArgList&);
 void Fit1D(const CmdLnArgList&, FitInputs*, PhysParamId_t);
 void Fit2D(const CmdLnArgList&, FitInputs*, PhysParamId_t, PhysParamId_t);
 PhysParamId_t GetPhysParamId(const std::string&);
-void SetPriors(FitParamList& fp);
+void SetPriors(FitParamList& fp, double nSigma);
 void SetFlatPrior(FitParamList& fp, conv::PhysParamId_t p,
       double min, double max);
 void SetGausPrior(FitParamList& fp, conv::PhysParamId_t p,
-      double mean, double sigma);
+      double mean, double sigma, double nSigma);
 void SetUserPrior(FitParamList& fp, conv::PhysParamId_t p, TH1D* h);
 TVectorD CholeskyGenerateTruncatedParams(double sigma);
 void NormalHierarchyOscillationParameters(FitParamList& fp,
@@ -98,8 +98,8 @@ int main(int argc, char** argv)
       "$VALOR_DUNE/config/apps/run_fitmarg.arg"
       ":$VALOR_DUNE/config/apps/seeds.arg");
    LOG("valor_dune", pNOTICE) << arg;  
-   //Fit(arg);
-   Validate(arg);
+   Fit(arg);
+   //Validate(arg);
   
    return 0;
 }
@@ -128,11 +128,13 @@ void Fit(CmdLnArgList& arg)
    PhysParamList* trueValuesFromFile = GetPhysParamList(arg);
 
    // Create file and tree to store outputs
+   /*
    TString outfilename = TString::Format("%s_%d.root",
       arg.GetString("tag").c_str(), arg.GetInt("run"));
    StdFitNtp ntp;
    ntp.Create(outfilename.Data(), "valor_dune_nd_ntp",
       "VALOR DUNE / ND-Fit n-tuple");
+   */
   
    // Get model & configure
    LOG("valor_dune", pNOTICE) << "Getting and configuring the fit elements";
@@ -142,12 +144,13 @@ void Fit(CmdLnArgList& arg)
    FitModelABC* model = elements->FitModel();
 
    // Get the specified fit parameter list
-/*   FitParamList* fp = util::GetFitParameterList(
-      arg.GetString("fit-param-list").c_str());*/
+//   FitParamList* fp = util::GetFitParameterList(
+//      arg.GetString("fit-param-list").c_str());
    CorrelatedSystematics* syst =
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
    int numOscParams = 6;
    FitParamList* fp = new FitParamList(syst->Size() + numOscParams);
+   // These values will be adjusted for nuisance parameters in SetPriors
    fp->AddParam(0, conv::kPhypMixing23, 0, 0, 1, 0.0001);
    fp->AddParam(1, conv::kPhypMixing13, 0, 0, 1, 0.0001);
    fp->AddParam(2, conv::kPhypMixing12, 0, 0, 1, 0.0001);
@@ -163,8 +166,6 @@ void Fit(CmdLnArgList& arg)
             "fit-param-0"));
    conv::PhysParamId_t param1 = MCMarginaliser::GetPhysParamId(arg.GetString(
             "fit-param-1"));
-   // Temporary hack to set a systematic as the free parameter
-//   param0 = fp->WhichParam(numOscParams + 151);        // fhc_flux_nue00
    int numDimensions = (param1 == conv::kPhypUndefined) ? 1 : 2;
    for(int i = 0; i < fp->Size(); ++i)
    {
@@ -199,18 +200,18 @@ void Fit(CmdLnArgList& arg)
    }
 
    // Set oscillation parameter priors
-   LOG("valor_dune", pNOTICE) << "Setting oscillation parameter priors";
-   SetPriors(*fp);
-   LOG("valor_dune", pNOTICE) << "FP:\n" << *fp;
+   SetPriors(*fp, arg.GetDouble("n-sigma-limit"));
 
-   // Generate fake data
-   fp->SetCurrentValue(param0, 1.2);
+   // Override prior for fit parameter to use full physical range
+   SetFlatPrior(*fp, param0, 0.0, 1.0);
+   // Set an initial value for fit parameter to generate fake data
+   fp->SetInitValue(param0, 0.524);
    Rnd::Instance()->SetSeeds(arg);
+   // Generate fake data
    data->Generate(model, *fp, false);
 
    // Fit/Marginalisation here
    LOG("valor_dune", pNOTICE) << "Preparing the fitter";
-
    MarginaliserABC* marginaliser = new MCMarginaliser(data, model, fp);
    marginaliser->Configure(arg);
    // Perform marginalisation
@@ -218,16 +219,15 @@ void Fit(CmdLnArgList& arg)
    marginaliser->Marginalise();
    LOG("Minuit", pNOTICE) << "Done marginalising";
   
-
    LOG("valor_dune", pNOTICE) << "Setting inputs";
    FitInputs* fitInputs = new FitInputs(data, model, fp, marginaliser);
    LOG("valor_dune", pNOTICE) << "Creating fitter";
    FitterABC* fitter = util::GetFitter(fitInputs,
          arg.GetString("fitter").c_str());
    LOG("valor_dune", pNOTICE) << "Fitting";
-   fitter->DoTheFit();
+//   fitter->DoTheFit();
 
-//   ntp.Save();
+   // ntp.Save();
 
    delete marginaliser;
 }
@@ -304,7 +304,7 @@ void Validate(CmdLnArgList& arg)
 
    // Set oscillation parameter priors
    LOG("valor_dune", pNOTICE) << "Setting oscillation parameter priors";
-   SetPriors(*fp);
+   SetPriors(*fp, arg.GetDouble("n-sigma-limit"));
    LOG("valor_dune", pNOTICE) << "FP:\n" << *fp;
 
    // Generate fake data with statistical fluctuations
@@ -379,7 +379,7 @@ PhysParamList* GetPhysParamList(const CmdLnArgList& arg)
    return trueValues;
 }
 
-void SetPriors(FitParamList& fp)
+void SetPriors(FitParamList& fp, double nSigma)
 {
    if(fp.Exists(conv::kPhypCPV))
    {
@@ -391,7 +391,7 @@ void SetPriors(FitParamList& fp)
    }
    if(fp.Exists(conv::kPhypMixing13))
    {
-      SetGausPrior(fp, conv::kPhypMixing13, 0.093, 0.008);
+      SetGausPrior(fp, conv::kPhypMixing13, 0.093, 0.008, nSigma);
    }
    if(fp.Exists(conv::kPhypDm23sq))
    {
@@ -399,11 +399,11 @@ void SetPriors(FitParamList& fp)
    }
    if(fp.Exists(conv::kPhypDm12sq))
    {
-      SetGausPrior(fp, conv::kPhypDm12sq, 7.53e-5, 1.8e-6);
+      SetGausPrior(fp, conv::kPhypDm12sq, 7.53e-5, 1.8e-6, nSigma);
    }
    if(fp.Exists(conv::kPhypMixing12))
    {
-      SetGausPrior(fp, conv::kPhypMixing12, 0.846, 0.021);
+      SetGausPrior(fp, conv::kPhypMixing12, 0.846, 0.021, nSigma);
    }
    if(fp.Exists(conv::kPhypCPVBar))
    {
@@ -415,7 +415,7 @@ void SetPriors(FitParamList& fp)
    }
    if(fp.Exists(conv::kPhypMixing13Bar))
    {
-      SetGausPrior(fp, conv::kPhypMixing13Bar, 0.093, 0.008);
+      SetGausPrior(fp, conv::kPhypMixing13Bar, 0.093, 0.008, nSigma);
    }
    if(fp.Exists(conv::kPhypDm23sqBar))
    {
@@ -423,11 +423,11 @@ void SetPriors(FitParamList& fp)
    }
    if(fp.Exists(conv::kPhypDm12sqBar))
    {
-      SetGausPrior(fp, conv::kPhypDm12sqBar, 7.53e-5, 1.8e-6);
+      SetGausPrior(fp, conv::kPhypDm12sqBar, 7.53e-5, 1.8e-6, nSigma);
    }
    if(fp.Exists(conv::kPhypMixing12Bar))
    {
-      SetGausPrior(fp, conv::kPhypMixing12Bar, 0.846, 0.021);
+      SetGausPrior(fp, conv::kPhypMixing12Bar, 0.846, 0.021, nSigma);
    }
 }
 
@@ -435,16 +435,24 @@ void SetFlatPrior(FitParamList& fp, conv::PhysParamId_t p,
       double min, double max)
 {
    fp.SetPriorMode(p, "flat");
+   fp.SetInitValue(p, (min + max) / 2.0);
    fp.SetMinValueFlat(p, min);
    fp.SetMaxValueFlat(p, max);
+   fp.SetMinValue(p, min);
+   fp.SetMaxValue(p, max);
+   fp.SetStepSize(p, (max - min) / 9999.0);
 }
 
 void SetGausPrior(FitParamList& fp, conv::PhysParamId_t p,
-      double mean, double sigma)
+      double mean, double sigma, double nSigma)
 {
    fp.SetPriorMode(p, "gaus");
+   fp.SetInitValue(p, mean);
    fp.SetMeanGaus(p, mean);
    fp.SetSigmaGaus(p, sigma);
+   fp.SetMinValue(p, mean - nSigma * sigma);
+   fp.SetMaxValue(p, mean + nSigma * sigma);
+   fp.SetStepSize(p, (fp.MaxValue(p) - fp.MinValue(p)) / 9999.0);
 }
 
 void SetUserPrior(FitParamList& fp, conv::PhysParamId_t p, TH1D* h)
