@@ -157,7 +157,7 @@ int main(int argc, char ** argv)
   CorrelatedSystematics * syst = cm->GetSystematics();
   
   // If necessary, update the systematics prior from a previous fit
-  if (read_prior_from_file!="-") {
+  if (read_prior_from_file!="-" && read_prior_from_file!="none") {
     TFile prior_file(read_prior_from_file.c_str());
     TTree * prior_tree = dynamic_cast<TTree*>(prior_file.Get(fit_result_tree_name));
     assert(prior_tree);
