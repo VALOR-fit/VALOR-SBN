@@ -171,7 +171,8 @@ int main(int argc, char ** argv)
   double NC_Prob_nue   = -1;
   double Tau_Prob_nue  = -1;
   
-  double Ehad_reco = -1;
+  double Ehad_reco  = -1;
+  double QE_Ev_reco = -1;
   
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
@@ -210,7 +211,8 @@ int main(int argc, char ** argv)
   analysis_tree->SetBranchAddress("Tau_Prob_nue" , &Tau_Prob_nue   , &branchptr); active_branches.push_back(branchptr);
   
   // Variable used to cut for QE
-  analysis_tree->SetBranchAddress("Ehad_reco" ,  &Ehad_reco  , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Ehad_reco"  ,  &Ehad_reco  , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("QE_Ev_reco" ,  &QE_Ev_reco  , &branchptr); active_branches.push_back(branchptr);
   
   // Only read the branches we're using and their sub-branches
   analysis_tree->SetBranchStatus("*",0);
@@ -336,8 +338,13 @@ int main(int argc, char ** argv)
     conv::Sample_t sample = conv::ksUndefined;
     if (EvClass_reco == 0) {
       sample = conv::ksNuMuLikeCChigh;
-      if (split_sample_by_res && Ehad_reco > 0.1) {
-        sample = conv::ksNuMuLikeCClow;
+      if (split_sample_by_res) {
+        if (Ehad_reco > 0.1) {
+          sample = conv::ksNuMuLikeCClow;
+        }
+        else {
+          enu_reco = QE_Ev_reco;
+        }
       }
       
       if (!disable_extra_cuts) {
@@ -351,8 +358,13 @@ int main(int argc, char ** argv)
     }
     else if (EvClass_reco == 1) {
       sample = conv::ksNuELikeCChigh;
-      if (split_sample_by_res && Ehad_reco > 0.1) {
-        sample = conv::ksNuELikeCClow;
+      if (split_sample_by_res) {
+        if (Ehad_reco > 0.1) {
+          sample = conv::ksNuELikeCClow;
+        }
+        else {
+          enu_reco = QE_Ev_reco;
+        }
       }
       
       if (!disable_extra_cuts) {
