@@ -5477,8 +5477,8 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
     },
     // sample: ksNuMuCClow/ksNuMuBarCClow
     {
-      { kBlack, kYellow,   1001 }, // kmcNuMuCC
-      { kBlack, kWhite,    1001 }, // kmcNuMuBarCC
+      { kBlack, kWhite,    1001 }, // kmcNuMuCC
+      { kBlack, kYellow,   1001 }, // kmcNuMuBarCC
       { kBlack, kAzure,    3004 }, // kmcOscNuMuCC
       { kBlack, kBlue,     3005 }, // kmcOscNuMuBarCC
       { kBlack, kGreen,    3007 }, // kmcNuECC
