@@ -43,12 +43,12 @@ Input MC templates
 
   <dst> 
     <lbnf_fhc>
-       <filename> dune/fdfit/2016b/fdmc_ereco_v1/FHC_NuE_high_test.root </filename> 
+       <filename> dune/fdfit/2016b/fdmc_ereco_v2/FHC_NuE_high.root </filename> 
        <objname>  valor_dune_nd_mini_dst </objname> 
        <objtype>  TTree    </objtype> 
     </lbnf_fhc>
     <lbnf_rhc>
-       <filename> dune/fdfit/2016b/fdmc_ereco_v1/RHC_NuEBar_high_test.root </filename> 
+       <filename> dune/fdfit/2016b/fdmc_ereco_v2/RHC_NuEBar_high.root </filename> 
        <objname>  valor_dune_nd_mini_dst  </objname> 
        <objtype>  TTree     </objtype> 
     </lbnf_rhc>
