@@ -296,6 +296,27 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        close(PBS);
        `qsub -q prod $job_dir/$tag.pbs`;
     }
+	#
+    # Liverpool
+    #
+	if($resource eq "Liverpool_PBS") {
+       open(PBS, ">$job_dir/$tag.pbs") or die("Can not create the PBS batch script");
+       print PBS "#!/bin/bash \n";
+       print PBS "#PBS -N $tag \n";
+       print PBS "#PBS -l cput=$cput \n";
+       print PBS "#PBS -o $job_dir/$tag.pbs.out \n";
+       print PBS "#PBS -e $job_dir/$tag.pbs.err \n";
+       print PBS "#PBS -q prod \n";
+       print PBS "#PBS -l walltime=$cput \n";
+       print PBS "cd $job_dir \n";
+       print PBS "source $dune_softw_dir/setup/setup_at_cvmfs.sh $dune_softw_dir $fmwk_softw_dir\n";
+       print PBS "$command1 \n";
+#       print PBS "$command2 \n";
+#       print PBS "$command3 \n";
+#       print PBS "$command4 \n";
+       close(PBS);
+       `qsub -q medium64 $job_dir/$tag.pbs`;
+    }
     #
     # Oxford
     #
