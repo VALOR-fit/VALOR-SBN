@@ -156,7 +156,7 @@ int main(int argc, char ** argv)
   vector<TH1D *> err_m1      ;
   
   vector<double> max(cm->GetNSubModels());
-  vector<vector<TH1D *>> twk_pdf(cm->GetNSubModels());
+  vector<vector<TH1D *> > twk_pdf(cm->GetNSubModels());
       
 
   // Generate pdfs
