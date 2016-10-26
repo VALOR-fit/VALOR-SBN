@@ -37,8 +37,6 @@ public:
 
   void Configure(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t k);
   
-  void SetSystematics(CorrelatedSystematics * syst);
-  
   conv::Detector_t  GetDetector () const { return fDetector;}
   conv::BeamConf_t  GetBeam     () const { return fBeam;    }
   conv::Sample_t    GetSample   () const { return fSample;  }
@@ -55,8 +53,6 @@ protected:
   conv::Sample_t    fSample;
   conv::KineSpace_t fKSp;
   
-  // Sytematics
-  CorrelatedSystematics * fSyst;
 };
 
 } // valor

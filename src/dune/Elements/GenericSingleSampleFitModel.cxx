@@ -56,7 +56,9 @@ using namespace valor::conv;
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC(),
   fParamIsAppliedTo(),
-  fParamHasSplines()
+  fParamHasSplines(),
+  fSystematics(0),
+  fOwnerOfSystematics(false)
 {
   this->Init();
 }
@@ -133,8 +135,8 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 
   //------------------------
   // TODO
-  // fSyst = new What? CompoundCorrelatedSystematics; 
-  // fSyst->Read(xml,root_node);
+  // fSystematics = new CompoundCorrelatedSystematics; 
+  // fSystematics->Read(xml,root_node);
   //------------------------
 
   // Get the detector fiducial mass
@@ -306,28 +308,17 @@ bool GenericSingleSampleFitModel::Generate(const PhysHypothesis & ph, Option_t *
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::RandomizeSystematics(Option_t * options)
 {
-  TString opt(options);
-  if (!opt.Length()) {opt="randomize-all";}
-
-  bool randomize_flux=false, randomize_int=false, randomize_det=false;
-  if (opt.Contains("randomize-all")) {
-    randomize_flux = true;
-    randomize_int  = true;
-    randomize_det  = true;
-  }
-  if (opt.Contains("randomize-flux")) {randomize_flux = true;}
-  if (opt.Contains("randomize-int" )) {randomize_int  = true;}
-  if (opt.Contains("randomize-det" )) {randomize_det  = true;}
-
-  // -------------------------------------------- 
-  // TODO
-  // How do we do that if we have a single matrix
-  //       
-  //if (randomize_flux) {fNuFlux->Tweak(false,0);}
-  //if (randomize_int ) {fNuInt ->Tweak(false,0);}
-  //if (randomize_det ) {fNuDet ->Tweak(false,0);}
-  // -------------------------------------------- 
-
+  fSystematics->Tweak(false,NULL,options);
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::RandomizeSystematics(bool (* should_randomize)(conv::PhysParamId_t), Option_t * options)
+{
+  fSystematics->Tweak(false,0,should_randomize,options);
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::RandomizeSystematics(std::map<valor::conv::PhysParamId_t, bool> should_randomize, Option_t * options)
+{
+  fSystematics->Tweak(false,0,should_randomize,options);
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::TweakSystematic(
@@ -341,8 +332,8 @@ void GenericSingleSampleFitModel::TweakSystematic(
 void GenericSingleSampleFitModel::TweakSystematic(
     PhysParamId_t syst, double twkdial, Option_t * /*opt*/)
 {
-  if (fSyst) {
-    fSyst->SetCurrentValue(syst,twkdial);
+  if (fSystematics) {
+    fSystematics->SetCurrentValue(syst,twkdial);
   }
   else {
     LOG("GenericSingleSampleFitModel",pWARN) << "No systematic model - not tweaking requested parameter: "<<util::AsString(syst);
@@ -361,7 +352,7 @@ PhysParamList GenericSingleSampleFitModel::Tweaks(Option_t * /*opt*/) const
   //fNuDet  -> CopyTweaksTo(list);
   // -----------------------------------  
 
-  fSyst -> CopyTweaksTo(list);
+  fSystematics -> CopyTweaksTo(list);
 
   return list;
 }
@@ -375,7 +366,7 @@ void GenericSingleSampleFitModel::ResetSystematics(Option_t * /*opt*/)
   //fNuInt  -> Tweak(true, 0);
   //fNuDet  -> Tweak(true, 0);
   // -----------------------------------  
-  fSyst -> Tweak(true, 0);
+  fSystematics -> Tweak(true, 0);
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::PrintSystematics(ostream & stream, Option_t * /*opt*/) const
@@ -388,8 +379,8 @@ bool GenericSingleSampleFitModel::Generate (const FitParamList & fp, Option_t * 
   //  LOG("GenericSingleSampleFitModel",pDEBUG)  
   //     << "Input fit parameter list before converting to a physics hypothesis: " << fp;
 
-  if (fSyst) {
-    fSyst ->UpdateFrom(fp);
+  if (fSystematics) {
+    fSystematics ->UpdateFrom(fp);
   }
 
   // extract the values of params driving the oscillation, decoherence or decay model
@@ -890,7 +881,7 @@ double GenericSingleSampleFitModel::GetFitStatisticPenalty (Option_t * /*opt*/) 
   << ", detector = " << Sp_nudet << ")";
   // ------------------
   */
-  double Sp = (fSyst-> ChisqPenalty());
+  double Sp = (fSystematics-> ChisqPenalty());
   return Sp;
 }
 //________________________________________________________________________________________
@@ -959,7 +950,7 @@ void GenericSingleSampleFitModel::Init(void)
   
   fArrIdx = util::ArrIdx::Instance();
 
-  fSyst = 0;
+  fSystematics = 0;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Book(void)
@@ -1138,8 +1129,9 @@ void GenericSingleSampleFitModel::Clean(void)
     }
   }
   
-  if (fSyst) { delete fSyst; fSyst = 0; }
   if (fRFL)  { delete fRFL ; fRFL  = 0; }
+  
+  if (fSystematics && fOwnerOfSystematics) { delete fSystematics; fSystematics = 0; }
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Zero(void)
@@ -2336,7 +2328,7 @@ valor::PhysParamList valor::GenericSingleSampleFitModel::OneSigmaErrors(Option_t
   //--------------------------------------- 
 
   ppl.SetName("PreFitErrors");
-  fSyst->CopyOneSigmaErrorsTo(ppl);
+  fSystematics->CopyOneSigmaErrorsTo(ppl);
   return ppl;
 }
 //________________________________________________________________________________________
@@ -2417,6 +2409,31 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
       }//isrsb2
     }//irsb1
   } //imode
+  return;
+}
+//________________________________________________________________________________________
+CorrelatedSystematics * GenericSingleSampleFitModel::GetSystematics(Option_t * /*opt*/)
+{
+  return fSystematics;
+}
+//________________________________________________________________________________________
+const CorrelatedSystematics * GenericSingleSampleFitModel::GetSystematics(Option_t * /*opt*/) const
+{
+  return fSystematics;
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::SetSystConf(CorrelatedSystematics * syst, Option_t * opt)
+{
+  TString ts(opt);
+  if (ts.Contains("copy") ) {
+    fSystematics = dynamic_cast<CorrelatedSystematics *>(syst->Clone());
+    fOwnerOfSystematics = true;
+  }
+  else {
+    fSystematics = syst;
+    fOwnerOfSystematics = ts.Contains("adopt");
+  }
+  
   return;
 }
 //________________________________________________________________________________________
