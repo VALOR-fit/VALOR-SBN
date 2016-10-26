@@ -20,6 +20,7 @@ TGT = make_nd_minidst \
       make_response_functions \
       run_fit \
       write_pdf \
+      tweak_pdf_N \
       fitnt_conv \
       adaptive_mcmc
 
@@ -73,6 +74,12 @@ run_fit: FORCE
 write_pdf: FORCE
 	$(CXX) $(CXXFLAGS) -c write_pdf.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) write_pdf.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-write_pdf
+	
+# Randomly throw the pdf t o make envelopes
+# 
+tweak_pdf_N: FORCE
+	$(CXX) $(CXXFLAGS) -c tweak_pdf_N.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) tweak_pdf_N.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
 
 # Run an Adaptive Metropolis Hastings around the results of a fit
 #
@@ -100,6 +107,7 @@ clean: FORCE
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-write_pdf
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
 
@@ -110,6 +118,7 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/write_pdf
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/tweak_pdf_N
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
 
