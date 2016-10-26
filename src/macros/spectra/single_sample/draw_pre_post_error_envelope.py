@@ -59,7 +59,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(prefit_fn, postfit_fn, tag, write_tex, img_format,ratio_mult):
+def main(config, prefit_fn, postfit_fn, tag, write_tex, img_format,ratio_mult):
   f_prefit = ROOT.TFile(prefit_fn)
   if not f_prefit:
     raise DUNEAnaError("Could not open prefit input file")
@@ -67,10 +67,10 @@ def main(prefit_fn, postfit_fn, tag, write_tex, img_format,ratio_mult):
   if not f_postfit:
     raise DUNEAnaError("Could not open postfit input file")
     
-  pre_and_postfit_envelope(f_prefit,f_postfit, tag, write_tex, img_format,ratio_mult)
+  pre_and_postfit_envelope(config, f_prefit,f_postfit, tag, write_tex, img_format,ratio_mult)
   
 
-def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format, ratio_mult):
+def pre_and_postfit_envelope(config, prefit_file,postfit_file,tag,write_tex,img_format, ratio_mult):
   
   all_hists = []
     
@@ -79,270 +79,277 @@ def pre_and_postfit_envelope(prefit_file,postfit_file,tag,write_tex,img_format, 
   envelope_captions = []
   ratio_captions = []
   
-  for ibeam in xrange(conv.kNBeamConf):
-    b = util.BeamConfFromInt(ibeam)
-    for isamp in xrange(conv.kNSamples):
-      samp_hists = []
-      
-      s = util.GetActiveSample(ibeam,isamp)
-      hname_prefix = "env_sb_%s_%s" % (util.BeamConfAsString(b) , util.SampleAsString(s))
-      hname_nom = hname_prefix + "_nom"
-      hname_p1  = hname_prefix + "_p1"
-      hname_m1  = hname_prefix + "_m1"
-      
-      out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
-      
-      prefit_nom = get_hist(prefit_file,hname_nom)
-      prefit_nom.SetLineColor(prefit_color)
-      prefit_nom.SetLineStyle(1)
-      prefit_nom.SetLineWidth(linewidth)
-      
-      postfit_nom = get_hist(postfit_file,hname_nom)
-      postfit_nom.SetLineStyle(1)
-      postfit_nom.SetLineWidth(linewidth)
-      postfit_nom.SetLineColor(ROOT.kBlack)
-      
-      hplus_prefit   = get_hist(prefit_file,hname_p1)
-      hminus_prefit  = get_hist(prefit_file,hname_m1)
-      hplus_postfit  = get_hist(postfit_file,hname_p1)
-      hminus_postfit = get_hist(postfit_file,hname_m1)
-      
-      hists = [prefit_nom, postfit_nom, hplus_prefit,hminus_prefit,hplus_postfit,hminus_postfit]
+  elem = valor.CompoundFitElements()
+  elem.Read(util.CompleteConfigPath(config))
+  cm = elem.FitModel()
+  
+  for imodel in xrange(cm.GetNSubModels()):
+    m = cm.GetSubModel(imodel)
+    s = m.GetSample()
+    b = m.GetBeam()
+    samp_hists = []
     
-      for h in hists:
-        samp_hists.append(h)
-        all_hists.append(h)
-        h.UseCurrentStyle()
+    hname_prefix = "env_sb_%s_%s" % (util.BeamConfAsString(b) , util.SampleAsString(s))
+    hname_nom = hname_prefix + "_nom"
+    hname_p1  = hname_prefix + "_p1"
+    hname_m1  = hname_prefix + "_m1"
+    
+    out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
+    
+    prefit_nom = get_hist(prefit_file,hname_nom)
+    prefit_nom.SetLineColor(prefit_color)
+    prefit_nom.SetLineStyle(1)
+    prefit_nom.SetLineWidth(linewidth)
+    
+    postfit_nom = get_hist(postfit_file,hname_nom)
+    postfit_nom.SetLineStyle(1)
+    postfit_nom.SetLineWidth(linewidth)
+    postfit_nom.SetLineColor(ROOT.kBlack)
+    
+    hplus_prefit   = get_hist(prefit_file,hname_p1)
+    hminus_prefit  = get_hist(prefit_file,hname_m1)
+    hplus_postfit  = get_hist(postfit_file,hname_p1)
+    hminus_postfit = get_hist(postfit_file,hname_m1)
+    
+    hists = [prefit_nom, postfit_nom, hplus_prefit,hminus_prefit,hplus_postfit,hminus_postfit]
+  
+    for h in hists:
+      samp_hists.append(h)
+      all_hists.append(h)
+      h.UseCurrentStyle()
+      
+      h.GetXaxis().SetTitleSize(title_size)
+      h.GetYaxis().SetTitleSize(title_size)
+      h.GetXaxis().SetLabelSize(label_size)
+      h.GetYaxis().SetLabelSize(label_size)
+      h.GetXaxis().SetTitle("E_{reco}")
+      h.GetYaxis().SetTitle("Events per bin")
+      h.SetTitle("")
+      h.GetXaxis().SetRangeUser(0.,max_energy)
+      h.GetYaxis().SetTitleOffset(title_offset)
+    
+    for h in [hplus_prefit,hminus_prefit]:
+      #~ h.SetLineColor(postfit_color)
+      h.SetLineStyle(0)
+      h.SetLineWidth(0)
+      h.GetXaxis().SetRangeUser(0.,max_energy)
+      
+    for h in [hplus_postfit,hminus_postfit]:
+      h.SetLineStyle(1)
+      h.SetLineWidth(0)
+      h.GetXaxis().SetRangeUser(0.,max_energy)
+      
+    legend = ROOT.TLegend(0.7,0.7,0.93,0.92);
+    legend.SetFillStyle(0);
+    legend.SetBorderSize(0);
+    #~ legend.SetTextSize(0.04);
+   
+    limit = max([abs(h.GetMinimum()) for h in samp_hists] + [abs(h.GetMaximum()) for h in samp_hists])
+    
+    canv = ROOT.TCanvas()
+    canv.SetLeftMargin  (left_margin)
+    canv.SetBottomMargin(bottom_margin)
+    canv.SetRightMargin (right_margin )
+    if use_log_plots: canv.SetLogx()
+    
+    for h in samp_hists:
+      h.SetMinimum(0.)
+      h.SetMaximum(1.05*limit)
+      
+    env_hists = [(prefit_nom, hplus_prefit  , hminus_prefit ) ,
+                 (postfit_nom, hplus_postfit , hminus_postfit)]
+    
+    env_graph_prefit  = ROOT.TGraphAsymmErrors(hplus_prefit  .GetXaxis().GetNbins())
+    env_graph_postfit = ROOT.TGraphAsymmErrors(hplus_postfit .GetXaxis().GetNbins())
+    
+    env_graphs = [env_graph_prefit  ,
+                  env_graph_postfit , ]
+    
+    for (hn,hp,hm),g in zip(env_hists,env_graphs):
+      for i in xrange(hp.GetXaxis().GetNbins()):
+        low_edge  = hp.GetBinLowEdge(i+1)
+        high_edge = low_edge + hp.GetBinWidth(i+1)
+        centre = hn.GetBinContent(i+1)
+        g.SetPoint      (i,hp.GetBinCenter(i+1),centre)
+        g.SetPointEYlow (i,abs(hm.GetBinContent(i+1)-centre))
+        g.SetPointEYhigh(i,abs(hp.GetBinContent(i+1)-centre))
+        g.SetPointEXlow (i,hp.GetBinWidth(i+1)*0.5)
+        g.SetPointEXhigh(i,hp.GetBinWidth(i+1)*0.5)
         
-        h.GetXaxis().SetTitleSize(title_size)
-        h.GetYaxis().SetTitleSize(title_size)
-        h.GetXaxis().SetLabelSize(label_size)
-        h.GetYaxis().SetLabelSize(label_size)
-        h.GetXaxis().SetTitle("E_{reco}")
-        h.GetYaxis().SetTitle("Events per bin")
-        h.SetTitle("")
-        h.GetXaxis().SetRangeUser(0.,max_energy)
-        h.GetYaxis().SetTitleOffset(title_offset)
+      g.GetXaxis().SetRangeUser(0,max_energy)
+      CopyHistAxisFormatting(hp,g)
+      g.GetYaxis().SetTitle("Ratio of # Total Events")
       
-      for h in [hplus_prefit,hminus_prefit]:
-        #~ h.SetLineColor(postfit_color)
-        h.SetLineStyle(0)
-        h.SetLineWidth(0)
-        h.GetXaxis().SetRangeUser(0.,max_energy)
-        
-      for h in [hplus_postfit,hminus_postfit]:
-        h.SetLineStyle(1)
-        h.SetLineWidth(0)
-        h.GetXaxis().SetRangeUser(0.,max_energy)
-        
-      legend = ROOT.TLegend(0.7,0.7,0.93,0.92);
-      legend.SetFillStyle(0);
-      legend.SetBorderSize(0);
-      #~ legend.SetTextSize(0.04);
-     
-      limit = max([abs(h.GetMinimum()) for h in samp_hists] + [abs(h.GetMaximum()) for h in samp_hists])
+    hplus_prefit.GetYaxis().SetTitleOffset(title_offset)
+    #~ hplus_prefit.SetLineColor(prefit_color)
+    #~ hplus_prefit.SetFillColor(prefit_color)
+    #~ hplus_prefit.SetFillStyle(prefit_style)
+    
+    hplus_prefit.Draw("AXIS")
+    #~ hplus_postfit.SetFillColor(postfit_color)
+    #~ hplus_postfit.SetFillStyle(postfit_style)
+    #~ hminus_postfit.SetFillStyle(postfit_style)
+    
+    env_graph_prefit.SetFillStyle(prefit_style)
+    env_graph_prefit.SetFillColor(prefit_color)
+    env_graph_prefit.Draw("same2")
+    
+    env_graph_postfit.SetFillStyle(postfit_style)
+    env_graph_postfit.SetFillColor(postfit_color)
+    env_graph_postfit.SetLineWidth(0)
+    env_graph_postfit.SetLineStyle(0)
+    env_graph_postfit.SetLineWidth(0)
+    env_graph_postfit.SetMarkerStyle(ROOT.kFullSquare)
+    env_graph_postfit.SetMarkerColor(postfit_color)
+    env_graph_postfit.Draw("same2")
+    
+    prefit_nom.SetLineStyle(R.kDashed)
+    
+    prefit_nom.Draw("same")
+    postfit_nom.Draw("same")
+    
+    #~ hplus_postfit.Draw("same")
+    #~ prefit_nom.Draw("same")
+    #~ prefit_nom.Draw("same")
+    #~ hplus_prefit.Draw("same")
+    
+    canv.RedrawAxis()
+    
+    legend_prefit = ROOT.TH1D(prefit_nom)
+    legend_prefit.SetFillStyle(env_graph_prefit.GetFillStyle())
+    legend_prefit.SetFillColor(env_graph_prefit.GetFillColor())
+    legend_prefit.SetLineStyle(prefit_nom.GetLineStyle())
+    legend_prefit.SetLineColor(prefit_nom.GetLineColor())
+    legend_prefit.SetLineWidth(prefit_nom.GetLineWidth())
+    
+    legend_postfit = ROOT.TH1D(postfit_nom)
+    legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
+    legend_postfit.SetFillColor(env_graph_postfit.GetFillColor())
+    legend_postfit.SetMarkerStyle(env_graph_postfit.GetMarkerStyle())
+    legend_postfit.SetMarkerColor(env_graph_postfit.GetMarkerColor())
+    legend_postfit.SetMarkerSize (env_graph_postfit.GetMarkerSize())
+    
+    all_hists.extend([legend_prefit,legend_postfit])
+    
+    legend.AddEntry(legend_prefit   ,"Prefit" ,"F")
+    legend.AddEntry(legend_postfit  ,"Postfit","FL")
+    
+    legend.Draw()
+    envelope_fn = out_prefix+"_envelope."+img_format
+    canv.Print(envelope_fn)
+    envelope_images.append(envelope_fn)
+    cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
+    envelope_captions.append(cap.replace("_"," "))
+    
+    # Now do it with ratios
+    ratio_plus_prefit   = R.TH1D(hplus_prefit)
+    ratio_minus_prefit  = R.TH1D(hminus_prefit)
+    ratio_plus_postfit  = R.TH1D(hplus_postfit)
+    ratio_minus_postfit = R.TH1D(hminus_postfit)
+    
+    ratio_plus_prefit  .Divide(prefit_nom)
+    ratio_minus_prefit .Divide(prefit_nom)
+    ratio_plus_postfit .Divide(prefit_nom)
+    ratio_minus_postfit.Divide(prefit_nom)
       
-      canv = ROOT.TCanvas()
-      canv.SetLeftMargin  (left_margin)
-      canv.SetBottomMargin(bottom_margin)
-      canv.SetRightMargin (right_margin )
-      if use_log_plots: canv.SetLogx()
+    for i in xrange(prefit_nom.GetXaxis().GetNbins()):
+      if abs(prefit_nom.GetBinContent(i+1))<conv.kASmallNum:
+        ratio_plus_postfit .SetBinContent(i+1,1)
+        ratio_minus_postfit.SetBinContent(i+1,1)
+      if abs(prefit_nom.GetBinContent(i+1))<conv.kASmallNum:
+        ratio_plus_prefit .SetBinContent(i+1,1)
+        ratio_minus_prefit.SetBinContent(i+1,1)
+    
+    ratio_hists = [(ratio_plus_prefit  , ratio_minus_prefit ) ,
+                   (ratio_plus_postfit , ratio_minus_postfit)]
+    
+    ratio_graph_prefit  = ROOT.TGraphAsymmErrors(ratio_plus_prefit  .GetXaxis().GetNbins())
+    ratio_graph_postfit = ROOT.TGraphAsymmErrors(ratio_plus_postfit .GetXaxis().GetNbins())
+    
+    ratio_graphs = [ratio_graph_prefit  ,
+                    ratio_graph_postfit , ]
+    
+    if ratio_mult is not None:
+      eff_mult = ratio_mult
+    else:
+      eff_mult = 1.
       
-      for h in samp_hists:
-        h.SetMinimum(0.)
-        h.SetMaximum(1.05*limit)
-        
-      env_hists = [(prefit_nom, hplus_prefit  , hminus_prefit ) ,
-                   (postfit_nom, hplus_postfit , hminus_postfit)]
+    fill_ratio_graph_from_hist(ratio_graph_prefit , ratio_minus_prefit , ratio_plus_prefit , 1.)
+    fill_ratio_graph_from_hist(ratio_graph_postfit, ratio_minus_postfit, ratio_plus_postfit, eff_mult)
       
-      env_graph_prefit  = ROOT.TGraphAsymmErrors(hplus_prefit  .GetXaxis().GetNbins())
-      env_graph_postfit = ROOT.TGraphAsymmErrors(hplus_postfit .GetXaxis().GetNbins())
-      
-      env_graphs = [env_graph_prefit  ,
-                    env_graph_postfit , ]
-      
-      for (hn,hp,hm),g in zip(env_hists,env_graphs):
-        for i in xrange(hp.GetXaxis().GetNbins()):
-          low_edge  = hp.GetBinLowEdge(i+1)
-          high_edge = low_edge + hp.GetBinWidth(i+1)
-          centre = hn.GetBinContent(i+1)
-          g.SetPoint      (i,hp.GetBinCenter(i+1),centre)
-          g.SetPointEYlow (i,abs(hm.GetBinContent(i+1)-centre))
-          g.SetPointEYhigh(i,abs(hp.GetBinContent(i+1)-centre))
-          g.SetPointEXlow (i,hp.GetBinWidth(i+1)*0.5)
-          g.SetPointEXhigh(i,hp.GetBinWidth(i+1)*0.5)
-          
-        g.GetXaxis().SetRangeUser(0,max_energy)
-        CopyHistAxisFormatting(hp,g)
-        g.GetYaxis().SetTitle("Ratio of # Total Events")
-        
-      hplus_prefit.GetYaxis().SetTitleOffset(title_offset)
-      #~ hplus_prefit.SetLineColor(prefit_color)
-      #~ hplus_prefit.SetFillColor(prefit_color)
-      #~ hplus_prefit.SetFillStyle(prefit_style)
-      
-      hplus_prefit.Draw("AXIS")
-      #~ hplus_postfit.SetFillColor(postfit_color)
-      #~ hplus_postfit.SetFillStyle(postfit_style)
-      #~ hminus_postfit.SetFillStyle(postfit_style)
-      
-      env_graph_prefit.SetFillStyle(prefit_style)
-      env_graph_prefit.SetFillColor(prefit_color)
-      env_graph_prefit.Draw("same2")
-      
-      env_graph_postfit.SetFillStyle(postfit_style)
-      env_graph_postfit.SetFillColor(postfit_color)
-      env_graph_postfit.SetLineWidth(0)
-      env_graph_postfit.SetLineStyle(0)
-      env_graph_postfit.SetLineWidth(0)
-      env_graph_postfit.SetMarkerStyle(ROOT.kFullSquare)
-      env_graph_postfit.SetMarkerColor(postfit_color)
-      env_graph_postfit.Draw("same2")
-      
-      prefit_nom.SetLineStyle(R.kDashed)
-      
-      prefit_nom.Draw("same")
-      postfit_nom.Draw("same")
-      
-      #~ hplus_postfit.Draw("same")
-      #~ prefit_nom.Draw("same")
-      #~ prefit_nom.Draw("same")
-      #~ hplus_prefit.Draw("same")
-      
-      canv.RedrawAxis()
-      
-      legend_prefit = ROOT.TH1D(prefit_nom)
-      legend_prefit.SetFillStyle(env_graph_prefit.GetFillStyle())
-      legend_prefit.SetFillColor(env_graph_prefit.GetFillColor())
-      legend_prefit.SetLineStyle(prefit_nom.GetLineStyle())
-      legend_prefit.SetLineColor(prefit_nom.GetLineColor())
-      legend_prefit.SetLineWidth(prefit_nom.GetLineWidth())
-      
-      legend_postfit = ROOT.TH1D(postfit_nom)
-      legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
-      legend_postfit.SetFillColor(env_graph_postfit.GetFillColor())
-      legend_postfit.SetMarkerStyle(env_graph_postfit.GetMarkerStyle())
-      legend_postfit.SetMarkerColor(env_graph_postfit.GetMarkerColor())
-      legend_postfit.SetMarkerSize (env_graph_postfit.GetMarkerSize())
-      
-      all_hists.extend([legend_prefit,legend_postfit])
-      
-      legend.AddEntry(legend_prefit   ,"Prefit" ,"F")
-      legend.AddEntry(legend_postfit  ,"Postfit","FL")
-      
-      legend.Draw()
-      envelope_fn = out_prefix+"_envelope."+img_format
-      canv.Print(envelope_fn)
-      envelope_images.append(envelope_fn)
-      cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
-      envelope_captions.append(cap.replace("_"," "))
-      
-      # Now do it with ratios
-      ratio_plus_prefit   = R.TH1D(hplus_prefit)
-      ratio_minus_prefit  = R.TH1D(hminus_prefit)
-      ratio_plus_postfit  = R.TH1D(hplus_postfit)
-      ratio_minus_postfit = R.TH1D(hminus_postfit)
-      
-      ratio_plus_prefit  .Divide(prefit_nom)
-      ratio_minus_prefit .Divide(prefit_nom)
-      ratio_plus_postfit .Divide(prefit_nom)
-      ratio_minus_postfit.Divide(prefit_nom)
-        
-      for i in xrange(prefit_nom.GetXaxis().GetNbins()):
-        if abs(prefit_nom.GetBinContent(i+1))<conv.kASmallNum:
-          ratio_plus_postfit .SetBinContent(i+1,1)
-          ratio_minus_postfit.SetBinContent(i+1,1)
-        if abs(prefit_nom.GetBinContent(i+1))<conv.kASmallNum:
-          ratio_plus_prefit .SetBinContent(i+1,1)
-          ratio_minus_prefit.SetBinContent(i+1,1)
-      
-      ratio_hists = [(ratio_plus_prefit  , ratio_minus_prefit ) ,
-                     (ratio_plus_postfit , ratio_minus_postfit)]
-      
-      ratio_graph_prefit  = ROOT.TGraphAsymmErrors(ratio_plus_prefit  .GetXaxis().GetNbins())
-      ratio_graph_postfit = ROOT.TGraphAsymmErrors(ratio_plus_postfit .GetXaxis().GetNbins())
-      
-      ratio_graphs = [ratio_graph_prefit  ,
-                      ratio_graph_postfit , ]
-      
-      if ratio_mult is not None:
-        eff_mult = ratio_mult
-      else:
-        eff_mult = 1.
-        
-      fill_ratio_graph_from_hist(ratio_graph_prefit , ratio_minus_prefit , ratio_plus_prefit , 1.)
-      fill_ratio_graph_from_hist(ratio_graph_postfit, ratio_minus_postfit, ratio_plus_postfit, eff_mult)
-        
-      ratio_graph_prefit .SetFillColor(prefit_color)
-      ratio_graph_postfit.SetFillColor(postfit_color)
-      ratio_graph_prefit .SetLineColor(prefit_color)
-      ratio_graph_postfit.SetLineColor(postfit_color)
-      
-      ratio_graph_prefit .SetLineWidth(3)
-      ratio_graph_postfit.SetLineWidth(3)
-      ratio_graph_prefit .SetFillStyle(1001)
-      ratio_graph_postfit.SetFillStyle(1001)
-      
-      canv2 = ROOT.TCanvas()
-      canv2.SetLeftMargin  (left_margin)
-      canv2.SetBottomMargin(bottom_margin)
-      canv2.SetRightMargin (right_margin )
-      if use_log_plots: canv2.SetLogx()
-      canv2.cd()
-      
-      ratio_max = 1.3*ratio_plus_prefit .GetMaximum()
-      
-      #~ ratio_graph_postfit.SetMaximum(ratio_max)
-      #~ ratio_graph_postfit.SetMinimum(2-ratio_max)
-      ratio_graph_prefit.GetYaxis().SetRangeUser(0.,2.5)
-      
-      ratio_graph_prefit .Draw("a2")
-      ratio_graph_postfit.Draw("2")
-      canv2.RedrawAxis()
-      
-      legend2 = ROOT.TLegend(0.5,0.85,0.93,0.94);
-      legend2.SetFillStyle(0);
-      legend2.SetBorderSize(0);
-      legend2.SetNColumns(2)
-      legend2.AddEntry(ratio_graph_prefit  ,"Prefit" ,"F")
-      if ratio_mult is not None:
-        legend2.AddEntry(ratio_graph_postfit ,"Postfit*%g"%eff_mult,"FL")
-      else:
-        legend2.AddEntry(ratio_graph_postfit ,"Postfit","FL")
-      
-      
-      legend2.Draw("same")
-      canv2.Update() # Need to update here so line gets right maximum
-      
-      line_at_1 = ROOT.TLine(0,1,canv2.GetUxmax(),1)
-      line_at_1.SetLineWidth(2)
-      line_at_1.Draw("same")
-      
-      canv2.Update()
-      ratio_fn = out_prefix+"_envelope_ratio."+img_format
-      canv2.Print(ratio_fn)
-      ratio_images.append(ratio_fn)
-      cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
-      ratio_captions.append(cap.replace("_"," "))
-      
-      #~ # Print out some event rates
-      #~ nom_events     = prefit_nom  .Integral()
-      #~ p1_events_pre  = hplus_prefit  .Integral()
-      #~ m1_events_pre  = hminus_prefit .Integral()
-      #~ p1_events_post = hplus_postfit .Integral()
-      #~ m1_events_post = hminus_postfit.Integral()
-      #~ 
-      #~ p1_percent_pre  = 100.*( (p1_events_pre -nom_events)/nom_events )
-      #~ m1_percent_pre  = 100.*( (m1_events_pre -nom_events)/nom_events )
-      #~ p1_percent_post = 100.*( (p1_events_post-nom_events)/nom_events )
-      #~ m1_percent_post = 100.*( (m1_events_post-nom_events)/nom_events )
-      #~ 
-      #~ items = [name+"_"+par_set,to3dp.format(nom_events)]
-      #~ items.append(to3dp.format(p1_events_pre ) +" ("+to3dp.format(p1_percent_pre )+"%)")
-      #~ items.append(to3dp.format(m1_events_pre ) +" ("+to3dp.format(m1_percent_pre )+"%)")
-      #~ items.append(to3dp.format(p1_events_post) +" ("+to3dp.format(p1_percent_post)+"%)")
-      #~ items.append(to3dp.format(m1_events_post) +" ("+to3dp.format(m1_percent_post)+"%)")
-      #~ print "\t".join(items)
+    ratio_graph_prefit .SetFillColor(prefit_color)
+    ratio_graph_postfit.SetFillColor(postfit_color)
+    ratio_graph_prefit .SetLineColor(prefit_color)
+    ratio_graph_postfit.SetLineColor(postfit_color)
+    
+    ratio_graph_prefit .SetLineWidth(3)
+    ratio_graph_postfit.SetLineWidth(3)
+    ratio_graph_prefit .SetFillStyle(1001)
+    ratio_graph_postfit.SetFillStyle(1001)
+    
+    canv2 = ROOT.TCanvas()
+    canv2.SetLeftMargin  (left_margin)
+    canv2.SetBottomMargin(bottom_margin)
+    canv2.SetRightMargin (right_margin )
+    if use_log_plots: canv2.SetLogx()
+    canv2.cd()
+    
+    ratio_max = 1.3*ratio_plus_prefit .GetMaximum()
+    
+    #~ ratio_graph_postfit.SetMaximum(ratio_max)
+    #~ ratio_graph_postfit.SetMinimum(2-ratio_max)
+    ratio_graph_prefit.GetYaxis().SetRangeUser(0.,2.5)
+    
+    ratio_graph_prefit .Draw("a2")
+    ratio_graph_postfit.Draw("2")
+    canv2.RedrawAxis()
+    
+    legend2 = ROOT.TLegend(0.5,0.85,0.93,0.94);
+    legend2.SetFillStyle(0);
+    legend2.SetBorderSize(0);
+    legend2.SetNColumns(2)
+    legend2.AddEntry(ratio_graph_prefit  ,"Prefit" ,"F")
+    if ratio_mult is not None:
+      legend2.AddEntry(ratio_graph_postfit ,"Postfit*%g"%eff_mult,"FL")
+    else:
+      legend2.AddEntry(ratio_graph_postfit ,"Postfit","FL")
+    
+    
+    legend2.Draw("same")
+    canv2.Update() # Need to update here so line gets right maximum
+    
+    line_at_1 = ROOT.TLine(0,1,canv2.GetUxmax(),1)
+    line_at_1.SetLineWidth(2)
+    line_at_1.Draw("same")
+    
+    canv2.Update()
+    ratio_fn = out_prefix+"_envelope_ratio."+img_format
+    canv2.Print(ratio_fn)
+    ratio_images.append(ratio_fn)
+    cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
+    ratio_captions.append(cap.replace("_"," "))
+    
+    #~ # Print out some event rates
+    #~ nom_events     = prefit_nom  .Integral()
+    #~ p1_events_pre  = hplus_prefit  .Integral()
+    #~ m1_events_pre  = hminus_prefit .Integral()
+    #~ p1_events_post = hplus_postfit .Integral()
+    #~ m1_events_post = hminus_postfit.Integral()
+    #~ 
+    #~ p1_percent_pre  = 100.*( (p1_events_pre -nom_events)/nom_events )
+    #~ m1_percent_pre  = 100.*( (m1_events_pre -nom_events)/nom_events )
+    #~ p1_percent_post = 100.*( (p1_events_post-nom_events)/nom_events )
+    #~ m1_percent_post = 100.*( (m1_events_post-nom_events)/nom_events )
+    #~ 
+    #~ items = [name+"_"+par_set,to3dp.format(nom_events)]
+    #~ items.append(to3dp.format(p1_events_pre ) +" ("+to3dp.format(p1_percent_pre )+"%)")
+    #~ items.append(to3dp.format(m1_events_pre ) +" ("+to3dp.format(m1_percent_pre )+"%)")
+    #~ items.append(to3dp.format(p1_events_post) +" ("+to3dp.format(p1_percent_post)+"%)")
+    #~ items.append(to3dp.format(m1_events_post) +" ("+to3dp.format(m1_percent_post)+"%)")
+    #~ print "\t".join(items)
+    
+  # End of model loop
+  
   if (write_tex):
     tex = start_latex_file("%s_envelopes.tex"%(tag))
     add_figures_to_tex(tex,envelope_images,envelope_captions)
@@ -439,7 +446,7 @@ def fill_ratio_graph_from_hist(g,hm,hp,multiplier=1.):
 if __name__=="__main__":
   import optparse
   parser = optparse.OptionParser(usage="%prog [options]..",description="Make plots of size of systematic/statistical effects")
-  #~ parser.add_option('-s', dest='sample',default="RHC1Rmu"  ,help='The sample')
+  parser.add_option('-c','--config', dest='config'  ,default="fit/dunend_fit.xml",help='The config file we get the sample list from.')
   parser.add_option('-a','--prefit', dest='prefit'  ,default=default_prefit_input_file  ,help='The prefit input ROOT file')
   parser.add_option('-b','--postfit', dest='postfit',default=default_postfit_input_file,help='The postfit input ROOT file')
   parser.add_option('-f','--format', dest='imgformat',default='eps',help='The image format')
@@ -453,4 +460,4 @@ if __name__=="__main__":
     print "Bad arguments: ",other
     exit(-1)
   
-  main(options.prefit,options.postfit,options.tag,options.tex,options.imgformat,options.ratiomult)
+  main(options.config, options.prefit,options.postfit,options.tag,options.tex,options.imgformat,options.ratiomult)
