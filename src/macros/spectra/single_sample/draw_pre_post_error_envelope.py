@@ -59,7 +59,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(config, prefit_fn, postfit_fn, tag, write_tex, img_format,ratio_mult):
+def main(config, prefit_fn, postfit_fn, prefit_label,postfit_label, tag, write_tex, img_format,ratio_mult):
   f_prefit = ROOT.TFile(prefit_fn)
   if not f_prefit:
     raise DUNEAnaError("Could not open prefit input file")
@@ -67,10 +67,10 @@ def main(config, prefit_fn, postfit_fn, tag, write_tex, img_format,ratio_mult):
   if not f_postfit:
     raise DUNEAnaError("Could not open postfit input file")
     
-  pre_and_postfit_envelope(config, f_prefit,f_postfit, tag, write_tex, img_format,ratio_mult)
+  pre_and_postfit_envelope(config, f_prefit,f_postfit, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult)
   
 
-def pre_and_postfit_envelope(config, prefit_file,postfit_file,tag,write_tex,img_format, ratio_mult):
+def pre_and_postfit_envelope(config, prefit_file,postfit_file,prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult):
   
   all_hists = []
     
@@ -80,7 +80,7 @@ def pre_and_postfit_envelope(config, prefit_file,postfit_file,tag,write_tex,img_
   ratio_captions = []
   
   elem = valor.CompoundFitElements()
-  elem.Read(util.CompleteConfigPath(config))
+  elem.Read(util.CompleteConfigPath(config),"nomc nosplines")
   cm = elem.FitModel()
   
   for imodel in xrange(cm.GetNSubModels()):
@@ -231,8 +231,8 @@ def pre_and_postfit_envelope(config, prefit_file,postfit_file,tag,write_tex,img_
     
     all_hists.extend([legend_prefit,legend_postfit])
     
-    legend.AddEntry(legend_prefit   ,"Prefit" ,"F")
-    legend.AddEntry(legend_postfit  ,"Postfit","FL")
+    legend.AddEntry(legend_prefit   ,prefit_label ,"F")
+    legend.AddEntry(legend_postfit  ,postfit_label,"FL")
     
     legend.Draw()
     envelope_fn = out_prefix+"_envelope."+img_format
@@ -308,11 +308,11 @@ def pre_and_postfit_envelope(config, prefit_file,postfit_file,tag,write_tex,img_
     legend2.SetFillStyle(0);
     legend2.SetBorderSize(0);
     legend2.SetNColumns(2)
-    legend2.AddEntry(ratio_graph_prefit  ,"Prefit" ,"F")
+    legend2.AddEntry(ratio_graph_prefit  ,prefit_label ,"F")
     if ratio_mult is not None:
-      legend2.AddEntry(ratio_graph_postfit ,"Postfit*%g"%eff_mult,"FL")
+      legend2.AddEntry(ratio_graph_postfit ,"%s#times%g"%(postfit_label,eff_mult),"FL")
     else:
-      legend2.AddEntry(ratio_graph_postfit ,"Postfit","FL")
+      legend2.AddEntry(ratio_graph_postfit ,postfit_label,"FL")
     
     
     legend2.Draw("same")
@@ -448,7 +448,9 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options]..",description="Make plots of size of systematic/statistical effects")
   parser.add_option('-c','--config', dest='config'  ,default="fit/dunend_fit.xml",help='The config file we get the sample list from.')
   parser.add_option('-a','--prefit', dest='prefit'  ,default=default_prefit_input_file  ,help='The prefit input ROOT file')
+  parser.add_option('--alabel', dest='prefit_label'  ,default="Prefit"  ,help='The label for the prefit')
   parser.add_option('-b','--postfit', dest='postfit',default=default_postfit_input_file,help='The postfit input ROOT file')
+  parser.add_option('--blabel', dest='postfit_label'  ,default="Postfit"  ,help='The label for the postfit')
   parser.add_option('-f','--format', dest='imgformat',default='eps',help='The image format')
   parser.add_option('-t','--tag', dest='tag',default='env',help='Prefix for output filenames')
   parser.add_option('-w','--write-tex', dest='tex',action="store_true",default=False,help='Write TeX file with images in.')
@@ -460,4 +462,4 @@ if __name__=="__main__":
     print "Bad arguments: ",other
     exit(-1)
   
-  main(options.config, options.prefit,options.postfit,options.tag,options.tex,options.imgformat,options.ratiomult)
+  main(options.config, options.prefit,options.postfit,options.prefit_label,options.postfit_label,options.tag,options.tex,options.imgformat,options.ratiomult)
