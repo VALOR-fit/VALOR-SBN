@@ -20,6 +20,9 @@ pot-override                         |   double       |  optional   |   -999
 load-prior-from-file                 |   string       |  optional   |   none
 prior-fit-number                     |   integer      |  optional   |   0
 #
+tweak-parameter-set                  |   string       |  optional   |   none
+force-tweak-size                     |   double       |  optional   |   0
+#
 input-mixing12                       |   double       |  optional   |   0.304
 input-mixing13                       |   double       |  optional   |   0.0219
 input-mixing23                       |   double       |  optional   |   0.514

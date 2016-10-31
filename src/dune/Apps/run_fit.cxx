@@ -29,6 +29,9 @@
              --load-prior-from-file : Option for file to give constrained prior matrix [ use default prior ]
              --prior-fit-number     : Option to specify the entry in the tree for above file [ 0 ]
              
+             --tweak-parameter-set : Option to tweak a set of parameters [ default: none ]
+             --force-tweak-size      : Tweak the parameters to a given +n-sigma. If given 0, randomize [ randomize ] 
+             
              [--nthreads ]         : Number of CPU threads to use [ std::thread::hardware_concurrency ]
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
@@ -48,6 +51,7 @@
 #include "TString.h"
 #include "TVirtualFitter.h"
 // fmwk
+#include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
@@ -103,6 +107,9 @@ int main(int argc, char ** argv)
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   int prior_fit_number = arg.GetInt("prior-fit-number");
   
+  string tweak_parameter_set = arg.GetString("tweak-parameter-set");
+  double force_tweak_size    = arg.GetDouble("force-tweak-size");
+  
   // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
   double pot_override     = arg.GetDouble("pot-override");
   if (pot_override > 0 ) {
@@ -153,8 +160,7 @@ int main(int argc, char ** argv)
   FitModelABC * model = elements->FitModel();
   
   // Hack until we move GetSystematics() into FitModelABC
-  CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
-  CorrelatedSystematics * syst = cm->GetSystematics();
+  CorrelatedSystematics * syst = model->GetSystematics();
   
   // If necessary, update the systematics prior from a previous fit
   if (read_prior_from_file!="-" && read_prior_from_file!="none") {
@@ -181,11 +187,35 @@ int main(int argc, char ** argv)
     FitParamList * fp = util::GetFitParameterList(fplname.c_str(), syst);
 
     model->ResetSystematics("all");
-    // Randomise the systematics in the model, and copy them to the FPL
+    // If required, randomise the systematics in the model, and copy them to the FPL
     if (param_values_ts.Contains("randomize")) {
       model->RandomizeSystematics(param_values_ts.Data());
     }
-
+    
+    if (tweak_parameter_set != "none" && tweak_parameter_set != "-") {
+      vector<PhysParamId_t> param_set = util::GetParameterSet(tweak_parameter_set);
+      assert(param_set.size());
+      // Force tweaks to specific value
+      if (std::fabs(force_tweak_size)>conv::kAVerySmallNum) {
+        for (unsigned int ip = 0 ; ip < param_set.size(); ip++) {
+          PhysParamId_t p = param_set[ip];
+          double central = syst->InitialValue(p);
+          double onesig  = syst->OneSigmaError(p);
+          double tweaked = central + force_tweak_size * onesig;
+          syst->SetCurrentValue(p,tweaked);
+        }
+      }
+      // or just randomise according to prior
+      else {
+        std::map<PhysParamId_t,bool> param_map;
+        for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
+          PhysParamId_t p = param_set[ip];
+          param_map[p] = true;
+        }
+        model->RandomizeSystematics(param_map);
+      }
+    }
+      
     PhysParamList tweaks = model->Tweaks();
 
     //~ // Don't randomise fixed parameters
