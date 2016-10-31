@@ -22,6 +22,8 @@
 #  --config                 : Analysis configuration file. Default: "dune_ndfit-2015v1-FGTv1.xml".
 #  --mesg-thresholds        : Message thresholds file. Default: "verbosity.xml"
 #  --load-prior-from-file   : Get a ND fit covariance from an ND-fitted output file [ - ] 
+#  --tweak-parameter-set    : Tweak a set of parameters (eg CCQE, flux, DIS etc)
+#  --force-tweak-size       : Tweaks above are done by N-sigma, rather than randomising
 #
 # S. Dennis & C. Andreopoulos
 # University of Liverpool & STFC/RAL
@@ -53,6 +55,8 @@ foreach (@ARGV) {
   elsif($_ eq '--config'                 ) { $config              = $ARGV[$iarg+1]; }
   elsif($_ eq '--mesg-thresholds'        ) { $mesg_thresholds     = $ARGV[$iarg+1]; }
   elsif($_ eq '--load-prior-from-file'   ) { $prior_file          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--tweak-parameter-set'    ) { $tweak_set           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--force-tweak-size'       ) { $tweak_size          = $ARGV[$iarg+1]; }
   
   else {
     print "Unrecognised argument ".$_."\n"; exit;
@@ -73,7 +77,8 @@ $dune_softw_dir         = $ENV{'VALOR_DUNE'}                                    
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                                      unless defined $fmwk_softw_dir;
 $config                 = "fit/dunend_ndtf_2ndpassthrough_18sample_toymc_fit.xml" unless defined $config;
 $mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
-$prior_file             = "-"                                     				  unless defined $prior_file;
+$prior_file             = "-"                                                     unless defined $prior_file;
+$tweak_set              = "none"                                                  unless defined $tweak_set;
 
 chomp($job_dir);
 
@@ -98,7 +103,7 @@ while($irun < $nruns) {
 
   $program = "valor_dune-run_fit";
   # use "" in some cases as the existence of ; as part of the name can wreak havoc
-  $arguments   = " --tag $tag --run $irun --ntoymc $ntoymc --fit-param-list \"$fitparamlist\" --param-values-option \"$param_values\" --fitter \"$fitoption\" --config $config --mesg-thresholds $mesg_thresholds --load-prior-from-file $prior_file";
+  $arguments   = " --tag $tag --run $irun --ntoymc $ntoymc --fit-param-list \"$fitparamlist\" --param-values-option \"$param_values\" --fitter \"$fitoption\" --config $config --mesg-thresholds $mesg_thresholds --load-prior-from-file $prior_file --tweak-parameter-set $tweak_set ";
 
   if(defined $store_spectra) {
     $arguments = $arguments . " --store-spectra";
@@ -116,6 +121,10 @@ while($irun < $nruns) {
     $arguments = $arguments . " --start-at-true";
   } else {
     $arguments = $arguments . " --start-at-central";
+  }
+  
+  if(defined $tweak_size) {
+    $arguments = $arguments . " --force-tweak-size $tweak_size";
   }
   
   $command = $program." ".$arguments;
