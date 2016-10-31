@@ -199,6 +199,7 @@ int main(int argc, char ** argv)
       if (std::fabs(force_tweak_size)>conv::kAVerySmallNum) {
         for (unsigned int ip = 0 ; ip < param_set.size(); ip++) {
           PhysParamId_t p = param_set[ip];
+          if (!syst->Contains(p)) {continue;}
           double central = syst->InitialValue(p);
           double onesig  = syst->OneSigmaError(p);
           double tweaked = central + force_tweak_size * onesig;
