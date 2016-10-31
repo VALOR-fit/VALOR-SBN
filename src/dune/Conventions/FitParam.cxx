@@ -1245,6 +1245,20 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
     vec.push_back(kNuisIntNuBarCC1pic2);
     vec.push_back(kNuisIntNuBarCC1pic3);
   }
+  if (set_name == "res") {
+    vec.push_back(kNuisIntNuCC1piz1   );
+    vec.push_back(kNuisIntNuCC1piz2   );
+    vec.push_back(kNuisIntNuCC1piz3   );
+    vec.push_back(kNuisIntNuBarCC1piz1);
+    vec.push_back(kNuisIntNuBarCC1piz2);
+    vec.push_back(kNuisIntNuBarCC1piz3);
+    vec.push_back(kNuisIntNuCC1pic1   );
+    vec.push_back(kNuisIntNuCC1pic2   );
+    vec.push_back(kNuisIntNuCC1pic3   );
+    vec.push_back(kNuisIntNuBarCC1pic1);
+    vec.push_back(kNuisIntNuBarCC1pic2);
+    vec.push_back(kNuisIntNuBarCC1pic3);
+  }
   if (set_name == "cc2pi") {
     vec.push_back(kNuisIntNuCC2Pi   );
     vec.push_back(kNuisIntNuBarCC2Pi);
