@@ -1257,6 +1257,10 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
     vec.push_back(kNuisIntNuBarDIS2);
     vec.push_back(kNuisIntNuBarDIS3);
   }
+  if (set_name == "nc") {
+    vec.push_back(kNuisIntNuNormNC   );
+    vec.push_back(kNuisIntNuBarNormNC);
+  }
   if (set_name == "fsi") {
     vec.push_back(kNuisIntPiMeanFreePath       );
     vec.push_back(kNuisIntNucMeanFreePath      );
