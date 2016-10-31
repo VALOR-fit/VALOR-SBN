@@ -4040,6 +4040,8 @@ namespace util {
   bool IsNuFDDetRelated (conv::PhysParamId_t p);
 
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
+  // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
+  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
 
   bool ParamIsAppliedTo(conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, 
                         conv::ReacMode_t m, conv::PhysParamId_t p);

@@ -132,11 +132,12 @@ int main(int argc, char ** argv)
   CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
   assert(cm);
   
-  TFile postfit_matrix_file(read_prior_from_file.c_str());
-  if (postfit_matrix_file.IsOpen()) {
+  TFile * postfit_matrix_file = NULL;
+  if (read_prior_from_file!="-" && read_prior_from_file!="none") {
+    postfit_matrix_file = new TFile(read_prior_from_file.c_str());
     FitParamList * fp = new FitParamList;
     cout << "Using postfit matrix "<<prior_fit_number<<" from "<<read_prior_from_file<<endl;
-    TTree * fit_tree = (TTree*)postfit_matrix_file.Get("valor_dune_nd_ntp");
+    TTree * fit_tree = (TTree*)postfit_matrix_file->Get("valor_dune_nd_ntp");
     assert(fit_tree);
     fit_tree->SetBranchAddress("best_fit_params",&fp);
     fit_tree->GetEntry(prior_fit_number);
@@ -175,8 +176,18 @@ int main(int argc, char ** argv)
     
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL
+    std::vector<PhysParamId_t> param_set = util::GetParameterSet(params_to_tweak);
+    std::map<PhysParamId_t,bool> param_map;
+    
+    assert(param_set.size());
+    
+    for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
+      PhysParamId_t p = param_set[ip];
+      param_map[p] = true;
+    }
+    
     if (itoy > -1) {
-      model->RandomizeSystematics();
+      model->RandomizeSystematics(param_map);
     }
     fp->FromPhysParamList(model->Tweaks(),"current");
 
