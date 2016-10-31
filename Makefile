@@ -45,10 +45,6 @@ build-conventions: make-bin-lib-dir FORCE
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Conventions;
 	
-build-binning: make-bin-lib-dir FORCE
-	@echo " "
-	@echo "** Building Conventions package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/dune/KineBinning;
 
 build-binning: make-bin-lib-dir FORCE
 	@echo " "
