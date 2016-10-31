@@ -158,6 +158,7 @@ int main(int argc, char ** argv)
   
   vector<double> max(cm->GetNSubModels());
   vector<vector<TH1D *> > twk_pdf(cm->GetNSubModels());
+  const CorrelatedSystematics * syst = cm->GetSystematics();
       
 
   // Generate pdfs
@@ -165,7 +166,7 @@ int main(int argc, char ** argv)
     cout << "** Toy-MC: #" << itoy << endl;
 
     // (toy-MC #-1 is special: default)
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str());
+    FitParamList * fp = util::GetFitParameterList(fplname.c_str(),syst);
     fp->Update(conv::kPhypMixing12,mixing12);
     fp->Update(conv::kPhypMixing13,mixing13);
     fp->Update(conv::kPhypMixing23,mixing23);
