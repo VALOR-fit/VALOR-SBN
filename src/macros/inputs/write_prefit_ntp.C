@@ -2,7 +2,7 @@
 void write_prefit_ntp(
   TString config = "fit/dune_ndfit.xml",
   TString outfilename = "prefit_ntp.root",
-  TString fit_param_list = "standard"
+  TString fit_param_list = "standard+no-osc-params"
 )
 {
   using namespace std;
@@ -17,26 +17,25 @@ void write_prefit_ntp(
   // Get ND model & configure
   cout<< "Getting and configuring the fit elements"<<endl;
   CompoundFitElements * elements = new CompoundFitElements();
-  elements->Read(configpath.c_str());
+  elements->Read(configpath.c_str(),"nomc nosplines");
   FitModelABC * model = elements->FitModel();
   
   // Reset output tree variables
   ntp.Reset();
-    
+  
+  // Get the systematics object
+  CorrelatedSystematics * syst = model->GetSystematics();
   // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
   // parameter limits, initial values etc).
-  FitParamList * fp = util::GetFitParameterList(fit_param_list.Data());
+  FitParamList * fp = util::GetFitParameterList(fit_param_list.Data(),syst);
   PhysParamList true_params = fp->AsPhysParamList("current");
   ntp.TrueParamArr()->Append(true_params);
   
   // Copy bestfit
   fp->CopyCurrToBestFitValues();
   
-  // Copy prior errors
-  const CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
-  assert(cm);
-  
-  TMatrixDSym prior_cov = util::MatrixToSymMatrix(cm->GetSystematics()->CovMatrix());
+  assert(syst->Size()==fp->Size());
+  TMatrixDSym prior_cov = util::MatrixToSymMatrix(syst->CovMatrix());
   fp->SetCovMatrix(prior_cov);
 
   // Copy best-fit params
