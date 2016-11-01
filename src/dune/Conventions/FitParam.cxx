@@ -806,6 +806,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
     bool no_osc                 = (param_list_opt.find("no-osc-params"    ) != string::npos);
     bool fix_osc_params         = (param_list_opt.find("fix-osc-params"   ) != string::npos);
     bool cons_osc_params        = (param_list_opt.find("cons-osc-params"  ) != string::npos);
+    bool cons_atm_params        = (param_list_opt.find("cons-atm-params" ) != string::npos);
     bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
     bool fix_nd_detector_params = (param_list_opt.find("fix-nd-det-syst"  ) != string::npos);
     bool fix_fd_detector_params = (param_list_opt.find("fix-fd-det-syst"  ) != string::npos);
@@ -898,6 +899,12 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
       //constrain osc params
       if(cons_osc_params && IsOscParam(p)){
         fparm->SetNuisance(p,true);
+      }
+      
+      //constrain atmospheric params
+      if(cons_atm_params){
+        fparm->SetNuisance(conv::kPhypMixing12,true);
+        fparm->SetNuisance(conv::kPhypDm12sq  ,true);
       }
 
       // toggle detector related params on/off
