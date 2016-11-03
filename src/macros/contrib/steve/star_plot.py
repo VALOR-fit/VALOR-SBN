@@ -40,7 +40,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(file_patterns, par_x, par_y, output, longest):
+def main(file_patterns, par_x, par_y, output, longest, ellipse):
   
   min_x =  9E99
   max_x = -9E99
@@ -148,6 +148,15 @@ def main(file_patterns, par_x, par_y, output, longest):
     legend.AddEntry(line,par_set,"l")
   
   legend.Draw()
+  
+  # Draw a statistics ellipse
+  if ellipse:
+    ellx,elly = map(float,ellipse.split(","))
+    ell = R.TEllipse(0,0,ellx,elly)
+    ell.SetFillStyle(0)
+    ell.SetLineWidth(2)
+    ell.SetLineStyle(R.kDotted)
+    ell.Draw()
     
   canvas.Update()
   canvas.Print(output)
@@ -189,7 +198,8 @@ if __name__=="__main__":
   parser.add_option('-x','--parx', dest='parx',default="cpv"     ,help='First parameter to plot')
   parser.add_option('-y','--pary', dest='pary',default="mixing23",help='Second parameter to plot')
   parser.add_option('-l','--longest',dest='longest',action="store_true",help='Draw only one arrow per pattern')
+  parser.add_option('-e','--ellipse',dest='ellipse',help="Draw an ellipse with this width/height")
   
   options,files = parser.parse_args()
   
-  main(files,options.parx,options.pary,options.output, options.longest)
+  main(files,options.parx,options.pary,options.output, options.longest, options.ellipse)
