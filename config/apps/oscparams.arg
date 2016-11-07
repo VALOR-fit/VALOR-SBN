@@ -1,0 +1,31 @@
+# argument                           |   type         |  require?   |   default
+# .......................................................................................................
+input-mixing12                       |   double       |  optional   |   0.304
+input-mixing13                       |   double       |  optional   |   0.0219
+input-mixing23                       |   double       |  optional   |   0.514
+input-dm12sq                         |   double       |  optional   |   0.000075
+input-dm23sq                         |   double       |  optional   |   0.00244
+input-deltaCP                        |   double       |  optional   |   0.0
+fix-mixing12                         |   boolean      |  optional   |   false
+fix-mixing13                         |   boolean      |  optional   |   false
+fix-mixing23                         |   boolean      |  optional   |   false
+fix-dm12sq                           |   boolean      |  optional   |   false
+fix-dm23sq                           |   boolean      |  optional   |   false
+fix-deltaCP                          |   boolean      |  optional   |   false
+fix-at-deltaCP                       |   double       |  optional   |   -999
+fix-at-mixing12                      |   double       |  optional   |   -999
+fix-at-mixing13                      |   double       |  optional   |   -999
+fix-at-mixing23                      |   double       |  optional   |   -999
+fix-at-dm23sq                        |   double       |  optional   |   -999
+fix-at-dm12sq                        |   double       |  optional   |   -999
+fix-at-dm13sq                        |   double       |  optional   |   -999
+flat-prior-mixing12                  |   boolean      |  optional   |   false
+flat-prior-mixing13                  |   boolean      |  optional   |   false
+flat-prior-mixing23                  |   boolean      |  optional   |   false
+flat-prior-dm12sq                    |   boolean      |  optional   |   false
+flat-prior-dm23sq                    |   boolean      |  optional   |   false
+flat-prior-deltaCP                   |   boolean      |  optional   |   false
+normal,inverted                      |   boolean_list |  optional   |   normal
+first-octant,second-octant           |   boolean_list |  optional   |   first-octant
+sinsqtheta, sinsq2theta              |   boolean_list |  optional   |   sinsqtheta
+dmsq12abs23,foglilisi                |   boolean_list |  optional   |   dmsq12abs23           
