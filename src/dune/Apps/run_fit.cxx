@@ -88,7 +88,7 @@ int main(int argc, char ** argv)
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/run_fit.arg:$VALOR_DUNE/config/apps/seeds.arg");
+  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/run_fit.arg:$VALOR_DUNE/config/apps/seeds.arg:$VALOR_DUNE/config/apps/oscparams.arg");
   LOG("valor_dune", pNOTICE) << arg;
 
   TString param_values_ts(arg.GetString("param-values-option"));
