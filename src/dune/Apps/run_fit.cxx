@@ -368,13 +368,62 @@ int main(int argc, char ** argv)
            
     
     //before reset for the fit, fix to a different value? 
-    double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
+	double fix_mixing12 = arg.GetDouble("fix-at-mixing12");
+    if((fix_mixing12 > util::OscParamMinValue(util::PhysParamFromString("mixing12"))) && 
+       (fix_mixing12 < util::OscParamMaxValue(util::PhysParamFromString("mixing12"))))
+    {
+      fp->Update(util::PhysParamFromString("mixing12"), fix_mixing12);
+      fp->SetInitValue(util::PhysParamFromString("mixing12"), fix_mixing12);
+    }
+
+	double fix_mixing13 = arg.GetDouble("fix-at-mixing13");
+    if((fix_mixing13 > util::OscParamMinValue(util::PhysParamFromString("mixing13"))) && 
+       (fix_mixing13 < util::OscParamMaxValue(util::PhysParamFromString("mixing13"))))
+    {
+      fp->Update(util::PhysParamFromString("mixing13"), fix_mixing13);
+      fp->SetInitValue(util::PhysParamFromString("mixing13"), fix_mixing13);
+    }
+
+	double fix_mixing23 = arg.GetDouble("fix-at-mixing23");
+    if((fix_mixing23 > util::OscParamMinValue(util::PhysParamFromString("mixing23"))) && 
+       (fix_mixing23 < util::OscParamMaxValue(util::PhysParamFromString("mixing23"))))
+    {
+      fp->Update(util::PhysParamFromString("mixing23"), fix_mixing23);
+      fp->SetInitValue(util::PhysParamFromString("mixing23"), fix_mixing23);
+    }
+
+	double fix_dm23sq = arg.GetDouble("fix-at-dm23sq");
+    if((fix_dm23sq > util::OscParamMinValue(util::PhysParamFromString("dm23sq"))) && 
+       (fix_dm23sq < util::OscParamMaxValue(util::PhysParamFromString("dm23sq"))))
+    {
+      fp->Update(util::PhysParamFromString("dm23sq"), fix_dm23sq);
+      fp->SetInitValue(util::PhysParamFromString("dm23sq"), fix_dm23sq);
+    }
+
+	double fix_dm12sq = arg.GetDouble("fix-at-dm12sq");
+    if((fix_dm12sq > util::OscParamMinValue(util::PhysParamFromString("dm12sq"))) && 
+       (fix_dm12sq < util::OscParamMaxValue(util::PhysParamFromString("dm12sq"))))
+    {
+      fp->Update(util::PhysParamFromString("dm12sq"), fix_dm12sq);
+      fp->SetInitValue(util::PhysParamFromString("dm12sq"), fix_dm12sq);
+    }
+
+	double fix_dm13sq = arg.GetDouble("fix-at-dm13sq");
+    if((fix_dm13sq > util::OscParamMinValue(util::PhysParamFromString("dm13sq"))) && 
+       (fix_dm13sq < util::OscParamMaxValue(util::PhysParamFromString("dm13sq"))))
+    {
+      fp->Update(util::PhysParamFromString("dm13sq"), fix_dm13sq);
+      fp->SetInitValue(util::PhysParamFromString("dm13sq"), fix_dm13sq);
+    }
+
+	double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
     if((fix_deltacp > util::OscParamMinValue(util::PhysParamFromString("cpv"))) && 
        (fix_deltacp < util::OscParamMaxValue(util::PhysParamFromString("cpv"))))
     {
       fp->Update(util::PhysParamFromString("cpv"), fix_deltacp);
       fp->SetInitValue(util::PhysParamFromString("cpv"), fix_deltacp);
     }
+
     // Set our current values back to the fitter start point.
     // This will be central values unless start-at-true is defined.
     fp->ResetCurrToInitValues();
