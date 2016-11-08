@@ -17,6 +17,7 @@ options after list construction
         - fix-osc-param: fix all oscillation parameters
         - cons_osc_params: set all osc params as nuisance - Note: to constrain only one (i.e. theta13, usual reactor)
                            use this one and fix other osc params independently (see run_fit options)
+        - cons_atm_params: set only the 12 parameters as nuisance
         - fix_detector_params: fix all detector params included in the list
         - fix_flux_params:     fix all flux params included in the list
         - fix_nd_flux_params:  as above, only nd flux params

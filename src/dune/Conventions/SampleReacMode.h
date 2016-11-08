@@ -4765,25 +4765,25 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
     //TODO: revisit ksNeutrinoElec and ksInvMuDecay
     // sample: ksNeutrinoElec
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
+      kmcNuMuCCElScat,    
+      kmcNuMuBarCCElScat,
+      kmcNuEElScat,
+      kmcNuEBarElScat, 
       kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuBarCCoth,   
+      kmcNuENuEBarCC,
       kmcNC,
       kmcUndefined
     },
     // sample: ksInvMuDecay
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuCCElScat,    
+      kmcNuMuBarCCElScat,
+      kmcNuEElScat,
+      kmcNuEBarElScat, 
+      kmcNuMuCCoth,
+      kmcNuMuBarCCoth,   
+      kmcNuENuEBarCC,
       kmcNC,
       kmcUndefined
     },
@@ -5094,25 +5094,25 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
     //TODO: revisit ksNeutrinoElec and ksInvMuDecay
     // sample: ksNeutrinoElec
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
+      kmcNuMuCCElScat,    
+      kmcNuMuBarCCElScat,
+      kmcNuEElScat,
+      kmcNuEBarElScat, 
       kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuBarCCoth,   
+      kmcNuENuEBarCC,
       kmcNC,
       kmcUndefined
     },
     // sample: ksInvMuDecay
     {
-      kmcNuMuCCQE,    
-      kmcNuMuCCMEC,    
-      kmcNuMuCC1pi,   
-      kmcNuMuCC2pi,   
-      kmcNuMuCCoth,   
-      kmcNuMuBarCC,   
-      kmcNuENuEBarCC, 
+      kmcNuMuCCElScat,    
+      kmcNuMuBarCCElScat,
+      kmcNuEElScat,
+      kmcNuEBarElScat, 
+      kmcNuMuCCoth,
+      kmcNuMuBarCCoth,   
+      kmcNuENuEBarCC,
       kmcNC,
       kmcUndefined
     },
