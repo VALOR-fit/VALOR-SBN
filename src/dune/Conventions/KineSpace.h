@@ -31,7 +31,7 @@ using std::vector;
 namespace valor {
 namespace conv {
 
-static const int kMaxKineSpaces = 7;
+static const int kMaxKineSpaces = 9;
 
 typedef enum EKineSpace
 {
@@ -40,8 +40,10 @@ typedef enum EKineSpace
    kspEreco,           // 1D: reconstructed neutrino energy
    kspEvis,            // 1D: visible neutrino energy
    kspYreco,           // 1D: reconstructed inelasticity (y)
+   kspThetareco,       // 1D: reconstructed lepton angle 
    kspErecoYreco,      // 2D: reconstructed energy, inelasticity
-   kspEtrueQ2true      // 2D: true neutrino energy, true momentum transfer
+   kspEtrueQ2true,     // 2D: true neutrino energy, true momentum transfer
+   kspErecoThetareco   // 2D: reconstructed neutrino energy, reconstructed lepton angle
    // ...
    // ...
    // ...

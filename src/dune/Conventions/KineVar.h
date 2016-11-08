@@ -34,7 +34,8 @@ typedef enum EKineVar
    kvQ2true,          // true momentum transfer
    kvEreco,           // reconstructed neutrino energy
    kvEvis,            // visible neutrino energy
-   kvYreco            // reconstructed inelasticity (y)
+   kvYreco,           // reconstructed inelasticity (y)
+   kvThetareco        // reconstructed lepton angle
 } 
 KineVar_t; 
 
