@@ -89,7 +89,7 @@ def main(param,param_value,config_file,outfile,ntoys,seed=0):
     fpl.FromPhysParamList(model.Tweaks(),"current silent")
     out_param[0] = param
     out_value[0] = value
-    out_chisq[0] = fit_inputs.Statistic()
+    out_chisq[0] = fit_inputs.Statistic("likelihood-ratio nopenalty")
     tr_out.Fill()
   
   tr_out.Write()
