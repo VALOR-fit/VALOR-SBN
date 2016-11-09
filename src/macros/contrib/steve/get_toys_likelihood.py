@@ -68,7 +68,7 @@ def main(param,param_value,config_file,outfile,ntoys,seed=0):
   
   # Set true parameter value and generate 'data'
   fpl.SetCurrentValue(param,value)
-  #~ applied_negevents_condition = data.Generate(model, fpl, False)
+  applied_negevents_condition = data.Generate(model, fpl, False)
   
   # Output Tree
   out_param = np.array([-2] ,dtype=int)
