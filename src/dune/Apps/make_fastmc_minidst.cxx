@@ -85,6 +85,7 @@ int main(int argc, char ** argv)
   int    opt_beam_pdg          = arg.GetInt("beam-pdg");
   bool   disable_extra_cuts    = arg.GetBool("disable-extra-cuts");
   bool   split_sample_by_res   = arg.GetBool("split-sample-by-res");
+  bool   optimised_beam        = arg.GetBool("optimised-beam");
    
   int    valor_minidst_sample       = -1;
   int    valor_minidst_beam         = util::BeamConfFromString(opt_beam_name);  // see Conventions/BeamConf.h 
@@ -174,6 +175,8 @@ int main(int argc, char ** argv)
   double Ehad_reco  = -1;
   double QE_Ev_reco = -1;
   
+  double AllOptimizations[7];
+  
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
     
@@ -209,6 +212,10 @@ int main(int argc, char ** argv)
   analysis_tree->SetBranchAddress("Tau_Prob_numu", &Tau_Prob_numu  , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("NC_Prob_nue"  ,  &NC_Prob_nue   , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("Tau_Prob_nue" , &Tau_Prob_nue   , &branchptr); active_branches.push_back(branchptr);
+  
+  // Optimisation branch
+  analysis_tree->SetBranchAddress("frw7_AllOptimizations",&AllOptimizations  , &branchptr); active_branches.push_back(branchptr);
+
   
   // Variable used to cut for QE
   analysis_tree->SetBranchAddress("Ehad_reco"  ,  &Ehad_reco  , &branchptr); active_branches.push_back(branchptr);
@@ -339,7 +346,7 @@ int main(int argc, char ** argv)
     if (EvClass_reco == 0) {
       sample = conv::ksNuMuLikeCChigh;
       if (split_sample_by_res) {
-        if (Ehad_reco > 0.1) {
+        if (!isQEL) {
           sample = conv::ksNuMuLikeCClow;
         }
         else {
@@ -359,7 +366,7 @@ int main(int argc, char ** argv)
     else if (EvClass_reco == 1) {
       sample = conv::ksNuELikeCChigh;
       if (split_sample_by_res) {
-        if (Ehad_reco > 0.1) {
+        if (!isQEL) {
           sample = conv::ksNuELikeCClow;
         }
         else {
@@ -398,13 +405,18 @@ int main(int argc, char ** argv)
 
       //~ VLOG("make_fastmc_minidst", pDEBUG) 
         //~ << "GENIE MC truth info: " << event;
+        
+    double wght = 1.;
+    if (optimised_beam) {
+      wght *= AllOptimizations[4];
+    }
     
     valor_minidst_sample    = sample; 
     valor_minidst_reac_mode = reac_mode;
     valor_minidst_enu_true  = enu_true; 
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco;
-    valor_minidst_wght      = 1.;
+    valor_minidst_wght      = wght;
     valor_minidst_wght_pot  = POTweight/nev; 
     valor_minidst_wght_smear= 1.; 
     valor_minidst_Q2_true   = Q2s;
