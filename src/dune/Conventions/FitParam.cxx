@@ -17,7 +17,8 @@ options after list construction
         - fix-osc-param: fix all oscillation parameters
         - cons_osc_params: set all osc params as nuisance - Note: to constrain only one (i.e. theta13, usual reactor)
                            use this one and fix other osc params independently (see run_fit options)
-        - cons_atm_params: set only the 12 parameters as nuisance
+        - cons_atm_params:     set the 23 parameters as nuisance
+        - cons_solar_params:   set the 12 parameters as nuisance
         - fix_detector_params: fix all detector params included in the list
         - fix_flux_params:     fix all flux params included in the list
         - fix_nd_flux_params:  as above, only nd flux params
@@ -807,7 +808,8 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
     bool no_osc                 = (param_list_opt.find("no-osc-params"    ) != string::npos);
     bool fix_osc_params         = (param_list_opt.find("fix-osc-params"   ) != string::npos);
     bool cons_osc_params        = (param_list_opt.find("cons-osc-params"  ) != string::npos);
-    bool cons_atm_params        = (param_list_opt.find("cons-atm-params" ) != string::npos);
+    bool cons_atm_params        = (param_list_opt.find("cons-atm-params"  ) != string::npos);
+    bool cons_solar_params      = (param_list_opt.find("cons-solar-params") != string::npos);
     bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
     bool fix_nd_detector_params = (param_list_opt.find("fix-nd-det-syst"  ) != string::npos);
     bool fix_fd_detector_params = (param_list_opt.find("fix-fd-det-syst"  ) != string::npos);
@@ -902,10 +904,16 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
         fparm->SetNuisance(p,true);
       }
       
-      //constrain atmospheric params
-      if(cons_atm_params){
+      //constrain solar params
+      if(cons_solar_params){
         fparm->SetNuisance(conv::kPhypMixing12,true);
         fparm->SetNuisance(conv::kPhypDm12sq  ,true);
+      }
+      
+      //constrain atmospheric params
+      if(cons_atm_params){
+        fparm->SetNuisance(conv::kPhypMixing23,true);
+        fparm->SetNuisance(conv::kPhypDm23sq  ,true);
       }
 
       // toggle detector related params on/off
