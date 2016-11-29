@@ -380,31 +380,35 @@ int GenericSingleSampleFitData::NumOfBins(Option_t * /*opt*/) const
 }
 //________________________________________________________________________________________
 double GenericSingleSampleFitData::GetFitStatistic(
-    FitModelABC* model_abc, const FitParamList & fp, Option_t * opt)
+    FitModelABC* model_abc, const FitParamList & fp, Option_t * opt, std::map<std::string,double> * likelihood_components)
 {
   bool ok = model_abc->Generate(fp);
   assert(ok);
 
-  return this->GetFitStatistic(model_abc,opt);
+  return this->GetFitStatistic(model_abc,opt, likelihood_components);
 }
 //________________________________________________________________________________________
 double GenericSingleSampleFitData::GetFitStatistic(
-    FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt)
+    FitModelABC * model_abc, const PhysHypothesis & ph, Option_t * opt, std::map<std::string,double> * likelihood_components)
 {
   bool ok = model_abc->Generate(ph);
   assert(ok);
 
-  return this->GetFitStatistic(model_abc,opt);  
+  return this->GetFitStatistic(model_abc,opt, likelihood_components);  
 }
 //________________________________________________________________________________________
 double GenericSingleSampleFitData::GetFitStatistic(
-    FitModelABC * model_abc, Option_t * /*opt*/) 
+    FitModelABC * model_abc, Option_t * /*opt*/, std::map<std::string,double> * likelihood_components) 
 {
   TObjArray * array = new TObjArray();
   model_abc->Write(array, "curr", "pdft_vf");
 
   // Calculate statistic
   double S = 0;
+  
+  // Counters for total number of events to we can do rate-only
+  double tot_nmc   = 0.;
+  double tot_ndata = 0.;
 
   for(int izone = 0; izone < kNMaxBinZones; izone++) {
     if(fDataObNull[izone]) continue;
@@ -418,15 +422,29 @@ double GenericSingleSampleFitData::GetFitStatistic(
       for(int iy = 0; iy < n_y_reco_bins; iy++) {
         double nmc   = pdf->GetEntry(ier,iy);
         double ndata = fDataOb[izone]->GetEntry(ier,iy); 
+        tot_nmc   += nmc;
+        tot_ndata += ndata;
         double dS = util::ChisqPoisson(ndata, nmc);
         S += dS;
       }//iy
     }//ier
   }//izone
   S = TMath::Max(0.,S);
+  
+  double S_rate_only = TMath::Max(0.,util::ChisqPoisson(tot_ndata, tot_nmc));
 
   LOG("GenericSingleSampleFitData",pINFO) 
-    << fName<<" - Current fit statistic = " << S;
+    << fName<<" - Current fit statistic (rate+shape) = " << S;
+  LOG("GenericSingleSampleFitData",pINFO) 
+    << fName<<" - Current fit statistic (rate only) = " << S_rate_only;
+  
+  // Write our contribution to the likelihood
+  if (likelihood_components) {
+    TString likelihood_name = TString::Format("sample_%s",fName.c_str());
+    TString likelihood_name_rate_only = TString::Format("sample_rate_only_%s",fName.c_str());
+    (*likelihood_components)[likelihood_name.Data()] = S;
+    (*likelihood_components)[likelihood_name_rate_only.Data()] = S_rate_only;
+  }
     
   delete array;
 
