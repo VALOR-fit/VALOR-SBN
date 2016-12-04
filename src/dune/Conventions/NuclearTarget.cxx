@@ -24,7 +24,7 @@ string util::AsString(NuclearTarget_t nt)
 {
   string name = "";
   switch(nt) {
-    case (kntAll      ) : name = "All";       break;
+    case (kntInclusive) : name = "Inclusive"; break;
     case (kntHydrogen ) : name = "Hydrogen";  break;
     case (kntCarbon   ) : name = "Carbon";    break;
     case (kntOxygen   ) : name = "Oxygen";    break;
@@ -42,7 +42,7 @@ string util::AsStringTeX(NuclearTarget_t nt, bool root)
 {
   string name = "";
   switch(nt) { // Maybe change these to the isotope notation
-    case (kntAll      ) : name = "All";       break;
+    case (kntInclusive) : name = "Inclusive"; break;
     case (kntHydrogen ) : name = "Hydrogen";  break;
     case (kntCarbon   ) : name = "Carbon";    break;
     case (kntOxygen   ) : name = "Oxygen";    break;
@@ -63,5 +63,17 @@ string util::AsStringTeX(NuclearTarget_t nt, bool root)
   }
 
   return name;
+}
+//________________________________________________________________________________________
+NuclearTarget_t util::NuclearTargetFromString(string inp_name)
+{
+  for(int it = 0; it < kNNuclearTarget; it++) {
+     NuclearTarget_t nuc = (NuclearTarget_t)(it);
+     string name = util::AsString(nuc);
+     if(name == inp_name) {
+       return nuc;
+     }
+  }
+  return kntUndefined;
 }
 //________________________________________________________________________________________

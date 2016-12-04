@@ -23,18 +23,30 @@
 namespace valor {
 namespace conv {
 
+static const int kNNuclearTarget = 7;
+
 typedef enum ENuclearTarget
-{
+{ // Note that a specific name refers to only a single isotope, eg C12, Ar40 etc
   kntUndefined = -1, 
-  kntAll,
+  kntInclusive,
+  kntOther,
   kntHydrogen,
   kntCarbon,
   kntOxygen,
   kntArgon,
   kntCalcium,
-  kntOther
-} 
+}
 NuclearTarget_t; 
+
+static const int kNuclearTargetPDG [conv::kNNuclearTarget] = {
+  /* kntInclusive */ -2             ,
+  /* kntOther     */ -3             ,
+  /* kntHydrogen  */ 1000010010     ,
+  /* kntCarbon    */ 1000060120     ,
+  /* kntOxygen    */ 1000080160     ,
+  /* kntArgon     */ 1000180400     ,
+  /* kntCalcium   */ 1000200400     
+};
 
 } // conv
 
@@ -46,6 +58,8 @@ namespace util {
 
   std::string  AsString     (conv::NuclearTarget_t nt);
   std::string  AsStringTeX  (conv::NuclearTarget_t nt, bool root);
+  
+  conv::NuclearTarget_t NuclearTargetFromString(string nt);
 
 } // util
 

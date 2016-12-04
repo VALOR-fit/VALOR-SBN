@@ -1165,11 +1165,14 @@ bool util::ParamIsAppliedTo(
 {
   static const ArrIdx * arridx = ArrIdx::Instance();
   
-  if (b==conv::kbUndefined   ) {return false;}
-  if (m==conv::kmUndefined   ) {return false;}
-  if (s==conv::ksUndefined   ) {return false;}
-  if (d==conv::kdUndefined   ) {return false;}
-  if (p==conv::kPhypUndefined) {return false;}
+  NuclearTarget_t nt = conv::kntInclusive; // Make this an argument
+  
+  if (b ==conv::kbUndefined   ) {return false;}
+  if (m ==conv::kmUndefined   ) {return false;}
+  if (s ==conv::ksUndefined   ) {return false;}
+  if (d ==conv::kdUndefined   ) {return false;}
+  if (nt==conv::kntUndefined  ) {return false;}
+  if (p ==conv::kPhypUndefined) {return false;}
   
   // Get parameter mask
   int ip = arridx->FitParamIdx(p);
@@ -1180,14 +1183,15 @@ bool util::ParamIsAppliedTo(
   ReacType_t  t = conv::kReacModeToType[m];
   
   // Check whether or not to apply the param to this
-  bool apply_to_beam     = (kApplyToBeamMode [b] & pmask.beam    ).any();
-  bool apply_to_sample   = (kApplyToSample   [s] & pmask.selec   ).any();
-  bool apply_to_flavour  = (kApplyToFlavour  [f] & pmask.flav    ).any();
-  bool apply_to_type     = (kApplyToReacType [t] & pmask.reactype).any();
-  bool apply_to_detector = (kApplyToDetector [d] & pmask.detector).any();
+  bool apply_to_beam     = (kApplyToBeamMode     [b]  & pmask.beam    ).any();
+  bool apply_to_sample   = (kApplyToSample       [s]  & pmask.selec   ).any();
+  bool apply_to_flavour  = (kApplyToFlavour      [f]  & pmask.flav    ).any();
+  bool apply_to_type     = (kApplyToReacType     [t]  & pmask.reactype).any();
+  bool apply_to_detector = (kApplyToDetector     [d]  & pmask.detector).any();
+  bool apply_to_target   = (kApplyToNuclearTarget[nt] & pmask.target  ).any();
   
   bool apply_to_mode = apply_to_flavour && apply_to_type;
-  bool apply = (apply_to_beam && apply_to_sample && apply_to_mode && apply_to_detector);
+  bool apply = (apply_to_beam && apply_to_sample && apply_to_mode && apply_to_detector && apply_to_target);
   
   //~ std::cerr<<"Param    : "  <<util::AsString(p)<<std::endl;
   //~ std::cerr<<"Beam     : "  <<apply_to_beam    <<"\t("<<util::AsString(b)<<")"<<std::endl;

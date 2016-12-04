@@ -20,6 +20,9 @@
 #pragma link C++ enum valor::conv::ReacType_t;
 #pragma link C++ enum valor::conv::FitParamGroup_t;
 
+#pragma link C++ enum valor::conv::NuclearTarget_t;
+#pragma link C++ class std::vector<valor::conv::NuclearTarget_t>+;
+
 #pragma link C++ struct valor::UniqueSampleID;
 #pragma link C++ class std::vector<valor::UniqueSampleID>+;
 
