@@ -8,6 +8,8 @@ ChangeLog:
 */
 //________________________________________________________________________________________
 
+#include <algorithm>
+
 //fmwk
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Messenger/Messenger.h"
@@ -50,9 +52,13 @@ string util::AsStringTeX(KineVar_t kv, bool root)
         << "Unrecognized kinematic variable: " << kv;
   }
 
-  if(root) return name;
-
-  // change # with \ -- later
+  if(root) {
+    replace( name.begin(), name.end(), '\\', '#' ); // Make slashes hashes for RooTeX
+    // Get rid of hashes preceding sin
+    size_t ind = name.find("#sin",0);
+    if (ind !=  string::npos) (name.replace(ind,4," sin"));
+    return util::TrimSpaces(name);
+  }
 
   return name;
 }
