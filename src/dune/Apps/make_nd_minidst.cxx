@@ -8,7 +8,7 @@
   \syntax    valor_dune-make_nd_minidst 
   --input  input_analysis_file.root
   --output output_file_containing_valor_minidst.root
-  --format format_of_the_input_file <hpgartpc, lartpc, fgt>
+  [--format format_of_the_input_file <hpgartpc, lartpc, fgt>]
   [--disable-checks]
 
   \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
@@ -83,7 +83,7 @@ int main(int argc, char ** argv)
   int    valor_minidst_beam       = -1; // see Conventions/BeamConf.h 
   int    valor_minidst_sample     = -1; // see SDFit/NDSample.h 
   int    valor_minidst_reac_mode  = -1; // see Conventions/ReacMode.h 
-  int valor_minidst_target        = -1; // nuclear target -  GENIE PDG convention
+  int    valor_minidst_target     = -1; // nuclear target -  GENIE PDG convention
   double valor_minidst_enu_true   = -1; // true neutrino energy, in GeV
   double valor_minidst_Q2_true    = -1; // true neutrino energy, in GeV
   double valor_minidst_enu_reco   = -1; // reco neutrino energy, in GeV
@@ -185,7 +185,7 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("sample",          &sample_orig    , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("sample_reco",     &sample_reco    , &branchptr); active_branches.push_back(branchptr);
-    //~ analysis_tree->SetBranchAddress("reactionmode",    &reac_mode      , &branchptr); active_branches.push_back(branchptr);
+    //~ analysis_tree->SetBranchAddress("reactionmode",    &reac_mode  , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev",              &enu_true_float , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr); active_branches.push_back(branchptr);
@@ -268,8 +268,10 @@ int main(int argc, char ** argv)
       enu_true   = enu_true_float;
       enu_reco   = enu_reco_float;
       y_reco     = y_reco_float;
-      wght_pot   = wght_pot_float;
-      sample = sample_reco;
+      //~ wght_pot   = wght_pot_float;
+      if (gOptInpFileFormat == "fgt") {
+        sample = sample_reco;
+      }
     }
     
     VLOG("make_minidist",pDEBUG) << "Read event: "
@@ -412,10 +414,9 @@ void GetCommandLineArgs(int argc, char ** argv)
     VLOG("make_minidst", pNOTICE) << "Reading input format";
     gOptInpFileFormat = parser.ArgAsString("format");
   } else {
-    VLOG("make_minidst", pFATAL) 
-      << "Unspecified input file format - Exiting";
-    genie::gAbortingInErr = true;
-    exit(1);
+    VLOG("make_minidst", pWARN) 
+      << "Unspecified input file format - using FGT";
+    gOptInpFileFormat = "fgt";
   }
 
   if ( parser.OptionExists("input") ) {
