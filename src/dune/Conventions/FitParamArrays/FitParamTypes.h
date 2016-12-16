@@ -1,6 +1,7 @@
 #ifndef valor_dune_fit_param_types_h
 #define valor_dune_fit_param_types_h
 
+// This file is absurd. We need to get rid of 90% of the stuff in it at some point, and replace it with something more easily maintainable.
 
 //
 // ...........................................................................
