@@ -332,24 +332,24 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    false,  // kNuisEffFHCnumuCC1pic07           
    false,  // kNuisEffFHCnumuCC1pic08           
    false,  // kNuisEffFHCnumuCC1pic09           
-   false,  // kNuisEffFHCnumuCC1pi001           
-   false,  // kNuisEffFHCnumuCC1pi002           
-   false,  // kNuisEffFHCnumuCC1pi003           
-   false,  // kNuisEffFHCnumuCC1pi004           
-   false,  // kNuisEffFHCnumuCC1pi005           
-   false,  // kNuisEffFHCnumuCC1pi006           
-   false,  // kNuisEffFHCnumuCC1pi007           
-   false,  // kNuisEffFHCnumuCC1pi008           
-   false,  // kNuisEffFHCnumuCC1pi009           
-   false,  // kNuisEffFHCnumuCC1pic1pi001       
-   false,  // kNuisEffFHCnumuCC1pic1pi002       
-   false,  // kNuisEffFHCnumuCC1pic1pi003       
-   false,  // kNuisEffFHCnumuCC1pic1pi004       
-   false,  // kNuisEffFHCnumuCC1pic1pi005       
-   false,  // kNuisEffFHCnumuCC1pic1pi006       
-   false,  // kNuisEffFHCnumuCC1pic1pi007       
-   false,  // kNuisEffFHCnumuCC1pic1pi008       
-   false,  // kNuisEffFHCnumuCC1pic1pi009       
+   false,  // kNuisEffFHCnumuCC1piz01           
+   false,  // kNuisEffFHCnumuCC1piz02           
+   false,  // kNuisEffFHCnumuCC1piz03           
+   false,  // kNuisEffFHCnumuCC1piz04           
+   false,  // kNuisEffFHCnumuCC1piz05           
+   false,  // kNuisEffFHCnumuCC1piz06           
+   false,  // kNuisEffFHCnumuCC1piz07           
+   false,  // kNuisEffFHCnumuCC1piz08           
+   false,  // kNuisEffFHCnumuCC1piz09           
+   false,  // kNuisEffFHCnumuCC1pic1piz01       
+   false,  // kNuisEffFHCnumuCC1pic1piz02       
+   false,  // kNuisEffFHCnumuCC1pic1piz03       
+   false,  // kNuisEffFHCnumuCC1pic1piz04       
+   false,  // kNuisEffFHCnumuCC1pic1piz05       
+   false,  // kNuisEffFHCnumuCC1pic1piz06       
+   false,  // kNuisEffFHCnumuCC1pic1piz07       
+   false,  // kNuisEffFHCnumuCC1pic1piz08       
+   false,  // kNuisEffFHCnumuCC1pic1piz09       
    false,  // kNuisEffFHCnumuCCother01          
    false,  // kNuisEffFHCnumuCCother02          
    false,  // kNuisEffFHCnumuCCother03          
@@ -489,24 +489,24 @@ static const bool kFitParamTrueKinematicDependence[kNFitParams] =
    false,  // kNuisEffRHCnumuCC1pic07           
    false,  // kNuisEffRHCnumuCC1pic08           
    false,  // kNuisEffRHCnumuCC1pic09           
-   false,  // kNuisEffRHCnumuCC1pi001           
-   false,  // kNuisEffRHCnumuCC1pi002           
-   false,  // kNuisEffRHCnumuCC1pi003           
-   false,  // kNuisEffRHCnumuCC1pi004           
-   false,  // kNuisEffRHCnumuCC1pi005           
-   false,  // kNuisEffRHCnumuCC1pi006           
-   false,  // kNuisEffRHCnumuCC1pi007           
-   false,  // kNuisEffRHCnumuCC1pi008           
-   false,  // kNuisEffRHCnumuCC1pi009           
-   false,  // kNuisEffRHCnumuCC1pic1pi001       
-   false,  // kNuisEffRHCnumuCC1pic1pi002       
-   false,  // kNuisEffRHCnumuCC1pic1pi003       
-   false,  // kNuisEffRHCnumuCC1pic1pi004       
-   false,  // kNuisEffRHCnumuCC1pic1pi005       
-   false,  // kNuisEffRHCnumuCC1pic1pi006       
-   false,  // kNuisEffRHCnumuCC1pic1pi007       
-   false,  // kNuisEffRHCnumuCC1pic1pi008       
-   false,  // kNuisEffRHCnumuCC1pic1pi009       
+   false,  // kNuisEffRHCnumuCC1piz01           
+   false,  // kNuisEffRHCnumuCC1piz02           
+   false,  // kNuisEffRHCnumuCC1piz03           
+   false,  // kNuisEffRHCnumuCC1piz04           
+   false,  // kNuisEffRHCnumuCC1piz05           
+   false,  // kNuisEffRHCnumuCC1piz06           
+   false,  // kNuisEffRHCnumuCC1piz07           
+   false,  // kNuisEffRHCnumuCC1piz08           
+   false,  // kNuisEffRHCnumuCC1piz09           
+   false,  // kNuisEffRHCnumuCC1pic1piz01       
+   false,  // kNuisEffRHCnumuCC1pic1piz02       
+   false,  // kNuisEffRHCnumuCC1pic1piz03       
+   false,  // kNuisEffRHCnumuCC1pic1piz04       
+   false,  // kNuisEffRHCnumuCC1pic1piz05       
+   false,  // kNuisEffRHCnumuCC1pic1piz06       
+   false,  // kNuisEffRHCnumuCC1pic1piz07       
+   false,  // kNuisEffRHCnumuCC1pic1piz08       
+   false,  // kNuisEffRHCnumuCC1pic1piz09       
    false,  // kNuisEffRHCnumuCCother01          
    false,  // kNuisEffRHCnumuCCother02          
    false,  // kNuisEffRHCnumuCCother03          
@@ -922,24 +922,24 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
    {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic07           
    {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic08           
    {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic09           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi001           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi002           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi003           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi004           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi005           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi006           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi007           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi008           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pi009           
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi001       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi002       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi003       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi004       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi005       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi006       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi007       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi008       
-   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1pi009       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz01           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz02           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz03           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz04           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz05           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz06           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz07           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz08           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1piz09           
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz01       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz02       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz03       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz04       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz05       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz06       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz07       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz08       
+   {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCC1pic1piz09       
    {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCCother01          
    {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCCother02          
    {  0.0 , kEtrueMax},  // kNuisEffFHCnumuCCother03          
@@ -1079,24 +1079,24 @@ static const double kFitParamEtrueRange[kNFitParams][2] =
    {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic07           
    {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic08           
    {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic09           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi001           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi002           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi003           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi004           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi005           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi006           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi007           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi008           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pi009           
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi001       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi002       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi003       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi004       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi005       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi006       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi007       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi008       
-   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1pi009       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz01           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz02           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz03           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz04           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz05           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz06           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz07           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz08           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1piz09           
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz01       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz02       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz03       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz04       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz05       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz06       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz07       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz08       
+   {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCC1pic1piz09       
    {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCCother01          
    {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCCother02          
    {  0.0 , kEtrueMax},  // kNuisEffRHCnumuCCother03          
@@ -1512,24 +1512,24 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
    { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic07           
    { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic08           
    { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic09           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi001           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi002           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi003           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi004           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi005           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi006           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi007           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi008           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pi009           
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi001       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi002       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi003       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi004       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi005       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi006       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi007       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi008       
-   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1pi009       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz01           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz02           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz03           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz04           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz05           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz06           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz07           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz08           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1piz09           
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz01       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz02       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz03       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz04       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz05       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz06       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz07       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz08       
+   { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCC1pic1piz09       
    { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCCother01          
    { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCCother02          
    { 0.0  , kQ2trueMax},  // kNuisEffFHCnumuCCother03          
@@ -1669,24 +1669,24 @@ static const double kFitParamQ2trueRange[kNFitParams][2] =
    { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic07           
    { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic08           
    { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic09           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi001           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi002           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi003           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi004           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi005           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi006           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi007           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi008           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pi009           
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi001       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi002       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi003       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi004       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi005       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi006       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi007       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi008       
-   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1pi009       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz01           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz02           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz03           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz04           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz05           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz06           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz07           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz08           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1piz09           
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz01       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz02       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz03       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz04       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz05       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz06       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz07       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz08       
+   { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCC1pic1piz09       
    { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCCother01          
    { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCCother02          
    { 0.0  , kQ2trueMax},  // kNuisEffRHCnumuCCother03          

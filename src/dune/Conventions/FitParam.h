@@ -53,7 +53,7 @@ static const int kNFitParamsNuInt  =  43; // neutrino interactions related
 static const int kNFitParamsNuOsc  =   6; //usual 3-flavour suspects
 
 static const int kNFitParams   = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet+kNFitParamsNuOsc;
-static const int kNFitParamsND = kNFitParamsNuFluxND+kNFitParamsNuInt+kNFitParamsNuDetND;
+//~ static const int kNFitParamsND = kNFitParamsNuFluxND+kNFitParamsNuInt+kNFitParamsNuDetND;
 
 //
 // FHC flux
@@ -430,24 +430,24 @@ static const PhysParamId_t kNuisEffFHCnumuCC1pic06           = kNuis353;
 static const PhysParamId_t kNuisEffFHCnumuCC1pic07           = kNuis354;
 static const PhysParamId_t kNuisEffFHCnumuCC1pic08           = kNuis355;
 static const PhysParamId_t kNuisEffFHCnumuCC1pic09           = kNuis356; //
-static const PhysParamId_t kNuisEffFHCnumuCC1pi001           = kNuis357;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi002           = kNuis358;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi003           = kNuis359;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi004           = kNuis360;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi005           = kNuis361;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi006           = kNuis362;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi007           = kNuis363;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi008           = kNuis364;
-static const PhysParamId_t kNuisEffFHCnumuCC1pi009           = kNuis365; //
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi001       = kNuis366;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi002       = kNuis367;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi003       = kNuis368;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi004       = kNuis369;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi005       = kNuis370;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi006       = kNuis371;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi007       = kNuis372;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi008       = kNuis373;
-static const PhysParamId_t kNuisEffFHCnumuCC1pic1pi009       = kNuis374; //
+static const PhysParamId_t kNuisEffFHCnumuCC1piz01           = kNuis357;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz02           = kNuis358;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz03           = kNuis359;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz04           = kNuis360;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz05           = kNuis361;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz06           = kNuis362;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz07           = kNuis363;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz08           = kNuis364;
+static const PhysParamId_t kNuisEffFHCnumuCC1piz09           = kNuis365; //
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz01       = kNuis366;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz02       = kNuis367;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz03       = kNuis368;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz04       = kNuis369;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz05       = kNuis370;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz06       = kNuis371;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz07       = kNuis372;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz08       = kNuis373;
+static const PhysParamId_t kNuisEffFHCnumuCC1pic1piz09       = kNuis374; //
 static const PhysParamId_t kNuisEffFHCnumuCCother01          = kNuis375;
 static const PhysParamId_t kNuisEffFHCnumuCCother02          = kNuis376;
 static const PhysParamId_t kNuisEffFHCnumuCCother03          = kNuis377;
@@ -587,24 +587,24 @@ static const PhysParamId_t kNuisEffRHCnumuCC1pic06           = kNuis553;
 static const PhysParamId_t kNuisEffRHCnumuCC1pic07           = kNuis554;
 static const PhysParamId_t kNuisEffRHCnumuCC1pic08           = kNuis555;
 static const PhysParamId_t kNuisEffRHCnumuCC1pic09           = kNuis556; //
-static const PhysParamId_t kNuisEffRHCnumuCC1pi001           = kNuis557;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi002           = kNuis558;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi003           = kNuis559;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi004           = kNuis560;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi005           = kNuis561;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi006           = kNuis562;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi007           = kNuis563;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi008           = kNuis564;
-static const PhysParamId_t kNuisEffRHCnumuCC1pi009           = kNuis565; //
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi001       = kNuis566;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi002       = kNuis567;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi003       = kNuis568;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi004       = kNuis569;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi005       = kNuis570;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi006       = kNuis571;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi007       = kNuis572;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi008       = kNuis573;
-static const PhysParamId_t kNuisEffRHCnumuCC1pic1pi009       = kNuis574; //
+static const PhysParamId_t kNuisEffRHCnumuCC1piz01           = kNuis557;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz02           = kNuis558;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz03           = kNuis559;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz04           = kNuis560;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz05           = kNuis561;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz06           = kNuis562;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz07           = kNuis563;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz08           = kNuis564;
+static const PhysParamId_t kNuisEffRHCnumuCC1piz09           = kNuis565; //
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz01       = kNuis566;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz02       = kNuis567;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz03       = kNuis568;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz04       = kNuis569;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz05       = kNuis570;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz06       = kNuis571;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz07       = kNuis572;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz08       = kNuis573;
+static const PhysParamId_t kNuisEffRHCnumuCC1pic1piz09       = kNuis574; //
 static const PhysParamId_t kNuisEffRHCnumuCCother01          = kNuis575;
 static const PhysParamId_t kNuisEffRHCnumuCCother02          = kNuis576;
 static const PhysParamId_t kNuisEffRHCnumuCCother03          = kNuis577;
@@ -1039,24 +1039,24 @@ static const PhysParamId_t kFitParam[kNFitParams] =
   kNuisEffFHCnumuCC1pic07        ,
   kNuisEffFHCnumuCC1pic08        ,
   kNuisEffFHCnumuCC1pic09        ,
-  kNuisEffFHCnumuCC1pi001        ,
-  kNuisEffFHCnumuCC1pi002        ,
-  kNuisEffFHCnumuCC1pi003        ,
-  kNuisEffFHCnumuCC1pi004        ,
-  kNuisEffFHCnumuCC1pi005        ,
-  kNuisEffFHCnumuCC1pi006        ,
-  kNuisEffFHCnumuCC1pi007        ,
-  kNuisEffFHCnumuCC1pi008        ,
-  kNuisEffFHCnumuCC1pi009        ,
-  kNuisEffFHCnumuCC1pic1pi001    ,
-  kNuisEffFHCnumuCC1pic1pi002    ,
-  kNuisEffFHCnumuCC1pic1pi003    ,
-  kNuisEffFHCnumuCC1pic1pi004    ,
-  kNuisEffFHCnumuCC1pic1pi005    ,
-  kNuisEffFHCnumuCC1pic1pi006    ,
-  kNuisEffFHCnumuCC1pic1pi007    ,
-  kNuisEffFHCnumuCC1pic1pi008    ,
-  kNuisEffFHCnumuCC1pic1pi009    ,
+  kNuisEffFHCnumuCC1piz01        ,
+  kNuisEffFHCnumuCC1piz02        ,
+  kNuisEffFHCnumuCC1piz03        ,
+  kNuisEffFHCnumuCC1piz04        ,
+  kNuisEffFHCnumuCC1piz05        ,
+  kNuisEffFHCnumuCC1piz06        ,
+  kNuisEffFHCnumuCC1piz07        ,
+  kNuisEffFHCnumuCC1piz08        ,
+  kNuisEffFHCnumuCC1piz09        ,
+  kNuisEffFHCnumuCC1pic1piz01    ,
+  kNuisEffFHCnumuCC1pic1piz02    ,
+  kNuisEffFHCnumuCC1pic1piz03    ,
+  kNuisEffFHCnumuCC1pic1piz04    ,
+  kNuisEffFHCnumuCC1pic1piz05    ,
+  kNuisEffFHCnumuCC1pic1piz06    ,
+  kNuisEffFHCnumuCC1pic1piz07    ,
+  kNuisEffFHCnumuCC1pic1piz08    ,
+  kNuisEffFHCnumuCC1pic1piz09    ,
   kNuisEffFHCnumuCCother01       ,
   kNuisEffFHCnumuCCother02       ,
   kNuisEffFHCnumuCCother03       ,
@@ -1196,24 +1196,24 @@ static const PhysParamId_t kFitParam[kNFitParams] =
   kNuisEffRHCnumuCC1pic07        ,
   kNuisEffRHCnumuCC1pic08        ,
   kNuisEffRHCnumuCC1pic09        ,
-  kNuisEffRHCnumuCC1pi001        ,
-  kNuisEffRHCnumuCC1pi002        ,
-  kNuisEffRHCnumuCC1pi003        ,
-  kNuisEffRHCnumuCC1pi004        ,
-  kNuisEffRHCnumuCC1pi005        ,
-  kNuisEffRHCnumuCC1pi006        ,
-  kNuisEffRHCnumuCC1pi007        ,
-  kNuisEffRHCnumuCC1pi008        ,
-  kNuisEffRHCnumuCC1pi009        ,
-  kNuisEffRHCnumuCC1pic1pi001    ,
-  kNuisEffRHCnumuCC1pic1pi002    ,
-  kNuisEffRHCnumuCC1pic1pi003    ,
-  kNuisEffRHCnumuCC1pic1pi004    ,
-  kNuisEffRHCnumuCC1pic1pi005    ,
-  kNuisEffRHCnumuCC1pic1pi006    ,
-  kNuisEffRHCnumuCC1pic1pi007    ,
-  kNuisEffRHCnumuCC1pic1pi008    ,
-  kNuisEffRHCnumuCC1pic1pi009    ,
+  kNuisEffRHCnumuCC1piz01        ,
+  kNuisEffRHCnumuCC1piz02        ,
+  kNuisEffRHCnumuCC1piz03        ,
+  kNuisEffRHCnumuCC1piz04        ,
+  kNuisEffRHCnumuCC1piz05        ,
+  kNuisEffRHCnumuCC1piz06        ,
+  kNuisEffRHCnumuCC1piz07        ,
+  kNuisEffRHCnumuCC1piz08        ,
+  kNuisEffRHCnumuCC1piz09        ,
+  kNuisEffRHCnumuCC1pic1piz01    ,
+  kNuisEffRHCnumuCC1pic1piz02    ,
+  kNuisEffRHCnumuCC1pic1piz03    ,
+  kNuisEffRHCnumuCC1pic1piz04    ,
+  kNuisEffRHCnumuCC1pic1piz05    ,
+  kNuisEffRHCnumuCC1pic1piz06    ,
+  kNuisEffRHCnumuCC1pic1piz07    ,
+  kNuisEffRHCnumuCC1pic1piz08    ,
+  kNuisEffRHCnumuCC1pic1piz09    ,
   kNuisEffRHCnumuCCother01       ,
   kNuisEffRHCnumuCCother02       ,
   kNuisEffRHCnumuCCother03       ,

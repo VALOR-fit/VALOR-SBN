@@ -333,24 +333,24 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
    kpgDetector,        // kNuisEffFHCnumuCC1pic07           
    kpgDetector,        // kNuisEffFHCnumuCC1pic08           
    kpgDetector,        // kNuisEffFHCnumuCC1pic09           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi001           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi002           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi003           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi004           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi005           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi006           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi007           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi008           
-   kpgDetector,        // kNuisEffFHCnumuCC1pi009           
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi001       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi002       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi003       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi004       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi005       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi006       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi007       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi008       
-   kpgDetector,        // kNuisEffFHCnumuCC1pic1pi009       
+   kpgDetector,        // kNuisEffFHCnumuCC1piz01           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz02           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz03           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz04           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz05           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz06           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz07           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz08           
+   kpgDetector,        // kNuisEffFHCnumuCC1piz09           
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz01       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz02       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz03       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz04       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz05       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz06       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz07       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz08       
+   kpgDetector,        // kNuisEffFHCnumuCC1pic1piz09       
    kpgDetector,        // kNuisEffFHCnumuCCother01          
    kpgDetector,        // kNuisEffFHCnumuCCother02          
    kpgDetector,        // kNuisEffFHCnumuCCother03          
@@ -490,24 +490,24 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
    kpgDetector,        // kNuisEffRHCnumuCC1pic07           
    kpgDetector,        // kNuisEffRHCnumuCC1pic08           
    kpgDetector,        // kNuisEffRHCnumuCC1pic09           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi001           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi002           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi003           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi004           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi005           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi006           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi007           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi008           
-   kpgDetector,        // kNuisEffRHCnumuCC1pi009           
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi001       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi002       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi003       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi004       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi005       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi006       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi007       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi008       
-   kpgDetector,        // kNuisEffRHCnumuCC1pic1pi009       
+   kpgDetector,        // kNuisEffRHCnumuCC1piz01           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz02           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz03           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz04           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz05           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz06           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz07           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz08           
+   kpgDetector,        // kNuisEffRHCnumuCC1piz09           
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz01       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz02       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz03       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz04       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz05       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz06       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz07       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz08       
+   kpgDetector,        // kNuisEffRHCnumuCC1pic1piz09       
    kpgDetector,        // kNuisEffRHCnumuCCother01          
    kpgDetector,        // kNuisEffRHCnumuCCother02          
    kpgDetector,        // kNuisEffRHCnumuCCother03          
@@ -922,24 +922,24 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
    false, // kNuisEffFHCnumuCC1pic07           
    false, // kNuisEffFHCnumuCC1pic08           
    false, // kNuisEffFHCnumuCC1pic09           
-   false, // kNuisEffFHCnumuCC1pi001           
-   false, // kNuisEffFHCnumuCC1pi002           
-   false, // kNuisEffFHCnumuCC1pi003           
-   false, // kNuisEffFHCnumuCC1pi004           
-   false, // kNuisEffFHCnumuCC1pi005           
-   false, // kNuisEffFHCnumuCC1pi006           
-   false, // kNuisEffFHCnumuCC1pi007           
-   false, // kNuisEffFHCnumuCC1pi008           
-   false, // kNuisEffFHCnumuCC1pi009           
-   false, // kNuisEffFHCnumuCC1pic1pi001       
-   false, // kNuisEffFHCnumuCC1pic1pi002       
-   false, // kNuisEffFHCnumuCC1pic1pi003       
-   false, // kNuisEffFHCnumuCC1pic1pi004       
-   false, // kNuisEffFHCnumuCC1pic1pi005       
-   false, // kNuisEffFHCnumuCC1pic1pi006       
-   false, // kNuisEffFHCnumuCC1pic1pi007       
-   false, // kNuisEffFHCnumuCC1pic1pi008       
-   false, // kNuisEffFHCnumuCC1pic1pi009       
+   false, // kNuisEffFHCnumuCC1piz01           
+   false, // kNuisEffFHCnumuCC1piz02           
+   false, // kNuisEffFHCnumuCC1piz03           
+   false, // kNuisEffFHCnumuCC1piz04           
+   false, // kNuisEffFHCnumuCC1piz05           
+   false, // kNuisEffFHCnumuCC1piz06           
+   false, // kNuisEffFHCnumuCC1piz07           
+   false, // kNuisEffFHCnumuCC1piz08           
+   false, // kNuisEffFHCnumuCC1piz09           
+   false, // kNuisEffFHCnumuCC1pic1piz01       
+   false, // kNuisEffFHCnumuCC1pic1piz02       
+   false, // kNuisEffFHCnumuCC1pic1piz03       
+   false, // kNuisEffFHCnumuCC1pic1piz04       
+   false, // kNuisEffFHCnumuCC1pic1piz05       
+   false, // kNuisEffFHCnumuCC1pic1piz06       
+   false, // kNuisEffFHCnumuCC1pic1piz07       
+   false, // kNuisEffFHCnumuCC1pic1piz08       
+   false, // kNuisEffFHCnumuCC1pic1piz09       
    false, // kNuisEffFHCnumuCCother01          
    false, // kNuisEffFHCnumuCCother02          
    false, // kNuisEffFHCnumuCCother03          
@@ -1079,24 +1079,24 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
    false, // kNuisEffRHCnumuCC1pic07           
    false, // kNuisEffRHCnumuCC1pic08           
    false, // kNuisEffRHCnumuCC1pic09           
-   false, // kNuisEffRHCnumuCC1pi001           
-   false, // kNuisEffRHCnumuCC1pi002           
-   false, // kNuisEffRHCnumuCC1pi003           
-   false, // kNuisEffRHCnumuCC1pi004           
-   false, // kNuisEffRHCnumuCC1pi005           
-   false, // kNuisEffRHCnumuCC1pi006           
-   false, // kNuisEffRHCnumuCC1pi007           
-   false, // kNuisEffRHCnumuCC1pi008           
-   false, // kNuisEffRHCnumuCC1pi009           
-   false, // kNuisEffRHCnumuCC1pic1pi001       
-   false, // kNuisEffRHCnumuCC1pic1pi002       
-   false, // kNuisEffRHCnumuCC1pic1pi003       
-   false, // kNuisEffRHCnumuCC1pic1pi004       
-   false, // kNuisEffRHCnumuCC1pic1pi005       
-   false, // kNuisEffRHCnumuCC1pic1pi006       
-   false, // kNuisEffRHCnumuCC1pic1pi007       
-   false, // kNuisEffRHCnumuCC1pic1pi008       
-   false, // kNuisEffRHCnumuCC1pic1pi009       
+   false, // kNuisEffRHCnumuCC1piz01           
+   false, // kNuisEffRHCnumuCC1piz02           
+   false, // kNuisEffRHCnumuCC1piz03           
+   false, // kNuisEffRHCnumuCC1piz04           
+   false, // kNuisEffRHCnumuCC1piz05           
+   false, // kNuisEffRHCnumuCC1piz06           
+   false, // kNuisEffRHCnumuCC1piz07           
+   false, // kNuisEffRHCnumuCC1piz08           
+   false, // kNuisEffRHCnumuCC1piz09           
+   false, // kNuisEffRHCnumuCC1pic1piz01       
+   false, // kNuisEffRHCnumuCC1pic1piz02       
+   false, // kNuisEffRHCnumuCC1pic1piz03       
+   false, // kNuisEffRHCnumuCC1pic1piz04       
+   false, // kNuisEffRHCnumuCC1pic1piz05       
+   false, // kNuisEffRHCnumuCC1pic1piz06       
+   false, // kNuisEffRHCnumuCC1pic1piz07       
+   false, // kNuisEffRHCnumuCC1pic1piz08       
+   false, // kNuisEffRHCnumuCC1pic1piz09       
    false, // kNuisEffRHCnumuCCother01          
    false, // kNuisEffRHCnumuCCother02          
    false, // kNuisEffRHCnumuCCother03          
@@ -1511,24 +1511,24 @@ static const bool kFitIsNDNuFluxRelated[kNFitParams] =
    false, // kNuisEffFHCnumuCC1pic07           
    false, // kNuisEffFHCnumuCC1pic08           
    false, // kNuisEffFHCnumuCC1pic09           
-   false, // kNuisEffFHCnumuCC1pi001           
-   false, // kNuisEffFHCnumuCC1pi002           
-   false, // kNuisEffFHCnumuCC1pi003           
-   false, // kNuisEffFHCnumuCC1pi004           
-   false, // kNuisEffFHCnumuCC1pi005           
-   false, // kNuisEffFHCnumuCC1pi006           
-   false, // kNuisEffFHCnumuCC1pi007           
-   false, // kNuisEffFHCnumuCC1pi008           
-   false, // kNuisEffFHCnumuCC1pi009           
-   false, // kNuisEffFHCnumuCC1pic1pi001       
-   false, // kNuisEffFHCnumuCC1pic1pi002       
-   false, // kNuisEffFHCnumuCC1pic1pi003       
-   false, // kNuisEffFHCnumuCC1pic1pi004       
-   false, // kNuisEffFHCnumuCC1pic1pi005       
-   false, // kNuisEffFHCnumuCC1pic1pi006       
-   false, // kNuisEffFHCnumuCC1pic1pi007       
-   false, // kNuisEffFHCnumuCC1pic1pi008       
-   false, // kNuisEffFHCnumuCC1pic1pi009       
+   false, // kNuisEffFHCnumuCC1piz01           
+   false, // kNuisEffFHCnumuCC1piz02           
+   false, // kNuisEffFHCnumuCC1piz03           
+   false, // kNuisEffFHCnumuCC1piz04           
+   false, // kNuisEffFHCnumuCC1piz05           
+   false, // kNuisEffFHCnumuCC1piz06           
+   false, // kNuisEffFHCnumuCC1piz07           
+   false, // kNuisEffFHCnumuCC1piz08           
+   false, // kNuisEffFHCnumuCC1piz09           
+   false, // kNuisEffFHCnumuCC1pic1piz01       
+   false, // kNuisEffFHCnumuCC1pic1piz02       
+   false, // kNuisEffFHCnumuCC1pic1piz03       
+   false, // kNuisEffFHCnumuCC1pic1piz04       
+   false, // kNuisEffFHCnumuCC1pic1piz05       
+   false, // kNuisEffFHCnumuCC1pic1piz06       
+   false, // kNuisEffFHCnumuCC1pic1piz07       
+   false, // kNuisEffFHCnumuCC1pic1piz08       
+   false, // kNuisEffFHCnumuCC1pic1piz09       
    false, // kNuisEffFHCnumuCCother01          
    false, // kNuisEffFHCnumuCCother02          
    false, // kNuisEffFHCnumuCCother03          
@@ -1668,24 +1668,24 @@ static const bool kFitIsNDNuFluxRelated[kNFitParams] =
    false, // kNuisEffRHCnumuCC1pic07           
    false, // kNuisEffRHCnumuCC1pic08           
    false, // kNuisEffRHCnumuCC1pic09           
-   false, // kNuisEffRHCnumuCC1pi001           
-   false, // kNuisEffRHCnumuCC1pi002           
-   false, // kNuisEffRHCnumuCC1pi003           
-   false, // kNuisEffRHCnumuCC1pi004           
-   false, // kNuisEffRHCnumuCC1pi005           
-   false, // kNuisEffRHCnumuCC1pi006           
-   false, // kNuisEffRHCnumuCC1pi007           
-   false, // kNuisEffRHCnumuCC1pi008           
-   false, // kNuisEffRHCnumuCC1pi009           
-   false, // kNuisEffRHCnumuCC1pic1pi001       
-   false, // kNuisEffRHCnumuCC1pic1pi002       
-   false, // kNuisEffRHCnumuCC1pic1pi003       
-   false, // kNuisEffRHCnumuCC1pic1pi004       
-   false, // kNuisEffRHCnumuCC1pic1pi005       
-   false, // kNuisEffRHCnumuCC1pic1pi006       
-   false, // kNuisEffRHCnumuCC1pic1pi007       
-   false, // kNuisEffRHCnumuCC1pic1pi008       
-   false, // kNuisEffRHCnumuCC1pic1pi009       
+   false, // kNuisEffRHCnumuCC1piz01           
+   false, // kNuisEffRHCnumuCC1piz02           
+   false, // kNuisEffRHCnumuCC1piz03           
+   false, // kNuisEffRHCnumuCC1piz04           
+   false, // kNuisEffRHCnumuCC1piz05           
+   false, // kNuisEffRHCnumuCC1piz06           
+   false, // kNuisEffRHCnumuCC1piz07           
+   false, // kNuisEffRHCnumuCC1piz08           
+   false, // kNuisEffRHCnumuCC1piz09           
+   false, // kNuisEffRHCnumuCC1pic1piz01       
+   false, // kNuisEffRHCnumuCC1pic1piz02       
+   false, // kNuisEffRHCnumuCC1pic1piz03       
+   false, // kNuisEffRHCnumuCC1pic1piz04       
+   false, // kNuisEffRHCnumuCC1pic1piz05       
+   false, // kNuisEffRHCnumuCC1pic1piz06       
+   false, // kNuisEffRHCnumuCC1pic1piz07       
+   false, // kNuisEffRHCnumuCC1pic1piz08       
+   false, // kNuisEffRHCnumuCC1pic1piz09       
    false, // kNuisEffRHCnumuCCother01          
    false, // kNuisEffRHCnumuCCother02          
    false, // kNuisEffRHCnumuCCother03          
@@ -2100,24 +2100,24 @@ static const bool kFitIsFDNuFluxRelated[kNFitParams] =
    false, // kNuisEffFHCnumuCC1pic07           
    false, // kNuisEffFHCnumuCC1pic08           
    false, // kNuisEffFHCnumuCC1pic09           
-   false, // kNuisEffFHCnumuCC1pi001           
-   false, // kNuisEffFHCnumuCC1pi002           
-   false, // kNuisEffFHCnumuCC1pi003           
-   false, // kNuisEffFHCnumuCC1pi004           
-   false, // kNuisEffFHCnumuCC1pi005           
-   false, // kNuisEffFHCnumuCC1pi006           
-   false, // kNuisEffFHCnumuCC1pi007           
-   false, // kNuisEffFHCnumuCC1pi008           
-   false, // kNuisEffFHCnumuCC1pi009           
-   false, // kNuisEffFHCnumuCC1pic1pi001       
-   false, // kNuisEffFHCnumuCC1pic1pi002       
-   false, // kNuisEffFHCnumuCC1pic1pi003       
-   false, // kNuisEffFHCnumuCC1pic1pi004       
-   false, // kNuisEffFHCnumuCC1pic1pi005       
-   false, // kNuisEffFHCnumuCC1pic1pi006       
-   false, // kNuisEffFHCnumuCC1pic1pi007       
-   false, // kNuisEffFHCnumuCC1pic1pi008       
-   false, // kNuisEffFHCnumuCC1pic1pi009       
+   false, // kNuisEffFHCnumuCC1piz01           
+   false, // kNuisEffFHCnumuCC1piz02           
+   false, // kNuisEffFHCnumuCC1piz03           
+   false, // kNuisEffFHCnumuCC1piz04           
+   false, // kNuisEffFHCnumuCC1piz05           
+   false, // kNuisEffFHCnumuCC1piz06           
+   false, // kNuisEffFHCnumuCC1piz07           
+   false, // kNuisEffFHCnumuCC1piz08           
+   false, // kNuisEffFHCnumuCC1piz09           
+   false, // kNuisEffFHCnumuCC1pic1piz01       
+   false, // kNuisEffFHCnumuCC1pic1piz02       
+   false, // kNuisEffFHCnumuCC1pic1piz03       
+   false, // kNuisEffFHCnumuCC1pic1piz04       
+   false, // kNuisEffFHCnumuCC1pic1piz05       
+   false, // kNuisEffFHCnumuCC1pic1piz06       
+   false, // kNuisEffFHCnumuCC1pic1piz07       
+   false, // kNuisEffFHCnumuCC1pic1piz08       
+   false, // kNuisEffFHCnumuCC1pic1piz09       
    false, // kNuisEffFHCnumuCCother01          
    false, // kNuisEffFHCnumuCCother02          
    false, // kNuisEffFHCnumuCCother03          
@@ -2257,24 +2257,24 @@ static const bool kFitIsFDNuFluxRelated[kNFitParams] =
    false, // kNuisEffRHCnumuCC1pic07           
    false, // kNuisEffRHCnumuCC1pic08           
    false, // kNuisEffRHCnumuCC1pic09           
-   false, // kNuisEffRHCnumuCC1pi001           
-   false, // kNuisEffRHCnumuCC1pi002           
-   false, // kNuisEffRHCnumuCC1pi003           
-   false, // kNuisEffRHCnumuCC1pi004           
-   false, // kNuisEffRHCnumuCC1pi005           
-   false, // kNuisEffRHCnumuCC1pi006           
-   false, // kNuisEffRHCnumuCC1pi007           
-   false, // kNuisEffRHCnumuCC1pi008           
-   false, // kNuisEffRHCnumuCC1pi009           
-   false, // kNuisEffRHCnumuCC1pic1pi001       
-   false, // kNuisEffRHCnumuCC1pic1pi002       
-   false, // kNuisEffRHCnumuCC1pic1pi003       
-   false, // kNuisEffRHCnumuCC1pic1pi004       
-   false, // kNuisEffRHCnumuCC1pic1pi005       
-   false, // kNuisEffRHCnumuCC1pic1pi006       
-   false, // kNuisEffRHCnumuCC1pic1pi007       
-   false, // kNuisEffRHCnumuCC1pic1pi008       
-   false, // kNuisEffRHCnumuCC1pic1pi009       
+   false, // kNuisEffRHCnumuCC1piz01           
+   false, // kNuisEffRHCnumuCC1piz02           
+   false, // kNuisEffRHCnumuCC1piz03           
+   false, // kNuisEffRHCnumuCC1piz04           
+   false, // kNuisEffRHCnumuCC1piz05           
+   false, // kNuisEffRHCnumuCC1piz06           
+   false, // kNuisEffRHCnumuCC1piz07           
+   false, // kNuisEffRHCnumuCC1piz08           
+   false, // kNuisEffRHCnumuCC1piz09           
+   false, // kNuisEffRHCnumuCC1pic1piz01       
+   false, // kNuisEffRHCnumuCC1pic1piz02       
+   false, // kNuisEffRHCnumuCC1pic1piz03       
+   false, // kNuisEffRHCnumuCC1pic1piz04       
+   false, // kNuisEffRHCnumuCC1pic1piz05       
+   false, // kNuisEffRHCnumuCC1pic1piz06       
+   false, // kNuisEffRHCnumuCC1pic1piz07       
+   false, // kNuisEffRHCnumuCC1pic1piz08       
+   false, // kNuisEffRHCnumuCC1pic1piz09       
    false, // kNuisEffRHCnumuCCother01          
    false, // kNuisEffRHCnumuCCother02          
    false, // kNuisEffRHCnumuCCother03          
@@ -2689,24 +2689,24 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
    false, // kNuisEffFHCnumuCC1pic07           
    false, // kNuisEffFHCnumuCC1pic08           
    false, // kNuisEffFHCnumuCC1pic09           
-   false, // kNuisEffFHCnumuCC1pi001           
-   false, // kNuisEffFHCnumuCC1pi002           
-   false, // kNuisEffFHCnumuCC1pi003           
-   false, // kNuisEffFHCnumuCC1pi004           
-   false, // kNuisEffFHCnumuCC1pi005           
-   false, // kNuisEffFHCnumuCC1pi006           
-   false, // kNuisEffFHCnumuCC1pi007           
-   false, // kNuisEffFHCnumuCC1pi008           
-   false, // kNuisEffFHCnumuCC1pi009           
-   false, // kNuisEffFHCnumuCC1pic1pi001       
-   false, // kNuisEffFHCnumuCC1pic1pi002       
-   false, // kNuisEffFHCnumuCC1pic1pi003       
-   false, // kNuisEffFHCnumuCC1pic1pi004       
-   false, // kNuisEffFHCnumuCC1pic1pi005       
-   false, // kNuisEffFHCnumuCC1pic1pi006       
-   false, // kNuisEffFHCnumuCC1pic1pi007       
-   false, // kNuisEffFHCnumuCC1pic1pi008       
-   false, // kNuisEffFHCnumuCC1pic1pi009       
+   false, // kNuisEffFHCnumuCC1piz01           
+   false, // kNuisEffFHCnumuCC1piz02           
+   false, // kNuisEffFHCnumuCC1piz03           
+   false, // kNuisEffFHCnumuCC1piz04           
+   false, // kNuisEffFHCnumuCC1piz05           
+   false, // kNuisEffFHCnumuCC1piz06           
+   false, // kNuisEffFHCnumuCC1piz07           
+   false, // kNuisEffFHCnumuCC1piz08           
+   false, // kNuisEffFHCnumuCC1piz09           
+   false, // kNuisEffFHCnumuCC1pic1piz01       
+   false, // kNuisEffFHCnumuCC1pic1piz02       
+   false, // kNuisEffFHCnumuCC1pic1piz03       
+   false, // kNuisEffFHCnumuCC1pic1piz04       
+   false, // kNuisEffFHCnumuCC1pic1piz05       
+   false, // kNuisEffFHCnumuCC1pic1piz06       
+   false, // kNuisEffFHCnumuCC1pic1piz07       
+   false, // kNuisEffFHCnumuCC1pic1piz08       
+   false, // kNuisEffFHCnumuCC1pic1piz09       
    false, // kNuisEffFHCnumuCCother01          
    false, // kNuisEffFHCnumuCCother02          
    false, // kNuisEffFHCnumuCCother03          
@@ -2846,24 +2846,24 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
    false, // kNuisEffRHCnumuCC1pic07           
    false, // kNuisEffRHCnumuCC1pic08           
    false, // kNuisEffRHCnumuCC1pic09           
-   false, // kNuisEffRHCnumuCC1pi001           
-   false, // kNuisEffRHCnumuCC1pi002           
-   false, // kNuisEffRHCnumuCC1pi003           
-   false, // kNuisEffRHCnumuCC1pi004           
-   false, // kNuisEffRHCnumuCC1pi005           
-   false, // kNuisEffRHCnumuCC1pi006           
-   false, // kNuisEffRHCnumuCC1pi007           
-   false, // kNuisEffRHCnumuCC1pi008           
-   false, // kNuisEffRHCnumuCC1pi009           
-   false, // kNuisEffRHCnumuCC1pic1pi001       
-   false, // kNuisEffRHCnumuCC1pic1pi002       
-   false, // kNuisEffRHCnumuCC1pic1pi003       
-   false, // kNuisEffRHCnumuCC1pic1pi004       
-   false, // kNuisEffRHCnumuCC1pic1pi005       
-   false, // kNuisEffRHCnumuCC1pic1pi006       
-   false, // kNuisEffRHCnumuCC1pic1pi007       
-   false, // kNuisEffRHCnumuCC1pic1pi008       
-   false, // kNuisEffRHCnumuCC1pic1pi009       
+   false, // kNuisEffRHCnumuCC1piz01           
+   false, // kNuisEffRHCnumuCC1piz02           
+   false, // kNuisEffRHCnumuCC1piz03           
+   false, // kNuisEffRHCnumuCC1piz04           
+   false, // kNuisEffRHCnumuCC1piz05           
+   false, // kNuisEffRHCnumuCC1piz06           
+   false, // kNuisEffRHCnumuCC1piz07           
+   false, // kNuisEffRHCnumuCC1piz08           
+   false, // kNuisEffRHCnumuCC1piz09           
+   false, // kNuisEffRHCnumuCC1pic1piz01       
+   false, // kNuisEffRHCnumuCC1pic1piz02       
+   false, // kNuisEffRHCnumuCC1pic1piz03       
+   false, // kNuisEffRHCnumuCC1pic1piz04       
+   false, // kNuisEffRHCnumuCC1pic1piz05       
+   false, // kNuisEffRHCnumuCC1pic1piz06       
+   false, // kNuisEffRHCnumuCC1pic1piz07       
+   false, // kNuisEffRHCnumuCC1pic1piz08       
+   false, // kNuisEffRHCnumuCC1pic1piz09       
    false, // kNuisEffRHCnumuCCother01          
    false, // kNuisEffRHCnumuCCother02          
    false, // kNuisEffRHCnumuCCother03          
@@ -3278,24 +3278,24 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
    true, // kNuisEffFHCnumuCC1pic07           
    true, // kNuisEffFHCnumuCC1pic08           
    true, // kNuisEffFHCnumuCC1pic09           
-   true, // kNuisEffFHCnumuCC1pi001           
-   true, // kNuisEffFHCnumuCC1pi002           
-   true, // kNuisEffFHCnumuCC1pi003           
-   true, // kNuisEffFHCnumuCC1pi004           
-   true, // kNuisEffFHCnumuCC1pi005           
-   true, // kNuisEffFHCnumuCC1pi006           
-   true, // kNuisEffFHCnumuCC1pi007           
-   true, // kNuisEffFHCnumuCC1pi008           
-   true, // kNuisEffFHCnumuCC1pi009           
-   true, // kNuisEffFHCnumuCC1pic1pi001       
-   true, // kNuisEffFHCnumuCC1pic1pi002       
-   true, // kNuisEffFHCnumuCC1pic1pi003       
-   true, // kNuisEffFHCnumuCC1pic1pi004       
-   true, // kNuisEffFHCnumuCC1pic1pi005       
-   true, // kNuisEffFHCnumuCC1pic1pi006       
-   true, // kNuisEffFHCnumuCC1pic1pi007       
-   true, // kNuisEffFHCnumuCC1pic1pi008       
-   true, // kNuisEffFHCnumuCC1pic1pi009       
+   true, // kNuisEffFHCnumuCC1piz01           
+   true, // kNuisEffFHCnumuCC1piz02           
+   true, // kNuisEffFHCnumuCC1piz03           
+   true, // kNuisEffFHCnumuCC1piz04           
+   true, // kNuisEffFHCnumuCC1piz05           
+   true, // kNuisEffFHCnumuCC1piz06           
+   true, // kNuisEffFHCnumuCC1piz07           
+   true, // kNuisEffFHCnumuCC1piz08           
+   true, // kNuisEffFHCnumuCC1piz09           
+   true, // kNuisEffFHCnumuCC1pic1piz01       
+   true, // kNuisEffFHCnumuCC1pic1piz02       
+   true, // kNuisEffFHCnumuCC1pic1piz03       
+   true, // kNuisEffFHCnumuCC1pic1piz04       
+   true, // kNuisEffFHCnumuCC1pic1piz05       
+   true, // kNuisEffFHCnumuCC1pic1piz06       
+   true, // kNuisEffFHCnumuCC1pic1piz07       
+   true, // kNuisEffFHCnumuCC1pic1piz08       
+   true, // kNuisEffFHCnumuCC1pic1piz09       
    true, // kNuisEffFHCnumuCCother01          
    true, // kNuisEffFHCnumuCCother02          
    true, // kNuisEffFHCnumuCCother03          
@@ -3435,24 +3435,24 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
    true, // kNuisEffRHCnumuCC1pic07           
    true, // kNuisEffRHCnumuCC1pic08           
    true, // kNuisEffRHCnumuCC1pic09           
-   true, // kNuisEffRHCnumuCC1pi001           
-   true, // kNuisEffRHCnumuCC1pi002           
-   true, // kNuisEffRHCnumuCC1pi003           
-   true, // kNuisEffRHCnumuCC1pi004           
-   true, // kNuisEffRHCnumuCC1pi005           
-   true, // kNuisEffRHCnumuCC1pi006           
-   true, // kNuisEffRHCnumuCC1pi007           
-   true, // kNuisEffRHCnumuCC1pi008           
-   true, // kNuisEffRHCnumuCC1pi009           
-   true, // kNuisEffRHCnumuCC1pic1pi001       
-   true, // kNuisEffRHCnumuCC1pic1pi002       
-   true, // kNuisEffRHCnumuCC1pic1pi003       
-   true, // kNuisEffRHCnumuCC1pic1pi004       
-   true, // kNuisEffRHCnumuCC1pic1pi005       
-   true, // kNuisEffRHCnumuCC1pic1pi006       
-   true, // kNuisEffRHCnumuCC1pic1pi007       
-   true, // kNuisEffRHCnumuCC1pic1pi008       
-   true, // kNuisEffRHCnumuCC1pic1pi009       
+   true, // kNuisEffRHCnumuCC1piz01           
+   true, // kNuisEffRHCnumuCC1piz02           
+   true, // kNuisEffRHCnumuCC1piz03           
+   true, // kNuisEffRHCnumuCC1piz04           
+   true, // kNuisEffRHCnumuCC1piz05           
+   true, // kNuisEffRHCnumuCC1piz06           
+   true, // kNuisEffRHCnumuCC1piz07           
+   true, // kNuisEffRHCnumuCC1piz08           
+   true, // kNuisEffRHCnumuCC1piz09           
+   true, // kNuisEffRHCnumuCC1pic1piz01       
+   true, // kNuisEffRHCnumuCC1pic1piz02       
+   true, // kNuisEffRHCnumuCC1pic1piz03       
+   true, // kNuisEffRHCnumuCC1pic1piz04       
+   true, // kNuisEffRHCnumuCC1pic1piz05       
+   true, // kNuisEffRHCnumuCC1pic1piz06       
+   true, // kNuisEffRHCnumuCC1pic1piz07       
+   true, // kNuisEffRHCnumuCC1pic1piz08       
+   true, // kNuisEffRHCnumuCC1pic1piz09       
    true, // kNuisEffRHCnumuCCother01          
    true, // kNuisEffRHCnumuCCother02          
    true, // kNuisEffRHCnumuCCother03          
@@ -3867,24 +3867,24 @@ static const bool kFitIsNuNDDetRelated[kNFitParams] =
    true,  // kNuisEffFHCnumuCC1pic07           
    true,  // kNuisEffFHCnumuCC1pic08           
    true,  // kNuisEffFHCnumuCC1pic09           
-   true,  // kNuisEffFHCnumuCC1pi001           
-   true,  // kNuisEffFHCnumuCC1pi002           
-   true,  // kNuisEffFHCnumuCC1pi003           
-   true,  // kNuisEffFHCnumuCC1pi004           
-   true,  // kNuisEffFHCnumuCC1pi005           
-   true,  // kNuisEffFHCnumuCC1pi006           
-   true,  // kNuisEffFHCnumuCC1pi007           
-   true,  // kNuisEffFHCnumuCC1pi008           
-   true,  // kNuisEffFHCnumuCC1pi009           
-   true,  // kNuisEffFHCnumuCC1pic1pi001       
-   true,  // kNuisEffFHCnumuCC1pic1pi002       
-   true,  // kNuisEffFHCnumuCC1pic1pi003       
-   true,  // kNuisEffFHCnumuCC1pic1pi004       
-   true,  // kNuisEffFHCnumuCC1pic1pi005       
-   true,  // kNuisEffFHCnumuCC1pic1pi006       
-   true,  // kNuisEffFHCnumuCC1pic1pi007       
-   true,  // kNuisEffFHCnumuCC1pic1pi008       
-   true,  // kNuisEffFHCnumuCC1pic1pi009       
+   true,  // kNuisEffFHCnumuCC1piz01           
+   true,  // kNuisEffFHCnumuCC1piz02           
+   true,  // kNuisEffFHCnumuCC1piz03           
+   true,  // kNuisEffFHCnumuCC1piz04           
+   true,  // kNuisEffFHCnumuCC1piz05           
+   true,  // kNuisEffFHCnumuCC1piz06           
+   true,  // kNuisEffFHCnumuCC1piz07           
+   true,  // kNuisEffFHCnumuCC1piz08           
+   true,  // kNuisEffFHCnumuCC1piz09           
+   true,  // kNuisEffFHCnumuCC1pic1piz01       
+   true,  // kNuisEffFHCnumuCC1pic1piz02       
+   true,  // kNuisEffFHCnumuCC1pic1piz03       
+   true,  // kNuisEffFHCnumuCC1pic1piz04       
+   true,  // kNuisEffFHCnumuCC1pic1piz05       
+   true,  // kNuisEffFHCnumuCC1pic1piz06       
+   true,  // kNuisEffFHCnumuCC1pic1piz07       
+   true,  // kNuisEffFHCnumuCC1pic1piz08       
+   true,  // kNuisEffFHCnumuCC1pic1piz09       
    true,  // kNuisEffFHCnumuCCother01          
    true,  // kNuisEffFHCnumuCCother02          
    true,  // kNuisEffFHCnumuCCother03          
@@ -4024,24 +4024,24 @@ static const bool kFitIsNuNDDetRelated[kNFitParams] =
    true,  // kNuisEffRHCnumuCC1pic07           
    true,  // kNuisEffRHCnumuCC1pic08           
    true,  // kNuisEffRHCnumuCC1pic09           
-   true,  // kNuisEffRHCnumuCC1pi001           
-   true,  // kNuisEffRHCnumuCC1pi002           
-   true,  // kNuisEffRHCnumuCC1pi003           
-   true,  // kNuisEffRHCnumuCC1pi004           
-   true,  // kNuisEffRHCnumuCC1pi005           
-   true,  // kNuisEffRHCnumuCC1pi006           
-   true,  // kNuisEffRHCnumuCC1pi007           
-   true,  // kNuisEffRHCnumuCC1pi008           
-   true,  // kNuisEffRHCnumuCC1pi009           
-   true,  // kNuisEffRHCnumuCC1pic1pi001       
-   true,  // kNuisEffRHCnumuCC1pic1pi002       
-   true,  // kNuisEffRHCnumuCC1pic1pi003       
-   true,  // kNuisEffRHCnumuCC1pic1pi004       
-   true,  // kNuisEffRHCnumuCC1pic1pi005       
-   true,  // kNuisEffRHCnumuCC1pic1pi006       
-   true,  // kNuisEffRHCnumuCC1pic1pi007       
-   true,  // kNuisEffRHCnumuCC1pic1pi008       
-   true,  // kNuisEffRHCnumuCC1pic1pi009       
+   true,  // kNuisEffRHCnumuCC1piz01           
+   true,  // kNuisEffRHCnumuCC1piz02           
+   true,  // kNuisEffRHCnumuCC1piz03           
+   true,  // kNuisEffRHCnumuCC1piz04           
+   true,  // kNuisEffRHCnumuCC1piz05           
+   true,  // kNuisEffRHCnumuCC1piz06           
+   true,  // kNuisEffRHCnumuCC1piz07           
+   true,  // kNuisEffRHCnumuCC1piz08           
+   true,  // kNuisEffRHCnumuCC1piz09           
+   true,  // kNuisEffRHCnumuCC1pic1piz01       
+   true,  // kNuisEffRHCnumuCC1pic1piz02       
+   true,  // kNuisEffRHCnumuCC1pic1piz03       
+   true,  // kNuisEffRHCnumuCC1pic1piz04       
+   true,  // kNuisEffRHCnumuCC1pic1piz05       
+   true,  // kNuisEffRHCnumuCC1pic1piz06       
+   true,  // kNuisEffRHCnumuCC1pic1piz07       
+   true,  // kNuisEffRHCnumuCC1pic1piz08       
+   true,  // kNuisEffRHCnumuCC1pic1piz09       
    true,  // kNuisEffRHCnumuCCother01          
    true,  // kNuisEffRHCnumuCCother02          
    true,  // kNuisEffRHCnumuCCother03          
@@ -4456,24 +4456,24 @@ static const bool kFitIsNuFDDetRelated[kNFitParams] =
    false, // kNuisEffFHCnumuCC1pic07           
    false, // kNuisEffFHCnumuCC1pic08           
    false, // kNuisEffFHCnumuCC1pic09           
-   false, // kNuisEffFHCnumuCC1pi001           
-   false, // kNuisEffFHCnumuCC1pi002           
-   false, // kNuisEffFHCnumuCC1pi003           
-   false, // kNuisEffFHCnumuCC1pi004           
-   false, // kNuisEffFHCnumuCC1pi005           
-   false, // kNuisEffFHCnumuCC1pi006           
-   false, // kNuisEffFHCnumuCC1pi007           
-   false, // kNuisEffFHCnumuCC1pi008           
-   false, // kNuisEffFHCnumuCC1pi009           
-   false, // kNuisEffFHCnumuCC1pic1pi001       
-   false, // kNuisEffFHCnumuCC1pic1pi002       
-   false, // kNuisEffFHCnumuCC1pic1pi003       
-   false, // kNuisEffFHCnumuCC1pic1pi004       
-   false, // kNuisEffFHCnumuCC1pic1pi005       
-   false, // kNuisEffFHCnumuCC1pic1pi006       
-   false, // kNuisEffFHCnumuCC1pic1pi007       
-   false, // kNuisEffFHCnumuCC1pic1pi008       
-   false, // kNuisEffFHCnumuCC1pic1pi009       
+   false, // kNuisEffFHCnumuCC1piz01           
+   false, // kNuisEffFHCnumuCC1piz02           
+   false, // kNuisEffFHCnumuCC1piz03           
+   false, // kNuisEffFHCnumuCC1piz04           
+   false, // kNuisEffFHCnumuCC1piz05           
+   false, // kNuisEffFHCnumuCC1piz06           
+   false, // kNuisEffFHCnumuCC1piz07           
+   false, // kNuisEffFHCnumuCC1piz08           
+   false, // kNuisEffFHCnumuCC1piz09           
+   false, // kNuisEffFHCnumuCC1pic1piz01       
+   false, // kNuisEffFHCnumuCC1pic1piz02       
+   false, // kNuisEffFHCnumuCC1pic1piz03       
+   false, // kNuisEffFHCnumuCC1pic1piz04       
+   false, // kNuisEffFHCnumuCC1pic1piz05       
+   false, // kNuisEffFHCnumuCC1pic1piz06       
+   false, // kNuisEffFHCnumuCC1pic1piz07       
+   false, // kNuisEffFHCnumuCC1pic1piz08       
+   false, // kNuisEffFHCnumuCC1pic1piz09       
    false, // kNuisEffFHCnumuCCother01          
    false, // kNuisEffFHCnumuCCother02          
    false, // kNuisEffFHCnumuCCother03          
@@ -4613,24 +4613,24 @@ static const bool kFitIsNuFDDetRelated[kNFitParams] =
    false, // kNuisEffRHCnumuCC1pic07           
    false, // kNuisEffRHCnumuCC1pic08           
    false, // kNuisEffRHCnumuCC1pic09           
-   false, // kNuisEffRHCnumuCC1pi001           
-   false, // kNuisEffRHCnumuCC1pi002           
-   false, // kNuisEffRHCnumuCC1pi003           
-   false, // kNuisEffRHCnumuCC1pi004           
-   false, // kNuisEffRHCnumuCC1pi005           
-   false, // kNuisEffRHCnumuCC1pi006           
-   false, // kNuisEffRHCnumuCC1pi007           
-   false, // kNuisEffRHCnumuCC1pi008           
-   false, // kNuisEffRHCnumuCC1pi009           
-   false, // kNuisEffRHCnumuCC1pic1pi001       
-   false, // kNuisEffRHCnumuCC1pic1pi002       
-   false, // kNuisEffRHCnumuCC1pic1pi003       
-   false, // kNuisEffRHCnumuCC1pic1pi004       
-   false, // kNuisEffRHCnumuCC1pic1pi005       
-   false, // kNuisEffRHCnumuCC1pic1pi006       
-   false, // kNuisEffRHCnumuCC1pic1pi007       
-   false, // kNuisEffRHCnumuCC1pic1pi008       
-   false, // kNuisEffRHCnumuCC1pic1pi009       
+   false, // kNuisEffRHCnumuCC1piz01           
+   false, // kNuisEffRHCnumuCC1piz02           
+   false, // kNuisEffRHCnumuCC1piz03           
+   false, // kNuisEffRHCnumuCC1piz04           
+   false, // kNuisEffRHCnumuCC1piz05           
+   false, // kNuisEffRHCnumuCC1piz06           
+   false, // kNuisEffRHCnumuCC1piz07           
+   false, // kNuisEffRHCnumuCC1piz08           
+   false, // kNuisEffRHCnumuCC1piz09           
+   false, // kNuisEffRHCnumuCC1pic1piz01       
+   false, // kNuisEffRHCnumuCC1pic1piz02       
+   false, // kNuisEffRHCnumuCC1pic1piz03       
+   false, // kNuisEffRHCnumuCC1pic1piz04       
+   false, // kNuisEffRHCnumuCC1pic1piz05       
+   false, // kNuisEffRHCnumuCC1pic1piz06       
+   false, // kNuisEffRHCnumuCC1pic1piz07       
+   false, // kNuisEffRHCnumuCC1pic1piz08       
+   false, // kNuisEffRHCnumuCC1pic1piz09       
    false, // kNuisEffRHCnumuCCother01          
    false, // kNuisEffRHCnumuCCother02          
    false, // kNuisEffRHCnumuCCother03          
