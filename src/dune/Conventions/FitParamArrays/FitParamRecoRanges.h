@@ -275,320 +275,320 @@ static const bool kFitParamRecoKinematicDependence[kNFitParams] =
   false,  // kNuisIntFracNucAbsorb
   false,  // kNuisIntFracNucProduction
   // Detector systematics
-  true ,  // kNuisEffFHCnumuCC0pi1trk01        
-  true ,  // kNuisEffFHCnumuCC0pi1trk02        
-  true ,  // kNuisEffFHCnumuCC0pi1trk03        
-  true ,  // kNuisEffFHCnumuCC0pi1trk04        
-  true ,  // kNuisEffFHCnumuCC0pi1trk05        
-  true ,  // kNuisEffFHCnumuCC0pi1trk06        
-  true ,  // kNuisEffFHCnumuCC0pi1trk07        
-  true ,  // kNuisEffFHCnumuCC0pi1trk08        
-  true ,  // kNuisEffFHCnumuCC0pi1trk09        
-  true ,  // kNuisEffFHCnumuCC0pi2trk01        
-  true ,  // kNuisEffFHCnumuCC0pi2trk02        
-  true ,  // kNuisEffFHCnumuCC0pi2trk03        
-  true ,  // kNuisEffFHCnumuCC0pi2trk04        
-  true ,  // kNuisEffFHCnumuCC0pi2trk05        
-  true ,  // kNuisEffFHCnumuCC0pi2trk06        
-  true ,  // kNuisEffFHCnumuCC0pi2trk07        
-  true ,  // kNuisEffFHCnumuCC0pi2trk08        
-  true ,  // kNuisEffFHCnumuCC0pi2trk09        
-  true ,  // kNuisEffFHCnumuCC0piNtrk01        
-  true ,  // kNuisEffFHCnumuCC0piNtrk02        
-  true ,  // kNuisEffFHCnumuCC0piNtrk03        
-  true ,  // kNuisEffFHCnumuCC0piNtrk04        
-  true ,  // kNuisEffFHCnumuCC0piNtrk05        
-  true ,  // kNuisEffFHCnumuCC0piNtrk06        
-  true ,  // kNuisEffFHCnumuCC0piNtrk07        
-  true ,  // kNuisEffFHCnumuCC0piNtrk08        
-  true ,  // kNuisEffFHCnumuCC0piNtrk09        
-  true ,  // kNuisEffFHCnumuCC0piNtrk10        
-  true ,  // kNuisEffFHCnumuCC0piNtrk11        
-  true ,  // kNuisEffFHCnumuCC0piNtrk12        
-  true ,  // kNuisEffFHCnumuCC0piNtrk13        
-  true ,  // kNuisEffFHCnumuCC0piNtrk14        
-  true ,  // kNuisEffFHCnumuCC0piNtrk15        
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta01   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta02   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta03   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta04   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta05   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta06   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta07   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta08   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta09   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta10   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta11   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta12   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta13   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta14   
-  true ,  // kNuisEffFHCnumuCC1pi3trkDelta15   
-  true ,  // kNuisEffFHCnumuCC1pic01           
-  true ,  // kNuisEffFHCnumuCC1pic02           
-  true ,  // kNuisEffFHCnumuCC1pic03           
-  true ,  // kNuisEffFHCnumuCC1pic04           
-  true ,  // kNuisEffFHCnumuCC1pic05           
-  true ,  // kNuisEffFHCnumuCC1pic06           
-  true ,  // kNuisEffFHCnumuCC1pic07           
-  true ,  // kNuisEffFHCnumuCC1pic08           
-  true ,  // kNuisEffFHCnumuCC1pic09           
-  true ,  // kNuisEffFHCnumuCC1piz01           
-  true ,  // kNuisEffFHCnumuCC1piz02           
-  true ,  // kNuisEffFHCnumuCC1piz03           
-  true ,  // kNuisEffFHCnumuCC1piz04           
-  true ,  // kNuisEffFHCnumuCC1piz05           
-  true ,  // kNuisEffFHCnumuCC1piz06           
-  true ,  // kNuisEffFHCnumuCC1piz07           
-  true ,  // kNuisEffFHCnumuCC1piz08           
-  true ,  // kNuisEffFHCnumuCC1piz09           
-  true ,  // kNuisEffFHCnumuCC1pic1piz01       
-  true ,  // kNuisEffFHCnumuCC1pic1piz02       
-  true ,  // kNuisEffFHCnumuCC1pic1piz03       
-  true ,  // kNuisEffFHCnumuCC1pic1piz04       
-  true ,  // kNuisEffFHCnumuCC1pic1piz05       
-  true ,  // kNuisEffFHCnumuCC1pic1piz06       
-  true ,  // kNuisEffFHCnumuCC1pic1piz07       
-  true ,  // kNuisEffFHCnumuCC1pic1piz08       
-  true ,  // kNuisEffFHCnumuCC1pic1piz09       
-  true ,  // kNuisEffFHCnumuCCother01          
-  true ,  // kNuisEffFHCnumuCCother02          
-  true ,  // kNuisEffFHCnumuCCother03          
-  true ,  // kNuisEffFHCnumuCCother04          
-  true ,  // kNuisEffFHCnumuCCother05          
-  true ,  // kNuisEffFHCnumuCCother06          
-  true ,  // kNuisEffFHCnumuCCother07          
-  true ,  // kNuisEffFHCnumuCCother08          
-  true ,  // kNuisEffFHCnumuCCother09          
-  true ,  // kNuisEffFHCnumuCCother10          
-  true ,  // kNuisEffFHCnumuCCother11          
-  true ,  // kNuisEffFHCnumuCCWS0pi01          
-  true ,  // kNuisEffFHCnumuCCWS0pi02          
-  true ,  // kNuisEffFHCnumuCCWS0pi03          
-  true ,  // kNuisEffFHCnumuCCWS0pi04          
-  true ,  // kNuisEffFHCnumuCCWS0pi05          
-  true ,  // kNuisEffFHCnumuCCWS1pic01         
-  true ,  // kNuisEffFHCnumuCCWS1pic02         
-  true ,  // kNuisEffFHCnumuCCWS1pic03         
-  true ,  // kNuisEffFHCnumuCCWS1pic04         
-  true ,  // kNuisEffFHCnumuCCWS1pic05         
-  true ,  // kNuisEffFHCnumuCCWS1pic06         
-  true ,  // kNuisEffFHCnumuCCWS1pic07         
-  true ,  // kNuisEffFHCnumuCCWS1pic08         
-  true ,  // kNuisEffFHCnumuCCWS1piz01         
-  true ,  // kNuisEffFHCnumuCCWS1piz02         
-  true ,  // kNuisEffFHCnumuCCWS1piz03         
-  true ,  // kNuisEffFHCnumuCCWSother01        
-  true ,  // kNuisEffFHCnueCC0pi01             
-  true ,  // kNuisEffFHCnueCC0pi02             
-  true ,  // kNuisEffFHCnueCC0pi03             
-  true ,  // kNuisEffFHCnueCC0pi04             
-  true ,  // kNuisEffFHCnueCC0pi05             
-  true ,  // kNuisEffFHCnueCC0pi06             
-  true ,  // kNuisEffFHCnueCC0pi07             
-  true ,  // kNuisEffFHCnueCC0pi08             
-  true ,  // kNuisEffFHCnueCC0pi09             
-  true ,  // kNuisEffFHCnueCC1pic01            
-  true ,  // kNuisEffFHCnueCC1pic02            
-  true ,  // kNuisEffFHCnueCC1pic03            
-  true ,  // kNuisEffFHCnueCC1pic04            
-  true ,  // kNuisEffFHCnueCC1pic05            
-  true ,  // kNuisEffFHCnueCC1pic06            
-  true ,  // kNuisEffFHCnueCC1pic07            
-  true ,  // kNuisEffFHCnueCC1pic08            
-  true ,  // kNuisEffFHCnueCC1pic09            
-  true ,  // kNuisEffFHCnueCC1piz01            
-  true ,  // kNuisEffFHCnueCC1piz02            
-  true ,  // kNuisEffFHCnueCC1piz03            
-  true ,  // kNuisEffFHCnueCC1piz04            
-  true ,  // kNuisEffFHCnueCC1piz05            
-  true ,  // kNuisEffFHCnueCC1piz06            
-  true ,  // kNuisEffFHCnueCC1piz07            
-  true ,  // kNuisEffFHCnueCC1piz08            
-  true ,  // kNuisEffFHCnueCC1piz09            
-  true ,  // kNuisEffFHCnueCCother01           
-  true ,  // kNuisEffFHCnueCCother02           
-  true ,  // kNuisEffFHCnueCCother03           
-  true ,  // kNuisEffFHCnueCCother04           
-  true ,  // kNuisEffFHCnueCCother05           
-  true ,  // kNuisEffFHCnueCCother06           
-  true ,  // kNuisEffFHCnueCCother07           
-  true ,  // kNuisEffFHCnueCCother08           
-  true ,  // kNuisEffFHCnueCCother09           
-  true ,  // kNuisEffFHCnueCCother10           
-  true ,  // kNuisEffFHCnueCCother11           
-  true ,  // kNuisEffFHCnueCCWS01              
-  true ,  // kNuisEffFHCnueCCWS02              
-  true ,  // kNuisEffFHCNC0pi01                
-  true ,  // kNuisEffFHCNC0pi02                
-  true ,  // kNuisEffFHCNC0pi03                
-  true ,  // kNuisEffFHCNC1pic01               
-  true ,  // kNuisEffFHCNC1pic02               
-  true ,  // kNuisEffFHCNC1pic03               
-  true ,  // kNuisEffFHCNC1piz01               
-  true ,  // kNuisEffFHCNC1piz02               
-  true ,  // kNuisEffFHCNC1piz03               
-  true ,  // kNuisEffFHCNCother01              
-  true ,  // kNuisEffFHCNCother02              
-  true ,  // kNuisEffFHCNCother03              
-  true ,  // kNuisEffFHCNeutrinoElec           
-  true ,  // kNuisEffFHCIMD                    
-  true ,  // kNuisEffRHCnumuCC0pi1trk01        
-  true ,  // kNuisEffRHCnumuCC0pi1trk02        
-  true ,  // kNuisEffRHCnumuCC0pi1trk03        
-  true ,  // kNuisEffRHCnumuCC0pi1trk04        
-  true ,  // kNuisEffRHCnumuCC0pi1trk05        
-  true ,  // kNuisEffRHCnumuCC0pi1trk06        
-  true ,  // kNuisEffRHCnumuCC0pi1trk07        
-  true ,  // kNuisEffRHCnumuCC0pi1trk08        
-  true ,  // kNuisEffRHCnumuCC0pi1trk09        
-  true ,  // kNuisEffRHCnumuCC0pi2trk01        
-  true ,  // kNuisEffRHCnumuCC0pi2trk02        
-  true ,  // kNuisEffRHCnumuCC0pi2trk03        
-  true ,  // kNuisEffRHCnumuCC0pi2trk04        
-  true ,  // kNuisEffRHCnumuCC0pi2trk05        
-  true ,  // kNuisEffRHCnumuCC0pi2trk06        
-  true ,  // kNuisEffRHCnumuCC0pi2trk07        
-  true ,  // kNuisEffRHCnumuCC0pi2trk08        
-  true ,  // kNuisEffRHCnumuCC0pi2trk09        
-  true ,  // kNuisEffRHCnumuCC0piNtrk01        
-  true ,  // kNuisEffRHCnumuCC0piNtrk02        
-  true ,  // kNuisEffRHCnumuCC0piNtrk03        
-  true ,  // kNuisEffRHCnumuCC0piNtrk04        
-  true ,  // kNuisEffRHCnumuCC0piNtrk05        
-  true ,  // kNuisEffRHCnumuCC0piNtrk06        
-  true ,  // kNuisEffRHCnumuCC0piNtrk07        
-  true ,  // kNuisEffRHCnumuCC0piNtrk08        
-  true ,  // kNuisEffRHCnumuCC0piNtrk09        
-  true ,  // kNuisEffRHCnumuCC0piNtrk10        
-  true ,  // kNuisEffRHCnumuCC0piNtrk11        
-  true ,  // kNuisEffRHCnumuCC0piNtrk12        
-  true ,  // kNuisEffRHCnumuCC0piNtrk13        
-  true ,  // kNuisEffRHCnumuCC0piNtrk14        
-  true ,  // kNuisEffRHCnumuCC0piNtrk15        
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta01   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta02   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta03   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta04   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta05   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta06   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta07   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta08   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta09   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta10   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta11   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta12   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta13   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta14   
-  true ,  // kNuisEffRHCnumuCC1pi3trkDelta15   
-  true ,  // kNuisEffRHCnumuCC1pic01           
-  true ,  // kNuisEffRHCnumuCC1pic02           
-  true ,  // kNuisEffRHCnumuCC1pic03           
-  true ,  // kNuisEffRHCnumuCC1pic04           
-  true ,  // kNuisEffRHCnumuCC1pic05           
-  true ,  // kNuisEffRHCnumuCC1pic06           
-  true ,  // kNuisEffRHCnumuCC1pic07           
-  true ,  // kNuisEffRHCnumuCC1pic08           
-  true ,  // kNuisEffRHCnumuCC1pic09           
-  true ,  // kNuisEffRHCnumuCC1piz01           
-  true ,  // kNuisEffRHCnumuCC1piz02           
-  true ,  // kNuisEffRHCnumuCC1piz03           
-  true ,  // kNuisEffRHCnumuCC1piz04           
-  true ,  // kNuisEffRHCnumuCC1piz05           
-  true ,  // kNuisEffRHCnumuCC1piz06           
-  true ,  // kNuisEffRHCnumuCC1piz07           
-  true ,  // kNuisEffRHCnumuCC1piz08           
-  true ,  // kNuisEffRHCnumuCC1piz09           
-  true ,  // kNuisEffRHCnumuCC1pic1piz01       
-  true ,  // kNuisEffRHCnumuCC1pic1piz02       
-  true ,  // kNuisEffRHCnumuCC1pic1piz03       
-  true ,  // kNuisEffRHCnumuCC1pic1piz04       
-  true ,  // kNuisEffRHCnumuCC1pic1piz05       
-  true ,  // kNuisEffRHCnumuCC1pic1piz06       
-  true ,  // kNuisEffRHCnumuCC1pic1piz07       
-  true ,  // kNuisEffRHCnumuCC1pic1piz08       
-  true ,  // kNuisEffRHCnumuCC1pic1piz09       
-  true ,  // kNuisEffRHCnumuCCother01          
-  true ,  // kNuisEffRHCnumuCCother02          
-  true ,  // kNuisEffRHCnumuCCother03          
-  true ,  // kNuisEffRHCnumuCCother04          
-  true ,  // kNuisEffRHCnumuCCother05          
-  true ,  // kNuisEffRHCnumuCCother06          
-  true ,  // kNuisEffRHCnumuCCother07          
-  true ,  // kNuisEffRHCnumuCCother08          
-  true ,  // kNuisEffRHCnumuCCother09          
-  true ,  // kNuisEffRHCnumuCCother10          
-  true ,  // kNuisEffRHCnumuCCother11          
-  true ,  // kNuisEffRHCnumuCCWS0pi01          
-  true ,  // kNuisEffRHCnumuCCWS0pi02          
-  true ,  // kNuisEffRHCnumuCCWS0pi03          
-  true ,  // kNuisEffRHCnumuCCWS0pi04          
-  true ,  // kNuisEffRHCnumuCCWS0pi05          
-  true ,  // kNuisEffRHCnumuCCWS1pic01         
-  true ,  // kNuisEffRHCnumuCCWS1pic02         
-  true ,  // kNuisEffRHCnumuCCWS1pic03         
-  true ,  // kNuisEffRHCnumuCCWS1pic04         
-  true ,  // kNuisEffRHCnumuCCWS1pic05         
-  true ,  // kNuisEffRHCnumuCCWS1pic06         
-  true ,  // kNuisEffRHCnumuCCWS1pic07         
-  true ,  // kNuisEffRHCnumuCCWS1pic08         
-  true ,  // kNuisEffRHCnumuCCWS1piz01         
-  true ,  // kNuisEffRHCnumuCCWS1piz02         
-  true ,  // kNuisEffRHCnumuCCWS1piz03         
-  true ,  // kNuisEffRHCnumuCCWSother01        
-  true ,  // kNuisEffRHCnueCC0pi01             
-  true ,  // kNuisEffRHCnueCC0pi02             
-  true ,  // kNuisEffRHCnueCC0pi03             
-  true ,  // kNuisEffRHCnueCC0pi04             
-  true ,  // kNuisEffRHCnueCC0pi05             
-  true ,  // kNuisEffRHCnueCC0pi06             
-  true ,  // kNuisEffRHCnueCC0pi07             
-  true ,  // kNuisEffRHCnueCC0pi08             
-  true ,  // kNuisEffRHCnueCC0pi09             
-  true ,  // kNuisEffRHCnueCC1pic01            
-  true ,  // kNuisEffRHCnueCC1pic02            
-  true ,  // kNuisEffRHCnueCC1pic03            
-  true ,  // kNuisEffRHCnueCC1pic04            
-  true ,  // kNuisEffRHCnueCC1pic05            
-  true ,  // kNuisEffRHCnueCC1pic06            
-  true ,  // kNuisEffRHCnueCC1pic07            
-  true ,  // kNuisEffRHCnueCC1pic08            
-  true ,  // kNuisEffRHCnueCC1pic09            
-  true ,  // kNuisEffRHCnueCC1piz01            
-  true ,  // kNuisEffRHCnueCC1piz02            
-  true ,  // kNuisEffRHCnueCC1piz03            
-  true ,  // kNuisEffRHCnueCC1piz04            
-  true ,  // kNuisEffRHCnueCC1piz05            
-  true ,  // kNuisEffRHCnueCC1piz06            
-  true ,  // kNuisEffRHCnueCC1piz07            
-  true ,  // kNuisEffRHCnueCC1piz08            
-  true ,  // kNuisEffRHCnueCC1piz09            
-  true ,  // kNuisEffRHCnueCCother01           
-  true ,  // kNuisEffRHCnueCCother02           
-  true ,  // kNuisEffRHCnueCCother03           
-  true ,  // kNuisEffRHCnueCCother04           
-  true ,  // kNuisEffRHCnueCCother05           
-  true ,  // kNuisEffRHCnueCCother06           
-  true ,  // kNuisEffRHCnueCCother07           
-  true ,  // kNuisEffRHCnueCCother08           
-  true ,  // kNuisEffRHCnueCCother09           
-  true ,  // kNuisEffRHCnueCCother10           
-  true ,  // kNuisEffRHCnueCCother11           
-  true ,  // kNuisEffRHCnueCCWS01              
-  true ,  // kNuisEffRHCnueCCWS02              
-  true ,  // kNuisEffRHCNC0pi01                
-  true ,  // kNuisEffRHCNC0pi02                
-  true ,  // kNuisEffRHCNC0pi03                
-  true ,  // kNuisEffRHCNC1pic01               
-  true ,  // kNuisEffRHCNC1pic02               
-  true ,  // kNuisEffRHCNC1pic03               
-  true ,  // kNuisEffRHCNC1piz01               
-  true ,  // kNuisEffRHCNC1piz02               
-  true ,  // kNuisEffRHCNC1piz03               
-  true ,  // kNuisEffRHCNCother01              
-  true ,  // kNuisEffRHCNCother02              
-  true ,  // kNuisEffRHCNCother03              
-  true ,  // kNuisEffRHCNeutrinoElec           
-  true ,  // kNuisEffRHCIMD                    
+  true ,  // kNuisEffFHCnumuCC0pi1trk01
+  true ,  // kNuisEffFHCnumuCC0pi1trk02
+  true ,  // kNuisEffFHCnumuCC0pi1trk03
+  true ,  // kNuisEffFHCnumuCC0pi1trk04
+  true ,  // kNuisEffFHCnumuCC0pi1trk05
+  true ,  // kNuisEffFHCnumuCC0pi1trk06
+  true ,  // kNuisEffFHCnumuCC0pi1trk07
+  true ,  // kNuisEffFHCnumuCC0pi1trk08
+  true ,  // kNuisEffFHCnumuCC0pi1trk09
+  true ,  // kNuisEffFHCnumuCC0pi2trk01
+  true ,  // kNuisEffFHCnumuCC0pi2trk02
+  true ,  // kNuisEffFHCnumuCC0pi2trk03
+  true ,  // kNuisEffFHCnumuCC0pi2trk04
+  true ,  // kNuisEffFHCnumuCC0pi2trk05
+  true ,  // kNuisEffFHCnumuCC0pi2trk06
+  true ,  // kNuisEffFHCnumuCC0pi2trk07
+  true ,  // kNuisEffFHCnumuCC0pi2trk08
+  true ,  // kNuisEffFHCnumuCC0pi2trk09
+  true ,  // kNuisEffFHCnumuCC0piNtrk01
+  true ,  // kNuisEffFHCnumuCC0piNtrk02
+  true ,  // kNuisEffFHCnumuCC0piNtrk03
+  true ,  // kNuisEffFHCnumuCC0piNtrk04
+  true ,  // kNuisEffFHCnumuCC0piNtrk05
+  true ,  // kNuisEffFHCnumuCC0piNtrk06
+  true ,  // kNuisEffFHCnumuCC0piNtrk07
+  true ,  // kNuisEffFHCnumuCC0piNtrk08
+  true ,  // kNuisEffFHCnumuCC0piNtrk09
+  true ,  // kNuisEffFHCnumuCC0piNtrk10
+  true ,  // kNuisEffFHCnumuCC0piNtrk11
+  true ,  // kNuisEffFHCnumuCC0piNtrk12
+  true ,  // kNuisEffFHCnumuCC0piNtrk13
+  true ,  // kNuisEffFHCnumuCC0piNtrk14
+  true ,  // kNuisEffFHCnumuCC0piNtrk15
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta01
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta02
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta03
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta04
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta05
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta06
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta07
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta08
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta09
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta10
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta11
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta12
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta13
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta14
+  true ,  // kNuisEffFHCnumuCC1pi3trkDelta15
+  true ,  // kNuisEffFHCnumuCC1pic01
+  true ,  // kNuisEffFHCnumuCC1pic02
+  true ,  // kNuisEffFHCnumuCC1pic03
+  true ,  // kNuisEffFHCnumuCC1pic04
+  true ,  // kNuisEffFHCnumuCC1pic05
+  true ,  // kNuisEffFHCnumuCC1pic06
+  true ,  // kNuisEffFHCnumuCC1pic07
+  true ,  // kNuisEffFHCnumuCC1pic08
+  true ,  // kNuisEffFHCnumuCC1pic09
+  true ,  // kNuisEffFHCnumuCC1piz01
+  true ,  // kNuisEffFHCnumuCC1piz02
+  true ,  // kNuisEffFHCnumuCC1piz03
+  true ,  // kNuisEffFHCnumuCC1piz04
+  true ,  // kNuisEffFHCnumuCC1piz05
+  true ,  // kNuisEffFHCnumuCC1piz06
+  true ,  // kNuisEffFHCnumuCC1piz07
+  true ,  // kNuisEffFHCnumuCC1piz08
+  true ,  // kNuisEffFHCnumuCC1piz09
+  true ,  // kNuisEffFHCnumuCC1pic1piz01
+  true ,  // kNuisEffFHCnumuCC1pic1piz02
+  true ,  // kNuisEffFHCnumuCC1pic1piz03
+  true ,  // kNuisEffFHCnumuCC1pic1piz04
+  true ,  // kNuisEffFHCnumuCC1pic1piz05
+  true ,  // kNuisEffFHCnumuCC1pic1piz06
+  true ,  // kNuisEffFHCnumuCC1pic1piz07
+  true ,  // kNuisEffFHCnumuCC1pic1piz08
+  true ,  // kNuisEffFHCnumuCC1pic1piz09
+  true ,  // kNuisEffFHCnumuCCother01
+  true ,  // kNuisEffFHCnumuCCother02
+  true ,  // kNuisEffFHCnumuCCother03
+  true ,  // kNuisEffFHCnumuCCother04
+  true ,  // kNuisEffFHCnumuCCother05
+  true ,  // kNuisEffFHCnumuCCother06
+  true ,  // kNuisEffFHCnumuCCother07
+  true ,  // kNuisEffFHCnumuCCother08
+  true ,  // kNuisEffFHCnumuCCother09
+  true ,  // kNuisEffFHCnumuCCother10
+  true ,  // kNuisEffFHCnumuCCother11
+  true ,  // kNuisEffFHCnumuCCWS0pi01
+  true ,  // kNuisEffFHCnumuCCWS0pi02
+  true ,  // kNuisEffFHCnumuCCWS0pi03
+  true ,  // kNuisEffFHCnumuCCWS0pi04
+  true ,  // kNuisEffFHCnumuCCWS0pi05
+  true ,  // kNuisEffFHCnumuCCWS1pic01
+  true ,  // kNuisEffFHCnumuCCWS1pic02
+  true ,  // kNuisEffFHCnumuCCWS1pic03
+  true ,  // kNuisEffFHCnumuCCWS1pic04
+  true ,  // kNuisEffFHCnumuCCWS1pic05
+  true ,  // kNuisEffFHCnumuCCWS1pic06
+  true ,  // kNuisEffFHCnumuCCWS1pic07
+  true ,  // kNuisEffFHCnumuCCWS1pic08
+  true ,  // kNuisEffFHCnumuCCWS1piz01
+  true ,  // kNuisEffFHCnumuCCWS1piz02
+  true ,  // kNuisEffFHCnumuCCWS1piz03
+  true ,  // kNuisEffFHCnumuCCWSother01
+  true ,  // kNuisEffFHCnueCC0pi01
+  true ,  // kNuisEffFHCnueCC0pi02
+  true ,  // kNuisEffFHCnueCC0pi03
+  true ,  // kNuisEffFHCnueCC0pi04
+  true ,  // kNuisEffFHCnueCC0pi05
+  true ,  // kNuisEffFHCnueCC0pi06
+  true ,  // kNuisEffFHCnueCC0pi07
+  true ,  // kNuisEffFHCnueCC0pi08
+  true ,  // kNuisEffFHCnueCC0pi09
+  true ,  // kNuisEffFHCnueCC1pic01
+  true ,  // kNuisEffFHCnueCC1pic02
+  true ,  // kNuisEffFHCnueCC1pic03
+  true ,  // kNuisEffFHCnueCC1pic04
+  true ,  // kNuisEffFHCnueCC1pic05
+  true ,  // kNuisEffFHCnueCC1pic06
+  true ,  // kNuisEffFHCnueCC1pic07
+  true ,  // kNuisEffFHCnueCC1pic08
+  true ,  // kNuisEffFHCnueCC1pic09
+  true ,  // kNuisEffFHCnueCC1piz01
+  true ,  // kNuisEffFHCnueCC1piz02
+  true ,  // kNuisEffFHCnueCC1piz03
+  true ,  // kNuisEffFHCnueCC1piz04
+  true ,  // kNuisEffFHCnueCC1piz05
+  true ,  // kNuisEffFHCnueCC1piz06
+  true ,  // kNuisEffFHCnueCC1piz07
+  true ,  // kNuisEffFHCnueCC1piz08
+  true ,  // kNuisEffFHCnueCC1piz09
+  true ,  // kNuisEffFHCnueCCother01
+  true ,  // kNuisEffFHCnueCCother02
+  true ,  // kNuisEffFHCnueCCother03
+  true ,  // kNuisEffFHCnueCCother04
+  true ,  // kNuisEffFHCnueCCother05
+  true ,  // kNuisEffFHCnueCCother06
+  true ,  // kNuisEffFHCnueCCother07
+  true ,  // kNuisEffFHCnueCCother08
+  true ,  // kNuisEffFHCnueCCother09
+  true ,  // kNuisEffFHCnueCCother10
+  true ,  // kNuisEffFHCnueCCother11
+  true ,  // kNuisEffFHCnueCCWS01
+  true ,  // kNuisEffFHCnueCCWS02
+  true ,  // kNuisEffFHCNC0pi01
+  true ,  // kNuisEffFHCNC0pi02
+  true ,  // kNuisEffFHCNC0pi03
+  true ,  // kNuisEffFHCNC1pic01
+  true ,  // kNuisEffFHCNC1pic02
+  true ,  // kNuisEffFHCNC1pic03
+  true ,  // kNuisEffFHCNC1piz01
+  true ,  // kNuisEffFHCNC1piz02
+  true ,  // kNuisEffFHCNC1piz03
+  true ,  // kNuisEffFHCNCother01
+  true ,  // kNuisEffFHCNCother02
+  true ,  // kNuisEffFHCNCother03
+  true ,  // kNuisEffFHCNeutrinoElec
+  true ,  // kNuisEffFHCIMD
+  true ,  // kNuisEffRHCnumuCC0pi1trk01
+  true ,  // kNuisEffRHCnumuCC0pi1trk02
+  true ,  // kNuisEffRHCnumuCC0pi1trk03
+  true ,  // kNuisEffRHCnumuCC0pi1trk04
+  true ,  // kNuisEffRHCnumuCC0pi1trk05
+  true ,  // kNuisEffRHCnumuCC0pi1trk06
+  true ,  // kNuisEffRHCnumuCC0pi1trk07
+  true ,  // kNuisEffRHCnumuCC0pi1trk08
+  true ,  // kNuisEffRHCnumuCC0pi1trk09
+  true ,  // kNuisEffRHCnumuCC0pi2trk01
+  true ,  // kNuisEffRHCnumuCC0pi2trk02
+  true ,  // kNuisEffRHCnumuCC0pi2trk03
+  true ,  // kNuisEffRHCnumuCC0pi2trk04
+  true ,  // kNuisEffRHCnumuCC0pi2trk05
+  true ,  // kNuisEffRHCnumuCC0pi2trk06
+  true ,  // kNuisEffRHCnumuCC0pi2trk07
+  true ,  // kNuisEffRHCnumuCC0pi2trk08
+  true ,  // kNuisEffRHCnumuCC0pi2trk09
+  true ,  // kNuisEffRHCnumuCC0piNtrk01
+  true ,  // kNuisEffRHCnumuCC0piNtrk02
+  true ,  // kNuisEffRHCnumuCC0piNtrk03
+  true ,  // kNuisEffRHCnumuCC0piNtrk04
+  true ,  // kNuisEffRHCnumuCC0piNtrk05
+  true ,  // kNuisEffRHCnumuCC0piNtrk06
+  true ,  // kNuisEffRHCnumuCC0piNtrk07
+  true ,  // kNuisEffRHCnumuCC0piNtrk08
+  true ,  // kNuisEffRHCnumuCC0piNtrk09
+  true ,  // kNuisEffRHCnumuCC0piNtrk10
+  true ,  // kNuisEffRHCnumuCC0piNtrk11
+  true ,  // kNuisEffRHCnumuCC0piNtrk12
+  true ,  // kNuisEffRHCnumuCC0piNtrk13
+  true ,  // kNuisEffRHCnumuCC0piNtrk14
+  true ,  // kNuisEffRHCnumuCC0piNtrk15
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta01
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta02
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta03
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta04
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta05
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta06
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta07
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta08
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta09
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta10
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta11
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta12
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta13
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta14
+  true ,  // kNuisEffRHCnumuCC1pi3trkDelta15
+  true ,  // kNuisEffRHCnumuCC1pic01
+  true ,  // kNuisEffRHCnumuCC1pic02
+  true ,  // kNuisEffRHCnumuCC1pic03
+  true ,  // kNuisEffRHCnumuCC1pic04
+  true ,  // kNuisEffRHCnumuCC1pic05
+  true ,  // kNuisEffRHCnumuCC1pic06
+  true ,  // kNuisEffRHCnumuCC1pic07
+  true ,  // kNuisEffRHCnumuCC1pic08
+  true ,  // kNuisEffRHCnumuCC1pic09
+  true ,  // kNuisEffRHCnumuCC1piz01
+  true ,  // kNuisEffRHCnumuCC1piz02
+  true ,  // kNuisEffRHCnumuCC1piz03
+  true ,  // kNuisEffRHCnumuCC1piz04
+  true ,  // kNuisEffRHCnumuCC1piz05
+  true ,  // kNuisEffRHCnumuCC1piz06
+  true ,  // kNuisEffRHCnumuCC1piz07
+  true ,  // kNuisEffRHCnumuCC1piz08
+  true ,  // kNuisEffRHCnumuCC1piz09
+  true ,  // kNuisEffRHCnumuCC1pic1piz01
+  true ,  // kNuisEffRHCnumuCC1pic1piz02
+  true ,  // kNuisEffRHCnumuCC1pic1piz03
+  true ,  // kNuisEffRHCnumuCC1pic1piz04
+  true ,  // kNuisEffRHCnumuCC1pic1piz05
+  true ,  // kNuisEffRHCnumuCC1pic1piz06
+  true ,  // kNuisEffRHCnumuCC1pic1piz07
+  true ,  // kNuisEffRHCnumuCC1pic1piz08
+  true ,  // kNuisEffRHCnumuCC1pic1piz09
+  true ,  // kNuisEffRHCnumuCCother01
+  true ,  // kNuisEffRHCnumuCCother02
+  true ,  // kNuisEffRHCnumuCCother03
+  true ,  // kNuisEffRHCnumuCCother04
+  true ,  // kNuisEffRHCnumuCCother05
+  true ,  // kNuisEffRHCnumuCCother06
+  true ,  // kNuisEffRHCnumuCCother07
+  true ,  // kNuisEffRHCnumuCCother08
+  true ,  // kNuisEffRHCnumuCCother09
+  true ,  // kNuisEffRHCnumuCCother10
+  true ,  // kNuisEffRHCnumuCCother11
+  true ,  // kNuisEffRHCnumuCCWS0pi01
+  true ,  // kNuisEffRHCnumuCCWS0pi02
+  true ,  // kNuisEffRHCnumuCCWS0pi03
+  true ,  // kNuisEffRHCnumuCCWS0pi04
+  true ,  // kNuisEffRHCnumuCCWS0pi05
+  true ,  // kNuisEffRHCnumuCCWS1pic01
+  true ,  // kNuisEffRHCnumuCCWS1pic02
+  true ,  // kNuisEffRHCnumuCCWS1pic03
+  true ,  // kNuisEffRHCnumuCCWS1pic04
+  true ,  // kNuisEffRHCnumuCCWS1pic05
+  true ,  // kNuisEffRHCnumuCCWS1pic06
+  true ,  // kNuisEffRHCnumuCCWS1pic07
+  true ,  // kNuisEffRHCnumuCCWS1pic08
+  true ,  // kNuisEffRHCnumuCCWS1piz01
+  true ,  // kNuisEffRHCnumuCCWS1piz02
+  true ,  // kNuisEffRHCnumuCCWS1piz03
+  true ,  // kNuisEffRHCnumuCCWSother01
+  true ,  // kNuisEffRHCnueCC0pi01
+  true ,  // kNuisEffRHCnueCC0pi02
+  true ,  // kNuisEffRHCnueCC0pi03
+  true ,  // kNuisEffRHCnueCC0pi04
+  true ,  // kNuisEffRHCnueCC0pi05
+  true ,  // kNuisEffRHCnueCC0pi06
+  true ,  // kNuisEffRHCnueCC0pi07
+  true ,  // kNuisEffRHCnueCC0pi08
+  true ,  // kNuisEffRHCnueCC0pi09
+  true ,  // kNuisEffRHCnueCC1pic01
+  true ,  // kNuisEffRHCnueCC1pic02
+  true ,  // kNuisEffRHCnueCC1pic03
+  true ,  // kNuisEffRHCnueCC1pic04
+  true ,  // kNuisEffRHCnueCC1pic05
+  true ,  // kNuisEffRHCnueCC1pic06
+  true ,  // kNuisEffRHCnueCC1pic07
+  true ,  // kNuisEffRHCnueCC1pic08
+  true ,  // kNuisEffRHCnueCC1pic09
+  true ,  // kNuisEffRHCnueCC1piz01
+  true ,  // kNuisEffRHCnueCC1piz02
+  true ,  // kNuisEffRHCnueCC1piz03
+  true ,  // kNuisEffRHCnueCC1piz04
+  true ,  // kNuisEffRHCnueCC1piz05
+  true ,  // kNuisEffRHCnueCC1piz06
+  true ,  // kNuisEffRHCnueCC1piz07
+  true ,  // kNuisEffRHCnueCC1piz08
+  true ,  // kNuisEffRHCnueCC1piz09
+  true ,  // kNuisEffRHCnueCCother01
+  true ,  // kNuisEffRHCnueCCother02
+  true ,  // kNuisEffRHCnueCCother03
+  true ,  // kNuisEffRHCnueCCother04
+  true ,  // kNuisEffRHCnueCCother05
+  true ,  // kNuisEffRHCnueCCother06
+  true ,  // kNuisEffRHCnueCCother07
+  true ,  // kNuisEffRHCnueCCother08
+  true ,  // kNuisEffRHCnueCCother09
+  true ,  // kNuisEffRHCnueCCother10
+  true ,  // kNuisEffRHCnueCCother11
+  true ,  // kNuisEffRHCnueCCWS01
+  true ,  // kNuisEffRHCnueCCWS02
+  true ,  // kNuisEffRHCNC0pi01
+  true ,  // kNuisEffRHCNC0pi02
+  true ,  // kNuisEffRHCNC0pi03
+  true ,  // kNuisEffRHCNC1pic01
+  true ,  // kNuisEffRHCNC1pic02
+  true ,  // kNuisEffRHCNC1pic03
+  true ,  // kNuisEffRHCNC1piz01
+  true ,  // kNuisEffRHCNC1piz02
+  true ,  // kNuisEffRHCNC1piz03
+  true ,  // kNuisEffRHCNCother01
+  true ,  // kNuisEffRHCNCother02
+  true ,  // kNuisEffRHCNCother03
+  true ,  // kNuisEffRHCNeutrinoElec
+  true ,  // kNuisEffRHCIMD
   // Far detector systematics
   false,  // kNuisEffFDNuMuCCHigh
   false,  // kNuisEffFDNuMuCCLow
@@ -660,7 +660,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   { 0.0 , kErecoMax } ,   // kNuisFHCNuEBarFlux04
   { 0.0 , kErecoMax } ,   // kNuisFHCNuEBarFlux05
   { 0.0 , kErecoMax } ,   // kNuisFHCNuEBarFlux06
-  
+
   { 0.0 , kErecoMax } ,   // kNuisRHCNuMuFlux00
   { 0.0 , kErecoMax } ,   // kNuisRHCNuMuFlux01
   { 0.0 , kErecoMax } ,   // kNuisRHCNuMuFlux02
@@ -713,7 +713,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   { 0.0 , kErecoMax } ,   // kNuisRHCNuEBarFlux04
   { 0.0 , kErecoMax } ,   // kNuisRHCNuEBarFlux05
   { 0.0 , kErecoMax } ,   // kNuisRHCNuEBarFlux06
-    
+
   { 0.0 , kErecoMax } ,   // kNuisFHCNuMuFDFlux00
   { 0.0 , kErecoMax } ,   // kNuisFHCNuMuFDFlux01
   { 0.0 , kErecoMax } ,   // kNuisFHCNuMuFDFlux02
@@ -864,331 +864,331 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   { 0.0 , kErecoMax } ,  // kNuisIntFracNucAbsorb
   { 0.0 , kErecoMax } ,  // kNuisIntFracNucProduction
   // Detector systematics
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk02        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk03        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk04        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk05        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk06        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk07        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk08        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi1trk09        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk02        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk03        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk04        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk05        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk06        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk07        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk08        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0pi2trk09        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk02        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk03        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk04        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk05        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk06        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk07        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk08        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk09        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk10        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk11        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk12        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk13        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk14        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC0piNtrk15        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta01   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta02   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta03   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta04   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta05   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta06   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta07   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta08   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta09   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta10   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta11   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta12   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta13   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta14   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta15   
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic01           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic02           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic03           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic04           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic05           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic06           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic07           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic08           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic09           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz01           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz02           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz03           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz04           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz05           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz06           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz07           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz08           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1piz09           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz01       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz02       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz03       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz04       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz05       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz06       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz07       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz08       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCC1pic1piz09       
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother01          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother02          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother03          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother04          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother05          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother06          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother07          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother08          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother09          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother10          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCother11          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS0pi01          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS0pi02          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS0pi03          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS0pi04          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS0pi05          
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic01         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic02         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic03         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic04         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic05         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic06         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic07         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1pic08         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1piz01         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1piz02         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWS1piz03         
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnumuCCWSother01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi01             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi02             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi03             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi04             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi05             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi06             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi07             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi08             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC0pi09             
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic01            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic02            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic03            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic04            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic05            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic06            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic07            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic08            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1pic09            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz01            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz02            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz03            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz04            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz05            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz06            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz07            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz08            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCC1piz09            
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother01           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother02           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother03           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother04           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother05           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother06           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother07           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother08           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother09           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother10           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCother11           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCWS01              
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCnueCCWS02              
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC0pi01                
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC0pi02                
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC0pi03                
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC1pic01               
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC1pic02               
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC1pic03               
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC1piz01               
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC1piz02               
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNC1piz03               
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNCother01              
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNCother02              
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNCother03              
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCNeutrinoElec           
-  {  0.0 , kEtrueMax} ,  // kNuisEffFHCIMD                    
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk02        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk03        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk04        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk05        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk06        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk07        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk08        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi1trk09        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk02        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk03        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk04        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk05        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk06        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk07        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk08        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0pi2trk09        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk02        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk03        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk04        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk05        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk06        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk07        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk08        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk09        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk10        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk11        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk12        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk13        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk14        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC0piNtrk15        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta01   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta02   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta03   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta04   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta05   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta06   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta07   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta08   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta09   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta10   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta11   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta12   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta13   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta14   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta15   
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic01           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic02           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic03           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic04           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic05           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic06           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic07           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic08           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic09           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz01           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz02           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz03           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz04           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz05           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz06           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz07           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz08           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1piz09           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz01       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz02       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz03       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz04       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz05       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz06       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz07       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz08       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCC1pic1piz09       
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother01          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother02          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother03          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother04          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother05          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother06          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother07          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother08          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother09          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother10          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCother11          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS0pi01          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS0pi02          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS0pi03          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS0pi04          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS0pi05          
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic01         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic02         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic03         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic04         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic05         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic06         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic07         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1pic08         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1piz01         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1piz02         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWS1piz03         
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnumuCCWSother01        
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi01             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi02             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi03             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi04             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi05             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi06             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi07             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi08             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC0pi09             
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic01            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic02            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic03            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic04            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic05            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic06            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic07            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic08            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1pic09            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz01            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz02            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz03            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz04            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz05            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz06            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz07            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz08            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCC1piz09            
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother01           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother02           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother03           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother04           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother05           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother06           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother07           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother08           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother09           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother10           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCother11           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCWS01              
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCnueCCWS02              
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC0pi01                
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC0pi02                
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC0pi03                
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC1pic01               
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC1pic02               
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC1pic03               
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC1piz01               
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC1piz02               
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNC1piz03               
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNCother01              
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNCother02              
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNCother03              
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCNeutrinoElec           
-  {  0.0 , kEtrueMax} ,  // kNuisEffRHCIMD                    
+  {  0.0 , 3.0      } ,  // kNuisEffFHCnumuCC0pi1trk01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC0pi1trk02
+  {  0.0 , 2.0      } ,  // kNuisEffFHCnumuCC0pi1trk03
+  {  2.0 , 3.0      } ,  // kNuisEffFHCnumuCC0pi1trk04
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC0pi1trk05
+  {  0.0 , 2.0      } ,  // kNuisEffFHCnumuCC0pi1trk06
+  {  2.0 , 3.0      } ,  // kNuisEffFHCnumuCC0pi1trk07
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC0pi1trk08
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnumuCC0pi1trk09 //
+  {  0.0 , 3.0      } ,  // kNuisEffFHCnumuCC0pi2trk01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC0pi2trk02
+  {  0.0 , 2.0      } ,  // kNuisEffFHCnumuCC0pi2trk03
+  {  2.0 , 3.0      } ,  // kNuisEffFHCnumuCC0pi2trk04
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC0pi2trk05
+  {  0.0 , 2.0      } ,  // kNuisEffFHCnumuCC0pi2trk06
+  {  2.0 , 3.0      } ,  // kNuisEffFHCnumuCC0pi2trk07
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC0pi2trk08
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnumuCC0pi2trk09 //
+  {  0.0 , 3.0      } ,  // kNuisEffFHCnumuCC0piNtrk01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC0piNtrk02
+  {  0.0 , 2.0      } ,  // kNuisEffFHCnumuCC0piNtrk03
+  {  2.0 , 3.0      } ,  // kNuisEffFHCnumuCC0piNtrk04
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC0piNtrk05
+  {  5.0 , 7.5      } ,  // kNuisEffFHCnumuCC0piNtrk06
+  {  0.0 , 2.0      } ,  // kNuisEffFHCnumuCC0piNtrk07
+  {  2.0 , 3.0      } ,  // kNuisEffFHCnumuCC0piNtrk08
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC0piNtrk09
+  {  5.0 , 7.5      } ,  // kNuisEffFHCnumuCC0piNtrk10
+  {  0.0 , 2.0      } ,  // kNuisEffFHCnumuCC0piNtrk11
+  {  2.0 , 3.0      } ,  // kNuisEffFHCnumuCC0piNtrk12
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC0piNtrk13
+  {  5.0 , 7.5      } ,  // kNuisEffFHCnumuCC0piNtrk14
+  {  7.5 , kErecoMax} ,  // kNuisEffFHCnumuCC0piNtrk15 //
+  {  0.0 , 3.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta02
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta03
+  {  1.0 , 3.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta04
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta05
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta06
+  {  1.0 , 3.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta07
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta08
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta09
+  {  1.0 , 3.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta10
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta11
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta12
+  {  1.0 , 3.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta13
+  {  3.0 , 5.0      } ,  // kNuisEffFHCnumuCC1pi3trkDelta14
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1pi3trkDelta15 //
+  {  0.0 , 3.0      } ,  // kNuisEffFHCnumuCC1pic01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1pic02
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1pic03
+  {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1pic04
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1pic05
+  {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1pic06
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1pic07
+  {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1pic08
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1pic09 //
+  {  0.0 , 3.0      } ,  // kNuisEffFHCnumuCC1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1piz02
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1piz03
+  {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1piz04
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1piz05
+  {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1piz06
+  {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1piz07
+  {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1piz08
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1piz09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCC1pic1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1pic1piz02
+  {  0.0 ,    1.0   } ,  // kNuisEffFHCnumuCC1pic1piz03
+  {  1.0 ,    3.0   } ,  // kNuisEffFHCnumuCC1pic1piz04
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnumuCC1pic1piz05
+  {  0.0 ,    1.0   } ,  // kNuisEffFHCnumuCC1pic1piz06
+  {  1.0 ,    3.0   } ,  // kNuisEffFHCnumuCC1pic1piz07
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnumuCC1pic1piz08
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1pic1piz09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCCother01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCCother02
+  {  0.0 ,    1.0   } ,  // kNuisEffFHCnumuCCother03
+  {  1.0 ,    3.0   } ,  // kNuisEffFHCnumuCCother04
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnumuCCother05
+  {  5.0 ,    7.5   } ,  // kNuisEffFHCnumuCCother06
+  {  0.0 ,    1.0   } ,  // kNuisEffFHCnumuCCother07
+  {  1.0 ,    3.0   } ,  // kNuisEffFHCnumuCCother08
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnumuCCother09
+  {  5.0 ,    7.5   } ,  // kNuisEffFHCnumuCCother10
+  {  7.5 , kErecoMax} ,  // kNuisEffFHCnumuCCother11 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCCWS0pi01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS0pi02
+  {  0.0 ,    5.0   } ,  // kNuisEffFHCnumuCCWS0pi03
+  {  0.0 ,    5.0   } ,  // kNuisEffFHCnumuCCWS0pi04
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS0pi05 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCCWS1pic01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS1pic02
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCCWS1pic03
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCCWS1pic04
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCCWS1pic05
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS1pic06
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS1pic07
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS1pic08 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCCWS1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS1piz02
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWS1piz03 //
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnumuCCWSother01 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC0pi01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnueCC0pi02
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC0pi03
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC0pi04
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC0pi05
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC0pi06
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC0pi07
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC0pi08
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCC0pi09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1pic01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnueCC1pic02
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1pic03
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1pic04
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1pic05
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1pic06
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1pic07
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1pic08
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCC1pic09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnueCC1piz02
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1piz03
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1piz04
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1piz05
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1piz06
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1piz07
+  {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1piz08
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCC1piz09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCCother01
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCnueCCother02
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCCother03
+  {  3.0 ,    7.5   } ,  // kNuisEffFHCnueCCother04
+  {  7.5 , kErecoMax} ,  // kNuisEffFHCnueCCother05
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCCother06
+  {  3.0 ,    7.5   } ,  // kNuisEffFHCnueCCother07
+  {  7.5 , kErecoMax} ,  // kNuisEffFHCnueCCother08
+  {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCCother09
+  {  3.0 ,    7.5   } ,  // kNuisEffFHCnueCCother10
+  {  7.5 , kErecoMax} ,  // kNuisEffFHCnueCCother11 //
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCCWS01
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCCWS02 //
+  {  0.0 ,   1.0    } ,  // kNuisEffFHCNC0pi01
+  {  1.0 ,   3.0    } ,  // kNuisEffFHCNC0pi02
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCNC0pi03 //
+  {  0.0 ,   1.0    } ,  // kNuisEffFHCNC1pic01
+  {  1.0 ,   3.0    } ,  // kNuisEffFHCNC1pic02
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCNC1pic03 //
+  {  0.0 ,   1.0    } ,  // kNuisEffFHCNC1piz01
+  {  1.0 ,   3.0    } ,  // kNuisEffFHCNC1piz02
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCNC1piz03 //
+  {  0.0 ,   1.0    } ,  // kNuisEffFHCNCother01
+  {  1.0 ,   3.0    } ,  // kNuisEffFHCNCother02
+  {  3.0 , kErecoMax} ,  // kNuisEffFHCNCother03
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCNeutrinoElec //
+  {  0.0 , kErecoMax} ,  // kNuisEffFHCIMD //
+  {  0.0 , 3.0      } ,  // kNuisEffRHCnumuCC0pi1trk01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC0pi1trk02
+  {  0.0 , 2.0      } ,  // kNuisEffRHCnumuCC0pi1trk03
+  {  2.0 , 3.0      } ,  // kNuisEffRHCnumuCC0pi1trk04
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC0pi1trk05
+  {  0.0 , 2.0      } ,  // kNuisEffRHCnumuCC0pi1trk06
+  {  2.0 , 3.0      } ,  // kNuisEffRHCnumuCC0pi1trk07
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC0pi1trk08
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnumuCC0pi1trk09 //
+  {  0.0 , 3.0      } ,  // kNuisEffRHCnumuCC0pi2trk01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC0pi2trk02
+  {  0.0 , 2.0      } ,  // kNuisEffRHCnumuCC0pi2trk03
+  {  2.0 , 3.0      } ,  // kNuisEffRHCnumuCC0pi2trk04
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC0pi2trk05
+  {  0.0 , 2.0      } ,  // kNuisEffRHCnumuCC0pi2trk06
+  {  2.0 , 3.0      } ,  // kNuisEffRHCnumuCC0pi2trk07
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC0pi2trk08
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnumuCC0pi2trk09 //
+  {  0.0 , 3.0      } ,  // kNuisEffRHCnumuCC0piNtrk01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC0piNtrk02
+  {  0.0 , 2.0      } ,  // kNuisEffRHCnumuCC0piNtrk03
+  {  2.0 , 3.0      } ,  // kNuisEffRHCnumuCC0piNtrk04
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC0piNtrk05
+  {  5.0 , 7.5      } ,  // kNuisEffRHCnumuCC0piNtrk06
+  {  0.0 , 2.0      } ,  // kNuisEffRHCnumuCC0piNtrk07
+  {  2.0 , 3.0      } ,  // kNuisEffRHCnumuCC0piNtrk08
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC0piNtrk09
+  {  5.0 , 7.5      } ,  // kNuisEffRHCnumuCC0piNtrk10
+  {  0.0 , 2.0      } ,  // kNuisEffRHCnumuCC0piNtrk11
+  {  2.0 , 3.0      } ,  // kNuisEffRHCnumuCC0piNtrk12
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC0piNtrk13
+  {  5.0 , 7.5      } ,  // kNuisEffRHCnumuCC0piNtrk14
+  {  7.5 , kErecoMax} ,  // kNuisEffRHCnumuCC0piNtrk15 //
+  {  0.0 , 3.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta02
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta03
+  {  1.0 , 3.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta04
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta05
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta06
+  {  1.0 , 3.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta07
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta08
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta09
+  {  1.0 , 3.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta10
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta11
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta12
+  {  1.0 , 3.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta13
+  {  3.0 , 5.0      } ,  // kNuisEffRHCnumuCC1pi3trkDelta14
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1pi3trkDelta15 //
+  {  0.0 , 3.0      } ,  // kNuisEffRHCnumuCC1pic01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1pic02
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1pic03
+  {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1pic04
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1pic05
+  {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1pic06
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1pic07
+  {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1pic08
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1pic09 //
+  {  0.0 , 3.0      } ,  // kNuisEffRHCnumuCC1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1piz02
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1piz03
+  {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1piz04
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1piz05
+  {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1piz06
+  {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1piz07
+  {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1piz08
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1piz09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCC1pic1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1pic1piz02
+  {  0.0 ,    1.0   } ,  // kNuisEffRHCnumuCC1pic1piz03
+  {  1.0 ,    3.0   } ,  // kNuisEffRHCnumuCC1pic1piz04
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnumuCC1pic1piz05
+  {  0.0 ,    1.0   } ,  // kNuisEffRHCnumuCC1pic1piz06
+  {  1.0 ,    3.0   } ,  // kNuisEffRHCnumuCC1pic1piz07
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnumuCC1pic1piz08
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1pic1piz09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCCother01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCCother02
+  {  0.0 ,    1.0   } ,  // kNuisEffRHCnumuCCother03
+  {  1.0 ,    3.0   } ,  // kNuisEffRHCnumuCCother04
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnumuCCother05
+  {  5.0 ,    7.5   } ,  // kNuisEffRHCnumuCCother06
+  {  0.0 ,    1.0   } ,  // kNuisEffRHCnumuCCother07
+  {  1.0 ,    3.0   } ,  // kNuisEffRHCnumuCCother08
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnumuCCother09
+  {  5.0 ,    7.5   } ,  // kNuisEffRHCnumuCCother10
+  {  7.5 , kErecoMax} ,  // kNuisEffRHCnumuCCother11 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCCWS0pi01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS0pi02
+  {  0.0 ,    5.0   } ,  // kNuisEffRHCnumuCCWS0pi03
+  {  0.0 ,    5.0   } ,  // kNuisEffRHCnumuCCWS0pi04
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS0pi05 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCCWS1pic01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS1pic02
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCCWS1pic03
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCCWS1pic04
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCCWS1pic05
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS1pic06
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS1pic07
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS1pic08 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCCWS1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS1piz02
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWS1piz03 //
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnumuCCWSother01 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC0pi01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnueCC0pi02
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC0pi03
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC0pi04
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC0pi05
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC0pi06
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC0pi07
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC0pi08
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCC0pi09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1pic01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnueCC1pic02
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1pic03
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1pic04
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1pic05
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1pic06
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1pic07
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1pic08
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCC1pic09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1piz01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnueCC1piz02
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1piz03
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1piz04
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1piz05
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1piz06
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1piz07
+  {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1piz08
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCC1piz09 //
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCCother01
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCnueCCother02
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCCother03
+  {  3.0 ,    7.5   } ,  // kNuisEffRHCnueCCother04
+  {  7.5 , kErecoMax} ,  // kNuisEffRHCnueCCother05
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCCother06
+  {  3.0 ,    7.5   } ,  // kNuisEffRHCnueCCother07
+  {  7.5 , kErecoMax} ,  // kNuisEffRHCnueCCother08
+  {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCCother09
+  {  3.0 ,    7.5   } ,  // kNuisEffRHCnueCCother10
+  {  7.5 , kErecoMax} ,  // kNuisEffRHCnueCCother11 //
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCCWS01
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCCWS02 //
+  {  0.0 ,   1.0    } ,  // kNuisEffRHCNC0pi01
+  {  1.0 ,   3.0    } ,  // kNuisEffRHCNC0pi02
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCNC0pi03 //
+  {  0.0 ,   1.0    } ,  // kNuisEffRHCNC1pic01
+  {  1.0 ,   3.0    } ,  // kNuisEffRHCNC1pic02
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCNC1pic03 //
+  {  0.0 ,   1.0    } ,  // kNuisEffRHCNC1piz01
+  {  1.0 ,   3.0    } ,  // kNuisEffRHCNC1piz02
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCNC1piz03 //
+  {  0.0 ,   1.0    } ,  // kNuisEffRHCNCother01
+  {  1.0 ,   3.0    } ,  // kNuisEffRHCNCother02
+  {  3.0 , kErecoMax} ,  // kNuisEffRHCNCother03 //
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCNeutrinoElec //
+  {  0.0 , kErecoMax} ,  // kNuisEffRHCIMD //
   // Far detector systematics
-   {  0.0, kErecoMax} ,  // kNuisEffFDNuMuCCHigh
-   {  0.0, kErecoMax} ,  // kNuisEffFDNuMuCCLow
-   {  0.0, kErecoMax} ,  // kNuisEffFDNuECCHigh
-   {  0.0, kErecoMax}    // kNuisEffFDNuECCLow
+  {  0.0, kErecoMax} ,  // kNuisEffFDNuMuCCHigh
+  {  0.0, kErecoMax} ,  // kNuisEffFDNuMuCCLow
+  {  0.0, kErecoMax} ,  // kNuisEffFDNuECCHigh
+  {  0.0, kErecoMax}    // kNuisEffFDNuECCLow
 };
 
-// Which is the true Q2 range?
+// Which is the Y reco range?
 static const double kFitParamYrecoRange[kNFitParams][2] =
 {
-   // Q2 min, Q2 max
+   // Y min, Y max
   //oscillation parameters
   { 0.0, kYrecoMax },
   { 0.0, kYrecoMax },
@@ -1454,320 +1454,320 @@ static const double kFitParamYrecoRange[kNFitParams][2] =
   { 0.0 , kYrecoMax },  // kNuisIntFracNucAbsorb
   { 0.0 , kYrecoMax },  // kNuisIntFracNucProduction
   // Detector systematics
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk01        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk02        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk03        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk04        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk05        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk06        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk07        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk08        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk09        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk01        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk02        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk03        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk04        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk05        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk06        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk07        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk08        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk09        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk01        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk02        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk03        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk04        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk05        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk06        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk07        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk08        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk09        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk10        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk11        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk12        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk13        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk14        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk15        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta01   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta02   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta03   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta04   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta05   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta06   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta07   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta08   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta09   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta10   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta11   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta12   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta13   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta14   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta15   
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic01           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic02           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic03           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic04           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic05           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic06           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic07           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic08           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic09           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz01           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz02           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz03           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz04           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz05           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz06           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz07           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz08           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz09           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz01       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz02       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz03       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz04       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz05       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz06       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz07       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz08       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz09       
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother01          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother02          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother03          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother04          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother05          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother06          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother07          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother08          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother09          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother10          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother11          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi01          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi02          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi03          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi04          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi05          
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic01         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic02         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic03         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic04         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic05         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic06         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic07         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic08         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz01         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz02         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz03         
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWSother01        
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi01             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi02             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi03             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi04             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi05             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi06             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi07             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi08             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi09             
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic01            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic02            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic03            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic04            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic05            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic06            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic07            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic08            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic09            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz01            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz02            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz03            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz04            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz05            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz06            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz07            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz08            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz09            
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother01           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother02           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother03           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother04           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother05           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother06           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother07           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother08           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother09           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother10           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother11           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCWS01              
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCWS02              
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi01                
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi02                
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi03                
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1pic01               
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1pic02               
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1pic03               
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1piz01               
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1piz02               
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1piz03               
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNCother01              
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNCother02              
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNCother03              
-  { 0.0  , kYrecoMax},  // kNuisEffFHCNeutrinoElec           
-  { 0.0  , kYrecoMax},  // kNuisEffFHCIMD                    
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk01        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk02        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk03        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk04        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk05        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk06        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk07        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk08        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk09        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk01        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk02        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk03        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk04        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk05        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk06        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk07        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk08        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk09        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk01        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk02        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk03        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk04        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk05        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk06        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk07        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk08        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk09        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk10        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk11        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk12        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk13        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk14        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk15        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta01   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta02   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta03   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta04   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta05   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta06   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta07   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta08   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta09   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta10   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta11   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta12   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta13   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta14   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta15   
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic01           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic02           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic03           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic04           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic05           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic06           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic07           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic08           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic09           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz01           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz02           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz03           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz04           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz05           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz06           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz07           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz08           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz09           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz01       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz02       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz03       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz04       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz05       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz06       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz07       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz08       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz09       
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother01          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother02          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother03          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother04          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother05          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother06          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother07          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother08          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother09          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother10          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother11          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi01          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi02          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi03          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi04          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi05          
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic01         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic02         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic03         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic04         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic05         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic06         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic07         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic08         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz01         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz02         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz03         
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWSother01        
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi01             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi02             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi03             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi04             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi05             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi06             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi07             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi08             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi09             
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic01            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic02            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic03            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic04            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic05            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic06            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic07            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic08            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic09            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz01            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz02            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz03            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz04            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz05            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz06            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz07            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz08            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz09            
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother01           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother02           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother03           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother04           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother05           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother06           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother07           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother08           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother09           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother10           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother11           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCWS01              
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCWS02              
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi01                
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi02                
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi03                
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1pic01               
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1pic02               
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1pic03               
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1piz01               
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1piz02               
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1piz03               
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNCother01              
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNCother02              
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNCother03              
-  { 0.0  , kYrecoMax},  // kNuisEffRHCNeutrinoElec           
-  { 0.0  , kYrecoMax},  // kNuisEffRHCIMD                    
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk10
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk11
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk12
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk13
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk14
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk15
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta10
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta11
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta12
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta13
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta14
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta15
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother10
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother11
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWSother01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother04
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother05
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother06
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother07
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother08
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother09
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother10
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother11
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCWS01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCWS02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNC1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNCother01
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNCother02
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNCother03
+  { 0.0  , kYrecoMax},  // kNuisEffFHCNeutrinoElec
+  { 0.0  , kYrecoMax},  // kNuisEffFHCIMD
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk10
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk11
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk12
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk13
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk14
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk15
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta10
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta11
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta12
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta13
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta14
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta15
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother10
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother11
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWSother01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother04
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother05
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother06
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother07
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother08
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother09
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother10
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother11
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCWS01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCWS02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1pic01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1pic02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1pic03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1piz01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1piz02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNC1piz03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNCother01
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNCother02
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNCother03
+  { 0.0  , kYrecoMax},  // kNuisEffRHCNeutrinoElec
+  { 0.0  , kYrecoMax},  // kNuisEffRHCIMD
   // Far detector systematics
   { 0.0  , kYrecoMax},  // kNuisEffFDNuMuCCHigh
   { 0.0  , kYrecoMax},  // kNuisEffFDNuMuCCLow
