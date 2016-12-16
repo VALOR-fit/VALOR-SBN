@@ -708,83 +708,6 @@ PhysParamId_t util::PhysParamFromString(string inp_name)
   return kPhypUndefined;
 }
 //________________________________________________________________________________________
-PhysHypothesis util::GetPhysHypothesis(Option_t * param_list)
-{
-// Create a PhysHypothesis object, adding all physics + nuisance params
-// The input option specifies both the set of parameters (eg "standard") 
-
-  PhysHypothesis ph(kHypVoid); 
-
-  string param_list_opt   = ((param_list)   ? param_list   : "standard");
-
-  LOG("FitParams", pNOTICE) 
-    << "Instantiating a physics hypothesis object with option: " << param_list_opt;
-
-  //
-  // Get the standard set of parameters
-  //
-
-  if(param_list_opt.find("standard") != string::npos) {
-    for(int ip = 0; ip < kNFitParams; ip++) {
-      PhysParamId_t p = kFitParam[ip];
-      if(p == kPhypUndefined) continue;
-
-      // skip detector params?
-      bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
-      if(skip_detector_params && kFitIsNuDetRelated[ip]) continue;
-
-      // skip nd detector params?
-      bool skip_nd_detector_params = (param_list_opt.find("no-nd-detector-systematics") != string::npos);
-      if(skip_nd_detector_params && kFitIsNuNDDetRelated[ip]) continue;
-
-      // skip fd detector params?
-      bool skip_fd_detector_params = (param_list_opt.find("no-fd-detector-systematics") != string::npos);
-      if(skip_fd_detector_params && kFitIsNuFDDetRelated[ip]) continue;
-
-      // skip int params?
-      bool skip_int_params = (param_list_opt.find("no-int-systematics") != string::npos);
-      if(skip_int_params && kFitIsNuIntRelated[ip]) continue;
-
-      // skip flux params?
-      bool skip_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
-      if(skip_flux_params && kFitIsNuFluxRelated[ip]) continue;
-
-      // skip nd flux params?
-      bool skip_nd_flux_params = (param_list_opt.find("no-nd-flux-systematics") != string::npos);
-      if(skip_nd_flux_params && kFitIsNDNuFluxRelated[ip]) continue;
-
-      // skip fd flux params?
-      bool skip_fd_flux_params = (param_list_opt.find("no-fd-flux-systematics") != string::npos);
-      if(skip_fd_flux_params && kFitIsFDNuFluxRelated[ip]) continue;
-
-      // skip osc params?
-      bool skip_osc_params = (param_list_opt.find("no-osc-params") != string::npos);
-      if(skip_osc_params && IsOscParam(p)) continue;
-
-    }//ip
-  }
-  //now we also defined a ND only fit params list
-  else if (param_list_opt.find("only-nd") != string::npos) {
-    for(int ip = 0; ip < kNFitParamsND; ip++) {
-      PhysParamId_t p = kFitParamND[ip];
-      if(p == kPhypUndefined) continue;
-
-      bool skip_detector_params = (param_list_opt.find("no-detector-systematics") != string::npos);
-      if(skip_detector_params && kFitIsNuDetRelated[ip]) continue;
-
-      // skip int params?                                                                                                       
-      bool skip_int_params = (param_list_opt.find("no-int-systematics") != string::npos);
-      if(skip_int_params && kFitIsNuIntRelated[ip]) continue;
-
-      bool skip_flux_params = (param_list_opt.find("no-flux-systematics") != string::npos);
-      if(skip_flux_params && kFitIsNuFluxRelated[ip]) continue;
-
-    }
-  }
-
-  return ph;
-}
-//________________________________________________________________________________________
 FitParamList * util::GetFitParameterList (Option_t * param_list, const CorrelatedSystematics * syst)
 {
 // Create a FitParamList object, adding all physics + nuisance params.
@@ -974,7 +897,19 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
   }
   //now we also defined a ND only fit params list
   else  if(param_list_opt.find("only-nd") != string::npos) {
-    fparm = new FitParamList(kNFitParamsND); // NOTE: If params are undefined, we initialize the array with more elements than used 
+    
+    int n_nd_params = 0;
+    // Count the number of params we need:
+    for(int ip = 0; ip < kNFitParams; ip++) {
+      PhysParamId_t p = kFitParam[ip];
+      if(p == kPhypUndefined) continue;
+      if(!kFitIsNDNuFluxRelated[ip] && !kFitIsNuNDDetRelated[ip] && !kFitIsNuIntRelated[ip]) {
+        continue;
+      }
+      n_nd_params++;
+    }
+    fparm = new FitParamList(n_nd_params);
+    
 
     //get other options
     bool fix_detector_params = (param_list_opt.find("fix-det-syst")  != string::npos);
@@ -985,9 +920,14 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
 
     //now loop over parameters
     int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
-    for(int ip = 0; ip < kNFitParamsND; ip++) {
-      PhysParamId_t p = kFitParamND[ip];
+    for(int ip = 0; ip < kNFitParams; ip++) {
+      PhysParamId_t p = kFitParam[ip];
       if(p == kPhypUndefined) continue;
+      
+      // If not ND, move on
+      if(!kFitIsNDNuFluxRelated[ip] && !kFitIsNuNDDetRelated[ip] && !kFitIsNuIntRelated[ip]) {
+        continue;
+      }
 
       // set parameter range, current and init value, etc
       double init = 1.0;
