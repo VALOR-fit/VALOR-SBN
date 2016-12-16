@@ -1454,149 +1454,149 @@ static const double kFitParamYrecoRange[kNFitParams][2] =
   { 0.0 , kYrecoMax },  // kNuisIntFracNucAbsorb
   { 0.0 , kYrecoMax },  // kNuisIntFracNucProduction
   // Detector systematics
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk10
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk11
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk12
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk13
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk14
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk15
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta10
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta11
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta12
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta13
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta14
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta15
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1piz09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother10
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCother11
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz03
+  {  0.0 , 0.02     },  // kNuisEffFHCnumuCC0pi1trk01
+  {  0.0 , 0.02     },  // kNuisEffFHCnumuCC0pi1trk02
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC0pi1trk03
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC0pi1trk04
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC0pi1trk05
+  {  0.5 , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk06
+  {  0.5 , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk07
+  {  0.5 , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCC0pi1trk09
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC0pi2trk01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC0pi2trk02
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC0pi2trk03
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC0pi2trk04
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC0pi2trk05
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk06
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk07
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCC0pi2trk09
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC0piNtrk01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC0piNtrk02
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC0piNtrk03
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC0piNtrk04
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC0piNtrk05
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC0piNtrk06
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC0piNtrk07
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC0piNtrk08
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC0piNtrk09
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC0piNtrk10
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk11
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk12
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk13
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk14
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCC0piNtrk15
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1pi3trkDelta01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1pi3trkDelta02
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC1pi3trkDelta03
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC1pi3trkDelta04
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC1pi3trkDelta05
+  { 0.3  , 0.5      },  // kNuisEffFHCnumuCC1pi3trkDelta06
+  { 0.3  , 0.5      },  // kNuisEffFHCnumuCC1pi3trkDelta07
+  { 0.3  , 0.5      },  // kNuisEffFHCnumuCC1pi3trkDelta08
+  { 0.5  , 0.7      },  // kNuisEffFHCnumuCC1pi3trkDelta09
+  { 0.5  , 0.7      },  // kNuisEffFHCnumuCC1pi3trkDelta10
+  { 0.5  , 0.7      },  // kNuisEffFHCnumuCC1pi3trkDelta11
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta12
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta13
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta14
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCC1pi3trkDelta15
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1pic01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1pic02
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC1pic03
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC1pic04
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC1pic05
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC1pic06
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC1pic07
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC1pic08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCC1pic09
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1piz01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1piz02
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC1piz03
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCC1piz04
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC1piz05
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCC1piz06
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC1piz07
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCC1piz08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCC1piz09
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1pic1piz01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCC1pic1piz02
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC1pic1piz03
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC1pic1piz04
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCC1pic1piz05
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz06
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz07
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCC1pic1piz09
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCother01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCother02
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCCother03
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCCother04
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCCother05
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCCother06
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCCother07
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCCother08
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCCother09
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCCother10
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCCother11
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCWS0pi01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCWS0pi02
+  { 0.02 , 0.5      },  // kNuisEffFHCnumuCCWS0pi03
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi04
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCCWS0pi05
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCWS1pic01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCWS1pic02
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCCWS1pic03
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCCWS1pic04
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic05
+  { 0.02 , 0.3      },  // kNuisEffFHCnumuCCWS1pic06
+  { 0.3  , 0.7      },  // kNuisEffFHCnumuCCWS1pic07
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnumuCCWS1pic08
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCWS1piz01
+  { 0.0  , 0.02     },  // kNuisEffFHCnumuCCWS1piz02
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnumuCCWS1piz03
   { 0.0  , kYrecoMax},  // kNuisEffFHCnumuCCWSother01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC0pi09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1pic09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCC1piz09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother02
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother03
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother04
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother05
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother06
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother07
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother08
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother09
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother10
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCother11
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCWS01
-  { 0.0  , kYrecoMax},  // kNuisEffFHCnueCCWS02
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCC0pi01
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCC0pi02
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCC0pi03
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCC0pi04
+  { 0.3  , 0.5      },  // kNuisEffFHCnueCC0pi05
+  { 0.3  , 0.5      },  // kNuisEffFHCnueCC0pi06
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnueCC0pi07
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnueCC0pi08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnueCC0pi09
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCC1pic01
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCC1pic02
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCC1pic03
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCC1pic04
+  { 0.3  , 0.5      },  // kNuisEffFHCnueCC1pic05
+  { 0.3  , 0.5      },  // kNuisEffFHCnueCC1pic06
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnueCC1pic07
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnueCC1pic08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnueCC1pic09
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCC1piz01
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCC1piz02
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCC1piz03
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCC1piz04
+  { 0.3  , 0.5      },  // kNuisEffFHCnueCC1piz05
+  { 0.3  , 0.5      },  // kNuisEffFHCnueCC1piz06
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnueCC1piz07
+  { 0.5  , kYrecoMax},  // kNuisEffFHCnueCC1piz08
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnueCC1piz09
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCCother01
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCCother02
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCCother03
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCCother04
+  { 0.02 , 0.3      },  // kNuisEffFHCnueCCother05
+  { 0.3  , 0.7      },  // kNuisEffFHCnueCCother06
+  { 0.3  , 0.7      },  // kNuisEffFHCnueCCother07
+  { 0.3  , 0.7      },  // kNuisEffFHCnueCCother08
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnueCCother09
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnueCCother10
+  { 0.7  , kYrecoMax},  // kNuisEffFHCnueCCother11
+  { 0.0  , 0.02     },  // kNuisEffFHCnueCCWS01
+  { 0.02 , kYrecoMax},  // kNuisEffFHCnueCCWS02
   { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi01
   { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi02
   { 0.0  , kYrecoMax},  // kNuisEffFHCNC0pi03
@@ -1611,149 +1611,149 @@ static const double kFitParamYrecoRange[kNFitParams][2] =
   { 0.0  , kYrecoMax},  // kNuisEffFHCNCother03
   { 0.0  , kYrecoMax},  // kNuisEffFHCNeutrinoElec
   { 0.0  , kYrecoMax},  // kNuisEffFHCIMD
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk10
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk11
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk12
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk13
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk14
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk15
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta10
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta11
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta12
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta13
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta14
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta15
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1piz09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother10
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCother11
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz03
+  {  0.0 , 0.02     },  // kNuisEffRHCnumuCC0pi1trk01
+  {  0.0 , 0.02     },  // kNuisEffRHCnumuCC0pi1trk02
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC0pi1trk03
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC0pi1trk04
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC0pi1trk05
+  {  0.5 , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk06
+  {  0.5 , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk07
+  {  0.5 , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCC0pi1trk09
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC0pi2trk01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC0pi2trk02
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC0pi2trk03
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC0pi2trk04
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC0pi2trk05
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk06
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk07
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCC0pi2trk09
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC0piNtrk01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC0piNtrk02
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC0piNtrk03
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC0piNtrk04
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC0piNtrk05
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC0piNtrk06
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC0piNtrk07
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC0piNtrk08
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC0piNtrk09
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC0piNtrk10
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk11
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk12
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk13
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk14
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCC0piNtrk15
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1pi3trkDelta01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1pi3trkDelta02
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC1pi3trkDelta03
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC1pi3trkDelta04
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC1pi3trkDelta05
+  { 0.3  , 0.5      },  // kNuisEffRHCnumuCC1pi3trkDelta06
+  { 0.3  , 0.5      },  // kNuisEffRHCnumuCC1pi3trkDelta07
+  { 0.3  , 0.5      },  // kNuisEffRHCnumuCC1pi3trkDelta08
+  { 0.5  , 0.7      },  // kNuisEffRHCnumuCC1pi3trkDelta09
+  { 0.5  , 0.7      },  // kNuisEffRHCnumuCC1pi3trkDelta10
+  { 0.5  , 0.7      },  // kNuisEffRHCnumuCC1pi3trkDelta11
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta12
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta13
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta14
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCC1pi3trkDelta15
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1pic01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1pic02
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC1pic03
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC1pic04
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC1pic05
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC1pic06
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC1pic07
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC1pic08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCC1pic09
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1piz01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1piz02
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC1piz03
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCC1piz04
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC1piz05
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCC1piz06
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC1piz07
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCC1piz08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCC1piz09
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1pic1piz01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCC1pic1piz02
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC1pic1piz03
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC1pic1piz04
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCC1pic1piz05
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz06
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz07
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCC1pic1piz09
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCother01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCother02
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCCother03
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCCother04
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCCother05
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCCother06
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCCother07
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCCother08
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCCother09
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCCother10
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCCother11
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCWS0pi01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCWS0pi02
+  { 0.02 , 0.5      },  // kNuisEffRHCnumuCCWS0pi03
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi04
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCCWS0pi05
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCWS1pic01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCWS1pic02
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCCWS1pic03
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCCWS1pic04
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic05
+  { 0.02 , 0.3      },  // kNuisEffRHCnumuCCWS1pic06
+  { 0.3  , 0.7      },  // kNuisEffRHCnumuCCWS1pic07
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnumuCCWS1pic08
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCWS1piz01
+  { 0.0  , 0.02     },  // kNuisEffRHCnumuCCWS1piz02
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnumuCCWS1piz03
   { 0.0  , kYrecoMax},  // kNuisEffRHCnumuCCWSother01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC0pi09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1pic09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCC1piz09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother02
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother03
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother04
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother05
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother06
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother07
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother08
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother09
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother10
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCother11
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCWS01
-  { 0.0  , kYrecoMax},  // kNuisEffRHCnueCCWS02
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCC0pi01
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCC0pi02
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCC0pi03
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCC0pi04
+  { 0.3  , 0.5      },  // kNuisEffRHCnueCC0pi05
+  { 0.3  , 0.5      },  // kNuisEffRHCnueCC0pi06
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnueCC0pi07
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnueCC0pi08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnueCC0pi09
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCC1pic01
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCC1pic02
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCC1pic03
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCC1pic04
+  { 0.3  , 0.5      },  // kNuisEffRHCnueCC1pic05
+  { 0.3  , 0.5      },  // kNuisEffRHCnueCC1pic06
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnueCC1pic07
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnueCC1pic08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnueCC1pic09
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCC1piz01
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCC1piz02
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCC1piz03
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCC1piz04
+  { 0.3  , 0.5      },  // kNuisEffRHCnueCC1piz05
+  { 0.3  , 0.5      },  // kNuisEffRHCnueCC1piz06
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnueCC1piz07
+  { 0.5  , kYrecoMax},  // kNuisEffRHCnueCC1piz08
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnueCC1piz09
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCCother01
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCCother02
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCCother03
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCCother04
+  { 0.02 , 0.3      },  // kNuisEffRHCnueCCother05
+  { 0.3  , 0.7      },  // kNuisEffRHCnueCCother06
+  { 0.3  , 0.7      },  // kNuisEffRHCnueCCother07
+  { 0.3  , 0.7      },  // kNuisEffRHCnueCCother08
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnueCCother09
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnueCCother10
+  { 0.7  , kYrecoMax},  // kNuisEffRHCnueCCother11
+  { 0.0  , 0.02     },  // kNuisEffRHCnueCCWS01
+  { 0.02 , kYrecoMax},  // kNuisEffRHCnueCCWS02
   { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi01
   { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi02
   { 0.0  , kYrecoMax},  // kNuisEffRHCNC0pi03
