@@ -19,7 +19,7 @@ BUILD_TARGETS =    print-make-info     \
 		   copy-scripts-to-bin             \
 		   build-libs                      \
 		   copy-rootdict-to-lib            \
-		   build-apps   
+		   | build-apps   
 
 # define targets
 
