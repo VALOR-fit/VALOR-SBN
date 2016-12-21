@@ -195,18 +195,6 @@ int main(int argc, char ** argv)
     VLOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
     exit(-1);
   }
-  
-  // Only read the branches we're using and their sub-branches
-  analysis_tree->SetBranchStatus("*",0);
-  for (unsigned int ib = 0 ; ib < active_branches.size(); ib++) {
-    active_branches[ib]->SetStatus(1);
-    TObjArray * bar = active_branches[ib]->GetListOfBranches();
-    for (int ie = 0 ; ie < bar->GetEntries(); ie++) {
-      TBranch * b = dynamic_cast<TBranch*>(bar->At(ie));
-      assert(b);
-      b->SetStatus(1);
-    }
-  }
 
 
   Long64_t nev_accept = 0;
@@ -221,6 +209,11 @@ int main(int argc, char ** argv)
   //
   // event loop to get total POT
   //
+  
+  // Disable all branches except POT weight
+  analysis_tree->SetBranchStatus("*",0);
+  analysis_tree->SetBranchStatus("POTWeight",1);
+    
   VLOG("make_minidst", pNOTICE) << "Doing loop to calculate total POT";
   int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
   for(Long64_t iev = 0; iev < nev; iev++) {
@@ -240,6 +233,17 @@ int main(int argc, char ** argv)
     last_tree_number = analysis_tree->GetTreeNumber();
   }
   VLOG("make_minidst", pNOTICE) << "Total POT read: "<<total_pot_read;
+  
+  // Enable all the branches we actually care about
+  for (unsigned int ib = 0 ; ib < active_branches.size(); ib++) {
+    active_branches[ib]->SetStatus(1);
+    TObjArray * bar = active_branches[ib]->GetListOfBranches();
+    for (int ie = 0 ; ie < bar->GetEntries(); ie++) {
+      TBranch * b = dynamic_cast<TBranch*>(bar->At(ie));
+      assert(b);
+      b->SetStatus(1);
+    }
+  }
   
   
   //
@@ -269,9 +273,7 @@ int main(int argc, char ** argv)
       enu_reco   = enu_reco_float;
       y_reco     = y_reco_float;
       //~ wght_pot   = wght_pot_float;
-      if (gOptInpFileFormat == "fgt") {
-        sample = sample_reco;
-      }
+      sample = sample_reco;
     }
     
     VLOG("make_minidist",pDEBUG) << "Read event: "
