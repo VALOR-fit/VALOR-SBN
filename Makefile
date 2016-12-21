@@ -84,7 +84,7 @@ build-sd-fit: make-bin-lib-dir FORCE
 build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions build-binning \
   build-systematics build-utilities build-genie-utilities build-elements
  
-build-apps: make-bin-lib-dir build-libs FORCE
+build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building apps..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Apps;
