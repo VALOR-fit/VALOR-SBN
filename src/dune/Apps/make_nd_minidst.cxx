@@ -80,14 +80,14 @@ int main(int argc, char ** argv)
 
   // Create output mini-DST   
 
-  int    valor_minidst_beam       = -1; // see Conventions/BeamConf.h 
-  int    valor_minidst_sample     = -1; // see SDFit/NDSample.h 
-  int    valor_minidst_reac_mode  = -1; // see Conventions/ReacMode.h 
-  int    valor_minidst_target     = -1; // nuclear target -  GENIE PDG convention
-  double valor_minidst_enu_true   = -1; // true neutrino energy, in GeV
-  double valor_minidst_Q2_true    = -1; // true neutrino energy, in GeV
-  double valor_minidst_enu_reco   = -1; // reco neutrino energy, in GeV
-  double valor_minidst_y_reco     = -1; // inelasticity, in GeV
+  int    valor_minidst_beam       = -99; // see Conventions/BeamConf.h 
+  int    valor_minidst_sample     = -99; // see SDFit/NDSample.h 
+  int    valor_minidst_reac_mode  = -99; // see Conventions/ReacMode.h 
+  int    valor_minidst_target     = -99; // nuclear target -  GENIE PDG convention
+  double valor_minidst_enu_true   = -99; // true neutrino energy, in GeV
+  double valor_minidst_Q2_true    = -99; // true neutrino energy, in GeV
+  double valor_minidst_enu_reco   = -99; // reco neutrino energy, in GeV
+  double valor_minidst_y_reco     = -99; // inelasticity, in GeV
   double valor_minidst_wght       = 1.; // misc weight 
   double valor_minidst_wght_pot   = 1.; // POT weight 
   double valor_minidst_wght_smear = 1.; // Kinematic smearing weight (always 1 in the ND since our files are already smeared)
@@ -165,6 +165,7 @@ int main(int argc, char ** argv)
   float enu_reco_float =  -999.;
   float y_reco_float   =  -999.;
   float wght_pot_float =  -999.;
+  float wght_tgt_float =  -999.;
   
   double total_pot_read = 0.;
   
@@ -190,6 +191,7 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("Ev_reco",         &enu_reco_float , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("POTWeight",       &wght_pot_float , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("TGTWeight",       &wght_tgt_float , &branchptr); active_branches.push_back(branchptr);
   }
   else {
     VLOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
@@ -342,6 +344,9 @@ int main(int argc, char ** argv)
     
     valor_minidst_sample_o  = sample_orig; 
     valor_minidst_sample_r  = sample_reco; 
+    
+    valor_minidst_wght = 1.;
+    valor_minidst_wght *= wght_tgt_float;
     
     if(!gOptDisableChecks) {
       //
