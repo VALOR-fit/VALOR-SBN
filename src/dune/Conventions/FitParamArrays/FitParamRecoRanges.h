@@ -929,7 +929,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1piz06
   {  0.0 , 1.0      } ,  // kNuisEffFHCnumuCC1piz07
   {  1.0 , 5.0      } ,  // kNuisEffFHCnumuCC1piz08
-  {  0.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1piz09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1piz09 //
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnumuCC1pic1piz01
   {  3.0 , kErecoMax} ,  // kNuisEffFHCnumuCC1pic1piz02
   {  0.0 ,    1.0   } ,  // kNuisEffFHCnumuCC1pic1piz03
@@ -975,7 +975,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC0pi06
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC0pi07
   {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC0pi08
-  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCC0pi09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnueCC0pi09 //
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1pic01
   {  3.0 , kErecoMax} ,  // kNuisEffFHCnueCC1pic02
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1pic03
@@ -984,7 +984,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1pic06
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1pic07
   {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1pic08
-  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCC1pic09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnueCC1pic09 //
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1piz01
   {  3.0 , kErecoMax} ,  // kNuisEffFHCnueCC1piz02
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1piz03
@@ -993,7 +993,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1piz06
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCC1piz07
   {  3.0 ,    5.0   } ,  // kNuisEffFHCnueCC1piz08
-  {  0.0 , kErecoMax} ,  // kNuisEffFHCnueCC1piz09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffFHCnueCC1piz09 //
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCCother01
   {  3.0 , kErecoMax} ,  // kNuisEffFHCnueCCother02
   {  0.0 ,    3.0   } ,  // kNuisEffFHCnueCCother03
@@ -1086,7 +1086,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1piz06
   {  0.0 , 1.0      } ,  // kNuisEffRHCnumuCC1piz07
   {  1.0 , 5.0      } ,  // kNuisEffRHCnumuCC1piz08
-  {  0.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1piz09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1piz09 //
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnumuCC1pic1piz01
   {  3.0 , kErecoMax} ,  // kNuisEffRHCnumuCC1pic1piz02
   {  0.0 ,    1.0   } ,  // kNuisEffRHCnumuCC1pic1piz03
@@ -1132,7 +1132,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC0pi06
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC0pi07
   {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC0pi08
-  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCC0pi09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnueCC0pi09 //
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1pic01
   {  3.0 , kErecoMax} ,  // kNuisEffRHCnueCC1pic02
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1pic03
@@ -1141,7 +1141,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1pic06
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1pic07
   {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1pic08
-  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCC1pic09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnueCC1pic09 //
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1piz01
   {  3.0 , kErecoMax} ,  // kNuisEffRHCnueCC1piz02
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1piz03
@@ -1150,7 +1150,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1piz06
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCC1piz07
   {  3.0 ,    5.0   } ,  // kNuisEffRHCnueCC1piz08
-  {  0.0 , kErecoMax} ,  // kNuisEffRHCnueCC1piz09 //
+  {  5.0 , kErecoMax} ,  // kNuisEffRHCnueCC1piz09 //
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCCother01
   {  3.0 , kErecoMax} ,  // kNuisEffRHCnueCCother02
   {  0.0 ,    3.0   } ,  // kNuisEffRHCnueCCother03
