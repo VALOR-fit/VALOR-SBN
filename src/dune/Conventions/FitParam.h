@@ -49,7 +49,7 @@ static const int kNFitParamsNuFlux   = kNFitParamsNuFluxND + kNFitParamsNuFluxFD
 static const int kNFitParamsNuDetND  = 314; // near detector related
 static const int kNFitParamsNuDetFD  =  4; // far detector related: one per sample for now
 static const int kNFitParamsNuDet    = kNFitParamsNuDetND+ kNFitParamsNuDetFD;
-static const int kNFitParamsNuInt  =  43; // neutrino interactions related
+static const int kNFitParamsNuInt  =  44; // neutrino interactions related
 static const int kNFitParamsNuOsc  =   6; //usual 3-flavour suspects
 
 static const int kNFitParams   = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet+kNFitParamsNuOsc;
@@ -358,19 +358,20 @@ static const PhysParamId_t kNuisIntNormNuBarCoherent     = kNuis256;
 static const PhysParamId_t kNuisIntNuNormNC              = kNuis257;
 static const PhysParamId_t kNuisIntNuBarNormNC           = kNuis258;
 static const PhysParamId_t kNuisIntNormNuMuToNuE         = kNuis259;
+static const PhysParamId_t kNuisIntNormNuMuBarToNuEBar   = kNuis260;
 
-static const PhysParamId_t kNuisIntPiMeanFreePath        = kNuis260;
-static const PhysParamId_t kNuisIntNucMeanFreePath       = kNuis261;
-static const PhysParamId_t kNuisIntFracPiChargeExchange  = kNuis262;
-static const PhysParamId_t kNuisIntFracPiInelastic       = kNuis263;
-static const PhysParamId_t kNuisIntFracPiAbsorb          = kNuis264;
-static const PhysParamId_t kNuisIntFracPiProduction      = kNuis265;
-static const PhysParamId_t kNuisIntFracNucChargeExchange = kNuis266;
-static const PhysParamId_t kNuisIntFracNucInelastic      = kNuis267;
-static const PhysParamId_t kNuisIntFracNucAbsorb         = kNuis268;
-static const PhysParamId_t kNuisIntFracNucProduction     = kNuis269;
+static const PhysParamId_t kNuisIntPiMeanFreePath        = kNuis261;
+static const PhysParamId_t kNuisIntNucMeanFreePath       = kNuis262;
+static const PhysParamId_t kNuisIntFracPiChargeExchange  = kNuis263;
+static const PhysParamId_t kNuisIntFracPiInelastic       = kNuis264;
+static const PhysParamId_t kNuisIntFracPiAbsorb          = kNuis265;
+static const PhysParamId_t kNuisIntFracPiProduction      = kNuis266;
+static const PhysParamId_t kNuisIntFracNucChargeExchange = kNuis267;
+static const PhysParamId_t kNuisIntFracNucInelastic      = kNuis268;
+static const PhysParamId_t kNuisIntFracNucAbsorb         = kNuis269;
+static const PhysParamId_t kNuisIntFracNucProduction     = kNuis270;
 
-static const PhysParamId_t kNuisIntHadronization         = kNuis270;
+static const PhysParamId_t kNuisIntHadronization         = kNuis271;
 
 // Big detector parameterisation
 static const PhysParamId_t kNuisEffFHCnumuCC0pi1trk01        = kNuis300;
@@ -971,6 +972,7 @@ static const PhysParamId_t kFitParam[kNFitParams] =
    kNuisIntNuNormNC              ,
    kNuisIntNuBarNormNC           ,
    kNuisIntNormNuMuToNuE         ,
+   kNuisIntNormNuMuBarToNuEBar   ,
    kNuisIntPiMeanFreePath        ,
    kNuisIntNucMeanFreePath       ,
    kNuisIntFracPiChargeExchange  ,

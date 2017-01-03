@@ -672,6 +672,7 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisIntNuNormNC              ) : return "f_int_nu_nc";
     case (kNuisIntNuBarNormNC           ) : return "f_int_nubar_nc";
     case (kNuisIntNormNuMuToNuE         ) : return "f_int_nuenumu";
+    case (kNuisIntNormNuMuBarToNuEBar   ) : return "f_int_nuebarnumubar";
     case (kNuisIntPiMeanFreePath        ) : return "f_int_pi_mfp";
     case (kNuisIntNucMeanFreePath       ) : return "f_int_n_mfp";
     case (kNuisIntFracPiChargeExchange  ) : return "f_int_pi_cex";
@@ -981,6 +982,7 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
     case (kNuisIntNuNormNC              ) : name = "f_{\\nu NC}";                          break;
     case (kNuisIntNuBarNormNC           ) : name = "f_{\\bar{\\nu} NC}";                   break;
     case (kNuisIntNormNuMuToNuE         ) : name = "f_{\\nu_{e} / \\nu_{\\mu}}";           break;
+    case (kNuisIntNormNuMuBarToNuEBar   ) : name = "f_{\\bar{\\nu}_{e} / \\bar{\\nu}_{\\mu}}";           break;
     case (kNuisIntPiMeanFreePath        ) : name = "f_{FSI ; \\pi ; MFP}";                 break;
     case (kNuisIntNucMeanFreePath       ) : name = "f_{FSI ; N ; MFP}";                    break;
     case (kNuisIntFracPiChargeExchange  ) : name = "f_{FSI ; \\pi ; CEx}";                 break;

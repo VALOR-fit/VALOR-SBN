@@ -264,6 +264,7 @@ static const bool kFitParamRecoKinematicDependence[kNFitParams] =
   false,  // kNuisIntNuNormNC
   false,  // kNuisIntNuBarNormNC
   false,  // kNuisIntNormNuMuToNuE
+  false,  // kNuisIntNormNuMuBarToNuEBar
   false,  // kNuisIntPiMeanFreePath
   false,  // kNuisIntNucMeanFreePath
   false,  // kNuisIntFracPiChargeExchange
@@ -853,6 +854,7 @@ static const double kFitParamErecoRange[kNFitParams][2] =
   { 0.0 , kErecoMax } ,  // kNuisIntNuNormNC
   { 0.0 , kErecoMax } ,  // kNuisIntNuBarNormNC
   { 0.0 , kErecoMax } ,  // kNuisIntNormNuMuToNuE
+  { 0.0 , kErecoMax } ,  // kNuisIntNormNuMuBarToNuEBar
   { 0.0 , kErecoMax } ,  // kNuisIntPiMeanFreePath
   { 0.0 , kErecoMax } ,  // kNuisIntNucMeanFreePath
   { 0.0 , kErecoMax } ,  // kNuisIntFracPiChargeExchange
@@ -1443,6 +1445,7 @@ static const double kFitParamYrecoRange[kNFitParams][2] =
   { 0.0 , kYrecoMax },  // kNuisIntNuNormNC
   { 0.0 , kYrecoMax },  // kNuisIntNuBarNormNC
   { 0.0 , kYrecoMax },  // kNuisIntNormNuMuToNuE
+  { 0.0 , kYrecoMax },  // kNuisIntNormNuMuBarToNuEBar
   { 0.0 , kYrecoMax },  // kNuisIntPiMeanFreePath
   { 0.0 , kYrecoMax },  // kNuisIntNucMeanFreePath
   { 0.0 , kYrecoMax },  // kNuisIntFracPiChargeExchange

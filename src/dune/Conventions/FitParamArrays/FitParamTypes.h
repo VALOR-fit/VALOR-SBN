@@ -265,6 +265,7 @@ static const FitParamGroup_t kFitParamGroup[kNFitParams] =
    kpgXSec,            // kNuisIntNuNormNC
    kpgXSec,            // kNuisIntNuBarNormNC
    kpgXSec,            // kNuisIntNormNuMuToNuE
+   kpgXSec,            // kNuisIntNormNuMuBarToNuEBar
    kpgXSec,            // kNuisIntPiMeanFreePath
    kpgXSec,            // kNuisIntNucMeanFreePath
    kpgXSec,            // kNuisIntFracPiChargeExchange
@@ -854,6 +855,7 @@ static const bool kFitIsNuFluxRelated[kNFitParams] =
    false, // kNuisIntNuNormNC
    false, // kNuisIntNuBarNormNC
    false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntNormNuMuBarToNuEBar
    false, // kNuisIntPiMeanFreePath
    false, // kNuisIntNucMeanFreePath
    false, // kNuisIntFracPiChargeExchange
@@ -1443,6 +1445,7 @@ static const bool kFitIsNDNuFluxRelated[kNFitParams] =
    false, // kNuisIntNuNormNC
    false, // kNuisIntNuBarNormNC
    false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntNormNuMuBarToNuEBar
    false, // kNuisIntPiMeanFreePath
    false, // kNuisIntNucMeanFreePath
    false, // kNuisIntFracPiChargeExchange
@@ -2032,6 +2035,7 @@ static const bool kFitIsFDNuFluxRelated[kNFitParams] =
    false, // kNuisIntNuNormNC
    false, // kNuisIntNuBarNormNC
    false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntNormNuMuBarToNuEBar
    false, // kNuisIntPiMeanFreePath
    false, // kNuisIntNucMeanFreePath
    false, // kNuisIntFracPiChargeExchange
@@ -2621,6 +2625,7 @@ static const bool kFitIsNuIntRelated[kNFitParams] =
    true, // kNuisIntNuNormNC
    true, // kNuisIntNuBarNormNC
    true, // kNuisIntNormNuMuToNuE
+   true, // kNuisIntNormNuMuBarToNuEBar
    true, // kNuisIntPiMeanFreePath
    true, // kNuisIntNucMeanFreePath
    true, // kNuisIntFracPiChargeExchange
@@ -3210,6 +3215,7 @@ static const bool kFitIsNuDetRelated[kNFitParams] =
    false, // kNuisIntNuNormNC
    false, // kNuisIntNuBarNormNC
    false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntNormNuMuBarToNuEBar
    false, // kNuisIntPiMeanFreePath
    false, // kNuisIntNucMeanFreePath
    false, // kNuisIntFracPiChargeExchange
@@ -3799,6 +3805,7 @@ static const bool kFitIsNuNDDetRelated[kNFitParams] =
    false, // kNuisIntNuNormNC
    false, // kNuisIntNuBarNormNC
    false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntNormNuMuBarToNuEBar
    false, // kNuisIntPiMeanFreePath
    false, // kNuisIntNucMeanFreePath
    false, // kNuisIntFracPiChargeExchange
@@ -4388,6 +4395,7 @@ static const bool kFitIsNuFDDetRelated[kNFitParams] =
    false, // kNuisIntNuNormNC
    false, // kNuisIntNuBarNormNC
    false, // kNuisIntNormNuMuToNuE
+   false, // kNuisIntNormNuMuBarToNuEBar
    false, // kNuisIntPiMeanFreePath
    false, // kNuisIntNucMeanFreePath
    false, // kNuisIntFracPiChargeExchange
