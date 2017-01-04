@@ -13,6 +13,7 @@
 #pragma link C++ class valor::SimpleDet2016b+;
 #pragma link C++ class valor::SimpleDet2016bND+;
 #pragma link C++ class valor::SimpleDet2016bFD+;
+#pragma link C++ class valor::DuneND2017a+;
 
 #pragma link C++ class valor::MINERVAFlux2016aND+;
 #pragma link C++ class valor::MINERVAFlux2016aFD+;
