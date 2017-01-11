@@ -29,7 +29,6 @@ ClassImp(DuneND2017a)
 DuneND2017a::DuneND2017a() :
 CorrelatedSystematics()
 {
-  int nparams = kNFitParamsNuDet;
   std::vector<PhysParamId_t> params;
   
   params.push_back(kNuisEffFHCnumuCC0pi1trk01     );
