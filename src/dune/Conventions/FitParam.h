@@ -49,7 +49,7 @@ static const int kNFitParamsNuFlux   = kNFitParamsNuFluxND + kNFitParamsNuFluxFD
 static const int kNFitParamsNuDetND  = 314; // near detector related
 static const int kNFitParamsNuDetFD  =  4; // far detector related: one per sample for now
 static const int kNFitParamsNuDet    = kNFitParamsNuDetND+ kNFitParamsNuDetFD;
-static const int kNFitParamsNuInt  =  44; // neutrino interactions related
+static const int kNFitParamsNuInt  =  45; // neutrino interactions related
 static const int kNFitParamsNuOsc  =   6; //usual 3-flavour suspects
 
 static const int kNFitParams   = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet+kNFitParamsNuOsc;
@@ -372,6 +372,7 @@ static const PhysParamId_t kNuisIntFracNucAbsorb         = kNuis269;
 static const PhysParamId_t kNuisIntFracNucProduction     = kNuis270;
 
 static const PhysParamId_t kNuisIntHadronization         = kNuis271;
+static const PhysParamId_t kNuisIntTarget                = kNuis272;
 
 // Big detector parameterisation
 static const PhysParamId_t kNuisEffFHCnumuCC0pi1trk01        = kNuis300;
@@ -700,7 +701,7 @@ static const PhysParamId_t kNuisNDFluxLastParameter  = kNuisRHCNuEBarFlux06;
 static const PhysParamId_t kNuisFDFluxFirstParameter = kNuisFHCNuMuFDFlux00;
 static const PhysParamId_t kNuisFDFluxLastParameter  = kNuisRHCNuEBarFDFlux06;
 static const PhysParamId_t kNuisIntFirstParameter    = kNuisIntNuCCQE1;
-static const PhysParamId_t kNuisIntLastParameter     = kNuisIntHadronization;
+static const PhysParamId_t kNuisIntLastParameter     = kNuisIntTarget;
 static const PhysParamId_t kNuisDetFirstParameter    = kNuisEffFHCnumuCC0pi1trk01; // Wrong - does not include FD
 static const PhysParamId_t kNuisDetLastParameter     = kNuisEffRHCIMD;             // Wrong - does not include FD
 static const PhysParamId_t kNuisNDDetFirstParameter  = kNuisEffFHCnumuCC0pi1trk01;
@@ -983,6 +984,7 @@ static const PhysParamId_t kFitParam[kNFitParams] =
    kNuisIntFracNucInelastic      ,
    kNuisIntFracNucAbsorb         ,
    kNuisIntFracNucProduction     ,
+   kNuisIntTarget                ,
    // Detector systematics
   kNuisEffFHCnumuCC0pi1trk01     ,
   kNuisEffFHCnumuCC0pi1trk02     ,

@@ -7,7 +7,11 @@
 #pragma link C++ namespace valor;
 
 #pragma link C++ class valor::MINERVAFlux2016a+;
+
 #pragma link C++ class valor::VALORInt2016a+;
+#pragma link C++ class valor::VALORInt2017a+;
+#pragma link C++ class valor::VALORInt2017aFGT+;
+
 #pragma link C++ class valor::SimpleDet2016a+;
 
 #pragma link C++ class valor::SimpleDet2016b+;

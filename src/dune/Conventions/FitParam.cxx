@@ -683,6 +683,7 @@ string util::AsString(conv::PhysParamId_t p)
     case (kNuisIntFracNucInelastic      ) : return "f_int_n_inel";
     case (kNuisIntFracNucAbsorb         ) : return "f_int_n_abs";
     case (kNuisIntFracNucProduction     ) : return "f_int_n_prod";
+    case (kNuisIntTarget                ) : return "f_int_target";
 
     case (kPhypMixing12                 ) : return "f_osc_mixing12";
     case (kPhypMixing23                 ) : return "f_osc_mixing23";

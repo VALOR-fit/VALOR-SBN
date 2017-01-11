@@ -570,6 +570,7 @@ static const ApplyMask_t kApplyParamToTemplates[kNFitParams] =
   /* kNuisIntFracNucInelastic      */ { kdApplyToAll , kbApplyToAll , kfApplyToAll       , ksApplyToAll , ktApplyToAllWithFSI , kntApplyToAll } ,
   /* kNuisIntFracNucAbsorb         */ { kdApplyToAll , kbApplyToAll , kfApplyToAll       , ksApplyToAll , ktApplyToAllWithFSI , kntApplyToAll } ,
   /* kNuisIntFracNucProduction     */ { kdApplyToAll , kbApplyToAll , kfApplyToAll       , ksApplyToAll , ktApplyToAllWithFSI , kntApplyToAll } ,
+  /* kNuisIntTarget                */ { kdApplyToAll , kbApplyToAll , kfApplyToAll       , ksApplyToAll , ktApplyToAll        , kntApplyToOther} ,
   // Detector systematics
   /* kNuisEffFHCnumuCC0pi1trk01      */ { kdApplyToDUNEND , kbApplyToFHC , kfApplyToAll , ksApplyToNuMuCC0pi1trk , ktApplyToAll , kntApplyToAll } ,
   /* kNuisEffFHCnumuCC0pi1trk02      */ { kdApplyToDUNEND , kbApplyToFHC , kfApplyToAll , ksApplyToNuMuCC0pi1trk , ktApplyToAll , kntApplyToAll } ,
