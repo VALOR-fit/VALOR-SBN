@@ -33,10 +33,10 @@ coln_width = 3
 def main(beam_mode_arg = None, sample_arg = None,
          output_file="syst_applied_table.tex",
          config_file = "dune_ndfit.xml",
-         skipflux=False, skipint=False, skipdet =False, include_empty = False, color = True):
+         skipflux=False, skipint=False, skipdet =False, include_empty = False, color = True, unosc = False):
   
   elements = valor.CompoundFitElements();
-  elements.Read(base_dir+"/config/"+config_file,"nosplines")
+  elements.Read(base_dir+"/config/"+config_file,"nosplines nomc")
   model = elements.FitModel()
   
   syst = model.GetSystematics()
@@ -58,7 +58,7 @@ def main(beam_mode_arg = None, sample_arg = None,
 \\usepackage{fullpage}
 \\usepackage{rotate}  
 \\usepackage{rotating}
-\\usepackage[paperwidth=400mm,paperheight=1800mm]{geometry} % This is huge - use pdfcrop
+\\usepackage[paperwidth=1200mm,paperheight=1800mm]{geometry} % This is huge - use pdfcrop
 \\usepackage[table]{xcolor}
 \\usepackage{nopageno}
 """)
@@ -85,6 +85,9 @@ def main(beam_mode_arg = None, sample_arg = None,
     ROOT.gROOT.ProcessLine(root_loop)
     modes  = [m for m in modes_array     if m != conv.kmUndefined]
     
+    if unosc:
+      modes = [m for m in modes if util.ReacModeToInitFlavor(m) == util.ReacModeToFinalFlavor(m)]
+    
     if first_page:
       first_page = False
     else:
@@ -95,7 +98,7 @@ def main(beam_mode_arg = None, sample_arg = None,
 \\setlength{\\tabcolsep}{3pt}
 \\renewcommand{\\arraystretch}{1.8}\n""")
     tex_output.write("\\begin{table} \\tiny\n")
-    #~ tex_output.write("\\centering\n")
+    tex_output.write("\\centering\n")
     
     # Build the format row - single lines between similar modes, double lines if the neutrino flavour or current charge changes
     table_col_spec = "| c |"
@@ -160,13 +163,14 @@ if __name__=="__main__":
   
   parser.add_option('-c', '--config', dest='config', default="fit/dune_ndfit.xml", help="Configuration file")
   
-  parser.add_option('-b', '--beam'   , dest='beam'     , default=None     , help="Beam current (FHC/RHC)")
-  parser.add_option('-s', '--sample' , dest='sample'   , default=None     , help="Sample (numuCC1trkQE etc)")
-  parser.add_option('--skip-flux'    , dest='skipflux' , action="store_true", default=False, help="Skip the flux parameters")
-  parser.add_option('--skip-int'     , dest='skipint'  , action="store_true", default=False, help="Skip the interaction parameters")
-  parser.add_option('--skip-det'     , dest='skipdet'  , action="store_true", default=False, help="Skip the detector parameters")
-  parser.add_option('--include-empty', dest='incempty' , action="store_true", default=False, help="Write completely empty rows in the table")
-  parser.add_option('-n',"--no-color", dest='nocolor'  , action="store_true", default=False, help="Color backgrounds of ticked cells")
+  parser.add_option('-b', '--beam'     , dest='beam'     , default=None     , help="Beam current (FHC/RHC)")
+  parser.add_option('-s', '--sample'   , dest='sample'   , default=None     , help="Sample (numuCC1trkQE etc)")
+  parser.add_option('--skip-flux'      , dest='skipflux' , action="store_true", default=False, help="Skip the flux parameters")
+  parser.add_option('--skip-int'       , dest='skipint'  , action="store_true", default=False, help="Skip the interaction parameters")
+  parser.add_option('--skip-det'       , dest='skipdet'  , action="store_true", default=False, help="Skip the detector parameters")
+  parser.add_option('--include-empty'  , dest='incempty' , action="store_true", default=False, help="Write completely empty rows in the table")
+  parser.add_option('-n',"--no-color"  , dest='nocolor'  , action="store_true", default=False, help="Color backgrounds of ticked cells")
+  parser.add_option('-u',"--unosc-only", dest='unosc'    , action="store_true", default=False, help="Don't write oscillated modes.")
   
   o,other = parser.parse_args()
   
@@ -179,7 +183,7 @@ if __name__=="__main__":
   else:
     sample = None
   
-  main(beam,sample,o.output_file,o.config, o.skipflux, o.skipint, o.skipdet,o.incempty, not o.nocolor)
+  main(beam,sample,o.output_file,o.config, o.skipflux, o.skipint, o.skipdet,o.incempty, not o.nocolor, o.unosc)
   
   if other:
     print "Warning - ignored arguments: ",other
