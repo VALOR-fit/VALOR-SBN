@@ -18,8 +18,8 @@ BUILD_TARGETS =    print-make-info     \
 		   make-bin-lib-dir                \
 		   copy-scripts-to-bin             \
 		   build-libs                      \
-		   copy-rootdict-to-lib            \
-		   | build-apps   
+		   | copy-rootdict-to-lib            \
+		   build-apps   
 
 # define targets
 
@@ -33,35 +33,35 @@ print-make-info: FORCE
 	@echo "***** The source tree corresponds to VALOR version $(VALOR_VERSION)"
 	@echo " "
 
-copy-scripts-to-bin: make-bin-lib-dir FORCE
+copy-scripts-to-bin: | make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Copying scripts to bin..."
 	cp ${VALOR_DUNE}/make/valor_dune-config ${VALOR_DUNE}/bin
 	cp ${VALOR_DUNE}/root/valor_dune        ${VALOR_DUNE}/bin
 	cp ${VALOR_DUNE}/root/pydune            ${VALOR_DUNE}/bin
 	
-build-conventions: make-bin-lib-dir FORCE
+build-conventions: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Conventions;
 	
 
-build-binning: make-bin-lib-dir FORCE
+build-binning: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building KineBinning package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/KineBinning;
 
-build-systematics: make-bin-lib-dir FORCE
+build-systematics: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building Systematics package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Systematics;
 	
-build-utilities: make-bin-lib-dir FORCE
+build-utilities: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building DUNE Utilities package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Utilities;
 	
-build-genie-utilities: make-bin-lib-dir FORCE
+build-genie-utilities: | copy-scripts-to-bin FORCE
 ifdef GENIE
 	@echo " "
 	@echo "** Building DUNE GENIE Utilities package..."
@@ -71,15 +71,11 @@ else
 	@echo "** GENIE not set up - skipping GENIEUtilities"
 endif
 
-build-elements: make-bin-lib-dir FORCE
+build-elements: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building Elements package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Elements;
 
-build-sd-fit: make-bin-lib-dir FORCE
-	@echo " "
-	@echo "** Building SDFit package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/dune/SDFit;
 
 build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions build-binning \
   build-systematics build-utilities build-genie-utilities build-elements
@@ -110,7 +106,6 @@ purge: FORCE
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
 	$(MAKE) -C src/dune/Elements         purge && \
-	$(MAKE) -C src/dune/SDFit            purge && \
 	$(MAKE) -C src/dune/Systematics      purge; \
 
 clean: clean-files clean-dir clean-etc
@@ -127,8 +122,7 @@ clean-files: FORCE
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
 	$(MAKE) -C src/dune/Elements        clean && \
-	$(MAKE) -C src/dune/SDFit           clean && \
-	$(MAKE) -C src/dune/Systematics     clean; \
+	$(MAKE) -C src/dune/Systematics     clean ; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_DUNE)
