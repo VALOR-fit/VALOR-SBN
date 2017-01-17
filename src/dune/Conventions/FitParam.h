@@ -46,7 +46,7 @@ namespace conv {
 static const int kNFitParamsNuFluxND = 104; // neutrino flux related 104 ND 
 static const int kNFitParamsNuFluxFD = 104; // neutrino flux related 104 FD 
 static const int kNFitParamsNuFlux   = kNFitParamsNuFluxND + kNFitParamsNuFluxFD;
-static const int kNFitParamsNuDetND  = 314; // near detector related
+static const int kNFitParamsNuDetND  = 323; // near detector related
 static const int kNFitParamsNuDetFD  =  4; // far detector related: one per sample for now
 static const int kNFitParamsNuDet    = kNFitParamsNuDetND+ kNFitParamsNuDetFD;
 static const int kNFitParamsNuInt  =  45; // neutrino interactions related
@@ -1304,7 +1304,18 @@ static const PhysParamId_t kFitParam[kNFitParams] =
   kNuisEffFDNuMuLikeCCHigh,
   kNuisEffFDNuMuLikeCCLow,
   kNuisEffFDNuELikeCCHigh,
-  kNuisEffFDNuELikeCCLow
+  kNuisEffFDNuELikeCCLow ,
+  kNuisEffNuMuCC0pi1trk  ,
+  kNuisEffNuMuCC0pi2trk  ,
+  kNuisEffNuMuCC1piC     ,
+  kNuisEffNuMuCC1pi0     ,
+  kNuisEffNuMuCC1piC1pi0 ,
+  kNuisEffNuMuCCoth      ,
+  kNuisEffNuECC          ,
+  kNuisEffNuMuCCWS       ,
+  kNuisEffNC            
+  
+  
 };
 
 // Shifted these big arrays off into their own little files to keep this a bit tidier.
