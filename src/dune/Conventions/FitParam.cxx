@@ -14,18 +14,30 @@ additional options
         - no-osc-params: skipping oscillation parameters in the list construction
 
 options after list construction
-        - fix-osc-param: fix all oscillation parameters
-        - cons_osc_params: set all osc params as nuisance - Note: to constrain only one (i.e. theta13, usual reactor)
-                           use this one and fix other osc params independently (see run_fit options)
-        - cons_atm_params:     set the 23 parameters as nuisance
-        - cons_solar_params:   set the 12 parameters as nuisance
-        - fix_detector_params: fix all detector params included in the list
-        - fix_flux_params:     fix all flux params included in the list
-        - fix_nd_flux_params:  as above, only nd flux params
-        - fix_fd_flux_params:  as above, only fd flux params
-        - fix_int_params:      fix all neutrino interaction systematic parameters
-        - fix_mec_params:      fix mec params
-        - fix_fsi_params:      fix the FSI params
+        - no-osc-params     : 
+        - fix-osc-params    : fix all oscillation parameters
+        - cons-osc-params   : set all osc params as nuisance - Note: to constrain only one (i.e. theta13, usual reactor)
+                              use this one and fix other osc params independently (see run_fit options)
+        - cons-atm-params   : set the 23 parameters as nuisance
+        - cons-solar-params : set the 12 parameters as nuisance
+        - fix-det-syst      : fix all detector params included in the list
+        - fix-nd-det-syst   : 
+        - fix-fd-det-syst   : 
+        - fix-flux-syst     : fix all flux params included in the list
+        - fix-nd-flux-syst  : 
+        - fix-fd-flux-syst  : 
+        - fix-int-syst      : fix all neutrino interaction systematic parameters
+        - fix-mec-syst      : fix mec params
+        - fix-fsi-syst      : fix the FSI params
+        - fix-osc-param: 
+        - cons_osc_params: 
+        - cons_atm_params:     
+        - cons_solar_params:   
+        - fix_detector_params: 
+        - fix_flux_params:     
+        - fix_int_params:      
+        - fix_mec_params:      
+        - fix_fsi_params:      
 */
 //____________________________________________________________________________________________________________________
 
