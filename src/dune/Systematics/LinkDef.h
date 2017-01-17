@@ -20,6 +20,7 @@
 #pragma link C++ class valor::DuneND2017a+;
 
 #pragma link C++ class valor::MINERVAFlux2016aND+;
+#pragma link C++ class valor::MINERVAFlux2016aNDFHC+;
 #pragma link C++ class valor::MINERVAFlux2016aFD+;
 
 #endif
