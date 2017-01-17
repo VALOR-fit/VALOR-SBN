@@ -67,10 +67,16 @@ int main(int argc, char ** argv)
   LOG("valor_dune", pNOTICE) << arg;
 
   string fplname          = arg.GetString("fit-param-list"); 
-  const char * write_opt  = (char*) arg.GetString("write-opt").c_str();
+  const char * write_opt  = arg.GetString("write-opt").c_str();
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string output_name      = arg.GetString("output-name");
   string config_file      = arg.GetString("config");
+  
+  // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
+  double pot_override     = arg.GetDouble("pot-override");
+  if (pot_override > 0 ) {
+    Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
+  }
   
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
