@@ -28,26 +28,19 @@ ClassImp(SimpleDet2016bND)
 SimpleDet2016bND::SimpleDet2016bND() :
 CorrelatedSystematics()
 {
-  int nparams = kNFitParamsNuDetND;
-  PhysParamId_t params[nparams];
-  const bool * is_relevant = conv::kFitIsNuNDDetRelated;
+  std::vector<PhysParamId_t> params;
   
-  int i_params = 0;
-  for(int i = 0; i < conv::kNFitParams; i++) {
-    PhysParamId_t p = conv::kFitParam[i];
-    if (is_relevant[i]) {
-      params[i_params] = p;
-      i_params++;
-    }
-  }
+  params.push_back(kNuisEffNuMuCC0pi1trk );
+  params.push_back(kNuisEffNuMuCC0pi2trk );
+  params.push_back(kNuisEffNuMuCC1piC    );
+  params.push_back(kNuisEffNuMuCC1pi0    );
+  //~ params.push_back(kNuisEffNuMuCC1piC1pi0);
+  params.push_back(kNuisEffNuMuCCoth     );
+  params.push_back(kNuisEffNuECC         );
+  //~ params.push_back(kNuisEffNuMuCCWS      );
+  params.push_back(kNuisEffNC            );
   
-  // Check we have the right number of parameters labelled as related to this class
-  if (nparams-i_params) {
-    LOG("SimpleDet2016bND",pFATAL)<<"kNFitParamsNuDet does not match kFitIsNuDetRelated";
-    util::Die(-1); return;
-  }
-  
-  this->Init(nparams, params,"detector");
+  this->Init(params.size(), &params[0],"detector");
   
   this->SetName("SimpleDet2016bND");
 }
