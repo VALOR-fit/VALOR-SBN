@@ -35,6 +35,8 @@
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Oscillation/NuOsc3Flavour.h"
+#include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Messenger/Messenger.h"
 //dune
 #include "dune/Conventions/DuneBuild.h"
@@ -2028,8 +2030,9 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   for(int imode = 0; imode < kNReacModes; imode++) {
     for(int ip = 0; ip < conv::kNuis000; ip++) {
       PhysParamId_t p = (PhysParamId_t) ip;
-      if(fPhysHypothesis.Contains(p))
-	{apply_osc_prob = true;}
+      if(fPhysHypothesis.Contains(p)) {
+        apply_osc_prob = true;
+      }
     }
   }
 
@@ -2050,70 +2053,94 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     return;
   }
   
-  // Otherwise actually do the oscillation calculation
-  //first find the baseline to be applied
-  double baseline = util::Baseline(fBeam,fDetector);
-  fNuOsc3Flavour.SetBaseline(baseline);
+  PhysHypothesis_t hypid = fPhysHypothesis.Hypothesis();
+  // Variables for the sterile oscillations if we need them, since they don't come in an object
+  double sinsq2thee = -1, sinsq2thmumu = -1, dm41sq = -1;
   
-  // set oscillation parameters to the oscillation probability calculation code
-  double mixing12 = fPhysHypothesis.CurrValue(kPhypMixing12);
-  double mixing13 = fPhysHypothesis.CurrValue(kPhypMixing13);
-  double mixing23 = fPhysHypothesis.CurrValue(kPhypMixing23);
-  double dmsq     = fPhysHypothesis.CurrValue(kPhypDm12sq);
-  double Dmsq     = fPhysHypothesis.CurrValue(kPhypDm23sq);
-  double delta_cp = fPhysHypothesis.CurrValue(kPhypCPV    );
+  // Set 3 flavour osc parameters
+  if (hypid == kHypOsc3F) {
+    
+    // Otherwise actually do the oscillation calculation
+    //first find the baseline to be applied
+    double baseline = util::Baseline(fBeam,fDetector);
+    fNuOsc3Flavour.SetBaseline(baseline);
+    
+    // set oscillation parameters to the oscillation probability calculation code
+    double mixing12 = fPhysHypothesis.CurrValue(kPhypMixing12);
+    double mixing13 = fPhysHypothesis.CurrValue(kPhypMixing13);
+    double mixing23 = fPhysHypothesis.CurrValue(kPhypMixing23);
+    double dmsq     = fPhysHypothesis.CurrValue(kPhypDm12sq);
+    double Dmsq     = fPhysHypothesis.CurrValue(kPhypDm23sq);
+    double delta_cp = fPhysHypothesis.CurrValue(kPhypCPV    );
 
-  NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
-  NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
+    NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
+    NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
 
-  double p_osc[3][3];
-  double p_osc_bar[3][3];
-
-  // mixing params are: sin^2(2*theta)                                                                                        
-  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                            
-  if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsq2Theta)
-  {
-    fNuOsc3Flavour.SetOscParameters(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+    // mixing params are: sin^2(2*theta)                                                                                        
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                            
+    if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsq2Theta)
+    {
+      fNuOsc3Flavour.SetOscParameters(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+    }
+    // mixing params are: sin^2(theta)                                                                                     
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                          
+    else if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsqTheta)
+    {
+      fNuOsc3Flavour.SetOscParametersSinSqTAll(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+    }
+    // mixing params are: sin^2(2*theta)                                                                                      
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                   
+    else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsq2Theta)
+    {
+      fNuOsc3Flavour.SetOscParametersSSq2TDmAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+    }
+    // mixing params are: sin^2(theta)                                                                                        
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                    
+    else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsqTheta)
+    {
+      fNuOsc3Flavour.SetOscParametersDmsqAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+    }
+    // mixing paras are: sin^2(2*theta)                                                                                     
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                       
+    else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsq2Theta)
+    {
+      fNuOsc3Flavour.SetOscParametersSSq2TDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+    }
+    // mixing paras are: sin^2(theta)                                                                                        
+    // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                           
+    else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsqTheta)
+    {
+      fNuOsc3Flavour.SetOscParametersDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+    }
+    //unknown                                                                                                                    
+    else {
+      std::cerr << "**  GenericSingleSampleFitModel >> Can't handle choice of "
+           << "\n oscillation mixing params: " << util::AsString(omp)
+           << "\n and independent squared mass-splittings: " << util::AsString(dmsqscheme)
+           << endl;
+      util::Die(-1);return;
+    }
   }
-  // mixing params are: sin^2(theta)                                                                                     
-  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{23}|                                          
-  else if(dmsqscheme == kNuDmsq12andAbs23 && omp == kNuMixSinsqTheta)
-  {
-    fNuOsc3Flavour.SetOscParametersSinSqTAll(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
+  else if (hypid == kHypOscSterileEff) {
+    sinsq2thee   = fPhysHypothesis.CurrValue(kPhypMixingEE);
+    sinsq2thmumu = fPhysHypothesis.CurrValue(kPhypMixingMuMu);
+    dm41sq       = fPhysHypothesis.CurrValue(kPhypDm41sq);
   }
-  // mixing params are: sin^2(2*theta)                                                                                      
-  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                   
-  else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsq2Theta)
-  {
-    fNuOsc3Flavour.SetOscParametersSSq2TDmAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-  }
-  // mixing params are: sin^2(theta)                                                                                        
-  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |m^2_{3} - (m^2_{1} + m^2_{1})/2|                    
-  else if(dmsqscheme == kNuDmsqFogliLisi && omp == kNuMixSinsqTheta)
-  {
-    fNuOsc3Flavour.SetOscParametersDmsqAtmSol(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-  }
-  // mixing paras are: sin^2(2*theta)                                                                                     
-  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                       
-  else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsq2Theta)
-  {
-    fNuOsc3Flavour.SetOscParametersSSq2TDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-  }
-  // mixing paras are: sin^2(theta)                                                                                        
-  // independent squared mass splittings are: dm^2 = Dm^2_{12}, Dm^2 = |Dm^2_{31}|                                           
-  else if(dmsqscheme == kNuDmsq12andAbs31 && omp == kNuMixSinsqTheta)
-  {
-    fNuOsc3Flavour.SetOscParametersDmsq13(mixing12,mixing13,mixing23,dmsq,Dmsq,delta_cp);
-  }
-  //unknown                                                                                                                    
-  else {
-    std::cerr << "**  GenericSingleSampleFitModel >> Can't handle choice of "
-         << "\n oscillation mixing params: " << util::AsString(omp)
-         << "\n and independent squared mass-splittings: " << util::AsString(dmsqscheme)
-         << endl;
-    util::Die(-1);return;
-  }
-
+    
+  
+  double p_numu_numu       = -1;
+  double p_numu_nue        = -1;
+  double p_numu_nutau      = -1;
+  double p_numubar_numubar = -1;
+  double p_numubar_nuebar  = -1;
+  double p_numubar_nutaubar= -1;
+  double p_nue_nue         = -1;
+  double p_nue_numu        = -1;
+  double p_nue_nutau       = -1;
+  double p_nuebar_nuebar   = -1;
+  double p_nuebar_numubar  = -1;
+  double p_nuebar_nutaubar = -1;
+  
   const int n_true1_bins         = util::NumEtrueBins  (fSample);
   const double * true1_bin_edges = util::EtrueBinEdges (fSample);
 
@@ -2135,22 +2162,43 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
       sbin.bin3 = it1;
       //get the true energy to calculate osc prob 
       double Etrue = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2; 
-
-      fNuOsc3Flavour.CalcMatterOscProbAll(false, Etrue, p_osc    );
-      fNuOsc3Flavour.CalcMatterOscProbAll(true , Etrue, p_osc_bar);
-
-      double p_numu_numu       = p_osc    [1][1];
-      double p_numu_nue        = p_osc    [1][0];
-      double p_numu_nutau      = p_osc    [1][2];
-      double p_numubar_numubar = p_osc_bar[1][1];
-      double p_numubar_nuebar  = p_osc_bar[1][0];
-      double p_numubar_nutaubar= p_osc_bar[1][2];
-      double p_nue_nue         = p_osc    [0][0];
-      double p_nue_numu        = p_osc    [0][1];
-      double p_nue_nutau       = p_osc    [0][2];
-      double p_nuebar_nuebar   = p_osc_bar[0][0];
-      double p_nuebar_numubar  = p_osc_bar[0][1];
-      double p_nuebar_nutaubar = p_osc_bar[0][2];
+      
+      if (hypid == kHypOsc3F) {
+        double p_osc    [3][3];
+        double p_osc_bar[3][3];
+        fNuOsc3Flavour.CalcMatterOscProbAll(false, Etrue, p_osc    );
+        fNuOsc3Flavour.CalcMatterOscProbAll(true , Etrue, p_osc_bar);
+        p_numu_numu       = p_osc    [1][1];
+        p_numu_nue        = p_osc    [1][0];
+        p_numu_nutau      = p_osc    [1][2];
+        p_numubar_numubar = p_osc_bar[1][1];
+        p_numubar_nuebar  = p_osc_bar[1][0];
+        p_numubar_nutaubar= p_osc_bar[1][2];
+        p_nue_nue         = p_osc    [0][0];
+        p_nue_numu        = p_osc    [0][1];
+        p_nue_nutau       = p_osc    [0][2];
+        p_nuebar_nuebar   = p_osc_bar[0][0];
+        p_nuebar_numubar  = p_osc_bar[0][1];
+        p_nuebar_nutaubar = p_osc_bar[0][2];
+      
+      }
+      else if (hypid == kHypOscSterileEff) {
+        double baseline = util::Baseline(fBeam,fDetector);
+        double lOverE = baseline / Etrue;
+        p_numu_numu       = util::Calculate2FSterileOsc(conv::kPdgNuMu   , conv::kPdgNuMu   , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_numu_nue        = util::Calculate2FSterileOsc(conv::kPdgNuMu   , conv::kPdgNuE    , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_numu_nutau      = 0.;
+        p_numubar_numubar = util::Calculate2FSterileOsc(conv::kPdgNuMuBar, conv::kPdgNuMuBar, lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_numubar_nuebar  = util::Calculate2FSterileOsc(conv::kPdgNuMuBar, conv::kPdgNuEBar , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_numubar_nutaubar= 0.;
+        p_nue_nue         = util::Calculate2FSterileOsc(conv::kPdgNuE    , conv::kPdgNuE    , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_nue_numu        = util::Calculate2FSterileOsc(conv::kPdgNuE    , conv::kPdgNuMu   , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_nue_nutau       = 0;
+        p_nuebar_nuebar   = util::Calculate2FSterileOsc(conv::kPdgNuEBar , conv::kPdgNuEBar , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_nuebar_numubar  = util::Calculate2FSterileOsc(conv::kPdgNuEBar , conv::kPdgNuMuBar, lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_nuebar_nutaubar = 0;;
+      }
+        
 
       double posc = 1.;
       if(util::IsCC(m))
@@ -2187,7 +2235,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
                 bin.bin2 = ir2;
                 
                 double & val = fMCTFinOb[imode][izone]->GetEntryRef(bin);
-		val *= posc;
+                val *= posc;
 
               }//ir2
             }//ir1
