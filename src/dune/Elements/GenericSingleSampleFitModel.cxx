@@ -183,7 +183,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     string template_tag = util::XML2String(xml,root_node,"mc/template/tag");
     TFile * template_file = util::XML2TFile(xml,root_node,"mc/template");
 
-    this->FillFromTemplateFile(template_file,template_tag);
+    this->FillFromTemplateFile(template_file,template_tag,fPOT);
     template_file->Close();
     delete template_file;
   }
@@ -1459,13 +1459,17 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   }//iev 
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
+bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag, double desired_POT)
 {
   bool success = true;
 
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
   BeamConf_t b = fBeam;
   Sample_t   s = fSample;
+  
+  if (desired_POT > 0) {
+    LOG("GenericSingleSampleFitModel",pNOTICE) << "Scaling POT template by "<<desired_POT * 1E-21 << " to get template for "<<desired_POT<<" POT.";
+  }
 
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
@@ -1481,6 +1485,9 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
         assert(arr->GetDimensionSizes() == fMCTSysOb[imode][izone]->GetDimensionSizes());
         assert(arr->GetDimensionSizes() == fMCTFinOb[imode][izone]->GetDimensionSizes());
         assert(arr->GetDimensionSizes() == fMCStatOb[imode][izone]->GetDimensionSizes());
+        if (desired_POT > 0) {
+          arr->Scale(desired_POT * 1E-21);
+        }
         fMCTNomOb [imode][izone]->CopyFrom(*arr);
         fMCTTunOb [imode][izone]->CopyFrom(*arr);
         fMCTSysOb [imode][izone]->CopyFrom(*arr);
@@ -1505,6 +1512,9 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag)
       assert(arr->GetDimensionSizes() == fMCTSysSb[imode]->GetDimensionSizes());
       assert(arr->GetDimensionSizes() == fMCTFinSb[imode]->GetDimensionSizes());
       assert(arr->GetDimensionSizes() == fMCStatSb[imode]->GetDimensionSizes());
+      if (desired_POT > 0) {
+          arr->Scale(desired_POT * 1E-21);
+      }
       fMCTNomSb [imode]->CopyFrom(*arr);
       fMCTTunSb [imode]->CopyFrom(*arr);
       fMCTSysSb [imode]->CopyFrom(*arr);
