@@ -552,7 +552,7 @@
     <group name="detector">
       <class> valor::DuneND2017a </class>
       <covariance_matrix>
-         <filename>   det_eff_cov_fgt_final_MCfew.root </filename>
+         <filename>   dune/ndfit/2017a/det/det_eff_cov_fgt_final_MCfew.root </filename>
          <objname>    frac_cov          </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
