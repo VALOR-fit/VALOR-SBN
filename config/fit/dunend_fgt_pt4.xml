@@ -552,8 +552,8 @@
     <group name="detector">
       <class> valor::DuneND2017a </class>
       <covariance_matrix>
-         <filename>   test/dummy_detector_matrices.root </filename>
-         <objname>    diag_310x310_05pct    </objname>    
+         <filename>   det_eff_cov_fgt_final_MCfew.root </filename>
+         <objname>    frac_cov          </objname>    
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
     </group>
