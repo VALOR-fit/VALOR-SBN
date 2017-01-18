@@ -133,6 +133,7 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
 
+<!--
     <element name="dune_nd_fhc_nc0pi">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
@@ -143,6 +144,7 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
+-->
 
     <element name="dune_nd_fhc_nc1piC">
       <detector>     dune_nd                                              </detector>
