@@ -23,7 +23,8 @@ void plot_pdf(
   const char * out_tag = "valor",
   const char * image_save_format = "",
   int canv_size_x = 700,
-  int canv_size_y = 700
+  int canv_size_y = 700,
+  double enu_reco_max = 12.;
 )
 {
   using namespace std;
@@ -34,8 +35,6 @@ void plot_pdf(
   env->AutoSet("dune");
   valor::util::PopulateNameRegistry();
 #endif
-  
-  double enu_reco_max = 12.; 
 
   const int n_pdf_slices = 10; //
   
@@ -110,8 +109,14 @@ void plot_pdf(
     int nrows = 1;
     int ncols = 1;
     while (nrows * ncols < plots_on_this_canv) {
-      if (nrows < ncols) {nrows++;}
-      else {ncols++;}
+      if (canv_size_x > canv_size_y) {
+        if (ncols < nrows) {ncols++;}
+        else {nrows++;}
+      }
+      else {
+        if (nrows < ncols) {nrows++;}
+        else {ncols++;}
+      }
     }
     // Get the first submodel so we can get beam/detector info
     unsigned int isubmodel = canvas_content[icanvas][0];
