@@ -60,13 +60,14 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(config, postfit_fns, postfit_labels,output,img_format,entry):
+def main(config, postfit_fns, postfit_labels,output,img_format,entry, spacing):
   config_path = os.environ["VALOR_DUNE"]+"config/"+config
   
   elem = valor.CompoundFitElements()
   elem.Read(config_path,"nosplines nomc")
   model = elem.FitModel()
-  prefit_cov = model.GetSystematics().CovMatrix()
+  syst = model.GetSystematics()
+  prefit_cov = syst.CovMatrix()
   prefit_err = util.CovarianceMatrixToErrorVector(prefit_cov)
   
   min_ = min(prefit_err)
@@ -116,7 +117,7 @@ def main(config, postfit_fns, postfit_labels,output,img_format,entry):
   axis_hist.GetYaxis().SetRangeUser(miny,maxy)
   axis_hist.GetYaxis().SetTitle("Fractional Error")
   axis_hist.GetXaxis().SetTitle("")
-  label_bins(axis_hist,postfit_chain.best_fit_params,4)
+  label_bins(axis_hist,postfit_chain.best_fit_params,spacing)
   dividing_lines = get_dividing_lines(postfit_chain.best_fit_params, miny, maxy)
   
   legend = R.TLegend(left_margin,0.95-top_margin,1.-right_margin,1.-top_margin)
@@ -189,6 +190,9 @@ if __name__=="__main__":
   parser.add_option('-f','--format', dest='imgformat',default='eps',help='The image format')
   parser.add_option('-o','--output', dest='output',default='prefit_postfit_errors',help='Output name')
   parser.add_option('-n','--entry', dest='entry',default=0,type=int,help='The entry in the tree to get')
+  #~ parser.add_option('--skip-fixed',dest='skip_fixed',default=False,action='store_true',help='Do not include fixed parameters in the plot')
+  #~ parser.add_option('--skip-det',dest='skip_det',default=False,action='store_true',help='Do not include detector parameters in the plot')
+  parser.add_option('--spacing',dest='spacing',type=int,default=4,help='Spacing between labels on the x-axis')
   
   options,other = parser.parse_args()
   
@@ -196,4 +200,4 @@ if __name__=="__main__":
     print "Bad arguments: ",other
     exit(-1)
     
-  main(options.config,options.postfit,options.labels,options.output,options.imgformat,options.entry)
+  main(options.config,options.postfit,options.labels,options.output,options.imgformat,options.entry,options.spacing)
