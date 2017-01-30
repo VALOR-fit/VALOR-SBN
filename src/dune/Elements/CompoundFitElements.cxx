@@ -267,7 +267,6 @@ FitDataABC * CompoundFitElements::AdoptFitData(
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   SingleSampleFitDataABC * s_dataset = (SingleSampleFitDataABC *) (vbase);
   s_dataset->Configure(d,b,s,o);
-  s_dataset->Read(config_file, opt);
   FitDataABC * dataset = (FitDataABC *) (s_dataset);
   return dataset;
 }
