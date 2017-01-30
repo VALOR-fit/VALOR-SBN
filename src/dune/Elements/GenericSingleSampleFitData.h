@@ -88,8 +88,9 @@ private:
   bool         fDataObNull   [conv::kNMaxBinZones]; 
   VALORArray * fDataOb       [conv::kNMaxBinZones]; 
   // Below are versions the use a simple (~fine and ~regular) binning throughout the whole range.
-  bool         fDataSbNull; 
-  VALORArray * fDataSb; 
+  bool         fDataSbNull;
+  VALORArray * fDataSb;
+  bool fIsBooked;
 };
 
 } // valor

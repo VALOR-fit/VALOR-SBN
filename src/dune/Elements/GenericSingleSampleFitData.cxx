@@ -13,6 +13,7 @@
 #include <TMath.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TSystem.h>
 
 // fmwk
 #include "valor/FitCore/FitModelABC.h"
@@ -48,14 +49,11 @@ string GenericSingleSampleFitData::Name(void) const
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
 {
-  assert(fDetector != kdUndefined);
-  assert(fBeam     != kbUndefined);
-  assert(fSample   != ksUndefined);
-
-  fName = util::nm::DSetName(fDetector, fBeam, fSample, fKSp);
-
-  this->Book();
-//this->Zero();
+  LOG("valor_dune", pNOTICE) << "******************* HERE!";    // TODO: remove when done testing
+  if(!fIsBooked){
+    this->Book();
+  }
+  //this->Zero();
 
   return true;
 }
@@ -306,6 +304,10 @@ bool GenericSingleSampleFitData::Generate(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
+  derr << "********** Reached GSSD::Generate" << std::endl;
+  if(!fIsBooked){
+    this->Book();
+  }
   TObjArray array;
   model_abc->Write(&array, "curr", "pdft_vf +SB");
 
@@ -467,11 +469,19 @@ void GenericSingleSampleFitData::Init(void)
   }//izone
   fDataSbNull = true;
   fDataSb     = 0;
+
+  fIsBooked = false;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Book(void)
 {
   LOG("GenericSingleSampleFitData",pDEBUG) << "Booking...";
+
+  assert(fDetector != kdUndefined);
+  assert(fBeam     != kbUndefined);
+  assert(fSample   != ksUndefined);
+
+  fName = util::nm::DSetName(fDetector, fBeam, fSample, fKSp);
 
   const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
   for(int izone = 0; izone < kNMaxBinZones; izone++) {
@@ -483,6 +493,8 @@ void GenericSingleSampleFitData::Book(void)
   }//izone
   fDataSbNull = false;
   fDataSb     = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);
+
+  fIsBooked = true;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Clean(void)
