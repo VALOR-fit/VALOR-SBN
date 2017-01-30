@@ -21,11 +21,14 @@ string util::AsString(KineSpace_t ks)
   switch(ks) {
     case (kspEtrue)            : return "Etrue";                  break;
     case (kspEreco)            : return "Ereco";                  break;
-    case (kspEvis )            : return "Evis";                   break;
+    case (kspEvis)             : return "Evis";                   break;
     case (kspYreco)            : return "yreco";                  break;
+    case (kspThetareco)        : return "Thetareco";              break;
     case (kspErecoYreco)       : return "Ereco,yreco";            break;
     case (kspEtrueQ2true)      : return "Etrue,Q2true";           break;
     case (kspErecoThetareco)   : return "Ereco,Thetareco";        break;
+    case (kspq0recoq3reco)     : return "q0reco,q3reco";          break;
+	case (kspq0recomodqreco)   : return "q0reco,|q|reco";         break;
     default : 
      LOG("KineSpace",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -38,13 +41,16 @@ string util::AsStringTeX(KineSpace_t ks, bool root)
   string name = "";
 
   switch(ks) {
-    case (kspEtrue)            : name = "<E_{true}>";                     break;
-    case (kspEreco)            : name = "<E_{reco}>";                     break;
-    case (kspEvis )            : name = "<E_{vis}>";                      break;
-    case (kspYreco)            : name = "<y_{reco}>";                     break;
-    case (kspErecoYreco)       : name = "<E_{reco},y_{reco}>";            break;
-    case (kspEtrueQ2true)      : name = "<E_{true},Q^2_{true}>";          break;
-    case (kspErecoThetareco)   : name = "<E_{reco},\theta_{reco}";        break;      
+    case (kspEtrue)            : name = "<E_{true}>";                                     break;
+    case (kspEreco)            : name = "<E_{reco}>";                                     break;
+    case (kspEvis )            : name = "<E_{vis}>";                                      break;
+    case (kspYreco)            : name = "<y_{reco}>";                                     break;
+    case (kspThetareco)        : name = "\theta_{reco}";                                  break;
+    case (kspErecoYreco)       : name = "<E_{reco},y_{reco}>";                            break;
+    case (kspEtrueQ2true)      : name = "<E_{true},Q^2_{true}>";                          break;
+    case (kspErecoThetareco)   : name = "<E_{reco},\theta_{reco}";                        break;
+    case (kspq0recoq3reco)     : name = "<q_{0 reco},q_{3 reco}>";       				  break;
+    case (kspq0recomodqreco)   : name = "<q_{0 reco},|\overrightarrow{q}|_{reco}>";       break;
     default : 
      LOG("KineSpace",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -64,9 +70,12 @@ bool util::IsPureReco(KineSpace_t ks)
     case (kspEreco)            : return true;
     case (kspEvis )            : return true;
     case (kspYreco)            : return true;
+    case (kspThetareco)        : return true;
     case (kspErecoYreco)       : return true;
     case (kspEtrueQ2true)      : return false;
-    case (kspErecoThetareco)   : return true;        
+    case (kspErecoThetareco)   : return true;
+    case (kspq0recoq3reco)     : return true;
+	case (kspq0recomodqreco)   : return true;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -81,9 +90,12 @@ bool util::IsPureTrue(KineSpace_t ks)
     case (kspEreco)            : return false;
     case (kspEvis )            : return false;
     case (kspYreco)            : return false;
+    case (kspThetareco)        : return false;
     case (kspErecoYreco)       : return false;
     case (kspEtrueQ2true)      : return true;
-    case (kspErecoThetareco)   : return false;              
+    case (kspErecoThetareco)   : return false;
+    case (kspq0recoq3reco)     : return false;
+	case (kspq0recomodqreco)   : return false;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -98,9 +110,12 @@ bool util::IsMixedRecoTrue(KineSpace_t ks)
     case (kspEreco)            : return false;
     case (kspEvis )            : return false;
     case (kspYreco)            : return false;
+    case (kspThetareco)        : return false;
     case (kspErecoYreco)       : return false;
     case (kspEtrueQ2true)      : return false;
-    case (kspErecoThetareco)   : return false;              
+    case (kspErecoThetareco)   : return false;
+    case (kspq0recoq3reco)     : return false;
+	case (kspq0recomodqreco)   : return false;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -115,9 +130,12 @@ int util::NDim(KineSpace_t ks)
     case (kspEreco)            : return 1;
     case (kspEvis )            : return 1;
     case (kspYreco)            : return 1;
+    case (kspThetareco)        : return 1;
     case (kspErecoYreco)       : return 2;
     case (kspEtrueQ2true)      : return 2;
-    case (kspErecoThetareco)   : return 2;              
+    case (kspErecoThetareco)   : return 2;
+    case (kspq0recoq3reco)     : return 2;
+	case (kspq0recomodqreco)   : return 2;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -132,9 +150,12 @@ int util::NDimReco(KineSpace_t ks)
     case (kspEreco)            : return 1;
     case (kspEvis )            : return 1;
     case (kspYreco)            : return 1;
+    case (kspThetareco)        : return 1;
     case (kspErecoYreco)       : return 2;
     case (kspEtrueQ2true)      : return 0;
-    case (kspErecoThetareco)   : return 2;              
+    case (kspErecoThetareco)   : return 2;
+    case (kspq0recoq3reco)     : return 2;
+	case (kspq0recomodqreco)   : return 2;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -149,9 +170,12 @@ int util::NDimTrue(KineSpace_t ks)
     case (kspEreco)            : return 0;
     case (kspEvis )            : return 0;
     case (kspYreco)            : return 0;
+    case (kspThetareco)        : return 0;
     case (kspErecoYreco)       : return 0;
     case (kspEtrueQ2true)      : return 2;
-    case (kspErecoThetareco)   : return 0;              
+    case (kspErecoThetareco)   : return 0;
+    case (kspq0recoq3reco)     : return 0;
+	case (kspq0recomodqreco)   : return 0;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -166,9 +190,12 @@ conv::KineSpace_t util::SubSpaceReco(conv::KineSpace_t ks)
     case (kspEreco)            : return kspEreco;
     case (kspEvis )            : return kspEvis;
     case (kspYreco)            : return kspYreco;
+    case (kspThetareco)        : return kspThetareco;
     case (kspErecoYreco)       : return kspErecoYreco;
     case (kspEtrueQ2true)      : return kspUndefined;
-    case (kspErecoThetareco)   : return kspErecoThetareco; 
+    case (kspErecoThetareco)   : return kspErecoThetareco;
+    case (kspq0recoq3reco)     : return kspq0recoq3reco;
+	case (kspq0recomodqreco)   : return kspq0recoq3reco;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -183,9 +210,12 @@ conv::KineSpace_t util::SubSpaceTrue(conv::KineSpace_t ks)
     case (kspEreco)            : return kspUndefined;
     case (kspEvis )            : return kspUndefined;
     case (kspYreco)            : return kspUndefined;
+    case (kspThetareco)        : return kspUndefined;
     case (kspErecoYreco)       : return kspUndefined;
     case (kspEtrueQ2true)      : return kspEtrueQ2true;
-    case (kspErecoThetareco)   : return kspUndefined;       
+    case (kspErecoThetareco)   : return kspUndefined;
+    case (kspq0recoq3reco)     : return kspUndefined;
+	case (kspq0recomodqreco)   : return kspUndefined;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -210,6 +240,9 @@ vector<KineVar_t> util::KineVar(conv::KineSpace_t ks)
     case (kspYreco) : 
       vv.push_back(kvYreco);
       break;
+    case (kspThetareco) :
+      vv.push_back(kvThetareco);
+      break;
     case (kspErecoYreco) : 
       vv.push_back(kvEreco);
       vv.push_back(kvYreco);
@@ -220,7 +253,13 @@ vector<KineVar_t> util::KineVar(conv::KineSpace_t ks)
       break;
     case (kspErecoThetareco)   :
       vv.push_back(kvEreco);
-      vv.push_back(kvThetareco);      
+      vv.push_back(kvThetareco);
+    case (kspq0recoq3reco) :
+      vv.push_back(kvq0reco);
+      vv.push_back(kvq3reco);
+	case (kspq0recomodqreco) :
+      vv.push_back(kvq0reco);
+      vv.push_back(kvmodqreco);
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -245,6 +284,9 @@ vector<KineVar_t> util::KineVarReco(conv::KineSpace_t ks)
     case (kspYreco) : 
       vv.push_back(kvYreco);
       break;
+    case (kspThetareco) :
+      vv.push_back(kvThetareco);
+      break;
     case (kspErecoYreco) : 
       vv.push_back(kvEreco);
       vv.push_back(kvYreco);
@@ -253,7 +295,13 @@ vector<KineVar_t> util::KineVarReco(conv::KineSpace_t ks)
       break;
     case (kspErecoThetareco)   :
       vv.push_back(kvEreco);
-      vv.push_back(kvThetareco);      
+      vv.push_back(kvThetareco);
+    case (kspq0recoq3reco) :
+      vv.push_back(kvq0reco);
+      vv.push_back(kvq3reco);
+	case (kspq0recomodqreco) :
+      vv.push_back(kvq0reco);
+      vv.push_back(kvmodqreco);
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic space: " << ks;
@@ -276,6 +324,8 @@ vector<KineVar_t> util::KineVarTrue(conv::KineSpace_t ks)
       break;
     case (kspYreco) : 
       break;
+    case (kspThetareco) :
+      break;
     case (kspErecoYreco) : 
       break;
     case (kspEtrueQ2true) :
@@ -283,6 +333,10 @@ vector<KineVar_t> util::KineVarTrue(conv::KineSpace_t ks)
       vv.push_back(kvQ2true);
       break;
     case (kspErecoThetareco)   :
+      break;
+    case (kspq0recoq3reco) :
+      break;
+	case (kspq0recomodqreco) :
       break;
     default:
      LOG("KineVar",pERROR) 
@@ -296,7 +350,7 @@ conv::KineSpace_t util::KineSpaceFromInt(int i_sp)
 {
 // Cast an integer to KineSpace_t, but with boundary check
 //                [first]                   [last]
-  if(i_sp >= (int)kspEtrue && i_sp <= (int) kspErecoThetareco) return (KineSpace_t)i_sp;
+  if(i_sp >= (int)kspEtrue && i_sp <= (int) kspq0recomodqreco) return (KineSpace_t)i_sp;
   return kspUndefined;
 }
 //________________________________________________________________________________________

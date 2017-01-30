@@ -28,7 +28,10 @@ string util::AsString(KineVar_t kv)
     case (kvEreco     ) : return "Ereco";     break;
     case (kvEvis      ) : return "Evis";      break;
     case (kvYreco     ) : return "yreco";     break;
-    case (kvThetareco ) : return "Thetareco"; break;      
+    case (kvThetareco ) : return "Thetareco"; break;
+    case (kvq0reco    ) : return "q0reco";    break;
+    case (kvq3reco    ) : return "|q|reco";   break;
+	case (kvmodqreco  ) : return "|q|reco";   break;
     default : 
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic variable: " << kv;
@@ -41,12 +44,15 @@ string util::AsStringTeX(KineVar_t kv, bool root)
   string name = "";
 
   switch(kv) {
-    case (kvEtrue     ) : name = "E_{true} (GeV)";         break;
-    case (kvQ2true    ) : name = "Q^{2}_{true} (GeV^{2})"; break;
-    case (kvEreco     ) : name = "E_{reco} (GeV)";         break;
-    case (kvEvis      ) : name = "E_{vis} (GeV)";          break;
-    case (kvYreco     ) : name = "y_{reco}";               break;
-    case (kvThetareco ) : name = "\theta_{reco}";          break;            
+    case (kvEtrue     ) : name = "E_{true} (GeV)";                break;
+    case (kvQ2true    ) : name = "Q^{2}_{true} (GeV^{2})";        break;
+    case (kvEreco     ) : name = "E_{reco} (GeV)";                break;
+    case (kvEvis      ) : name = "E_{vis} (GeV)";                 break;
+    case (kvYreco     ) : name = "y_{reco}";                      break;
+    case (kvThetareco ) : name = "\theta_{reco}";                 break;
+    case (kvq0reco    ) : name = "q_{0 reco}";                    break;
+    case (kvq3reco    ) : name = "|\overrightarrow{q}|_{reco}";   break;
+	case (kvmodqreco  ) : name = "|\overrightarrow{q}|_{reco}";   break;
     default : 
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic variable: " << kv;
@@ -72,6 +78,9 @@ bool util::IsReco(KineVar_t kv)
     case (kvEvis      ) : return true;
     case (kvYreco     ) : return true;
     case (kvThetareco ) : return true;
+    case (kvq0reco    ) : return true;
+    case (kvq3reco    ) : return true;
+	case (kvmodqreco  ) : return true;
     default:
      LOG("KineVar",pERROR) 
         << "Unrecognized kinematic variable: " << kv;
