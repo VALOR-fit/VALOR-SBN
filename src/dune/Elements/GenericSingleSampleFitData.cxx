@@ -304,7 +304,6 @@ bool GenericSingleSampleFitData::Generate(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
-  derr << "********** Reached GSSD::Generate" << std::endl;
   if(!fIsBooked){
     this->Book();
   }
