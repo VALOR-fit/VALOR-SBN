@@ -34,6 +34,8 @@ static const double kLBNFTgt2DUNEND  =    0.547;  // km
 static const double kBNBTgt2SBND     =    0.110;  // km
 static const double kBNBTgt2uBooNE   =    0.470;  // km
 static const double kBNBTgt2ICARUS   =    0.600;  // km
+static const double kNuMITgt2NOvAFD  =  810.000;  // km
+static const double kNuMITgt2NOvAND  =    1.000;  // km
 
 } // conv
 
