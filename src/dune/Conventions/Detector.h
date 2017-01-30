@@ -29,7 +29,7 @@ using std::string;
 namespace valor {
 namespace conv {
 
-static const int kNDetectorsDefined = 13;
+static const int kNDetectorsDefined = 15;
 
 typedef enum EDetector
 {
@@ -47,6 +47,8 @@ typedef enum EDetector
    kdINGRID,          // INGRID
    kdNuPRISM,         // NuPRISM
    kdNuTIT,           // appropriate shorter name for TITUS
+   kdNOvAND,          // NOvA near detector
+   kdNOvAFD           // NOvA far detector
 } 
 Detector_t; 
 
