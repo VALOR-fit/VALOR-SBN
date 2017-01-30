@@ -93,7 +93,7 @@ int main(int argc, char ** argv)
 
   // Get ND model & configure                
   CompoundFitElements * elements = new CompoundFitElements();
-  elements->Read(config_file);
+  elements->Read(util::CompleteConfigPath(config_file));
   FitModelABC * model = elements->FitModel();
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
