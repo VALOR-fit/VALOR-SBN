@@ -26,11 +26,11 @@
 #include "valor/FitCore/CompoundFitData.h"
 #include "valor/FitCore/CompoundFitModel.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
+#include "valor/Conventions/KineSpace.h"
 //dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"
 #include "dune/Conventions/Detector.h"
-#include "dune/Conventions/KineSpace.h"
 
 using namespace valor;
 

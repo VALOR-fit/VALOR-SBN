@@ -18,10 +18,12 @@
 #ifndef _valor_dune_naming_conventions_h_
 #define _valor_dune_naming_conventions_h_
 
+#include "valor/Conventions/KineSpace.h"
+
 #include "dune/Conventions/Detector.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"
-#include "dune/Conventions/KineSpace.h"
+
 
 namespace valor {
 namespace util  {

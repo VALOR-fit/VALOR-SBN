@@ -62,8 +62,8 @@
 
 #include "valor/VArray/VALORArray.h"
 #include "valor/VArray/VALORArrayBin.h"
-#include "dune/Conventions/KineVar.h"
-#include "dune/Conventions/KineSpace.h"
+#include "valor/Conventions/KineVar.h"
+#include "valor/Conventions/KineSpace.h"
 
 using std::vector;
 using std::map;

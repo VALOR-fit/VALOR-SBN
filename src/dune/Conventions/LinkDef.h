@@ -11,8 +11,6 @@
 #pragma link C++ namespace valor::util;
 #pragma link C++ namespace valor::util::nm;
 
-#pragma link C++ enum valor::conv::KineVar_t;
-#pragma link C++ enum valor::conv::KineSpace_t;
 #pragma link C++ enum valor::conv::BeamConf_t;
 #pragma link C++ enum valor::conv::Sample_t;
 #pragma link C++ enum valor::conv::ReacMode_t;

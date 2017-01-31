@@ -20,11 +20,11 @@
 
 // fmwk
 #include "valor/FitCore/FitDataABC.h"
+#include "valor/Conventions/KineSpace.h"
 // dune
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"
 #include "dune/Conventions/Detector.h"
-#include "dune/Conventions/KineSpace.h"
 
 namespace valor {
 

@@ -28,7 +28,8 @@
 #define _use_single_zone_optimized_binning_scheme_v1_ 
 //~ #define _use_single_zone_optimized_binning_scheme_v2_ 
 
-#include "dune/Conventions/KineVar.h"
+#include "valor/Conventions/KineVar.h"
+
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/Sample.h"
 
