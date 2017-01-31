@@ -64,12 +64,10 @@
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"
 #include "dune/Conventions/ReacMode.h"
-#include "dune/Conventions/KineVar.h"
 #include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ArrIdx.h"
-
 #include "dune/GENIEUtilities/UtlEventRec.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Utilities/KinematicBin.h"
