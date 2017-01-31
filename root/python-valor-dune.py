@@ -3,6 +3,7 @@ import sys
 import os
 import glob
 import math
+import itertools
 
 print "\n=============================="
 print   "Loading python with VALOR DUNE"
@@ -45,6 +46,18 @@ opt.gDoNotDie = True # We're interactive, so don't die unless you have to.
 for n in xrange(1,9):
   globals()["to"+`n`+"dp"] = "{0:."+`n`+"f}"
   globals()["to"+`n`+"sf"] = "{0:."+`n-1`+"e}"
+  
+  
+# Touch every VALOR object so they appear in tab completion
+import os
+for root, dirs, files in itertools.chain(os.walk(os.environ['VALOR_FMWK']),os.walk(os.environ['VALOR_DUNE'])):
+  for f in files:
+    if f.endswith(".cxx"):
+      classname = f[:-4]
+      try:
+        getattr(valor,classname)
+      except:
+        pass
   
 # Quick and dirty function to get every object in a file
 def fileburst(f):
