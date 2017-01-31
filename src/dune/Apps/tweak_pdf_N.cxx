@@ -142,6 +142,11 @@ int main(int argc, char ** argv)
     fit_tree->SetBranchAddress("best_fit_params",&fp);
     fit_tree->GetEntry(prior_fit_number);
     TMatrixD * cov_m = new TMatrixD(*(fp->GetCovMatrix()));
+    
+    if (cov_m->GetNrows() != fp->Size()) {
+      std::cerr<<"Input matrix has "<<cov_m->GetNrows()<<" entries, need "<<fp->Size()<<endl;
+      util::Die(-1);
+    }
     cm->GetSystematics()->SetCovMatrix(*cov_m);
     cout<<"Read postfit matrix."<<endl;
   }
@@ -167,12 +172,13 @@ int main(int argc, char ** argv)
 
     // (toy-MC #-1 is special: default)
     FitParamList * fp = util::GetFitParameterList(fplname.c_str(),syst);
-    fp->Update(conv::kPhypMixing12,mixing12);
-    fp->Update(conv::kPhypMixing13,mixing13);
-    fp->Update(conv::kPhypMixing23,mixing23);
-    fp->Update(conv::kPhypDm12sq  ,dm12sq  );
-    fp->Update(conv::kPhypDm23sq  ,dm23sq  );
-    fp->Update(conv::kPhypCPV     ,deltacp );
+    
+    if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
+    if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
+    if (fp->Exists(conv::kPhypMixing23)) { fp->Update(conv::kPhypMixing23,mixing23); }
+    if (fp->Exists(conv::kPhypDm12sq  )) { fp->Update(conv::kPhypDm12sq  ,dm12sq  ); }
+    if (fp->Exists(conv::kPhypDm23sq  )) { fp->Update(conv::kPhypDm23sq  ,dm23sq  ); }
+    if (fp->Exists(conv::kPhypCPV     )) { fp->Update(conv::kPhypCPV     ,deltacp ); }
     
     
     model->ResetSystematics("all");
@@ -191,7 +197,7 @@ int main(int argc, char ** argv)
       model->RandomizeSystematics(param_map);
     }
     fp->FromPhysParamList(model->Tweaks(),"current");
-
+    
     // Generate predictions
     model->Generate(*fp,"+SB");
 
