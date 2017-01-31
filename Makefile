@@ -44,12 +44,6 @@ build-conventions: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Conventions;
-	
-
-build-binning: | copy-scripts-to-bin FORCE
-	@echo " "
-	@echo "** Building KineBinning package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/dune/KineBinning;
 
 build-systematics: | copy-scripts-to-bin FORCE
 	@echo " "
@@ -77,7 +71,7 @@ build-elements: | copy-scripts-to-bin FORCE
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Elements;
 
 
-build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions build-binning \
+build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions \
   build-systematics build-utilities build-genie-utilities build-elements
  
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
@@ -102,7 +96,6 @@ purge: FORCE
 	@echo "** Purging..."
 	$(MAKE) -C src/dune/Apps             purge && \
 	$(MAKE) -C src/dune/Conventions      purge && \
-	$(MAKE) -C src/dune/KineBinning      purge && \
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
 	$(MAKE) -C src/dune/Elements         purge && \
@@ -118,7 +111,6 @@ clean-files: FORCE
 	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
 	$(MAKE) -C src/dune/Apps            clean && \
 	$(MAKE) -C src/dune/Conventions     clean && \
-	$(MAKE) -C src/dune/KineBinning     clean && \
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
 	$(MAKE) -C src/dune/Elements        clean && \

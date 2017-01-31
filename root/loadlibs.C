@@ -10,7 +10,6 @@
   gSystem->SetDynamicPath(dune_libs.Data());
   
   gSystem->Load("libValorDuneConv.so");
-  gSystem->Load("libValorDuneKBin.so");
   gSystem->Load("libValorDuneUtil.so");
   gSystem->Load("libValorDuneElements.so");
   gSystem->Load("libValorDuneSystematics.so");
