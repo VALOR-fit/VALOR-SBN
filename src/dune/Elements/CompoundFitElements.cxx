@@ -96,6 +96,8 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * opt)
        }
        fCompoundFitData ->SetName(list_name);
        fCompoundFitModel->SetName(list_name);
+       
+       LOG("CompoundFitElements", pNOTICE) << "Created model with "<<fCompoundFitModel->GetNSubModels()<<" submodels.";
     }
     else if (curr_node_name == "systematics") {
       const char * syst_name_cstr = xmleng->GetAttr(curr_node,"name");
