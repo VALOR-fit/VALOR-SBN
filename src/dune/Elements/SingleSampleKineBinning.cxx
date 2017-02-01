@@ -21,12 +21,22 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 using namespace valor;
 
 //________________________________________________________________________________________
-SingleSampleKineBinning::SingleSampleKineBinning(conv::BeamConf_t b, conv::Sample_t s)
+SingleSampleKineBinning::SingleSampleKineBinning(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s)
 {
   this->Init();
 
+  fDetector = d;
   fBeamConf = b;
   fSample   = s;
+}
+//________________________________________________________________________________________
+SingleSampleKineBinning::SingleSampleKineBinning(UniqueSampleID usid)
+{
+  this->Init();
+
+  fDetector = usid.detector;
+  fBeamConf = usid.beamconf;
+  fSample   = usid.sample;
 }
 //________________________________________________________________________________________
 SingleSampleKineBinning::~SingleSampleKineBinning(void)
@@ -222,12 +232,12 @@ void SingleSampleKineBinning::Init(void)
   fBeamConf = conv::kbUndefined; 
   fSample   = conv::ksUndefined;
 
-  fRecoOptimizedBinning = 0;
-  fRecoSimpleBinning    = 0;
-  fXsecSimpleBinning    = 0;
+  fRecoOptimizedBinning = NULL;
+  fRecoSimpleBinning    = NULL;
+  fXsecSimpleBinning    = NULL;
 
   for(int im = 0; im < conv::kNReacModes; im++) {
-     fTrueSimpleBinning [im] = 0;
+     fTrueSimpleBinning [im] = NULL;
   }
 
   fTrueSimpleBinningUnique.clear();
@@ -235,12 +245,9 @@ void SingleSampleKineBinning::Init(void)
 //________________________________________________________________________________________
 void SingleSampleKineBinning::CleanUp(void)
 {
-  if (fRecoOptimizedBinning) delete fRecoOptimizedBinning;
-  if (fRecoSimpleBinning   ) delete fRecoSimpleBinning;
-
-  fRecoOptimizedBinning = 0;
-  fRecoSimpleBinning    = 0;
-  fXsecSimpleBinning    = 0;
+  if (fRecoOptimizedBinning) { delete fRecoOptimizedBinning; fRecoOptimizedBinning = 0; }
+  if (fRecoSimpleBinning   ) { delete fRecoSimpleBinning;    fRecoSimpleBinning    = 0; }
+  if (fXsecSimpleBinning   ) { delete fXsecSimpleBinning;    fXsecSimpleBinning    = 0; }
   
   vector<KBCubHcmbEdge2Edge *>::iterator it = fTrueSimpleBinningUnique.begin();
   for( ; it != fTrueSimpleBinningUnique.end(); ++it) {

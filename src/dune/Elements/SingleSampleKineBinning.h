@@ -69,6 +69,7 @@
 #include "valor/KineBinning/KBCubHcmbEdge2Edge.h"
 
 #include "dune/Conventions/BeamConf.h"
+#include "dune/Conventions/UniqueSampleID.h"
 #include "dune/Conventions/Sample.h"
 #include "dune/Conventions/SampleReacMode.h"
 
@@ -80,7 +81,8 @@ namespace valor {
 class SingleSampleKineBinning {
 
 public:
-  SingleSampleKineBinning(conv::BeamConf_t b, conv::Sample_t s);
+  SingleSampleKineBinning(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s);
+  SingleSampleKineBinning(UniqueSampleID usid);
  ~SingleSampleKineBinning();
 
   bool Read(string file);
@@ -100,6 +102,7 @@ private:
   void Init    (void);
   void CleanUp (void);
 
+  conv::Detector_t             fDetector;
   conv::BeamConf_t             fBeamConf;
   conv::Sample_t               fSample;
   KBCubHcmbMondrian *          fRecoOptimizedBinning;                   //
