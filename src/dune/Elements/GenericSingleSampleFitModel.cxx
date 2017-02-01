@@ -18,6 +18,7 @@
 #include <TSystem.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TPRegexp.h>
 
 //fmwk
 #include "valor/Conventions/Constants.h"
@@ -94,10 +95,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   }
 
   fName = util::nm::MdlName(fDetector, fBeam, fSample, fKSp);
-
-  this->Book();
-  this->Zero();
-
+  
   TString ts_opt(opt);
   bool force_use_dst    = ts_opt.Contains("forcedst");
   bool skip_spline_read = ts_opt.Contains("nosplines");
@@ -106,6 +104,8 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   skip_spline_read = true;
 #endif
   
+  
+  // Set up the initial XML reader
   LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
 
@@ -134,6 +134,28 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     util::Die(1); return false;
   }
   XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+  
+  
+  // Get binning file name, potentially from option string
+  string binning_file;
+  TPRegexp binning_re("(?<=binning\\=)[^ ,]+");
+  TObjArray * matches = binning_re.MatchS(opt);
+  if(matches->GetEntries()==1) {
+    TObjString * binning_objstring = dynamic_cast<TObjString*>(matches->At(0));
+    if (binning_objstring) {
+      binning_file = binning_objstring->String().Data();
+    }
+    LOG("GenericSingleSampleFitModel",pNOTICE) << fName<< ": Reading binning from "<<binning_file;
+  }
+  else {
+    binning_file = util::XML2String(xml,root_node,"default_binning");
+    LOG("GenericSingleSampleFitModel",pNOTICE) << fName<< ": No sample-specific binning in options \""<<opt<<"\" , falling back to default: "<<binning_file;
+  }
+  delete matches;
+
+  this->Book();
+  this->Zero();
+  
 
   //------------------------
   // TODO
