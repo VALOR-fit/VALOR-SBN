@@ -154,6 +154,7 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
   string mc_file          = "";
   string data_class       = "";
   string model_class      = "";
+  string binning          = "";
 
   XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
   while(curr_node) {
@@ -169,6 +170,7 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
         if(curr_node_name == "mc"         ) { mc_file         = content; }
         if(curr_node_name == "data_class" ) { data_class      = content; }
         if(curr_node_name == "model_class") { model_class     = content; }
+        if(curr_node_name == "binning"    ) { binning         = content; }
       }
       curr_node = xmleng->GetNext(curr_node);
   }
@@ -196,11 +198,16 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
     success = false;
   }
   
+  TString model_opt = opt;
+  if (!binning.empty()) {
+    model_opt = TString::Format("%s binning=%s",opt,binning.c_str());
+  }
+  
   if (success) {
     FitDataABC *  fit_data  = 
        this->AdoptFitData (data_file, detector, beam, sample, observable, data_class , opt);
     FitModelABC * fit_model = 
-       this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class, opt);
+       this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class, model_opt.Data());
 
     assert(fit_data);
     assert(fit_model);
