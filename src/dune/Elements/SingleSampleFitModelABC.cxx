@@ -6,7 +6,8 @@ Copyright (c) 2010-2016, The VALOR group. All rights reserved.
 */
 //________________________________________________________________________________________
 
-#include <cassert>
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Messenger/Messenger.h"
 
 #include "dune/Elements/SingleSampleFitModelABC.h"
 
@@ -35,10 +36,10 @@ void SingleSampleFitModelABC::Configure(
   fSample   = s;
   fKSp      = k;
 
-  assert(fDetector != conv::kdUndefined );
-  assert(fBeam     != conv::kbUndefined );
-  assert(fSample   != conv::ksUndefined );
-  assert(fKSp      != conv::kspUndefined);
+  if (fDetector == conv::kdUndefined ) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad Detector"  << fDetector ; util::Die(-1); }
+  if (fBeam     == conv::kbUndefined ) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad Beam"      << fBeam     ; util::Die(-1); }
+  if (fSample   == conv::ksUndefined ) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad Sample"    << fSample   ; util::Die(-1); }
+  if (fKSp      == conv::kspUndefined) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad KineSpace" << fKSp      ; util::Die(-1); }
 
 }
 //________________________________________________________________________________________
