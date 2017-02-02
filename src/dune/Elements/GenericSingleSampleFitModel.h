@@ -48,17 +48,13 @@ brief      A generic implementation of the fit model for a single sample,
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
+#include "dune/Elements/SingleSampleKineBinning.h"
 
 
 using std::string;
 
 namespace valor {
 
-// --------------------------------------
-// abstract this  
-//class NuFlux; // neutrino flux model systematics
-//class NuInt;  // neutrino interaction model systematics
-//class NuDet;  // neutrino detector model systematics
 // --------------------------------------
 
 class GenericSingleSampleFitModel: public SingleSampleFitModelABC
@@ -141,7 +137,6 @@ private:
 
   // Input VALOR MC DSTs
   bool fUseMCDST;
-  TTree * fMCDST;
   
   // MC templates (MCT) 
   // Each template is (currently always) a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.
@@ -164,17 +159,17 @@ private:
   //
   // Below are MCT with binning heavily optimized to reduce the CPU intensity of the fit.
   // A number of binning zones are defined, and in each zone a variable-size binning scheme is used.
-  bool         fMCTNullOb [conv::kNReacModes][conv::kNMaxBinZones];
-  VALORArray * fMCTNomOb  [conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTTunOb  [conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTSysOb  [conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCTFinOb  [conv::kNReacModes][conv::kNMaxBinZones]; 
-  VALORArray * fMCStatOb  [conv::kNReacModes][conv::kNMaxBinZones]; // MC statistics
+  bool         fMCTNullOb [conv::kNReacModes];
+  VALORArray * fMCTNomOb  [conv::kNReacModes]; 
+  VALORArray * fMCTTunOb  [conv::kNReacModes]; 
+  VALORArray * fMCTSysOb  [conv::kNReacModes]; 
+  VALORArray * fMCTFinOb  [conv::kNReacModes]; 
+  VALORArray * fMCStatOb  [conv::kNReacModes]; // MC statistics
   
   // We'll keep our response function pointers in a VALORArray of longs.
   // If we move to C++ 11, should use intptr_t instead.
   // This has an extra dimension above those  in the arrays above - parameter
-  VALORArrayL * fRFPtr[conv::kNReacModes][conv::kNMaxBinZones];
+  VALORArrayL * fRFPtr[conv::kNReacModes];
   
   // Below are MCT versions the use a simple (~fine and ~regular) binning throughout the whole range.
   // These templates are not used in the fit, but mainly for the visualization of the fit results.
@@ -193,13 +188,16 @@ private:
   // The `Tot' versions are integrated over the true reac_modes and can be used for comparisons with data.
   //
   // Below are PDFs with binning heavily optimized to reduce the CPU intensity of the fit.
-  bool         fPDFTotNullOb [conv::kNMaxBinZones];                    //
-  VALORArray * fPDFTotOb     [conv::kNMaxBinZones];                    // total
-  VALORArray * fPDFCompOb    [conv::kNReacModes][conv::kNMaxBinZones]; // components
+  bool         fPDFTotNullOb;                     //
+  VALORArray * fPDFTotOb    ;                     // total
+  VALORArray * fPDFCompOb    [conv::kNReacModes]; // components
   // Below are PDFs versions the use a simple (~fine and ~regular) binning throughout the whole range.
   bool         fPDFTotNullSb;                     // 
   VALORArray * fPDFTotSb;                         // total
   VALORArray * fPDFCompSb    [conv::kNReacModes]; // components
+  
+  // Binning
+  SingleSampleKineBinning * fBinning;
   
   // Spline library
   util::DuneRFL * fRFL;
