@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<binning>
+
+  <space>
+    Ereco,yreco
+  </space>
+
+  <type>
+    mondrian
+  </type>
+
+  <nbins>
+    18
+  </nbins>
+
+  <bin_0>  0,  1.58,  2.05,  2.59,  3.13,  4.84,  100  </bin_0>
+  <bin_1>  0,  1.57,  2.05,  2.56,  3.13,  3.87,  100  </bin_1>
+  <bin_2>  0,  1.5,   2.05,  2.49,  3.13,  3.67,  100  </bin_2>
+
+</binning>
