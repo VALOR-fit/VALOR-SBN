@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<valor> 
+<valor>
 
   <element_list name="dune_fd_ndtf_3rdpass">
 <!--
@@ -17,7 +17,7 @@
       <mc>           dune_2016b_fd_mulike_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      dune_fd_fhc_numulikecchigh_bins.xml                  </binning>
+      <binning>      binning/dune_fd_fhc_numulikecchigh_bins.xml          </binning>
     </element>
 
 <!--
@@ -43,7 +43,7 @@
       <mc>           dune_2016b_fd_elike_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      dune_fd_fhc_nuelikecchigh_bins.xml                   </binning>
+      <binning>      binning/dune_fd_fhc_nuelikecchigh_bins.xml           </binning>
     </element>
 
 <!--
@@ -69,7 +69,7 @@
       <mc>           dune_2016b_fd_mulike_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      dune_fd_rhc_numulikecchigh_bins.xml                  </binning>
+      <binning>      binning/dune_fd_rhc_numulikecchigh_bins.xml          </binning>
     </element>
 
 <!--
@@ -95,7 +95,7 @@
       <mc>           dune_2016b_fd_elike_pt3.xml </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      dune_fd_rhc_nuelikecchigh_bins.xml                   </binning>
+      <binning>      binning/dune_fd_rhc_nuelikecchigh_bins.xml           </binning>
     </element>
 
 <!--
@@ -113,36 +113,36 @@
 -->
 
   </element_list>
-  
+
   <systematics name="DUNE_2016bFD">
     <group name="flux">
       <class> valor::MINERVAFlux2016aFD </class>
-      
+
       <covariance_matrix>
         <filename>   dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
-        <objname>    far_only             </objname>    
+        <objname>    far_only             </objname>
         <objtype>    TMatrixD             </objtype>
-      </covariance_matrix> 
+      </covariance_matrix>
     </group>
-    
+
     <group name="interaction">
       <class> valor::VALORInt2016a </class>
       <covariance_matrix>
          <filename>   dune/ndfit/2016a/xsec/xsec_covariance_2016a_gevgen_v2.root </filename>
-         <objname>    frac_cov_max    </objname>    
+         <objname>    frac_cov_max    </objname>
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
     </group>
-    
+
     <group name="detector">
       <class> valor::SimpleDet2016bFD </class>
       <covariance_matrix>
          <filename>   test/dummy_detector_matrices.root </filename>
-         <objname>    diag_4x4_10pct    </objname>    
+         <objname>    diag_4x4_10pct    </objname>
          <objtype>    TMatrixD          </objtype>
       </covariance_matrix>
     </group>
-    
+
   </systematics>
 
-</valor> 
+</valor>

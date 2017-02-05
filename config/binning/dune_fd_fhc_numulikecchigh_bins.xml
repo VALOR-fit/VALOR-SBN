@@ -4,12 +4,12 @@
 
   <!-- Single Mondrian binning scheme for reco quantities -->
   <reco_optimized>
-    valor_dune_mondrian_FD_ErecoYreco_Mulike_binning.xml
+    binning/valor_dune_mondrian_FD_ErecoYreco_Mulike_binning.xml
   </reco_optimized>
 
   <!-- Single edge-to-edge binning scheme for reco quantities -->
   <reco_simple>
-    valor_dune_e2e_FD_ErecoYreco_Mulike_binning.xml
+    binning/valor_dune_e2e_FD_ErecoYreco_Mulike_binning.xml
   </reco_simple>
 
   <!-- Single edge-to-edge binning scheme for true quantities.
@@ -18,18 +18,14 @@
     <!-- Applies to all modes unless a mode binning scheme
          is specified explicitly below -->
     <default>
-      example_binning-Etrue-e2e_01.xml
+      binning/valor_dune_e2e_FD_Ereco_Mulike_binning.xml
     </default>
 
-    <!-- Exception for specific modes (optional) -->
-    <numuCCQE>
-      example_binning-Etrue,Q2true-e2e_01.xml
-    </numuCCQE>
-
-    <numubarCCQE>
-      example_binning-Etrue,Q2true-e2e_02.xml
-    </numubarCCQE>
-
   </true_simple>
+
+  <xsec_simple>
+    binning/valor_dune_e2e_FD_Ereco_Mulike_binning.xml    
+  </xsec_simple>
+  
 
 </sample_binning>
