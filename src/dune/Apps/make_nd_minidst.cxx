@@ -150,7 +150,7 @@ int main(int argc, char ** argv)
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
   analysis_tree->GetEntry(0);
 
-  genie::NtpMCEventRecord * mcrec = 0;
+  genie::NtpMCEventRecord * mcrec = new genie::NtpMCEventRecord;
   int    sample         = -1;
   int    sample_orig    = -1;
   int    sample_reco    = -1;
@@ -183,7 +183,6 @@ int main(int argc, char ** argv)
     //~ analysis_tree->SetBranchAddress("POTWeight",       &wght_pot       , &branchptr); active_branches.push_back(branchptr);
   }
   else if (gOptInpFileFormat == "lartpc" || gOptInpFileFormat == "fgt") {
-    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("sample",          &sample_orig    , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("sample_reco",     &sample_reco    , &branchptr); active_branches.push_back(branchptr);
     //~ analysis_tree->SetBranchAddress("reactionmode",    &reac_mode  , &branchptr); active_branches.push_back(branchptr);
@@ -192,6 +191,7 @@ int main(int argc, char ** argv)
     analysis_tree->SetBranchAddress("y_reco",          &y_reco_float   , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("POTWeight",       &wght_pot_float , &branchptr); active_branches.push_back(branchptr);
     analysis_tree->SetBranchAddress("TGTWeight",       &wght_tgt_float , &branchptr); active_branches.push_back(branchptr);
+    analysis_tree->SetBranchAddress("genie_mc_truth",  &mcrec          , &branchptr); active_branches.push_back(branchptr);
   }
   else {
     VLOG("make_minidst",pFATAL) << "Unknown input format: "<<gOptInpFileFormat;
@@ -238,12 +238,15 @@ int main(int argc, char ** argv)
   
   // Enable all the branches we actually care about
   for (unsigned int ib = 0 ; ib < active_branches.size(); ib++) {
+    assert(active_branches[ib]);
     active_branches[ib]->SetStatus(1);
     TObjArray * bar = active_branches[ib]->GetListOfBranches();
-    for (int ie = 0 ; ie < bar->GetEntries(); ie++) {
-      TBranch * b = dynamic_cast<TBranch*>(bar->At(ie));
-      assert(b);
-      b->SetStatus(1);
+    if (bar) {
+      for (int ie = 0 ; ie < bar->GetEntries(); ie++) {
+        TBranch * b = dynamic_cast<TBranch*>(bar->At(ie));
+        assert(b);
+        b->SetStatus(1);
+      }
     }
   }
   
@@ -252,6 +255,8 @@ int main(int argc, char ** argv)
   // event loop to fill my output tree
   //
   for(Long64_t iev = 0; iev < nev; iev++) {
+    
+    if (mcrec) {mcrec->Clear();}
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
       VLOG("make_minidst", pNOTICE) << "** Reading event: " << iev;
@@ -290,7 +295,6 @@ int main(int argc, char ** argv)
       
       if(mcrec->event == NULL) {
         VLOG("make_minidst", pNOTICE) << "- Rejecting event [null GENIE record]";
-        mcrec->Clear();
         continue;
       }
       
@@ -299,18 +303,15 @@ int main(int argc, char ** argv)
       //
       if(sample == valor::conv::ksUndefined) {
         VLOG("make_minidst", pNOTICE) << "- Rejecting event [undefined sample]: "<<sample;
-        mcrec->Clear();
         continue;
       }
       if(enu_reco <= 0) {
         VLOG("make_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
-        mcrec->Clear();
         continue;
       }
       if( (y_reco < 0 || y_reco > 1) ) {
         if (valor::util::IsCC((valor::conv::Sample_t)sample)) {
           VLOG("make_minidst", pNOTICE) << "- Rejecting CC event [y (reco) < 0]: "<<y_reco;
-          mcrec->Clear();
           continue;
         }
         else {
@@ -355,7 +356,6 @@ int main(int argc, char ** argv)
       if(valor_minidst_reac_mode == valor::conv::kmUndefined) {
         VLOG("make_minidst", pWARN) << "- Rejecting event [bad mode]";
         VLOG("make_minidst", pINFO) << event;
-        mcrec->Clear();
         continue;
       }
     }
@@ -373,8 +373,6 @@ int main(int argc, char ** argv)
       << "\n weight        = " << valor_minidst_wght_pot;
     
     valor_minidst->Fill();
-
-    mcrec->Clear();
   }
   
   for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
