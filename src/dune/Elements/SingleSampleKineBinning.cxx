@@ -198,26 +198,29 @@ bool SingleSampleKineBinning::Read(string file)
   // XSec Simple 
   //
 
-  if(! util::NodeExists(xml,root_node,"xsec_simple")) {
+  if(! util::NodeExists(xml,root_node,"xsec_reco")) {
      LOG("SampleBinning", pERROR)
         << "<xsec_simple> node not found in file: " << file;
      return false;
   }
-  string xsec_smp_binning_file = util::XML2String(xml,root_node,"xsec_simple");
+  string xsec_reco_binning_file = util::XML2String(xml,root_node,"xsec_reco");
   LOG("SampleBinning", pINFO)
-    << "\n ** Reading simple xsec binning ** " 
+    << "\n ** Reading xsec reconstructed binning ** " 
     << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
-    << "\n    From file: " << xsec_smp_binning_file;
+    << "\n    From file: " << xsec_reco_binning_file;
 
-  fXsecSimpleBinning = new KBCubHcmbEdge2Edge;
-  read_ok = fXsecSimpleBinning->Read(xsec_smp_binning_file);
+  fXsecRecoBinning = new KBCubHcmbMondrian;
+  read_ok = fXsecRecoBinning->Read(xsec_reco_binning_file);
   if(!read_ok) {
-     LOG("SampleBinning", pINFO)
-       << "Could not read simple xsec binning from: " << xsec_smp_binning_file;
-     return false;
+     LOG("SampleBinning", pNOTICE)
+       << "Could not read xsec reco binning from: " << xsec_reco_binning_file<<", falling back on optimized.";
+       
+     // FALL BACK ON OPTIMIZED BINNING
+     delete fXsecRecoBinning;
+     fXsecRecoBinning = fRecoOptimizedBinning;
   }
   
-  return false;
+  return true;
 }
 //________________________________________________________________________________________
 KBCubHcmbEdge2Edge * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m) const
@@ -234,7 +237,7 @@ void SingleSampleKineBinning::Init(void)
 
   fRecoOptimizedBinning = NULL;
   fRecoSimpleBinning    = NULL;
-  fXsecSimpleBinning    = NULL;
+  fXsecRecoBinning      = NULL;
 
   for(int im = 0; im < conv::kNReacModes; im++) {
      fTrueSimpleBinning [im] = NULL;
@@ -247,7 +250,7 @@ void SingleSampleKineBinning::CleanUp(void)
 {
   if (fRecoOptimizedBinning) { delete fRecoOptimizedBinning; fRecoOptimizedBinning = 0; }
   if (fRecoSimpleBinning   ) { delete fRecoSimpleBinning;    fRecoSimpleBinning    = 0; }
-  if (fXsecSimpleBinning   ) { delete fXsecSimpleBinning;    fXsecSimpleBinning    = 0; }
+  if (fXsecRecoBinning     ) { delete fXsecRecoBinning;    fXsecRecoBinning    = 0; }
   
   vector<KBCubHcmbEdge2Edge *>::iterator it = fTrueSimpleBinningUnique.begin();
   for( ; it != fTrueSimpleBinningUnique.end(); ++it) {
