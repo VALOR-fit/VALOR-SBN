@@ -48,7 +48,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
-#include "dune/Elements/SingleSampleKineBinning.h"
+#include "dune/Utilities/SingleSampleKineBinning.h"
 
 
 using std::string;

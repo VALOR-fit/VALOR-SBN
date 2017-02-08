@@ -13,6 +13,4 @@
 #pragma link C++ class valor::GenericSingleSampleFitModel+;
 #pragma link C++ class valor::GenericSingleSampleFitData+;
 
-#pragma link C++ class valor::SingleSampleKineBinning;
-
 #endif

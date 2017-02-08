@@ -10,6 +10,8 @@
 #pragma link C++ namespace valor::conv;
 #pragma link C++ namespace valor::util;
 
+#pragma link C++ class valor::SingleSampleKineBinning;
+
 #pragma link C++ class valor::util::KinematicBin;
 #pragma link C++ class valor::util::KinematicPoint;
 #pragma link C++ class valor::util::DuneRFL;

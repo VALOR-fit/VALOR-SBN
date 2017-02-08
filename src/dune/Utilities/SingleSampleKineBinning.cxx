@@ -16,7 +16,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/KineBinning/KBCubHcmbEdge2Edge.h"
 
 #include "dune/Conventions/ArrIdx.h"
-#include "dune/Elements/SingleSampleKineBinning.h"
+#include "dune/Utilities/SingleSampleKineBinning.h"
 
 using namespace valor;
 
