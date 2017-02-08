@@ -60,6 +60,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
+
 #include "dune/Conventions/Detector.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"
@@ -69,8 +70,11 @@
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
+#include "dune/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Utilities/KinematicBin.h"
+#include "dune/Elements/CompoundFitElements.h"
+#include "dune/Elements/GenericSingleSampleFitModel.h"
 
 
 using std::string;
@@ -93,13 +97,14 @@ int main(int argc, char ** argv)
   arg.Read(argc,argv,"$VALOR_DUNE/config/apps/make_response_functions.arg");
   VLOG("valor_dune", pNOTICE) << arg;
 
-  string arg_beam       = arg.GetString("beam");
-  string arg_sample     = arg.GetString("sample");
-  string arg_detector   = arg.GetString("detector");
-  string arg_systematic = arg.GetString("systematic");
-  string arg_format     = arg.GetString("format");  
-  string arg_inp_file   = arg.GetString("input");
-  string arg_out_file   = arg.GetString("output");
+  string arg_beam        = arg.GetString("beam");
+  string arg_sample      = arg.GetString("sample");
+  string arg_detector    = arg.GetString("detector");
+  string arg_systematic  = arg.GetString("systematic");
+  string arg_format      = arg.GetString("format");  
+  string arg_inp_file    = arg.GetString("input");
+  string arg_out_file    = arg.GetString("output");
+  string arg_config_file = arg.GetString("config");
   
   bool include_sb       = arg.GetBool("include-simple-binning");
 
@@ -133,8 +138,34 @@ int main(int argc, char ** argv)
   assert(detector  != kdUndefined   );
   assert(fit_param != kPhypUndefined);
   
-  // Make an RFL to generate the spline names
-  util::DuneRFL rfl(beam,sample,detector,1,&fit_param);
+  // Read the config to get the relevant binning
+  CompoundFitElements * elements = new CompoundFitElements();
+  std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
+  elements->Read(config_path);
+  CompoundFitModel * compound_model = dynamic_cast<CompoundFitModel*>(elements->FitModel());
+  assert(compound_model);
+  GenericSingleSampleFitModel * fit_model = 0;
+  bool got_appropriate_model = false;
+  for (unsigned int ism = 0 ; ism < compound_model->GetNSubModels() ; ism++) {
+    fit_model = dynamic_cast<GenericSingleSampleFitModel*>(compound_model->GetSubModel(ism));
+    if  (fit_model->GetDetector() == detector && 
+         fit_model->GetSample()   == sample   && 
+         fit_model->GetBeam()     == beam )
+      { got_appropriate_model = true; break; }
+  }
+  if (!got_appropriate_model) {
+    VLOG("make_response_func", pFATAL) << "Failed to identify appropriate fit model to get binning.";
+  }
+  
+  const util::DuneRFL           & rfl      = *(fit_model->GetRFL());
+  const SingleSampleKineBinning & binning  = *(fit_model->GetBinning());
+  
+  // Make it an option here to use the Xsec binning instead
+  const KBCubHcmbMondrian  * reco_ob = binning.RecoOptBinning();
+  const KBCubHcmbEdge2Edge * reco_sb = binning.RecoSmpBinning();
+  const int n_reco_bins_ob  = reco_ob->NBins();
+  const int n_reco_bins_sb  = reco_sb->NBins();
+  
 
   // Number of tweaks for the specified systematic parameter
   const int   inom          = 5;
@@ -146,7 +177,7 @@ int main(int argc, char ** argv)
   // Arrays to store the number of events in each MC template bin
   // for each systematic parameter tweak
   VALORArray * mc_templ_sb [n_twks] [kNReacModes]; 
-  VALORArray * mc_templ_ob [n_twks] [kNReacModes][kNMaxBinZones]; 
+  VALORArray * mc_templ_ob [n_twks] [kNReacModes]; 
 
   const util::ArrIdx * arridx = util::ArrIdx::Instance();  
   int isample = arridx->SampleIdx(beam,sample);
@@ -155,22 +186,16 @@ int main(int argc, char ** argv)
     for(int imode = 0; imode < kNReacModes; imode++) {
       ReacMode_t m = kReactionModes[isample][imode];
       if(m == kmUndefined) continue;
-      const int n_y_reco_bins_sb  = util::NumYrecoBinsSb(sample);
-      const int n_enu_true_bins   = util::NumEtrueBinsXsec(sample);
-      const int n_q2_true_bins    = util::NumQ2trueBinsXsec(sample,m);
+      const KBCubHcmbEdge2Edge * true_sb = binning.TrueSmpBinning(m);
+      const int n_true_bins_sb  = true_sb->NBins();
       if (include_sb) {
         mc_templ_sb [itwk][imode] = 
-          new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb, n_enu_true_bins, n_q2_true_bins);
+          new VALORArray(kNErecoBinsSb, n_reco_bins_sb, n_true_bins_sb);
         mc_templ_sb [itwk][imode] -> SetAll(0.);
       }
-      for(int izone = 0; izone < kNMaxBinZones; izone++) {
-        const int n_enu_reco_bins = util::NumErecoBinsXsec(sample,izone);
-        const int n_y_reco_bins   = util::NumYrecoBinsXsec(sample,izone);
-        if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
-        mc_templ_ob [itwk][imode][izone] = 
-          new VALORArray(n_enu_reco_bins, n_y_reco_bins, n_enu_true_bins, n_q2_true_bins);
-        mc_templ_ob [itwk][imode][izone] -> SetAll(0.);
-      }
+      mc_templ_ob [itwk][imode] = 
+        new VALORArray(n_reco_bins_ob, n_true_bins_sb);
+      mc_templ_ob [itwk][imode] -> SetAll(0.);
     }
   }
 
@@ -314,45 +339,31 @@ int main(int argc, char ** argv)
       double wght = rw.CalcWeight(event);
       //if(wght <    0) wght = 1; // needed?
       //if(wght > 9999) wght = 1; // needed?
-
-      // Get enu_true, enu_reco, y_reco array indices
-      const int izone = util::BinZone(curr_sample, curr_enu_reco, curr_y_reco);
-      if(izone < 0) {
-        VLOG("make_minidst", pNOTICE) << "- Rejecting event [Negative zone!]";
-        curr_mcrec->Clear();
-        continue;
-      }
-      const int      n_enu_true_bins       = util::NumEtrueBinsXsec  (curr_sample);
-      const double * enu_true_bin_edges    = util::EtrueBinEdgesXsec (curr_sample);
-      const int      n_q2_true_bins        = util::NumQ2trueBinsXsec (curr_sample,curr_mode);
-      const double * q2_true_bin_edges     = util::Q2trueBinEdgesXsec(curr_sample,curr_mode);
       
-      const int      n_enu_reco_bins_ob    = util::NumErecoBinsXsec  (curr_sample,izone);
-      const double * enu_reco_bin_edges_ob = util::ErecoBinEdgesXsec (curr_sample,izone);
-      const int      n_y_reco_bins_sb      = util::NumYrecoBinsSb    (curr_sample);
-      const double * y_reco_bin_edges_sb   = util::YrecoBinEdgesSb   (curr_sample);
-      const int      n_y_reco_bins_ob      = util::NumYrecoBinsXsec  (curr_sample,izone);
-      const double * y_reco_bin_edges_ob   = util::YrecoBinEdgesXsec (curr_sample,izone);
-
       // Protect against vars at upper limit (eg y_reco = 1, set by hand for NC events) as
       // the binary search below will give an index out of limits
       const double epsilon = 1E-10;
       if(curr_enu_reco >= kErecoMax) { curr_enu_reco = curr_enu_reco - epsilon; }
       if(curr_y_reco   >= kYrecoMax) { curr_y_reco   = curr_y_reco   - epsilon; } 
-
-      // Repeat, finding the indices for the template versions using a simple binning scheme
-      int ienu_reco_sb = TMath::BinarySearch(1+(Long_t)kNErecoBinsSb,      kErecoBinEdgesSb,      curr_enu_reco);
-      int iy_reco_sb   = TMath::BinarySearch(1+(Long_t)n_y_reco_bins_sb,   y_reco_bin_edges_sb,   curr_y_reco  );
-      // Work-out the index using the bin-edge array defining the variable-size binning scheme
-      int ienu_true    = TMath::BinarySearch(1+(Long_t)n_enu_true_bins,    enu_true_bin_edges,    curr_enu_true);
-      int iq2_true     = TMath::BinarySearch(1+(Long_t)n_q2_true_bins ,    q2_true_bin_edges ,    curr_q2_true);
-      int ienu_reco_ob = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins_ob, enu_reco_bin_edges_ob, curr_enu_reco);
-      int iy_reco_ob   = TMath::BinarySearch(1+(Long_t)n_y_reco_bins_ob,   y_reco_bin_edges_ob,   curr_y_reco  );
+      
+      // MUST BE REPLACED WITH APPROPRIATE KINESPACE STUFF
+      std::vector<double> truevec;
+      truevec.push_back(curr_enu_true);
+      truevec.push_back(curr_q2_true );
+      
+      std::vector<double> recovec;
+      recovec.push_back(curr_enu_reco);
+      recovec.push_back(curr_y_reco);
+      
+      const KBCubHcmbEdge2Edge * true_sb = binning.TrueSmpBinning(curr_mode);
+      const int itrue_sb = true_sb->FindLinearizedBin(truevec);
+      const int ireco_ob = reco_ob->FindBin(recovec);
+      const int ireco_sb = reco_sb->FindLinearizedBin(recovec);
 
       if (include_sb) {
-        mc_templ_sb [itwk] [imode]      -> AddToEntry(wght, ienu_reco_sb, iy_reco_sb, ienu_true, iq2_true); 
+        mc_templ_sb [itwk] [imode]      -> AddToEntry(wght, ireco_sb, itrue_sb); 
       }
-      mc_templ_ob [itwk] [imode][izone] -> AddToEntry(wght, ienu_reco_ob, iy_reco_ob, ienu_true, iq2_true);
+      mc_templ_ob [itwk] [imode] -> AddToEntry(wght, ireco_ob, itrue_sb);
       curr_mcrec->Clear();
     }// event loop
   }//tweaks
@@ -375,82 +386,57 @@ int main(int argc, char ** argv)
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
-    const int n_enu_reco_bins_sb = kNErecoBinsSb;    
-    const int n_y_reco_bins_sb   = util::NumYrecoBinsSb(sample);
-    const int n_enu_true_bins    = util::NumEtrueBinsXsec(sample);
-    const int n_q2_true_bins     = util::NumQ2trueBinsXsec(sample, m);
+    const KBCubHcmbEdge2Edge * true_sb = binning.TrueSmpBinning(m);
+    const int n_true_bins_sb = true_sb->NBins();
+    
     if (include_sb) {
-      for(int ienu_reco = 0; ienu_reco < n_enu_reco_bins_sb; ienu_reco++) {
-        for(int iy_reco = 0;  iy_reco <  n_y_reco_bins_sb; iy_reco++) {
-          for(int ienu_true = 0; ienu_true < n_enu_true_bins; ienu_true++) {
-            for(int iq2_true = 0; iq2_true < n_q2_true_bins; iq2_true++) {
-              double y[n_twks] = { 0 };
-              double x[n_twks] = { 0 };    
-              for(int itwk = 0; itwk < n_twks; itwk++) {
-                double twk_dial = twk_dial_min + itwk * twk_dial_step;  
-                double nevents  = mc_templ_sb [itwk][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
-                double nevents0 = mc_templ_sb [inom][imode] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
-                y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-                x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
-              }//itwk
-              util::KinematicBin kb;
-              kb.true1 = ienu_true;
-              kb.true2 = iq2_true;
-              kb.reco1 = ienu_reco;
-              kb.reco2 = iy_reco;
-              kb.zone  = -1; // HACK - simple binning get zone -1 to avoid name collisions with normal splines. Should probably update the pattern here.
-              TString name  = rfl.BuildSplineName(m,fit_param,kb);
-              TString title = name; // Make this contain real kinematic ranges
-              //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
-              TSpline3 spl(title.Data(), x[0], x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
-              spl.SetName(name.Data());
-              spl.Write();
-              n_splines_written++;
-              if (n_splines_written%1000==0) {
-                VLOG("make_response_func",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
-              }
-            }//iq2_true
-          }//ienu_true
-        }//iy_reco
-      }//ienu_reco
+      for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
+        for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+          double y[n_twks] = { 0 };
+          double x[n_twks] = { 0 };    
+          for(int itwk = 0; itwk < n_twks; itwk++) {
+            double twk_dial = twk_dial_min + itwk * twk_dial_step;  
+            double nevents  = mc_templ_sb [itwk][imode] -> GetEntry(ireco,itrue);
+            double nevents0 = mc_templ_sb [inom][imode] -> GetEntry(ireco,itrue);
+            y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
+            x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
+          }//itwk
+          TString name  = rfl.BuildSplineName(m,fit_param,itrue,ireco);
+          TString title = name; // Make this contain real kinematic ranges
+          //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
+          TSpline3 spl(title.Data(), x[0], x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
+          spl.SetName(name.Data());
+          spl.Write();
+          n_splines_written++;
+          if (n_splines_written%1000==0) {
+            VLOG("make_response_func",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
+          }
+        }//itrue
+      }//ireco
     }//if include sb
-    for(int izone = 0; izone < kNMaxBinZones; izone++) {
-      const int n_enu_reco_bins_ob = util::NumErecoBinsXsec(sample,izone);
-      const int n_y_reco_bins_ob   = util::NumYrecoBinsXsec(sample,izone);
-      for(int ienu_reco = 0; ienu_reco < n_enu_reco_bins_ob; ienu_reco++) {
-        for(int iy_reco = 0;  iy_reco <  n_y_reco_bins_ob; iy_reco++) {
-          for(int ienu_true = 0; ienu_true < n_enu_true_bins; ienu_true++) {
-            for(int iq2_true = 0; iq2_true < n_q2_true_bins; iq2_true++) {
-              double y[n_twks] = { 0 };
-              double x[n_twks] = { 0 };    
-              for(int itwk = 0; itwk < n_twks; itwk++) {
-                double twk_dial = twk_dial_min + itwk * twk_dial_step;  
-                double nevents  = mc_templ_ob [itwk][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
-                double nevents0 = mc_templ_ob [inom][imode][izone] -> GetEntry(ienu_reco, iy_reco, ienu_true, iq2_true);
-                y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-                x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
-              }//itwk
-              util::KinematicBin kb;
-              kb.true1 = ienu_true;
-              kb.true2 = iq2_true;
-              kb.reco1 = ienu_reco;
-              kb.reco2 = iy_reco;
-              kb.zone  = izone;
-              TString name  = rfl.BuildSplineName(m,fit_param,kb);
-              TString title = name; // Make this contain real kinematic ranges
-              //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
-              TSpline3 spl(title.Data(), x[0],x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
-              spl.SetName(name.Data());
-              spl.Write();
-              n_splines_written++;
-              if (n_splines_written%1000==0) {
-                VLOG("make_response_func",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
-              }
-            }//iq2_true
-          }//ienu_true
-        }//iy_reco
-      }//ienu_reco    
-    }//izone
+    for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+      for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+        double y[n_twks] = { 0 };
+        double x[n_twks] = { 0 };    
+        for(int itwk = 0; itwk < n_twks; itwk++) {
+          double twk_dial = twk_dial_min + itwk * twk_dial_step;  
+          double nevents  = mc_templ_ob [itwk][imode] -> GetEntry(ireco, itrue);
+          double nevents0 = mc_templ_ob [inom][imode] -> GetEntry(ireco, itrue);
+          y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
+          x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
+        }//itwk
+        TString name  = rfl.BuildSplineName(m,fit_param,itrue,ireco);
+        TString title = name; // Make this contain real kinematic ranges
+        //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
+        TSpline3 spl(title.Data(), x[0],x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
+        spl.SetName(name.Data());
+        spl.Write();
+        n_splines_written++;
+        if (n_splines_written%1000==0) {
+          VLOG("make_response_func",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
+        }
+      }//itrue
+    }//ireco
   }//imode
 
   fout.Close();
