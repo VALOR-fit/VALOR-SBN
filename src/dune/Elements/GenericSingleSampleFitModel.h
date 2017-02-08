@@ -93,6 +93,10 @@ public:
   // Auxiliary methods, not part of the  FitModelABC interface (needed?)
   //
   
+  // Get the response function library and binning
+  const util::DuneRFL * GetRFL(void) const;
+  const SingleSampleKineBinning * GetBinning(void) const;
+  
   PhysParamList OneSigmaErrors (Option_t * opt = "");
 //  TMatrixD CovarianceMatrix(Option_t * opt = "");
 

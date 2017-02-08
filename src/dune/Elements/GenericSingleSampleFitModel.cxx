@@ -2337,3 +2337,13 @@ void GenericSingleSampleFitModel::SetSystConf(CorrelatedSystematics * syst, Opti
   return;
 }
 //________________________________________________________________________________________
+const util::DuneRFL * GenericSingleSampleFitModel::GetRFL() const
+{
+  return fRFL;
+}
+//________________________________________________________________________________________
+const SingleSampleKineBinning * GenericSingleSampleFitModel::GetBinning() const
+{
+  return fBinning;
+}
+//________________________________________________________________________________________
