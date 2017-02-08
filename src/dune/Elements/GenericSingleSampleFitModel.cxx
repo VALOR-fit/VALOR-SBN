@@ -46,6 +46,7 @@
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/Names.h"
+#include "dune/Utilities/KinematicPoint.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
 
 using std::endl;
@@ -243,75 +244,76 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   xml->FreeDoc(xmldoc);
   delete xml;
   
-  LOG("GenericSingleSampleFitModel",pINFO) << "Configuring the Response Function Library... \n\n";
-  // And now get the RFL
-  fRFL = new util::DuneRFL(fBeam, fSample, fDetector, conv::kNFitParamsWithSplines,conv::kFitParamsWithSplines);
   if (!skip_spline_read) {
-    fRFL->Read(file, opt);
-    
-    bool null_warning = false;
-  
-  
-    // Fill the spline array
-    const int n_true1_bins = util::NumEtrueBins(fSample);
-    const double * true1_bin_edges = util::EtrueBinEdges(fSample);
-
-    for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kReactionModes[isample][imode];
-      if(m == kmUndefined) continue;
-      const int n_true2_bins = util::NumQ2trueBins(fSample,m);
-      const double * true2_bin_edges = util::Q2trueBinEdges(fSample,m);
-      
-      // Optimised binning
-      for(int izone = 0; izone < kNMaxBinZones; izone++) {
-        util::KinematicPoint kp;
-        const int n_reco1_bins = util::NumErecoBins(fSample,izone);
-        const int n_reco2_bins = util::NumYrecoBins(fSample,izone);
-        const double * reco1_bin_edges = util::ErecoBinEdges(fSample,izone);
-        const double * reco2_bin_edges = util::YrecoBinEdges(fSample,izone);
-        for(int it1 = 0; it1 < n_true1_bins; it1++) {
-          double true1 = (true1_bin_edges[it1]+true1_bin_edges[it1+1])/2.;
-          kp.true1 = true1;
-          for(int it2 = 0; it2 < n_true2_bins; it2++) {
-            double true2 = (true2_bin_edges[it2]+true2_bin_edges[it2+1])/2.;
-            kp.true2 = true2;
-            for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-              double reco1 = (reco1_bin_edges[ir1]+reco1_bin_edges[ir1+1])/2.;
-              kp.reco1 = reco1;
-              for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                double reco2 = (reco2_bin_edges[ir2]+reco2_bin_edges[ir2+1])/2.;
-                kp.reco2 = reco2;
-                util::KinematicBin kb = fRFL->GetBin(kp,m);
-                for (int ip = 0 ; ip < kNFitParams; ip++) {
-                  PhysParamId_t p = kFitParam[ip];
-                  Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
-                  if (util::ParamHasSplines(p)) {
-                    const util::Interpolator * spl = fRFL->GetSpline(m,p,kb);
-                    if (spl == NULL) {
-                      LOG("GenericSingleSampleFitModel",pINFO) << "Got null spline.\n";
-                      null_warning = true;
-                    }
-                    spl_as_int = reinterpret_cast<Long64_t>(spl);
-                    
-                  }
-                  fRFPtr[imode]->SetEntry(spl_as_int,ir1,ir2,it1,it2,ip);
-                }//ip
-              }//ir2
-            }//ir1
-          }//it2
-        }//it1
-      }//izone
-    }//imode
-    if (null_warning) {
-      LOG("GenericSingleSampleFitModel",pFATAL) << "Null splines found - giving up.";
-      util::Die(-1);return false;
-    }
-    LOG("GenericSingleSampleFitModel",pINFO) << "Spline array filled... \n\n";
+    if (! this->FillSplines(file,opt)) { return false; }
   }
     
 
   LOG("GenericSingleSampleFitModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
 
+  return true;
+}
+//________________________________________________________________________________________
+bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
+{
+  LOG("GenericSingleSampleFitModel",pINFO) << "Configuring the Response Function Library... \n\n";
+  // And now get the RFL
+  fRFL = new util::DuneRFL(fBinning, conv::kNFitParamsWithSplines,conv::kFitParamsWithSplines);
+  fRFL->Read(file, opt);
+  
+  bool null_warning = false;
+
+  const KBCubHcmbMondrian  * reco_ob = fBinning->RecoOptBinning();
+  const KBCubHcmbEdge2Edge * reco_sb = fBinning->RecoSmpBinning();
+  
+  const int n_reco_bins_ob = reco_ob->NBins();
+  const int n_reco_bins_sb = reco_sb->NBins();
+  
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
+
+  for(int imode = 0; imode < kNReacModes; imode++) {
+    ReacMode_t m = kReactionModes[isample][imode];
+    if(m == kmUndefined) continue;
+
+
+    const KBCubHcmbEdge2Edge * true_sb = fBinning->TrueSmpBinning(m);
+    const int n_true_bins_sb = true_sb->NBins();
+    
+    // Optimised binning
+    util::KinematicPoint kp;
+    for (int itrue = 0 ; itrue < n_true_bins_sb ; itrue++) {
+      std::vector<double> true_centers = true_sb->BinCentre(itrue);
+      if (true_centers.size() > 0) { kp.true1 = true_centers[0]; }
+      if (true_centers.size() > 1) { kp.true2 = true_centers[1]; }
+      if (true_centers.size() > 2) { kp.true3 = true_centers[2]; }
+      for (int ireco = 0 ; ireco < n_reco_bins_ob ; ireco++) {
+        std::vector<double> reco_centers = reco_ob->BinCentre(ireco);
+        kp.reco1 = reco_centers[0];
+        kp.reco2 = reco_centers[1];
+        std::pair<int,int> binid = fRFL->GetBin(kp,m);
+        int ispltrue = binid.first;
+        int isplreco = binid.second;
+        for (int ip = 0 ; ip < kNFitParams; ip++) {
+          PhysParamId_t p = kFitParam[ip];
+          Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
+          if (util::ParamHasSplines(p)) {
+            const util::Interpolator * spl = fRFL->GetSpline(m,p,ispltrue,isplreco);
+            if (spl == NULL) {
+              LOG("GenericSingleSampleFitModel",pINFO) << "Got null spline.\n";
+              null_warning = true;
+            }
+            spl_as_int = reinterpret_cast<Long64_t>(spl);
+          } // param has splines
+          fRFPtr[imode]->SetEntry(spl_as_int,ireco,itrue,ip);
+        }//ip
+      }//ireco
+    }//itrue
+  }//imode
+  if (null_warning) {
+    LOG("GenericSingleSampleFitModel",pFATAL) << "Null splines found - giving up.";
+    util::Die(-1);return false;
+  }
+  LOG("GenericSingleSampleFitModel",pINFO) << "Spline array filled... \n\n";
   return true;
 }
 //________________________________________________________________________________________

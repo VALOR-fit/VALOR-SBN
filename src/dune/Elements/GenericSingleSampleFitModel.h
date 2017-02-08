@@ -107,6 +107,7 @@ private:
   void Zero  (void);
   void FillFromDST  (TTree * t);
   bool FillFromTemplateFile (TFile * f, std::string tag, double desired_POT); // If desired_POT is a positive number, assume template being read is 1E21 and reweight accordingly.
+  bool FillSplines(string file, Option_t * opt);
 
   void ApplyTuning                       (Option_t * opt = 0);
   void FluctuateMCStat                   (Option_t * opt = 0);
