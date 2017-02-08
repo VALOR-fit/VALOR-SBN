@@ -107,6 +107,7 @@ int main(int argc, char ** argv)
   string arg_config_file = arg.GetString("config");
   
   bool include_sb       = arg.GetBool("include-simple-binning");
+  int  max_events       = arg.GetInt("max-events");
 
   BeamConf_t beam      = util::BeamConfFromString (arg_beam      );
   Sample_t   sample    = util::SampleFromString   (arg_sample    );
@@ -283,7 +284,8 @@ int main(int argc, char ** argv)
 
     // Event loop
     Long64_t nev = analysis_tree->GetEntries();
-    for(Long64_t iev = 0; iev < nev; iev++) {
+    Long64_t events_to_read = (max_events > 0 ? max_events : nev);
+    for(Long64_t iev = 0; iev < events_to_read; iev++) {
       if (iev%1000==0) {
         VLOG("make_response_func", pNOTICE) << "** Reading event: " << iev;
       }

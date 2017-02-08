@@ -3,8 +3,10 @@
 input                              |   string       |  mandatory  |   -
 output                             |   string       |  optional   |   valor_splines_[BEAM]_[SAMPLE]_[PARAM].root
 format                             |   string       |  mandatory  |   -
+config                             |   string       |  mandatory  |   -
 beam                               |   string       |  mandatory  |   -
 sample                             |   string       |  mandatory  |   -
 detector                           |   string       |  mandatory  |   -
 systematic                         |   string       |  mandatory  |   -
 include-simple-binning             |   boolean      |  optional   |  false
+max-events                         |   int          |  optional   | -1
