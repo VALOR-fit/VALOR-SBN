@@ -23,6 +23,7 @@
 #define __valor_dune_response_function_library__
 
 #include <iostream>
+#include <utility>
 
 #include "TSpline.h"
 
@@ -37,10 +38,11 @@
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/Sample.h"
-#include "dune/Utilities/KinematicBin.h"
 #include "dune/Utilities/KinematicPoint.h"
 
 namespace valor {
+class SingleSampleKineBinning;
+  
 namespace util {
 
 class DuneRFL {
@@ -48,7 +50,7 @@ class DuneRFL {
 public:
 
   DuneRFL();
-  DuneRFL(conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, int n_params, const conv::PhysParamId_t * param_ids);
+  DuneRFL(const SingleSampleKineBinning * binning, int n_params, const conv::PhysParamId_t * param_ids);
  ~DuneRFL();
 
   // Define a dummy spline pointer to an object we know, so we can use its address as a special argument.
@@ -62,7 +64,7 @@ public:
   
   const valor::util::Interpolator * GetSpline(
     conv::ReacMode_t m, conv::PhysParamId_t p,
-    const util::KinematicBin & kb ) const;
+    const int& itrue, const int& ireco ) const;
     
   int Param2Idx(conv::PhysParamId_t p) const;
                       
@@ -72,33 +74,29 @@ public:
   
   // Get the name of the spline we're looking for
   TString BuildSplineName(conv::ReacMode_t m, conv::PhysParamId_t p,
-                          const KinematicBin & kb) const;
+                          const int & itrue, const int & ireco) const;
                           
   // Read splines from config file
   bool Read (string file, Option_t * opt = 0);
   
-  util::KinematicBin GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m = conv::kmUndefined) const;
+  // Get the bin corresponding to a point in kinematical space, returns pair<itrue,ireco>
+  std::pair<int,int> GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m = conv::kmUndefined) const;
   
 private:
 
+  const SingleSampleKineBinning * fBinning;
+
   // Actual response function block
-  // This is a vector, with one entry per SingleSampleModel specified.
-  // Each entry be a big block, with dimensions [conv::kNReacModes][NFitParams][NBinsTrue1][NBinsTrue2][NBinsTrue3][NBinsObs1][NBinsObs2][NBinsObs3]
+  // Each entry be a big block, with dimensions [conv::kNReacModes][NFitParams][NBinsTrue][NBinsObs]
   const valor::util::Interpolator ** fSplines;
   UInt_t    fSplineBlockSize;
   
   // The spline indices
-  inline int SplineIndex(const int& im, const int& ip, const util::KinematicBin & kb) const
+  inline int SplineIndex(const int& im, const int& ip, const int& itrue, const int & ireco) const
   {
-    return (kb.reco3 +
-            kb.reco2 * fNBinsReco3 +
-            kb.reco1 * fNBinsReco3*fNBinsReco2 +
-            kb.true3 * fNBinsReco3*fNBinsReco2*fNBinsReco1 +
-            kb.true2 * fNBinsReco3*fNBinsReco2*fNBinsReco1*fNBinsTrue3 +
-            kb.true1 * fNBinsReco3*fNBinsReco2*fNBinsReco1*fNBinsTrue3*fNBinsTrue2 +
-            kb.zone  * fNBinsReco3*fNBinsReco2*fNBinsReco1*fNBinsTrue3*fNBinsTrue2*fNBinsTrue1 +
-            ip       * fNBinsReco3*fNBinsReco2*fNBinsReco1*fNBinsTrue3*fNBinsTrue2*fNBinsTrue1*fNBinZones +
-            im       * fNBinsReco3*fNBinsReco2*fNBinsReco1*fNBinsTrue3*fNBinsTrue2*fNBinsTrue1*fNBinZones*fNParams);
+    return (ireco + itrue * fNBinsReco  + 
+            ip * fNBinsReco * fNBinsTrue  +
+            im * fNBinsReco * fNBinsTrue *fNParams);
   }
   
   // The beam and sample (used in spline names)
@@ -113,13 +111,8 @@ private:
   conv::PhysParamId_t * fParams;        //[fParams]
   
   // These numbers store the largest number of bins for any mode
-  int                         fNBinsTrue1;    //
-  int                         fNBinsTrue2;    //
-  int                         fNBinsTrue3;    //
-  int                         fNBinsReco1;    //
-  int                         fNBinsReco2;    //
-  int                         fNBinsReco3;    //
-  int                         fNBinZones;     //
+  unsigned int fNBinsTrue;    //
+  unsigned int fNBinsReco;    //
   
   // Name for the splines (used in filename)
   TString fSplineNamePattern;

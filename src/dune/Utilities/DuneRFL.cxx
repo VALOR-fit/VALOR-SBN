@@ -22,7 +22,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/DuneRFL.h"
-#include "dune/Utilities/KinematicBin.h"
+#include "dune/Elements/SingleSampleKineBinning.h"
 
 #define USE_FLAT_SPLINE_FOR_MISSING
 
@@ -53,6 +53,7 @@ namespace util {
 //________________________________________________________________________________________
 valor::util::DuneRFL::DuneRFL(void)
  :
+fBinning       (NULL),
 fSplines       (NULL),
 fSplineBlockSize(0),
 fBeam          (conv::kbUndefined),
@@ -62,42 +63,33 @@ fNModes        (0),
 fModes         (NULL),
 fNParams       (0),
 fParams        (NULL),
-fNBinsTrue1    (1),
-fNBinsTrue2    (1),
-fNBinsTrue3    (1),
-fNBinsReco1    (1),
-fNBinsReco2    (1),
-fNBinsReco3    (1),
-fNBinZones     (1),
+fNBinsTrue     (1),
+fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]")
 {
   
 }
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL(conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, int n_params, const PhysParamId_t * param_ids)
+valor::util::DuneRFL::DuneRFL(const SingleSampleKineBinning * binning, int n_params, const PhysParamId_t * param_ids)
  :
+fBinning       (binning),
 fSplines       (NULL),
 fSplineBlockSize(0),
-fBeam          (b),
-fSample        (s),
-fDetector      (d),
+fBeam          (fBinning->GetBeamConf()),
+fSample        (fBinning->GetSample()),
+fDetector      (fBinning->GetDetector()),
 fNModes        (conv::kNReacModes),
 fModes         (NULL),
 fNParams       (n_params),
 fParams        (NULL),
-fNBinsTrue1    (1),
-fNBinsTrue2    (1),
-fNBinsTrue3    (1),
-fNBinsReco1    (1),
-fNBinsReco2    (1),
-fNBinsReco3    (1),
-fNBinZones     (1),
-fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]")
+fNBinsTrue     (1),
+fNBinsReco     (1),
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
 {
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
   fModes = new ReacMode_t[fNModes];
-  memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(b,s)], fNParams*sizeof(ReacMode_t));
+  memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(fBeam,fSample)], fNParams*sizeof(ReacMode_t));
   
   // Fill parameter to index
   for (int ip = 0 ; ip < conv::knppmax ; ip++ ) {
@@ -108,6 +100,16 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[R
         fParam2Idx[p] = idx;
       }
     }
+  }
+  
+  const KBCubHcmbMondrian  * reco_ob = fBinning->XsecRecoBinning();
+
+  fNBinsReco  = reco_ob->NBins();
+  // Calculate max bin numbers
+  for (int im = 0 ; im < fNModes ; im++) {
+    conv::ReacMode_t m = fModes[im];
+    const KBCubHcmbEdge2Edge * true_sb = fBinning->XsecTrueBinning(m);
+    fNBinsTrue = std::max(fNBinsTrue,true_sb->NBins());
   }
 }
 //________________________________________________________________________________________
@@ -135,21 +137,21 @@ void valor::util::DuneRFL::Print(ostream & stream) const
 //________________________________________________________________________________________
 const util::Interpolator* valor::util::DuneRFL::GetSpline (
   conv::ReacMode_t m, conv::PhysParamId_t p,
-  const KinematicBin & kb) const
+  const int & itrue, const int & ireco) const
 {
   static const util::ArrIdx * arr_idx = util::ArrIdx::Instance();
   
   const int im = arr_idx->ReacModeIdx(fSample,m);
   const int ip = this->Param2Idx(p);
   
-  const int splidx = SplineIndex(im,ip,kb);
+  const int splidx = SplineIndex(im,ip,itrue,ireco);
   
   return fSplines[splidx];
 }
 //________________________________________________________________________________________
 TString valor::util::DuneRFL::BuildSplineName (
   conv::ReacMode_t m, conv::PhysParamId_t p,
-  const KinematicBin & kb) const
+  const int& itrue, const int& ireco) const
 {
   TString name = fSplineNamePattern;
   
@@ -159,41 +161,22 @@ TString valor::util::DuneRFL::BuildSplineName (
   name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
   name = name.ReplaceAll("[PARAM]"  , util::AsString(p).c_str());
   
-  name = name.ReplaceAll("[ZONE]"  , TString::Format("%d", kb.zone  ));
-  name = name.ReplaceAll("[TRUE1]" , TString::Format("%d", kb.true1 ));
-  name = name.ReplaceAll("[TRUE2]" , TString::Format("%d", kb.true2 ));
-  name = name.ReplaceAll("[TRUE3]" , TString::Format("%d", kb.true3 ));
-  name = name.ReplaceAll("[RECO1]" , TString::Format("%d", kb.reco1 ));
-  name = name.ReplaceAll("[RECO2]" , TString::Format("%d", kb.reco2 ));
-  name = name.ReplaceAll("[RECO3]" , TString::Format("%d", kb.reco3 ));
-                         
+  name = name.ReplaceAll("[TRUE]" , TString::Format("%d", itrue ));
+  name = name.ReplaceAll("[RECO]" , TString::Format("%d", ireco ));
+  
   return name;
 }
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
 {
   // Get binning details, allocate the spline block
-  fNBinsTrue1 = util::NumEtrueBinsXsec (fSample);
-  fNBinsReco1 = util::NumErecoBinsXsec (fSample, 0);
-  fNBinsReco2 = util::NumYrecoBinsXsec (fSample, 0);
-  for (int im = 0 ; im < fNModes ; im++) {
-    conv::ReacMode_t m = fModes[im];
-    fNBinsTrue2 = TMath::Max(fNBinsTrue2,util::NumQ2trueBinsXsec (fSample,m));
-  }
-  fSplineBlockSize = fNModes * fNParams * fNBinZones *
-    fNBinsTrue1*fNBinsTrue2*fNBinsTrue3*
-    fNBinsReco1*fNBinsReco2*fNBinsReco3;
+  fSplineBlockSize = fNModes * fNParams * fNBinsTrue * fNBinsReco;
     
   LOG("DuneRFL",pDEBUG) << "Spline binning for sample "<<util::AsString(fBeam)<<" "<<util::AsString(fSample)<<"\n"
    <<std::setw(7)<<fNModes<<" modes.\n"
    <<std::setw(7)<<fNParams<<" parameters with splines.\n"
-   <<std::setw(7)<<fNBinZones<<" bin zones.\n"
-   <<std::setw(7)<<fNBinsTrue1<<" Etrue bins.\n"
-   <<std::setw(7)<<fNBinsTrue2<<" Q^2 bins.\n"
-   <<std::setw(7)<<fNBinsTrue3<<" other truevar bins.\n"
-   <<std::setw(7)<<fNBinsReco1<<" Ereco bins.\n"
-   <<std::setw(7)<<fNBinsReco2<<" Yreco bins.\n"
-   <<std::setw(7)<<fNBinsReco2<<" other recovar bins.\n"
+   <<std::setw(7)<<fNBinsTrue<<" true bins.\n"
+   <<std::setw(7)<<fNBinsReco<<" reco bins \n"
    <<std::setw(7)<<fSplineBlockSize<<" maximum.";
     
   fSplines = new const util::Interpolator*[fSplineBlockSize]();
@@ -264,8 +247,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
     if(m == conv::kmUndefined) continue;
     
-    const int true1_bins = util::NumEtrueBinsXsec (fSample);
-    const int true2_bins = util::NumQ2trueBinsXsec (fSample,m);
+    const KBCubHcmbEdge2Edge * true_sb = fBinning->XsecTrueBinning(m);
+    const int n_bins_true = true_sb->NBins();
+    const int n_bins_reco = fNBinsReco;
     
     for (int ip = 0 ; ip < fNParams ; ip++) {
       conv::PhysParamId_t p = fParams[ip];
@@ -273,84 +257,63 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
       
       bool param_applied_to_mode = util::ParamIsAppliedTo(fBeam,fSample,fDetector,m,p);
       
-      KinematicBin kb;
-      
-      for (int izone = 0 ; izone < fNBinZones ; izone++ ) {
-        kb.zone = izone;
-        const int reco1_bins = util::NumErecoBinsXsec (fSample, izone);
-        const int reco2_bins = util::NumYrecoBinsXsec (fSample, izone);
-        for (int itrue1 = 0 ; itrue1 < true1_bins ; itrue1++) {
-          kb.true1 = itrue1;
-          for (int itrue2 = 0 ; itrue2 < true2_bins ; itrue2++) {
-            kb.true2 = itrue2;
-            for (int itrue3 = 0 ; itrue3 < fNBinsTrue3 ; itrue3++) {
-              kb.true3 = itrue3;
-              for (int ireco1 = 0 ; ireco1 < reco1_bins ; ireco1++) {
-                kb.reco1 = ireco1;
-                for (int ireco2 = 0 ; ireco2 < reco2_bins ; ireco2++) {
-                  kb.reco2 = ireco2;
-                  for (int ireco3 = 0 ; ireco3 < fNBinsReco3 ; ireco3++) {
-                    kb.reco3 = ireco3;
-                    
-                    TString spl_name = this->BuildSplineName(m,p,kb);
-                    
-                    const UInt_t spline_index = SplineIndex(imode,ip,kb);
-                    if (spline_index >= fSplineBlockSize) {
-                      LOG("DuneRFL",pFATAL) << "Bad spline index "<<spline_index; 
-                      util::Die(-1); return false;
-                    }
-                    
-                    if (param_applied_to_mode) {
-                      TObject * spline_obj = NULL;
-                      for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
-                        TFile * spline_file = spline_files[ifile];
-                        spline_obj = spline_file->Get(spl_name.Data());
-                        if (spline_obj) {break;}
-                      }
-                      TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
-                      if (spline) {
-                        if (util::SplineIsFlat(spline)) {
-                          fSplines[spline_index] = kFlatSpline;
-                          n_splines_flat++;
-                          n_splines_read++;
-                          delete spline;
-                          continue;
-                        }
-                        util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
-                        delete spline;
-                        if (this->CheckForNegativeValues(gsl_spline,p)) {
-                          LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name;
-                          delete gsl_spline;
-                          fSplines[spline_index] = kFlatSpline;
-                          n_splines_neg++;
-                          n_splines_read++;
-                        }
-                        else {
-                          fSplines[spline_index] = gsl_spline;
-                          n_splines_read++;
-                        }
-                      }
-                      else {
-                        LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
+      for (int ireco = 0 ; ireco < n_bins_reco ; ireco++) {
+        for (int itrue = 0 ; itrue < n_bins_true ; itrue++) {
+          TString spl_name = this->BuildSplineName(m,p,itrue,ireco);
+          
+          const UInt_t spline_index = SplineIndex(imode,ip,itrue,ireco);
+          if (spline_index >= fSplineBlockSize) {
+            LOG("DuneRFL",pFATAL) << "Bad spline index "<<spline_index; 
+            util::Die(-1); return false;
+          }
+          
+          if (param_applied_to_mode) {
+            TObject * spline_obj = NULL;
+            // Read each file till we get one that contains our spline
+            for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
+              TFile * spline_file = spline_files[ifile];
+              spline_obj = spline_file->Get(spl_name.Data());
+              if (spline_obj) {break;}
+            }
+            TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
+            if (spline) {
+              if (util::SplineIsFlat(spline)) {
+                fSplines[spline_index] = kFlatSpline;
+                n_splines_flat++;
+                n_splines_read++;
+                delete spline;
+                continue;
+              }
+              util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
+              delete spline;
+              if (this->CheckForNegativeValues(gsl_spline,p)) {
+                LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
+                delete gsl_spline;
+                fSplines[spline_index] = kFlatSpline;
+                n_splines_neg++;
+                n_splines_read++;
+              }
+              else {
+                fSplines[spline_index] = gsl_spline;
+                n_splines_read++;
+              }
+            }
+            else {
+              LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
 #ifdef USE_FLAT_SPLINE_FOR_MISSING
-                        fSplines[spline_index] = kFlatSpline;
+              fSplines[spline_index] = kFlatSpline;
 #else
-                        fSplines[spline_index] = NULL;
+              fSplines[spline_index] = NULL;
 #endif
-                        n_splines_missing++;
-                      }
-                    }
-                    else {
-                      fSplines[spline_index] = kNoSplineRequired;
-                      n_splines_expected--;
-                    }
-                  } //ireco3
-                } //ireco2
-              } //ireco1
-            } //itrue3
-          } //itrue2
-        } //itrue1
-      } //iz
+              n_splines_missing++;
+            }
+          }
+          else {
+            fSplines[spline_index] = kNoSplineRequired;
+            n_splines_expected--;
+          }
+        } // itrue
+      } //ireco
     } //ip
   } //imode
   
@@ -367,9 +330,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
 
   if (n_splines_missing) {
 #ifdef USE_FLAT_SPLINE_FOR_MISSING
-    LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines. Continuing.";
+    LOG("DuneRFL",pERROR) << "Missing "<<n_splines_missing<<" splines of "<<n_splines_expected<<" expected. Continuing.";
 #else
-    LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines. Exiting.";
+    LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines of "<<n_splines_expected<<" expected. Exiting.";
     util::Die(-1);return false;
 #endif
   }
@@ -380,44 +343,24 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   return true;
 }
 //________________________________________________________________________________________
-util::KinematicBin valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m) const
+std::pair<int,int> valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m) const
 {
-  static const int zone = 0;//SHOULD BE FIXED
-  util::KinematicBin kb_out;
-  if (fNBinsTrue1 > 1) {
-    const Long_t n_bins = fNBinsTrue1;
-    const double * bin_edges = util::EtrueBinEdgesXsec(fSample);
-    kb_out.true1 = TMath::BinarySearch(n_bins+1, bin_edges, kp.true1);
-  }
-  if (fNBinsTrue2 > 1) {
-    const Long_t n_bins = util::NumQ2trueBinsXsec(fSample,m);
-    const double * bin_edges = util::Q2trueBinEdgesXsec(fSample,m);
-    kb_out.true2 = TMath::BinarySearch(n_bins+1, bin_edges, kp.true2);
-  }
-  if (fNBinsTrue3 > 1) {
-    const Long_t n_bins    = 1;
-    const double * bin_edges = 0;
-    assert(!"Not supported");
-    kb_out.true3 = TMath::BinarySearch(n_bins+1, bin_edges, kp.true3);
-  }
-  if (fNBinsReco1 > 1) {
-    const Long_t n_bins    = fNBinsReco1;
-    const double * bin_edges = util::ErecoBinEdgesXsec(fSample, zone);
-    kb_out.reco1 = TMath::BinarySearch(n_bins+1, bin_edges, kp.reco1);
-  }
-  if (fNBinsReco2 > 1) {
-    const Long_t n_bins    = fNBinsReco2;
-    const double * bin_edges = util::YrecoBinEdgesXsec(fSample, zone);
-    kb_out.reco2 = TMath::BinarySearch(n_bins+1, bin_edges, kp.reco2);
-  }
-  if (fNBinsReco3 > 1) {
-    const Long_t n_bins    = 1;
-    const double * bin_edges = 0;
-    assert(!"Not supported");
-    kb_out.reco3 = TMath::BinarySearch(n_bins+1, bin_edges, kp.reco3);
-  }
+  const KBCubHcmbEdge2Edge * true_sb = fBinning->XsecTrueBinning(m);
+  const KBCubHcmbMondrian  * reco_ob = fBinning->XsecRecoBinning();
   
-  return kb_out;
+  std::vector<double> recovec;
+  recovec.push_back(kp.reco1);
+  recovec.push_back(kp.reco2); // Mondrian must be 2D for now
+  const int ireco = reco_ob->FindBin(recovec);
+  
+  int ntruedim = true_sb->NDimensions();
+  std::vector<double> truevec;
+  if (ntruedim--) { truevec.push_back(kp.true1); }
+  if (ntruedim--) { truevec.push_back(kp.true2); }
+  if (ntruedim--) { truevec.push_back(kp.true3); }
+  const int itrue = true_sb->FindLinearizedBin(recovec);
+      
+  return std::pair<int,int>(itrue,ireco);
 }
 //________________________________________________________________________________________
 int valor::util::DuneRFL::Param2Idx(conv::PhysParamId_t p) const
