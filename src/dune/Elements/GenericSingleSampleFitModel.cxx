@@ -164,9 +164,6 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 
   this->Book();
   this->Zero();
-  
-  exit(-1);
-  
 
   //------------------------
   // TODO
@@ -384,14 +381,6 @@ PhysParamList GenericSingleSampleFitModel::Tweaks(Option_t * /*opt*/) const
 {
   PhysParamList list;
 
-  // -----------------------------------  
-  // TODO
-  // Remove
-  //fNuFlux -> CopyTweaksTo(list);
-  //fNuInt  -> CopyTweaksTo(list);
-  //fNuDet  -> CopyTweaksTo(list);
-  // -----------------------------------  
-
   fSystematics -> CopyTweaksTo(list);
 
   return list;
@@ -399,13 +388,6 @@ PhysParamList GenericSingleSampleFitModel::Tweaks(Option_t * /*opt*/) const
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::ResetSystematics(Option_t * /*opt*/)
 {
-  // -----------------------------------  
-  // TODO
-  // Remove
-  //fNuFlux -> Tweak(true, 0);
-  //fNuInt  -> Tweak(true, 0);
-  //fNuDet  -> Tweak(true, 0);
-  // -----------------------------------  
   fSystematics -> Tweak(true, 0);
 }
 //________________________________________________________________________________________
@@ -876,24 +858,6 @@ bool GenericSingleSampleFitModel::Write(
 //________________________________________________________________________________________
 double GenericSingleSampleFitModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 {
-  /*
-  // ------------------
-  // TODO
-  // Remove
-  //
-  double Sp_nuflux = (fNuFlux -> ChisqPenalty());
-  double Sp_nuint  = (fNuInt  -> ChisqPenalty());
-  double Sp_nudet  = (fNuDet  -> ChisqPenalty());
-
-  double Sp = Sp_nuflux + Sp_nuint + Sp_nudet;
-
-  LOG("GenericSingleSampleFitModel",pDEBUG) 
-  << "Current penalty term = " << Sp 
-  << " (flux = " << Sp_nuflux 
-  << ", interaction = " << Sp_nuint 
-  << ", detector = " << Sp_nudet << ")";
-  // ------------------
-  */
   double Sp = (fSystematics-> ChisqPenalty());
   return Sp;
 }
@@ -1330,22 +1294,35 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << ", mode: " << util::AsString(m) << " ??";
       util::Die(-1);return;
     }
-
-    // check Ereco, yreco and Etrue values against built-in limits
-    if(enu_reco < kErecoMin || enu_reco > kErecoMax) {
+    
+    // Get the mode appropriate binning
+    const KBCubHcmbEdge2Edge * true_sb = fBinning->TrueSmpBinning(m);
+    
+    // check kinematic values against built-in limits
+    if(enu_reco < reco_ob->Minimum(kvEreco) || enu_reco > reco_ob->Maximum(kvEreco)) {
       LOG("GenericSingleSampleFitModel",pWARN) 
         << "MC event: " << iev << " has reconstructed energy = " << enu_reco 
-        << " GeV, range used: [" << kErecoMin << ", " << kErecoMax << "] GeV";
+        << " GeV, range used: [" << reco_ob->Minimum(kvEreco) << ", " << reco_ob->Maximum(kvEreco) << "] GeV";
+      continue;
     }
-    if(y_reco < kYrecoMin || y_reco > kYrecoMax) {
+    if(y_reco < reco_ob->Minimum(kvYreco) || y_reco > reco_ob->Maximum(kvYreco)) {
       LOG("GenericSingleSampleFitModel",pWARN) 
         << "MC event: " << iev << " has reconstructed inelasticity y = " << y_reco 
-        << ", range used: [" << kYrecoMin << ", " << kYrecoMax << "]";
+        << ", range used: [" << reco_ob->Minimum(kvYreco) << ", " << reco_ob->Maximum(kvYreco) << "]";
+        continue;
     }
-    if(enu_true < kEtrueMin || enu_true > kEtrueMax) {
+    if(enu_true < true_sb->Minimum(kvEtrue) || enu_true > true_sb->Maximum(kvEtrue)) {
       LOG("GenericSingleSampleFitModel",pWARN) 
         << "MC event: " << iev << " has true energy = " << enu_true 
-        << " GeV, range used: [" << kEtrueMin << ", " << kEtrueMax << "] GeV";
+        << " GeV, range used: [" << true_sb->Minimum(kvEtrue) << ", " << true_sb->Maximum(kvEtrue) << "] GeV";
+        continue;
+    }
+    
+    if(Q2_true < true_sb->Minimum(kvQ2true) || Q2_true > true_sb->Maximum(kvQ2true)) {
+      LOG("GenericSingleSampleFitModel",pWARN) 
+        << "MC event: " << iev << " has true Q2 = " << Q2_true 
+        << " GeV^2, range used: [" << true_sb->Minimum(kvQ2true) << ", " << true_sb->Maximum(kvQ2true) << "] GeV^2";
+        continue;
     }
     
     // Exposure for assumed data - Weight MC templates to that exposure
@@ -1368,7 +1345,6 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     true_vars.push_back(enu_true);
     true_vars.push_back(Q2_true);
     
-    const KBCubHcmbEdge2Edge * true_sb = fBinning->TrueSmpBinning(m);
     int true_bin    = true_sb->FindLinearizedBin(true_vars);
     int reco_bin_sb = reco_sb->FindLinearizedBin(reco_vars);
     int reco_bin_ob = reco_ob->FindBin(reco_vars);
@@ -1381,13 +1357,15 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       << "\n pot_wght    = " << pot_wght
       << "\n true_bin    = " << true_bin
       << "\n reco_bin_ob = " << reco_bin_ob
-      << "\n reco_bin_sb = " << reco_bin_sb;
+      << "\n reco_bin_sb = " << reco_bin_sb
+      << "\n  True: "<<true_vars[0]<<" , "<<true_vars[1]
+      << "\n  Reco: "<<reco_vars[0]<<" , "<<reco_vars[1];
       
     double this_entry = wght;
     
     this_entry *= pot_wght;
     this_entry *= wght_smear;
-
+    
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode]->GetEntry(reco_bin_ob, true_bin);
     curr_wght += this_entry;

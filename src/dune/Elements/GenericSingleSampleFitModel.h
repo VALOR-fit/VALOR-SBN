@@ -144,7 +144,7 @@ private:
   bool fUseMCDST;
   
   // MC templates (MCT) 
-  // Each template is (currently always) a 3-D Nev = Nev(Enu_reco, y_reco, Enu_true) array.
+  // Each template is a 2D array, with (reco,true) bins linearised in whatever kinematic space we need.
   // There is a template for all beam/sample/reac_mode combinations.
   // Four types of MC templates are constructed:
   // - nom: Nominal MC 
