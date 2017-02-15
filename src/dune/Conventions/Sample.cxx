@@ -11,6 +11,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 // fmwk
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/UtlSystem.h"
 // dune
 #include "dune/Conventions/Sample.h"
 
@@ -357,7 +358,7 @@ bool util::IsMuLike(Sample_t s)
     case ksNuEBarCClow     : return false ;
   }
   LOG("Sample",pFATAL) << "Unknown sample: "<<util::AsString(s)<<" ("<<s<<")";
-  exit(-1);
+  util::Die(-1) ; return false;
 }
 //________________________________________________________________________________________
 bool util::IsELike(Sample_t s)
@@ -402,6 +403,6 @@ bool util::IsELike(Sample_t s)
     case ksNuEBarCClow     : return true  ;
   }
   LOG("Sample",pFATAL) << "Unknown sample: "<<util::AsString(s)<<" ("<<s<<")";
-  exit(-1);
+  util::Die(-1) ; return false;
 }
 //________________________________________________________________________________________
