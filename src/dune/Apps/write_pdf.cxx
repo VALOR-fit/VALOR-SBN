@@ -14,22 +14,24 @@
            --mesg-thresholds     : Message thresholds [def: "verbosity.xml"] 
            --input               : Input values of the oscillation parameters
            --fix                 : Oscillation parameters to be fixed 
+           --pot-override        : Fix all samples to given POT (use 1E21 when making template files)
+           --force-dst           : Ignore the XML requesting you use prebuilt templates and read the DST anyway (useful for making the prebuilt templates)
 
 \author    VALOR DUNE people, aka Costas, Steve, Lorena
-\created   March 27, 2014                                                                                                     
-                                                                                                                                   
-\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved                                                              
-                                                                                                                                      
+\created   March 27, 2014
+
+\copyright (c) 2010-2017, The VALOR Fitting Group, All Rights Reserved
+
 */
 //____________________________________________________________________________ 
 
-// root                                                                                                                              
+// root
 #include "TFile.h"
 #include "TSystem.h"
 #include "TObjArray.h"
 #include "TString.h"
 #include "TVirtualFitter.h"
-// fmwk                                                                                                                        
+// fmwk
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -46,7 +48,7 @@
 #include "valor/Utilities/Env.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune                                                                                                                        
+// dune
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
@@ -78,6 +80,13 @@ int main(int argc, char ** argv)
     Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
   }
   
+  TString readopt;
+  // Check if we want to force the fit to read trees rather than templates, ignoring the config file
+  bool force_dst = arg.GetBool("force-dst");
+  if (force_dst) {
+    readopt += " forcedst";
+  }
+  
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
   // Set DUNE param names inside framework       
@@ -93,7 +102,7 @@ int main(int argc, char ** argv)
 
   // Get ND model & configure                
   CompoundFitElements * elements = new CompoundFitElements();
-  elements->Read(util::CompleteConfigPath(config_file));
+  elements->Read(util::CompleteConfigPath(config_file),readopt.Data());
   FitModelABC * model = elements->FitModel();
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              

@@ -22,3 +22,4 @@ first-octant,second-octant           |   boolean_list |  optional   |   first-oc
 sinsqtheta, sinsq2theta              |   boolean_list |  optional   |   sinsqtheta
 dmsq12abs23,foglilisi                |   boolean_list |  optional   |   dmsq12abs23
 pot-override                         |   double       |  optional   |   -999
+force-dst,no-force-dst               |   boolean_list |  optional   |   no-force-dst
