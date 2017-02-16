@@ -89,7 +89,7 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
   fModes = new ReacMode_t[fNModes];
-  memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(fBeam,fSample)], fNParams*sizeof(ReacMode_t));
+  memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(fBeam,fSample)], fNModes*sizeof(ReacMode_t));
   
   // Fill parameter to index
   for (int ip = 0 ; ip < conv::knppmax ; ip++ ) {

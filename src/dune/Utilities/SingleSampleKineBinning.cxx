@@ -127,6 +127,7 @@ bool SingleSampleKineBinning::Read(string file)
     << "\n    From file: " << reco_smp_binning_file;
 
   fRecoSimpleBinning = new KBCubHcmbEdge2Edge;
+  fRecoSimpleBinning->SetName("reco_simple");
   read_ok = fRecoSimpleBinning->Read(reco_smp_binning_file);
   if(!read_ok) {
      LOG("SampleBinning", pINFO)
@@ -152,6 +153,7 @@ bool SingleSampleKineBinning::Read(string file)
         << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
         << "\n    From file: " << def_true_smp_binning_file;
      KBCubHcmbEdge2Edge * def_true_smp_binning = new KBCubHcmbEdge2Edge;
+     def_true_smp_binning->SetName("true_simple (default)");
      read_ok = def_true_smp_binning->Read(def_true_smp_binning_file);
      if(!read_ok) {
         LOG("SampleBinning", pINFO)
@@ -200,7 +202,7 @@ bool SingleSampleKineBinning::Read(string file)
 
   if(! util::NodeExists(xml,root_node,"xsec_reco")) {
      LOG("SampleBinning", pERROR)
-        << "<xsec_simple> node not found in file: " << file;
+        << "<xsec_reco> node not found in file: " << file;
      return false;
   }
   string xsec_reco_binning_file = util::XML2String(xml,root_node,"xsec_reco");
@@ -211,6 +213,7 @@ bool SingleSampleKineBinning::Read(string file)
 
   fXsecRecoBinning = new KBCubHcmbMondrian;
   read_ok = fXsecRecoBinning->Read(xsec_reco_binning_file);
+  fXsecRecoBinning->SetName("xsec_reco");
   if(!read_ok) {
      LOG("SampleBinning", pNOTICE)
        << "Could not read xsec reco binning from: " << xsec_reco_binning_file<<", falling back on optimized.";
@@ -250,7 +253,7 @@ void SingleSampleKineBinning::CleanUp(void)
 {
   if (fRecoOptimizedBinning) { delete fRecoOptimizedBinning; fRecoOptimizedBinning = 0; }
   if (fRecoSimpleBinning   ) { delete fRecoSimpleBinning;    fRecoSimpleBinning    = 0; }
-  if (fXsecRecoBinning     ) { delete fXsecRecoBinning;    fXsecRecoBinning    = 0; }
+  if (fXsecRecoBinning     ) { delete fXsecRecoBinning;      fXsecRecoBinning    = 0; }
   
   vector<KBCubHcmbEdge2Edge *>::iterator it = fTrueSimpleBinningUnique.begin();
   for( ; it != fTrueSimpleBinningUnique.end(); ++it) {
