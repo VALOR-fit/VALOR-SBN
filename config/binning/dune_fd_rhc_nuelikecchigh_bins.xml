@@ -18,13 +18,13 @@
     <!-- Applies to all modes unless a mode binning scheme
          is specified explicitly below -->
     <default>
-      binning/valor_dune_e2e_FD_Ereco_Elike_binning.xml
+      binning/valor_dune_e2e_Etrue_Q2true.xml
     </default>
 
   </true_simple>
-    <xsec_simple>
+    <xsec_reco>
     binning/valor_dune_e2e_FD_Ereco_Elike_binning.xml    
-  </xsec_simple>    
+  </xsec_reco>    
 
 
 </sample_binning>
