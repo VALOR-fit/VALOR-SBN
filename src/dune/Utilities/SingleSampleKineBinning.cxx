@@ -8,6 +8,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include <TSystem.h>
 
+#include "valor/Conventions/Constants.h"
 #include "valor/Utilities/UtlXML.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Env.h"
@@ -133,6 +134,19 @@ bool SingleSampleKineBinning::Read(string file)
      LOG("SampleBinning", pINFO)
        << "Could not read simple reco binning from: " << reco_smp_binning_file;
      return false;
+  }
+  
+  // Check reco and true have the dimensions and limits
+  if (fRecoSimpleBinning->KineSpace() != fRecoOptimizedBinning->KineSpace()) {
+    LOG("SampleBinning",pERROR)<<"Simple and Optimized binnings do not have the kinematic dimensions.";
+    return false;
+  }
+  for (unsigned int idim = 0 ; idim < fRecoSimpleBinning->NDimensions(); idim++) {
+    if (std::fabs(fRecoSimpleBinning->Maximum(idim)-fRecoOptimizedBinning->Maximum(idim)) > conv::kASmallNum || 
+        std::fabs(fRecoSimpleBinning->Minimum(idim)-fRecoOptimizedBinning->Minimum(idim)) > conv::kASmallNum ) {
+      LOG("SampleBinning",pERROR)<<"Simple and Optimized binnings do not have the same total range.";
+      return false;
+    }
   }
 
 
