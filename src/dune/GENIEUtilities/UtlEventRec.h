@@ -27,6 +27,8 @@
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/DuneBuild.h"
 
+#include "valor/Conventions/KineSpace.h"
+
 namespace genie {
   class EventRecord;
 }
@@ -40,6 +42,18 @@ namespace util {
   // Does not respect bar/nonbar
   bool EventContainsQuarkFlavour(const genie::EventRecord * event, int quark_pdg);
 
+  /**
+    Extracts kinematic variables from a GENIE vertex.
+
+    \param evrec The event record from which kinematic variables are to be
+      extracted.
+    \param kv The required kinematic variables.
+
+    \return A vector comprising the kinematic variables in the order specifed by
+      kv.
+  */
+  std::vector<double> GetTrueKinematics(const genie::EventRecord* evrec,
+        conv::KineSpace_t kv);
 }      // util namespace
 }      // valor namespace
 

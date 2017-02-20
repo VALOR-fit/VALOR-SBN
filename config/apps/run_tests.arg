@@ -1,0 +1,4 @@
+# argument                           |   type         |  require?   |   default
+# .......................................................................................................
+mc-events-file                       |   string       |  mandatory  |   -
+mesg-thresholds                      |   string       |  optional   |   verbosity.xml

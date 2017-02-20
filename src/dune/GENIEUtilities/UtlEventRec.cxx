@@ -384,3 +384,35 @@ conv::ReacMode_t valor::util::DetermineReactionMode(const genie::EventRecord * e
   return conv::kmUndefined;
 }
 //_________________________________________________________________________________
+
+std::vector<double> valor::util::GetTrueKinematics(const genie::EventRecord* evrec,
+      conv::KineSpace_t kv)
+{
+   // Get the interaction and kinematics from the event record
+   genie::Interaction* interaction = evrec->Summary();
+   const genie::Kinematics kine = interaction->Kine();
+
+   std::vector<double> vars;
+
+   switch(kv)
+   {
+      case conv::kspEtrue:
+      {  // Retrieve the true energy
+         double Enu = evrec->Probe()->Energy();
+         vars.push_back(Enu);
+         return vars;
+      }
+      case conv::kspEtrueQ2true:
+      {  // Retrieve the true energy and momentum transfer
+         double Enu = evrec->Probe()->Energy();
+         double Q2 = kine.Q2(true);
+         vars.push_back(Enu);
+         vars.push_back(Q2);
+         return vars;
+      }
+      default:
+      {  // Only interested in true E and Q2 for now, ignore anything else
+         return vars;
+      }
+   }
+}

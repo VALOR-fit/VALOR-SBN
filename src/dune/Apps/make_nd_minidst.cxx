@@ -330,6 +330,14 @@ int main(int argc, char ** argv)
     // retrieve GHEP event record and print it out.
     genie::NtpMCRecHeader rec_header = mcrec->hdr;
     genie::EventRecord &  event = *(mcrec->event);
+
+    std::vector<double> vars1 = valor::util::GetTrueKinematics(&event,
+          valor::conv::kspEtrue);
+    VLOG("make_minidst", pERROR) << "Etrue " << vars1[0];
+    std::vector<double> vars2 = valor::util::GetTrueKinematics(&event,
+          valor::conv::kspEtrueQ2true);
+    VLOG("make_minidst", pERROR) << "Etrue " << vars2[0] << " Q2 " << vars2[1];
+
     VLOG("make_minidst", pDEBUG) 
       << "GENIE MC truth info: " << event;
       

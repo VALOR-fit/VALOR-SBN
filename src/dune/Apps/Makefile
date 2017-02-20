@@ -22,7 +22,8 @@ TGT = make_nd_minidst \
       write_pdf \
       tweak_pdf_N \
       fitnt_conv \
-      adaptive_mcmc
+      adaptive_mcmc \
+      run_tests
 
 all: $(TGT)
 
@@ -93,6 +94,13 @@ fitnt_conv: FORCE
 	$(CXX) $(CXXFLAGS) -c fitnt_conv.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) fitnt_conv.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 
+run_tests: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c run_tests.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) run_tests.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_tests
+else
+	@echo "Skipping run_tests due to no GENIE"
+endif
 
 #################### CLEANING
 
