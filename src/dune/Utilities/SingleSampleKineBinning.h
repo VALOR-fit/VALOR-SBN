@@ -64,6 +64,7 @@
 #define __valor_single_sample_kinematic_binning__
 
 #include <string>
+#include <vector>
 
 #include "valor/KineBinning/KBCubHcmbMondrian.h"
 #include "valor/KineBinning/KBCubHcmbEdge2Edge.h"
@@ -114,7 +115,7 @@ private:
   KBCubHcmbEdge2Edge *         fRecoSimpleBinning;                      //
   KBCubHcmbEdge2Edge *         fTrueSimpleBinning [conv::kNReacModes];  //
   KBCubHcmbMondrian *          fXsecRecoBinning;                        // Binning for Xsec splines
-  vector<KBCubHcmbEdge2Edge *> fTrueSimpleBinningUnique;                //
+  std::vector<KBCubHcmbEdge2Edge *> fTrueSimpleBinningUnique;                //
 };
 
 } // valor namespace
