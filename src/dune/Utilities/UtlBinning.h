@@ -19,6 +19,9 @@
 
 #include <vector>
 
+#include "TH1D.h"
+#include "TH2D.h"
+
 // valor
 #include "valor/Conventions/KineSpace.h"
 
