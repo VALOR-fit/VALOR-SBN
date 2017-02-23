@@ -46,8 +46,8 @@ public:
       \return A 1D histogram of the specified kinematic variable.
 
    */
-   static TH1D* Make1DHistogram(VALORArray v, SingleSampleKineBinning b,
-        conv::KineVar_t k);
+   static TH1D* Make1DHistogram(const VALORArray& v,
+         const SingleSampleKineBinning& b, const conv::KineVar_t k);
 
    /**
       Produce a 2D ROOT-compatible, optimised histogram of specified kinematic
@@ -63,8 +63,9 @@ public:
       \return A 2D histogram of the specified kinematic variables.
 
    */
-   static TH2D* Make2DOptimisedHistogram(VALORArray v, SingleSampleKineBinning b,
-        std::vector<conv::KineVar_t> ks);
+   static TH2D* Make2DOptimisedHistogram(const VALORArray& v,
+         const SingleSampleKineBinning& b,
+         const std::vector<conv::KineVar_t>& ks);
 
    /**
       Produce a 2D ROOT-compatible, simple histogram of specified kinematic
@@ -76,8 +77,9 @@ public:
       \return A 2D histogram of the specified kinematic variables.
 
    */
-   static TH2D* Make2DSimpleHistogram(VALORArray v, SingleSampleKineBinning b,
-        std::vector<conv::KineVar_t> ks);
+   static TH2D* Make2DSimpleHistogram(const VALORArray& v,
+         const SingleSampleKineBinning& b,
+         const std::vector<conv::KineVar_t>& ks);
 
 private:
    /**
@@ -90,57 +92,44 @@ private:
       \return The contracted VALORArray containing only the specified kinematic
          variables.
    */
-   static VALORArray* Contract(VALORArray v, SingleSampleKineBinning b,
-        std::vector<conv::KineVar_t> ks);
+   static VALORArray* Contract(const VALORArray& v,
+         const SingleSampleKineBinning& b,
+         const std::vector<conv::KineVar_t>& ks);
 
    /**
-      Maps the bins of the specified VALORArray to a 1D ROOT-compatible histogram
-      for the specified kinematic variable.
+      Maps the events associated with the specified binning to a 1D
+      ROOT-compatible histogram.
 
-      This function assumes that the VALORArray has already been contracted to
-      contain only the specified kinematic variable.
-
-      \param v The VALORArray containing the spectrum to be plotted.
-      \param b The binning used by the VALORArray.
-      \param k The kinematic variable for which the histogram is to be produced.
-      \return A 1D histogram of the specified kinematic variable.
+      \param events The spectrum corresponding to the simple binning.
+      \param b The simple binning.
+      \return A ROOT-compatible 1D histogram representing the simple binning.
    */
-   static TH1D* Remap1D(VALORArray v, SingleSampleKineBinning b,
-         conv::KineVar_t k);
+   static TH1D* Remap1D(const double* events, const KBCubHcmbEdge2Edge& b);
 
    /**
-      Maps the bins of the specified VALORArray to a 2D ROOT-compatible histogram
-      for the specified kinematic variable.
-
-      This function assumes that the VALORArray has already been contracted to
-      contain only the specified kinematic variable.
+      Maps the events associated with the specified binning to a 2D
+      ROOT-compatible histogram.
 
       Note that the ROOT histogram produced by this function should be used only
       for plotting purposes, as mapping from optimised to ROOT-compatible binning
       is not guaranteed to conserve total event counts.
 
-      \param v The VALORArray containing the spectrum to be plotted.
-      \param b The binning used by the VALORArray.
-      \param ks The kinematic variables for which the histogram is to be produced.
-      \return A 2D histogram of the specified kinematic variables.
+      \param events The spectrum corresponding to the optimised binning.
+      \param b The optimised binning.
+      \return A ROOT-compatible 2D histogram representing the optimised binning.
    */
-   static TH2D* RemapOptimised2D(VALORArray v, SingleSampleKineBinning b,
-         std::vector<conv::KineVar_t> ks);
+   static TH2D* RemapOptimised2D(const double* events,
+         const KBCubHcmbMondrian& b);
 
    /**
-      Maps the bins of the specified VALORArray to a 2D ROOT-compatible histogram
-      for the specified kinematic variable.
+      Maps the events associated with the specified binning to a 2D
+      ROOT-compatible histogram.
 
-      This function assumes that the VALORArray has already been contracted to
-      contain only the specified kinematic variable.
-
-      \param v The VALORArray containing the spectrum to be plotted.
-      \param b The binning used by the VALORArray.
-      \param ks The kinematic variables for which the histogram is to be produced.
-      \return A 2D histogram of the specified kinematic variables.
+      \param events The spectrum corresponding to the optimised binning.
+      \param b The optimised binning.
+      \return A ROOT-compatible 2D histogram representing the simple binning.
    */
-   static TH2D* RemapSimple2D(VALORArray v, SingleSampleKineBinning b,
-         std::vector<conv::KineVar_t> ks);
+   static TH2D* RemapSimple2D(const double* events, const KBCubHcmbEdge2Edge& b);
 
 private:
    UtlBinning(){ }

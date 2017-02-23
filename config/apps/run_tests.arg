@@ -1,4 +1,7 @@
 # argument                           |   type         |  require?   |   default
-# .......................................................................................................
+# ...............................................................................
 mc-events-file                       |   string       |  mandatory  |   -
+binning-file                         |   string       |  mandatory  |   -
+true-binning-file                    |   string       |  mandatory  |   -
+reco-binning-file                    |   string       |  mandatory  |   -
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml

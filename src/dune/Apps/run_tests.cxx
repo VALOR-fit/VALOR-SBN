@@ -33,11 +33,16 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Utilities/Env.h"
+#include "valor/KineBinning/KBCubHcmbMondrian.h"
 
 
 // dune
 #include "dune/GENIEUtilities/UtlEventRec.h"
 #include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/BeamConf.h"
+#include "dune/Conventions/Detector.h"
+#include "dune/Conventions/Sample.h"
+#include "dune/Utilities/UtlBinning.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -46,15 +51,40 @@ using namespace valor::conv;
    Tests the equality of double-precision floating point numbers within a given
    arithmetic tolerance.
 
-   \param a The first number to be compared.
-   \param b The second number to be compared.
+   \param obs The observed value.
+   \param b The expected value.
    \param tol The tolerance of the comparison. Default 1E-6.
 
    \return True if the numbers are equal within tolerance, false otherwise.
 */
-bool Equal(double a, double b, double tol = 1E-6)
+bool Equal(double obs, double exp, double tol = 1E-6)
 {
-   return (abs(a - b) < tol);
+   bool equal = (abs(obs - exp) < tol);
+   if(!equal)
+   {
+      LOG("Test", pERROR) << "Test failed: Expected " << exp << ". Found " <<
+         obs << ".";
+   }
+   return equal;
+}
+
+/**
+   Tests the equality of integer values.
+
+   \param obs The observed value.
+   \param exp The expected value.
+
+   \return True if the numbers are equal.
+*/
+bool Equal(int obs, int exp)
+{
+   bool equal = obs == exp;
+   if(!equal)
+   {
+      LOG("Test", pERROR) << "Test failed: Expected " << exp << ". Found " <<
+         obs << ".";
+   }
+   return equal;
 }
 
 /**
@@ -114,20 +144,8 @@ bool TestTrueKinematics(CmdLnArgList& arg)
       std::vector<double> vals = valor::util::GetTrueKinematics(&event, kv);
       
       passed = passed && vals.size() == 1;
-      if(!passed)
-      {
-         LOG("Test", pERROR) << "Test failed: Expected 1 kinematic variable"
-            " Etrue. Found " << vals.size() << ".";
-         return passed;
-      }
       
       passed = passed && Equal(Eexp[i], vals[0]);
-      if(!passed)
-      {
-         LOG("Test", pERROR) << "Test failed: Expected Etrue = " << Eexp[i] <<
-            ". Found " << vals[0] << ". ";
-         return passed;
-      }
    }
 
    // Test retrieval of Etrue and Q2true values
@@ -140,31 +158,116 @@ bool TestTrueKinematics(CmdLnArgList& arg)
       std::vector<double> vals = valor::util::GetTrueKinematics(&event, kv);
 
       passed = passed && vals.size() == 2;
-      if(!passed)
-      {
-         LOG("Test", pERROR) << "Test failed: Expected 2 kinematic variables"
-            " Etrue, Q2. Found " << vals.size() << ".";
-         return passed;
-      }
       
       passed = passed && Equal(Eexp[i], vals[0]);
-      if(!passed)
-      {
-         LOG("Test", pERROR) << "Test failed: Expected Etrue = " << Eexp[i] <<
-            ". Found " << vals[0] << ".";
-         return passed;
-      }
 
       passed = passed && Equal(Q2exp[i], vals[1]);
-      if(!passed)
-      {
-         LOG("Test", pERROR) << "Test failed: Expected Q2true = " << Q2exp[i] <<
-            ". Found " << vals[1] << ".";
-         return passed;
-      }
+
 
       mcrec->Clear();
    }
+
+   return passed;
+}
+
+/**
+   Unit tests for KBCubHcmbMondrian::Contract.
+
+   Checks that a known Mondrian binning of [Ereco,Yreco] contracted to [Ereco]
+   produces the expected result.
+
+   \param arg The set of command line arguments specified.
+   \return True if all tests pass, fale otherwise.
+*/
+bool TestMondrianContraction(CmdLnArgList& arg)
+{
+   // Retrieve the location of the Mondrian XML file
+   std::string filename = arg.GetString("reco-binning-file");
+   KBCubHcmbMondrian binning;
+   binning.Read(filename);
+
+   bool passed = true;
+
+   KBCubHcmbMondrian* newBinning = binning.Contract(conv::kspEreco);
+
+   // This is not quite right yet, contraction can produce overlapping bins,
+   // need to think about how to handle this
+   // May be easiest to just run through the edges, and add them to an ordered
+   // set and reconstruct the bins from that
+   passed = passed && Equal(newBinning->NBins(), 5);
+
+   // Check bin edges
+   passed = passed && Equal(newBinning->BinMinimum(0, 0), 0.0) &&
+      Equal(newBinning->BinMaximum(0, 0), 40.0);
+   passed = passed && Equal(newBinning->BinMinimum(1, 0), 40.0) &&
+      Equal(newBinning->BinMaximum(1, 0), 150.0);
+   passed = passed && Equal(newBinning->BinMinimum(2, 0), 40.0) &&
+      Equal(newBinning->BinMaximum(2, 0), 180.0);
+   passed = passed && Equal(newBinning->BinMinimum(3, 0), 150.0) &&
+      Equal(newBinning->BinMaximum(3, 0), 200.0);
+   passed = passed && Equal(newBinning->BinMinimum(4, 0), 180.0) &&
+      Equal(newBinning->BinMaximum(4, 0), 200.0);
+
+   // Check minima and maxima
+   passed = passed && Equal(newBinning->Minimum(0), 0.0);
+   passed = passed && Equal(newBinning->Maximum(0), 200.0);
+
+   delete newBinning;
+
+   return passed;
+}
+
+/**
+   Unit tests for production of plotting histograms.
+
+   Checks that a known binning of [Ereco,Yreco, Etrue] produces an [Ereco,Yreco]
+   ROOT compatible plot.
+
+   \param arg The set of command line arguments specified.
+   \return True if all tests pass, fale otherwise.
+*/
+bool TestPlot(CmdLnArgList& arg)
+{
+   // Retrieve the location of the true and reco binning XML files
+   std::string filename = arg.GetString("binning-file");
+   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
+        conv::ksNuMuCC);
+   std::vector<KineVar_t> ks = util::KineVar(conv::kspErecoYreco);
+   binning.Read(filename);
+
+   KBCubHcmbMondrian& recoBinning = (*binning.RecoOptBinning());
+   KBCubHcmbEdge2Edge& trueBinning = (*binning.TrueSmpBinning(0));
+   VALORArray v(recoBinning.NBins(), trueBinning.NBins());
+
+   for(int i = 0; i < recoBinning.NBins(); ++i)
+   {
+      for(int j = 0; j < trueBinning.NBins(); ++j)
+      {
+         v.SetEntry(j * 10 + (i + 1), i, j);
+      }
+   }
+
+   TH2D* histo = util::UtlBinning::Make2DOptimisedHistogram(v, binning, ks);
+
+   bool passed = true;
+
+   // Bin 0 in Mondrian contains 105, so bins (1, 1) to (1, 5) should be 105
+   passed = passed && Equal(histo->GetBinContent(1, 1), 105.0);
+   passed = passed && Equal(histo->GetBinContent(1, 5), 105.0);
+
+   // Bin 4 in Mondrian contains 125, so bins (2, 8) to (3, 8) should be 125
+   passed = passed && Equal(histo->GetBinContent(2, 8), 125.0);
+   passed = passed && Equal(histo->GetBinContent(3, 8), 125.0);
+
+   // Bin 6 in Mondrian contains 135, so bins (3, 1) to (4, 1) should be 135
+   passed = passed && Equal(histo->GetBinContent(3, 1), 135.0);
+   passed = passed && Equal(histo->GetBinContent(4, 1), 135.0);
+
+   // Bin 11 in Mondrian contains 160, so bins (4, 8) to (4, 9) should be 160
+   passed = passed && Equal(histo->GetBinContent(4, 8), 160.0);
+   passed = passed && Equal(histo->GetBinContent(4, 9), 160.0);
+
+   delete histo;
 
    return passed;
 }
@@ -192,6 +295,30 @@ void Tests(CmdLnArgList& arg)
       ++tests;
       ++failed;
       LOG("Test", pINFO) << "TestTrueKinematics failed.";
+   }
+
+   if(TestMondrianContraction(arg))
+   {
+      ++tests;
+      LOG("Test", pINFO) << "TestMondrianContraction passed.";
+   }
+   else
+   {
+      ++tests;
+      ++failed;
+      LOG("Test", pINFO) << "TestMondrianContraction failed.";
+   }
+
+   if(TestPlot(arg))
+   {
+      ++tests;
+      LOG("Test", pINFO) << "TestPlot passed.";
+   }
+   else
+   {
+      ++tests;
+      ++failed;
+      LOG("Test", pINFO) << "TestPlot failed.";
    }
 
    if(!failed)
