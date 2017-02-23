@@ -48,7 +48,7 @@ Input MC templates
        <objtype>  TTree    </objtype> 
     </lbnf_fhc>
     <lbnf_rhc>
-       <filename> dune/fdfit/2017a/v2.2/RHC_NuMuBar_high.root </filename> 
+       <filename> dune/fdfit/2017a/v2.2/RHC_NuMu_high.root </filename> 
        <objname>  valor_dune_nd_mini_dst  </objname> 
        <objtype>  TTree     </objtype> 
     </lbnf_rhc>
