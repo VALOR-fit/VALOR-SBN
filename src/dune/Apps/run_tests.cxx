@@ -226,7 +226,7 @@ bool TestMondrianContraction(CmdLnArgList& arg)
    \param arg The set of command line arguments specified.
    \return True if all tests pass, fale otherwise.
 */
-bool TestPlot(CmdLnArgList& arg)
+bool TestOptimisedPlot(CmdLnArgList& arg)
 {
    // Retrieve the location of the true and reco binning XML files
    std::string filename = arg.GetString("binning-file");
@@ -241,7 +241,7 @@ bool TestPlot(CmdLnArgList& arg)
 
    for(int i = 0; i < recoBinning.NBins(); ++i)
    {
-      for(int j = 0; j < trueBinning.NBins(); ++j)
+      for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
       {
          v.SetEntry(j * 10 + (i + 1), i, j);
       }
@@ -266,6 +266,60 @@ bool TestPlot(CmdLnArgList& arg)
    // Bin 11 in Mondrian contains 160, so bins (4, 8) to (4, 9) should be 160
    passed = passed && Equal(histo->GetBinContent(4, 8), 160.0);
    passed = passed && Equal(histo->GetBinContent(4, 9), 160.0);
+
+   delete histo;
+
+   return passed;
+}
+
+/**
+   Unit tests for production of plotting histograms.
+
+   Checks that a known binning of [Ereco,Yreco, Etrue] produces an [Ereco,Yreco]
+   ROOT compatible plot.
+
+   \param arg The set of command line arguments specified.
+   \return True if all tests pass, fale otherwise.
+*/
+bool TestSimple2DPlot(CmdLnArgList& arg)
+{
+   // Retrieve the location of the true and reco binning XML files
+   std::string filename = arg.GetString("binning-file");
+   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
+        conv::ksNuMuCC);
+   std::vector<KineVar_t> ks = util::KineVar(conv::kspErecoYreco);
+   binning.Read(filename);
+
+   KBCubHcmbEdge2Edge& recoBinning = (*binning.RecoSmpBinning());
+   KBCubHcmbEdge2Edge& trueBinning = (*binning.TrueSmpBinning(0));
+   VALORArray v(recoBinning.NBins(), trueBinning.NBins());
+
+   for(int i = 0; i < recoBinning.NBins(); ++i)
+   {
+      for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
+      {
+         v.SetEntry(j * 10 + (i + 1), i, j);
+      }
+   }
+
+   TH2D* histo = util::UtlBinning::Make2DSimpleHistogram(v, binning, ks);
+
+   bool passed = true;
+
+   // Bin 0 in Edge2Edge contains 105, so bin (1, 1) should be 105
+   passed = passed && Equal(histo->GetBinContent(1, 1), 105.0);
+
+   // Bin 3 in Edge2Edge contains 120, so bin (4, 1) should be 120
+   passed = passed && Equal(histo->GetBinContent(4, 1), 120.0);
+
+   // Bin 8 in Edge2Edge contains 145, so bin (1, 3) should be 145
+   passed = passed && Equal(histo->GetBinContent(1, 3), 145.0);
+
+   // Bin 5 in Edge2Edge contains 130, so bin (2, 2) should be 130
+   passed = passed && Equal(histo->GetBinContent(2, 2), 130.0);
+
+   // Bin 11 in Edge2Edge contains 160, so bin (4, 3) should be 160
+   passed = passed && Equal(histo->GetBinContent(4, 3), 160.0);
 
    delete histo;
 
@@ -309,16 +363,28 @@ void Tests(CmdLnArgList& arg)
       LOG("Test", pINFO) << "TestMondrianContraction failed.";
    }
 
-   if(TestPlot(arg))
+   if(TestOptimisedPlot(arg))
    {
       ++tests;
-      LOG("Test", pINFO) << "TestPlot passed.";
+      LOG("Test", pINFO) << "TestOptimisedPlot passed.";
    }
    else
    {
       ++tests;
       ++failed;
-      LOG("Test", pINFO) << "TestPlot failed.";
+      LOG("Test", pINFO) << "TestOptimisedPlot failed.";
+   }
+
+   if(TestSimple2DPlot(arg))
+   {
+      ++tests;
+      LOG("Test", pINFO) << "TestSimple2DPlot passed.";
+   }
+   else
+   {
+      ++tests;
+      ++failed;
+      LOG("Test", pINFO) << "TestSimple2DPlot failed.";
    }
 
    if(!failed)
