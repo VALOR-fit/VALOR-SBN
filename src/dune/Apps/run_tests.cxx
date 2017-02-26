@@ -218,6 +218,67 @@ bool TestMondrianContraction(CmdLnArgList& arg)
 }
 
 /**
+   Unit tests for KBCubHcmbEdge2Edge::Contract.
+
+   Checks that a known Edge2Edge binning of [Ereco,Yreco] contracted to [Ereco]
+   and [Yreco] produces the expected results.
+
+   \param arg The set of command line arguments specified.
+   \return True if all tests pass, fale otherwise.
+*/
+bool TestEdge2EdgeContraction(CmdLnArgList& arg)
+{
+   std::string filename = arg.GetString("binning-file");
+   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
+        conv::ksNuMuCC);
+   binning.Read(filename);
+
+   KBCubHcmbEdge2Edge& recoBinning = (*binning.RecoSmpBinning());
+
+   bool passed = true;
+
+   // Ereco
+   KBCubHcmbEdge2Edge* newBinning = recoBinning.Contract(conv::kspEreco);
+
+   passed = passed && Equal(newBinning->NBins(), 4);
+
+   // Check bin edges
+   passed = passed && Equal(newBinning->BinMinimum(0, 0), 0.0) &&
+      Equal(newBinning->BinMaximum(0, 0), 50.0);
+   passed = passed && Equal(newBinning->BinMinimum(1, 0), 50.0) &&
+      Equal(newBinning->BinMaximum(1, 0), 100.0);
+   passed = passed && Equal(newBinning->BinMinimum(2, 0), 100.0) &&
+      Equal(newBinning->BinMaximum(2, 0), 150.0);
+   passed = passed && Equal(newBinning->BinMinimum(3, 0), 150.0) &&
+      Equal(newBinning->BinMaximum(3, 0), 200.0);
+
+   // Check minima and maxima
+   passed = passed && Equal(newBinning->Minimum(0), 0.0);
+   passed = passed && Equal(newBinning->Maximum(0), 200.0);
+
+   delete newBinning;
+
+   // Yreco
+   newBinning = recoBinning.Contract(conv::kspYreco);
+
+   passed = passed && Equal(newBinning->NBins(), 3);
+
+   // Check bin edges
+   passed = passed && Equal(newBinning->BinMinimum(0, 0), 0.0) &&
+      Equal(newBinning->BinMaximum(0, 0), 1.0 / 3.0);
+   passed = passed && Equal(newBinning->BinMinimum(1, 0), 1.0 / 3.0) &&
+      Equal(newBinning->BinMaximum(1, 0), 2.0 / 3.0);
+   passed = passed && Equal(newBinning->BinMinimum(2, 0), 2.0 / 3.0) &&
+      Equal(newBinning->BinMaximum(2, 0), 1.0);
+
+   // Check minima and maxima
+   passed = passed && Equal(newBinning->Minimum(0), 0.0);
+   passed = passed && Equal(newBinning->Maximum(0), 1.0);
+
+   return passed;
+}
+
+/**
    Unit tests for production of plotting histograms.
 
    Checks that a known binning of [Ereco,Yreco, Etrue] produces an [Ereco,Yreco]
@@ -294,7 +355,7 @@ bool TestSimple2DPlot(CmdLnArgList& arg)
    KBCubHcmbEdge2Edge& trueBinning = (*binning.TrueSmpBinning(0));
    VALORArray v(recoBinning.NBins(), trueBinning.NBins());
 
-   for(int i = 0; i < recoBinning.NBins(); ++i)
+   for(unsigned int i = 0; i < recoBinning.NBins(); ++i)
    {
       for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
       {
@@ -320,6 +381,57 @@ bool TestSimple2DPlot(CmdLnArgList& arg)
 
    // Bin 11 in Edge2Edge contains 160, so bin (4, 3) should be 160
    passed = passed && Equal(histo->GetBinContent(4, 3), 160.0);
+
+   delete histo;
+
+   return passed;
+}
+
+/**
+   Unit tests for production of plotting histograms.
+
+   Checks that a known binning of [Ereco, Etrue] produces an [Ereco]
+   ROOT compatible plot.
+
+   \param arg The set of command line arguments specified.
+   \return True if all tests pass, fale otherwise.
+*/
+bool TestSimple1DPlot(CmdLnArgList& arg)
+{
+   // Retrieve the location of the true and reco binning XML files
+   std::string filename = arg.GetString("binning-file");
+   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
+        conv::ksNuMuCC);
+   KineSpace_t ks = conv::kspEreco;
+   binning.Read(filename);
+
+   KBCubHcmbEdge2Edge& recoBinning = (*binning.RecoSmpBinning());
+   KBCubHcmbEdge2Edge& trueBinning = (*binning.TrueSmpBinning(0));
+   VALORArray v(recoBinning.NBins(), trueBinning.NBins());
+
+   for(unsigned int i = 0; i < recoBinning.NBins(); ++i)
+   {
+      for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
+      {
+         v.SetEntry(j * 10 + (i + 1), i, j);
+      }
+   }
+
+   TH1D* histo = util::UtlBinning::Make1DHistogram(v, binning, ks);
+
+   bool passed = true;
+
+   // Bins 0, 4, 8 in Edge2Edge contains 375, so bin (1) should be 375
+   passed = passed && Equal(histo->GetBinContent(1), 375.0);
+
+   // Bin 1, 5, 9 in Edge2Edge contains 390, so bin (2) should be 390
+   passed = passed && Equal(histo->GetBinContent(2), 390.0);
+
+   // Bin 2, 6, 10 in Edge2Edge contains 405, so bin (3) should be 405
+   passed = passed && Equal(histo->GetBinContent(3), 405.0);
+
+   // Bin 3, 7, 11 in Edge2Edge contains 420, so bin (4) should be 420
+   passed = passed && Equal(histo->GetBinContent(4), 420.0);
 
    delete histo;
 
@@ -363,6 +475,18 @@ void Tests(CmdLnArgList& arg)
       LOG("Test", pINFO) << "TestMondrianContraction failed.";
    }
 
+   if(TestEdge2EdgeContraction(arg))
+   {
+      ++tests;
+      LOG("Test", pINFO) << "TestEdge2EdgeContraction passed.";
+   }
+   else
+   {
+      ++tests;
+      ++failed;
+      LOG("Test", pINFO) << "TestEdge2EdgeContraction failed.";
+   }
+
    if(TestOptimisedPlot(arg))
    {
       ++tests;
@@ -385,6 +509,18 @@ void Tests(CmdLnArgList& arg)
       ++tests;
       ++failed;
       LOG("Test", pINFO) << "TestSimple2DPlot failed.";
+   }
+
+   if(TestSimple1DPlot(arg))
+   {
+      ++tests;
+      LOG("Test", pINFO) << "TestSimple1DPlot passed.";
+   }
+   else
+   {
+      ++tests;
+      ++failed;
+      LOG("Test", pINFO) << "TestSimple1DPlot failed.";
    }
 
    if(!failed)

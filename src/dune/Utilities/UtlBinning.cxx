@@ -12,9 +12,55 @@ namespace util
 {
 
 TH1D* UtlBinning::Make1DHistogram(const VALORArray& v,
-      const SingleSampleKineBinning& b, conv::KineVar_t k)
+      const SingleSampleKineBinning& b, conv::KineSpace_t ks)
 {
-   return nullptr;
+   // Get the reco binning and associated kinematic variables for the VALORArray
+   KBCubHcmbEdge2Edge& recoBinning = (*b.RecoSmpBinning());
+   const std::vector<conv::KineVar_t>& recoKv = recoBinning.KineVars();
+   std::vector<conv::KineVar_t> kvs = util::KineVar(ks);
+
+   // Check that the requested kinematic variables are consistent with those in
+   // the VALORArray
+   if(kvs.size() != 1)
+   {
+      LOG("UtlBinning", pERROR) << "Expected 1 kinematic variable to plot, " <<
+         "found " << kvs.size();
+      util::Die(-1);
+   }
+   for(auto kv : kvs)
+   {
+      if(std::find(recoKv.begin(), recoKv.end(), kv) == recoKv.end())
+      {  // Mismatch in variables
+         LOG("UtlBinning", pERROR) << "Kinematic variable " <<
+            util::AsString(kv) << " not found in template kinematic space " <<
+            util::AsString(recoBinning.KineSpace());
+         util::Die(-1);
+      }
+   }
+
+   // Contract the binning to 1D
+   KBCubHcmbEdge2Edge& newRecoBinning = (*recoBinning.Contract(ks));
+
+   // Need to integrate out the reco variables here, before integrating over
+   // truth
+   VALORArray* targetV = UtlBinning::Contract(v, b, newRecoBinning);
+
+   // Integrate over the truth variables
+   unsigned int nbins = newRecoBinning.NBins();
+   double events[nbins];
+   for(unsigned int i = 0; i < nbins; ++i)
+   {
+      // Reco is always first dimension in VALORArray, so fix the bins in this
+      // dimension and integrate over the rest
+      events[i] = targetV->Integral(i, i);
+   }
+
+   // Map the events to a ROOT compatible histogram
+   TH1D* histo = Remap1D(events, newRecoBinning);
+
+   delete targetV;
+   
+   return histo;
 }
 
 TH2D* UtlBinning::Make2DOptimisedHistogram(const VALORArray& v,
@@ -100,14 +146,124 @@ TH2D* UtlBinning::Make2DSimpleHistogram(const VALORArray& v,
 }
 
 VALORArray* UtlBinning::Contract(const VALORArray& v,
-      const SingleSampleKineBinning& b, const std::vector<conv::KineVar_t>& ks)
+      const SingleSampleKineBinning& currentBinning,
+      const KBCubHcmbEdge2Edge& targetBinning)
 {
-   return nullptr;
+   KBCubHcmbEdge2Edge& trueBinning = (*currentBinning.TrueSmpBinning(0));
+   KBCubHcmbEdge2Edge& recoBinning = (*currentBinning.RecoSmpBinning());
+
+   auto targetKs = targetBinning.KineVars();
+   auto integrationKs = recoBinning.KineVars();
+
+   for(auto it = integrationKs.begin(); it != integrationKs.end(); )
+   {
+      if(std::find(targetKs.begin(), targetKs.end(), *it) != targetKs.end())
+      {  // Found kinematic variable in target, remove
+         // This retains the iterator validity on erase
+         it = integrationKs.erase(it);
+      }
+      else
+      {  // Did not find kinematic variable in target, move on
+         ++it;
+      }
+   }
+
+   VALORArray* targetV = new VALORArray(targetBinning.NBins(), trueBinning.NBins());
+  
+   // Permute all bin combinations for the integration variable binning
+   std::vector<std::vector<int>> permRecoInt = UtlBinning::BinPermutation(
+         recoBinning, integrationKs);
+   // Permute all bin combinations for the new binning
+   std::vector<std::vector<int>> permRecoTarget = UtlBinning::BinPermutation(
+         targetBinning, targetBinning.KineSpace());
+
+   // Get the dimensions of the various kinematic variables in the current reco
+   // binning
+   std::vector<int> targetIndices;
+   std::vector<int> integrationIndices;
+   for(auto kv : targetKs)
+   {
+      targetIndices.push_back(recoBinning.Dimension(kv));
+   }
+   for(auto kv : integrationKs)
+   {
+      integrationIndices.push_back(recoBinning.Dimension(kv));
+   }
+
+   int ndims = targetIndices.size() + integrationIndices.size();
+   for(auto tbin : permRecoTarget)
+   {  // Loop through all of the target reco bins
+      // Need a sum for each truth bin
+      double sum[trueBinning.NBins()] = {0.0};
+      for(auto ibin : permRecoInt)
+      {  // Loop through all of the integration reco bins
+         std::vector<double> currentBin(ndims);
+
+         for(unsigned int i = 0; i < targetIndices.size(); ++i)
+         {
+            const double* edges = recoBinning.BinEdgeArr(targetIndices[i]);
+            double centre = 0.5 * (edges[tbin[i]] + edges[tbin[i] + 1]);
+            currentBin[targetIndices[i]] = centre;
+         }
+         for(unsigned int i = 0; i < integrationIndices.size(); ++i)
+         {
+            const double* edges = recoBinning.BinEdgeArr(integrationIndices[i]);
+            double centre = 0.5 * (edges[ibin[i]] + edges[ibin[i] + 1]);
+            currentBin[integrationIndices[i]] = centre;
+         }
+         int currentIndex = recoBinning.FindBin(currentBin);
+         for(unsigned int t = 0; t < trueBinning.NBins(); ++t)
+         {  // Loop over all truth bins
+            sum[t] += v.GetEntry(currentIndex, t);
+         }
+      }
+      std::vector<double> newBin(tbin.size());
+      for(unsigned int i = 0; i < targetIndices.size(); ++i)
+      {
+         const double* edges = targetBinning.BinEdgeArr(i);
+         double centre = 0.5 * (edges[tbin[i]] + edges[tbin[i] + 1]);
+         newBin[i] = centre;
+      }
+      int newIndex = targetBinning.FindBin(newBin);
+      for(unsigned int t = 0; t < trueBinning.NBins(); ++t)
+      {  // Loop over all truth bins
+         targetV->SetEntry(sum[t], newIndex, t);
+      }
+   }
+
+   return targetV;
 }
 
 TH1D* UtlBinning::Remap1D(const double* events, const KBCubHcmbEdge2Edge& b)
 {
-   return nullptr;
+   // Find all bin edges
+   std::set<double> dimEdges;
+   for(unsigned int i = 0; i < b.NBins(); ++i)
+   {
+      // Minimum edge of first dimension for bin i
+      dimEdges.insert(b.BinMinimum(i, 0));
+      // Maximum edge of first dimension for bin i
+      dimEdges.insert(b.BinMaximum(i, 0));
+   }
+   // No need to sort or remove duplicate edges as both properties are
+   // guaranteed by set
+   // Create the Root histogram
+   int nDimBins = dimEdges.size() - 1;
+   double dimBinEdges[nDimBins + 1];
+   std::copy(dimEdges.begin(), dimEdges.end(), dimBinEdges);
+   TH1D* histo = new TH1D("histo", "histo", nDimBins, dimBinEdges);
+
+   // Get the number of bins from our ROOT histogram
+   int xbins = histo->GetNbinsX();
+   std::vector<double> coords = {0.0};
+   for(int i = 1; i <= xbins; ++i)
+   {
+      coords[0] = histo->GetXaxis()->GetBinCenter(i);
+      int index = b.FindBin(coords);
+      histo->SetBinContent(i, events[index]);
+   }
+
+   return histo;
 }
 
 TH2D* UtlBinning::RemapOptimised2D(const double* events,
@@ -202,6 +358,72 @@ TH2D* UtlBinning::RemapSimple2D(const double* events,
    }
 
    return histo;
+}
+
+std::vector<std::vector<int>> UtlBinning::BinPermutation(
+      const KBCubHcmbEdge2Edge& binning, const conv::KineSpace_t ks)
+{
+   auto kvs = util::KineVar(ks);
+   return UtlBinning::BinPermutation(binning, kvs);
+}
+
+std::vector<std::vector<int>> UtlBinning::BinPermutation(
+      const KBCubHcmbEdge2Edge& binning,
+      const std::vector<conv::KineVar_t>& kvs)
+{
+   std::vector<std::vector<int>> permutation;
+
+   std::vector<int> binCounts;
+   std::vector<int> repCounts;
+
+   // Store the number of bins associatedwith each kinematic variable
+   for(auto kv : kvs)
+   {
+      binCounts.push_back(binning.NBins(kv));
+   }
+   // Define a function to compute a running product
+   auto lambda = [&](int product, int x) mutable { return product * x; };
+   // Compute the product of the bin counts to determine the number of permutations
+   auto count = std::accumulate(binCounts.begin(), binCounts.end(), 1, lambda);
+
+   // Compute the number of repetitions of each bin index for the permutation
+   for(unsigned int i = 0; i < kvs.size(); ++i)
+   {
+      repCounts.push_back(std::accumulate(binCounts.begin() + (i + 1),
+               binCounts.end(), 1, lambda));
+   }
+
+   // Initialise the permutation vector
+   for(int i = 0; i < count; ++i)
+   {
+      permutation.push_back(std::vector<int>());
+   }
+
+   // Fill the permutations vector
+   for(unsigned int i = 0; i < kvs.size(); ++i)
+   {
+      int nreps = repCounts[i];
+      int nbins = binCounts[i];
+      int bin = 0;
+      for(int j = 0; j < count; ++j)
+      {
+         // Each bin of each kinematic variable is repeated according to the
+         // repetition count before moving to the next value
+         permutation[j].push_back(bin);
+         if(((j + 1) % nreps) == 0)
+         {
+            ++bin;
+         }
+         // Cycle back to the first bin of the kinematic variable once each bin
+         // has been added to the permutation
+         if(bin == nbins)
+         {
+            bin = 0;
+         }
+      }
+   }
+
+   return permutation;
 }
 
 }
