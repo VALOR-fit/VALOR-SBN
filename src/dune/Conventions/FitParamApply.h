@@ -893,10 +893,10 @@ static const ApplyMask_t kApplyParamToTemplates[kNFitParams] =
   /* kNuisEffRHCNeutrinoElec         */ { kdApplyToDUNEND , kbApplyToRHC , kfApplyToAll , ksApplyToNeutrinoElec  , ktApplyToAll , kntApplyToAll } ,
   /* kNuisEffRHCIMD                  */ { kdApplyToDUNEND , kbApplyToRHC , kfApplyToAll , ksApplyToInvMuDecay    , ktApplyToAll , kntApplyToAll } ,
   // Far detector systematics 
-  /* kNuisEffFDNuMuCCHigh     */ { kdApplyToDUNEFD , kbApplyToAll , kfApplyToNuMuAny     , ksApplyToHighRes , ktApplyToAll , kntApplyToAll } ,
-  /* kNuisEffFDNuMuCCLow      */ { kdApplyToDUNEFD , kbApplyToAll , kfApplyToNuMuAny     , ksApplyToLowRes  , ktApplyToAll , kntApplyToAll } ,
-  /* kNuisEffFDNuECCHigh      */ { kdApplyToDUNEFD , kbApplyToAll , kfApplyToNuEAny      , ksApplyToHighRes , ktApplyToAll , kntApplyToAll } ,
-  /* kNuisEffFDNuECCLow       */ { kdApplyToDUNEFD , kbApplyToAll , kfApplyToNuEAny      , ksApplyToLowRes  , ktApplyToAll , kntApplyToAll } ,
+  /* kNuisEffFDNuMuCCHigh     */ { kdApplyToDUNEFD , kbApplyToFHC , kfApplyToNuMuAny     , ksApplyToAll , ktApplyToAll , kntApplyToAll } ,
+  /* kNuisEffFDNuMuCCLow      */ { kdApplyToDUNEFD , kbApplyToRHC , kfApplyToNuMuAny     , ksApplyToAll , ktApplyToAll , kntApplyToAll } ,
+  /* kNuisEffFDNuECCHigh      */ { kdApplyToDUNEFD , kbApplyToFHC , kfApplyToNuEAny      , ksApplyToAll , ktApplyToAll , kntApplyToAll } ,
+  /* kNuisEffFDNuECCLow       */ { kdApplyToDUNEFD , kbApplyToRHC , kfApplyToNuEAny      , ksApplyToAll , ktApplyToAll , kntApplyToAll } ,
   // Old det
   /* kNuisEffNuMuCC0pi1trk */ { kdApplyToAllND , kbApplyToAll , kfApplyToAll , ksApplyToNuMuCC0pi1trk  , ktApplyToAll , kntApplyToAll } ,
   /* kNuisEffNuMuCC0pi2trk */ { kdApplyToAllND , kbApplyToAll , kfApplyToAll , ksApplyToNuMuCC0pi2trk  , ktApplyToAll , kntApplyToAll } ,
