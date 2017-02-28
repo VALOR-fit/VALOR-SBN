@@ -257,28 +257,40 @@ int main(int argc, char ** argv)
       Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
       
       double mixing12 = arg.GetDouble("input-mixing12");
-      fp->Update(util::PhysParamFromString("mixing12"), mixing12);
-      fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
+      if ( std::fabs(mixing12 - 999. ) > conv::kASmallNum ) { 
+        fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
+        fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
+      }
 
       double mixing23 = arg.GetDouble("input-mixing23");
-      fp->Update(util::PhysParamFromString("mixing23"), mixing23);
-      fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
-
+      if ( std::fabs(mixing23 - 999. ) > conv::kASmallNum ) { 
+        fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
+        fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
+      }
+      
       double mixing13 = arg.GetDouble("input-mixing13");
-      fp->Update(util::PhysParamFromString("mixing13"), mixing13);
-      fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
-
+      if ( std::fabs(mixing13 - 999. ) > conv::kASmallNum ) { 
+        fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
+        fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
+      }
+      
       double dm23sq = arg.GetDouble("input-dm23sq");
-      fp->Update(util::PhysParamFromString("dm23sq"), dm23sq);
-      fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
+      if ( std::fabs(dm23sq - 999. ) > conv::kASmallNum ) { 
+        fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
+        fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
+      }
 
       double dm12sq = arg.GetDouble("input-dm12sq");
-      fp->Update(util::PhysParamFromString("dm12sq"), dm12sq);
-      fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
+      if ( std::fabs(dm12sq - 999. ) > conv::kASmallNum ) { 
+        fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
+        fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
+      }
 
       double deltacp = arg.GetDouble("input-deltaCP");
-      fp->Update(util::PhysParamFromString("cpv"), deltacp);
-      fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
+      if ( std::fabs(deltacp - 999. ) > conv::kASmallNum ) { 
+        fp->Update      (util::PhysParamFromString("cpv"), deltacp);
+        fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
+      }
 
       // fix them? randomize them? 
       if(arg.GetBool("fix-mixing12")){
@@ -370,7 +382,7 @@ int main(int argc, char ** argv)
            
     
     //before reset for the fit, fix to a different value? 
-	double fix_mixing12 = arg.GetDouble("fix-at-mixing12");
+    double fix_mixing12 = arg.GetDouble("fix-at-mixing12");
     if((fix_mixing12 > util::OscParamMinValue(util::PhysParamFromString("mixing12"))) && 
        (fix_mixing12 < util::OscParamMaxValue(util::PhysParamFromString("mixing12"))))
     {
@@ -378,7 +390,7 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("mixing12"), fix_mixing12);
     }
 
-	double fix_mixing13 = arg.GetDouble("fix-at-mixing13");
+    double fix_mixing13 = arg.GetDouble("fix-at-mixing13");
     if((fix_mixing13 > util::OscParamMinValue(util::PhysParamFromString("mixing13"))) && 
        (fix_mixing13 < util::OscParamMaxValue(util::PhysParamFromString("mixing13"))))
     {
@@ -386,7 +398,7 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("mixing13"), fix_mixing13);
     }
 
-	double fix_mixing23 = arg.GetDouble("fix-at-mixing23");
+    double fix_mixing23 = arg.GetDouble("fix-at-mixing23");
     if((fix_mixing23 > util::OscParamMinValue(util::PhysParamFromString("mixing23"))) && 
        (fix_mixing23 < util::OscParamMaxValue(util::PhysParamFromString("mixing23"))))
     {
@@ -394,7 +406,7 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("mixing23"), fix_mixing23);
     }
 
-	double fix_dm23sq = arg.GetDouble("fix-at-dm23sq");
+    double fix_dm23sq = arg.GetDouble("fix-at-dm23sq");
     if((fix_dm23sq > util::OscParamMinValue(util::PhysParamFromString("dm23sq"))) && 
        (fix_dm23sq < util::OscParamMaxValue(util::PhysParamFromString("dm23sq"))))
     {
@@ -402,7 +414,7 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("dm23sq"), fix_dm23sq);
     }
 
-	double fix_dm12sq = arg.GetDouble("fix-at-dm12sq");
+    double fix_dm12sq = arg.GetDouble("fix-at-dm12sq");
     if((fix_dm12sq > util::OscParamMinValue(util::PhysParamFromString("dm12sq"))) && 
        (fix_dm12sq < util::OscParamMaxValue(util::PhysParamFromString("dm12sq"))))
     {
@@ -410,7 +422,7 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("dm12sq"), fix_dm12sq);
     }
 
-	double fix_dm13sq = arg.GetDouble("fix-at-dm13sq");
+    double fix_dm13sq = arg.GetDouble("fix-at-dm13sq");
     if((fix_dm13sq > util::OscParamMinValue(util::PhysParamFromString("dm13sq"))) && 
        (fix_dm13sq < util::OscParamMaxValue(util::PhysParamFromString("dm13sq"))))
     {
@@ -418,7 +430,7 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("dm13sq"), fix_dm13sq);
     }
 
-	double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
+    double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
     if((fix_deltacp > util::OscParamMinValue(util::PhysParamFromString("cpv"))) && 
        (fix_deltacp < util::OscParamMaxValue(util::PhysParamFromString("cpv"))))
     {

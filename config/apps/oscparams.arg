@@ -1,11 +1,11 @@
 # argument                           |   type         |  require?   |   default
 # .......................................................................................................
-input-mixing12                       |   double       |  optional   |   0.304
-input-mixing13                       |   double       |  optional   |   0.0219
-input-mixing23                       |   double       |  optional   |   0.514
-input-dm12sq                         |   double       |  optional   |   0.000075
-input-dm23sq                         |   double       |  optional   |   0.00244
-input-deltaCP                        |   double       |  optional   |   0.0
+input-mixing12                       |   double       |  optional   |   -999
+input-mixing13                       |   double       |  optional   |   -999
+input-mixing23                       |   double       |  optional   |   -999
+input-dm12sq                         |   double       |  optional   |   -999
+input-dm23sq                         |   double       |  optional   |   -999
+input-deltaCP                        |   double       |  optional   |   -999
 fix-mixing12                         |   boolean      |  optional   |   false
 fix-mixing13                         |   boolean      |  optional   |   false
 fix-mixing23                         |   boolean      |  optional   |   false
