@@ -257,37 +257,37 @@ int main(int argc, char ** argv)
       Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
       
       double mixing12 = arg.GetDouble("input-mixing12");
-      if ( std::fabs(mixing12 - 999. ) > conv::kASmallNum ) { 
+      if ( std::fabs(mixing12 + 999. ) > conv::kASmallNum ) { 
         fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
         fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
       }
 
       double mixing23 = arg.GetDouble("input-mixing23");
-      if ( std::fabs(mixing23 - 999. ) > conv::kASmallNum ) { 
+      if ( std::fabs(mixing23 + 999. ) > conv::kASmallNum ) { 
         fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
         fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
       }
       
       double mixing13 = arg.GetDouble("input-mixing13");
-      if ( std::fabs(mixing13 - 999. ) > conv::kASmallNum ) { 
+      if ( std::fabs(mixing13 + 999. ) > conv::kASmallNum ) { 
         fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
         fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
       }
       
       double dm23sq = arg.GetDouble("input-dm23sq");
-      if ( std::fabs(dm23sq - 999. ) > conv::kASmallNum ) { 
+      if ( std::fabs(dm23sq + 999. ) > conv::kASmallNum ) { 
         fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
         fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
       }
 
       double dm12sq = arg.GetDouble("input-dm12sq");
-      if ( std::fabs(dm12sq - 999. ) > conv::kASmallNum ) { 
+      if ( std::fabs(dm12sq + 999. ) > conv::kASmallNum ) { 
         fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
         fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
       }
 
       double deltacp = arg.GetDouble("input-deltaCP");
-      if ( std::fabs(deltacp - 999. ) > conv::kASmallNum ) { 
+      if ( std::fabs(deltacp + 999. ) > conv::kASmallNum ) { 
         fp->Update      (util::PhysParamFromString("cpv"), deltacp);
         fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
       }
