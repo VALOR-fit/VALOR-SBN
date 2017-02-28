@@ -452,6 +452,7 @@ int main(int argc, char ** argv)
     LOG("valor_dune", pNOTICE) << "Fit starts with the following fit parameter list: " << *fp;
     LOG("valor_dune", pNOTICE) << "Fit starts with statistic: " << fit_inputs->Statistic();
     fitter->DoTheFit();
+    LOG("valor_dune", pNOTICE) << "Fit ends with statistic: " << fit_inputs->Statistic();
 
 //  migradmin = fitter->FitStatusCode("migrad_min");
 //  migraderr = fitter->FitStatusCode("migrad_err");
