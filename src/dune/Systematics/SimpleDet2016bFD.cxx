@@ -28,26 +28,14 @@ ClassImp(SimpleDet2016bFD)
 SimpleDet2016bFD::SimpleDet2016bFD() :
 CorrelatedSystematics()
 {
-  int nparams = kNFitParamsNuDetFD;
-  PhysParamId_t params[nparams];
-  const bool * is_relevant = conv::kFitIsNuFDDetRelated;
+  std::vector<PhysParamId_t> params;
   
-  int i_params = 0;
-  for(int i = 0; i < conv::kNFitParams; i++) {
-    PhysParamId_t p = conv::kFitParam[i];
-    if (is_relevant[i]) {
-      params[i_params] = p;
-      i_params++;
-    }
-  }
-  
-  // Check we have the right number of parameters labelled as related to this class
-  if (nparams-i_params) {
-    LOG("SimpleDet2016bFD",pFATAL)<<"kNFitParamsNuDet does not match kFitIsNuDetRelated";
-    util::Die(-1); return;
-  }
-  
-  this->Init(nparams, params,"detector");
+  params.push_back(kNuisEffFDNuMuLikeCCHigh);
+  params.push_back(kNuisEffFDNuMuLikeCCLow );
+  params.push_back(kNuisEffFDNuELikeCCHigh );
+  params.push_back(kNuisEffFDNuELikeCCLow  );
+
+  this->Init(params.size(), &params[0],"detector");
   
   this->SetName("SimpleDet2016bFD");
 }
