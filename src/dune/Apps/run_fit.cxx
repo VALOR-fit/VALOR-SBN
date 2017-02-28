@@ -86,6 +86,8 @@ int main(int argc, char ** argv)
 {  
   Env::Instance()->AutoSet("dune");
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
+  
+  util::InitializeOAPriors();
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_DUNE/config/apps/run_fit.arg:$VALOR_DUNE/config/apps/seeds.arg:$VALOR_DUNE/config/apps/oscparams.arg");
