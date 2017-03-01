@@ -26,6 +26,8 @@ env  =  valor.Env.Instance()
 colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.kCyan+2,]
 markers = [R.kFullSquare, R.kFullCircle, R.kFullTriangleUp, R.kFullCross, R.kFullDiamond, R.kFullStar, R.kFullTriangleDown]
 
+ymax = 8.
+
 def GetGraph(filename):
   chain = R.TChain("valor_dune_nd_ntp")
   chain.Add(filename)
@@ -62,11 +64,12 @@ def main(files,labels):
   canv = R.TCanvas("canv","canv",1200,800)
   canv.SetTopMargin(0.03)
   canv.SetRightMargin(0.03)
+  canv.SetGridy(1)
 
   frame = R.TH1D("f","f",1,-1,1)
   frame.GetXaxis().SetTitle("#delta_{CP} / #pi")
   frame.GetYaxis().SetTitle("#sigma")
-  frame.GetYaxis().SetRangeUser(0,7)
+  frame.GetYaxis().SetRangeUser(0,ymax)
   frame.Draw()
 
   #~ cdr_file = R.TFile(os.environ[env_var]+"/data/test/CDR_sinsq23_05.root")
@@ -77,7 +80,7 @@ def main(files,labels):
   
   print
   
-  legend = R.TLegend(0.45,0.70,0.68,0.97)
+  legend = R.TLegend(0.35,0.70,0.78,0.97)
   for i,g in enumerate(graphs):
     g.SetLineColor(colors[i])
     g.Draw("C")
@@ -89,6 +92,7 @@ def main(files,labels):
     
   canv.Print("dcp_sens.png")
   canv.Print("dcp_sens.eps")
+  canv.Print("dcp_sens.root")
   
 if __name__=="__main__":
   import optparse
