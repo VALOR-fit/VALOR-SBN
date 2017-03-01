@@ -22,3 +22,5 @@ prior-fit-number                     |   integer      |  optional   |   0
 #
 tweak-parameter-set                  |   string       |  optional   |   none
 force-tweak-size                     |   double       |  optional   |   0
+#
+flip-true-octant                     |   boolean      |  optional   |   0

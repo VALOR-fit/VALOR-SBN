@@ -62,6 +62,7 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -105,6 +106,7 @@ int main(int argc, char ** argv)
   string fittername       = arg.GetString("fitter");
   string true_values_file = arg.GetString("true-from-filename");
   string true_values_obj  = arg.GetString("true-from-objname"); // a physparamlist
+  bool flip_23_octant     = arg.GetBool("flip-true-octant");
   
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   int prior_fit_number = arg.GetInt("prior-fit-number");
@@ -257,40 +259,50 @@ int main(int argc, char ** argv)
       Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
       
       double mixing12 = arg.GetDouble("input-mixing12");
-      if ( std::fabs(mixing12 + 999. ) > conv::kASmallNum ) { 
-        fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
-        fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
+      if ( std::fabs(mixing12 + 999. ) < conv::kASmallNum ) { 
+        mixing12 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing12);
       }
+      fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
+      fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
 
+      double mixing13 = arg.GetDouble("input-mixing13");
+      if ( std::fabs(mixing13 + 999. ) < conv::kASmallNum ) { 
+        mixing13 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing13);
+      }
+      fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
+      fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
+      
       double mixing23 = arg.GetDouble("input-mixing23");
-      if ( std::fabs(mixing23 + 999. ) > conv::kASmallNum ) { 
-        fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
-        fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
+      if ( std::fabs(mixing23 + 999. ) < conv::kASmallNum ) { 
+        mixing23 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing23);
       }
       
-      double mixing13 = arg.GetDouble("input-mixing13");
-      if ( std::fabs(mixing13 + 999. ) > conv::kASmallNum ) { 
-        fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
-        fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
+      if (flip_23_octant) {
+        mixing23 = util::FlipOctantAroundMaxDisap(mixing23,mixing13);
       }
+      fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
+      fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
       
       double dm23sq = arg.GetDouble("input-dm23sq");
-      if ( std::fabs(dm23sq + 999. ) > conv::kASmallNum ) { 
-        fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
-        fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
+      if ( std::fabs(dm23sq + 999. ) < conv::kASmallNum ) {
+        dm23sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm23sq);
       }
+      fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
+      fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
 
       double dm12sq = arg.GetDouble("input-dm12sq");
-      if ( std::fabs(dm12sq + 999. ) > conv::kASmallNum ) { 
-        fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
-        fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
+      if ( std::fabs(dm12sq + 999. ) < conv::kASmallNum ) { 
+        dm12sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm12sq);
       }
+      fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
+      fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
 
       double deltacp = arg.GetDouble("input-deltaCP");
-      if ( std::fabs(deltacp + 999. ) > conv::kASmallNum ) { 
-        fp->Update      (util::PhysParamFromString("cpv"), deltacp);
-        fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
+      if ( std::fabs(deltacp + 999. ) < conv::kASmallNum ) {
+        deltacp = Opt::Instance()->GetGlobalBestFit(conv::kPhypCPV);
       }
+      fp->Update      (util::PhysParamFromString("cpv"), deltacp);
+      fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
 
       // fix them? randomize them? 
       if(arg.GetBool("fix-mixing12")){
