@@ -32,9 +32,11 @@
 // valor
 #include "valor/Messenger/Messenger.h"
 #include "valor/CmdLine/CmdLnArgList.h"
+#include "valor/FitCore/PhysParams.h"
 #include "valor/Utilities/Env.h"
 #include "valor/KineBinning/KBCubHcmbMondrian.h"
-
+#include "valor/Utilities/FitParamListFactory.h"
+#include "valor/Utilities/UtlFile.h"
 
 // dune
 #include "dune/GENIEUtilities/UtlEventRec.h"
@@ -439,6 +441,58 @@ bool TestSimple1DPlot(CmdLnArgList& arg)
 }
 
 /**
+   Unit tests for FitParamList creation.
+
+   Checks that FitParamLists can be built from configuration file specifications.
+
+   \param arg The set of command line arguments specified.
+   \return True if all tests pass, fale otherwise.
+*/
+bool TestFitParamListFactory(CmdLnArgList& arg)
+{
+   bool passed = false;
+
+   util::FitParamListFactory factory;
+
+   return passed;
+}
+
+/**
+   Unit tests for PhysParams.
+
+   Checks that physics and nuisance parameters can be loaded from configuration
+   file specifications.
+
+   \param arg The set of command line arguments specified.
+   \return True if all tests pass, fale otherwise.
+*/
+bool TestPhysParams(CmdLnArgList& arg)
+{
+   // Retrieve the location of the XML configuration file
+   std::string filename = arg.GetString("params-file");
+   std::string fullFilename = util::UtlFile::GetConfigurationFilename(filename);
+
+   bool passed = true;
+
+   PhysParams& params = (*PhysParams::Instance());
+   params.Read(fullFilename);
+
+   // Check the number of parameters defined
+   passed = Equal(params.NParams(), 586) && passed;
+   // Check first parameter ID
+   passed = Equal(params["kPhypMixing23"], 0) && passed;
+   // Check last parameter ID
+   passed = Equal(params["kNuisIntTarget"], 585) && passed;
+   // Check intermediate parameter IDs
+   passed = Equal(params["kNuisFHCNuEFDFlux01"], 149) && passed;
+   passed = Equal(params["kNuisEffRHCnumuCC0pi1trk08"], 324) && passed;
+   // Check undefined parameter ID
+   passed = Equal(params["_kPhypNonExistent"], PhysParams::Undefined) && passed;
+
+   return passed;
+}
+
+/**
    Runs a set of unit tests.
 
    Currently the only test is of UtlEventRec::GetTrueKinematics. Eventually this
@@ -521,6 +575,30 @@ void Tests(CmdLnArgList& arg)
       ++tests;
       ++failed;
       LOG("Test", pINFO) << "TestSimple1DPlot failed.";
+   }
+
+   if(TestFitParamListFactory(arg))
+   {
+      ++tests;
+      LOG("Test", pINFO) << "TestFitParamListFactory passed.";
+   }
+   else
+   {
+      ++tests;
+      ++failed;
+      LOG("Test", pINFO) << "TestFitParamListFactory failed.";
+   }
+
+   if(TestPhysParams(arg))
+   {
+      ++tests;
+      LOG("Test", pINFO) << "TestPhysParams passed.";
+   }
+   else
+   {
+      ++tests;
+      ++failed;
+      LOG("Test", pINFO) << "TestPhysParams failed.";
    }
 
    if(!failed)

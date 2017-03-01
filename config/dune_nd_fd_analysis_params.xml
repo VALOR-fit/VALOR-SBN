@@ -1,9 +1,4 @@
-<?xmlversion="1.0"?>
-
-<!--
-  This configuration file is used to specify a complete set of mappings between
-  Dune-specific nuisance parameters and generic nuisance parameter IDs
--->
+<?xml version="1.0"?>
 
 <analysis name="dune_nd_fd_analysis">
 
@@ -253,9 +248,6 @@
     </param_list>
 
   </rule>
-
-
-
 
   <rule name="dune_fd1ph_fhc_numu_flux">
 
@@ -1016,8 +1008,4 @@
   </rule>
 
 </analysis>
-
-
-
-
 
