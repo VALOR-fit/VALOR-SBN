@@ -37,6 +37,7 @@
 #include "valor/KineBinning/KBCubHcmbMondrian.h"
 #include "valor/Utilities/FitParamListFactory.h"
 #include "valor/Utilities/UtlFile.h"
+#include "valor/Testing/PhysParamsTest.h"
 
 // dune
 #include "dune/GENIEUtilities/UtlEventRec.h"
@@ -469,7 +470,7 @@ bool TestFitParamListFactory(CmdLnArgList& arg)
 bool TestPhysParams(CmdLnArgList& arg)
 {
    // Retrieve the location of the XML configuration file
-   std::string filename = arg.GetString("params-file");
+/*   std::string filename = arg.GetString("params-file");
    std::string fullFilename = util::UtlFile::GetConfigurationFilename(filename);
 
    bool passed = true;
@@ -487,7 +488,12 @@ bool TestPhysParams(CmdLnArgList& arg)
    passed = Equal(params["kNuisFHCNuEFDFlux01"], 149) && passed;
    passed = Equal(params["kNuisEffRHCnumuCC0pi1trk08"], 324) && passed;
    // Check undefined parameter ID
-   passed = Equal(params["_kPhypNonExistent"], PhysParams::Undefined) && passed;
+   passed = Equal(params["_kPhypNonExistent"], PhysParams::Undefined) && passed;*/
+
+   testing::PhysParamsTest test;
+   test.Configure(arg);
+   test.AddTests();
+   bool passed = test.Run();
 
    return passed;
 }
