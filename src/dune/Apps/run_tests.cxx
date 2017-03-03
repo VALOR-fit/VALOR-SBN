@@ -1,4 +1,3 @@
-//____________________________________________________________________________
 /*!
 
 \app       valor_dune-run_tests
@@ -16,73 +15,31 @@
 \copyright (c) 2010-2017, The VALOR Fitting Group, All Rights Reserved
 
 */
-//____________________________________________________________________________
-
-#include <string>
 
 // valor
 #include "valor/Messenger/Messenger.h"
 #include "valor/CmdLine/CmdLnArgList.h"
-#include "valor/FitCore/PhysParams.h"
 #include "valor/Utilities/Env.h"
-#include "valor/KineBinning/KBCubHcmbMondrian.h"
-#include "valor/Utilities/FitParamListFactory.h"
-#include "valor/Utilities/UtlFile.h"
 #include "valor/Testing/MondrianKBTest.h"
 #include "valor/Testing/PhysParamsTest.h"
 #include "valor/Testing/TestSuite.h"
 
 // dune
-#include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/BeamConf.h"
-#include "dune/Conventions/Detector.h"
-#include "dune/Conventions/Sample.h"
-#include "dune/Utilities/UtlBinning.h"
 #include "dune/Testing/CubicEdge2EdgeKBTest.h"
+#include "dune/Testing/UtlBinningTest.h"
 #include "dune/Testing/UtlTest.h"
 
+// genie
+#include "Conventions/GBuild.h"
+#include "Ntuple/NtpMCEventRecord.h"
+#include "EVGCore/EventRecord.h"
+
+// Root
+#include <TFile.h>
+#include <TTree.h>
+
+
 using namespace valor;
-using namespace valor::conv;
-
-/**
-   Tests the equality of double-precision floating point numbers within a given
-   arithmetic tolerance.
-
-   \param obs The observed value.
-   \param b The expected value.
-   \param tol The tolerance of the comparison. Default 1E-6.
-
-   \return True if the numbers are equal within tolerance, false otherwise.
-*/
-bool Equal(double obs, double exp, double tol = 1E-6)
-{
-   bool equal = (abs(obs - exp) < tol);
-   if(!equal)
-   {
-      LOG("Test", pERROR) << "Test failed: Expected " << exp << ". Found " <<
-         obs << ".";
-   }
-   return equal;
-}
-
-/**
-   Tests the equality of integer values.
-
-   \param obs The observed value.
-   \param exp The expected value.
-
-   \return True if the numbers are equal.
-*/
-bool Equal(int obs, int exp)
-{
-   bool equal = obs == exp;
-   if(!equal)
-   {
-      LOG("Test", pERROR) << "Test failed: Expected " << exp << ". Found " <<
-         obs << ".";
-   }
-   return equal;
-}
 
 /**
    Performs basic configuration.
@@ -101,229 +58,42 @@ void Configure(int argc, char** argv, CmdLnArgList& arg)
    arg.Read(argc, argv, "$VALOR_DUNE/config/apps/run_tests.arg"
          ":$VALOR_DUNE/config/apps/seeds.arg");
    Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
-}
 
-/**
-   Unit tests for production of plotting histograms.
-
-   Checks that a known binning of [Ereco,Yreco, Etrue] produces an [Ereco,Yreco]
-   ROOT compatible plot.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestOptimisedPlot(CmdLnArgList& arg)
-{
-   // Retrieve the location of the true and reco binning XML files
-   std::string filename = arg.GetString("binning-file");
-   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
-        conv::ksNuMuCC);
-   std::vector<KineVar_t> ks = util::KineVar(conv::kspErecoYreco);
-   binning.Read(filename);
-
-   KBCubHcmbMondrian& recoBinning = (*binning.RecoOptBinning());
-   KBCubHcmbEdge2Edge& trueBinning = (*binning.TrueSmpBinning(0));
-   VALORArray v(recoBinning.NBins(), trueBinning.NBins());
-
-   for(int i = 0; i < recoBinning.NBins(); ++i)
+   // This block of code is here only to ensure that the GENIE banner doesn't
+   // interfere with the test result output by invoking GENIE early.
+   std::string filename = arg.GetString("mc-events-file");
+   TFile file(filename.c_str(), "READ");
+   TTree* tree = dynamic_cast<TTree*>(file.Get("gtree"));
+   genie::NtpMCEventRecord* mcrec = nullptr;
+   for(Long64_t i = 0; i < tree->GetEntries(); ++i)
    {
-      for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
-      {
-         v.SetEntry(j * 10 + (i + 1), i, j);
-      }
+      tree->GetEntry(i);
+      genie::EventRecord& event = *(mcrec->event);
    }
-
-   TH2D* histo = util::UtlBinning::Make2DOptimisedHistogram(v, binning, ks);
-
-   bool passed = true;
-
-   // Bin 0 in Mondrian contains 105, so bins (1, 1) to (1, 5) should be 105
-   passed = passed && Equal(histo->GetBinContent(1, 1), 105.0);
-   passed = passed && Equal(histo->GetBinContent(1, 5), 105.0);
-
-   // Bin 4 in Mondrian contains 125, so bins (2, 8) to (3, 8) should be 125
-   passed = passed && Equal(histo->GetBinContent(2, 8), 125.0);
-   passed = passed && Equal(histo->GetBinContent(3, 8), 125.0);
-
-   // Bin 6 in Mondrian contains 135, so bins (3, 1) to (4, 1) should be 135
-   passed = passed && Equal(histo->GetBinContent(3, 1), 135.0);
-   passed = passed && Equal(histo->GetBinContent(4, 1), 135.0);
-
-   // Bin 11 in Mondrian contains 160, so bins (4, 8) to (4, 9) should be 160
-   passed = passed && Equal(histo->GetBinContent(4, 8), 160.0);
-   passed = passed && Equal(histo->GetBinContent(4, 9), 160.0);
-
-   delete histo;
-
-   return passed;
-}
-
-/**
-   Unit tests for production of plotting histograms.
-
-   Checks that a known binning of [Ereco,Yreco, Etrue] produces an [Ereco,Yreco]
-   ROOT compatible plot.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestSimple2DPlot(CmdLnArgList& arg)
-{
-   // Retrieve the location of the true and reco binning XML files
-   std::string filename = arg.GetString("binning-file");
-   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
-        conv::ksNuMuCC);
-   std::vector<KineVar_t> ks = util::KineVar(conv::kspErecoYreco);
-   binning.Read(filename);
-
-   KBCubHcmbEdge2Edge& recoBinning = (*binning.RecoSmpBinning());
-   KBCubHcmbEdge2Edge& trueBinning = (*binning.TrueSmpBinning(0));
-   VALORArray v(recoBinning.NBins(), trueBinning.NBins());
-
-   for(unsigned int i = 0; i < recoBinning.NBins(); ++i)
-   {
-      for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
-      {
-         v.SetEntry(j * 10 + (i + 1), i, j);
-      }
-   }
-
-   TH2D* histo = util::UtlBinning::Make2DSimpleHistogram(v, binning, ks);
-
-   bool passed = true;
-
-   // Bin 0 in Edge2Edge contains 105, so bin (1, 1) should be 105
-   passed = passed && Equal(histo->GetBinContent(1, 1), 105.0);
-
-   // Bin 3 in Edge2Edge contains 120, so bin (4, 1) should be 120
-   passed = passed && Equal(histo->GetBinContent(4, 1), 120.0);
-
-   // Bin 8 in Edge2Edge contains 145, so bin (1, 3) should be 145
-   passed = passed && Equal(histo->GetBinContent(1, 3), 145.0);
-
-   // Bin 5 in Edge2Edge contains 130, so bin (2, 2) should be 130
-   passed = passed && Equal(histo->GetBinContent(2, 2), 130.0);
-
-   // Bin 11 in Edge2Edge contains 160, so bin (4, 3) should be 160
-   passed = passed && Equal(histo->GetBinContent(4, 3), 160.0);
-
-   delete histo;
-
-   return passed;
-}
-
-/**
-   Unit tests for production of plotting histograms.
-
-   Checks that a known binning of [Ereco, Etrue] produces an [Ereco]
-   ROOT compatible plot.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestSimple1DPlot(CmdLnArgList& arg)
-{
-   // Retrieve the location of the true and reco binning XML files
-   std::string filename = arg.GetString("binning-file");
-   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
-        conv::ksNuMuCC);
-   KineSpace_t ks = conv::kspEreco;
-   binning.Read(filename);
-
-   KBCubHcmbEdge2Edge& recoBinning = (*binning.RecoSmpBinning());
-   KBCubHcmbEdge2Edge& trueBinning = (*binning.TrueSmpBinning(0));
-   VALORArray v(recoBinning.NBins(), trueBinning.NBins());
-
-   for(unsigned int i = 0; i < recoBinning.NBins(); ++i)
-   {
-      for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
-      {
-         v.SetEntry(j * 10 + (i + 1), i, j);
-      }
-   }
-
-   TH1D* histo = util::UtlBinning::Make1DHistogram(v, binning, ks);
-
-   bool passed = true;
-
-   // Bins 0, 4, 8 in Edge2Edge contains 375, so bin (1) should be 375
-   passed = passed && Equal(histo->GetBinContent(1), 375.0);
-
-   // Bin 1, 5, 9 in Edge2Edge contains 390, so bin (2) should be 390
-   passed = passed && Equal(histo->GetBinContent(2), 390.0);
-
-   // Bin 2, 6, 10 in Edge2Edge contains 405, so bin (3) should be 405
-   passed = passed && Equal(histo->GetBinContent(3), 405.0);
-
-   // Bin 3, 7, 11 in Edge2Edge contains 420, so bin (4) should be 420
-   passed = passed && Equal(histo->GetBinContent(4), 420.0);
-
-   delete histo;
-
-   return passed;
+   delete tree;
 }
 
 /**
    Runs a set of unit tests.
-
-   Currently the only test is of UtlEventRec::GetTrueKinematics. Eventually this
-   will be partitioned into test classes and ideally make use of cppunit or
-   similar.
 
    \param arg The command line arguments specified.
 */
 void Tests(CmdLnArgList& arg)
 {
    testing::TestSuite suite(arg);
-   int failed = 0;
-   int tests = 0;
 
    suite.Add("UtlTest", new testing::UtlTest);
    suite.Add("MondrianKBTest", new testing::MondrianKBTest);
    suite.Add("CubicEdge2EdgeKBTest", new testing::CubicEdge2EdgeKBTest);
-
-   if(TestOptimisedPlot(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestOptimisedPlot passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestOptimisedPlot failed.";
-   }
-
-   if(TestSimple2DPlot(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestSimple2DPlot passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestSimple2DPlot failed.";
-   }
-
-   if(TestSimple1DPlot(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestSimple1DPlot passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestSimple1DPlot failed.";
-   }
-
+   suite.Add("UtlBinningTest", new testing::UtlBinningTest);
    suite.Add("PhysParamsTest", new testing::PhysParamsTest);
+
    suite.Run();
 }
 
 int main(int argc, char** argv)
 {
+
    CmdLnArgList arg;
    Configure(argc, argv, arg);
    Tests(arg);

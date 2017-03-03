@@ -69,6 +69,8 @@ bool UtlTestCase::TestGetTrueKinematics()
       mcrec->Clear();
    }
 
+   delete tree;
+
    return passed;
 }
 
