@@ -17,7 +17,7 @@ srcdir=$VALOR_DUNE/src
 libs="-lValorDuneConv -lValorDuneUtil -lValorDuneElements -lValorDuneSystematics"
 
 #VALOR/DUNE genie-dependent libraries
-glibs="-lValorDuneGenieUtil"
+glibs="-lValorDuneGenieUtil -lValorDuneTesting"
 
 #
 # Usage

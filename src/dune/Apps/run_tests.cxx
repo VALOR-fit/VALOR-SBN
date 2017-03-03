@@ -20,15 +20,6 @@
 
 #include <string>
 
-// root
-#include <TFile.h>
-#include <TTree.h>
-
-// genie
-#include "Conventions/GBuild.h"
-#include "EVGCore/EventRecord.h"
-#include "Ntuple/NtpMCEventRecord.h"
-
 // valor
 #include "valor/Messenger/Messenger.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -41,12 +32,12 @@
 #include "valor/Testing/TestSuite.h"
 
 // dune
-#include "dune/GENIEUtilities/UtlEventRec.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Detector.h"
 #include "dune/Conventions/Sample.h"
 #include "dune/Utilities/UtlBinning.h"
+#include "dune/Testing/UtlTest.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -108,70 +99,6 @@ void Configure(int argc, char** argv, CmdLnArgList& arg)
    arg.Read(argc, argv, "$VALOR_DUNE/config/apps/run_tests.arg"
          ":$VALOR_DUNE/config/apps/seeds.arg");
    Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
-}
-
-/**
-   Unit tests for UtlEventRec::GetTrueKinematics.
-
-   Compares kinematic variables retrieved from a GENIE vertex to a known set of
-   kinematic variables.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestTrueKinematics(CmdLnArgList& arg)
-{
-   // Retrieve the location of the GENIE MC events
-   std::string filename = arg.GetString("mc-events-file");
-   TFile file(filename.c_str(), "READ");
-
-   // Load the tree containing the events and specify the n-tuple to load events
-   // into
-   TTree* tree = dynamic_cast<TTree*>(file.Get("gtree"));
-   genie::NtpMCEventRecord* mcrec = 0;
-   tree->SetBranchAddress("gmcrec", &mcrec);
-
-   // The expected truth values of E and Q2 - gntp.test.ghep.root
-   double Eexp[10] = {0.577132, 0.701179, 4.43347, 0.564247, 0.456497,
-      0.621421, 0.329308, 1.20505, 0.688733, 0.512196};
-   double Q2exp[10] = {0.539777, 0.212278, 0.273801, 0.469212, 0.106599,
-      0.484452, 0.151665, 0.157586, 0.184618, 0.364481};
-
-   // Test retrieval of Etrue values
-   bool passed = true;
-   for(Long64_t i = 0; i < tree->GetEntries(); ++i)
-   {
-      tree->GetEntry(i);
-      genie::EventRecord& event = *(mcrec->event);
-
-      conv::KineSpace_t kv = conv::kspEtrue;
-      std::vector<double> vals = valor::util::GetTrueKinematics(&event, kv);
-      
-      passed = passed && vals.size() == 1;
-      
-      passed = passed && Equal(Eexp[i], vals[0]);
-   }
-
-   // Test retrieval of Etrue and Q2true values
-   for(Long64_t i = 0; i < tree->GetEntries(); ++i)
-   {
-      tree->GetEntry(i);
-      genie::EventRecord& event = *(mcrec->event);
-
-      conv::KineSpace_t kv = conv::kspEtrueQ2true;
-      std::vector<double> vals = valor::util::GetTrueKinematics(&event, kv);
-
-      passed = passed && vals.size() == 2;
-      
-      passed = passed && Equal(Eexp[i], vals[0]);
-
-      passed = passed && Equal(Q2exp[i], vals[1]);
-
-
-      mcrec->Clear();
-   }
-
-   return passed;
 }
 
 /**
@@ -443,60 +370,6 @@ bool TestSimple1DPlot(CmdLnArgList& arg)
 }
 
 /**
-   Unit tests for FitParamList creation.
-
-   Checks that FitParamLists can be built from configuration file specifications.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestFitParamListFactory(CmdLnArgList& arg)
-{
-   bool passed = false;
-
-   util::FitParamListFactory factory;
-
-   return passed;
-}
-
-/**
-   Unit tests for PhysParams.
-
-   Checks that physics and nuisance parameters can be loaded from configuration
-   file specifications.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestPhysParams(CmdLnArgList& arg)
-{
-   // Retrieve the location of the XML configuration file
-/*   std::string filename = arg.GetString("params-file");
-   std::string fullFilename = util::UtlFile::GetConfigurationFilename(filename);
-
-   bool passed = true;
-
-   PhysParams& params = (*PhysParams::Instance());
-   params.Read(fullFilename);
-
-   // Check the number of parameters defined
-   passed = Equal(params.NParams(), 586) && passed;
-   // Check first parameter ID
-   passed = Equal(params["kPhypMixing23"], 0) && passed;
-   // Check last parameter ID
-   passed = Equal(params["kNuisIntTarget"], 585) && passed;
-   // Check intermediate parameter IDs
-   passed = Equal(params["kNuisFHCNuEFDFlux01"], 149) && passed;
-   passed = Equal(params["kNuisEffRHCnumuCC0pi1trk08"], 324) && passed;
-   // Check undefined parameter ID
-   passed = Equal(params["_kPhypNonExistent"], PhysParams::Undefined) && passed;*/
-
-   testing::TestSuite suite(arg);
-   suite.Add("PhysParamsTest", new testing::PhysParamsTest);
-   return suite.Run();
-}
-
-/**
    Runs a set of unit tests.
 
    Currently the only test is of UtlEventRec::GetTrueKinematics. Eventually this
@@ -507,19 +380,11 @@ bool TestPhysParams(CmdLnArgList& arg)
 */
 void Tests(CmdLnArgList& arg)
 {
+   testing::TestSuite suite(arg);
    int failed = 0;
    int tests = 0;
-   if(TestTrueKinematics(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestTrueKinematics passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestTrueKinematics failed.";
-   }
+
+   suite.Add("UtlTest", new testing::UtlTest);
 
    if(TestMondrianContraction(arg))
    {
@@ -581,38 +446,8 @@ void Tests(CmdLnArgList& arg)
       LOG("Test", pINFO) << "TestSimple1DPlot failed.";
    }
 
-   if(TestFitParamListFactory(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestFitParamListFactory passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestFitParamListFactory failed.";
-   }
-
-   if(TestPhysParams(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestPhysParams passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestPhysParams failed.";
-   }
-
-   if(!failed)
-   {
-      LOG("Test", pINFO) << "All tests passed.";
-   }
-   else
-   {
-      LOG("Test", pINFO) << failed << " of " << tests << " tests failed.";
-   }
+   suite.Add("PhysParamsTest", new testing::PhysParamsTest);
+   suite.Run();
 }
 
 int main(int argc, char** argv)

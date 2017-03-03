@@ -70,9 +70,18 @@ build-elements: | copy-scripts-to-bin FORCE
 	@echo "** Building Elements package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Elements;
 
+build-testing: | copy-scripts-to-bin FORCE
+ifdef GENIE
+	@echo " "
+	@echo "** Building Testing package..."
+	$(MAKE) -C ${VALOR_DUNE}/src/dune/Testing;
+else
+	@echo " "
+	@echo "** GENIE not set up - skipping Testing"
+endif
 
 build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions \
-  build-systematics build-utilities build-genie-utilities build-elements
+  build-systematics build-utilities build-genie-utilities build-elements build-testing
  
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
@@ -99,6 +108,7 @@ purge: FORCE
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
 	$(MAKE) -C src/dune/Elements         purge && \
+	$(MAKE) -C src/dune/Testing          purge && \
 	$(MAKE) -C src/dune/Systematics      purge; \
 
 clean: clean-files clean-dir clean-etc
@@ -114,6 +124,7 @@ clean-files: FORCE
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
 	$(MAKE) -C src/dune/Elements        clean && \
+	$(MAKE) -C src/dune/Testing         clean && \
 	$(MAKE) -C src/dune/Systematics     clean ; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
