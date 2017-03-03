@@ -38,6 +38,7 @@
 #include "dune/Conventions/Detector.h"
 #include "dune/Conventions/Sample.h"
 #include "dune/Utilities/UtlBinning.h"
+#include "dune/Testing/CubicEdge2EdgeKBTest.h"
 #include "dune/Testing/UtlTest.h"
 
 using namespace valor;
@@ -100,67 +101,6 @@ void Configure(int argc, char** argv, CmdLnArgList& arg)
    arg.Read(argc, argv, "$VALOR_DUNE/config/apps/run_tests.arg"
          ":$VALOR_DUNE/config/apps/seeds.arg");
    Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
-}
-
-/**
-   Unit tests for KBCubHcmbEdge2Edge::Contract.
-
-   Checks that a known Edge2Edge binning of [Ereco,Yreco] contracted to [Ereco]
-   and [Yreco] produces the expected results.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestEdge2EdgeContraction(CmdLnArgList& arg)
-{
-   std::string filename = arg.GetString("binning-file");
-   SingleSampleKineBinning binning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
-        conv::ksNuMuCC);
-   binning.Read(filename);
-
-   KBCubHcmbEdge2Edge& recoBinning = (*binning.RecoSmpBinning());
-
-   bool passed = true;
-
-   // Ereco
-   KBCubHcmbEdge2Edge* newBinning = recoBinning.Contract(conv::kspEreco);
-
-   passed = passed && Equal(newBinning->NBins(), 4);
-
-   // Check bin edges
-   passed = passed && Equal(newBinning->BinMinimum(0, 0), 0.0) &&
-      Equal(newBinning->BinMaximum(0, 0), 50.0);
-   passed = passed && Equal(newBinning->BinMinimum(1, 0), 50.0) &&
-      Equal(newBinning->BinMaximum(1, 0), 100.0);
-   passed = passed && Equal(newBinning->BinMinimum(2, 0), 100.0) &&
-      Equal(newBinning->BinMaximum(2, 0), 150.0);
-   passed = passed && Equal(newBinning->BinMinimum(3, 0), 150.0) &&
-      Equal(newBinning->BinMaximum(3, 0), 200.0);
-
-   // Check minima and maxima
-   passed = passed && Equal(newBinning->Minimum(0), 0.0);
-   passed = passed && Equal(newBinning->Maximum(0), 200.0);
-
-   delete newBinning;
-
-   // Yreco
-   newBinning = recoBinning.Contract(conv::kspYreco);
-
-   passed = passed && Equal(newBinning->NBins(), 3);
-
-   // Check bin edges
-   passed = passed && Equal(newBinning->BinMinimum(0, 0), 0.0) &&
-      Equal(newBinning->BinMaximum(0, 0), 1.0 / 3.0);
-   passed = passed && Equal(newBinning->BinMinimum(1, 0), 1.0 / 3.0) &&
-      Equal(newBinning->BinMaximum(1, 0), 2.0 / 3.0);
-   passed = passed && Equal(newBinning->BinMinimum(2, 0), 2.0 / 3.0) &&
-      Equal(newBinning->BinMaximum(2, 0), 1.0);
-
-   // Check minima and maxima
-   passed = passed && Equal(newBinning->Minimum(0), 0.0);
-   passed = passed && Equal(newBinning->Maximum(0), 1.0);
-
-   return passed;
 }
 
 /**
@@ -340,18 +280,7 @@ void Tests(CmdLnArgList& arg)
 
    suite.Add("UtlTest", new testing::UtlTest);
    suite.Add("MondrianKBTest", new testing::MondrianKBTest);
-
-   if(TestEdge2EdgeContraction(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestEdge2EdgeContraction passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestEdge2EdgeContraction failed.";
-   }
+   suite.Add("CubicEdge2EdgeKBTest", new testing::CubicEdge2EdgeKBTest);
 
    if(TestOptimisedPlot(arg))
    {
