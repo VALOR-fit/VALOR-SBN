@@ -28,6 +28,7 @@
 #include "valor/KineBinning/KBCubHcmbMondrian.h"
 #include "valor/Utilities/FitParamListFactory.h"
 #include "valor/Utilities/UtlFile.h"
+#include "valor/Testing/MondrianKBTest.h"
 #include "valor/Testing/PhysParamsTest.h"
 #include "valor/Testing/TestSuite.h"
 
@@ -99,53 +100,6 @@ void Configure(int argc, char** argv, CmdLnArgList& arg)
    arg.Read(argc, argv, "$VALOR_DUNE/config/apps/run_tests.arg"
          ":$VALOR_DUNE/config/apps/seeds.arg");
    Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
-}
-
-/**
-   Unit tests for KBCubHcmbMondrian::Contract.
-
-   Checks that a known Mondrian binning of [Ereco,Yreco] contracted to [Ereco]
-   produces the expected result.
-
-   \param arg The set of command line arguments specified.
-   \return True if all tests pass, fale otherwise.
-*/
-bool TestMondrianContraction(CmdLnArgList& arg)
-{
-   // Retrieve the location of the Mondrian XML file
-   std::string filename = arg.GetString("reco-binning-file");
-   KBCubHcmbMondrian binning;
-   binning.Read(filename);
-
-   bool passed = true;
-
-   KBCubHcmbMondrian* newBinning = binning.Contract(conv::kspEreco);
-
-   // This is not quite right yet, contraction can produce overlapping bins,
-   // need to think about how to handle this
-   // May be easiest to just run through the edges, and add them to an ordered
-   // set and reconstruct the bins from that
-   passed = passed && Equal(newBinning->NBins(), 5);
-
-   // Check bin edges
-   passed = passed && Equal(newBinning->BinMinimum(0, 0), 0.0) &&
-      Equal(newBinning->BinMaximum(0, 0), 40.0);
-   passed = passed && Equal(newBinning->BinMinimum(1, 0), 40.0) &&
-      Equal(newBinning->BinMaximum(1, 0), 150.0);
-   passed = passed && Equal(newBinning->BinMinimum(2, 0), 40.0) &&
-      Equal(newBinning->BinMaximum(2, 0), 180.0);
-   passed = passed && Equal(newBinning->BinMinimum(3, 0), 150.0) &&
-      Equal(newBinning->BinMaximum(3, 0), 200.0);
-   passed = passed && Equal(newBinning->BinMinimum(4, 0), 180.0) &&
-      Equal(newBinning->BinMaximum(4, 0), 200.0);
-
-   // Check minima and maxima
-   passed = passed && Equal(newBinning->Minimum(0), 0.0);
-   passed = passed && Equal(newBinning->Maximum(0), 200.0);
-
-   delete newBinning;
-
-   return passed;
 }
 
 /**
@@ -385,18 +339,7 @@ void Tests(CmdLnArgList& arg)
    int tests = 0;
 
    suite.Add("UtlTest", new testing::UtlTest);
-
-   if(TestMondrianContraction(arg))
-   {
-      ++tests;
-      LOG("Test", pINFO) << "TestMondrianContraction passed.";
-   }
-   else
-   {
-      ++tests;
-      ++failed;
-      LOG("Test", pINFO) << "TestMondrianContraction failed.";
-   }
+   suite.Add("MondrianKBTest", new testing::MondrianKBTest);
 
    if(TestEdge2EdgeContraction(arg))
    {
