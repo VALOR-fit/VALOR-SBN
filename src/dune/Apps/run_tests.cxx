@@ -38,6 +38,7 @@
 #include "valor/Utilities/FitParamListFactory.h"
 #include "valor/Utilities/UtlFile.h"
 #include "valor/Testing/PhysParamsTest.h"
+#include "valor/Testing/TestSuite.h"
 
 // dune
 #include "dune/GENIEUtilities/UtlEventRec.h"
@@ -490,12 +491,9 @@ bool TestPhysParams(CmdLnArgList& arg)
    // Check undefined parameter ID
    passed = Equal(params["_kPhypNonExistent"], PhysParams::Undefined) && passed;*/
 
-   testing::PhysParamsTest test;
-   test.Configure(arg);
-   test.AddTests();
-   bool passed = test.Run();
-
-   return passed;
+   testing::TestSuite suite(arg);
+   suite.Add("PhysParamsTest", new testing::PhysParamsTest);
+   return suite.Run();
 }
 
 /**
