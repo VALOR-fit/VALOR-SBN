@@ -55,6 +55,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //~ #define SPLINE_WEIGHTS_ARE_ONE
+#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
 #define OH_GOD_FIX_ME -999
 
@@ -470,10 +471,10 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       if(m == kmUndefined) continue;
 
       if(fMCTNullOb[imode]) continue;
-      fMCTNomOb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctnom_ob_vf", fName.c_str() ).Data() );
-      fMCTTunOb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mcttun_ob_vf", fName.c_str() ).Data() );
-      fMCTSysOb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctsys_ob_vf", fName.c_str() ).Data() );
-      fMCTFinOb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctfin_ob_vf", fName.c_str() ).Data() );
+      fMCTNomOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
+      fMCTTunOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
+      fMCTSysOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctsys_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
+      fMCTFinOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctfin_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
       LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTNomOb [imode]->GetName();
       LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTTunOb [imode]->GetName();
       LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTSysOb [imode]->GetName();
@@ -485,10 +486,10 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
 
       if(opt.find("+SB") != string::npos) {
         if(fMCTNullSb[imode]) continue;
-        fMCTNomSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctnom_sb_vf", fName.c_str()).Data() );
-        fMCTTunSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mcttun_sb_vf", fName.c_str()).Data() );
-        fMCTSysSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctsys_sb_vf", fName.c_str()).Data() );
-        fMCTFinSb [imode] -> SetName( TString::Format("%s_%s_%s", tag, "mctfin_sb_vf", fName.c_str()).Data() );
+        fMCTNomSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
+        fMCTTunSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
+        fMCTSysSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctsys_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
+        fMCTFinSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctfin_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTNomSb [imode]->GetName();
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTTunSb [imode]->GetName();
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fMCTSysSb [imode]->GetName();
@@ -516,72 +517,18 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       
       // in VALORArray format
       if (opt.find("pdfc_vf") != string::npos) {
-        fPDFCompOb [imode]->SetName(TString::Format("%s_%s_%s",tag,"pdfc_ob_vf",fName.c_str()).Data());
+        fPDFCompOb [imode]->SetName(TString::Format("%s_%s_%s_%s",tag,"pdfc_ob_vf",fName.c_str(),util::AsString(m).c_str()).Data());
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompOb[imode]->GetName();
         array->Add(fPDFCompOb[imode]);
-      }
-      // in TH2D format
-      // -----
-      // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-      // array to ROOT TH2D could happen elsewhere generically)
-      // -----
-      if (opt.find("pdfc_rf") != string::npos) {
-        // get binning
-        const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-        const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-        if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
-        const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
-        const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
-        // book histogram
-        TString hname = TString::Format("%s_%s_%s",tag, "pdfc_ob_rf",fName.c_str());
-        TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode,zone)";
-        TH2D * h2 = new TH2D(hname.Data(),htitle.Data(),
-            n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-        // fill from corresponding VALOR array
-        for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-          for(int iy = 0; iy < n_y_reco_bins; iy++) {
-            double val = fPDFCompOb[imode]->GetEntry(ier,iy);
-            h2->SetBinContent(ier+1,iy+1,val);
-          }//iy
-        }//ier
-        // add tp object array and clean-up
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
-        array->Add(h2); 
-        // delete h2; ???? // MEMORY LEAK?
       }
 
       if(opt.find("+SB") != string::npos) {
         if(fMCTNullSb[imode]) continue;
         // in VALORArray format
         if (opt.find("pdfc_vf") != string::npos) {
-          fPDFCompSb[imode]->SetName(TString::Format("%s_%s_%s",tag,"pdfc_sb_vf",fName.c_str()));
+          fPDFCompSb[imode]->SetName(TString::Format("%s_%s_%s_%s",tag,"pdfc_sb_vf",fName.c_str(),util::AsString(m).c_str()));
           LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompSb[imode]->GetName();
           array->Add(fPDFCompSb[imode]);
-        }
-        // in TH2D format
-        // -----
-        // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-        // array to ROOT TH2D could happen elsewhere generically)
-        // -----
-        if (opt.find("pdfc_rf") != string::npos) {
-          // book histogram
-          const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-          const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-          TString hname = TString::Format("%s_%s_%s",tag, "pdfc_sb_rf",fName.c_str());
-          TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF component = f(beam,sample,mode)";
-          TH2D * h2 = new TH2D(hname.Data(),htitle.Data(),
-              kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
-          // fill from corresponding VALOR array
-          for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-            for(int iy = 0; iy <  n_y_reco_bins_sb; iy++) {
-              double val = fPDFCompSb[imode]->GetEntry(ier,iy);
-              h2->SetBinContent(ier+1,iy+1,val);
-            }//iy
-          }//ier
-          // add tp object array and clean-up
-          LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
-          array->Add(h2); 
-          // delete h2; ???? // MEMORY LEAK?
         }
       }//+SB?          
 
@@ -600,34 +547,6 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotOb->GetName();
         array->Add(fPDFTotOb);
       }
-      // in TH2D format
-      // -----
-      // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-      // array to ROOT TH2D could happen elsewhere generically)
-      // -----
-      if (opt.find("pdft_rf") != string::npos) {
-        // get binning
-        const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-        const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-        const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
-        const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
-        // book histogram
-        TString hname = TString::Format("%s_%s_%s",tag, "pdft_ob_rf",fName.c_str()); 
-        TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample,zone)";
-        TH2D * h2 = new TH2D(hname.Data(), htitle.Data(),
-            n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-        // fill from corresponding VALOR array
-        for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-          for(int iy = 0; iy < n_y_reco_bins; iy++) {
-            double val = fPDFTotOb->GetEntry(ier,iy);
-            h2->SetBinContent(ier+1,iy+1,val);
-          }//iy
-        }//ier
-        // add to object array and clean-up
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
-        array->Add(h2); 
-        // delete h2; ???? // MEMORY LEAK?
-      }
 
     if(opt.find("+SB") != string::npos) {
       // in VALORArray format
@@ -635,34 +554,6 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         fPDFTotSb->SetName(TString::Format("%s_%s_%s",tag,"pdft_sb_vf",fName.c_str()));
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotSb->GetName();
         array->Add(fPDFTotSb);
-      }
-      // in TH2D format
-      // -----
-      // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-      // array to ROOT TH2D could happen elsewhere generically)
-      // -----
-      if (opt.find("pdft_rf") != string::npos) {
-        // book histogram
-        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-        const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-        TString hname = TString::Format("%s_%s_%s",tag, "pdft_sb_rf",fName.c_str());
-        TString htitle = "VALOR/DUNE ND (Ereco,yreco) PDF = f(beam,sample)";
-        TH2D * h2 = new TH2D(hname,htitle,
-            kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
-        h2->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h2->GetYaxis()->SetTitle("y");
-        h2->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-        // fill from corresponding VALOR array
-        for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-          for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-            double val = fPDFTotSb->GetEntry(ier,iy);
-            h2->SetBinContent(ier+1,iy+1,val);
-          }//iy
-        }//ier
-        // add to object array and clean-up
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h2->GetName();
-        array->Add(h2); 
-        // delete h2; ???? // MEMORY LEAK?
       }
     }//+SB?
 
@@ -683,158 +574,10 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       ReacMode_t m = kReactionModes[isample][imode];
       if(m == kmUndefined) continue;
       
-      { // Trivial block to keep some variables in scope
-        // get binning
-        const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-        const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-        const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
-        const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
-        // create slices of the PDF components (function of Ereco, for given yreco bin)
-        TString hname_ob = TString::Format("%s_%s_%s",tag, "pdfcs_ob_rf",fName.c_str()) ;
-        TString htitle_ob = "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode,zone)";
-        TH1D * htot = new TH1D(hname_ob.Data(),htitle_ob.Data(),n_enu_reco_bins, enu_reco_bins);
-        htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-        for(int iy = 0; iy < n_y_reco_bins; iy++) {
-          TString hname_s  = TString::Format("%s_%s_%s_y%d",tag, "pdfcs_ob_rf",fName.c_str(),iy);
-          TString htitle_s = TString::Format(
-            "VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode,zone) for y in [%f,%f]", 
-            y_reco_bins[iy],y_reco_bins[iy+1]);
-          TH1D * h = new TH1D(hname_s.Data(),htitle_s.Data(),
-              n_enu_reco_bins, enu_reco_bins);
-          h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-          h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-          for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-            double val = fPDFCompOb[imode]->GetEntry(ier,iy);
-            h->SetBinContent(ier+1, val);
-            htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
-          }//ier
-          // add to obj array and clean-up 
-          LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
-          array->Add(h);
-          //delete h; ??? MEM LEAK??
-        }//iy         
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
-        array->Add(htot);
-        //delete htot; ??? MEM LEAK??
-      }
-
-      if(opt.find("+SB") != string::npos) {
-        // create slices of the PDF components (function of Ereco, for given yreco bin)
-        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-        const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-        TString hname = TString::Format( "%s_%s_%s",tag, "pdfcs_sb_rf",fName.c_str());
-        TString htitle = "VALOR/DUNE ND PDF component: Ereco spectrum = f(beam,sample,mode)";
-        TH1D * htot = new TH1D(hname.Data(), htitle.Data(), kNErecoBinsSb, kErecoBinEdgesSb);
-        htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-        for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-          TString hname_s = TString::Format("%s_%s_%s_y%d",tag, "pdfcs_sb_rf",fName.c_str(),iy);
-          TString htitle_s = TString::Format(
-            "VALOR/DUNE ND PDF component slice: Ereco spectrum = f(beam,sample,mode) for y in [%f,%f]", 
-            y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]);
-          TH1D * h = new TH1D(hname_s.Data(), htitle_s.Data(),kNErecoBinsSb, kErecoBinEdgesSb);
-          h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-          h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-          for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-            double val = fPDFCompSb[imode]->GetEntry(ier,iy);
-            h->SetBinContent(ier+1, val);
-            htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
-          }//ier
-          // add to obj array and clean-up 
-          LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
-          array->Add(h);
-          //delete h; ??? MEM LEAK??
-        }//iy         
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
-        array->Add(htot);
-        //delete htot; ??? MEM LEAK??
-      }//+SB?
+      // This should happen elsewhere.
 
     }//imode
   }//pdfcs_rf
-
-
-  //
-  // Write out the slices of the total PDF (bare ROOT format)
-  //
-  // -----
-  // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-  // array to ROOT TH1D slices could happen elsewhere generically)
-  // -----
-
-  if(opt.find("pdfts_rf") != string::npos) {
-    
-    { // block for variable scope
-      // get binning
-      const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-      const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-      const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
-      const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
-      // create slices of the total PDF (function of Ereco, for given yreco bin)
-      TString hname  = TString::Format("%s_%s_%s",tag, "pdfts_ob_rf",fName.c_str());
-      TString htitle = TString::Format("VALOR/DUNE ND PDF: Ereco spectrum = f(beam,sample,zone)");
-      TH1D * htot = new TH1D(hname.Data(), htitle.Data(),
-        n_enu_reco_bins, enu_reco_bins);
-      htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT));
-      for(int iy = 0; iy < n_y_reco_bins; iy++) {
-        TString hname_s = TString::Format("%s_%s_%s_y%d",tag, "pdfts_ob_rf",fName.c_str(),iy);
-        TString htitle_s = TString::Format(
-          "VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",
-          y_reco_bins[iy],y_reco_bins[iy+1]);
-        TH1D * h = new TH1D(hname_s.Data(), htitle_s.Data(),
-            n_enu_reco_bins, enu_reco_bins);
-        h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-        for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-          double val = fPDFTotOb->GetEntry(ier,iy);
-          h->SetBinContent(ier+1, val);
-          htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
-        }//ier
-        // add to obj array and clean-up 
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
-        array->Add(h);
-        //delete h; ??? MEM LEAK??      
-      }//iy         
-      LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
-      array->Add(htot);
-      //delete htot; ??? MEM LEAK??      
-    }
-
-    if(opt.find("+SB") != string::npos) {
-      // create slices of the total PDF (function of Ereco, for given yreco bin)
-      const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-      const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-      TH1D * htot = new TH1D("htot", "htot", kNErecoBinsSb, kErecoBinEdgesSb);
-      htot->SetName(TString::Format("%s_%s_%s",tag, "pdfts_sb_rf",fName.c_str()).Data() );
-      htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-      for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-        TString hname = TString::Format("%s_%s_%s_y%d",tag, "pdfts_sb_rf",fName.c_str(),iy);
-        TString htitle = TString::Format(
-          "VALOR/DUNE ND PDF slice: Ereco spectrum = f(beam,sample) for y in [%f,%f]", 
-          y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]);
-        TH1D * h = new TH1D(hname.Data(),htitle.Data(),
-            kNErecoBinsSb, kErecoBinEdgesSb);
-        h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle(TString::Format("Number of events /bin /%lg POT", fPOT).Data());
-        for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-          double val = fPDFTotSb->GetEntry(ier,iy);
-          h->SetBinContent(ier+1, val);
-          htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
-        }//ier
-        // add to obj array and clean-up 
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << h->GetName();
-        array->Add(h);
-        //delete h; ??? MEM LEAK??
-      }//iy         
-      LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << htot->GetName();
-      array->Add(htot);
-      //delete htot; ??? MEM LEAK??
-    }//+SB?
-
-  }//pdfts_rf
 
   return true;
 }
@@ -1586,13 +1329,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 {
   // This method maps sys -> fin MC templates.
   // Applying correlated flux and cross-section systematics
-
+  
   LOG("GenericSingleSampleFitModel",pINFO) 
     << fName
     << " - Applying physics params (option: " 
     << ((option) ? option : "")
     << ")";
-
+    
   bool update_mct_sb = false;
   if(option) {
     string opt = option;
@@ -1616,6 +1359,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     const KBCubHcmbEdge2Edge * true_sb = fBinning->TrueSmpBinning(m);
     
     const int n_true_bins_sb = true_sb->NBins();
+    const KineSpace_t true_ks = true_sb->KineSpace();
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
     LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1648,7 +1392,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       double f = fPhysHypothesis.CurrValue(p);
       
     // First apply spline parameters
-      if (has_splines) {
+      if (has_splines) { continue;
 #ifndef SPLINE_WEIGHTS_ARE_ONE
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1689,45 +1433,51 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif //SPLINE_WEIGHTS_ARE_ONE
       } // has_splines
       else if (has_kinematic_dependence) {
-        LOG("GenericSingleSampleFitModel",pWARN) << "WARNING, STEVE DID NOT FINISH UPDATING THIS";
-        //~ VALORArrayBin bin;
-        //~ f = TMath::Max(0.,f);
-        //~ bool tweaked = TMath::Abs(f-1) > kASmallNum;
-        //~ if(!tweaked) continue;
+        f = TMath::Max(0.,f);
+        bool tweaked = TMath::Abs(f-1) > kASmallNum;
+        if(!tweaked) continue;
         
-        //~ // MUST BE MADE MORE INTELLIGENT FOR KINESPACE
-        //~ const double true1_min  = kFitParamEtrueRange [ip][0];
-        //~ const double true1_max  = kFitParamEtrueRange [ip][1];     
-        //~ const double true2_min  = kFitParamQ2trueRange[ip][0];
-        //~ const double true2_max  = kFitParamQ2trueRange[ip][1];     
-        //~ int i_true1_min = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_min+kASmallNum);
-        //~ int i_true1_max = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_max-kASmallNum);
-        //~ int i_true2_min = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_min+kASmallNum);
-        //~ int i_true2_max = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_max-kASmallNum);
-//~ #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-        //~ LOG("GenericSingleSampleFitModel",pINFO) 
-          //~ << fName <<": "
-          //~ << "Applying parameter: " << util::AsString(p) << " with value = " << f 
-          //~ << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
-          //~ << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
-//~ #endif
-        //~ for(int it1 = i_true1_min; it1 <= i_true1_max; it1++) {
-          //~ bin.bin3 = it1;
-          //~ for(int it2 = i_true2_min; it2 <= i_true2_max; it2++) {
-            //~ bin.bin4 = it2;
-            //~ for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-              //~ bin.bin1 = ir1;
-              //~ for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                //~ bin.bin2 = ir2;
-                //~ double & val = fMCTFinOb[imode]->GetEntryRef(bin);
-                //~ val *= f;
-//~ #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-                //~ LOG("GenericSingleSampleFitModel",pDEBUG) 
-                  //~ << "MCT[" << imode << "] = " 
-                  //~ << val/f << " --> " << val;
-//~ #endif
-            //~ }//ireco: reco bins
-        //~ }//itrue: true bins
+        double true1_min  = 0.;
+        double true1_max  = 0.;
+        double true2_min  = 0.;
+        double true2_max  = 0.;
+        
+        if (true_ks == conv::kspEtrueQ2true) {
+          true1_min  = kFitParamEtrueRange [ip][0];
+          true1_max  = kFitParamEtrueRange [ip][1];
+          true2_min  = kFitParamQ2trueRange[ip][0];
+          true2_max  = kFitParamQ2trueRange[ip][1];
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+          LOG("GenericSingleSampleFitModel",pINFO) 
+            << fName <<": "
+            << "Applying parameter: " << util::AsString(p) << " with value = " << f 
+            << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
+            << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
+#endif
+        }
+        else {
+          LOG("GenericSingleSampleFitModel",pWARN) << "Unsupported true kinespace "<<util::AsString(true_ks);
+          util::Die(-1); break;
+        }
+        for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+          vector<double> true1_range (true_sb->BinRange(itrue,0));
+          vector<double> true2_range (true_sb->BinRange(itrue,1));
+          
+          // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
+          double frac1 = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+          double frac2 = util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+          double effective_tweak = frac1*frac2*(f-1.) + 1;
+          if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
+          for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+            double & val = fMCTFinOb[imode]->GetEntryRef(ireco,itrue);
+            val *= effective_tweak;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+            LOG("GenericSingleSampleFitModel",pDEBUG) 
+              << "MCT[" << imode << "] = " 
+              << val/f << " --> " << val;
+#endif
+          }//ireco: reco bins
+        }//itrue: true bins
       }// has kinematic dependence
 
       // then apply the non-Etrue-dependent factors (use scale - not loop)
@@ -1772,69 +1522,87 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         // first apply spline parameters
         if (has_splines) {
 #ifndef SPLINE_WEIGHTS_ARE_ONE
-          LOG("GenericSingleSampleFitModel",pWARN) << "WARNING, STEVE DID NOT FINISH UPDATING THIS";
-          //~ //if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
-          //~ VALORArrayBin sbin;
-          //~ util::KinematicPoint kp;
-          //~ for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-            //~ sbin.bin2 = itrue;
-            //~ kp.true1 = (true1_bin_edges[itrue]+true1_bin_edges[itrue+1])/2;
-            //~ for(int ireco_sb = 0; ireco_sb < n_reco1_bins_sb; ireco_sb++) {
-              //~ sbin.bin1 = ireco_sb;
-              //~ kp.reco1 = (reco1_bin_edges_sb[ireco_sb]+reco1_bin_edges_sb[ireco_sb+1])/2;
-              //~ util::KinematicBin kb = fRFL->GetBin(kp,m);
-              //~ const util::Interpolator * spl = fRFL->GetSpline(m,p,kb);
-              //~ if (spl==util::DuneRFL::kNoSplineRequired) {
-                //~ LOG("GenericSingleSampleFitModel",pERROR)
-                  //~ <<"Got no spline required for simple bin expecting spline."
-                  //~ <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
-                  //~ <<util::AsString(fSample)<<","<<util::AsString(m);
-              //~ }
-              //~ double response = spl->EvalWithLimits(f);
-              //~ if (response<0) {
-                //~ LOG("GenericSingleSampleFitModel",pINFO)
-                 //~ <<"Negative response from spline (SB) "//<<spl->GetName()
-                 //~ <<" evaluated at "<<f<<" with result "<<response
-                 //~ <<". Using 0 instead.";
-                //~ response = 0;
-              //~ }
-              //~ double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
-              //~ val *= response;
-            //~ }//ireco
-          //~ }//itrue
+          //if (TMath::Abs(f-1) < kASmallNum ) {continue;} // SHOULD USE A MORE INTELLIGENT CENTRE
+          util::KinematicPoint kp;
+          for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+            vector<double> true1_range (true_sb->BinRange(itrue,0));
+            vector<double> true2_range (true_sb->BinRange(itrue,1));
+            kp.true1 = (true1_range[0]+true1_range[1])/2;
+            kp.true2 = (true2_range[0]+true2_range[1])/2;
+            for(int ireco_sb = 0; ireco_sb < n_reco_bins_sb; ireco_sb++) {
+              vector<double> reco1_range (reco_sb->BinRange(ireco_sb,0));
+              vector<double> reco2_range (reco_sb->BinRange(ireco_sb,1));
+              kp.reco1 = (reco1_range[0]+reco1_range[1])/2;
+              kp.reco2 = (reco2_range[0]+reco2_range[1])/2;
+              std::pair<int,int> kb = fRFL->GetBin(kp,m);
+              const util::Interpolator * spl = fRFL->GetSpline(m,p, kb.first,kb.second);
+              if (spl==util::DuneRFL::kNoSplineRequired) {
+                LOG("GenericSingleSampleFitModel",pERROR)
+                  <<"Got no spline required for simple bin expecting spline."
+                  <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+                  <<util::AsString(fSample)<<","<<util::AsString(m);
+              }
+              double response = spl->EvalWithLimits(f);
+              if (response<0) {
+                LOG("GenericSingleSampleFitModel",pINFO)
+                 <<"Negative response from spline (SB) "//<<spl->GetName()
+                 <<" evaluated at "<<f<<" with result "<<response
+                 <<". Using 0 instead.";
+                response = 0;
+              }
+              double & val = fMCTFinSb[imode]->GetEntryRef(ireco_sb,itrue);
+              val *= response;
+            }//ireco
+          }//itrue
 #endif
         }//has splines
         
         else if (has_kinematic_dependence) {
-          LOG("GenericSingleSampleFitModel",pWARN) << "WARNING, STEVE DID NOT FINISH UPDATING THIS";
-          //~ f = TMath::Max(0.,f);
-          //~ bool tweaked = TMath::Abs(f-1) > kASmallNum;
-          //~ if(!tweaked) continue;
+          f = TMath::Max(0.,f);
+          bool tweaked = TMath::Abs(f-1) > kASmallNum;
+          if(!tweaked) continue;
           
-          //~ // MUST BE MADE SMARTER WITH KINESPACE
-          //~ const double true1_min = kFitParamEtrueRange[ip][0];
-          //~ const double true1_max = kFitParamEtrueRange[ip][1];     
-          //~ int itrue1_min = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_min+kASmallNum);
-          //~ int itrue1_max = TMath::BinarySearch((Long_t)n_true1_bins, true1_bin_edges, true1_max-kASmallNum);
-          //~ const double true2_min = kFitParamQ2trueRange[ip][0];
-          //~ const double true2_max = kFitParamQ2trueRange[ip][1];
-          //~ int itrue2_min = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_min+kASmallNum);
-          //~ int itrue2_max = TMath::BinarySearch((Long_t)n_true2_bins, true2_bin_edges, true2_max-kASmallNum);
-
-          //~ for(int it1 = itrue1_min; it1 <= itrue1_max; it1++) {
-            //~ bin.bin3 = it1;
-            //~ for(int it2 = itrue2_min; it2 <= itrue2_max; it2++) {
-              //~ bin.bin4 = it2;
-              //~ for(int irsb1 = 0; irsb1 < kNErecoBinsSb; irsb1++) {
-                //~ bin.bin1 = irsb1;
-                //~ for(int irsb2 = 0; irsb2 < n_reco2_bins_sb; irsb2++) {
-                  //~ bin.bin2 = irsb2;
-                  //~ double & val = fMCTFinSb[imode]->GetEntryRef(bin);
-                  //~ val *= f;
-                //~ }//ir2: yreco bins
-              //~ }//ir1: Ereco bins
-            //~ }//it2: Q2 bins
-          //~ }//it1: Etrue bins
+          double true1_min  = 0.;
+          double true1_max  = 0.;
+          double true2_min  = 0.;
+          double true2_max  = 0.;
+          
+          if (true_ks == conv::kspEtrueQ2true) {
+            true1_min  = kFitParamEtrueRange [ip][0];
+            true1_max  = kFitParamEtrueRange [ip][1];
+            true2_min  = kFitParamQ2trueRange[ip][0];
+            true2_max  = kFitParamQ2trueRange[ip][1];
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+            LOG("GenericSingleSampleFitModel",pINFO) 
+              << fName <<": "
+              << "Applying parameter: " << util::AsString(p) << " with value = " << f 
+              << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
+              << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
+#endif
+          }
+          else {
+            LOG("GenericSingleSampleFitModel",pWARN) << "Unsupported true kinespace "<<util::AsString(true_ks);
+            continue;
+          }
+          for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+            vector<double> true1_range (true_sb->BinRange(itrue,0));
+            vector<double> true2_range (true_sb->BinRange(itrue,1));
+            
+            // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
+            double frac1 = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+            double frac2 = util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+            double effective_tweak = frac1*frac2*(f-1.) + 1;
+            if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
+            for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
+              double & val = fMCTFinSb[imode]->GetEntryRef(ireco,itrue);
+              val *= effective_tweak;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+              LOG("GenericSingleSampleFitModel",pDEBUG) 
+                << "MCT[" << imode << "] = " 
+                << val/f << " --> " << val;
+#endif
+            }//ireco: reco bins
+          }//itrue: true bins
         }// has kinematic dependence
         else {
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
@@ -2213,79 +1981,46 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
 
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
-
-  // OLD
-  const int n_true1_bins            = util::NumEtrueBins   (fSample);
-  const int n_reco1_bins_sb         = util::NumErecoBinsSb (fSample);
-  const double * reco1_bin_edges_sb = util::ErecoBinEdgesSb(fSample);
-  const int n_reco2_bins_sb         = util::NumYrecoBinsSb (fSample);
-  const double * reco2_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-  const int izone = 0;
-
+  
   for(int imode = 0; imode < kNReacModes; imode++) {
-    LOG("GenericSingleSampleFitModel",pWARN) << "WARNING, STEVE DID NOT FINISH UPDATING THIS";
-    return;
     
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
     
     const KBCubHcmbEdge2Edge * true_sb = fBinning->TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
-
-    // OLD
-    const int n_true2_bins         = util::NumQ2trueBins (fSample,m);
     
     // Zero it out, since we'll just be adding to elements
     fMCTFinOb[imode]->SetAll(0.);
     
     // We'll use two nested sets of loops - first over the simple bins, then over the optimised bins to get their content
-    VALORArrayBin sb_bin;
-    for(int irsb1 = 0; irsb1 < OH_GOD_FIX_ME; irsb1++) {
-      sb_bin.bin1 = irsb1;
-      for(int irsb2 = 0; irsb2 < OH_GOD_FIX_ME; irsb2++) {
-        sb_bin.bin2 = irsb2;
-        
-        // Now loop over the observable bins
-        VALORArrayBin ob_bin;
+    for(int ireco_sb = 0; ireco_sb < n_reco_bins_sb; ireco_sb++) {
+      // And optimised reco bins
+      for(int ireco_ob = 0; ireco_ob < n_reco_bins_ob; ireco_ob++) {
+        // Now loop over the truth bins
+        for(int itrue_sb = 0; itrue_sb < n_true_bins_sb; itrue_sb++) {
+          // Fraction of the observable bin held in the simple bin.
+          std::vector<double> frac_sb_range1 = reco_sb->BinRange(ireco_sb,0);
+          std::vector<double> frac_ob_range1 = reco_ob->BinRange(ireco_ob,0);
+          double frac_sb_1 = util::FractionOfBinContained(frac_sb_range1[0],frac_sb_range1[1], frac_ob_range1[0],frac_ob_range1[1]);
           
-          const int n_reco1_bins            = util::NumErecoBins   (fSample,izone);
-          const double * reco1_bin_edges    = util::ErecoBinEdges  (fSample,izone);
+          double frac_sb_2 = 1;
+          if (reco_sb->NDimensions() > 1) {
+            std::vector<double> frac_sb_range2 = reco_sb->BinRange(ireco_sb,1);
+            std::vector<double> frac_ob_range2 = reco_ob->BinRange(ireco_ob,1);
+            frac_sb_1 = util::FractionOfBinContained(frac_sb_range2[0],frac_sb_range2[1],frac_ob_range2[0],frac_ob_range2[1]);
+          }
           
-          const int n_reco2_bins            = util::NumYrecoBins   (fSample,izone);
-          const double * reco2_bin_edges    = util::YrecoBinEdges  (fSample,izone);
-  
-          for(int it1 = 0; it1 < n_true1_bins; it1++) {
-            ob_bin.bin3 = it1;
-            sb_bin.bin3 = it1;
-            for(int it2 = 0; it2 < n_true2_bins; it2++) {
-              ob_bin.bin4 = it2;
-              sb_bin.bin4 = it2;
-              for(int ir1 = 0; ir1 < n_reco1_bins; ir1++) {
-                ob_bin.bin1 = ir1;
-                for(int ir2 = 0; ir2 < n_reco2_bins; ir2++) {
-                  ob_bin.bin2 = ir2;
-                  
-                  // Fraction of the observable bin held in the simple bin.
-                  double frac_sb_1 = util::FractionOfBinContained(
-                    reco1_bin_edges_sb[irsb1],reco1_bin_edges_sb[irsb1+1],
-                    reco1_bin_edges   [ir1]  ,reco1_bin_edges   [ir1  +1]);
-                  double frac_sb_2 = util::FractionOfBinContained(
-                    reco2_bin_edges_sb[irsb2],reco2_bin_edges_sb[irsb2+1],
-                    reco2_bin_edges   [ir2]  ,reco2_bin_edges   [ir2  +1]);
-                  
-                  double frac_sb = frac_sb_1 * frac_sb_2;
-                  if (frac_sb < conv::kASmallNum) {
-                    continue;
-                  }
-                  double sb_content = fMCTFinSb[imode]->GetEntry(sb_bin);
-                  double content_to_add = frac_sb * sb_content;
-                  fMCTFinOb[imode]->AddToEntry(content_to_add,ob_bin);
-                }//ir2
-              }//ir1
-            }//it2
-          }//it1
-      }//isrsb2
-    }//irsb1
+          double frac_sb = frac_sb_1 * frac_sb_2;
+          if (frac_sb < conv::kASmallNum) {
+            continue;
+          }
+          double sb_content = fMCTFinSb[imode]->GetEntry(ireco_sb,itrue_sb);
+          double content_to_add = frac_sb * sb_content;
+          fMCTFinOb[imode]->AddToEntry(content_to_add,ireco_ob,itrue_sb);
+        }//itrue_sb
+      }//ireco_ob
+    }//ireco_sb
   } //imode
   return;
 }
