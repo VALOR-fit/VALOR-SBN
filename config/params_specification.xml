@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<parameters>
+
+   <defaults>
+
+      <values>
+         <bestfit>1.0</bestfit>
+         <init>1.0</init>
+         <minimum>0.0</minimum>
+         <maximum>2.0</maximum>
+         <stepsize>0.0001</stepsize>
+         <scaling>1.0</scaling>
+      </values>
+
+      <marginalisation>
+         <set>False</set>               <!-- True/False -->
+         <priors>
+            
+            <gaus>
+               <mean>0.0</mean>
+               <sigma>1.0</sigma>
+            </gaus>
+
+            <flat>
+               <minimum>0.0</minimum>
+               <maximum>1.0</maximum>
+            </flat>
+
+            <user>
+               <histogram></histogram>  <!-- Filename -->
+            </user>
+
+         </priors>
+
+      </marginalisation>
+
+      <properties>
+         <fixed>False</fixed>           <!-- True/False -->
+         <nuisance>True</nuisance>      <!-- True/False -->
+      </properties>
+
+      <errors>
+
+         <migrad>
+           <set>False</set>             <!-- True/False -->
+           <error>0.0</error>
+         </migrad>
+
+         <hesse>
+           <set>False</set>             <!-- True/False -->
+           <error>0.0</error>
+         </hesse>
+
+         <minos>
+           <set>False</set>             <!-- True/False -->
+           <low_error>0.0</low_error>
+           <high_error>0.0</high_error>
+         </minos>
+
+      </errors>
+
+   </defaults>
+
+   <parameter name="kPhypMixing23" />
+
+</parameters>
+
