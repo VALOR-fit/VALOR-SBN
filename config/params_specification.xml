@@ -9,7 +9,7 @@
          <init>1.0</init>
          <minimum>0.0</minimum>
          <maximum>2.0</maximum>
-         <stepsize>0.0001</stepsize>
+         <step_size>0.0001</step_size>
          <scaling>1.0</scaling>
       </values>
 
