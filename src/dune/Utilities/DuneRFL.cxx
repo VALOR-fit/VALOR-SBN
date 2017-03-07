@@ -355,11 +355,10 @@ std::pair<int,int> valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp,
   
   int ntruedim = true_sb->NDimensions();
   std::vector<double> truevec;
-  if (ntruedim--) { truevec.push_back(kp.true1); }
-  if (ntruedim--) { truevec.push_back(kp.true2); }
-  if (ntruedim--) { truevec.push_back(kp.true3); }
-  const int itrue = true_sb->FindLinearizedBin(recovec);
-      
+  if (ntruedim > 0) { truevec.push_back(kp.true1); }
+  if (ntruedim > 1) { truevec.push_back(kp.true2); }
+  if (ntruedim > 2) { truevec.push_back(kp.true3); }
+  const int itrue = true_sb->FindLinearizedBin(truevec);
   return std::pair<int,int>(itrue,ireco);
 }
 //________________________________________________________________________________________
