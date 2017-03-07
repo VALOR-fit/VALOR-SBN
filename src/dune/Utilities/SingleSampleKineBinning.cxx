@@ -211,7 +211,7 @@ bool SingleSampleKineBinning::Read(string file)
   }
 
   //
-  // XSec Simple 
+  // XSec reco 
   //
 
   if(! util::NodeExists(xml,root_node,"xsec_reco")) {
@@ -237,6 +237,72 @@ bool SingleSampleKineBinning::Read(string file)
      fXsecRecoBinning = fRecoOptimizedBinning;
   }
   
+  //
+  // xsec true [default]
+  //
+  bool xsec_true_binning_exists = util::NodeExists(xml,root_node,"xsec_true");
+  if (xsec_true_binning_exists) {
+    bool def_xsec_true_exists = util::NodeExists(xml,root_node,"xsec_true/default");
+    if(! def_xsec_true_exists) {
+       LOG("SampleBinning", pWARN)
+          << "<xsec_true><default> node not found in file: " << file << "\n"
+          << " ** Binning must be specified for every single reaction mode";
+    }
+    if(def_xsec_true_exists) {
+       string def_xsec_true_binning_file = util::XML2String(xml,root_node,"xsec_true/default");
+       LOG("SampleBinning", pINFO)
+          << "\n ** Reading `default' xsec true binning ** " 
+          << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
+          << "\n    From file: " << def_xsec_true_binning_file;
+       KBCubHcmbEdge2Edge * def_xsec_true_binning = new KBCubHcmbEdge2Edge;
+       def_xsec_true_binning->SetName("xsec_true (default)");
+       read_ok = def_xsec_true_binning->Read(def_xsec_true_binning_file);
+       if(!read_ok) {
+          LOG("SampleBinning", pINFO)
+            << "Could not read default xsec true binning from: " << def_xsec_true_binning_file;
+          return false;
+       }
+       fXsecTrueBinningUnique.push_back(def_xsec_true_binning);
+       for(int im = 0; im < conv::kNReacModes; im++) {
+          fXsecTrueBinning [im] = def_xsec_true_binning;
+       }
+    }
+
+    //
+    // True/Simple [per mode]
+    //
+    for(int im = 0; im < conv::kNReacModes; im++) {
+      conv::ReacMode_t m = conv::kReactionModes[is][im];
+      if(m == conv::kmUndefined) continue;
+      string node_path = "xsec_true/" + util::AsString(m);
+      bool mode_xsec_true_exists = util::NodeExists(xml,root_node,node_path);
+      if(mode_xsec_true_exists) {
+        string mode_xsec_true_binning_file = util::XML2String(xml,root_node,node_path);
+        LOG("SampleBinning", pINFO)
+          << "\n ** Overriding default / Reading xsec true binning ** " 
+          << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample) << " / mode: " <<  util::AsString(m)
+          << "\n    From file: " << mode_xsec_true_binning_file;
+        KBCubHcmbEdge2Edge * mode_xsec_true_binning = new KBCubHcmbEdge2Edge;
+        read_ok = mode_xsec_true_binning->Read(mode_xsec_true_binning_file);
+        if(!read_ok) {
+           LOG("SampleBinning", pINFO)
+              << "Could not read xsec true binning from: " << mode_xsec_true_binning_file;
+           return false;
+        }
+        fXsecTrueBinningUnique.push_back(mode_xsec_true_binning);
+        fXsecTrueBinning [im] = mode_xsec_true_binning;
+      }    
+    }
+  } // xsec binning specified independently
+  else {
+     LOG("SampleBinning", pNOTICE)
+       << "No xsec true binning specified. Using default true binning for xsec model.";
+    fXsecTrueBinningUnique = fTrueSimpleBinningUnique;
+    for (int im = 0 ; im <  conv::kNReacModes; im++) {
+      fXsecTrueBinning[im] = fTrueSimpleBinning [im];
+    }
+  }
+  
   return true;
 }
 //________________________________________________________________________________________
@@ -245,6 +311,13 @@ KBCubHcmbEdge2Edge * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m)
   if(m == conv::kmUndefined) return 0;
   int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
   return this->TrueSmpBinning(im);
+}
+//________________________________________________________________________________________
+KBCubHcmbEdge2Edge * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m) const
+{
+  if(m == conv::kmUndefined) return 0;
+  int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
+  return this->XsecTrueBinning(im);
 }
 //________________________________________________________________________________________
 void SingleSampleKineBinning::Init(void)
@@ -280,6 +353,17 @@ void SingleSampleKineBinning::CleanUp(void)
      fTrueSimpleBinning [im] = 0;
   }
 
+}
+//________________________________________________________________________________________
+unsigned int SingleSampleKineBinning::GetRecoOptBin(unsigned int reco_smp_bin) const
+{
+  int ndim = fRecoOptimizedBinning->NDimensions();
+  std::vector<double> bin_centres;
+  for (int idim = 0 ; idim < ndim ; idim++) {
+    double smp_centre = fRecoSimpleBinning->BinCentre(reco_smp_bin,idim);
+    bin_centres.push_back(smp_centre);
+  }
+  return fRecoOptimizedBinning->FindBin(bin_centres);
 }
 //________________________________________________________________________________________
 

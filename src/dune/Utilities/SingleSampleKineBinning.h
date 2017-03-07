@@ -96,12 +96,15 @@ public:
   
   // Cross sections binnings. For now truth is always the same as the simple binning, and reco is always optimised
   KBCubHcmbMondrian  * XsecRecoBinning(void              )  const { return fXsecRecoBinning  ;}
-  KBCubHcmbEdge2Edge * XsecTrueBinning(conv::ReacMode_t m)  const { return TrueSmpBinning(m) ;}
-  KBCubHcmbEdge2Edge * XsecTrueBinning(int im            )  const { return TrueSmpBinning(im);}
+  KBCubHcmbEdge2Edge * XsecTrueBinning(conv::ReacMode_t m)  const;
+  KBCubHcmbEdge2Edge * XsecTrueBinning(int im            )  const { return fXsecTrueBinning[im];}
 
   conv::BeamConf_t     GetBeamConf(void)      const { return fBeamConf; }
   conv::Sample_t       GetSample  (void)      const { return fSample;   }
   conv::Detector_t     GetDetector(void)      const { return fDetector; }
+  
+  // Find the optimised bin containing a simple bin for a reco event
+  unsigned int GetRecoOptBin(unsigned int reco_smp_bin) const; 
 
 private:
 
@@ -114,8 +117,12 @@ private:
   KBCubHcmbMondrian *          fRecoOptimizedBinning;                   //
   KBCubHcmbEdge2Edge *         fRecoSimpleBinning;                      //
   KBCubHcmbEdge2Edge *         fTrueSimpleBinning [conv::kNReacModes];  //
-  KBCubHcmbMondrian *          fXsecRecoBinning;                        // Binning for Xsec splines
-  std::vector<KBCubHcmbEdge2Edge *> fTrueSimpleBinningUnique;                //
+  std::vector<KBCubHcmbEdge2Edge *> fTrueSimpleBinningUnique;           // 
+  
+  
+  KBCubHcmbMondrian *          fXsecRecoBinning;                           // Binning for Xsec splines
+  KBCubHcmbEdge2Edge *         fXsecTrueBinning [conv::kNReacModes]; //
+  std::vector<KBCubHcmbEdge2Edge *> fXsecTrueBinningUnique;          // 
 };
 
 } // valor namespace
