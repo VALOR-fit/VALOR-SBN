@@ -18,13 +18,13 @@
          <priors>
             
             <gaus>
-               <mean>0.0</mean>
-               <sigma>1.0</sigma>
+               <mean>1.0</mean>
+               <sigma>0.2</sigma>
             </gaus>
 
             <flat>
                <minimum>0.0</minimum>
-               <maximum>1.0</maximum>
+               <maximum>2.0</maximum>
             </flat>
 
             <user>

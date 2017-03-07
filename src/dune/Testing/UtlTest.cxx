@@ -47,7 +47,7 @@ bool UtlTestCase::TestGetTrueKinematics()
       
       passed = Test::Equal(vals.size(), 1) && passed;
       
-      passed = Test::Equal(vals[0], Eexp[i]) && passed;
+      passed = Test::Equal(vals[0], Eexp[i], 5e-6) && passed;
    }
 
    // Test retrieval of Etrue and Q2true values
@@ -61,10 +61,9 @@ bool UtlTestCase::TestGetTrueKinematics()
 
       passed = Test::Equal(vals.size(), 2) && passed;
       
-      passed = Test::Equal(vals[0], Eexp[i]) && passed;
+      passed = Test::Equal(vals[0], Eexp[i], 5e-6) && passed;
 
       passed = Test::Equal(vals[1], Q2exp[i]) && passed;
-
 
       mcrec->Clear();
    }
