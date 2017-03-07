@@ -303,6 +303,19 @@ bool SingleSampleKineBinning::Read(string file)
     }
   }
   
+  // Should write a check here that makes sure that optimised bin edges each lie on a simple bin edge.
+  // For now just check there's more bins
+  if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
+    LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
+      <<") than optimised bins ("<<fRecoSimpleBinning->NBins()<<"). You did something wrong.";
+    util::Die(-1); return false;
+  }
+  if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
+    LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
+      <<") than xsec bins ("<<fXsecRecoBinning->NBins()<<"). You did something wrong.";
+    util::Die(-1); return false;
+  }
+  
   return true;
 }
 //________________________________________________________________________________________
