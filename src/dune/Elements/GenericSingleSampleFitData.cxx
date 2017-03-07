@@ -22,17 +22,20 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlNumStat.h"
+#include "valor/Utilities/UtlSystem.h"
 #include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/Conventions/Names.h"
 #include "dune/Elements/GenericSingleSampleFitData.h"
+#include "dune/Elements/GenericSingleSampleFitModel.h"
 
 using namespace valor;
 using namespace valor::conv;
 
 //________________________________________________________________________________________
 GenericSingleSampleFitData::GenericSingleSampleFitData() :
-  SingleSampleFitDataABC()
+  SingleSampleFitDataABC(),
+  fBinning(nullptr)
 {
   this->Init();
 }
@@ -50,10 +53,11 @@ string GenericSingleSampleFitData::Name(void) const
 bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
 {
   LOG("valor_dune", pNOTICE) << "******************* HERE!";    // TODO: remove when done testing
-  if(!fIsBooked){
-    this->Book();
+  
+  if (!fBinning) {
+    LOG("GenericSingleSampleFitData", pERROR) << "Must call Generate() with FitModel before attempting to read file.";
+    return false;
   }
-  //this->Zero();
 
   return true;
 }
@@ -84,162 +88,30 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
   if(opt.find("data_vf") != string::npos || opt.find("data_rf") != string::npos) {
 
     // binning optimised for fit CPU performance
-    for(int izone = 0; izone < kNMaxBinZones; izone++) {
-      if(fDataObNull[izone]) continue;
-      // Add data in VALOR array format
-      TString name = TString::Format("%s_%s_z%d",
-          util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), izone);
-      if(opt.find("data_vf") != string::npos) {
-        assert(fDataOb[izone]);
-        fDataOb[izone]->SetName(TString::Format("%s_%s_%s",tag,"data_ob_vf",name.Data()).Data());
-        LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataOb[izone]->GetName();
-        array->Add(fDataOb[izone]);
-      }
-      // Add data in ROOT format if requested
-      // -----
-      // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-      // array to ROOT TH2D could happen elsewhere generically)
-      // -----
-      if(opt.find("data_rf") != string::npos) {
-        const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-        const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-        if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
-        const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
-        const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
-        TH2D * h2 = new TH2D("h2", "VALOR/DUNE ND (Ereco,yreco) data = f(beam,sample,zone)",
-            n_enu_reco_bins, enu_reco_bins, n_y_reco_bins, y_reco_bins);
-        h2->SetName(TString::Format("%s_%s_%s",tag,"data_ob_rf",name.Data()).Data());
-        for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-          for(int iy = 0; iy < n_y_reco_bins; iy++) {
-            double val = fDataOb[izone]->GetEntry(ier,iy);
-            h2->SetBinContent(ier+1,iy+1,val);
-          }//iy
-        }//ier
-        // add to object array and clean-up
-        LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h2->GetName();
-        array->Add(h2);
-        // delete h2; ???? // MEMORY LEAK?
-      }
-    }//izone
+    if(fDataObNull)  {
+      LOG("GenericSingleSampleFitData",pFATAL) << "Trying to write null data.";
+      util::Die(-1) ; return false;
+    }
+    // Add data in VALOR array format
+    if(opt.find("data_vf") != string::npos) {
+      assert(fDataOb);
+      fDataOb->SetName(TString::Format("%s_%s_%s",tag,"data_ob_vf",fName.c_str()).Data());
+      LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataOb->GetName();
+      array->Add(fDataOb);
+    }
 
     // regular/fine binning for plotting
     if(opt.find("+SB") != string::npos) {
-      TString name = TString::Format("%s_%s",
-          util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
       assert(!fDataSbNull);
       // Add data in VALOR array format
       if(opt.find("data_vf") != string::npos) {
         assert(fDataSb);
-        fDataSb->SetName(TString::Format("%s_%s_%s",tag,"data_sb_vf",name.Data()));
+        fDataSb->SetName(TString::Format("%s_%s_%s",tag,"data_sb_vf",fName.c_str()));
         LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataSb->GetName();
         array->Add(fDataSb);
       }//data_vf
-      // Add data in ROOT format if requested
-      // -----
-      // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-      // array to ROOT TH2D could happen elsewhere generically)
-      // -----
-      if(opt.find("data_rf") != string::npos) {
-        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-        const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-        TH2D * h2 = new TH2D("h2","VALOR/DUNE ND (Ereco,yreco) data = f(beam,sample)",
-            kNErecoBinsSb, kErecoBinEdgesSb, n_y_reco_bins_sb, y_reco_bin_edges_sb);
-        h2->SetName(TString::Format("%s_%s_%s",tag,"data_sb_rf",name.Data()).Data());
-        for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-          for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-            double val = fDataSb->GetEntry(ier,iy);
-            h2->SetBinContent(ier+1,iy+1,val);
-          }//iy
-        }//ier
-        // add to object array and clean-up
-        LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h2->GetName();
-        array->Add(h2);
-        // delete h2; ???? // MEMORY LEAK?
-      }//data_vf
     }//+SB
   }//data_vf, data_rf
-
-  //
-  // Write out the slices of the data distributions (bare ROOT format)
-  //
-  // -----
-  // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-  // array to ROOT TH1D slices could happen elsewhere generically)
-  // -----
-  if(opt.find("+slices") != string::npos) {
-
-    for(int izone = 0; izone < kNMaxBinZones; izone++) {
-      TString name = TString::Format("%s_%s_z%d",
-          util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(), izone);
-      // get binning
-      const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-      const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-      if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
-      const double * enu_reco_bins = util::ErecoBinEdges(fSample,izone);
-      const double * y_reco_bins   = util::YrecoBinEdges(fSample,izone);
-      // create slices of the data (function of Ereco, for given yreco bin)
-      TH1D * htot = new TH1D("htot",
-          "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample,zone)", n_enu_reco_bins, enu_reco_bins);
-      htot->SetName(TString::Format("%s_%s_%s",tag, "data_slice_ob_rf",name.Data()).Data());
-      htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle("Number of events /bin");
-      for(int iy = 0; iy < n_y_reco_bins; iy++) {
-        TString hname  = TString::Format("%s_%s_%s_y%d",tag, "data_slice_ob_rf",name.Data(),iy);
-        TString htitle = TString::Format(
-          "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample,zone) for y in [%f,%f]",y_reco_bins[iy],y_reco_bins[iy+1]);
-        TH1D * h = new TH1D(hname.Data(),htitle.Data(),n_enu_reco_bins, enu_reco_bins);
-        h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle("Number of events /bin");
-        for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-          double val = fDataOb[izone]->GetEntry(ier,iy);
-          h->SetBinContent(ier+1, val);
-          htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
-        }//ier
-        // add to obj array and clean-up
-        LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h->GetName();
-        array->Add(h);
-        //delete h; ??? MEM LEAK??
-      }//iy
-      LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << htot->GetName();
-      array->Add(htot);
-      //delete htot; ??? MEM LEAK??
-    }//izone
-
-    if(opt.find("+SB") != string::npos) {
-      TString name = TString::Format("%s_%s",
-          util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
-      // create slices of the total PDF (function of Ereco, for given yreco bin)
-      const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-      const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-      TString hname = TString::Format("%s_%s_%s",tag, "data_slice_sb_rf",name.Data());
-      TString htitle = "VALOR/DUNE ND data: Ereco spectrum = f(beam,sample)";
-      TH1D * htot = new TH1D(hname.Data(),htitle.Data(),
-        kNErecoBinsSb, kErecoBinEdgesSb);
-      htot->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-      htot->GetYaxis()->SetTitle("Number of events /bin");
-      for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-        TString hname_s = TString::Format("%s_%s_%s_y%d",tag, "data_slice_sb_rf",name.Data(),iy);
-        TString htitle_s = TString::Format("VALOR/DUNE ND data: Ereco spectrum = f(beam,sample) for y in [%f,%f]",
-              y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]);
-        TH1D * h = new TH1D(hname_s.Data(),htitle_s.Data(),
-            kNErecoBinsSb, kErecoBinEdgesSb);
-        h->GetXaxis()->SetTitle("Reconstructed E_{#nu} (GeV)");
-        h->GetYaxis()->SetTitle("Number of events /bin /%f POT");
-        for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-          double val = fDataSb->GetEntry(ier,iy);
-          h->SetBinContent(ier+1, val);
-          htot->SetBinContent(ier+1, htot->GetBinContent(ier+1) + val);
-        }//ier
-        // add to obj array and clean-up
-        LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << h->GetName();
-        array->Add(h);
-        //delete h; ??? MEM LEAK??
-      }//iy
-      LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << htot->GetName();
-      array->Add(htot);
-      //delete htot; ??? MEM LEAK??
-    }//+SB?
-  }//+slices
 
   LOG("GenericSingleSampleFitData", pINFO)  << "Done!";
 
@@ -304,9 +176,15 @@ bool GenericSingleSampleFitData::Generate(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate)
 {
-  if(!fIsBooked){
+  
+  GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
+  
+  if(fBinning!=model->GetBinning()){
+    this->Clean();
+    fBinning = model->GetBinning();
     this->Book();
   }
+  
   TObjArray array;
   model_abc->Write(&array, "curr", "pdft_vf +SB");
 
@@ -314,53 +192,33 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
 #ifndef __VALOR_FMWK_PENALTY_ONLY__
   LOG("GenericSingleSampleFitData",pINFO) 
     << "Generating toy-MC for: " 
-    << util::AsString(fBeam) << " / " << util::AsString(fSample);
-
-  const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
+    << fName;
     
-  TString sb_name = TString::Format("curr_pdft_sb_vf_%s_%s", 
-      util::AsString(fBeam).c_str(), util::AsString(fSample).c_str());
-  VALORArray * pdf = (VALORArray*) array.FindObject(sb_name.Data());
-  assert(pdf);
+  TString sb_name = TString::Format("curr_pdft_sb_vf_%s",fModelName.c_str());
+  VALORArray * pdf_sb = (VALORArray*) array.FindObject(sb_name.Data());
+  assert(pdf_sb);
+  const int nbins_sb = pdf_sb->GetSize();
+  assert(nbins_sb==fDataSb->GetSize());
   
-  for(int ier = 0; ier < kNErecoBinsSb; ier++) {
-    for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-      double nmc   = pdf->GetEntry(ier,iy);
-      double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
-      fDataSb->SetEntry(ndata,ier,iy);
+  for(int ibin_sb = 0 ; ibin_sb < nbins_sb ; ibin_sb ++) {
+    double nmc   = pdf_sb->GetArray()[ibin_sb];
+    double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
+    fDataSb->GetArray()[ibin_sb] = ndata;
 
-      LOG("GenericSingleSampleFitData",pDEBUG) 
-        << "(E_reco idx = " << ier << ", y_reco idx = " << iy 
-        << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
-        
-      // Map to distributions with optimized binning
-      //
-      const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(fSample);
-      double enu_reco = kErecoBinEdgesSb[ier]   + (kErecoBinEdgesSb[ier+1]-kErecoBinEdgesSb[ier])/2.;
-      double y_reco   = y_reco_bin_edges_sb[iy] + (y_reco_bin_edges_sb[iy+1]-y_reco_bin_edges_sb[iy])/2.;
-      int izone = util::BinZone(fSample, enu_reco, y_reco);
-      if(izone < 0) {
-        //         LOG("GenericSingleSampleFitData",pFATAL) - turn that to fatal after binning optimization is done
-        LOG("GenericSingleSampleFitData",pWARN)
-          << " ** No bin zone for toy MC event (" << " (" << util::AsString(fSample) << ")"
-          << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
-        //         exit(1);
-      }
-      const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-      const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-      const double * enu_reco_bin_edges  = util::ErecoBinEdges(fSample,izone);
-      const double * y_reco_bin_edges    = util::YrecoBinEdges(fSample,izone);
-      int ier2 = TMath::BinarySearch(1+(Long_t)n_enu_reco_bins, enu_reco_bin_edges, enu_reco);
-      int iy2  = TMath::BinarySearch(1+(Long_t)n_y_reco_bins,   y_reco_bin_edges,   y_reco  );
-      double ndata_curr = fDataOb[izone]->GetEntry(ier2,iy2);
-      fDataOb[izone]->SetEntry(ndata_curr+ndata,ier2,iy2);
-    }//iy
-  }//ier
+    LOG("GenericSingleSampleFitData",pFATAL) 
+      << "(reco_sb_idx = "<<ibin_sb
+      << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
+      
+    // Map to distributions with optimized binning
+    //
+    unsigned int ibin_ob = fBinning->GetRecoOptBin(ibin_sb);
+    fDataOb->GetArray()[ibin_ob] += ndata;
+  }//ibin_sb
 #endif //__VALOR_FMWK_PENALTY_ONLY__
   
   LOG("GenericSingleSampleFitData",pNOTICE) 
     << fName<< ": N_{Data} SB = " << fDataSb->Integral()
-    <<" ; N_{Data} OB[0] = "<<fDataOb[0]->Integral();
+    <<" ; N_{Data} OB = "<<fDataOb->Integral();
 
   return true;
 }
@@ -410,26 +268,19 @@ double GenericSingleSampleFitData::GetFitStatistic(
   // Counters for total number of events to we can do rate-only
   double tot_nmc   = 0.;
   double tot_ndata = 0.;
-
-  for(int izone = 0; izone < kNMaxBinZones; izone++) {
-    if(fDataObNull[izone]) continue;
-    TString name = TString::Format("curr_pdft_ob_vf_%s_%s_z%d", 
-        util::AsString(fBeam).c_str(), util::AsString(fSample).c_str(),izone);
-    VALORArray * pdf = (VALORArray*) array->FindObject(name.Data());
-    assert(pdf);           
-    const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-    const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-    for(int ier = 0; ier < n_enu_reco_bins; ier++) {
-      for(int iy = 0; iy < n_y_reco_bins; iy++) {
-        double nmc   = pdf->GetEntry(ier,iy);
-        double ndata = fDataOb[izone]->GetEntry(ier,iy); 
-        tot_nmc   += nmc;
-        tot_ndata += ndata;
-        double dS = util::ChisqPoisson(ndata, nmc);
-        S += dS;
-      }//iy
-    }//ier
-  }//izone
+  
+  TString name = TString::Format("curr_pdft_ob_vf_%s",fModelName.c_str());
+  VALORArray * pdf = (VALORArray*) array->FindObject(name.Data());
+  assert(pdf);
+  assert(pdf->GetSize() == fDataOb->GetSize());
+  for(int ibin = 0; ibin < pdf->GetSize(); ibin++) {
+    double nmc   = pdf    ->GetArray()[ibin];
+    double ndata = fDataOb->GetArray()[ibin];
+    tot_nmc   += nmc;
+    tot_ndata += ndata;
+    double dS = util::ChisqPoisson(ndata, nmc);
+    S += dS;
+  }//ier
   S = TMath::Max(0.,S);
   
   double S_rate_only = TMath::Max(0.,util::ChisqPoisson(tot_ndata, tot_nmc));
@@ -462,54 +313,47 @@ void GenericSingleSampleFitData::Init(void)
   fBeam     = kbUndefined;
   fSample   = ksUndefined;
 
-  for(int izone = 0; izone < kNMaxBinZones; izone++) {
-    fDataObNull [izone] = true;
-    fDataOb     [izone] = 0;
-  }//izone
+  fDataObNull= true;
+  fDataOb    = 0;
   fDataSbNull = true;
   fDataSb     = 0;
 
-  fIsBooked = false;
+  fBinning = 0;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Book(void)
 {
   LOG("GenericSingleSampleFitData",pDEBUG) << "Booking...";
-
+  assert(fBinning);
   assert(fDetector != kdUndefined);
   assert(fBeam     != kbUndefined);
   assert(fSample   != ksUndefined);
+  assert(fKSp      != kspUndefined);
 
-  fName = util::nm::DSetName(fDetector, fBeam, fSample, fKSp);
+  fName      = util::nm::DSetName(fDetector, fBeam, fSample, fKSp);
+  fModelName = util::nm::MdlName (fDetector, fBeam, fSample, fKSp);
+  
+  const KBCubHcmbMondrian  * reco_ob = fBinning->RecoOptBinning();
+  const KBCubHcmbEdge2Edge * reco_sb = fBinning->RecoSmpBinning();
 
-  const int n_y_reco_bins_sb = util::NumYrecoBinsSb(fSample);
-  for(int izone = 0; izone < kNMaxBinZones; izone++) {
-    const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-    const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-    if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
-    fDataObNull [izone] = false;
-    fDataOb     [izone] = new VALORArray(n_enu_reco_bins, n_y_reco_bins);
-  }//izone
+  fDataObNull = false;
+  fDataOb     = new VALORArray(reco_ob->NBins());
   fDataSbNull = false;
-  fDataSb     = new VALORArray(kNErecoBinsSb, n_y_reco_bins_sb);
-
-  fIsBooked = true;
+  fDataSb     = new VALORArray(reco_sb->NBins());
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Clean(void)
 {
   LOG("GenericSingleSampleFitData",pDEBUG) << "Cleaning-up...";
 
-  for(int izone = 0; izone < kNMaxBinZones; izone++) {
-    if (!fDataObNull[izone]) {
-      fDataObNull[izone] = true;
-      if (fDataOb[izone]) delete fDataOb[izone];
-      fDataOb[izone] = 0;
-    }
-  }//izone
+  if (!fDataObNull) {
+    fDataObNull = true;
+    if (fDataOb) {delete fDataOb;}
+    fDataOb = 0;
+  }
   if (!fDataSbNull) {
     fDataSbNull = true;
-    if(fDataSb) delete fDataSb;
+    if(fDataSb) {delete fDataSb;}
     fDataSb = 0;
   }
 }
@@ -520,14 +364,8 @@ void GenericSingleSampleFitData::Zero(Option_t * opt)
 
   string option = (opt) ? opt : "all";
 
-  for(int izone = 0; izone < kNMaxBinZones; izone++) {
-    if (!fDataObNull[izone]) {
-      fDataOb[izone]->SetAll(0.);
-    }
-  }//izone
-  if (!fDataSbNull) {
-    fDataSb->SetAll(0.);
-  }
+  if (!fDataObNull) { fDataOb->SetAll(0.); }
+  if (!fDataSbNull) { fDataSb->SetAll(0.); }
 }
 //________________________________________________________________________________________
 

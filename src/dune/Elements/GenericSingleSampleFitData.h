@@ -34,10 +34,10 @@
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/Sample.h"
 #include "dune/Conventions/Detector.h"
-#include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Elements/SingleSampleFitDataABC.h"
+#include "dune/Utilities/SingleSampleKineBinning.h"
 
 class TObjArray;
 class TH1D;
@@ -69,7 +69,7 @@ public:
   double GetFitStatistic(FitModelABC * pred, const FitParamList & fp,   Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
   double GetFitStatistic(FitModelABC * pred, const PhysHypothesis & ph, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
   double GetFitStatistic(FitModelABC * pred, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
-
+  
 private:
 
   void Init  (void);
@@ -79,18 +79,21 @@ private:
 
   // Name of this VALOR fit dataset (see Conventions/Names.h)
   string fName;
+  // And the corresponding model (used to get the right PDFs)
+  string fModelName;
 
   // Data distributions:
-  // Each distribution is (currently always) a 2-D Nev = Nev(Enu_reco, y_reco) array that can be directly compared with data.
-  // There is a distribution for all beam/sample/bin_zone combinations.
-  //
+  // Each distribution is an array that can be directly compared with data.
   // Distributions with binning heavily optimized to reduce the CPU intensity of the fit.
-  bool         fDataObNull   [conv::kNMaxBinZones]; 
-  VALORArray * fDataOb       [conv::kNMaxBinZones]; 
+  bool         fDataObNull; 
+  VALORArray * fDataOb    ; 
   // Below are versions the use a simple (~fine and ~regular) binning throughout the whole range.
   bool         fDataSbNull;
   VALORArray * fDataSb;
-  bool fIsBooked;
+  
+  // Binning booked with. Does not own
+  const SingleSampleKineBinning * fBinning;
+  
 };
 
 } // valor
