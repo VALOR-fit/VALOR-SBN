@@ -205,7 +205,7 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
     fDataSb->GetArray()[ibin_sb] = ndata;
 
-    LOG("GenericSingleSampleFitData",pFATAL) 
+    LOG("GenericSingleSampleFitData",pDEBUG) 
       << "(reco_sb_idx = "<<ibin_sb
       << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
       
