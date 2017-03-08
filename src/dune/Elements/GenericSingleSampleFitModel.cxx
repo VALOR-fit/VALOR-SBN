@@ -437,12 +437,9 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   //  pdfc  -> PDF component                  CC: f(Ereco,yreco;s,m)
   //  pdfts -> 1-D slice of PDF total         CC: f(Ereco;s)|yreco
   //  pdfcs -> 1-D slice of PDF component     CC: f(Ereco;s,m)|yreco
-  //  rf    -> ROOT format
   //  vf    -> VALOR format
   //  ob    -> Optimized binning (for fit)
   //  sb    -> Simple binning (for plots)
-  
-  int izone = 0; //DEBUG!
 
   LOG("GenericSingleSampleFitModel", pINFO)  << "Writing results to input object array...";
   LOG("GenericSingleSampleFitModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
@@ -915,16 +912,13 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     assert(!any_bad_status);
     old_format = true;
   }
-
-
-  //~ t->SetBranchStatus("*",             0);
-  //~ t->SetBranchStatus("sample",        1); 
-  //~ t->SetBranchStatus("reac_mode",     1);    
-  //~ t->SetBranchStatus("enu_true",      1);  
-  //~ t->SetBranchStatus("enu_reco",      1);  
-  //~ t->SetBranchStatus("y_reco",        1);    
-  //~ t->SetBranchStatus("wght_pot",      1);
-  //~ t->SetBranchStatus("wght",          1);
+  
+  // Build a map of the branches to the kinematic variables
+  std::map<conv::KineVar_t,double*> kinematics;
+  kinematics[kvEtrue]  = &enu_true;
+  kinematics[kvQ2true] = &Q2_true;
+  kinematics[kvEreco]  = &enu_reco;
+  kinematics[kvYreco]  = &y_reco;
 
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
@@ -1042,30 +1036,25 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     const KBCubHcmbEdge2Edge * true_sb = fBinning->TrueSmpBinning(m);
     
     // check kinematic values against built-in limits
-    if(enu_reco < reco_ob->Minimum(kvEreco) || enu_reco > reco_ob->Maximum(kvEreco)) {
-      LOG("GenericSingleSampleFitModel",pWARN) 
-        << "MC event: " << iev << " has reconstructed energy = " << enu_reco 
-        << " GeV, range used: [" << reco_ob->Minimum(kvEreco) << ", " << reco_ob->Maximum(kvEreco) << "] GeV";
-      continue;
-    }
-    if(y_reco < reco_ob->Minimum(kvYreco) || y_reco > reco_ob->Maximum(kvYreco)) {
-      LOG("GenericSingleSampleFitModel",pWARN) 
-        << "MC event: " << iev << " has reconstructed inelasticity y = " << y_reco 
-        << ", range used: [" << reco_ob->Minimum(kvYreco) << ", " << reco_ob->Maximum(kvYreco) << "]";
+    // in true
+    for (conv::KineVar_t kv : true_sb->KineVars()) {
+      double val = *(kinematics.at(kv));
+      if (val < true_sb->Minimum(kv) || val > true_sb->Maximum(kv)) {
+        LOG("GenericSingleSampleFitModel",pWARN) 
+          << "MC event: " << iev << " has true kinematic value outside range: "<<util::AsString(kv) << " = "<<val
+          << ", range used: [" << true_sb->Minimum(kv) << ", " << true_sb->Maximum(kv) << "]";
         continue;
+      }
     }
-    if(enu_true < true_sb->Minimum(kvEtrue) || enu_true > true_sb->Maximum(kvEtrue)) {
-      LOG("GenericSingleSampleFitModel",pWARN) 
-        << "MC event: " << iev << " has true energy = " << enu_true 
-        << " GeV, range used: [" << true_sb->Minimum(kvEtrue) << ", " << true_sb->Maximum(kvEtrue) << "] GeV";
+    // and in reco
+    for (conv::KineVar_t kv : reco_ob->KineVars()) {
+      double val = *(kinematics.at(kv));
+      if (val < reco_ob->Minimum(kv) || val > reco_ob->Maximum(kv)) {
+        LOG("GenericSingleSampleFitModel",pWARN) 
+          << "MC event: " << iev << " has reco kinematic value outside range: "<<util::AsString(kv) << " = "<<val
+          << ", range used: [" << reco_ob->Minimum(kv) << ", " << reco_ob->Maximum(kv) << "]";
         continue;
-    }
-    
-    if(Q2_true < true_sb->Minimum(kvQ2true) || Q2_true > true_sb->Maximum(kvQ2true)) {
-      LOG("GenericSingleSampleFitModel",pWARN) 
-        << "MC event: " << iev << " has true Q2 = " << Q2_true 
-        << " GeV^2, range used: [" << true_sb->Minimum(kvQ2true) << ", " << true_sb->Maximum(kvQ2true) << "] GeV^2";
-        continue;
+      }
     }
     
     // Exposure for assumed data - Weight MC templates to that exposure
