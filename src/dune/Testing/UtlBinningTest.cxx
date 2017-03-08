@@ -1,7 +1,12 @@
 #include "dune/Testing/UtlBinningTest.h"
 
+// root
+#include <TAxis.h>
+#include <TCanvas.h>
+
 // valor
 #include "valor/Utilities/UtlFile.h"
+#include "valor/Utilities/UtlPlotting.h"
 
 namespace valor
 {
@@ -35,6 +40,9 @@ bool UtlBinningTestCase::TestMake2DOptimisedHistogram()
    passed = Test::Equal(histo->GetBinContent(4, 8), 160.0) && passed;
    passed = Test::Equal(histo->GetBinContent(4, 9), 160.0) && passed;
 
+   util::UtlPlotting::Plot(histo, "Mondrian histogram test", "E_{r} / GeV",
+         "y_{r}", "mondrian.pdf");
+
    delete histo;
 
    return passed;
@@ -66,6 +74,9 @@ bool UtlBinningTestCase::TestMake2DSimpleHistogram()
    // Bin 11 in Edge2Edge contains 160, so bin (4, 3) should be 160
    passed = Test::Equal(histo->GetBinContent(4, 3), 160.0) && passed;
 
+   util::UtlPlotting::Plot(histo, "Edge-to-edge histogram test", "E_{r} / GeV",
+         "y_{r}", "edge2edge.pdf");
+
    delete histo;
 
    return passed;
@@ -92,6 +103,9 @@ bool UtlBinningTestCase::TestMake1DHistogram()
 
    // Bin 3, 7, 11 in Edge2Edge contains 420, so bin (4) should be 420
    passed = Test::Equal(histo->GetBinContent(4), 420.0) && passed;
+
+   util::UtlPlotting::Plot(histo, "1D histogram test", "E_{r} / GeV",
+         "Events", "ereco.pdf");
 
    delete histo;
 
