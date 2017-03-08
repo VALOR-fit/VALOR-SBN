@@ -57,8 +57,6 @@ using namespace valor::conv;
 //~ #define SPLINE_WEIGHTS_ARE_ONE
 #define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
-#define OH_GOD_FIX_ME -999
-
 //________________________________________________________________________________________
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC(),
@@ -1035,7 +1033,10 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     // Get the mode appropriate binning
     const KBCubHcmbEdge2Edge * true_sb = fBinning->TrueSmpBinning(m);
     
-    // check kinematic values against built-in limits
+    // check kinematic values against built-in limits and make vectors
+    std::vector<double> true_vars;
+    std::vector<double> reco_vars;
+    bool out_of_range = false;
     // in true
     for (conv::KineVar_t kv : true_sb->KineVars()) {
       double val = *(kinematics.at(kv));
@@ -1043,8 +1044,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         LOG("GenericSingleSampleFitModel",pWARN) 
           << "MC event: " << iev << " has true kinematic value outside range: "<<util::AsString(kv) << " = "<<val
           << ", range used: [" << true_sb->Minimum(kv) << ", " << true_sb->Maximum(kv) << "]";
-        continue;
+        out_of_range = true;
       }
+      true_vars.push_back(val);
     }
     // and in reco
     for (conv::KineVar_t kv : reco_ob->KineVars()) {
@@ -1053,9 +1055,11 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         LOG("GenericSingleSampleFitModel",pWARN) 
           << "MC event: " << iev << " has reco kinematic value outside range: "<<util::AsString(kv) << " = "<<val
           << ", range used: [" << reco_ob->Minimum(kv) << ", " << reco_ob->Maximum(kv) << "]";
-        continue;
+        out_of_range = true;
       }
+      reco_vars.push_back(val);
     }
+    if (out_of_range) {continue;}
     
     // Exposure for assumed data - Weight MC templates to that exposure
     double data_pot = fPOT;
@@ -1068,14 +1072,6 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     }
     
     // Find the appropriate bins
-    
-    // MUST BE UPDATED WITH OTHER KINESPACES
-    std::vector<double> reco_vars;
-    reco_vars.push_back(enu_reco);
-    reco_vars.push_back(y_reco);
-    std::vector<double> true_vars;
-    true_vars.push_back(enu_true);
-    true_vars.push_back(Q2_true);
     
     int true_bin    = true_sb->FindLinearizedBin(true_vars);
     int reco_bin_sb = reco_sb->FindLinearizedBin(reco_vars);
