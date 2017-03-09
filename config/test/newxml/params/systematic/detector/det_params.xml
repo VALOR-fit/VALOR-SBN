@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<parameters>
+	<!--
+		A set of default values for all parameters is used if not
+		overriden below
+	-->
+	<defaults>
+		<bestfit>1.0</bestfit>
+		<init>1.0</bestfit>
+		<minimum>0.0</minimum>
+		<maximum>2.0</maximum>
+		<step_size>0.0001</stepsize>
+		<scaling>1.0</scaling>
+		<fixed>false</fixed>
+		<nuisance>true</nuisance>
+		<marginalise>true</marginalise>
+	</defaults>
+	<!--
+		Parameter names follow the convention used in the old enum format,
+		e.g. kPhypMixing23
+	-->
+	<parameter name="kNuisEffNuMuCC0pi1trk" />
+</parameters>
+
