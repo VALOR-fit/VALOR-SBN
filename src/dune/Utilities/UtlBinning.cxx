@@ -1,6 +1,7 @@
 #include "dune/Utilities/UtlBinning.h"
 
 #include <algorithm>
+#include <numeric>
 
 // valor
 #include "valor/Utilities/UtlSystem.h"
@@ -279,7 +280,7 @@ VALORArray* Contract(const VALORArray& v,
    for(auto tbin : permRecoTarget)
    {  // Loop through all of the target reco bins
       // Need a sum for each truth bin
-      double sum[trueBinning.NBins()] = {0.0};
+      std::vector<double> sum(trueBinning.NBins(),0.);
       for(auto ibin : permRecoInt)
       {  // Loop through all of the integration reco bins
          std::vector<double> currentBin(ndims);
