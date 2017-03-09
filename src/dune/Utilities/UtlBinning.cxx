@@ -10,8 +10,93 @@ namespace valor
 {
 namespace util
 {
+namespace binning
+{
 
-TH1D* UtlBinning::Make1DHistogram(const VALORArray& v,
+/**
+   Integrate a VALORArray with a specified binning such that only the
+   specified kinematic variables remain.
+
+   \param v The VALORArray containing the data to be integrated.
+   \param currentBinning The current binning used by the VALORArray.
+   \param targetBinning The target binning to be used by the new VALORArray.
+   \param k The kinematic variables to retain.
+   \return The contracted VALORArray containing only the specified kinematic
+      variables.
+*/
+VALORArray* Contract(const VALORArray& v,
+      const SingleSampleKineBinning& curentBinning,
+      const KBCubHcmbEdge2Edge& targetBinning);
+
+/**
+   Maps the events associated with the specified binning to a 1D
+   ROOT-compatible histogram.
+
+   \param events The spectrum corresponding to the simple binning.
+   \param b The simple binning.
+   \return A ROOT-compatible 1D histogram representing the simple binning.
+*/
+TH1D* Remap1D(const double* events, const KBCubHcmbEdge2Edge& b);
+
+/**
+   Maps the events associated with the specified binning to a 2D
+   ROOT-compatible histogram.
+
+   Note that the ROOT histogram produced by this function should be used only
+   for plotting purposes, as mapping from optimised to ROOT-compatible binning
+   is not guaranteed to conserve total event counts.
+
+   \param events The spectrum corresponding to the optimised binning.
+   \param b The optimised binning.
+   \return A ROOT-compatible 2D histogram representing the optimised binning.
+*/
+TH2D* RemapOptimised2D(const double* events,
+      const KBCubHcmbMondrian& b);
+
+/**
+   Maps the events associated with the specified binning to a 2D
+   ROOT-compatible histogram.
+
+   \param events The spectrum corresponding to the optimised binning.
+   \param b The optimised binning.
+   \return A ROOT-compatible 2D histogram representing the simple binning.
+*/
+TH2D* RemapSimple2D(const double* events, const KBCubHcmbEdge2Edge& b);
+
+/**
+   Returns a permutation of all of the bin indices within the specified
+   kinematic space.
+
+   This method is a helper method for performing integration within
+   multidimensional  kinematic variables, because VALORArray can only
+   integrate over entire reconstructed or true space.
+
+   \param binning The kinematic binning for which the permutation will be
+      applied.
+   \param ks The kinematic space for which bin indices are to be permuted.
+   \return The permutation of all bins in the kinematic space.
+*/
+std::vector<std::vector<int>> BinPermutation(
+      const KBCubHcmbEdge2Edge& binning, const conv::KineSpace_t ks);
+
+/**
+   Returns a permutation of all of the bin indices within the specified
+   kinematic space.
+
+   This method is a helper method for performing integration within
+   multidimensional  kinematic variables, because VALORArray can only
+   integrate over entire reconstructed or true space.
+
+   \param binning The kinematic binning for which the permutation will be
+      applied.
+   \param kvs The kinematic variables for which bin indices are to be permuted.
+   \return The permutation of all bins in the kinematic space.
+*/
+std::vector<std::vector<int>> BinPermutation(
+      const KBCubHcmbEdge2Edge& binning,
+      const std::vector<conv::KineVar_t>& kvs);
+
+TH1D* Make1DHistogram(const VALORArray& v,
       const SingleSampleKineBinning& b, conv::KineSpace_t ks)
 {
    // Get the reco binning and associated kinematic variables for the VALORArray
@@ -43,7 +128,7 @@ TH1D* UtlBinning::Make1DHistogram(const VALORArray& v,
 
    // Need to integrate out the reco variables here, before integrating over
    // truth
-   VALORArray* targetV = UtlBinning::Contract(v, b, newRecoBinning);
+   VALORArray* targetV = Contract(v, b, newRecoBinning);
 
    // Integrate over the truth variables
    unsigned int nbins = newRecoBinning.NBins();
@@ -63,7 +148,7 @@ TH1D* UtlBinning::Make1DHistogram(const VALORArray& v,
    return histo;
 }
 
-TH2D* UtlBinning::Make2DOptimisedHistogram(const VALORArray& v,
+TH2D* Make2DOptimisedHistogram(const VALORArray& v,
       const SingleSampleKineBinning& b, const std::vector<conv::KineVar_t>& ks)
 {
    // Get the reco binning and associated kinematic variables for the VALORArray
@@ -104,7 +189,7 @@ TH2D* UtlBinning::Make2DOptimisedHistogram(const VALORArray& v,
    return histo;
 }
 
-TH2D* UtlBinning::Make2DSimpleHistogram(const VALORArray& v,
+TH2D* Make2DSimpleHistogram(const VALORArray& v,
       const SingleSampleKineBinning& b, const std::vector<conv::KineVar_t>& ks)
 {
    // Get the reco binning and associated kinematic variables for the VALORArray
@@ -145,7 +230,7 @@ TH2D* UtlBinning::Make2DSimpleHistogram(const VALORArray& v,
    return histo;
 }
 
-VALORArray* UtlBinning::Contract(const VALORArray& v,
+VALORArray* Contract(const VALORArray& v,
       const SingleSampleKineBinning& currentBinning,
       const KBCubHcmbEdge2Edge& targetBinning)
 {
@@ -171,11 +256,11 @@ VALORArray* UtlBinning::Contract(const VALORArray& v,
    VALORArray* targetV = new VALORArray(targetBinning.NBins(), trueBinning.NBins());
   
    // Permute all bin combinations for the integration variable binning
-   std::vector<std::vector<int>> permRecoInt = UtlBinning::BinPermutation(
-         recoBinning, integrationKs);
+   std::vector<std::vector<int>> permRecoInt = BinPermutation(recoBinning,
+         integrationKs);
    // Permute all bin combinations for the new binning
-   std::vector<std::vector<int>> permRecoTarget = UtlBinning::BinPermutation(
-         targetBinning, targetBinning.KineSpace());
+   std::vector<std::vector<int>> permRecoTarget = BinPermutation(targetBinning,
+         targetBinning.KineSpace());
 
    // Get the dimensions of the various kinematic variables in the current reco
    // binning
@@ -234,7 +319,7 @@ VALORArray* UtlBinning::Contract(const VALORArray& v,
    return targetV;
 }
 
-TH1D* UtlBinning::Remap1D(const double* events, const KBCubHcmbEdge2Edge& b)
+TH1D* Remap1D(const double* events, const KBCubHcmbEdge2Edge& b)
 {
    // Find all bin edges
    std::set<double> dimEdges;
@@ -266,7 +351,7 @@ TH1D* UtlBinning::Remap1D(const double* events, const KBCubHcmbEdge2Edge& b)
    return histo;
 }
 
-TH2D* UtlBinning::RemapOptimised2D(const double* events,
+TH2D* RemapOptimised2D(const double* events,
       const KBCubHcmbMondrian& b)
 {
    // Find all bin edges in each dimension
@@ -313,7 +398,7 @@ TH2D* UtlBinning::RemapOptimised2D(const double* events,
    return histo;
 }
 
-TH2D* UtlBinning::RemapSimple2D(const double* events,
+TH2D* RemapSimple2D(const double* events,
       const KBCubHcmbEdge2Edge& b)
 {
    // Find all bin edges in each dimension
@@ -360,14 +445,14 @@ TH2D* UtlBinning::RemapSimple2D(const double* events,
    return histo;
 }
 
-std::vector<std::vector<int>> UtlBinning::BinPermutation(
+std::vector<std::vector<int>> BinPermutation(
       const KBCubHcmbEdge2Edge& binning, const conv::KineSpace_t ks)
 {
    auto kvs = util::KineVar(ks);
-   return UtlBinning::BinPermutation(binning, kvs);
+   return BinPermutation(binning, kvs);
 }
 
-std::vector<std::vector<int>> UtlBinning::BinPermutation(
+std::vector<std::vector<int>> BinPermutation(
       const KBCubHcmbEdge2Edge& binning,
       const std::vector<conv::KineVar_t>& kvs)
 {
@@ -426,6 +511,7 @@ std::vector<std::vector<int>> UtlBinning::BinPermutation(
    return permutation;
 }
 
+}
 }
 }
 

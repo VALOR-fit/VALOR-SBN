@@ -64,7 +64,7 @@ void CubicEdge2EdgeKBTest::Setup()
 {
    // Retrieve the location of the Mondrian XML file
    std::string filename = _arg->GetString("binning-file");
-   std::string fullFilename = util::UtlFile::GetConfigurationFilename(filename);
+   std::string fullFilename = util::file::GetConfigurationFilename(filename);
    
    _binning = new SingleSampleKineBinning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
         conv::ksNuMuCC);
