@@ -60,7 +60,7 @@
 		</postfit>
 	</parameter_group>
 	<!-- Interaction systematics -->
-	<parameter_group name="iteraction">
+	<parameter_group name="interaction">
  		<!-- Specify a file where the oscillation parameters are defined -->
 		<parameters>params/systematic/interaction/int_params.xml -->
     <!--

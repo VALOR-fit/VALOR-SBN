@@ -27,26 +27,6 @@
 		<maximum>0.109</maximum>
 		<nuisance>false</nuisance>
 		<marginalise>true</marginalise>
-		<!--
-			If marginalising a set of priors can be specified.
-			Nuisance parameters will have their priors determined
-			by the corresponding covariance matrix in the top-
-			level configuration file.
-		-->
-		<priors>
-			<!-- Specify one of gaus, flat or user -->
-			<gaus>
-				<mean>0.093</mean>
-				<sigma>0.008</sigma>
-			</gaus>
-			<flat>
-				<minimum>0.077</minimum>
-				<maximum>0.109</maximum>
-			</flat>
-			<user>
-				<histogram>theta13_prior.root</histogram>
-			</user>
-		</priors>
 		<!-- Optionally, errors can also be specified -->
 		<errors>
 			<!-- Choose one of migrad, hesse or minos -->
