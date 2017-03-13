@@ -54,14 +54,6 @@ for the analysis.
 		<!-- in kg, for calculating CCinc xsec-->
 		<interaction_mass>-999</interaction_mass>
 	</mc>
-	<!--
-		Specify the spline location and the pattern for generating per-sample
-		splines.
-	-->
-	<splines>
-		<folder>dune/ndfit/2016b/fd/splines</folder>
-		<pattern>valor_splines_[BEAM]_[SAMPLE]_[PARAM].root</pattern>
-	</splines>
 	<!-- Specify where to find the description of the binning to be applied -->
 	<default_binning>binning/fd_elike.xml</default_binning>
 </analysis_inputs>
