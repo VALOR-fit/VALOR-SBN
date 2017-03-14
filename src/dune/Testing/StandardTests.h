@@ -15,15 +15,7 @@
 #ifndef valor_testing_standard_tests
 #define valor_testing_standard_tests
 
-// valor
-#include "valor/Testing/MondrianKBTest.h"
-#include "valor/Testing/PhysParamsTest.h"
-#include "valor/Testing/TestSuite.h"
-
-// dune
-#include "dune/Testing/CubicEdge2EdgeKBTest.h"
-#include "dune/Testing/UtlBinningTest.h"
-#include "dune/Testing/UtlTest.h"
+#include "valor/CmdLine/CmdLnArgList.h"
 
 namespace valor
 {
