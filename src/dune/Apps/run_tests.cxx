@@ -17,9 +17,9 @@
 */
 
 // valor
-#include "valor/Messenger/Messenger.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Utilities/Env.h"
+#include "valor/Utilities/UtlSystem.h"
 #include "valor/Testing/MondrianKBTest.h"
 #include "valor/Testing/PhysParamsTest.h"
 #include "valor/Testing/TestSuite.h"
@@ -30,14 +30,7 @@
 #include "dune/Testing/UtlTest.h"
 
 // genie
-#include "Conventions/GBuild.h"
-#include "Ntuple/NtpMCEventRecord.h"
-#include "EVGCore/EventRecord.h"
-
-// Root
-#include <TFile.h>
-#include <TTree.h>
-
+#include "Messenger/Messenger.h"
 
 using namespace valor;
 
@@ -55,30 +48,22 @@ using namespace valor;
 void Configure(int argc, char** argv, CmdLnArgList& arg)
 {
    Env::Instance()->AutoSet("dune");
-   arg.Read(argc, argv, "$VALOR_DUNE/config/apps/run_tests.arg"
-         ":$VALOR_DUNE/config/apps/seeds.arg");
-   Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
+   std::string appArgs = util::CompleteConfigPath("apps/run_tests.arg");
+   std::string seedArgs = util::CompleteConfigPath("apps/seeds.arg");
+   arg.Read(argc, argv, (appArgs + ":" + seedArgs).c_str());
 
-   // This block of code is here only to ensure that the GENIE banner doesn't
-   // interfere with the test result output by invoking GENIE early.
-   std::string filename = arg.GetString("mc-events-file");
-   TFile file(filename.c_str(), "READ");
-   TTree* tree = dynamic_cast<TTree*>(file.Get("gtree"));
-   genie::NtpMCEventRecord* mcrec = nullptr;
-   for(Long64_t i = 0; i < tree->GetEntries(); ++i)
-   {
-      tree->GetEntry(i);
-      genie::EventRecord& event = *(mcrec->event);
-   }
-   delete tree;
+   std::string thresholds = util::CompleteConfigPath(arg.GetString(
+            "mesg-thresholds"));
+   genie::Messenger::Instance()->SetPrioritiesFromXmlFile(thresholds);
 }
 
 /**
-   Runs a set of unit tests.
+   Runs a set of unit tests, returning the result.
 
    \param arg The command line arguments specified.
+   \return The pass/failure status of the tests.
 */
-void Tests(CmdLnArgList& arg)
+bool Tests(CmdLnArgList& arg)
 {
    testing::TestSuite suite(arg);
 
@@ -88,7 +73,7 @@ void Tests(CmdLnArgList& arg)
    suite.Add("UtlBinningTest", new testing::UtlBinningTest);
    suite.Add("PhysParamsTest", new testing::PhysParamsTest);
 
-   suite.Run();
+   return suite.Run();
 }
 
 int main(int argc, char** argv)
@@ -96,7 +81,5 @@ int main(int argc, char** argv)
 
    CmdLnArgList arg;
    Configure(argc, argv, arg);
-   Tests(arg);
-  
-   return 0;
+   return Tests(arg);
 }
