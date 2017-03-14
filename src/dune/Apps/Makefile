@@ -23,7 +23,8 @@ TGT = make_nd_minidst \
       tweak_pdf_N \
       fitnt_conv \
       adaptive_mcmc \
-      run_tests
+      run_tests \
+      batch_tests
 
 all: $(TGT)
 
@@ -102,6 +103,14 @@ else
 	@echo "Skipping run_tests due to no GENIE"
 endif
 
+batch_tests: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c batch_tests.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) batch_tests.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-batch_tests
+else
+	@echo "Skipping run_tests due to no GENIE"
+endif
+
 #################### CLEANING
 
 purge: FORCE
@@ -118,6 +127,8 @@ clean: FORCE
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_tests
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-batch_tests
 
 distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
@@ -129,6 +140,8 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/tweak_pdf_N
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_tests
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-batch_tests
 
 FORCE:
 	

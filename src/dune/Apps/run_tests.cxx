@@ -20,14 +20,9 @@
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlSystem.h"
-#include "valor/Testing/MondrianKBTest.h"
-#include "valor/Testing/PhysParamsTest.h"
-#include "valor/Testing/TestSuite.h"
 
 // dune
-#include "dune/Testing/CubicEdge2EdgeKBTest.h"
-#include "dune/Testing/UtlBinningTest.h"
-#include "dune/Testing/UtlTest.h"
+#include "dune/Testing/StandardTests.h"
 
 // genie
 #include "Messenger/Messenger.h"
@@ -57,29 +52,9 @@ void Configure(int argc, char** argv, CmdLnArgList& arg)
    genie::Messenger::Instance()->SetPrioritiesFromXmlFile(thresholds);
 }
 
-/**
-   Runs a set of unit tests, returning the result.
-
-   \param arg The command line arguments specified.
-   \return The pass/failure status of the tests.
-*/
-bool Tests(CmdLnArgList& arg)
-{
-   testing::TestSuite suite(arg);
-
-   suite.Add("UtlTest", new testing::UtlTest);
-   suite.Add("MondrianKBTest", new testing::MondrianKBTest);
-   suite.Add("CubicEdge2EdgeKBTest", new testing::CubicEdge2EdgeKBTest);
-   suite.Add("UtlBinningTest", new testing::UtlBinningTest);
-   suite.Add("PhysParamsTest", new testing::PhysParamsTest);
-
-   return suite.Run();
-}
-
 int main(int argc, char** argv)
 {
-
    CmdLnArgList arg;
    Configure(argc, argv, arg);
-   return Tests(arg);
+   return testing::BatchTests(arg);
 }
