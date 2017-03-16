@@ -18,8 +18,8 @@
 
 // valor
 #include "valor/CmdLine/CmdLnArgList.h"
-#include "valor/Utilities/Env.h"
-#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/UtlFile.h"
+#include "valor/Utilities/UtlInit.h"
 
 // dune
 #include "dune/Testing/StandardTests.h"
@@ -40,19 +40,16 @@ using namespace valor;
    \param arg  An object to populate with the command line arguments as key
       value pairs.
 */
-void Configure(int argc, char** argv, CmdLnArgList& arg)
+void Configure(const int argc, const char** argv, CmdLnArgList& arg)
 {
-   Env::Instance()->AutoSet("dune");
-   std::string appArgs = util::CompleteConfigPath("apps/run_tests.arg");
-   std::string seedArgs = util::CompleteConfigPath("apps/seeds.arg");
-   arg.Read(argc, argv, (appArgs + ":" + seedArgs).c_str());
+   arg = util::init::Init("dune", "apps/run_tests.arg", "apps/seeds.arg",
+         argc, argv);
 
-   std::string thresholds = util::CompleteConfigPath(arg.GetString(
-            "mesg-thresholds"));
-   genie::Messenger::Instance()->SetPrioritiesFromXmlFile(thresholds);
+   genie::Messenger::Instance()->SetPrioritiesFromXmlFile(
+         util::file::GetConfigurationFilename("mesg-thresholds"));
 }
 
-int main(int argc, char** argv)
+int main(const int argc, const char** argv)
 {
    CmdLnArgList arg;
    Configure(argc, argv, arg);

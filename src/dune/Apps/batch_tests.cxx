@@ -20,10 +20,9 @@
 #include <vector>
 
 // valor
-#include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlFile.h"
-#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/UtlInit.h"
 
 // dune
 #include "dune/Testing/StandardTests.h"
@@ -52,9 +51,11 @@ std::vector<std::string> BatchArgs()
    args.push_back("--binning-file");
    args.push_back(util::file::GetDataFilename("test/binning.xml"));
    args.push_back("--params-sel-file");
-   args.push_back(util::CompleteConfigPath("dune_nd_fd_analysis_params.xml"));
+   args.push_back(util::file::GetConfigurationFilename(
+            "dune_nd_fd_analysis_params.xml"));
    args.push_back("--params-spec-file");
-   args.push_back(util::CompleteConfigPath("params_specification.xml"));
+   args.push_back(util::file::GetConfigurationFilename(
+            "params_specification.xml"));
 
    for(auto arg : args)
    {
@@ -75,23 +76,22 @@ std::vector<std::string> BatchArgs()
 */
 void Configure(CmdLnArgList& arg)
 {
+   // Usually this is handled by util::init::Init, but in this case the call
+   // to BatchArgs, which must precede Init, depends on the environment being
+   // set.
    Env::Instance()->AutoSet("dune");
-   std::string appArgs = util::CompleteConfigPath("apps/run_tests.arg");
-   std::string seedArgs = util::CompleteConfigPath("apps/seeds.arg");
-   
    std::vector<string> args = BatchArgs();
-   int argc = args.size();
+   const int argc = args.size();
    char* argv[argc];
    for(unsigned int i = 0; i < args.size(); ++i)
    {
       argv[i] = const_cast<char*>(args[i].c_str());
    }
 
-   arg.Read(argc, argv, (appArgs + ":" + seedArgs).c_str());
-
-   std::string thresholds = util::CompleteConfigPath(arg.GetString(
-            "mesg-thresholds"));
-   genie::Messenger::Instance()->SetPrioritiesFromXmlFile(thresholds);
+   arg = util::init::Init("dune", "apps/run_tests.arg", "apps/seeds.arg",
+         argc, const_cast<const char**>(argv));
+   genie::Messenger::Instance()->SetPrioritiesFromXmlFile(
+         util::file::GetConfigurationFilename("mesg-thresholds"));
 }
 
 int main()
