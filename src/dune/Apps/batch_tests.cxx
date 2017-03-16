@@ -56,6 +56,11 @@ std::vector<std::string> BatchArgs()
    args.push_back("--params-spec-file");
    args.push_back(util::CompleteConfigPath("params_specification.xml"));
 
+   for(auto arg : args)
+   {
+      std::cout << arg << std::endl;
+   }
+
    return args;
 }
 
