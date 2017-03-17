@@ -5,8 +5,8 @@
     Specify the key configuration files that define ana analysis. All other
     configuration files are linked from these key files.
   -->
-  <samples>samples/samples.xml</samples>
-  <parameters>params/params.xml</parameters>
-  <splines>splines/splines.xml</splines>
+  <samples>test/newxml/samples/samples.xml</samples>
+  <parameters>test/newxml/params/params.xml</parameters>
+  <splines>test/newxml/splines/splines.xml</splines>
 </valor> 
 

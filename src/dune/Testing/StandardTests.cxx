@@ -1,6 +1,7 @@
 #include "dune/Testing/StandardTests.h"
 
 // valor
+#include "valor/Testing/ConfigurationHandlerTest.h"
 #include "valor/Testing/ConfigurationTest.h"
 #include "valor/Testing/MondrianKBTest.h"
 #include "valor/Testing/PhysParamsTest.h"
@@ -26,6 +27,7 @@ bool BatchTests(CmdLnArgList& arg)
    suite.Add("UtlBinningTest", new UtlBinningTest);
    suite.Add("PhysParamsTest", new PhysParamsTest);
    suite.Add("ConfigurationTest", new ConfigurationTest);
+   suite.Add("ConfigurationHandlerTest", new ConfigurationHandlerTest);
 
    return suite.Run();
 }

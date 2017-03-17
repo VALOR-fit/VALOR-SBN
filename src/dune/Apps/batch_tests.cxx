@@ -56,6 +56,9 @@ std::vector<std::string> BatchArgs()
    args.push_back("--params-spec-file");
    args.push_back(util::file::GetConfigurationFilename(
             "params_specification.xml"));
+   args.push_back("--test-config-analysis-file");
+   args.push_back(util::file::GetConfigurationFilename(
+            "test/newxml/analysis.xml"));
 
    for(auto arg : args)
    {
