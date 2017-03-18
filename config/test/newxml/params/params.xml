@@ -7,7 +7,7 @@
 	<!-- Oscillation parameters -->
 	<parameter_group name="oscillation">
 		<!-- Specify a file where the oscillation parameters are defined -->
-		<parameters>params/oscillation/osc_params.xml -->
+		<parameters>params/oscillation/osc_params.xml</parameters>
 		<!--
 			Optionally define penalty terms, if this is omitted, parameters are
 			left free.
@@ -35,7 +35,7 @@
 	<!-- Flux systematics -->
 	<parameter_group name="flux">
 		<!-- Specify a file where the oscillation parameters are defined -->
-		<parameters>params/systematic/flux/flux_params.xml -->
+		<parameters>params/systematic/flux/flux_params.xml</parameters>
     <!--
 			Optionally define penalty terms, if this is omitted, parameters are
 			left free.
@@ -62,7 +62,7 @@
 	<!-- Interaction systematics -->
 	<parameter_group name="interaction">
  		<!-- Specify a file where the oscillation parameters are defined -->
-		<parameters>params/systematic/interaction/int_params.xml -->
+		<parameters>params/systematic/interaction/int_params.xml</parameters>
     <!--
 			Optionally define penalty terms, if this is omitted, parameters are
 			left free.
@@ -89,7 +89,7 @@
 	<!-- Detector systematics -->
 	<parameter_group name="detector">
 		<!-- Specify a file where the oscillation parameters are defined -->
-		<parameters>params/systematic/detector/det_params.xml -->
+		<parameters>params/systematic/detector/det_params.xml</parameters>
     <!--
 			Optionally define penalty terms, if this is omitted, parameters are
 			left free.
