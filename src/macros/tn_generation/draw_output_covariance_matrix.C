@@ -5,6 +5,11 @@ void draw_output_covariance_matrix(
   const char * input_file,
   int entry = 0)
 {
+  const int n_tot_flux = 52;
+  const int n_int = 44;
+  const int n_det = 0;
+  
+  const int n_params = n_tot_flux+n_int+n_det;
   
   TFile * tf = TFile::Open(input_file);
   
@@ -20,10 +25,10 @@ void draw_output_covariance_matrix(
   
   TMatrixD cov(*(best_fit_params->GetCovMatrix()));
   
-  TH2D * h = new TH2D("h","Fractional covariance matrix", 147,0.,147,147,0,147);
+  TH2D * h = new TH2D("h","Fractional covariance matrix", n_params,0.,n_params,n_params,0,n_params);
 
-  for(int i=0; i<147; i++){
-    for(int j=0; j<147; j++){
+  for(int i=0; i<n_params; i++){
+    for(int j=0; j<n_params; j++){
       double value = cov(i,j);
       h->SetBinContent(i+1,j+1,value);
     }
@@ -48,35 +53,35 @@ void draw_output_covariance_matrix(
     axis->SetBinLabel(30 ,"FHC #bar{#nu}_{#mu}");
     axis->SetBinLabel(42 ,"FHC #nu_{e}");
     axis->SetBinLabel(49 ,"FHC #bar{#nu}_{e}");
-    axis->SetBinLabel(63 ,"RHC #nu_{#mu}");
-    axis->SetBinLabel(82 ,"RHC #bar{#nu}_{#mu}");
-    axis->SetBinLabel(95 ,"RHC #nu_{e}");
-    axis->SetBinLabel(101,"RHC #bar{#nu}_{e}");
+    //~ axis->SetBinLabel(63 ,"RHC #nu_{#mu}");
+    //~ axis->SetBinLabel(82 ,"RHC #bar{#nu}_{#mu}");
+    //~ axis->SetBinLabel(95 ,"RHC #nu_{e}");
+    //~ axis->SetBinLabel(101,"RHC #bar{#nu}_{e}");
 
-    axis->SetBinLabel(4+104,"CCQE");
-    //~ axis->SetBinLabel(4+104,"#bar{#nu}_{#mu} CCQE");
-    axis->SetBinLabel(8+104,"MEC         ");
-    //~ axis->SetBinLabel(8+104,"#bar{#nu}_{#mu} MEC");
-    axis->SetBinLabel(12+104,"CC1#pi^{#pm}");
-    //~ axis->SetBinLabel(12+104,"#bar{#nu}_{#mu} CC1#pi^{#pm}");
-    axis->SetBinLabel(18+104,"CC1#pi^{0}");
-    //~ axis->SetBinLabel(18+104,"#bar{#nu}_{#mu} CC1#pi^{0}");
-    axis->SetBinLabel(21+104,"CC2#pi         ");
-    axis->SetBinLabel(26+104,"DIS");
-    //~ axis->SetBinLabel(26+104,"#bar{#nu}_{#mu} DIS");
-    axis->SetBinLabel(30+104,"CC coh       ");
-    axis->SetBinLabel(32+104,"NC");
-    //~ axis->SetBinLabel(33+104,"CC #nu_{e}/#nu_{#mu}");
-    //~ axis->SetBinLabel(34+104,"MFP #pi");
-    //~ axis->SetBinLabel(35+104,"MFP N");
-    axis->SetBinLabel(38+104,"#pi FSI");
-    //~ axis->SetBinLabel(37+104,"FrInel #pi");
-    //~ axis->SetBinLabel(38+104,"FrAbs #pi");
-    //~ axis->SetBinLabel(39+104,"FrPiProd #pi");
-    axis->SetBinLabel(43+104,"N FSI");
-    //~ axis->SetBinLabel(41+104,"FrInel N");
-    //~ axis->SetBinLabel(42+104,"FrAbs N");
-    //~ axis->SetBinLabel(43+104,"FrPiProd N");
+    axis->SetBinLabel(4+n_tot_flux,"CCQE");
+    //~ axis->SetBinLabel(4+n_tot_flux,"#bar{#nu}_{#mu} CCQE");
+    axis->SetBinLabel(8+n_tot_flux,"MEC         ");
+    //~ axis->SetBinLabel(8+n_tot_flux,"#bar{#nu}_{#mu} MEC");
+    axis->SetBinLabel(12+n_tot_flux,"CC1#pi^{#pm}");
+    //~ axis->SetBinLabel(12+n_tot_flux,"#bar{#nu}_{#mu} CC1#pi^{#pm}");
+    axis->SetBinLabel(18+n_tot_flux,"CC1#pi^{0}");
+    //~ axis->SetBinLabel(18+n_tot_flux,"#bar{#nu}_{#mu} CC1#pi^{0}");
+    axis->SetBinLabel(21+n_tot_flux,"CC2#pi         ");
+    axis->SetBinLabel(26+n_tot_flux,"DIS");
+    //~ axis->SetBinLabel(26+n_tot_flux,"#bar{#nu}_{#mu} DIS");
+    axis->SetBinLabel(30+n_tot_flux,"CC coh       ");
+    axis->SetBinLabel(32+n_tot_flux,"NC");
+    //~ axis->SetBinLabel(33+n_tot_flux,"CC #nu_{e}/#nu_{#mu}");
+    //~ axis->SetBinLabel(34+n_tot_flux,"MFP #pi");
+    //~ axis->SetBinLabel(35+n_tot_flux,"MFP N");
+    axis->SetBinLabel(36+n_tot_flux,"#pi FSI");
+    //~ axis->SetBinLabel(37+n_tot_flux,"FrInel #pi");
+    //~ axis->SetBinLabel(38+n_tot_flux,"FrAbs #pi");
+    //~ axis->SetBinLabel(39+n_tot_flux,"FrPiProd #pi");
+    axis->SetBinLabel(42+n_tot_flux,"N FSI");
+    //~ axis->SetBinLabel(41+n_tot_flux,"FrInel N");
+    //~ axis->SetBinLabel(42+n_tot_flux,"FrAbs N");
+    //~ axis->SetBinLabel(n_params,"FrPiProd N");
     //~ axis->LabelsOption("v");
 
     axis->SetTickLength(0.);
@@ -90,171 +95,89 @@ void draw_output_covariance_matrix(
   h->Draw("colz");
   h->GetZaxis()->SetRangeUser(10E-10,10E-6);
   //  h->Draw("colz");
+  
+  TLine * lines[100] = {};
 
-  TLine * l0 = new TLine(104,0,104,147);
-  TLine * l1 = new TLine(0,104,147,104);
+  lines[0] = new TLine(n_tot_flux,0,n_tot_flux,n_params);
+  lines[1] = new TLine(0,n_tot_flux,n_params,n_tot_flux);
 
-  TLine * l2 = new TLine(6+104,0,6+104,43+104);
-  TLine * l3 = new TLine(0,6+104,43+104,6+104);
+  lines[2] = new TLine(6+n_tot_flux,0,6+n_tot_flux,n_params);
+  lines[3] = new TLine(0,6+n_tot_flux,n_params,6+n_tot_flux);
 
-  TLine * l4 = new TLine(8+104,0,8+104,43+104);
-  TLine * l5 = new TLine(0,8+104,43+104,8+104);
+  lines[4] = new TLine(8+n_tot_flux,0,8+n_tot_flux,n_params);
+  lines[5] = new TLine(0,8+n_tot_flux,n_params,8+n_tot_flux);
 
-  TLine * l6 = new TLine(19,0,19,147);
-  TLine * l7 = new TLine(0,19,147,19);
+  lines[6] = new TLine(19,0,19,n_params);
+  lines[7] = new TLine(0,19,n_params,19);
 
-  TLine * l34 = new TLine(14+104,0,14+104,43+104);
-  TLine * l35 = new TLine(0,14+104,43+104,14+104);
+  lines[34] = new TLine(14+n_tot_flux,0,14+n_tot_flux,n_params);
+  lines[35] = new TLine(0,14+n_tot_flux,n_params,14+n_tot_flux);
 
-  TLine * l8 = new TLine(20+104,0,20+104,43+104);
-  TLine * l9 = new TLine(0,20+104,43+104,20+104);
+  lines[8] = new TLine(20+n_tot_flux,0,20+n_tot_flux,n_params);
+  lines[9] = new TLine(0,20+n_tot_flux,n_params,20+n_tot_flux);
 
-  TLine * l10 = new TLine(22+104,0,22+104,43+104);
-  TLine * l11 = new TLine(0,22+104,43+104,22+104);
+  lines[10] = new TLine(22+n_tot_flux,0,22+n_tot_flux,n_params);
+  lines[11] = new TLine(0,22+n_tot_flux,n_params,22+n_tot_flux);
 
-  TLine * l12 = new TLine(38,0,38,147);
-  TLine * l13 = new TLine(0,38,147,38);
+  lines[12] = new TLine(38,0,38,n_params);
+  lines[13] = new TLine(0,38,n_params,38);
 
-  TLine * l14 = new TLine(28+104,0,28+104,43+104);
-  TLine * l15 = new TLine(0,28+104,43+104,28+104);
+  lines[14] = new TLine(28+n_tot_flux,0,28+n_tot_flux,n_params);
+  lines[15] = new TLine(0,28+n_tot_flux,n_params,28+n_tot_flux);
 
-  TLine * l16 = new TLine(30+104,0,30+104,43+104);
-  TLine * l17 = new TLine(0,30+104,43+104,30+104);
+  lines[16] = new TLine(30+n_tot_flux,0,30+n_tot_flux,n_params);
+  lines[17] = new TLine(0,30+n_tot_flux,n_params,30+n_tot_flux);
 
-  TLine * l18 = new TLine(32+104,0,32+104,43+104);
-  TLine * l19 = new TLine(0,32+104,43+104,32+104);
+  lines[18] = new TLine(32+n_tot_flux,0,32+n_tot_flux,n_params);
+  lines[19] = new TLine(0,32+n_tot_flux,n_params,32+n_tot_flux);
 
-  TLine * l20 = new TLine(45,0,45,147);
-  TLine * l21 = new TLine(0,45,147,45);
+  lines[20] = new TLine(45,0,45,n_params);
+  lines[21] = new TLine(0,45,n_params,45);
 
-  TLine * l22 = new TLine(35+104,0,35+104,43+104);
-  TLine * l23 = new TLine(0,35+104,43+104,35+104);
+  //~ lines[22] = new TLine(35+n_tot_flux,0,35+n_tot_flux,n_params);
+  //~ lines[23] = new TLine(0,35+n_tot_flux,n_params,35+n_tot_flux);
 
-  TLine * l24 = new TLine(52,0,52,147);
-  TLine * l25 = new TLine(0,52,147,52);
+  lines[24] = new TLine(52,0,52,n_params);
+  lines[25] = new TLine(0,52,n_params,52);
 
-  TLine * l26 = new TLine(71,0,71,147);
-  TLine * l27 = new TLine(0,71,147,71);
+  lines[26] = new TLine(71,0,71,n_params);
+  lines[27] = new TLine(0,71,n_params,71);
 
-  TLine * l28 = new TLine(90,0,90,147);
-  TLine * l29 = new TLine(0,90,147,90);
+  lines[28] = new TLine(90,0,90,n_params);
+  lines[29] = new TLine(0,90,n_params,90);
 
-  TLine * l30 = new TLine(39+104,0,39+104,43+104);
-  TLine * l31 = new TLine(0,39+104,43+104,39+104);
+  //~ lines[30] = new TLine(39+n_tot_flux,0,39+n_tot_flux,n_params);
+  //~ lines[31] = new TLine(0,39+n_tot_flux,n_params,39+n_tot_flux);
 
-    TLine * l32 = new TLine(97,0,97,147);
-  TLine * l33 = new TLine(0,97,147,97);
+  lines[32] = new TLine(97,0,97,n_params);
+  lines[33] = new TLine(0,97,n_params,97);
 
 /*
-  TLine * l36 = new TLine(17,0,17,43);
-  TLine * l37 = new TLine(0,17,43,17);
+  lines[36] = new TLine(17,0,17,43);
+  lines[37] = new TLine(0,17,43,17);
 
-  TLine * l38 = new TLine(32,0,32,43);
-  TLine * l39 = new TLine(0,32,43,32);
+  lines[38] = new TLine(32,0,32,43);
+  lines[39] = new TLine(0,32,43,32);
 
-  TLine * l40 = new TLine(41,0,41,43);
-  TLine * l41 = new TLine(0,41,43,41);
+  lines[40] = new TLine(41,0,41,43);
+  lines[41] = new TLine(0,41,43,41);
 
-  TLine * l44 = new TLine(42,0,42,43);
-  TLine * l45 = new TLine(0,42,43,42);
+  lines[44] = new TLine(42,0,42,43);
+  lines[45] = new TLine(0,42,43,42);
   */
-  TLine * l42 = new TLine(33+104,0,33+104,43+104);
-  TLine * l43 = new TLine(0,33+104,43+104,33+104);
-
-
-  l0->SetLineWidth(2);
-  l1->SetLineWidth(2);
-  l2->SetLineWidth(2);
-  l3->SetLineWidth(2);
-  l4->SetLineWidth(2);
-  l5->SetLineWidth(2);
-  l6->SetLineWidth(2);
-  l7->SetLineWidth(2);
-  l8->SetLineWidth(2);
-  l9->SetLineWidth(2);
-  l10->SetLineWidth(2);
-  l11->SetLineWidth(2);
-  l12->SetLineWidth(2);
-  l13->SetLineWidth(2);
-  l14->SetLineWidth(2);
-  l15->SetLineWidth(2);
-  l16->SetLineWidth(2);
-  l17->SetLineWidth(2);
-  l18->SetLineWidth(2);
-  l19->SetLineWidth(2);
-  l20->SetLineWidth(2);
-  l21->SetLineWidth(2);
-  l22->SetLineWidth(2);
-  l23->SetLineWidth(2);
-  l24->SetLineWidth(2);
-  l25->SetLineWidth(2);
-  l26->SetLineWidth(2);
-  l27->SetLineWidth(2);
-  l28->SetLineWidth(2);
-  l29->SetLineWidth(2);
-  l30->SetLineWidth(2);
-  l31->SetLineWidth(2);
-    l32->SetLineWidth(2);
-  l33->SetLineWidth(2);
-    l34->SetLineWidth(2);
-  l35->SetLineWidth(2);
-  /*  l36->SetLineWidth(2);
-  l37->SetLineWidth(2);
-  l38->SetLineWidth(2);
-  l39->SetLineWidth(2);
-  l40->SetLineWidth(2);
-  l41->SetLineWidth(2);*/
-  l42->SetLineWidth(2);
-  l43->SetLineWidth(2);
-  //  l44->SetLineWidth(2);
-  //l45->SetLineWidth(2);
-
-  l0->Draw("same");
-  l1->Draw("same");
-  l2->Draw("same");
-  l3->Draw("same");
-  l4->Draw("same");
-  l5->Draw("same");
-  l6->Draw("same");
-  l7->Draw("same");
-  l8->Draw("same");
-  l9->Draw("same");
-  l10->Draw("same");
-  l11->Draw("same");
-  l12->Draw("same");
-  l13->Draw("same");
-  l14->Draw("same");
-  l15->Draw("same");
-  l16->Draw("same");
-  l17->Draw("same");
-  l18->Draw("same");
-  l19->Draw("same");
-  l20->Draw("same");
-  l21->Draw("same");
-  l22->Draw("same");
-  l23->Draw("same");
-  l24->Draw("same");
-  l25->Draw("same");
-  l26->Draw("same");
-  l27->Draw("same");
-  l28->Draw("same");
-  l29->Draw("same");
-  l30->Draw("same");
-  l31->Draw("same");
-  l32->Draw("same");
-  l33->Draw("same");
-  l34->Draw("same");
-  l35->Draw("same");
-  /*l36->Draw("same");
-  l37->Draw("same");
-  l38->Draw("same");
-  l39->Draw("same");
-  l40->Draw("same");
-  l41->Draw("same");*/
-  l42->Draw("same");
-  l43->Draw("same");
-  //  l44->Draw("same");
-  //l45->Draw("same");
+  //~ lines[42] = new TLine(33+n_tot_flux,0,33+n_tot_flux,n_params);
+  //~ lines[43] = new TLine(0,33+n_tot_flux,n_params,33+n_tot_flux);
+  
+  for (int il = 0 ; il < 100 ; il++) {
+    if (lines[il]) {
+      // Don't draw any lines off the edges
+      if (lines[il]->GetX1() <= n_params && lines[il]->GetY1() <= n_params &&
+          lines[il]->GetX2() <= n_params && lines[il]->GetY2() <= n_params) {
+        lines[il]->SetLineWidth(2);
+        lines[il]->Draw("same");
+      }
+    }
+  }
   
   c1->Print("cov.eps");
   
@@ -264,8 +187,8 @@ void draw_output_covariance_matrix(
   corr_canv->SetRightMargin(0.15);
   corr_canv->SetBottomMargin(xy_margin);
   TH2D * corr_hist = new TH2D(*h);
-  for(int i=0; i<147; i++){
-    for(int j=0; j<147; j++){
+  for(int i=0; i<n_params; i++){
+    for(int j=0; j<n_params; j++){
       double value = corr(i,j);
       corr_hist->SetBinContent(i+1,j+1,value);
     }
@@ -277,52 +200,15 @@ void draw_output_covariance_matrix(
   corr_hist->Draw("colz");
   corr_hist->GetZaxis()->SetRangeUser(-1.,1.);
   
-  l0->Draw("same");
-  l1->Draw("same");
-  l2->Draw("same");
-  l3->Draw("same");
-  l4->Draw("same");
-  l5->Draw("same");
-  l6->Draw("same");
-  l7->Draw("same");
-  l8->Draw("same");
-  l9->Draw("same");
-  l10->Draw("same");
-  l11->Draw("same");
-  l12->Draw("same");
-  l13->Draw("same");
-  l14->Draw("same");
-  l15->Draw("same");
-  l16->Draw("same");
-  l17->Draw("same");
-  l18->Draw("same");
-  l19->Draw("same");
-  l20->Draw("same");
-  l21->Draw("same");
-  l22->Draw("same");
-  l23->Draw("same");
-  l24->Draw("same");
-  l25->Draw("same");
-  l26->Draw("same");
-  l27->Draw("same");
-  l28->Draw("same");
-  l29->Draw("same");
-  l30->Draw("same");
-  l31->Draw("same");
-  l32->Draw("same");
-  l33->Draw("same");
-  l34->Draw("same");
-  l35->Draw("same");
-  /*l36->Draw("same");
-  l37->Draw("same");
-  l38->Draw("same");
-  l39->Draw("same");
-  l40->Draw("same");
-  l41->Draw("same");*/
-  l42->Draw("same");
-  l43->Draw("same");
-  //  l44->Draw("same");
-  //l45->Draw("same");
+  for (int il = 0 ; il < 100 ; il++) {
+    if (lines[il]) {
+      // Don't draw any lines off the edges
+      if (lines[il]->GetX1() <= n_params && lines[il]->GetY1() <= n_params &&
+          lines[il]->GetX2() <= n_params && lines[il]->GetY2() <= n_params) {
+        lines[il]->Draw("same");
+      }
+    }
+  }
   
   corr_canv->Print("corr.eps");
 
