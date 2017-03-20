@@ -6,10 +6,10 @@
 	-->
 	<defaults>
 		<bestfit>1.0</bestfit>
-		<init>1.0</bestfit>
+		<init>1.0</init>
 		<minimum>0.0</minimum>
 		<maximum>2.0</maximum>
-		<step_size>0.0001</stepsize>
+		<step_size>0.0001</step_size>
 		<scaling>1.0</scaling>
 		<fixed>false</fixed>
 		<nuisance>true</nuisance>
@@ -31,8 +31,9 @@
 		<errors>
 			<!-- Choose one of migrad, hesse or minos -->
 			<migrad>
-				<error>0.0</error>
-			</migrad>		
+				<error>0.6</error>
+			</migrad>
+      <!--
 			<hesse>
 				<error>0.0</error>
 			</hesse>
@@ -40,6 +41,7 @@
 				<low_error>0.0</low_error>
 				<high_error>0.0</high_error>
 			</minos>
+      -->
 		</errors>
 	</parameter>
 </parameters>
