@@ -101,15 +101,15 @@
 				the object name and type in the ROOT file.
 			-->
 			<covariance_matrix>
-				<filename>int_covariance.root</filename>
-				<objname>int_covariance</objname>
+				<filename>det_covariance.root</filename>
+				<objname>det_covariance</objname>
 				<objtype>TMatrixD</objtype>
 			</covariance_matrix>
 		</penalty_term>
 		<!-- Optionally specify a postfit file for non-unit means -->
 		<postfit>
-			<filename>int_postfit.root</filename>
-			<objname>int_postfit</objname>    
+			<filename>det_postfit.root</filename>
+			<objname>det_postfit</objname>    
 			<objtype>TVectorD</objtype>
 		</postfit>
 	</parameter_group>
