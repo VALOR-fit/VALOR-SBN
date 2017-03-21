@@ -55,6 +55,6 @@ for the analysis.
 		<interaction_mass>-999</interaction_mass>
 	</mc>
 	<!-- Specify where to find the description of the binning to be applied -->
-	<default_binning>test/newxml/binning/fd_elike.xml</default_binning>
+	<default_binning>test/newxml/binning/binning.xml</default_binning>
 </mc_inputs>
 
