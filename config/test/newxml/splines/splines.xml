@@ -6,6 +6,6 @@
 -->
 <splines>
 	<folder>dune/ndfit/2016b/fd/splines</folder>
-	<pattern>valor_splines_[BEAM]_[SAMPLE]_[PARAM].root</pattern>
+	<pattern>valor_splines_[BEAM]_[SELECTION]_[PARAM].root</pattern>
 </splines>
 
