@@ -15,7 +15,7 @@
     <beam>lbnf_fhc</beam>
     <selection>numucc0pi1trk</selection>
     <data>observations.root</data>
-    <mc>mc/dune_ndfit_2017a_FGT_pt4.xml</mc>
+    <mc>test/newxml/mc/mc.xml</mc>
     <data_class>valor::GenericSingleSampleFitData</data_class>
     <model_class>valor::GenericSingleSampleFitModel</model_class>
   </sample>
