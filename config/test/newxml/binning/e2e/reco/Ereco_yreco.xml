@@ -11,7 +11,7 @@
 	<Ereco_binning>
 		<bin_size>variable</bin_size>
 		<nbins>3</nbins>
-		<bin_edges>0.0, 1.0, 3.0, 7.0, 10.0</bin_edges>
+		<bin_edges>0.0, 1.0, 3.0, 10.0</bin_edges>
 	</Ereco_binning>
 	<yreco_binning>
 		<bin_size>fixed</bin_size>
