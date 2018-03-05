@@ -74,7 +74,7 @@ void valor::util::ArrIdx::Init(void)
     BeamConf_t b = kBeamConf[ib];
     if(b == kbUndefined) continue;
     fBeamConfIdx[b] = ib;
-    LOG("ArrIdx",pINFO)
+    LOG("ArrIdx",pDEBUG)
        << "Beam config: [" << util::AsString(b) << "] --> at slot: " << fBeamConfIdx[b];
   }//ib
 
@@ -85,7 +85,7 @@ void valor::util::ArrIdx::Init(void)
         Sample_t s = kSample[ib][is];
         if(s == ksUndefined) continue;
         fSampleIdx [b][s] = is; // HERE
-        LOG("ArrIdx",pINFO) 
+        LOG("ArrIdx",pDEBUG) 
             << "Fit sample: [" << util::AsString(b)  << "/" 
             << util::AsString(s) << "] --> at slot: " << fSampleIdx[s][b];
     }//is
@@ -99,7 +99,7 @@ void valor::util::ArrIdx::Init(void)
       ReacMode_t m = kReactionModes[is][im];
         if(m == kmUndefined) continue;
         fReacModeIdx [s][m] = im;
-        LOG("ArrIdx",pINFO)
+        LOG("ArrIdx",pDEBUG)
                << " ... with contribution from mode: [" << util::AsString(m) 
                << "] --> at slot: " << fReacModeIdx [s][m];
     }//im
@@ -109,7 +109,7 @@ void valor::util::ArrIdx::Init(void)
      PhysParamId_t p = kFitParam[ip];
      if(p == kPhypUndefined) continue;
      fFitParamIdx[p] = ip;
-     LOG("ArrIdx",pINFO)
+     LOG("ArrIdx",pDEBUG)
         << "Fit parameter: " << util::AsString(p) 
         << " is at slot: " << fFitParamIdx[p];
   }
