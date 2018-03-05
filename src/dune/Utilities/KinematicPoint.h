@@ -36,8 +36,12 @@ public:
   double reco1;
   double reco2;
   double reco3;
+  
+  friend std::ostream & operator << (std::ostream & stream, const KinematicPoint & rfl);
 
 }; //KinematicPoint
+
+std::ostream & operator << (std::ostream & stream, const KinematicPoint & rfl);
 
 }      // Namespace util
 }      // valor namespace

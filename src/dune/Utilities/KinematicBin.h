@@ -38,7 +38,10 @@ public:
   int reco3;
   int zone ;
 
+  friend std::ostream & operator << (std::ostream & stream, const KinematicBin & rfl);
 }; //KinematicBin
+
+std::ostream & operator << (std::ostream & stream, const KinematicBin & rfl);
 
 }      // Namespace util
 }      // valor namespace

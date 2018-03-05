@@ -25,3 +25,9 @@ KinematicBin::KinematicBin(void)
   
 }
 //________________________________________________________________________________________
+std::ostream& valor::util::operator<<(std::ostream& s,const KinematicBin & b)
+{
+  s<<"True("<<b.true1<<","<<b.true2<<","<<b.true3<<")\tReco("<<b.reco1<<","<<b.reco2<<","<<b.reco3<<")\tZone"<<b.zone<<std::endl;
+  return s;
+}
+//________________________________________________________________________________________
