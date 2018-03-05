@@ -333,8 +333,8 @@ void GenericSingleSampleFitData::Book(void)
   fName      = util::nm::DSetName(fDetector, fBeam, fSample, fKSp);
   fModelName = util::nm::MdlName (fDetector, fBeam, fSample, fKSp);
   
-  const KBCubHcmbMondrian  * reco_ob = fBinning->RecoOptBinning();
-  const KBCubHcmbEdge2Edge * reco_sb = fBinning->RecoSmpBinning();
+  const VALORBinning * reco_ob = fBinning->RecoOptBinning();
+  const VALORBinning * reco_sb = fBinning->RecoSmpBinning();
 
   fDataObNull = false;
   fDataOb     = new VALORArray(reco_ob->NBins());

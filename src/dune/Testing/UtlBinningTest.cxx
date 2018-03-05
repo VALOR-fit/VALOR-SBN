@@ -123,9 +123,9 @@ void UtlBinningTest::Setup()
         conv::ksNuMuCC);
    _binning->Read(fullFilename);
 
-   KBCubHcmbMondrian& recoOptBinning = (*_binning->RecoOptBinning());
-   KBCubHcmbEdge2Edge& recoSmpBinning = (*_binning->RecoSmpBinning());
-   KBCubHcmbEdge2Edge& trueBinning = (*_binning->TrueSmpBinning(0));
+   VALORBinning& recoOptBinning = *(_binning->RecoOptBinning());
+   VALORBinning& recoSmpBinning = *(_binning->RecoSmpBinning());
+   VALORBinning& trueBinning    = *(_binning->TrueSmpBinning(0));
 
    _vOpt = new VALORArray(recoOptBinning.NBins(), trueBinning.NBins());
    for(int i = 0; i < recoOptBinning.NBins(); ++i)

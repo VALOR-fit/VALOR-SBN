@@ -307,7 +307,7 @@ bool SingleSampleKineBinning::Read(string file)
   // For now just check there's more bins
   if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
     LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
-      <<") than optimised bins ("<<fRecoSimpleBinning->NBins()<<"). You did something wrong.";
+      <<") than optimised bins ("<<fRecoOptimizedBinning->NBins()<<"). You did something wrong.";
     util::Die(-1); return false;
   }
   if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
@@ -316,17 +316,20 @@ bool SingleSampleKineBinning::Read(string file)
     util::Die(-1); return false;
   }
   
+  xml->FreeDoc(xmldoc);
+  delete xml;
+  
   return true;
 }
 //________________________________________________________________________________________
-KBCubHcmbEdge2Edge * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m) const
+VALORBinning * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
   int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
   return this->TrueSmpBinning(im);
 }
 //________________________________________________________________________________________
-KBCubHcmbEdge2Edge * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m) const
+VALORBinning * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
   int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
@@ -335,37 +338,48 @@ KBCubHcmbEdge2Edge * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m
 //________________________________________________________________________________________
 void SingleSampleKineBinning::Init(void)
 {
+  fDetector = conv::kdUndefined; 
   fBeamConf = conv::kbUndefined; 
   fSample   = conv::ksUndefined;
 
-  fRecoOptimizedBinning = NULL;
-  fRecoSimpleBinning    = NULL;
-  fXsecRecoBinning      = NULL;
+  fRecoOptimizedBinning = nullptr;
+  fRecoSimpleBinning    = nullptr;
+  fXsecRecoBinning      = nullptr;
 
   for(int im = 0; im < conv::kNReacModes; im++) {
-     fTrueSimpleBinning [im] = NULL;
+     fTrueSimpleBinning [im] = nullptr;
+     fXsecTrueBinning   [im] = nullptr;
   }
 
   fTrueSimpleBinningUnique.clear();
+  fXsecTrueBinningUnique  .clear();
 }
 //________________________________________________________________________________________
 void SingleSampleKineBinning::CleanUp(void)
 {
-  if (fRecoOptimizedBinning) { delete fRecoOptimizedBinning; fRecoOptimizedBinning = 0; }
-  if (fRecoSimpleBinning   ) { delete fRecoSimpleBinning;    fRecoSimpleBinning    = 0; }
-  if (fXsecRecoBinning     ) { delete fXsecRecoBinning;      fXsecRecoBinning    = 0; }
+  std::vector<VALORBinning*> deleted_binnings;
   
-  vector<KBCubHcmbEdge2Edge *>::iterator it = fTrueSimpleBinningUnique.begin();
-  for( ; it != fTrueSimpleBinningUnique.end(); ++it) {
-    KBCubHcmbEdge2Edge * binning = *it;
-    if(binning) { delete binning; }
-  }
-  fTrueSimpleBinningUnique.clear();
-
+  std::function<void(VALORBinning*)> delete_binning = [&](VALORBinning* b) {
+    // Check we haven't deleted it already
+    if (b && std::find(deleted_binnings.begin(),deleted_binnings.end(),b) == deleted_binnings.end()) {
+      deleted_binnings.push_back(b);
+      delete b;
+    }
+    b = nullptr;
+  };
+  
+  delete_binning(fRecoOptimizedBinning);  
+  delete_binning(fRecoSimpleBinning);  
+  delete_binning(fXsecRecoBinning);
+  
   for(int im = 0; im < conv::kNReacModes; im++) {
-     fTrueSimpleBinning [im] = 0;
+    delete_binning(fTrueSimpleBinning [im]);
+    delete_binning(fXsecTrueBinning   [im]);
   }
-
+  
+  for (auto & b : fTrueSimpleBinningUnique) {delete_binning(b);}
+  for (auto & b : fXsecTrueBinningUnique  ) {delete_binning(b);}
+  return;
 }
 //________________________________________________________________________________________
 unsigned int SingleSampleKineBinning::GetRecoOptBin(unsigned int reco_smp_bin) const

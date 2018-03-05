@@ -121,12 +121,17 @@ private:
 
   const util::ArrIdx * fArrIdx;
   
-  // Cache whether or not to apply a given parameter to a given template
-  bool fParamIsAppliedTo[conv::kNReacModes][conv::kNFitParams];
+  // Keep track of the parameters we need to loop over
+  std::vector<conv::PhysParamId_t> fParams;
+  // Normalisation and spline parameters divided
+  std::vector<conv::PhysParamId_t> fNormParams;
+  std::vector<conv::PhysParamId_t> fSplineParams;
   
-  // Cache whether or not a parameter uses splines
-  bool fParamHasSplines[conv::kNFitParams];
-
+  // Cache whether each parameter is applied to each entry
+  std::vector<bool> fParamIsAppliedTo      [conv::kNReacModes];
+  std::vector<bool> fNormParamIsAppliedTo  [conv::kNReacModes];
+  std::vector<bool> fSplineParamIsAppliedTo[conv::kNReacModes];
+  
   NuOsc3Flavour  fNuOsc3Flavour;
   PhysHypothesis fPhysHypothesis;
 

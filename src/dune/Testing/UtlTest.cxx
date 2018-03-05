@@ -5,9 +5,8 @@
 #include <TTree.h>
 
 // genie
-#include "Conventions/GBuild.h"
-#include "EVGCore/EventRecord.h"
-#include "Ntuple/NtpMCEventRecord.h"
+#include "Framework/EventGen/EventRecord.h"
+#include "Framework/Ntuple/NtpMCEventRecord.h"
 
 // valor
 #include "valor/Utilities/UtlFile.h"

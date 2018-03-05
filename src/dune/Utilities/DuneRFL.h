@@ -51,6 +51,7 @@ public:
 
   DuneRFL();
   DuneRFL(const SingleSampleKineBinning * binning, int n_params, const conv::PhysParamId_t * param_ids);
+  DuneRFL(const SingleSampleKineBinning * binning, const std::vector<conv::PhysParamId_t> & params);
  ~DuneRFL();
 
   // Define a dummy spline pointer to an object we know, so we can use its address as a special argument.

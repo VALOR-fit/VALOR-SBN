@@ -70,6 +70,9 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[R
   
 }
 //________________________________________________________________________________________
+valor::util::DuneRFL::DuneRFL(const SingleSampleKineBinning * binning, const std::vector<PhysParamId_t> & params)
+ : DuneRFL(binning,params.size(),params.data()) {}
+//________________________________________________________________________________________
 valor::util::DuneRFL::DuneRFL(const SingleSampleKineBinning * binning, int n_params, const PhysParamId_t * param_ids)
  :
 fBinning       (binning),
@@ -102,13 +105,13 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
     }
   }
   
-  const KBCubHcmbMondrian  * reco_ob = fBinning->XsecRecoBinning();
+  const VALORBinning  * reco_ob = fBinning->XsecRecoBinning();
 
   fNBinsReco  = reco_ob->NBins();
   // Calculate max bin numbers
   for (int im = 0 ; im < fNModes ; im++) {
     conv::ReacMode_t m = fModes[im];
-    const KBCubHcmbEdge2Edge * true_sb = fBinning->XsecTrueBinning(m);
+    const VALORBinning * true_sb = fBinning->XsecTrueBinning(m);
     fNBinsTrue = std::max(fNBinsTrue,true_sb->NBins());
   }
 }
@@ -126,8 +129,8 @@ valor::util::DuneRFL::~DuneRFL()
     delete[] fSplines;
   }
   
-  if (fModes        )  {delete fModes;        }
-  if (fParams       )  {delete fParams;       }
+  if (fModes        )  {delete[] fModes;        }
+  if (fParams       )  {delete[] fParams;       }
 }
 //________________________________________________________________________________________
 void valor::util::DuneRFL::Print(ostream & stream) const
@@ -247,7 +250,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
     if(m == conv::kmUndefined) continue;
     
-    const KBCubHcmbEdge2Edge * true_sb = fBinning->XsecTrueBinning(m);
+    const VALORBinning * true_sb = fBinning->XsecTrueBinning(m);
     const int n_bins_true = true_sb->NBins();
     const int n_bins_reco = fNBinsReco;
     
@@ -345,20 +348,23 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
 //________________________________________________________________________________________
 std::pair<int,int> valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m) const
 {
-  const KBCubHcmbEdge2Edge * true_sb = fBinning->XsecTrueBinning(m);
-  const KBCubHcmbMondrian  * reco_ob = fBinning->XsecRecoBinning();
+  const VALORBinning * true_binning = fBinning->XsecTrueBinning(m);
+  const VALORBinning * reco_binning = fBinning->XsecRecoBinning();
   
+  int nrecodim = reco_binning->NDimensions();
   std::vector<double> recovec;
-  recovec.push_back(kp.reco1);
-  recovec.push_back(kp.reco2); // Mondrian must be 2D for now
-  const int ireco = reco_ob->FindBin(recovec);
+  if (nrecodim > 0) { recovec.push_back(kp.reco1); }
+  if (nrecodim > 1) { recovec.push_back(kp.reco2); }
+  if (nrecodim > 2) { recovec.push_back(kp.reco3); }
   
-  int ntruedim = true_sb->NDimensions();
+  int ntruedim = true_binning->NDimensions();
   std::vector<double> truevec;
   if (ntruedim > 0) { truevec.push_back(kp.true1); }
   if (ntruedim > 1) { truevec.push_back(kp.true2); }
   if (ntruedim > 2) { truevec.push_back(kp.true3); }
-  const int itrue = true_sb->FindLinearizedBin(truevec);
+  
+  const int itrue = true_binning->FindBin(truevec);
+  const int ireco = reco_binning->FindBin(recovec);
   return std::pair<int,int>(itrue,ireco);
 }
 //________________________________________________________________________________________

@@ -88,16 +88,16 @@ public:
 
   bool Read(string file);
 
-  KBCubHcmbMondrian *  RecoOptBinning(void)   const { return fRecoOptimizedBinning;    }
-  KBCubHcmbEdge2Edge * RecoSmpBinning(void)   const { return fRecoSimpleBinning;       }
-  KBCubHcmbEdge2Edge * TrueSmpBinning(int im) const { return fTrueSimpleBinning [im];  }
+  VALORBinning *  RecoOptBinning(void)   const { return fRecoOptimizedBinning;    }
+  VALORBinning * RecoSmpBinning(void)   const { return fRecoSimpleBinning;       }
+  VALORBinning * TrueSmpBinning(int im) const { return fTrueSimpleBinning [im];  }
   // Return Simple Binning for the reaction mode, m
-  KBCubHcmbEdge2Edge * TrueSmpBinning(conv::ReacMode_t m) const;
+  VALORBinning * TrueSmpBinning(conv::ReacMode_t m) const;
   
   // Cross sections binnings. For now truth is always the same as the simple binning, and reco is always optimised
-  KBCubHcmbMondrian  * XsecRecoBinning(void              )  const { return fXsecRecoBinning  ;}
-  KBCubHcmbEdge2Edge * XsecTrueBinning(conv::ReacMode_t m)  const;
-  KBCubHcmbEdge2Edge * XsecTrueBinning(int im            )  const { return fXsecTrueBinning[im];}
+  VALORBinning  * XsecRecoBinning(void              )  const { return fXsecRecoBinning  ;}
+  VALORBinning * XsecTrueBinning(conv::ReacMode_t m)  const;
+  VALORBinning * XsecTrueBinning(int im            )  const { return fXsecTrueBinning[im];}
 
   conv::BeamConf_t     GetBeamConf(void)      const { return fBeamConf; }
   conv::Sample_t       GetSample  (void)      const { return fSample;   }
@@ -120,7 +120,7 @@ private:
   std::vector<KBCubHcmbEdge2Edge *> fTrueSimpleBinningUnique;           // 
   
   
-  KBCubHcmbMondrian *          fXsecRecoBinning;                           // Binning for Xsec splines
+  KBCubHcmbMondrian *          fXsecRecoBinning;                     // Binning for Xsec splines
   KBCubHcmbEdge2Edge *         fXsecTrueBinning [conv::kNReacModes]; //
   std::vector<KBCubHcmbEdge2Edge *> fXsecTrueBinningUnique;          // 
 };
