@@ -202,6 +202,19 @@ if($have_fmwk_requirement) {
   print "No VALOR framework package version requirement\n\n";
 }
 
+# Work out the GENIE version
+if ($ENV{GENIE}) {
+  $GENIE_ENABLED = 1;
+  if (`genie-config --version` >= 3) {
+    $GENIE_VERSION = 3;
+  }
+  else {
+    $GENIE_VERSION = 2;
+  }
+}
+else {
+  $GENIE_ENABLED = 0;
+}
 
 # 
 # Read version info and automatically generate a header file with relevant flags that
@@ -243,6 +256,11 @@ print BLD_HEADER_FILE " */ \n\n\n\n";
 
 if ($opt_enable_low_level_messages eq "YES") {
   print BLD_HEADER_FILE "#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED\n\n";
+}
+
+print BLD_HEADER_FILE "#define GENIE_ENABLED $GENIE_ENABLED\n";
+if ($GENIE_ENABLED) {
+  print BLD_HEADER_FILE "#define GENIE_VERSION $GENIE_VERSION\n\n";
 }
 
 print BLD_HEADER_FILE "\n\n#endif //_VALOR_DUNE_BUILD_H_ \n\n";
