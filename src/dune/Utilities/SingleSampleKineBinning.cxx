@@ -6,6 +6,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 */
 //________________________________________________________________________________________
 
+#include <functional>
+
 #include <TSystem.h>
 
 #include "valor/Conventions/Constants.h"
