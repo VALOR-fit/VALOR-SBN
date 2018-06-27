@@ -34,18 +34,7 @@
 #include <TSystem.h>
 
 // genie
-#include "Conventions/GBuild.h"
-#include "EVGCore/EventRecord.h"
-#include "GHEP/GHepParticle.h"
-#include "Ntuple/NtpMCFormat.h"
-#include "Ntuple/NtpMCTreeHeader.h"
-#include "Ntuple/NtpMCEventRecord.h"
-#include "Messenger/Messenger.h"
-#include "PDG/PDGCodes.h"
-#include "PDG/PDGUtils.h"
-#include "PDG/PDGLibrary.h"
-#include "Utils/CmdLnArgParser.h"
-#include "Utils/RunOpt.h"
+#include "dune/GENIEUtilities/GENIEIncludes.h"
 
 // valor/dune
 #include "valor/Conventions/Constants.h"
@@ -101,7 +90,6 @@ double GetTotalPOT(std::string filename, int runno);
 int main(int argc, char ** argv)
 {
   // Set GENIE print level
-  genie::Messenger::Instance();
   genie::GHepRecord::SetPrintLevel(genie::RunOpt::Instance()->EventRecordPrintLevel());
   
   using namespace valor;
