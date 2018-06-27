@@ -28,7 +28,7 @@
 #include "dune/Testing/StandardTests.h"
 
 // genie
-#include "Messenger/Messenger.h"
+#include "dune/GENIEUtilities/GENIEIncludes.h"
 
 using namespace valor;
 
@@ -93,8 +93,8 @@ void Configure(CmdLnArgList& arg)
 
    arg = util::init::Init("dune", "apps/run_tests.arg", "apps/seeds.arg",
          argc, const_cast<const char**>(argv));
-   genie::Messenger::Instance()->SetPrioritiesFromXmlFile(
-         util::file::GetConfigurationFilename("mesg-thresholds"));
+   //~ genie::Messenger::Instance()->SetPrioritiesFromXmlFile(
+         //~ util::file::GetConfigurationFilename("mesg-thresholds"));
 }
 
 int main()
