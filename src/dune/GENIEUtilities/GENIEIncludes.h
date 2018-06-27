@@ -28,6 +28,27 @@
 
 #else //genie 2
 
+#include "Conventions/GBuild.h"
+#include "Conventions/Units.h"
+#include "EVGCore/EventRecord.h"
+#include "GHEP/GHepParticle.h"
+#include "PDG/PDGCodes.h"
+#include "PDG/PDGLibrary.h"
+#include "PDG/PDGUtils.h"
+#include "Messenger/Messenger.h"
+#include "Ntuple/NtpMCEventRecord.h"
+#include "Ntuple/NtpMCFormat.h"
+#include "Ntuple/NtpMCTreeHeader.h"
+#include "Utils/AppInit.h"
+#include "Utils/CmdLnArgParser.h"
+#include "Utils/RunOpt.h"
+#include "ReWeight/GReWeight.h"
+#include "ReWeight/GReWeightI.h"
+#include "ReWeight/GReWeightINuke.h"
+#include "ReWeight/GSyst.h"
+#include "ReWeight/GSystSet.h"
+#include "ReWeight/GSystUncertainty.h"
+
 #endif
 
 

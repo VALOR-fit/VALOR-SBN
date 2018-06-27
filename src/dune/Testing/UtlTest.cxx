@@ -5,8 +5,7 @@
 #include <TTree.h>
 
 // genie
-#include "Framework/EventGen/EventRecord.h"
-#include "Framework/Ntuple/NtpMCEventRecord.h"
+#include "dune/GENIEUtilities/GENIEIncludes.h"
 
 // valor
 #include "valor/Utilities/UtlFile.h"
