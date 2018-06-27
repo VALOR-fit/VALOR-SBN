@@ -143,8 +143,8 @@ int main(int argc, char ** argv)
   const SingleSampleKineBinning & binning  = *(fit_model->GetBinning());
   
   // Make it an option here to use the Xsec binning instead
-  const KBCubHcmbMondrian  * reco_ob = binning.RecoOptBinning();
-  const KBCubHcmbEdge2Edge * reco_sb = binning.RecoSmpBinning();
+  const KBCubHcmbMondrian  * reco_ob = static_cast<KBCubHcmbMondrian*>  (binning.RecoOptBinning());
+  const KBCubHcmbEdge2Edge * reco_sb = static_cast<KBCubHcmbEdge2Edge*> (binning.RecoSmpBinning());
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
   
@@ -168,7 +168,7 @@ int main(int argc, char ** argv)
     for(int imode = 0; imode < kNReacModes; imode++) {
       ReacMode_t m = kReactionModes[isample][imode];
       if(m == kmUndefined) continue;
-      const KBCubHcmbEdge2Edge * true_sb = binning.TrueSmpBinning(m);
+      const KBCubHcmbEdge2Edge * true_sb = static_cast<KBCubHcmbEdge2Edge*>(binning.TrueSmpBinning(m));
       const int n_true_bins_sb  = true_sb->NBins();
       if (include_sb) {
         mc_templ_sb [itwk][imode] = 
@@ -338,10 +338,10 @@ int main(int argc, char ** argv)
       recovec.push_back(curr_enu_reco);
       recovec.push_back(curr_y_reco);
       
-      const KBCubHcmbEdge2Edge * true_sb = binning.TrueSmpBinning(curr_mode);
-      const int itrue_sb = true_sb->FindLinearizedBin(truevec);
+      const KBCubHcmbEdge2Edge * true_sb = static_cast<KBCubHcmbEdge2Edge*>(binning.TrueSmpBinning(curr_mode));
+      const int itrue_sb = true_sb->FindBin(truevec);
       const int ireco_ob = reco_ob->FindBin(recovec);
-      const int ireco_sb = reco_sb->FindLinearizedBin(recovec);
+      const int ireco_sb = reco_sb->FindBin(recovec);
 
       if (include_sb) {
         mc_templ_sb [itwk] [imode]      -> AddToEntry(wght, ireco_sb, itrue_sb); 
@@ -369,7 +369,7 @@ int main(int argc, char ** argv)
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
-    const KBCubHcmbEdge2Edge * true_sb = binning.TrueSmpBinning(m);
+    const KBCubHcmbEdge2Edge * true_sb = static_cast<KBCubHcmbEdge2Edge*>(binning.TrueSmpBinning(m));
     const int n_true_bins_sb = true_sb->NBins();
     
     if (include_sb) {
