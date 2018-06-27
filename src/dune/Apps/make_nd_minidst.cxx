@@ -56,7 +56,6 @@ static const int gPrintEveryNEvents = 50000;
 int main(int argc, char ** argv)
 {
   // Set GENIE print level
-  genie::Messenger::Instance();
   genie::GHepRecord::SetPrintLevel(genie::RunOpt::Instance()->EventRecordPrintLevel());
   
   TString messenger_config("$VALOR_DUNE/config/verbosity.xml");
@@ -425,7 +424,7 @@ void GetCommandLineArgs(int argc, char ** argv)
   } else {
     VLOG("make_minidst", pFATAL) 
       << "Unspecified input file - Exiting";
-    genie::gAbortingInErr = true;
+    //~ genie::gAbortingInErr = true;
     exit(1);
   }
 
