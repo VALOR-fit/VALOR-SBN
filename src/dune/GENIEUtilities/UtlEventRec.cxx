@@ -13,15 +13,6 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "TString.h"
 #include "TMath.h"
 
-// GENIE
-#include "Framework/Conventions/GBuild.h"
-#include "Framework/Conventions/Units.h"
-#include "Framework/EventGen/EventRecord.h"
-#include "Framework/GHEP/GHepParticle.h"
-#include "Framework/ParticleData/PDGCodes.h"
-#include "Framework/ParticleData/PDGUtils.h"
-#include "Framework/ParticleData/PDGLibrary.h"
-
 // valor/dune
 #include "valor/Conventions/PDG.h"
 #include "valor/Messenger/Messenger.h"
@@ -30,6 +21,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/Sample.h"
+
+#include "dune/GENIEUtilities/GENIEIncludes.h"
 
 #include "dune/GENIEUtilities/UtlEventRec.h"
 

@@ -34,26 +34,6 @@
 #include <TSystem.h>
 #include <TMath.h>
 
-// genie
-#include "Conventions/GBuild.h"
-#include "EVGCore/EventRecord.h"
-#include "GHEP/GHepParticle.h"
-#include "Ntuple/NtpMCFormat.h"
-#include "Ntuple/NtpMCTreeHeader.h"
-#include "Ntuple/NtpMCEventRecord.h"
-#include "PDG/PDGCodes.h"
-#include "PDG/PDGUtils.h"
-#include "PDG/PDGLibrary.h"
-#include "Utils/AppInit.h"
-#include "Utils/CmdLnArgParser.h"
-#include "Utils/RunOpt.h"
-#include "ReWeight/GReWeightI.h"
-#include "ReWeight/GSystSet.h"
-#include "ReWeight/GSyst.h"
-#include "ReWeight/GSystUncertainty.h"
-#include "ReWeight/GReWeight.h"
-#include "ReWeight/GReWeightINuke.h"
-
 // valor
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
@@ -69,6 +49,7 @@
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ArrIdx.h"
+#include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/DuneRFL.h"
