@@ -142,9 +142,9 @@
   <parameter> f_eff_fhc_nuecc_other_11 </parameter>
   <parameter> f_eff_fhc_nuecc_ws_01 </parameter>
   <parameter> f_eff_fhc_nuecc_ws_02 </parameter>
-  <parameter> f_eff_fhc_nc_0pi_01 </parameter>
-  <parameter> f_eff_fhc_nc_0pi_02 </parameter>
-  <parameter> f_eff_fhc_nc_0pi_03 </parameter>
+  <parameter> f_eff_fhc_nc_0pi_01  </parameter>
+  <parameter> f_eff_fhc_nc_0pi_02  </parameter>
+  <parameter> f_eff_fhc_nc_0pi_03  </parameter>
   <parameter> f_eff_fhc_nc_1pic_01 </parameter>
   <parameter> f_eff_fhc_nc_1pic_02 </parameter>
   <parameter> f_eff_fhc_nc_1pic_03 </parameter>
@@ -297,9 +297,9 @@
   <parameter> f_eff_rhc_nuecc_other_11 </parameter>
   <parameter> f_eff_rhc_nuecc_ws_01 </parameter>
   <parameter> f_eff_rhc_nuecc_ws_02 </parameter>
-  <parameter> f_eff_rhc_nc_0pi_01 </parameter>
-  <parameter> f_eff_rhc_nc_0pi_02 </parameter>
-  <parameter> f_eff_rhc_nc_0pi_03 </parameter>
+  <parameter> f_eff_rhc_nc_0pi_01  </parameter>
+  <parameter> f_eff_rhc_nc_0pi_02  </parameter>
+  <parameter> f_eff_rhc_nc_0pi_03  </parameter>
   <parameter> f_eff_rhc_nc_1pic_01 </parameter>
   <parameter> f_eff_rhc_nc_1pic_02 </parameter>
   <parameter> f_eff_rhc_nc_1pic_03 </parameter>

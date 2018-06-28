@@ -37,13 +37,13 @@
   <parameter> f_fhc_fd_flux_numubar16 </parameter>
   <parameter> f_fhc_fd_flux_numubar17 </parameter>
   <parameter> f_fhc_fd_flux_numubar18 </parameter>
-  <parameter> f_fhc_fd_flux_nue00 </parameter>
-  <parameter> f_fhc_fd_flux_nue01 </parameter>
-  <parameter> f_fhc_fd_flux_nue02 </parameter>
-  <parameter> f_fhc_fd_flux_nue03 </parameter>
-  <parameter> f_fhc_fd_flux_nue04 </parameter>
-  <parameter> f_fhc_fd_flux_nue05 </parameter>
-  <parameter> f_fhc_fd_flux_nue06 </parameter>
+  <parameter> f_fhc_fd_flux_nue00  </parameter>
+  <parameter> f_fhc_fd_flux_nue01  </parameter>
+  <parameter> f_fhc_fd_flux_nue02  </parameter>
+  <parameter> f_fhc_fd_flux_nue03  </parameter>
+  <parameter> f_fhc_fd_flux_nue04  </parameter>
+  <parameter> f_fhc_fd_flux_nue05  </parameter>
+  <parameter> f_fhc_fd_flux_nue06  </parameter>
   <parameter> f_fhc_fd_flux_nuebar00 </parameter>
   <parameter> f_fhc_fd_flux_nuebar01 </parameter>
   <parameter> f_fhc_fd_flux_nuebar02 </parameter>
@@ -89,13 +89,13 @@
   <parameter> f_rhc_fd_flux_numubar16 </parameter>
   <parameter> f_rhc_fd_flux_numubar17 </parameter>
   <parameter> f_rhc_fd_flux_numubar18 </parameter>
-  <parameter> f_rhc_fd_flux_nue00 </parameter>
-  <parameter> f_rhc_fd_flux_nue01 </parameter>
-  <parameter> f_rhc_fd_flux_nue02 </parameter>
-  <parameter> f_rhc_fd_flux_nue03 </parameter>
-  <parameter> f_rhc_fd_flux_nue04 </parameter>
-  <parameter> f_rhc_fd_flux_nue05 </parameter>
-  <parameter> f_rhc_fd_flux_nue06 </parameter>
+  <parameter> f_rhc_fd_flux_nue00  </parameter>
+  <parameter> f_rhc_fd_flux_nue01  </parameter>
+  <parameter> f_rhc_fd_flux_nue02  </parameter>
+  <parameter> f_rhc_fd_flux_nue03  </parameter>
+  <parameter> f_rhc_fd_flux_nue04  </parameter>
+  <parameter> f_rhc_fd_flux_nue05  </parameter>
+  <parameter> f_rhc_fd_flux_nue06  </parameter>
   <parameter> f_rhc_fd_flux_nuebar00 </parameter>
   <parameter> f_rhc_fd_flux_nuebar01 </parameter>
   <parameter> f_rhc_fd_flux_nuebar02 </parameter>
