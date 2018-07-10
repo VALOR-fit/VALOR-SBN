@@ -226,25 +226,7 @@ CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (
   string syst_list_name = (syst_name_cstr ? syst_name_cstr : "NoNameFoundInXML");
   LOG("CompoundFitElements", pNOTICE) << "Reading systematics group: "<<syst_list_name;
   
-  string class_name  = "";
-
-  XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
-  while(curr_node) {
-    string curr_node_name = xmleng->GetNodeName(curr_node);
-    if(xmleng->GetNodeContent(curr_node)) {
-      string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
-      LOG("CompoundFitElements", pNOTICE) << curr_node_name << " --> " << content;
-      if(curr_node_name == "class") { class_name = content; break; }
-    }
-    curr_node = xmleng->GetNext(curr_node);
-  }
-  if (class_name.size()==0) {
-    LOG("CompoundFitElements", pFATAL) 
-       << "Failed to get systematic group class name";
-    util::Die(-1); return NULL;
-  }
-  void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
-  CorrelatedSystematics * syst = (CorrelatedSystematics *) (vbase);
+  CorrelatedSystematics * syst = new CorrelatedSystematics;
   syst->SetXMLNodeName("");
   syst->Read(xmleng, top_node);
   return syst;
