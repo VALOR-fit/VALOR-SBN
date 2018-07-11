@@ -115,8 +115,8 @@
   </element_list>
 
   <systematics name="DUNE_2016bFD">
-    <group name="flux">
-      <class> valor::MINERVAFlux2016aFD </class>
+    <group name="MINERVAFlux2016aFD">
+      <format> MINERVAFlux2016aFD.xml </format>
 
       <covariance_matrix>
         <filename>   dune/ndfit/2016a/flux/2016av1_flux_optimized.root </filename>
@@ -125,8 +125,8 @@
       </covariance_matrix>
     </group>
 
-    <group name="interaction">
-      <class> valor::VALORInt2016a </class>
+    <group name="VALORInt2016a">
+      <format> VALORInt2016a.xml </format>
       <covariance_matrix>
          <filename>   dune/ndfit/2016a/xsec/xsec_covariance_2016a_gevgen_v2.root </filename>
          <objname>    frac_cov_max    </objname>
@@ -134,8 +134,8 @@
       </covariance_matrix>
     </group>
 
-    <group name="detector">
-      <class> valor::SimpleDet2016bFD </class>
+    <group name="SimpleDet2016bFD">
+      <format> SimpleDet2016bFD.xml </format>
       <covariance_matrix>
          <filename>   test/dummy_detector_matrices.root </filename>
          <objname>    diag_4x4_10pct    </objname>
