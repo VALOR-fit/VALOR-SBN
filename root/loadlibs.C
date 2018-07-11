@@ -12,6 +12,5 @@
   gSystem->Load("libValorDuneConv.so");
   gSystem->Load("libValorDuneUtil.so");
   gSystem->Load("libValorDuneElements.so");
-  gSystem->Load("libValorDuneSystematics.so");
 }
 

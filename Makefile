@@ -44,11 +44,6 @@ build-conventions: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_DUNE}/src/dune/Conventions;
-
-build-systematics: | copy-scripts-to-bin FORCE
-	@echo " "
-	@echo "** Building Systematics package..."
-	$(MAKE) -C ${VALOR_DUNE}/src/dune/Systematics;
 	
 build-utilities: | copy-scripts-to-bin FORCE
 	@echo " "
@@ -81,7 +76,7 @@ else
 endif
 
 build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions \
-  build-systematics build-utilities build-genie-utilities build-elements build-testing
+  build-utilities build-genie-utilities build-elements build-testing
  
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
@@ -108,8 +103,7 @@ purge: FORCE
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
 	$(MAKE) -C src/dune/Elements         purge && \
-	$(MAKE) -C src/dune/Testing          purge && \
-	$(MAKE) -C src/dune/Systematics      purge; \
+	$(MAKE) -C src/dune/Testing          purge; \
 
 clean: clean-files clean-dir clean-etc
 
@@ -124,8 +118,7 @@ clean-files: FORCE
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
 	$(MAKE) -C src/dune/Elements        clean && \
-	$(MAKE) -C src/dune/Testing         clean && \
-	$(MAKE) -C src/dune/Systematics     clean ; \
+	$(MAKE) -C src/dune/Testing         clean; \
 	cd $(VALOR_DUNE);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_DUNE)
