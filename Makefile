@@ -130,10 +130,10 @@ clean-dir: FORCE
 	[ ! -d ./lib ] || rmdir ./lib 
 
 force-clean-dir: FORCE
-	@echo "Deleting VALOR/DUNE lib and bin directories...";\
-	cd $(VALOR_DUNE);\
-	[ ! -d ./bin ] || rm -rf ./bin;\
-	[ ! -d ./lib ] || rm -rf ./lib 
+	@echo "Deleting VALOR/DUNE lib and bin directories...";
+	cd $(VALOR_DUNE);
+	-rm -rf ./bin;
+	-rm -rf ./lib 
 
 clean-etc: FORCE
 	cd $(VALOR_DUNE); \

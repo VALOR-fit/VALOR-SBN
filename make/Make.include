@@ -10,6 +10,13 @@ ifndef OPT_WITH_CXX_USERDEF_FLAGS
  OPT_WITH_CXX_USERDEF_FLAGS=
 endif
 
+# Check if this is a "clean" command, we can skip some stuff
+ifeq (clean,$(findstring clean,$(MAKECMDGOALS)))
+  is_cln="true"
+else
+  is_cln="false"
+endif
+
 #-------------------------------------------------------------------
 #                           ARCHITECTURE 
 #-------------------------------------------------------------------
@@ -32,7 +39,9 @@ VALOR_APP_INCLUDES := -I$(VALOR_DUNE)/src/
 
 # VALOR application libraries
 #
-VALOR_APP_LIBRARIES = $(shell $(VALOR_DUNE)/make/valor_dune-config --libs 2>/dev/null)
+ifeq ("false",$(is_cln))
+  VALOR_APP_LIBRARIES = $(shell $(VALOR_DUNE)/make/valor_dune-config --libs)
+endif
 
 #-------------------------------------------------------------------
 #                      VALOR FRAMEWORK CODE
@@ -48,13 +57,15 @@ VALOR_FMWK_INCLUDES  := -I$(OPT_WITH_VALOR_FRAMEWORK)/src/
 
 # VALOR framework libraries
 #
-VALOR_FMWK_LIBRARIES = $(shell $(VALOR_FMWK)/make/valor_fmwk-config --libs 2>/dev/null)
+ifeq ("false",$(is_cln))
+  VALOR_FMWK_LIBRARIES = $(shell $(VALOR_FMWK)/make/valor_fmwk-config --libs)
+endif
 
 #-------------------------------------------------------------------
 #                      GENIE MC
 #-------------------------------------------------------------------
 ifdef GENIE
-GENIE_INCLUDES  = -I$(shell genie-config --topsrcdir)
+  GENIE_INCLUDES  = -I$(shell genie-config --topsrcdir)
 endif
 
 #-------------------------------------------------------------------
@@ -201,7 +212,7 @@ GCC_GE_4_2_1  = $(shell awk 'BEGIN {\
 ifeq ($(strip $(ARCH)),macosx) 
 ARCH_OK       = YES
 IS_MACOSX     = YES
-CXXFLAGS      = -pipe -W -Wall -Wno-long-double \
+CCFLAGS      = -pipe \
 		-fsigned-char -fno-common -flat_namespace \
 		$(ROOT_FLAGS) \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
@@ -209,6 +220,7 @@ CXXFLAGS      = -pipe -W -Wall -Wno-long-double \
 		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS) \
 		$(OPT_WITH_CXX_MISC_FLAGS)
+CXXFLAGS      = $(CCFLAGS) -W -Wall -Wno-long-double
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
 endif
@@ -247,7 +259,7 @@ OSX_GE_10_9_0  = $(shell awk 'BEGIN {\
 		if($(OSXVRS_MAJ)>=10 && $(OSXVRS_MIN)>=9) print "YES"}')
 ARCH_OK       = YES
 IS_MACOSX     = YES
-CXXFLAGS      = -m64 -pipe -Wshadow -W -Wall -Wno-overloaded-virtual \
+CCFLAGS      = -m64 -pipe \
 		-fsigned-char -fno-common  \
 		$(ROOT_FLAGS) \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
@@ -255,6 +267,7 @@ CXXFLAGS      = -m64 -pipe -Wshadow -W -Wall -Wno-overloaded-virtual \
 		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS) \
 		$(OPT_WITH_CXX_MISC_FLAGS)
+CXXFLAGS      = $(CCFLAGS) -Wshadow -W -Wall -Wno-overloaded-virtual
 ifneq ($(strip $(GCC_GE_4_2_1)), YES) 
   ifneq ($(USING_CLANG), YES)
     CXXFLAGS   += -flat_namespace
@@ -294,13 +307,14 @@ endif
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifeq ($(strip $(ARCH)),linux) 
 ARCH_OK       = YES
-CXXFLAGS      = -Wall -fPIC \
+CCFLAGS      = -fPIC \
 		$(ROOT_FLAGS) \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
 		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
 		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS)  \
 		$(OPT_WITH_CXX_MISC_FLAGS)
+CXXFLAGS      = $(CCFLAGS) -Wshadow -W -Wall 
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
 endif
@@ -324,13 +338,14 @@ endif
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ifeq ($(strip $(ARCH)),linuxx8664gcc) 
 ARCH_OK       = YES
-CXXFLAGS      = -Wall -Wextra -Wshadow -fPIC \
+CCFLAGS      = -fPIC \
 		$(ROOT_FLAGS) \
 		$(OPT_WITH_CXX_DEBUG_FLAG) \
 		$(OPT_WITH_CXX_OPTIMIZ_FLAG) \
 		$(OPT_WITH_CXX_VERSION_FLAG) \
 		$(OPT_WITH_CXX_USERDEF_FLAGS)  \
 		$(OPT_WITH_CXX_MISC_FLAGS)
+CXXFLAGS      = $(CCFLAGS) -Wall -Wextra -Wshadow 
 ifeq ($(strip $(GCC_GE_4_1_0)), YES) 
   CXXFLAGS += -Wno-strict-aliasing 
 endif
@@ -385,7 +400,9 @@ ifdef GENIE
  GINCLUDES  = $(shell genie-config --topsrcdir)
  GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
  GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
- VALOR_GLIBRARIES := $(shell valor_dune-config --glibs)
+ ifeq ("false",$(is_cln))
+  VALOR_GLIBRARIES := $(shell valor_dune-config --glibs)
+ endif
 endif
 
 # Default compiler and preprocessor flags
@@ -407,7 +424,7 @@ CFLAGS    = $(OPT_WITH_CXX_DEBUG_FLAG)
 #	$(CXX) -c -o $@ $(CXXFLAGS) $(CPPFLAGS) $<
 
 .cc.o:
-	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $<
+	$(CXX) -c $(CCFLAGS) $(CPPFLAGS) $<
 
 .cxx.o:
 	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $<
