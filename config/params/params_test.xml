@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<param_list name="dune_nd">
+
+    <param>
+        <name>
+            <simple> int_ccqe_nu_1 </simple>
+            <rootex> f_{int^{ccqe}_{#nu ; 1}} </rootex>
+        </name>
+        <apply_to_range>
+            <etrue> 0, inf  </etrue>
+            <q2true> 0, 0.3 </q2true>
+        </apply_to_range>
+
+        <type> normalisation </type>
+
+        <categories>
+            <category> int         </category>
+            <category> constrained </category>
+            <category> nu          </category>
+        </categories>
+
+        <apply_to>
+            <detector>  all    </detector>
+            <beam>      all    </beam>
+            <selection> all    </selection>
+            <reac_type> ccqe   </reac_type>
+            <flav>      nu any </flav>
+            <target>    all    </target>
+        </apply_to>
+
+        <limits> 0, inf  </limits>
+    </param>
+
+    <!-- Test parameter to make sure the code dies when given bad information -->
+    <param>
+        <name>
+            <simple> test_param2  </simple>
+           <!-- <rootex>  </rootex> -->
+        </name>
+        <!--
+        <apply_to_range>
+            <etrue> -inf, 10  </etrue>
+            <q2true> 0, 0.1 </q2true>
+            <etrue> 0, 1  </etrue>
+        </apply_to_range>
+        -->
+
+        <!-- <type> lateral </type> -->
+
+        <categories>
+            <category> whatever         </category>
+            <category> you    </category>
+            <category> like          </category>
+        </categories>
+        <apply_to>
+            <detector>  all    </detector>
+            <beam>          </beam>
+            <selection> nc 0 pi    </selection>
+            <reac_type> ccqe   </reac_type>
+            <flav>      nu any </flav>
+            <target>    all    </target>
+        </apply_to>
+    </param>
+</param_list>
