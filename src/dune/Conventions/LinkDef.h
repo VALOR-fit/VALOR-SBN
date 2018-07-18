@@ -17,6 +17,7 @@
 #pragma link C++ enum valor::conv::ReacModeCoarse_t;
 #pragma link C++ enum valor::conv::ReacType_t;
 #pragma link C++ enum valor::conv::FitParamGroup_t;
+#pragma link C++ enum valor::conv::SystType_t;
 
 #pragma link C++ enum valor::conv::NuclearTarget_t;
 #pragma link C++ class std::vector<valor::conv::NuclearTarget_t>+;
@@ -26,5 +27,6 @@
 
 #pragma link C++ class valor::util::ArrIdx+;
 #pragma link C++ class valor::util::PhysicalParameterLimits+;
+#pragma link C++ class valor::util::FitParamNew+;
 
 #endif
