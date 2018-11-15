@@ -69,9 +69,9 @@
 #include "valor/KineBinning/KBCubHcmbMondrian.h"
 #include "valor/KineBinning/KBCubHcmbEdge2Edge.h"
 
-#include "dune/Conventions/BeamConf.h"
+#include "valor/Conventions/BeamConf.h"
 #include "dune/Conventions/UniqueSampleID.h"
-#include "dune/Conventions/Sample.h"
+#include "valor/Conventions/Sample.h"
 #include "dune/Conventions/SampleReacMode.h"
 
 namespace valor {

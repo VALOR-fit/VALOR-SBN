@@ -20,9 +20,9 @@
 
 #include "valor/Conventions/KineSpace.h"
 
-#include "dune/Conventions/Detector.h"
-#include "dune/Conventions/BeamConf.h"
-#include "dune/Conventions/Sample.h"
+#include "valor/Conventions/Detector.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/Sample.h"
 
 
 namespace valor {

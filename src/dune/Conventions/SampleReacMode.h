@@ -21,8 +21,8 @@
 #ifndef _valor_dune_sample_reac_modes_h_
 #define _valor_dune_sample_reac_modes_h_
 
-#include "dune/Conventions/BeamConf.h"
-#include "dune/Conventions/Sample.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/Sample.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/ReacModeCoarse.h"
 

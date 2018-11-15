@@ -42,8 +42,8 @@
 //dune
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
-#include "dune/Conventions/Baseline.h"
-#include "dune/Conventions/BeamConf.h"
+#include "valor/Conventions/Baseline.h"
+#include "valor/Conventions/BeamConf.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/Names.h"
 #include "dune/Utilities/KinematicPoint.h"

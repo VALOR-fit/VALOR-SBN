@@ -18,9 +18,9 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/UtlSystem.h"
 
-#include "dune/Conventions/BeamConf.h"
+#include "valor/Conventions/BeamConf.h"
 #include "dune/Conventions/ReacMode.h"
-#include "dune/Conventions/Sample.h"
+#include "valor/Conventions/Sample.h"
 
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 

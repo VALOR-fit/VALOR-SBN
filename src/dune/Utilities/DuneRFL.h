@@ -34,10 +34,10 @@
 // DUNE
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ArrIdx.h"
-#include "dune/Conventions/BeamConf.h"
+#include "valor/Conventions/BeamConf.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ReacMode.h"
-#include "dune/Conventions/Sample.h"
+#include "valor/Conventions/Sample.h"
 #include "dune/Utilities/KinematicPoint.h"
 
 namespace valor {

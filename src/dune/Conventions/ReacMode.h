@@ -23,7 +23,7 @@
 
 //FWMK
 #include "valor/Conventions/NuFlavour.h"
-//#include "dune/Conventions/Sample.h"
+//#include "valor/Conventions/Sample.h"
 
 namespace valor {
 namespace conv {

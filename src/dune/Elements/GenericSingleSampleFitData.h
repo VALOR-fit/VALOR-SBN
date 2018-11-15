@@ -31,9 +31,9 @@
 //fmwk
 #include "valor/VArray/VALORArray.h"
 //dune
-#include "dune/Conventions/BeamConf.h"
-#include "dune/Conventions/Sample.h"
-#include "dune/Conventions/Detector.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/Sample.h"
+#include "valor/Conventions/Detector.h"
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Elements/SingleSampleFitDataABC.h"

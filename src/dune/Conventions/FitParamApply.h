@@ -23,13 +23,13 @@
 
 // FMWK
 #include "valor/Conventions/NuFlavour.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/NuclearTarget.h"
 
 // Dune
-#include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/NuclearTarget.h"
 
 namespace valor {
 namespace conv {

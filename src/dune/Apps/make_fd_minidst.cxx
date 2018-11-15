@@ -47,9 +47,9 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 
-#include "dune/Conventions/BeamConf.h"
+#include "valor/Conventions/BeamConf.h"
 #include "dune/Conventions/ReacMode.h"
-#include "dune/Conventions/Sample.h"
+#include "valor/Conventions/Sample.h"
 
 #include "dune/GENIEUtilities/UtlEventRec.h"
 

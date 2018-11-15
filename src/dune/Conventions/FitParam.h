@@ -26,17 +26,18 @@
 
 //fmwk
 #include "valor/Conventions/PhysParamId.h"
+#include "valor/Conventions/Detector.h"
+#include "valor/Conventions/BeamConf.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/PhysHypothesis.h"
 
 //dune
-#include "dune/Conventions/Detector.h"
-#include "dune/Conventions/BeamConf.h"
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
-#include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/FitParamGroup.h"
+
+#include "dune/Conventions/SampleKineBinning.h"
 
 using std::string;
 

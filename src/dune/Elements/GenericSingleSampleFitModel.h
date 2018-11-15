@@ -39,9 +39,9 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/VArray/VALORArrayBin.h"
 
 //dune
-#include "dune/Conventions/Detector.h"
-#include "dune/Conventions/BeamConf.h"
-#include "dune/Conventions/Sample.h"
+#include "valor/Conventions/Detector.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/Sample.h"
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ArrIdx.h"

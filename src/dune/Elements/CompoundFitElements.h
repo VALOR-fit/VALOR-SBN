@@ -28,9 +28,9 @@
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/Conventions/KineSpace.h"
 //dune
-#include "dune/Conventions/BeamConf.h"
-#include "dune/Conventions/Sample.h"
-#include "dune/Conventions/Detector.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/Sample.h"
+#include "valor/Conventions/Detector.h"
 
 using namespace valor;
 
