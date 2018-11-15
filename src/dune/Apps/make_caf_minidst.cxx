@@ -26,6 +26,7 @@
 #include <sstream>
 #include <map>
 #include <utility>
+#include <algorithm>
 
 //
 #include <TFile.h>
@@ -35,6 +36,7 @@
 
 // valor/dune
 #include "valor/Conventions/Constants.h"
+#include "valor/Conventions/NuclearTarget.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -55,19 +57,41 @@
 using std::string;
 using std::ostringstream;
 
-static const string gTreeName     = "cafana";
+static const string gTreeName     = "caf";
 static const string gMetaTreeName = "meta";
 
 void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
 
 static const int gPrintEveryNEvents = 50000;
 
-// Cuts from Cal
-
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
   
+  
+  // Cuts from Cal
+  std::map<std::string,double> upper_cut_numu;
+  std::map<std::string,double> upper_cut_nue;
+  std::map<std::string,double> lower_cut_numu;
+  std::map<std::string,double> lower_cut_nue;
+
+  lower_cut_numu["cvnnumu"] = 0.7;
+  lower_cut_nue ["cvnnue" ] = 0.7;
+
+  //~ lower_cut_numu["nuvtxx_truth"] = -310. ;
+  //~ upper_cut_numu["nuvtxx_truth"] =  310. ;
+  //~ lower_cut_numu["nuvtxy_truth"] = -550. ;
+  //~ upper_cut_numu["nuvtxy_truth"] =  550. ;
+  //~ lower_cut_numu["nuvtxz_truth"] =  50.  ;
+  //~ upper_cut_numu["nuvtxz_truth"] =  1244.;
+
+  //~ lower_cut_nue ["nuvtxx_truth"] = -310. ;
+  //~ upper_cut_nue ["nuvtxx_truth"] =  310. ;
+  //~ lower_cut_nue ["nuvtxy_truth"] = -550. ;
+  //~ upper_cut_nue ["nuvtxy_truth"] =  550. ;
+  //~ lower_cut_nue ["nuvtxz_truth"] =  50.  ;
+  //~ upper_cut_nue ["nuvtxz_truth"] =  1244.;
+
   using namespace valor;
   
   Env::Instance()->AutoSet("dune");
@@ -79,7 +103,6 @@ int main(int argc, char ** argv)
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(thresholds);
   
-  string opt_beam_name         = arg.GetString("beam");
   string opt_output_name       = arg.GetString("output");
   string opt_input_name        = arg.GetString("input");
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
@@ -87,7 +110,7 @@ int main(int argc, char ** argv)
   bool   split_sample_by_res   = arg.GetBool("split-sample-by-res");
    
   int    valor_minidst_sample       = -1;
-  int    valor_minidst_beam         = util::BeamConfFromString(opt_beam_name);  // see Conventions/BeamConf.h 
+  int    valor_minidst_beam         = -1;
   int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h 
   int    valor_minidst_target       = -1;  // nuclear target -  GENIE PDG convention
   double valor_minidst_enu_true     = -1.; // true neutrino energy, in GeV
@@ -150,15 +173,17 @@ int main(int argc, char ** argv)
   analysis_tree->GetEntry(0);
   
   int run = -1;
-  double enu_true       =  -999.;
-  double enu_reco_nue   =  -999.;
-  double enu_reco_numu  =  -999.;
-  double y_reco         =  -999.;
-  double Q2_true        =  -999.;
+  double enu_true         =  -999.;
+  double enu_reco_nue     =  -999.;
+  double enu_reco_numu    =  -999.;
+  double had_en_reco_nue  =  -999.;
+  double had_en_reco_numu =  -999.;
+  double Q2_true          =  -999.;
   
   int init_pdg  = -1;
   int final_pdg  = -1;
   
+  int is_fhc   = -1;
   int mode     = -1;
   int nin      = -1;
   int nip      = -1;
@@ -173,29 +198,51 @@ int main(int argc, char ** argv)
   
   int tgt = -1;
   
-  bool iscc   = false;
+  int iscc   = -1;
   
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
     
-  analysis_tree->SetBranchAddress("Ev"           ,  &enu_true     , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("Ev_reco_nue"  ,  &enu_reco_nue , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("Ev_reco_numu" ,  &enu_reco_numu, &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("y_reco"       ,  &y_reco       , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("Q2"           ,  &Q2_true      , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nuPDGunosc"   ,  &init_pdg     , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nuPDG"        ,  &final_pdg    , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nP"           ,  &nip          , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nN"           ,  &nin          , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nipip"        ,  &nipip        , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nipim"        ,  &nipim        , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nipi0"        ,  &nipi0        , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nikp"         ,  &nikp         , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nikm"         ,  &nikm         , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("nik0"         ,  &nik0         , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("niem"         ,  &niem         , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("niother"      ,  &niother      , &branchptr); active_branches.push_back(branchptr);
-  //~ analysis_tree->SetBranchAddress("tgt"          ,  &tgt           , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("isFHC"        ,  &is_fhc          , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("isCC"         ,  &iscc            , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("mode"         ,  &mode            , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Ev"           ,  &enu_true        , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Ev_reco_nue"  ,  &enu_reco_nue    , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Ev_reco_numu" ,  &enu_reco_numu   , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("RecoHadEnNue" ,  &had_en_reco_nue , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("RecoHadEnNumu",  &had_en_reco_numu, &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Q2"           ,  &Q2_true         , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nuPDGunosc"   ,  &init_pdg        , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nuPDG"        ,  &final_pdg       , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nP"           ,  &nip             , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nN"           ,  &nin             , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nipip"        ,  &nipip           , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nipim"        ,  &nipim           , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nipi0"        ,  &nipi0           , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nikp"         ,  &nikp            , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nikm"         ,  &nikm            , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("nik0"         ,  &nik0            , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("niem"         ,  &niem            , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("niother"      ,  &niother         , &branchptr); active_branches.push_back(branchptr);
+  //~ analysis_tree->SetBranchAddress("tgt"          ,  &tgt              , &branchptr); active_branches.push_back(branchptr);
+  
+  // Branches for the cut variables
+  std::vector<std::string> cut_branch_names;
+  for (const auto & it : lower_cut_numu) { cut_branch_names.push_back(it.first);  }
+  for (const auto & it : upper_cut_numu) { cut_branch_names.push_back(it.first);  }
+  for (const auto & it : upper_cut_nue ) { cut_branch_names.push_back(it.first);  }
+  for (const auto & it : upper_cut_nue ) { cut_branch_names.push_back(it.first);  }
+  
+  std::unique(cut_branch_names.begin(),cut_branch_names.end());
+  
+  std::map<std::string,double> cut_branches;
+  for (const std::string & branchname : cut_branch_names) {
+    double & branch_ref = cut_branches[branchname];
+    analysis_tree->SetBranchAddress(branchname.c_str(), &branch_ref, &branchptr); active_branches.push_back(branchptr);
+  }
+  
+  // Temporarily set target to argon
+  tgt = conv::kntArgon;
   
   // Only read the branches we're using and their sub-branches
   analysis_tree->SetBranchStatus("*",0);
@@ -234,10 +281,11 @@ int main(int argc, char ** argv)
     analysis_tree->GetEntry(iev);
     
     VLOG("make_caf_minidst",pDEBUG) << "Read event: "
-      << "Etrue         = "<<enu_true  << " GeV; "
-      << "Ereco_nue     = "<<enu_reco_nue  << " GeV; "
-      << "Ereco_numu    = "<<enu_reco_numu  << " GeV; "
-      << "Yreco         = "<<y_reco  << ";";
+      << "Etrue            = "<<enu_true  << " GeV; "
+      << "Ereco_nue        = "<<enu_reco_nue  << " GeV; "
+      << "Ereco_numu       = "<<enu_reco_numu  << " GeV; "
+      << "RecoHadEnNue     = "<<had_en_reco_nue  << ";"
+      << "RecoHadEnNuMu    = "<<had_en_reco_numu  << ";";
     
     // Construct the reaction mode
     conv::ReacType_t t = conv::kmtUndefined;
@@ -319,10 +367,35 @@ int main(int argc, char ** argv)
     
     conv::Sample_t sample = conv::ksUndefined;
     
-    // Write Cal's cuts here:
+    // Do the cuts
+    sample = conv::ksNuELikeCChigh;
+    for (const auto & cut : upper_cut_nue) {
+      const std::string & branch_name = cut.first;
+      if (cut_branches[branch_name] < cut.second) continue;
+      sample = conv::ksUndefined;
+    }
+    for (const auto & cut : lower_cut_nue) {
+      const std::string & branch_name = cut.first;
+      if (cut_branches[branch_name] > cut.second) continue;
+      sample = conv::ksUndefined;
+    }
     
+    if (sample == conv::ksUndefined) {
+      sample = conv::ksNuMuLikeCChigh;
+      for (const auto & cut : upper_cut_numu) {
+        const std::string & branch_name = cut.first;
+      if (cut_branches[branch_name] < cut.second) continue;
+        sample = conv::ksUndefined;
+      }
+      for (const auto & cut : lower_cut_numu) {
+        const std::string & branch_name = cut.first;
+        if (cut_branches[branch_name] > cut.second) continue;
+        sample = conv::ksUndefined;
+      }
+    }
     
     double enu_reco = (util::IsELike(sample) ? enu_reco_nue : enu_reco_numu);
+    double y_reco   = (util::IsELike(sample) ? had_en_reco_nue/enu_reco : had_en_reco_numu / enu_reco);
     if(!opt_disable_checks) {
       
       //
@@ -350,6 +423,7 @@ int main(int argc, char ** argv)
     double wght = 1.;
     // Write in the thing to apply the cvwghts here
     
+    valor_minidst_beam      = (is_fhc ? conv::kbLBNF_FHC : conv::kbLBNF_RHC);
     valor_minidst_sample    = sample; 
     valor_minidst_reac_mode = reac_mode;
     valor_minidst_enu_true  = enu_true; 
