@@ -9,7 +9,7 @@
 
 if [ -z ${VALOR_FWMK} ] ; then
   if [ $USER == steve ] ; then 
-    source "/home/steve/analysis/fmwk/setup/setup_at_steve_laptop.sh"
+    source "/home/steve/steve/analysis/github/VALOR-SDK/setup/setup_at_steve_laptop.sh"
   fi
   if [ $USER == phrhbq ] ; then 
     source "/storage/epp2/phrhbq/analysis/fmwk/setup/setup_at_steve_laptop.sh"
