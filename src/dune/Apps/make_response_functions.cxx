@@ -40,10 +40,10 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
-
-#include "dune/Conventions/Detector.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
+#include "valor/Conventions/Detector.h"
+
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
