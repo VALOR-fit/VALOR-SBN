@@ -202,8 +202,17 @@ int main(int argc, char ** argv)
   
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
+  
+  // Hack for "isFHC" while that's broken in CAFs
+  TString filename(opt_input_name.c_str());
+  if      (filename.Contains("FHC")) {is_fhc = 1;}
+  else if (filename.Contains("RHC")) {is_fhc = 0;}
+  else {
+    std::cerr<<"Could not work out if beam is FHC or RHC from filename "<<opt_input_name<<"  - exiting."<<std::endl;
+    util::Die(-1);
+  }
     
-  analysis_tree->SetBranchAddress("isFHC"        ,  &is_fhc          , &branchptr); active_branches.push_back(branchptr);
+  //~ analysis_tree->SetBranchAddress("isFHC"        ,  &is_fhc          , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("isCC"         ,  &iscc            , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("mode"         ,  &mode            , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("Ev"           ,  &enu_true        , &branchptr); active_branches.push_back(branchptr);
@@ -437,7 +446,7 @@ int main(int argc, char ** argv)
     valor_minidst_target    = tgt;
       
     VLOG("make_caf_minidst", pINFO) 
-      << "\n Information copied to VALOR DUNE/ND Mini-DST: "
+      << "\n Information copied to VALOR DUNE CAF Mini-DST: "
       << "\n Beam          = " << valor_minidst_beam   
       << "\n Sample        = " << valor_minidst_sample    
       << "\n Reaction mode = " << valor_minidst_reac_mode 
