@@ -1,5 +1,6 @@
+int valor_expt_loadlibs()
 {
-  TString fmwk_loadlibs = ".x $VALOR_FMWK/root/loadlibs.C";
+  TString fmwk_loadlibs = ".x $VALOR_FMWK/root/valor_sdk_loadlibs.C";
   gSystem->ExpandPathName(fmwk_loadlibs);
   gROOT->ProcessLine(fmwk_loadlibs.Data());
   
@@ -12,5 +13,7 @@
   gSystem->Load("libValorDuneConv.so");
   gSystem->Load("libValorDuneUtil.so");
   gSystem->Load("libValorDuneElements.so");
+  
+  return 0;
 }
 

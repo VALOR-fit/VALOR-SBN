@@ -1,4 +1,4 @@
-{
+int valor_expt_loadincs () {
   TString topdir = gSystem->Getenv("VALOR_DUNE");
 
   TString mp = gROOT->GetMacroPath();
@@ -38,5 +38,7 @@
 
   dip = ".include /opt/local/include/log4cpp";
   gROOT->ProcessLine(dip.Data());
+  
+  return 0;
 }
 

@@ -116,7 +116,7 @@ void config_mesg()
   valor::util::Verbosity(verbosity.Data());
 }
 
-void valor_dune_utils()
+void valor_expt_utils()
 {
     valor::util::ChangeInterpreterPrompt("VALOR/DUNE: [%d] ");
     

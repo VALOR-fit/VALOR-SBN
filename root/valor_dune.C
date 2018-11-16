@@ -5,12 +5,12 @@ void valor_dune()
 
     TString top_dir = gSystem->Getenv("VALOR_DUNE");
 
-    TString loadincs = ".x " + top_dir + "/root/loadincs.C";
-    TString loadlibs = ".x " + top_dir + "/root/loadlibs.C";
+    TString loadincs = ".x " + top_dir + "/root/valor_expt_loadincs.C";
+    TString loadlibs = ".x " + top_dir + "/root/valor_expt_loadlibs.C";
     
     gROOT->ProcessLine(loadincs.Data());
     gROOT->ProcessLine(loadlibs.Data());
     
-    TString loadutils = ".x " + top_dir + "/root/valor_dune_utils.C";
+    TString loadutils = ".x " + top_dir + "/root/valor_expt_utils.C";
     gROOT->ProcessLine(loadutils.Data());
 }
