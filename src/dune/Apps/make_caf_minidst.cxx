@@ -70,27 +70,27 @@ int main(int argc, char ** argv)
   
   
   // Cuts from Cal
-  std::map<std::string,double> upper_cut_numu;
-  std::map<std::string,double> upper_cut_nue;
-  std::map<std::string,double> lower_cut_numu;
-  std::map<std::string,double> lower_cut_nue;
+  std::map<std::string,double> cut_upper_limit_numu;
+  std::map<std::string,double> cut_upper_limit_nue;
+  std::map<std::string,double> cut_lower_limit_numu;
+  std::map<std::string,double> cut_lower_limit_nue;
 
-  lower_cut_numu["cvnnumu"] = 0.7;
-  lower_cut_nue ["cvnnue" ] = 0.7;
+  cut_lower_limit_numu["cvnnumu"] = 0.7;
+  cut_lower_limit_nue ["cvnnue" ] = 0.7;
 
-  //~ lower_cut_numu["nuvtxx_truth"] = -310. ;
-  //~ upper_cut_numu["nuvtxx_truth"] =  310. ;
-  //~ lower_cut_numu["nuvtxy_truth"] = -550. ;
-  //~ upper_cut_numu["nuvtxy_truth"] =  550. ;
-  //~ lower_cut_numu["nuvtxz_truth"] =  50.  ;
-  //~ upper_cut_numu["nuvtxz_truth"] =  1244.;
+  //~ cut_lower_limit_numu["nuvtxx_truth"] = -310. ;
+  //~ cut_upper_limit_numu["nuvtxx_truth"] =  310. ;
+  //~ cut_lower_limit_numu["nuvtxy_truth"] = -550. ;
+  //~ cut_upper_limit_numu["nuvtxy_truth"] =  550. ;
+  //~ cut_lower_limit_numu["nuvtxz_truth"] =  50.  ;
+  //~ cut_upper_limit_numu["nuvtxz_truth"] =  1244.;
 
-  //~ lower_cut_nue ["nuvtxx_truth"] = -310. ;
-  //~ upper_cut_nue ["nuvtxx_truth"] =  310. ;
-  //~ lower_cut_nue ["nuvtxy_truth"] = -550. ;
-  //~ upper_cut_nue ["nuvtxy_truth"] =  550. ;
-  //~ lower_cut_nue ["nuvtxz_truth"] =  50.  ;
-  //~ upper_cut_nue ["nuvtxz_truth"] =  1244.;
+  //~ cut_lower_limit_nue ["nuvtxx_truth"] = -310. ;
+  //~ cut_upper_limit_nue ["nuvtxx_truth"] =  310. ;
+  //~ cut_lower_limit_nue ["nuvtxy_truth"] = -550. ;
+  //~ cut_upper_limit_nue ["nuvtxy_truth"] =  550. ;
+  //~ cut_lower_limit_nue ["nuvtxz_truth"] =  50.  ;
+  //~ cut_upper_limit_nue ["nuvtxz_truth"] =  1244.;
 
   using namespace valor;
   
@@ -108,6 +108,7 @@ int main(int argc, char ** argv)
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
   bool   disable_extra_cuts    = arg.GetBool("disable-extra-cuts");
   bool   split_sample_by_res   = arg.GetBool("split-sample-by-res");
+  double nc_factor             = arg.GetDouble("nc-factor");
    
   int    valor_minidst_sample       = -1;
   int    valor_minidst_beam         = -1;
@@ -150,10 +151,15 @@ int main(int argc, char ** argv)
   }
   double br_pot = 0.;
   metadata_tree->SetBranchAddress("pot",&br_pot);
-  double total_pot = 0.;
+  std::vector<double> pot_per_file;
+  int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
   for (Long64_t ientry = 0 ; ientry < metadata_tree->GetEntries() ; ientry++) {
+    int this_tree = metadata_tree->GetFileNumber();
+    if (this_tree != last_tree_number) {
+      pot_per_file.push_back(0.);
+    }
     metadata_tree->GetEntry(ientry);
-    total_pot += br_pot;
+    pot_per_file.back() += br_pot;
   }
   VLOG("make_can_minidst",pNOTICE) << "Input analysis tree contains "<<br_pot<<" POT";
   
@@ -237,13 +243,12 @@ int main(int argc, char ** argv)
   
   // Branches for the cut variables
   std::vector<std::string> cut_branch_names;
-  for (const auto & it : lower_cut_numu) { cut_branch_names.push_back(it.first);  }
-  for (const auto & it : upper_cut_numu) { cut_branch_names.push_back(it.first);  }
-  for (const auto & it : upper_cut_nue ) { cut_branch_names.push_back(it.first);  }
-  for (const auto & it : upper_cut_nue ) { cut_branch_names.push_back(it.first);  }
+  for (const auto & it : cut_lower_limit_numu) { cut_branch_names.push_back(it.first);  }
+  for (const auto & it : cut_upper_limit_numu) { cut_branch_names.push_back(it.first);  }
+  for (const auto & it : cut_lower_limit_nue ) { cut_branch_names.push_back(it.first);  }
+  for (const auto & it : cut_upper_limit_nue ) { cut_branch_names.push_back(it.first);  }
   
   std::unique(cut_branch_names.begin(),cut_branch_names.end());
-  
   std::map<std::string,double> cut_branches;
   for (const std::string & branchname : cut_branch_names) {
     double & branch_ref = cut_branches[branchname];
@@ -253,8 +258,10 @@ int main(int argc, char ** argv)
   // Temporarily set target to argon
   tgt = conv::kntArgon;
   
+  // Why the hell doesn't this work? Probably indicate of a bug elsewhere.
+  //~ analysis_tree->SetBranchStatus("*",0);
+  
   // Only read the branches we're using and their sub-branches
-  analysis_tree->SetBranchStatus("*",0);
   for (unsigned int ib = 0 ; ib < active_branches.size(); ib++) {
     active_branches[ib]->SetStatus(1);
     TObjArray * bar = active_branches[ib]->GetListOfBranches();
@@ -275,8 +282,6 @@ int main(int argc, char ** argv)
   for (int im = 0 ; im < valor::conv::kNReacModes; im++) {
     nev_accept_by_mode.push_back(0);
   }
-  
-  int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
@@ -335,6 +340,8 @@ int main(int argc, char ** argv)
     //~ else if (isNuEl) {
       //~ t = conv::kmtELScat;
     //~ }
+  
+    std::cerr<<util::AsString(t)<<"\t"<<init_pdg<<"\t"<<final_pdg<<std::endl;
     
     conv::NuFlavour_t init_flav  = valor::util::FlavourFromPDG(init_pdg );
     conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(final_pdg);
@@ -361,6 +368,8 @@ int main(int argc, char ** argv)
     // Get the real valor mode
     conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(t,init_flav,final_flav);
     
+    //~ std::cerr<<util::AsString(t)<<"\t"<<util::AsString(init_flav)<<"\t"<<util::AsString(final_flav)<<std::endl;
+    
     if(!opt_disable_checks) {
       //
       // ignore events that can not be used in the VALOR analysis
@@ -378,28 +387,31 @@ int main(int argc, char ** argv)
     
     // Do the cuts
     sample = conv::ksNuELikeCChigh;
-    for (const auto & cut : upper_cut_nue) {
-      const std::string & branch_name = cut.first;
-      if (cut_branches[branch_name] < cut.second) continue;
-      sample = conv::ksUndefined;
-    }
-    for (const auto & cut : lower_cut_nue) {
-      const std::string & branch_name = cut.first;
-      if (cut_branches[branch_name] > cut.second) continue;
-      sample = conv::ksUndefined;
-    }
-    
-    if (sample == conv::ksUndefined) {
-      sample = conv::ksNuMuLikeCChigh;
-      for (const auto & cut : upper_cut_numu) {
-        const std::string & branch_name = cut.first;
-      if (cut_branches[branch_name] < cut.second) continue;
+    for (const auto & cut_upper_limit : cut_upper_limit_nue) {
+      const std::string & branch_name = cut_upper_limit.first;
+      if (cut_branches[branch_name] > cut_upper_limit.second) {
         sample = conv::ksUndefined;
       }
-      for (const auto & cut : lower_cut_numu) {
-        const std::string & branch_name = cut.first;
-        if (cut_branches[branch_name] > cut.second) continue;
+    }
+    for (const auto & cut_lower_limit : cut_lower_limit_nue) {
+      const std::string & branch_name = cut_lower_limit.first;
+      if (cut_branches[branch_name] < cut_lower_limit.second) {
         sample = conv::ksUndefined;
+      }
+    }
+    if (sample==conv::ksUndefined) {
+      sample = conv::ksNuMuLikeCChigh;
+      for (const auto & cut_upper_limit : cut_upper_limit_numu) {
+        const std::string & branch_name = cut_upper_limit.first;
+        if (cut_branches[branch_name] > cut_upper_limit.second) {
+          sample = conv::ksUndefined;
+        }
+      }
+      for (const auto & cut_lower_limit : cut_lower_limit_numu) {
+        const std::string & branch_name = cut_lower_limit.first;
+        if (cut_branches[branch_name] < cut_lower_limit.second) {
+          sample = conv::ksUndefined;
+        }
       }
     }
     
@@ -439,11 +451,16 @@ int main(int argc, char ** argv)
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco;
     valor_minidst_wght      = wght;
-    valor_minidst_wght_pot  = 1./total_pot; 
+    valor_minidst_wght_pot  = 1./pot_per_file[analysis_tree->GetFileNumber()];
     valor_minidst_wght_smear= 1.; 
     valor_minidst_Q2_true   = Q2_true;
       
     valor_minidst_target    = tgt;
+    
+    // apply the extra weight factor to NC events
+    if (!util::ModeIsCC(reac_mode)) {
+      valor_minidst_wght_pot *= nc_factor;
+    }
       
     VLOG("make_caf_minidst", pINFO) 
       << "\n Information copied to VALOR DUNE CAF Mini-DST: "
