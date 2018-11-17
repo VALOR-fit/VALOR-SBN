@@ -152,16 +152,20 @@ int main(int argc, char ** argv)
   double br_pot = 0.;
   metadata_tree->SetBranchAddress("pot",&br_pot);
   std::vector<double> pot_per_file;
-  int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
+  int last_file_number = -1;
   for (Long64_t ientry = 0 ; ientry < metadata_tree->GetEntries() ; ientry++) {
-    int this_tree = metadata_tree->GetFileNumber();
-    if (this_tree != last_tree_number) {
-      pot_per_file.push_back(0.);
-    }
     metadata_tree->GetEntry(ientry);
+    int this_file_number = metadata_tree->GetTreeNumber();
+    if (this_file_number != last_file_number) {
+      pot_per_file.push_back(0.);
+      last_file_number = this_file_number;
+    }
     pot_per_file.back() += br_pot;
   }
-  VLOG("make_can_minidst",pNOTICE) << "Input analysis tree contains "<<br_pot<<" POT";
+  VLOG("make_can_minidst",pNOTICE) << "Reading "<<pot_per_file.size()<<" files";
+  for (size_t ifile = 0 ; ifile < pot_per_file.size() ; ifile++) {
+    VLOG("make_can_minidst",pNOTICE) << "Input analysis tree in file "<<ifile<<" contains "<<pot_per_file[ifile]<<" POT";
+  }
   
   // Then the analysis tree
   TChain * analysis_tree = new TChain(gTreeName.c_str());
@@ -341,7 +345,7 @@ int main(int argc, char ** argv)
       //~ t = conv::kmtELScat;
     //~ }
   
-    std::cerr<<util::AsString(t)<<"\t"<<init_pdg<<"\t"<<final_pdg<<std::endl;
+    //~ std::cerr<<util::AsString(t)<<"\t"<<init_pdg<<"\t"<<final_pdg<<std::endl;
     
     conv::NuFlavour_t init_flav  = valor::util::FlavourFromPDG(init_pdg );
     conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(final_pdg);
@@ -380,8 +384,6 @@ int main(int argc, char ** argv)
         continue;
       }
     }
-    
-    last_tree_number = analysis_tree->GetTreeNumber();
     
     conv::Sample_t sample = conv::ksUndefined;
     
@@ -451,7 +453,7 @@ int main(int argc, char ** argv)
     valor_minidst_enu_reco  = enu_reco; 
     valor_minidst_y_reco    = y_reco;
     valor_minidst_wght      = wght;
-    valor_minidst_wght_pot  = 1./pot_per_file[analysis_tree->GetFileNumber()];
+    valor_minidst_wght_pot  = 1./pot_per_file[analysis_tree->GetTreeNumber()];
     valor_minidst_wght_smear= 1.; 
     valor_minidst_Q2_true   = Q2_true;
       
