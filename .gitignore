@@ -5,5 +5,4 @@ make/Make.config
 src/dune/Conventions/Version.h
 
 bin/
-data/
 lib/
