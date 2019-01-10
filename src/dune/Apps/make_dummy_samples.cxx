@@ -23,6 +23,7 @@
 #include "TFile.h"
 #include "TSystem.h"
 #include "TObjArray.h"
+#include "TRandom.h"
 #include "TString.h"
 #include "TVirtualFitter.h"
 #include "TMath.h"
@@ -56,13 +57,44 @@ void MakeMCSample()
 {
    TFile f("dummy_templates.root", "RECREATE");
    VALORArray* opt_fhc_sample = new VALORArray(3, 12);
-   opt_fhc_sample->Write("valor_mctnom_ob_vf_dune_nd:LBNF_FHC:numuCC0pi1trk");
    VALORArray* simple_fhc_sample = new VALORArray(5, 12);
-   simple_fhc_sample->Write("valor_mctnom_sb_vf_dune_nd:LBNF_FHC:numuCC0pi1trk");
    VALORArray* opt_rhc_sample = new VALORArray(3, 12);
-   opt_rhc_sample->Write("valor_mctnom_ob_vf_dune_nd:LBNF_RHC:numuCC0pi1trk");
    VALORArray* simple_rhc_sample = new VALORArray(5, 12);
+
+   // Populate the bins with dummy data
+   TRandom random;
+   for(int x = 0; x < 5; ++x)
+   {
+      for(int y = 0; y < 12; ++y)
+      {
+         if(x >= 2)
+         {
+            double fhc_val = random.Uniform(1.0);
+            double rhc_val = random.Uniform(0.4);
+            simple_fhc_sample->SetEntry(fhc_val, x, y);
+            simple_rhc_sample->SetEntry(rhc_val, x, y);
+
+            opt_fhc_sample->SetEntry(fhc_val, x - 2, y);
+            opt_rhc_sample->SetEntry(rhc_val, x - 2, y);
+         }
+         else
+         {
+            double fhc_val = random.Uniform(1.0);
+            double rhc_val = random.Uniform(0.4);
+            simple_fhc_sample->SetEntry(fhc_val, x, y);
+            simple_rhc_sample->SetEntry(rhc_val, x, y);
+
+            opt_fhc_sample->SetEntry(fhc_val + opt_fhc_sample->GetEntry(0, y), 0, y);
+            opt_rhc_sample->SetEntry(rhc_val + opt_rhc_sample->GetEntry(0, y), 0, y);
+         }
+      }
+   }
+
+   opt_fhc_sample->Write("valor_mctnom_ob_vf_dune_nd:LBNF_FHC:numuCC0pi1trk");
+   simple_fhc_sample->Write("valor_mctnom_sb_vf_dune_nd:LBNF_FHC:numuCC0pi1trk");
+   opt_rhc_sample->Write("valor_mctnom_ob_vf_dune_nd:LBNF_RHC:numuCC0pi1trk");
    simple_rhc_sample->Write("valor_mctnom_sb_vf_dune_nd:LBNF_RHC:numuCC0pi1trk");
+
 
    f.Close();
 
@@ -74,12 +106,13 @@ void MakeMCSample()
 
 void MakeCovarianceMatrices()
 {
+   TRandom random;
    TFile f_flux("flux.root", "RECREATE");
    int Nflux = 8;
    TMatrixD flux_cov(Nflux, Nflux);
    for(int i = 0; i < Nflux; ++i)
    {
-      flux_cov(i, i) = 1.0;
+      flux_cov(i, i) = random.Uniform(2.5e-3);
    }
    flux_cov.Write("flux_cov");
    f_flux.Close();
@@ -89,7 +122,7 @@ void MakeCovarianceMatrices()
    TMatrixD det_cov(Ndet, Ndet);
    for(int i = 0; i < Ndet; ++i)
    {
-      det_cov(i, i) = 1.0;
+      det_cov(i, i) = random.Uniform(4.0e-2);
    }
    det_cov.Write("det_cov");
    f_det.Close();
@@ -99,7 +132,7 @@ void MakeCovarianceMatrices()
    TMatrixD int_cov(Nint, Nint);
    for(int i = 0; i < Nint; ++i)
    {
-      int_cov(i, i) = 1.0;
+      int_cov(i, i) = random.Uniform(1.0e-1);
    }
    int_cov.Write("int_cov");
    f_int.Close();
