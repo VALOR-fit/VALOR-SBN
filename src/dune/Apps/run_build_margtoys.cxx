@@ -43,6 +43,7 @@
 #include "TStopwatch.h"
 
 #include "cmath"
+#include "fstream"      // std::ofstream
 
 // fmwk
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -133,6 +134,9 @@ void BuildToys(CmdLnArgList& arg)
    int batch = arg.GetInt("batch");
    int Ntoys = arg.GetInt("nmargtoy");
 
+   // Create a file to store this batch of marginalisation toys
+   std::ofstream os_toys("temporary.bin", std::ios::binary | std::ios::out);
+
    TStopwatch clock;
    clock.Start();
    for(int t = 0; t < Ntoys; ++t)
@@ -163,8 +167,11 @@ void BuildToys(CmdLnArgList& arg)
       LOG("valor_dune", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
       FitDataABC* data = elements->FitData();
       data->Generate(model, *fpl, with_stat_fluct);
+      data->Write(os_toys, "+SB");
    }
    clock.Stop();
+
+   os_toys.close();
     
    LOG("valor_dune", pNOTICE) << "Generate batch " << batch << ": " << Ntoys <<
       " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
