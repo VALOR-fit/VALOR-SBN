@@ -135,6 +135,36 @@ bool GenericSingleSampleFitData::Write(
   return true;
 }
 //________________________________________________________________________________________
+bool GenericSingleSampleFitData::Write (std::ofstream& stream, Option_t * write_opt)
+{
+   string opt = (write_opt) ? write_opt : "";
+   assert(fDataOb);
+   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
+   int n_dim = fDataOb->GetNDim();
+   int size = fDataOb->GetSize(-1);
+   const int* dimensions = fDataOb->GetDimensions();
+   LOG("GenericSingleSampleFitData", pDEBUG) << "Writing " <<
+      fDataOb->GetName() << " " << dimensions[0] << " " << dimensions[1] <<
+      ": " << size;
+   stream.write((char*)&n_dim, sizeof(int));
+   stream.write((char*)dimensions, 6 * sizeof(int));
+   stream.write((char*)fDataOb->GetArray(), size * sizeof(float));
+
+   if(opt.find("+SB") != string::npos)
+   {
+      assert(fDataSb);
+      fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
+      LOG("GenericSingleSampleFitData", pDEBUG) << "Writing " << fDataSb->GetName();
+      n_dim = fDataSb->GetNDim();
+      size = fDataSb->GetSize(-1);
+      stream.write((char*)&n_dim, sizeof(int));
+      stream.write((char*)fDataSb->GetDimensions(), 6 * sizeof(int));
+      stream.write((char*)fDataSb->GetArray(), size * sizeof(float));
+   } //+SB
+
+   return true;
+}
+//________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(
     FitModelABC * model_abc, const FitParamList & fp, bool fluctuate)
 {
