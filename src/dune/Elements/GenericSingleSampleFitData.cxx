@@ -62,6 +62,51 @@ bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
+bool GenericSingleSampleFitData::Read(std::ifstream& stream, Option_t * read_opt)
+{
+   string opt = (read_opt) ? read_opt : "";
+   assert(fDataOb);
+   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
+   int n_dim = 0;
+   int size = 1;
+   int dimensions[6] = {0};
+   stream.read((char*)&n_dim, sizeof(int));
+   stream.read((char*)dimensions, 6 * sizeof(int));
+   for(int i = 0; i < n_dim; ++i)
+   {
+      size *= dimensions[i];
+   }
+
+   LOG("GenericSingleSampleFitData", pDEBUG) << "Reading " <<
+      fDataOb->GetName() << " " << dimensions[0] << " " << dimensions[1] <<
+      " (" << size << ")";
+   stream.read((char*)fDataOb->GetArray(), size * sizeof(double));
+
+   if(opt.find("+SB") != string::npos)
+   {
+      assert(fDataSb);
+      fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
+      stream.read((char*)&n_dim, sizeof(int));
+      stream.read((char*)dimensions, 6 * sizeof(int));
+      size = 1;
+      for(int i = 0; i < n_dim; ++i)
+      {
+         size *= dimensions[i];
+      }
+      LOG("GenericSingleSampleFitData", pDEBUG) << "Reading " <<
+         fDataSb->GetName() << " " << dimensions[0] << " " << dimensions[1] <<
+         " (" << size << ")";
+      stream.read((char*)fDataSb->GetArray(), size * sizeof(double));
+   } //+SB
+
+   LOG("GenericSingleSampleFitData",pINFO)
+      << fName << ": N_{Data} SB = " << fDataSb->Integral()
+      <<" ; N_{Data} OB = "<< fDataOb->Integral();
+
+   return true;
+}
+
+//________________________________________________________________________________________
 bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
   LOG("GenericSingleSampleFitData", pINFO)  
@@ -135,7 +180,7 @@ bool GenericSingleSampleFitData::Write(
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Write (std::ofstream& stream, Option_t * write_opt)
+bool GenericSingleSampleFitData::Write(std::ofstream& stream, Option_t * write_opt)
 {
    string opt = (write_opt) ? write_opt : "";
    assert(fDataOb);
@@ -145,21 +190,24 @@ bool GenericSingleSampleFitData::Write (std::ofstream& stream, Option_t * write_
    const int* dimensions = fDataOb->GetDimensions();
    LOG("GenericSingleSampleFitData", pDEBUG) << "Writing " <<
       fDataOb->GetName() << " " << dimensions[0] << " " << dimensions[1] <<
-      ": " << size;
+      "( " << size << ")";
    stream.write((char*)&n_dim, sizeof(int));
    stream.write((char*)dimensions, 6 * sizeof(int));
-   stream.write((char*)fDataOb->GetArray(), size * sizeof(float));
+   stream.write((char*)fDataOb->GetArray(), size * sizeof(double));
 
    if(opt.find("+SB") != string::npos)
    {
       assert(fDataSb);
       fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
-      LOG("GenericSingleSampleFitData", pDEBUG) << "Writing " << fDataSb->GetName();
       n_dim = fDataSb->GetNDim();
       size = fDataSb->GetSize(-1);
+      dimensions = fDataSb->GetDimensions();
+      LOG("GenericSingleSampleFitData", pDEBUG) << "Writing " <<
+         fDataSb->GetName() << " " << dimensions[0] << " " << dimensions[1] <<
+         " (" << size << ")";
       stream.write((char*)&n_dim, sizeof(int));
-      stream.write((char*)fDataSb->GetDimensions(), 6 * sizeof(int));
-      stream.write((char*)fDataSb->GetArray(), size * sizeof(float));
+      stream.write((char*)dimensions, 6 * sizeof(int));
+      stream.write((char*)fDataSb->GetArray(), size * sizeof(double));
    } //+SB
 
    return true;

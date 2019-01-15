@@ -30,7 +30,7 @@
   <priority msgstream="CorrelatedSystematics">          NOTICE </priority>
   <priority msgstream="CompoundCorrelatedSystematics">  NOTICE </priority>
   <priority msgstream="GenericSingleSampleFitModel">    NOTICE </priority>
-  <priority msgstream="GenericSingleSampleFitData">     NOTICE </priority>
+  <priority msgstream="GenericSingleSampleFitData">       INFO </priority>
   <priority msgstream="FitInputs">                      NOTICE </priority>
   <priority msgstream="UtlNumStat">                     NOTICE </priority>
   

@@ -25,6 +25,7 @@ TGT = make_nd_minidst \
       adaptive_mcmc \
       run_tests \
       run_build_margtoys \
+      run_fit_marg \
       make_dummy_samples \
       batch_tests
 
@@ -101,6 +102,10 @@ run_build_margtoys: FORCE
 	$(CXX) $(CXXFLAGS) -c run_build_margtoys.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) run_build_margtoys.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_build_margtoys
 
+run_fit_marg: FORCE
+	$(CXX) $(CXXFLAGS) -c run_fit_marg.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) run_fit_marg.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_fit_marg
+
 make_dummy_samples: FORCE
 	$(CXX) $(CXXFLAGS) -c make_dummy_samples.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) make_dummy_samples.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_dummy_samples
@@ -139,6 +144,7 @@ clean: FORCE
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_tests
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit_marg
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-batch_tests
 
@@ -154,6 +160,7 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_tests
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit_marg
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-batch_tests
 
