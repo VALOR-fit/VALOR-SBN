@@ -255,6 +255,80 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   return true;
 }
 //________________________________________________________________________________________
+bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt)
+{
+   LOG("GenericSingleSampleFitModel",pNOTICE) << "Reading model from stream";
+
+   string opt = (read_opt) ? read_opt : "pdft";
+
+   int isample = fArrIdx->SampleIdx(fBeam, fSample);
+   // Read in the MC templates
+   if(opt.find("mct") != string::npos)
+   {
+      for(int imode = 0; imode < kNReacModes; imode++)
+      {
+         ReacMode_t m = kReactionModes[isample][imode];
+         if(m == kmUndefined || fMCTNullOb[imode])
+         {
+            continue;
+         }
+         fMCTNomOb[imode]->ReadStream(stream);
+         fMCTTunOb[imode]->ReadStream(stream);
+         fMCTSysOb[imode]->ReadStream(stream);
+         fMCTFinOb[imode]->ReadStream(stream);
+
+         if(opt.find("+SB") != string::npos)
+         {
+            if(fMCTNullSb[imode])
+            {
+               continue;
+            }
+            fMCTNomSb[imode]->ReadStream(stream);
+            fMCTTunSb[imode]->ReadStream(stream);
+            fMCTSysSb[imode]->ReadStream(stream);
+            fMCTFinSb[imode]->ReadStream(stream);
+         }
+      }
+   }
+
+   // Write out the PDF components
+   if(opt.find("pdfc") != string::npos)
+   {
+      for(int imode = 0; imode < kNReacModes; imode++)
+      {
+         ReacMode_t m = kReactionModes[isample][imode];
+         if(m == kmUndefined || fMCTNullOb[imode])
+         {
+            continue;
+         }
+         fPDFCompOb[imode]->ReadStream(stream);
+
+         if(opt.find("+SB") != string::npos)
+         {
+            if(fMCTNullSb[imode])
+            {
+               continue;
+            }
+            fPDFCompSb[imode]->ReadStream(stream);
+         }
+      }
+   }
+
+   // Write out the total PDF
+   if(opt.find("pdft") != string::npos)
+   {
+      fPDFTotOb->ReadStream(stream);
+
+      if(opt.find("+SB") != string::npos)
+      {
+        fPDFTotSb->ReadStream(stream);
+      }
+   }
+
+   return true;
+
+}
+//________________________________________________________________________________________
 bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
 {
   LOG("GenericSingleSampleFitModel",pINFO) << "Configuring the Response Function Library... \n\n";
@@ -599,6 +673,79 @@ bool GenericSingleSampleFitModel::Write(
   delete array;
 
   return true;
+}
+//________________________________________________________________________________________
+bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_opt)
+{
+   LOG("GenericSingleSampleFitModel",pNOTICE) << "Writing results to stream";
+
+   string opt = (write_opt) ? write_opt : "pdft";
+
+   int isample = fArrIdx->SampleIdx(fBeam, fSample);
+   // Write out the MC templates
+   if(opt.find("mct") != string::npos)
+   {
+      for(int imode = 0; imode < kNReacModes; imode++)
+      {
+         ReacMode_t m = kReactionModes[isample][imode];
+         if(m == kmUndefined || fMCTNullOb[imode])
+         {
+            continue;
+         }
+         fMCTNomOb[imode]->WriteStream(stream);
+         fMCTTunOb[imode]->WriteStream(stream);
+         fMCTSysOb[imode]->WriteStream(stream);
+         fMCTFinOb[imode]->WriteStream(stream);
+
+         if(opt.find("+SB") != string::npos)
+         {
+            if(fMCTNullSb[imode])
+            {
+               continue;
+            }
+            fMCTNomSb[imode]->WriteStream(stream);
+            fMCTTunSb[imode]->WriteStream(stream);
+            fMCTSysSb[imode]->WriteStream(stream);
+            fMCTFinSb[imode]->WriteStream(stream);
+         }
+      }
+   }
+
+   // Write out the PDF components
+   if(opt.find("pdfc") != string::npos)
+   {
+      for(int imode = 0; imode < kNReacModes; imode++)
+      {
+         ReacMode_t m = kReactionModes[isample][imode];
+         if(m == kmUndefined || fMCTNullOb[imode])
+         {
+            continue;
+         }
+         fPDFCompOb[imode]->WriteStream(stream);
+
+         if(opt.find("+SB") != string::npos)
+         {
+            if(fMCTNullSb[imode])
+            {
+               continue;
+            }
+            fPDFCompSb[imode]->WriteStream(stream);
+         }
+      }
+   }
+
+   // Write out the total PDF
+   if(opt.find("pdft") != string::npos)
+   {
+      fPDFTotOb->WriteStream(stream);
+
+      if(opt.find("+SB") != string::npos)
+      {
+        fPDFTotSb->WriteStream(stream);
+      }
+   }
+
+   return true;
 }
 //________________________________________________________________________________________
 double GenericSingleSampleFitModel::GetFitStatisticPenalty (Option_t * /*opt*/) const

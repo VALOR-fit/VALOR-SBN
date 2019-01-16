@@ -167,7 +167,8 @@ void BuildToys(CmdLnArgList& arg)
       LOG("valor_dune", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
       FitDataABC* data = elements->FitData();
       data->Generate(model, *fpl, with_stat_fluct);
-      data->Write(os_toys, "+SB");
+      //data->Write(os_toys, "+SB");
+      model->Write(os_toys, "pdft+SB");
    }
    clock.Stop();
 

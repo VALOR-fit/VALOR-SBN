@@ -70,6 +70,7 @@ public:
 
   string        Name                   (void) const;
   bool          Read                   (string file, Option_t * opt = 0);
+  virtual bool Read(std::ifstream& stream, Option_t* read_opt = 0);
   bool          Generate               (const PhysHypothesis & ph, Option_t * opt = 0);
   void          RandomizeSystematics   (Option_t * opt = 0);
   void          RandomizeSystematics   (bool (*should_randomize)(conv::PhysParamId_t), Option_t * opt = 0);
@@ -82,6 +83,7 @@ public:
   bool          Generate               (const FitParamList & fp, Option_t * opt = 0);
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
+  virtual bool Write(std::ofstream& stream, Option_t* write_opt = 0);
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
   
   void          SetSystConf            (CorrelatedSystematics * syst, Option_t * opt = "");

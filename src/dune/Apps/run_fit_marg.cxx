@@ -104,6 +104,7 @@ void Fit(CmdLnArgList& arg)
    // Get arguments
    string fpl_name = arg.GetString("fit-param-list");
    string param_val_opts = arg.GetString("param-values-option");
+   string fitter_name = arg.GetString("fitter");
    bool with_stat_fluct = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
@@ -117,8 +118,7 @@ void Fit(CmdLnArgList& arg)
    FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), systematics);
 
    FitDataABC* data = elements->FitData();
-   // Call Generate once to force a call to Book, but won't use the generated
-   // spectra
+   // Call Generate - forces a call to Book as well as providing the fake data
    data->Generate(model, *fpl, with_stat_fluct);
 
    // Get the requested batch number and number of marginalisation toys for the
@@ -135,7 +135,26 @@ void Fit(CmdLnArgList& arg)
    {
       // Read a toy-MC experiment 
       LOG("valor_dune", pDEBUG) << "Reading toy-MC data";
-      data->Read(is_toys, "+SB");
+      //data->Read(is_toys, "+SB");
+      model->Read(is_toys, "pdft+SB");
+
+      LOG("valor_dune", pNOTICE) << "Stat(" << t << "): " << data->GetFitStatistic(model, "likelihood-ratio");
+
+/*      // Temp test
+      model->ResetSystematics("all");
+      // Randomise the systematics in the model
+      if (param_val_opts.find("randomize") != std::string::npos)
+      {
+         model->RandomizeSystematics(param_val_opts.c_str());
+      }
+
+      PhysParamList tweaks = model->Tweaks();
+      fpl->FromPhysParamList(tweaks,"current silent");
+      // End temp test*/
+
+//      FitInputs fit_inputs(data, model, fpl);
+//      FitterABC* fitter = util::GetFitter(&fit_inputs, fitter_name.c_str());
+//      LOG("valor_dune", pNOTICE) << "Stat(" << t << "): " << fit_inputs.Statistic();
    }
    clock.Stop();
 

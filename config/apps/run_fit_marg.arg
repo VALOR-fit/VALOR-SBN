@@ -4,6 +4,7 @@ tag                                  |   string       |  optional   |   margtoy
 run                                  |   integer      |  optional   |   0
 batch                                |   integer      |  optional   |   1
 nmargtoy                             |   integer      |  mandatory  |   1
+fitter                               |   string       |  optional   |   minuit
 fit-param-list                       |   string       |  optional   |   standard
 param-values-option                  |   string       |  optional   |   randomize-all;prefit-errors
 config                               |   string       |  mandatory  |   -
