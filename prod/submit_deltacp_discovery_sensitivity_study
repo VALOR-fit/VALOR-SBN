@@ -174,7 +174,7 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        $fullprogram = abs_path(`which $program`);
        $arguments =~ s/\"/\\\"/g;        # All double quotes must be escaped for Condor
        $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
-       $jobname = "${tag}-cp=0-octant=1-${jobID}";
+       $jobname = "${tag}-cp_is_0-octant_is_1-${jobID}";
        $cndfn = "$job_dir/${jobname}.condor";
        open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
        print CND "Executable               = $fullprogram \n";
@@ -194,7 +194,7 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        close(CND);
        system("condor_submit",$cndfn);
 
-       $jobname = "${tag}-cp=0-octant=2-${jobID}";
+       $jobname = "${tag}-cp_is_0-octant_is_2-${jobID}";
        $cndfn = "$job_dir/${jobname}.condor";
        open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
        print CND "Executable               = $fullprogram \n";
@@ -214,7 +214,7 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        close(CND);
        system("condor_submit",$cndfn);
 
-       $jobname = "${tag}-cp=pi-octant=1-${jobID}";
+       $jobname = "${tag}-cp_is_pi-octant_is_1-${jobID}";
        $cndfn = "$job_dir/${jobname}.condor";
        open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
        print CND "Executable               = $fullprogram \n";
@@ -234,7 +234,7 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        close(CND);
        system("condor_submit",$cndfn);
 
-       $jobname = "${tag}-cp=pi-octant=2-${jobID}";
+       $jobname = "${tag}-cp_is_pi-octant_is_2-${jobID}";
        $cndfn = "$job_dir/${jobname}.condor";
        open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
        print CND "Executable               = $fullprogram \n";
