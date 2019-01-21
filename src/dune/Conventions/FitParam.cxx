@@ -1067,6 +1067,7 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
     bool cons_osc_params        = (param_list_opt.find("cons-osc-params"  ) != string::npos);
     bool cons_atm_params        = (param_list_opt.find("cons-atm-params"  ) != string::npos);
     bool cons_solar_params      = (param_list_opt.find("cons-solar-params") != string::npos);
+    bool cons_theta13           = (param_list_opt.find("cons-theta13"     ) != string::npos);
     bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
     bool fix_nd_detector_params = (param_list_opt.find("fix-nd-det-syst"  ) != string::npos);
     bool fix_fd_detector_params = (param_list_opt.find("fix-fd-det-syst"  ) != string::npos);
@@ -1171,6 +1172,10 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
       if(cons_atm_params){
         fparm->SetNuisance(conv::kPhypMixing23,true);
         fparm->SetNuisance(conv::kPhypDm23sq  ,true);
+      }
+      
+      if (cons_theta13) {
+        fparm->SetNuisance(conv::kPhypMixing13,true);
       }
 
       // toggle detector related params on/off
