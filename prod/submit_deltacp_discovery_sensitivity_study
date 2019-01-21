@@ -246,6 +246,7 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
        print CND "Getenv                   = True \n";
        print CND "should_transfer_files    = YES \n";
        print CND "when_to_transfer_output  = ON_EXIT \n";
+       print CND "requirements             = (OpSysAndVer=?="SL6") \n";
        if ($ncores > 0) {
          print CND "request_cpus             = $ncores \n";
        } 
