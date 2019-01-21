@@ -50,6 +50,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
 #include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/OscParams.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
@@ -64,8 +65,10 @@ int main(int argc, char ** argv)
   Env::Instance()->AutoSet("dune");
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
   
+  util::InitializeOAPriors();
+  
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/write_pdf.arg:$VALOR_DUNE/config/apps/seeds.arg");
+  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/write_pdf.arg:$VALOR_DUNE/config/apps/oscparams.arg:$VALOR_DUNE/config/apps/seeds.arg");
   LOG("valor_dune", pNOTICE) << arg;
 
   string fplname          = arg.GetString("fit-param-list"); 
@@ -106,8 +109,9 @@ int main(int argc, char ** argv)
   FitModelABC * model = elements->FitModel();
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
-  // parameter limits, initial values etc).                                                                                           
-  FitParamList * fp = util::GetFitParameterList(fplname.c_str());
+  // parameter limits, initial values etc).            
+  CorrelatedSystematics * syst = model->GetSystematics();                                                                               
+  FitParamList * fp = util::GetFitParameterList(fplname.c_str(),syst);
 
   //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
@@ -116,45 +120,54 @@ int main(int argc, char ** argv)
   Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
 
   // Update values of oscillation parameters 
-  if(fplname != "only-nd"){
+  
+  if (fp->Exists(conv::kPhypMixing12)) {
     double mixing12 = arg.GetDouble("input-mixing12");
-    PhysParamId_t p = util::PhysParamFromString("mixing12");
-    fp->Update(p, mixing12);
-    fp->SetInitValue(p, mixing12);
-
-    double mixing23 = arg.GetDouble("input-mixing23");
-    p = util::PhysParamFromString("mixing23");
-    fp->Update(p, mixing23);
-    fp->SetInitValue(p, mixing23);
-
-    double mixing13 = arg.GetDouble("input-mixing13");
-    p = util::PhysParamFromString("mixing13");
-    fp->Update(p, mixing13);
-    fp->SetInitValue(p, mixing13);
-
-    double dm23sq = arg.GetDouble("input-dm23sq");
-    p = util::PhysParamFromString("dm23sq");
-    fp->Update(p, dm23sq);
-    fp->SetInitValue(p, dm23sq);
-
-    double dm12sq = arg.GetDouble("input-dm12sq");
-    p = util::PhysParamFromString("dm12sq");
-    fp->Update(p, dm12sq);
-    fp->SetInitValue(p, dm12sq);
-
-    double deltacp = arg.GetDouble("input-deltaCP");
-    p = util::PhysParamFromString("cpv");
-    fp->Update(p, deltacp);
-    fp->SetInitValue(p, deltacp);
-
-    // fix them? 
-    if(arg.GetBool("fix-mixing12")) fp->FixParameter(util::PhysParamFromString("mixing12"));
-    if(arg.GetBool("fix-mixing13")) fp->FixParameter(util::PhysParamFromString("mixing13"));
-    if(arg.GetBool("fix-mixing23")) fp->FixParameter(util::PhysParamFromString("mixing23"));
-    if(arg.GetBool("fix-dm23sq"))   fp->FixParameter(util::PhysParamFromString("dm23sq"));
-    if(arg.GetBool("fix-dm12sq"))   fp->FixParameter(util::PhysParamFromString("dm12sq"));
-    if(arg.GetBool("fix-deltaCP"))  fp->FixParameter(util::PhysParamFromString("cpv"));
+    if ( std::fabs(mixing12 + 999. ) < conv::kASmallNum ) { 
+      mixing12 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing12);
+    }
+    fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
+    fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
   }
+
+  double mixing13 = arg.GetDouble("input-mixing13");
+  if ( std::fabs(mixing13 + 999. ) < conv::kASmallNum ) { 
+    mixing13 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing13);
+  }
+  fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
+  fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
+  
+  double mixing23 = arg.GetDouble("input-mixing23");
+  if ( std::fabs(mixing23 + 999. ) < conv::kASmallNum ) { 
+    mixing23 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing23);
+  }
+  
+  //~ if (flip_23_octant) {
+    //~ mixing23 = util::FlipOctantAroundMaxDisap(mixing23,mixing13);
+  //~ }
+  //~ fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
+  //~ fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
+  
+  double dm23sq = arg.GetDouble("input-dm23sq");
+  if ( std::fabs(dm23sq + 999. ) < conv::kASmallNum ) {
+    dm23sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm23sq);
+  }
+  fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
+  fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
+
+  double dm12sq = arg.GetDouble("input-dm12sq");
+  if ( std::fabs(dm12sq + 999. ) < conv::kASmallNum ) { 
+    dm12sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm12sq);
+  }
+  fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
+  fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
+
+  double deltacp = arg.GetDouble("input-deltaCP");
+  if ( std::fabs(deltacp + 999. ) < conv::kASmallNum ) {
+    deltacp = Opt::Instance()->GetGlobalBestFit(conv::kPhypCPV);
+  }
+  fp->Update      (util::PhysParamFromString("cpv"), deltacp);
+  fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
 
   // Generate predictions                                                                                                         
   Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                 
@@ -170,5 +183,7 @@ int main(int argc, char ** argv)
   model->Write(outfilename,"valor",write_opt);
 
   std::cout<<"Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
+  
+  fp->Print(cout);
 
 }
