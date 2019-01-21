@@ -79,6 +79,7 @@ $fitoption              = "minuit"                                unless defined
 $store_spectra          = 0                                       unless defined $store_spectra;
 $prior_file             = "-"                                     unless defined $prior_file;
 $ncores                 = 1                                       unless defined $ncores;
+$pot_override           = -999                                    unless defined $pot_override;
 
 $job_dir                = `pwd`                                   unless defined $job_dir;
 $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
@@ -119,33 +120,31 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
 
     $program   = "valor_dune-run_fit";
     
-    #first fit in first octanct, deltacp 0
-    $arguments1 = "--tag $tag-cp=0-octant=1 --run $ipoint --ntoymc 1 ".
-      " --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
+    $standard_options = " --run $ipoint --ntoymc 1  --fit-param-list $fitparamlist".
+      " --param-values-option  $param_values --fitter $fitoption".
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-      " --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --first-octant ".
-      " --load-prior-from-file $prior_file --pot-override $pot_override";
+      " --$mhchoice --input-deltaCP $deltacp_input_value --fix-deltaCP ".
+      " --load-prior-from-file $prior_file --pot-override $pot_override ";
+      
+    #first fit in first octant, deltacp 0
+    $arguments1 = "--tag $tag-cp=0-octant=1 ".
+      " --fix-at-deltaCP 0 --first-octant ".
+      $standard_options;
 
-    #second fit in second octanct, deltacp 0
-    $arguments2 = "--tag $tag-cp=0-octant=2 --run $ipoint --ntoymc 1 ".
-      " --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
-      " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-      " --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --second-octant ".
-      " --load-prior-from-file $prior_file --pot-override $pot_override --flip-true-octant";
+    #second fit in second octant, deltacp 0
+    $arguments2 = "--tag $tag-cp=0-octant=2 ".
+      " --fix-at-deltaCP 0 --second-octant --flip-true-octant ".
+      $standard_options;
 
-    #third fit in first octanct, deltacp pi
-    $arguments3 = "--tag $tag-cp=pi-octant=1 --run $ipoint --ntoymc 1 ".
-      " --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
-      " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-      " --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value  --$mhchoice --first-octant ".
-      " --load-prior-from-file $prior_file --pot-override $pot_override";
+    #third fit in first octant, deltacp pi
+    $arguments3 = "--tag $tag-cp=pi-octant=1 ".
+      " --fix-at-deltaCP $max_value --first-octant ".
+      $standard_options;
 
-    #forth fit in second octanct, deltacp pi
-    $arguments4 = "--tag $tag-cp=pi-octant=2 --run $ipoint --ntoymc 1 ".
-      " --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
-      " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-      " --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value  --$mhchoice --second-octant ".
-      " --load-prior-from-file $prior_file --pot-override $pot_override --flip-true-octant";
+    #fourth fit in second octant, deltacp pi
+    $arguments4 = "--tag $tag-cp=pi-octant=2 ".
+      " --fix-at-deltaCP $max_value --second-octant --flip-true-octant ".
+      $standard_options;
 
 
     $command1 = $program." ".$arguments1;
