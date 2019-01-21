@@ -171,91 +171,94 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
     
     if($resource eq "RAL" || $resource eq "RAL_HTC") {
        $fullprogram = abs_path(`which $program`);
-       $arguments =~ s/\"/\\\"/g;        # All double quotes must be escaped for Condor
-       $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
-       $jobname = "${tag}-cp_is_0-octant_is_1-${jobID}";
-       $cndfn = "$job_dir/${jobname}.condor";
-       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-       print CND "Executable               = $fullprogram \n";
-       print CND "Arguments                = $arguments1 \n";
-       print CND "initialdir               = $job_dir \n";
-       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-       print CND "Universe                 = vanilla \n";
-       print CND "Getenv                   = True \n";
-       print CND "should_transfer_files    = YES \n";
-       print CND "when_to_transfer_output  = ON_EXIT \n";
-       print CND "requirements             = (OpSysAndVer=?=\"SL6\") \n";
-       if ($ncores > 0) {
-         print CND "request_cpus             = $ncores \n";
-       } 
-       print CND "\nqueue\n";
+       chomp($fullprogram);
        
-       close(CND);
-       system("condor_submit",$cndfn);
+       $fmwk_setup_script = "$fmwk_softw_dir/setup/setup_at_cvmfs_root6.sh";
+       $dune_setup_script = "$dune_softw_dir/setup/setup_at_cvmfs_root6.sh";
+       
+       $jobname1 = "${tag}-cp_is_0-octant_is_1-${jobID}";
+       $shell1fn = "$job_dir/${jobname1}.sh";
+       $jobname2 = "${tag}-cp_is_0-octant_is_2-${jobID}";
+       $shell2fn = "$job_dir/${jobname2}.sh";
+       $jobname3 = "${tag}-cp_is_pi-octant_is_1-${jobID}";
+       $shell3fn = "$job_dir/${jobname3}.sh";
+       $jobname4 = "${tag}-cp_is_pi-octant_is_2-${jobID}";
+       $shell4fn = "$job_dir/${jobname4}.sh";
+       
+       open(shell1,">".$shell1fn);
+       print shell1 "hostname \n";
+       print shell1 "date \n";
+       print shell1 "source $fmwk_setup_script \n";
+       print shell1 "source $dune_setup_script \n";
+       print shell1 "$fullprogram $arguments1";
+       close(shell1);
+       open(shell2,">".$shell2fn);
+       print shell2 "hostname \n";
+       print shell2 "date \n";
+       print shell2 "source $fmwk_setup_script \n";
+       print shell2 "source $dune_setup_script \n";
+       print shell2 "$fullprogram $arguments2";
+       close(shell2);
+       open(shell3,">".$shell3fn);
+       print shell3 "hostname \n";
+       print shell3 "date \n";
+       print shell3 "source $fmwk_setup_script \n";
+       print shell3 "source $dune_setup_script \n";
+       print shell3 "$fullprogram $arguments3";
+       close(shell3);
+       open(shell4,">".$shell4fn);
+       print shell4 "hostname \n";
+       print shell4 "date \n";
+       print shell4 "source $fmwk_setup_script \n";
+       print shell4 "source $dune_setup_script \n";
+       print shell4 "$fullprogram $arguments4";
+       close(shell4);
+       
+       $default_cnd_options =
+         "Executable               = /bin/bash \n".
+         "initialdir               = $job_dir \n".
+         "Universe                 = vanilla \n".
+         "Getenv                   = False \n".
+         "should_transfer_files    = YES \n".
+         "when_to_transfer_output  = ON_EXIT \n".
+         (ncores > 1 ? "request_cpus             = $ncores \n":"").
+         "\nqueue\n";
+                             
+       $cndfn1 = "$job_dir/${jobname1}.condor";
+       open(CND1, ">".$cndfn1) or die("Cannot create the Condor batch script");
+       print CND1 "Arguments                = $shell1fn \n";
+       print CND1 "Error                    = ${jobname1}_\$\(Process\).err \n";
+       print CND1 "Output                   = ${jobname1}_\$\(Process\).out \n";
+       print CND1 $default_cnd_options;
+       close(CND1);
+       system("condor_submit",$cndfn1);
 
-       $jobname = "${tag}-cp_is_0-octant_is_2-${jobID}";
-       $cndfn = "$job_dir/${jobname}.condor";
-       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-       print CND "Executable               = $fullprogram \n";
-       print CND "Arguments                = $arguments2 \n";
-       print CND "initialdir               = $job_dir \n";
-       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-       print CND "Universe                 = vanilla \n";
-       print CND "Getenv                   = True \n";
-       print CND "should_transfer_files    = YES \n";
-       print CND "when_to_transfer_output  = ON_EXIT \n";
-       print CND "requirements             = (OpSysAndVer=?=\"SL6\") \n";
-       if ($ncores > 0) {
-         print CND "request_cpus             = $ncores \n";
-       } 
-       print CND "\nqueue\n";
+       $cndfn2 = "$job_dir/${jobname2}.condor";
+       open(CND2, ">".$cndfn2) or die("Cannot create the Condor batch script");
+       print CND2 "Arguments                = $shell2fn \n";
+       print CND2 "Error                    = ${jobname2}_\$\(Process\).err \n";
+       print CND2 "Output                   = ${jobname2}_\$\(Process\).out \n";
+       print CND2 $default_cnd_options;
+       close(CND2);
+       system("condor_submit",$cndfn2);
        
-       close(CND);
-       system("condor_submit",$cndfn);
-
-       $jobname = "${tag}-cp_is_pi-octant_is_1-${jobID}";
-       $cndfn = "$job_dir/${jobname}.condor";
-       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-       print CND "Executable               = $fullprogram \n";
-       print CND "Arguments                = $arguments3 \n";
-       print CND "initialdir               = $job_dir \n";
-       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-       print CND "Universe                 = vanilla \n";
-       print CND "Getenv                   = True \n";
-       print CND "should_transfer_files    = YES \n";
-       print CND "when_to_transfer_output  = ON_EXIT \n";
-       print CND "requirements             = (OpSysAndVer=?=\"SL6\") \n";
-       if ($ncores > 0) {
-         print CND "request_cpus             = $ncores \n";
-       } 
-       print CND "\nqueue\n";
+       $cndfn3 = "$job_dir/${jobname3}.condor";
+       open(CND3, ">".$cndfn3) or die("Cannot create the Condor batch script");
+       print CND3 "Arguments                = $shell3fn \n";
+       print CND3 "Error                    = ${jobname3}_\$\(Process\).err \n";
+       print CND3 "Output                   = ${jobname3}_\$\(Process\).out \n";
+       print CND3 $default_cnd_options;
+       close(CND3);
+       system("condor_submit",$cndfn3);
        
-       close(CND);
-       system("condor_submit",$cndfn);
-
-       $jobname = "${tag}-cp_is_pi-octant_is_2-${jobID}";
-       $cndfn = "$job_dir/${jobname}.condor";
-       open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-       print CND "Executable               = $fullprogram \n";
-       print CND "Arguments                = $arguments4 \n";
-       print CND "initialdir               = $job_dir \n";
-       print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-       print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-       print CND "Universe                 = vanilla \n";
-       print CND "Getenv                   = True \n";
-       print CND "should_transfer_files    = YES \n";
-       print CND "when_to_transfer_output  = ON_EXIT \n";
-       print CND "requirements             = (OpSysAndVer=?=\"SL6\") \n";
-       if ($ncores > 0) {
-         print CND "request_cpus             = $ncores \n";
-       } 
-       print CND "\nqueue\n";
-       
-       close(CND);
-       system("condor_submit",$cndfn);
+       $cndfn4 = "$job_dir/${jobname4}.condor";
+       open(CND4, ">".$cndfn4) or die("Cannot create the Condor batch script");
+       print CND4 "Arguments                = $shell4fn \n";
+       print CND4 "Error                    = ${jobname4}_\$\(Process\).err \n";
+       print CND4 "Output                   = ${jobname4}_\$\(Process\).out \n";
+       print CND4 $default_cnd_options;
+       close(CND4);
+       system("condor_submit",$cndfn4);
 
     }
   
