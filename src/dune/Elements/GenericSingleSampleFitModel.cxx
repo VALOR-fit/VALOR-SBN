@@ -234,7 +234,8 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     if(m == kmUndefined) continue;
     n_events+=fMCTNomSb[imode]->Integral();
   }
-  LOG("GenericSingleSampleFitModel",pNOTICE) << "Untuned template contains "<<n_events<<" events.";
+  LOG("GenericSingleSampleFitModel",pNOTICE) << "Untuned template contains " <<
+     n_events << " events.";
 
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.

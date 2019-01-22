@@ -76,16 +76,14 @@
 #include "valor/FitCore/CompoundFitModel.h"
 #include "valor/Conventions/Opt.h"
 
+#include "dune/Utilities/UtlOscillation.h"
+
 using namespace valor;
 using namespace valor::conv;
 //using namespace valor::marginalisation;
 
 void BuildToys(CmdLnArgList& arg);
 void Init(CmdLnArgList& arg);
-void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl);
-void SetOscillationParameterPriors(CmdLnArgList& arg, FitParamList& fpl);
-void ThrowOscillationParameters(FitParamList& fpl);
-void SetUnoscillated(FitParamList& fpl);
 
 int main(int argc, char** argv)
 {
@@ -120,14 +118,14 @@ void BuildToys(CmdLnArgList& arg)
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
    FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), systematics);
    // Set the priors
-   SetOscillationParameterPriors(arg, *fpl);
+   util::oscillation::SetOscillationParameterPriors(arg, *fpl);
    // Fix or set marginalisation flag for oscillation parameters
-   SetOscillationParameters(arg, *fpl);
+   util::oscillation::SetOscillationParameters(arg, *fpl);
    // Test of oscillation parameter throwing
    // ThrowOscillationParameters(*fpl);
 
    // Initialize non delta M squared oscillation parameters to zero
-   SetUnoscillated(*fpl);
+   util::oscillation::SetUnoscillated(*fpl);
 
    // Get the requested batch number and number of marginalisation toys for the
    // batch
@@ -199,122 +197,5 @@ void Init(CmdLnArgList& arg)
    util::InitializeOAPriors();
 
    Rnd::Instance()->SetSeeds(arg);
-}
-
-void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
-{
-   string osc_parameters[7] = { "mixing12", "mixing13", "mixing23", "dm23sq",
-      "dm12sq", "dm13sq", "cpv" };
-
-   for(int i = 0; i < 7; ++i)
-   {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
-            osc_parameters[i].c_str());
-      if(fpl.Exists(p))
-      {
-         double fix_value = arg.GetDouble(TString::Format("fix-at-%s",
-                  osc_parameters[i].c_str()).Data());
-         double min_value = util::OscParamMinValue(p);
-         double max_value = util::OscParamMaxValue(p);
-         if(fix_value >= min_value && fix_value < max_value)
-         {
-            fpl.Update(p, fix_value);
-            fpl.SetInitValue(p, fix_value);
-            fpl.FixParameter(p);
-         }
-         else
-         {
-            fpl.SetDoMarg(p, true);
-         }
-      }
-   }
-}
-
-void SetOscillationParameterPriors(CmdLnArgList& arg, FitParamList& fpl)
-{
-   // This should all be done from xml
-   valor::conv::PhysParamId_t p = util::PhysParamFromString("mixing12");
-   fpl.SetPriorMode(p, "gaus");
-   fpl.SetMeanGaus(p, 0.307); fpl.SetSigmaGaus(p, 0.013);
-
-   p = util::PhysParamFromString("dm12sq");
-   fpl.SetPriorMode(p, "gaus");
-   fpl.SetMeanGaus(p, 7.53e-5); fpl.SetSigmaGaus(p, 0.18e-5);
-
-   p = util::PhysParamFromString("mixing13");
-   fpl.SetPriorMode(p, "gaus");
-   fpl.SetMeanGaus(p, 2.12e-3); fpl.SetSigmaGaus(p, 0.8e-3);
-
-   p = util::PhysParamFromString("mixing23");
-   fpl.SetPriorMode(p, "flat");
-   fpl.SetMinValueFlat(p, 0.3); fpl.SetMaxValueFlat(p, 0.7);
-
-   p = util::PhysParamFromString("dm23sq");
-   fpl.SetPriorMode(p, "flat");
-   fpl.SetMinValueFlat(p, 2.3e-3); fpl.SetMaxValueFlat(p, 2.7e-3);
-
-   p = util::PhysParamFromString("cpv");
-   fpl.SetPriorMode(p, "flat");
-   fpl.SetMinValueFlat(p, -3.14159265358979312); fpl.SetMaxValueFlat(p, +3.14159265358979312);
-}
-
-void ThrowOscillationParameters(FitParamList& fpl)
-{
-   string osc_parameters[7] = { "mixing12", "mixing13", "mixing23", "dm23sq",
-      "dm12sq", "dm13sq", "cpv" };
-
-   for(int i = 0; i < 7; ++i)
-   {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
-            osc_parameters[i].c_str());
-      if(fpl.Exists(p) && fpl.IsMarginalized(p))
-      {
-         double value = util::GetRandomizedOscParam(p, fpl.GetPriorModeName(p));
-         LOG("valor_dune", pDEBUG) << osc_parameters[i] << " " << fpl.GetPriorModeName(p) << " " << value;
-         LOG("valor_dune", pDEBUG) << "I think GetRandomizedOscParam ignores the prior in the FPL";
-         double min_value = util::OscParamMinValue(p);
-         double max_value = util::OscParamMaxValue(p);
-         if(value >= min_value && value < max_value)
-         {
-            fpl.Update(p, value);
-            fpl.SetInitValue(p, value);
-         }
-         else
-         {
-            // Rethrow if not in physical range
-            --i;
-            continue;
-         }
-      }
-   }
-}
-
-void SetUnoscillated(FitParamList& fpl)
-{
-   string osc_parameters[4] = { "mixing12", "mixing13", "mixing23", "cpv" };
-   string dm_parameters[3] = {"dm23sq", "dm12sq", "dm13sq" };
-
-   for(int i = 0; i < 4; ++i)
-   {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
-            osc_parameters[i].c_str());
-      if(fpl.Exists(p))
-      {
-         fpl.Update(p, 0.0);
-         fpl.SetInitValue(p, 0.0);
-      }
-   }
-
-   for(int i = 0; i < 3; ++i)
-   {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
-            dm_parameters[i].c_str());
-      if(fpl.Exists(p))
-      {
-         double value = fpl.InitValue(p);
-         fpl.Update(p, value);
-         fpl.SetInitValue(p, value);
-      }
-   }
 }
 
