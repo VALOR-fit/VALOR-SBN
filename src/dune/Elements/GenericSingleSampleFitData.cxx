@@ -254,10 +254,9 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     fDataOb->GetArray()[ibin_ob] += ndata;
   }//ibin_sb
 #endif //__VALOR_FMWK_PENALTY_ONLY__
-  
-  LOG("GenericSingleSampleFitData",pNOTICE) 
-    << fName<< ": N_{Data} SB = " << fDataSb->Integral()
-    <<" ; N_{Data} OB = "<<fDataOb->Integral();
+ 
+   LOG("GenericSingleSampleFitData",pNOTICE) << fName << ": N_{Data} SB = " <<
+      fDataSb->Integral() << " ; N_{Data} OB = " << fDataOb->Integral();
 
   return true;
 }

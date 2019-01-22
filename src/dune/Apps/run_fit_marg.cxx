@@ -76,6 +76,8 @@
 #include "valor/FitCore/CompoundFitModel.h"
 #include "valor/Conventions/Opt.h"
 
+#include "dune/Utilities/UtlOscillation.h"
+
 using namespace valor;
 using namespace valor::conv;
 //using namespace valor::marginalisation;
@@ -116,6 +118,14 @@ void Fit(CmdLnArgList& arg)
    CorrelatedSystematics* systematics =
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
    FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), systematics);
+
+   // Set the priors
+   util::oscillation::SetOscillationParameterPriors(arg, *fpl);
+   // Fix or set marginalisation flag for oscillation parameters
+   util::oscillation::SetOscillationParameters(arg, *fpl);
+
+   // Initialize non delta M squared oscillation parameters to zero
+   util::oscillation::SetUnoscillated(*fpl);
 
    FitDataABC* data = elements->FitData();
    // Call Generate - forces a call to Book as well as providing the fake data
