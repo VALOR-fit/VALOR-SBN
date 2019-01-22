@@ -141,31 +141,25 @@ void Fit(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
+   double likelihood_sum = 0.0;
    for(int t = 0; t < Ntoys; ++t)
    {
       // Read a toy-MC experiment 
       LOG("valor_dune", pDEBUG) << "Reading toy-MC data";
-      //data->Read(is_toys, "+SB");
       model->Read(is_toys, "pdft+SB");
+      double chi2 = data->GetFitStatistic(model, "likelihood-ratio");
+      double likelihood = TMath::Exp(-chi2 * 0.5);
+      likelihood_sum += likelihood;
 
-      LOG("valor_dune", pNOTICE) << "Stat(" << t << "): " << data->GetFitStatistic(model, "likelihood-ratio");
-
-/*      // Temp test
-      model->ResetSystematics("all");
-      // Randomise the systematics in the model
-      if (param_val_opts.find("randomize") != std::string::npos)
-      {
-         model->RandomizeSystematics(param_val_opts.c_str());
-      }
-
-      PhysParamList tweaks = model->Tweaks();
-      fpl->FromPhysParamList(tweaks,"current silent");
-      // End temp test*/
+      LOG("valor_dune", pNOTICE) << "chi2(" << t << "): " << chi2 <<
+         " L(" << t << "): " << likelihood;
 
 //      FitInputs fit_inputs(data, model, fpl);
 //      FitterABC* fitter = util::GetFitter(&fit_inputs, fitter_name.c_str());
 //      LOG("valor_dune", pNOTICE) << "Stat(" << t << "): " << fit_inputs.Statistic();
    }
+   double chi2_marg = -2 * TMath::Log(likelihood_sum / Ntoys);
+   LOG("valor_dune", pNOTICE) << "chi2(marg): " << chi2_marg;
    clock.Stop();
 
    is_toys.close();
