@@ -74,8 +74,8 @@ void MakeMCSample()
             simple_fhc_sample->SetEntry(fhc_val, x, y);
             simple_rhc_sample->SetEntry(rhc_val, x, y);
 
-            opt_fhc_sample->SetEntry(fhc_val, x - 2, y);
-            opt_rhc_sample->SetEntry(rhc_val, x - 2, y);
+            opt_fhc_sample->SetEntry(fhc_val + opt_fhc_sample->GetEntry(2, y), 2, y);
+            opt_rhc_sample->SetEntry(rhc_val + opt_rhc_sample->GetEntry(2, y), 2, y);
          }
          else
          {
@@ -84,8 +84,8 @@ void MakeMCSample()
             simple_fhc_sample->SetEntry(fhc_val, x, y);
             simple_rhc_sample->SetEntry(rhc_val, x, y);
 
-            opt_fhc_sample->SetEntry(fhc_val + opt_fhc_sample->GetEntry(0, y), 0, y);
-            opt_rhc_sample->SetEntry(rhc_val + opt_rhc_sample->GetEntry(0, y), 0, y);
+            opt_fhc_sample->SetEntry(fhc_val, x, y);
+            opt_rhc_sample->SetEntry(rhc_val, x, y);
          }
       }
    }
