@@ -14,7 +14,7 @@
       <sample>       numulikecchigh                                       </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           mc/dune_tdr_fd_mcc11_mu.xml                          </mc>
+      <mc>           mc/dune_tdr_fd_mcc11.xml                             </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/dune_fd_fhc_numulikecchigh_bins.xml          </binning>
@@ -26,7 +26,7 @@
       <sample>       nuelikecchigh                                        </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           mc/dune_tdr_fd_mcc11_e.xml                           </mc>
+      <mc>           mc/dune_tdr_fd_mcc11.xml                             </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/dune_fd_fhc_nuelikecchigh_bins.xml           </binning>
@@ -39,7 +39,7 @@
       <sample>       numulikecchigh                                       </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           mc/dune_tdr_fd_mcc11_mu.xml                          </mc>
+      <mc>           mc/dune_tdr_fd_mcc11.xml                             </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/dune_fd_fhc_numulikecchigh_bins.xml          </binning>
@@ -51,7 +51,7 @@
       <sample>       nuelikecchigh                                        </sample>
       <observable>   Ereco,yreco                                          </observable>
       <data>                                                              </data>
-      <mc>           mc/dune_tdr_fd_mcc11_e.xml                           </mc>
+      <mc>           mc/dune_tdr_fd_mcc11.xml                             </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/dune_fd_fhc_nuelikecchigh_bins.xml           </binning>

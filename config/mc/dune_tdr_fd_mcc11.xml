@@ -11,10 +11,10 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <lbnf_fhc>
-      5.1518e+21
+      3.85e+21
     </lbnf_fhc>
     <lbnf_rhc>
-      5.1518e+21
+      3.85e+21
     </lbnf_rhc>
   </exposure>
 </data>
@@ -48,7 +48,7 @@ Input MC templates
        <objtype>  TTree    </objtype> 
     </lbnf_fhc>
     <lbnf_rhc>
-       <filename> dune/tdr/valor_fd_fhc_mcc11.root </filename> 
+       <filename> dune/tdr/valor_fd_rhc_mcc11.root </filename> 
        <objname>  valor_dune_caf_minidst  </objname> 
        <objtype>  TTree     </objtype> 
     </lbnf_rhc>
