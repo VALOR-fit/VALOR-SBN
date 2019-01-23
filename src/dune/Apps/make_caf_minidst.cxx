@@ -140,6 +140,12 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
   valor_minidst->Branch("wght_smear", &valor_minidst_wght_smear  ,"wght_smear/D" );
   
+  
+  double valor_minidst_cvnnumu  = -1.; 
+  double valor_minidst_cvnnue   = -1.; 
+  valor_minidst->Branch("cvnnumu"   , &valor_minidst_cvnnumu    ,"cvnnumu/D"       );
+  valor_minidst->Branch("cvnnue"    , &valor_minidst_cvnnue     ,"cvnnue/D"       );
+  
   // First get the POT metadata
   TChain * metadata_tree = new TChain(gMetaTreeName.c_str());
   metadata_tree->Add(opt_input_name.c_str());
@@ -459,10 +465,8 @@ int main(int argc, char ** argv)
       
     valor_minidst_target    = tgt;
     
-    // apply the extra weight factor to NC events
-    if (!util::ModeIsCC(reac_mode)) {
-      valor_minidst_wght_pot *= nc_factor;
-    }
+    valor_minidst_cvnnumu = cut_branches.at("cvnnumu");
+    valor_minidst_cvnnue  = cut_branches.at("cvnnue" );
       
     VLOG("make_caf_minidst", pINFO) 
       << "\n Information copied to VALOR DUNE CAF Mini-DST: "

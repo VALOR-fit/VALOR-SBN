@@ -18,6 +18,7 @@ TGT = make_nd_minidst \
       make_fd_minidst \
       make_fastmc_minidst \
       make_caf_minidst \
+      make_nd_caf_minidst \
       make_response_functions \
       run_fit \
       write_pdf \
@@ -74,6 +75,14 @@ ifdef GENIE
 	$(LD) $(LDFLAGS) make_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_caf_minidst
 else
 	@echo "Skipping make_caf_minidst due to no GENIE"
+endif
+
+make_nd_caf_minidst: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_nd_caf_minidst.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_nd_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_caf_minidst
+else
+	@echo "Skipping make_nd_caf_minidst due to no GENIE"
 endif
 
 # Run a generic fit
