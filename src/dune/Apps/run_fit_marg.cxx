@@ -76,6 +76,7 @@
 #include "valor/FitCore/CompoundFitModel.h"
 #include "valor/Conventions/Opt.h"
 
+#include "dune/Utilities/Marginalisation.h"
 #include "dune/Utilities/UtlOscillation.h"
 
 using namespace valor;
@@ -136,34 +137,16 @@ void Fit(CmdLnArgList& arg)
    int batch = arg.GetInt("batch");
    int Ntoys = arg.GetInt("nmargtoy");
 
-   // Setup the stream to read this batch of marginalisation toys
-   std::ifstream is_toys("temporary.bin", std::ios::binary | std::ios::in);
-
    TStopwatch clock;
    clock.Start();
-   double likelihood_sum = 0.0;
-   for(int t = 0; t < Ntoys; ++t)
-   {
-      // Read a toy-MC experiment 
-      LOG("valor_dune", pDEBUG) << "Reading toy-MC data";
-      model->Read(is_toys, "pdft+SB");
-      double chi2 = data->GetFitStatistic(model, "likelihood-ratio");
-      double likelihood = TMath::Exp(-chi2 * 0.5);
-      likelihood_sum += likelihood;
-
-      LOG("valor_dune", pNOTICE) << "chi2(" << t << "): " << chi2 <<
-         " L(" << t << "): " << likelihood;
-
-//      FitInputs fit_inputs(data, model, fpl);
-//      FitterABC* fitter = util::GetFitter(&fit_inputs, fitter_name.c_str());
-//      LOG("valor_dune", pNOTICE) << "Stat(" << t << "): " << fit_inputs.Statistic();
-   }
-   double chi2_marg = -2 * TMath::Log(likelihood_sum / Ntoys);
-   LOG("valor_dune", pNOTICE) << "chi2(marg): " << chi2_marg;
+   Marginalisation marginalisation(*elements, "temporary");
+   marginalisation.ComputeStatistics(data, Ntoys, 3, batch);
+   double likelihood = marginalisation.GetLikelihood();
+   double chi2 = marginalisation.GetChi2();
+   LOG("valor_dune", pNOTICE) << "chi2(marg): " << chi2 << " L(marg): " <<
+      likelihood;
    clock.Stop();
 
-   is_toys.close();
-    
    LOG("valor_dune", pNOTICE) << "Read batch " << batch << ": " << Ntoys <<
       " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
       clock.CpuTime();
