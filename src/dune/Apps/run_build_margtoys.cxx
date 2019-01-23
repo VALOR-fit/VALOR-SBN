@@ -77,6 +77,7 @@
 #include "valor/Conventions/Opt.h"
 
 #include "dune/Utilities/UtlOscillation.h"
+#include "dune/Utilities/Marginalisation.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -106,7 +107,6 @@ void BuildToys(CmdLnArgList& arg)
    // Get arguments
    string fpl_name = arg.GetString("fit-param-list");
    string param_val_opts = arg.GetString("param-values-option");
-   bool with_stat_fluct = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
    CompoundFitElements * elements = new CompoundFitElements();
@@ -132,46 +132,12 @@ void BuildToys(CmdLnArgList& arg)
    int batch = arg.GetInt("batch");
    int Ntoys = arg.GetInt("nmargtoy");
 
-   // Create a file to store this batch of marginalisation toys
-   std::ofstream os_toys("temporary.bin", std::ios::binary | std::ios::out);
-
    TStopwatch clock;
    clock.Start();
-   for(int t = 0; t < Ntoys; ++t)
-   {
-      model->ResetSystematics("all");
-      // Randomise the systematics in the model
-      if (param_val_opts.find("randomize") != std::string::npos)
-      {
-         model->RandomizeSystematics(param_val_opts.c_str());
-      }
-
-      PhysParamList tweaks = model->Tweaks();
-      fpl->FromPhysParamList(tweaks,"current silent");
-
-      // Check parameter name, maybe rethrow
-      if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fpl))
-      {
-         LOG("valor_dune", pDEBUG) << "At least one parameter thrown outside expected limits.";
-         if (rethrow_unphysical)
-         {
-            LOG("valor_dune", pDEBUG) << "Regenerating (not really at the moment)...";
-         }
-      }
-      PhysParamList true_params = fpl->AsPhysParamList("current");
-       
-      // Generate a toy-MC experiment 
-      LOG("valor_dune", pDEBUG) << "Generating toy-MC data";
-      LOG("valor_dune", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
-      FitDataABC* data = elements->FitData();
-      data->Generate(model, *fpl, with_stat_fluct);
-      //data->Write(os_toys, "+SB");
-      model->Write(os_toys, "pdft+SB");
-   }
+   Marginalisation marginalisation(*elements, "temporary");
+   marginalisation.BuildToys(batch, Ntoys, *fpl);
    clock.Stop();
 
-   os_toys.close();
-    
    LOG("valor_dune", pNOTICE) << "Generate batch " << batch << ": " << Ntoys <<
       " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
       clock.CpuTime();
