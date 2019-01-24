@@ -2,7 +2,8 @@
 # .......................................................................................................
 tag                                  |   string       |  optional   |   margtoy
 run                                  |   integer      |  optional   |   0
-batch                                |   integer      |  optional   |   1
+nbatches                             |   integer      |  optional   |   1
+first-batch                          |   integer      |  optional   |   0
 nmargtoy                             |   integer      |  mandatory  |   1
 fitter                               |   string       |  optional   |   minuit
 fit-param-list                       |   string       |  optional   |   standard
@@ -13,6 +14,12 @@ with-stat-fluct,without-stat-fluct   |   boolean_list |  optional   |   without-
 store-spectra,discard-spectra        |   boolean_list |  optional   |   discard-spectra
 start-at-true,start-at-central       |   boolean_list |  optional   |   start-at-true
 rethrow-unphysical,accept-unphysical |   boolean_list |  optional   |   rethrow-unphysical
+fit-param1                           |   string       |  mandatory  |   -
+fit-param-value1                     |   double       |  mandatory  |   0.0
+fit-param-bin1                       |   integer      |  mandatory  |   -1
+fit-param2                           |   string       |  optional   |   -
+fit-param-value2                     |   double       |  optional   |   0.0
+fit-param-bin2                       |   integer      |  optional   |   -1
 n-sigma-limit                        |   double       |  optional   |   0.0
 fix-at-mixing12                      |   double       |  optional   |   -999
 fix-at-mixing13                      |   double       |  optional   |   -999
