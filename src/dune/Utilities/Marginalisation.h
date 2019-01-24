@@ -72,6 +72,8 @@ public:
       of marginalisation toys can be split into batches, each of which should
       have the same number of toys in it.
 
+      \param fitParamBin The bin associated with the current unmarginalised
+             oscillation parameter.
       \param batch The numeric ID for the batch of toys to be generated. This
              should start with batch 0.
       \param Ntoys The number of marginalisation toys to be created in *this*
@@ -88,7 +90,40 @@ public:
              parameters to move beyond bounds even if they are thrown with
              limits). Default true.
    */
-   void BuildToys(const int batch, const int Ntoys, FitParamList& fpl,
+   void BuildToys(const int fitParamBin, const int batch, const int Ntoys,
+         FitParamList& fpl, bool randomizeSystematics = true,
+         const char* options = "randomize-all;prefit-errors",
+         bool rethrowUnphysical = true);
+
+   /**
+      Builds a batch of marginalisation toys.
+
+      To facilitate incremental building of marginalisation toys, a complete set
+      of marginalisation toys can be split into batches, each of which should
+      have the same number of toys in it.
+
+      \param fitParam1Bin The bin associated with the first unmarginalised
+             oscillation parameter.
+      \param fitParam2Bin The bin associated with the second unmarginalised
+             oscillation parameter.
+      \param batch The numeric ID for the batch of toys to be generated. This
+             should start with batch 0.
+      \param Ntoys The number of marginalisation toys to be created in *this*
+             batch.
+      \param fpl The FitParamList defining the parameters to be used in
+             generating the marginalisation toys. This method will only throw
+             those parameters that return true for FitParamList::IsMarginalized.
+      \param randomizeSystematics Whether or not to randomize the systematics.
+             Default true (kind of the point of marginalisation, but might be
+             useful for testing).
+      \param options The options associated with randomizing systematics.
+      \param rethrowUnphysical Whether or not to rethrow parameters that exceed
+             their physical boundaries (Cholesky decomposition can cause
+             parameters to move beyond bounds even if they are thrown with
+             limits). Default true.
+   */
+   void BuildToys(const int fitParam1Bin, const int fitParam2Bin,
+         const int batch, const int Ntoys, FitParamList& fpl,
          bool randomizeSystematics = true,
          const char* options = "randomize-all;prefit-errors",
          bool rethrowUnphysical = true);
@@ -97,6 +132,8 @@ public:
       Computes the marginal likelihood and chi-squared statistics for a given
       data set relative to a set of marginalisation toys.
 
+      \param fitParamBin The bin associated with the current unmarginalised
+             oscillation parameter.
       \param data The data against which the statistic should be computed.
       \param Ntoys The number of marginalisation toys contained within each
              batch.
@@ -105,7 +142,27 @@ public:
       \param firstBatch The numeric ID for the first batch of marginalisation
              toys to be included. Note, batches should be indexec from 0.
    */
-   void ComputeStatistics(FitDataABC* data, const int Ntoys, const int Nbatches,
+   void ComputeStatistics(const int fitParamBin, FitDataABC* data,
+         const int Ntoys, const int Nbatches, const int firstBatch = 0);
+
+   /**
+      Computes the marginal likelihood and chi-squared statistics for a given
+      data set relative to a set of marginalisation toys.
+
+      \param fitParam1Bin The bin associated with the first unmarginalised
+             oscillation parameter.
+      \param fitParam2Bin The bin associated with the second unmarginalised
+             oscillation parameter.
+      \param data The data against which the statistic should be computed.
+      \param Ntoys The number of marginalisation toys contained within each
+             batch.
+      \param Nbatches The number of batches to include
+             (i.e. Nbatches * Ntoys = Ntoys total).
+      \param firstBatch The numeric ID for the first batch of marginalisation
+             toys to be included. Note, batches should be indexec from 0.
+   */
+   void ComputeStatistics(const int fitParam1Bin, const int fitParam2Bin,
+         FitDataABC* data, const int Ntoys, const int Nbatches,
          const int firstBatch = 0);
 
    /**

@@ -109,6 +109,26 @@ void BuildToys(CmdLnArgList& arg)
    string param_val_opts = arg.GetString("param-values-option");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
+   string fp_name1 = arg.GetString("fit-param1");
+   const double fp_val1 = arg.GetDouble("fit-param-value1");
+   const int fp_bin1 = arg.GetInt("fit-param-bin1");
+
+   string fp_name2;
+   double fp_val2;
+   int fp_bin2;
+
+   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name1 << "(" <<
+      fp_bin1 << ") = " << fp_val1;
+
+   if(arg.Exists("fit-param2"))
+   {
+      fp_name2 = arg.GetString("fit-param2");
+      fp_val2 = arg.GetDouble("fit-param-value2");
+      fp_bin2 = arg.GetInt("fit-param-bin2");
+      LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name2 << "(" <<
+         fp_bin2 << ") = " << fp_val2;
+   }
+
    CompoundFitElements * elements = new CompoundFitElements();
    elements->Read(arg.GetString("config"), "nosplines");
    FitModelABC* model = elements->FitModel();
@@ -135,7 +155,7 @@ void BuildToys(CmdLnArgList& arg)
    TStopwatch clock;
    clock.Start();
    Marginalisation marginalisation(*elements, "temporary");
-   marginalisation.BuildToys(batch, Ntoys, *fpl);
+   marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl);
    clock.Stop();
 
    LOG("valor_dune", pNOTICE) << "Generate batch " << batch << ": " << Ntoys <<

@@ -111,7 +111,27 @@ void Fit(CmdLnArgList& arg)
    bool with_stat_fluct = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
-   CompoundFitElements * elements = new CompoundFitElements();
+   string fp_name1 = arg.GetString("fit-param1");
+   const double fp_val1 = arg.GetDouble("fit-param-value1");
+   const int fp_bin1 = arg.GetInt("fit-param-bin1");
+
+   string fp_name2;
+   double fp_val2;
+   int fp_bin2;
+
+   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name1 << "(" <<
+      fp_bin1 << ") = " << fp_val1;
+
+   if(arg.Exists("fit-param2"))
+   {
+      fp_name2 = arg.GetString("fit-param2");
+      fp_val2 = arg.GetDouble("fit-param-value2");
+      fp_bin2 = arg.GetInt("fit-param-bin2");
+      LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name2 << "(" <<
+         fp_bin2 << ") = " << fp_val2;
+   }
+
+   CompoundFitElements* elements = new CompoundFitElements();
    elements->Read(arg.GetString("config"), "nosplines");
    FitModelABC* model = elements->FitModel();
 
@@ -134,20 +154,21 @@ void Fit(CmdLnArgList& arg)
 
    // Get the requested batch number and number of marginalisation toys for the
    // batch
-   int batch = arg.GetInt("batch");
+   int Nbatches = arg.GetInt("nbatches");
+   int firstBatch = arg.GetInt("first-batch");
    int Ntoys = arg.GetInt("nmargtoy");
 
    TStopwatch clock;
    clock.Start();
    Marginalisation marginalisation(*elements, "temporary");
-   marginalisation.ComputeStatistics(data, Ntoys, 3, batch);
+   marginalisation.ComputeStatistics(fp_bin1, data, Ntoys, Nbatches, firstBatch);
    double likelihood = marginalisation.GetLikelihood();
    double chi2 = marginalisation.GetChi2();
    LOG("valor_dune", pNOTICE) << "chi2(marg): " << chi2 << " L(marg): " <<
       likelihood;
    clock.Stop();
 
-   LOG("valor_dune", pNOTICE) << "Read batch " << batch << ": " << Ntoys <<
+   LOG("valor_dune", pNOTICE) << "Read: " << Ntoys <<
       " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
       clock.CpuTime();
 }

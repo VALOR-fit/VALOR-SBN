@@ -26,12 +26,26 @@ Marginalisation::~Marginalisation()
    this->_model = nullptr;
 }
 //______________________________________________________________________________
-void Marginalisation::BuildToys(const int batch, const int Ntoys,
-      FitParamList& fpl, bool randomizeSystematics, const char* options,
-      bool rethrowUnphysical)
+void Marginalisation::BuildToys(const int fitParamBin, const int batch,
+      const int Ntoys, FitParamList& fpl, bool randomizeSystematics,
+      const char* options, bool rethrowUnphysical)
+{
+   this->BuildToys(fitParamBin, -1, batch, Ntoys, fpl, randomizeSystematics,
+         options, rethrowUnphysical);
+}
+//______________________________________________________________________________
+void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
+      const int batch, const int Ntoys, FitParamList& fpl,
+      bool randomizeSystematics, const char* options, bool rethrowUnphysical)
 {
    std::ostringstream oss;
-   oss << this->_filePrefix << "_" << batch << ".bin";
+   oss << this->_filePrefix << "_" << fitParam1Bin;
+   if(fitParam2Bin > -1)
+   {  // Filename for 2D fit
+      oss << "_v_" << fitParam2Bin;
+   }
+   oss << "_" << batch << "_" << Ntoys << ".bin";
+
    std::string filename = oss.str();
 
    PhysicalParameterLimits* limits = PhysicalParameterLimits::Instance();
@@ -75,7 +89,14 @@ void Marginalisation::BuildToys(const int batch, const int Ntoys,
    os_toys.close();
 }
 //______________________________________________________________________________
-void Marginalisation::ComputeStatistics(FitDataABC* data, const int Ntoys,
+void Marginalisation::ComputeStatistics(const int fitParamBin, FitDataABC* data,
+      const int Ntoys, const int Nbatches, const int firstBatch)
+{
+   this->ComputeStatistics(fitParamBin, -1, data, Ntoys, Nbatches, firstBatch);
+}
+//______________________________________________________________________________
+void Marginalisation::ComputeStatistics(const int fitParam1Bin,
+      const int fitParam2Bin, FitDataABC* data, const int Ntoys,
       const int Nbatches, const int firstBatch)
 {
    const int lastBatch = firstBatch + Nbatches - 1;
@@ -83,8 +104,14 @@ void Marginalisation::ComputeStatistics(FitDataABC* data, const int Ntoys,
    for(int b = firstBatch; b <= lastBatch; ++b)
    {
       std::ostringstream oss;
-      oss << this->_filePrefix << "_" << b << ".bin";
+      oss << this->_filePrefix << "_" << fitParam1Bin;
+      if(fitParam2Bin > -1)
+      {  // File name for 2D fit
+         oss << "_v_" << fitParam2Bin;
+      }
+      oss << "_" << b << "_" << Ntoys << ".bin";
       std::string filename = oss.str();
+      LOG("valor_dune", pNOTICE) << "Filename: " << filename;
 
       std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
       for(int t = 0; t < Ntoys; ++t)
