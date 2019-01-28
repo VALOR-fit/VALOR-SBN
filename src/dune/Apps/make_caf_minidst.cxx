@@ -287,7 +287,7 @@ int main(int argc, char ** argv)
     std::string branchname(Form("%s_cvwgt",syst_name.c_str()));
     analysis_tree->SetBranchAddress(branchname.c_str(), &branch_ref, &branchptr); active_branches.push_back(branchptr);
     // And the VALOR branch for the CVWght
-    std::string valor_branch_name (Form("wght_%s",syst_name.c_str()));
+    std::string valor_branch_name (Form("autowght_%s",syst_name.c_str()));
     valor_minidst->Branch(valor_branch_name.c_str(),&branch_ref,Form("%s/D",valor_branch_name.c_str()));
   }
   
