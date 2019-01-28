@@ -145,7 +145,7 @@ void BuildToys(CmdLnArgList& arg)
    // ThrowOscillationParameters(*fpl);
 
    // Initialize non delta M squared oscillation parameters to zero
-   util::oscillation::SetUnoscillated(*fpl);
+   // util::oscillation::SetUnoscillated(*fpl);
 
    // Get the requested batch number and number of marginalisation toys for the
    // batch
@@ -154,7 +154,7 @@ void BuildToys(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, "temporary");
+   Marginalisation marginalisation(*elements, arg.GetString("tag"));
    marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl);
    clock.Stop();
 

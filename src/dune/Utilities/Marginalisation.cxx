@@ -5,6 +5,7 @@
 #include "TMath.h"
 
 #include "dune/Conventions/PhysicalParameterLimits.h"
+#include "dune/Utilities/UtlOscillation.h"
 #include "valor/Messenger/Messenger.h"
 
 namespace valor
@@ -62,10 +63,13 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
          if(randomizeSystematics)
          {
             this->_model->RandomizeSystematics(options);
+            util::oscillation::ThrowOscillationParameters(fpl);
          }
 
          PhysParamList tweaks = this->_model->Tweaks();
          fpl.FromPhysParamList(tweaks, "current silent");
+
+         LOG("Marginalisation", pINFO) << fpl;
 
          // Check parameter name, maybe rethrow
          if(rethrowUnphysical && !limits->AllWithinLimits(fpl))

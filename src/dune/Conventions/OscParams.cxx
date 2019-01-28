@@ -182,6 +182,41 @@ double util::GetRandomizedOscParam(conv::PhysParamId_t p, string mode)
   }
   return rndm;
 }
+//______________________________________________________________________________
+double util::GetRandomizedOscParam(conv::PhysParamId_t p, FitParamList& fpl)
+{
+   string mode = fpl.GetPriorModeName(p);
+   if(mode == "flat")
+   {
+      // Get the limits imposed by the prior
+      double min = fpl.GetMinValueFlat(p);
+      double max = fpl.GetMaxValueFlat(p);
+      double value = min - 1.0;
+      do
+      {
+         value = Rnd::Instance()->RndToyMCosc().Uniform(min, max);
+      }
+      while(value < min || value > max);
+      
+      return value;
+   }
+   else
+   {
+      double mean = fpl.GetMeanGaus(p);
+      double sigma = fpl.GetSigmaGaus(p);
+      // Get the absolute physical limits
+      double min = util::OscParamMinValue(p);
+      double max = util::OscParamMaxValue(p);
+      double value = min - 1.0;
+      do
+      {
+         value = Rnd::Instance()->RndToyMCosc().Gaus(mean, sigma);
+      }
+      while(value < min || value > max);
+
+      return value;
+   }
+}
 //________________________________________________________________________________________
 void util::InitializeOAPriors()
 {

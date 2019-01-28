@@ -1,6 +1,6 @@
 # argument                           |   type         |  require?   |   default
 # .......................................................................................................
-tag                                  |   string       |  optional   |   margtoy
+tag                                  |   string       |  optional   |   toys/margtoy
 run                                  |   integer      |  optional   |   0
 batch                                |   integer      |  optional   |   1
 nmargtoy                             |   integer      |  mandatory  |   1
