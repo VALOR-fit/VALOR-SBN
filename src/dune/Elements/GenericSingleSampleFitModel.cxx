@@ -54,8 +54,10 @@ using std::endl;
 using namespace valor;
 using namespace valor::conv;
 
-//~ #define SPLINE_WEIGHTS_ARE_ONE
+#define SPLINE_WEIGHTS_ARE_ONE
 #define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+
+#define APPLY_ALL_AUTOWGHT_BRANCHES
 
 const util::ArrIdx * arridx = util::ArrIdx::Instance();
 
@@ -902,6 +904,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   bool old_format = false;
 
   int    sample        = 0;
+  int    beam          = 0;
   int    reac_mode     = 0;
   double enu_true      = 0.;
   double enu_reco      = 0.;
@@ -909,9 +912,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   double Q2_true       = 0.;
   double wght          = 1.;
   double wght_pot      = 1.;
-  double wght_smear    = 1.;
   
   int bstat_sample     = 0; 
+  int bstat_beam       = 0; 
   int bstat_reac_mode  = 0; 
   int bstat_enu_true   = 0; 
   int bstat_enu_reco   = 0; 
@@ -919,9 +922,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   int bstat_Q2_true    = 0;   
   int bstat_wght       = 0;   
   int bstat_wght_pot   = 0; 
-  int bstat_wght_smear = 0; 
   
   bstat_sample    = t->SetBranchAddress("sample",    &sample);
+  bstat_sample    = t->SetBranchAddress("beam"  ,    &beam);
   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
   bstat_enu_true  = t->SetBranchAddress("enu_true",  &enu_true);
   bstat_enu_reco  = t->SetBranchAddress("enu_reco",  &enu_reco);
@@ -931,25 +934,27 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   // Weight is not required - use one if failed
   bstat_wght       = t->SetBranchAddress("wght"       , &wght);
   bstat_wght_pot   = t->SetBranchAddress("wght_pot"   , &wght_pot);
-  bstat_wght_smear = t->SetBranchAddress("wght_smear" , &wght_smear);
   
-  bool any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
+  bool any_bad_status = (bstat_sample || bstat_beam || bstat_reac_mode || bstat_enu_true || 
       bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
 
   if (any_bad_status) {
-    LOG("GenericSingleSampleFitModel",pWARN)<<"MiniDST branches not found. Attempting to fall back to 2014a LBNETree format.";
-    bstat_sample    = t->SetBranchAddress("sample",       &sample);
-    bstat_reac_mode = t->SetBranchAddress("reactionmode", &reac_mode);
-    bstat_enu_true  = t->SetBranchAddress("Ev",           &enu_true);
-    bstat_enu_reco  = t->SetBranchAddress("Ev_reco",      &enu_reco);
-    bstat_y_reco    = t->SetBranchAddress("y_reco",       &y_reco);
-    bstat_wght_pot  = t->SetBranchAddress("POTWeight",    &wght_pot);
-    bstat_Q2_true   = t->SetBranchAddress("Q2",           &Q2_true);
-    
-    any_bad_status = (bstat_sample || bstat_reac_mode || bstat_enu_true || 
-        bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
-    assert(!any_bad_status);
-    old_format = true;
+    LOG("GenericSingleSampleFitModel",pWARN)<<"MiniDST branches not found - giving up";
+    util::Die(-1);
+  }
+  
+  // Also read any other branches named "wght_"
+  TPRegexp wght_branch_pattern("autowght_\\w+");
+  std::map<std::string,double> wght_branches;
+  TObjArray * branch_list = t->GetListOfBranches();
+  for (size_t ib = 0 ; ib < branch_list->GetEntries(); ib++) {
+    const char * branchname = branch_list->At(ib)->GetName();
+    TObjArray * matches = wght_branch_pattern.MatchS(branchname);
+    if (matches->GetEntries()==1) {
+      wght_branches[branchname] = -1.;
+      t->SetBranchAddress(branchname,&(wght_branches[branchname]));
+    }
+    delete matches;
   }
   
   // Build a map of the branches to the kinematic variables
@@ -1023,6 +1028,18 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << "Ignoring MC event: " << iev 
         << " (sample ID: " << util::AsString(s) << " not included in current fit)";
       continue;
+    }
+    
+    BeamConf_t b = util::BeamConfFromInt(beam);
+    if(b != fBeam) {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+      LOG("GenericSingleSampleFitModel",pDEBUG) 
+        << "Ignoring MC event: " << iev 
+        << " (beam ID: " << b << " "<< util::AsString(b) 
+        << " not matching one used for configuring model: " 
+        << fBeam <<" "<<util::AsString(fBeam) << ")";
+#endif
+      continue;  
     }
 
     // Get reaction mode index
@@ -1133,7 +1150,13 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     double this_entry = wght;
     
     this_entry *= pot_wght;
-    this_entry *= wght_smear;
+    
+#ifdef APPLY_ALL_AUTOWGHT_BRANCHES
+    // Apply the "autowght" variables
+    for (const auto & namewght : wght_branches) {
+      this_entry *= namewght.second;
+    }
+#endif
     
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode]->GetEntry(reco_bin_ob, true_bin);
@@ -1160,8 +1183,8 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag, d
   bool success = true;
 
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
-  BeamConf_t b = fBeam;
-  Sample_t   s = fSample;
+  //~ BeamConf_t b = fBeam;
+  //~ Sample_t   s = fSample;
   
   if (desired_POT > 0) {
     LOG("GenericSingleSampleFitModel",pNOTICE) << "Scaling POT template by "<<desired_POT * 1E-21 << " to get template for "<<desired_POT<<" POT.";
