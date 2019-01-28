@@ -75,8 +75,11 @@ int main(int argc, char ** argv)
   std::map<std::string,double> cut_lower_limit_numu;
   std::map<std::string,double> cut_lower_limit_nue;
 
-  cut_lower_limit_numu["cvnnumu"] = 0.7;
-  cut_lower_limit_nue ["cvnnue" ] = 0.7;
+  cut_lower_limit_numu["cvnnumu"] = 0.50;
+  cut_lower_limit_nue ["cvnnue" ] = 0.85;
+  
+  cut_upper_limit_nue ["cvnnumu"] = 0.50;
+  cut_upper_limit_numu["cvnnue" ] = 0.85;
 
   //~ cut_lower_limit_numu["nuvtxx_truth"] = -310. ;
   //~ cut_upper_limit_numu["nuvtxx_truth"] =  310. ;
@@ -252,13 +255,12 @@ int main(int argc, char ** argv)
   //~ analysis_tree->SetBranchAddress("tgt"          ,  &tgt              , &branchptr); active_branches.push_back(branchptr);
   
   // Branches for the cut variables
-  std::vector<std::string> cut_branch_names;
-  for (const auto & it : cut_lower_limit_numu) { cut_branch_names.push_back(it.first);  }
-  for (const auto & it : cut_upper_limit_numu) { cut_branch_names.push_back(it.first);  }
-  for (const auto & it : cut_lower_limit_nue ) { cut_branch_names.push_back(it.first);  }
-  for (const auto & it : cut_upper_limit_nue ) { cut_branch_names.push_back(it.first);  }
+  std::set<std::string> cut_branch_names;
+  for (const auto & it : cut_lower_limit_numu) { cut_branch_names.insert(it.first);  }
+  for (const auto & it : cut_upper_limit_numu) { cut_branch_names.insert(it.first);  }
+  for (const auto & it : cut_lower_limit_nue ) { cut_branch_names.insert(it.first);  }
+  for (const auto & it : cut_upper_limit_nue ) { cut_branch_names.insert(it.first);  }
   
-  std::unique(cut_branch_names.begin(),cut_branch_names.end());
   std::map<std::string,double> cut_branches;
   for (const std::string & branchname : cut_branch_names) {
     double & branch_ref = cut_branches[branchname];

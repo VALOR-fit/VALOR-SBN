@@ -184,8 +184,12 @@ int main(int argc, char ** argv)
   
   int iscc   = -1;
   
-  int reco_numu = -1;
-  int reco_nue  = -1;
+  int reco_numu      = -1;
+  int reco_nue       = -1;
+  int reco_q         = -999;
+  int muon_contained = -1;
+  int muon_tracker   = -1;
+  double Ehad_veto   = -1;
   
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
@@ -222,6 +226,10 @@ int main(int argc, char ** argv)
   
   analysis_tree->SetBranchAddress("reco_numu"      ,  &reco_numu       , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("reco_nue"       ,  &reco_nue        , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("reco_q"         ,  &reco_q          , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("muon_contained" ,  &muon_tracker    , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("muon_tracker"   ,  &muon_tracker    , &branchptr); active_branches.push_back(branchptr);
+  analysis_tree->SetBranchAddress("Ehad_veto"      ,  &Ehad_veto       , &branchptr); active_branches.push_back(branchptr);
   
   // Temporarily set target to argon
   tgt = conv::kntArgon;
@@ -266,6 +274,10 @@ int main(int argc, char ** argv)
       << "Etrue            = "<<enu_true  << " GeV; "
       << "Enu_reco         = "<<enu_reco << " GeV; "
       << "Elep_reco        = "<<elep_reco << " GeV; ";
+      
+    // Get the beam type
+    conv::BeamConf_t beam = (is_fhc ? conv::kbLBNF_FHC : conv::kbLBNF_RHC);
+
     
     // Construct the reaction mode
     conv::ReacType_t t = conv::kmtUndefined;
@@ -349,9 +361,18 @@ int main(int argc, char ** argv)
     
     conv::Sample_t sample = conv::ksUndefined;
     
-    if (reco_numu) {sample = conv::ksNuMuLikeCChigh;}
+    bool numu_cuts = (reco_numu && muon_contained && muon_tracker && Ehad_veto < 30.);
+    
+    if       (beam==conv::kbLBNF_FHC) {numu_cuts = numu_cuts && (reco_q == -1);}
+    else if  (beam==conv::kbLBNF_RHC) {numu_cuts = numu_cuts && (reco_q ==  1);}
+    else     {numu_cuts = false;}
+    
+    if (numu_cuts) {sample = conv::ksNuMuLikeCChigh;}
     
     double y_reco   = 1.-(elep_reco / enu_reco);
+    if (std::abs(y_reco-1) < conv::kASmallNum) {
+      y_reco = 1.-conv::kASmallNum;
+    }
     
     if(!opt_disable_checks) {
       
@@ -380,7 +401,7 @@ int main(int argc, char ** argv)
     double wght = 1.;
     // Write in the thing to apply the cvwghts here
     
-    valor_minidst_beam      = (is_fhc ? conv::kbLBNF_FHC : conv::kbLBNF_RHC);
+    valor_minidst_beam      = beam;
     valor_minidst_sample    = sample; 
     valor_minidst_reac_mode = reac_mode;
     valor_minidst_enu_true  = enu_true; 
