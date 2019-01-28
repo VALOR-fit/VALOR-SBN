@@ -33,6 +33,7 @@
 #include <TChain.h>
 #include <TTree.h>
 #include <TSystem.h>
+#include <TPRegexp.h>
 
 // valor/dune
 #include "valor/Conventions/Constants.h"
@@ -265,6 +266,29 @@ int main(int argc, char ** argv)
   for (const std::string & branchname : cut_branch_names) {
     double & branch_ref = cut_branches[branchname];
     analysis_tree->SetBranchAddress(branchname.c_str(), &branch_ref, &branchptr); active_branches.push_back(branchptr);
+  }
+  
+  // Get list of systematics in tree
+  std::vector<std::string> syst_list;
+  TPRegexp syst_pattern("(\\w+)_cvwgt");
+  TObjArray * branch_list = analysis_tree->GetListOfBranches();
+  for (size_t ib = 0 ; ib < branch_list->GetEntries(); ib++) {
+    const char * branchname = branch_list->At(ib)->GetName();
+    TObjArray * matches = syst_pattern.MatchS(branchname);
+    if (matches->GetEntries()==2) {
+      syst_list.push_back(std::string(dynamic_cast<TObjString*>(matches->At(1))->GetString().Data()));
+    }
+    delete matches;
+  }
+  
+  std::map<std::string,double> cvwght_branches;
+  for (const std::string & syst_name : syst_list) {
+    double & branch_ref = cvwght_branches[syst_name];
+    std::string branchname(Form("%s_cvwgt",syst_name.c_str()));
+    analysis_tree->SetBranchAddress(branchname.c_str(), &branch_ref, &branchptr); active_branches.push_back(branchptr);
+    // And the VALOR branch for the CVWght
+    std::string valor_branch_name (Form("wght_%s",syst_name.c_str()));
+    valor_minidst->Branch(valor_branch_name.c_str(),&branch_ref,Form("%s/D",valor_branch_name.c_str()));
   }
   
   // Temporarily set target to argon
