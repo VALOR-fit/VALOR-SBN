@@ -1,5 +1,6 @@
 #include "dune/Utilities/UtlOscillation.h"
 
+#include "valor/Messenger/Messenger.h"
 
 namespace valor
 {
@@ -11,6 +12,9 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
 {
    string osc_parameters[7] = { "mixing12", "mixing13", "mixing23", "dm23sq",
       "dm12sq", "dm13sq", "cpv" };
+
+   string free_param1 = arg.GetString("fit-param1");
+   string free_param2 = arg.Exists("fit-param2") ? arg.GetString("fit-param2") : "";
 
    for(int i = 0; i < 7; ++i)
    {
@@ -27,10 +31,41 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
             fpl.Update(p, fix_value);
             fpl.SetInitValue(p, fix_value);
             fpl.FixParameter(p);
+            LOG("UtlOscillation", pNOTICE) << "Setting fixed parameter " <<
+               util::AsString(p) << " := " << fix_value;
+         }
+         else if(free_param1 == osc_parameters[i] ||
+            free_param2 == osc_parameters[i])
+         {
+            double free_value = 0.0;
+            if(free_param1 == osc_parameters[i])
+            {
+               free_value = arg.GetDouble("fit-param-value1");
+            }
+            else
+            {
+               if(arg.Exists("fit-param-value2"))
+               {
+                  free_value = arg.GetDouble("fit-param-value2");
+               }
+               else
+               {
+                  LOG("UtlOscillation", pERROR) << "--fit-param2 specified " <<
+                     "without accompanying --fit-param-value2.";
+                  exit(1);
+               }
+            }
+            fpl.Update(p, free_value);
+            fpl.SetInitValue(p, free_value);
+            fpl.FreeParameter(p);
+            LOG("UtlOscillation", pNOTICE) << "Setting free parameter " <<
+               util::AsString(p) << " := " << free_value;
          }
          else
          {
             fpl.SetDoMarg(p, true);
+            LOG("UtlOscillation", pNOTICE) << "Setting marginalised parameter " <<
+               util::AsString(p);
          }
       }
    }
@@ -49,7 +84,7 @@ void SetOscillationParameterPriors(CmdLnArgList& arg, FitParamList& fpl)
 
    p = util::PhysParamFromString("mixing13");
    fpl.SetPriorMode(p, "gaus");
-   fpl.SetMeanGaus(p, 2.12e-3); fpl.SetSigmaGaus(p, 0.8e-3);
+   fpl.SetMeanGaus(p, 2.12e-2); fpl.SetSigmaGaus(p, 0.8e-2);
 
    p = util::PhysParamFromString("mixing23");
    fpl.SetPriorMode(p, "flat");
@@ -75,20 +110,15 @@ void ThrowOscillationParameters(FitParamList& fpl)
             osc_parameters[i].c_str());
       if(fpl.Exists(p) && fpl.IsMarginalized(p))
       {
-         double value = util::GetRandomizedOscParam(p, fpl.GetPriorModeName(p));
-         double min_value = util::OscParamMinValue(p);
-         double max_value = util::OscParamMaxValue(p);
-         if(value >= min_value && value < max_value)
-         {
-            fpl.Update(p, value);
-            fpl.SetInitValue(p, value);
-         }
-         else
-         {
-            // Rethrow if not in physical range
-            --i;
-            continue;
-         }
+         double value = util::GetRandomizedOscParam(p, fpl);
+         double min_value = fpl.GetMinValueFlat(p);
+         double max_value = fpl.GetMinValueFlat(p);
+         LOG("UtlOscillation", pNOTICE) << i << ": " << util::AsString(p) <<
+            " = " << value << " [" << min_value << "," << max_value << "]";
+         // Prior range is enforced in util::GetRandomizedOscParam, so no need
+         // to check here
+         fpl.Update(p, value);
+         fpl.SetInitValue(p, value);
       }
    }
 }

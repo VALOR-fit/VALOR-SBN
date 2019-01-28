@@ -146,7 +146,8 @@ void Fit(CmdLnArgList& arg)
    util::oscillation::SetOscillationParameters(arg, *fpl);
 
    // Initialize non delta M squared oscillation parameters to zero
-   util::oscillation::SetUnoscillated(*fpl);
+   // util::oscillation::SetUnoscillated(*fpl);
+   LOG("valor_dune", pNOTICE) << *fpl;
 
    FitDataABC* data = elements->FitData();
    // Call Generate - forces a call to Book as well as providing the fake data
@@ -160,7 +161,7 @@ void Fit(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, "temporary");
+   Marginalisation marginalisation(*elements, arg.GetString("tag"));
    marginalisation.ComputeStatistics(fp_bin1, data, Ntoys, Nbatches, firstBatch);
    double likelihood = marginalisation.GetLikelihood();
    double chi2 = marginalisation.GetChi2();
