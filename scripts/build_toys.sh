@@ -1,11 +1,14 @@
-valor_dune-run_build_margtoys \
-   --config $VALOR_DUNE/config/test/marginalisation/analysis.xml \
-   --seed-toys-syst 1 \
-   --seed-toys-osc 1 \
-   --seed-other 1 \
-   --nmargtoy 3 \
-   --batch 0 \
-   --fit-param1 cpv \
-   --fit-param-value1 -1.570796327 \
-   --fit-param-bin1 25 \
-
+for i in {0..8}; do
+   step=$(echo "3.141592654 / 4.0" | bc -l)
+   cpv=$(bc <<< "-3.141592654+${i}*${step}")
+   valor_dune-run_build_margtoys \
+      --config $VALOR_DUNE/config/test/marginalisation/analysis.xml \
+      --seed-toys-syst 1 \
+      --seed-toys-osc 1 \
+      --seed-other 1 \
+      --nmargtoy 100 \
+      --batch 0 \
+      --fit-param1 cpv \
+      --fit-param-value1 $cpv \
+      --fit-param-bin1 $i
+done
