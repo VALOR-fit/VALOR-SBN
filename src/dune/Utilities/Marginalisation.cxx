@@ -127,7 +127,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
          double likelihood = TMath::Exp(-chi2 * 0.5);
          likelihood_sum += likelihood;
 
-         LOG("valor_dune", pNOTICE) << "chi2(" << t << "): " << chi2 <<
+         LOG("valor_dune", pDEBUG) << "chi2(" << t << "): " << chi2 <<
             " L(" << t << "): " << likelihood;
       }
       is_toys.close();

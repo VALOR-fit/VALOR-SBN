@@ -27,4 +27,4 @@ fix-at-mixing23                      |   double       |  optional   |   -999
 fix-at-dm23sq                        |   double       |  optional   |   -999
 fix-at-dm12sq                        |   double       |  optional   |   -999
 fix-at-dm13sq                        |   double       |  optional   |   -999
-fix-at-cpv                           |   double       |  optional   |   -999
+fix-at-cpv                           |   double       |  optional   |   -1.570796327
