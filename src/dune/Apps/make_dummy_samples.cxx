@@ -42,6 +42,8 @@
 using namespace valor;
 using namespace valor::conv;
 
+void MakeMCSampleND();
+void MakeMCSampleFD();
 void MakeMCSample();
 void MakeCovarianceMatrices();
 
@@ -53,7 +55,7 @@ int main(int argc, char** argv)
    return 0;
 }
 
-void MakeMCSample()
+void MakeMCSampleND()
 {
    TFile f("dummy_templates.root", "RECREATE");
    VALORArray* opt_fhc_sample = new VALORArray(3, 12);
@@ -102,6 +104,63 @@ void MakeMCSample()
    delete simple_fhc_sample;
    delete opt_rhc_sample;
    delete simple_rhc_sample;
+}
+
+void MakeMCSampleFD()
+{
+   TFile f("dummy_fd_templates.root", "RECREATE");
+   VALORArray* opt_fhc_sample = new VALORArray(3, 12);
+   VALORArray* simple_fhc_sample = new VALORArray(5, 12);
+   VALORArray* opt_rhc_sample = new VALORArray(3, 12);
+   VALORArray* simple_rhc_sample = new VALORArray(5, 12);
+
+   // Populate the bins with dummy data
+   TRandom random;
+   for(int x = 0; x < 5; ++x)
+   {
+      for(int y = 0; y < 12; ++y)
+      {
+         if(x >= 2)
+         {
+            double fhc_val = random.Uniform(1.0);
+            double rhc_val = random.Uniform(0.4);
+            simple_fhc_sample->SetEntry(fhc_val, x, y);
+            simple_rhc_sample->SetEntry(rhc_val, x, y);
+
+            opt_fhc_sample->SetEntry(fhc_val + opt_fhc_sample->GetEntry(2, y), 2, y);
+            opt_rhc_sample->SetEntry(rhc_val + opt_rhc_sample->GetEntry(2, y), 2, y);
+         }
+         else
+         {
+            double fhc_val = random.Uniform(1.0);
+            double rhc_val = random.Uniform(0.4);
+            simple_fhc_sample->SetEntry(fhc_val, x, y);
+            simple_rhc_sample->SetEntry(rhc_val, x, y);
+
+            opt_fhc_sample->SetEntry(fhc_val, x, y);
+            opt_rhc_sample->SetEntry(rhc_val, x, y);
+         }
+      }
+   }
+
+   opt_fhc_sample->Write("valor_mctnom_ob_vf_dune_fd1ph:LBNF_FHC:numuCC0pi1trk");
+   simple_fhc_sample->Write("valor_mctnom_sb_vf_dune_fd1ph:LBNF_FHC:numuCC0pi1trk");
+   opt_rhc_sample->Write("valor_mctnom_ob_vf_dune_fd1ph:LBNF_RHC:numuCC0pi1trk");
+   simple_rhc_sample->Write("valor_mctnom_sb_vf_dune_fd1ph:LBNF_RHC:numuCC0pi1trk");
+
+
+   f.Close();
+
+   delete opt_fhc_sample;
+   delete simple_fhc_sample;
+   delete opt_rhc_sample;
+   delete simple_rhc_sample;
+}
+
+void MakeMCSample()
+{
+   MakeMCSampleND();
+   MakeMCSampleFD();
 }
 
 void MakeCovarianceMatrices()
