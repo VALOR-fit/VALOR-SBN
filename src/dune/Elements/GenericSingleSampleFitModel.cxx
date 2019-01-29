@@ -737,6 +737,8 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
    if(opt.find("pdft") != string::npos)
    {
       fPDFTotOb->WriteStream(stream);
+      LOG("GenericSingleSampleFitModel", pNOTICE) << "Sample integral: " <<
+         fPDFTotOb->Integral();
 
       if(opt.find("+SB") != string::npos)
       {
@@ -1884,7 +1886,6 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   
   // Set 3 flavour osc parameters
   if (hypid == kHypOsc3F) {
-    
     // Otherwise actually do the oscillation calculation
     //first find the baseline to be applied
     double baseline = util::Baseline(fBeam,fDetector);
@@ -1974,7 +1975,11 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
-    
+   
+//    LOG("GenericSingleSampleFitModel",pNOTICE) << "Apply osc: [" <<
+//       util::AsString(fDetector) << ", " << util::AsString(fBeam) << ", " <<
+//       util::AsString(fSample) << ", " << util::AsString(m) << ": " <<
+//             util::OscProbIsAppliedTo(fDetector,fBeam,fSample,m);
     //check if beam+sample+mode should be applied oscillation probabilities
     if(!util::OscProbIsAppliedTo(fDetector,fBeam,fSample,m)) {continue; }
     

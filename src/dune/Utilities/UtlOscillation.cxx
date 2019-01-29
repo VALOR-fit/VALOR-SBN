@@ -113,8 +113,6 @@ void ThrowOscillationParameters(FitParamList& fpl)
          double value = util::GetRandomizedOscParam(p, fpl);
          double min_value = fpl.GetMinValueFlat(p);
          double max_value = fpl.GetMinValueFlat(p);
-         LOG("UtlOscillation", pNOTICE) << i << ": " << util::AsString(p) <<
-            " = " << value << " [" << min_value << "," << max_value << "]";
          // Prior range is enforced in util::GetRandomizedOscParam, so no need
          // to check here
          fpl.Update(p, value);

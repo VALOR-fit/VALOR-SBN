@@ -7,6 +7,18 @@
         FHC
     -->
 
+    <element name="dune_fd_fhc_numucc0pi1trk">
+      <detector>     dune_fd1ph                                           </detector>
+      <beam>         lbnf_fhc                                             </beam>
+      <sample>       numucc0pi1trk                                         </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           test/marginalisation/fd_sample.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+    </element>
+
+<!--
     <element name="dune_nd_fhc_numucc0pi1trk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_fhc                                             </beam>
@@ -17,11 +29,23 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
-
+-->
     <!--
         RHC
     -->
 
+    <element name="dune_nd_rhc_numucc0pi1trk">
+      <detector>     dune_fd1ph                                           </detector>
+      <beam>         lbnf_rhc                                             </beam>
+      <sample>       numucc0pi1trk                                         </sample>
+      <observable>   Ereco,yreco                                          </observable>
+      <data>                                                              </data>
+      <mc>           test/marginalisation/fd_sample.xml </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+    </element>
+
+<!--
     <element name="dune_nd_rhc_numucc0pi1trk">
       <detector>     dune_nd                                              </detector>
       <beam>         lbnf_rhc                                             </beam>
@@ -32,7 +56,7 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
     </element>
-
+-->
   </element_list>
   
   <systematics name="dummy_systematics">

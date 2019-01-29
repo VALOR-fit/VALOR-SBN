@@ -141,8 +141,6 @@ void BuildToys(CmdLnArgList& arg)
    util::oscillation::SetOscillationParameterPriors(arg, *fpl);
    // Fix or set marginalisation flag for oscillation parameters
    util::oscillation::SetOscillationParameters(arg, *fpl);
-   // Test of oscillation parameter throwing
-   // ThrowOscillationParameters(*fpl);
 
    // Initialize non delta M squared oscillation parameters to zero
    // util::oscillation::SetUnoscillated(*fpl);
