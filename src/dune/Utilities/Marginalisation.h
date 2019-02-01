@@ -28,6 +28,10 @@
 #include "valor/FitCore/FitDataABC.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/FitResult.h"
+
+#include "TH1.h"
+#include "TH2.h"
 
 using std::string;
 using namespace valor;
@@ -60,8 +64,7 @@ public:
    /**
       Destructor.
 
-      This class does not own any of the objects assigned to class variables,
-      so it does not destroy them.
+      This class does not own the FitModel object, so it does not destroy it.
    */
    virtual ~Marginalisation();
 
@@ -166,6 +169,52 @@ public:
          const int firstBatch = 0);
 
    /**
+      Initialises the chi2 and likelihood surfaces for a fit.
+
+      Specifying only the param1* arguments will initialise for a 1D fit,
+      whereas specifying param2* arguments will initialise for a 2D fit.
+
+      \param param1Nbins The number of bins for param1.
+      \param param1MinValue The minimum value that param1 can take. Note that
+             this should be the centre of the first bin.
+      \param param1MaxValue The maximum value that param1 can take. Note that
+             this should be the centre of the last bin (param1Nbins).
+      \param param2Nbins The number of bins for param2. Default -1 (i.e. 1D fit).
+      \param param2MinValue The minimum value that param2 can take. Note that
+             this should be the centre of the first bin. Default -1 (i.e. 1D fit).
+      \param param2MaxValue The maximum value that param2 can take. Note that
+             this should be the centre of the last bin (param2Nbins). Default -1
+             (i.e. 1D fit).
+
+   */
+   void InitFit(const int param1Nbins, const double param1MinValue, const double param1MaxValue,
+         const int param2Nbins = -1, const double param2MinValue = -1.0,
+         const double param2MaxValue = -1.0);
+
+   /**
+      Find the best-fit along with the full chi2 surface for a given data set
+      relative to a set of marginalisation toys.
+      
+      For some fits we want not only the best fit, but the entire chi2 surface;
+      this method provides that capability. If you do not want the full chi2
+      surface (for example, this may be the case when finding Feldman-Cousins
+      critical values), then the alternative versions of this method should be
+      called, specifying the starting bin(s) for the fit, which will use an
+      optimized fitting procedure that will aim to find the best-fit without
+      computing the entire chi2 surface.
+
+      \param data The data against which the statistic should be computed.
+      \param Ntoys The number of marginalisation toys contained within each
+             batch.
+      \param Nbatches The number of batches to include
+             (i.e. Nbatches * Ntoys = Ntoys total).
+      \param firstBatch The numeric ID for the first batch of marginalisation
+             toys to be included. Note, batches should be indexec from 0.
+   */
+   FitResult* Fit(FitDataABC* data, const int Ntoys, const int Nbatches,
+         const int firstBatch = 0);
+
+   /**
       Retrieves the marginal likelihood computed by the most recent call to
       ComputeStatistics.
 
@@ -186,6 +235,12 @@ private:
    FitModelABC* _model;
    double _likelihood;
    double _chi2;
+   bool _isFit2D;
+   TH1D* _likelihood_1D;
+   TH2D* _likelihood_2D;
+   TH1D* _chi2_1D;
+   TH2D* _chi2_2D;
+   FitResult* _fitResult;
 };
 
 } // valor

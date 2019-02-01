@@ -1,5 +1,6 @@
 #include "dune/Utilities/Marginalisation.h"
 
+#include <limits>
 #include <sstream>
 #include <string>
 #include "TMath.h"
@@ -18,13 +19,20 @@ Marginalisation::Marginalisation(CompoundFitElements& elements,
 }
 //______________________________________________________________________________
 Marginalisation::Marginalisation(FitModelABC& model, string filePrefix):
-   _filePrefix(filePrefix), _model(&model), _likelihood(0.0), _chi2(0.0)
+   _filePrefix(filePrefix), _model(&model), _likelihood(0.0), _chi2(0.0),
+   _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
+   _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr)
 {
 }
 //______________________________________________________________________________
 Marginalisation::~Marginalisation()
 {
    this->_model = nullptr;
+   delete this->_likelihood_1D;
+   delete this->_likelihood_2D;
+   delete this->_chi2_1D;
+   delete this->_chi2_2D;
+   delete this->_fitResult;
 }
 //______________________________________________________________________________
 void Marginalisation::BuildToys(const int fitParamBin, const int batch,
@@ -135,6 +143,99 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
    const int N = Nbatches * Ntoys;
    this->_likelihood = likelihood_sum / N;
    this->_chi2 = -2 * TMath::Log(this->_likelihood);
+}
+
+void Marginalisation::InitFit(const int param1Nbins,
+      const double param1MinValue, const double param1MaxValue,
+      const int param2Nbins, const double param2MinValue,
+      const double param2MaxValue)
+{
+   if(param2Nbins > 0)
+   {
+      this->_isFit2D = true;
+      double step = (param1MaxValue - param1MinValue) / (param1Nbins - 1);
+      double shift = 0.5 * step;
+      double xMin = param1MinValue - shift;
+      double xMax = param1MaxValue + shift;
+      step = (param2MaxValue - param2MinValue) / (param2Nbins - 1);
+      shift = 0.5 * step;
+      double yMin = param2MinValue - shift;
+      double yMax = param2MaxValue + shift;
+      this->_likelihood_2D = new TH2D("likelihood_2d", "Likelihood 2D",
+            param1Nbins, xMin, xMax, param2Nbins, yMin, yMax);
+      this->_chi2_2D = new TH2D("chi2_2d", "#chi^{2} 2D", param1Nbins, xMin,
+            xMax, param2Nbins, yMin, yMax);
+
+      // Initialise chi2 grid to maximum value - likelihood initialised to zero
+      // by default
+      for(int i = 1; i <= param1Nbins; ++i)
+      {
+         for(int j = 1; j <= param2Nbins; ++j)
+         {
+            this->_chi2_2D->SetBinContent(i, j, std::numeric_limits<double>::max());
+         }
+      }
+   }
+   else
+   {
+      this->_isFit2D = false;
+      double step = (param1MaxValue - param1MinValue) / (param1Nbins - 1);
+      double shift = 0.5 * step;
+      double xMin = param1MinValue - shift;
+      double xMax = param1MaxValue + shift;
+      this->_likelihood_1D = new TH1D("likelihood_1d", "Likelihood 1D",
+            param1Nbins, xMin, xMax);
+      this->_chi2_1D = new TH1D("chi2_1d", "#chi^{2} 1D", param1Nbins, xMin,
+            xMax);
+
+      // Initialise chi2 grid to maximum value - likelihood initialised to zero
+      // by default
+      for(int i = 1; i <= param1Nbins; ++i)
+      {
+         this->_chi2_1D->SetBinContent(i, std::numeric_limits<double>::max());
+      }
+   }
+}
+
+FitResult* Marginalisation::Fit(FitDataABC* data, const int Ntoys, const int Nbatches,
+      const int firstBatch)
+{
+   if(this->_isFit2D)
+   {
+      const int Nx =  this->_chi2_2D->GetXaxis()->GetNbins();
+      const int Ny =  this->_chi2_2D->GetYaxis()->GetNbins();
+      // Get the likelihood and chi2 statistics for the entire grid
+      for(int i = 0; i < Nx; ++i)
+      {
+         for(int j = 0; j < Ny; ++j)
+         {
+            this->ComputeStatistics(i, j, data, Ntoys, Nbatches, firstBatch);
+            this->_likelihood_2D->SetBinContent(i + 1, j + 1, this->_likelihood);
+            this->_chi2_2D->SetBinContent(i + 1, j + 1, this->_chi2);
+         }
+      }
+
+      // Store the result of the fit
+      this->_fitResult = new FitResult(*this->_chi2_2D, *this->_likelihood_2D);
+
+      return this->_fitResult;
+   }
+   else
+   {
+      const int N =  this->_chi2_1D->GetXaxis()->GetNbins();
+      // Get the likelihood and chi2 statistics for the entire grid
+      for(int i = 0; i < N; ++i)
+      {
+         this->ComputeStatistics(i, data, Ntoys, Nbatches, firstBatch);
+         this->_likelihood_1D->SetBinContent(i + 1, this->_likelihood);
+         this->_chi2_1D->SetBinContent(i + 1, this->_chi2);
+      }
+
+      // Store the result of the fit
+      this->_fitResult = new FitResult(*this->_chi2_1D, *this->_likelihood_1D);
+
+      return this->_fitResult;
+   }
 }
 
 } // valor
