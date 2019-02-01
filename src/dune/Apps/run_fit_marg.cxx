@@ -111,24 +111,35 @@ void Fit(CmdLnArgList& arg)
    bool with_stat_fluct = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
-   string fp_name1 = arg.GetString("fit-param1");
-   const double fp_val1 = arg.GetDouble("fit-param-value1");
-   const int fp_bin1 = arg.GetInt("fit-param-bin1");
+   string fp1_name = arg.GetString("fit-param1");
+   const double fp1_val = arg.GetDouble("fit-param1-value");
+   const int fp1_bin = arg.GetInt("fit-param1-bin");
+   const double fp1_minval = arg.GetDouble("fit-param1-min-value");
+   const double fp1_maxval = arg.GetDouble("fit-param1-max-value");
+   const int fp1_nbins = arg.GetInt("fit-param1-nbins");
 
-   string fp_name2;
-   double fp_val2;
-   int fp_bin2;
+   string fp2_name;
+   double fp2_val;
+   int fp2_bin;
+   double fp2_minval;
+   double fp2_maxval;
+   int fp2_nbins;
 
-   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name1 << "(" <<
-      fp_bin1 << ") = " << fp_val1;
+   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
+      fp1_bin << ") = " << fp1_val << " [" << fp1_nbins << ": " << fp1_minval <<
+      ", " << fp1_maxval << "]";
 
    if(arg.Exists("fit-param2"))
    {
-      fp_name2 = arg.GetString("fit-param2");
-      fp_val2 = arg.GetDouble("fit-param-value2");
-      fp_bin2 = arg.GetInt("fit-param-bin2");
-      LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name2 << "(" <<
-         fp_bin2 << ") = " << fp_val2;
+      fp2_name = arg.GetString("fit-param2");
+      fp2_val = arg.GetDouble("fit-param2-value");
+      fp2_bin = arg.GetInt("fit-param2-bin");
+      fp2_minval = arg.GetDouble("fit-param2-min-value");
+      fp2_maxval = arg.GetDouble("fit-param2-max-value");
+      fp2_nbins = arg.GetInt("fit-param2-nbins");
+      LOG("valor_dune", pNOTICE) << "Fit parameter " << fp2_name << "(" <<
+         fp2_bin << ") = " << fp2_val << " [" << fp2_nbins << ": " <<
+         fp2_minval << ", " << fp2_maxval << "]";
    }
 
    CompoundFitElements* elements = new CompoundFitElements();
@@ -162,11 +173,26 @@ void Fit(CmdLnArgList& arg)
    TStopwatch clock;
    clock.Start();
    Marginalisation marginalisation(*elements, arg.GetString("tag"));
-   marginalisation.ComputeStatistics(fp_bin1, data, Ntoys, Nbatches, firstBatch);
+   marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval);
+   FitResult* result = marginalisation.Fit(data, Ntoys, Nbatches, firstBatch);
+
+   LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
+      result->GetParam1BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
+      " " << " L = " << result->GetLikelihoodBestFit();
+
+   TFile* fitFile = new TFile("fit_result.root", "RECREATE");
+   TH1D* chi2Surface = result->GetChi2Surface1D();
+   TH1D* likelihoodSurface = result->GetLikelihoodSurface1D();
+   chi2Surface->Write("chi2");
+   likelihoodSurface->Write("likelihood");
+   fitFile->Close();
+   delete fitFile;
+
+/*   marginalisation.ComputeStatistics(fp1_bin, data, Ntoys, Nbatches, firstBatch);
    double likelihood = marginalisation.GetLikelihood();
    double chi2 = marginalisation.GetChi2();
    LOG("valor_dune", pNOTICE) << "chi2(marg): " << chi2 << " L(marg): " <<
-      likelihood;
+      likelihood;*/
    clock.Stop();
 
    LOG("valor_dune", pNOTICE) << "Read: " << Ntoys <<
