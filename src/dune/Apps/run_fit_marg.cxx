@@ -172,15 +172,29 @@ void Fit(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, arg.GetString("tag"));
+   Marginalisation marginalisation(*elements, arg.GetString("margtoy-tag"));
    marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval);
+   // Perform a fit and populate the entire chi2 and likelihood surfaces
    FitResult* result = marginalisation.Fit(data, Ntoys, Nbatches, firstBatch);
+   // Perform an optimised fit starting at the specified value
+/*   FitResult* result = marginalisation.Fit(fp1_val, data, Ntoys, Nbatches,
+         firstBatch);
+   delete result;
+   result = marginalisation.Fit(-fp1_val, data, Ntoys, Nbatches, firstBatch);*/
 
    LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
       result->GetParam1BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
       " " << " L = " << result->GetLikelihoodBestFit();
 
-   TFile* fitFile = new TFile("fit_result.root", "RECREATE");
+   std::ostringstream oss;
+   oss << arg.GetString("tag") << "_" << fp1_name;
+   if(arg.Exists("fit-param2"))
+   {
+      oss << "_" << fp2_name;
+   }
+   oss << "_result.root";
+   string filename = oss.str();
+   TFile* fitFile = new TFile(filename.c_str(), "RECREATE");
    TH1D* chi2Surface = result->GetChi2Surface1D();
    TH1D* likelihoodSurface = result->GetLikelihoodSurface1D();
    chi2Surface->Write("chi2");
