@@ -7,9 +7,10 @@ Copyright (c) 2010-2018, The VALOR Fitting Group, All Rights Reserved.
 //________________________________________________________________________________________
 
 #include <string>
-#include <TXMLEngine.h>
 #include <algorithm>
 #include <cctype>
+
+#include <TXMLEngine.h>
 
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlXML.h"
@@ -28,6 +29,10 @@ using std::pair;
 using namespace valor;
 using namespace valor::conv;
 
+// Just so we don't have to keep making it later
+std::pair<double,double> max_limits = std::make_pair<double,double>(
+  -std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+
 //________________________________________________________________________________________
 FitParamNew::FitParamNew(TXMLEngine *xml, XMLNodePointer_t param_node)
 {
@@ -43,11 +48,15 @@ FitParamNew::FitParamNew(TXMLEngine *xml, XMLNodePointer_t param_node)
 //________________________________________________________________________________________
 void FitParamNew::Init(TXMLEngine *xml, XMLNodePointer_t param_node)
 {
-  fxml        = xml;
-  fParamNode  = param_node;
-  fName       = "";
-  fRootexName = "";
+  fParam      = conv::kPhypUndefined;
+  fName       = "undefined";
+  fRooTeXName = "undefined";
+  fTeXName    = "undefined";
   fType       = ksystUndefined;
+  fHasLimits  = false;
+
+  fxml = xml;
+  fParamNode = param_node;
 }
 //________________________________________________________________________________________
 void FitParamNew::ReadNames()
@@ -61,12 +70,21 @@ void FitParamNew::ReadNames()
   }
 
   if(IsNodeSpecified("name/rootex")) {
-    fRootexName = util::XML2String(fxml, fParamNode, "name/rootex");
+    fRooTeXName = util::XML2String(fxml, fParamNode, "name/rootex");
   }
   else {
     LOG("FitInputs", pNOTICE) << "No rootex name specified for parameter \'"
                               << fName << "\', instead using the simple name";
-    fRootexName = fName;
+    fRooTeXName = fName;
+  }
+  
+  if (!IsNodeSpecified("name/tex")) {
+    fTeXName = fRooTeXName;
+    replace( fTeXName.begin(), fTeXName.end(), '\\', '#' ); // Make slashes hashes for RooTeX
+    // Get rid of hashes preceding sin
+    size_t ind = fTeXName.find("#sin",0);
+    if (ind !=  string::npos) (fTeXName.replace(ind,4," sin"));
+    fTeXName = util::TrimSpaces(fTeXName);
   }
 }
 //________________________________________________________________________________________
@@ -94,7 +112,7 @@ void FitParamNew::ReadRanges()
           util::Die(1);
         }
       }
-      if(fRange.count(kv) != 0) {
+      if(std::find(fKinematicVariables.begin(),fKinematicVariables.end(),kv)!=fKinematicVariables.end()) {
         LOG("FitInputs", pFATAL) << "For parameter " << fName << " and kinematic variable " << node_name
                                  << ", there is already a range defined for this kinematic variable, cannot add another";
         util::Die(1);
@@ -107,20 +125,13 @@ void FitParamNew::ReadRanges()
       }
       // Get the range
       string path = "apply_to_range/" + node_name;
-      fRange[kv] = util::XML2DblDblPair(fxml, fParamNode, path);
-      if(fRange[kv].second < fRange[kv].first) {
+      fKinematicVariables.push_back(kv);
+      fKinematicRange.push_back(util::XML2DblDblPair(fxml, fParamNode, path));
+      if(fKinematicRange.back().second < fKinematicRange.back().first) {
         LOG("FitInputs", pFATAL) << "For parameter " << fName << " and kinematic variable " << node_name
                                  << ", the value specified for the upper limit of the range is smaller than the value specified for the lower limit";
         util::Die(1);
       }
-    }
-  }
-  else {
-    LOG("FitInputs", pNOTICE) << "For parameter " << fName
-                              << ", apply ranges were not set. Applying to the full ranges of all kinematic variables";
-    for(int ik = 0; ik < kNKineVarMax; ++ik) {
-      KineVar_t kv = util::KineVarFromInt(ik);
-      fRange[kv] = util::PhysicalLimits(kv);
     }
   }
 }
@@ -138,9 +149,9 @@ void FitParamNew::ReadType()
     fType = type;
   }
   else {
-    // The user hasn't tried to set any type for this param, so set to the default type
-    LOG("FitInputs", pNOTICE) << "For parameter " << fName << ", systematic type not set. Setting the type to normalisation";
-    fType = ksystNorm;
+    // The user hasn't tried to set any type for this param, so give up
+    LOG("FitInputs", pNOTICE) << "For parameter " << fName << ", systematic type not set.";
+    util::Die(-1);
   }
 }
 //________________________________________________________________________________________
@@ -335,21 +346,8 @@ void FitParamNew::ReadLimits()
     fLimits = util::XML2DblDblPair(fxml, fParamNode, "limits");
   }
   else {
-    // The user hasn't tried to set any limits for this param, so set to the default limits
-    SystType_t type = GetType();
-    if(type == ksystNorm || type == ksystResponse) {
-      fLimits.first  = 0;
-      fLimits.second = kALargeNum;
-    }
-    else {
-      fLimits.first  = -kALargeNum;
-      fLimits.second =  kALargeNum;
-    }
-    LOG("FitInputs", pNOTICE) << "For parameter " << fName << ", physical parameter limits not set. Setting to default: [" << fLimits.first << ", " << fLimits.second << "]";
-  }
-  if(fLimits.second < fLimits.first) {
-      LOG("FitInputs", pFATAL) << "For parameter " << fName <<", the value specified for the physical upper limit is smaller than the value specified for the lower limit";
-      util::Die(1);
+    fHasLimits = false;
+    fLimits = max_limits;
   }
 }
 //________________________________________________________________________________________
@@ -375,7 +373,7 @@ void FitParamNew::Print(std::ostream & stream) const
   std::pair<double,double> limits = GetLimits();
   stream << "Parameter info:\n"
          << "    Name (simple) = " << GetName()       << "\n"
-         << "    Name (Rootex) = " << GetRootexName() << "\n"
+         << "    Name (RooTeX) = " << GetRooTeXName() << "\n"
          << "    Type = " << util::AsString(GetType()) << "\n"
          << "    Categories:\n";
   for(string cat : cats) {
@@ -383,7 +381,7 @@ void FitParamNew::Print(std::ostream & stream) const
   }
   stream << "    Ranges:\n";
   for(KineVar_t kv : kinevars) {
-    pair<double,double> range = GetRange(kv);
+    const pair<double,double> & range = this->GetKineRange(kv);
     stream << "        For " << util::AsString(kv) << ", range = [" << range.first << ", " << range.second << "]\n";
   }
   stream << "    Apply parameter to:\n";
@@ -397,16 +395,7 @@ void FitParamNew::Print(std::ostream & stream) const
   stream << std::endl;
 }
 //________________________________________________________________________________________
-vector<KineVar_t> FitParamNew::GetKineVars() const
-{
-  vector<KineVar_t> v;
-  for(map<KineVar_t,pair<double,double>>::const_iterator it = fRange.begin(); it != fRange.end(); ++it) {
-    v.push_back(it->first);
-  }
-  return v;
-}
-//________________________________________________________________________________________
-bool FitParamNew::SearchCatergories(string to_find, bool one_category_only) const
+bool FitParamNew::SearchCategories(string to_find, bool one_category_only) const
 {
   if(one_category_only) {
     if(fCategories.size() != 1) {
@@ -448,5 +437,16 @@ bool FitParamNew::ParamIsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacM
   bool apply = (apply_to_beam && apply_to_sample && apply_to_mode && apply_to_detector && apply_to_target);
 
   return apply;
+}
+//________________________________________________________________________________________
+const std::pair<double,double> & FitParamNew::GetKineRange(conv::KineVar_t kv) const
+{
+  for (size_t it = 0 ; it < fKinematicVariables.size(); it++) {
+    conv::KineVar_t kvi = fKinematicVariables[it];
+    if (kvi == kv) { return fKinematicRange[it]; }
+  }
+  LOG("FitParamNew",pFATAL) << "Param "<<fName<<" does not have requested dependence on "<<util::AsString(kv);
+  util::Die(-1);
+  return max_limits;
 }
 //________________________________________________________________________________________
