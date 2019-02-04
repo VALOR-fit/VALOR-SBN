@@ -238,5 +238,180 @@ FitResult* Marginalisation::Fit(FitDataABC* data, const int Ntoys, const int Nba
    }
 }
 
+FitResult* Marginalisation::Fit(const double initValue, FitDataABC* data,
+      const int Ntoys, const int Nbatches, const int firstBatch)
+{
+   double value = initValue;
+   int binInit = this->_chi2_1D->FindBin(value);
+   const int N =  this->_chi2_1D->GetXaxis()->GetNbins();
+   bool minimised = false;
+
+   while(!minimised)
+   {
+      // Get the likelihood and chi2 statistics for the local grid (3x3 region
+      // around the current bin)
+      int binMin = CheckLocalMinimum(binInit, 3, N, data, Ntoys, Nbatches,
+            firstBatch);
+      if(binMin == binInit)
+      {  // This is the (very) local minimum, check a larger region to see if
+         // this is likely to be the true global minimum
+         binMin = CheckLocalMinimum(binInit, 7, N, data, Ntoys, Nbatches,
+               firstBatch);
+         if(binMin == binInit)
+         {  // Global minimum probably found, we're done
+            minimised = true;
+         }
+         else
+         {  // Update central bin and iterate, minimum not found.
+            binInit = binMin;
+         }
+      }
+      else
+      {  // Update central bin and iterate, minimum not found.
+         binInit = binMin;
+      }
+   }
+
+   // Store the result of the fit
+   this->_fitResult = new FitResult(*this->_chi2_1D, *this->_likelihood_1D);
+
+   return this->_fitResult;
+}
+
+FitResult* Marginalisation::Fit(const double initValue1,
+      const double initValue2, FitDataABC* data, const int Ntoys,
+      const int Nbatches, const int firstBatch)
+{
+   double valueX = initValue1;
+   double valueY = initValue2;
+   int binInitX = this->_chi2_2D->GetXaxis()->FindBin(valueX);
+   int binInitY = this->_chi2_2D->GetXaxis()->FindBin(valueY);
+   const int Nx =  this->_chi2_2D->GetXaxis()->GetNbins();
+   const int Ny =  this->_chi2_2D->GetYaxis()->GetNbins();
+   bool minimised = false;
+
+   while(!minimised)
+   {
+      // Get the likelihood and chi2 statistics for the local grid (3x3 region
+      // around the current bin)
+      int binMinX = binInitX;
+      int binMinY = binInitY;
+      CheckLocalMinimum(binMinX, binMinY, 3, Nx, Ny, data, Ntoys, Nbatches,
+            firstBatch);
+      if(binMinX == binInitX && binMinY == binInitY)
+      {  // This is the (very) local minimum, check a larger region to see if
+         // this is likely to be the true global minimum
+         CheckLocalMinimum(binMinX, binMinY, 7, Nx, Ny, data, Ntoys, Nbatches,
+               firstBatch);
+         if(binMinX == binInitX && binMinY == binInitY)
+         {  // Global minimum probably found, we're done
+            minimised = true;
+         }
+         else
+         {  // Update central bin and iterate, minimum not found.
+            binInitX = binMinX;
+            binInitY = binMinY;
+         }
+      }
+      else
+      {  // Update central bin and iterate, minimum not found.
+         binInitX = binMinX;
+         binInitY = binMinY;
+      }
+   }
+
+   // Store the result of the fit
+   this->_fitResult = new FitResult(*this->_chi2_1D, *this->_likelihood_1D);
+
+   return this->_fitResult;
+}
+
+int Marginalisation::CheckLocalMinimum(const int binInit, const int windowSize,
+      const int gridSize, FitDataABC* data, const int Ntoys, const int Nbatches,
+      const int firstBatch)
+{
+   int binMin = binInit;
+   const int limit = (windowSize - 1) / 2;
+   double chi2Min = std::numeric_limits<double>::max();
+   for(int di = -limit; di <= limit; ++di)
+   {
+      int i = binInit + di;
+      // Check still within fit bounds
+      if(i < 1 || i > gridSize)
+      {
+         continue;
+      }
+      // Check if the chi2 value has already been loaded
+      if(this->_likelihood_1D->GetBinContent(i) == 0.0)
+      {  // Load the chi2 value from file
+         this->ComputeStatistics(i - 1, data, Ntoys, Nbatches, firstBatch);
+         this->_likelihood_1D->SetBinContent(i, this->_likelihood);
+         this->_chi2_1D->SetBinContent(i, this->_chi2);
+      }
+      else
+      {  // Load the chi2 value from the existing surface
+         this->_chi2 = this->_chi2_1D->GetBinContent(i);
+      }
+      if(this->_chi2 < chi2Min)
+      {
+         chi2Min = this->_chi2;
+         binMin = i;
+      }
+   }
+
+   return binMin;
+}
+
+void Marginalisation::CheckLocalMinimum(int& binX, int& binY,
+      const int windowSize, const int gridSizeX, const int gridSizeY,
+      FitDataABC* data, const int Ntoys, const int Nbatches,
+      const int firstBatch)
+{
+   int binMinX = binX;
+   int binMinY = binY;
+   const int limit = (windowSize - 1) / 2;
+   double chi2Min = std::numeric_limits<double>::max();
+   for(int di = -limit; di <= limit; ++di)
+   {
+      int i = binX + di;
+      // Check still within fit bounds
+      if(i < 1 || i > gridSizeX)
+      {
+         continue;
+      }
+      for(int dj = -limit; dj <= limit; ++dj)
+      {
+         int j = binY + di;
+         // Check still within fit bounds
+         if(j < 1 || j > gridSizeY)
+         {
+            continue;
+         }
+         // Check if the chi2 value has already been loaded
+         if(this->_likelihood_2D->GetBinContent(i, j) == 0.0)
+         {  // Load the chi2 value from file
+            this->ComputeStatistics(i - 1, j - 1, data, Ntoys, Nbatches,
+                  firstBatch);
+            this->_likelihood_2D->SetBinContent(i, j, this->_likelihood);
+            this->_chi2_2D->SetBinContent(i, j, this->_chi2);
+         }
+         else
+         {  // Load the chi2 value from the existing surface
+            this->_chi2 = this->_chi2_1D->GetBinContent(i, j);
+         }
+         if(this->_chi2 < chi2Min)
+         {
+            chi2Min = this->_chi2;
+            binMinX = i;
+            binMinY = j;
+         }
+      }
+   }
+
+   // Set the location of the minimum bin in the reference variables
+   binX = binMinX;
+   binY = binMinY;
+}
+
 } // valor
 

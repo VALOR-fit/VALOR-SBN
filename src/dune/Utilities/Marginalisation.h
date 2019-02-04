@@ -136,7 +136,7 @@ public:
       data set relative to a set of marginalisation toys.
 
       \param fitParamBin The bin associated with the current unmarginalised
-             oscillation parameter.
+             oscillation parameter - zero indexed.
       \param data The data against which the statistic should be computed.
       \param Ntoys The number of marginalisation toys contained within each
              batch.
@@ -153,9 +153,9 @@ public:
       data set relative to a set of marginalisation toys.
 
       \param fitParam1Bin The bin associated with the first unmarginalised
-             oscillation parameter.
+             oscillation parameter - zero indexed.
       \param fitParam2Bin The bin associated with the second unmarginalised
-             oscillation parameter.
+             oscillation parameter - zero indexed.
       \param data The data against which the statistic should be computed.
       \param Ntoys The number of marginalisation toys contained within each
              batch.
@@ -215,6 +215,55 @@ public:
          const int firstBatch = 0);
 
    /**
+      Find the best-fit for a given data set relative to a set of
+      marginalisation toys.
+      
+      This version of Fit determines only the best fit and will only populate
+      the chi2 surface to the extent necessary to find a satisfactory best-fit.
+      As a result, this version of Fit should, in principle, provide superior
+      computational performance to the version computing the entire chi2
+      surface.
+
+      \param initValue The initial value of the fit parameter at which the fit
+             should begin.
+      \param data The data against which the statistic should be computed.
+      \param Ntoys The number of marginalisation toys contained within each
+             batch.
+      \param Nbatches The number of batches to include
+             (i.e. Nbatches * Ntoys = Ntoys total).
+      \param firstBatch The numeric ID for the first batch of marginalisation
+             toys to be included. Note, batches should be indexec from 0.
+   */
+   FitResult* Fit(const double initValue, FitDataABC* data, const int Ntoys,
+         const int Nbatches, const int firstBatch = 0);
+
+   /**
+      Find the best-fit for a given data set relative to a set of
+      marginalisation toys.
+      
+      This version of Fit determines only the best fit and will only populate
+      the chi2 surface to the extent necessary to find a satisfactory best-fit.
+      As a result, this version of Fit should, in principle, provide superior
+      computational performance to the version computing the entire chi2
+      surface.
+
+      \param initValue1 The initial value of the first fit parameter at which
+             the fit should begin.
+      \param initValue2 The initial value of the second fit parameter at which
+             the fit should begin.
+      \param data The data against which the statistic should be computed.
+      \param Ntoys The number of marginalisation toys contained within each
+             batch.
+      \param Nbatches The number of batches to include
+             (i.e. Nbatches * Ntoys = Ntoys total).
+      \param firstBatch The numeric ID for the first batch of marginalisation
+             toys to be included. Note, batches should be indexec from 0.
+   */
+   FitResult* Fit(const double initValue1, const double initValue2,
+         FitDataABC* data, const int Ntoys, const int Nbatches,
+         const int firstBatch = 0); 
+
+   /**
       Retrieves the marginal likelihood computed by the most recent call to
       ComputeStatistics.
 
@@ -229,6 +278,44 @@ public:
       \return The marginal chi-squared for a data set.
    */
    double GetChi2() const { return this->_chi2; }
+
+private:
+   /**
+      Finds the minimum chi2 within a local 1D window.
+
+      \param binInit The central bin of the window - 1 indexed.
+      \param windowSize The size of the window to explore
+             (windowSize x 1).
+      \param gridSize The size of the full grid from which the window is
+             extracted (gridSize x 1).
+
+      \return The bin at which the minimum of this window occurs.
+   */
+   int CheckLocalMinimum(const int binInit, const int windowSize,
+         const int gridSize, FitDataABC* data, const int Ntoys,
+         const int Nbatches, const int firstBatch = 0);
+
+   /**
+      Finds the minimum chi2 within a local 2D window.
+
+      \param binInitX A reference to the X bin at the centre of the window. This
+             value will be updated with the X bin found to be the minimum of the
+             window - 1 indexed.
+      \param binInitY A reference to the Y bin at the centre of the window. This
+             value will be updated with the X bin found to be the minimum of the
+             window - 1 indexed.
+      \param windowSize The size of the window to explore
+             (windowSize x windowSize).
+      \param gridSizeX The size of the full grid from which the window is
+             extracted (gridSizeX x gridSizeY).
+      \param gridSizeY The size of the full grid from which the window is
+             extracted (gridSizeX x gridSizeY).
+
+      \return The bin at which the minimum of this window occurs.
+   */
+   void CheckLocalMinimum(int& binX, int& binY, const int windowSize,
+         const int gridSizeX, const int gridSizeY, FitDataABC* data,
+         const int Ntoys, const int Nbatches, const int firstBatch = 0);
 
 private:
    string _filePrefix; 
