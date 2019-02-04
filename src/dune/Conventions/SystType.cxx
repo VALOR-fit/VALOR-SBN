@@ -22,9 +22,10 @@ string util::AsString(SystType_t t, Option_t * opt)
   string name = "";
 
   switch(t) {
-    case (ksystNorm    ) : name = "normalisation";     break;
-    case (ksystLateral ) : name = "lateral";           break;
-    case (ksystResponse) : name = "response function"; break;
+    case (ksystNormSimple) : name = "normalisation";     break;
+    case (ksystNormKinDep) : name = "kinematic dependent normalisation";     break;
+    case (ksystLateral )   : name = "lateral";           break;
+    case (ksystResponse)   : name = "response function"; break;
     default : name = "--";
   }
 
@@ -46,7 +47,7 @@ SystType_t util::SystTypeFromInt(int t)
 {
 // Cast an integer to SystType_t, but with boundary check
 //              [first]                   [last]
-  if(t >= (int)ksystNorm && t <= (int) ksystResponse) return (SystType_t)t;
+  if(t >= 0 && t <= (int) ksystResponse) return (SystType_t)t;
   return ksystUndefined;
 }
 //________________________________________________________________________________________
