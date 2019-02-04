@@ -676,7 +676,7 @@ bool GenericSingleSampleFitModel::Write(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_opt)
 {
-   LOG("GenericSingleSampleFitModel",pNOTICE) << "Writing results to stream";
+   LOG("GenericSingleSampleFitModel",pINFO) << "Writing results to stream";
 
    string opt = (write_opt) ? write_opt : "pdft";
 
@@ -737,7 +737,7 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
    if(opt.find("pdft") != string::npos)
    {
       fPDFTotOb->WriteStream(stream);
-      LOG("GenericSingleSampleFitModel", pNOTICE) << "Sample integral: " <<
+      LOG("GenericSingleSampleFitModel", pINFO) << "Sample integral: " <<
          fPDFTotOb->Integral();
 
       if(opt.find("+SB") != string::npos)

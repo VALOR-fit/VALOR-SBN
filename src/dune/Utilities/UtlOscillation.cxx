@@ -40,18 +40,18 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
             double free_value = 0.0;
             if(free_param1 == osc_parameters[i])
             {
-               free_value = arg.GetDouble("fit-param-value1");
+               free_value = arg.GetDouble("fit-param1-value");
             }
             else
             {
-               if(arg.Exists("fit-param-value2"))
+               if(arg.Exists("fit-param2-value"))
                {
-                  free_value = arg.GetDouble("fit-param-value2");
+                  free_value = arg.GetDouble("fit-param2-value");
                }
                else
                {
                   LOG("UtlOscillation", pERROR) << "--fit-param2 specified " <<
-                     "without accompanying --fit-param-value2.";
+                     "without accompanying --fit-param2-value.";
                   exit(1);
                }
             }
@@ -111,8 +111,6 @@ void ThrowOscillationParameters(FitParamList& fpl)
       if(fpl.Exists(p) && fpl.IsMarginalized(p))
       {
          double value = util::GetRandomizedOscParam(p, fpl);
-         double min_value = fpl.GetMinValueFlat(p);
-         double max_value = fpl.GetMinValueFlat(p);
          // Prior range is enforced in util::GetRandomizedOscParam, so no need
          // to check here
          fpl.Update(p, value);

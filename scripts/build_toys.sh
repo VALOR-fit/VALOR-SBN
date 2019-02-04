@@ -11,6 +11,7 @@ for ((i=0; i<=maxbin; i++)); do
       --nmargtoy 50 \
       --batch 0 \
       --fit-param1 cpv \
-      --fit-param-value1 $cpv \
-      --fit-param-bin1 $i
+      --fit-param1-value $cpv \
+      --fit-param1-bin $i \
+      --tag toys/1d/margtoy_cpv
 done

@@ -123,7 +123,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       }
       oss << "_" << b << "_" << Ntoys << ".bin";
       std::string filename = oss.str();
-      LOG("valor_dune", pNOTICE) << "Filename: " << filename;
+      LOG("valor_dune", pINFO) << "Filename: " << filename;
 
       std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
       for(int t = 0; t < Ntoys; ++t)
@@ -285,7 +285,7 @@ FitResult* Marginalisation::Fit(const double initValue1,
    double valueX = initValue1;
    double valueY = initValue2;
    int binInitX = this->_chi2_2D->GetXaxis()->FindBin(valueX);
-   int binInitY = this->_chi2_2D->GetXaxis()->FindBin(valueY);
+   int binInitY = this->_chi2_2D->GetYaxis()->FindBin(valueY);
    const int Nx =  this->_chi2_2D->GetXaxis()->GetNbins();
    const int Ny =  this->_chi2_2D->GetYaxis()->GetNbins();
    bool minimised = false;
@@ -321,7 +321,7 @@ FitResult* Marginalisation::Fit(const double initValue1,
    }
 
    // Store the result of the fit
-   this->_fitResult = new FitResult(*this->_chi2_1D, *this->_likelihood_1D);
+   this->_fitResult = new FitResult(*this->_chi2_2D, *this->_likelihood_2D);
 
    return this->_fitResult;
 }
@@ -397,7 +397,7 @@ void Marginalisation::CheckLocalMinimum(int& binX, int& binY,
          }
          else
          {  // Load the chi2 value from the existing surface
-            this->_chi2 = this->_chi2_1D->GetBinContent(i, j);
+            this->_chi2 = this->_chi2_2D->GetBinContent(i, j);
          }
          if(this->_chi2 < chi2Min)
          {

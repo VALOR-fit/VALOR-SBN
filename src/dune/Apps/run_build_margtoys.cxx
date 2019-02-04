@@ -88,6 +88,7 @@ void Init(CmdLnArgList& arg);
 
 int main(int argc, char** argv)
 {
+   gROOT->SetBatch(1);
    Env::Instance()->AutoSet("dune");
    CmdLnArgList arg;
    arg.Read(argc,argv,
@@ -110,8 +111,8 @@ void BuildToys(CmdLnArgList& arg)
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
    string fp_name1 = arg.GetString("fit-param1");
-   const double fp_val1 = arg.GetDouble("fit-param-value1");
-   const int fp_bin1 = arg.GetInt("fit-param-bin1");
+   const double fp_val1 = arg.GetDouble("fit-param1-value");
+   const int fp_bin1 = arg.GetInt("fit-param1-bin");
 
    string fp_name2;
    double fp_val2;
@@ -123,8 +124,8 @@ void BuildToys(CmdLnArgList& arg)
    if(arg.Exists("fit-param2"))
    {
       fp_name2 = arg.GetString("fit-param2");
-      fp_val2 = arg.GetDouble("fit-param-value2");
-      fp_bin2 = arg.GetInt("fit-param-bin2");
+      fp_val2 = arg.GetDouble("fit-param2-value");
+      fp_bin2 = arg.GetInt("fit-param2-bin");
       LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name2 << "(" <<
          fp_bin2 << ") = " << fp_val2;
    }
@@ -153,7 +154,14 @@ void BuildToys(CmdLnArgList& arg)
    TStopwatch clock;
    clock.Start();
    Marginalisation marginalisation(*elements, arg.GetString("tag"));
-   marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl);
+   if(!arg.Exists("fit-param2"))
+   {  // Build toys for 1D fit
+      marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl);
+   }
+   else
+   {  // Build toys for 2D fit
+      marginalisation.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl);
+   }
    clock.Stop();
 
    LOG("valor_dune", pNOTICE) << "Generate batch " << batch << ": " << Ntoys <<
