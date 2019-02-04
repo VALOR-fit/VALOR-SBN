@@ -13,5 +13,7 @@ valor_dune-run_fit_marg \
    --fit-param1-bin 1 \
    --fit-param1-min-value -3.141592654 \
    --fit-param1-max-value +3.141592654 \
-   --fit-param1-nbins $param1nbins
+   --fit-param1-nbins $param1nbins \
+   --tag fits/fit_cpv \
+   --margtoy-tag toys/1d/margtoy_cpv
 

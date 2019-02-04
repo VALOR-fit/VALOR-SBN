@@ -119,11 +119,11 @@ void Fit(CmdLnArgList& arg)
    const int fp1_nbins = arg.GetInt("fit-param1-nbins");
 
    string fp2_name;
-   double fp2_val;
-   int fp2_bin;
-   double fp2_minval;
-   double fp2_maxval;
-   int fp2_nbins;
+   double fp2_val = 0.0;
+   int fp2_bin = 0;
+   double fp2_minval = 0.0;
+   double fp2_maxval = 0.0;
+   int fp2_nbins = 0;
 
    LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
       fp1_bin << ") = " << fp1_val << " [" << fp1_nbins << ": " << fp1_minval <<
@@ -155,6 +155,13 @@ void Fit(CmdLnArgList& arg)
    util::oscillation::SetOscillationParameterPriors(arg, *fpl);
    // Fix or set marginalisation flag for oscillation parameters
    util::oscillation::SetOscillationParameters(arg, *fpl);
+   // Overwrite the free parameters with fixed values for the fake data
+   valor::conv::PhysParamId_t p = util::PhysParamFromString("cpv");
+   fpl->Update(p, -1.570796327);
+   fpl->SetInitValue(p, -1.570796327);
+   p = util::PhysParamFromString("mixing23");
+   fpl->Update(p, 0.53);
+   fpl->SetInitValue(p, 0.53);
 
    // Initialize non delta M squared oscillation parameters to zero
    // util::oscillation::SetUnoscillated(*fpl);
@@ -173,32 +180,65 @@ void Fit(CmdLnArgList& arg)
    TStopwatch clock;
    clock.Start();
    Marginalisation marginalisation(*elements, arg.GetString("margtoy-tag"));
-   marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval);
+   if(!arg.Exists("fit-param2"))
+   {  // Initialise for 1D fit
+      marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval);
+   }
+   else
+   {  // Initalise for 2D fit
+      marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval, fp2_nbins,
+            fp2_minval, fp2_maxval);
+   }
+   FitResult* result = nullptr;
    // Perform a fit and populate the entire chi2 and likelihood surfaces
-   FitResult* result = marginalisation.Fit(data, Ntoys, Nbatches, firstBatch);
+   // This version of the fit works for both 1D and 2D
+   result = marginalisation.Fit(data, Ntoys, Nbatches, firstBatch);
    // Perform an optimised fit starting at the specified value
-/*   FitResult* result = marginalisation.Fit(fp1_val, data, Ntoys, Nbatches,
-         firstBatch);
-   delete result;
-   result = marginalisation.Fit(-fp1_val, data, Ntoys, Nbatches, firstBatch);*/
+/*   if(!arg.Exists("fit-param2"))
+   {
+      result = marginalisation.Fit(fp1_val, data, Ntoys, Nbatches, firstBatch);
+      LOG("valor_dune", pNOTICE) << "HERE 4a";
+   }
+   else
+   {
+      result = marginalisation.Fit(fp1_val, fp2_val, data, Ntoys, Nbatches,
+            firstBatch);
+      LOG("valor_dune", pNOTICE) << "HERE 4b";
+   }*/
 
-   LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
-      result->GetParam1BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
-      " " << " L = " << result->GetLikelihoodBestFit();
+   if(!arg.Exists("fit-param2"))
+   {
+      LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
+         result->GetParam1BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
+         " " << " L = " << result->GetLikelihoodBestFit();
+   }
+   else
+   {
+      LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
+         result->GetParam1BestFit() << " mixing23 = " <<
+         result->GetParam2BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
+         " " << " L = " << result->GetLikelihoodBestFit();
+   }
 
    std::ostringstream oss;
-   oss << arg.GetString("tag") << "_" << fp1_name;
-   if(arg.Exists("fit-param2"))
-   {
-      oss << "_" << fp2_name;
-   }
+   oss << arg.GetString("tag");
    oss << "_result.root";
    string filename = oss.str();
    TFile* fitFile = new TFile(filename.c_str(), "RECREATE");
-   TH1D* chi2Surface = result->GetChi2Surface1D();
-   TH1D* likelihoodSurface = result->GetLikelihoodSurface1D();
-   chi2Surface->Write("chi2");
-   likelihoodSurface->Write("likelihood");
+   if(!arg.Exists("fit-param2"))
+   {
+      TH1D* chi2Surface = result->GetChi2Surface1D();
+      TH1D* likelihoodSurface = result->GetLikelihoodSurface1D();
+      chi2Surface->Write("chi2");
+      likelihoodSurface->Write("likelihood");
+   }
+   else
+   {
+      TH2D* chi2Surface = result->GetChi2Surface2D();
+      TH2D* likelihoodSurface = result->GetLikelihoodSurface2D();
+      chi2Surface->Write("chi2");
+      likelihoodSurface->Write("likelihood");
+   }
    fitFile->Close();
    delete fitFile;
 
