@@ -197,13 +197,11 @@ void Fit(CmdLnArgList& arg)
 /*   if(!arg.Exists("fit-param2"))
    {
       result = marginalisation.Fit(fp1_val, data, Ntoys, Nbatches, firstBatch);
-      LOG("valor_dune", pNOTICE) << "HERE 4a";
    }
    else
    {
       result = marginalisation.Fit(fp1_val, fp2_val, data, Ntoys, Nbatches,
             firstBatch);
-      LOG("valor_dune", pNOTICE) << "HERE 4b";
    }*/
 
    if(!arg.Exists("fit-param2"))
