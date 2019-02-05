@@ -381,7 +381,7 @@ void Marginalisation::CheckLocalMinimum(int& binX, int& binY,
       }
       for(int dj = -limit; dj <= limit; ++dj)
       {
-         int j = binY + di;
+         int j = binY + dj;
          // Check still within fit bounds
          if(j < 1 || j > gridSizeY)
          {

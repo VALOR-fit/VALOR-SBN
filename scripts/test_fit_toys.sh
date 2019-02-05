@@ -17,7 +17,7 @@ for ((i=0; i<=maxbin; i++)); do
       --fit-param1-min-value -3.141592654 \
       --fit-param1-max-value +3.141592654 \
       --fit-param1-nbins $param1nbins \
-      --tag fits/fit_${i} \
+      --tag fits/fit_${i}_cpv \
       --margtoy-tag toys/1d/margtoy_cpv
 done
 
