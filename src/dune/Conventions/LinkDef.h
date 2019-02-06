@@ -22,6 +22,8 @@
 
 #pragma link C++ class valor::util::ArrIdx+;
 #pragma link C++ class valor::util::PhysicalParameterLimits+;
-#pragma link C++ class valor::util::FitParamNew+;
+
+#pragma link C++ class valor::FitParamNew+;
+#pragma link C++ class valor::ParameterSet+;
 
 #endif
