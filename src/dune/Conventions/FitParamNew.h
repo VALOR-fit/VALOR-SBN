@@ -81,6 +81,8 @@ namespace valor {
   class FitParamNew {
     public:
       FitParamNew(TXMLEngine* xml, XMLNodePointer_t param_node);
+      FitParamNew();
+      ~FitParamNew();
       
       // Stuff I definitely want to keep
       const std::string              &   GetName      (void) const { return fName;          }

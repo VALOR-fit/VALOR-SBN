@@ -46,6 +46,15 @@ FitParamNew::FitParamNew(TXMLEngine *xml, XMLNodePointer_t param_node)
   LOG("FitInputs", pINFO) << "Successfully read parameter \'" << GetName() << "\'";
 }
 //________________________________________________________________________________________
+FitParamNew::FitParamNew()
+{
+  this->Init(nullptr,nullptr);
+}
+//________________________________________________________________________________________
+FitParamNew::~FitParamNew()
+{
+}
+//________________________________________________________________________________________
 void FitParamNew::Init(TXMLEngine *xml, XMLNodePointer_t param_node)
 {
   fParam      = conv::kPhypUndefined;
