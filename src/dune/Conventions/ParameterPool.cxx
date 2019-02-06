@@ -12,20 +12,20 @@ Copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/UtlSystem.h"
-#include "dune/Conventions/ParameterSet.h"
+#include "dune/Conventions/ParameterPool.h"
 
 using namespace valor;
 
 
 //________________________________________________________________________________________
-valor::ParameterSet * valor::ParameterSet::fInstance = 0;
+valor::ParameterPool * valor::ParameterPool::fInstance = 0;
 //________________________________________________________________________________________
-valor::ParameterSet::ParameterSet()
+valor::ParameterPool::ParameterPool()
 {
   fInstance = 0;
 }
 //________________________________________________________________________________________
-void ParameterSet::ReadXML(std::string xml_path)
+void ParameterPool::ReadXML(std::string xml_path)
 {
   // Analysis configuration
   std::string param_file_full = util::CompleteConfigPath(xml_path);
@@ -34,14 +34,14 @@ void ParameterSet::ReadXML(std::string xml_path)
   TXMLEngine* xmleng = new TXMLEngine;
   XMLDocPointer_t xmldoc = xmleng->ParseFile(param_file_full.c_str());
   if (xmldoc==0) {
-    LOG("ParameterSet",pFATAL)<< "Can not parse input XML file [" << param_file_full << "]";
+    LOG("ParameterPool",pFATAL)<< "Can not parse input XML file [" << param_file_full << "]";
     util::Die(1);
   }
   XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);
   
   std::string root_node_name = xmleng->GetNodeName(root_node);
   if (strcmp(root_node_name.c_str(),"param_list")!=0) {
-    LOG("ParameterSet",pFATAL)<< "root node in XML file "<<param_file_full<<" is "<<root_node_name<<", expected param_list";
+    LOG("ParameterPool",pFATAL)<< "root node in XML file "<<param_file_full<<" is "<<root_node_name<<", expected param_list";
     util::Die(-1);
   }
 
@@ -52,7 +52,7 @@ void ParameterSet::ReadXML(std::string xml_path)
       fParams.emplace_back(xmleng, curr_node);
     }
     else {
-      LOG("ParameterSet",pWARN)<< "Found a node, " << curr_node_name << ", which does not correspond to a parameter";
+      LOG("ParameterPool",pWARN)<< "Found a node, " << curr_node_name << ", which does not correspond to a parameter";
     }
 
     curr_node = xmleng->GetNext(curr_node);
@@ -62,22 +62,22 @@ void ParameterSet::ReadXML(std::string xml_path)
   delete xmleng;
 }
 //________________________________________________________________________________________
-const std::vector<FitParamNew> & ParameterSet::GetParams() const
+const std::vector<Parameter> & ParameterPool::GetParams() const
 {
   return fParams;
 }
 //________________________________________________________________________________________
-const valor::ParameterSet * valor::ParameterSet::Instance()
+const valor::ParameterPool * valor::ParameterPool::Instance()
 {
   return MutableInstance();
 }
 //________________________________________________________________________________________
-valor::ParameterSet * valor::ParameterSet::MutableInstance()
+valor::ParameterPool * valor::ParameterPool::MutableInstance()
 {
   if(fInstance == 0) {
-    static valor::ParameterSet::Cleaner cleaner;
+    static valor::ParameterPool::Cleaner cleaner;
     cleaner.DummyMethodAndSilentCompiler();
-    fInstance = new valor::ParameterSet;
+    fInstance = new valor::ParameterPool;
   }
   return fInstance;
 }

@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
    
-\class     valor::ParameterSet
+\class     valor::ParameterPool
       
 \brief     A singleton to hold the set of parameters currently being used.
    
@@ -15,46 +15,46 @@
 */
 //____________________________________________________________________________
    
-#ifndef _valor_parameter_set_h_
-#define _valor_parameter_set_h_
+#ifndef _valor_parameter_pool_h_
+#define _valor_parameter_pool_h_
 
 #include <iostream>
 #include <string>
 #include <map>
 #include <vector>
 
-#include "dune/Conventions/FitParamNew.h"
+#include "dune/Conventions/Parameter.h"
 
 namespace valor {
 
-class ParameterSet
+class ParameterPool
 {
 public:
 
-  static ParameterSet * MutableInstance();
-  static const ParameterSet * Instance();
+  static ParameterPool * MutableInstance();
+  static const ParameterPool * Instance();
   
   void ReadXML(std::string xml_path);
   
-  const std::vector<FitParamNew> & GetParams() const;
+  const std::vector<Parameter> & GetParams() const;
   
   
 private:
   
-  std::vector<FitParamNew> fParams;
+  std::vector<Parameter> fParams;
   
-  ParameterSet();
-  ParameterSet(const ParameterSet &) {};
- ~ParameterSet() {};
+  ParameterPool();
+  ParameterPool(const ParameterPool &) {};
+ ~ParameterPool() {};
 
-  static ParameterSet * fInstance;
+  static ParameterPool * fInstance;
 
   struct Cleaner {
       void DummyMethodAndSilentCompiler() { }
       ~Cleaner() {
-         if (ParameterSet::fInstance !=0) {
-            delete ParameterSet::fInstance;
-            ParameterSet::fInstance = 0;
+         if (ParameterPool::fInstance !=0) {
+            delete ParameterPool::fInstance;
+            ParameterPool::fInstance = 0;
          }
       }
   };

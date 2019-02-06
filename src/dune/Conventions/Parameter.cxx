@@ -19,7 +19,7 @@ Copyright (c) 2010-2018, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
 
-#include "dune/Conventions/FitParamNew.h"
+#include "dune/Conventions/Parameter.h"
 
 using std::string;
 using std::vector;
@@ -34,7 +34,7 @@ std::pair<double,double> max_limits = std::make_pair<double,double>(
   -std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 
 //________________________________________________________________________________________
-FitParamNew::FitParamNew(TXMLEngine *xml, XMLNodePointer_t param_node)
+Parameter::Parameter(TXMLEngine *xml, XMLNodePointer_t param_node)
 {
   Init(xml, param_node);
   ReadNames();
@@ -46,16 +46,16 @@ FitParamNew::FitParamNew(TXMLEngine *xml, XMLNodePointer_t param_node)
   LOG("FitInputs", pINFO) << "Successfully read parameter \'" << GetName() << "\'";
 }
 //________________________________________________________________________________________
-FitParamNew::FitParamNew()
+Parameter::Parameter()
 {
   this->Init(nullptr,nullptr);
 }
 //________________________________________________________________________________________
-FitParamNew::~FitParamNew()
+Parameter::~Parameter()
 {
 }
 //________________________________________________________________________________________
-void FitParamNew::Init(TXMLEngine *xml, XMLNodePointer_t param_node)
+void Parameter::Init(TXMLEngine *xml, XMLNodePointer_t param_node)
 {
   fParam      = conv::kPhypUndefined;
   fName       = "undefined";
@@ -68,7 +68,7 @@ void FitParamNew::Init(TXMLEngine *xml, XMLNodePointer_t param_node)
   fParamNode = param_node;
 }
 //________________________________________________________________________________________
-void FitParamNew::ReadNames()
+void Parameter::ReadNames()
 {
   if(IsNodeSpecified("name/simple")) {
     fName = util::XML2String(fxml, fParamNode, "name/simple");
@@ -97,7 +97,7 @@ void FitParamNew::ReadNames()
   }
 }
 //________________________________________________________________________________________
-void FitParamNew::ReadRanges()
+void Parameter::ReadRanges()
 {
   if(util::NodeExists(fxml, fParamNode, "apply_to_range")) {
     vector <XMLNodePointer_t> range_nodes = util::FindAllNodes(fxml,
@@ -145,7 +145,7 @@ void FitParamNew::ReadRanges()
   }
 }
 //________________________________________________________________________________________
-void FitParamNew::ReadType()
+void Parameter::ReadType()
 {
   if(IsNodeSpecified("type")) {
     std::string type_str = util::XML2String(fxml, fParamNode, "type");
@@ -164,7 +164,7 @@ void FitParamNew::ReadType()
   }
 }
 //________________________________________________________________________________________
-void FitParamNew::ReadCategories()
+void Parameter::ReadCategories()
 {
   XMLNodePointer_t cats_node = util::FindNode(fxml, fParamNode, "categories");
   vector<XMLNodePointer_t> cat_nodes = util::FindNodes(fxml, cats_node, "category");
@@ -182,7 +182,7 @@ void FitParamNew::ReadCategories()
   }
 }
 //________________________________________________________________________________________
-void FitParamNew::ReadApplyMaskAll()
+void Parameter::ReadApplyMaskAll()
 {
   DetectorApplyMask_t      detector = fDefApplyDetector;
   BeamApplyMask_t          beam     = fDefApplyBeam;
@@ -205,7 +205,7 @@ void FitParamNew::ReadApplyMaskAll()
   fApply = {detector, beam, flav, selec, reactype, target};
 }
 //________________________________________________________________________________________
-DetectorApplyMask_t FitParamNew::ReadDetectorApplyMask(string node_name) const
+DetectorApplyMask_t Parameter::ReadDetectorApplyMask(string node_name) const
 {
   DetectorApplyMask_t mask = fDefApplyDetector;
   string node_path = "apply_to/" + node_name;
@@ -229,7 +229,7 @@ DetectorApplyMask_t FitParamNew::ReadDetectorApplyMask(string node_name) const
   return mask;
 }
 //________________________________________________________________________________________
-BeamApplyMask_t FitParamNew::ReadBeamApplyMask(string node_name) const
+BeamApplyMask_t Parameter::ReadBeamApplyMask(string node_name) const
 {
   BeamApplyMask_t mask = fDefApplyBeam;
   string node_path = "apply_to/" + node_name;
@@ -253,7 +253,7 @@ BeamApplyMask_t FitParamNew::ReadBeamApplyMask(string node_name) const
   return mask;
 }
 //________________________________________________________________________________________
-FlavApplyMask_t FitParamNew::ReadFlavApplyMask(string node_name) const
+FlavApplyMask_t Parameter::ReadFlavApplyMask(string node_name) const
 {
   FlavApplyMask_t mask = fDefApplyFlav;
   string node_path = "apply_to/" + node_name;
@@ -277,7 +277,7 @@ FlavApplyMask_t FitParamNew::ReadFlavApplyMask(string node_name) const
   return mask;
 }
 //________________________________________________________________________________________
-SelecApplyMask_t FitParamNew::ReadSelecApplyMask(string node_name) const
+SelecApplyMask_t Parameter::ReadSelecApplyMask(string node_name) const
 {
   SelecApplyMask_t mask = fDefApplySelec;
   string node_path = "apply_to/" + node_name;
@@ -301,7 +301,7 @@ SelecApplyMask_t FitParamNew::ReadSelecApplyMask(string node_name) const
   return mask;
 }
 //________________________________________________________________________________________
-ReacTypeApplyMask_t FitParamNew::ReadReacTypeApplyMask(string node_name) const
+ReacTypeApplyMask_t Parameter::ReadReacTypeApplyMask(string node_name) const
 {
   ReacTypeApplyMask_t mask = fDefApplyReacType;
   string node_path = "apply_to/" + node_name;
@@ -325,7 +325,7 @@ ReacTypeApplyMask_t FitParamNew::ReadReacTypeApplyMask(string node_name) const
   return mask;
 }
 //________________________________________________________________________________________
-NuclearTargetApplyMask_t FitParamNew::ReadNuclearTargetApplyMask(string node_name) const
+NuclearTargetApplyMask_t Parameter::ReadNuclearTargetApplyMask(string node_name) const
 {
   NuclearTargetApplyMask_t mask = fDefApplyNuclearTarget;
   string node_path = "apply_to/" + node_name;
@@ -349,7 +349,7 @@ NuclearTargetApplyMask_t FitParamNew::ReadNuclearTargetApplyMask(string node_nam
   return mask;
 }
 //________________________________________________________________________________________
-void FitParamNew::ReadLimits()
+void Parameter::ReadLimits()
 {
   if(IsNodeSpecified("limits")) {
     fLimits = util::XML2DblDblPair(fxml, fParamNode, "limits");
@@ -360,7 +360,7 @@ void FitParamNew::ReadLimits()
   }
 }
 //________________________________________________________________________________________
-bool FitParamNew::IsNodeSpecified(const string node_path) const
+bool Parameter::IsNodeSpecified(const string node_path) const
 {
   bool specified = true;
   if(util::NodeExists(fxml, fParamNode, node_path)) {
@@ -375,7 +375,7 @@ bool FitParamNew::IsNodeSpecified(const string node_path) const
   return specified;
 }
 //________________________________________________________________________________________
-void FitParamNew::Print(std::ostream & stream) const
+void Parameter::Print(std::ostream & stream) const
 {
   vector<string> cats = GetCategories();
   vector<KineVar_t> kinevars = GetKineVars();
@@ -404,7 +404,7 @@ void FitParamNew::Print(std::ostream & stream) const
   stream << std::endl;
 }
 //________________________________________________________________________________________
-bool FitParamNew::SearchCategories(string to_find, bool one_category_only) const
+bool Parameter::SearchCategories(string to_find, bool one_category_only) const
 {
   if(one_category_only) {
     if(fCategories.size() != 1) {
@@ -423,7 +423,7 @@ bool FitParamNew::SearchCategories(string to_find, bool one_category_only) const
   return false;
 }
 //________________________________________________________________________________________
-bool FitParamNew::ParamIsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacMode_t m, NuclearTarget_t nt) const
+bool Parameter::ParamIsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacMode_t m, NuclearTarget_t nt) const
 {
   if(b == kbUndefined) { return false; }
   if(m == kmUndefined) { return false; }
@@ -448,13 +448,13 @@ bool FitParamNew::ParamIsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacM
   return apply;
 }
 //________________________________________________________________________________________
-const std::pair<double,double> & FitParamNew::GetKineRange(conv::KineVar_t kv) const
+const std::pair<double,double> & Parameter::GetKineRange(conv::KineVar_t kv) const
 {
   for (size_t it = 0 ; it < fKinematicVariables.size(); it++) {
     conv::KineVar_t kvi = fKinematicVariables[it];
     if (kvi == kv) { return fKinematicRange[it]; }
   }
-  LOG("FitParamNew",pFATAL) << "Param "<<fName<<" does not have requested dependence on "<<util::AsString(kv);
+  LOG("Parameter",pFATAL) << "Param "<<fName<<" does not have requested dependence on "<<util::AsString(kv);
   util::Die(-1);
   return max_limits;
 }

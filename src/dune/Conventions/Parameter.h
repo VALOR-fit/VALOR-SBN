@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\file      FitParamNew
+\file      Parameter
 
 \brief     Reads and stores a single parameter specified from in an XML file
 
@@ -60,7 +60,7 @@
 */
 //____________________________________________________________________________
 
-//TODO: This class and file has a placeholder name of FitParamNew, but as it will eventually replace the current FitParam class, this name should be changed
+//TODO: This class and file has a placeholder name of Parameter, but as it will eventually replace the current FitParam class, this name should be changed
 
 #ifndef _valor_dune_fit_param_new_definition_h_
 #define _valor_dune_fit_param_new_definition_h_
@@ -78,11 +78,11 @@
 using namespace valor;
 
 namespace valor {
-  class FitParamNew {
+  class Parameter {
     public:
-      FitParamNew(TXMLEngine* xml, XMLNodePointer_t param_node);
-      FitParamNew();
-      ~FitParamNew();
+      Parameter(TXMLEngine* xml, XMLNodePointer_t param_node);
+      Parameter();
+      ~Parameter();
       
       // Stuff I definitely want to keep
       const std::string              &   GetName      (void) const { return fName;          }
