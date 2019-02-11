@@ -82,3 +82,10 @@ valor::ParameterPool * valor::ParameterPool::MutableInstance()
   return fInstance;
 }
 //________________________________________________________________________________________
+void valor::ParameterPool::Print(std::ostream & o) const
+{
+  for (const auto & p : fParams) {
+    p.Print(o);
+  }
+}
+//________________________________________________________________________________________

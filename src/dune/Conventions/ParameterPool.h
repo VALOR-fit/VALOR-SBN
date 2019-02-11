@@ -38,6 +38,8 @@ public:
   
   const std::vector<Parameter> & GetParams() const;
   
+  void Print(std::ostream & stream = std::cout) const;
+  
   
 private:
   
