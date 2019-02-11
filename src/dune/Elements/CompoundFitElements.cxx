@@ -19,6 +19,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/FitCore/CompoundFitModel.h"
 #include "valor/FitCore/CompoundCorrelatedSystematics.h"
 // dune
+#include "dune/Conventions/ParameterPool.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitDataABC.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
@@ -80,8 +81,24 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * opt)
     util::Die(1); return false;
   }
   XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);
-
+  
+  // Let's make sure we do the parameter definitions before we get to the matrix definititions
   XMLNodePointer_t curr_node = xmleng->GetChild(root_node);
+  while(curr_node) {
+    string curr_node_name = xmleng->GetNodeName(curr_node);
+    if(!strcmp(curr_node_name.c_str(),"parameter_definitions")) {
+      bool success = this->ReadParameterList(xmleng,curr_node,opt);
+      if (!success) {
+        LOG("CompoundFitElements", pERROR) 
+            << "Failed to read parameter list. Exiting.";
+        util::Die(1); return false;
+      }
+    }
+    curr_node = xmleng->GetNext(curr_node);
+  }
+      
+  // Now we'll go over to get the elements and the list of parameter matrices in the fit
+  curr_node = xmleng->GetChild(root_node);
   while(curr_node) {
     string curr_node_name = xmleng->GetNodeName(curr_node);
     if(curr_node_name == "element_list") {
@@ -231,6 +248,23 @@ CorrelatedSystematics * CompoundFitElements::ReadSystematicGroup (
   syst->Read(xmleng, top_node);
   return syst;
 }
+//________________________________________________________________________________________
+bool CompoundFitElements::ReadParameterList (
+ TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * /*opt*/)
+{
+  XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
+  while(curr_node) {
+    std::string curr_node_name = xmleng->GetNodeName(curr_node);
+    if(!strcmp(curr_node_name.c_str(),"filename")) {
+      string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
+      ParameterPool::MutableInstance()->ReadXML(content);
+    }
+    curr_node = xmleng->GetNext(curr_node);
+  }
+  ParameterPool::Instance()->Print();
+  return true;
+}
+//________________________________________________________________________________________
 void CompoundFitElements::Init(void)
 {
   fCompoundFitData  = 0;
