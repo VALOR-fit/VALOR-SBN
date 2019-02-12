@@ -34,9 +34,9 @@ std::pair<double,double> max_limits = std::make_pair<double,double>(
   -std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 
 //________________________________________________________________________________________
-Parameter::Parameter(TXMLEngine *xml, XMLNodePointer_t param_node)
+Parameter::Parameter(conv::PhysParamId_t param_id, TXMLEngine *xml, XMLNodePointer_t param_node)
 {
-  Init(xml, param_node);
+  Init(param_id,xml, param_node);
   ReadNames();
   ReadRanges();
   ReadType();
@@ -48,16 +48,16 @@ Parameter::Parameter(TXMLEngine *xml, XMLNodePointer_t param_node)
 //________________________________________________________________________________________
 Parameter::Parameter()
 {
-  this->Init(nullptr,nullptr);
+  this->Init(conv::kPhypUndefined,nullptr,nullptr);
 }
 //________________________________________________________________________________________
 Parameter::~Parameter()
 {
 }
 //________________________________________________________________________________________
-void Parameter::Init(TXMLEngine *xml, XMLNodePointer_t param_node)
+void Parameter::Init(conv::PhysParamId_t param_id, TXMLEngine *xml, XMLNodePointer_t param_node)
 {
-  fParam      = conv::kPhypUndefined;
+  fParam      = param_id;
   fName       = "undefined";
   fRooTeXName = "undefined";
   fTeXName    = "undefined";
@@ -381,6 +381,7 @@ void Parameter::Print(std::ostream & stream) const
   vector<KineVar_t> kinevars = GetKineVars();
   std::pair<double,double> limits = GetLimits();
   stream << "Parameter info:\n"
+         << "    Current numerical ID: "<<fParam<<"\n"
          << "    Name (simple) = " << GetName()       << "\n"
          << "    Name (RooTeX) = " << GetRooTeXName() << "\n"
          << "    Type = " << util::AsString(GetType()) << "\n"

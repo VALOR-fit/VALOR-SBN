@@ -40,6 +40,9 @@ public:
   
   void Print(std::ostream & stream = std::cout) const;
   
+  // Make sure we haven't added two parameters with the same name
+  void CheckForCollisions() const;
+  
   
 private:
   

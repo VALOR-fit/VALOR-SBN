@@ -7,6 +7,8 @@ Copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved.
 //________________________________________________________________________________________
 
 #include <cstring>
+#include <utility>
+#include <map>
 
 #include "TXMLEngine.h"
 
@@ -49,7 +51,8 @@ void ParameterPool::ReadXML(std::string xml_path)
   while(curr_node) {
     string curr_node_name = xmleng->GetNodeName(curr_node);
     if(curr_node_name == "param") {
-      fParams.emplace_back(xmleng, curr_node);
+      conv::PhysParamId_t p = (conv::PhysParamId_t)((size_t)conv::kNuis000+fParams.size());
+      fParams.emplace_back(p, xmleng, curr_node);
     }
     else {
       LOG("ParameterPool",pWARN)<< "Found a node, " << curr_node_name << ", which does not correspond to a parameter";
@@ -87,5 +90,20 @@ void valor::ParameterPool::Print(std::ostream & o) const
   for (const auto & p : fParams) {
     p.Print(o);
   }
+}
+//________________________________________________________________________________________
+void valor::ParameterPool::CheckForCollisions() const
+{
+  std::map<std::string,conv::PhysParamId_t> names;
+  for (const Parameter & p : fParams) {
+    std::string name = p.GetName();
+    if (names.count(name)) {
+      LOG("ParameterPool",pFATAL) << "Duplicated parameter name: "<<name;
+      exit(-1);
+    }
+    conv::PhysParamId_t param_id = p.GetID();
+    names[name] = param_id;
+  }
+  return;
 }
 //________________________________________________________________________________________

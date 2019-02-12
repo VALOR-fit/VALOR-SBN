@@ -80,11 +80,12 @@ using namespace valor;
 namespace valor {
   class Parameter {
     public:
-      Parameter(TXMLEngine* xml, XMLNodePointer_t param_node);
+      Parameter(conv::PhysParamId_t param_id, TXMLEngine* xml, XMLNodePointer_t param_node);
       Parameter();
       ~Parameter();
       
       // Stuff I definitely want to keep
+      const conv::PhysParamId_t      &   GetID        (void) const { return fParam;         }
       const std::string              &   GetName      (void) const { return fName;          }
       const std::string              &   GetRooTeXName(void) const { return fRooTeXName;    }
       const std::string              &   GetTeXName   (void) const { return fTeXName;       }
@@ -154,7 +155,7 @@ namespace valor {
       const conv::ReacTypeApplyMask_t      fDefApplyReacType      = conv::ktApplyToAll;
       const conv::NuclearTargetApplyMask_t fDefApplyNuclearTarget = conv::kntApplyToAll;
 
-      void Init(TXMLEngine* xml, XMLNodePointer_t param_node);
+      void Init(conv::PhysParamId_t param_id, TXMLEngine* xml, XMLNodePointer_t param_node);
       void ReadNames       ();
       // TODO: Sensible defaults for each kinevar in each used binning scheme should be set, but does each parameter apply to every kinevar in each binning scheme?
       void ReadRanges      ();
