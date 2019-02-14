@@ -19,6 +19,8 @@ Copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved.
 using namespace valor;
 
 
+valor::conv::PhysParamId_t gFirstParam = conv::kNuis000;
+
 //________________________________________________________________________________________
 valor::ParameterPool * valor::ParameterPool::fInstance = 0;
 //________________________________________________________________________________________
@@ -51,7 +53,7 @@ void ParameterPool::ReadXML(std::string xml_path)
   while(curr_node) {
     string curr_node_name = xmleng->GetNodeName(curr_node);
     if(curr_node_name == "param") {
-      conv::PhysParamId_t p = (conv::PhysParamId_t)((size_t)conv::kNuis000+fParams.size());
+      conv::PhysParamId_t p = (conv::PhysParamId_t)((size_t)gFirstParam+fParams.size());
       fParams.emplace_back(p, xmleng, curr_node);
     }
     else {
@@ -105,5 +107,12 @@ void valor::ParameterPool::CheckForCollisions() const
     names[name] = param_id;
   }
   return;
+}
+//________________________________________________________________________________________
+const Parameter & ParameterPool::GetParam(conv::PhysParamId_t p) const
+{
+  int new_id = p - gFirstParam;
+  // Should definitely do a bounds check here if it doesn't slow us down too much
+  return fParams[new_id];
 }
 //________________________________________________________________________________________

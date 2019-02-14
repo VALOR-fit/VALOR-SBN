@@ -37,6 +37,7 @@ public:
   void ReadXML(std::string xml_path);
   
   const std::vector<Parameter> & GetParams() const;
+  const Parameter & GetParam (conv::PhysParamId_t) const;
   
   void Print(std::ostream & stream = std::cout) const;
   
@@ -50,7 +51,7 @@ private:
   
   ParameterPool();
   ParameterPool(const ParameterPool &) {};
- ~ParameterPool() {};
+ ~ParameterPool() {this->Print();};
 
   static ParameterPool * fInstance;
 

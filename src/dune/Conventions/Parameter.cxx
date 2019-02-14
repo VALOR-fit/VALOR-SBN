@@ -61,7 +61,7 @@ void Parameter::Init(conv::PhysParamId_t param_id, TXMLEngine *xml, XMLNodePoint
   fName       = "undefined";
   fRooTeXName = "undefined";
   fTeXName    = "undefined";
-  fType       = ksystUndefined;
+  fType       = kSystUndefined;
   fHasLimits  = false;
 
   fxml = xml;
@@ -150,7 +150,7 @@ void Parameter::ReadType()
   if(IsNodeSpecified("type")) {
     std::string type_str = util::XML2String(fxml, fParamNode, "type");
     SystType_t type = util::SystTypeFromString(type_str);
-    if(type == ksystUndefined) {
+    if(type == kSystUndefined) {
       // The user has tried to set a type for this param but it was not recognised, so die
       LOG("FitInputs", pFATAL) << "For parameter " << fName << ", systematic type \'" << type_str << "\' not recognised";
       util::Die(1);
@@ -424,7 +424,7 @@ bool Parameter::SearchCategories(string to_find, bool one_category_only) const
   return false;
 }
 //________________________________________________________________________________________
-bool Parameter::ParamIsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacMode_t m, NuclearTarget_t nt) const
+bool Parameter::IsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacMode_t m, NuclearTarget_t nt) const
 {
   if(b == kbUndefined) { return false; }
   if(m == kmUndefined) { return false; }
@@ -436,12 +436,12 @@ bool Parameter::ParamIsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacMod
   ReacType_t t = kReacModeToType[m];
 
   // Check whether or not to apply the param to this
-  bool apply_to_beam = (kApplyToBeamMode[b] & fApply.beam).any();
-  bool apply_to_sample = (kApplyToSample[s] & fApply.selec).any();
-  bool apply_to_flavour = (kApplyToFlavour[f] & fApply.flav).any();
-  bool apply_to_type = (kApplyToReacType[t] & fApply.reactype).any();
-  bool apply_to_detector = (kApplyToDetector[d] & fApply.detector).any();
-  bool apply_to_target = (kApplyToNuclearTarget[nt] & fApply.target).any();
+  bool apply_to_beam     = (kApplyToBeamMode     [b]  & fApply.beam).any();
+  bool apply_to_sample   = (kApplyToSample       [s]  & fApply.selec).any();
+  bool apply_to_flavour  = (kApplyToFlavour      [f]  & fApply.flav).any();
+  bool apply_to_type     = (kApplyToReacType     [t]  & fApply.reactype).any();
+  bool apply_to_detector = (kApplyToDetector     [d]  & fApply.detector).any();
+  bool apply_to_target   = (kApplyToNuclearTarget[nt] & fApply.target).any();
 
   bool apply_to_mode = apply_to_flavour && apply_to_type;
   bool apply = (apply_to_beam && apply_to_sample && apply_to_mode && apply_to_detector && apply_to_target);
