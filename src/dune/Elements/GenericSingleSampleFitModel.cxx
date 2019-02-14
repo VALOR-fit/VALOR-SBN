@@ -40,7 +40,6 @@
 #include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Messenger/Messenger.h"
 //dune
-#include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
 #include "valor/Conventions/Baseline.h"
 #include "valor/Conventions/BeamConf.h"

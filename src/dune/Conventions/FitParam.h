@@ -33,7 +33,6 @@
 #include "valor/FitCore/PhysHypothesis.h"
 
 //dune
-#include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/FitParamGroup.h"
 

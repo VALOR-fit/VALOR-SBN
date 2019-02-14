@@ -19,7 +19,6 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
 
-#include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"

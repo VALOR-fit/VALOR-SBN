@@ -25,3 +25,4 @@
 #pragma link C++ class valor::util::FitParamNew+;
 
 #endif
+

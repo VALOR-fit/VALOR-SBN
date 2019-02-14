@@ -27,7 +27,6 @@
 #include "valor/Conventions/NuclearTarget.h"
 
 // Dune
-#include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/FitParam.h"
 
