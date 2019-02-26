@@ -24,7 +24,7 @@ string util::AsString(SystType_t t, Option_t * opt)
   switch(t) {
     case (kSystNorm    ) : name = "normalisation";     break;
     case (kSystLateral ) : name = "lateral";           break;
-    case (kSystResponse) : name = "response function"; break;
+    case (kSystResponse) : name = "response"; break;
     default : name = "--";
   }
 
