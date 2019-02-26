@@ -59,6 +59,10 @@
 
   </element_list>
   
+  <parameter_definitions>
+    <filename> params/caf_params_fd.xml </filename>
+  </parameter_definitions>
+  
   <systematics name="DUNE_2018aFD">
 <!--
     <group name="flux">
