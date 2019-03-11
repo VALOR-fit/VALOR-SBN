@@ -70,7 +70,7 @@ const util::ArrIdx * arridx = util::ArrIdx::Instance();
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC(),
   fBinning(NULL),
-  fNReacModes(0),
+  fNReacModes(kNReacModes),
   fReactionModes(NULL),
   fSystematics(NULL),
   fOwnerOfSystematics(false)
@@ -451,7 +451,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   //  ob    -> Optimized binning (for fit)
   //  sb    -> Simple binning (for plots)
   
-  write_opt = NULL;
+  write_opt = "mct_vf";
   
   LOG("GenericSingleSampleFitModel", pINFO)  << "Writing results to input object array...";
   LOG("GenericSingleSampleFitModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
@@ -627,6 +627,12 @@ void GenericSingleSampleFitModel::Init(void)
   fPOT          = 0;
   fUseMCDST     = false;
   fRFL          = 0;
+  
+  fPDFTotOb      = 0;
+  fPDFTotNullOb  = true;
+
+  fPDFTotSb     = 0;
+  fPDFTotNullSb = true;
 
   for(size_t imode = 0; imode < fNReacModes; imode++) {
 
@@ -639,10 +645,6 @@ void GenericSingleSampleFitModel::Init(void)
     fMCStatSb [imode] = 0;
     // PDF (simple binning)
     fPDFCompSb[imode] = 0;
-    if(imode == 0) {
-      fPDFTotSb     = 0;
-      fPDFTotNullSb = true;
-    }
 
     // MC templates
     fMCTNullOb [imode] = true;
@@ -655,10 +657,6 @@ void GenericSingleSampleFitModel::Init(void)
     fRFPtr     [imode] = 0;
     // PDF
     fPDFCompOb [imode] = 0;
-    if(imode == 0) {
-      fPDFTotOb      = 0;
-      fPDFTotNullOb  = true;
-    }
     
   }//imode
   
