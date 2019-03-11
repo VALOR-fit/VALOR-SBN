@@ -6,33 +6,33 @@ import sys
 
 parameter_regex = re.compile(r"(\w+)_cvwgt")
 
-file_form = """<parameter_list name="from_caf">
- [PARAMS]
-</parameter_list>"""
+file_form = """<param_list name="from_caf">
+[PARAMS]</param_list>
+"""
 
-param_form = """<param>
-  <name>
-    <simple> [SNAME] </simple>
-  </name>
-  
-  <type>
-    response
-  </type>
-  
-  <categories>
-   <category> int </category>
-   <category> caf </category>
-  </categories>
+param_form = """  <param>
+    <name>
+      <simple> [SNAME] </simple>
+    </name>
     
-  <apply_to>
-   <detector>  all    </detector>
-   <beam>      all    </beam>
-   <selection> all    </selection>
-   <reac_type> all    </reac_type>
-   <flav>      all    </flav>
-   <target>    all    </target>
-   </apply_to>
-</param>
+    <type>
+      response
+    </type>
+    
+    <categories>
+      <category> int </category>
+      <category> caf </category>
+    </categories>
+      
+    <apply_to>
+      <detector>  all    </detector>
+      <beam>      all    </beam>
+      <selection> all    </selection>
+      <reac_type> all    </reac_type>
+      <flav>      all    </flav>
+      <target>    all    </target>
+    </apply_to>
+  </param>
 
 """
 
