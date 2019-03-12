@@ -11,6 +11,9 @@ if [ -z ${VALOR_FWMK} ] ; then
   if [ $USER == steve ] ; then 
     source "/home/steve/steve/analysis/github/VALOR-SDK/setup/setup_at_steve_laptop.sh"
   fi
+  if [ $USER == steved ] ; then 
+    source "/hepstore/steved/analysis/VALOR-SDK/setup/setup_at_cvmfs_root6.sh"
+  fi
   if [ $USER == phrhbq ] ; then 
     source "/storage/epp2/phrhbq/analysis/fmwk/setup/setup_at_steve_laptop.sh"
   fi
