@@ -124,22 +124,8 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   // Set up the initial XML reader
   LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
-
-  TString ts_file = file.c_str();
-  gSystem->ExpandPathName(ts_file);
-
-  // Check for config file.
-  // See if it works as a normal path
-  FileStat_t dummy;
-  if (gSystem->GetPathInfo(ts_file.Data(), dummy)) 
-  {
-    // If not, try the config folder
-    ts_file = TString::Format("%s/%s",Env::Instance()->TopLevelConfDir().c_str(),ts_file.Data());
-    if (gSystem->GetPathInfo(ts_file.Data(), dummy)) {
-      LOG("GenericSingleSampleFitModel",pERROR) << "Config file not found: "<<file;
-      util::Die(1); return false;
-    }
-  }
+  
+  TString ts_file = util::CompleteConfigPath(file).c_str();
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   

@@ -69,6 +69,8 @@ public:
   //
 
   string        Name                   (void) const;
+  
+  // Options available to Read() include nosplines, nomc, forcedst, pot_override, binning=myfile.xml 
   bool          Read                   (string file, Option_t * opt = 0);
   bool          Generate               (const PhysHypothesis & ph, Option_t * opt = 0);
   void          RandomizeSystematics   (Option_t * opt = 0);
