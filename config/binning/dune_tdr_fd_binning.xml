@@ -31,7 +31,7 @@
     <!-- Applies to all modes unless a mode binning scheme
          is specified explicitly below -->
     <default>
-      binning/e2e/true/valor_dune_e2e_Etrue_binning.xml
+      binning/e2e/true/valor_dune_tdr_fd_e2e_binning.xml
     </default>
   </xsec_true>
 
