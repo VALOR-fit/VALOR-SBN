@@ -72,7 +72,7 @@ int main(int argc, char ** argv)
   LOG("valor_dune", pNOTICE) << arg;
 
   string fplname          = arg.GetString("fit-param-list"); 
-  const char * write_opt  = arg.GetString("write-opt").c_str();
+  std::string write_opt   = arg.GetString("write-opt");
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string output_name      = arg.GetString("output-name");
   string config_file      = arg.GetString("config");
@@ -180,7 +180,7 @@ int main(int argc, char ** argv)
   }
 
   // Write stuff out                              
-  model->Write(outfilename,"valor",write_opt);
+  model->Write(outfilename,"valor",write_opt.c_str());
 
   std::cout<<"Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
   
