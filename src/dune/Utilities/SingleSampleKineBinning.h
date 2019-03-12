@@ -66,8 +66,7 @@
 #include <string>
 #include <vector>
 
-#include "valor/KineBinning/KBCubHcmbMondrian.h"
-#include "valor/KineBinning/KBCubHcmbEdge2Edge.h"
+#include "valor/KineBinning/VALORBinning.h"
 
 #include "valor/Conventions/BeamConf.h"
 #include "dune/Conventions/UniqueSampleID.h"
@@ -75,9 +74,6 @@
 #include "dune/Conventions/SampleReacMode.h"
 
 namespace valor {
-
-// class KBCubHcmbMondrian;
-// class KBCubHcmbEdge2Edge;
 
 class SingleSampleKineBinning {
 
@@ -88,14 +84,14 @@ public:
 
   bool Read(string file);
 
-  VALORBinning *  RecoOptBinning(void)   const { return fRecoOptimizedBinning;    }
+  VALORBinning * RecoOptBinning(void)   const { return fRecoOptimizedBinning;    }
   VALORBinning * RecoSmpBinning(void)   const { return fRecoSimpleBinning;       }
   VALORBinning * TrueSmpBinning(int im) const { return fTrueSimpleBinning [im];  }
   // Return Simple Binning for the reaction mode, m
   VALORBinning * TrueSmpBinning(conv::ReacMode_t m) const;
   
   // Cross sections binnings. For now truth is always the same as the simple binning, and reco is always optimised
-  VALORBinning  * XsecRecoBinning(void              )  const { return fXsecRecoBinning  ;}
+  VALORBinning * XsecRecoBinning(void              )  const { return fXsecRecoBinning  ;}
   VALORBinning * XsecTrueBinning(conv::ReacMode_t m)  const;
   VALORBinning * XsecTrueBinning(int im            )  const { return fXsecTrueBinning[im];}
 
@@ -111,18 +107,18 @@ private:
   void Init    (void);
   void CleanUp (void);
 
-  conv::Detector_t             fDetector;
-  conv::BeamConf_t             fBeamConf;
-  conv::Sample_t               fSample;
-  KBCubHcmbMondrian *          fRecoOptimizedBinning;                   //
-  KBCubHcmbEdge2Edge *         fRecoSimpleBinning;                      //
-  KBCubHcmbEdge2Edge *         fTrueSimpleBinning [conv::kNReacModes];  //
-  std::vector<KBCubHcmbEdge2Edge *> fTrueSimpleBinningUnique;           // 
+  conv::Detector_t                  fDetector;
+  conv::BeamConf_t                  fBeamConf;
+  conv::Sample_t                    fSample;
+  VALORBinning *                    fRecoOptimizedBinning;                   //
+  VALORBinning *                    fRecoSimpleBinning;                      //
+  VALORBinning *                    fTrueSimpleBinning [conv::kNReacModes];  //
+  std::vector<VALORBinning *>       fTrueSimpleBinningUnique;           // 
   
   
-  KBCubHcmbMondrian *          fXsecRecoBinning;                     // Binning for Xsec splines
-  KBCubHcmbEdge2Edge *         fXsecTrueBinning [conv::kNReacModes]; //
-  std::vector<KBCubHcmbEdge2Edge *> fXsecTrueBinningUnique;          // 
+  VALORBinning *              fXsecRecoBinning;                     // Binning for Xsec splines
+  VALORBinning *              fXsecTrueBinning [conv::kNReacModes]; //
+  std::vector<VALORBinning *> fXsecTrueBinningUnique;          // 
 };
 
 } // valor namespace
