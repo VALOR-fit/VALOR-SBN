@@ -426,28 +426,45 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   // - include the string "+SB" to write-out versions of the above in simpler binning
   //
   // Key:
-  //  mct   -> MC template                    CC: f(Ereco,yreco,Etrue;s,m)
-  //  pdft  -> PDF total                      CC: f(Ereco,yreco;s)
-  //  pdfc  -> PDF component                  CC: f(Ereco,yreco;s,m)
-  //  pdfts -> 1-D slice of PDF total         CC: f(Ereco;s)|yreco
-  //  pdfcs -> 1-D slice of PDF component     CC: f(Ereco;s,m)|yreco
+  //  mct   -> MC template                    CC: f(reco,true;s,m)
+  //  pdft  -> PDF total                      CC: f(reco,true;s)
+  //  pdfc  -> PDF component                  CC: f(reco,true;s,m)
+  //  pdfts -> 1-D slice of PDF total         CC: f(Ereco;s)|other_reco,true
+  //  pdfcs -> 1-D slice of PDF component     CC: f(Ereco;s,m)|other_reco,true
   //  vf    -> VALOR format
   //  rf    -> ROOT format (TH1 or TH2)
-  //  rfp   -> ROOT format (TH2Poly for 2-d histograms)
+  //  rpf   -> ROOT format (TH2Poly for 2-d histograms)
   //  ob    -> Optimized binning (for fit)
   //  sb    -> Simple binning (for plots)
   
-  write_opt = "mct_vf";
-  
+    
   LOG("GenericSingleSampleFitModel", pINFO)  << "Writing results to input object array...";
   LOG("GenericSingleSampleFitModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
 
   string opt = (write_opt) ? write_opt : "pdft_vf";
-  if(opt.find("all") != string::npos) {
-    opt = "mct_vf + pdfc_vf + pdfc_rf + pdft_vf + pdft_rf + pdfcs_rf + pdfts_rf +SB";
-    LOG("GenericSingleSampleFitModel", pDEBUG) << "Write option replaced with = " << opt;
-  }
-
+  
+  bool write_all = opt.find("all") != string::npos;
+  bool write_sb  = opt.find("+SB") != string::npos;
+    
+  bool write_mct_vf   = (opt.find("mct_vf"  ) != string::npos) || write_all;
+  bool write_pdft_vf  = (opt.find("pdft_vf" ) != string::npos) || write_all;
+  bool write_pdft_rf  = (opt.find("pdft_rf" ) != string::npos) || write_all;
+  bool write_pdfc_vf  = (opt.find("pdfc_vf" ) != string::npos) || write_all;
+  bool write_pdfc_rf  = (opt.find("pdfc_rf" ) != string::npos) || write_all;
+  //~ bool write_pdfts_vf = (opt.find("pdfts_vf") != string::npos) || write_all;
+  //~ bool write_pdfts_rf = (opt.find("pdfts_rf") != string::npos) || write_all;
+  //~ bool write_pdfcs_vf = (opt.find("pdfcs_vf") != string::npos) || write_all;
+  //~ bool write_pdfcs_rf = (opt.find("pdfcs_rf") != string::npos) || write_all;
+  
+  derr<<"write_opt     : "<<write_opt      <<std::endl;
+  derr<<"write_all     : "<<write_all      <<std::endl; 
+  derr<<"write_sb      : "<<write_sb       <<std::endl; 
+  derr<<"write_mct_vf  : "<<write_mct_vf   <<std::endl; 
+  derr<<"write_pdft_vf : "<<write_pdft_vf  <<std::endl; 
+  derr<<"write_pdft_rf : "<<write_pdft_rf  <<std::endl; 
+  derr<<"write_pdfc_vf : "<<write_pdfc_vf  <<std::endl; 
+  derr<<"write_pdfc_rf : "<<write_pdfc_rf  <<std::endl; 
+  
   if(!array) {
     LOG("GenericSingleSampleFitModel",pERROR) << "Null input object array.";
     return false;
@@ -457,7 +474,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   // Write out MC templates (VALORArray format)
   //
 
-  if(opt.find("mct_vf") != string::npos) {
+  if(write_mct_vf) {
 
     for(size_t imode = 0; imode < fNReacModes; imode++) {
       ReacMode_t m = fReactionModes[imode];
@@ -477,7 +494,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       array -> Add ( fMCTSysOb [imode] ); 
       array -> Add ( fMCTFinOb [imode] );
 
-      if(opt.find("+SB") != string::npos) {
+      if(write_sb) {
         if(fMCTNullSb[imode]) continue;
         fMCTNomSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
         fMCTTunSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
@@ -500,7 +517,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   // Write out the PDF components (VALORArray or bare ROOT format)
   //
 
-  if(opt.find("pdfc_vf") != string::npos || opt.find("pdfc_rf") != string::npos) {
+  if(write_pdfc_vf || write_pdfc_rf) {
 
     for(size_t imode = 0; imode < fNReacModes; imode++) {
       ReacMode_t m = fReactionModes[imode];
@@ -509,16 +526,16 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       if(fMCTNullOb[imode]) continue;
       
       // in VALORArray format
-      if (opt.find("pdfc_vf") != string::npos) {
+      if (write_pdfc_vf) {
         fPDFCompOb [imode]->SetName(TString::Format("%s_%s_%s_%s",tag,"pdfc_ob_vf",fName.c_str(),util::AsString(m).c_str()).Data());
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompOb[imode]->GetName();
         array->Add(fPDFCompOb[imode]);
       }
 
-      if(opt.find("+SB") != string::npos) {
+      if(write_sb) {
         if(fMCTNullSb[imode]) continue;
         // in VALORArray format
-        if (opt.find("pdfc_vf") != string::npos) {
+        if (write_pdfc_vf) {
           fPDFCompSb[imode]->SetName(TString::Format("%s_%s_%s_%s",tag,"pdfc_sb_vf",fName.c_str(),util::AsString(m).c_str()));
           LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompSb[imode]->GetName();
           array->Add(fPDFCompSb[imode]);
@@ -533,17 +550,17 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   // Write out the total PDF (VALORArray or bare ROOT format)
   //
 
-  if(opt.find("pdft_vf") != string::npos || opt.find("pdft_rf") != string::npos) {
+  if(write_pdft_vf || write_pdft_rf) {
       // in VALORArray format
-      if (opt.find("pdft_vf") != string::npos) {
+      if (write_pdft_vf) {
         fPDFTotOb->SetName(TString::Format("%s_%s_%s",tag,"pdft_ob_vf",fName.c_str()).Data());
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotOb->GetName();
         array->Add(fPDFTotOb);
       }
 
-    if(opt.find("+SB") != string::npos) {
+    if(write_sb) {
       // in VALORArray format
-      if (opt.find("pdft_vf") != string::npos) {
+      if (write_pdft_vf) {
         fPDFTotSb->SetName(TString::Format("%s_%s_%s",tag,"pdft_sb_vf",fName.c_str()));
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotSb->GetName();
         array->Add(fPDFTotSb);
@@ -551,26 +568,6 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
     }//+SB?
 
   }//pdft_vf,pdft_rf
-
-
-  //
-  // Write out the slices of the PDF components (bare ROOT format)
-  //
-  // -----
-  // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-  // array to ROOT TH1D slices could happen elsewhere generically)
-  // -----
-
-  if(opt.find("pdfcs_rf") != string::npos) {
-
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
-      ReacMode_t m = fReactionModes[imode];
-      if(m == kmUndefined) continue;
-      
-      // This should happen elsewhere.
-
-    }//imode
-  }//pdfcs_rf
 
   return true;
 }
