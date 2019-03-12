@@ -456,15 +456,6 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   //~ bool write_pdfcs_vf = (opt.find("pdfcs_vf") != string::npos) || write_all;
   //~ bool write_pdfcs_rf = (opt.find("pdfcs_rf") != string::npos) || write_all;
   
-  derr<<"write_opt     : "<<write_opt      <<std::endl;
-  derr<<"write_all     : "<<write_all      <<std::endl; 
-  derr<<"write_sb      : "<<write_sb       <<std::endl; 
-  derr<<"write_mct_vf  : "<<write_mct_vf   <<std::endl; 
-  derr<<"write_pdft_vf : "<<write_pdft_vf  <<std::endl; 
-  derr<<"write_pdft_rf : "<<write_pdft_rf  <<std::endl; 
-  derr<<"write_pdfc_vf : "<<write_pdfc_vf  <<std::endl; 
-  derr<<"write_pdfc_rf : "<<write_pdfc_rf  <<std::endl; 
-  
   if(!array) {
     LOG("GenericSingleSampleFitModel",pERROR) << "Null input object array.";
     return false;
