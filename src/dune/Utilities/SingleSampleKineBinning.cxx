@@ -15,8 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Messenger/Messenger.h"
-#include "valor/KineBinning/KBCubHcmbMondrian.h"
-#include "valor/KineBinning/KBCubHcmbEdge2Edge.h"
+#include "valor/KineBinning/VALORBinning.h"
 
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
@@ -106,7 +105,7 @@ bool SingleSampleKineBinning::Read(string file)
     << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
     << "\n    From file: " << reco_opt_binning_file;
 
-  fRecoOptimizedBinning = new KBCubHcmbMondrian;
+  fRecoOptimizedBinning = VALORBinning::BinningFromFile(reco_opt_binning_file,false);
   bool read_ok = fRecoOptimizedBinning->Read(reco_opt_binning_file);
   if(!read_ok) {
      LOG("SampleBinning", pERROR)
@@ -129,7 +128,7 @@ bool SingleSampleKineBinning::Read(string file)
     << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
     << "\n    From file: " << reco_smp_binning_file;
 
-  fRecoSimpleBinning = new KBCubHcmbEdge2Edge;
+  fRecoSimpleBinning = VALORBinning::BinningFromFile(reco_smp_binning_file,false);;
   fRecoSimpleBinning->SetName("reco_simple");
   read_ok = fRecoSimpleBinning->Read(reco_smp_binning_file);
   if(!read_ok) {
@@ -168,7 +167,7 @@ bool SingleSampleKineBinning::Read(string file)
         << "\n ** Reading `default' simple true binning ** " 
         << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
         << "\n    From file: " << def_true_smp_binning_file;
-     KBCubHcmbEdge2Edge * def_true_smp_binning = new KBCubHcmbEdge2Edge;
+     VALORBinning * def_true_smp_binning = VALORBinning::BinningFromFile(def_true_smp_binning_file,false);
      def_true_smp_binning->SetName("true_simple (default)");
      read_ok = def_true_smp_binning->Read(def_true_smp_binning_file);
      if(!read_ok) {
@@ -200,7 +199,7 @@ bool SingleSampleKineBinning::Read(string file)
         << "\n ** Overriding default / Reading simple true binning ** " 
         << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample) << " / mode: " <<  util::AsString(m)
         << "\n    From file: " << mode_true_smp_binning_file;
-      KBCubHcmbEdge2Edge * mode_true_smp_binning = new KBCubHcmbEdge2Edge;
+      VALORBinning * mode_true_smp_binning = VALORBinning::BinningFromFile(mode_true_smp_binning_file,false);;
       read_ok = mode_true_smp_binning->Read(mode_true_smp_binning_file);
       if(!read_ok) {
          LOG("SampleBinning", pINFO)
@@ -227,7 +226,7 @@ bool SingleSampleKineBinning::Read(string file)
     << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
     << "\n    From file: " << xsec_reco_binning_file;
 
-  fXsecRecoBinning = new KBCubHcmbMondrian;
+  fXsecRecoBinning = VALORBinning::BinningFromFile(xsec_reco_binning_file,false);
   read_ok = fXsecRecoBinning->Read(xsec_reco_binning_file);
   fXsecRecoBinning->SetName("xsec_reco");
   if(!read_ok) {
@@ -256,7 +255,7 @@ bool SingleSampleKineBinning::Read(string file)
           << "\n ** Reading `default' xsec true binning ** " 
           << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample)
           << "\n    From file: " << def_xsec_true_binning_file;
-       KBCubHcmbEdge2Edge * def_xsec_true_binning = new KBCubHcmbEdge2Edge;
+       VALORBinning * def_xsec_true_binning = VALORBinning::BinningFromFile(def_xsec_true_binning_file,false);
        def_xsec_true_binning->SetName("xsec_true (default)");
        read_ok = def_xsec_true_binning->Read(def_xsec_true_binning_file);
        if(!read_ok) {
@@ -284,7 +283,7 @@ bool SingleSampleKineBinning::Read(string file)
           << "\n ** Overriding default / Reading xsec true binning ** " 
           << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample) << " / mode: " <<  util::AsString(m)
           << "\n    From file: " << mode_xsec_true_binning_file;
-        KBCubHcmbEdge2Edge * mode_xsec_true_binning = new KBCubHcmbEdge2Edge;
+        VALORBinning * mode_xsec_true_binning = VALORBinning::BinningFromFile(mode_xsec_true_binning_file,false);
         read_ok = mode_xsec_true_binning->Read(mode_xsec_true_binning_file);
         if(!read_ok) {
            LOG("SampleBinning", pINFO)
