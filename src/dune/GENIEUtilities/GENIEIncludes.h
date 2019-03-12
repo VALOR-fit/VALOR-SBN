@@ -18,12 +18,15 @@
 #include "Framework/Utils/AppInit.h"
 #include "Framework/Utils/CmdLnArgParser.h"
 #include "Framework/Utils/RunOpt.h"
-#include "Tools/ReWeight/GReWeight.h"
-#include "Tools/ReWeight/GReWeightI.h"
-#include "Tools/ReWeight/GReWeightINuke.h"
-#include "Tools/ReWeight/GSyst.h"
-#include "Tools/ReWeight/GSystSet.h"
-#include "Tools/ReWeight/GSystUncertainty.h"
+
+//Reweight
+#include "RwFramework/GReWeight.h"
+#include "RwFramework/GReWeightI.h"
+#include "RwFramework/GSyst.h"
+#include "RwFramework/GSystSet.h"
+#include "RwFramework/GSystUncertainty.h"
+
+#include "RwCalculators/GReWeightINuke.h"
 
 
 #else //genie 2
