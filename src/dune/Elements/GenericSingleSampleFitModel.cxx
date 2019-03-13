@@ -51,6 +51,7 @@
 #include "valor/Conventions/BeamConf.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/Names.h"
+#include "dune/Utilities/UtlBinning.h"
 #include "dune/Utilities/KinematicPoint.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
 
@@ -452,14 +453,18 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   bool write_pdfc_vf  = (opt.find("pdfc_vf" ) != string::npos) || write_all;
   bool write_pdfc_rf  = (opt.find("pdfc_rf" ) != string::npos) || write_all;
   //~ bool write_pdfts_vf = (opt.find("pdfts_vf") != string::npos) || write_all;
-  //~ bool write_pdfts_rf = (opt.find("pdfts_rf") != string::npos) || write_all;
+  bool write_pdfts_rf = (opt.find("pdfts_rf") != string::npos) || write_all;
   //~ bool write_pdfcs_vf = (opt.find("pdfcs_vf") != string::npos) || write_all;
-  //~ bool write_pdfcs_rf = (opt.find("pdfcs_rf") != string::npos) || write_all;
+  bool write_pdfcs_rf = (opt.find("pdfcs_rf") != string::npos) || write_all;
   
   if(!array) {
     LOG("GenericSingleSampleFitModel",pERROR) << "Null input object array.";
     return false;
   }
+  
+  const SingleSampleKineBinning & binning = *fBinning;
+  const VALORBinning & reco_smp = *(binning.RecoSmpBinning());
+  const VALORBinning & reco_opt = *(binning.RecoOptBinning());
 
   //
   // Write out MC templates (VALORArray format)
@@ -559,6 +564,60 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
     }//+SB?
 
   }//pdft_vf,pdft_rf
+  
+  // Write 1d slices for the total in reco only
+  if (write_pdfts_rf) {
+    const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
+    for (const conv::KineVar_t kv : reco_vars) {
+      conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
+      if (ks == conv::ksUndefined) {continue;}
+      TH1 * hob = util::binning::Make1DHistogram(*fPDFTotOb,binning,ks,false);
+      TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdfts_ob_rf",fName.c_str(),util::AsString(kv).c_str());
+      hob->SetName(hobname.Data());
+      array->Add(hob);
+      
+      if (write_sb) {
+        TH1 * hsb = util::binning::Make1DHistogram(*fPDFTotSb,binning,ks,true);
+        TString hsbname = TString::Format("%s_%s_%s_%s",tag,"pdfts_sb_rf",fName.c_str(),util::AsString(kv).c_str());
+        hsb->SetName(hsbname.Data());
+        array->Add(hsb);
+      }
+    }
+  }
+  
+  // Write 1d slices for the components in both reco and true
+  
+  if (write_pdfcs_rf) {
+    const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
+    
+    for(size_t imode = 0; imode < fNReacModes; imode++) {
+      ReacMode_t m = fReactionModes[imode];
+      if(m == kmUndefined) continue;
+      
+      // This will work when we fix Make1DHistogram() to be happy using truth
+      std::vector<KineVar_t> vars;//= binning.TrueSmpBinning(imode)->KineVars();
+      vars.insert(vars.end(),reco_vars.begin(),reco_vars.end());
+      
+      for (const conv::KineVar_t kv : vars) {
+        conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
+        if (ks == conv::ksUndefined) {continue;}
+        TH1 * hob = util::binning::Make1DHistogram(*fPDFCompOb[imode],binning,ks,false);
+        TString hobname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_ob_rf",
+          fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
+        hob->SetName(hobname.Data());
+        array->Add(hob);
+        
+        if (write_sb) {
+          TH1 * hsb = util::binning::Make1DHistogram(*fPDFCompSb[imode],binning,ks,true);
+          TString hsbname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_sb_rf",
+            fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
+          hsb->SetName(hsbname.Data());
+          array->Add(hsb);
+        }
+      }
+    }
+  }
+  
 
   return true;
 }
