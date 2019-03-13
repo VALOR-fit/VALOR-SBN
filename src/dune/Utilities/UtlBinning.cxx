@@ -98,12 +98,14 @@ std::vector<std::vector<int>> BinPermutation(
       const std::vector<conv::KineVar_t>& kvs);
 
 TH1D* Make1DHistogram(const VALORArray& v,
-      const SingleSampleKineBinning& b, conv::KineSpace_t ks)
+      const SingleSampleKineBinning& b, conv::KineSpace_t ks,
+      bool use_simple)
 {
   // Get the reco binning and associated kinematic variables for the VALORArray
-  KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(b.RecoSmpBinning());
+  const VALORBinning * tmpb = use_simple ? b.RecoSmpBinning() : b.RecoOptBinning();
+  const KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<const KBCubHcmbEdge2Edge*>(tmpb);
   if (!recoBinning) {
-    LOG("UtlBinning", pERROR) << b.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
+    LOG("UtlBinning", pERROR) << tmpb->GetName()<<" is not a KBCubHcmbEdge2Edge";
      util::Die(-1);
   }
   
@@ -251,12 +253,12 @@ VALORArray* Contract(const VALORArray& v,
   KBCubHcmbEdge2Edge * trueBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(currentBinning.TrueSmpBinning(0));
   if (!trueBinning) {
     LOG("UtlBinning", pERROR) << currentBinning.TrueSmpBinning(0)->GetName()<<" is not a KBCubHcmbEdge2Edge";
-     util::Die(-1);
+    util::Die(-1); return nullptr;
   }
   KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(currentBinning.RecoSmpBinning());
   if (!recoBinning) {
     LOG("UtlBinning", pERROR) << currentBinning.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
-     util::Die(-1);
+    util::Die(-1); return nullptr;
   }
 
   auto targetKs = targetBinning.KineVars();

@@ -42,11 +42,13 @@ namespace binning
       \param v The VALORArray containing the spectrum to be plotted.
       \param b The binning used by the VALORArray.
       \param ks The kinematic space for which the histogram is to be produced.
+      \param use_simple Whether to use the simple binning. Otherwise, use optimised.
       \return A 1D histogram of the specified kinematic variable.
 
    */
    TH1D* Make1DHistogram(const VALORArray& v,
-         const SingleSampleKineBinning& b, const conv::KineSpace_t ks);
+         const SingleSampleKineBinning& b, const conv::KineSpace_t ks,
+         bool use_simple = false);
 
    /**
       Produce a 2D ROOT-compatible, optimised histogram of specified kinematic
