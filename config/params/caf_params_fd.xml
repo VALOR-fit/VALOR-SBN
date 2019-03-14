@@ -77,7 +77,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
@@ -197,7 +197,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
@@ -221,7 +221,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
@@ -365,7 +365,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
@@ -389,7 +389,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
@@ -533,7 +533,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
@@ -1469,7 +1469,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
@@ -1613,7 +1613,7 @@
     </name>
     
     <type>
-      response
+      disabled
     </type>
     
     <categories>
