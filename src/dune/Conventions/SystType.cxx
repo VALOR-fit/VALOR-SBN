@@ -24,7 +24,8 @@ string util::AsString(SystType_t t, Option_t * opt)
   switch(t) {
     case (kSystNorm    ) : name = "normalisation";     break;
     case (kSystLateral ) : name = "lateral";           break;
-    case (kSystResponse) : name = "response"; break;
+    case (kSystResponse) : name = "response";          break;
+    case (kSystDisabled) : name = "disabled";          break;
     default : name = "--";
   }
 
@@ -46,14 +47,14 @@ SystType_t util::SystTypeFromInt(int t)
 {
 // Cast an integer to SystType_t, but with boundary check
 //              [first]                   [last]
-  if(t >= (int)kSystNorm && t <= (int) kSystResponse) return (SystType_t)t;
+  if(t >= 0 && t <= conv::kNSystTypes) return (SystType_t)t;
   return kSystUndefined;
 }
 //________________________________________________________________________________________
 SystType_t util::SystTypeFromString(string type)
 {
   string lc_type = util::ToLowerCase(type);
-  for (int i = 0 ; i <= (int)kSystResponse ; i++ ) {
+  for (int i = 0 ; i <= conv::kNSystTypes ; i++ ) {
     SystType_t t = (SystType_t)i;
     string this_type = util::ToLowerCase(util::AsString(t));
     if(lc_type==this_type && this_type!="--") {

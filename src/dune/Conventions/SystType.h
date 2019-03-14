@@ -33,9 +33,12 @@ namespace valor {
       kSystUndefined = -1,
       kSystNorm,
       kSystLateral,
-      kSystResponse
+      kSystResponse,
+      kSystDisabled
     }
     SystType_t;
+    
+    static const size_t kNSystTypes = kSystDisabled+1;
 
   } // conv
 
