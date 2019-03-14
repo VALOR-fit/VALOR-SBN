@@ -28,8 +28,6 @@ markers = [R.kFullSquare, R.kFullCircle, R.kFullTriangleUp, R.kFullCross, R.kFul
 
 param = "mixing23"
 
-ymax = 20
-
 def GetGraph(filename):
   chain = R.TChain("valor_dune_nd_ntp")
   chain.Add(filename)
@@ -56,7 +54,7 @@ def GetGraph(filename):
   
   return mygraph
 
-def main(files,labels,min_val,max_val):
+def main(files,labels,min_val,max_val,ymax=None):
   
   graphs = [GetGraph(f) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
@@ -76,6 +74,18 @@ def main(files,labels,min_val,max_val):
   frame = R.TH1D("f","f",1,min_val,max_val)
   frame.GetXaxis().SetTitle(param)
   frame.GetYaxis().SetTitle("#sigma")
+  
+  if ymax is None:
+    for g in graphs:
+      ycurr = max( (g.GetY()[i] for i in xrange(g.GetN()) if g.GetX()[i] >= min_val and g.GetX()[i] <= max_val) )
+      ymax = max(ymax,ycurr)
+  
+  draw_legend = len(graphs) > 1
+  if draw_legend:
+    ymax *= 1.4
+  else:
+    ymax *= 1.1
+    
   frame.GetYaxis().SetRangeUser(0,ymax)
   frame.Draw()
 
@@ -95,7 +105,7 @@ def main(files,labels,min_val,max_val):
     
     print labels[i],"\t:","Max =",R.TMath.MaxElement(g.GetN(),g.GetY())
   
-  if len(graphs)>1:
+  if draw_legend:
     legend.Draw()
     
   canv.Print("param_scan_%s.png" %param)
