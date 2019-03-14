@@ -48,8 +48,8 @@ foreach (@ARGV) {
   elsif($_ eq '--ncores'                 ) { $ncores               = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                    ) { $tag                  = $ARGV[$iarg+1]; }
   elsif($_ eq '--npoints'                ) { $npoints              = $ARGV[$iarg+1]; }
-  elsif($_ eq '--min_value'              ) { $min_value            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--max_value'              ) { $max_value            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--min-value'              ) { $min_value            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--max-value'              ) { $max_value            = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--hierarchy'              ) { $mhchoice             = $ARGV[$iarg+1]; }
