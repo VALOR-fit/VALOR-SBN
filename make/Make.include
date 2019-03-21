@@ -68,6 +68,11 @@ ifdef GENIE
   GENIE_INCLUDES  = -I$(shell genie-config --topsrcdir)
 endif
 
+# hack for the FNAL UPS approach
+ifdef GENIE_FQ_DIR
+  GENIE_INCLUDES += -I$(GENIE_FQ_DIR)/include/GENIE/
+endif
+
 #-------------------------------------------------------------------
 #                              ROOT
 #-------------------------------------------------------------------
@@ -397,7 +402,13 @@ LIBRARIES := $(SYSLIBS) \
 #ifeq(, $(shell which genie-config))
 ifdef GENIE
  GLIBRARIES = $(shell genie-config --libs)
- GINCLUDES  = $(shell genie-config --topsrcdir)
+ 
+ # Hack while GENIE_REWEIGHT independent package is not good at reporting its own libraries
+ ifdef GENIE_REWEIGHT
+   GLIBRARIES += -lGRwFwk -lGRwClc -lGRwIO
+ endif
+ 
+ GINCLUDES  = $(GENIE_INCLUDES)
  GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
  GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
  ifeq ("false",$(is_cln))
