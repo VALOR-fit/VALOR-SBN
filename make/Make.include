@@ -409,7 +409,7 @@ ifdef GENIE
  endif
  
  GINCLUDES  = $(GENIE_INCLUDES)
- GINCLUDES  := -I$(GINCLUDES) $(INCLUDES)
+ GINCLUDES  := $(GINCLUDES) $(INCLUDES)
  GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
  ifeq ("false",$(is_cln))
   VALOR_GLIBRARIES := $(shell valor_dune-config --glibs)
