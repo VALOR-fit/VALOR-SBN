@@ -40,6 +40,11 @@
 use File::Path;
 use Cwd 'abs_path';
 
+sub log10 {
+  my $n = shift;
+  return log($n)/log(10);
+}
+
 $iarg=0;
 foreach (@ARGV) {
   
@@ -52,10 +57,12 @@ foreach (@ARGV) {
   elsif($_ eq '--param1'                 ) { $param1               = $ARGV[$iarg+1]; }
   elsif($_ eq '--min-value1'             ) { $min_value1           = $ARGV[$iarg+1]; }
   elsif($_ eq '--max-value1'             ) { $max_value1           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--log-param1'             ) { $log_param1           = $ARGV[$iarg+1]; }
   elsif($_ eq '--npoints2'               ) { $npoints2             = $ARGV[$iarg+1]; }
   elsif($_ eq '--param2'                 ) { $param2               = $ARGV[$iarg+1]; }
   elsif($_ eq '--min-value2'             ) { $min_value2           = $ARGV[$iarg+1]; }
   elsif($_ eq '--max-value2'             ) { $max_value2           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--log-param2'             ) { $log_param2           = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--hierarchy'              ) { $mhchoice             = $ARGV[$iarg+1]; }
@@ -80,10 +87,12 @@ $npoints1               = 50                                      unless defined
 $param1                 = deltaCP                                 unless defined $param1;
 $min_value1             = -3.141592653589793                      unless defined $min_value1;
 $max_value1             = 3.141592653589793                       unless defined $max_value1;
+$log_param1             = 0                                       unless defined $log_param1;
 $npoints2               = 50                                      unless defined $npoints2;
 $param2                 = mixing23                                unless defined $param2;
 $min_value2             = 0.3                                     unless defined $min_value2;
 $max_value2             = 0.7                                     unless defined $max_value2;
+$log_param2             = 0                                       unless defined $log_param2;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
 $mhchoice               = "normal"                                unless defined $mhchoice;
 $fitoption              = "minuit"                                unless defined $fitoption;
@@ -125,6 +134,13 @@ if ($npoints2 <= 1) {
 $step1 = ($max_value1-$min_value1)/($npoints1-1);
 $step2 = ($max_value2-$min_value2)/($npoints2-1);
 
+if ($log_param1) {
+  $step1=(log10($max_value1)-log10($min_value1))/$npoints1;
+}
+if ($log_param2) {
+  $step2=(log10($max_value2)-log10($min_value2))/$npoints2;
+}
+
 $jobID = 0;
 
 for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
@@ -133,9 +149,16 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
   
   $param_val1 = $min_value1 + $ipoint1*$step1;
   
+  if($log_param1) {
+    $param_val1 = 10**($step1*($ipoint1+1)+log10($min_value1));
+  }
+  
   for($ipoint2 = 0; $ipoint2 < $npoints2; $ipoint2++) {
     
     $param_val2 = $min_value2 + ($ipoint2)*$step2;
+    if($log_param2) {
+      $param_val2 = 10**($step2*($ipoint2)+log10($min_value2));
+    }
     
     print "Submitting point: $ipoint1 - $ipoint2 as job $jobID";
     print " with $param1 = $param_val1 and $param2 = $param_val2\n";
