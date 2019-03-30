@@ -20,7 +20,9 @@
                                      MC generation? [def: yes]
              --without-stat-fluct] 
             [--store-spectra   |   : Store toy-MC/best-fit spectra? [def: no]
-             --discard-spectra   ] 
+             --discard-spectra   ]
+            
+             --start_at_random_points : Should we start at a random point? If so, how many [-1, start at default]
 
              --input-mixing12,etc  : Option to give input values to osc params (in .arg)
              --fix-mixing12,etc    : Option to fix osc params (in .arg)
@@ -30,9 +32,10 @@
              --prior-fit-number     : Option to specify the entry in the tree for above file [ 0 ]
              
              --tweak-parameter-set : Option to tweak a set of parameters [ default: none ]
-             --force-tweak-size      : Tweak the parameters to a given +n-sigma. If given 0, randomize [ randomize ] 
+             --force-tweak-size      : Tweak the parameters to a given +n-sigma. If given 0, randomize [ randomize ]
              
              [--nthreads ]         : Number of CPU threads to use [ std::thread::hardware_concurrency ]
+             * 
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -303,6 +306,29 @@ int main(int argc, char ** argv)
       }
       fp->Update      (util::PhysParamFromString("cpv"), deltacp);
       fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
+      
+      
+      double sinsq2thMuMu = arg.GetDouble("input-sinsq2thMuMu");
+      if ( std::fabs(sinsq2thMuMu + 999. ) < conv::kASmallNum ) { 
+        sinsq2thMuMu = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixingMuMu);
+      }
+      fp->Update      (conv::kPhypMixingMuMu, sinsq2thMuMu);
+      fp->SetInitValue(conv::kPhypMixingMuMu, sinsq2thMuMu);
+      
+      double sinsq2thMuE = arg.GetDouble("input-sinsq2thMuE");
+      if ( std::fabs(sinsq2thMuE + 999. ) < conv::kASmallNum ) { 
+        sinsq2thMuE = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixingMuE);
+      }
+      fp->Update      (conv::kPhypMixingMuE, sinsq2thMuE);
+      fp->SetInitValue(conv::kPhypMixingMuE, sinsq2thMuE);
+      
+      double sinsq2thEE = arg.GetDouble("input-sinsq2thEE");
+      if ( std::fabs(sinsq2thEE + 999. ) < conv::kASmallNum ) { 
+        sinsq2thEE = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixingEE);
+      }
+      fp->Update      (conv::kPhypMixingEE, sinsq2thEE);
+      fp->SetInitValue(conv::kPhypMixingEE, sinsq2thEE);
+      
 
       // fix them? randomize them? 
       if(arg.GetBool("fix-mixing12")){
@@ -364,6 +390,34 @@ int main(int argc, char ** argv)
         double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("cpv"),mode);
         fp->Update(util::PhysParamFromString("cpv"), rnd_value);
         fp->SetInitValue(util::PhysParamFromString("cpv"), rnd_value);
+      }
+      
+      if(arg.GetBool("fix-sinsq2thMuMu")) {
+        fp->FixParameter(conv::kPhypMixingMuMu);
+      }
+      else if(param_values_ts.Contains("randomize-all")) {
+        string mode = ( (arg.GetBool("flat-prior-sinsq2thMuMu ")) ? "flat" : "gaus" );
+        double rnd_value = util::GetRandomizedOscParam(conv::kPhypMixingMuMu,mode);
+        fp->Update(conv::kPhypMixingMuMu, rnd_value);
+        fp->SetInitValue(conv::kPhypMixingMuMu, rnd_value);
+      }
+      if(arg.GetBool("fix-sinsq2thMuE")) {
+        fp->FixParameter(conv::kPhypMixingMuE);
+      }
+      else if(param_values_ts.Contains("randomize-all")) {
+        string mode = ( (arg.GetBool("flat-prior-sinsq2thMuE ")) ? "flat" : "gaus" );
+        double rnd_value = util::GetRandomizedOscParam(conv::kPhypMixingMuE,mode);
+        fp->Update(conv::kPhypMixingMuE, rnd_value);
+        fp->SetInitValue(conv::kPhypMixingMuE, rnd_value);
+      }
+      if(arg.GetBool("fix-sinsq2thEE")) {
+        fp->FixParameter(conv::kPhypMixingEE);
+      }
+      else if(param_values_ts.Contains("randomize-all")) {
+        string mode = ( (arg.GetBool("flat-prior-sinsq2thEE ")) ? "flat" : "gaus" );
+        double rnd_value = util::GetRandomizedOscParam(conv::kPhypMixingEE,mode);
+        fp->Update(conv::kPhypMixingEE, rnd_value);
+        fp->SetInitValue(conv::kPhypMixingEE, rnd_value);
       }
       
     }
@@ -448,6 +502,28 @@ int main(int argc, char ** argv)
     {
       fp->Update(util::PhysParamFromString("cpv"), fix_deltacp);
       fp->SetInitValue(util::PhysParamFromString("cpv"), fix_deltacp);
+    }
+    
+    double fix_sinsq2thMuMu = arg.GetDouble("fix-at-sinsq2thMuMu");
+    if((fix_sinsq2thMuMu > util::OscParamMinValue(conv::kPhypMixingMuMu)) && 
+       (fix_sinsq2thMuMu < util::OscParamMaxValue(conv::kPhypMixingMuMu)))
+    {
+      fp->Update(conv::kPhypMixingMuMu, fix_sinsq2thMuMu);
+      fp->SetInitValue(kPhypMixingMuMu, fix_sinsq2thMuMu);
+    }
+    double fix_sinsq2thMuE = arg.GetDouble("fix-at-sinsq2thMuE");
+    if((fix_sinsq2thMuE > util::OscParamMinValue(conv::kPhypMixingMuE)) && 
+       (fix_sinsq2thMuE < util::OscParamMaxValue(conv::kPhypMixingMuE)))
+    {
+      fp->Update(conv::kPhypMixingMuE, fix_sinsq2thMuE);
+      fp->SetInitValue(kPhypMixingMuE, fix_sinsq2thMuE);
+    }
+    double fix_sinsq2thEE = arg.GetDouble("fix-at-sinsq2thEE");
+    if((fix_sinsq2thEE > util::OscParamMinValue(conv::kPhypMixingEE)) && 
+       (fix_sinsq2thEE < util::OscParamMaxValue(conv::kPhypMixingEE)))
+    {
+      fp->Update(conv::kPhypMixingEE, fix_sinsq2thEE);
+      fp->SetInitValue(kPhypMixingEE, fix_sinsq2thEE);
     }
 
     // Set our current values back to the fitter start point.
