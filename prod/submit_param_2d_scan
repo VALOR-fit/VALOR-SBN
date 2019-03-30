@@ -135,10 +135,10 @@ $step1 = ($max_value1-$min_value1)/($npoints1-1);
 $step2 = ($max_value2-$min_value2)/($npoints2-1);
 
 if ($log_param1) {
-  $step1=(log10($max_value1)-log10($min_value1))/$npoints1;
+  $step1=(log10($max_value1)-log10($min_value1))/($npoints1-1);
 }
 if ($log_param2) {
-  $step2=(log10($max_value2)-log10($min_value2))/$npoints2;
+  $step2=(log10($max_value2)-log10($min_value2))/($npoints2-1);
 }
 
 $jobID = 0;
@@ -150,7 +150,7 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
   $param_val1 = $min_value1 + $ipoint1*$step1;
   
   if($log_param1) {
-    $param_val1 = 10**($step1*($ipoint1+1)+log10($min_value1));
+    $param_val1 = 10**($step1*($ipoint1)+log10($min_value1));
   }
   
   for($ipoint2 = 0; $ipoint2 < $npoints2; $ipoint2++) {
