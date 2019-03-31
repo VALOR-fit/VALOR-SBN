@@ -570,7 +570,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
     const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
     for (const conv::KineVar_t kv : reco_vars) {
       conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
-      if (ks == conv::ksUndefined) {continue;}
+      if (ks == conv::kspUndefined) {continue;}
       TH1 * hob = util::binning::Make1DHistogram(*fPDFTotOb,binning,ks,false);
       TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdfts_ob_rf",fName.c_str(),util::AsString(kv).c_str());
       hob->SetName(hobname.Data());
@@ -600,7 +600,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       
       for (const conv::KineVar_t kv : vars) {
         conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
-        if (ks == conv::ksUndefined) {continue;}
+        if (ks == conv::kspUndefined) {continue;}
         TH1 * hob = util::binning::Make1DHistogram(*fPDFCompOb[imode],binning,ks,false);
         TString hobname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_ob_rf",
           fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
@@ -978,42 +978,52 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 
   if(!t) return;
   
+  // Get a list of all the kinematic variables we care about
+  const std::vector<conv::KineVar_t> & kinevars = fBinning->KineVars();
+  
   bool old_format = false;
 
   int    sample        = 0;
   int    beam          = 0;
   int    reac_mode     = 0;
-  double enu_true      = 0.;
-  double enu_reco      = 0.;
-  double y_reco        = 0.;
-  double Q2_true       = 0.;
   double wght          = 1.;
   double wght_pot      = 1.;
   
+  std::map<KineVar_t,double> kinematics;
+  
+  // Set up a list of the branches associated with each kinematic variable
+  std::map<KineVar_t,std::string> kinematic_branch_names;
+  for (const KineVar_t & kv : kinevars) {
+    kinematic_branch_names[kv] = util::AsString(kv);
+  }
+  // These ones are overridden
+  kinematic_branch_names[kvEtrue]  = "enu_true";
+  kinematic_branch_names[kvEreco]  = "enu_reco";
+  kinematic_branch_names[kvQ2true] = "Q2_true";
+  kinematic_branch_names[kvYreco]  = "y_reco";
+  
+  
   int bstat_sample     = 0; 
   int bstat_beam       = 0; 
-  int bstat_reac_mode  = 0; 
-  int bstat_enu_true   = 0; 
-  int bstat_enu_reco   = 0; 
-  int bstat_y_reco     = 0; 
-  int bstat_Q2_true    = 0;   
+  int bstat_reac_mode  = 0;  
   int bstat_wght       = 0;   
-  int bstat_wght_pot   = 0; 
+  int bstat_wght_pot   = 0;
+  std::map<KineVar_t,int> bstat_kinematics;
   
   bstat_sample    = t->SetBranchAddress("sample",    &sample);
   bstat_sample    = t->SetBranchAddress("beam"  ,    &beam);
   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
-  bstat_enu_true  = t->SetBranchAddress("enu_true",  &enu_true);
-  bstat_enu_reco  = t->SetBranchAddress("enu_reco",  &enu_reco);
-  bstat_y_reco    = t->SetBranchAddress("y_reco",    &y_reco);
-  bstat_Q2_true   = t->SetBranchAddress("Q2_true",   &Q2_true);
   
   // Weight is not required - use one if failed
   bstat_wght       = t->SetBranchAddress("wght"       , &wght);
   bstat_wght_pot   = t->SetBranchAddress("wght_pot"   , &wght_pot);
   
-  bool any_bad_status = (bstat_sample || bstat_beam || bstat_reac_mode || bstat_enu_true || 
-      bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
+  bool any_bad_status = (bstat_sample || bstat_beam || bstat_reac_mode);
+  
+  for(const conv::KineVar_t & kv : kinevars) {
+    bool bstat = t->SetBranchAddress(kinematic_branch_names[kv].c_str(),&kinematics[kv]);
+    any_bad_status = any_bad_status || bstat;
+  }
 
   if (any_bad_status) {
     LOG("GenericSingleSampleFitModel",pWARN)<<"MiniDST branches not found - giving up";
@@ -1034,13 +1044,6 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     delete matches;
   }
   
-  // Build a map of the branches to the kinematic variables
-  std::map<conv::KineVar_t,double*> kinematics;
-  kinematics[kvEtrue]  = &enu_true;
-  kinematics[kvQ2true] = &Q2_true;
-  kinematics[kvEreco]  = &enu_reco;
-  kinematics[kvYreco]  = &y_reco;
-
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
   
@@ -1129,23 +1132,12 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " (ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
       util::Die(-1);return;
     }
-    // Get bin zone index
-    int izone = util::BinZone(s, enu_reco, y_reco);
-    if(izone < 0) {
-      //     LOG("GenericSingleSampleFitModel",pFATAL) - turn that to fatal after binning optimization is done
-      LOG("GenericSingleSampleFitModel",pWARN) 
-        << " ** No bin zone for MC event: " << iev 
-        << " (" << util::AsString(s) << "/" << util::AsString(m) 
-        << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
-      //     util::Die(-1);return;
-      continue;
-    }
 
     bool is_null = fMCTNullOb[imode];
     if(is_null) {
       LOG("GenericSingleSampleFitModel",pFATAL) 
         << "** Null MC template for sample: " << util::AsString(s) 
-        << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
+        << ", mode: " << util::AsString(m);
       util::Die(-1);return;
     }
     bool is_null_sb = fMCTNullSb[imode];
@@ -1165,7 +1157,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     bool out_of_range = false;
     // in true
     for (conv::KineVar_t kv : true_sb->KineVars()) {
-      double val = *(kinematics.at(kv));
+      double val = kinematics.at(kv);
       if (val < true_sb->Minimum(kv) || val > true_sb->Maximum(kv)) {
         LOG("GenericSingleSampleFitModel",pWARN) 
           << "MC event: " << iev << " has true kinematic value outside range: "<<util::AsString(kv) << " = "<<val
@@ -1176,7 +1168,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     }
     // and in reco
     for (conv::KineVar_t kv : reco_ob->KineVars()) {
-      double val = *(kinematics.at(kv));
+      double val = kinematics.at(kv);
       if (val < reco_ob->Minimum(kv) || val > reco_ob->Maximum(kv)) {
         LOG("GenericSingleSampleFitModel",pWARN) 
           << "MC event: " << iev << " has reco kinematic value outside range: "<<util::AsString(kv) << " = "<<val
@@ -1801,9 +1793,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
       conv::NuFlavour_t init_flav   = util::ReacModeToInitFlavor(m);
       conv::NuFlavour_t final_flav  = util::ReacModeToFinalFlavor(m);
       if (init_flav != final_flav) {
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          fMCTFinOb[imode]->SetAll(0.);
-        }
+        fMCTFinOb[imode]->SetAll(0.);
         if (update_mct_sb) {fMCTFinSb[imode]->SetAll(0.);}
       }
     }
