@@ -100,7 +100,10 @@ public:
   conv::Detector_t     GetDetector(void)      const { return fDetector; }
   
   // Find the optimised bin containing a simple bin for a reco event
-  unsigned int GetRecoOptBin(unsigned int reco_smp_bin) const; 
+  unsigned int GetRecoOptBin(unsigned int reco_smp_bin) const;
+  
+  // Get a list of all the kinematic variables included in this binning
+  const std::vector<conv::KineVar_t> & KineVars() const;
 
 private:
 
@@ -119,6 +122,8 @@ private:
   VALORBinning *              fXsecRecoBinning;                     // Binning for Xsec splines
   VALORBinning *              fXsecTrueBinning [conv::kNReacModes]; //
   std::vector<VALORBinning *> fXsecTrueBinningUnique;          // 
+  
+  std::vector<conv::KineVar_t> fKineVars;
 };
 
 } // valor namespace
