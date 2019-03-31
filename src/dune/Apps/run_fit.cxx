@@ -308,6 +308,13 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
       
       
+      double dm41sq = arg.GetDouble("input-dm41sq");
+      if ( std::fabs(dm41sq + 999. ) < conv::kASmallNum ) { 
+        dm41sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm41sq);
+      }
+      fp->Update      (conv::kPhypDm41sq, dm41sq);
+      fp->SetInitValue(conv::kPhypDm41sq, dm41sq);
+      
       double sinsq2thMuMu = arg.GetDouble("input-sinsq2thMuMu");
       if ( std::fabs(sinsq2thMuMu + 999. ) < conv::kASmallNum ) { 
         sinsq2thMuMu = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixingMuMu);
@@ -392,6 +399,16 @@ int main(int argc, char ** argv)
         fp->SetInitValue(util::PhysParamFromString("cpv"), rnd_value);
       }
       
+      if(arg.GetBool("fix-dm41sq")) {
+        fp->FixParameter(conv::kPhypDm41sq);
+      }
+      else if(param_values_ts.Contains("randomize-all")) {
+        string mode = ( (arg.GetBool("flat-prior-dm41sq ")) ? "flat" : "gaus" );
+        double rnd_value = util::GetRandomizedOscParam(conv::kPhypDm41sq,mode);
+        fp->Update(conv::kPhypDm41sq, rnd_value);
+        fp->SetInitValue(conv::kPhypDm41sq, rnd_value);
+      }
+      
       if(arg.GetBool("fix-sinsq2thMuMu")) {
         fp->FixParameter(conv::kPhypMixingMuMu);
       }
@@ -401,6 +418,7 @@ int main(int argc, char ** argv)
         fp->Update(conv::kPhypMixingMuMu, rnd_value);
         fp->SetInitValue(conv::kPhypMixingMuMu, rnd_value);
       }
+      
       if(arg.GetBool("fix-sinsq2thMuE")) {
         fp->FixParameter(conv::kPhypMixingMuE);
       }
@@ -410,6 +428,7 @@ int main(int argc, char ** argv)
         fp->Update(conv::kPhypMixingMuE, rnd_value);
         fp->SetInitValue(conv::kPhypMixingMuE, rnd_value);
       }
+      
       if(arg.GetBool("fix-sinsq2thEE")) {
         fp->FixParameter(conv::kPhypMixingEE);
       }
@@ -504,6 +523,13 @@ int main(int argc, char ** argv)
       fp->SetInitValue(util::PhysParamFromString("cpv"), fix_deltacp);
     }
     
+    double fix_dm41sq = arg.GetDouble("fix-at-dm41sq");
+    if((fix_dm41sq > util::OscParamMinValue(conv::kPhypDm41sq)) && 
+       (fix_dm41sq < util::OscParamMaxValue(conv::kPhypDm41sq)))
+    {
+      fp->Update(conv::kPhypDm41sq, fix_dm41sq);
+      fp->SetInitValue(kPhypDm41sq, fix_dm41sq);
+    }
     double fix_sinsq2thMuMu = arg.GetDouble("fix-at-sinsq2thMuMu");
     if((fix_sinsq2thMuMu > util::OscParamMinValue(conv::kPhypMixingMuMu)) && 
        (fix_sinsq2thMuMu < util::OscParamMaxValue(conv::kPhypMixingMuMu)))

@@ -65,13 +65,18 @@ string util::AsStringSimple(conv::PhysParamId_t p)
 {
   switch(p) {
 
-     case (kPhypMixing12                 ) : return "mixing12";
-     case (kPhypMixing23                 ) : return "mixing23";
-     case (kPhypMixing13                 ) : return "mixing13";
-     case (kPhypDm23sq                   ) : return "dm23sq";  
-     case (kPhypDm12sq                   ) : return "dm12sq"; 
-     case (kPhypCPV                      ) : return "cpv";  
+    case (kPhypMixing12                 ) : return "mixing12";
+    case (kPhypMixing23                 ) : return "mixing23";
+    case (kPhypMixing13                 ) : return "mixing13";
+    case (kPhypDm23sq                   ) : return "dm23sq";  
+    case (kPhypDm12sq                   ) : return "dm12sq"; 
+    case (kPhypCPV                      ) : return "cpv";
     
+    case (kPhypDm41sq                   ) : return "dm41sq"; 
+    case (kPhypMixingEE                 ) : return "sinsq2thEE";
+    case (kPhypMixingMuE                ) : return "sinsq2thMuE";
+    case (kPhypMixingMuMu               ) : return "sinsq2thMuMu";
+
     default                       : return util::RawParamAsString(p);   
   }
   return "";
