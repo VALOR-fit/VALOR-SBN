@@ -53,7 +53,7 @@
 
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
-//#include "core/Event.hh"
+#include "core/Event.hh"
 
 using std::string;
 using std::ostringstream;
@@ -150,7 +150,10 @@ int main(int argc, char ** argv)
 
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
   assert(sample != conv::ksUndefined);
-  
+ 
+  conv::BeamConf_t beam = util::BeamConfFromString(opt_beam_name);
+  assert(beam != conv::kbUndefined);
+
   int    valor_minidst_sample       = sample;
   int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h 
   int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h 
@@ -167,7 +170,7 @@ int main(int argc, char ** argv)
   fout.cd();
 
   TTree * valor_minidst = 
-    new TTree("valor_dune_nd_mini_dst","Mini-DST input for VALOR/DUNE SBNCode Fit");
+    new TTree("valor_sbncode_mini_dst","Mini-DST input for VALOR/DUNE SBNCode Fit");
 
   valor_minidst->Branch("beam"      , &valor_minidst_beam        ,"beam/I"       );
   valor_minidst->Branch("sample"    , &valor_minidst_sample      ,"sample/I"     );
@@ -197,31 +200,17 @@ int main(int argc, char ** argv)
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
   analysis_tree->GetEntry(0);
   
-  int iscc   = false;
-  int isnc   = false;
-  int nu_pdg = -1;
-  double enu_true       =  -999.;
-  double enu_reco       =  -999.;
-  double Q2s            =  -999.;
- 
-  /*
-  int nin      = -1;
-  int nip      = -1;
-  int nipip    = -1;
-  int nipim    = -1;
-  int nipi0    = -1;
-  int nikp     = -1;
-  int nikm     = -1;
-  int nik0     = -1;
-  int niem     = -1;
-  int niother  = -1;
-  */
-  
-  int larsoft_mode = -1;
-  
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
+ 
+  Event *pevent;
   
+  analysis_tree->SetBranchAddress("events", &pevent, &branchptr); active_branches.push_back(branchptr);
+  
+  Event & event = *pevent;
+
+
+  /*
   analysis_tree->SetBranchAddress("truth.neutrino.energy"       ,  &enu_true    , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("reco.reco_energy"            ,  &enu_reco    , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("truth.neutrino.Q2"           ,  &Q2s         , &branchptr); active_branches.push_back(branchptr);
@@ -239,7 +228,6 @@ int main(int argc, char ** argv)
   analysis_tree->SetBranchAddress("truth.neutrino.iscc"          ,  &iscc        , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("truth.neutrino.isnc"          ,  &isnc        , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("truth.neutrino.genie_intcode" ,  &larsoft_mode, &branchptr); active_branches.push_back(branchptr);
-
   // Only read the branches we're using and their sub-branches
   analysis_tree->SetBranchStatus("*",0);
   for (unsigned int ib = 0 ; ib < active_branches.size(); ib++) {
@@ -251,7 +239,7 @@ int main(int argc, char ** argv)
       b->SetStatus(1);
     }
   }
-  
+ */ 
   //
   // event loop
   //
@@ -273,78 +261,139 @@ int main(int argc, char ** argv)
     else {
       VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev;
     }
+    
+    int iscc   = false;
+    int isnc   = false;
+    int nu_pdg = -1;
+    double enu_true       =  -999.;
+    double enu_reco       =  -999.;
+    double Q2s            =  -999.;
+
+    /*
+       int nin      = -1;
+       int nip      = -1;
+       int nipip    = -1;
+       int nipim    = -1;
+       int nipi0    = -1;
+       int nikp     = -1;
+       int nikm     = -1;
+       int nik0     = -1;
+       int niem     = -1;
+       int niother  = -1;
+       */
+
+    int larsoft_mode = -1;
 
     analysis_tree->GetEntry(iev);
-    
-    VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
-      << "Etrue         = "<< enu_true  << " GeV; "
-      << "Ereco         = "<< enu_reco  << " GeV; "
-      << "LArSoft mode  = "<< larsoft_mode  << "; ";
-      
-    // Construct the reaction mode
-    conv::ReacType_t t = conv::kmtUndefined;
-    if (iscc) {
-      if      (larsoft_mode==kLArQE                ) { t = conv::kmtCCQE;    }
-      else if (larsoft_mode==kLArMEC               ) { t = conv::kmtCCMEC;   }
-      else if (larsoft_mode==kLArCoh               ) { t = conv::kmtCCcoh;   }
-      else if (larsoft_mode==kLArIMDAnnihilation   ) { t = conv::kmtCCIMD;   }
-      else if (larsoft_mode==kLArElectronScattering) { t = conv::kmtCCELScat;}
-      
-  /*    else { // start counting pions
-        if      (nikp || nik0 || nikm || niother) { t = conv::kmtCCoth;}
-        else if (nipip+nipim == 1 && nipi0 == 0)  { t = conv::kmtCC1piC;}
-        else if (nipip+nipim == 0 && nipi0 == 1)  { t = conv::kmtCC1pi0;}
-        else if (nipip+nipim == 2 && nipi0 == 0)  { t = conv::kmtCC2piC;}
-        else if (nipip+nipim == 0 && nipi0 == 2)  { t = conv::kmtCC2pi0;}
-        else if (nipip+nipim == 1 && nipi0 == 1)  { t = conv::kmtCCpiCpi0;}
-        else                                      { t = conv::kmtCCoth;}
-      }*/
-    }
-    else if (isnc) {
-      if      (larsoft_mode==kLArQE                ) { t = conv::kmtNCEL;    }
-    //else if (larsoft_mode==kLArMEC               ) { t = conv::kmtNCMEC;   }
-      else if (larsoft_mode==kLArCoh               ) { t = conv::kmtNCcoh;   }
-    //else if (larsoft_mode==kLArElectronScattering) { t = conv::kmtNCELScat;}
-      
-     /* else { // start counting pions
-        if      (nikp || nik0 || nikm || niother) { t = conv::kmtNCoth;}
-        else if (nipip+nipim == 1 && nipi0 == 0)  { t = conv::kmtNC1piC;}
-        else if (nipip+nipim == 0 && nipi0 == 1)  { t = conv::kmtNC1pi0;}
-      //else if (nipip+nipim == 2 && nipi0 == 0)  { t = conv::kmtNC2piC;}
-      //else if (nipip+nipim == 0 && nipi0 == 2)  { t = conv::kmtNC2pi0;}
-      //else if (nipip+nipim == 1 && nipi0 == 1)  { t = conv::kmtNCpiCpi0;}
-        else                                      { t = conv::kmtNCoth;}
-      }*/
-    }
-    else if (larsoft_mode == kLArElectronScattering) {
-      t = conv::kmtELScat;
-    }
-    
-    conv::ReacMode_t reac_mode;
-    
-    for (int im = 0 ; im < valor::conv::kNReacModes ; im++) {
-      conv::ReacMode_t  m       =  util::ReacModeFromInt(im);
-      conv::ReacType_t  m_t     =  util::ReacModeToType       (m);
-      if (m_t == t) {
-        reac_mode = m;
-      }
+   
+    std::vector<Event::Interaction> &truth = event.truth;
+    std::vector<Event::RecoInteraction> &reco = event.reco;
+    if(truth.size() == 0 || reco.size() == 0){
+      VLOG("make_sbncode_minidst", pNOTICE) 
+        << "The number of truth entries is " << truth.size() << " and reco " << reco.size() << ", neither should be 0";
+      continue;      
     }
 
-    if(!opt_disable_checks) {
-      //
-      // ignore events that can not be used in the VALOR analysis
-      //
-      if(reac_mode == valor::conv::kmUndefined) {
-        VLOG("make_minidst", pNOTICE) << "- Rejecting event [bad mode]";
-        continue;
-      }
-    }
-    
-    last_tree_number = analysis_tree->GetTreeNumber();
-    
-    for (int irecobin = 1 ; irecobin <= 1; irecobin++) {
-      valor_minidst_wght_smear = 1.;
+    for(unsigned int t = 0; t < truth.size(); ++t){
+      std::cout << " Energy : " << truth[t].neutrino.energy << std::endl;
+      iscc = truth[t].neutrino.iscc;
+      isnc = truth[t].neutrino.isnc;
+      nu_pdg = truth[t].neutrino.pdg;
+      enu_true = truth[t].neutrino.energy;
+      Q2s = truth[t].neutrino.Q2;
+      larsoft_mode = truth[t].neutrino.genie_intcode;
       
+      // Construct the reaction mode
+      conv::ReacType_t reac = conv::kmtUndefined;
+      if (iscc) {
+        if      (larsoft_mode==kLArQE                ) { reac = conv::kmtCCQE;    }
+        else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtCCMEC;   }
+        else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtCCcoh;   }
+        else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtCCIMD;   }
+        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
+
+        /*    else { // start counting pions
+              if      (nikp || nik0 || nikm || niother) { reac = conv::kmtCCoth;}
+              else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtCC1piC;}
+              else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtCC1pi0;}
+              else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtCC2piC;}
+              else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtCC2pi0;}
+              else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtCCpiCpi0;}
+              else                                      { reac = conv::kmtCCoth;}
+              }*/
+      }
+      else if (isnc) {
+        if      (larsoft_mode==kLArQE                ) { reac = conv::kmtNCEL;    }
+        //else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtNCMEC;   }
+        else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtNCcoh;   }
+        //else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
+
+        /* else { // start counting pions
+           if      (nikp || nik0 || nikm || niother) { reac = conv::kmtNCoth;}
+           else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtNC1piC;}
+           else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtNC1pi0;}
+        //else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtNC2piC;}
+        //else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtNC2pi0;}
+        //else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtNCpiCpi0;}
+        else                                      { reac = conv::kmtNCoth;}
+        }*/
+      }
+      else if (larsoft_mode == kLArElectronScattering) {
+        reac = conv::kmtELScat;
+      }
+
+      conv::NuFlavour_t init_flav  = valor::util::FlavourFromPDG(nu_pdg);
+      conv::NuFlavour_t final_flav = init_flav;
+      //conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(osc_pdg);
+
+      // Get the real valor mode
+      conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+
+      /*
+      if(!opt_disable_checks) {
+        //
+        // ignore events that can not be used in the VALOR analysis
+        //
+        if(reac_mode == valor::conv::kmUndefined) {
+          VLOG("make_fd_minidst", pWARN) << "- Rejecting event [bad mode]\n"
+            << util::AsString(init_flav)<<" -> "<<util::AsString(final_flav)<<"\t"<<util::AsString(reac);
+          continue;
+        }
+      }*/
+
+      VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
+        << "Etrue         = "<< enu_true  << " GeV; "
+        << "LArSoft mode  = "<< larsoft_mode  << "; ";
+
+      valor_minidst_sample    = sample; 
+      valor_minidst_beam      = beam; 
+      valor_minidst_reac_mode = reac_mode;
+      valor_minidst_enu_true  = enu_true; 
+      valor_minidst_wght      = 1.;
+      valor_minidst_Q2_true   = Q2s;
+      valor_minidst_wght_pot  = 1./mcsample_pot; 
+      valor_minidst_target    = 1000180400; // Argon40
+      //valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
+
+      VLOG("make_sbncode_minidst", pINFO) 
+        << "\n Information copied to VALOR DUNE/SBNCode Mini-DST: "
+        << "\n Beam          = " << valor_minidst_beam   
+        << "\n Sample        = " << valor_minidst_sample    
+        << "\n Reaction mode = " << valor_minidst_reac_mode 
+        << "\n Target        = " << valor_minidst_target
+        << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
+        << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
+        << "\n y (reco)      = " << valor_minidst_y_reco    
+        << "\n POT weight    = " << valor_minidst_wght_pot
+        << "\n Smear weight  = " << valor_minidst_wght_smear;
+
+    } // true loop
+
+    for(unsigned int r = 0; r < reco.size(); ++r){
+      enu_reco = reco[r].reco_energy;
+      
+      VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
+        << "Ereco         = "<< enu_reco  << " GeV; ";
       if(!opt_disable_checks) {
         
         //
@@ -358,39 +407,18 @@ int main(int argc, char ** argv)
         VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
       }
       
-      nev_accept++;
-      nev_accept_by_mode[reac_mode]++;
-
-      //~ VLOG("make_sbncode_minidst", pDEBUG) 
-        //~ << "GENIE MC truth info: " << event;
-        
-      valor_minidst_sample    = sample; 
-      valor_minidst_reac_mode = reac_mode;
-      valor_minidst_enu_true  = enu_true; 
       valor_minidst_enu_reco  = enu_reco; 
-      valor_minidst_wght      = 1.;
-      valor_minidst_Q2_true   = Q2s;
-      valor_minidst_wght_pot  = 1./mcsample_pot; 
-      valor_minidst_target    = 1000180400; // Argon40
-      //valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
-      
       VLOG("make_sbncode_minidst", pINFO) 
-        << "\n Information copied to VALOR DUNE/SBNCode Mini-DST: "
-        << "\n Beam          = " << valor_minidst_beam   
-        << "\n Sample        = " << valor_minidst_sample    
-        << "\n Reaction mode = " << valor_minidst_reac_mode 
-        << "\n Target        = " << valor_minidst_target
-        << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
-        << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
-        << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV" 
-        << "\n y (reco)      = " << valor_minidst_y_reco    
-        << "\n POT weight    = " << valor_minidst_wght_pot
-        << "\n Smear weight  = " << valor_minidst_wght_smear;
+        << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV"; 
       
-      valor_minidst->Fill();
-    }//smearing histogram loop
+    } // reco loop 
+     
+    if(enu_reco <= 0)
+      std::cin.get();
+    valor_minidst->Fill();
   } // event loop
-  
+ 
+  /*
   for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
     valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
     VLOG("make_sbncode_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
@@ -403,7 +431,7 @@ int main(int argc, char ** argv)
     
   //~ VLOG("make_sbncode_minidst", pNOTICE) <<
     //~ "Total POT read: "<<total_pot_read;
-
+*/
   // Saving VALOR mini-FST to output file 
   VLOG("make_sbncode_minidst", pNOTICE) 
     << "Saving VALOR/DUNE mini-DST to: " << opt_output_name;

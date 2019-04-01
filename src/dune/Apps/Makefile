@@ -63,7 +63,7 @@ make_sbncode_minidst: FORCE
 ifeq ($(SBNANALYSIS_ENABLED),1)
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
-	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) $(LARSOFT_LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
+	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
 else
    @echo "Skipping make_sbncode_minidst due to no GENIE"
 endif
