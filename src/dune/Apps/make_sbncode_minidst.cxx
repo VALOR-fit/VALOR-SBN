@@ -342,9 +342,9 @@ int main(int argc, char ** argv)
         reac = conv::kmtELScat;
       }
 
-      conv::NuFlavour_t init_flav  = valor::util::FlavourFromPDG(nu_pdg);
-      conv::NuFlavour_t final_flav = init_flav;
-      //conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(osc_pdg);
+      conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
+      conv::NuFlavour_t init_flav  = final_flav;
+      //conv::NuFlavour_t init_flav = valor::util::FlavourFromPDG(unosc_pdg);
 
       // Get the real valor mode
       conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);

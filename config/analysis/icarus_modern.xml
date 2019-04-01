@@ -12,7 +12,8 @@
       <detector>     sbn_icarus                                           </detector>
       <beam>         bnb_fhc                                              </beam>
       <sample>       numuCCIncl                                           </sample>
-      <observable>   Ereco,yreco                                          </observable>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                               </observable>
       <data>                                                              </data>
       <mc>           mc/sbn_fd_modern_mcp1.xml                            </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>

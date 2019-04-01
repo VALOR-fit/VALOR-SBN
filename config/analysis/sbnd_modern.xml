@@ -11,8 +11,8 @@
     <element name="sbn_nd_fhc_modern_numuCCIncl">
       <detector>     sbn_nd                                               </detector>
       <beam>         bnb_fhc                                              </beam>
-      <sample>       numuCCIncl                                           </sample>
-      <observable>   Ereco,yreco                                          </observable>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                                </observable>
       <data>                                                              </data>
       <mc>           mc/sbn_nd_modern_mcp1.xml                            </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
