@@ -53,7 +53,7 @@
 
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
-#include "core/Event.hh"
+//#include "core/Event.hh"
 
 using std::string;
 using std::ostringstream;
