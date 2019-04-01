@@ -994,14 +994,8 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   // Set up a list of the branches associated with each kinematic variable
   std::map<KineVar_t,std::string> kinematic_branch_names;
   for (const KineVar_t & kv : kinevars) {
-    kinematic_branch_names[kv] = util::AsString(kv);
+    kinematic_branch_names[kv] = util::DSTBranchName(kv);
   }
-  // These ones are overridden
-  kinematic_branch_names[kvEtrue]  = "enu_true";
-  kinematic_branch_names[kvEreco]  = "enu_reco";
-  kinematic_branch_names[kvQ2true] = "Q2_true";
-  kinematic_branch_names[kvYreco]  = "y_reco";
-  
   
   int bstat_sample     = 0; 
   int bstat_beam       = 0; 
