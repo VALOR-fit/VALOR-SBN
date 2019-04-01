@@ -60,13 +60,16 @@ make_fastmc_minidst: FORCE
 # Generate DSTs for SBNCode fit
 #
 make_sbncode_minidst: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
 ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
+	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) $(LARSOFT_LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
 else
-	@echo "Skipping make_sbncode_minidst due to no GENIE"
+   @echo "Skipping make_sbncode_minidst due to no GENIE"
 endif
-
+else
+  @echo "Skipping make_sbncode_minidst due to no SBNanalysis"
+endif
 
 # Generate GENIE response functions
 #

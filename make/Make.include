@@ -79,8 +79,14 @@ endif
 #-------------------------------------------------------------------
 ifeq (1,$(SBNANALYSIS_ENABLED))
   # This is wrong but it'll work until we have a proper directory to get these from
-  SBNANALYSIS_INC = -I$(SBN_ANALYSIS_DIR)/../core/ 
+  SBNANALYSIS_INC = -I$(SBN_ANALYSIS_DIR)/../ 
   SBNANALYSIS_LIB = -lsbnanalysis_Event -L$(SBN_LIB_DIR)
+
+  LARSOFT_INCLUDES += -I$(CANVAS_INC)
+  LARSOFT_INCLUDES += -I$(CETLIB_INC)
+  
+  LARSOFT_LIBRARIES += -L$(CANVAS_LIB)
+  LARSOFT_LIBRARIES += -L$(CETLIB_LIB)
 endif
 
 #-------------------------------------------------------------------

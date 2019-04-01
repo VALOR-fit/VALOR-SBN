@@ -53,6 +53,8 @@
 
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
+#include "core/Event.hh"
+
 using std::string;
 using std::ostringstream;
 
@@ -219,7 +221,7 @@ int main(int argc, char ** argv)
   
   TBranch * branchptr = 0;
   vector<TBranch*> active_branches;
-    
+  
   analysis_tree->SetBranchAddress("truth.neutrino.energy"       ,  &enu_true    , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("reco.reco_energy"            ,  &enu_reco    , &branchptr); active_branches.push_back(branchptr);
   analysis_tree->SetBranchAddress("truth.neutrino.Q2"           ,  &Q2s         , &branchptr); active_branches.push_back(branchptr);
