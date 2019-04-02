@@ -18,7 +18,7 @@
       <mc>           mc/sbn_fd_modern_mcp1.xml                            </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      binning/dune_tdr_fd_binning.xml                      </binning>
+      <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
     </element>
 
   </element_list>

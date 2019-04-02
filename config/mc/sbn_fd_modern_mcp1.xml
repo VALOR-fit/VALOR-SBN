@@ -82,7 +82,7 @@ Splines
 Default binning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<default_binning> binning/dune_fd_fhc_numulikecchigh_bins.xml </default_binning>
+<default_binning> binning/sbn_proposal_binning_NuMu.xml  </default_binning>
 
 </analysis_inputs>
 
