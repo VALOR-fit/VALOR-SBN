@@ -8,9 +8,15 @@
 #  --resource               : Computer resource, <RAL, Oxford, Grid, ETH-Monch, interactive>. Default: interactive.
 #  --tag                    : Tag for output files. Default: "param_scan".
 #  --npoints                : Number of points you want to consider for deltaCP. Default: 50
-#  --param                  : Parameter to scan. Default: deltaCP
-#  --min-value              : Min param value for the sensitivity study. Default: -pi
-#  --max-value              : Max param value for the sensitivity study. Default: +pi
+#  --param1                 : Parameter to scan. Default: deltaCP
+#  --min-value1             : Min param value for the sensitivity study. Default: -pi
+#  --max-value1             : Max param value for the sensitivity study. Default: +pi
+#  --log-param1             : Should we loop over the parameter range using log scaling?
+#  --param2                 : Parameter to scan. Default: mixing23
+#  --min-value2             : Min param value for the sensitivity study. Default: 0.3
+#  --max-value2             : Max param value for the sensitivity study. Default: 0.7
+#  --log-param2             : Should we loop over the parameter range using log scaling?
+#  --discovery              : If enabled, change the true parameter used for generating data, not the fixed value. Default: false
 #  --cpu-time               : Required CPU time. Default: "8:00:00" for RAL, "11:50:00" for Oxford.
 #  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
 #  --hierarchy              : Specifies the mass hierarchy option. Default: "normal"
@@ -20,8 +26,8 @@
 #  --pot-override           : Override the default POT in the config file with this value (for every beam mode) (default -999, use config POT)
 
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`.
-#  --dune-softw-dir         : VALOR/DUNE code top-level directory. Default: `pwd`.
-#  --fmwk-softw-dir         : VALOR/FMWK code top-level directory. Default: `pwd`/../fmwk/
+#  --dune-softw-dir         : VALOR/DUNE code top-level directory. Default: $VALOR_DUNE
+#  --fmwk-softw-dir         : VALOR/FMWK code top-level directory. Default: $VALOR_FMWK
 #  --config-file            : Analysis configuration file. Default: "default_config.xml"
 #  --mesg-thresholds        : Message thresholds file. Default: "verbosity.xml"
 #  [--ncores ]              : Number of cores-per-job to request and thus threads to use (requires C++11) [ 1 ]
@@ -63,6 +69,7 @@ foreach (@ARGV) {
   elsif($_ eq '--min-value2'             ) { $min_value2           = $ARGV[$iarg+1]; }
   elsif($_ eq '--max-value2'             ) { $max_value2           = $ARGV[$iarg+1]; }
   elsif($_ eq '--log-param2'             ) { $log_param2           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--discovery'              ) { $discovery            = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--hierarchy'              ) { $mhchoice             = $ARGV[$iarg+1]; }
@@ -93,6 +100,7 @@ $param2                 = mixing23                                unless defined
 $min_value2             = 0.3                                     unless defined $min_value2;
 $max_value2             = 0.7                                     unless defined $max_value2;
 $log_param2             = 0                                       unless defined $log_param2;
+$discovery              = 0                                       unless defined $discovery;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
 $mhchoice               = "normal"                                unless defined $mhchoice;
 $fitoption              = "minuit"                                unless defined $fitoption;
@@ -172,13 +180,20 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
       " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
       
-      
-    $arguments = "--tag $tag-$param1-$param2 ".
-      " --fix-at-$param1 $param_val1 ".
-      " --fix-$param1 ".
-      " --fix-at-$param2 $param_val2 ".
-      " --fix-$param2 ".
-      "--first-octant ".$standard_options;
+    if (!$discovery) {
+      $arguments = "--tag $tag-$param1-$param2 ".
+        " --fix-at-$param1 $param_val1 ".
+        " --fix-$param1 ".
+        " --fix-at-$param2 $param_val2 ".
+        " --fix-$param2 ".
+        "--first-octant ".$standard_options;
+    }
+    else {
+      $arguments = "--tag $tag-$param1-$param2 ".
+        " --input-$param1 $param_val1 ".
+        " --input-$param2 $param_val2 ".
+        "--first-octant ".$standard_options;
+    }
 
 
     $command = $program." ".$arguments;

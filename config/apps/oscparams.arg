@@ -29,3 +29,20 @@ normal,inverted                      |   boolean_list |  optional   |   normal
 first-octant,second-octant           |   boolean_list |  optional   |   first-octant
 sinsqtheta, sinsq2theta              |   boolean_list |  optional   |   sinsqtheta
 dmsq12abs23,foglilisi                |   boolean_list |  optional   |   dmsq12abs23           
+# steriles
+input-dm41sq                         |   double       |  optional   |   -999
+fix-dm41sq                           |   boolean      |  optional   |   false
+fix-at-dm41sq                        |   double       |  optional   |   -999
+flat-prior-dm41sq                    |   boolean      |  optional   |   false
+input-sinsq2thMuMu                   |   double       |  optional   |   -999
+fix-sinsq2thMuMu                     |   boolean      |  optional   |   false
+fix-at-sinsq2thMuMu                  |   double       |  optional   |   -999
+flat-prior-sinsq2thMuMu              |   boolean      |  optional   |   false
+input-sinsq2thMuE                    |   double       |  optional   |   -999
+fix-sinsq2thMuE                      |   boolean      |  optional   |   false
+fix-at-sinsq2thMuE                   |   double       |  optional   |   -999
+flat-prior-sinsq2thMuE               |   boolean      |  optional   |   false
+input-sinsq2thEE                     |   double       |  optional   |   -999
+fix-sinsq2thEE                       |   boolean      |  optional   |   false
+fix-at-sinsq2thEE                    |   double       |  optional   |   -999
+flat-prior-sinsq2thEE                |   boolean      |  optional   |   false

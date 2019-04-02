@@ -51,8 +51,7 @@
 
 #include "dune/Conventions/ReacMode.h"
 
-// GENIE
-#include "Framework/Interaction/ScatteringType.h"
+#include "dune/GENIEUtilities/GENIEIncludes.h"
 
 using std::string;
 using std::ostringstream;
