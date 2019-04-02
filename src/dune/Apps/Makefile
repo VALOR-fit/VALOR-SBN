@@ -16,6 +16,7 @@ DUNE_LIBRARIES =
 
 TGT = make_nd_minidst \
       make_fd_minidst \
+      make_sbncode_minidst \
       make_fastmc_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
@@ -56,6 +57,19 @@ make_fastmc_minidst: FORCE
 	$(CXX) $(CXXFLAGS) -c make_fastmc_minidst.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) make_fastmc_minidst.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
 
+# Generate DSTs for SBNCode fit
+#
+make_sbncode_minidst: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
+else
+   @echo "Skipping make_sbncode_minidst due to no GENIE"
+endif
+else
+  @echo "Skipping make_sbncode_minidst due to no SBNanalysis"
+endif
 
 # Generate GENIE response functions
 #
@@ -140,6 +154,7 @@ clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fd_minidst
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
@@ -153,6 +168,7 @@ clean: FORCE
 distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fd_minidst
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_sbncode_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit

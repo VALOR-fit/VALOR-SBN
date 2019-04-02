@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbncode">
+<!--
+   Far detector selections
+-->
+
+<!-- FHC -->
+    <element name="sbn_fd_fhc_proposal_numuCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCIncl                                           </sample>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                               </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_fd_modern_mcp1.xml                            </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/dune_tdr_fd_binning.xml                      </binning>
+    </element>
+
+  </element_list>
+
+</valor> 
