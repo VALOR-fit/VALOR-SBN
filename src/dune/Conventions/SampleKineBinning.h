@@ -29,6 +29,7 @@
 //~ #define _use_single_zone_optimized_binning_scheme_v2_ 
 
 #include "valor/Conventions/KineVar.h"
+#include "valor/Conventions/Constants.h"
 
 #include "dune/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
@@ -74,7 +75,10 @@ static const int kMCTemplateNdim[kNSamples] =
   3, // ksNuMuCChigh/ksNuMuBarCChigh
   3, // ksNuMuCClow/ksNuMuBarCClow
   3, // ksNuECChigh/ksNuEBarCChigh
-  3 // ksNuECClow/ksNuEBarCClow
+  3, // ksNuECClow/ksNuEBarCClow
+  3, // ks1Rmu
+  3, // ks1Re
+  3  // ksMultiRe
 };
 
 // Define dimensionality of fit distributions
@@ -106,7 +110,10 @@ static const int kFitSpectrumNdim[kNSamples] =
     2, // ksNuMuCChigh/ksNuMuBarCChigh
     2, // ksNuMuCClow/ksNuMuBarCClow
     2, // ksNuECChigh/ksNuEBarCChigh
-    2 // ksNuECClow/ksNuEBarCClow
+    2, // ksNuECClow/ksNuEBarCClow
+    1, // ks1Rmu
+    2, // ks1Re
+    2  // ksMultiRe
 };
 
 // Define variables entering in MC template definitions.
@@ -139,7 +146,10 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCChigh/ksNuMuBarCChigh
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCClow/ksNuMuBarCClow
   { kvEreco, kvYreco, kvEtrue },     //   ksNuECChigh/ksNuEBarCChigh
-  { kvEreco, kvYreco, kvEtrue }      //   ksNuECClow/ksNuEBarCClow
+  { kvEreco, kvYreco, kvEtrue },     //   ksNuECClow/ksNuEBarCClow
+  { kvThetareco, kvEreco, kvEtrue }, //   ks1Rmu
+  { kvThetareco, kvEreco, kvEtrue }, //   ks1Re
+  { kvThetareco, kvEreco, kvEtrue }  //   ksMultiRe
 };
 
 
@@ -147,14 +157,16 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
 // 
 // Parameter ranges (same for all binning schemes)
 //
-static const double kEtrueMin  = 0.;
-static const double kEtrueMax  = 120.;
-static const double kQ2trueMin = 0;
-static const double kQ2trueMax = 1E6; //<-- should probably be changed
-static const double kErecoMin  = 0.;
-static const double kErecoMax  = 120.;
-static const double kYrecoMin  = 0.;
-static const double kYrecoMax  = 1.;
+static const double kEtrueMin     = 0.;
+static const double kEtrueMax     = 120.;
+static const double kQ2trueMin    = 0;
+static const double kQ2trueMax    = 1E6; //<-- should probably be changed
+static const double kErecoMin     = 0.;
+static const double kErecoMax     = 120.;
+static const double kYrecoMin     = 0.;
+static const double kYrecoMax     = 1.;
+static const double kThetarecoMin = 0.;                // TODO: check the angle convention.
+static const double kThetarecoMax = 360.;              // TODO: check the angle convention
 
 // ...........................................................................
 // 
