@@ -78,6 +78,15 @@ void Parameter::ReadNames()
     util::Die(1);
   }
 
+  if(IsNodeSpecified("name/long")) {
+    fNameLong = util::XML2String(fxml, fParamNode, "name/long");
+  }
+  else {
+    LOG("FitInputs", pNOTICE) << "No long name specified for parameter \'"
+                              << fName << "\', instead using the simple name";
+    fNameLong = fName;
+  }
+
   if(IsNodeSpecified("name/rootex")) {
     fRooTeXName = util::XML2String(fxml, fParamNode, "name/rootex");
   }
@@ -388,6 +397,7 @@ void Parameter::Print(std::ostream & stream) const
   stream << "Parameter info:\n"
          << "    Current numerical ID: "<<fParam<<"\n"
          << "    Name (simple) = " << GetName()       << "\n"
+         << "    Name (long) = "   << GetNameLong()   << "\n"
          << "    Name (RooTeX) = " << GetRooTeXName() << "\n"
          << "    Name (TeX) = "    << GetTeXName()    << "\n"
          << "    Type = " << util::AsString(GetType()) << "\n"

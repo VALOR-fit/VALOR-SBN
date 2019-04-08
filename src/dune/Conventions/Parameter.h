@@ -11,6 +11,7 @@
             <param>
               <name>
                 <simple> int_ccqe_nu_1 </simple>              <!-- must be specified -->
+                <long> nu-mode CCQE; Qsq 0-0.3 GeVsq </long>
                 <rootex> f_{int^{ccqe}_{#nu ; 1}} </rootex>   <!-- default: simple name -->
                 <tex> f_{int^{ccqe}_{\nu ; 1}} </tex>
               </name>
@@ -86,6 +87,7 @@ namespace valor {
       // Stuff I definitely want to keep
       const conv::PhysParamId_t      &   GetID        (void) const { return fParam;         }
       const std::string              &   GetName      (void) const { return fName;          }
+      const std::string              &   GetNameLong  (void) const { return fNameLong;      }
       const std::string              &   GetRooTeXName(void) const { return fRooTeXName;    }
       const std::string              &   GetTeXName   (void) const { return fTeXName;       }
       const conv::SystType_t         &   GetType      (void) const { return fType;          }
@@ -116,6 +118,9 @@ namespace valor {
       conv::PhysParamId_t fParam;
       // Simple parameter name for printing etc.
       std::string fName;
+
+      // Longer, more descriptive parameter name for more verbose printing
+      std::string fNameLong;
 
       // ROOT TeX name for displaying on plots
       std::string fRooTeXName;
