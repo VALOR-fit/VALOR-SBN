@@ -156,6 +156,20 @@ namespace conv {
       // selection: ksNuECClow/ksNuEBarCClow
       {
         #include "dune/Conventions/ModeLists/OscHighE.h"
+      },
+
+      // SuperK Selections
+      // selection: ks1Rmu
+      {
+        #include "dune/Conventions/ModeLists/SuperK.h"
+      },
+      // selection: ks1Re
+      {
+        #include "dune/Conventions/ModeLists/SuperK.h"
+      },
+      // selection: ksMultiRe
+      {
+        #include "dune/Conventions/ModeLists/SuperK.h"
       }
 };
   
@@ -173,7 +187,7 @@ static const int kNReacModesCoarse = 9;  // max coarse modes used per sample
 
 static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReacModesCoarse] = 
 {
-  // FHC
+  // DUNE FHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -500,9 +514,21 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuTauCC,
       kmcNuTauBarCC,
       kmcNC
-    }
-  }, // end of FHC
-  //RHC
+    },
+    // sample: ks1Rmu
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ks1Re
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksMultiRe
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		}
+  }, // end of DUNE FHC
+  //DUNE RHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -829,17 +855,280 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuTauCC,
       kmcNuTauBarCC,
       kmcNC
+    },
+    // sample: ks1Rmu
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ks1Re
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksMultiRe
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		}
+  }, // End of DUNE RHC
+
+  // T2K FHC   TODO: Revisit the SuperK coarse reac modes, see dune/Conventions/ModeLists/Coarse/SuperK.h
+  {
+    // sample: ksNuMuCC0pi1trk
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCC0pi2trk
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCC0piNtrk
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCC0pi3trkDelta
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCC1piC
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCC1pi0
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCC1piC1pi0
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCCoth
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCCWS0pi
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCCWS1piC
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCCWS1pi0
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCCWSoth
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuECC0pi
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuECC1piC
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuECC1pi0
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuECCoth
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNC0pi
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNC1piC
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNC1pi0
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNCoth
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    //TODO: revisit ksNeutrinoElec and ksInvMuDecay
+    // sample: ksNeutrinoElec
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksInvMuDecay
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuECCWS
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    //2016b far detector selections
+    // sample: ksNuMuCChigh
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuMuCClow
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuECChigh
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ksNuECClow
+    {
+ 			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+ 		},
+    // sample: ks1Rmu
+    {
+      #include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+      #include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+      #include "dune/Conventions/ModeLists/Coarse/SuperK.h"
     }
-  }
+  },  // end of T2K FHC
+
+  // T2K RHC
+  {
+    // sample: ksNuMuCC0pi1trk
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCC0pi2trk
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCC0piNtrk
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCC0pi3trkDelta
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCC1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCC1piC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCCoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWS0pi
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWS1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWS1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWSoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuECC0pi
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuECC1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuECC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuECCoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNC0pi
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNC1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNCoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    //TODO: revisit ksNeutrinoElec and ksInvMuDecay
+    // sample: ksNeutrinoElec
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksInvMuDecay
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuECCWS
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    //2016b far detector selections
+    // sample: ksNuMuCChigh
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuMuCClow
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuECChigh
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ksNuECClow
+    {
+			#include "dune/Conventions/ModeLists/Coarse/AllUndefined.h"
+    },
+    // sample: ks1Rmu
+    {
+			#include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+			#include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+			#include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    }
+  }  // end of T2K RHC
 };
 
 //
 // Also, specify formatting (line color, fill color, fill style)
-//
 
 static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacModesCoarse][3] = 
 {
-  // FHC
+  // DUNE FHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -1163,9 +1452,21 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kViolet-1, 3001 }, // kmcNuTauCC 
       { kBlack, kOrange-1, 3001 }, // kmcNuTauBarCC 
       { kBlack, kRed,      3001 }  // kmcNC 
+    },
+    // sample: ks1Rmu
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ks1Re
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksMultiRe
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
     }
-  }, // end of FHC
-  // RHC
+  }, // end of DUNE FHC
+  // DUNE RHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -1468,8 +1769,270 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kViolet-1, 3001 }, // kmcNuTauCC 
       { kBlack, kOrange-1, 3001 }, // kmcNuTauBarCC 
       { kBlack, kRed,      3001 }  // kmcNC 
+    },
+    // sample: ks1Rmu
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ks1Re
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksMultiRe
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
     }
-  } // end of RHC
+  }, // end of DUNE RHC
+
+  // T2K FHC
+  {
+    // sample: ksNuMuCC0pi1trk
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCC0pi2trk
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCC0piNtrk,
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCC3trkDelta
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCC1piC
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCC1pi0
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCC1piC1pi0
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCCoth
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCCWS0pi
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCCWS1piC
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCCWS1pi0
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCCWSoth
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuECC0pi
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuECC1piC
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuECC1pi0
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuECCoth
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNC0pi
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNC1piC
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNC1pi0
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNCoth
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNeutrinoElec
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksInvMuDecay
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuECCWS
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    //far detector samples
+    // sample: ksNuMuCChigh/ksNuMuBarCChigh
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuMuCClow/ksNuMuBarCClow
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuECChigh/ksNuEBarCChigh
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ksNuECClow/ksNuEBarCClow
+		{
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+		},
+    // sample: ks1Rmu
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    }
+  }, // end of T2K FHC
+
+  // T2K RHC
+  {
+    // sample: ksNuMuCC0pi1trk
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCC0pi2trk
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCC0piNtrk,
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCC3trkDelta
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCC1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCC1piC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCCoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWS0pi
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWS1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWS1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCCWSoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuECC0pi
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuECC1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuECC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuECCoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNC0pi
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNC1piC
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNC1pi0
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNCoth
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNeutrinoElec
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksInvMuDecay
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuECCWS
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    //far detector samples
+    // sample: ksNuMuCChigh/ksNuMuBarCChigh
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuMuCClow/ksNuMuBarCClow
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuECChigh/ksNuEBarCChigh
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ksNuECClow/ksNuEBarCClow
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/AllUndefined.h"
+    },
+    // sample: ks1Rmu
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    }
+  } // end of T2K RHC
 };
 
 } // conv
