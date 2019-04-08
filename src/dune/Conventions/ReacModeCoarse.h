@@ -285,6 +285,11 @@ namespace util {
   string AsString    (conv::ReacModeCoarse_t m);
   string AsStringTex (conv::ReacModeCoarse_t m, bool root);
 
+  conv::ReacModeCoarse_t CoarseModeFromString (std::string s);
+
+  // Is the given reac mode contained within the given coarse reac mode?
+  bool ModeWithinCoarse(conv::ReacMode_t m, conv::ReacModeCoarse_t c);
+
 } // util
 
 } // valor

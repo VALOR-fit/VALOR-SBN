@@ -9,6 +9,7 @@ ChangeLog:
 //________________________________________________________________________________________
 
 #include "dune/Conventions/ReacModeCoarse.h"
+#include "valor/Utilities/UtlStr.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -143,4 +144,28 @@ string util::AsStringTex(ReacModeCoarse_t m, bool root)
   return name;
 }
 //________________________________________________________________________________________
-	
+conv::ReacModeCoarse_t util::CoarseModeFromString(string coarse)
+{
+  string lc_coarse = util::ToLowerCase(coarse);
+  for (int i = 0 ; i < (int)conv::kmcNuTauBarCC ; i++ ) {
+    conv::ReacModeCoarse_t c = (conv::ReacModeCoarse_t)i;
+    string this_coarse = util::ToLowerCase(util::AsString(c));
+    if(lc_coarse==this_coarse && this_coarse!="--") {
+      return c;
+    }
+  }
+
+  return conv::kmcUndefined;
+}
+//________________________________________________________________________________________
+bool util::ModeWithinCoarse(conv::ReacMode_t m, conv::ReacModeCoarse_t c)
+{
+  for (int icoarse = 0 ; icoarse < conv::kMaxCoarseReacOptions ; icoarse++ ) {
+    conv::ReacModeCoarse_t coarse = conv::kCoarseReacPriority[(int)m][icoarse];
+    if(c == coarse) {
+      return true;
+    }
+  }
+  return false;
+}
+//________________________________________________________________________________________
