@@ -39,14 +39,14 @@ static const int nbitsBeamApplyMask            = 2;
   static const int nbitsFlavApplyMask          = 4;
   static const int nbitsSelecApplyMask         = 30;
   static const int nbitsReacTypeApplyMask      = 21;
-  static const int nbitsDetectorApplyMask  = 5;
+  static const int nbitsDetectorApplyMask      = 7;
   static const int nbitsNuclearTargetApplyMask = 7;
 
 typedef std::bitset<nbitsBeamApplyMask>           BeamApplyMask_t;
 typedef std::bitset<nbitsFlavApplyMask>           FlavApplyMask_t;
 typedef std::bitset<nbitsSelecApplyMask>          SelecApplyMask_t;
 typedef std::bitset<nbitsReacTypeApplyMask>       ReacTypeApplyMask_t;
-typedef std::bitset<nbitsDetectorApplyMask>   DetectorApplyMask_t;
+typedef std::bitset<nbitsDetectorApplyMask>       DetectorApplyMask_t;
 typedef std::bitset<nbitsNuclearTargetApplyMask>  NuclearTargetApplyMask_t;
 
 // Which physics parameters are applied to which beam/sample/mode
@@ -126,6 +126,8 @@ static const DetectorApplyMask_t kdApplyToDUNEFD          = (kApplyMaskOne << 1 
 static const DetectorApplyMask_t kdApplyToSBND            = (kApplyMaskOne << 2 );
 static const DetectorApplyMask_t kdApplyToMicroBooNE      = (kApplyMaskOne << 3 );
 static const DetectorApplyMask_t kdApplyToICARUS          = (kApplyMaskOne << 4 );
+static const DetectorApplyMask_t kdApplyToND280           = (kApplyMaskOne << 5 );
+static const DetectorApplyMask_t kdApplyToSuperK          = (kApplyMaskOne << 6 );
 
 // Nuclear Targets
 static const NuclearTargetApplyMask_t kntApplyToInclusive = (kApplyMaskOne << 0 ); // Nuclear targets.
@@ -176,6 +178,7 @@ extern const ReacTypeApplyMask_t ktApplyToAllWithFSI;
 extern const DetectorApplyMask_t kdApplyToAllDUNE;
 extern const DetectorApplyMask_t kdApplyToAllSBN;
 extern const DetectorApplyMask_t kdApplyToAllSBN2Det;
+extern const DetectorApplyMask_t kdApplyToAllT2K;
 extern const DetectorApplyMask_t kdApplyToAllND;
 extern const DetectorApplyMask_t kdApplyToAll;
 

@@ -52,8 +52,9 @@ const ReacTypeApplyMask_t valor::conv::ktApplyToAllWithFSI   = ktApplyToAll & (~
 const DetectorApplyMask_t valor::conv::kdApplyToAllDUNE = kdApplyToDUNEND | kdApplyToDUNEFD;
 const DetectorApplyMask_t valor::conv::kdApplyToAllSBN  = kdApplyToSBND | kdApplyToMicroBooNE | kdApplyToICARUS;
 const DetectorApplyMask_t valor::conv::kdApplyToAllSBN2Det  = kdApplyToSBND | kdApplyToMicroBooNE;
-const DetectorApplyMask_t valor::conv::kdApplyToAllND  = kdApplyToDUNEND | kdApplyToSBND | kdApplyToMicroBooNE | kdApplyToICARUS;
-const DetectorApplyMask_t valor::conv::kdApplyToAll    = kdApplyToAllDUNE | kdApplyToAllSBN;
+const DetectorApplyMask_t valor::conv::kdApplyToAllND  = kdApplyToDUNEND | kdApplyToSBND | kdApplyToMicroBooNE | kdApplyToICARUS | kdApplyToND280;
+const DetectorApplyMask_t valor::conv::kdApplyToAllT2K  = kdApplyToND280 | kdApplyToSuperK;
+const DetectorApplyMask_t valor::conv::kdApplyToAll    = kdApplyToAllDUNE | kdApplyToAllSBN | kdApplyToAllT2K;
 
 
 // Samples
@@ -79,8 +80,10 @@ const NuclearTargetApplyMask_t valor::conv::kntApplyToAll = (
 // Which masks apply to which beam modes
 // This is defined for all samples in the BeamConf_t enum.
 const BeamApplyMask_t valor::conv::kApplyToBeamMode[kNBeamConf] = {
-  /* kbLBNF_FHC */ kbApplyToFHC ,
-  /* kbLBNF_RHC */ kbApplyToRHC ,
+  /* kbLBNF_FHC */  kbApplyToFHC ,
+  /* kbLBNF_RHC */  kbApplyToRHC ,
+  /* kbJPARC_FHC */ kbApplyToFHC ,
+  /* kbJPARC_RHC */ kbApplyToRHC
 };
 
 
@@ -133,9 +136,9 @@ const DetectorApplyMask_t valor::conv::kApplyToDetector[conv::kNDetectorsDefined
   /* kdSBND      */  kdApplyToSBND,
   /* kdSBNuBooNE */  kdApplyToMicroBooNE,
   /* kdSBNICARUS */  kdApplyToICARUS,
-  /* kdSuperK    */  0,
+  /* kdSuperK    */  kdApplyToSuperK,
   /* kdHyperK    */  0,
-  /* kdND280     */  0,
+  /* kdND280     */  kdApplyToND280,
   /* kdND280Up   */  0,
   /* kdINGRID    */  0,
   /* kdNuPRISM   */  0,
@@ -930,6 +933,9 @@ void valor::util::ApplyMaskNaming::Init(void)
   fDetectorMaskToName.insert( std::make_pair(kdApplyToSBND      , "sbnd") );
   fDetectorMaskToName.insert( std::make_pair(kdApplyToMicroBooNE, "microboone") );
   fDetectorMaskToName.insert( std::make_pair(kdApplyToICARUS    , "icarus") );
+  fDetectorMaskToName.insert( std::make_pair(kdApplyToND280     , "nd280") );
+  fDetectorMaskToName.insert( std::make_pair(kdApplyToSuperK    , "superk") );
+  fDetectorMaskToName.insert( std::make_pair(kdApplyToAllT2K    , "allt2k") );
   fDetectorMaskToName.insert( std::make_pair(kdApplyToAllDUNE   , "alldune") );
   fDetectorMaskToName.insert( std::make_pair(kdApplyToAllSBN    , "allsbn") );
   fDetectorMaskToName.insert( std::make_pair(kdApplyToAllSBN2Det, "allsbn2det") );
