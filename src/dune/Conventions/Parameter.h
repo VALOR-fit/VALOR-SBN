@@ -10,8 +10,9 @@
 
             <param>
               <name>
-              <simple> int_ccqe_nu_1 </simple>              <!-- must be specified -->
-              <rootex> f_{int^{ccqe}_{#nu ; 1}} </rootex>   <!-- default: simple name -->
+                <simple> int_ccqe_nu_1 </simple>              <!-- must be specified -->
+                <rootex> f_{int^{ccqe}_{#nu ; 1}} </rootex>   <!-- default: simple name -->
+                <tex> f_{int^{ccqe}_{\nu ; 1}} </tex>
               </name>
               <apply_to_range>
                 <etrue> 0, inf  </etrue>
@@ -59,8 +60,6 @@
 
 */
 //____________________________________________________________________________
-
-//TODO: This class and file has a placeholder name of Parameter, but as it will eventually replace the current FitParam class, this name should be changed
 
 #ifndef _valor_dune_fit_param_new_definition_h_
 #define _valor_dune_fit_param_new_definition_h_

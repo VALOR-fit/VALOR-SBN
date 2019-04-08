@@ -86,8 +86,13 @@ void Parameter::ReadNames()
                               << fName << "\', instead using the simple name";
     fRooTeXName = fName;
   }
-  
-  if (!IsNodeSpecified("name/tex")) {
+
+  if(IsNodeSpecified("name/tex")) {
+    fTeXName = util::XML2String(fxml, fParamNode, "name/tex");
+  }
+  else {
+    LOG("FitInputs", pNOTICE) << "No Tex name specified for parameter \'"
+                              << fName << "\', instead using the RooTex name with \'\\\\\' replaced with \'#\'";
     fTeXName = fRooTeXName;
     replace( fTeXName.begin(), fTeXName.end(), '\\', '#' ); // Make slashes hashes for RooTeX
     // Get rid of hashes preceding sin
@@ -384,6 +389,7 @@ void Parameter::Print(std::ostream & stream) const
          << "    Current numerical ID: "<<fParam<<"\n"
          << "    Name (simple) = " << GetName()       << "\n"
          << "    Name (RooTeX) = " << GetRooTeXName() << "\n"
+         << "    Name (TeX) = "    << GetTeXName()    << "\n"
          << "    Type = " << util::AsString(GetType()) << "\n"
          << "    Categories:\n";
   for(string cat : cats) {
