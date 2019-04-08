@@ -322,11 +322,12 @@ ReacTypeApplyMask_t Parameter::ReadReacTypeApplyMask(string node_name) const
   if(IsNodeSpecified(node_path)) {
     string content = util::XML2String(fxml, fParamNode, node_path);
     std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
+    std::string reac_type_str = util::ReplaceAll(trimmed_content, "2p2h", "mec");  // 2p2h and MEC are the same thing, but we internally use MEC only
     try {
-      mask = util::ReacTypeMaskFromString(util::ToLowerCase(trimmed_content));
+      mask = util::ReacTypeMaskFromString(util::ToLowerCase(reac_type_str));
     }
     catch (const std::out_of_range& oor) {
-      LOG("FitInputs", pFATAL) << "For parameter " << fName << ", " << node_name << " apply mask name \'" << trimmed_content
+      LOG("FitInputs", pFATAL) << "For parameter " << fName << ", " << node_name << " apply mask name \'" << reac_type_str
                                << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
       util::Die(1);
     }
