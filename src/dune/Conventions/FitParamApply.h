@@ -38,7 +38,7 @@ static const unsigned long kApplyMaskOne = 1ul;
 static const int nbitsBeamApplyMask            = 2;
   static const int nbitsFlavApplyMask          = 4;
   static const int nbitsSelecApplyMask         = 33;
-  static const int nbitsReacTypeApplyMask      = 21;
+  static const int nbitsReacTypeApplyMask      = 22;
   static const int nbitsDetectorApplyMask      = 7;
   static const int nbitsNuclearTargetApplyMask = 7;
 
@@ -120,9 +120,10 @@ static const ReacTypeApplyMask_t ktApplyToNC2piC       = (kApplyMaskOne << 14 );
 static const ReacTypeApplyMask_t ktApplyToNC2pi0       = (kApplyMaskOne << 15 );
 static const ReacTypeApplyMask_t ktApplyToNCpiCpi0     = (kApplyMaskOne << 16 );
 static const ReacTypeApplyMask_t ktApplyToNCcoh        = (kApplyMaskOne << 17 );
-static const ReacTypeApplyMask_t ktApplyToNCELScat     = (kApplyMaskOne << 18 );
-static const ReacTypeApplyMask_t ktApplyToNCoth        = (kApplyMaskOne << 19 );
-static const ReacTypeApplyMask_t ktApplyToNuEELScat    = (kApplyMaskOne << 20 ); //only for nue: CC + NC + interference
+static const ReacTypeApplyMask_t ktApplyToNC1Gamma     = (kApplyMaskOne << 18 );
+static const ReacTypeApplyMask_t ktApplyToNCELScat     = (kApplyMaskOne << 19 );
+static const ReacTypeApplyMask_t ktApplyToNCoth        = (kApplyMaskOne << 20 );
+static const ReacTypeApplyMask_t ktApplyToNuEELScat    = (kApplyMaskOne << 21 ); //only for nue: CC + NC + interference
 
 static const DetectorApplyMask_t kdApplyToDUNEND          = (kApplyMaskOne << 0 ); // Dectectors
 static const DetectorApplyMask_t kdApplyToDUNEFD          = (kApplyMaskOne << 1 );
@@ -162,6 +163,7 @@ extern const ReacTypeApplyMask_t ktApplyToAllCCELScat; // nu + e CC elastic scat
 extern const ReacTypeApplyMask_t ktApplyToAllCC1pi;
 extern const ReacTypeApplyMask_t ktApplyToAllCC2pi;
 extern const ReacTypeApplyMask_t ktApplyToAllCC;
+extern const ReacTypeApplyMask_t ktApplyToCCnQE;
 
 extern const ReacTypeApplyMask_t ktApplyToNCElLike; //this is not used, modes disabled
 extern const ReacTypeApplyMask_t ktApplyToAllNCELScat; //nu+e NC elastic scattering
@@ -171,6 +173,7 @@ extern const ReacTypeApplyMask_t ktApplyToAllNC;
 
 extern const ReacTypeApplyMask_t ktApplyToAllCoh;
 extern const ReacTypeApplyMask_t ktApplyToAllELScat;
+extern const ReacTypeApplyMask_t ktApplyToAll1pi;
 
 extern const ReacTypeApplyMask_t ktApplyToAll;
 extern const ReacTypeApplyMask_t ktApplyToAllButCoh;
