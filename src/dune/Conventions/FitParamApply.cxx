@@ -67,10 +67,17 @@ const SelecApplyMask_t valor::conv::ksApplyToAllND = (
   ksApplyToNuECCWS | ksApplyToNuECC | ksApplyToNuMuCCWS | ksApplyToNC
 );
 
-const SelecApplyMask_t valor::conv::ksApplyToAllFD = ksApplyToLowRes | ksApplyToHighRes;
+
+const SelecApplyMask_t valor::conv::ksApplyToELikeRingAny = ksApplyTo1RingE | ksApplyToMultiRingE;                    // SuperK selections
+const SelecApplyMask_t valor::conv::ksApplyTo1RingAny     = ksApplyTo1RingE | ksApplyTo1RingMu;                       // SuperK selections
+const SelecApplyMask_t valor::conv::ksApplyToAllRings     = ksApplyTo1RingE | ksApplyTo1RingMu | ksApplyToMultiRingE; // SuperK selections
+
+const SelecApplyMask_t valor::conv::ksApplyToAllFD = ksApplyToLowRes | ksApplyToHighRes | ksApplyToAllRings;
 const SelecApplyMask_t valor::conv::ksApplyToAll = ksApplyToAllND | ksApplyToAllFD;
 const SelecApplyMask_t valor::conv::ksApplyToAllNC =  ( ksApplyToNC0pi | ksApplyToNC1piC | ksApplyToNC1pi0 | ksApplyToNCoth );
 const SelecApplyMask_t valor::conv::ksApplyToAllNuECC =  (ksApplyToNuECC0pi      | ksApplyToNuECC1piC    | ksApplyToNuECC1pi0      | ksApplyToNuECCoth);
+
+
 
 // Targets
 const NuclearTargetApplyMask_t valor::conv::kntApplyToAll = (
@@ -125,7 +132,10 @@ const SelecApplyMask_t valor::conv::kApplyToSample[kMaxNSamples] = {
   /* ksNuELikeCChigh  */ ksApplyToHighRes         ,
   /* ksNuELikeCClow   */ ksApplyToLowRes          ,
   /* ksNuEBarCChigh   */ ksApplyToHighRes         ,
-  /* ksNuEBarCClow    */ ksApplyToLowRes
+  /* ksNuEBarCClow    */ ksApplyToLowRes          ,
+  /* ks1Rmu           */ ksApplyTo1RingMu         ,
+  /* ks1Re            */ ksApplyTo1RingE          ,
+  /* ksMultiRe        */ ksApplyToMultiRingE
 };
 
 // Which masks apply to which parent particle flavour
@@ -881,6 +891,12 @@ void valor::util::ApplyMaskNaming::Init(void)
   fSelecMaskToName.insert( std::make_pair(ksApplyToAll            , "all") );
   fSelecMaskToName.insert( std::make_pair(ksApplyToAllNC          , "allnc") );
   fSelecMaskToName.insert( std::make_pair(ksApplyToAllNuECC       , "allnuecc") );
+  fSelecMaskToName.insert( std::make_pair(ksApplyTo1RingMu        , "1rmu") );
+  fSelecMaskToName.insert( std::make_pair(ksApplyTo1RingE         , "1re") );
+  fSelecMaskToName.insert( std::make_pair(ksApplyToMultiRingE     , "multire") );
+  fSelecMaskToName.insert( std::make_pair(ksApplyToELikeRingAny   , "e-likerings") );
+  fSelecMaskToName.insert( std::make_pair(ksApplyTo1RingAny       , "1rany") );
+  fSelecMaskToName.insert( std::make_pair(ksApplyToAllRings       , "allrings") );
   for(auto const& pair : fSelecMaskToName) {
     fSelecNameToMask.insert( std::make_pair(pair.second, pair.first) );
   }

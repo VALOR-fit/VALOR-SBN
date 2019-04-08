@@ -37,7 +37,7 @@ namespace conv {
 static const unsigned long kApplyMaskOne = 1ul;
 static const int nbitsBeamApplyMask            = 2;
   static const int nbitsFlavApplyMask          = 4;
-  static const int nbitsSelecApplyMask         = 30;
+  static const int nbitsSelecApplyMask         = 33;
   static const int nbitsReacTypeApplyMask      = 21;
   static const int nbitsDetectorApplyMask      = 7;
   static const int nbitsNuclearTargetApplyMask = 7;
@@ -98,6 +98,9 @@ static const SelecApplyMask_t ksApplyToNuMuCCWS        = (kApplyMaskOne << 26 );
 static const SelecApplyMask_t ksApplyToNC              = (kApplyMaskOne << 27 );
 static const SelecApplyMask_t ksApplyToHighRes         = (kApplyMaskOne << 28 ); // Far detector selections
 static const SelecApplyMask_t ksApplyToLowRes          = (kApplyMaskOne << 29 ); // Far detector selections
+static const SelecApplyMask_t ksApplyTo1RingMu         = (kApplyMaskOne << 30 ); // SuperK selections
+static const SelecApplyMask_t ksApplyTo1RingE          = (kApplyMaskOne << 31 ); // SuperK selections
+static const SelecApplyMask_t ksApplyToMultiRingE      = (kApplyMaskOne << 32 ); // SuperK selections
 
 static const ReacTypeApplyMask_t ktApplyToCCQE         = (kApplyMaskOne <<  0 ); // Reaction type
 static const ReacTypeApplyMask_t ktApplyToCCMEC        = (kApplyMaskOne <<  1 );
@@ -189,6 +192,9 @@ extern const SelecApplyMask_t ksApplyToAllFD;
 extern const SelecApplyMask_t ksApplyToAll;
 extern const SelecApplyMask_t ksApplyToAllNC;
 extern const SelecApplyMask_t ksApplyToAllNuECC;
+extern const SelecApplyMask_t ksApplyToELikeRingAny;  // SuperK selections
+extern const SelecApplyMask_t ksApplyTo1RingAny;      // SuperK selections
+extern const SelecApplyMask_t ksApplyToAllRings;      // SuperK selections
 
 
 
