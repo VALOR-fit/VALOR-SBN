@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="t2k_run1-9d">
+<!--
+   Far detector selections
+-->
+    <!--
+      TODO: Make sure the order of variables used in the template binning files are consistent with each other and with whatever function fills the templates
+
+      TODO: Sort out MC XML files and filling the MC templates
+
+      TODO: Flux and BANFF matrix inputs
+    -->
+
+    <element name="sk_fhc_1rmu">
+      <detector>     superk                                               </detector>
+      <beam>         JPARC_FHC                                            </beam>
+      <sample>       1rmu                                                 </sample>
+      <observable>   Ereco                                                </observable>
+      <data>         t2k/official/2018/data/SK_data_Run19d_valor.root     </data>         <!-- TODO: Temp. path -->
+      <mc>           mc/t2k/t2k_mc_run1-9d                                </mc>           <!-- TODO: Temp. path -->
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/t2k_fhc_mulike_run1-9d_bins.xml              </binning>
+    </element>
+
+    <element name="sk_rhc_1rmu">
+      <detector>     superk                                               </detector>
+      <beam>         JPARC_RHC                                            </beam>
+      <sample>       1rmu                                                 </sample>
+      <observable>   Ereco                                                </observable>
+      <data>         t2k/official/2018/data/SK_data_Run19d_valor.root     </data>         <!-- TODO: Temp. path -->
+      <mc>           mc/t2k/t2k_mc_run1-9d                                </mc>           <!-- TODO: Temp. path -->
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/t2k_rhc_mulike_run1-9d_bins.xml              </binning>
+    </element>
+
+    <element name="sk_fhc_1re">
+      <detector>     superk                                               </detector>
+      <beam>         JPARC_FHC                                            </beam>
+      <sample>       1re                                                  </sample>
+      <observable>   Ereco,Thetareco                                      </observable>
+      <data>         t2k/official/2018/data/SK_data_Run19d_valor.root     </data>         <!-- TODO: Temp. path -->
+      <mc>           mc/t2k/t2k_mc_run1-9d                                </mc>           <!-- TODO: Temp. path -->
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/t2k_fhc_elike_run1-9d_bins.xml               </binning>
+    </element>
+
+    <element name="sk_rhc_1re">
+      <detector>     superk                                               </detector>
+      <beam>         JPARC_RHC                                            </beam>
+      <sample>       1re                                                  </sample>
+      <observable>   Ereco,Thetareco                                      </observable>
+      <data>         t2k/official/2018/data/SK_data_Run19d_valor.root     </data>         <!-- TODO: Temp. path -->
+      <mc>           mc/t2k/t2k_mc_run1-9d                                </mc>           <!-- TODO: Temp. path -->
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/t2k_rhc_elike_run1-9d_bins.xml               </binning>
+    </element>
+
+    <element name="sk_fhc_multire">
+      <detector>     superk                                               </detector>
+      <beam>         JPARC_FHC                                            </beam>
+      <sample>       multire                                              </sample>
+      <observable>   Ereco,Thetareco                                      </observable>
+      <data>         t2k/official/2018/data/SK_data_Run19d_valor.root     </data>         <!-- TODO: Temp. path -->
+      <mc>           mc/t2k/t2k_mc_run1-9d                                </mc>           <!-- TODO: Temp. path -->
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/t2k_fhc_elike_run1-9d_bins.xml               </binning>
+    </element>
+    
+  </element_list>
+  
+  <systematics name="t2k_run1-9d">  <!-- TODO: flux and int matricies are combined for T2K. Does the SDK allow this? -->
+
+    <!-- TODO: Put in SKDetFSI matrix -->
+
+    <!-- TODO: Remove SCCA and SCCV from the BANFF matrix? (this will be done when converting to VALOR format) -->
+
+    <group name="flux"> <!-- TODO: change group name -->
+      <!-- TODO: This may change with the new params specification. Check CorrelatedSystematics::Read after the update-->
+      <!-- This is the list of param names (to be read by AsStringSimple or AsString) in the input matrix.
+           The order of params in this list must be the same as the order of params in the matrix.-->
+      <format> t2k_banff_params_run1-9d.xml </format>
+      
+      <covariance_matrix>
+        <filename> t2k/official/2018/banff/DataFit_Postfit_2018_final_v1_180907_sk_eb_valor_order_all_plus_scc.root </filename>         <!-- TODO: Temp. path -->
+        <objname>  postfit_cov    </objname>
+        <objtype>  TMatrixD       </objtype>
+      </covariance_matrix>
+
+      <!-- TODO: see L263 in CorrelatedSystematics::Read -->
+      <untuned_values>
+        <filename> t2k/official/2018/banff/DataFit_Postfit_2018_final_v1_180907_sk_eb_valor_order_all_plus_scc.root </filename>
+        <objname>  banff_untuned_central_values  </objname>
+      </untuned_values>
+
+      <!-- TODO: see CorrelatedSystematics::Read -->
+      <initial_values>
+        <filename> t2k/official/2018/banff/DataFit_Postfit_2018_final_v1_180907_sk_eb_valor_order_all_plus_scc.root </filename>
+        <objname>  postfit_params  </objname>
+      </initial_values>
+    </group>
+    
+  </systematics>
+
+</valor> 
