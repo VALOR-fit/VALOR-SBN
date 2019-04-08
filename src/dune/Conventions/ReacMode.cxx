@@ -33,8 +33,8 @@ string util::AsString(ReacMode_t m)
     case (kmNuMuCCcoh       ): return "numuCCcoh";    break;       
     case (kmNuMuCCIMD       ): return "numuCCIMD";    break;
     case (kmNuMuCCELScat    ): return "numuCCELscat"; break;        
-    case (kmNuMuCCoth       ): return "numuCCoth";    break;        
-//  case (kmNuMuNCEL        ): return ""; break;        
+    case (kmNuMuCCoth       ): return "numuCCoth";    break;
+//  case (kmNuMuNCEL        ): return ""; break;
 //  case (kmNuMuNCMEC       ): return ""; break;        
     case (kmNuMuNC1piC      ): return "numuNC1piC"; break;        
     case (kmNuMuNC1pi0      ): return "numuNC1pi0"; break;        
@@ -42,7 +42,8 @@ string util::AsString(ReacMode_t m)
 //  case (kmNuMuNC2pi0      ): return ""; break;        
 //  case (kmNuMuNCpiCpi0    ): return ""; break;       
     case (kmNuMuNCcoh       ): return "numuNCcoh";  break;        
-    case (kmNuMuNCELScat    ): return "numuNCELscat"; break;        
+    case (kmNuMuNC1Gamma    ): return "numuNC1Gamma";  break;
+    case (kmNuMuNCELScat    ): return "numuNCELscat"; break;
     case (kmNuMuNCoth       ): return "numuNCoth";  break;        
 
     case (kmNuMuBarCCQE     ): return "numubarCCQE";     break;        
@@ -63,7 +64,8 @@ string util::AsString(ReacMode_t m)
 //  case (kmNuMuBarNC2pi0   ): return ""; break;    
 //  case (kmNuMuBarNCpiCpi0 ): return ""; break;   
     case (kmNuMuBarNCcoh    ): return "numubarNCcoh";  break;  
-    case (kmNuMuBarNCELScat ): return "numubarNCELscat"; break;         
+    case (kmNuMuBarNC1Gamma ): return "numubarNC1Gamma";  break;
+    case (kmNuMuBarNCELScat ): return "numubarNCELscat"; break;
     case (kmNuMuBarNCoth    ): return "numubarNCoth";  break;      
 
     case (kmNuECCQE         ): return "nueCCQE";     break;             
@@ -83,7 +85,8 @@ string util::AsString(ReacMode_t m)
 //  case (kmNuENC2pi0       ): return ""; break;    
 //  case (kmNuENCpiCpi0     ): return ""; break;   
     case (kmNuENCcoh        ): return "nueNCcoh";  break; 
-    case (kmNuEELScat       ): return "nueELscat"; break;        
+    case (kmNuENC1Gamma     ): return "nueNC1Gamma"; break;
+    case (kmNuEELScat       ): return "nueELscat"; break;
     case (kmNuENCoth        ): return "nueNCoth";  break;    
 
     case (kmNuEBarCCQE      ): return "nuebarCCQE";     break;    
@@ -104,7 +107,8 @@ string util::AsString(ReacMode_t m)
 //  case (kmNuEBarNC2pi0    ): return ""; break;    
 //  case (kmNuEBarNCpiCpi0  ): return ""; break;  
     case (kmNuEBarNCcoh     ): return "nuebarNCcoh";  break;   
-    case (kmNuEBarELScat    ): return "nuebarELscat"; break;        
+    case (kmNuEBarNC1Gamma  ): return "nuebarNC1Gamma"; break;
+    case (kmNuEBarELScat    ): return "nuebarELscat"; break;
     case (kmNuEBarNCoth     ): return "nuebarNCoth";  break;     
 
   case (kmNuMuToNuECCQE        ): return "numutonueCCQE";     break;
@@ -228,7 +232,8 @@ string util::AsStringTeX(ReacMode_t m, bool root)
 //  case (kmNuMuNC2pi0      ): name = "";                                 break;        
 //  case (kmNuMuNCpiCpi0    ): name = "";                                 break;       
     case (kmNuMuNCcoh       ): name = "#nu_{#mu} NCcoh";                  break;        
-    case (kmNuMuNCELScat    ): name = "#nu_{#mu} NC e^{-} elastic scat";  break;        
+    case (kmNuMuNC1Gamma    ): name = "#nu_{#mu} NC 1 gamma";             break;
+    case (kmNuMuNCELScat    ): name = "#nu_{#mu} NC e^{-} elastic scat";  break;
     case (kmNuMuNCoth       ): name = "#nu_{#mu} NCoth";                  break;        
 
     case (kmNuMuBarCCQE     ): name = "#bar{#nu}_{#mu} CCQE";             break;        
@@ -249,7 +254,8 @@ string util::AsStringTeX(ReacMode_t m, bool root)
 //  case (kmNuMuBarNC2pi0   ): name = "";                                 break;    
 //  case (kmNuMuBarNCpiCpi0 ): name = "";                                 break;   
     case (kmNuMuBarNCcoh    ): name = "#bar{#nu}_{#mu} NCcoh";            break;  
-    case (kmNuMuBarNCELScat ): name = "#bar{#nu}_{#mu} NC e^{-} elastic scat";  break;        
+    case (kmNuMuBarNC1Gamma ): name = "#bar{#nu}_{#mu} NC 1 gamma";       break;
+    case (kmNuMuBarNCELScat ): name = "#bar{#nu}_{#mu} NC e^{-} elastic scat";  break;
     case (kmNuMuBarNCoth    ): name = "#bar{#nu}_{#mu} NCoth";            break;       
 
     case (kmNuECCQE         ): name = "#nu_{e} CCQE";                     break;             
@@ -269,7 +275,8 @@ string util::AsStringTeX(ReacMode_t m, bool root)
 //  case (kmNuENC2pi0       ): name = "";                                 break;    
 //  case (kmNuENCpiCpi0     ): name = "";                                 break;   
     case (kmNuENCcoh        ): name = "#nu_{e} NCcoh";                    break; 
-    case (kmNuEELScat       ): name = "#nu_{e} e^{-} elastic scat";       break;          
+    case (kmNuENC1Gamma     ): name = "#nu_{e} NC 1 gamma";               break;
+    case (kmNuEELScat       ): name = "#nu_{e} e^{-} elastic scat";       break;
     case (kmNuENCoth        ): name = "#nu_{e} NCoth";                    break;    
 
     case (kmNuEBarCCQE      ): name = "#bar{#nu}_{e} CCQE";               break;    
@@ -290,7 +297,8 @@ string util::AsStringTeX(ReacMode_t m, bool root)
 //  case (kmNuEBarNC2pi0    ): name = "";                                 break;    
 //  case (kmNuEBarNCpiCpi0  ): name = "";                                 break;  
     case (kmNuEBarNCcoh     ): name = "#bar{#nu}_{e} NCcoh";              break;   
-    case (kmNuEBarELScat    ): name = "#bar{#nu}_{e} e^{-} elastic scat"; break;          
+    case (kmNuEBarNC1Gamma  ): name = "#bar{#nu}_{e} NC 1 gamma";         break;
+    case (kmNuEBarELScat    ): name = "#bar{#nu}_{e} e^{-} elastic scat"; break;
     case (kmNuEBarNCoth     ): name = "#bar{#nu}_{e} NCoth";              break;     
 
     case (kmNuMuToNuECCQE        ): name = "#nu_{#mu} #rightarrow #nu_{e} CCQE";                   break;
@@ -417,6 +425,7 @@ std::string util::AsString(conv::ReacType_t t)
     case (kmtNC2pi0   ) : return "NC2pi0";
     case (kmtNCpiCpi0 ) : return "NC1pi01piC";
     case (kmtNCcoh    ) : return "NCcoherent";
+    case (kmtNC1Gamma ) : return "NC1Gamma";
     case (kmtNCELScat ) : return "NCnuEEl";
     case (kmtNCoth    ) : return "NCother";
     case (kmtELScat   ) : return "nuEEl";
