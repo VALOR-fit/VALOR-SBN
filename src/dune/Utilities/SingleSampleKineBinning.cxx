@@ -15,6 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Conventions/Constants.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Messenger/Messenger.h"
@@ -293,10 +294,37 @@ bool SingleSampleKineBinning::Read(string file)
     for(int im = 0; im < conv::kNReacModes; im++) {
       conv::ReacMode_t m = conv::kReactionModes[is][im];
       if(m == conv::kmUndefined) continue;
+      string mode_xsec_true_binning_file = "";
       string node_path = "xsec_true/" + util::AsString(m);
-      bool mode_xsec_true_exists = util::NodeExists(xml,root_node,node_path);
+      bool mode_xsec_true_exists = false;
+      if(util::NodeExists(xml,root_node,node_path)) {
+        mode_xsec_true_exists = true;
+        mode_xsec_true_binning_file = util::XML2String(xml, root_node, node_path);
+      }
+      else {
+        // Read binning that depends on the coarse reac mode, if specified
+        XMLNodePointer_t xsec_true_node = util::FindNode(xml, root_node, "xsec_true");
+        vector<XMLNodePointer_t> xsec_true_binning_vec = util::FindNodes(xml, xsec_true_node, "element");
+        if(xsec_true_binning_vec.size() != 0) {
+          for(XMLNodePointer_t element : xsec_true_binning_vec) {
+            if(util::NodeExists(xml, element, "coarse_modes") && util::NodeExists(xml, element, "binning")) {
+              string coarse_modes_str_all = util::XML2String(xml, element, "coarse_modes");
+              vector<string> coarse_modes_str_vec = util::Tokens(util::RemoveAllWhitespace(coarse_modes_str_all), ",");
+              for(string coarse_mode_str : coarse_modes_str_vec) {
+                if(util::ModeWithinCoarse(m, util::CoarseModeFromString(coarse_mode_str))) {
+                  mode_xsec_true_exists = true;
+                  mode_xsec_true_binning_file = util::XML2String(xml, element, "binning");
+                  break;
+                }
+              }
+            }
+            if(mode_xsec_true_exists) {
+              break;
+            }
+          }
+        }
+      }
       if(mode_xsec_true_exists) {
-        string mode_xsec_true_binning_file = util::XML2String(xml,root_node,node_path);
         LOG("SampleBinning", pINFO)
           << "\n ** Overriding default / Reading xsec true binning ** " 
           << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample) << " / mode: " <<  util::AsString(m)
