@@ -34,6 +34,7 @@
                 <selection> all    </selection>
                 <reac_type> ccqe   </reac_type>
                 <flav>      nu any </flav>
+                <osc>       unosc  </osc>
                 <target>    all    </target>
               </apply_to>
 
@@ -155,6 +156,7 @@ namespace valor {
       const conv::DetectorApplyMask_t      fDefApplyDetector      = conv::kdApplyToAll;
       const conv::BeamApplyMask_t          fDefApplyBeam          = conv::kbApplyToAll;
       const conv::FlavApplyMask_t          fDefApplyFlav          = conv::kfApplyToAll;
+      const conv::OscModeApplyMask_t       fDefApplyOscMode       = conv::koApplyToAll;
       const conv::SelecApplyMask_t         fDefApplySelec         = conv::ksApplyToAllND;
       const conv::ReacTypeApplyMask_t      fDefApplyReacType      = conv::ktApplyToAll;
       const conv::NuclearTargetApplyMask_t fDefApplyNuclearTarget = conv::kntApplyToAll;
@@ -170,6 +172,7 @@ namespace valor {
       conv::DetectorApplyMask_t      ReadDetectorApplyMask     (std::string node_name) const;
       conv::BeamApplyMask_t          ReadBeamApplyMask         (std::string node_name) const;
       conv::FlavApplyMask_t          ReadFlavApplyMask         (std::string node_name) const;
+      conv::OscModeApplyMask_t       ReadOscModeApplyMask      (std::string node_name) const;
       conv::SelecApplyMask_t         ReadSelecApplyMask        (std::string node_name) const;
       conv::ReacTypeApplyMask_t      ReadReacTypeApplyMask     (std::string node_name) const;
       conv::NuclearTargetApplyMask_t ReadNuclearTargetApplyMask(std::string node_name) const;

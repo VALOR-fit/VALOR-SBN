@@ -201,6 +201,7 @@ void Parameter::ReadApplyMaskAll()
   DetectorApplyMask_t      detector = fDefApplyDetector;
   BeamApplyMask_t          beam     = fDefApplyBeam;
   FlavApplyMask_t          flav     = fDefApplyFlav;
+  OscModeApplyMask_t       osc      = fDefApplyOscMode;
   SelecApplyMask_t         selec    = fDefApplySelec;
   ReacTypeApplyMask_t      reactype = fDefApplyReacType;
   NuclearTargetApplyMask_t target   = fDefApplyNuclearTarget;
@@ -208,6 +209,7 @@ void Parameter::ReadApplyMaskAll()
     detector = ReadDetectorApplyMask     ("detector");
     beam     = ReadBeamApplyMask         ("beam");
     flav     = ReadFlavApplyMask         ("flav");
+    osc      = ReadOscModeApplyMask      ("osc");
     selec    = ReadSelecApplyMask        ("selection");
     reactype = ReadReacTypeApplyMask     ("reac_type");
     target   = ReadNuclearTargetApplyMask("target");
@@ -216,7 +218,7 @@ void Parameter::ReadApplyMaskAll()
     LOG("FitInputs", pNOTICE) << "For parameter " << fName << ", no apply masks have been set. Applying to all.";
     // No need to do anything here, as the the variables were initialised with the default values and have not been changed
   }
-  fApply = {detector, beam, flav, selec, reactype, target};
+  fApply = {detector, beam, flav, osc, selec, reactype, target};
 }
 //________________________________________________________________________________________
 DetectorApplyMask_t Parameter::ReadDetectorApplyMask(string node_name) const
@@ -287,6 +289,30 @@ FlavApplyMask_t Parameter::ReadFlavApplyMask(string node_name) const
     // The user hasn't tried to set any mask of this type for this param, so keep at the default mask
     // No need to do anything here, as the the variables were initialised with the default values and have not been changed
     LOG("FitInputs", pNOTICE) << "For parameter " << fName << ", " << node_name << " apply mask not set. Setting to default (" << util::FlavMaskAsString(mask) << ")";
+  }
+  return mask;
+}
+//________________________________________________________________________________________
+OscModeApplyMask_t Parameter::ReadOscModeApplyMask(string node_name) const
+{
+  OscModeApplyMask_t mask = fDefApplyOscMode;
+  string node_path = "apply_to/" + node_name;
+  if(IsNodeSpecified(node_path)) {
+    string content = util::XML2String(fxml, fParamNode, node_path);
+    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
+    try {
+      mask = util::OscModeMaskFromString(trimmed_content);
+    }
+    catch (const std::out_of_range& oor) {
+      LOG("FitInputs", pFATAL) << "For parameter " << fName << ", " << node_name << " apply mask name \'" << trimmed_content
+                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of Range error: " << oor.what();
+      util::Die(1);
+    }
+  }
+  else {
+    // The user hasn't tried to set any mask of this type for this param, so keep at the default mask
+    // No need to do anything here, as the the variables were initialised with the default values and have not been changed
+    LOG("FitInputs", pNOTICE) << "For parameter " << fName << ", " << node_name << " apply mask not set. Setting to default (" << util::OscModeMaskAsString(mask) << ")";
   }
   return mask;
 }
@@ -417,6 +443,7 @@ void Parameter::Print(std::ostream & stream) const
   stream << "        Selection = "       << util::SelecMaskAsString(fApply.selec)    << "\n";
   stream << "        Reaction type = "   << util::ReacTypeMaskAsString(fApply.reactype) << "\n";
   stream << "        True nu flavour = " << util::FlavMaskAsString(fApply.flav)     << "\n";
+  stream << "        Osc/unosc modes = " << util::OscModeMaskAsString(fApply.osc)     << "\n";
   stream << "        Nuclear target = "  << util::NuclearTargetMaskAsString(fApply.target)   << "\n";
   stream << "    Physical limits = [" << limits.first << ", " << limits.second << "]" << "\n";
   stream << std::endl;
