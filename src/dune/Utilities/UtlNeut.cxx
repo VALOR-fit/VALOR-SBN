@@ -197,7 +197,8 @@ conv::ReacMode_t valor::util::NeutModeToValorMode(int neut_mode, conv::NuFlavour
   }
 
   if (is_oscillated && (flav == conv::kNuE || flav == conv::kNuEBar) && !NeutIsNC(abs_mode)) {
-    // We don't keep track of NC oscillated modes, so lump those events in with the NC un-oscillated modes
+    // We don't keep track of NC oscillated modes, as e.g. the nue template for NC covers nue -> nue, nue -> numu and
+    // nue -> nutau (they would all be detected as the same)
     valor_mode = util::NuEModeToOscNuEMode(valor_mode);
   }
 

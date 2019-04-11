@@ -23,7 +23,7 @@
 namespace valor {
   namespace util {
 
-    conv::ReacMode_t NeutModeToValorMode(int neut_mode, conv::NuFlavour_t flav, bool is_oscillated);
+    valor::conv::ReacMode_t NeutModeToValorMode(int neut_mode, valor::conv::NuFlavour_t flav, bool is_oscillated);
 
     // See https://t2k.org/docs/technotes/351/v02 tables 5 and 6 (p105) for an explanation of what each neut reac mode number is (for the 2018 analysis)
     bool NeutIsCCQE     (int neut_reaction_mode);

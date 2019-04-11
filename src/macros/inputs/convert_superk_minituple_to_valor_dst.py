@@ -1,0 +1,298 @@
+#!/usr/bin/env python
+
+#
+# Convert the minituple, mtuple from the SK group into a VALOR DST format to be read by GSSFM::FillFromDST
+#
+# NOTE: Be aware that the sample, beam and reac mode for each event is stored as an int (in the output tree),
+# so if any of these enumerations change, the MC file will have to be regenerated
+#
+# Francis Bench <F.Bench \at liverpool.ac.uk>
+# April 2019
+
+import ROOT
+import glob
+from array import array
+
+ROOT.PyConfig.IgnoreCommandLineOptions = True
+ROOT.gROOT.SetBatch(1)
+
+try:
+  ROOT.valor
+except:
+  ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C")
+
+valor = ROOT.valor
+util =  valor.util
+conv =  valor.conv
+opt  =  valor.Opt.Instance()
+env  =  valor.Env.Instance()
+
+
+types = ["nuebar_x_nuebar"  ,  # The naming conventions used by the input SK MC files
+         "nue_x_nue"        ,
+         "numubar_x_nuebar" ,
+         "numubar_x_numubar",
+         "numu_x_nue"       ,
+         "numu_x_numu"      ,
+        ]
+
+true_int_flav = dict()    # Map of the input file name conventions to their corresponding true nu flavour (at interaction time)
+true_int_flav["nuebar_x_nuebar"]   = conv.kNuEBar
+true_int_flav["nue_x_nue"]         = conv.kNuE
+true_int_flav["numubar_x_nuebar"]  = conv.kNuEBar
+true_int_flav["numubar_x_numubar"] = conv.kNuMuBar
+true_int_flav["numu_x_nue"]        = conv.kNuE
+true_int_flav["numu_x_numu"]       = conv.kNuMu
+
+is_osc = dict()         # Map of the input file name conventions to whether the file corresponds to oscillated neutrinos or not
+is_osc["nuebar_x_nuebar"]   = False
+is_osc["nue_x_nue"]         = False
+is_osc["numubar_x_nuebar"]  = True
+is_osc["numubar_x_numubar"] = False
+is_osc["numu_x_nue"]        = True
+is_osc["numu_x_numu"]       = False
+
+# Scales for 14a MC, 13a nominal flux from http://www.t2k.org/t2ksk/documentation-page/MCWeighting/MCReweighting14a
+scales_FHC = dict()
+scales_FHC["numu_x_numu"        ] = ( 1396.245 , 634881. )
+scales_FHC["nue_x_nue"          ] = (   26.663 , 126899. )
+scales_FHC["numubar_x_numubar"  ] = (   50.964 , 634600. )
+scales_FHC["nuebar_x_nuebar"    ] = (    2.884 , 126728. )
+scales_FHC["numu_x_nue"         ] = ( 1483.994 , 126916. )
+scales_FHC["numubar_x_nuebar"   ] = (   52.939 , 126984. )
+
+scales_RHC = dict()
+scales_RHC["numu_x_numu"        ] = ( 208.369 , 634659. )
+scales_RHC["nue_x_nue"          ] = (   8.941 , 127262. )
+scales_RHC["numubar_x_numubar"  ] = ( 353.789 , 633988. )
+scales_RHC["nuebar_x_nuebar"    ] = (   6.811 , 127013. )
+scales_RHC["numu_x_nue"         ] = ( 215.099 , 127278. )
+scales_RHC["numubar_x_nuebar"   ] = ( 376.420 , 126812. )
+
+orig_treename = "mtuple"
+rhc_file_name_conv = "m250ka"   # All RHC file names contain this string, search for this before FHC
+fhc_file_name_conv = "250ka"    # All FHC file names contain this string
+
+# NOTE: See https://www.t2k.org/t2ksk/code/ntuplevariables  for reading in any other variables from the input MC trees
+
+#_______________________________________________________________________
+
+def main(fhc_dir, rhc_dir, output_filename):
+
+  files_fhc = glob.glob(fhc_dir+"/*root")
+  files_rhc = glob.glob(rhc_dir+"/*root")
+  print "Registered the following FHC files, will select the relevant files\n", [f.rsplit("/")[-1] for f in files_fhc], "\n\n"
+  print "Registered the following RHC files, will select the relevant files\n", [f.rsplit("/")[-1] for f in files_rhc], "\n\n"
+  files = files_fhc + files_rhc
+
+  f = files[0].rsplit("/")[-1]  # Gets the filename of the first file (strips the path)
+  if not "t2ksk.14a" in f:
+    print "ERROR: Unknown MC scaling"
+    util.Die(-1)
+
+  appropriate_files = get_appropriate_files(files)
+  print "Reading from the following input files:\n", [f.rsplit("/")[-1] for f in appropriate_files], "\n"
+  if len(appropriate_files) != len(list(set(appropriate_files))):
+    print "ERROR: Duplicate input files detected!"
+    util.Die(-1)
+
+  print "Creating the output file", output_filename, "\n"
+  output_file = ROOT.TFile(output_filename, "RECREATE")
+
+  # Set up the output tree
+  tree_out = ROOT.TTree("valor_t2k_dst","valor_t2k_dst")
+  sample     = array('i', [-1])   # For why an array is used see https://root.cern.ch/how/how-write-ttree-python
+  beam       = array('i', [-1])
+  reac_mode  = array('i', [-1])
+  enu_true   = array('d', [-1])
+  enu_reco   = array('d', [-1])
+  Theta_reco = array('d', [-1])
+  wght       = array('d', [-1])
+  wght_pot   = array('d', [-1])
+  tree_out.Branch("sample"       , sample        , "sample/I"    )
+  tree_out.Branch("beam"         , beam          , "beam/I"      )
+  tree_out.Branch("reac_mode"    , reac_mode     , "reac_mode/I" )
+  tree_out.Branch("enu_true"     , enu_true      , "enu_true/D"  )
+  tree_out.Branch("enu_reco"     , enu_reco      , "enu_reco/D"  )
+  tree_out.Branch("Theta_reco"   , Theta_reco    , "Theta_reco/D")
+  tree_out.Branch("wght"         , wght          , "wght/D"      )
+  tree_out.Branch("wght_pot"     , wght_pot      , "wght_pot/D"  )
+
+  # Loop over the input files and fill the output tree
+  for file_in_name in appropriate_files:
+    file_in = ROOT.TFile(file_in_name, "read")
+    in_tree = file_in.Get(orig_treename)
+
+    sample[0]       = get_selection(file_in_name)
+    beam[0]         = get_beam(file_in_name)
+    true_nu_flavour = get_flavour(file_in_name)
+    is_oscillated   = get_osc(file_in_name)
+    this_scale      = get_scale(file_in_name)
+    wght_pot[0]     = get_pot_weight(file_in_name, this_scale)
+
+    for event in in_tree:
+      neut_mode     = event.mode
+      reac_mode[0]  = util.NeutModeToValorMode(neut_mode, true_nu_flavour, is_oscillated)
+      enu_reco[0]   = ROOT.TMath.Min(event.erec / 1000., 29.9)      # Convert from MeV to GeV and set any overflow events with Erec > 29.9GeV to Erec = 29.9GeV
+      enu_true[0]   = event.pnu[0]                                  # Already in GeV/c
+      Theta_reco[0] = calc_theta_degrees(event.fq1rdir, sample[0])  # event.fq1rdir is a 3D list that contains info on the lepton direction and is dependant on the sample
+      wght[0]       = group_NIWG_weights(event, neut_mode)          # Group all of the standard multiplicative NIWG weights into a single weight
+
+      if enu_reco[0] < 0.:
+        continue
+
+      tree_out.Fill()
+
+  output_file.cd()
+  tree_out.Write("valor_t2k_dst")
+  output_file.Close()
+  print "Written the MC DST to the output file", output_filename
+  print "Done!"
+
+
+#_______________________________________________________________________
+def get_appropriate_files(files):
+  appropriate_files = []
+  for f in files:
+    for partial_name in types:
+      if partial_name in f:
+        appropriate_files.append(f)
+        continue
+  return appropriate_files
+
+#_______________________________________________________________________
+# Get the POT scale corresponding to the input file
+def get_scale(file_in_name):
+  this_scale = None
+  if rhc_file_name_conv in file_in_name:
+    # File is RHC
+    print "Using RHC scaling for input file", file_in_name.rsplit("/")[-1]
+    this_scale = scales_RHC
+  elif fhc_file_name_conv in file_in_name:
+    # File is FHC
+    print "Using FHC scaling for input file", file_in_name.rsplit("/")[-1]
+    this_scale = scales_FHC
+  else:
+    print "ERROR: Unknown horn current for file", file_in_name
+    util.Die(-1)
+  return this_scale
+
+#_______________________________________________________________________
+# Get the selection corresponding to the input file
+def get_selection(file_in_name):
+  selection = conv.ksUndefined
+  if "cc1piselec" in file_in_name:
+    selection = conv.ksMultiRe
+  elif "nueselec" in file_in_name:
+    selection = conv.ks1Re
+  elif "numuselec" in file_in_name:
+    selection = conv.ks1Rmu
+  else:
+    print "FATAL: Could not determine the selection for input file", file_in_name
+    util.Die(-1)
+  return selection    # In python the enumerations are just treated as ints, so there's no need to cast to an int
+
+#_______________________________________________________________________
+# Get the beam corresponding to the input file
+def get_beam(file_in_name):
+  beam = conv.kbUndefined
+  if rhc_file_name_conv in file_in_name:
+    beam = conv.kbJPARC_RHC
+  elif fhc_file_name_conv in file_in_name:
+    beam = conv.kbJPARC_FHC
+  else:
+    print "FATAL: Could not determine the horn current for input file ", file_in_name
+  return beam
+
+#_______________________________________________________________________
+# Get the true nu flavour corresponding to the input file
+def get_flavour(file_in_name):
+  true_nu_flavour = conv.kNuFlavourUndefined
+  for filename_partial in types:
+    if filename_partial in file_in_name:
+      true_nu_flavour = true_int_flav[filename_partial]
+      break
+  if true_nu_flavour == conv.kNuFlavourUndefined or true_nu_flavour == 2**64 -1:
+    print "FATAL: Could not determine true nu flavour for file", file_in_name
+    util.Die(-1)
+  return true_nu_flavour
+
+#_______________________________________________________________________
+# Determine if the input file corresponds to oscillated or un-oscillated events
+def get_osc(file_in_name):
+  for partial_filename in types:
+    if partial_filename in file_in_name:
+      return is_osc[partial_filename]
+  print "FATAL: Could not determine whether the neutrinos are oscillated for file", file_in_name
+  util.Die(-1)
+
+#_______________________________________________________________________
+# This returns 1 / MC POT. When the tree is later read in GSSFM::FillFromDST, this will be multiplied by the data POT to get the true POT weight
+def get_pot_weight(file_in_name, this_scale):
+  for partial_filename in types:
+    if partial_filename in file_in_name:
+      scale_events,scale_per_mc = this_scale[partial_filename]
+      return  scale_events / (scale_per_mc * 1E21)
+  print "FATAL: Could not determine the POT weight for file", file_in_name
+  util.Die(-1)
+
+#_______________________________________________________________________
+# Takes the scalar product between the beam and lepton directions
+def calc_theta_degrees(lep_dir, sample):
+  # lep_dir contains info on the lepton direction and is dependant on the sample
+  costheta = -999.
+  if util.SampleIsELike(sample):
+    costheta = conv.kBeamDir[0] * lep_dir[0][1][0] + conv.kBeamDir[1] * lep_dir[0][1][1] + conv.kBeamDir[2] * lep_dir[0][1][2]
+  if util.SampleIsMuLike(sample):
+    costheta = conv.kBeamDir[0] * lep_dir[0][2][0] + conv.kBeamDir[1] * lep_dir[0][2][1] + conv.kBeamDir[2] * lep_dir[0][2][2]
+
+  if  costheta < -1.00001 or costheta > +1.00001:
+    print "ERROR: costheta = " << costheta << " --> outside allowed range"
+    util.Die(1)
+
+  LepTheta        = ROOT.TMath.ACos(costheta)          # radians
+  LepThetaDegrees = LepTheta / ROOT.TMath.Pi() * 180.  # degrees
+  if LepTheta < 0.:
+    print "ERROR: Theta lepton is negative: " << LepThetaDegrees << " degrees"
+    util.Die(1)
+
+  return LepThetaDegrees
+
+#_______________________________________________________________________
+# Group all of the standard multiplicative NIWG weights into a single weight
+def group_NIWG_weights(event, neut_mode):
+  weight_SF_RFG   = event.wgtsfrfg
+  weight_BeRPA    = event.wgtBeRPA_nom
+  weight_CCcoh    = event.wght_CCcoh
+  weight_NC1Gamma = 1.
+
+  # In 2017 analysis SuperK mtuples included NC1Gamma and 2p2h weights in CCCoh weight
+  # creating problems with double-weighting these events. As CCCoh does not apply to these
+  # events, we override the mtuple weight and apply the weighting manually
+  if util.NeutIsNC1Gamma(neut_mode) or util.NeutIs2p2h(neut_mode):
+    weight_CCcoh = 1.
+
+  # TODO: Why do we set the NC1Gamma weight to 2?
+  if util.NeutIsNC1Gamma(neut_mode):
+    weight_NC1Gamma = 2.
+
+  # NOTE: If, in the future, you want to put in fake data weights, do so here. See L1597 of SuperkMC.cxx and util::UtlMakeFakeData (in VALOR-T2K-LBL) for examples
+
+  return weight_SF_RFG * weight_BeRPA * weight_CCcoh * weight_NC1Gamma
+
+#_______________________________________________________________________
+if __name__=="__main__":
+  
+  import optparse
+  parser = optparse.OptionParser(usage="%prog [options]..",description="Reformat and optionally reduce input SK MC trees")
+  
+  parser.add_option('-o', '--out-file', dest='output_filename', default="", help="Name for output MC DST file.")
+  parser.add_option('-f', '--fhc-dir ', dest='fhc_dir'        , default="", help="Directory containing all FHC input files")
+  parser.add_option('-r', '--rhc-dir ', dest='rhc_dir'        , default="", help="Directory containing all RHC input files")
+
+  o,other = parser.parse_args()
+
+  main(o.fhc_dir, o.rhc_dir, o.output_filename)
+
+  if other:
+    print "Warning - ignored arguments: ", other
