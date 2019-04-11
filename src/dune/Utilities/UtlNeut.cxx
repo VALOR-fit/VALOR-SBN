@@ -16,35 +16,35 @@ using namespace valor;
 
 
 //___________________________________________________________________________
-bool valor::util::IsCCQE(int neut_reaction_mode)
+bool valor::util::NeutIsCCQE(int neut_reaction_mode)
 {
   return neut_reaction_mode ==  1;
 }
 //___________________________________________________________________________
-bool valor::util::IsCC1piC(int neut_reaction_mode)
+bool valor::util::NeutIsCC1piC(int neut_reaction_mode)
 {
   bool is_cc1piC = (neut_reaction_mode == 11 ||
                     neut_reaction_mode == 13);
   return is_cc1piC;
 }
 //___________________________________________________________________________
-bool valor::util::IsCC1pi0(int neut_reaction_mode)
+bool valor::util::NeutIsCC1pi0(int neut_reaction_mode)
 {
   bool is_cc1pi0 = (neut_reaction_mode == 12);
   return is_cc1pi0;
 }
 //___________________________________________________________________________
-bool valor::util::IsCCcoh(int neut_reaction_mode)
+bool valor::util::NeutIsCCcoh(int neut_reaction_mode)
 {
   return neut_reaction_mode ==  16;
 }
 //___________________________________________________________________________
-bool valor::util::Is2p2h(int neut_reaction_mode)
+bool valor::util::NeutIs2p2h(int neut_reaction_mode)
 {
   return neut_reaction_mode ==  2;
 }
 //___________________________________________________________________________
-bool valor::util::IsCCoth(int neut_reaction_mode)
+bool valor::util::NeutIsCCoth(int neut_reaction_mode)
 //this is a catch all for everything CC that is not QE, 1pi, or coh
 // needs to be updated if another subcategory is added
 {
@@ -56,33 +56,33 @@ bool valor::util::IsCCoth(int neut_reaction_mode)
   return is_ccoth;
 }
 //___________________________________________________________________________
-bool valor::util::IsNC1pi0(int neut_reaction_mode)
+bool valor::util::NeutIsNC1pi0(int neut_reaction_mode)
 {
   bool is_cc1pi0 = (neut_reaction_mode == 31 ||
                     neut_reaction_mode == 32);
   return is_cc1pi0;
 }
 //___________________________________________________________________________
-bool valor::util::IsNC1Gamma(int neut_reaction_mode)
+bool valor::util::NeutIsNC1Gamma(int neut_reaction_mode)
 {
   bool is_nc1gamma= (neut_reaction_mode == 38 ||
                      neut_reaction_mode == 39);
   return is_nc1gamma;
 }
 //___________________________________________________________________________
-bool valor::util::IsNC1piC(int neut_reaction_mode)
+bool valor::util::NeutIsNC1piC(int neut_reaction_mode)
 {
   bool is_cc1pi0 = (neut_reaction_mode == 33 ||
                     neut_reaction_mode == 34);
   return is_cc1pi0;
 }
 //___________________________________________________________________________
-bool valor::util::IsNCcoh(int neut_reaction_mode)
+bool valor::util::NeutIsNCcoh(int neut_reaction_mode)
 {
   return neut_reaction_mode == 36;
 }
 //___________________________________________________________________________
-bool valor::util::IsNCoth(int neut_reaction_mode)
+bool valor::util::NeutIsNCoth(int neut_reaction_mode)
 //this is a catch all for everything NC that is not 1pi0, 1piC or coh
 // needs to be updated if another subcategory is added
 {
@@ -98,16 +98,16 @@ bool valor::util::IsNCoth(int neut_reaction_mode)
   return is_ncoth;
 }
 //___________________________________________________________________________
-bool valor::util::IsCC(int neut_reaction_mode)
+bool valor::util::NeutIsCC(int neut_reaction_mode)
 {
-  return IsCCQE(neut_reaction_mode) || IsCC1piC(neut_reaction_mode) || IsCC1pi0(neut_reaction_mode) || 
-         Is2p2h(neut_reaction_mode) || IsCCcoh(neut_reaction_mode) || IsCCoth(neut_reaction_mode);
+  return NeutIsCCQE(neut_reaction_mode) || NeutIsCC1piC(neut_reaction_mode) || NeutIsCC1pi0(neut_reaction_mode) || 
+         NeutIs2p2h(neut_reaction_mode) || NeutIsCCcoh(neut_reaction_mode) || NeutIsCCoth(neut_reaction_mode);
 }
 //___________________________________________________________________________
-bool valor::util::IsNC(int neut_reaction_mode)
+bool valor::util::NeutIsNC(int neut_reaction_mode)
 {
-  return IsNC1piC(neut_reaction_mode) || IsNC1pi0(neut_reaction_mode) || IsNC1Gamma(neut_reaction_mode) ||
-         IsNCcoh(neut_reaction_mode) || IsNCoth(neut_reaction_mode);
+  return NeutIsNC1piC(neut_reaction_mode) || NeutIsNC1pi0(neut_reaction_mode) || NeutIsNC1Gamma(neut_reaction_mode) ||
+         NeutIsNCcoh(neut_reaction_mode) || NeutIsNCoth(neut_reaction_mode);
 }
 //___________________________________________________________________________
 conv::ReacMode_t valor::util::NeutModeToValorMode(int neut_mode, conv::NuFlavour_t flav, bool is_oscillated)
@@ -125,67 +125,67 @@ conv::ReacMode_t valor::util::NeutModeToValorMode(int neut_mode, conv::NuFlavour
     return conv::kmUndefined;
   }
 
-  if (IsCCQE(abs_mode)) {
+  if (NeutIsCCQE(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuCCQE;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuECCQE;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarCCQE;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarCCQE;
   }
-  else if (IsCC1piC(abs_mode)) {
+  else if (NeutIsCC1piC(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuCC1piC;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuECC1piC;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarCC1piC;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarCC1piC;
   }
-  else if (IsCC1pi0(abs_mode)) {
+  else if (NeutIsCC1pi0(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuCC1pi0;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuECC1pi0;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarCC1pi0;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarCC1pi0;
   }
-  else if (Is2p2h(abs_mode)) {
+  else if (NeutIs2p2h(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuCCMEC;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuECCMEC;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarCCMEC;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarCCMEC;
   }
-  else if (IsCCcoh(abs_mode)) {
+  else if (NeutIsCCcoh(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuCCcoh;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuECCcoh;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarCCcoh;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarCCcoh;
   }
-  else if (IsCCoth(abs_mode)) {
+  else if (NeutIsCCoth(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuCCoth;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuECCoth;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarCCoth;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarCCoth;
   }
-  else if (IsNC1piC(abs_mode)) {
+  else if (NeutIsNC1piC(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuNC1piC;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuENC1piC;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarNC1piC;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarNC1piC;
   }
-  else if (IsNC1pi0(abs_mode)) {
+  else if (NeutIsNC1pi0(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuNC1pi0;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuENC1pi0;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarNC1pi0;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarNC1pi0;
   }
-  else if (IsNCcoh(abs_mode)) {
+  else if (NeutIsNCcoh(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuNCcoh;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuENCcoh;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarNCcoh;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarNCcoh;
   }
-  else if (IsNC1Gamma(abs_mode)) {
+  else if (NeutIsNC1Gamma(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuNC1Gamma;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuENC1Gamma;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarNC1Gamma;
     if(flav == conv::kNuEBar ) valor_mode = conv::kmNuEBarNC1Gamma;
   }
-  else if (IsNCoth(abs_mode)) {
+  else if (NeutIsNCoth(abs_mode)) {
     if(flav == conv::kNuMu   ) valor_mode = conv::kmNuMuNCoth;
     if(flav == conv::kNuE    ) valor_mode = conv::kmNuENCoth;
     if(flav == conv::kNuMuBar) valor_mode = conv::kmNuMuBarNCoth;
@@ -196,7 +196,7 @@ conv::ReacMode_t valor::util::NeutModeToValorMode(int neut_mode, conv::NuFlavour
     return conv::kmUndefined;
   }
 
-  if (is_oscillated && (flav == conv::kNuE || flav == conv::kNuEBar) && !IsNC(abs_mode)) {
+  if (is_oscillated && (flav == conv::kNuE || flav == conv::kNuEBar) && !NeutIsNC(abs_mode)) {
     // We don't keep track of NC oscillated modes, so lump those events in with the NC un-oscillated modes
     valor_mode = util::NuEModeToOscNuEMode(valor_mode);
   }
