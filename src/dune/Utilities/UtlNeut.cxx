@@ -98,6 +98,18 @@ bool valor::util::IsNCoth(int neut_reaction_mode)
   return is_ncoth;
 }
 //___________________________________________________________________________
+bool valor::util::IsCC(int neut_reaction_mode)
+{
+  return IsCCQE(neut_reaction_mode) || IsCC1piC(neut_reaction_mode) || IsCC1pi0(neut_reaction_mode) || 
+         Is2p2h(neut_reaction_mode) || IsCCcoh(neut_reaction_mode) || IsCCoth(neut_reaction_mode);
+}
+//___________________________________________________________________________
+bool valor::util::IsNC(int neut_reaction_mode)
+{
+  return IsNC1piC(neut_reaction_mode) || IsNC1pi0(neut_reaction_mode) || IsNC1Gamma(neut_reaction_mode) ||
+         IsNCcoh(neut_reaction_mode) || IsNCoth(neut_reaction_mode);
+}
+//___________________________________________________________________________
 conv::ReacMode_t valor::util::NeutModeToValorMode(int neut_mode, conv::NuFlavour_t flav, bool is_oscillated)
 {
   conv::ReacMode_t valor_mode = conv::kmUndefined;
@@ -184,7 +196,8 @@ conv::ReacMode_t valor::util::NeutModeToValorMode(int neut_mode, conv::NuFlavour
     return conv::kmUndefined;
   }
 
-  if (is_oscillated && (flav == conv::kNuE || flav == conv::kNuEBar)) {
+  if (is_oscillated && (flav == conv::kNuE || flav == conv::kNuEBar) && !IsNC(abs_mode)) {
+    // We don't keep track of NC oscillated modes, so lump those events in with the NC un-oscillated modes
     valor_mode = util::NuEModeToOscNuEMode(valor_mode);
   }
 

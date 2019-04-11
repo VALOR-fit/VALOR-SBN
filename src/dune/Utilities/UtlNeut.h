@@ -32,11 +32,13 @@ namespace valor {
     bool Is2p2h     (int neut_reaction_mode);
     bool IsCCcoh    (int neut_reaction_mode);
     bool IsCCoth    (int neut_reaction_mode); // this is a catch all. if new categories are added, please alter this method too
+    bool IsCC       (int neut_reaction_mode);
     bool IsNC1pi0   (int neut_reaction_mode);
     bool IsNC1piC   (int neut_reaction_mode);
     bool IsNCcoh    (int neut_reaction_mode);
     bool IsNCoth    (int neut_reaction_mode);
     bool IsNC1Gamma (int neut_reaction_mode);
+    bool IsNC       (int neut_reaction_mode);
   }
 }
 
