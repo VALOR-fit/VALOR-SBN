@@ -132,7 +132,7 @@ def main(fhc_dir, rhc_dir, output_filename):
 
     for event in in_tree:
       neut_mode     = event.mode
-      reac_mode[0]  = util.NeutModeToValorMode(neut_mode, true_nu_flavour, is_oscillated)
+      reac_mode[0]  = NeutModeToValorMode(neut_mode, true_nu_flavour, is_oscillated)
       enu_reco[0]   = ROOT.TMath.Min(event.erec / 1000., 29.9)      # Convert from MeV to GeV and set any overflow events with Erec > 29.9GeV to Erec = 29.9GeV
       enu_true[0]   = event.pnu[0]                                  # Already in GeV/c
       Theta_reco[0] = calc_theta_degrees(event.fq1rdir, sample[0])  # event.fq1rdir is a 3D list that contains info on the lepton direction and is dependant on the sample
