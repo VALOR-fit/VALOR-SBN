@@ -72,6 +72,7 @@ scales_RHC["numubar_x_nuebar"   ] = ( 376.420 , 126812. )
 orig_treename = "mtuple"
 rhc_file_name_conv = "m250ka"   # All RHC file names contain this string, search for this before FHC
 fhc_file_name_conv = "250ka"    # All FHC file names contain this string
+t2k_beam_dir = [0.669764, -0.742179, 0.024223]  # This is a direct copy of kBeamDir from VALOR-SDK/src/Conventions/Constants.h. The reason for this is that pyROOT often completely fails to read 1D C arrays.
 
 # NOTE: See https://www.t2k.org/t2ksk/code/ntuplevariables  for reading in any other variables from the input MC trees
 
@@ -242,9 +243,9 @@ def calc_theta_degrees(lep_dir, sample):
   # lep_dir contains info on the lepton direction and is dependant on the sample
   costheta = -999.
   if util.SampleIsELike(sample):
-    costheta = conv.kBeamDir[0] * lep_dir[0][1][0] + conv.kBeamDir[1] * lep_dir[0][1][1] + conv.kBeamDir[2] * lep_dir[0][1][2]
+    costheta = t2k_beam_dir[0] * lep_dir[0][1][0] + t2k_beam_dir[1] * lep_dir[0][1][1] + t2k_beam_dir[2] * lep_dir[0][1][2]
   if util.SampleIsMuLike(sample):
-    costheta = conv.kBeamDir[0] * lep_dir[0][2][0] + conv.kBeamDir[1] * lep_dir[0][2][1] + conv.kBeamDir[2] * lep_dir[0][2][2]
+    costheta = t2k_beam_dir[0] * lep_dir[0][2][0] + t2k_beam_dir[1] * lep_dir[0][2][1] + t2k_beam_dir[2] * lep_dir[0][2][2]
 
   if  costheta < -1.00001 or costheta > +1.00001:
     print "ERROR: costheta = " << costheta << " --> outside allowed range"
