@@ -12,6 +12,11 @@
 import ROOT
 import glob
 from array import array
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.environ["VALOR_FMWK"] + "/src/valor/Utilities/"))
+from UtlPy import c_to_pyroot_array_hack
 
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 ROOT.gROOT.SetBatch(1)
@@ -136,7 +141,7 @@ def main(fhc_dir, rhc_dir, output_filename):
       reac_mode[0]  = NeutModeToValorMode(neut_mode, true_nu_flavour, is_oscillated)
       enu_reco[0]   = ROOT.TMath.Min(event.erec / 1000., 29.9)      # Convert from MeV to GeV and set any overflow events with Erec > 29.9GeV to Erec = 29.9GeV
       enu_true[0]   = event.pnu[0]                                  # Already in GeV/c
-      Theta_reco[0] = calc_theta_degrees(event.fq1rdir, sample[0])  # event.fq1rdir is a 3D list that contains info on the lepton direction and is dependant on the sample
+      Theta_reco[0] = calc_theta_degrees(event.fq1rdir, event.fqnse, sample[0])  # event.fq1rdir is a 3D list that contains info on the lepton direction and is dependant on the sample
       wght[0]       = group_NIWG_weights(event, neut_mode)          # Group all of the standard multiplicative NIWG weights into a single weight
 
       if enu_reco[0] < 0.:
@@ -239,8 +244,9 @@ def get_pot_weight(file_in_name, this_scale):
 
 #_______________________________________________________________________
 # Takes the scalar product between the beam and lepton directions
-def calc_theta_degrees(lep_dir, sample):
+def calc_theta_degrees(lep_dir_in, size, sample):
   # lep_dir contains info on the lepton direction and is dependant on the sample
+  lep_dir = c_to_pyroot_array_hack(lep_dir_in, size, 7, 3)
   costheta = -999.
   if util.SampleIsELike(sample):
     costheta = t2k_beam_dir[0] * lep_dir[0][1][0] + t2k_beam_dir[1] * lep_dir[0][1][1] + t2k_beam_dir[2] * lep_dir[0][1][2]
@@ -270,11 +276,11 @@ def group_NIWG_weights(event, neut_mode):
   # In 2017 analysis SuperK mtuples included NC1Gamma and 2p2h weights in CCCoh weight
   # creating problems with double-weighting these events. As CCCoh does not apply to these
   # events, we override the mtuple weight and apply the weighting manually
-  if util.NeutIsNC1Gamma(neut_mode) or util.NeutIs2p2h(neut_mode):
+  if NeutIsNC1Gamma(neut_mode) or NeutIs2p2h(neut_mode):
     weight_CCcoh = 1.
 
   # TODO: Why do we set the NC1Gamma weight to 2?
-  if util.NeutIsNC1Gamma(neut_mode):
+  if NeutIsNC1Gamma(neut_mode):
     weight_NC1Gamma = 2.
 
   # NOTE: If, in the future, you want to put in fake data weights, do so here. See L1597 of SuperkMC.cxx and util::UtlMakeFakeData (in VALOR-T2K-LBL) for examples
