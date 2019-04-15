@@ -280,6 +280,199 @@ def group_NIWG_weights(event, neut_mode):
 
   return weight_SF_RFG * weight_BeRPA * weight_CCcoh * weight_NC1Gamma
 
+#___________________________________________________________________________
+def NeutIsCCQE(neut_reaction_mode):
+  return neut_reaction_mode == 1
+
+#___________________________________________________________________________
+def NeutIsCC1piC(neut_reaction_mode):
+  return neut_reaction_mode == 11 or neut_reaction_mode == 13
+
+#___________________________________________________________________________
+def NeutIsCC1pi0(neut_reaction_mode):
+  return neut_reaction_mode == 12
+
+#___________________________________________________________________________
+def NeutIsCCcoh(neut_reaction_mode):
+  return neut_reaction_mode == 16
+
+#___________________________________________________________________________
+def NeutIs2p2h(neut_reaction_mode):
+  return neut_reaction_mode == 2
+
+#___________________________________________________________________________
+def NeutIsCCoth(neut_reaction_mode):
+  #this is a catch all for everything CC that is not QE, 1pi, or coh
+  # needs to be updated if another subcategory is added
+  return ( neut_reaction_mode == 17 or
+           neut_reaction_mode == 21 or
+           neut_reaction_mode == 22 or
+           neut_reaction_mode == 23 or
+           neut_reaction_mode == 26 )
+
+#___________________________________________________________________________
+def NeutIsNC1pi0(neut_reaction_mode):
+  return neut_reaction_mode == 31 or neut_reaction_mode == 32
+
+#___________________________________________________________________________
+def NeutIsNC1Gamma(neut_reaction_mode):
+  return neut_reaction_mode == 38 or neut_reaction_mode == 39
+
+#___________________________________________________________________________
+def NeutIsNC1piC(neut_reaction_mode):
+  return neut_reaction_mode == 33 or neut_reaction_mode == 34
+
+#___________________________________________________________________________
+def NeutIsNCcoh(neut_reaction_mode):
+  return neut_reaction_mode == 36
+
+#___________________________________________________________________________
+def NeutIsNCoth(neut_reaction_mode):
+  #this is a catch all for everything NC that is not 1pi0, 1piC or coh
+  # needs to be updated if another subcategory is added
+  return ( neut_reaction_mode == 41 or
+           neut_reaction_mode == 42 or
+           neut_reaction_mode == 43 or
+           neut_reaction_mode == 44 or
+           neut_reaction_mode == 45 or
+           neut_reaction_mode == 46 or
+           neut_reaction_mode == 51 or
+           neut_reaction_mode == 52 )
+
+#___________________________________________________________________________
+def NeutIsCC(neut_reaction_mode):
+  return NeutIsCCQE(neut_reaction_mode) or NeutIsCC1piC(neut_reaction_mode) or NeutIsCC1pi0(neut_reaction_mode) or \
+         NeutIs2p2h(neut_reaction_mode) or NeutIsCCcoh(neut_reaction_mode) or NeutIsCCoth(neut_reaction_mode)
+
+#___________________________________________________________________________
+def NeutIsNC(neut_reaction_mode):
+  return NeutIsNC1piC(neut_reaction_mode) or NeutIsNC1pi0(neut_reaction_mode) or NeutIsNC1Gamma(neut_reaction_mode) or \
+         NeutIsNCcoh(neut_reaction_mode) or NeutIsNCoth(neut_reaction_mode)
+
+#___________________________________________________________________________
+# Convert a Neut MC reaction mode into a VALOR SDK reaction mode
+# See https://t2k.org/docs/technotes/351/v02 tables 5 and 6 (p105) for an explanation of what each neut reac mode number is (for the 2018 analysis)
+def NeutModeToValorMode(neut_mode, flav,  is_oscillated):
+  valor_mode = conv.kmUndefined
+  abs_mode = ROOT.TMath.Abs(neut_mode)   # +ve neut modes are for neutrinos, -ve neut modes are the equivalent antineutrino modes
+
+  if flav == conv.kNuFlavourUndefined:
+    print "WARNING: Tried to convert a neut reac mode to a valor reac mode, but the input flavour was undefined!"
+    return conv.kmUndefined
+  elif flav == conv.kNuTau or flav == conv.kNuTauBar:
+    print "WARNING: NuTau and NuTauBar not supported when converting from neut reac mode to valor reac mode"
+    return conv.kmUndefined
+
+  if NeutIsCCQE(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuCCQE
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuECCQE
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarCCQE
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarCCQE
+  elif NeutIsCC1piC(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuCC1piC
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuECC1piC
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarCC1piC
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarCC1piC
+  elif NeutIsCC1pi0(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuCC1pi0
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuECC1pi0
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarCC1pi0
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarCC1pi0
+  elif NeutIs2p2h(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuCCMEC
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuECCMEC
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarCCMEC
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarCCMEC
+  elif NeutIsCCcoh(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuCCcoh
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuECCcoh
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarCCcoh
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarCCcoh
+  elif NeutIsCCoth(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuCCoth
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuECCoth
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarCCoth
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarCCoth
+  elif NeutIsNC1piC(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuNC1piC
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuENC1piC
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarNC1piC
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarNC1piC
+  elif NeutIsNC1pi0(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuNC1pi0
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuENC1pi0
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarNC1pi0
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarNC1pi0
+  elif NeutIsNCcoh(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuNCcoh
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuENCcoh
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarNCcoh
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarNCcoh
+  elif NeutIsNC1Gamma(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuNC1Gamma
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuENC1Gamma
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarNC1Gamma
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarNC1Gamma
+  elif NeutIsNCoth(abs_mode):
+    if flav == conv.kNuMu:
+      valor_mode = conv.kmNuMuNCoth
+    if flav == conv.kNuE:
+      valor_mode = conv.kmNuENCoth
+    if flav == conv.kNuMuBar:
+      valor_mode = conv.kmNuMuBarNCoth
+    if flav == conv.kNuEBar:
+      valor_mode = conv.kmNuEBarNCoth
+  else:
+    print "WARNING: Could not convert a neut reac mode with code " << neut_mode << ", to a valor reac mode"
+    return conv.kmUndefined
+
+  if is_oscillated and (flav == conv.kNuE or flav == conv.kNuEBar) and not NeutIsNC(abs_mode):
+    # We don't keep track of NC oscillated modes, as e.g. the nue template for NC covers nue -> nue, nue -> numu and
+    # nue -> nutau (they would all be detected as the same)
+    valor_mode = util.NuEModeToOscNuEMode(valor_mode)
+
+  return valor_mode
+
 #_______________________________________________________________________
 if __name__=="__main__":
   
