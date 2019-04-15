@@ -65,10 +65,10 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
 	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
 else
-   @echo "Skipping make_sbncode_minidst due to no GENIE"
+	@echo "Skipping make_sbncode_minidst due to no GENIE"
 endif
 else
-  @echo "Skipping make_sbncode_minidst due to no SBNanalysis"
+	@echo "Skipping make_sbncode_minidst due to no SBNanalysis"
 endif
 
 # Generate GENIE response functions
