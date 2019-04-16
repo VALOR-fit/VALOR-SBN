@@ -25,11 +25,7 @@
 #include "valor/Conventions/NuFlavour.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/NuclearTarget.h"
-
-// Dune
-#include "dune/Conventions/DuneBuild.h"
 #include "valor/Conventions/ReacMode.h"
-#include "dune/Conventions/FitParam.h"
 
 namespace valor {
 namespace conv {
@@ -212,9 +208,6 @@ extern const ReacTypeApplyMask_t kApplyToReacType[conv::kNReacType];
 
 // Which masks apply to which nucleus
 extern const NuclearTargetApplyMask_t kApplyToNuclearTarget[conv::kNNuclearTarget];
-
-//  TODO: delete this apply mask array when done testing the new setup with FitParamNew etc.
-extern const ApplyMask_t kApplyParamToTemplates[kNFitParams];
 
 
 
