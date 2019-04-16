@@ -38,7 +38,10 @@ public:
   
   const std::vector<Parameter> & GetParams() const;
   const Parameter & GetParam (conv::PhysParamId_t) const;
-  
+
+  // Get the Parameter corresponding to the input simple name
+  const Parameter & ParamFromString (std::string str) const;
+
   void Print(std::ostream & stream = std::cout) const;
   
   // Make sure we haven't added two parameters with the same name

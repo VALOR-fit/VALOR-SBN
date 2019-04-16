@@ -14,6 +14,7 @@ Copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/UtlStr.h"
 #include "dune/Conventions/ParameterPool.h"
 
 using namespace valor;
@@ -114,5 +115,19 @@ const Parameter & ParameterPool::GetParam(conv::PhysParamId_t p) const
   int new_id = p - gFirstParam;
   // Should definitely do a bounds check here if it doesn't slow us down too much
   return fParams[new_id];
+}
+//________________________________________________________________________________________
+const Parameter & ParameterPool::ParamFromString(std::string str) const
+{
+  this->CheckForCollisions();
+  std::string str_search = util::ToLowerCase(util::RemoveAllWhitespace(str));
+  for (const Parameter & p : fParams) {
+    if (p.GetName() == str_search) {
+      return p;
+    }
+  }
+  LOG("ParameterPool",pFATAL) << "No parameter named [" << str << "] in the ParameterPool";
+  exit(-1);
+  return 0;
 }
 //________________________________________________________________________________________
