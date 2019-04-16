@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="T2K" version="run1-9d" detector="SuperK">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Assumed exposure for various beam configurations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+  <exposure> 
+    <jparc_fhc>
+      1.4937977e+21
+    </jparc_fhc>
+    <jparc_rhc>
+      1.634556e+21
+    </jparc_rhc>
+  </exposure>
+</data>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Information about the detector configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<!-- This is (real detector fiducial mass) / (simulated fiducial mass) -->
+<fiducial_mass>
+  1.
+</fiducial_mass>
+
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Input MC templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<mc>
+  <using_dst_format> 
+     true
+  </using_dst_format>
+
+  <dst>
+    <jparc_fhc>
+       <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst.root </filename>
+       <objname>  valor_t2k_dst </objname>
+       <objtype>  TTree </objtype>
+    </jparc_fhc>
+    <jparc_rhc>
+        <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst.root </filename>
+        <objname>  valor_t2k_dst </objname>
+        <objtype>  TTree </objtype>
+    </jparc_rhc>
+  </dst>
+  
+  <template>
+    <filename> dune/ndfit/2016b/fd/nonexistent.root </filename>
+    <tag> pass </tag>
+  </template>
+  
+  <!-- in kg, for calculating CCinc xsec-->
+  <interaction_mass> 
+    -999 
+  </interaction_mass>
+
+</mc>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+External Tuning Histograms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+<tuning>
+    <tune name="flux_fhc_numu">
+        <filename>       official/2018/flux/tuned13av3/run1-9a_v1/sk_tuned13av3_13anom_run1-9a_numode_fine.root </filename> <!-- TODO: temp path -->
+        <objname>        enu_sk_tuned13a_numu_ratio   </objname>
+        <objtype>        TH1D                         </objtype>
+        <apply_beam>     jparc_fhc                    </apply_beam>
+        <apply_flav>     numu                         </apply_flav>
+        <apply_kinevar>  enu_true                     </apply_kinevar>
+    </tune>
+    <!-- TODO: add other tuning hists -->
+</tuning>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Splines
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<splines>
+  <folder>  official/2018/xsec/splines2018v1/valor_format </folder>   <!-- TODO: Temp. path -->
+  <pattern> splines_v1_[SAMPLE].root    </pattern>     <!-- TODO: Does [SAMPLE] here include FHC/RHC? If not, I should instead do [BEAM CURRENT][SAMPLE]? -->
+    <!-- TODO: e-like sample spline have different names -->
+</splines>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Default binning
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+<default_binning> binning/t2k_rhc_mulike_run1-9d_bins.xml </default_binning>
+
+</analysis_inputs>
+
+

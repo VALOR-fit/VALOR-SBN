@@ -44,6 +44,10 @@ Input MC templates
 
   <dst>
     <jparc_fhc>
+       <!--
+         TODO: Now that we have a different MC config file for each sample, the MC DST can be split into one tree/file
+         TODO: for each sample. This would just be to improve the efficiency of GSSFM::Read, so is not an essential change.
+       -->
        <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst.root </filename>
        <objname>  valor_t2k_dst </objname>
        <objtype>  TTree </objtype>
