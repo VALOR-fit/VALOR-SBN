@@ -70,7 +70,7 @@
   </element_list>
 
   <parameter_definitions>
-    <filename> param/parameter_specification_t2k_oa2018_run1-9d_v1.xml </filename>
+    <filename> params/parameter_specification_t2k_oa2018_run1-9d_v1.xml </filename>
   </parameter_definitions>
 
 
