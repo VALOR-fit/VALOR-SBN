@@ -26,7 +26,6 @@ Information about the detector configuration
 -->
 
 <!-- This is (real detector fiducial mass) / (simulated fiducial mass) -->
-<!-- TODO: Does the T2K simulated mass = actual mass? -->
 <fiducial_mass>
   1.
 </fiducial_mass>
@@ -43,18 +42,18 @@ Input MC templates
      true
   </using_dst_format>
 
-  <superk_mc>
+  <dst>
     <jparc_fhc>
-       <filename>  </filename>   <!-- TODO-->
-       <objname>   </objname> <!-- TODO-->
+       <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst.root </filename>
+       <objname>  valor_t2k_dst </objname>
        <objtype>  TTree </objtype>
     </jparc_fhc>
     <jparc_rhc>
-        <filename>  </filename>   <!-- TODO-->
-        <objname>   </objname> <!-- TODO-->
+        <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst.root </filename>
+        <objname>  valor_t2k_dst </objname>
         <objtype>  TTree </objtype>
     </jparc_rhc>
-  </superk_mc>
+  </dst>
   
   <template>
     <filename> dune/ndfit/2016b/fd/nonexistent.root </filename>
@@ -102,8 +101,7 @@ Splines
 Default binning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<default_binning> binning/t2k_mulike_run1-9d_bins.xml </default_binning>
-    <!-- TODO: e-like samples have different binning -->
+<default_binning> binning/t2k_fhc_mulike_run1-9d_bins.xml </default_binning>
 
 </analysis_inputs>
 
