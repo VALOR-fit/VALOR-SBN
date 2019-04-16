@@ -30,7 +30,7 @@
 
 #include "valor/Conventions/KineVar.h"
 
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 
 namespace valor {

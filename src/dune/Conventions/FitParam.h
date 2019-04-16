@@ -34,7 +34,7 @@
 
 //dune
 #include "dune/Conventions/DuneBuild.h"
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/FitParamGroup.h"
 
 #include "dune/Conventions/SampleKineBinning.h"

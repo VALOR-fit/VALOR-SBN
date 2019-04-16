@@ -24,7 +24,7 @@
 #include <iostream>
 #include <vector>
 
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/DuneBuild.h"
 
 #include "valor/Conventions/KineSpace.h"

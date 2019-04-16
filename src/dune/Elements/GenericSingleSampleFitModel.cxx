@@ -45,7 +45,7 @@
 #include "valor/Messenger/Messenger.h"
 //dune
 #include "dune/Conventions/DuneBuild.h"
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/ParameterPool.h"
 #include "valor/Conventions/Baseline.h"
 #include "valor/Conventions/BeamConf.h"

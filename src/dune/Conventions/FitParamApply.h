@@ -28,7 +28,7 @@
 
 // Dune
 #include "dune/Conventions/DuneBuild.h"
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/FitParam.h"
 
 namespace valor {

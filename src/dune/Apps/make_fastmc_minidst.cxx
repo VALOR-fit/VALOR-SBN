@@ -45,8 +45,7 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
-
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 
 using std::string;
 using std::ostringstream;

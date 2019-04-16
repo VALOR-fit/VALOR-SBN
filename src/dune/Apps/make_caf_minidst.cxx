@@ -50,7 +50,7 @@
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 
