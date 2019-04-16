@@ -69,6 +69,10 @@
     
   </element_list>
 
+  <parameter_definitions>
+    <filename> param/parameter_specification_t2k_oa2018_run1-9d_v1.xml </filename>
+  </parameter_definitions>
+
 
   <systematics name="t2k_run1-9d">
     <!-- TODO: This may change with the new params specification? Check CorrelatedSystematics::Read after the update-->
