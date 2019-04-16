@@ -144,7 +144,7 @@ const util::Interpolator* valor::util::DuneRFL::GetSpline (
 {
   static const util::ArrIdx * arr_idx = util::ArrIdx::Instance();
   
-  const int im = arr_idx->ReacModeIdx(fSample,m);
+  const int im = arr_idx->ReacModeIdx(fBeam,fSample,m);
   const int ip = this->Param2Idx(p);
   
   const int splidx = SplineIndex(im,ip,itrue,ireco);
