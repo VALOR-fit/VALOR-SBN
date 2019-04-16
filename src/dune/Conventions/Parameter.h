@@ -71,8 +71,8 @@
 #include <map>
 
 #include "valor/Conventions/KineVar.h"
+#include "valor/Conventions/SystType.h"
 
-#include "dune/Conventions/SystType.h"
 #include "dune/Conventions/FitParamApply.h"
 
 using namespace valor;
