@@ -376,14 +376,14 @@ bool SingleSampleKineBinning::Read(string file)
 VALORBinning * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
-  int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
+  int im = util::ArrIdx::Instance()->ReacModeIdx(fBeamConf,fSample,m);
   return this->TrueSmpBinning(im);
 }
 //________________________________________________________________________________________
 VALORBinning * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
-  int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
+  int im = util::ArrIdx::Instance()->ReacModeIdx(fBeamConf,fSample,m);
   return this->XsecTrueBinning(im);
 }
 //________________________________________________________________________________________

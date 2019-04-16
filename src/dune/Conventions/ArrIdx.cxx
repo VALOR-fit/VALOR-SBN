@@ -56,11 +56,13 @@ void valor::util::ArrIdx::Init(void)
     }//j
   }//i
 
-  for(int i = 0; i < 2*kNSamples; i++) {
-     for(int j = 0; j < 2*kNReacModes; j++) {
-         fReacModeIdx [i][j] = -1;
-     }//i
-  }//j
+  for(int ib = 0; ib < 2 * kNBeamConf; ib++) {
+    for(int i = 0; i < 2 * kNSamples; i++) {
+      for(int j = 0; j < 2 * kNReacModes; j++) {
+        fReacModeIdx[ib][i][j] = -1;
+      }//i
+    }//j
+  }//ib
 
   for(int i = 0; i < 2*knppmax; i++) {
      fFitParamIdx[i] = -1;
@@ -91,19 +93,22 @@ void valor::util::ArrIdx::Init(void)
     }//is
   }//ib
 
-  int ib=0;//HERE
-  for(int is = 0; is < kNSamples; is++) {
-    Sample_t s = kSample[ib][is];
-    if(s == ksUndefined) continue;
-    for(int im = 0; im < kNReacModes; im++) {
-      ReacMode_t m = kReactionModes[is][im];
-        if(m == kmUndefined) continue;
-        fReacModeIdx [s][m] = im;
-        LOG("ArrIdx",pDEBUG)
-               << " ... with contribution from mode: [" << util::AsString(m) 
-               << "] --> at slot: " << fReacModeIdx [s][m];
-    }//im
-  }//is
+  for(int ib = 0; ib < kNBeamConf; ib++) {
+    BeamConf_t b = kBeamConf[ib];
+    if(b == kbUndefined) continue;
+    for(int is = 0; is < kNSamples; is++) {
+      Sample_t s = kSample[ib][is];
+      if(s == ksUndefined) continue;
+      for(int im = 0; im < kNReacModes; im++) {
+        ReacMode_t m = kReactionModes[is][im];
+          if(m == kmUndefined) continue;
+          fReacModeIdx [b][s][m] = im;
+          LOG("ArrIdx",pDEBUG)
+                 << " ... with contribution from mode: [" << util::AsString(m)
+                 << "] --> at slot: " << fReacModeIdx [b][s][m];
+      }//im
+    }//is
+  }//ib
 
   for(int ip = 0; ip < kNFitParams; ip++) {
      PhysParamId_t p = kFitParam[ip];

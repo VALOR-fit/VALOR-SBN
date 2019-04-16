@@ -1116,7 +1116,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " (value stored in DST: " << reac_mode << "). Ignoring event.";
       continue;
     }
-    int imode = fArrIdx->ReacModeIdx(s, m);
+    int imode = fArrIdx->ReacModeIdx(b, s, m);
     if(imode < 0) {
       // For a given sample we should consider a complete list of
       // true reaction modes (otherwise there are true contributions to the

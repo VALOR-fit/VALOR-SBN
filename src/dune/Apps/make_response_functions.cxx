@@ -315,7 +315,7 @@ int main(int argc, char ** argv)
         curr_mcrec->Clear();
         continue;
       }
-      int imode = arridx->ReacModeIdx(curr_sample, curr_mode);       
+      int imode = arridx->ReacModeIdx(beam, curr_sample, curr_mode);
 
       // Get required true kinematical variables
       double curr_enu_true = event.Particle(0)->E();
