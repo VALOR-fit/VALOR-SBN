@@ -44,6 +44,7 @@ kmNuMuToNuECC1pi0,  // TODO: In legacy T2K, we had CC1piC and CC1pi0 grouped as 
 kmNuMuToNuECCcoh,
 kmNuMuToNuECCMEC,
 kmNuMuToNuECCcoh,
+kmNuMuToNuECCoth,
 
 // Intrinsic nuebar modes
 kmNuEBarCCQE,
@@ -65,6 +66,7 @@ kmNuMuBarToNuEBarCC1pi0,  // TODO: In legacy T2K, we had CC1piC and CC1pi0 group
 kmNuMuBarToNuEBarCCcoh,
 kmNuMuBarToNuEBarCCMEC,
 kmNuMuBarToNuEBarCCcoh,
+kmNuMuBarToNuEBarCCoth,
 
 // Oscillated nue -> numu modes are not used in the T2K analysis
 kmUndefined,  //kmNuEToNuMuCCQE,
@@ -83,8 +85,6 @@ kmUndefined,  //kmNuEBarToNuMuBarCCMEC,
 kmUndefined,  //kmNuEBarToNuMuBarCCcoh,
 
 // Non T2K modes:
-kmUndefined,
-kmUndefined,
 kmUndefined,
 kmUndefined,
 kmUndefined,
