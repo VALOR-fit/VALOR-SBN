@@ -262,6 +262,7 @@ bool CompoundFitElements::ReadParameterList (
     curr_node = xmleng->GetNext(curr_node);
   }
   ParameterPool::Instance()->CheckForCollisions();
+  ParameterPool::Instance()->PopulateNameRegistry();
   return true;
 }
 //________________________________________________________________________________________
