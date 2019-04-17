@@ -29,9 +29,10 @@
 //~ #define _use_single_zone_optimized_binning_scheme_v2_ 
 
 #include "valor/Conventions/KineVar.h"
-
-#include "dune/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
+
+#include "dune/Conventions/SampleReacMode.h"
+
 
 namespace valor {
 namespace conv  {
