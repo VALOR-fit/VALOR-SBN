@@ -245,7 +245,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   int n_splines_expected = fSplineBlockSize;
   int n_splines_flat = 0;
   int n_splines_neg = 0;
-  
+
+  NuclearTarget_t nt = conv::kntInclusive; // Make this an argument
+
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
     if(m == conv::kmUndefined) continue;
@@ -257,8 +259,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     for (int ip = 0 ; ip < fNParams ; ip++) {
       conv::PhysParamId_t p = fParams[ip];
       if(p == conv::kPhypUndefined) continue;
-      
-      bool param_applied_to_mode = util::ParamIsAppliedTo(fBeam,fSample,fDetector,m,p);
+
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
+      bool param_applied_to_mode = param.IsAppliedTo(fBeam,fSample,fDetector,m,nt);
       
       for (int ireco = 0 ; ireco < n_bins_reco ; ireco++) {
         for (int itrue = 0 ; itrue < n_bins_true ; itrue++) {
