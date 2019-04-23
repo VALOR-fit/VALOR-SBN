@@ -51,6 +51,10 @@ sub log10 {
   return log($n)/log(10);
 }
 
+# What the null hypothesis value for a discovery plot is. Might have to become a command line argument?
+$param_nullhyp1 = 0;
+$param_nullhyp2 = 0;
+
 $iarg=0;
 foreach (@ARGV) {
   
@@ -214,10 +218,14 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
     else {
       $arguments = "--tag $tag-$param1-$param2 ".
         "--first-octant ".$standard_options.
-        " --input-$param1 $param_val1 ";
+        " --input-$param1 $param_val1 ".
+        " --fix-at-$param1 $param_nullhyp1 ".
+        " --fix-$param1 ";
       if (!$only1dscan) {
         $arguments = $arguments.
-          " --input-$param2 $param_val2 ";
+          " --input-$param2 $param_val2 ".
+          " --fix-at-$param2 $param_nullhyp2 ".
+          " --fix-$param2 ";
       }
     }
 
