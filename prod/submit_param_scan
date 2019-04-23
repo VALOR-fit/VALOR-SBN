@@ -175,100 +175,13 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
     $param_val1 = 10**($step1*($ipoint1)+log10($min_value1));
   }
 
-  #
-  # Only 1D dimensional scan to be performed
-  #
-  if($only1dscan){
-    print " Only performing 1D scan \n";
-    print " Submitting point: $ipoint1 as job $jobID";
-    print " with $param1 = $param_val1 \n";
+  for($ipoint2 = 0; $ipoint2 < $npoints2; $ipoint2++) {
     
-    #
-    # Perform all fits
-    # Fixing the parameter each value in the scan
-    
-    $standard_options = " --run $jobID --ntoymc 1  --fit-param-list $fitparamlist".
-      " --param-values-option  $param_values --fitter $fitoption".
-      " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-      " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
-      
-    if (!$discovery) {
-      $arguments = "--tag $tag-$param1 ".
-        " --fix-at-$param1 $param_val1 ".
-        " --fix-$param1 ".
-        "--first-octant ".$standard_options;
+    if ($only1dscan) {
+      print "Submitting 1D point: $ipoint1 as job $jobID";
+      print " with $param1 = $param_val1 \n";
     }
     else {
-      $arguments = "--tag $tag-$param1 ".
-        " --input-$param1 $param_val1 ".
-        "--first-octant ".$standard_options;
-    }
-
-    $command = $program." ".$arguments;
-    
-    print "Running: $command \n";
-    
-    #
-    # HTCondor @ RAL
-    #
-    
-    if($resource eq "RAL" || $resource eq "RAL_HTC") {
-     $fullprogram = abs_path(`which $program`);
-     chomp($fullprogram);
-     
-     $fmwk_setup_script = "$fmwk_softw_dir/setup/setup_at_cvmfs_root6.sh";
-     $dune_setup_script = "$dune_softw_dir/setup/setup_at_cvmfs_root6.sh";
-     
-     $jobname = "${tag}-${param1}-${jobID}";
-     $shellfn = "$job_dir/${jobname}.sh";
-     
-     open(shell,">".$shellfn);
-     print shell "hostname \n";
-     print shell "date \n";
-     print shell "source $fmwk_setup_script \n";
-     print shell "source $dune_setup_script \n";
-     print shell "$command \n";
-     print shell "date \n";
-     close(shell);
-     
-     $default_cnd_options =
-       "Executable               = /bin/bash \n".
-       "initialdir               = $job_dir \n".
-       "Universe                 = vanilla \n".
-       "Getenv                   = False \n".
-       "should_transfer_files    = YES \n".
-       "when_to_transfer_output  = ON_EXIT \n".
-       (ncores > 1 ? "request_cpus             = $ncores \n":"").
-       "\nqueue\n";
-                           
-     $cndfn = "$job_dir/${jobname}.condor";
-     open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-     print CND "Arguments                = $shellfn \n";
-     print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-     print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-     print CND $default_cnd_options;
-     close(CND);
-     system("condor_submit",$cndfn);
-
-    }
-    
-    #
-    # interactive
-    #
-    if($resource eq "interactive") {
-       system($command);
-    }
-    
-    $jobID++;
-  
-  }
-  #
-  # Otherwise perform 2d scan
-  #
-  else{
-
-    for($ipoint2 = 0; $ipoint2 < $npoints2; $ipoint2++) {
-
       $param_val2 = $min_value2 + ($ipoint2)*$step2;
       if($log_param2) {
         $param_val2 = 10**($step2*($ipoint2)+log10($min_value2));
@@ -276,88 +189,97 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
 
       print "Submitting point: $ipoint1 - $ipoint2 as job $jobID";
       print " with $param1 = $param_val1 and $param2 = $param_val2\n";
+    }
 
-      #
-      # Perform all fits
-      # Fixing the parameter each value in the scan
+    #
+    # Perform all fits
+    # Fixing the parameter each value in the scan
 
-      $standard_options = " --run $jobID --ntoymc 1  --fit-param-list $fitparamlist".
-      " --param-values-option  $param_values --fitter $fitoption".
-      " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-      " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
+    $standard_options = " --run $jobID --ntoymc 1  --fit-param-list $fitparamlist".
+    " --param-values-option  $param_values --fitter $fitoption".
+    " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
+    " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
 
-      if (!$discovery) {
-        $arguments = "--tag $tag-$param1-$param2 ".
+    if (!$discovery) {
+      $arguments = "--tag $tag-$param1-$param2 ".
+      "--first-octant ".$standard_options.
         " --fix-at-$param1 $param_val1 ".
-        " --fix-$param1 ".
-        " --fix-at-$param2 $param_val2 ".
-        " --fix-$param2 ".
-        "--first-octant ".$standard_options;
+        " --fix-$param1 ";
+      if (!$only1dscan) {
+        $arguments = $arguments.
+          " --fix-at-$param2 $param_val2 ".
+          " --fix-$param2 ";
       }
-      else {
-        $arguments = "--tag $tag-$param1-$param2 ".
-        " --input-$param1 $param_val1 ".
-        " --input-$param2 $param_val2 ".
-        "--first-octant ".$standard_options;
+    }
+    else {
+      $arguments = "--tag $tag-$param1-$param2 ".
+        "--first-octant ".$standard_options.
+        " --input-$param1 $param_val1 ";
+      if (!$only1dscan) {
+        $arguments = $arguments.
+          " --input-$param2 $param_val2 ";
       }
+    }
 
 
-      $command = $program." ".$arguments;
+    $command = $program." ".$arguments;
 
-      print "Running: $command \n";
+    print "Running: $command \n";
 
-      #
-      # HTCondor @ RAL
-      #
+    #
+    # HTCondor @ RAL
+    #
 
-      if($resource eq "RAL" || $resource eq "RAL_HTC") {
-        $fullprogram = abs_path(`which $program`);
-        chomp($fullprogram);
+    if($resource eq "RAL" || $resource eq "RAL_HTC") {
+      $fullprogram = abs_path(`which $program`);
+      chomp($fullprogram);
 
-        $fmwk_setup_script = "$fmwk_softw_dir/setup/setup_at_cvmfs_root6.sh";
-        $dune_setup_script = "$dune_softw_dir/setup/setup_at_cvmfs_root6.sh";
+      $fmwk_setup_script = "$fmwk_softw_dir/setup/setup_at_cvmfs_root6.sh";
+      $dune_setup_script = "$dune_softw_dir/setup/setup_at_cvmfs_root6.sh";
 
-        $jobname = "${tag}-${param1}-${param2}-${jobID}";
-        $shellfn = "$job_dir/${jobname}.sh";
+      $jobname = "${tag}-${param1}-${param2}-${jobID}";
+      $shellfn = "$job_dir/${jobname}.sh";
 
-        open(shell,">".$shellfn);
-        print shell "hostname \n";
-        print shell "date \n";
-        print shell "source $fmwk_setup_script \n";
-        print shell "source $dune_setup_script \n";
-        print shell "$command \n";
-        print shell "date \n";
-        close(shell);
+      open(shell,">".$shellfn);
+      print shell "hostname \n";
+      print shell "date \n";
+      print shell "source $fmwk_setup_script \n";
+      print shell "source $dune_setup_script \n";
+      print shell "$command \n";
+      print shell "date \n";
+      close(shell);
 
-        $default_cnd_options =
-        "Executable               = /bin/bash \n".
-        "initialdir               = $job_dir \n".
-        "Universe                 = vanilla \n".
-        "Getenv                   = False \n".
-        "should_transfer_files    = YES \n".
-        "when_to_transfer_output  = ON_EXIT \n".
-        (ncores > 1 ? "request_cpus             = $ncores \n":"").
-        "\nqueue\n";
+      $default_cnd_options =
+      "Executable               = /bin/bash \n".
+      "initialdir               = $job_dir \n".
+      "Universe                 = vanilla \n".
+      "Getenv                   = False \n".
+      "should_transfer_files    = YES \n".
+      "when_to_transfer_output  = ON_EXIT \n".
+      (ncores > 1 ? "request_cpus             = $ncores \n":"").
+      "\nqueue\n";
 
-        $cndfn = "$job_dir/${jobname}.condor";
-        open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-        print CND "Arguments                = $shellfn \n";
-        print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-        print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-        print CND $default_cnd_options;
-        close(CND);
-        system("condor_submit",$cndfn);
+      $cndfn = "$job_dir/${jobname}.condor";
+      open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+      print CND "Arguments                = $shellfn \n";
+      print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+      print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+      print CND $default_cnd_options;
+      close(CND);
+      system("condor_submit",$cndfn);
 
-      }
+    }
 
-      #
-      # interactive
-      #
-      if($resource eq "interactive") {
-        system($command);
-      }
+    #
+    # interactive
+    #
+    if($resource eq "interactive") {
+      system($command);
+    }
 
-      $jobID++;
-    } # for point2
-  } # else 2d
+    $jobID++;
+    
+    # If we're scanning 1D, break the second loop
+    if ($only1dscan) {break;}
+  } # for point2
 } # for point1
