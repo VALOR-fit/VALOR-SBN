@@ -1326,8 +1326,9 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
   
   }
   else {
-    LOG("FitParams",pERROR)<<"Unrecognised fit parameter list name: "<<param_list_opt;
-    util::Die(-1); return fparm;
+    fparm = FitParamList::NamedParameterList(param_list_opt);
+    //LOG("FitParams",pERROR)<<"Unrecognised fit parameter list name: "<<param_list_opt;
+    //util::Die(-1); return fparm;
   }
 
   if(!fparm->IsComplete()) {
