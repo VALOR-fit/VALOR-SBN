@@ -234,13 +234,17 @@ void util::InitializeOAPriors()
 {
   NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
   NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
-
+  
+  for (int ip = 0 ; ip < conv::kNuis000 ; ip++) {
+    PhysParamId_t p = (PhysParamId_t) ip;
+    Opt::Instance()->SetGlobalBestFit (p,util::OscParamInitValue(p));
+    Opt::Instance()->SetGlobalFitError(p,util::OscParamInitError(p));
+  }
+    
   Opt::Instance()->SetGlobalBestFit (kPhypDm12sq,valor::conv::duneosc::kInitDm12sq);
   Opt::Instance()->SetGlobalFitError(kPhypDm12sq,valor::conv::duneosc::kInitErrDm12sq);
-
   Opt::Instance()->SetGlobalBestFit (kPhypCPV,valor::conv::duneosc::kInitDeltaCP);
   Opt::Instance()->SetGlobalFitError(kPhypCPV,valor::conv::duneosc::kInitErrDeltaCP);
-
   if(omp==kNuMixSinsq2Theta){
     Opt::Instance()->SetGlobalBestFit (kPhypMixing23,valor::conv::duneosc::kInitSinsq2Theta23);
     Opt::Instance()->SetGlobalFitError(kPhypMixing23,valor::conv::duneosc::kInitErrSinsq2Theta23);
