@@ -124,7 +124,7 @@ double util::OscParamMaxValue(conv::PhysParamId_t p)
       return 3.1416;
       
     case (kPhypDm41sq) :
-      return 100.;
+      return 1E10;
     case (kPhypMixingMuE):
       return 1.;
     case (kPhypMixingMuMu):
