@@ -1031,8 +1031,8 @@ string util::ParamAsStringTeX (conv::PhysParamId_t p, bool root) {return util::A
 //________________________________________________________________________________________
 PhysParamId_t util::PhysParamFromString(string inp_name)
 {
-  for(int ip = 0; ip < kNFitParams; ip++) {
-     PhysParamId_t p = kFitParam[ip];
+  for(int ip = 0; ip < knppmax; ip++) {
+     PhysParamId_t p = (PhysParamId_t)ip;
      string name = util::AsString(p);
      if(IsOscParam(p)){  
        string name_simple = util::AsStringSimple(p);
