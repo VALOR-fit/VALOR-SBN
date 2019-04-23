@@ -209,37 +209,6 @@ int main(int argc, char ** argv)
   
   Event & event = *pevent;
 
-
-  /*
-  analysis_tree->SetBranchAddress("truth.neutrino.energy"       ,  &enu_true    , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("reco.reco_energy"            ,  &enu_reco    , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("truth.neutrino.Q2"           ,  &Q2s         , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("truth.neutrino.pdg"          ,  &nu_pdg   , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nP"       ,  &nip         , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nN"       ,  &nin         , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nipip"    ,  &nipip       , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nipim"    ,  &nipim       , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nipi0"    ,  &nipi0       , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nikp"     ,  &nikp        , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nikm"     ,  &nikm        , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("nik0"     ,  &nik0        , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("niem"     ,  &niem        , &branchptr); active_branches.push_back(branchptr);
- // analysis_tree->SetBranchAddress("niother"  ,  &niother     , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("truth.neutrino.iscc"          ,  &iscc        , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("truth.neutrino.isnc"          ,  &isnc        , &branchptr); active_branches.push_back(branchptr);
-  analysis_tree->SetBranchAddress("truth.neutrino.genie_intcode" ,  &larsoft_mode, &branchptr); active_branches.push_back(branchptr);
-  // Only read the branches we're using and their sub-branches
-  analysis_tree->SetBranchStatus("*",0);
-  for (unsigned int ib = 0 ; ib < active_branches.size(); ib++) {
-    active_branches[ib]->SetStatus(1);
-    TObjArray * bar = active_branches[ib]->GetListOfBranches();
-    for (int ie = 0 ; ie < bar->GetEntries(); ie++) {
-      TBranch * b = dynamic_cast<TBranch*>(bar->At(ie));
-      assert(b);
-      b->SetStatus(1);
-    }
-  }
- */ 
   //
   // event loop
   //
@@ -262,32 +231,32 @@ int main(int argc, char ** argv)
       VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev;
     }
     
-    int iscc   = false;
-    int isnc   = false;
-    int nu_pdg = -1;
-    double enu_true       =  -999.;
-    double enu_reco       =  -999.;
-    double Q2s            =  -999.;
+    int iscc        = false;
+    int isnc        = false;
+    int nu_pdg      = -1;
+    //int init_pdg    = -1;
+    double enu_true =  -999.;
+    double enu_reco =  -999.;
+    double Q2s      =  -999.;
 
-    /*
-       int nin      = -1;
-       int nip      = -1;
-       int nipip    = -1;
-       int nipim    = -1;
-       int nipi0    = -1;
-       int nikp     = -1;
-       int nikm     = -1;
-       int nik0     = -1;
-       int niem     = -1;
-       int niother  = -1;
-       */
-
+    int nin      = 0;
+    int nip      = 0;
+    int nipip    = 0;
+    int nipim    = 0;
+    int nipi0    = 0;
+    int nikp     = 0;
+    int nikm     = 0;
+    int nik0     = 0;
+    int niem     = 0;
+    int niother  = 0;
+    
     int larsoft_mode = -1;
 
     analysis_tree->GetEntry(iev);
    
     std::vector<Event::Interaction> &truth = event.truth;
     std::vector<Event::RecoInteraction> &reco = event.reco;
+
     if(truth.size() == 0 || reco.size() == 0){
       VLOG("make_sbncode_minidst", pNOTICE) 
         << "The number of truth entries is " << truth.size() << " and reco " << reco.size() << ", neither should be 0";
@@ -295,14 +264,29 @@ int main(int argc, char ** argv)
     }
 
     for(unsigned int t = 0; t < truth.size(); ++t){
-      std::cout << " Energy : " << truth[t].neutrino.energy << std::endl;
+      std::vector<Event::FinalStateParticle> &fsps = truth[t].finalstate;
       iscc = truth[t].neutrino.iscc;
       isnc = truth[t].neutrino.isnc;
       nu_pdg = truth[t].neutrino.pdg;
+      //init_pdg = truth[t].neutrino.initpdg;
       enu_true = truth[t].neutrino.energy;
       Q2s = truth[t].neutrino.Q2;
       larsoft_mode = truth[t].neutrino.genie_intcode;
       
+      // Particle counting
+      for(unsigned int p = 0; p < fsps.size(); ++p){
+        if(fsps[p].pdg == 2112) nin++;
+        else if(fsps[p].pdg == 2212) nip++;
+        else if(fsps[p].pdg == 211) nipip++;
+        else if(fsps[p].pdg == -211) nipim++;
+        else if(fsps[p].pdg == 111) nipi0++;
+        else if(fsps[p].pdg == 321) nikp++;
+        else if(fsps[p].pdg == -321) nikm++;
+        else if(fsps[p].pdg == 311) nik0++;
+        else if(fsps[p].pdg == 11) niem++;
+        else niother++;
+      }
+
       // Construct the reaction mode
       conv::ReacType_t reac = conv::kmtUndefined;
       if (iscc) {
@@ -312,42 +296,44 @@ int main(int argc, char ** argv)
         else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtCCIMD;   }
         else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
 
-        /*    else { // start counting pions
-              if      (nikp || nik0 || nikm || niother) { reac = conv::kmtCCoth;}
-              else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtCC1piC;}
-              else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtCC1pi0;}
-              else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtCC2piC;}
-              else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtCC2pi0;}
-              else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtCCpiCpi0;}
-              else                                      { reac = conv::kmtCCoth;}
-              }*/
+        else { // start counting pions
+          if      (nikp || nik0 || nikm || niother) { reac = conv::kmtCCoth;}
+          else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtCC1piC;}
+          else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtCC1pi0;}
+          else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtCC2piC;}
+          else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtCC2pi0;}
+          else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtCCpiCpi0;}
+          else                                      { reac = conv::kmtCCoth;}
+        }
       }
       else if (isnc) {
         if      (larsoft_mode==kLArQE                ) { reac = conv::kmtNCEL;    }
-        //else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtNCMEC;   }
+        else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtNCMEC;   }
         else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtNCcoh;   }
-        //else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
+        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
 
-        /* else { // start counting pions
-           if      (nikp || nik0 || nikm || niother) { reac = conv::kmtNCoth;}
-           else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtNC1piC;}
-           else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtNC1pi0;}
-        //else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtNC2piC;}
-        //else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtNC2pi0;}
-        //else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtNCpiCpi0;}
-        else                                      { reac = conv::kmtNCoth;}
-        }*/
+        else { // start counting pions
+          if      (nikp || nik0 || nikm || niother) { reac = conv::kmtNCoth;}
+          else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtNC1piC;}
+          else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtNC1pi0;}
+          //else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtNC2piC;}
+          //else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtNC2pi0;}
+          //else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtNCpiCpi0;}
+          else                                      { reac = conv::kmtNCoth;}
+        }
       }
       else if (larsoft_mode == kLArElectronScattering) {
         reac = conv::kmtELScat;
       }
+      else reac = conv::kmtOther;
 
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
       conv::NuFlavour_t init_flav  = final_flav;
-      //conv::NuFlavour_t init_flav = valor::util::FlavourFromPDG(unosc_pdg);
+      //conv::NuFlavour_t init_flav  = valor::util::FlavourFromPDG(init_pdg);
 
       // Get the real valor mode
       conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+      if(reac_mode == conv::kmUndefined) reac_mode = conv::kmOther;
 
       /*
       if(!opt_disable_checks) {
@@ -417,7 +403,8 @@ int main(int argc, char ** argv)
       std::cin.get();
     valor_minidst->Fill();
   } // event loop
- 
+
+  std::cout << " Number in valor tree : " << valor_minidst->GetEntries() << std::endl;
   /*
   for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
     valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
