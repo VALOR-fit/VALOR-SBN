@@ -1892,7 +1892,9 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     if(m == kmUndefined) continue;
     
     //check if beam+sample+mode should be applied oscillation probabilities
-    if(!util::OscProbIsAppliedTo(fDetector,fBeam,fSample,m)) {continue; }
+    if(hypid == kHypOsc3F && !util::OscProbIsAppliedTo(fDetector,fBeam,fSample,m)) {
+      continue;
+    }
     
 
     const VALORBinning * true_sb = fBinning->TrueSmpBinning(m);
