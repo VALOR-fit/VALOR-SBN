@@ -53,6 +53,7 @@
 #include "TObjArray.h"
 #include "TString.h"
 #include "TVirtualFitter.h"
+#include "TPRegexp.h"
 // fmwk
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
@@ -131,7 +132,7 @@ int main(int argc, char ** argv)
   if(n_threads>0) {//without n-cores specified, use as many as the host has
     util::VThreadPool::Instance()->SetNThreads(n_threads);
   }
-  
+
   // Set the random seeds
   Rnd::Instance()->SetSeeds(arg);
   
@@ -259,186 +260,78 @@ int main(int argc, char ** argv)
       Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
       Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
       Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
-      
-      double mixing12 = arg.GetDouble("input-mixing12");
-      if ( std::fabs(mixing12 + 999. ) < conv::kASmallNum ) { 
-        mixing12 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing12);
-      }
-      fp->Update      (nr->PhysParamFromString("mixing12"), mixing12);
-      fp->SetInitValue(nr->PhysParamFromString("mixing12"), mixing12);
 
-      double mixing13 = arg.GetDouble("input-mixing13");
-      if ( std::fabs(mixing13 + 999. ) < conv::kASmallNum ) { 
-        mixing13 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing13);
-      }
-      fp->Update      (nr->PhysParamFromString("mixing13"), mixing13);
-      fp->SetInitValue(nr->PhysParamFromString("mixing13"), mixing13);
-      
-      double mixing23 = arg.GetDouble("input-mixing23");
-      if ( std::fabs(mixing23 + 999. ) < conv::kASmallNum ) { 
-        mixing23 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing23);
-      }
-      
-      if (flip_23_octant) {
-        mixing23 = util::FlipOctantAroundMaxDisap(mixing23,mixing13);
-      }
-      fp->Update      (nr->PhysParamFromString("mixing23"), mixing23);
-      fp->SetInitValue(nr->PhysParamFromString("mixing23"), mixing23);
-      
-      double dm23sq = arg.GetDouble("input-dm23sq");
-      if ( std::fabs(dm23sq + 999. ) < conv::kASmallNum ) {
-        dm23sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm23sq);
-      }
-      fp->Update      (nr->PhysParamFromString("dm23sq"), dm23sq);
-      fp->SetInitValue(nr->PhysParamFromString("dm23sq"), dm23sq);
+      // Set input parameters
+      RgKeyList input_args = arg.FindKeys("input-");
+      TPRegexp input_match("input-(\\w*)");
+      for (RgKey argname : input_args) { // RgKey is just a typename for std::string right now
+        TObjArray * matches = input_match.MatchS(argname.c_str());
 
-      double dm12sq = arg.GetDouble("input-dm12sq");
-      if ( std::fabs(dm12sq + 999. ) < conv::kASmallNum ) { 
-        dm12sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm12sq);
-      }
-      fp->Update      (nr->PhysParamFromString("dm12sq"), dm12sq);
-      fp->SetInitValue(nr->PhysParamFromString("dm12sq"), dm12sq);
+        if (matches->GetEntries() != 2) {
+          LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+          util::Die(-1);
+        }
+        TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
+        std::string param_name(tos_param_name->String().Data());
+        delete matches;
 
-      double deltacp = arg.GetDouble("input-deltaCP");
-      if ( std::fabs(deltacp + 999. ) < conv::kASmallNum ) {
-        deltacp = Opt::Instance()->GetGlobalBestFit(conv::kPhypCPV);
-      }
-      fp->Update      (nr->PhysParamFromString("cpv"), deltacp);
-      fp->SetInitValue(nr->PhysParamFromString("cpv"), deltacp);
-      
-      
-      double dm41sq = arg.GetDouble("input-dm41sq");
-      if ( std::fabs(dm41sq + 999. ) < conv::kASmallNum ) { 
-        dm41sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm41sq);
-      }
-      fp->Update      (conv::kPhypDm41sq, dm41sq);
-      fp->SetInitValue(conv::kPhypDm41sq, dm41sq);
-      
-      double sinsq2thMuMu = arg.GetDouble("input-sinsq2thMuMu");
-      if ( std::fabs(sinsq2thMuMu + 999. ) < conv::kASmallNum ) { 
-        sinsq2thMuMu = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixingMuMu);
-      }
-      fp->Update      (conv::kPhypMixingMuMu, sinsq2thMuMu);
-      fp->SetInitValue(conv::kPhypMixingMuMu, sinsq2thMuMu);
-      
-      double sinsq2thMuE = arg.GetDouble("input-sinsq2thMuE");
-      if ( std::fabs(sinsq2thMuE + 999. ) < conv::kASmallNum ) { 
-        sinsq2thMuE = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixingMuE);
-      }
-      fp->Update      (conv::kPhypMixingMuE, sinsq2thMuE);
-      fp->SetInitValue(conv::kPhypMixingMuE, sinsq2thMuE);
-      
-      double sinsq2thEE = arg.GetDouble("input-sinsq2thEE");
-      if ( std::fabs(sinsq2thEE + 999. ) < conv::kASmallNum ) { 
-        sinsq2thEE = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixingEE);
-      }
-      fp->Update      (conv::kPhypMixingEE, sinsq2thEE);
-      fp->SetInitValue(conv::kPhypMixingEE, sinsq2thEE);
-      
+        conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
+        if (param == conv::kPhypUndefined) {
+          LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+          util::Die(-1);
+        }
 
-      // fix them? randomize them? 
-      if(arg.GetBool("fix-mixing12")){
-        fp->FixParameter(nr->PhysParamFromString("mixing12"));
-      }
-      else if(param_values_ts.Contains("randomize-all")){
-        string mode = ( (arg.GetBool("flat-prior-mixing12")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("mixing12"),mode);
-        fp->Update(nr->PhysParamFromString("mixing12"), rnd_value);
-        fp->SetInitValue(nr->PhysParamFromString("mixing12"), rnd_value);
-      }
-        
-      if(arg.GetBool("fix-mixing13")) {
-        fp->FixParameter(nr->PhysParamFromString("mixing13"));
-      }
-      else if(param_values_ts.Contains("randomize-all")){
-        string mode = ( (arg.GetBool("flat-prior-mixing13")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("mixing13"),mode);
-        fp->Update(nr->PhysParamFromString("mixing13"), rnd_value);
-        fp->SetInitValue(nr->PhysParamFromString("mixing13"), rnd_value);
+        double param_val = arg.GetDouble(argname);
+        if ( std::fabs(param_val + 999. ) < conv::kASmallNum ) {
+          param_val = Opt::Instance()->GetGlobalBestFit(param);
+        }
+        if (param==kPhypMixing23 && flip_23_octant) {
+          param_val = util::FlipOctantAroundMaxDisap(param_val,arg.GetDouble("input-mixing13"));
+        }
+        if(fp->Exists(param)) {
+          fp->Update      (param, param_val);
+          fp->SetInitValue(param, param_val);
+        }
       }
 
-      if(arg.GetBool("fix-mixing23")) {
-        fp->FixParameter(nr->PhysParamFromString("mixing23"));
-      }
-      else if(param_values_ts.Contains("randomize-all")){
-        string mode = ( (arg.GetBool("flat-prior-mixing23")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("mixing23"),mode);
-        fp->Update(nr->PhysParamFromString("mixing23"), rnd_value);
-        fp->SetInitValue(nr->PhysParamFromString("mixing23"), rnd_value);
-      }
+      // fix them? randomize them?
+      RgKeyList fix_args = arg.FindKeys("fix-");
+      TPRegexp fix_match("fix-(\\w*)");
+      for (RgKey argname : fix_args) { // RgKey is just a typename for std::string right now
+        TObjArray * matches = fix_match.MatchS(argname.c_str());
 
-      if(arg.GetBool("fix-dm23sq")){
-        fp->FixParameter(nr->PhysParamFromString("dm23sq"));
-      }
-      else if(param_values_ts.Contains("randomize-all")){
-        string mode = ( (arg.GetBool("flat-prior-dm23sq")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("dm23sq"),mode);
-        fp->Update(nr->PhysParamFromString("dm23sq"), rnd_value);
-        fp->SetInitValue(nr->PhysParamFromString("dm23sq"), rnd_value);
-      }
+        if (matches->GetEntries() != 2) {
+          LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+          util::Die(-1);
+        }
+        TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
+        std::string param_name(tos_param_name->String().Data());
+        delete matches;
 
-      if(arg.GetBool("fix-dm12sq")) {
-        fp->FixParameter(nr->PhysParamFromString("dm12sq"));
-      }
-      else if(param_values_ts.Contains("randomize-all")){
-        string mode = ( (arg.GetBool("flat-prior-dm12sq")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("dm12sq"),mode);
-        fp->Update(nr->PhysParamFromString("dm12sq"), rnd_value);
-        fp->SetInitValue(nr->PhysParamFromString("dm12sq"), rnd_value);
-      }
+        if (param_name=="at") {continue;} // We have lots of arguments called fix-at instead of just fix-[param]
 
-      if(arg.GetBool("fix-deltaCP")) {
-        fp->FixParameter(nr->PhysParamFromString("cpv"));
-        fp->SetNuisance(nr->PhysParamFromString("cpv"),false); //HACK
-      }
-      else if(param_values_ts.Contains("randomize-all")){
-        string mode = ( (arg.GetBool("flat-prior-deltaCP")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("cpv"),mode);
-        fp->Update(nr->PhysParamFromString("cpv"), rnd_value);
-        fp->SetInitValue(nr->PhysParamFromString("cpv"), rnd_value);
-      }
-      
-      if(arg.GetBool("fix-dm41sq")) {
-        fp->FixParameter(conv::kPhypDm41sq);
-      }
-      else if(param_values_ts.Contains("randomize-all")) {
-        string mode = ( (arg.GetBool("flat-prior-dm41sq ")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(conv::kPhypDm41sq,mode);
-        fp->Update(conv::kPhypDm41sq, rnd_value);
-        fp->SetInitValue(conv::kPhypDm41sq, rnd_value);
-      }
-      
-      if(arg.GetBool("fix-sinsq2thMuMu")) {
-        fp->FixParameter(conv::kPhypMixingMuMu);
-      }
-      else if(param_values_ts.Contains("randomize-all")) {
-        string mode = ( (arg.GetBool("flat-prior-sinsq2thMuMu ")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(conv::kPhypMixingMuMu,mode);
-        fp->Update(conv::kPhypMixingMuMu, rnd_value);
-        fp->SetInitValue(conv::kPhypMixingMuMu, rnd_value);
-      }
-      
-      if(arg.GetBool("fix-sinsq2thMuE")) {
-        fp->FixParameter(conv::kPhypMixingMuE);
-      }
-      else if(param_values_ts.Contains("randomize-all")) {
-        string mode = ( (arg.GetBool("flat-prior-sinsq2thMuE ")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(conv::kPhypMixingMuE,mode);
-        fp->Update(conv::kPhypMixingMuE, rnd_value);
-        fp->SetInitValue(conv::kPhypMixingMuE, rnd_value);
-      }
-      
-      if(arg.GetBool("fix-sinsq2thEE")) {
-        fp->FixParameter(conv::kPhypMixingEE);
-      }
-      else if(param_values_ts.Contains("randomize-all")) {
-        string mode = ( (arg.GetBool("flat-prior-sinsq2thEE ")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(conv::kPhypMixingEE,mode);
-        fp->Update(conv::kPhypMixingEE, rnd_value);
-        fp->SetInitValue(conv::kPhypMixingEE, rnd_value);
-      }
-      
-    }
+        conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
+        if (param == conv::kPhypUndefined) {
+          LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+          util::Die(-1);
+        }
+
+        if (fp->Exists(param)) {
+          if(arg.GetBool(argname)){
+            fp->FixParameter(param);
+          }
+          else if(param_values_ts.Contains("randomize-all")) {
+            TString prior_arg = TString::Format("flat-prior-%s",param_name.c_str());
+            string mode = ( (arg.GetBool(prior_arg.Data())) ? "flat" : "gaus" );
+            double rnd_value = util::GetRandomizedOscParam(param,mode);
+            fp->Update      (param, rnd_value);
+            fp->SetInitValue(param, rnd_value);
+          }
+        } //Exists(param)
+        else {
+          LOG("valor_dune",pINFO)<<"Not setting parameter not included in FPL: "<<param_name;
+        }
+      } //argname
 
     PhysParamList true_params = fp->AsPhysParamList("current");
     
@@ -463,93 +356,38 @@ int main(int argc, char ** argv)
       LOG("valor_dune", pNOTICE) << "Copying current values to initial values to give the fitter some help.";
       fp->CopyCurrToInitValues();
     }
-           
-    
-    //before reset for the fit, fix to a different value? 
-    double fix_mixing12 = arg.GetDouble("fix-at-mixing12");
-    if((fix_mixing12 > util::OscParamMinValue(nr->PhysParamFromString("mixing12"))) && 
-       (fix_mixing12 < util::OscParamMaxValue(nr->PhysParamFromString("mixing12"))))
-    {
-      fp->Update(nr->PhysParamFromString("mixing12"), fix_mixing12);
-      fp->SetInitValue(nr->PhysParamFromString("mixing12"), fix_mixing12);
-    }
 
-    double fix_mixing13 = arg.GetDouble("fix-at-mixing13");
-    if((fix_mixing13 > util::OscParamMinValue(nr->PhysParamFromString("mixing13"))) && 
-       (fix_mixing13 < util::OscParamMaxValue(nr->PhysParamFromString("mixing13"))))
-    {
-      fp->Update(nr->PhysParamFromString("mixing13"), fix_mixing13);
-      fp->SetInitValue(nr->PhysParamFromString("mixing13"), fix_mixing13);
-    }
 
-    double fix_mixing23 = arg.GetDouble("fix-at-mixing23");
-    if((fix_mixing23 > util::OscParamMinValue(nr->PhysParamFromString("mixing23"))) && 
-       (fix_mixing23 < util::OscParamMaxValue(nr->PhysParamFromString("mixing23"))))
-    {
-      fp->Update(nr->PhysParamFromString("mixing23"), fix_mixing23);
-      fp->SetInitValue(nr->PhysParamFromString("mixing23"), fix_mixing23);
-    }
+      //before reset for the fit, fix to a different value?
+      RgKeyList fix_at_args = arg.FindKeys("fix-at-");
+      TPRegexp fix_at_match("fix-at-(\\w*)");
+      for (RgKey argname : fix_at_args) { // RgKey is just a typename for std::string right now
+        TObjArray * matches = fix_at_match.MatchS(argname.c_str());
 
-    double fix_dm23sq = arg.GetDouble("fix-at-dm23sq");
-    if((fix_dm23sq > util::OscParamMinValue(nr->PhysParamFromString("dm23sq"))) && 
-       (fix_dm23sq < util::OscParamMaxValue(nr->PhysParamFromString("dm23sq"))))
-    {
-      fp->Update(nr->PhysParamFromString("dm23sq"), fix_dm23sq);
-      fp->SetInitValue(nr->PhysParamFromString("dm23sq"), fix_dm23sq);
-    }
+        if (matches->GetEntries() != 2) {
+          LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+          util::Die(-1);
+        }
+        TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
+        std::string param_name(tos_param_name->String().Data());
+        delete matches;
 
-    double fix_dm12sq = arg.GetDouble("fix-at-dm12sq");
-    if((fix_dm12sq > util::OscParamMinValue(nr->PhysParamFromString("dm12sq"))) && 
-       (fix_dm12sq < util::OscParamMaxValue(nr->PhysParamFromString("dm12sq"))))
-    {
-      fp->Update(nr->PhysParamFromString("dm12sq"), fix_dm12sq);
-      fp->SetInitValue(nr->PhysParamFromString("dm12sq"), fix_dm12sq);
-    }
+        conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
+        if (param == conv::kPhypUndefined) {
+          LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+          util::Die(-1);
+        }
 
-    double fix_dm13sq = arg.GetDouble("fix-at-dm13sq");
-    if((fix_dm13sq > util::OscParamMinValue(nr->PhysParamFromString("dm13sq"))) && 
-       (fix_dm13sq < util::OscParamMaxValue(nr->PhysParamFromString("dm13sq"))))
-    {
-      fp->Update(nr->PhysParamFromString("dm13sq"), fix_dm13sq);
-      fp->SetInitValue(nr->PhysParamFromString("dm13sq"), fix_dm13sq);
-    }
-
-    double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
-    if((fix_deltacp > util::OscParamMinValue(nr->PhysParamFromString("cpv"))) && 
-       (fix_deltacp < util::OscParamMaxValue(nr->PhysParamFromString("cpv"))))
-    {
-      fp->Update(nr->PhysParamFromString("cpv"), fix_deltacp);
-      fp->SetInitValue(nr->PhysParamFromString("cpv"), fix_deltacp);
-    }
-    
-    double fix_dm41sq = arg.GetDouble("fix-at-dm41sq");
-    if((fix_dm41sq > util::OscParamMinValue(conv::kPhypDm41sq)) && 
-       (fix_dm41sq < util::OscParamMaxValue(conv::kPhypDm41sq)))
-    {
-      fp->Update(conv::kPhypDm41sq, fix_dm41sq);
-      fp->SetInitValue(kPhypDm41sq, fix_dm41sq);
-    }
-    double fix_sinsq2thMuMu = arg.GetDouble("fix-at-sinsq2thMuMu");
-    if((fix_sinsq2thMuMu > util::OscParamMinValue(conv::kPhypMixingMuMu)) && 
-       (fix_sinsq2thMuMu < util::OscParamMaxValue(conv::kPhypMixingMuMu)))
-    {
-      fp->Update(conv::kPhypMixingMuMu, fix_sinsq2thMuMu);
-      fp->SetInitValue(kPhypMixingMuMu, fix_sinsq2thMuMu);
-    }
-    double fix_sinsq2thMuE = arg.GetDouble("fix-at-sinsq2thMuE");
-    if((fix_sinsq2thMuE > util::OscParamMinValue(conv::kPhypMixingMuE)) && 
-       (fix_sinsq2thMuE < util::OscParamMaxValue(conv::kPhypMixingMuE)))
-    {
-      fp->Update(conv::kPhypMixingMuE, fix_sinsq2thMuE);
-      fp->SetInitValue(kPhypMixingMuE, fix_sinsq2thMuE);
-    }
-    double fix_sinsq2thEE = arg.GetDouble("fix-at-sinsq2thEE");
-    if((fix_sinsq2thEE > util::OscParamMinValue(conv::kPhypMixingEE)) && 
-       (fix_sinsq2thEE < util::OscParamMaxValue(conv::kPhypMixingEE)))
-    {
-      fp->Update(conv::kPhypMixingEE, fix_sinsq2thEE);
-      fp->SetInitValue(kPhypMixingEE, fix_sinsq2thEE);
-    }
+        if (fp->Exists(param)) {
+          double fix_param_at = arg.GetDouble(argname);
+          if((fix_param_at > util::OscParamMinValue(param)) &&
+             (fix_param_at < util::OscParamMaxValue(param)))
+          {
+            fp->Update(param, fix_param_at);
+            fp->SetInitValue(param, fix_param_at);
+          }
+        }
+      }
 
     // Set our current values back to the fitter start point.
     // This will be central values unless start-at-true is defined.
