@@ -39,8 +39,8 @@ static const int kNBeamConf = 2;
 
 static const BeamConf_t kBeamConf[kNBeamConf] =
 {
-   kbLBNF_FHC, 
-   kbLBNF_RHC 
+   kbBNB_FHC, 
+   kbBNB_RHC 
 };
 // ---------------------------------------------------------------------
 
