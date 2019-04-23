@@ -45,7 +45,17 @@ double util::OscParamInitValue(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return valor::conv::duneosc::kInitDeltaCP;
-
+      
+      
+    case (kPhypDm41sq) :
+      return 0.;
+    case (kPhypMixingMuE):
+      return 0.;
+    case (kPhypMixingMuMu):
+      return 0.;
+    case (kPhypMixingEE):
+      return 0.;
+      
     default: 
       return -1; 
 
@@ -76,6 +86,15 @@ double util::OscParamInitError(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return valor::conv::duneosc::kInitErrDeltaCP;
+      
+    case (kPhypDm41sq) :
+      return 10.;
+    case (kPhypMixingMuE):
+      return 1.;
+    case (kPhypMixingMuMu):
+      return 1.;
+    case (kPhypMixingEE):
+      return 1.;
 
     default: 
       return -1; 
@@ -103,6 +122,15 @@ double util::OscParamMaxValue(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return 3.1416;
+      
+    case (kPhypDm41sq) :
+      return 100.;
+    case (kPhypMixingMuE):
+      return 1.;
+    case (kPhypMixingMuMu):
+      return 1.;
+    case (kPhypMixingEE):
+      return 1.;
 
     default: 
       return -1; 
@@ -129,6 +157,16 @@ double util::OscParamMinValue(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return -3.1416;
+      
+            
+    case (kPhypDm41sq) :
+      return 0;
+    case (kPhypMixingMuE):
+      return 0.;
+    case (kPhypMixingMuMu):
+      return 0.;
+    case (kPhypMixingEE):
+      return 0.;
 
     default: 
       return -1; 
@@ -157,6 +195,15 @@ double util::OscParamStepSize (conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return valor::conv::duneosc::kStepDeltaCP;
+      
+    case (kPhypDm41sq) :
+      return 0.05;
+    case (kPhypMixingMuE):
+      return 0.05;
+    case (kPhypMixingMuMu):
+      return 0.05;
+    case (kPhypMixingEE):
+      return 0.05;
 
     default: 
       LOG("Failed to get OA parameter step size",pFATAL);
