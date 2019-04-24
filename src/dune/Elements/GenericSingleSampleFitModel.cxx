@@ -49,6 +49,9 @@
 #include "dune/Conventions/ParameterPool.h"
 #include "valor/Conventions/Baseline.h"
 #include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/Detector.h"
+//dune
+#include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/Names.h"
 #include "dune/Utilities/UtlBinning.h"
@@ -1889,10 +1892,13 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
 
   for(size_t imode = 0; imode < fNReacModes; imode++) {
     ReacMode_t m = fReactionModes[imode];
-    if(m == kmUndefined) continue;
-    
-    //check if beam+sample+mode should be applied oscillation probabilities
-    if(!util::OscProbIsAppliedTo(fDetector,fBeam,fSample,m)) {continue; }
+    if(m         == kmUndefined) continue;
+    if(fDetector == kdUndefined) continue;
+    if(fBeam     == kbUndefined) continue;
+    if(fSample   == ksUndefined) continue;
+
+    //check if oscillation probabilities should be applied to this combination of phys hypothesis and detector
+    if(!util::OscProbIsAppliedTo(hypid, fDetector)) {continue; }
     
 
     const VALORBinning * true_sb = fBinning->TrueSmpBinning(m);
