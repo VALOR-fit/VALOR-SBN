@@ -48,7 +48,7 @@ void fit_param_sensitivity
   
   TString param_values_ts(param_values); // TString version for useful methods
 
-  PhysParamId_t sp = util::PhysParamFromString(s_param_name);
+  PhysParamId_t sp = util::PhysParamFromString(s_param_name);   // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   cout << util::AsString(sp) << endl;
   if(sp == kPhypUndefined) {
     cerr << "Undefined parameter: " << s_param_name << endl;
