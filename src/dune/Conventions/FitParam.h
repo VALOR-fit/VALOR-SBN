@@ -1351,8 +1351,6 @@ namespace util {
   string  AsStringSimple(conv::PhysParamId_t p);
   string  AsStringTeX (conv::PhysParamId_t p, bool root = false);
 
-  // Aliases for above
-  string  ParamAsString    (conv::PhysParamId_t p) ;
   string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
 
   // If you give a CorrelatedSystematics object, it'll ignore your list's standard systematics and use this set instead
