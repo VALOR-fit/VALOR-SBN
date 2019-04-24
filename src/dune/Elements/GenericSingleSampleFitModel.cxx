@@ -50,6 +50,7 @@
 #include "valor/Conventions/Baseline.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Detector.h"
+#include "valor/Conventions/SystType.h"
 //dune
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/FitParamApply.h"
@@ -292,7 +293,8 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
         for (unsigned int ip = 0 ; ip < fSplineParams.size(); ip++) {
           PhysParamId_t p = fSplineParams[ip];
           Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
-          if (util::ParamHasSplines(p)) {
+          Parameter param = ParameterPool::Instance()->GetParam(p);
+          if (param.GetType() == conv::kSystResponse) {
             const util::Interpolator * spl = fRFL->GetSpline(m,p,ispltrue,isplreco);
             if (spl == NULL) {
               LOG("GenericSingleSampleFitModel",pINFO) << "Got null spline.\n";
