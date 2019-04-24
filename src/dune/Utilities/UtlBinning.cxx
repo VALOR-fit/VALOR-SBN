@@ -131,15 +131,22 @@ TH1D* Make1DHistogram(const VALORArray& v,
      }
   }
 
-  // Contract the binning to 1D
-  KBCubHcmbEdge2Edge& newRecoBinning = (*recoBinning->Contract(ks));
-
-  // Need to integrate out the reco variables here, before integrating over
-  // truth
-  VALORArray* targetV = Contract(v, b, newRecoBinning);
+  // If necessary, contract the binning to 1D
+  const VALORArray* targetV = nullptr;
+  const KBCubHcmbEdge2Edge * newRecoBinning = nullptr;
+  if (recoKv.size() > 1) {
+     newRecoBinning = recoBinning->Contract(ks);
+    // Need to integrate out the reco variables here, before integrating over
+    // truth
+    targetV = Contract(v, b, *newRecoBinning);
+  }
+  else {
+    newRecoBinning = recoBinning;
+    targetV = &v;
+  }
 
   // Integrate over the truth variables
-  unsigned int nbins = newRecoBinning.NBins();
+  unsigned int nbins = newRecoBinning->NBins();
   double events[nbins];
   for(unsigned int i = 0; i < nbins; ++i)
   {
@@ -149,9 +156,14 @@ TH1D* Make1DHistogram(const VALORArray& v,
   }
 
   // Map the events to a ROOT compatible histogram
-  TH1D* histo = Remap1D(events, newRecoBinning);
-
-  delete targetV;
+  TH1D* histo = Remap1D(events, *newRecoBinning);
+  
+  std::cerr<<v.Integral()<<"\t"<<targetV->Integral()<<"\t"<<histo->Integral()<<std::endl;  
+  
+  if (targetV != &v) { delete targetV; }
+  if (newRecoBinning != recoBinning) {
+    delete const_cast<KBCubHcmbEdge2Edge*>(newRecoBinning);
+  }
   
   return histo;
 }
