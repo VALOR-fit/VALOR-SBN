@@ -1029,24 +1029,6 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
 string util::ParamAsString    (conv::PhysParamId_t p)            {return util::AsString   (p);     };
 string util::ParamAsStringTeX (conv::PhysParamId_t p, bool root) {return util::AsStringTeX(p,root);};
 //________________________________________________________________________________________
-PhysParamId_t util::PhysParamFromString(string inp_name)
-{
-  for(int ip = 0; ip < kNFitParams; ip++) {
-     PhysParamId_t p = kFitParam[ip];
-     string name = util::AsString(p);
-     if(IsOscParam(p)){  
-       string name_simple = util::AsStringSimple(p);
-       if((name == inp_name) || (name_simple == inp_name))
-         return p;
-       }
-     else{
-       if(name == inp_name) 
-         return p;
-     }
-  }
-  return kPhypUndefined;
-}
-//________________________________________________________________________________________
 FitParamList * util::GetFitParameterList (Option_t * param_list, const CorrelatedSystematics * syst)
 {
 // Create a FitParamList object, adding all physics + nuisance params.

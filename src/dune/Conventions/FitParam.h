@@ -1355,8 +1355,6 @@ namespace util {
   string  ParamAsString    (conv::PhysParamId_t p) ;
   string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
 
-  conv::PhysParamId_t PhysParamFromString(string p);
-
   // If you give a CorrelatedSystematics object, it'll ignore your list's standard systematics and use this set instead
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", const CorrelatedSystematics * syst = 0);
 
