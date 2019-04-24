@@ -74,6 +74,7 @@
 #include "valor/Utilities/VThreadPool.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
+#include "valor/Utilities/NameRegistry.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/OscParams.h"
@@ -165,7 +166,8 @@ int main(int argc, char ** argv)
   std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
   elements->Read(config_path);
   FitModelABC * model = elements->FitModel();
-  
+  NameRegistry * nr = util::NameRegistry::Instance();
+
   // Hack until we move GetSystematics() into FitModelABC
   CorrelatedSystematics * syst = model->GetSystematics();
   
@@ -265,15 +267,15 @@ int main(int argc, char ** argv)
       if ( std::fabs(mixing12 + 999. ) < conv::kASmallNum ) { 
         mixing12 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing12);
       }
-      fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
-      fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
+      fp->Update      (nr->PhysParamFromString("mixing12"), mixing12);
+      fp->SetInitValue(nr->PhysParamFromString("mixing12"), mixing12);
 
       double mixing13 = arg.GetDouble("input-mixing13");
       if ( std::fabs(mixing13 + 999. ) < conv::kASmallNum ) { 
         mixing13 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing13);
       }
-      fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
-      fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
+      fp->Update      (nr->PhysParamFromString("mixing13"), mixing13);
+      fp->SetInitValue(nr->PhysParamFromString("mixing13"), mixing13);
       
       double mixing23 = arg.GetDouble("input-mixing23");
       if ( std::fabs(mixing23 + 999. ) < conv::kASmallNum ) { 
@@ -283,29 +285,29 @@ int main(int argc, char ** argv)
       if (flip_23_octant) {
         mixing23 = util::FlipOctantAroundMaxDisap(mixing23,mixing13);
       }
-      fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
-      fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
+      fp->Update      (nr->PhysParamFromString("mixing23"), mixing23);
+      fp->SetInitValue(nr->PhysParamFromString("mixing23"), mixing23);
       
       double dm23sq = arg.GetDouble("input-dm23sq");
       if ( std::fabs(dm23sq + 999. ) < conv::kASmallNum ) {
         dm23sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm23sq);
       }
-      fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
-      fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
+      fp->Update      (nr->PhysParamFromString("dm23sq"), dm23sq);
+      fp->SetInitValue(nr->PhysParamFromString("dm23sq"), dm23sq);
 
       double dm12sq = arg.GetDouble("input-dm12sq");
       if ( std::fabs(dm12sq + 999. ) < conv::kASmallNum ) { 
         dm12sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm12sq);
       }
-      fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
-      fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
+      fp->Update      (nr->PhysParamFromString("dm12sq"), dm12sq);
+      fp->SetInitValue(nr->PhysParamFromString("dm12sq"), dm12sq);
 
       double deltacp = arg.GetDouble("input-deltaCP");
       if ( std::fabs(deltacp + 999. ) < conv::kASmallNum ) {
         deltacp = Opt::Instance()->GetGlobalBestFit(conv::kPhypCPV);
       }
-      fp->Update      (util::PhysParamFromString("cpv"), deltacp);
-      fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
+      fp->Update      (nr->PhysParamFromString("cpv"), deltacp);
+      fp->SetInitValue(nr->PhysParamFromString("cpv"), deltacp);
       
       
       double dm41sq = arg.GetDouble("input-dm41sq");
@@ -339,64 +341,64 @@ int main(int argc, char ** argv)
 
       // fix them? randomize them? 
       if(arg.GetBool("fix-mixing12")){
-        fp->FixParameter(util::PhysParamFromString("mixing12"));
+        fp->FixParameter(nr->PhysParamFromString("mixing12"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-mixing12")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("mixing12"),mode);
-        fp->Update(util::PhysParamFromString("mixing12"), rnd_value);
-        fp->SetInitValue(util::PhysParamFromString("mixing12"), rnd_value);
+        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("mixing12"),mode);
+        fp->Update(nr->PhysParamFromString("mixing12"), rnd_value);
+        fp->SetInitValue(nr->PhysParamFromString("mixing12"), rnd_value);
       }
         
       if(arg.GetBool("fix-mixing13")) {
-        fp->FixParameter(util::PhysParamFromString("mixing13"));
+        fp->FixParameter(nr->PhysParamFromString("mixing13"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-mixing13")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("mixing13"),mode);
-        fp->Update(util::PhysParamFromString("mixing13"), rnd_value);
-        fp->SetInitValue(util::PhysParamFromString("mixing13"), rnd_value);
+        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("mixing13"),mode);
+        fp->Update(nr->PhysParamFromString("mixing13"), rnd_value);
+        fp->SetInitValue(nr->PhysParamFromString("mixing13"), rnd_value);
       }
 
       if(arg.GetBool("fix-mixing23")) {
-        fp->FixParameter(util::PhysParamFromString("mixing23"));
+        fp->FixParameter(nr->PhysParamFromString("mixing23"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-mixing23")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("mixing23"),mode);
-        fp->Update(util::PhysParamFromString("mixing23"), rnd_value);
-        fp->SetInitValue(util::PhysParamFromString("mixing23"), rnd_value);
+        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("mixing23"),mode);
+        fp->Update(nr->PhysParamFromString("mixing23"), rnd_value);
+        fp->SetInitValue(nr->PhysParamFromString("mixing23"), rnd_value);
       }
 
       if(arg.GetBool("fix-dm23sq")){
-        fp->FixParameter(util::PhysParamFromString("dm23sq"));
+        fp->FixParameter(nr->PhysParamFromString("dm23sq"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-dm23sq")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("dm23sq"),mode);
-        fp->Update(util::PhysParamFromString("dm23sq"), rnd_value);
-        fp->SetInitValue(util::PhysParamFromString("dm23sq"), rnd_value);
+        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("dm23sq"),mode);
+        fp->Update(nr->PhysParamFromString("dm23sq"), rnd_value);
+        fp->SetInitValue(nr->PhysParamFromString("dm23sq"), rnd_value);
       }
 
       if(arg.GetBool("fix-dm12sq")) {
-        fp->FixParameter(util::PhysParamFromString("dm12sq"));
+        fp->FixParameter(nr->PhysParamFromString("dm12sq"));
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-dm12sq")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("dm12sq"),mode);
-        fp->Update(util::PhysParamFromString("dm12sq"), rnd_value);
-        fp->SetInitValue(util::PhysParamFromString("dm12sq"), rnd_value);
+        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("dm12sq"),mode);
+        fp->Update(nr->PhysParamFromString("dm12sq"), rnd_value);
+        fp->SetInitValue(nr->PhysParamFromString("dm12sq"), rnd_value);
       }
 
       if(arg.GetBool("fix-deltaCP")) {
-        fp->FixParameter(util::PhysParamFromString("cpv"));
-        fp->SetNuisance(util::PhysParamFromString("cpv"),false); //HACK
+        fp->FixParameter(nr->PhysParamFromString("cpv"));
+        fp->SetNuisance(nr->PhysParamFromString("cpv"),false); //HACK
       }
       else if(param_values_ts.Contains("randomize-all")){
         string mode = ( (arg.GetBool("flat-prior-deltaCP")) ? "flat" : "gaus" );
-        double rnd_value = util::GetRandomizedOscParam(util::PhysParamFromString("cpv"),mode);
-        fp->Update(util::PhysParamFromString("cpv"), rnd_value);
-        fp->SetInitValue(util::PhysParamFromString("cpv"), rnd_value);
+        double rnd_value = util::GetRandomizedOscParam(nr->PhysParamFromString("cpv"),mode);
+        fp->Update(nr->PhysParamFromString("cpv"), rnd_value);
+        fp->SetInitValue(nr->PhysParamFromString("cpv"), rnd_value);
       }
       
       if(arg.GetBool("fix-dm41sq")) {
@@ -468,59 +470,59 @@ int main(int argc, char ** argv)
     
     //before reset for the fit, fix to a different value? 
     double fix_mixing12 = arg.GetDouble("fix-at-mixing12");
-    if((fix_mixing12 > util::OscParamMinValue(util::PhysParamFromString("mixing12"))) && 
-       (fix_mixing12 < util::OscParamMaxValue(util::PhysParamFromString("mixing12"))))
+    if((fix_mixing12 > util::OscParamMinValue(nr->PhysParamFromString("mixing12"))) && 
+       (fix_mixing12 < util::OscParamMaxValue(nr->PhysParamFromString("mixing12"))))
     {
-      fp->Update(util::PhysParamFromString("mixing12"), fix_mixing12);
-      fp->SetInitValue(util::PhysParamFromString("mixing12"), fix_mixing12);
+      fp->Update(nr->PhysParamFromString("mixing12"), fix_mixing12);
+      fp->SetInitValue(nr->PhysParamFromString("mixing12"), fix_mixing12);
     }
 
     double fix_mixing13 = arg.GetDouble("fix-at-mixing13");
-    if((fix_mixing13 > util::OscParamMinValue(util::PhysParamFromString("mixing13"))) && 
-       (fix_mixing13 < util::OscParamMaxValue(util::PhysParamFromString("mixing13"))))
+    if((fix_mixing13 > util::OscParamMinValue(nr->PhysParamFromString("mixing13"))) && 
+       (fix_mixing13 < util::OscParamMaxValue(nr->PhysParamFromString("mixing13"))))
     {
-      fp->Update(util::PhysParamFromString("mixing13"), fix_mixing13);
-      fp->SetInitValue(util::PhysParamFromString("mixing13"), fix_mixing13);
+      fp->Update(nr->PhysParamFromString("mixing13"), fix_mixing13);
+      fp->SetInitValue(nr->PhysParamFromString("mixing13"), fix_mixing13);
     }
 
     double fix_mixing23 = arg.GetDouble("fix-at-mixing23");
-    if((fix_mixing23 > util::OscParamMinValue(util::PhysParamFromString("mixing23"))) && 
-       (fix_mixing23 < util::OscParamMaxValue(util::PhysParamFromString("mixing23"))))
+    if((fix_mixing23 > util::OscParamMinValue(nr->PhysParamFromString("mixing23"))) && 
+       (fix_mixing23 < util::OscParamMaxValue(nr->PhysParamFromString("mixing23"))))
     {
-      fp->Update(util::PhysParamFromString("mixing23"), fix_mixing23);
-      fp->SetInitValue(util::PhysParamFromString("mixing23"), fix_mixing23);
+      fp->Update(nr->PhysParamFromString("mixing23"), fix_mixing23);
+      fp->SetInitValue(nr->PhysParamFromString("mixing23"), fix_mixing23);
     }
 
     double fix_dm23sq = arg.GetDouble("fix-at-dm23sq");
-    if((fix_dm23sq > util::OscParamMinValue(util::PhysParamFromString("dm23sq"))) && 
-       (fix_dm23sq < util::OscParamMaxValue(util::PhysParamFromString("dm23sq"))))
+    if((fix_dm23sq > util::OscParamMinValue(nr->PhysParamFromString("dm23sq"))) && 
+       (fix_dm23sq < util::OscParamMaxValue(nr->PhysParamFromString("dm23sq"))))
     {
-      fp->Update(util::PhysParamFromString("dm23sq"), fix_dm23sq);
-      fp->SetInitValue(util::PhysParamFromString("dm23sq"), fix_dm23sq);
+      fp->Update(nr->PhysParamFromString("dm23sq"), fix_dm23sq);
+      fp->SetInitValue(nr->PhysParamFromString("dm23sq"), fix_dm23sq);
     }
 
     double fix_dm12sq = arg.GetDouble("fix-at-dm12sq");
-    if((fix_dm12sq > util::OscParamMinValue(util::PhysParamFromString("dm12sq"))) && 
-       (fix_dm12sq < util::OscParamMaxValue(util::PhysParamFromString("dm12sq"))))
+    if((fix_dm12sq > util::OscParamMinValue(nr->PhysParamFromString("dm12sq"))) && 
+       (fix_dm12sq < util::OscParamMaxValue(nr->PhysParamFromString("dm12sq"))))
     {
-      fp->Update(util::PhysParamFromString("dm12sq"), fix_dm12sq);
-      fp->SetInitValue(util::PhysParamFromString("dm12sq"), fix_dm12sq);
+      fp->Update(nr->PhysParamFromString("dm12sq"), fix_dm12sq);
+      fp->SetInitValue(nr->PhysParamFromString("dm12sq"), fix_dm12sq);
     }
 
     double fix_dm13sq = arg.GetDouble("fix-at-dm13sq");
-    if((fix_dm13sq > util::OscParamMinValue(util::PhysParamFromString("dm13sq"))) && 
-       (fix_dm13sq < util::OscParamMaxValue(util::PhysParamFromString("dm13sq"))))
+    if((fix_dm13sq > util::OscParamMinValue(nr->PhysParamFromString("dm13sq"))) && 
+       (fix_dm13sq < util::OscParamMaxValue(nr->PhysParamFromString("dm13sq"))))
     {
-      fp->Update(util::PhysParamFromString("dm13sq"), fix_dm13sq);
-      fp->SetInitValue(util::PhysParamFromString("dm13sq"), fix_dm13sq);
+      fp->Update(nr->PhysParamFromString("dm13sq"), fix_dm13sq);
+      fp->SetInitValue(nr->PhysParamFromString("dm13sq"), fix_dm13sq);
     }
 
     double fix_deltacp = arg.GetDouble("fix-at-deltaCP");
-    if((fix_deltacp > util::OscParamMinValue(util::PhysParamFromString("cpv"))) && 
-       (fix_deltacp < util::OscParamMaxValue(util::PhysParamFromString("cpv"))))
+    if((fix_deltacp > util::OscParamMinValue(nr->PhysParamFromString("cpv"))) && 
+       (fix_deltacp < util::OscParamMaxValue(nr->PhysParamFromString("cpv"))))
     {
-      fp->Update(util::PhysParamFromString("cpv"), fix_deltacp);
-      fp->SetInitValue(util::PhysParamFromString("cpv"), fix_deltacp);
+      fp->Update(nr->PhysParamFromString("cpv"), fix_deltacp);
+      fp->SetInitValue(nr->PhysParamFromString("cpv"), fix_deltacp);
     }
     
     double fix_dm41sq = arg.GetDouble("fix-at-dm41sq");
