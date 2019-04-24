@@ -33,7 +33,6 @@ void plot_pdf(
 #ifndef __CINT__
   valor::Env * env = valor::Env::Instance();
   env->AutoSet("dune");
-  valor::util::PopulateNameRegistry();
 #endif
 
   const int n_pdf_slices = 10; //
