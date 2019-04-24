@@ -116,9 +116,6 @@ void Fit(CmdLnArgList& arg)
          "sinsq2theta");
    Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
 
-   // Set DUNE param names inside framework
-   util::PopulateNameRegistry();
-
    // Set the random seeds
    Rnd::Instance()->SetSeeds(arg);
 
@@ -242,9 +239,6 @@ void Validate(CmdLnArgList& arg)
    Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
          "sinsq2theta");
    Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
-
-   // Set DUNE param names inside framework
-   util::PopulateNameRegistry();
 
    // Set the random seeds
    Rnd::Instance()->SetSeeds(arg);
