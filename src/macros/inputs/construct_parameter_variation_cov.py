@@ -56,14 +56,14 @@ def main(prefit_file, postfit_file, output_file, scale, params, prefit_num=0, po
   for ip in xrange(prefit_fp.Size()):
     p = prefit_fp.WhichParam(ip)
     for sel_p in params.split(","):
-      if sel_p.lower() in util.ParamAsString(p).lower():
+      if sel_p.lower() in util.ParamAsString(p).lower():    # TODO: Replace this with a call to NameRegistry::ParamAsString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
         selected_params.append(p)
   
   for p in selected_params:
     ip = prefit_fp.Id(p)
     assert(ip == postfit_fp.Id(p))
     final_err[ip] = prefit_err[ip] * scale
-    print "Setting value of",util.ParamAsString(p),"error to",final_err[ip]
+    print "Setting value of",util.ParamAsString(p),"error to",final_err[ip]    # TODO: Replace this with a call to NameRegistry::ParamAsString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
     
   final_cov = util.CorrelationAndErrorToCovarianceMatrix(prefit_corr,final_err)
   
