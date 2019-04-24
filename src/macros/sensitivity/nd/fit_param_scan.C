@@ -44,7 +44,7 @@ void fit_param_scan
   cout << endl;
   cout << *Rnd::Instance() << endl;
 
-  PhysParamId_t p = util::PhysParamFromString(pname);
+  PhysParamId_t p = util::PhysParamFromString(pname);   // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   int pidx = util::ArrIdx::Instance()->FitParamIdx(p);
 
   // Get ND model & configure
@@ -110,7 +110,7 @@ void fit_param_scan
     hndc->SetBinContent(ibin,valnew);
   }
 
-  hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());
+  hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());  // TODO: replace AsStringTeX with a call to Parameter
   hndc->GetYaxis()->SetTitle("-#Delta(lnL)");
   hndc->SetMarkerSize(1.3);
   hndc->SetMarkerStyle(20);
