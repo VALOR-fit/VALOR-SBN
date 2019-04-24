@@ -27,6 +27,8 @@
 #include "dune/Conventions/ReacModeCoarse.h"
 
 
+#define SBN
+
 namespace valor {  
 namespace conv {
       
@@ -39,8 +41,13 @@ static const int kNBeamConf = 2;
 
 static const BeamConf_t kBeamConf[kNBeamConf] =
 {
-   kbBNB_FHC, 
-   kbBNB_RHC 
+#ifdef SBN
+  kbBNB_FHC, 
+  kbBNB_RHC
+#else
+  kbLBNF_FHC, 
+  kbLBNF_RHC
+#endif
 };
 // ---------------------------------------------------------------------
 
@@ -249,6 +256,24 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
       {
         #include "dune/Conventions/ModeLists/OscLowE.h"
       },
+#ifdef SBN
+      // selection: ksNuMuCChigh/ksNuMuBarCChigh
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      },
+      // selection: ksNuMuCClow/ksNuMuBarCClow
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      },
+      // selection: ksNuECChigh/ksNuEBarCChigh
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      },
+      // selection: ksNuECClow/ksNuEBarCClow
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      }
+#else
       //far detector
       // selection: ksNuMuCChigh/ksNuMuBarCChigh
       {
@@ -266,6 +291,7 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
       {
         #include "dune/Conventions/ModeLists/OscHighE.h"
       }
+#endif
 };
   
    
@@ -564,6 +590,17 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
     //2016b far detector selections
     // sample: ksNuMuCChigh
     {
+#ifdef SBN
+      kmcNuMuCCQE,    
+      kmcNuMuCCMEC,    
+      kmcNuMuCC1pi,   
+      kmcNuMuCC2pi,   
+      kmcNuMuCCoth,   
+      kmcNuMuBarCC,   
+      kmcNuENuEBarCC, 
+      kmcNC,
+      kmcUndefined
+#else
       kmcNuMuCC,    
       kmcNuMuBarCC,   
       kmcOscNuMuCC,
@@ -572,10 +609,22 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuEBarCC,
       kmcNuTauCC,
       kmcNuTauBarCC,
-      kmcNC           
+      kmcNC
+#endif
     },
     // sample: ksNuMuCClow
     {
+#ifdef SBN
+      kmcNuMuCCQE,    
+      kmcNuMuCCMEC,    
+      kmcNuMuCC1pi,   
+      kmcNuMuCC2pi,   
+      kmcNuMuCCoth,   
+      kmcNuMuBarCC,   
+      kmcNuENuEBarCC, 
+      kmcNC,
+      kmcUndefined
+#else
       kmcNuMuCC,    
       kmcNuMuBarCC,   
       kmcOscNuMuCC,
@@ -584,7 +633,8 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuEBarCC,
       kmcNuTauCC,
       kmcNuTauBarCC,
-      kmcNC           
+      kmcNC
+#endif
     },
     // sample: ksNuECChigh
     {
