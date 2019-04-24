@@ -93,9 +93,6 @@ int main(int argc, char ** argv)
   
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
-  // Set DUNE param names inside framework       
-  util::PopulateNameRegistry();
-
   // Set the random seeds                                                                                                          
   Rnd::Instance()->SetSeeds(arg);
 
