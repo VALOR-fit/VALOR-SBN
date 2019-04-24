@@ -49,8 +49,8 @@ def main(file_patterns, par_x, par_y, output, longest, ellipse):
   max_diag = dict()
   lines    = dict()
   
-  px = util.PhysParamFromString(par_x)
-  py = util.PhysParamFromString(par_y)
+  px = util.PhysParamFromString(par_x)    # TODO: Replace this with a call to NameRegistry::>PhysParamFromString. Will need to read a config file to set up a ParameterPool first
+  py = util.PhysParamFromString(par_y)    # TODO: Replace this with a call to NameRegistry::>PhysParamFromString. Will need to read a config file to set up a ParameterPool first
   if (px < 0 or px > 1E4):
     print "Unidentified parameter x: ",par_x
     exit(-1)
