@@ -1346,7 +1346,6 @@ static const PhysParamId_t kFitParamsWithSplines[kNFitParamsWithSplines] =
 //
 
 namespace util {
-  string  AsStringSimple(conv::PhysParamId_t p);
   string  AsStringTeX (conv::PhysParamId_t p, bool root = false);
 
   string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
