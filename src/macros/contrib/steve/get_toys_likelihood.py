@@ -46,7 +46,7 @@ input_dm23sq       = 2.51E-3
 def main(param,param_value,config_file,outfile,ntoys,seed=0):
   
   # Pattern replacement for output filename
-  outfile = outfile.replace("[PARAM]",util.ParamAsString(param))
+  outfile = outfile.replace("[PARAM]",util.ParamAsString(param))    # TODO: Replace ParamAsString with a call to ParameterPool
   outfile = outfile.replace("[VALUE]",to3sf.format(value))
   
   if (seed):
@@ -114,6 +114,8 @@ if __name__=="__main__":
   opt,pv = parser.parse_args()
   assert(len(pv)==2)
   param_s,value_s = pv
+  # TODO: util.PhysParamFromString no longer exists. Instead read the config to setup the ParameterPool and populate the NameRegistry.
+  # TODO: Then get the param using nr = valor.NameRegistry.Instance(); nr.PhysParamFromString(param_s)
   param = util.PhysParamFromString(param_s)
   assert(param>=0 and param < python_undefined)
   value = float(value_s)
