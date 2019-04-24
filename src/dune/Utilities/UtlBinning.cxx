@@ -4,6 +4,7 @@
 #include <numeric>
 
 // valor
+#include "valor/Conventions/Constants.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Messenger/Messenger.h"
 
@@ -158,7 +159,10 @@ TH1D* Make1DHistogram(const VALORArray& v,
   // Map the events to a ROOT compatible histogram
   TH1D* histo = Remap1D(events, *newRecoBinning);
   
-  std::cerr<<v.Integral()<<"\t"<<targetV->Integral()<<"\t"<<histo->Integral()<<std::endl;  
+  if (std::fabs(v.Integral() - histo->Integral()) > conv::kASmallNum) {
+    LOG("UtlBinning",pFATAL) << "Histogram contents don't match VALORArray contents ("<<v.GetName()<<")";
+    util::Die(-1);
+  }
   
   if (targetV != &v) { delete targetV; }
   if (newRecoBinning != recoBinning) {
@@ -210,6 +214,11 @@ TH2D* Make2DOptimisedHistogram(const VALORArray& v,
   // Map the events to a ROOT compatible histogram
   TH2D* histo = RemapOptimised2D(events, *recoBinning);
   
+  if (std::fabs(v.Integral() - histo->Integral()) > conv::kASmallNum) {
+    LOG("UtlBinning",pFATAL) << "Histogram contents don't match VALORArray contents ("<<v.GetName()<<")";
+    util::Die(-1);
+  }
+  
   return histo;
 }
 
@@ -254,6 +263,11 @@ TH2D* Make2DSimpleHistogram(const VALORArray& v,
   
   // Map the events to a ROOT compatible histogram
   TH2D* histo = RemapSimple2D(events, *recoBinning);
+  
+  if (std::fabs(v.Integral() - histo->Integral()) > conv::kASmallNum) {
+    LOG("UtlBinning",pFATAL) << "Histogram contents don't match VALORArray contents ("<<v.GetName()<<")";
+    util::Die(-1);
+  }
   
   return histo;
 }
