@@ -19,7 +19,7 @@ void calc_critical_fit_statistic
 {
   using namespace valor;
 
-  conv::PhysParamId_t p = util::PhysParamFromString(lim_param_name);
+  conv::PhysParamId_t p = util::PhysParamFromString(lim_param_name);  // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   assert(p != conv::kPhypUndefined);
   
   cout << "Calculating critical values of fit statistic for parameter: " << lim_param_name << endl;
