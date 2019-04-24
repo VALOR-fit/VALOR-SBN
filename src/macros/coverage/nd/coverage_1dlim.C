@@ -34,7 +34,7 @@ void coverage_1dlim
  
   assert(lim_param_name);    
 
-  PhysParamId_t sp = util::PhysParamFromString(lim_param_name);
+  PhysParamId_t sp = util::PhysParamFromString(lim_param_name);    // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   cout << util::AsString(sp) << endl;
   if(sp == kPhypUndefined) {
     cerr << "Undefined parameter: " << lim_param_name << endl;
