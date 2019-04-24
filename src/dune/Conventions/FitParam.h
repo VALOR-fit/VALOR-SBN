@@ -1383,9 +1383,6 @@ namespace util {
   const double * EtrueRange (conv::PhysParamId_t p);
   const double * Q2trueRange(conv::PhysParamId_t p);
 
-  // Tell the framework classes what our parameter names are
-  void PopulateNameRegistry(void);
-
 } //util
 
 } // valor
