@@ -27,6 +27,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 rnd  =  valor.Rnd.Instance()
+nr   =  util.NameRegistry.Instance()
 
 opt.gOscMixingParamChoice = conv.kNuMixSinsqTheta
 opt.SetDefaultParameterValues()
@@ -111,7 +112,7 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
   fit_inputs = valor.FitInputs(data,model,fparm)
   
   for param_name in params:
-    param = util.PhysParamFromString(param_name)
+    param = nr.PhysParamFromString(param_name)
     
     if (param == conv.kPhypUndefined or param == python_undefined):
       try:
