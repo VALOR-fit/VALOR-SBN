@@ -110,9 +110,6 @@ int main(int argc, char ** argv)
   const int recalculate_step_every = 50;
   const int print_step_every = 500;
   
-  // Set DUNE param names inside framework
-  util::PopulateNameRegistry();
-  
   // Set the random seeds
   Rnd::Instance()->SetSeeds(arg);
   LOG("valor_dune", pNOTICE) << *Rnd::Instance();
