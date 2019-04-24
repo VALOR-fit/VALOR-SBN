@@ -288,6 +288,6 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
     $jobID++;
     
     # If we're scanning 1D, break the second loop
-    if ($only1dscan) {break;}
+    if ($only1dscan) { last; }
   } # for point2
 } # for point1
