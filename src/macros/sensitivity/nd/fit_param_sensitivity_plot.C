@@ -164,7 +164,7 @@ void fit_param_sensitivity_plot
 TGraph * get_sensitivity( 
   const char * pname, const char * filename, double & p_true_out, double & p_min_out, double & p_max_out)
 {
-  conv::PhysParamId_t p = util::PhysParamFromString(pname);
+  conv::PhysParamId_t p = util::PhysParamFromString(pname);   // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   assert(p != conv::kPhypUndefined);
   
   cout << "Plotting sensitivity to parameter: " << pname << " using toy-MC fit results stored in: " << filename << endl;
@@ -316,7 +316,7 @@ TF1 * get_sensitivity_fit (TGraph * sensitivity, double pmin, double pmax)
 // ------------------------------------------------------------------------------------------------
 TGraph * get_prior (const char * pname, double pmin, double pmax, double & err_out)
 {
-  conv::PhysParamId_t p = util::PhysParamFromString(pname);
+  conv::PhysParamId_t p = util::PhysParamFromString(pname);   // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   assert(p != conv::kPhypUndefined);
   
   cout << "Plotting prior for parameter: " << pname << " in range: [" << pmin << ", " << pmax << "]" << endl;
