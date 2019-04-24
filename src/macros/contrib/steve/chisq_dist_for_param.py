@@ -105,7 +105,7 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
   canv.cd()
   
   if len(params)==0:
-    params = [util.ParamAsString(p) for p in xrange(conv.knppmax) if fparm.Exists(p)]
+    params = [nr.ParamAsString(p) for p in xrange(conv.knppmax) if fparm.Exists(p)]
     
   print "Making chisq distribution for "+`len(params)`+" parameters."
   
@@ -126,18 +126,18 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
       continue
       
     if not fparm.Exists(param):
-      print "Param ",param,"=",util.ParamAsString(param)," not found in FitParamList ",fit_param_list
+      print "Param ",param,"=",nr.ParamAsString(param)," not found in FitParamList ",fit_param_list
       continue
       
-    print "Doing param: ",util.ParamAsString(param)
+    print "Doing param: ",nr.ParamAsString(param)
       
     fparm.ResetCurrToInitValues()
     
     lower_limit = fparm.MinValue(param)
     upper_limit = fparm.MaxValue(param)
     
-    hname = util.ParamAsString(param)+"_chisq"
-    htitle = "Chisq of "+util.ParamAsString(param)
+    hname = nr.ParamAsString(param)+"_chisq"
+    htitle = "Chisq of "+nr.ParamAsString(param)
     
     h = ROOT.TH1D(hname,htitle,nbins,lower_limit,upper_limit)
     h.SetLineColor(color)
