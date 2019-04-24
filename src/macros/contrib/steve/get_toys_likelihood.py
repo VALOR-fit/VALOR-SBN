@@ -27,6 +27,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 rnd  =  valor.Rnd.Instance()
+nr   =  util.NameRegistry.Instance()
 
 opt.gOscMixingParamChoice = conv.kNuMixSinsqTheta
 opt.SetDefaultParameterValues()
@@ -45,10 +46,6 @@ input_dm23sq       = 2.51E-3
 
 def main(param,param_value,config_file,outfile,ntoys,seed=0):
   
-  # Pattern replacement for output filename
-  outfile = outfile.replace("[PARAM]",util.ParamAsString(param))    # TODO: Replace ParamAsString with a call to ParameterPool
-  outfile = outfile.replace("[VALUE]",to3sf.format(value))
-  
   if (seed):
     rnd.SetSeeds(seed,seed+1,seed+2,seed+3,seed+4)
     
@@ -62,6 +59,10 @@ def main(param,param_value,config_file,outfile,ntoys,seed=0):
   elements.Read(config)
   model = elements.FitModel()
   data = elements.FitData()
+
+  # Pattern replacement for output filename
+  outfile = outfile.replace("[PARAM]",nr.ParamAsString(param))
+  outfile = outfile.replace("[VALUE]",to3sf.format(value))
   
   fpl = util.GetFitParameterList(default_fit_param_list)
   fit_inputs = valor.FitInputs(data,model,fpl)
