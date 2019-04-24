@@ -62,7 +62,7 @@ int NDFitExtractsBareRoot(void);
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
-  util::PopulateNameRegistry();
+  // TODO: I've Removed util::PopulateNameRegistry. Instead read a config file to set up a ParameterPool, which automatically populates the NameRegistry
   GetCommandLineArgs (argc, argv);
 
   if(gOptOutFormat == "ndfit_extracts_bare_root") {
@@ -79,11 +79,11 @@ bool IsMarginalised(const FitParamList * fparm, conv::PhysParamId_t p)
 {
   // Marginalise ND fluxes if FD fluxes present
   if (fparm->Exists(conv::kNuisFHCNuMuFDFlux00) || fparm->Exists(conv::kNuisRHCNuMuFDFlux00)) {
-    if (util::IsNDFluxRelated(p)) {return true;}
+    if (util::IsNDFluxRelated(p)) {return true;}     // TODO: Replace with call to Parameter::SearchCategories
   }
   // Marginalise physics params
   if (p < conv::kNuis000) {return true;}
-  return util::IsNuDetRelated(p); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.
+  return util::IsNuDetRelated(p); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.   // TODO: Replace with call to Parameter::SearchCategories
 }
 //___________________________________________________________________
 int NDFitExtractsBareRoot(void)
@@ -165,8 +165,8 @@ int NDFitExtractsBareRoot(void)
     conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     brPId = ip;
     strcpy(brPName, best_fit_params->Name(p).c_str());
-    const double * erange  = util::EtrueRange (p);
-    const double * q2range = util::Q2trueRange(p);
+    const double * erange  = util::EtrueRange (p);    // TODO: Replace EtrueRange with call to Parameter
+    const double * q2range = util::Q2trueRange(p);    // TODO: Replace Q2trueRange with call to Parameter
     brPEmin  = erange [0];
     brPEmax  = erange [1];
     brPQ2min = q2range[0];
