@@ -48,6 +48,7 @@
 #include "valor/Utilities/Env.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
+#include "valor/Utilities/NameRegistry.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/OscParams.h"
@@ -107,6 +108,7 @@ int main(int argc, char ** argv)
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(util::CompleteConfigPath(config_file),readopt.Data());
   FitModelABC * model = elements->FitModel();
+  NameRegistry * nr = util::NameRegistry::Instance();
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
   // parameter limits, initial values etc).            
@@ -126,16 +128,16 @@ int main(int argc, char ** argv)
     if ( std::fabs(mixing12 + 999. ) < conv::kASmallNum ) { 
       mixing12 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing12);
     }
-    fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
-    fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
+    fp->Update      (nr->PhysParamFromString("mixing12"), mixing12);
+    fp->SetInitValue(nr->PhysParamFromString("mixing12"), mixing12);
   }
 
   double mixing13 = arg.GetDouble("input-mixing13");
   if ( std::fabs(mixing13 + 999. ) < conv::kASmallNum ) { 
     mixing13 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing13);
   }
-  fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
-  fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
+  fp->Update      (nr->PhysParamFromString("mixing13"), mixing13);
+  fp->SetInitValue(nr->PhysParamFromString("mixing13"), mixing13);
   
   double mixing23 = arg.GetDouble("input-mixing23");
   if ( std::fabs(mixing23 + 999. ) < conv::kASmallNum ) { 
@@ -145,29 +147,29 @@ int main(int argc, char ** argv)
   //~ if (flip_23_octant) {
     //~ mixing23 = util::FlipOctantAroundMaxDisap(mixing23,mixing13);
   //~ }
-  //~ fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
-  //~ fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
+  //~ fp->Update      (nr->PhysParamFromString("mixing23"), mixing23);
+  //~ fp->SetInitValue(nr->PhysParamFromString("mixing23"), mixing23);
   
   double dm23sq = arg.GetDouble("input-dm23sq");
   if ( std::fabs(dm23sq + 999. ) < conv::kASmallNum ) {
     dm23sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm23sq);
   }
-  fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
-  fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
+  fp->Update      (nr->PhysParamFromString("dm23sq"), dm23sq);
+  fp->SetInitValue(nr->PhysParamFromString("dm23sq"), dm23sq);
 
   double dm12sq = arg.GetDouble("input-dm12sq");
   if ( std::fabs(dm12sq + 999. ) < conv::kASmallNum ) { 
     dm12sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm12sq);
   }
-  fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
-  fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
+  fp->Update      (nr->PhysParamFromString("dm12sq"), dm12sq);
+  fp->SetInitValue(nr->PhysParamFromString("dm12sq"), dm12sq);
 
   double deltacp = arg.GetDouble("input-deltaCP");
   if ( std::fabs(deltacp + 999. ) < conv::kASmallNum ) {
     deltacp = Opt::Instance()->GetGlobalBestFit(conv::kPhypCPV);
   }
-  fp->Update      (util::PhysParamFromString("cpv"), deltacp);
-  fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
+  fp->Update      (nr->PhysParamFromString("cpv"), deltacp);
+  fp->SetInitValue(nr->PhysParamFromString("cpv"), deltacp);
 
   // Generate predictions                                                                                                         
   Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                 
