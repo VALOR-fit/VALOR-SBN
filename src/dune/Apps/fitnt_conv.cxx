@@ -43,6 +43,7 @@
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitInputs.h"
+#include "valor/Utilities/NameRegistry.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 
@@ -150,8 +151,9 @@ int NDFitExtractsBareRoot(void)
   //find number of parameters after marginalisation
   std::vector<conv::PhysParamId_t> unmarginalised_parameters;
   int n_final_params = 0;
+  NameRegistry * nr = util::NameRegistry::Instance();
   for (int ip = 0 ; ip < n_params_input ; ip++) {
-    conv::PhysParamId_t p = util::PhysParamFromString(best_fit_params->NameByIndex(ip));
+    conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     if (!IsMarginalised(best_fit_params,p)) {
       unmarginalised_parameters.push_back(p);
       n_final_params++;
@@ -160,7 +162,7 @@ int NDFitExtractsBareRoot(void)
   // Fill the output tree
   for(int ip = 0; ip < n_final_params; ip++) {
     //~ conv::PhysParamId_t p = best_fit_params->WhichParam(ip); // Should work but something weird is happening
-    conv::PhysParamId_t p = util::PhysParamFromString(best_fit_params->NameByIndex(ip));
+    conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     brPId = ip;
     strcpy(brPName, best_fit_params->Name(p).c_str());
     const double * erange  = util::EtrueRange (p);
