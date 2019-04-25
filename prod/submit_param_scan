@@ -42,6 +42,17 @@
 # Steve Dennis
 #-------------------------------------------------------------------------------------------------------------------------------
 #
+# FNAL Specific:
+# 
+# To run on the fnal machines you need to make a tar file: use the following command "tar -C /sbnd/app/users/dbarker/valor/ -czf valor.tar ."
+# Make sure that valor in the example command includes the SKD and DUNE-LBL. Make sure it is on /pnfs 
+#
+# Make sure the job-dir is on the fnal machines also                  
+#
+# This is not currently set up for dune but its only a few changes away. Ask if you want it.
+#
+# For questions ask Dominic Barker 
+#-------------------------------------------------------------------------------------------------------------------------------
 
 use File::Path;
 use Cwd 'abs_path';
@@ -86,7 +97,10 @@ foreach (@ARGV) {
   elsif($_ eq '--fmwk-softw-dir'         ) { $fmwk_softw_dir       = $ARGV[$iarg+1]; }
   elsif($_ eq '--config-file'            ) { $config_file          = $ARGV[$iarg+1]; }
   elsif($_ eq '--mesg-thresholds'        ) { $mesg_thresholds      = $ARGV[$iarg+1]; }
-  
+  elsif($_ eq '--tarball'                ) { $tarball              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--group'                  ) { $group                = $ARGV[$iarg+1]; }
+  elsif($_ eq '--memory'                 ) { $memory               = $ARGV[$iarg+1]; }
+  elsif($_ eq '--disk'                   ) { $disk                 = $ARGV[$iarg+1]; }
   else {
     print "Unrecognised argument ".$_."\n"; exit;
   }
@@ -112,14 +126,14 @@ $store_spectra          = 0                                       unless defined
 $prior_file             = "-"                                     unless defined $prior_file;
 $ncores                 = 1                                       unless defined $ncores;
 $pot_override           = -999                                    unless defined $pot_override;
-
+$tarball                = ""                                      unless defined $tarball;
+$group                  = ""                                      unless defined $group;
 $job_dir                = `pwd`                                   unless defined $job_dir;
 $dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "default_config.xml"                    unless defined $config_file;
 #$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
 $mesg_thresholds        = "verbosity.xml"                         unless defined $mesg_thresholds;
-
 $param_values    = "prefit-errors"; #not randomized-all now, Asimov dataset! 
 
 chomp($job_dir);
@@ -169,125 +183,200 @@ if(!$only1dscan) {
 
 $jobID = 0;
 
-for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
-  
-  $program   = "valor_dune-run_fit";
-  
-  $param_val1 = $min_value1 + $ipoint1*$step1;
-  
-  if($log_param1) {
-    $param_val1 = 10**($step1*($ipoint1)+log10($min_value1));
-  }
-
-  for($ipoint2 = 0; $ipoint2 < $npoints2; $ipoint2++) {
+if($resource ne "fnal") {
     
-    if ($only1dscan) {
-      print "Submitting 1D point: $ipoint1 as job $jobID";
-      print " with $param1 = $param_val1 \n";
-    }
-    else {
-      $param_val2 = $min_value2 + ($ipoint2)*$step2;
-      if($log_param2) {
-        $param_val2 = 10**($step2*($ipoint2)+log10($min_value2));
-      }
+    for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
+	
+	$program   = "valor_dune-run_fit";
+	
+	$param_val1 = $min_value1 + $ipoint1*$step1;
+	
+	if($log_param1) {
+	    $param_val1 = 10**($step1*($ipoint1)+log10($min_value1));
+	}
+	
+	for($ipoint2 = 0; $ipoint2 < $npoints2; $ipoint2++) {
+	    
+	    if ($only1dscan) {
+		print "Submitting 1D point: $ipoint1 as job $jobID";
+		print " with $param1 = $param_val1 \n";
+	    }
+	    else {
+		$param_val2 = $min_value2 + ($ipoint2)*$step2;
+		if($log_param2) {
+		    $param_val2 = 10**($step2*($ipoint2)+log10($min_value2));
+		}
+		
+		print "Submitting point: $ipoint1 - $ipoint2 as job $jobID";
+		print " with $param1 = $param_val1 and $param2 = $param_val2\n";
+	    }
+	    
+	    #
+	    # Perform all fits
+	    # Fixing the parameter each value in the scan
+	    
+	    $standard_options = " --run $jobID --ntoymc 1  --fit-param-list $fitparamlist".
+		" --param-values-option  $param_values --fitter $fitoption".
+		" --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
+		" --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
 
-      print "Submitting point: $ipoint1 - $ipoint2 as job $jobID";
-      print " with $param1 = $param_val1 and $param2 = $param_val2\n";
-    }
-
-    #
-    # Perform all fits
-    # Fixing the parameter each value in the scan
-
-    $standard_options = " --run $jobID --ntoymc 1  --fit-param-list $fitparamlist".
-    " --param-values-option  $param_values --fitter $fitoption".
-    " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-    " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
-
-    if (!$discovery) {
-      $arguments = "--tag $tag-$param1-$param2 ".
-      "--first-octant ".$standard_options.
-        " --fix-at-$param1 $param_val1 ".
-        " --fix-$param1 ";
-      if (!$only1dscan) {
-        $arguments = $arguments.
-          " --fix-at-$param2 $param_val2 ".
-          " --fix-$param2 ";
-      }
-    }
-    else {
-      $arguments = "--tag $tag-$param1-$param2 ".
-        "--first-octant ".$standard_options.
-        " --input-$param1 $param_val1 ".
-        " --fix-at-$param1 $param_nullhyp1 ".
-        " --fix-$param1 ";
-      if (!$only1dscan) {
-        $arguments = $arguments.
-          " --input-$param2 $param_val2 ".
-          " --fix-at-$param2 $param_nullhyp2 ".
-          " --fix-$param2 ";
-      }
-    }
-
-
-    $command = $program." ".$arguments;
-
-    print "Running: $command \n";
-
-    #
-    # HTCondor @ RAL
-    #
-
-    if($resource eq "RAL" || $resource eq "RAL_HTC") {
-      $fullprogram = abs_path(`which $program`);
-      chomp($fullprogram);
-
-      $fmwk_setup_script = "$fmwk_softw_dir/setup/setup_at_cvmfs_root6.sh";
-      $dune_setup_script = "$dune_softw_dir/setup/setup_at_cvmfs_root6.sh";
-
-      $jobname = "${tag}-${param1}-${param2}-${jobID}";
-      $shellfn = "$job_dir/${jobname}.sh";
-
-      open(shell,">".$shellfn);
-      print shell "hostname \n";
-      print shell "date \n";
-      print shell "source $fmwk_setup_script \n";
-      print shell "source $dune_setup_script \n";
-      print shell "$command \n";
-      print shell "date \n";
-      close(shell);
-
-      $default_cnd_options =
-      "Executable               = /bin/bash \n".
-      "initialdir               = $job_dir \n".
-      "Universe                 = vanilla \n".
-      "Getenv                   = False \n".
-      "should_transfer_files    = YES \n".
-      "when_to_transfer_output  = ON_EXIT \n".
-      (ncores > 1 ? "request_cpus             = $ncores \n":"").
-      "\nqueue\n";
-
-      $cndfn = "$job_dir/${jobname}.condor";
-      open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
-      print CND "Arguments                = $shellfn \n";
-      print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-      print CND "Output                   = ${jobname}_\$\(Process\).out \n";
-      print CND $default_cnd_options;
-      close(CND);
-      system("condor_submit",$cndfn);
-
-    }
-
-    #
-    # interactive
-    #
-    if($resource eq "interactive") {
-      system($command);
-    }
-
-    $jobID++;
+	    if (!$discovery) {
+		$arguments = "--tag $tag-$param1-$param2 ".
+		    "--first-octant ".$standard_options.
+		    " --fix-at-$param1 $param_val1 ".
+		    " --fix-$param1 ";
+		if (!$only1dscan) {
+		    $arguments = $arguments.
+			" --fix-at-$param2 $param_val2 ".
+			" --fix-$param2 ";
+		}
+	    }
+	    else {
+		$arguments = "--tag $tag-$param1-$param2 ".
+		    "--first-octant ".$standard_options.
+		    " --input-$param1 $param_val1 ".
+		    " --fix-at-$param1 $param_nullhyp1 ".
+		    " --fix-$param1 ";
+		if (!$only1dscan) {
+		    $arguments = $arguments.
+			" --input-$param2 $param_val2 ".
+			" --fix-at-$param2 $param_nullhyp2 ".
+			" --fix-$param2 ";
+		}
+	    }
+	    
+	    
+	    $command = $program." ".$arguments;
+	    
+	    print "Running: $command \n";
+	    
+	    #
+	    # HTCondor @ RAL
+	    #
+	    
+	    if($resource eq "RAL" || $resource eq "RAL_HTC") {
+		$fullprogram = abs_path(`which $program`);
+		chomp($fullprogram);
+		
+		$fmwk_setup_script = "$fmwk_softw_dir/setup/setup_at_cvmfs_root6.sh";
+		$dune_setup_script = "$dune_softw_dir/setup/setup_at_cvmfs_root6.sh";
+		
+		$jobname = "${tag}-${param1}-${param2}-${jobID}";
+		$shellfn = "$job_dir/${jobname}.sh";
+		
+		open(shell,">".$shellfn);
+		print shell "hostname \n";
+		print shell "date \n";
+		print shell "source $fmwk_setup_script \n";
+		print shell "source $dune_setup_script \n";
+		print shell "$command \n";
+		print shell "date \n";
+		close(shell);
+		
+		$default_cnd_options =
+		    "Executable               = /bin/bash \n".
+		    "initialdir               = $job_dir \n".
+		    "Universe                 = vanilla \n".
+		    "Getenv                   = False \n".
+		    "should_transfer_files    = YES \n".
+		    "when_to_transfer_output  = ON_EXIT \n".
+		    (ncores > 1 ? "request_cpus             = $ncores \n":"").
+		    "\nqueue\n";
+		
+		$cndfn = "$job_dir/${jobname}.condor";
+		open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+		print CND "Arguments                = $shellfn \n";
+		print CND "Error                    = ${jobname}_\$\(Process\).err \n";
+		print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+		print CND $default_cnd_options;
+		close(CND);
+		system("condor_submit",$cndfn);
+		
+	    }
+	    
+	    #
+	    # interactive
+	    #
+	    if($resource eq "interactive") {
+		system($command);
+	    }
+	    
+	    $jobID++;
     
-    # If we're scanning 1D, break the second loop
-    if ($only1dscan) {break;}
-  } # for point2
-} # for point1
+	    # If we're scanning 1D, break the second loop
+	    if ($only1dscan) {break;}
+	} # for point2
+    } # for point1
+}
+    
+if($resource eq "fnal"){
+    #Run the jobsub command which does the loop for us.
+    $numjobs=($npoints2-1)*($npoints1-1);
+    if ($only1dscan){
+	$numjobs = $npoints1;
+    }
+
+    if($numjobs eq 0){
+	print "running on fnal with no jobs... why? \n";
+	exit; 
+    }
+
+    #Check that the group is set
+    if($group eq ""){
+	print "running on fnal with no group set. Please set a group. \n";
+	exit;
+    }
+
+    #Check the config file is on dCache 
+    $configpnfs  = substr $config_file, 0, 5;
+    if($configpnfs ne "/pnfs"){
+	print "configfile is not on pnfs. \n";
+	exit;
+    }
+    
+    #Check the jobsub is on dCache
+    $jobdirpnfs  = substr $job_dir, 0, 5;
+    if($jobdirpnfs ne "/pnfs"){
+	print "jobdir is not on pnfs. \n";
+	exit;
+    }
+   
+    #Check the tarball is on dCache
+    $tarballpnfs  = substr $tarball, 0, 5;
+    if($tarballpnfs ne "/pnfs"){
+	print "tarball is not on pnfs. \n";
+	exit;
+    }
+   
+    if( !defined $memory ){
+    $memory= "8000MB";
+    }
+
+    if( !defined $cput ) {
+	$cput =  "8h";
+    }
+
+    if(!defined $disk){
+        $disk = "30GB";
+    }
+
+    $file = "file://$ENV{VALOR_DUNE}/prod/jobsub_submit_param_scan.sh";
+
+    print "numjobs $numjobs \n";
+    print "group $group \n";
+    print "file: $file \n";
+    print "disk: $disk \n";
+    print "cput: $cput \n";
+    print "memory: $memory \n";
+    print "tarball: $tarball \n";
+
+    if($prior_file eq  "-"){
+	$prior_file = "none"
+    }
+
+    exec( "jobsub_submit -G sbnd --role=Analysis --memory=$memory --expected-lifetime=$cput --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N $numjobs --generate-email-summary $file --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2 --fit-param-list $fitparamlist --config-file $config_file  --param1 $param1 --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1 --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2 --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2 --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra --fit-option $fitoption --load-prior-from-file $prior_file --pot-override $pot_override --mesg-thresholds $mesg_thresholds --param-values-option $param_values --tarball $tarball --jobdir $job_dir");
+
+#    exec("./jobsub_submit_param_scan.sh --interactive --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2 --fit-param-list $fitparamlist --config-file $config_file  --param1 $param1 --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1 --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2 --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2 --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra --fit-option $fitoption --load-prior-from-file $prior_file --pot-override $pot_override --mesg-thresholds $mesg_thresholds --param-values-option $param_values --tarball $tarball --jobdir $job_dir --interactive > output.txt")
+}
+
+
