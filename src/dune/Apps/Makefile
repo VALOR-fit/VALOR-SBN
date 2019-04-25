@@ -68,7 +68,7 @@ else
    @echo "Skipping make_sbncode_minidst due to no GENIE"
 endif
 else
-  @echo "Skipping make_sbncode_minidst due to no SBNanalysis"
+	@echo "Skipping make_sbncode_minidst due to no SBNanalysis"
 endif
 
 # Generate GENIE response functions
