@@ -351,11 +351,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
   return fparm;
 }
 //____________________________________________________________________________
-bool valor::util::IsSystematic(conv::PhysParamId_t p)
-{
-  return (!util::IsOscParam(p));
-}
-//____________________________________________________________________________
 bool valor::util::IsNuFluxRelated(conv::PhysParamId_t p)
 {
   int nd_index = ArrIdx::Instance()->FitParamIdx(p);

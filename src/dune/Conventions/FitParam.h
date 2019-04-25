@@ -1349,7 +1349,6 @@ namespace util {
   // If you give a CorrelatedSystematics object, it'll ignore your list's standard systematics and use this set instead
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", const CorrelatedSystematics * syst = 0);
 
-  bool IsSystematic(conv::PhysParamId_t p);
 
   bool IsNuFluxRelated  (conv::PhysParamId_t p);
   bool IsNuIntRelated   (conv::PhysParamId_t p);
