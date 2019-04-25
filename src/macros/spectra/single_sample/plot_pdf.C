@@ -6,27 +6,26 @@
 // ------------------------------------------------------------------------------------------------
 //
 
+std::string kinevar = "Ereco"; // make this configurable later
+
 void plot_pdf(
   const char * config_file,
   const char * filename,
   const char * tag = "valor",
   double       per_range = -999., // Show events per what ereco (GeV). If negative, show per bin 
+  const char * data_filename = "", // if we want to plot a dataset on top, this is that file
+  const char * data_tag = "valor",
   TString   option = "",
   const char * out_tag = "valor",
   const char * image_save_format = "",
   int canv_size_x = 700,
   int canv_size_y = 700,
-  double enu_reco_max = 4.
+  double enu_reco_max = 3.
 )
 {
   using namespace std;
   using namespace valor;
   namespace vutil = valor::util;
-
-#ifndef __CINT__
-  valor::Env * env = valor::Env::Instance();
-  env->AutoSet("dune");
-#endif
 
   const int n_pdf_slices = 10; //
   
@@ -42,6 +41,13 @@ void plot_pdf(
   TFile * fin = new TFile(filename);
   assert(fin); assert(fin->IsOpen());
   
+  bool plot_data(data_filename[0]);
+  TFile * fdata = 0;
+  if (plot_data) {
+    fdata = new TFile(data_filename);
+    assert(fdata);
+  }
+
   const char * binning = (option.Contains("OB")?"ob":"sb");
   
   
@@ -230,11 +236,11 @@ void plot_pdf(
       
       
       { // Divided by mode
-        std::string kinevar = "Ereco";
         THStack * contrib_stack = new THStack("stack","spectrum contributions");
         TH1D * pdf_contrib              [conv::kNReacModes]       = { 0 };
         TH1D * pdf_contrib_width        [conv::kNReacModes]       = { 0 };
         TH1D * pdf_contrib_coarse       [conv::kNReacModesCoarse] = { 0 };
+        TH1D * pdf_contrib_coarse_width [conv::kNReacModesCoarse] = { 0 };
         for(int imode = 0; imode < conv::kNReacModes; imode++) {
           conv::ReacMode_t m = conv::kReactionModes[isample][imode];
           if(m == conv::kmUndefined) continue;
@@ -261,7 +267,7 @@ void plot_pdf(
               if (found) break;
             }
             if(!found) {
-              cout << "WTF! Did not find coarse reaction mode for mode: " << vutil::AsString(m)
+              cout << "WTF! Did not find coarse reaction mode for mode: " << vutil::AsString(m) 
                    << " beam: " << vutil::AsString(b) << " / sample: " << vutil::AsString(s) << endl;
               cout << "Options were: "<<std::endl;
               for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
@@ -281,21 +287,19 @@ void plot_pdf(
                   double new_bin_content = old_bin_content * per_range / bin_width;
                   width_norm->SetBinContent(ibin,new_bin_content);
                 }
-                if(pdf_contrib_coarse[imodec] == 0) {
-                   pdf_contrib_coarse[imodec] = new TH1D(*width_norm);
+                if(pdf_contrib_coarse_width[imodec] == 0) {
+                   pdf_contrib_coarse_width[imodec] = new TH1D(*width_norm);
                 }
                 else {
-                   pdf_contrib_coarse[imodec]->Add(width_norm);
+                   pdf_contrib_coarse_width[imodec]->Add(width_norm);
                 }
                 pdf_contrib_width[imode] = width_norm;
+              }// per width
+              if(pdf_contrib_coarse[imodec] == 0) {
+                 pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
               }
-              else {// not renormalising   
-                if(pdf_contrib_coarse[imodec] == 0) {
-                   pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
-                }
-                else {
-                   pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
-                }
+              else {
+                 pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
               }
             }//imodec
           }//!null
@@ -320,6 +324,31 @@ void plot_pdf(
            }//<emax
         }//ebin
         
+        TH1D * data_hist = 0;
+        // If we need data, get that histogram now
+        if (plot_data) {
+          TString data_name = TString::Format("%s_%s_%s_%s_%s_%s",
+              data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
+          TObject * tmp = fdata->Get(data_name.Data());
+          std::cout<<data_name<<"\t"<<tmp<<std::endl;
+          TH1D * htmp = (TH1D*)tmp;
+          data_hist = new TH1D(*htmp);
+
+          // and if necessary normalise to bin width
+          if (per_range > 0) {
+            for (int ibin = 1 ; ibin <= data_hist->GetXaxis()->GetNbins(); ibin++) {
+              double old_bin_content = data_hist->GetBinContent(ibin);
+              double bin_width = data_hist->GetXaxis()->GetBinWidth(ibin);
+              double new_bin_content = old_bin_content * per_range / bin_width;
+              data_hist->SetBinContent(ibin,new_bin_content);
+            }
+          }
+
+          data_hist->SetLineStyle(0);
+          data_hist->SetMarkerColor(kRed);
+          data_hist->SetMarkerStyle(kFullTriangleDown);
+        }
+
         // Start drawing
         TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
         contrib_legend->SetFillColor(0);
@@ -327,22 +356,24 @@ void plot_pdf(
             conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
             //~ cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
             if(mc == conv::kmcUndefined) continue;
-            pdf_contrib_coarse[imodec]->SetLineWidth(1); 
-            pdf_contrib_coarse[imodec]->SetLineColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][0]); 
-            pdf_contrib_coarse[imodec]->SetFillColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][1]); 
-            pdf_contrib_coarse[imodec]->SetFillStyle(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][2]); 
-            contrib_stack->Add(pdf_contrib_coarse[imodec]);
-            contrib_legend->AddEntry(pdf_contrib_coarse[imodec],Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
+            TH1D * relevant_hist = per_range > 0. ? pdf_contrib_coarse_width[imodec] : pdf_contrib_coarse[imodec];
+            relevant_hist->SetLineWidth(1);
+            relevant_hist->SetLineColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][0]);
+            relevant_hist->SetFillColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][1]);
+            relevant_hist->SetFillStyle(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][2]);
+            contrib_stack->Add(relevant_hist);
+            contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
         }//imodec
         
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
         this_pad->SetLeftMargin(0.2);
         TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*max_n);
         contrib_frame->Draw();
-        TString contrib_title_str = TString::Format("%s / %s", vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
+        TString contrib_title_str = TString::Format("%s / %s / %s",
+          vutil::AsString(d).c_str(), vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
         TLatex * contrib_title = new TLatex(0.3,1.07*max_n,contrib_title_str.Data());
         contrib_title->Draw(); 
-        if(vutil::IsCC(s)) {
+        if(vutil::IsCC(s)) {  
            contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
         } else {
            contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
@@ -355,6 +386,7 @@ void plot_pdf(
           contrib_frame->GetYaxis()->SetTitle("Events /bin");
         }
         contrib_stack->Draw("same");
+        if (plot_data) {data_hist->Draw("e same");}
         contrib_legend->Draw();
         
         double tot_event_rate = 0.;
@@ -364,7 +396,6 @@ void plot_pdf(
           conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
           if (mc == conv::kmcUndefined) {continue;}
           TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
-          tmphist->GetXaxis()->SetRangeUser(0.5,20.);
           double rate = tmphist->Integral();
           sample_event_rates<<"    "<<vutil::AsString(mc)<<": "<<rate<<std::endl;
           tot_event_rate += rate;
