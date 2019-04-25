@@ -24,6 +24,7 @@ void fit_param_scan_all_plot(const char * filename)
   c->Divide(nrows,ncols);
 
   int ic = 100;
+  // TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead can get the number of fit params using ParameterPool
   for(int ip = 0; ip < kNFitParams; ip++) {
      PhysParamId_t p = kFitParam[ip];
      if(p == kPhypUndefined) continue;
@@ -42,7 +43,7 @@ void fit_param_scan_all_plot(const char * filename)
      TH1D * hndc   = (TH1D*) f.Get(hndc_name);
      TH1D * hprior = (TH1D*) f.Get(hprior_name);
 
-     hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());
+     hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());  //  TODO: Replace ParamAsStringTeX with a call to NameRegistry::ParamAsStringRooTex. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
      hndc->GetYaxis()->SetTitle("-#Delta(lnL)");
      hndc->SetMarkerSize(1);
      hndc->SetMarkerStyle(20);
