@@ -1902,6 +1902,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     if(fSample   == ksUndefined) continue;
 
     //check if oscillation probabilities should be applied to this combination of phys hypothesis and detector
+    // TODO: Add a flag in the config files that controls whether or not we make this check. i.e. if this flag is specified then we apply the osc prob to ALL detectors
     if(!util::OscProbIsAppliedTo(hypid, fDetector)) {continue; }
     
 
