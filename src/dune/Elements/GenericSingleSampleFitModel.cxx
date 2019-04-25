@@ -41,6 +41,7 @@
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/Oscillation/NuOsc3Flavour.h"
 #include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Messenger/Messenger.h"
