@@ -105,7 +105,7 @@ int main(int argc, char ** argv)
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(util::CompleteConfigPath(config_file),readopt.Data());
   FitModelABC * model = elements->FitModel();
-  NameRegistry * nr = util::NameRegistry::Instance();
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
   // parameter limits, initial values etc).            
