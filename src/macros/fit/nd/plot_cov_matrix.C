@@ -219,7 +219,7 @@ bool marginalise = true
 
     for(int param=0; param<n_params; param++)
       {
-      PhysParamId_t p = kFitParam[param];
+      PhysParamId_t p = kFitParam[param]; // TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead read a config to populate the ParameterPool and then use the size of util::GetActiveParameters as the number of params
       //const char * label = util::AsStringTeX(p,true).c_str();
       const char * label = util::AsString(p).c_str();
       x_low = param;
