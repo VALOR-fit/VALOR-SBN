@@ -110,7 +110,8 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
   print "Making chisq distribution for "+`len(params)`+" parameters."
   
   fit_inputs = valor.FitInputs(data,model,fparm)
-  
+
+  pool = valor.ParameterPool.Instance()
   for param_name in params:
     param = nr.PhysParamFromString(param_name)
     
@@ -122,7 +123,7 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
         print "Failed to get param ",param_name
         continue
     
-    if spline_only and not util.ParamHasSplines(param):
+    if spline_only and pool.GetParam(param).GetType() != conv.kSystResponse:
       continue
       
     if not fparm.Exists(param):
