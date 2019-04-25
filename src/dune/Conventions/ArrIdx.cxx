@@ -110,7 +110,7 @@ void valor::util::ArrIdx::Init(void)
      if(p == kPhypUndefined) continue;
      fFitParamIdx[p] = ip;
      LOG("ArrIdx",pDEBUG)
-        << "Fit parameter: " << util::AsString(p) 
+        << "Fit parameter: " << params.At(ip).GetName()
         << " is at slot: " << fFitParamIdx[p];
   }
 }
