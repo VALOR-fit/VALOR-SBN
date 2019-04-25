@@ -29,8 +29,12 @@ void fit_param_scan_all
   // run fit_param_scan.C for each parameter
   //
 
-  for(int ip = 0; ip < kNFitParams; ip++) {
-     PhysParamId_t p = kFitParam[ip];
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(util::CompleteConfigPath(config_file),"");
+  const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+
+  for(int ip = 0; ip < param.size(); ip++) {
+     PhysParamId_t p = params.At(ip);
       if(p == kPhypUndefined) continue;
 
      ostringstream command;
