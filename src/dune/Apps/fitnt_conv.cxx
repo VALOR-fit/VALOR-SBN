@@ -80,7 +80,7 @@ int main(int argc, char ** argv)
 bool IsMarginalised(const FitParamList * fparm, conv::PhysParamId_t p)
 {
   Parameter param = ParameterPool::Instance()->GetParam(p);
-  NameRegistry * nr = util::NameRegistry::Instance();
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
   // Marginalise ND fluxes if FD fluxes present
   bool fd_flux_exists = false;
   for (const Parameter & param_search : ParameterPool::Instance()->GetParams()) {
@@ -162,7 +162,7 @@ int NDFitExtractsBareRoot(void)
   //find number of parameters after marginalisation
   std::vector<conv::PhysParamId_t> unmarginalised_parameters;
   int n_final_params = 0;
-  NameRegistry * nr = util::NameRegistry::Instance();
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
   for (int ip = 0 ; ip < n_params_input ; ip++) {
     conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     if (!IsMarginalised(best_fit_params,p)) {
