@@ -350,28 +350,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
 
   return fparm;
 }
-//____________________________________________________________________________        
-bool util::OscProbIsAppliedTo(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m)
-{
-  static const ArrIdx * arridx = ArrIdx::Instance();
-
-  if (d==conv::kdUndefined   ) {return false;}
-  if (b==conv::kbUndefined   ) {return false;}
-  if (m==conv::kmUndefined   ) {return false;}
-  if (s==conv::ksUndefined   ) {return false;}
-
-  // loop over osc param ids - check if any is applied to the sample+mode+beam
- 
-  int ip_min = arridx->FitParamIdx(kOscFirstParam);
-  int ip_max = arridx->FitParamIdx(kOscLastParam);
-  bool apply = false;
-  for(int ip = ip_min; ip<=ip_max; ip++){
-    conv::ApplyMask_t pmask = conv::kApplyParamToTemplates[ip];
-    bool apply_to_detector = (kApplyToDetector [d] & pmask.detector).any();
-    if(apply_to_detector) apply = true;
-  }
-  return apply;
-}
 //____________________________________________________________________________
 bool util::ParamHasSplines(conv::PhysParamId_t p)
 {

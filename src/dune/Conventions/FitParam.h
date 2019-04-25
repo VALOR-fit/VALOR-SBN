@@ -1355,8 +1355,6 @@ namespace util {
   // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
   std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
 
-  bool OscProbIsAppliedTo(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s,
-                          conv::ReacMode_t m);
   bool ParamHasSplines(conv::PhysParamId_t p);
   
   // Return pointer to array of min/max                      
