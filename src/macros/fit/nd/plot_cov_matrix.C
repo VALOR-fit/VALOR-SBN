@@ -52,6 +52,7 @@ bool marginalise = true
     {
     n_params_after_marg = 0;
     //find number of parameters after marginalisation
+    // TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead read a config to populate the ParameterPool and then use the size of util::GetActiveParameters as the number of params
     for(int i=0; i<kNFitParams; i++)
       {
       if(!kNDFitParamMarginalize[i])
@@ -130,16 +131,16 @@ bool marginalise = true
     if(marginalise)
       {
       //check that input covariance matrix has correct dimensions
-      if(cov->GetNrows() != kNFitParams || cov->GetNcols() != kNFitParams)
+      if(cov->GetNrows() != kNFitParams || cov->GetNcols() != kNFitParams)// TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead read a config to populate the ParameterPool and then use the size of util::GetActiveParameters as the number of params
         {
-        cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions to be marginalised - it must be "<<kNFitParams<<" x "<<kNFitParams<<"."<<endl;
+        cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions to be marginalised - it must be "<<kNFitParams<<" x "<<kNFitParams<<"."<<endl;// TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead read a config to populate the ParameterPool and then use the size of util::GetActiveParameters as the number of params
         exit(1);
         }
       }//end of if(marginalise)
 
     double *covmat_array = cov->GetMatrixArray();
     if(marginalise)
-      double *end_covmat_array = covmat_array + kNFitParams * kNFitParams;
+      double *end_covmat_array = covmat_array + kNFitParams * kNFitParams;// TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead read a config to populate the ParameterPool and then use the size of util::GetActiveParameters as the number of params
     else
       double *end_covmat_array = covmat_array + n_params * n_params;
 
@@ -153,7 +154,7 @@ bool marginalise = true
       //need to find 2D indices to write element to marginalised covariance matrix
       if(marginalise)
 	{
-        if((j+1)%kNFitParams==0)
+        if((j+1)%kNFitParams==0)// TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead read a config to populate the ParameterPool and then use the size of util::GetActiveParameters as the number of params
 	  {
 	  i++;
 	  j = -1;
@@ -169,7 +170,7 @@ bool marginalise = true
 	}
       j++;
       //skip this element if it is in a row or column corresponding to a parameter to be marginalised
-      if(marginalise && (kNDFitParamMarginalize[i] || kNDFitParamMarginalize[j]))
+      if(marginalise && (kNDFitParamMarginalize[i] || kNDFitParamMarginalize[j]))// TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead read a config to populate the ParameterPool and then use the size of util::GetActiveParameters as the number of params
         continue;
       //write element to marginalised covariance matrix
       hCovMatrix[toy]->SetBinContent(i+1, j+1, element);
