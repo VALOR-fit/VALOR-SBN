@@ -45,18 +45,6 @@ using std::string;
 namespace valor {
 namespace conv {
 
-static const int kNFitParamsNuFluxND = 104; // neutrino flux related 104 ND 
-static const int kNFitParamsNuFluxFD = 104; // neutrino flux related 104 FD 
-static const int kNFitParamsNuFlux   = kNFitParamsNuFluxND + kNFitParamsNuFluxFD;
-static const int kNFitParamsNuDetND  = 323; // near detector related
-static const int kNFitParamsNuDetFD  =  4; // far detector related: one per sample for now
-static const int kNFitParamsNuDet    = kNFitParamsNuDetND+ kNFitParamsNuDetFD;
-static const int kNFitParamsNuInt  =  45; // neutrino interactions related
-static const int kNFitParamsNuOsc  =   6; //usual 3-flavour suspects
-
-static const int kNFitParams   = kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet+kNFitParamsNuOsc;
-//~ static const int kNFitParamsND = kNFitParamsNuFluxND+kNFitParamsNuInt+kNFitParamsNuDetND;
-
 //
 // FHC flux
 //
