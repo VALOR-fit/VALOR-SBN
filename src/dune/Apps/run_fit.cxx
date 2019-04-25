@@ -132,9 +132,6 @@ int main(int argc, char ** argv)
     util::VThreadPool::Instance()->SetNThreads(n_threads);
   }
   
-  // Set DUNE param names inside framework
-  util::PopulateNameRegistry();
-  
   // Set the random seeds
   Rnd::Instance()->SetSeeds(arg);
   
