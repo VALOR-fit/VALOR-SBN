@@ -350,48 +350,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
 
   return fparm;
 }
-//____________________________________________________________________________
-bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
-{
-  int nd_index = ArrIdx::Instance()->FitParamIdx(p);
-  if (nd_index==-1) {
-    return false;
-  }
-  return conv::kFitIsNuDetRelated[nd_index];
-}
-//____________________________________________________________________________
-bool valor::util::IsNuNDDetRelated(conv::PhysParamId_t p)
-{
-  int nd_index = ArrIdx::Instance()->FitParamIdx(p);
-  if (nd_index==-1) {
-    return false;
-  }
-  return conv::kFitIsNuNDDetRelated[nd_index];
-}
-//____________________________________________________________________________
-bool valor::util::IsNuFDDetRelated(conv::PhysParamId_t p)
-{
-  int nd_index = ArrIdx::Instance()->FitParamIdx(p);
-  if (nd_index==-1) {
-    return false;
-  }
-  return conv::kFitIsNuFDDetRelated[nd_index];
-}
-//____________________________________________________________________________
-bool valor::util::IsNDFluxRelated(conv::PhysParamId_t p)
-{
-  return (p >= kNuisNDFluxFirstParameter && p<=kNuisNDFluxLastParameter);
-}
-//____________________________________________________________________________
-bool valor::util::IsFDFluxRelated(conv::PhysParamId_t p)
-{
-  return (p >= kNuisFDFluxFirstParameter && p<=kNuisFDFluxLastParameter);
-  }
-//____________________________________________________________________________
-bool valor::util::IsFSI(conv::PhysParamId_t p)
-{
-  return (p >= kNuisIntPiMeanFreePath && p<=kNuisIntFracNucProduction);
-}
 //____________________________________________________________________________        
 bool util::OscProbIsAppliedTo(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m)
 {

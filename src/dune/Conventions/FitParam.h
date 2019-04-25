@@ -1350,15 +1350,8 @@ namespace util {
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", const CorrelatedSystematics * syst = 0);
 
 
-  bool IsNuDetRelated   (conv::PhysParamId_t p);
-  bool IsFSI            (conv::PhysParamId_t p);
-  
-  bool IsNDFluxRelated  (conv::PhysParamId_t p);
-  bool IsFDFluxRelated  (conv::PhysParamId_t p);
-  bool IsNuNDDetRelated (conv::PhysParamId_t p);
-  bool IsNuFDDetRelated (conv::PhysParamId_t p);
 
-  conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
+  conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p); // TODO: Keep this
   // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
   std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
 
