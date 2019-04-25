@@ -123,8 +123,8 @@ def main(file_patterns, par_x, par_y, output, longest, ellipse):
   canvas.SetRightMargin(0.22)
   frame = R.TH2D("star_plot_frame","",1,min_x*1.2,max_x*1.2,1,min_y*1.2,max_y*1.3)
   title = "Fitted %s - True %s"
-  namex = util.ParamAsStringTeX(px,True)
-  namey = util.ParamAsStringTeX(py,True)
+  namex = util.ParamAsStringTeX(px,True)    # TODO: Replace ParamAsStringTeX with a call to NameRegistry::ParamAsStringRooTex. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
+  namey = util.ParamAsStringTeX(py,True)    # TODO: Replace ParamAsStringTeX with a call to NameRegistry::ParamAsStringRooTex. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   frame.GetXaxis().SetTitle(title%(namex,namex))
   frame.GetYaxis().SetTitle(title%(namey,namey))
   frame.Draw()
