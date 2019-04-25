@@ -58,9 +58,6 @@ options after list construction
 
 using namespace valor;
 using namespace valor::conv;
-
-//________________________________________________________________________________________
-string util::ParamAsStringTeX (conv::PhysParamId_t p, bool root) {return util::AsStringTeX(p,root);};
 //________________________________________________________________________________________
 FitParamList * util::GetFitParameterList (Option_t * param_list, const CorrelatedSystematics * syst)
 {

@@ -1346,8 +1346,6 @@ static const PhysParamId_t kFitParamsWithSplines[kNFitParamsWithSplines] =
 //
 
 namespace util {
-  string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
-
   // If you give a CorrelatedSystematics object, it'll ignore your list's standard systematics and use this set instead
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", const CorrelatedSystematics * syst = 0);
 
