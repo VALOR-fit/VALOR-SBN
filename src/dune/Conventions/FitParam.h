@@ -1355,10 +1355,7 @@ namespace util {
   // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
   std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
 
-
-  // Return pointer to array of min/max
-  const double * EtrueRange (conv::PhysParamId_t p);
-  const double * Q2trueRange(conv::PhysParamId_t p);
+  std::pair<double,double> GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k);
 
 } //util
 

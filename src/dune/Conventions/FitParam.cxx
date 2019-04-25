@@ -359,18 +359,16 @@ conv::FitParamGroup_t util::GetParameterGroup(conv::PhysParamId_t p)
   return conv::kFitParamGroup[ip];
 }
 //____________________________________________________________________________
-const double * util::EtrueRange (conv::PhysParamId_t p)
+std::pair<double,double> util::GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k)
 {
-  int idx = util::ArrIdx::Instance()->FitParamIdx(p);
-  if (idx < 0 ) {return NULL;}
-  return conv::kFitParamEtrueRange[idx];
-}
-//____________________________________________________________________________
-const double * util::Q2trueRange(conv::PhysParamId_t p)
-{
-  int idx = util::ArrIdx::Instance()->FitParamIdx(p);
-  if (idx < 0 ) {return NULL;}
-  return conv::kFitParamQ2trueRange[idx];
+  // Init with the ranges used for osc params
+  std::pair<double,double> range = util::PhysicalLimits(k);
+  // If it's not an osc param, get the kine range from the parameter pool
+  if(!util::IsOscParam(p)) {
+    Parameter param = ParameterPool::Instance()->GetParam(p);
+    range = param.GetKineRange(k);
+  }
+  return range;
 }
 //____________________________________________________________________________
 std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
