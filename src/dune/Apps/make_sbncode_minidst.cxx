@@ -51,6 +51,7 @@
 #include "dune/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 
+#include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
 #include "core/Event.hh"
@@ -63,10 +64,10 @@ static const string gTreeName = "sbnana";
 
 static const int gPrintEveryNEvents   = 50000;
 
-static const double proposalPOTSBND   = 47883366000000000000.000000;  // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed/SBND_POT_Proposal
-static const double modernPOTSBND     = 47883366000000000000.000000;  // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed/SBND_POT_Modern
-static const double proposalPOTICARUS = 118884300000000000000.000000; // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed/SBND_POT_Proposal
-static const double modernPOTICARUS   = 118884300000000000000.000000; // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed/SBND_POT_Modern
+static const double proposalPOTSBND   = 47311856000000000000.000000;  // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/SBND_POT_Proposal
+static const double modernPOTSBND     = 47311856000000000000.000000;  // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/SBND_POT_Modern
+static const double proposalPOTICARUS = 118884300000000000000.000000; // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/ICARUS_POT_Proposal
+static const double modernPOTICARUS   = 118884300000000000000.000000; // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed/ICARUS_POT_Modern
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
@@ -122,9 +123,9 @@ int main(int argc, char ** argv)
   string opt_sample_name       = arg.GetString("sample");
   string opt_output_name       = arg.GetString("output");
   string opt_input_name        = arg.GetString("input");
-  int opt_mcsample             = arg.GetInt("mcsample");
+  int    opt_mcsample          = arg.GetInt("mcsample");
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
- 
+
   double mcsample_pot = -1.;
   if(opt_mcsample == kUnknownSample){
     VLOG("make_sbncode_minidst", pFATAL) 
@@ -240,14 +241,21 @@ int main(int argc, char ** argv)
     double Q2s      =  -999.;
 
     int nin      = 0;
+    int nian     = 0;
     int nip      = 0;
+    int niap     = 0;
     int nipip    = 0;
     int nipim    = 0;
     int nipi0    = 0;
     int nikp     = 0;
     int nikm     = 0;
     int nik0     = 0;
+    int niak0    = 0;
     int niem     = 0;
+    int niep     = 0;
+    int nimu     = 0;
+    int nimup    = 0;
+    int nig      = 0;
     int niother  = 0;
     
     int larsoft_mode = -1;
@@ -275,15 +283,22 @@ int main(int argc, char ** argv)
       
       // Particle counting
       for(unsigned int p = 0; p < fsps.size(); ++p){
-        if(fsps[p].pdg == 2112) nin++;
-        else if(fsps[p].pdg == 2212) nip++;
-        else if(fsps[p].pdg == 211) nipip++;
-        else if(fsps[p].pdg == -211) nipim++;
-        else if(fsps[p].pdg == 111) nipi0++;
-        else if(fsps[p].pdg == 321) nikp++;
-        else if(fsps[p].pdg == -321) nikm++;
-        else if(fsps[p].pdg == 311) nik0++;
-        else if(fsps[p].pdg == 11) niem++;
+        if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
+        else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
+        else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
+        else if(fsps[p].pdg == genie::kPdgAntiNeutron ) nian++;
+        else if(fsps[p].pdg == genie::kPdgPiP         ) nipip++;
+        else if(fsps[p].pdg == genie::kPdgPiM         ) nipim++;
+        else if(fsps[p].pdg == genie::kPdgPi0         ) nipi0++;
+        else if(fsps[p].pdg == genie::kPdgKP          ) nikp++;
+        else if(fsps[p].pdg == genie::kPdgKM          ) nikm++;
+        else if(fsps[p].pdg == genie::kPdgK0          ) nik0++;
+        else if(fsps[p].pdg == genie::kPdgAntiK0      ) niak0++;
+        else if(fsps[p].pdg == genie::kPdgGamma       ) nig++;
+        else if(fsps[p].pdg == genie::kPdgElectron    ) niem++;
+        else if(fsps[p].pdg == genie::kPdgPositron    ) niep++;
+        else if(fsps[p].pdg == genie::kPdgMuon        ) nimu++;
+        else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
         else niother++;
       }
 
@@ -297,12 +312,12 @@ int main(int argc, char ** argv)
         else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
 
         else { // start counting pions
-          if      (nikp || nik0 || nikm || niother) { reac = conv::kmtCCoth;}
-          else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtCC1piC;}
-          else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtCC1pi0;}
-          else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtCC2piC;}
-          else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtCC2pi0;}
-          else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtCCpiCpi0;}
+          if      (nikp || nik0 || nikm || niother)  { reac = conv::kmtCCoth;}
+          else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtCC1piC;}
+          else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtCC1pi0;}
+          else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtCC2piC;}
+          else if (nipip+nipim == 0 && nipi0 == 2 )  { reac = conv::kmtCC2pi0;}
+          else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtCCpiCpi0;}
           else                                      { reac = conv::kmtCCoth;}
         }
       }
@@ -313,18 +328,19 @@ int main(int argc, char ** argv)
         else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
 
         else { // start counting pions
-          if      (nikp || nik0 || nikm || niother) { reac = conv::kmtNCoth;}
-          else if (nipip+nipim == 1 && nipi0 == 0)  { reac = conv::kmtNC1piC;}
-          else if (nipip+nipim == 0 && nipi0 == 1)  { reac = conv::kmtNC1pi0;}
-          //else if (nipip+nipim == 2 && nipi0 == 0)  { reac = conv::kmtNC2piC;}
-          //else if (nipip+nipim == 0 && nipi0 == 2)  { reac = conv::kmtNC2pi0;}
-          //else if (nipip+nipim == 1 && nipi0 == 1)  { reac = conv::kmtNCpiCpi0;}
+          if      (nikp || nik0 || nikm || niother)  { reac = conv::kmtNCoth;}
+          else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtNC1piC;}
+          else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtNC1pi0;}
+          else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtNC2piC;}
+          else if (nipip+nipim == 0 && nipi0 == 2 )  { reac = conv::kmtNC2pi0;}
+          else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtNCpiCpi0;}
           else                                      { reac = conv::kmtNCoth;}
         }
       }
       else if (larsoft_mode == kLArElectronScattering) {
         reac = conv::kmtELScat;
       }
+
       else reac = conv::kmtOther;
 
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
@@ -333,19 +349,18 @@ int main(int argc, char ** argv)
 
       // Get the real valor mode
       conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
-      if(reac_mode == conv::kmUndefined) reac_mode = conv::kmOther;
+//      if(reac_mode == conv::kmUndefined) reac_mode = conv::kmOther;
 
-      /*
       if(!opt_disable_checks) {
         //
         // ignore events that can not be used in the VALOR analysis
         //
-        if(reac_mode == valor::conv::kmUndefined) {
-          VLOG("make_fd_minidst", pWARN) << "- Rejecting event [bad mode]\n"
-            << util::AsString(init_flav)<<" -> "<<util::AsString(final_flav)<<"\t"<<util::AsString(reac);
+        if(reac_mode == conv::kmUndefined) {
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode]\n";
+      //      << util::AsString(init_flav)<<" -> "<<util::AsString(final_flav)<<"\t"<<util::AsString(reac);
           continue;
         }
-      }*/
+      }
 
       VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
         << "Etrue         = "<< enu_true  << " GeV; "
