@@ -21,6 +21,7 @@ double range_y_max =  3.;
 
 void FixMEC(valor::FitParamList & fp)
 {
+  // TODO: Now that the FitParam enumerations have been deleted, kNuisIntNuCCMEC and kNuisIntNuBarCCMEC no longer exist. Instead read a config to populate the ParameterPool and then use ParameterPool::ParamFromString to get the params to fix
   fp.FixParameter(conv::kNuisIntNuCCMEC);
   fp.FixParameter(conv::kNuisIntNuBarCCMEC);
   cout<< "Fixing MEC"<<endl;
