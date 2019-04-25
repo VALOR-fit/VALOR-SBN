@@ -50,9 +50,9 @@
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/SystType.h"
+#include "valor/Conventions/FitParamApply.h"
 //dune
 #include "dune/Conventions/DuneBuild.h"
-#include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/Names.h"
 #include "dune/Utilities/UtlBinning.h"
 #include "dune/Utilities/KinematicPoint.h"
