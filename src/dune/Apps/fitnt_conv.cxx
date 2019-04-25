@@ -29,6 +29,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <utility>
 // root
 #include <TSystem.h>
 #include <TFile.h>
@@ -175,12 +176,12 @@ int NDFitExtractsBareRoot(void)
     conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     brPId = ip;
     strcpy(brPName, best_fit_params->Name(p).c_str());
-    const double * erange  = util::EtrueRange (p);    // TODO: Replace EtrueRange with call to Parameter
-    const double * q2range = util::Q2trueRange(p);    // TODO: Replace Q2trueRange with call to Parameter
-    brPEmin  = erange [0];
-    brPEmax  = erange [1];
-    brPQ2min = q2range[0];
-    brPQ2max = q2range[1];
+    std::pair<double,double> erange  = util::GetKineRange(p, conv::kvEtrue);
+    std::pair<double,double> q2range = util::GetKineRange(p, conv::kvQ2true);
+    brPEmin  = erange.first;
+    brPEmax  = erange.second;
+    brPQ2min = q2range.first;
+    brPQ2max = q2range.second;
     out_metadata->Fill();
   }
 
