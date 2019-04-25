@@ -52,8 +52,6 @@ options after list construction
 // dune
 #include "dune/Conventions/OscParams.h"
 #include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/FitParamApply.h"
-#include "dune/Conventions/ArrIdx.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 
 using namespace valor;
