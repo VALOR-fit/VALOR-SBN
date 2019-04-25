@@ -110,7 +110,7 @@ void fit_param_scan
     hndc->SetBinContent(ibin,valnew);
   }
 
-  hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());  // TODO: replace AsStringTeX with a call to Parameter
+  hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());  // TODO: Replace ParamAsStringTeX with a call to NameRegistry::ParamAsStringRooTex. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
   hndc->GetYaxis()->SetTitle("-#Delta(lnL)");
   hndc->SetMarkerSize(1.3);
   hndc->SetMarkerStyle(20);
