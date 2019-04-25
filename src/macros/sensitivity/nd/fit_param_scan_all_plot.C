@@ -24,7 +24,8 @@ void fit_param_scan_all_plot(const char * filename)
   c->Divide(nrows,ncols);
 
   int ic = 100;
-  // TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists. Instead can get the number of fit params using ParameterPool
+  // TODO: Now that FitParam has been deleted, kNFitParams and kFitParam no longer exists.
+  // TODO: Instead read a config to populate the ParameterPool and then loop over all PhysParamId_t, and if it's a syst, check if it's the ParameterPool
   for(int ip = 0; ip < kNFitParams; ip++) {
      PhysParamId_t p = kFitParam[ip];
      if(p == kPhypUndefined) continue;
