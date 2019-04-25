@@ -711,21 +711,6 @@ static const PhysParamId_t kNuisFDDetLastParameter   = kNuisEffFDNuELikeCCLow;
 #include "dune/Conventions/FitParamArrays/FitParamRecoRanges.h"
 #include "dune/Conventions/FitParamArrays/FitParamTypes.h"
 
-static const int kNFitParamsWithSplines = 10;
-static const PhysParamId_t kFitParamsWithSplines[kNFitParamsWithSplines] = 
-{
-   kNuisIntPiMeanFreePath       ,
-   kNuisIntNucMeanFreePath      ,
-   kNuisIntFracPiChargeExchange ,
-   kNuisIntFracPiInelastic      ,
-   kNuisIntFracPiAbsorb         ,
-   kNuisIntFracPiProduction     ,
-   kNuisIntFracNucChargeExchange,
-   kNuisIntFracNucInelastic     ,
-   kNuisIntFracNucAbsorb        ,
-   kNuisIntFracNucProduction    
-};
-
 } // conv
 
 //
