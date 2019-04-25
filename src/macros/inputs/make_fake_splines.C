@@ -53,7 +53,7 @@ void make_fake_splines(const char * version_number = "2016v0")
           ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
-          if (! util::ParamIsAppliedTo(b,s,m,p) ) {continue;}
+          if (! util::ParamIsAppliedTo(b,s,m,p) ) {continue;}   // TODO: replace util::ParamIsAppliedTo with a call to Parameter::ParamIsAppliedTo
 
           const int n_q2_true_bins = util::NumQ2trueBinsXsec (s, m);
           
