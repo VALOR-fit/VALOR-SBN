@@ -1361,6 +1361,9 @@ namespace util {
   // Does the input parameter depend on any kine var?
   bool HasKinematicDependence(conv::PhysParamId_t p);
 
+  // Get a vector of osc + syst params from the PhysHypothesis and ParameterPool
+  std::vector<conv::PhysParamId_t> GetActiveParameters(const PhysHypothesis & ph);
+
 } //util
 
 } // valor

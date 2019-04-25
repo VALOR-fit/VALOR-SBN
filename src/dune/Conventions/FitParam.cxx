@@ -524,3 +524,23 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
   }
   return vec;
 }
+//____________________________________________________________________________
+std::vector<conv::PhysParamId_t> util::GetActiveParameters(const PhysHypothesis & ph)
+{
+  // Get the osc params
+  std::vector<conv::PhysParamId_t> vec = ph.GetParams();
+  if(vec.size() == 0) {
+    LOG("FitParams",pWARN) << "No parameters in the PhysHypothesis";
+  }
+  // Get the syst params
+  const std::vector<Parameter> & syst_params = ParameterPool::Instance()->GetParams();
+  if(syst_params.size() == 0) {
+    LOG("FitParams",pWARN)
+      << "No parameters in the ParameterPool. If this is unintended then read in a config file to populate it";
+  }
+  for (const Parameter & param : syst_params) {
+    if(param.GetID() != conv::kPhypUndefined) { vec.push_back(param.GetID()); }
+  }
+  return vec;
+}
+//____________________________________________________________________________
