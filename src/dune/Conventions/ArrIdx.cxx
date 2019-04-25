@@ -106,7 +106,7 @@ void valor::util::ArrIdx::Init(void)
 
   const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
   for(int ip = 0; ip < params.size(); ip++) {
-     PhysParamId_t p = params.at(ip);
+     PhysParamId_t p = params.at(ip).GetID();
      if(p == kPhypUndefined) continue;
      fFitParamIdx[p] = ip;
      LOG("ArrIdx",pDEBUG)
