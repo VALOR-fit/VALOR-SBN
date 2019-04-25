@@ -122,15 +122,16 @@ def main(beam_mode_arg = None, sample_arg = None,
     tex_output.write("\\\\ \hline \n")
     
     # Write all the other rows (per param)
+    pool = valor.ParameterPool.Instance()
     for iparam in xrange(syst.Size()):
-      param = syst.WhichParam(iparam)
-      if skipflux and util.IsNuFluxRelated(param): continue
-      if skipint  and util.IsNuIntRelated(param) : continue
-      if skipdet  and util.IsNuDetRelated(param) : continue
-      entries = ["$"+util.ParamAsStringTeX(param,0).ljust(col1_width)+"$"]
+      param = pool.GetParam(syst.WhichParam(iparam))
+      if skipflux and param.SearchCategories("flux"): continue
+      if skipint  and param.SearchCategories("int") : continue
+      if skipdet  and param.SearchCategories("det") : continue
+      entries = ["$"+param.GetTeXName().ljust(col1_width)+"$"]
       include_row = include_empty
       for m in modes:
-        if util.ParamIsAppliedTo(beam_mode,sample,detector,m,param):
+        if param.IsAppliedTo(beam_mode,sample,detector,m,conv.kntInclusive):
           entries.append("\\ck".ljust(coln_width))
           include_row = True
         else:
@@ -138,7 +139,7 @@ def main(beam_mode_arg = None, sample_arg = None,
       if not include_row: continue
       tex_output.write("& ".join(entries) + " \\\\ \\hline ")
       # Add second line if we're at the end of a group
-      if util.GetParameterGroup(param)!=util.GetParameterGroup(param+1):
+      if util.GetParameterGroup(param.GetID())!=util.GetParameterGroup(param.GetID()+1):
         tex_output.write(" \\hline ")
       tex_output.write("\n")
     
