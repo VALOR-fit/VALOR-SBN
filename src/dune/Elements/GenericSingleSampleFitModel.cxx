@@ -1493,9 +1493,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       
       int iparr = arridx->FitParamIdx(p);
       
-      bool has_kinematic_dependence =
-        (kFitParamTrueKinematicDependence[iparr] ||
-         kFitParamRecoKinematicDependence[iparr]);
+      bool has_kinematic_dependence = util::HasKinematicDependence(p);
          
       double f = fPhysHypothesis.CurrValue(p);
       
