@@ -351,14 +351,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
   return fparm;
 }
 //____________________________________________________________________________
-bool util::ParamHasSplines(conv::PhysParamId_t p)
-{
-  for (int ip = 0 ; ip < kNFitParamsWithSplines ; ip++) {
-    if (kFitParamsWithSplines[ip]==p) {return true;}
-  }
-  return false;
-}
-//____________________________________________________________________________
 conv::FitParamGroup_t util::GetParameterGroup(conv::PhysParamId_t p)
 {
   if (p==conv::kPhypUndefined) {return conv::kpgUndefined;}
