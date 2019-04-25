@@ -45,7 +45,7 @@ using std::string;
 namespace valor {
 namespace util {
   // If you give a CorrelatedSystematics object, it'll ignore your list's standard systematics and use this set instead
-  FitParamList * GetFitParameterList (Option_t * param_list = "standard", /*const PhysHypothesis & ph,*/ const CorrelatedSystematics * syst = 0) const;
+  FitParamList * GetFitParameterList (Option_t * param_list = "standard", /*const PhysHypothesis & ph,*/ const CorrelatedSystematics * syst = 0);
 
 
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
