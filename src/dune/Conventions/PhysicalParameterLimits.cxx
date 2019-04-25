@@ -17,6 +17,8 @@ ChangeLog:
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 
+#include "valor/Conventions/ParameterPool.h"
+
 using namespace valor;
 using namespace valor::conv;
 
