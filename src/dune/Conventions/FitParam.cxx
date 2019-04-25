@@ -366,9 +366,23 @@ std::pair<double,double> util::GetKineRange(conv::PhysParamId_t p, conv::KineVar
   // If it's not an osc param, get the kine range from the parameter pool
   if(!util::IsOscParam(p)) {
     Parameter param = ParameterPool::Instance()->GetParam(p);
+    if(!param.HasKinematicRange()) {
+      LOG("FitParams",pERROR)<<"Parameter " << param.GetName() << " has no kinematic range";
+      util::Die(-1);
+    }
     range = param.GetKineRange(k);
   }
   return range;
+}
+//____________________________________________________________________________
+bool util::HasKinematicDependence(conv::PhysParamId_t p)
+{
+  if(util::IsOscParam(p)) { return true; }
+  else {
+    Parameter param = ParameterPool::Instance()->GetParam(p);
+    if(!param.HasKinematicRange()) { return false; }
+    return true;
+  }
 }
 //____________________________________________________________________________
 std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)

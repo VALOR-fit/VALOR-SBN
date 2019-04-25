@@ -23,6 +23,7 @@
 #define _valor_dune_fit_param_definition_h_
 
 #include <string>
+#include <utility>
 
 //fmwk
 #include "valor/Conventions/PhysParamId.h"
@@ -1356,6 +1357,9 @@ namespace util {
   std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
 
   std::pair<double,double> GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k);
+
+  // Does the input parameter depend on any kine var?
+  bool HasKinematicDependence(conv::PhysParamId_t p);
 
 } //util
 
