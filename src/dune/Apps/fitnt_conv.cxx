@@ -44,6 +44,7 @@
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitInputs.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Conventions/ParameterPool.h"
 // dune
 #include "dune/Conventions/FitParam.h"
 
@@ -77,13 +78,22 @@ int main(int argc, char ** argv)
 //___________________________________________________________________
 bool IsMarginalised(const FitParamList * fparm, conv::PhysParamId_t p)
 {
+  Parameter param = ParameterPool::Instance()->GetParam(p);
+  NameRegistry * nr = util::NameRegistry::Instance();
   // Marginalise ND fluxes if FD fluxes present
-  if (fparm->Exists(conv::kNuisFHCNuMuFDFlux00) || fparm->Exists(conv::kNuisRHCNuMuFDFlux00)) {
-    if (util::IsNDFluxRelated(p)) {return true;}     // TODO: Replace with call to Parameter::SearchCategories
+  bool fd_flux_exists = false;
+  for (const Parameter & param_search : ParameterPool::Instance()->GetParams()) {
+    if(param_search.SearchCategories("fd") && param.SearchCategories("flux")) {
+      fd_flux_exists = true;
+      break;
+    }
+  }
+  if (fd_flux_exists) {
+    if (param.SearchCategories("nd") && param.SearchCategories("flux")) {return true;}
   }
   // Marginalise physics params
-  if (p < conv::kNuis000) {return true;}
-  return util::IsNuDetRelated(p); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.   // TODO: Replace with call to Parameter::SearchCategories
+  if (!util::IsSystematic(p)) {return true;}
+  return param.SearchCategories("det"); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.
 }
 //___________________________________________________________________
 int NDFitExtractsBareRoot(void)
