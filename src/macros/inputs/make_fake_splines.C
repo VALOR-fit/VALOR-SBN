@@ -20,7 +20,7 @@ TSpline3 * RandomSpline (double low_knot, double high_knot, double sigma)
 }
 
 
-void make_fake_splines(const char * version_number = "2016v0")
+void make_fake_splines(const char * version_number = "2016v0", const char * config = "config.xml")
 {
 
   int n_splines = 0;
@@ -30,6 +30,17 @@ void make_fake_splines(const char * version_number = "2016v0")
   int itrue3 = 0;
   int ireco3 = 0;
 
+  // Read config to populate the ParameterPool
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config);
+
+  std::vector<conv::PhysParamId_t> params_with_splines;
+  for (const Parameter & param_search : ParameterPool::Instance()->GetParams()) {
+    if(param_search.GetType() == conv::kSystResponse) {
+      params_with_splines.push_back(param_search.GetID());
+    }
+  }
+
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
     BeamConf_t b = kBeamConf[ibeam];
     assert(b != kbUndefined);
@@ -38,22 +49,23 @@ void make_fake_splines(const char * version_number = "2016v0")
       assert(s != ksUndefined);
       
       cout<<util::AsString(b)<<"\t"<<util::AsString(s)<<endl;
-        
-      DuneRFL rfl(b,s,kNFitParamsWithSplines,kFitParamsWithSplines);
+
+      DuneRFL rfl(b,s,params_with_splines);
 
       const int n_enu_true_bins = util::NumEtrueBinsXsec (s);
       const int n_enu_reco_bins = util::NumErecoBinsXsec (s, 0);
       const int n_y_reco_bins   = util::NumYrecoBinsXsec (s, 0);
         
-      for (int ip = 0 ; ip < kNFitParamsWithSplines; ip++ ) {
-        PhysParamId_t p = kFitParamsWithSplines[ip];
+      for (const PhysParamId_t p : params_with_splines) {
         assert(p != kPhypUndefined);
 
         for(int imode = 0; imode < kNReacModes; imode++) {
           ReacMode_t m = kReactionModes[isample][imode];
           if(m == kmUndefined) continue;
 
-          if (! util::ParamIsAppliedTo(b,s,m,p) ) {continue;}   // TODO: replace util::ParamIsAppliedTo with a call to Parameter::ParamIsAppliedTo
+          const Parameter & param = ParameterPool::Instance()->GetParam(p);
+          conv::Detector_t d = conv::kdDUNEND;    // TODO: The detector needs to be set before calling Parameter::IsAppliedTo
+          if (! param.IsAppliedTo(b,s,d,m,conv::kntInclusive) ) {continue;}
 
           const int n_q2_true_bins = util::NumQ2trueBinsXsec (s, m);
           
