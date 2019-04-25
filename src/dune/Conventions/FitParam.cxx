@@ -353,10 +353,54 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
 //____________________________________________________________________________
 conv::FitParamGroup_t util::GetParameterGroup(conv::PhysParamId_t p)
 {
+  const ParameterPool * pool = ParameterPool::Instance();
   if (p==conv::kPhypUndefined) {return conv::kpgUndefined;}
-  int ip = ArrIdx::Instance()->FitParamIdx(p);
-  if (ip<0) {return conv::kpgUndefined;}
-  return conv::kFitParamGroup[ip];
+  else if(util::IsOscParam(p)) {return conv::kpgOscillations;}
+  else if(pool->IsParamInPool(p)) {
+
+    const Parameter & param = pool->GetParam(p);
+    conv::ApplyMask_t mask = param.GetApplyMask();
+
+    bool apply_numu_only =     (conv::kfApplyToNuMu      & mask.flav).any() &&
+                              !(conv::kfApplyToNuMuBar  & mask.flav).any() &&
+                              !(conv::kfApplyToNuE      & mask.flav).any() &&
+                              !(conv::kfApplyToNuEBar   & mask.flav).any();
+
+    bool apply_numubar_only = !(conv::kfApplyToNuMu    & mask.flav).any() &&
+                               (conv::kfApplyToNuMuBar & mask.flav).any() &&
+                              !(conv::kfApplyToNuE     & mask.flav).any() &&
+                              !(conv::kfApplyToNuEBar  & mask.flav).any();
+
+    bool apply_nue_only =     !(conv::kfApplyToNuMu    & mask.flav).any() &&
+                              !(conv::kfApplyToNuMuBar & mask.flav).any() &&
+                               (conv::kfApplyToNuE     & mask.flav).any() &&
+                              !(conv::kfApplyToNuEBar  & mask.flav).any();
+
+    bool apply_nuebar_only =  !(conv::kfApplyToNuMu    & mask.flav).any() &&
+                              !(conv::kfApplyToNuMuBar & mask.flav).any() &&
+                              !(conv::kfApplyToNuE     & mask.flav).any() &&
+                               (conv::kfApplyToNuEBar  & mask.flav).any();
+
+    bool apply_fhc_only = (conv::kbApplyToFHC & mask.beam).any() &&
+                         !(conv::kbApplyToRHC & mask.beam).any();
+
+    bool apply_rhc_only = !(conv::kbApplyToFHC & mask.beam).any() &&
+                           (conv::kbApplyToRHC & mask.beam).any();
+
+    if(param.SearchCategories("flux") && apply_fhc_only && apply_numu_only)    {return conv::kpgFHCNuMuFlux;}
+    if(param.SearchCategories("flux") && apply_fhc_only && apply_numubar_only) {return conv::kpgFHCNuMuBarFlux;}
+    if(param.SearchCategories("flux") && apply_fhc_only && apply_nue_only)     {return conv::kpgFHCNuEFlux;}
+    if(param.SearchCategories("flux") && apply_fhc_only && apply_nuebar_only)  {return conv::kpgFHCNuEBarFlux;}
+    if(param.SearchCategories("flux") && apply_rhc_only && apply_numu_only)    {return conv::kpgRHCNuMuFlux;}
+    if(param.SearchCategories("flux") && apply_rhc_only && apply_numubar_only) {return conv::kpgRHCNuMuBarFlux;}
+    if(param.SearchCategories("flux") && apply_rhc_only && apply_nue_only)     {return conv::kpgRHCNuEFlux;}
+    if(param.SearchCategories("flux") && apply_rhc_only && apply_nuebar_only)  {return conv::kpgRHCNuEBarFlux;}
+    if(param.SearchCategories("xsec"))                                         {return conv::kpgXSec;}
+    if(param.SearchCategories("had"))                                          {return conv::kpgHadronization;}
+    if(param.SearchCategories("fsi"))                                          {return conv::kpgFSI;}
+    if(param.SearchCategories("det"))                                          {return conv::kpgDetector;}
+  }
+  return conv::kpgUndefined;
 }
 //____________________________________________________________________________
 std::pair<double,double> util::GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k)

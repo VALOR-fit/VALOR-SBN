@@ -48,10 +48,9 @@ namespace util {
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", const CorrelatedSystematics * syst = 0);
 
 
-
-  conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p); // TODO: Keep this
+  conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
   // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
-  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name); // TODO: Keep this
+  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
 
   std::pair<double,double> GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k);
 
