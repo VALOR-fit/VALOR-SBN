@@ -707,8 +707,6 @@ static const PhysParamId_t kNuisFDDetLastParameter   = kNuisEffFDNuELikeCCLow;
 
 
 // Shifted these big arrays off into their own little files to keep this a bit tidier.
-#include "dune/Conventions/FitParamArrays/FitParamTrueRanges.h"
-#include "dune/Conventions/FitParamArrays/FitParamRecoRanges.h"
 #include "dune/Conventions/FitParamArrays/FitParamTypes.h"
 
 } // conv
