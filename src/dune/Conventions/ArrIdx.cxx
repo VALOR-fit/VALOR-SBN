@@ -106,11 +106,11 @@ void valor::util::ArrIdx::Init(void)
 
   const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
   for(int ip = 0; ip < params.size(); ip++) {
-     PhysParamId_t p = params.At(ip);
+     PhysParamId_t p = params.at(ip);
      if(p == kPhypUndefined) continue;
      fFitParamIdx[p] = ip;
      LOG("ArrIdx",pDEBUG)
-        << "Fit parameter: " << params.At(ip).GetName()
+        << "Fit parameter: " << params.at(ip).GetName()
         << " is at slot: " << fFitParamIdx[p];
   }
 }
