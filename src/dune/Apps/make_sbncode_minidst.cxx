@@ -64,10 +64,14 @@ static const string gTreeName = "sbnana";
 
 static const int gPrintEveryNEvents   = 50000;
 
-static const double proposalPOTSBND   = 47311856000000000000.000000;  // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/SBND_POT_Proposal
-static const double modernPOTSBND     = 47311856000000000000.000000;  // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/SBND_POT_Modern
-static const double proposalPOTICARUS = 118884300000000000000.000000; // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/ICARUS_POT_Proposal
-static const double modernPOTICARUS   = 118884300000000000000.000000; // /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed/ICARUS_POT_Modern
+// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Proposal_SBND.root 
+static const double proposalPOTSBND   = 1.05524e+16; 
+// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Modern_SBND.root 
+static const double modernPOTSBND     = 1.05524e+16; 
+// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Proposal_Icarus.root 
+static const double proposalPOTICARUS = 2.35837e+17;
+// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Modern_Icarus.root 
+static const double modernPOTICARUS   = 2.35837e+17; 
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
