@@ -351,24 +351,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
   return fparm;
 }
 //____________________________________________________________________________
-bool valor::util::IsNuFluxRelated(conv::PhysParamId_t p)
-{
-  int nd_index = ArrIdx::Instance()->FitParamIdx(p);
-  if (nd_index==-1) {
-    return false;
-  }
-  return conv::kFitIsNuFluxRelated[nd_index];
-}
-//____________________________________________________________________________
-bool valor::util::IsNuIntRelated(conv::PhysParamId_t p)
-{
-  int nd_index = ArrIdx::Instance()->FitParamIdx(p);
-  if (nd_index==-1) {
-    return false;
-  }
-  return conv::kFitIsNuIntRelated[nd_index];
-}
-//____________________________________________________________________________
 bool valor::util::IsNuDetRelated(conv::PhysParamId_t p)
 {
   int nd_index = ArrIdx::Instance()->FitParamIdx(p);

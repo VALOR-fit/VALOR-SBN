@@ -1350,8 +1350,6 @@ namespace util {
   FitParamList * GetFitParameterList (Option_t * param_list = "standard", const CorrelatedSystematics * syst = 0);
 
 
-  bool IsNuFluxRelated  (conv::PhysParamId_t p);
-  bool IsNuIntRelated   (conv::PhysParamId_t p);
   bool IsNuDetRelated   (conv::PhysParamId_t p);
   bool IsFSI            (conv::PhysParamId_t p);
   
