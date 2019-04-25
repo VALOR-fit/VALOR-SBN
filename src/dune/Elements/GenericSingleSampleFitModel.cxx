@@ -14,6 +14,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <utility>
 
 #include <TXMLEngine.h>
 #include <TFile.h>
@@ -1507,14 +1508,17 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         double true1_max  = 0.;
         double true2_min  = 0.;
         double true2_max  = 0.;
-        
-        if (true_ks == conv::kspEtrueQ2true) {
-          true1_min  = kFitParamEtrueRange [iparr][0];
-          true1_max  = kFitParamEtrueRange [iparr][1];
-          true2_min  = kFitParamQ2trueRange[iparr][0];
-          true2_max  = kFitParamQ2trueRange[iparr][1];
+
+        std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
+        if (true_kinevars.size() == 2) {
+          std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
+          std::pair<double,double> pair2 = util::GetKineRange(p, true_kinevars[1]);
+          true1_min = pair1.first;
+          true1_max = pair1.second;
+          true2_min = pair2.first;
+          true2_max = pair2.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-          LOG("GenericSingleSampleFitModel",pINFO) 
+          LOG("GenericSingleSampleFitModel",pINFO)
             << fName <<": "
             << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
             << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
@@ -1649,14 +1653,17 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           double true1_max  = 0.;
           double true2_min  = 0.;
           double true2_max  = 0.;
-          
-          if (true_ks == conv::kspEtrueQ2true) {
-            true1_min  = kFitParamEtrueRange [iparr][0];
-            true1_max  = kFitParamEtrueRange [iparr][1];
-            true2_min  = kFitParamQ2trueRange[iparr][0];
-            true2_max  = kFitParamQ2trueRange[iparr][1];
+
+          std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
+          if (true_kinevars.size() == 2) {
+            std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
+            std::pair<double,double> pair2 = util::GetKineRange(p, true_kinevars[1]);
+            true1_min = pair1.first;
+            true1_max = pair1.second;
+            true2_min = pair2.first;
+            true2_max = pair2.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-            LOG("GenericSingleSampleFitModel",pINFO) 
+            LOG("GenericSingleSampleFitModel",pINFO)
               << fName <<": "
               << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
               << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
