@@ -49,6 +49,9 @@ options after list construction
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Messenger/Messenger.h"
+#include "valor/Conventions/ParameterPool.h"
+#include "valor/Conventions/FitParamApply.h"
+#include "valor/Utilities/UtlSystem.h"
 // dune
 #include "dune/Conventions/OscParams.h"
 #include "dune/Conventions/FitParam.h"
@@ -69,7 +72,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
   LOG("FitParams", pNOTICE)
     << "Instantiating a fit parameter list object with option: " << param_list_opt;
 
-  const std::vector<conv::PhysParamId_t> & osc_params = ph.GetParams();
+  const std::vector<conv::PhysParamId_t> osc_params = ph.GetParams();
   const std::vector<Parameter> & pool_params = ParameterPool::Instance()->GetParams();
   FitParamList * fparm = 0;
 
@@ -123,7 +126,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       PhysParamId_t p = param.GetID();
       if(p == kPhypUndefined) {
         LOG("FitParams", pFATAL) << "Found an undefined parameter in the ParameterPool";
-        util.Die(-1);
+        util::Die(-1);
       }
 
       // set parameter range, current and init value, etc
@@ -201,10 +204,10 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
     } // Params in ParameterPool
 
     // Add osc params from the PhysHypothesis:
-    for (conv::PhysParamId_t & p : osc_params) {
+    for (conv::PhysParamId_t p : osc_params) {
       if(p == kPhypUndefined) {
         LOG("FitParams", pFATAL) << "Found an undefined parameter in the PhysParamList";
-        util.Die(-1);
+        util::Die(-1);
       }
 
       // set parameter range, current and init value, etc
@@ -327,11 +330,6 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       // toggle detector params on/off
 
       if(fix_detector_params && param.SearchCategories("det")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
-        fparm->FixParameter(p);
-      }
-      if(fix_nd_detector_params && param.SearchCategories("ND")) {
         fparm->Update(p, 1.);
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
