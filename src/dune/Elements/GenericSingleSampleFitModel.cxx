@@ -44,10 +44,8 @@
 #include "valor/Oscillation/NuOsc3Flavour.h"
 #include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Messenger/Messenger.h"
-//dune
-#include "dune/Conventions/DuneBuild.h"
 #include "valor/Conventions/ReacMode.h"
-#include "dune/Conventions/ParameterPool.h"
+#include "valor/Conventions/ParameterPool.h"
 #include "valor/Conventions/Baseline.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Detector.h"
@@ -363,7 +361,7 @@ void GenericSingleSampleFitModel::RandomizeSystematics(std::map<valor::conv::Phy
 void GenericSingleSampleFitModel::TweakSystematic(
     string syst_name, double twkdial, Option_t * opt)
 {
-  PhysParamId_t p = util::PhysParamFromString(syst_name);
+  PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(syst_name);
   this->TweakSystematic(p,twkdial,opt);
   return;
 }
@@ -375,7 +373,8 @@ void GenericSingleSampleFitModel::TweakSystematic(
     fSystematics->SetCurrentValue(syst,twkdial);
   }
   else {
-    LOG("GenericSingleSampleFitModel",pWARN) << "No systematic model - not tweaking requested parameter: "<<util::AsString(syst);
+    LOG("GenericSingleSampleFitModel",pWARN) << "No systematic model - not tweaking requested parameter: "
+                                             << util::NameRegistry::Instance()->AsString(syst);
   }
 }
 //________________________________________________________________________________________
