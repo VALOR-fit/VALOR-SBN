@@ -1486,7 +1486,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       if (p == kPhypUndefined          ) {continue;}
       
       if (!fPhysHypothesis.Contains(p)) {
-        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
         continue;
       }
       
@@ -1516,9 +1516,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO) 
             << fName <<": "
-            << "Applying parameter: " << util::AsString(p) << " with value = " << f 
-            << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
-            << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
+            << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+            << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
+            << " and " << util::AsString(true_kinevars[1]) << " bin range: [" << true2_min << ", " << true2_max << "]";
 #endif
         }
         else {
@@ -1552,7 +1552,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pINFO)
           << fName <<": "
-          << "Applying parameter: " << util::AsString(p) << " with value = " << f << " to whole mode "<<util::AsString(m);
+          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f << " to whole mode "<<util::AsString(m);
 #endif
         noEt *= f;
         noEt = TMath::Max(0.,noEt);
@@ -1567,7 +1567,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       if (p == kPhypUndefined          ) {continue;}
       
       if (!fPhysHypothesis.Contains(p)) {
-        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
         continue;
       }
       
@@ -1575,7 +1575,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pDEBUG) 
-          << "Applying parameter: " << util::AsString(p) << " with value = " << f 
+          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
           << " using splines.";
 #endif
       VALORArrayBin bin;
@@ -1593,7 +1593,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           if (spl==util::DuneRFL::kNoSplineRequired) {
             LOG("GenericSingleSampleFitModel",pERROR)
               <<"Got no spline required for bin expecting spline."
-              <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+              <<util::NameRegistry::Instance()->ParamAsString(p)<<", "<<util::AsString(fBeam)<<", "
               <<util::AsString(fSample)<<","<<util::AsString(m);
           }
           if (spl!=util::DuneRFL::kFlatSpline) {
@@ -1628,7 +1628,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (p == kPhypUndefined          ) {continue;}
         
         if (!fPhysHypothesis.Contains(p)) {
-          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
           continue;
         }
         
@@ -1658,9 +1658,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO) 
               << fName <<": "
-              << "Applying parameter: " << util::AsString(p) << " with value = " << f 
-              << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
-              << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
+              << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+              << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
+              << " and " << util::AsString(true_kinevars[1]) << " bin range: [" << true2_min << ", " << true2_max << "]";
 #endif
           }
           else {
@@ -1707,7 +1707,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (p == kPhypUndefined          ) {continue;}
         
         if (!fPhysHypothesis.Contains(p)) {
-          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
           continue;
         }
         
@@ -1729,7 +1729,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             if (spl==util::DuneRFL::kNoSplineRequired) {
               LOG("GenericSingleSampleFitModel",pERROR)
                 <<"Got no spline required for simple bin expecting spline."
-                <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+                <<util::NameRegistry::Instance()->ParamAsString(p)<<", "<<util::AsString(fBeam)<<", "
                 <<util::AsString(fSample)<<","<<util::AsString(m);
             }
             double response = spl->EvalWithLimits(f);
