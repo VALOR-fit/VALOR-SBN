@@ -257,11 +257,13 @@ int main(int argc, char ** argv)
     int niak0    = 0;
     int niem     = 0;
     int niep     = 0;
+    int ninu     = 0;
     int nimu     = 0;
     int nimup    = 0;
     int nig      = 0;
     int niother  = 0;
-    
+    int ninuc    = 0;
+
     int larsoft_mode = -1;
 
     analysis_tree->GetEntry(iev);
@@ -303,9 +305,14 @@ int main(int argc, char ** argv)
         else if(fsps[p].pdg == genie::kPdgPositron    ) niep++;
         else if(fsps[p].pdg == genie::kPdgMuon        ) nimu++;
         else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
-        else niother++;
+        else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
+        else if(fsps[p].pdg == 14 || fsps[p].pdg == -14 || fsps[p].pdg == 12 || fsps[p].pdg == -12) ninu++;
+        else if(fsps[p].pdg > 1e4) ninuc++;
+        else niother++; 
+        // Currently not using niother as the only others seem to be deltas and etas
+        // These will eventually be removed when isStableFinalState variable is available in the analysis trees
       }
-
+      
       // Construct the reaction mode
       conv::ReacType_t reac = conv::kmtUndefined;
       if (iscc) {
@@ -316,7 +323,7 @@ int main(int argc, char ** argv)
         else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
 
         else { // start counting pions
-          if      (nikp || nik0 || nikm || niother)  { reac = conv::kmtCCoth;}
+          if      (nikp || nik0 || nikm           )  { reac = conv::kmtCCoth;}
           else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtCC1piC;}
           else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtCC1pi0;}
           else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtCC2piC;}
@@ -332,7 +339,7 @@ int main(int argc, char ** argv)
         else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
 
         else { // start counting pions
-          if      (nikp || nik0 || nikm || niother)  { reac = conv::kmtNCoth;}
+          if      (nikp || nik0 || nikm           )  { reac = conv::kmtNCoth;}
           else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtNC1piC;}
           else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtNC1pi0;}
           else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtNC2piC;}
