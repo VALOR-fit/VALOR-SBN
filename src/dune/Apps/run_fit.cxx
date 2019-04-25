@@ -163,7 +163,7 @@ int main(int argc, char ** argv)
   std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
   elements->Read(config_path);
   FitModelABC * model = elements->FitModel();
-  NameRegistry * nr = util::NameRegistry::Instance();
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
 
   // Hack until we move GetSystematics() into FitModelABC
   CorrelatedSystematics * syst = model->GetSystematics();
