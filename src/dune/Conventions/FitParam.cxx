@@ -351,12 +351,6 @@ FitParamList * util::GetFitParameterList (Option_t * param_list, const Correlate
   return fparm;
 }
 //____________________________________________________________________________
-bool valor::util::IsOscParam(conv::PhysParamId_t p)
-{
-  if(util::IsMixingAngle(p) || util::IsMassSplitting(p) || util::IsPhase(p)) return true;
-  else return false;
-}
-//____________________________________________________________________________
 bool valor::util::IsSystematic(conv::PhysParamId_t p)
 {
   return (!util::IsOscParam(p));
