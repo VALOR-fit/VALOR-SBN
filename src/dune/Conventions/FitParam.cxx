@@ -389,134 +389,33 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
 {
   vector<PhysParamId_t> vec;
   set_name = util::ToLowerCase(set_name);
-  if (set_name == "ccqe") {
-    vec.push_back(kNuisIntNuCCQE1   );
-    vec.push_back(kNuisIntNuCCQE2   );
-    vec.push_back(kNuisIntNuCCQE3   );
-    vec.push_back(kNuisIntNuBarCCQE1);
-    vec.push_back(kNuisIntNuBarCCQE2);
-    vec.push_back(kNuisIntNuBarCCQE3);
-  }
-  if(set_name == "mec") {
-    vec.push_back(kNuisIntNuCCMEC   );
-    vec.push_back(kNuisIntNuBarCCMEC);
-  }
-  if (set_name == "cc1piz") {
-    vec.push_back(kNuisIntNuCC1piz1   );
-    vec.push_back(kNuisIntNuCC1piz2   );
-    vec.push_back(kNuisIntNuCC1piz3   );
-    vec.push_back(kNuisIntNuBarCC1piz1);
-    vec.push_back(kNuisIntNuBarCC1piz2);
-    vec.push_back(kNuisIntNuBarCC1piz3);
-  }
-  if (set_name == "cc1pic") {
-    vec.push_back(kNuisIntNuCC1pic1   );
-    vec.push_back(kNuisIntNuCC1pic2   );
-    vec.push_back(kNuisIntNuCC1pic3   );
-    vec.push_back(kNuisIntNuBarCC1pic1);
-    vec.push_back(kNuisIntNuBarCC1pic2);
-    vec.push_back(kNuisIntNuBarCC1pic3);
-  }
-  if (set_name == "res") {
-    vec.push_back(kNuisIntNuCC1piz1   );
-    vec.push_back(kNuisIntNuCC1piz2   );
-    vec.push_back(kNuisIntNuCC1piz3   );
-    vec.push_back(kNuisIntNuBarCC1piz1);
-    vec.push_back(kNuisIntNuBarCC1piz2);
-    vec.push_back(kNuisIntNuBarCC1piz3);
-    vec.push_back(kNuisIntNuCC1pic1   );
-    vec.push_back(kNuisIntNuCC1pic2   );
-    vec.push_back(kNuisIntNuCC1pic3   );
-    vec.push_back(kNuisIntNuBarCC1pic1);
-    vec.push_back(kNuisIntNuBarCC1pic2);
-    vec.push_back(kNuisIntNuBarCC1pic3);
-  }
-  if (set_name == "cc2pi") {
-    vec.push_back(kNuisIntNuCC2Pi   );
-    vec.push_back(kNuisIntNuBarCC2Pi);
-  }
-  if (set_name == "dis") {
-    vec.push_back(kNuisIntNuDIS1   );
-    vec.push_back(kNuisIntNuDIS2   );
-    vec.push_back(kNuisIntNuDIS3   );
-    vec.push_back(kNuisIntNuBarDIS1);
-    vec.push_back(kNuisIntNuBarDIS2);
-    vec.push_back(kNuisIntNuBarDIS3);
-  }
-  if (set_name == "nc") {
-    vec.push_back(kNuisIntNuNormNC   );
-    vec.push_back(kNuisIntNuBarNormNC);
-  }
-  if (set_name == "fsi") {
-    vec.push_back(kNuisIntPiMeanFreePath       );
-    vec.push_back(kNuisIntNucMeanFreePath      );
-    vec.push_back(kNuisIntFracPiChargeExchange );
-    vec.push_back(kNuisIntFracPiInelastic      );
-    vec.push_back(kNuisIntFracPiAbsorb         );
-    vec.push_back(kNuisIntFracPiProduction     );
-    vec.push_back(kNuisIntFracNucChargeExchange);
-    vec.push_back(kNuisIntFracNucInelastic     );
-    vec.push_back(kNuisIntFracNucAbsorb        );
-    vec.push_back(kNuisIntFracNucProduction    );
-  }
-  // All interactions
-  if (set_name == "int") {
-  for (int ip = kNuisIntFirstParameter; ip <= kNuisIntLastParameter; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
+
+  if(set_name == "all" || set_name != "3fosc") {
+    const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+    for (const Parameter & param : params) {
+      // Search both the param name and categories
+      if(param.GetName().find(set_name) != string::npos ||                                           // Search param name
+         param.SearchCategories(set_name) ||                                                         // Search param category for a direct match
+         // Special cases:
+         set_name == "ndflux"  && param.SearchCategories("nd") && param.SearchCategories("flux") ||  // ND flux
+         set_name == "fdflux"  && param.SearchCategories("fd") && param.SearchCategories("flux") ||  // FD flux
+         set_name == "nddet"   && param.SearchCategories("nd") && param.SearchCategories("det")  ||  // ND Detector
+         set_name == "fddet"   && param.SearchCategories("fd") && param.SearchCategories("det")  ||  // FD Detector
+         set_name == "allsyst"                                                                       // All systematic params
+        ) {
+        vec.push_back(param.GetID());
+      }
     }
   }
-  // Fluxes
-  if (set_name == "flux") {
-    for (int ip = kNuisFluxFirstParameter; ip <= kNuisFluxLastParameter; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
-  }
-  if (set_name == "ndflux") {
-    for (int ip = kNuisNDFluxFirstParameter; ip <= kNuisNDFluxLastParameter; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
-  }
-  if (set_name == "fdflux") {
-    for (int ip = kNuisFDFluxFirstParameter; ip <= kNuisFDFluxLastParameter; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
-  }
-  // Detector efficiencies
-  if (set_name == "det") {
-    for (int ip = kNuisDetFirstParameter; ip <= kNuisDetLastParameter; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
-  }
-  if (set_name == "nddet") {
-    for (int ip = kNuisNDDetFirstParameter; ip <= kNuisNDDetLastParameter; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
-  }
-  if (set_name == "fddet") {
-    for (int ip = kNuisFDDetFirstParameter; ip <= kNuisFDDetLastParameter; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
-  }
+
   // OA parameters
-  if (set_name == "3fosc") {
+  if (set_name == "all" || set_name == "3fosc") {
     vec.push_back(kPhypMixing23);
     vec.push_back(kPhypMixing13);
     vec.push_back(kPhypMixing12);
     vec.push_back(kPhypCPV     );
     vec.push_back(kPhypDm23sq  );
     vec.push_back(kPhypDm12sq  );
-  }
-  
-  if (set_name == "allsyst") {
-    for (int ip = conv::kNuis000 ; ip < conv::knppmax ; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
-  }
-  
-  if (set_name == "all") {
-    for (int ip = 0 ; ip < conv::knppmax ; ip++) {
-      vec.push_back((PhysParamId_t)(ip));
-    }
   }
   
   if (vec.size()==0) {
