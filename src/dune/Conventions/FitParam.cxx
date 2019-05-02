@@ -121,6 +121,53 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
     }
 
     //now separately loop over the parameters from the ParameterPool, CorrelatedSystematics and PhysHypothesis to add them to the list
+
+    // Add osc params from the PhysHypothesis:
+    for (conv::PhysParamId_t p : osc_params) {
+      if(p == kPhypUndefined) {
+        LOG("FitParams", pFATAL) << "Found an undefined parameter in the PhysParamList";
+        util::Die(-1);
+      }
+
+      // set parameter range, current and init value, etc
+      double init = 1.0;
+      double curr = 1.0;
+      double min  = 0.0;
+      double max  = 2.0;
+      double step = 1E-4;
+      bool   fix  = false;
+      bool   nuis = true;
+
+      if (no_osc) {continue;}
+      init = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
+      curr = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
+      min  = util::OscParamMinValue(p);   // TODO: This is DUNE specific and needs moving to a config file
+      max  = util::OscParamMaxValue(p);   // TODO: This is DUNE specific and needs moving to a config file
+      step = util::OscParamStepSize(p);   // TODO: This is DUNE specific and needs moving to a config file
+      nuis = false;
+
+      // Check we're not going behind physical region
+      min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
+      max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
+
+      fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
+      ipc++;
+      fparm->Update(p, curr);
+
+      // toggle oscillation params on/off
+      if(fix_osc_params && util::IsOscParam(p)){
+        double init_value = util::OscParamInitValue(p);   // TODO: This is DUNE specific and needs moving to a config file
+        fparm->Update(p, init_value);
+        fparm->SetInitValue(p, init_value);
+        fparm->FixParameter(p);
+      }
+
+      //constrain osc params
+      if(cons_osc_params && util::IsOscParam(p)){
+        fparm->SetNuisance(p,true);
+      }
+    } // osc pars in PhysHyPothesis
+
     // Add parameters from the ParameterPool:
     for (const Parameter & param : pool_params) {
       PhysParamId_t p = param.GetID();
@@ -143,9 +190,11 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       min = param.GetNearestPhysicalValue(min);
       max = param.GetNearestPhysicalValue(min);
 
-      fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
-      ipc++;
-      fparm->Update(p, curr);
+      if (!syst) {
+        fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
+        ipc++;
+        fparm->Update(p, curr);
+      }
 
       // toggle detector related params on/off
       if(fix_detector_params && param.SearchCategories("det")) {
@@ -203,52 +252,6 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       }
     } // Params in ParameterPool
 
-    // Add osc params from the PhysHypothesis:
-    for (conv::PhysParamId_t p : osc_params) {
-      if(p == kPhypUndefined) {
-        LOG("FitParams", pFATAL) << "Found an undefined parameter in the PhysParamList";
-        util::Die(-1);
-      }
-
-      // set parameter range, current and init value, etc
-      double init = 1.0;
-      double curr = 1.0;
-      double min  = 0.0;
-      double max  = 2.0;
-      double step = 1E-4;
-      bool   fix  = false;
-      bool   nuis = true;
-
-      if (no_osc) {continue;}
-      init = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
-      curr = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
-      min  = util::OscParamMinValue(p);   // TODO: This is DUNE specific and needs moving to a config file
-      max  = util::OscParamMaxValue(p);   // TODO: This is DUNE specific and needs moving to a config file
-      step = util::OscParamStepSize(p);   // TODO: This is DUNE specific and needs moving to a config file
-      nuis = false;
-
-      // Check we're not going behind physical region
-      min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
-      max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
-
-      fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
-      ipc++;
-      fparm->Update(p, curr);
-
-      // toggle oscillation params on/off
-      if(fix_osc_params && util::IsOscParam(p)){
-        double init_value = util::OscParamInitValue(p);   // TODO: This is DUNE specific and needs moving to a config file
-        fparm->Update(p, init_value);
-        fparm->SetInitValue(p, init_value);
-        fparm->FixParameter(p);
-      }
-
-      //constrain osc params
-      if(cons_osc_params && util::IsOscParam(p)){
-        fparm->SetNuisance(p,true);
-      }
-    } // osc pars in PhysHyPothesis
-
     //constrain solar params
     if(cons_solar_params){
       fparm->SetNuisance(conv::kPhypMixing12,true);
@@ -271,7 +274,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       // And update their limits`
       for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
         conv::PhysParamId_t p = syst->WhichParam(ip);
-        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));
+        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));  // TODO: Do we want these hard-coded values in a config file?
         fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,2.));
       }
     }
