@@ -303,12 +303,21 @@ if [ "$TARBALLCUT" != "/pnfs" ] && ! [ $INTERACTIVE ]; then
     exit 1
 fi 
 
-CONFIGCUT=${CONFIGFILE:0:5}
+#CONFIGCUT=${CONFIGFILE:0:5}
+#
+#if [ "$CONFIGCUT" != "/pnfs" ] && ! [ $INTERACTIVE ]; then 
+#    echo "config file  is not on dCache. Please fix" 
+#    exit 1
+#fi 
 
-if [ "$CONFIGCUT" != "/pnfs" ] && ! [ $INTERACTIVE ]; then 
-    echo "config file  is not on dCache. Please fix" 
-    exit 1
+if [ "$CONFIGCUT" == "/pnfs" ]; then 
+    echo "Copying config file"
+    timeout 20s ifdh cp -D $CONFIGFILE $_CONDOR_SCRATCH_DIR
+    CONFIGNAME="${CONFIGFILE##*/}"
+    CONFIGFILE="config.xml"
+    mv $CONFIGNAME config.xml
 fi 
+
 
 #Make a subdirectory
 JOBSUBDIR=$JOBDIR/$PROCESS/
@@ -366,19 +375,19 @@ fi
 
 #Calculate what the values of the paramers should be for this job. PROCESS is the job number 
 STEP1=0
-VAL1=$(perl -E "say ($MAXVALUE1-$MINVALUE1)/($NPOINTS1-1)")
+VAL1=$(perl -E "say ($MINVALUE1 + $PROCESS*($MAXVALUE1-$MINVALUE1)/($NPOINTS1-1))")
 if [ $LOGPARAM1 ];  then
-    STEP1=$(perl -E "say (log($MAXVALUE1/$MINVALUE1)/log(10))/($NPOINTS1-1)")
-    VAL1=$(perl -E "say 10**($STEP1*$PROCESS + log($MINVALUE1)/log(10))")
+    STEP1=$(perl -E "say ((log($MAXVALUE1/$MINVALUE1)/log(10))/($NPOINTS1-1)))")
+    VAL1=$(perl -E "say (10**($STEP1*$PROCESS + log($MINVALUE1)/log(10)))")
 fi
 
 
 STEP2=0
 if [ $ONLY1DSCAN = false ] ; then 
-  VAL2=$(perl -E "say ($MAXVALUE2-$MINVALUE2)/($NPOINTS2-1)")
+  VAL2=$(perl -E "say MINVALUE2 + ($PROSESS*($MAXVALUE2-$MINVALUE2)/($NPOINTS2-1))")
   if [ $LOGPARAM2 ]; then 
-      STEP2=$(perl -E "say (log($MAXVALUE2/$MINVALUE2)/log(10))/($NPOINTS2-1)")
-      VAL2=$(perl -E "say 10**($STEP2*$PROCESS + log($MINVALUE2)/log(10))")
+      STEP2=$(perl -E "say ((log($MAXVALUE2/$MINVALUE2)/log(10))/($NPOINTS2-1))")
+      VAL2=$(perl -E "say (10**($STEP2*$PROCESS + log($MINVALUE2)/log(10)))")
   fi
 fi
 
@@ -395,7 +404,7 @@ echo "VAL2 is $VAL2"
 #Make the valor command.
 standard_options=" --run $PROCESS --ntoymc 1  --fit-param-list $FITPARAMLIST \
  --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
- --config config.xml --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct  \
+ --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct  \
  --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE --pot-override $POTOVERIDE ";
 
 if [ $DISCOVERY == 0 ]; then 
@@ -452,21 +461,17 @@ make;
 
 cd $_CONDOR_SCRATCH_DIR
 
-#Copy over the config file
-echo "Copying config file"
-timeout 20s ifdh cp -D $CONFIGFILE $_CONDOR_SCRATCH_DIR
-CONFIGNAME="${CONFIGFILE##*/}"
-mv $CONFIGNAME config.xml
-
 #Might be able to make this generic? Leave for now
 program="valor_dune-run_fit";
 valorcommand=$program$SPACE$arguments;
 
 #Run Valor
+valorfailed=false;
 echo "Running: $valorcommand";
 eval $valorcommand > valor.out 
 if [ $? -ne 0 ]; then
     echo "Err $?. Something went wrong with valor please look at the text file"
+    valorfailed=true;
 fi
 
 #Clean the directory before moving things. I think the scratch will be moved anyways.
@@ -481,6 +486,11 @@ if [ $? -ne 0 ]; then
   echo "Error $? when copying output to dCache"
   exit 73
 fi
+
+if [ $valorfailed = true ]; then
+    exit 1
+fi
+
 
 exit 0
 
