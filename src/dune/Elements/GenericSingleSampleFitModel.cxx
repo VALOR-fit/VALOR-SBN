@@ -462,7 +462,11 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   bool write_pdfts_rf = (opt.find("pdfts_rf") != string::npos) || write_all;
   //~ bool write_pdfcs_vf = (opt.find("pdfcs_vf") != string::npos) || write_all;
   bool write_pdfcs_rf = (opt.find("pdfcs_rf") != string::npos) || write_all;
-  
+
+  if(write_pdft_rf || write_pdfc_rf) {
+    LOG("GenericSingleSampleFitModel",pWARN) << "Options pdft_rf, pdfc_rf are not yet implemented.";
+  }
+
   if(!array) {
     LOG("GenericSingleSampleFitModel",pERROR) << "Null input object array.";
     return false;
@@ -578,15 +582,19 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
       if (ks == conv::kspUndefined) {continue;}
       TH1 * hob = util::binning::Make1DHistogram(*fPDFTotOb,binning,ks,false);
-      TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdfts_ob_rf",fName.c_str(),util::AsString(kv).c_str());
-      hob->SetName(hobname.Data());
-      array->Add(hob);
+      if(hob) {
+        TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdfts_ob_rf",fName.c_str(),util::AsString(kv).c_str());
+        hob->SetName(hobname.Data());
+        array->Add(hob);
+      }
       
       if (write_sb) {
         TH1 * hsb = util::binning::Make1DHistogram(*fPDFTotSb,binning,ks,true);
-        TString hsbname = TString::Format("%s_%s_%s_%s",tag,"pdfts_sb_rf",fName.c_str(),util::AsString(kv).c_str());
-        hsb->SetName(hsbname.Data());
-        array->Add(hsb);
+        if(hsb) {
+          TString hsbname = TString::Format("%s_%s_%s_%s",tag,"pdfts_sb_rf",fName.c_str(),util::AsString(kv).c_str());
+          hsb->SetName(hsbname.Data());
+          array->Add(hsb);
+        }
       }
     }
   }
@@ -608,17 +616,21 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
         if (ks == conv::kspUndefined) {continue;}
         TH1 * hob = util::binning::Make1DHistogram(*fPDFCompOb[imode],binning,ks,false);
-        TString hobname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_ob_rf",
-          fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
-        hob->SetName(hobname.Data());
-        array->Add(hob);
+        if(hob) {
+          TString hobname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_ob_rf",
+            fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
+          hob->SetName(hobname.Data());
+          array->Add(hob);
+        }
         
         if (write_sb) {
           TH1 * hsb = util::binning::Make1DHistogram(*fPDFCompSb[imode],binning,ks,true);
-          TString hsbname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_sb_rf",
-            fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
-          hsb->SetName(hsbname.Data());
-          array->Add(hsb);
+          if(hsb) {
+            TString hsbname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_sb_rf",
+              fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
+            hsb->SetName(hsbname.Data());
+            array->Add(hsb);
+          }
         }
       }
     }
