@@ -71,8 +71,7 @@ const util::ArrIdx * arridx = util::ArrIdx::Instance();
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC(),
   fBinning(NULL),
-  fNReacModes(kNReacModes),
-  fReactionModes(NULL),
+  fReactionModes(),
   fSystematics(NULL),
   fOwnerOfSystematics(false)
 {
@@ -108,9 +107,8 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     util::Die(-1);
   }
   
-  fNReacModes = kNReacModes;
-  fReactionModes = kReactionModes[isample];
-
+  fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
+  
   fName = util::nm::MdlName(fDetector, fBeam, fSample, fKSp);
   
   TString ts_opt(opt);
@@ -223,7 +221,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   }
   
   double n_events = 0.;
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     n_events+=fMCTNomSb[imode]->Integral();
@@ -264,7 +262,7 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
   const int n_reco_bins_ob = reco_ob->NBins();
   const int n_reco_bins_sb = reco_sb->NBins();
   
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
 
@@ -472,7 +470,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
 
   if(write_mct_vf) {
 
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
 
@@ -515,7 +513,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
 
   if(write_pdfc_vf || write_pdfc_rf) {
 
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
 
@@ -590,7 +588,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   if (write_pdfcs_rf) {
     const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
     
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
       
@@ -667,7 +665,7 @@ void GenericSingleSampleFitModel::Init(void)
   fPDFTotSb     = 0;
   fPDFTotNullSb = true;
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < conv::kNReacModes; imode++) {
 
     // MC templates (simple binning)
     fMCTNullSb[imode] = true;
@@ -707,9 +705,15 @@ void GenericSingleSampleFitModel::Book(void)
   
   const char * tag = "init"; // initial name for the array on booking
   
+  // Modes should eventually move to being fully runtime configurable
+  // Which means that this will end up going in read
+  // And we may have to completely merge Book/Read
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
+  fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
+  
   this->BuildParamLists();
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     
@@ -817,7 +821,7 @@ void GenericSingleSampleFitModel::BuildParamLists()
   const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
   for (const Parameter & param : params) {
     bool is_applied = false;
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
       
@@ -878,7 +882,7 @@ void GenericSingleSampleFitModel::Clean(void)
 {
   LOG("GenericSingleSampleFitModel",pDEBUG) << "Cleaning-up...";
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < conv::kNReacModes; imode++) {
 
     if(!fMCTNullSb[imode]) {
       fMCTNullSb[imode] = true;
@@ -933,7 +937,7 @@ void GenericSingleSampleFitModel::Zero(void)
 {
   LOG("GenericSingleSampleFitModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
 
     if(!fMCTNullSb[imode]) {
       fMCTNomSb [imode] -> SetAll(0.);
@@ -1243,7 +1247,7 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag, d
     LOG("GenericSingleSampleFitModel",pNOTICE) << "Scaling POT template by "<<desired_POT * 1E-21 << " to get template for "<<desired_POT<<" POT.";
   }
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     TString obj_name_ob = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_ob_vf", fName.c_str());
@@ -1346,7 +1350,7 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
   
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
 
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
@@ -1450,7 +1454,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   const int n_reco_bins_sb = reco_sb->NBins();
   const int n_reco_bins_ob = reco_ob->NBins();
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     //~ derr<<"Getting mode "<<imode<<" from "<<fReactionModes<<std::endl;
     ReacMode_t m = fReactionModes[imode];
     //~ derr<<"Got mode "<<m<<"\t"<<util::AsString(m)<<std::endl;
@@ -1770,7 +1774,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   
   //first, check that there are actually osc params in the fit params list 
   bool apply_osc_prob = false;
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     for(int ip = 0; ip < conv::kNuis000; ip++) {
       PhysParamId_t p = (PhysParamId_t) ip;
       if(fPhysHypothesis.Contains(p)) {
@@ -1781,7 +1785,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
 
   // If not, just set the oscillated modes to zero and move on
   if (!apply_osc_prob) {
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) {continue;}
       conv::NuFlavour_t init_flav   = util::ReacModeToInitFlavor(m);
@@ -1887,7 +1891,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   const int n_reco_bins_ob = reco_ob->NBins();
   const int n_reco_bins_sb = reco_sb->NBins();
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     
@@ -1942,7 +1946,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
         p_nue_nutau       = 0;
         p_nuebar_nuebar   = util::Calculate2FSterileOscMuE(conv::kPdgNuEBar , conv::kPdgNuEBar , lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
         p_nuebar_numubar  = util::Calculate2FSterileOscMuE(conv::kPdgNuEBar , conv::kPdgNuMuBar, lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
-        p_nuebar_nutaubar = 0;;
+        p_nuebar_nutaubar = 0;
       }
         
 
@@ -2009,7 +2013,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     
@@ -2046,7 +2050,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   //
     for(int ireco=0; ireco < n_reco_bins_ob; ireco++) {
         double sum = 0.;
-        for(size_t imode = 0; imode < fNReacModes; imode++) {
+        for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
           ReacMode_t m = fReactionModes[imode];
           if(m == kmUndefined) continue;
           if(fMCTNullOb[imode]) continue;
@@ -2058,7 +2062,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   if(update_mct_sb) {
     for(int ireco=0; ireco < n_reco_bins_sb; ireco++) {
       double sum = 0.;
-      for(size_t imode = 0; imode < fNReacModes; imode++) {
+      for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
         ReacMode_t m = fReactionModes[imode];
         if(m == kmUndefined) continue;
         if(fMCTNullOb[imode]) continue;
@@ -2099,7 +2103,7 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
   
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
@@ -2175,5 +2179,10 @@ const util::DuneRFL * GenericSingleSampleFitModel::GetRFL() const
 const SingleSampleKineBinning * GenericSingleSampleFitModel::GetBinning() const
 {
   return fBinning;
+}
+//________________________________________________________________________________________
+const std::vector<conv::ReacMode_t> GenericSingleSampleFitModel::GetReactionModes(Option_t * /*opt*/) const
+{
+  return fReactionModes;
 }
 //________________________________________________________________________________________
