@@ -50,7 +50,7 @@ options after list construction
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Messenger/Messenger.h"
 // dune
-#include "dune/Conventions/OscParams.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/ArrIdx.h"
