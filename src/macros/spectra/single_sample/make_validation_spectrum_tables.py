@@ -28,9 +28,9 @@ min_channels_to_landscape = 7   # If we get more than this number of channels, t
 
 #______________________________________________________________________________________________________________________________
 
-def main(config_file,
-  mixing12,mixing13,mixing23,dm12sq,dm23sq,deltacp,hierarchy,angle_scheme,octant,dmsqscheme,
-  output_file,label):
+def main(config_file, hypothesis, param_values,
+    hierarchy,angle_scheme,octant,dmsqscheme,
+    output_file,label):
   
   opt.gMassHierarchyAssumed = util.HierarchyFromString(hierarchy)
   opt.gOscMixingParamChoice = util.MixingTypeFromString(angle_scheme)
@@ -39,45 +39,19 @@ def main(config_file,
   
   opt.SetDefaultParameterValues()
   
-  phyp = valor.PhysHypothesis("3f_osc")
-    
+  phyp = valor.PhysHypothesis(hypothesis)
+  
   fit_elements = valor.CompoundFitElements()
   fit_elements.Read(util.CompleteConfigPath(config_file))
   
-  # ~ if mixing12 < 0.:
-    # ~ mixing12 = opt.GetGlobalBestFit(conv.kPhypMixing12)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypMixing12),": ",mixing12
-  # ~ if mixing13 < 0.:
-    # ~ #~ mixing13 = opt.GetGlobalBestFit(conv.kPhypMixing13)
-    # ~ if hierarchy=="normal": mixing13 = conv.kT2KBestFitTheta13_NH
-    # ~ else:                   mixing13 = conv.kT2KBestFitTheta13_IH
-    # ~ print "Using default ("+hierarchy+") value for ",util.ParamAsString(conv.kPhypMixing13),": ",mixing13
-  # ~ if mixing23 < 0.:
-    # ~ mixing23 = opt.GetGlobalBestFit(conv.kPhypMixing23)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypMixing23),": ",mixing23
-  # ~ if dm12sq < 0.:
-    # ~ dm12sq = opt.GetGlobalBestFit(conv.kPhypDm12sq)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypDm12sq),": ",dm12sq
-  # ~ if dm23sq < 0.:
-    # ~ dm23sq = opt.GetGlobalBestFit(conv.kPhypDm23sq)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypDm23sq),": ",dm23sq
-  # ~ if deltacp <= -9:
-    # ~ if hierarchy=="normal": deltacp = conv.kT2KBestFitDeltaCP_NH
-    # ~ else:                   deltacp = conv.kT2KBestFitDeltaCP_IH
-    # ~ print "Using default ("+hierarchy+") value for ",util.ParamAsString(conv.kPhypCPV),": ",deltacp
-  
-  osc_params = [(conv.kPhypMixing12,mixing12),
-                (conv.kPhypMixing13,mixing13),
-                (conv.kPhypMixing23,mixing23),
-                (conv.kPhypCPV     ,deltacp ),
-                (conv.kPhypDm12sq  ,dm12sq  ),
-                (conv.kPhypDm23sq  ,dm23sq  ),]
-  
-  for p,val in osc_params:
-    phyp.SetCurrValue(p,val)
-    print util.ParamAsString(p).ljust(25),phyp.CurrValue(p)
-  
-  print "\n"
+  relevant_params = []
+  for (parname,val) in param_values.iteritems():
+    p = util.PhysParamFromString(parname)
+    if (phyp.Contains(p)):
+      phyp.SetCurrValue(p,val)
+      print util.ParamAsString(p).ljust(25),phyp.CurrValue(p)
+      relevant_params.append(p)
+  relevant_params.sort()
   
   tex_output = open(output_file,"w")
   
@@ -98,16 +72,19 @@ def main(config_file,
   tex_output.write("\n\\section*{Job details}\n\n")
   
   tex_output.write("\n\\begin{minipage}[t]{0.5\\textwidth}")
-  tex_output.write("\n\\begin{itemize}\n")
-  for param,val in osc_params:
-    tex_output.write("\\item[] "+util.RawParamAsStringTex(param)+" = "+str(phyp.CurrValue(param))+"\n")
+  if len(relevant_params):
+    tex_output.write("\n\\begin{itemize}\n")
+    for param in relevant_params:
+      tex_output.write("\\item[] "+util.RawParamAsStringTex(param)+" = "+str(phyp.CurrValue(param))+"\n")
   
-  tex_output.write("\\end{itemize}\n\\end{minipage}")
+    tex_output.write("\\end{itemize}\n")
+    
+  tex_output.write("\\end{minipage}")
     
   tex_output.write("\n\\\\\n\n")
   
-  
-  tex_output.write("Hierarchy: "+hierarchy.capitalize()+"\n\n")
+  if (phyp=="3f_osc") :
+    tex_output.write("Hierarchy: "+hierarchy.capitalize()+"\n\n")
   if label: tex_output.write(label+"\n\n")
   
   model = fit_elements.FitModel()
@@ -245,14 +222,8 @@ if __name__=="__main__":
   import optparse
   parser = optparse.OptionParser(usage="%prog [options]..",description="Make tables of validation spectra")
 
-  # T2K+reactors (sinsqtheta)
-  parser.add_option('--mixing12', dest='mixing12',default=0.304   ,type=float, help='Value of sinsqtheta12 or sinsq2theta12 depending on mixing param choice')
-  parser.add_option('--mixing13', dest='mixing13',default=0.0248  ,type=float, help='Value of sinsqtheta13 or sinsq2theta13 depending on mixing param choice')
-  parser.add_option('--mixing23', dest='mixing23',default=0.527   ,type=float, help='Value of sinsqtheta23 or sinsq2theta23 depending on mixing param choice')
-  parser.add_option('--dm12sq'  , dest='dm12sq'  ,default=7.53E-5 ,type=float, help='Value of small mass splitting')
-  parser.add_option('--dm23sq'  , dest='dm23sq'  ,default=2.51E-3 ,type=float, help='Value of large mass splitting')
-  parser.add_option('--deltacp' , dest='deltacp' ,default=-1.55    ,type=float, help='Value of delta CP')
 
+  parser.add_option("--hypothesis",dest="hypothesis",default="3f_osc",help="Physics hypotheis: eg 3f_osc,eff_sterile_osc")
   parser.add_option(     '--hierarchy'          , dest="hierarchy"     , default="normal"    , help='Mass hierarchy: "normal" or "inverted"')
   parser.add_option('-m','--mixing-param-choice', dest="mixparamchoice", default="sinsqtheta", help='Mixing param coice: "sinsqtheta" or "sinsq2theta"')
   parser.add_option('-t','--mixing-param-octant', dest="mixparamoctant", default="two"       , help='Mixing param octant: "one" or "two"')
@@ -264,13 +235,23 @@ if __name__=="__main__":
   
   parser.add_option('-l', '--label' , dest='label' , default=None, help="Label to put in file.")
   
+  all_parnames = []
+  for p in xrange(conv.kNuis000):
+    parname = util.ParamAsStringSimple(p)
+    default = opt.GetGlobalBestFit(p)
+    parser.add_option('--%s'%parname, dest=parname,default=default,type=float, help='Value of %s'%parname)
+    all_parnames.append(parname)
+  
   v = optparse.Values()
   parser.parse_args(values=v) # v contains only the values that were specified, not defaults
   
   o,other = parser.parse_args()
   
-  main(o.config,
-    o.mixing12,o.mixing13,o.mixing23,o.dm12sq,o.dm23sq,o.deltacp,o.hierarchy,o.mixparamchoice,o.mixparamoctant,o.dmsqscheme,
+  # Make a dictionary of the parameter names to their argument values
+  param_values = dict(((pname,getattr(o,pname)) for pname in all_parnames))
+  
+  main(o.config, o.hypothesis, param_values,
+    o.hierarchy,o.mixparamchoice,o.mixparamoctant,o.dmsqscheme,
     o.output_file,o.label)
   
   if other:
