@@ -1352,8 +1352,9 @@ namespace util {
   string  AsStringTeX (conv::PhysParamId_t p, bool root = false);
 
   // Aliases for above
-  string  ParamAsString    (conv::PhysParamId_t p) ;
-  string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
+  string  ParamAsString      (conv::PhysParamId_t p) ;
+  string  ParamAsStringSimple(conv::PhysParamId_t p) ;
+  string  ParamAsStringTeX   (conv::PhysParamId_t p, bool root = false);
 
   conv::PhysParamId_t PhysParamFromString(string p);
 

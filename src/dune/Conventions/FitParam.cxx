@@ -1026,8 +1026,9 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
   return name;
 }
 //________________________________________________________________________________________
-string util::ParamAsString    (conv::PhysParamId_t p)            {return util::AsString   (p);     };
-string util::ParamAsStringTeX (conv::PhysParamId_t p, bool root) {return util::AsStringTeX(p,root);};
+string util::ParamAsString      (conv::PhysParamId_t p)            {return util::AsString      (p)  ;};
+string util::ParamAsStringSimple(conv::PhysParamId_t p)            {return util::AsStringSimple(p)  ;};
+string util::ParamAsStringTeX   (conv::PhysParamId_t p, bool root) {return util::AsStringTeX(p,root);};
 //________________________________________________________________________________________
 PhysParamId_t util::PhysParamFromString(string inp_name)
 {
