@@ -46,25 +46,25 @@ def main(config_file,
   
   # ~ if mixing12 < 0.:
     # ~ mixing12 = opt.GetGlobalBestFit(conv.kPhypMixing12)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypMixing12),": ",mixing12
+    # ~ print "Using default value for ",util.NameRegistry.Instance().ParamAsString(conv.kPhypMixing12),": ",mixing12
   # ~ if mixing13 < 0.:
     # ~ #~ mixing13 = opt.GetGlobalBestFit(conv.kPhypMixing13)
     # ~ if hierarchy=="normal": mixing13 = conv.kT2KBestFitTheta13_NH
     # ~ else:                   mixing13 = conv.kT2KBestFitTheta13_IH
-    # ~ print "Using default ("+hierarchy+") value for ",util.ParamAsString(conv.kPhypMixing13),": ",mixing13
+    # ~ print "Using default ("+hierarchy+") value for ",util.NameRegistry.Instance().ParamAsString(conv.kPhypMixing13),": ",mixing13
   # ~ if mixing23 < 0.:
     # ~ mixing23 = opt.GetGlobalBestFit(conv.kPhypMixing23)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypMixing23),": ",mixing23
+    # ~ print "Using default value for ",util.NameRegistry.Instance().ParamAsString(conv.kPhypMixing23),": ",mixing23
   # ~ if dm12sq < 0.:
     # ~ dm12sq = opt.GetGlobalBestFit(conv.kPhypDm12sq)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypDm12sq),": ",dm12sq
+    # ~ print "Using default value for ",util.NameRegistry.Instance().ParamAsString(conv.kPhypDm12sq),": ",dm12sq
   # ~ if dm23sq < 0.:
     # ~ dm23sq = opt.GetGlobalBestFit(conv.kPhypDm23sq)
-    # ~ print "Using default value for ",util.ParamAsString(conv.kPhypDm23sq),": ",dm23sq
+    # ~ print "Using default value for ",util.NameRegistry.Instance().ParamAsString(conv.kPhypDm23sq),": ",dm23sq
   # ~ if deltacp <= -9:
     # ~ if hierarchy=="normal": deltacp = conv.kT2KBestFitDeltaCP_NH
     # ~ else:                   deltacp = conv.kT2KBestFitDeltaCP_IH
-    # ~ print "Using default ("+hierarchy+") value for ",util.ParamAsString(conv.kPhypCPV),": ",deltacp
+    # ~ print "Using default ("+hierarchy+") value for ",util.NameRegistry.Instance().ParamAsString(conv.kPhypCPV),": ",deltacp
   
   osc_params = [(conv.kPhypMixing12,mixing12),
                 (conv.kPhypMixing13,mixing13),
@@ -75,7 +75,7 @@ def main(config_file,
   
   for p,val in osc_params:
     phyp.SetCurrValue(p,val)
-    print util.ParamAsString(p).ljust(25),phyp.CurrValue(p)
+    print util.NameRegistry.Instance().ParamAsString(p).ljust(25),phyp.CurrValue(p)
   
   print "\n"
   
@@ -100,7 +100,7 @@ def main(config_file,
   tex_output.write("\n\\begin{minipage}[t]{0.5\\textwidth}")
   tex_output.write("\n\\begin{itemize}\n")
   for param,val in osc_params:
-    tex_output.write("\\item[] "+util.RawParamAsStringTex(param)+" = "+str(phyp.CurrValue(param))+"\n")
+    tex_output.write("\\item[] "+util.NameRegistry.Instance().ParamAsStringTex(param)+" = "+str(phyp.CurrValue(param))+"\n")
   
   tex_output.write("\\end{itemize}\n\\end{minipage}")
     
