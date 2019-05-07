@@ -136,5 +136,8 @@ void valor_expt_utils()
     valor::util::ArrIdx::Instance();
     
     valor::util::PopulateNameRegistry();
+    
+    // Set up some OA priors
+    valor::util::InitializeOAPriors();
 
 }
