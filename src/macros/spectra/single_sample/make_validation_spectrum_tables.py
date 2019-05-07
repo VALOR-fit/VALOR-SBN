@@ -24,6 +24,7 @@ env  =  valor.Env.Instance()
 col1_width = 12
 coln_width = 20
 to3dp = "{0:.3f}"
+min_channels_to_landscape = 7   # If we get more than this number of channels, then switch the page to landscape orientation
 
 #______________________________________________________________________________________________________________________________
 
@@ -86,6 +87,9 @@ def main(config_file,
 \\usepackage{amsfonts}
 \\usepackage{amssymb}
 \\usepackage{fullpage}
+\\usepackage{lscape}
+\\usepackage{geometry}
+\\geometry{margin=1in}
 \\begin{document}
 """)
 
@@ -133,6 +137,10 @@ def main(config_file,
       if reac_type not in reac_types: reac_types.append(reac_type)
       channel = (init_flav,final_flav)
       if channel not in channels: channels.append(channel)
+
+    if len(channels) > min_channels_to_landscape:
+      tex_output.write("\\begin{landscape}\n")
+
       
     event_counts_per_channel         = dict() # Holds dictionaries of formatted strings
     total_event_counts_per_channel   = dict() # Holds float
@@ -221,7 +229,10 @@ def main(config_file,
     # ~ tex_output.write("\nTotal background: "+to3dp.format(background_events)+"\n\n")
     
     tex_output.write("POT: "+to3dp.format(submodel.GetPOT()*1E-20)+"E20\n\n")
-    
+
+    if len(channels) > min_channels_to_landscape:
+      tex_output.write("\\end{landscape}\n")
+        
     tex_output.write("\n\n\\clearpage\n\n")
     
   
