@@ -185,7 +185,7 @@ def main(config_file,
     
     for reac_type in reac_types:
       ev = event_counts_per_channel[reac_type]
-      if not total_event_counts_per_reac_type[reac_type]: continue
+      # ~ if not total_event_counts_per_reac_type[reac_type]: continue
       reac_type_name = util.ReacTypeAsString(reac_type)
       tex_output.write(" "+reac_type_name.ljust(col1_width)+" & ")
       ev_counts = []
