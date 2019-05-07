@@ -1657,3 +1657,67 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
   }
   return vec;
 }
+//____________________________________________________________________________
+conv::PhysParamId_t util::GetFitParam(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    return conv::kPhypUndefined;
+  }
+  return conv::kFitParam[index];
+}
+//____________________________________________________________________________
+bool util::ParamHasRecoDependence(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamRecoKinematicDependence[index];
+}
+//____________________________________________________________________________
+bool util::ParamHasTrueDependence(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamTrueKinematicDependence[index];
+}
+//____________________________________________________________________________
+const double * util::ParamErecoRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamErecoRange[index];
+}
+//___________________________________________________________________________
+const double* util::ParamYrecoRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamYrecoRange[index];
+}
+//___________________________________________________________________________
+const double* util::ParamEtrueRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamEtrueRange[index];
+}
+
+//___________________________________________________________________________
+const double* util::ParamQ2trueRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamQ2trueRange[index];
+}
+//___________________________________________________________________________
