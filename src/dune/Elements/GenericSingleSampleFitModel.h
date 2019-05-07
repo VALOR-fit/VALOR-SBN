@@ -97,6 +97,9 @@ public:
   // Get the modelist we're using
   const std::vector<conv::ReacMode_t> GetReactionModes(Option_t * opt = "") const;
   
+  // Get POT
+  const double & GetPOT() const;
+  
   // Get the response function library and binning
   const util::DuneRFL * GetRFL(void) const;
   const SingleSampleKineBinning * GetBinning(void) const;

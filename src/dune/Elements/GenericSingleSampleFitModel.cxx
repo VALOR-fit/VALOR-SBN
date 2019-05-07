@@ -2208,3 +2208,8 @@ const std::vector<conv::ReacMode_t> GenericSingleSampleFitModel::GetReactionMode
   return fReactionModes;
 }
 //________________________________________________________________________________________
+const double &  GenericSingleSampleFitModel::GetPOT() const
+{
+  return fPOT;
+}
+//________________________________________________________________________________________
