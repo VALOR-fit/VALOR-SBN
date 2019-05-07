@@ -1390,6 +1390,16 @@ namespace util {
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);
 
+  // Python wrappers for the various arrays
+  conv::PhysParamId_t GetFitParam(int index);
+  bool ParamHasRecoDependence    (int index);
+  bool ParamHasTrueDependence    (int index);
+  const double* ParamErecoRange  (int index);  //[2]
+  const double* ParamYrecoRange  (int index);  //[2]
+  const double* ParamEtrueRange  (int index);  //[2]
+  const double* ParamQ2trueRange (int index);  //[2]
+
+
 } //util
 
 } // valor
