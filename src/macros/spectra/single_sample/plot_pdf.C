@@ -24,7 +24,7 @@ void plot_pdf(
   const char * image_save_format = "",
   int canv_size_x = 700,
   int canv_size_y = 700,
-  double enu_reco_max = 12.;
+  double enu_reco_max = 12.
 )
 {
   using namespace std;
