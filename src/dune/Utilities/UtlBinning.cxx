@@ -228,8 +228,8 @@ TH2D* Make2DSimpleHistogram(const VALORArray& v,
   // Get the reco binning and associated kinematic variables for the VALORArray
   KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(b.RecoSmpBinning());
   if (!recoBinning) {
-     LOG("UtlBinning", pWARN) << tmpb->GetName()<<" is not a KBCubHcmbEdge2Edge, so will skip this";
-     return nullptr;
+    LOG("UtlBinning", pERROR) << b.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
+    util::Die(-1);
   }
   const std::vector<conv::KineVar_t>& recoKv = recoBinning->KineVars();
 
