@@ -94,6 +94,9 @@ public:
   // Auxiliary methods, not part of the  FitModelABC interface (needed?)
   //
   
+  // Get the modelist we're using
+  const std::vector<conv::ReacMode_t> GetReactionModes(Option_t * opt = "") const;
+  
   // Get the response function library and binning
   const util::DuneRFL * GetRFL(void) const;
   const SingleSampleKineBinning * GetBinning(void) const;
@@ -212,8 +215,7 @@ private:
   SingleSampleKineBinning * fBinning;
   
   // The list of reaction modes we're using
-  size_t fNReacModes;
-  const conv::ReacMode_t * fReactionModes;
+  std::vector<conv::ReacMode_t> fReactionModes;
   
   // Spline library
   util::DuneRFL * fRFL;
