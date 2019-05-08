@@ -168,33 +168,56 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       }
     } // osc pars in PhysHyPothesis
 
-    // Add parameters from the ParameterPool:
-    for (const Parameter & param : pool_params) {
-      PhysParamId_t p = param.GetID();
-      if(p == kPhypUndefined) {
-        LOG("FitParams", pFATAL) << "Found an undefined parameter in the ParameterPool";
-        util::Die(-1);
+    // If necessary, add the systematics from the model
+    if (syst) {
+      syst->AppendParamsTo(*fparm);
+      // And update their limits`
+      for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
+        conv::PhysParamId_t p = syst->WhichParam(ip);
+        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));  // TODO: Do we want these hard-coded values in a config file?
+        fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,2.));
       }
+    }
+    // Or add parameters from the ParameterPool
+    else {
+      for (const Parameter & param : pool_params) {
+        PhysParamId_t p = param.GetID();
+        if(p == kPhypUndefined) {
+          LOG("FitParams", pFATAL) << "Found an undefined parameter in the ParameterPool";
+          util::Die(-1);
+        }
 
-      // set parameter range, current and init value, etc
-      // TODO: It would be better to have the option of getting non-default values of the following params from a config file, but this is fine for now
-      double init = 1.0;
-      double curr = 1.0;
-      double min  = 0.0;
-      double max  = 2.0;
-      double step = 1E-4;
-      bool   fix  = false;
-      bool   nuis = true;
+        // set parameter range, current and init value, etc
+        // TODO: It would be better to have the option of getting non-default values of the following params from a config file, but this is fine for now
+        double init = 1.0;
+        double curr = 1.0;
+        double min  = 0.0;
+        double max  = 2.0;
+        double step = 1E-4;
+        bool   fix  = false;
+        bool   nuis = true;
 
-      // Check we're not going behind physical region
-      min = param.GetNearestPhysicalValue(min);
-      max = param.GetNearestPhysicalValue(min);
+        // Check we're not going behind physical region
+        min = param.GetNearestPhysicalValue(min);
+        max = param.GetNearestPhysicalValue(min);
 
-      if (!syst) {
         fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
         ipc++;
         fparm->Update(p, curr);
+      } // Params in ParameterPool
+    }
+
+    // Now that we have all the params we want in the FitParamList, fix/set parameters as necessary
+    for(int ip = 0; ip < nparams; ip++) {
+      conv::PhysParamId_t p = fparm->WhichParam(ip);
+      if(util::IsOscParam(p)) { continue; }
+      if(!ParameterPool::Instance()->IsParamInPool(p)) {
+        LOG("FitParams",pERROR)<<"When attempting to fix/set systematic parameters, parameter \'"
+                               << NameRegistry::Instance()->AsString(p)
+                               << "\' was not found in the ParameterPool so could not be categorised.";
+        util::Die(-1); return fparm;
       }
+      Parameter param = ParameterPool::Instance()->GetParam(p);
 
       // toggle detector related params on/off
       if(fix_detector_params && param.SearchCategories("det")) {
@@ -250,7 +273,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
         fparm->SetInitValue(p, 1.);
         fparm->FixParameter(p);
       }
-    } // Params in ParameterPool
+    }
 
     //constrain solar params
     if(cons_solar_params){
@@ -268,16 +291,6 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       fparm->SetNuisance(conv::kPhypMixing13,true);
     }
 
-    // If necessary, add the systematics from the model
-    if (syst) {
-      syst->AppendParamsTo(*fparm);
-      // And update their limits`
-      for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
-        conv::PhysParamId_t p = syst->WhichParam(ip);
-        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));  // TODO: Do we want these hard-coded values in a config file?
-        fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,2.));
-      }
-    }
   }
     //now we also defined a ND only fit params list
   else  if(param_list_opt.find("only-nd") != string::npos) {
