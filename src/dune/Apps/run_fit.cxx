@@ -251,87 +251,84 @@ int main(int argc, char ** argv)
     if (true_values_from_file) {
       fp->FromPhysParamList(*true_values_from_file,"current");
     }
-    
-    // Update values of oscillation parameters 
-    if(fplname.find("only-nd") == string::npos && fplname.find("no-osc-params")==string::npos){
 
-      //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)
-      Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
-      Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
-      Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
-      Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+    //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)
+    Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
+    Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
+    Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
+    Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
 
-      // Set input parameters
-      RgKeyList input_args = arg.FindKeys("input-");
-      TPRegexp input_match("input-(\\w*)");
-      for (RgKey argname : input_args) { // RgKey is just a typename for std::string right now
-        TObjArray * matches = input_match.MatchS(argname.c_str());
+    // Set input parameters
+    RgKeyList input_args = arg.FindKeys("input-");
+    TPRegexp input_match("input-(\\w*)");
+    for (RgKey argname : input_args) { // RgKey is just a typename for std::string right now
+      TObjArray * matches = input_match.MatchS(argname.c_str());
 
-        if (matches->GetEntries() != 2) {
-          LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
-          util::Die(-1);
-        }
-        TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
-        std::string param_name(tos_param_name->String().Data());
-        delete matches;
+      if (matches->GetEntries() != 2) {
+        LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+        util::Die(-1);
+      }
+      TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
+      std::string param_name(tos_param_name->String().Data());
+      delete matches;
 
-        conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
-        if (param == conv::kPhypUndefined) {
-          LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
-          util::Die(-1);
-        }
-
-        double param_val = arg.GetDouble(argname);
-        if ( std::fabs(param_val + 999. ) < conv::kASmallNum ) {
-          param_val = Opt::Instance()->GetGlobalBestFit(param);
-        }
-        if (param==kPhypMixing23 && flip_23_octant) {
-          param_val = util::FlipOctantAroundMaxDisap(param_val,arg.GetDouble("input-mixing13"));
-        }
-        if(fp->Exists(param)) {
-          fp->Update      (param, param_val);
-          fp->SetInitValue(param, param_val);
-        }
+      conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
+      if (param == conv::kPhypUndefined) {
+        LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+        util::Die(-1);
       }
 
-      // fix them? randomize them?
-      RgKeyList fix_args = arg.FindKeys("fix-");
-      TPRegexp fix_match("fix-(\\w*)");
-      for (RgKey argname : fix_args) { // RgKey is just a typename for std::string right now
-        TObjArray * matches = fix_match.MatchS(argname.c_str());
+      double param_val = arg.GetDouble(argname);
+      if ( std::fabs(param_val + 999. ) < conv::kASmallNum ) {
+        param_val = Opt::Instance()->GetGlobalBestFit(param);
+      }
+      if (param==kPhypMixing23 && flip_23_octant) {
+        param_val = util::FlipOctantAroundMaxDisap(param_val,arg.GetDouble("input-mixing13"));
+      }
+      if(fp->Exists(param)) {
+        fp->Update      (param, param_val);
+        fp->SetInitValue(param, param_val);
+      }
+    }
 
-        if (matches->GetEntries() != 2) {
-          LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
-          util::Die(-1);
+    // fix them? randomize them?
+    RgKeyList fix_args = arg.FindKeys("fix-");
+    TPRegexp fix_match("fix-(\\w*)");
+    for (RgKey argname : fix_args) { // RgKey is just a typename for std::string right now
+      TObjArray * matches = fix_match.MatchS(argname.c_str());
+
+      if (matches->GetEntries() != 2) {
+        LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+        util::Die(-1);
+      }
+      TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
+      std::string param_name(tos_param_name->String().Data());
+      delete matches;
+
+      if (param_name=="at") {continue;} // We have lots of arguments called fix-at instead of just fix-[param]
+
+      conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
+      if (param == conv::kPhypUndefined) {
+        LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+        util::Die(-1);
+      }
+
+      if (fp->Exists(param)) {
+        if(arg.GetBool(argname)){
+          fp->FixParameter(param);
         }
-        TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
-        std::string param_name(tos_param_name->String().Data());
-        delete matches;
-
-        if (param_name=="at") {continue;} // We have lots of arguments called fix-at instead of just fix-[param]
-
-        conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
-        if (param == conv::kPhypUndefined) {
-          LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
-          util::Die(-1);
+        else if(param_values_ts.Contains("randomize-all")) {
+          TString prior_arg = TString::Format("flat-prior-%s",param_name.c_str());
+          string mode = ( (arg.GetBool(prior_arg.Data())) ? "flat" : "gaus" );
+          double rnd_value = util::GetRandomizedOscParam(param,mode);
+          fp->Update      (param, rnd_value);
+          fp->SetInitValue(param, rnd_value);
         }
-
-        if (fp->Exists(param)) {
-          if(arg.GetBool(argname)){
-            fp->FixParameter(param);
-          }
-          else if(param_values_ts.Contains("randomize-all")) {
-            TString prior_arg = TString::Format("flat-prior-%s",param_name.c_str());
-            string mode = ( (arg.GetBool(prior_arg.Data())) ? "flat" : "gaus" );
-            double rnd_value = util::GetRandomizedOscParam(param,mode);
-            fp->Update      (param, rnd_value);
-            fp->SetInitValue(param, rnd_value);
-          }
-        } //Exists(param)
-        else {
-          LOG("valor_dune",pINFO)<<"Not setting parameter not included in FPL: "<<param_name;
-        }
-      } //argname
+      } //Exists(param)
+      else {
+        LOG("valor_dune",pINFO)<<"Not setting parameter not included in FPL: "<<param_name;
+      }
+    } //argname
 
     PhysParamList true_params = fp->AsPhysParamList("current");
     
