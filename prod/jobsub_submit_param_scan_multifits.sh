@@ -85,6 +85,8 @@ INTERACTIVE=0
 JOBDIR=""
 NJOBS=0
 
+valorfailed=false
+
 while [ $# -gt 0 ]; do
   case "$1" in
       
@@ -364,21 +366,24 @@ if [ "$CONFIGCUT" != "/pnfs" ] && ! [ $INTERACTIVE ]; then
     exit 1
 fi 
 
+ifdh lss $JOBDIR
+if [ $? -ne 0 ]; then
+    echo "job dir does not exist bailing."
+    exit 73
+fi 
+
 #Make a subdirectory
 JOBSUBDIR=$JOBDIR/$PROCESS/
 echo "JOBSUBDIR = $JOBSUBDIR"
 
-if [ -d $JOBSUBDIR ] && [ "$(ls -A $JOBSUBDIR)" ]; then 
-    echo "removing files in the jobdir subdir $JOBSUBDIR";
-    for filename in $JOBSUBDIR/*; do
-	echo "removing: $filename"
-	ifdh rm $filename
-    done
-fi
-
-if [ ! -d $JOBSUBDIR ]; then 
+SUBDIRFILES=$(ifdh ls $JOBSUBDIR)
+if [ $? -ne 0 ]; then
     echo "making sub dir";
     ifdh mkdir $JOBSUBDIR
+else
+    for filename in $SUBDIRFILES; do
+	ifdh rm $filename
+    done
 fi
 
 #Fix the proir file work around 
@@ -435,6 +440,20 @@ if [ $NJOBS -eq 0 ]; then
     exit 1 
 fi
 
+if [ "$CONFIGCUT" == "/pnfs" ]; then 
+    echo "Copying config file"
+    timeout 20s ifdh cp -D $CONFIGFILE $_CONDOR_SCRATCH_DIR
+    if [ $? -ne 0 ]; then
+	echo "Error $? when copying the config file"
+	exit 73
+    fi
+
+    CONFIGNAME="${CONFIGFILE##*/}"
+    CONFIGFILE="config.xml"
+    mv $CONFIGNAME config.xml
+fi 
+
+
 #Copy the tarball over 
 echo "Copying  tar file"
 echo $_CONDOR_SCRATCH_DIR
@@ -462,13 +481,6 @@ make;
 
 cd $_CONDOR_SCRATCH_DIR
 
-if [ "$CONFIGCUT" == "/pnfs" ]; then 
-    echo "Copying config file"
-    timeout 20s ifdh cp -D $CONFIGFILE $_CONDOR_SCRATCH_DIR
-    CONFIGNAME="${CONFIGFILE##*/}"
-    $CONFIGFILE="config.xml"
-    mv $CONFIGNAME config.xml
-fi 
 
 #The run number to start from for this job 
 NMIN=$(perl -E "use POSIX;say floor($PROCESS*$NPOINTS1*$NPOINTS2/$NJOBS)")
@@ -515,8 +527,6 @@ do
 	echo "VAl2: $VAL2"
 	echo " " 
     fi
-done
-exit
 
     #
     # Perform all fits
@@ -530,7 +540,7 @@ exit
 
     if [ $DISCOVERY == 0 ]; then 
 
-	arguments="--tag $TAG-$PARAM1-$PARAM2 --first-octant  --fix-at-$PARAM1 $VAL1 --fix-$PARAM1 ";
+	arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant  --fix-at-$PARAM1 $VAL1 --fix-$PARAM1 ";
 	arguments=$arguments$standard_options
     
 	if [ "$ONLY1DSCAN" = false ]; then 
@@ -539,9 +549,9 @@ exit
 	fi
 	
     else 
-	arguments="--tag $TAG-$PARAM1-$PARAM2 --first-octant "
+	arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant "
 	arguments=$arguments$standard_options
-	argparam1=" --input-$PARAM1 $VAl1 \
+	argparam1=" --input-$PARAM1 $VAL1 \
          --fix-at-$PARAM1 $PARAM1NULLHYP \
          --fix-$PARAM1 ";
 	arguments=$arguments$argparam1
@@ -560,8 +570,9 @@ exit
 
     #Run Valor
     echo "Running: $valorcommand";
-    eval $valorcommand > valor.out 
+    eval $valorcommand >> valor.out 
     if [ $? -ne 0 ]; then
+	valorfailed=true
 	echo "Err $?. Something went wrong with valor please look at the text file"
     fi
 done 
@@ -571,9 +582,13 @@ timeout 200s ifdh rm  local.tar
 
 
 #Copy over scratch directory 
-timeout 200s ifdh cp -D $_CONDOR_SCRATCH_DIR/*.root $JOBSUBDIR
-timeout 200s ifdh cp -D $_CONDOR_SCRATCH_DIR/*.out $JOBSUBDIR
-timeout 200s ifdh cp -D $_CONDOR_SCRATCH_DIR/*.xml $JOBSUBDIR
+for filename in $_CONDOR_SCRATCH_DIR/*; do
+    if [ -f "$filename" ]; then
+	echo "Copying $filename"
+	timeout 200s ifdh cp -D $filename $JOBSUBDIR
+    fi
+done
+
 if [ $? -ne 0 ]; then
   echo "Error $? when copying output to dCache"
   exit 73
