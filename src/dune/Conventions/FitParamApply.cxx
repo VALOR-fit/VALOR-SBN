@@ -10,6 +10,7 @@ Copyright (c) 2010-2018, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/UtlSystem.h"
 
 #include "dune/Conventions/FitParamApply.h"
 
@@ -951,5 +952,14 @@ void valor::util::ApplyMaskNaming::Init(void)
   for(auto const& pair : fNuclearTargetMaskToName) {
     fNuclearTargetNameToMask.insert( std::make_pair(pair.second, pair.first) );
   }
+}
+//________________________________________________________________________________________
+conv::ApplyMask_t util::GetApplyMask(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kApplyParamToTemplates[index];
 }
 //________________________________________________________________________________________

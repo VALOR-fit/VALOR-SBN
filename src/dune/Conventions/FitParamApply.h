@@ -307,6 +307,9 @@ namespace util{
     inline conv::ReacTypeApplyMask_t      ReacTypeMaskFromString     (std::string name) { return util::ApplyMaskNaming::Instance()->GetReacTypeNameToMaskMap().at(name); }
     inline conv::DetectorApplyMask_t      DetectorMaskFromString     (std::string name) { return util::ApplyMaskNaming::Instance()->GetDetectorNameToMaskMap().at(name); }
     inline conv::NuclearTargetApplyMask_t NuclearTargetMaskFromString(std::string name) { return util::ApplyMaskNaming::Instance()->GetNuclearTargetNameToMaskMap().at(name); }
+
+    // Wrapper for Python
+    conv::ApplyMask_t GetApplyMask(int index);
 } //util
 } //valor
 

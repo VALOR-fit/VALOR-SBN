@@ -1352,8 +1352,9 @@ namespace util {
   string  AsStringTeX (conv::PhysParamId_t p, bool root = false);
 
   // Aliases for above
-  string  ParamAsString    (conv::PhysParamId_t p) ;
-  string  ParamAsStringTeX (conv::PhysParamId_t p, bool root = false);
+  string  ParamAsString      (conv::PhysParamId_t p) ;
+  string  ParamAsStringSimple(conv::PhysParamId_t p) ;
+  string  ParamAsStringTeX   (conv::PhysParamId_t p, bool root = false);
 
   conv::PhysParamId_t PhysParamFromString(string p);
 
@@ -1389,6 +1390,16 @@ namespace util {
 
   // Tell the framework classes what our parameter names are
   void PopulateNameRegistry(void);
+
+  // Python wrappers for the various arrays
+  conv::PhysParamId_t GetFitParam(int index);
+  bool ParamHasRecoDependence    (int index);
+  bool ParamHasTrueDependence    (int index);
+  const double* ParamErecoRange  (int index);  //[2]
+  const double* ParamYrecoRange  (int index);  //[2]
+  const double* ParamEtrueRange  (int index);  //[2]
+  const double* ParamQ2trueRange (int index);  //[2]
+
 
 } //util
 

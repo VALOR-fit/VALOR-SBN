@@ -50,7 +50,7 @@ options after list construction
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Messenger/Messenger.h"
 // dune
-#include "dune/Conventions/OscParams.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/FitParamApply.h"
 #include "dune/Conventions/ArrIdx.h"
@@ -1026,8 +1026,9 @@ string util::AsStringTeX(conv::PhysParamId_t p, bool root)
   return name;
 }
 //________________________________________________________________________________________
-string util::ParamAsString    (conv::PhysParamId_t p)            {return util::AsString   (p);     };
-string util::ParamAsStringTeX (conv::PhysParamId_t p, bool root) {return util::AsStringTeX(p,root);};
+string util::ParamAsString      (conv::PhysParamId_t p)            {return util::AsString      (p)  ;};
+string util::ParamAsStringSimple(conv::PhysParamId_t p)            {return util::AsStringSimple(p)  ;};
+string util::ParamAsStringTeX   (conv::PhysParamId_t p, bool root) {return util::AsStringTeX(p,root);};
 //________________________________________________________________________________________
 PhysParamId_t util::PhysParamFromString(string inp_name)
 {
@@ -1657,3 +1658,67 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
   }
   return vec;
 }
+//____________________________________________________________________________
+conv::PhysParamId_t util::GetFitParam(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    return conv::kPhypUndefined;
+  }
+  return conv::kFitParam[index];
+}
+//____________________________________________________________________________
+bool util::ParamHasRecoDependence(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamRecoKinematicDependence[index];
+}
+//____________________________________________________________________________
+bool util::ParamHasTrueDependence(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamTrueKinematicDependence[index];
+}
+//____________________________________________________________________________
+const double * util::ParamErecoRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamErecoRange[index];
+}
+//___________________________________________________________________________
+const double* util::ParamYrecoRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamYrecoRange[index];
+}
+//___________________________________________________________________________
+const double* util::ParamEtrueRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamEtrueRange[index];
+}
+
+//___________________________________________________________________________
+const double* util::ParamQ2trueRange(int index)
+{
+  if(index < 0 || index >= conv::kNFitParams) {
+    LOG("FitParams",pERROR)<<"Index out of bounds: "<< index;
+    util::Die(-1);
+  }
+  return conv::kFitParamQ2trueRange[index];
+}
+//___________________________________________________________________________

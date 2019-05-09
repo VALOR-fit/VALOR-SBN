@@ -106,8 +106,8 @@ TH1D* Make1DHistogram(const VALORArray& v,
   const VALORBinning * tmpb = use_simple ? b.RecoSmpBinning() : b.RecoOptBinning();
   const KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<const KBCubHcmbEdge2Edge*>(tmpb);
   if (!recoBinning) {
-    LOG("UtlBinning", pERROR) << tmpb->GetName()<<" is not a KBCubHcmbEdge2Edge";
-     util::Die(-1);
+    LOG("UtlBinning", pWARN) << tmpb->GetName()<<" is not a KBCubHcmbEdge2Edge, so will skip this";
+    return nullptr;
   }
   
   const std::vector<conv::KineVar_t>& recoKv = recoBinning->KineVars();
@@ -229,7 +229,7 @@ TH2D* Make2DSimpleHistogram(const VALORArray& v,
   KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(b.RecoSmpBinning());
   if (!recoBinning) {
     LOG("UtlBinning", pERROR) << b.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
-     util::Die(-1);
+    util::Die(-1);
   }
   const std::vector<conv::KineVar_t>& recoKv = recoBinning->KineVars();
 
