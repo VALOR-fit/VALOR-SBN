@@ -166,6 +166,7 @@ int main(int argc, char ** argv)
   }
   
   bool is_appearance = false;
+  bool is_intrinsic  = false;
   
   // Get the POT
   // Disappearance
@@ -193,6 +194,7 @@ int main(int argc, char ** argv)
   if(opt_mcsample == kSBNDAppearanceIntProposal){
     mcsample_pot = appProposalPOTSBNDInt;
     is_appearance = true;
+    is_intrinsic = true;
   }
   if(opt_mcsample == kSBNDAppearanceOscProposal){
     mcsample_pot = appProposalPOTSBNDOsc;
@@ -206,6 +208,7 @@ int main(int argc, char ** argv)
   if(opt_mcsample == kUBOONEAppearanceIntProposal){
     mcsample_pot = appProposalPOTUBOONEInt;
     is_appearance = true;
+    is_intrinsic = true;
   }
   if(opt_mcsample == kUBOONEAppearanceOscProposal){
     mcsample_pot = appProposalPOTUBOONEOsc;
@@ -219,6 +222,7 @@ int main(int argc, char ** argv)
   if(opt_mcsample == kICARUSAppearanceIntProposal){
     mcsample_pot = appProposalPOTICARUSInt;
     is_appearance = true;
+    is_intrinsic = true;
   }
   if(opt_mcsample == kICARUSAppearanceOscProposal){
     mcsample_pot = appProposalPOTICARUSOsc;
@@ -437,27 +441,29 @@ int main(int argc, char ** argv)
       // If we are looking at the appearance samples, get the initial neutrino pdg from the file
       if(is_appearance){
         init_pdg = truth[t].neutrino.initpdg;
-        init_flav = valor::util::FlavourFromPDG(nu_pdg);
+        init_flav = valor::util::FlavourFromPDG(init_pdg);
       }
 
       // If we are looking at the disappearance samples, initial flavour = final flavour
       else init_flav = final_flav;
-
+      
       // Get the real valor mode
       conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
-//      if(reac_mode == conv::kmUndefined) reac_mode = conv::kmOther;
 
       if(!opt_disable_checks) {
         //
         // ignore events that can not be used in the VALOR analysis
         //
         if(reac_mode == conv::kmUndefined) {
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode]\n" 
-            << "Initial flavour : " << init_flav << ", final flavour : " << final_flav << "\n"
-            << "Initial PDG     : " << init_pdg  << ", final PDG     : " << nu_pdg << "\n"
-            << "Reaction type   : " << valor::util::AsString(reac) << "\n";
-      //      << util::AsString(init_flav)<<" -> "<<util::AsString(final_flav)<<"\t"<<util::AsString(reac);
-          std::cin.get();
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode]\n"; 
+          continue;
+        }
+        if(isnc && init_flav != final_flav){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc]\n"; 
+          continue;
+        }
+        if((init_pdg == 12 || init_pdg == -12) && (!is_intrinsic)){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic]\n"; 
           continue;
         }
       }
@@ -501,7 +507,7 @@ int main(int argc, char ** argv)
         // ignore events that can not be used in the VALOR analysis
         //
         if(enu_reco <= 0) {
-          VLOG("make_sbncode_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
+          VLOG("make_sbncode_minidst", pINFO) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
           continue;
         }
 
@@ -509,13 +515,10 @@ int main(int argc, char ** argv)
       }
       
       valor_minidst_enu_reco  = enu_reco; 
-      VLOG("make_sbncode_minidst", pINFO) 
+      VLOG("make_sbncode_minidst", pNOTICE) 
         << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV"; 
       
     } // reco loop 
-     
-    if(enu_reco <= 0)
-      std::cin.get();
     valor_minidst->Fill();
   } // event loop
 
