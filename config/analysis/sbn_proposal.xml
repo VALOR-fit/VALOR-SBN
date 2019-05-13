@@ -3,11 +3,8 @@
 <valor> 
 
   <element_list name="sbncode">
-<!--
-   Near detector selections
--->
 
-<!-- FHC -->
+<!-- NuMu FHC -->
     <element name="sbn_nd_fhc_proposal_numuCCIncl">
       <detector>     sbn_nd                                               </detector>
       <beam>         bnb_fhc                                              </beam>
@@ -42,6 +39,43 @@
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
+    </element>
+    
+<!-- NuE FHC -->
+    <element name="sbn_nd_fhc_proposal_nueCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nd_proposal_mcp1_nue.xml                      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+    
+    <element name="sbn_ub_fhc_proposal_nueCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_ub_proposal_mcp1_nue.xml                      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+    
+    <element name="sbn_icarus_fhc_proposal_nueCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_fd_proposal_mcp1_nue.xml                      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
     </element>
 
   </element_list>
