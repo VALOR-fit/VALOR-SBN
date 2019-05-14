@@ -305,6 +305,9 @@ void plot_pdf(
           }//!null
           else {
             cerr << "Null [" << contrib_name << "]" << endl;
+            cerr << "Giving up." << endl;
+            cerr << "This is usually caused by running this script with a different config file to write_pdf"<<std::endl;
+            exit(-1);
           }
         }//imode
         
