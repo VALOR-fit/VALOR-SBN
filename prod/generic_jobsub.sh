@@ -15,6 +15,7 @@ SHELLSCRIPT=""
 JOBDIR=""
 TARBALLSDK=""
 TARBALLDUNE=""
+INTERACTIVE=0
 
 #Collect command params if set 
 while [ $# -gt 0 ]; do
@@ -185,7 +186,7 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ $valorfailed = true ]; then
-    exit 1
+    exit 99
 fi
 
 exit 0

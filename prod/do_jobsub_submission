@@ -134,10 +134,13 @@ fi
 
 chmod +x $JOBDIR/$SHELLSCRIPTNAME
 
+cp $VALOR_DUNE/generic_jobsub.sh $VALOR_DUNE/generic_jobsub_$SHELLSCRIPT.sh 
+
 #Run Jobsub
 if [ $INTERACTIVE = false ]; then 
 
-    jobsub_submit -G $GROUP --role=Analysis --memory=$MEMORY --expected-lifetime=$CPUTIME --disk=$DISK --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N 1 --generate-email-summary file://$VALOR_DUNE/prod/generic_jobsub.sh --shellscript $JOBDIR/$SHELLSCRIPTNAME --tarballsdk $JOBDIR/valorsdk.tar --tarballdune $JOBDIR/valordune.tar --jobdir $JOBDIR
+    jobsub_submit -G $GROUP --role=Analysis --memory=$MEMORY --expected-lifetime=$CPUTIME --disk=$DISK --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N 1 --generate-email-summary file://$VALOR_DUNE/prod/generic_jobsub_$SHELLSCRIPT.sh --shellscript $JOBDIR/$SHELLSCRIPTNAME --tarballsdk $JOBDIR/valorsdk.tar --tarballdune $JOBDIR/valordune.tar --jobdir $JOBDIR
+    rm -rf $VALOR_DUNE/generic_jobsub_$SHELLSCRIPT.sh
 else
     echo "interactive"
     $VALOR_DUNE/prod/generic_jobsub.sh --shellscript $JOBDIR/$SHELLSCRIPTNAME --tarballsdk $JOBDIR/valorsdk.tar --tarballdune $JOBDIR/valordune.tar --jobdir $JOBDIR --interactive
