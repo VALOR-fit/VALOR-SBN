@@ -31,6 +31,8 @@
 #include <TFile.h>
 #include <TChain.h>
 #include <TTree.h>
+#include <TBranch.h>
+#include <TLeaf.h>
 #include <TSystem.h>
 
 // genie
@@ -64,25 +66,31 @@ static const string gTreeName = "sbnana";
 
 static const int gPrintEveryNEvents   = 50000;
 
-/*
-// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Proposal_SBND.root 
-static const double proposalPOTSBND   = 1.05524e+16; 
-// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Modern_SBND.root 
-static const double modernPOTSBND     = 1.05524e+16; 
-// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Proposal_Icarus.root 
-static const double proposalPOTICARUS = 2.35837e+17;
-// From sbnsubrun->Show(0) in /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.tempwgh/output_SBNOsc_NumuSelection_Modern_Icarus.root 
-static const double modernPOTICARUS   = 2.35837e+17; 
-*/
+/***
+ *
+ * This is for the /pnfs/sbnd/persistent/users/gputnam/numu_simulation_reweight/processed_2.a sample
+ *
+ * Wiki is here: https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample
+ *
+ * POT calculated by adding together every subrun totgootpot value in the processed event file
+ *
+ */
+static const double proposalPOTSBND   = 1.4182069e19; 
+static const double modernPOTSBND     = 1.4182069e19; 
+static const double proposalPOTUBOONE = 2.5698932e20; 
+static const double modernPOTUBOONE   = 2.5698932e20; 
+static const double proposalPOTICARUS = 2.8184718e19;
+static const double modernPOTICARUS   = 2.8184718e19;
 
-// From /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/POT files
-static const double proposalPOTSBND   = 47311856000000000000.000000; 
-// From /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/POT files
-static const double modernPOTSBND     = 47311856000000000000.000000; 
-// From /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/POT files
-static const double proposalPOTICARUS = 118884300000000000000.000000;
-// From /pnfs/sbnd/persistent/users/gputnam/numu_simulation_12_05_2018/processed_1.1/POT files
-static const double modernPOTICARUS   = 118884300000000000000.000000;
+static const double appProposalPOTSBNDNumu   = 1.3896325e19;
+static const double appProposalPOTSBNDInt    = 5.1225376e21;
+static const double appProposalPOTSBNDOsc    = 3.3940737e19;
+static const double appProposalPOTUBOONENumu = 2.5698932e20;
+static const double appProposalPOTUBOONEInt  = 1.4193883e23;
+static const double appProposalPOTUBOONEOsc  = 9.5440115e20;
+static const double appProposalPOTICARUSNumu = 2.8184718e19;
+static const double appProposalPOTICARUSInt  = 8.3903526e21;
+static const double appProposalPOTICARUSOsc  = 9.8446183e19;
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
@@ -108,13 +116,22 @@ typedef enum ELarMode{
 typedef enum EMCSample{
   kUnknownSample               = -1, 
   kSBNDDisappearanceProposal   = 0,
-  kSBNDAppearanceProposal      = 1,
-  kSBNDDisappearanceModern     = 2,
-  kSBNDAppearanceModern        = 3,
+  kSBNDDisappearanceModern     = 1,
+  kUBOONEDisappearanceProposal = 2,
+  kUBOONEDisappearanceModern   = 3,
   kICARUSDisappearanceProposal = 4,
-  kICARUSAppearanceProposal    = 5,
-  kICARUSDisappearanceModern   = 6,
-  kICARUSAppearanceModern      = 7,
+  kICARUSDisappearanceModern   = 5,
+
+  kSBNDAppearanceNumuProposal   = 6,
+  kSBNDAppearanceIntProposal    = 7,
+  kSBNDAppearanceOscProposal    = 8,
+  kUBOONEAppearanceNumuProposal = 9,
+  kUBOONEAppearanceIntProposal  = 10,
+  kUBOONEAppearanceOscProposal  = 11,
+  kICARUSAppearanceNumuProposal = 12,
+  kICARUSAppearanceIntProposal  = 13,
+  kICARUSAppearanceOscProposal  = 14
+
 } MCSample_t;
 
 //___________________________________________________________________
@@ -129,7 +146,7 @@ int main(int argc, char ** argv)
  
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_DUNE/config/apps/make_sbncode_minidst.arg");
-  LOG("valor_dune", pNOTICE) << arg;
+  LOG("make_sbncode_minidst", pNOTICE) << arg;
   
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(thresholds);
@@ -147,17 +164,71 @@ int main(int argc, char ** argv)
       << "MCSample not defined ";
     exit(1);
   }
+  
+  bool is_appearance = false;
+  bool is_intrinsic  = false;
+  
   // Get the POT
-  if(opt_mcsample == kSBNDDisappearanceProposal || opt_mcsample == kSBNDAppearanceProposal)
+  // Disappearance
+  if(opt_mcsample == kSBNDDisappearanceProposal)
     mcsample_pot = proposalPOTSBND;
-  if(opt_mcsample == kSBNDDisappearanceModern || opt_mcsample == kSBNDAppearanceModern)
+  if(opt_mcsample == kSBNDDisappearanceModern)
     mcsample_pot = modernPOTSBND;
+  
+  if(opt_mcsample == kUBOONEDisappearanceProposal)
+    mcsample_pot = proposalPOTUBOONE;
+  if(opt_mcsample == kUBOONEDisappearanceModern)
+    mcsample_pot = modernPOTUBOONE;
 
-  if(opt_mcsample == kICARUSDisappearanceProposal || opt_mcsample == kICARUSAppearanceProposal)
+  if(opt_mcsample == kICARUSDisappearanceProposal)
     mcsample_pot = proposalPOTICARUS;
-  if(opt_mcsample == kICARUSDisappearanceModern || opt_mcsample == kICARUSAppearanceModern)
+  if(opt_mcsample == kICARUSDisappearanceModern)
     mcsample_pot = modernPOTICARUS;
 
+
+  // Appearance POTs
+  if(opt_mcsample == kSBNDAppearanceNumuProposal){
+    mcsample_pot = appProposalPOTSBNDNumu;
+    is_appearance = true;
+  }
+  if(opt_mcsample == kSBNDAppearanceIntProposal){
+    mcsample_pot = appProposalPOTSBNDInt;
+    is_appearance = true;
+    is_intrinsic = true;
+  }
+  if(opt_mcsample == kSBNDAppearanceOscProposal){
+    mcsample_pot = appProposalPOTSBNDOsc;
+    is_appearance = true;
+  }
+  
+  if(opt_mcsample == kUBOONEAppearanceNumuProposal){
+    mcsample_pot = appProposalPOTUBOONENumu;
+    is_appearance = true;
+  }
+  if(opt_mcsample == kUBOONEAppearanceIntProposal){
+    mcsample_pot = appProposalPOTUBOONEInt;
+    is_appearance = true;
+    is_intrinsic = true;
+  }
+  if(opt_mcsample == kUBOONEAppearanceOscProposal){
+    mcsample_pot = appProposalPOTUBOONEOsc;
+    is_appearance = true;
+  }
+  
+  if(opt_mcsample == kICARUSAppearanceNumuProposal){
+    mcsample_pot = appProposalPOTICARUSNumu;
+    is_appearance = true;
+  }
+  if(opt_mcsample == kICARUSAppearanceIntProposal){
+    mcsample_pot = appProposalPOTICARUSInt;
+    is_appearance = true;
+    is_intrinsic = true;
+  }
+  if(opt_mcsample == kICARUSAppearanceOscProposal){
+    mcsample_pot = appProposalPOTICARUSOsc;
+    is_appearance = true;
+  }
+  
   if(mcsample_pot == -1.){
     VLOG("make_sbncode_minidst", pFATAL) 
       << "Not able to access MCSample POT from " << opt_mcsample;
@@ -216,15 +287,14 @@ int main(int argc, char ** argv)
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
   analysis_tree->GetEntry(0);
   
-  TBranch * branchptr = 0;
-  vector<TBranch*> active_branches;
- 
   Event *pevent;
-  
-  analysis_tree->SetBranchAddress("events", &pevent, &branchptr); active_branches.push_back(branchptr);
-  
+  analysis_tree->SetBranchAddress("events", &pevent);
   Event & event = *pevent;
 
+/*  TLeaf *l_initpdg;
+  if(is_appearance)
+    l_initpdg = analysis_tree->GetBranch("truth.neutrino.initpdg")->GetLeaf("truth.neutrino.initpdg");*/
+      
   //
   // event loop
   //
@@ -250,6 +320,8 @@ int main(int argc, char ** argv)
     int iscc        = false;
     int isnc        = false;
     int nu_pdg      = -1;
+    int init_pdg    = -1;
+
     //int init_pdg    = -1;
     double enu_true =  -999.;
     double enu_reco =  -999.;
@@ -293,11 +365,9 @@ int main(int argc, char ** argv)
       iscc = truth[t].neutrino.iscc;
       isnc = truth[t].neutrino.isnc;
       nu_pdg = truth[t].neutrino.pdg;
-      //init_pdg = truth[t].neutrino.initpdg;
       enu_true = truth[t].neutrino.energy;
       Q2s = truth[t].neutrino.Q2;
       larsoft_mode = truth[t].neutrino.genie_intcode;
-      
       // Particle counting
       for(unsigned int p = 0; p < fsps.size(); ++p){
         if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
@@ -356,7 +426,7 @@ int main(int argc, char ** argv)
           else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtNC2piC;}
           else if (nipip+nipim == 0 && nipi0 == 2 )  { reac = conv::kmtNC2pi0;}
           else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtNCpiCpi0;}
-          else                                      { reac = conv::kmtNCoth;}
+          else                                       { reac = conv::kmtNCoth;}
         }
       }
       else if (larsoft_mode == kLArElectronScattering) {
@@ -366,20 +436,34 @@ int main(int argc, char ** argv)
       else reac = conv::kmtOther;
 
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
-      conv::NuFlavour_t init_flav  = final_flav;
-      //conv::NuFlavour_t init_flav  = valor::util::FlavourFromPDG(init_pdg);
+      conv::NuFlavour_t init_flav;
+      
+      // If we are looking at the appearance samples, get the initial neutrino pdg from the file
+      if(is_appearance){
+        init_pdg = truth[t].neutrino.initpdg;
+        init_flav = valor::util::FlavourFromPDG(init_pdg);
+      }
 
+      // If we are looking at the disappearance samples, initial flavour = final flavour
+      else init_flav = final_flav;
+      
       // Get the real valor mode
       conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
-//      if(reac_mode == conv::kmUndefined) reac_mode = conv::kmOther;
 
       if(!opt_disable_checks) {
         //
         // ignore events that can not be used in the VALOR analysis
         //
         if(reac_mode == conv::kmUndefined) {
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode]\n";
-      //      << util::AsString(init_flav)<<" -> "<<util::AsString(final_flav)<<"\t"<<util::AsString(reac);
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode]\n"; 
+          continue;
+        }
+        if(isnc && init_flav != final_flav){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc]\n"; 
+          continue;
+        }
+        if((init_pdg == 12 || init_pdg == -12) && (!is_intrinsic)){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic]\n"; 
           continue;
         }
       }
@@ -423,7 +507,7 @@ int main(int argc, char ** argv)
         // ignore events that can not be used in the VALOR analysis
         //
         if(enu_reco <= 0) {
-          VLOG("make_sbncode_minidst", pNOTICE) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
+          VLOG("make_sbncode_minidst", pINFO) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
           continue;
         }
 
@@ -431,13 +515,10 @@ int main(int argc, char ** argv)
       }
       
       valor_minidst_enu_reco  = enu_reco; 
-      VLOG("make_sbncode_minidst", pINFO) 
+      VLOG("make_sbncode_minidst", pNOTICE) 
         << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV"; 
       
     } // reco loop 
-     
-    if(enu_reco <= 0)
-      std::cin.get();
     valor_minidst->Fill();
   } // event loop
 

@@ -15,6 +15,7 @@ Copyright (c) 2010-2018, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlXML.h"
 #include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
@@ -44,6 +45,12 @@ Parameter::Parameter(conv::PhysParamId_t param_id, TXMLEngine *xml, XMLNodePoint
   ReadApplyMaskAll();
   ReadLimits();
   LOG("FitInputs", pINFO) << "Successfully read parameter \'" << GetName() << "\'";
+  
+  // Hack for now - register the names in global registry object
+  // This should be fully replaced by ParameterPool when possible
+  auto nr = util::NameRegistry::MutableInstance();
+  nr->fParamNames      [fParam] = fName;
+  nr->fParamNamesSimple[fParam] = fName;
 }
 //________________________________________________________________________________________
 Parameter::Parameter()
@@ -63,6 +70,7 @@ void Parameter::Init(conv::PhysParamId_t param_id, TXMLEngine *xml, XMLNodePoint
   fTeXName    = "undefined";
   fType       = kSystUndefined;
   fHasLimits  = false;
+  fHasKinematicRange = false;
 
   fxml = xml;
   fParamNode = param_node;
@@ -101,10 +109,11 @@ void Parameter::ReadRanges()
 {
   if(util::NodeExists(fxml, fParamNode, "apply_to_range")) {
     vector <XMLNodePointer_t> range_nodes = util::FindAllNodes(fxml,
-                                                               util::FindNode(fxml, fParamNode, "apply_to_range"));
+      util::FindNode(fxml, fParamNode, "apply_to_range"));
     if(range_nodes.size() == 0) {
-      LOG("FitInputs", pFATAL) << "No parameter apply ranges specified for parameter \'" << fName << "\'";
-      util::Die(1);
+      LOG("FitInputs", pINFO) << "No parameter apply ranges specified for parameter \'" << fName << "\'";
+      fHasKinematicRange = false;
+      return;
     }
     for(XMLNodePointer_t range_node : range_nodes) {
       KineVar_t kv = kvUndefined;
@@ -143,6 +152,7 @@ void Parameter::ReadRanges()
       }
     }
   }
+  fHasKinematicRange = (bool)fKinematicVariables.size();
 }
 //________________________________________________________________________________________
 void Parameter::ReadType()
@@ -377,8 +387,8 @@ bool Parameter::IsNodeSpecified(const string node_path) const
 //________________________________________________________________________________________
 void Parameter::Print(std::ostream & stream) const
 {
-  vector<string> cats = GetCategories();
-  vector<KineVar_t> kinevars = GetKineVars();
+  const vector<string>    & cats = GetCategories();
+  const vector<KineVar_t> & kinevars = GetKineVars();
   std::pair<double,double> limits = GetLimits();
   stream << "Parameter info:\n"
          << "    Current numerical ID: "<<fParam<<"\n"
@@ -390,9 +400,14 @@ void Parameter::Print(std::ostream & stream) const
     stream << "        " << cat << "\n";
   }
   stream << "    Ranges:\n";
-  for(KineVar_t kv : kinevars) {
-    const pair<double,double> & range = this->GetKineRange(kv);
-    stream << "        For " << util::AsString(kv) << ", range = [" << range.first << ", " << range.second << "]\n";
+  if (fHasKinematicRange) {
+    for(KineVar_t kv : kinevars) {
+      const pair<double,double> & range = this->GetKineRange(kv);
+      stream << "        For " << util::AsString(kv) << ", range = [" << range.first << ", " << range.second << "]\n";
+    }
+  }
+  else {
+    stream << "      Universal\n";
   }
   stream << "    Apply parameter to:\n";
   stream << "        Detector = "        << util::DetectorMaskAsString(fApply.detector) << "\n";
@@ -426,10 +441,10 @@ bool Parameter::SearchCategories(string to_find, bool one_category_only) const
 //________________________________________________________________________________________
 bool Parameter::IsAppliedTo(BeamConf_t b, Sample_t s, Detector_t d, ReacMode_t m, NuclearTarget_t nt) const
 {
-  if(b == kbUndefined) { return false; }
-  if(m == kmUndefined) { return false; }
-  if(s == ksUndefined) { return false; }
-  if(d == kdUndefined) { return false; }
+  if(b == kbUndefined  ) { return false; }
+  if(m == kmUndefined  ) { return false; }
+  if(s == ksUndefined  ) { return false; }
+  if(d == kdUndefined  ) { return false; }
   if(nt == kntUndefined) { return false; }
 
   NuFlavour_t f = kReacModeToInitFlavour[m];
