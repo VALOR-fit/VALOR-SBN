@@ -9,7 +9,9 @@
              --run                 : Run # [def: 0]
              --ntoymc              : Number of toy-MC experiments [def: 1]
              --fit-param-list      : Fit parameter list (see FitParam.cxx) 
-                                     [def: "standard"]
+                                     [def: "nuosc3f"]
+             --fit-param-opt       : Options used when setting up the FitParamList
+                                     [def: "NONE"]
              --param-values-option : Decide how to set the values of physics 
                                      params used for toy-MC generation 
                                     [def:"randomize-all;prefit-errors"]
@@ -108,6 +110,7 @@ int main(int argc, char ** argv)
   int  ntoymc             = arg.GetInt("ntoymc");
   int n_threads           = arg.GetInt("nthreads");
   string fplname          = arg.GetString("fit-param-list");
+  string fplopt           = arg.GetString("fit-param-opt");
   string fittername       = arg.GetString("fitter");
   string true_values_file = arg.GetString("true-from-filename");
   string true_values_obj  = arg.GetString("true-from-objname"); // a physparamlist
@@ -143,7 +146,7 @@ int main(int argc, char ** argv)
   if (true_values_file.size() && util::ToLowerCase(true_values_file)!="none") {
     TFile tvf(true_values_file.c_str());
     if (!tvf.IsOpen()) {
-      LOG("valor_dune", pERROR)<<"Could not read true values file "<<true_values_file;
+      LOG("valor_dune", pERROR)<<"Could not read true values file ["<<true_values_file<<"]";
       util::Die(-1);
     }
     true_values_from_file = dynamic_cast<PhysParamList*>(tvf.Get(true_values_obj.c_str()));
@@ -191,7 +194,7 @@ int main(int argc, char ** argv)
     
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), syst);
+    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
 
     model->ResetSystematics("all");
     // If required, randomise the systematics in the model, and copy them to the FPL

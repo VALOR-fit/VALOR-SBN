@@ -12,7 +12,7 @@ void coverage_1dlim
   const char * tag                   = "toymc",                               /* tag for output file */
   int          run                   = 0,                                     /* run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list        = "standard",                            /* fit parameter list (see FitParam.cxx) */
+  const char * fit_param_list        = "nuosc3f",                             /* fit parameter list (see FitParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
   const char * lim_param_name        = 0,                                     /* specify the param name (see FitParam.cxx) for which a confidence limit is computed */
   int          lim_param_npoints     = 11,                                    /* coverage will be checked for a number of points within a range */
@@ -21,7 +21,8 @@ void coverage_1dlim
   bool         stat_fluct            = true,                                  /* include statistical fluctuation in toy MC generation? */
   const char * fit_option            = "minuit",                              /* fitter option */
   bool         store_spectra         = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
-  const char * config_file           = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
+  const char * config_file           = "dune_ndfit-2015v1-FGTv1.xml",         /* analysis configuration file */
+  const char * fit_param_opt         = ""                                     /* FitParamList options */
 )
 
 {
@@ -55,6 +56,7 @@ void coverage_1dlim
   cout << "   - Option for setting parameter values: " << param_values << endl;
   cout << "- Fit" << endl;
   cout << "   - Fit Parameter List: " << fit_param_list << endl;
+  cout << "   - Fit Parameter List option: " << fit_param_opt << endl;
   cout << "   - Fitter option: " << fit_option << endl;
   cout << "- Coverage check" << endl;  
   cout << "   - For parameter: " << lim_param_name << endl;  
@@ -101,7 +103,7 @@ void coverage_1dlim
 
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generatio below.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list, param_values);
+    FitParamList * fp = util::GetFitParameterList(fit_param_list, fit_param_opt, param_values);
 
     // Make sure the specified parameter exists in the specified list of parameters
     if(! fp->Exists(sp)) {

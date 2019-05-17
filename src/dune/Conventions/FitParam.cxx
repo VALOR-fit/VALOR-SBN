@@ -60,76 +60,94 @@ options after list construction
 using namespace valor;
 using namespace valor::conv;
 //________________________________________________________________________________________
-FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypothesis & ph,*/ const CorrelatedSystematics * syst)
+FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * param_opt , const CorrelatedSystematics * syst)
 {
 // Create a FitParamList object, adding all physics (from the PhysHypothesis) + nuisance (from the ParameterPool) params.
 // The input option specifies both the set of parameters (eg "standard")
 
-  PhysHypothesis ph = PhysHypothesis("3f_osc");   // TODO: this line is temporary, instead the osc params should be taken from a config file (or less desirable: take the PhysHypothesis as an input and hard-code all the osc param init values priors etc. for every hypothesis)
 
-  string param_list_opt   = ((param_list)   ? param_list   : "standard");
+  string param_list_name_str = ((param_list_name) ? param_list_name : "nuosc3f");
+  string param_list_opt      = ((param_opt)       ? param_opt       : "NONE");
 
   LOG("FitParams", pNOTICE)
-    << "Instantiating a fit parameter list object with option: " << param_list_opt;
+    << "Instantiating a fit parameter list object with named parameter list: " << param_list_name_str
+    << "\n and option: " << param_list_opt;
 
-  const std::vector<conv::PhysParamId_t> osc_params = ph.GetParams();
+  //get the extra options here:
+  bool no_osc                 = (param_list_opt.find("no-osc-params"    ) != string::npos);
+  bool fix_osc_params         = (param_list_opt.find("fix-osc-params"   ) != string::npos);
+  bool cons_osc_params        = (param_list_opt.find("cons-osc-params"  ) != string::npos);
+  bool cons_atm_params        = (param_list_opt.find("cons-atm-params"  ) != string::npos);
+  bool cons_solar_params      = (param_list_opt.find("cons-solar-params") != string::npos);
+  bool cons_theta13           = (param_list_opt.find("cons-theta13"     ) != string::npos);
+  bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
+  bool fix_nd_detector_params = (param_list_opt.find("fix-nd-det-syst"  ) != string::npos);
+  bool fix_fd_detector_params = (param_list_opt.find("fix-fd-det-syst"  ) != string::npos);
+  bool fix_flux_params        = (param_list_opt.find("fix-flux-syst"    ) != string::npos);
+  bool fix_nd_flux_params     = (param_list_opt.find("fix-nd-flux-syst" ) != string::npos);
+  bool fix_fd_flux_params     = (param_list_opt.find("fix-fd-flux-syst" ) != string::npos);
+  bool fix_int_params         = (param_list_opt.find("fix-int-syst"     ) != string::npos);
+  bool fix_mec_params         = (param_list_opt.find("fix-mec-syst"     ) != string::npos);
+  bool fix_fsi_params         = (param_list_opt.find("fix-fsi-syst"     ) != string::npos);
+  bool only_nd                = (param_list_opt.find("only-nd"          ) != string::npos);
+
   const std::vector<Parameter> & pool_params = ParameterPool::Instance()->GetParams();
   FitParamList * fparm = 0;
 
-  //
-  // Get the standard set of parameters
-  //
+  // Set the number of syst parameters
+  int nparams_syst = 0;
+  if (syst) {
+    nparams_syst = syst->Size();
+  }
+  else{
+    nparams_syst = pool_params.size();
+  }
+  int nparams_osc = 0;
 
-  // include params
-  if(param_list_opt.find("standard") != string::npos) {
-
-    //get the extra options here:
-    bool no_osc                 = (param_list_opt.find("no-osc-params"    ) != string::npos);
-    bool fix_osc_params         = (param_list_opt.find("fix-osc-params"   ) != string::npos);
-    bool cons_osc_params        = (param_list_opt.find("cons-osc-params"  ) != string::npos);
-    bool cons_atm_params        = (param_list_opt.find("cons-atm-params"  ) != string::npos);
-    bool cons_solar_params      = (param_list_opt.find("cons-solar-params") != string::npos);
-    bool cons_theta13           = (param_list_opt.find("cons-theta13"     ) != string::npos);
-    bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
-    bool fix_nd_detector_params = (param_list_opt.find("fix-nd-det-syst"  ) != string::npos);
-    bool fix_fd_detector_params = (param_list_opt.find("fix-fd-det-syst"  ) != string::npos);
-    bool fix_flux_params        = (param_list_opt.find("fix-flux-syst"    ) != string::npos);
-    bool fix_nd_flux_params     = (param_list_opt.find("fix-nd-flux-syst" ) != string::npos);
-    bool fix_fd_flux_params     = (param_list_opt.find("fix-fd-flux-syst" ) != string::npos);
-    bool fix_int_params         = (param_list_opt.find("fix-int-syst"     ) != string::npos);
-    bool fix_mec_params         = (param_list_opt.find("fix-mec-syst"     ) != string::npos);
-    bool fix_fsi_params         = (param_list_opt.find("fix-fsi-syst"     ) != string::npos);
-
-    // Set the number of osc + syst parameters
-    int nparams = 0;
-    if (syst) {
-      nparams = syst->Size();
+  // Get a FitParamList containing only the osc params and having empty slots for the syst params
+  bool is_sterile = param_list_name_str.find("sterile") != string::npos;
+  if(!no_osc && (is_sterile || !only_nd)) { // Make sure steriles are in the FPL even if we're only considering near detectors
+    fparm = FitParamList::NamedParameterList(param_list_name_str, nparams_syst);
+    if(!fparm) {
+      LOG("FitParams", pERROR) << "Could not get a named parameter list using input name = " << param_list_name_str;
+      util::Die(-1);
     }
-    else{
-      nparams = pool_params.size();
-    }
-    if (!no_osc) {
-      nparams += osc_params.size();
-    }
-
-    fparm = new FitParamList(nparams);
-    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
-
     //if osc params constrained, set priors
     if(cons_osc_params) {
       util::InitializeOAPriors();   // TODO: This is DUNE specific and needs moving to a config file, but can be left in for now
     }
+    nparams_osc = FitParamList::NamedParameterList(param_list_name_str, 0)->Size();
+  }
+  else {
+    fparm = new FitParamList(nparams_syst);
+  }
 
-    //now separately loop over the parameters from the ParameterPool, CorrelatedSystematics and PhysHypothesis to add them to the list
+  int nparams = nparams_syst + nparams_osc;
 
-    // Add osc params from the PhysHypothesis:
-    for (conv::PhysParamId_t p : osc_params) {
+  // If necessary, add the systematics from the model
+  if (syst) {
+    syst->AppendParamsTo(*fparm);
+    // And update their limits`
+    for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
+      conv::PhysParamId_t p = syst->WhichParam(ip);
+      fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));  // TODO: Do we want these hard-coded values in a config file?
+      fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,2.));
+    }
+  }
+  // Or add parameters from the ParameterPool
+  else {
+    int ipc = nparams_osc; //counter with no gaps, in case of `kPhypUndefined' params
+    for (const Parameter & param : pool_params) {
+      PhysParamId_t p = param.GetID();
       if(p == kPhypUndefined) {
-        LOG("FitParams", pFATAL) << "Found an undefined parameter in the PhysParamList";
+        LOG("FitParams", pFATAL) << "Found an undefined parameter in the ParameterPool";
         util::Die(-1);
       }
 
+      if(only_nd && !param.SearchCategories("ND")) { continue; }
+
       // set parameter range, current and init value, etc
+      // TODO: It would be better to have the option of getting non-default values of the following params from a config file, but this is fine for now
       double init = 1.0;
       double curr = 1.0;
       double min  = 0.0;
@@ -138,79 +156,60 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
       bool   fix  = false;
       bool   nuis = true;
 
-      if (no_osc) {continue;}
-      init = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
-      curr = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
-      min  = util::OscParamMinValue(p);   // TODO: This is DUNE specific and needs moving to a config file
-      max  = util::OscParamMaxValue(p);   // TODO: This is DUNE specific and needs moving to a config file
-      step = util::OscParamStepSize(p);   // TODO: This is DUNE specific and needs moving to a config file
-      nuis = false;
-
       // Check we're not going behind physical region
-      min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
-      max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
+      min = param.GetNearestPhysicalValue(min);
+      max = param.GetNearestPhysicalValue(min);
 
       fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
       ipc++;
       fparm->Update(p, curr);
+    } // Params in ParameterPool
+  }
+
+  // Now that we have all the params we want in the FitParamList, fix/set parameters as necessary
+  for(int ip = 0; ip < nparams; ip++) {
+    conv::PhysParamId_t p = fparm->WhichParam(ip);
+
+    // Special handling for the osc params, as we might want to set different fit info to those set in FitParamList::NamedParameterList
+    if(util::IsOscParam(p)) {
+      if (no_osc) {continue;}
+      // set parameter range, current and init value, etc
+      double init = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
+      double curr = util::OscParamInitValue(p);  // TODO: This is DUNE specific and needs moving to a config file
+      double min  = util::OscParamMinValue(p);   // TODO: This is DUNE specific and needs moving to a config file
+      double max  = util::OscParamMaxValue(p);   // TODO: This is DUNE specific and needs moving to a config file
+      double step = util::OscParamStepSize(p);   // TODO: This is DUNE specific and needs moving to a config file
+      bool nuis = false;
+      if(init != -1) { fparm->SetInitValue(p, init); }
+      if(curr != -1) { fparm->Update(p, curr); }
+      if(step != -1) { fparm->SetStepSize(p, step); }
+      fparm->SetIsNuisance(p, nuis);
+      // Check we're not going behind physical region
+      if(min != -1) {
+        min = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,min);
+        fparm->SetMinValue(p, min);
+      }
+      if(max != -1) {
+        max = PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,max);
+        fparm->SetMaxValue(p, max);
+      }
 
       // toggle oscillation params on/off
-      if(fix_osc_params && util::IsOscParam(p)){
+      if(fix_osc_params){
         double init_value = util::OscParamInitValue(p);   // TODO: This is DUNE specific and needs moving to a config file
-        fparm->Update(p, init_value);
-        fparm->SetInitValue(p, init_value);
-        fparm->FixParameter(p);
+        if(init != -1) {
+          fparm->Update(p, init_value);
+          fparm->SetInitValue(p, init_value);
+          fparm->FixParameter(p);
+        }
       }
 
       //constrain osc params
-      if(cons_osc_params && util::IsOscParam(p)){
+      if(cons_osc_params){
         fparm->SetNuisance(p,true);
       }
-    } // osc pars in PhysHyPothesis
-
-    // If necessary, add the systematics from the model
-    if (syst) {
-      syst->AppendParamsTo(*fparm);
-      // And update their limits`
-      for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
-        conv::PhysParamId_t p = syst->WhichParam(ip);
-        fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));  // TODO: Do we want these hard-coded values in a config file?
-        fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,2.));
-      }
     }
-    // Or add parameters from the ParameterPool
     else {
-      for (const Parameter & param : pool_params) {
-        PhysParamId_t p = param.GetID();
-        if(p == kPhypUndefined) {
-          LOG("FitParams", pFATAL) << "Found an undefined parameter in the ParameterPool";
-          util::Die(-1);
-        }
-
-        // set parameter range, current and init value, etc
-        // TODO: It would be better to have the option of getting non-default values of the following params from a config file, but this is fine for now
-        double init = 1.0;
-        double curr = 1.0;
-        double min  = 0.0;
-        double max  = 2.0;
-        double step = 1E-4;
-        bool   fix  = false;
-        bool   nuis = true;
-
-        // Check we're not going behind physical region
-        min = param.GetNearestPhysicalValue(min);
-        max = param.GetNearestPhysicalValue(min);
-
-        fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
-        ipc++;
-        fparm->Update(p, curr);
-      } // Params in ParameterPool
-    }
-
-    // Now that we have all the params we want in the FitParamList, fix/set parameters as necessary
-    for(int ip = 0; ip < nparams; ip++) {
-      conv::PhysParamId_t p = fparm->WhichParam(ip);
-      if(util::IsOscParam(p)) { continue; }
       if(!ParameterPool::Instance()->IsParamInPool(p)) {
         LOG("FitParams",pERROR)<<"When attempting to fix/set systematic parameters, parameter \'"
                                << NameRegistry::Instance()->AsString(p)
@@ -274,113 +273,22 @@ FitParamList * util::GetFitParameterList(Option_t * param_list, /*const PhysHypo
         fparm->FixParameter(p);
       }
     }
+  } // ip
 
-    //constrain solar params
-    if(cons_solar_params){
-      fparm->SetNuisance(conv::kPhypMixing12,true);
-      fparm->SetNuisance(conv::kPhypDm12sq  ,true);
-    }
-
-    //constrain atmospheric params
-    if(cons_atm_params){
-      fparm->SetNuisance(conv::kPhypMixing23,true);
-      fparm->SetNuisance(conv::kPhypDm23sq  ,true);
-    }
-
-    if (cons_theta13) {
-      fparm->SetNuisance(conv::kPhypMixing13,true);
-    }
-
+  //constrain solar params
+  if(cons_solar_params){
+    fparm->SetNuisance(conv::kPhypMixing12,true);
+    fparm->SetNuisance(conv::kPhypDm12sq  ,true);
   }
-    //now we also defined a ND only fit params list
-  else  if(param_list_opt.find("only-nd") != string::npos) {
 
-    int n_nd_params = 0;
-    // Count the number of params we need:
-    for (const Parameter & param : pool_params) {
-      PhysParamId_t p = param.GetID();
-      if(p == kPhypUndefined) continue;
-      if(!param.SearchCategories("ND")) {
-        continue;
-      }
-      n_nd_params++;
-    }
-    fparm = new FitParamList(n_nd_params);
-
-
-    //get other options
-    bool fix_detector_params = (param_list_opt.find("fix-det-syst")  != string::npos);
-    bool fix_flux_params     = (param_list_opt.find("fix-flux-syst") != string::npos);
-    bool fix_int_params      = (param_list_opt.find("fix-int-syst")  != string::npos);
-    bool fix_mec_params      = (param_list_opt.find("fix-mec-syst")  != string::npos);
-    bool fix_fsi_params      = (param_list_opt.find("fix-fsi-syst")  != string::npos);
-
-    //now loop over parameters
-    int ipc = 0; //counter with no gaps, in case of `kPhypUndefined' params
-    for (const Parameter & param : pool_params) {
-      PhysParamId_t p = param.GetID();
-      if(p == kPhypUndefined) continue;
-
-      // If not ND, move on
-      if(!param.SearchCategories("ND")) {
-        continue;
-      }
-
-      // set parameter range, current and init value, etc
-      double init = 1.0;
-      double curr = 1.0;
-      double min  = 0.0;
-      double max  = 2.0;
-      double step = 1E-4;
-      bool   fix  = false;
-      bool   nuis = true;
-
-      // Check we're not going behind physical region
-      min = param.GetNearestPhysicalValue(min);
-      max = param.GetNearestPhysicalValue(min);
-
-      fparm->AddParam(ipc, p, init, min, max, step, fix, nuis);
-      ipc++;
-      fparm->Update(p, curr);
-
-      // toggle detector params on/off
-
-      if(fix_detector_params && param.SearchCategories("det")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
-        fparm->FixParameter(p);
-      }
-      // toggle flux related params on/off
-      if(fix_flux_params && param.SearchCategories("flux")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
-        fparm->FixParameter(p);
-      }
-      // toggle int related params on/off
-      if(fix_int_params && param.SearchCategories("int")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
-        fparm->FixParameter(p);
-      }
-      // toggle mec related params on/off
-      if(fix_mec_params && (util::ToLowerCase(param.GetName()).find("mec") != std::string::npos ||
-                            util::ToLowerCase(param.GetName()).find("2p2h") != std::string::npos)) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
-        fparm->FixParameter(p);
-      }
-      // toggle FSI related params on/off
-      if(fix_fsi_params && param.SearchCategories("FSI")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
-        fparm->FixParameter(p);
-      }
-    }//ip
-
+  //constrain atmospheric params
+  if(cons_atm_params){
+    fparm->SetNuisance(conv::kPhypMixing23,true);
+    fparm->SetNuisance(conv::kPhypDm23sq  ,true);
   }
-  else {
-    LOG("FitParams",pERROR)<<"Unrecognised fit parameter list name: "<<param_list_opt;
-    util::Die(-1); return fparm;
+
+  if (cons_theta13) {
+    fparm->SetNuisance(conv::kPhypMixing13,true);
   }
 
   if(!fparm->IsComplete()) {

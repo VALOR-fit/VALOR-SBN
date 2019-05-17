@@ -21,7 +21,7 @@ void fit_param_sensitivity
   int          run                   = 0,                                     /* run # */
   int          subrun                = 0,                                     /* sub-run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list        = "standard",                            /* fit parameter list (see FitParam.cxx) */
+  const char * fit_param_list        = "nuosc3f",                             /* fit parameter list (see FitParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
   const char * s_param_name          = 0,                                     /* specify the param name (see FitParam.cxx) whose sensitivity to is studied */
   double       s_param_value_gen     = 1,                                     /* value for above param for toy-MC generation */
@@ -33,7 +33,8 @@ void fit_param_sensitivity
   bool         store_spectra         = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
   int          rndseed_toymc_stat    = 0,                                     /* rnd seed, set (usefull if want to fit same toy-MC across different batch jobs) or leave 0 to randomize */
   int          rndseed_toymc_syst    = 0,                                     /* rnd seed, set (usefull if want to fit same toy-MC across different batch jobs) or leave 0 to randomize */
-  const char * config_file           = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
+  const char * config_file           = "dune_ndfit-2015v1-FGTv1.xml",         /* analysis configuration file */
+  const char * fit_param_opt         = ""                                     /* FitParamList options */
 )
 
 {
@@ -122,7 +123,7 @@ void fit_param_sensitivity
 
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generatio below.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list, param_values);
+    FitParamList * fp = util::GetFitParameterList(fit_param_list, fit_param_opt, param_values);
 
     // Make sure the specified parameter exists in the specified list of parameters
     if(! fp->Exists(sp)) {

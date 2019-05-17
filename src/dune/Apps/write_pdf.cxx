@@ -7,7 +7,9 @@
 
 \options
            --fit-param-list      : Fit parameter list (see FitParam.cxx)                                                              
-                                     [def: "standard"]    				     
+                                     [def: "nuosc3f"]
+           --fit-param-opt       : Options used when setting up the FitParamList
+                                     [def: "NONE"]
            --config              : Analysis configuration file [required]
            --write-opt           : Options defining what to write-out [def:pdft_vf]
            --output-name         : Output file name [def:test]
@@ -72,7 +74,8 @@ int main(int argc, char ** argv)
   arg.Read(argc,argv,"$VALOR_DUNE/config/apps/write_pdf.arg:$VALOR_DUNE/config/apps/oscparams.arg:$VALOR_DUNE/config/apps/seeds.arg");
   LOG("valor_dune", pNOTICE) << arg;
 
-  string fplname          = arg.GetString("fit-param-list"); 
+  string fplname          = arg.GetString("fit-param-list");
+  string fplopt           = arg.GetString("fit-param-opt");
   std::string write_opt   = arg.GetString("write-opt");
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string output_name      = arg.GetString("output-name");
@@ -110,7 +113,7 @@ int main(int argc, char ** argv)
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
   // parameter limits, initial values etc).            
   CorrelatedSystematics * syst = model->GetSystematics();                                                                               
-  FitParamList * fp = util::GetFitParameterList(fplname.c_str(),syst);
+  FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
 
   //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);

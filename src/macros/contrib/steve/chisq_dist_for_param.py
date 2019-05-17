@@ -32,7 +32,7 @@ nr   =  util.NameRegistry.Instance()
 opt.gOscMixingParamChoice = conv.kNuMixSinsqTheta
 opt.SetDefaultParameterValues()
 
-default_fit_param_list = "standard"
+default_fit_param_list = "nuosc3f"
 
 nbins = 51
 
@@ -52,7 +52,7 @@ color = ROOT.kBlack
 
 img_format = "png"
 
-def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks = False, reset = False, spline_only = False, seed = 0):
+def main(params,config_file,fit_param_list, fit_param_opt, stat_fluctuations=False, syst_tweaks = False, reset = False, spline_only = False, seed = 0):
   
   if (seed):
     rnd.SetSeeds(seed,seed+1,seed+2,seed+3,seed+4)
@@ -70,8 +70,8 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
   if syst_tweaks: model.RandomizeSystematics();
   
   if fit_param_list is None: fit_param_list = default_fit_param_list
-  
-  fparm = valor.util.GetFitParameterList(fit_param_list)
+
+  fparm = valor.util.GetFitParameterList(fit_param_list, fit_param_opt)
   
   if fparm.Exists(conv.kPhypMixing12    ) : fparm.SetInitValue(conv.kPhypMixing12   , input_mixing12);
   if fparm.Exists(conv.kPhypMixing13    ) : fparm.SetInitValue(conv.kPhypMixing13   , input_mixing13);
@@ -174,7 +174,8 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options]..",description="Make tables of applied systematics")
   
   parser.add_option('-f', '--fit-param-list', dest='fpl', default=None, help="Name of FPL.")
-  
+  parser.add_option('-o', '--fit-param-opt' , dest='fpl_opt', default=None, help="FPL options.")
+
   #~ parser.add_option('-s', '--sample' , dest='sample'      , default="1Rmu"                    , help="Sample (1Rmu, 1Re, RHC1Rmu, RHC1Re)")
   
   parser.add_option('-c', '--config'        , dest='config' , default="analysis_configuration.xml", help="Configuration file")
@@ -186,4 +187,4 @@ if __name__=="__main__":
   
   opt,params = parser.parse_args()
   
-  main(params,opt.config,opt.fpl,opt.stat_fluct,opt.syst_fluct,opt.reset,opt.spline_only,opt.seed)
+  main(params,opt.config,opt.fpl,opt.fpl_opt,opt.stat_fluct,opt.syst_fluct,opt.reset,opt.spline_only,opt.seed)

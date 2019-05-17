@@ -7,7 +7,9 @@
 
 \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
              --ntoys               : Number of toy-MC experiments [def: 200]
-             --fit-param-list      : Fit parameter list [def: "standard"]
+             --fit-param-list      : Fit parameter list [def: "nuosc3f"]
+             --fit-param-opt       : Options used when setting up the FitParamList
+                                     [def: "NONE"]
              --config              : Analysis configuration file [required]
              --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
              --enu-reco-max        : Maximum Ereco to show on the plot [def: 10]
@@ -87,6 +89,7 @@ int main(int argc, char ** argv)
   int ntoys               = arg.GetInt("ntoys");
   int n_threads           = arg.GetInt("nthreads");
   string fplname          = arg.GetString("fit-param-list");
+  string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
   
@@ -168,7 +171,7 @@ int main(int argc, char ** argv)
     cout << "** Toy-MC: #" << itoy << endl;
 
     // (toy-MC #-1 is special: default)
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str(),syst);
+    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
     
     if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
     if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
