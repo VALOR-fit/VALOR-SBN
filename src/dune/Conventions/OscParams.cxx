@@ -158,9 +158,8 @@ double util::OscParamStepSize (conv::PhysParamId_t p)
     case (kPhypCPV):
       return valor::conv::duneosc::kStepDeltaCP;
 
-    default: 
-      LOG("Failed to get OA parameter step size",pFATAL);
-      util::Die(-1);
+    default:
+      return -1;
   }
   return -1;
 }
