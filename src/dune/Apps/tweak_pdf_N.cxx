@@ -65,7 +65,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
 #include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/OscParams.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"

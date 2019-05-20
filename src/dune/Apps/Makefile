@@ -17,6 +17,7 @@ DUNE_LIBRARIES =
 TGT = make_nd_minidst \
       make_fd_minidst \
       make_sbncode_minidst \
+      make_recoselection_minidst \
       make_fastmc_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
@@ -65,10 +66,24 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
 	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
 else
-   @echo "Skipping make_sbncode_minidst due to no GENIE"
+	@echo "Skipping make_sbncode_minidst due to no GENIE"
 endif
 else
 	@echo "Skipping make_sbncode_minidst due to no SBNanalysis"
+endif
+
+# Generate DSTs for RecoSelection fit
+#
+make_recoselection_minidst: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_recoselection_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) make_recoselection_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB)  -o $(VALOR_DUNE)/bin/valor_dune-make_recoselection_minidst
+else
+	@echo "Skipping make_recoselection_minidst due to no GENIE"
+endif
+else
+	@echo "Skipping make_recoselection_minidst due to no SBNanalysis"
 endif
 
 # Generate GENIE response functions
@@ -155,6 +170,7 @@ clean: FORCE
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fd_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_recoselection_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
@@ -169,6 +185,7 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fd_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_sbncode_minidst
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_recoselection_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit

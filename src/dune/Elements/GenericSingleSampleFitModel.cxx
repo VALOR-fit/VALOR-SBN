@@ -112,7 +112,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   }
   
   fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
-  
+
   fName = util::nm::MdlName(fDetector, fBeam, fSample, fKSp);
   
   TString ts_opt(opt);
@@ -444,7 +444,9 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   
     
   LOG("GenericSingleSampleFitModel", pINFO)  << "Writing results to input object array...";
-  LOG("GenericSingleSampleFitModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
+  LOG("GenericSingleSampleFitModel", pINFO) << "tag = " << tag << ", write option = " << write_opt;
+  LOG("GenericSingleSampleFitModel", pINFO)  << "sample = " << util::AsString(fSample) << ", detector = "
+                                             << util::AsString(fDetector) << ", beam = " << util::AsString(fBeam);
 
   string opt = (write_opt) ? write_opt : "pdft_vf";
   
@@ -728,7 +730,7 @@ void GenericSingleSampleFitModel::Book(void)
   // And we may have to completely merge Book/Read
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
   fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
-  
+
   this->BuildParamLists();
 
   for(size_t imode = 0; imode < fReactionModes.size(); imode++) {

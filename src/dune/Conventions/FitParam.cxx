@@ -53,7 +53,7 @@ options after list construction
 #include "valor/Conventions/FitParamApply.h"
 #include "valor/Utilities/UtlSystem.h"
 // dune
-#include "dune/Conventions/OscParams.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 
@@ -62,7 +62,7 @@ using namespace valor::conv;
 //________________________________________________________________________________________
 FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * param_opt , const CorrelatedSystematics * syst)
 {
-// Create a FitParamList object, adding all physics (from the PhysHypothesis) + nuisance (from the ParameterPool) params.
+// Create a FitParamList object, adding all physics (from FitParamList::NamedParameterList) + nuisance (from the ParameterPool) params.
 // The input option specifies both the set of parameters (eg "standard")
 
 
@@ -410,7 +410,7 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
     vec.push_back(kPhypDm23sq  );
     vec.push_back(kPhypDm12sq  );
   }
-  
+
   if (vec.size()==0) {
     LOG("FitParams",pWARN)<<"No parameters added to set: "<<set_name;
   }

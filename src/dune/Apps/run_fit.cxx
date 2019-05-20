@@ -69,6 +69,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/Oscillation/SimpleOsc.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -77,10 +78,9 @@
 #include "valor/Utilities/VThreadPool.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-#include "valor/Utilities/NameRegistry.h"
 // dune
 #include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/OscParams.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 
@@ -347,7 +347,7 @@ int main(int argc, char ** argv)
     ntp.TrueParamArr()->Append(true_params);
     
     if (start_at_true) {
-      // Before we do our start-at-true, we'll reset our fixed parameters to 1.
+      // Before we do our start-at-true, we'll reset our fixed parameters
       for (int ip = 0 ; ip < fp->GetNumberParameters() ; ip++) {
         if (fp->IsFixedByIndex(ip)) {
           fp->SetCurrentValueByIndex(ip,fp->InitValueByIndex(ip));
@@ -378,16 +378,24 @@ int main(int argc, char ** argv)
           util::Die(-1);
         }
 
-        if (fp->Exists(param)) {
+        if (fp->Exists(param) && fp->IsFixed(param)) {
           double fix_param_at = arg.GetDouble(argname);
-          if((fix_param_at > util::OscParamMinValue(param)) &&
-             (fix_param_at < util::OscParamMaxValue(param)))
-          {
-            fp->Update(param, fix_param_at);
-            fp->SetInitValue(param, fix_param_at);
+          if ( std::fabs(fix_param_at + 999. ) < conv::kASmallNum ) {
+            continue;
           }
-        }
-      }
+          if (util::IsOscParam(param)) {
+            if((fix_param_at < util::OscParamMinValue(param)) ||
+               (fix_param_at > util::OscParamMaxValue(param))) {
+              LOG("valor_dune",pFATAL) << "Attempting to fix parameter "
+                                       <<util::AsString(param)<<" outside limits at "<<fix_param_at
+                                       <<" - limits are "<<util::OscParamMinValue(param)<< " to "<<util::OscParamMaxValue(param);
+              util::Die(-1);
+            }
+          } // is osc param
+          fp->Update(param, fix_param_at);
+          fp->SetInitValue(param, fix_param_at);
+        } // param exists in FPL
+      } // argname
 
     // Set our current values back to the fitter start point.
     // This will be central values unless start-at-true is defined.
