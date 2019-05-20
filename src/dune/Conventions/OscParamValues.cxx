@@ -205,9 +205,8 @@ double util::OscParamStepSize (conv::PhysParamId_t p)
     case (kPhypMixingEE):
       return 0.05;
 
-    default: 
-      LOG("Failed to get OA parameter step size",pFATAL);
-      util::Die(-1);
+    default:
+      return -1;
   }
   return -1;
 }
