@@ -177,6 +177,13 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   LOG("GenericSingleSampleFitModel",pINFO)
     << "Fiducial mass = " << fFiducialMass*1000 << " tonnes";
 
+  // Check whether or not we should apply the osc prob to ALL detectors (i.e. skipping the util::OscProbIsAppliedTo check)
+  name = "force_apply_osc_prob_to_all_detectors";
+  if(util::NodeExists(xml,root_node,name)) {
+    fSkipOscProbApplyCheck = util::XML2Bool(xml,root_node,name);
+    LOG("GenericSingleSampleFitModel",pINFO)
+      << "Apply osc prob to all detectors (regardless of util::OscProbIsAppliedTo)? " << fSkipOscProbApplyCheck << " tonnes";
+  }
   // Get assumed exposure for each beam configuration
   {
     // Optionally over-ride the POT
@@ -684,6 +691,8 @@ void GenericSingleSampleFitModel::Init(void)
 
   fPDFTotSb     = 0;
   fPDFTotNullSb = true;
+
+  fSkipOscProbApplyCheck = false;
 
   for(size_t imode = 0; imode < conv::kNReacModes; imode++) {
 
@@ -1921,9 +1930,9 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     if(fSample   == ksUndefined) continue;
 
     //check if oscillation probabilities should be applied to this combination of phys hypothesis and detector
-    // TODO: Add a flag in the config files that controls whether or not we make this check. i.e. if this flag is specified then we apply the osc prob to ALL detectors
-    if(!util::OscProbIsAppliedTo(hypid, fDetector)) {continue; }
-    
+    if(!fSkipOscProbApplyCheck) {
+     if(!util::OscProbIsAppliedTo(hypid, fDetector)) {continue; }
+    }
 
     const VALORBinning * true_sb = fBinning->TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();

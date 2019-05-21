@@ -155,6 +155,9 @@ private:
 
   // Input VALOR MC DSTs
   bool fUseMCDST;
+
+  // Whether or not we should apply the osc prob to ALL detectors (i.e. skipping the util::OscProbIsAppliedTo check)
+  bool fSkipOscProbApplyCheck;
   
   // MC templates (MCT) 
   // Each template is a 2D array, with (reco,true) bins linearised in whatever kinematic space we need.
