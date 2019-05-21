@@ -27,10 +27,16 @@ void fit_param_sensitivity_plot
   const char * label2       = 0,             /*  */
   bool         custom_range = false,         /* by default plots will be shown in range of fit data, but if sensitivity is fitted with pol2 it can be extrapolated - define custom range if needed */
   double       pmin_in      =  9999,
-  double       pmax_in      = -9999
+  double       pmax_in      = -9999,
+  const char * config       = "analysis/dune_tdr.xml"
 )
 {
   using namespace valor;
+
+  // Read the config file to populate the ParameterPool
+  std::string config_path = util::CompleteConfigPath(config);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config_path.c_str());
 
   double epsilon = 1E-5;
 
@@ -164,7 +170,7 @@ void fit_param_sensitivity_plot
 TGraph * get_sensitivity( 
   const char * pname, const char * filename, double & p_true_out, double & p_min_out, double & p_max_out)
 {
-  conv::PhysParamId_t p = util::PhysParamFromString(pname);   // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
+  conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(pname);
   assert(p != conv::kPhypUndefined);
   
   cout << "Plotting sensitivity to parameter: " << pname << " using toy-MC fit results stored in: " << filename << endl;
@@ -316,7 +322,7 @@ TF1 * get_sensitivity_fit (TGraph * sensitivity, double pmin, double pmax)
 // ------------------------------------------------------------------------------------------------
 TGraph * get_prior (const char * pname, double pmin, double pmax, double & err_out)
 {
-  conv::PhysParamId_t p = util::PhysParamFromString(pname);   // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
+  conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(pname);
   assert(p != conv::kPhypUndefined);
   
   cout << "Plotting prior for parameter: " << pname << " in range: [" << pmin << ", " << pmax << "]" << endl;

@@ -58,13 +58,13 @@ void GetCommandLineArgs (int argc, char ** argv);
 string gOptInpFileName;
 string gOptOutFileName;
 string gOptOutFormat;
+string gOptConfig;
 
 int NDFitExtractsBareRoot(void);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
-  // TODO: I've Removed util::PopulateNameRegistry. Instead read a config file to set up a ParameterPool, which automatically populates the NameRegistry
   GetCommandLineArgs (argc, argv);
 
   if(gOptOutFormat == "ndfit_extracts_bare_root") {
@@ -101,6 +101,14 @@ int NDFitExtractsBareRoot(void)
 {
 // Extract selected VALOR/DUNE ND fit info and copy in bare ROOT format
 //
+
+  //
+  // Read the config file to populate the ParameterPool
+  //
+
+  std::string config_path = util::CompleteConfigPath(gOptConfig);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config_path.c_str());
 
   const int buffer_size = 100;
 
@@ -308,6 +316,16 @@ void GetCommandLineArgs(int argc, char ** argv)
     name << inpname << "vfnt_extracts.root";
 
     gOptOutFileName = gSystem->BaseName(name.str().c_str());
+  }
+
+  // get config file name
+  if ( parser.OptionExists("config") ) {
+    LOG("fitnt_conv", pINFO) << "Reading config file";
+    gOptConfig = parser.ArgAsString("config");
+  } else {
+    LOG("fitnt_conv", pFATAL)
+      << "Unspecified config file name - Exiting";
+    exit(1);
   }
 
 }

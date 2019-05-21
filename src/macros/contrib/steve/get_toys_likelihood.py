@@ -44,7 +44,7 @@ input_deltacp      = -1.55
 input_dm12sq       = 7.53E-5
 input_dm23sq       = 2.51E-3
 
-def main(param,param_value,config_file,outfile,ntoys,fit_param_opt,seed=0):
+def main(param_s,param_value_s,config_file,outfile,ntoys,fit_param_opt,seed=0):
   
   if (seed):
     rnd.SetSeeds(seed,seed+1,seed+2,seed+3,seed+4)
@@ -59,6 +59,10 @@ def main(param,param_value,config_file,outfile,ntoys,fit_param_opt,seed=0):
   elements.Read(config)
   model = elements.FitModel()
   data = elements.FitData()
+
+  param = util.NameRegistry.Instance().PhysParamFromString(param_s)
+  assert(param>=0 and param < python_undefined)
+  value = float(param_value_s)
 
   # Pattern replacement for output filename
   outfile = outfile.replace("[PARAM]",nr.ParamAsString(param))
@@ -116,10 +120,5 @@ if __name__=="__main__":
   opt,pv = parser.parse_args()
   assert(len(pv)==2)
   param_s,value_s = pv
-  # TODO: util.PhysParamFromString no longer exists. Instead read the config to setup the ParameterPool and populate the NameRegistry.
-  # TODO: Then get the param using nr = valor.NameRegistry.Instance(); nr.PhysParamFromString(param_s)
-  param = util.PhysParamFromString(param_s)
-  assert(param>=0 and param < python_undefined)
-  value = float(value_s)
   
-  main(param,value,opt.config,opt.outfile,opt.ntoys,opt.fpl_opt,opt.seed)
+  main(param_s,value_s,opt.config,opt.outfile,opt.ntoys,opt.fpl_opt,opt.seed)

@@ -14,12 +14,18 @@
 void calc_critical_fit_statistic
 (
   const char * filename,
-  const char * lim_param_name  /* specify the param name (see UtlParam.cxx) */
+  const char * lim_param_name,  /* specify the param name (see UtlParam.cxx) */
+  const char * config
 )
 {
   using namespace valor;
 
-  conv::PhysParamId_t p = util::PhysParamFromString(lim_param_name);  // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
+  // Read the config file to populate the ParameterPool
+  std::string config_path = util::CompleteConfigPath(config);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config_path.c_str());
+
+  conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(lim_param_name);
   assert(p != conv::kPhypUndefined);
   
   cout << "Calculating critical values of fit statistic for parameter: " << lim_param_name << endl;

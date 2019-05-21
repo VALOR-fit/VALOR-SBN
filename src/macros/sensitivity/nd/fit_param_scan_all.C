@@ -38,7 +38,7 @@ void fit_param_scan_all
       if(p == kPhypUndefined) continue;
 
      ostringstream command;
-     command << ".x macros/fit/nd/fit_param_scan.C(\"" << tag << "\",\"" << util::AsString(p) << "\"," 
+     command << ".x macros/fit/nd/fit_param_scan.C(\"" << tag << "\",\"" << util::NameRegistry::Instance()->ParamAsString(p) << "\","
              << pmin << "," << pmax << "," << npv << "," << ntoymc << "," << stat_fluct << ",\""
              << param_values << "\",\"" << param_list << "\",\"" << config_file << "\")";
      gROOT->ProcessLine(command.str().c_str());

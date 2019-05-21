@@ -43,14 +43,19 @@ void fit_param_sensitivity
   using namespace valor::conv;
 
   // Analysis configuration
+  cout << "Getting and configuring fit model" << endl;
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config.Data());
+  FitModelABC * model = elements->FitModel();
+
  
   assert(s_param_name);
   
   TString param_values_ts(param_values); // TString version for useful methods
 
-  PhysParamId_t sp = util::PhysParamFromString(s_param_name);   // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
-  cout << util::AsString(sp) << endl;   // TODO: Replace this with a call to NameRegistry::AsString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
+  PhysParamId_t sp = util::NameRegistry::Instance()-PhysParamFromString(s_param_name);
+  cout << util::NameRegistry::Instance()-AsString(sp) << endl;
   if(sp == kPhypUndefined) {
     cerr << "Undefined parameter: " << s_param_name << endl;
     exit(1);
@@ -105,11 +110,6 @@ void fit_param_sensitivity
   fitnt->Branch("best_fit_params", "valor::FitParamList",  &best_fit_param_array, 1280000,0);
   fitnt->Branch("best_fit_model",  "TObjArray",            &best_fit_model_array, 1280000,0);
   fitnt->Branch("data",            "TObjArray",            &data_array,           1280000,0);
-
-  // Get ND model & configure
-  cout << "Getting and configuring fit model" << endl;
-  FitModelABC * model = new SDModel;
-  model->Read(config.Data());
 
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < ntoymc; itoymc++) {

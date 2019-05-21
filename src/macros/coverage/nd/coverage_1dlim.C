@@ -14,7 +14,7 @@ void coverage_1dlim
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
   const char * fit_param_list        = "nuosc3f",                             /* fit parameter list (see UtlParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
-  const char * lim_param_name        = 0,                                     /* specify the param name (see UtlParam.cxx) for which a confidence limit is computed */
+  const char * lim_param_name        = 0,                                     /* specify the param name (see Parameter.h) for which a confidence limit is computed */
   int          lim_param_npoints     = 11,                                    /* coverage will be checked for a number of points within a range */
   double       lim_param_value_min   = 0.9,                                   /* min value in above-mentioned range */
   double       lim_param_value_max   = 1.1,                                   /* max value in avove-mentioned range */
@@ -32,10 +32,14 @@ void coverage_1dlim
 
   // Analysis configuration
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
- 
+
+  // Read the config file to populate the ParameterPool
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config.Data());
+
   assert(lim_param_name);    
 
-  PhysParamId_t sp = util::PhysParamFromString(lim_param_name);    // TODO: Replace this with a call to NameRegistry::PhysParamFromString. If this can be a syst param, you'll need to read a config file to set up a ParameterPool first
+  PhysParamId_t sp = util::NameRegistry::Instance()->PhysParamFromString(lim_param_name);
   cout << util::AsString(sp) << endl;
   if(sp == kPhypUndefined) {
     cerr << "Undefined parameter: " << lim_param_name << endl;

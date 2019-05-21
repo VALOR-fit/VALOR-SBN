@@ -20,7 +20,7 @@ TSpline3 * RandomSpline (double low_knot, double high_knot, double sigma)
 }
 
 
-void make_fake_splines(const char * version_number = "2016v0", const char * config = "config.xml")
+void make_fake_splines(const char * version_number = "2016v0", const char * config = "config.xml", const char * detector = "dune_nd")
 {
 
   int n_splines = 0;
@@ -64,7 +64,7 @@ void make_fake_splines(const char * version_number = "2016v0", const char * conf
           if(m == kmUndefined) continue;
 
           const Parameter & param = ParameterPool::Instance()->GetParam(p);
-          conv::Detector_t d = conv::kdDUNEND;    // TODO: The detector needs to be set before calling Parameter::IsAppliedTo
+          conv::Detector_t d = util::DetectorFromString(detector);
           if (! param.IsAppliedTo(b,s,d,m,conv::kntInclusive) ) {continue;}
 
           const int n_q2_true_bins = util::NumQ2trueBinsXsec (s, m);
