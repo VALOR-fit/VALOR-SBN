@@ -45,9 +45,11 @@
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitInputs.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/UtlSystem.h"
 #include "valor/Conventions/ParameterPool.h"
 // dune
 #include "dune/Utilities/UtlParam.h"
+#include "dune/Elements/CompoundFitElements.h"
 
 using std::string;
 using std::ostringstream;
