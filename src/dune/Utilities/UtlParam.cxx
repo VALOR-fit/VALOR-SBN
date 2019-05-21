@@ -1,17 +1,20 @@
 //________________________________________________________________________________________________________________________
 /*
 
-Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
+Copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved.
 
-options for the fit param list:
-        - standard: all nd + fd + osc parameters
-        - only-nd:  only nd parameters
+options for the fit param list (must match the options in FitParamList::NamedParameterList):
+        - nuosc3f:  standard PMNS osc params
+        - sterile:  effective sterile mixing params
+        etc.
+        In addition to the above osc params, sytematic params are taken from the instance of ParameterPool
 
 additional options
         - no-int-systematics: skipping neutrino interaction systematics in the list construction
         - no-flux-systematics, no-nd-flux-systematics, no-fd-flux-systematics: as above for flux
         - no-detector-systematics, no-nd-detector-systematics, no-fd-detector-systematics: as above for efficiencies
         - no-osc-params: skipping oscillation parameters in the list construction
+        - only-nd: skipping far detector parameters in the list construction
 
 options after list construction
         - no-osc-params     : 
@@ -54,7 +57,7 @@ options after list construction
 #include "valor/Utilities/UtlSystem.h"
 // dune
 #include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 
 using namespace valor;

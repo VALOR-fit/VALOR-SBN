@@ -14,7 +14,7 @@
 void calc_critical_fit_statistic
 (
   const char * filename,
-  const char * lim_param_name  /* specify the param name (see FitParam.cxx) */
+  const char * lim_param_name  /* specify the param name (see UtlParam.cxx) */
 )
 {
   using namespace valor;

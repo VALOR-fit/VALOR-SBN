@@ -1,10 +1,9 @@
 //____________________________________________________________________________
 /*!
 
-\file      FitParams
+\file      UtlParam
 
-\brief     Typedef specific systematics to free PhysParamId_t slots
-           of the VALOR framework
+\brief     Parameter related utilities
 
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
@@ -12,15 +11,18 @@
            Steve Dennis <s.r.dennis \at liverpool.ac.uk>
            University of Liverpool
 
-\created   March 20, 2014
+           Francis Bench <f.bench \at liverpool.ac.uk>
+           University of Liverpool
 
-\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
+\created   May 21, 2019
+
+\copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________
 
-#ifndef _valor_dune_fit_param_definition_h_
-#define _valor_dune_fit_param_definition_h_
+#ifndef _valor_dune_util_param_definition_h_
+#define _valor_dune_util_param_definition_h_
 
 #include <string>
 #include <utility>

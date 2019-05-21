@@ -21,7 +21,7 @@
 #ifndef _valor_expt_oscparams_h_
 #define _valor_expt_oscparams_h_
 
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 
 namespace valor {
 namespace conv {

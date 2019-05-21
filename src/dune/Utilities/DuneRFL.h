@@ -35,7 +35,7 @@
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "valor/Conventions/BeamConf.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 #include "dune/Utilities/KinematicPoint.h"

@@ -11,7 +11,7 @@ void run_fit
   const char * tag              = "toymc",                               /* tag for output file */
   int          run              = 0,                                     /* run # */
   int          ntoymc           = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list   = "nuosc3f",                             /* fit parameter list (see FitParam.cxx) */
+  const char * fit_param_list   = "nuosc3f",                             /* fit parameter list (see UtlParam.cxx) */
   const char * param_values     = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
   bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
   const char * fit_option       = "minuit",                              /* fitter option */

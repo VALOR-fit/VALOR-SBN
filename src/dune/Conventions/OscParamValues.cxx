@@ -15,7 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlSystem.h"
 
 //dune
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 
 using namespace valor;

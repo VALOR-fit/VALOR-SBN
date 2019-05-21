@@ -50,7 +50,7 @@
 #include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"

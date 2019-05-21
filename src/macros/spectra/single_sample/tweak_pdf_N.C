@@ -10,7 +10,7 @@
 
 void tweak_pdf_N
 (
-  const char * model_param_list   = "nuosc3f",               /* list of params included in model, see FitParam.cxx */
+  const char * model_param_list   = "nuosc3f",               /* list of params included in model, see UtlParam.cxx */
   const char * config_file        = "fit/dune_ndfit.xml",    /* analysis configuration file */
   const char * output_rootfile    = "",                      /* Optionally write envelope histograms to file */
   const char * fit_file           = "",                      /* File to get postfit matrix from. If not given, uses prefit. */

@@ -29,7 +29,7 @@
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 
 using namespace valor;
 

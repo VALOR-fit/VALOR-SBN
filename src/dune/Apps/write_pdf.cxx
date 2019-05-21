@@ -6,7 +6,7 @@
 \brief     Write out generic single sample PDFs and MC templates 
 
 \options
-           --fit-param-list      : Fit parameter list (see FitParam.cxx)                                                              
+           --fit-param-list      : Fit parameter list (see UtlParam.cxx)
                                      [def: "nuosc3f"]
            --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
@@ -53,7 +53,7 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"

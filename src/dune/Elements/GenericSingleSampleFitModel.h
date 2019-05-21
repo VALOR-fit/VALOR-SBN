@@ -43,7 +43,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Conventions/UtlParam.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
