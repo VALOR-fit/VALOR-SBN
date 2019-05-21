@@ -60,7 +60,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/Marginalisation/MCMarginaliser.h"
 // dune
-#include "dune/Conventions/UtlParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 

@@ -14,7 +14,7 @@ ChangeLog:
 
 #include <TROOT.h>
 
-#include "dune/Conventions/UtlParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 
 #include "valor/Conventions/ParameterPool.h"

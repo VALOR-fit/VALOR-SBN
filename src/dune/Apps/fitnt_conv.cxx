@@ -47,7 +47,7 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Conventions/ParameterPool.h"
 // dune
-#include "dune/Conventions/UtlParam.h"
+#include "dune/Utilities/UtlParam.h"
 
 using std::string;
 using std::ostringstream;

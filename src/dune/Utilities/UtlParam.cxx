@@ -57,7 +57,7 @@ options after list construction
 #include "valor/Utilities/UtlSystem.h"
 // dune
 #include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/UtlParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 
 using namespace valor;
