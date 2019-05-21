@@ -387,7 +387,7 @@ int main(int argc, char ** argv)
             if((fix_param_at < util::OscParamMinValue(param)) ||
                (fix_param_at > util::OscParamMaxValue(param))) {
               LOG("valor_dune",pFATAL) << "Attempting to fix parameter "
-                                       <<util::AsString(param)<<" outside limits at "<<fix_param_at
+                                       <<nr->ParamAsString(param)<<" outside limits at "<<fix_param_at
                                        <<" - limits are "<<util::OscParamMinValue(param)<< " to "<<util::OscParamMaxValue(param);
               util::Die(-1);
             }
