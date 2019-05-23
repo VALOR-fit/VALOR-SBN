@@ -25,10 +25,8 @@
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/ReacModeCoarse.h"
+#include "dune/Conventions/Experiment.h"
 
-
-#define SBN
-//#define T2K
 
 namespace valor {  
 namespace conv {
