@@ -35,6 +35,7 @@
 #include "valor/Conventions/Sample.h"
 
 #include "dune/Conventions/SampleReacMode.h"
+#include "dune/Conventions/Experiment.h"
 
 
 namespace valor {
@@ -52,6 +53,11 @@ const int kFitSpectrumNdimMax = 2; // (current) maximum dimensionality for fit d
 // Define dimensionality of MC templates
 static const int kMCTemplateNdim[kNSamples] =
 {
+#ifdef T2K
+  3, // ks1Rmu
+  3, // ks1Re
+  3  // ksMultiRe
+#else // if defined T2K
   3, // ksNuMuCC0pi1trk,
   3, // ksNuMuCC0pi2trk,
   3, // ksNuMuCC0piNtrk,
@@ -78,15 +84,18 @@ static const int kMCTemplateNdim[kNSamples] =
   3, // ksNuMuCChigh/ksNuMuBarCChigh
   3, // ksNuMuCClow/ksNuMuBarCClow
   3, // ksNuECChigh/ksNuEBarCChigh
-  3, // ksNuECClow/ksNuEBarCClow
-  3, // ks1Rmu
-  3, // ks1Re
-  3  // ksMultiRe
+  3  // ksNuECClow/ksNuEBarCClow
+#endif
 };
 
 // Define dimensionality of fit distributions
 static const int kFitSpectrumNdim[kNSamples] =
   {
+#ifdef T2K
+    1, // ks1Rmu
+    2, // ks1Re
+    2  // ksMultiRe
+#else // if defined T2K
     2, // ksNuMuCC0pi1trk,
     2, // ksNuMuCC0pi2trk,
     2, // ksNuMuCC0piNtrk,
@@ -113,16 +122,19 @@ static const int kFitSpectrumNdim[kNSamples] =
     2, // ksNuMuCChigh/ksNuMuBarCChigh
     2, // ksNuMuCClow/ksNuMuBarCClow
     2, // ksNuECChigh/ksNuEBarCChigh
-    2, // ksNuECClow/ksNuEBarCClow
-    1, // ks1Rmu
-    2, // ks1Re
-    2  // ksMultiRe
+    2  // ksNuECClow/ksNuEBarCClow
+#endif
 };
 
 // Define variables entering in MC template definitions.
 // Variable subset {0 -> kFitSpectrumNdim[isample]} is the one entering in PDF definitions.
 static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
 {
+#ifdef T2K
+  { kvThetareco, kvEreco, kvEtrue }, //   ks1Rmu
+  { kvThetareco, kvEreco, kvEtrue }, //   ks1Re
+  { kvThetareco, kvEreco, kvEtrue }  //   ksMultiRe
+#else // if defined T2K
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC0pi1trk,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC0pi2trk,
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCC0piNtrk,
@@ -149,10 +161,8 @@ static const KineVar_t kSampleKineVars[kNSamples][kMCTemplateNdimMax] =
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCChigh/ksNuMuBarCChigh
   { kvEreco, kvYreco, kvEtrue },     //   ksNuMuCClow/ksNuMuBarCClow
   { kvEreco, kvYreco, kvEtrue },     //   ksNuECChigh/ksNuEBarCChigh
-  { kvEreco, kvYreco, kvEtrue },     //   ksNuECClow/ksNuEBarCClow
-  { kvThetareco, kvEreco, kvEtrue }, //   ks1Rmu
-  { kvThetareco, kvEreco, kvEtrue }, //   ks1Re
-  { kvThetareco, kvEreco, kvEtrue }  //   ksMultiRe
+  { kvEreco, kvYreco, kvEtrue }      //   ksNuECClow/ksNuEBarCClow
+#endif
 };
 
 
