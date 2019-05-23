@@ -47,13 +47,13 @@
 #include "valor/Conventions/Detector.h"
 #include "valor/KineBinning/VALORBinning.h"
 
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Utilities/KinematicBin.h"
@@ -98,35 +98,42 @@ int main(int argc, char ** argv)
   Detector_t detector  = util::DetectorFromString (arg_detector  );
   GSyst_t    syst      = GSyst::FromString        (arg_systematic);
   
-  PhysParamId_t fit_param = kPhypUndefined;
-  if      (syst == kINukeTwkDial_MFP_pi     ) fit_param = kNuisIntPiMeanFreePath; 
-  else if (syst == kINukeTwkDial_MFP_N      ) fit_param = kNuisIntNucMeanFreePath;
-  else if (syst == kINukeTwkDial_FrCEx_pi   ) fit_param = kNuisIntFracPiChargeExchange; 
-  else if (syst == kINukeTwkDial_FrInel_pi  ) fit_param = kNuisIntFracPiInelastic; 
-  else if (syst == kINukeTwkDial_FrAbs_pi   ) fit_param = kNuisIntFracPiAbsorb; 
-  else if (syst == kINukeTwkDial_FrPiProd_pi) fit_param = kNuisIntFracPiProduction; 
-  else if (syst == kINukeTwkDial_FrCEx_N    ) fit_param = kNuisIntFracNucChargeExchange; 
-  else if (syst == kINukeTwkDial_FrInel_N   ) fit_param = kNuisIntFracNucInelastic; 
-  else if (syst == kINukeTwkDial_FrAbs_N    ) fit_param = kNuisIntFracNucAbsorb; 
-  else if (syst == kINukeTwkDial_FrPiProd_N ) fit_param = kNuisIntFracNucProduction; 
-  
+  // Read the config to get the relevant binning and the parameters
+  CompoundFitElements * elements = new CompoundFitElements();
+  std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
+  elements->Read(config_path);
+
+  Parameter p = ParameterPool::Instance()->ParamFromString(arg_systematic);
+  PhysParamId_t fit_param = p.GetID();
+  // TODO: Now that FitParam has been deleted, all of these PhysParamId_t enumerations are gone.
+  // TODO: Here I've assumed that arg_systematic can be used with both GSyst::FromString and
+  // TODO: ParameterPool::ParamFromString (I don't have a GENIE installation to test this).
+  // TODO: If this is not the case, then hard-code special cases below:
+//  PhysParamId_t fit_param = kPhypUndefined;
+//  if      (syst == kINukeTwkDial_MFP_pi     ) fit_param = kNuisIntPiMeanFreePath;
+//  else if (syst == kINukeTwkDial_MFP_N      ) fit_param = kNuisIntNucMeanFreePath;
+//  else if (syst == kINukeTwkDial_FrCEx_pi   ) fit_param = kNuisIntFracPiChargeExchange;
+//  else if (syst == kINukeTwkDial_FrInel_pi  ) fit_param = kNuisIntFracPiInelastic;
+//  else if (syst == kINukeTwkDial_FrAbs_pi   ) fit_param = kNuisIntFracPiAbsorb;
+//  else if (syst == kINukeTwkDial_FrPiProd_pi) fit_param = kNuisIntFracPiProduction;
+//  else if (syst == kINukeTwkDial_FrCEx_N    ) fit_param = kNuisIntFracNucChargeExchange;
+//  else if (syst == kINukeTwkDial_FrInel_N   ) fit_param = kNuisIntFracNucInelastic;
+//  else if (syst == kINukeTwkDial_FrAbs_N    ) fit_param = kNuisIntFracNucAbsorb;
+//  else if (syst == kINukeTwkDial_FrPiProd_N ) fit_param = kNuisIntFracNucProduction;
+
   if (beam==kbUndefined || sample == ksUndefined || fit_param == kPhypUndefined) {
     std::cerr<<"Bad configuration."<<std::endl;
     std::cerr<<"Beam:       "<<arg_beam       <<"\t => "<< util::AsString(beam)    <<std::endl;
     std::cerr<<"Sample:     "<<arg_sample     <<"\t => "<< util::AsString(sample)  <<std::endl;
     std::cerr<<"Detector:   "<<arg_detector   <<"\t => "<< util::AsString(detector)<<std::endl;
     std::cerr<<"GENIE Syst: "<<arg_systematic <<"\t => "<<GSyst::AsString(syst)    <<std::endl;
-    std::cerr<<" to VALOR   "<< "\t => "<<util::AsString(fit_param)<<std::endl;
+    std::cerr<<" to VALOR   "<< "\t => "<<util::NameRegistry::Instance()->AsString(fit_param)<<std::endl;
   }
   assert(beam      != kbUndefined   );
   assert(sample    != ksUndefined   );
   assert(detector  != kdUndefined   );
   assert(fit_param != kPhypUndefined);
-  
-  // Read the config to get the relevant binning
-  CompoundFitElements * elements = new CompoundFitElements();
-  std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
-  elements->Read(config_path);
+
   CompoundFitModel * compound_model = dynamic_cast<CompoundFitModel*>(elements->FitModel());
   assert(compound_model);
   GenericSingleSampleFitModel * fit_model = 0;
@@ -360,9 +367,9 @@ int main(int argc, char ** argv)
 
   // Output file - first make the substitutions for sample/parameter
   TString ts_outfile = arg_out_file.c_str();
-  ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam     ).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample   ).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , util::AsString(fit_param).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::                          AsString(beam     ).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::                          AsString(sample   ).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , util::NameRegistry::Instance()->AsString(fit_param).c_str());
   VLOG("make_response_func", pNOTICE) 
     << "Saving VALOR response functions to: "<<ts_outfile;
   TFile fout(ts_outfile.Data(),"recreate");

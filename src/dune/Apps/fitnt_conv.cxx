@@ -29,6 +29,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <utility>
 // root
 #include <TSystem.h>
 #include <TFile.h>
@@ -43,8 +44,12 @@
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitInputs.h"
+#include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Conventions/ParameterPool.h"
 // dune
-#include "dune/Conventions/FitParam.h"
+#include "dune/Utilities/UtlParam.h"
+#include "dune/Elements/CompoundFitElements.h"
 
 using std::string;
 using std::ostringstream;
@@ -55,13 +60,13 @@ void GetCommandLineArgs (int argc, char ** argv);
 string gOptInpFileName;
 string gOptOutFileName;
 string gOptOutFormat;
+string gOptConfig;
 
 int NDFitExtractsBareRoot(void);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
-  util::PopulateNameRegistry();
   GetCommandLineArgs (argc, argv);
 
   if(gOptOutFormat == "ndfit_extracts_bare_root") {
@@ -76,19 +81,36 @@ int main(int argc, char ** argv)
 //___________________________________________________________________
 bool IsMarginalised(const FitParamList * fparm, conv::PhysParamId_t p)
 {
+  Parameter param = ParameterPool::Instance()->GetParam(p);
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
   // Marginalise ND fluxes if FD fluxes present
-  if (fparm->Exists(conv::kNuisFHCNuMuFDFlux00) || fparm->Exists(conv::kNuisRHCNuMuFDFlux00)) {
-    if (util::IsNDFluxRelated(p)) {return true;}
+  bool fd_flux_exists = false;
+  for (const Parameter & param_search : ParameterPool::Instance()->GetParams()) {
+    if(param_search.SearchCategories("fd") && param.SearchCategories("flux")) {
+      fd_flux_exists = true;
+      break;
+    }
+  }
+  if (fd_flux_exists) {
+    if (param.SearchCategories("nd") && param.SearchCategories("flux")) {return true;}
   }
   // Marginalise physics params
-  if (p < conv::kNuis000) {return true;}
-  return util::IsNuDetRelated(p); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.
+  if (!util::IsSystematic(p)) {return true;}
+  return param.SearchCategories("det"); // Maybe update this to use fparm->IsMarginalized, which is not yet filled.
 }
 //___________________________________________________________________
 int NDFitExtractsBareRoot(void)
 {
 // Extract selected VALOR/DUNE ND fit info and copy in bare ROOT format
 //
+
+  //
+  // Read the config file to populate the ParameterPool
+  //
+
+  std::string config_path = util::CompleteConfigPath(gOptConfig);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config_path.c_str());
 
   const int buffer_size = 100;
 
@@ -150,8 +172,9 @@ int NDFitExtractsBareRoot(void)
   //find number of parameters after marginalisation
   std::vector<conv::PhysParamId_t> unmarginalised_parameters;
   int n_final_params = 0;
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
   for (int ip = 0 ; ip < n_params_input ; ip++) {
-    conv::PhysParamId_t p = util::PhysParamFromString(best_fit_params->NameByIndex(ip));
+    conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     if (!IsMarginalised(best_fit_params,p)) {
       unmarginalised_parameters.push_back(p);
       n_final_params++;
@@ -160,15 +183,15 @@ int NDFitExtractsBareRoot(void)
   // Fill the output tree
   for(int ip = 0; ip < n_final_params; ip++) {
     //~ conv::PhysParamId_t p = best_fit_params->WhichParam(ip); // Should work but something weird is happening
-    conv::PhysParamId_t p = util::PhysParamFromString(best_fit_params->NameByIndex(ip));
+    conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     brPId = ip;
     strcpy(brPName, best_fit_params->Name(p).c_str());
-    const double * erange  = util::EtrueRange (p);
-    const double * q2range = util::Q2trueRange(p);
-    brPEmin  = erange [0];
-    brPEmax  = erange [1];
-    brPQ2min = q2range[0];
-    brPQ2max = q2range[1];
+    std::pair<double,double> erange  = util::GetKineRange(p, conv::kvEtrue);
+    std::pair<double,double> q2range = util::GetKineRange(p, conv::kvQ2true);
+    brPEmin  = erange.first;
+    brPEmax  = erange.second;
+    brPQ2min = q2range.first;
+    brPQ2max = q2range.second;
     out_metadata->Fill();
   }
 
@@ -295,6 +318,16 @@ void GetCommandLineArgs(int argc, char ** argv)
     name << inpname << "vfnt_extracts.root";
 
     gOptOutFileName = gSystem->BaseName(name.str().c_str());
+  }
+
+  // get config file name
+  if ( parser.OptionExists("config") ) {
+    LOG("fitnt_conv", pINFO) << "Reading config file";
+    gOptConfig = parser.ArgAsString("config");
+  } else {
+    LOG("fitnt_conv", pFATAL)
+      << "Unspecified config file name - Exiting";
+    exit(1);
   }
 
 }

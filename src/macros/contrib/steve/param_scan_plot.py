@@ -22,6 +22,7 @@ util =  valor.util
 conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
+nr   =  util.NameRegistry.Instance()
 
 colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.kCyan+2,]
 markers = [R.kFullSquare, R.kFullCircle, R.kFullTriangleUp, R.kFullCross, R.kFullDiamond, R.kFullStar, R.kFullTriangleDown]
@@ -39,7 +40,7 @@ def GetGraph(filename):
   for ev in chain:
     fp = ev.best_fit_params
     true = ev.true_params
-    xval = fp.BestFitValue(util.PhysParamFromString(param))
+    xval = fp.BestFitValue(nr.PhysParamFromString(param))
     stat = math.sqrt(max(0.,fp.GetBestFitStatistic()))
     try:
       values[xval] = min(values[xval],stat)

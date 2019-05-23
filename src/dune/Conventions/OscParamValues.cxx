@@ -15,8 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlSystem.h"
 
 //dune
-#include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/OscParams.h"
+#include "dune/Conventions/OscParamValues.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -45,7 +44,17 @@ double util::OscParamInitValue(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return valor::conv::duneosc::kInitDeltaCP;
-
+      
+      
+    case (kPhypDm41sq) :
+      return 0.;
+    case (kPhypMixingMuE):
+      return 0.;
+    case (kPhypMixingMuMu):
+      return 0.;
+    case (kPhypMixingEE):
+      return 0.;
+      
     default: 
       return -1; 
 
@@ -76,6 +85,15 @@ double util::OscParamInitError(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return valor::conv::duneosc::kInitErrDeltaCP;
+      
+    case (kPhypDm41sq) :
+      return 10.;
+    case (kPhypMixingMuE):
+      return 1.;
+    case (kPhypMixingMuMu):
+      return 1.;
+    case (kPhypMixingEE):
+      return 1.;
 
     default: 
       return -1; 
@@ -103,6 +121,15 @@ double util::OscParamMaxValue(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return 3.1416;
+      
+    case (kPhypDm41sq) :
+      return 1E10;
+    case (kPhypMixingMuE):
+      return 1.;
+    case (kPhypMixingMuMu):
+      return 1.;
+    case (kPhypMixingEE):
+      return 1.;
 
     default: 
       return -1; 
@@ -129,6 +156,16 @@ double util::OscParamMinValue(conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return -3.1416;
+      
+            
+    case (kPhypDm41sq) :
+      return 0;
+    case (kPhypMixingMuE):
+      return 0.;
+    case (kPhypMixingMuMu):
+      return 0.;
+    case (kPhypMixingEE):
+      return 0.;
 
     default: 
       return -1; 
@@ -157,10 +194,18 @@ double util::OscParamStepSize (conv::PhysParamId_t p)
 
     case (kPhypCPV):
       return valor::conv::duneosc::kStepDeltaCP;
+      
+    case (kPhypDm41sq) :
+      return 0.05;
+    case (kPhypMixingMuE):
+      return 0.05;
+    case (kPhypMixingMuMu):
+      return 0.05;
+    case (kPhypMixingEE):
+      return 0.05;
 
-    default: 
-      LOG("Failed to get OA parameter step size",pFATAL);
-      util::Die(-1);
+    default:
+      return -1;
   }
   return -1;
 }
@@ -187,13 +232,17 @@ void util::InitializeOAPriors()
 {
   NuOscMixParam_t omp = Opt::Instance()->gOscMixingParamChoice;
   NuOscDmsqScheme_t  dmsqscheme = Opt::Instance()->GetEffectiveDmsqScheme();
-
+  
+  for (int ip = 0 ; ip < conv::kNuis000 ; ip++) {
+    PhysParamId_t p = (PhysParamId_t) ip;
+    Opt::Instance()->SetGlobalBestFit (p,util::OscParamInitValue(p));
+    Opt::Instance()->SetGlobalFitError(p,util::OscParamInitError(p));
+  }
+    
   Opt::Instance()->SetGlobalBestFit (kPhypDm12sq,valor::conv::duneosc::kInitDm12sq);
   Opt::Instance()->SetGlobalFitError(kPhypDm12sq,valor::conv::duneosc::kInitErrDm12sq);
-
   Opt::Instance()->SetGlobalBestFit (kPhypCPV,valor::conv::duneosc::kInitDeltaCP);
   Opt::Instance()->SetGlobalFitError(kPhypCPV,valor::conv::duneosc::kInitErrDeltaCP);
-
   if(omp==kNuMixSinsq2Theta){
     Opt::Instance()->SetGlobalBestFit (kPhypMixing23,valor::conv::duneosc::kInitSinsq2Theta23);
     Opt::Instance()->SetGlobalFitError(kPhypMixing23,valor::conv::duneosc::kInitErrSinsq2Theta23);

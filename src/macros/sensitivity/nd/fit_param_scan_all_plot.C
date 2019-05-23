@@ -6,7 +6,7 @@
 // ------------------------------------------------------------------------------------------------
 //
 	
-void fit_param_scan_all_plot(const char * filename)
+void fit_param_scan_all_plot(const char * filename, const char * config, const char * hypothesis)
 {
   using namespace std;
   using namespace valor;
@@ -16,6 +16,11 @@ void fit_param_scan_all_plot(const char * filename)
   int ncols = 2;
   int nplots_page = nrows*ncols;
 
+  // Read the config file to populate the ParameterPool
+  std::string config_path = util::CompleteConfigPath(config);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config_path.c_str());
+
   TFile f(filename, "read");
 
   TCanvas * c = new TCanvas("c");
@@ -24,8 +29,10 @@ void fit_param_scan_all_plot(const char * filename)
   c->Divide(nrows,ncols);
 
   int ic = 100;
-  for(int ip = 0; ip < kNFitParams; ip++) {
-     PhysParamId_t p = kFitParam[ip];
+  PhysHypothesis ph = PhysHypothesis(hypothesis);
+  std::vector<conv::PhysParamId_t> params = util::GetActiveParameters(ph);
+  for(int ip = 0; ip < params.size(); ip++) {
+     PhysParamId_t p = params[ip];
      if(p == kPhypUndefined) continue;
 
      ic++;
@@ -36,13 +43,13 @@ void fit_param_scan_all_plot(const char * filename)
      }
      c->cd(ic);
 
-     const char * hndc_name   = Form("nd_constraint_%s", util::AsString(p).c_str());
-     const char * hprior_name = Form("prior_%s",         util::AsString(p).c_str());
+     const char * hndc_name   = Form("nd_constraint_%s", util::NameRegistry::Instance()->AsString(p).c_str());
+     const char * hprior_name = Form("prior_%s",         util::NameRegistry::Instance()->AsString(p).c_str());
  
      TH1D * hndc   = (TH1D*) f.Get(hndc_name);
      TH1D * hprior = (TH1D*) f.Get(hprior_name);
 
-     hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());
+     hndc->GetXaxis()->SetTitle(util::NameRegistry::Instance()->AsStringRooTeX(p).c_str());
      hndc->GetYaxis()->SetTitle("-#Delta(lnL)");
      hndc->SetMarkerSize(1);
      hndc->SetMarkerStyle(20);

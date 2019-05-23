@@ -15,8 +15,8 @@ void fit_param_scan_all
   int          npv            = 11,                                    /* number of points between minimum and maximum */
   int          ntoymc         = 1,                                     /* number of toy-MC experiments */
   bool         stat_fluct     = false,                                 /* include statistical fluctuation in toy MC expts? */
-  const char * param_values   = "nominal",                             /* decide how to set the values of params used for toy-MC generation (see FitParam.cxx) */
-  const char * param_list     = "standard",                            /* model parameter list (see FitParam.cxx) */
+  const char * param_values   = "nominal",                             /* decide how to set the values of params used for toy-MC generation (see UtlParam.cxx) */
+  const char * param_list     = "standard",                            /* model parameter list (see UtlParam.cxx) */
   const char * config_file    = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
 )
 
@@ -29,12 +29,16 @@ void fit_param_scan_all
   // run fit_param_scan.C for each parameter
   //
 
-  for(int ip = 0; ip < kNFitParams; ip++) {
-     PhysParamId_t p = kFitParam[ip];
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(util::CompleteConfigPath(config_file),"");
+  const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+
+  for(int ip = 0; ip < param.size(); ip++) {
+     PhysParamId_t p = params.At(ip);
       if(p == kPhypUndefined) continue;
 
      ostringstream command;
-     command << ".x macros/fit/nd/fit_param_scan.C(\"" << tag << "\",\"" << util::AsString(p) << "\"," 
+     command << ".x macros/fit/nd/fit_param_scan.C(\"" << tag << "\",\"" << util::NameRegistry::Instance()->ParamAsString(p) << "\","
              << pmin << "," << pmax << "," << npv << "," << ntoymc << "," << stat_fluct << ",\""
              << param_values << "\",\"" << param_list << "\",\"" << config_file << "\")";
      gROOT->ProcessLine(command.str().c_str());

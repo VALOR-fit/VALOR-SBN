@@ -10,6 +10,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 // fmwk
 #include "valor/Messenger/Messenger.h"
+#include "valor/Conventions/ParameterPool.h"
 // dune
 #include "dune/Conventions/ArrIdx.h"
 
@@ -42,8 +43,6 @@ valor::util::ArrIdx * valor::util::ArrIdx::MutableInstance()
 //________________________________________________________________________________________
 void valor::util::ArrIdx::Init(void)
 {
-  
-  assert(kNFitParams==kNFitParamsNuFlux+kNFitParamsNuInt+kNFitParamsNuDet+kNFitParamsNuOsc);
   
   // Init to -1
   for(int i = 0; i < 2*kNBeamConf; i++) {
@@ -110,12 +109,13 @@ void valor::util::ArrIdx::Init(void)
     }//is
   }//ib
 
-  for(int ip = 0; ip < kNFitParams; ip++) {
-     PhysParamId_t p = kFitParam[ip];
+  const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+  for(int ip = 0; ip < params.size(); ip++) {
+     PhysParamId_t p = params.at(ip).GetID();
      if(p == kPhypUndefined) continue;
      fFitParamIdx[p] = ip;
      LOG("ArrIdx",pDEBUG)
-        << "Fit parameter: " << util::AsString(p) 
+        << "Fit parameter: " << params.at(ip).GetName()
         << " is at slot: " << fFitParamIdx[p];
   }
 }

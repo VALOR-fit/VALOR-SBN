@@ -27,11 +27,12 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 rnd  =  valor.Rnd.Instance()
+nr   =  util.NameRegistry.Instance()
 
 opt.gOscMixingParamChoice = conv.kNuMixSinsqTheta
 opt.SetDefaultParameterValues()
 
-default_fit_param_list = "standard"
+default_fit_param_list = "nuosc3f"
 
 nbins = 51
 
@@ -51,7 +52,7 @@ color = ROOT.kBlack
 
 img_format = "png"
 
-def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks = False, reset = False, spline_only = False, seed = 0):
+def main(params,config_file,fit_param_list, fit_param_opt, stat_fluctuations=False, syst_tweaks = False, reset = False, spline_only = False, seed = 0):
   
   if (seed):
     rnd.SetSeeds(seed,seed+1,seed+2,seed+3,seed+4)
@@ -69,8 +70,8 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
   if syst_tweaks: model.RandomizeSystematics();
   
   if fit_param_list is None: fit_param_list = default_fit_param_list
-  
-  fparm = valor.util.GetFitParameterList(fit_param_list)
+
+  fparm = valor.util.GetFitParameterList(fit_param_list, fit_param_opt)
   
   if fparm.Exists(conv.kPhypMixing12    ) : fparm.SetInitValue(conv.kPhypMixing12   , input_mixing12);
   if fparm.Exists(conv.kPhypMixing13    ) : fparm.SetInitValue(conv.kPhypMixing13   , input_mixing13);
@@ -104,14 +105,15 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
   canv.cd()
   
   if len(params)==0:
-    params = [util.ParamAsString(p) for p in xrange(conv.knppmax) if fparm.Exists(p)]
+    params = [nr.ParamAsString(p) for p in xrange(conv.knppmax) if fparm.Exists(p)]
     
   print "Making chisq distribution for "+`len(params)`+" parameters."
   
   fit_inputs = valor.FitInputs(data,model,fparm)
-  
+
+  pool = valor.ParameterPool.Instance()
   for param_name in params:
-    param = util.PhysParamFromString(param_name)
+    param = nr.PhysParamFromString(param_name)
     
     if (param == conv.kPhypUndefined or param == python_undefined):
       try:
@@ -121,22 +123,22 @@ def main(params,config_file,fit_param_list, stat_fluctuations=False, syst_tweaks
         print "Failed to get param ",param_name
         continue
     
-    if spline_only and not util.ParamHasSplines(param):
+    if spline_only and pool.GetParam(param).GetType() != conv.kSystResponse:
       continue
       
     if not fparm.Exists(param):
-      print "Param ",param,"=",util.ParamAsString(param)," not found in FitParamList ",fit_param_list
+      print "Param ",param,"=",nr.ParamAsString(param)," not found in FitParamList ",fit_param_list
       continue
       
-    print "Doing param: ",util.ParamAsString(param)
+    print "Doing param: ",nr.ParamAsString(param)
       
     fparm.ResetCurrToInitValues()
     
     lower_limit = fparm.MinValue(param)
     upper_limit = fparm.MaxValue(param)
     
-    hname = util.ParamAsString(param)+"_chisq"
-    htitle = "Chisq of "+util.ParamAsString(param)
+    hname = nr.ParamAsString(param)+"_chisq"
+    htitle = "Chisq of "+nr.ParamAsString(param)
     
     h = ROOT.TH1D(hname,htitle,nbins,lower_limit,upper_limit)
     h.SetLineColor(color)
@@ -172,7 +174,8 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options]..",description="Make tables of applied systematics")
   
   parser.add_option('-f', '--fit-param-list', dest='fpl', default=None, help="Name of FPL.")
-  
+  parser.add_option('-o', '--fit-param-opt' , dest='fpl_opt', default=None, help="FPL options.")
+
   #~ parser.add_option('-s', '--sample' , dest='sample'      , default="1Rmu"                    , help="Sample (1Rmu, 1Re, RHC1Rmu, RHC1Re)")
   
   parser.add_option('-c', '--config'        , dest='config' , default="analysis_configuration.xml", help="Configuration file")
@@ -184,4 +187,4 @@ if __name__=="__main__":
   
   opt,params = parser.parse_args()
   
-  main(params,opt.config,opt.fpl,opt.stat_fluct,opt.syst_fluct,opt.reset,opt.spline_only,opt.seed)
+  main(params,opt.config,opt.fpl,opt.fpl_opt,opt.stat_fluct,opt.syst_fluct,opt.reset,opt.spline_only,opt.seed)

@@ -8,7 +8,7 @@
 \options     --tag                 : Tag for output file [def: "toymc"]
              --run                 : Run # [def: 0]
              --ntoymc              : Number of toy-MC experiments [def: 1]
-             --fit-param-list      : Fit parameter list (see FitParam.cxx) 
+             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
                                      [def: "standard"]
              --param-values-option : Decide how to set the values of physics 
                                      params used for toy-MC generation 
@@ -60,7 +60,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/Marginalisation/MCMarginaliser.h"
 // dune
-#include "dune/Conventions/FitParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 
@@ -115,9 +115,6 @@ void Fit(CmdLnArgList& arg)
    Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
          "sinsq2theta");
    Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
-
-   // Set DUNE param names inside framework
-   util::PopulateNameRegistry();
 
    // Set the random seeds
    Rnd::Instance()->SetSeeds(arg);
@@ -242,9 +239,6 @@ void Validate(CmdLnArgList& arg)
    Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
          "sinsq2theta");
    Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
-
-   // Set DUNE param names inside framework
-   util::PopulateNameRegistry();
 
    // Set the random seeds
    Rnd::Instance()->SetSeeds(arg);

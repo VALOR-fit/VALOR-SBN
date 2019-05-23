@@ -10,12 +10,13 @@
 
 void tweak_pdf_N
 (
-  const char * model_param_list   = "standard",                            /* list of params included in model, see FitParam.cxx */
+  const char * model_param_list   = "nuosc3f",               /* list of params included in model, see UtlParam.cxx */
   const char * config_file        = "fit/dune_ndfit.xml",    /* analysis configuration file */
   const char * output_rootfile    = "",                      /* Optionally write envelope histograms to file */
   const char * fit_file           = "",                      /* File to get postfit matrix from. If not given, uses prefit. */
   int  fit_number                 = 0,                       /* If we're using a postfit matrix, which fit in the file to get it from */
-  const int ntoys                 = 200                      /* Number of toys to throw */
+  const int ntoys                 = 200,                     /* Number of toys to throw */
+  const char * fit_param_opt      = ""                       /* FitParamList options */
 )
 {
   using namespace std;
@@ -88,7 +89,7 @@ void tweak_pdf_N
     // Get a physics hypothesis by randomizing all params
     // (toy-MC #-1 is special: default)
     Option_t * model_param_values = (itoy<0) ? "nominal" : "randomize-all;prefit-errors";
-    FitParamList * fp = util::GetFitParameterList(model_param_list);
+    FitParamList * fp = util::GetFitParameterList(model_param_list, fit_param_opt);
     
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL

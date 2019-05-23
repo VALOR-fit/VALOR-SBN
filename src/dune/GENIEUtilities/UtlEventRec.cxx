@@ -19,7 +19,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlSystem.h"
 
 #include "valor/Conventions/BeamConf.h"
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 
 #include "dune/GENIEUtilities/GENIEIncludes.h"

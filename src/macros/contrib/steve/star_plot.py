@@ -40,7 +40,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(file_patterns, par_x, par_y, output, longest, ellipse):
+def main(file_patterns, par_x, par_y, output, longest, ellipse, config):
   
   min_x =  9E99
   max_x = -9E99
@@ -48,9 +48,13 @@ def main(file_patterns, par_x, par_y, output, longest, ellipse):
   max_y = -9E99
   max_diag = dict()
   lines    = dict()
-  
-  px = util.PhysParamFromString(par_x)
-  py = util.PhysParamFromString(par_y)
+
+  # Read the config file to populate the ParameterPool
+  fit_elements = valor.CompoundFitElements()
+  fit_elements.Read(util.CompleteConfigPath(config))
+
+  px = util.NameRegistry.Instance().PhysParamFromString(par_x)
+  py = util.NameRegistry.Instance().PhysParamFromString(par_y)
   if (px < 0 or px > 1E4):
     print "Unidentified parameter x: ",par_x
     exit(-1)
@@ -123,8 +127,8 @@ def main(file_patterns, par_x, par_y, output, longest, ellipse):
   canvas.SetRightMargin(0.22)
   frame = R.TH2D("star_plot_frame","",1,min_x*1.2,max_x*1.2,1,min_y*1.2,max_y*1.3)
   title = "Fitted %s - True %s"
-  namex = util.ParamAsStringTeX(px,True)
-  namey = util.ParamAsStringTeX(py,True)
+  namex = util.NameRegistry.Instance().ParamAsStringTeX(px,True)
+  namey = util.NameRegistry.Instance().ParamAsStringTeX(py,True)
   frame.GetXaxis().SetTitle(title%(namex,namex))
   frame.GetYaxis().SetTitle(title%(namey,namey))
   frame.Draw()
@@ -193,7 +197,7 @@ def GetVariedParameterSet(fit):
 if __name__=="__main__":
   import optparse
   parser = optparse.OptionParser(usage="%prog [options] files",description="Make star plots")
-  #~ parser.add_option('-c','--config', dest='config'  ,default="fit/dunend_fit.xml",help='The config file we get the sample list from.')
+  parser.add_option('-c','--config', dest='config'  ,default="analysis/dune_tdr.xml",help='The config file we get the sample list and params from.')
   parser.add_option('-o','--output', dest='output',default='star_plots.eps',help='Output filename')
   parser.add_option('-x','--parx', dest='parx',default="cpv"     ,help='First parameter to plot')
   parser.add_option('-y','--pary', dest='pary',default="mixing23",help='Second parameter to plot')
@@ -202,4 +206,4 @@ if __name__=="__main__":
   
   options,files = parser.parse_args()
   
-  main(files,options.parx,options.pary,options.output, options.longest, options.ellipse)
+  main(files,options.parx,options.pary,options.output, options.longest, options.ellipse, options.config)

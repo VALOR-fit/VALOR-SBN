@@ -27,9 +27,9 @@
 
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Utilities/UtlParam.h"
 
 using namespace valor;
 
@@ -58,7 +58,7 @@ private:
     int fBeamConfIdx [2*conv::kNBeamConf];                                          ///< maps each beam configuration to a kBeamConf array index
     int fSampleIdx   [2*conv::kNBeamConf] [2*conv::kNSamples];                      ///< maps each sample to a kSample array index
     int fReacModeIdx [2*conv::kNBeamConf][2*conv::kNSamples][2*conv::kNReacModes];  ///< maps each mode of each sample and beam to a kReactionModes array index (same for a given sample in any beam)
-    int fFitParamIdx [2*conv::knppmax];                                             ///< maps each physics param to a kFitParam array index
+    int fFitParamIdx [2*conv::knppmax];                                             ///< maps each physics param to a parameter within ParameterPool
 
     static ArrIdx * fInstance;
 

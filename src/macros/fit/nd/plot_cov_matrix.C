@@ -4,7 +4,7 @@ and a TH1D(s) of the square root(s) of its/their diagonal elements. It writes th
 file. The input ROOT file is made by generating and fitting some toy experiments using run_fit.C.
 
 There is an option to marginalise the input covariance matrix/matrices. This can only be done if the input matrix/
-matrices have dimensions kNFitParams x kNFitParams. The marginalisation is done by deleting the rows and 
+matrices have dimensions n_fit_params x n_fit_params. The marginalisation is done by deleting the rows and 
 columns that correspond to the parameters to be marginalised. This is equivalent to integrating over the parameters 
 to be marginalised if the parameters have a multivariate Gaussian distribution - please see, for example
 
@@ -24,11 +24,19 @@ Nick Grant  21 July 2014
 
 void plot_cov_matrix(
 TString inputfile = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/fit51params/toymc_fhcflux_plus10_4.root",
-bool marginalise = true
+bool marginalise = true,
+TString config = "analysis/dune_tdr.xml"
 )
 {
   using namespace valor;
   using namespace valor::conv;
+
+  // Read the config file to populate the ParameterPool
+  std::string config_path = util::CompleteConfigPath(config.Data());
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config_path.c_str());
+  const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+  const int n_fit_params = params.size();
 
   // Open input file
   TFile f(inputfile, "read");
@@ -52,7 +60,7 @@ bool marginalise = true
     {
     n_params_after_marg = 0;
     //find number of parameters after marginalisation
-    for(int i=0; i<kNFitParams; i++)
+    for(int i=0; i<n_fit_params; i++)
       {
       if(!kNDFitParamMarginalize[i])
         n_params_after_marg++;
@@ -130,16 +138,16 @@ bool marginalise = true
     if(marginalise)
       {
       //check that input covariance matrix has correct dimensions
-      if(cov->GetNrows() != kNFitParams || cov->GetNcols() != kNFitParams)
+      if(cov->GetNrows() != n_fit_params || cov->GetNcols() != n_fit_params)
         {
-        cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions to be marginalised - it must be "<<kNFitParams<<" x "<<kNFitParams<<"."<<endl;
+        cerr<<"Input covariance matrix in experiment "<<toy<<" has wrong dimensions to be marginalised - it must be "<<n_fit_params<<" x "<<n_fit_params<<"."<<endl;
         exit(1);
         }
       }//end of if(marginalise)
 
     double *covmat_array = cov->GetMatrixArray();
     if(marginalise)
-      double *end_covmat_array = covmat_array + kNFitParams * kNFitParams;
+      double *end_covmat_array = covmat_array + n_fit_params * n_fit_params;
     else
       double *end_covmat_array = covmat_array + n_params * n_params;
 
@@ -153,7 +161,7 @@ bool marginalise = true
       //need to find 2D indices to write element to marginalised covariance matrix
       if(marginalise)
 	{
-        if((j+1)%kNFitParams==0)
+        if((j+1)%n_fit_params==0)
 	  {
 	  i++;
 	  j = -1;
@@ -218,9 +226,9 @@ bool marginalise = true
 
     for(int param=0; param<n_params; param++)
       {
-      PhysParamId_t p = kFitParam[param];
+      PhysParamId_t p = params[param];
       //const char * label = util::AsStringTeX(p,true).c_str();
-      const char * label = util::AsString(p).c_str();
+      const char * label = util::NameRegistry::Instance()->ParamAsString(p).c_str();
       x_low = param;
       x_high = x_low + 1.0;
       tCovMatDiagonal[param] = new TPaveText(x_low,-0.04,x_high,-0.001);

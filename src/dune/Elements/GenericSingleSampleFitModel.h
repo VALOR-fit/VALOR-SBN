@@ -43,7 +43,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
@@ -93,6 +93,12 @@ public:
   //
   // Auxiliary methods, not part of the  FitModelABC interface (needed?)
   //
+  
+  // Get the modelist we're using
+  const std::vector<conv::ReacMode_t> GetReactionModes(Option_t * opt = "") const;
+  
+  // Get POT
+  const double & GetPOT() const;
   
   // Get the response function library and binning
   const util::DuneRFL * GetRFL(void) const;
@@ -149,6 +155,9 @@ private:
 
   // Input VALOR MC DSTs
   bool fUseMCDST;
+
+  // Whether or not we should apply the osc prob to ALL detectors (i.e. skipping the util::OscProbIsAppliedTo check)
+  bool fSkipOscProbApplyCheck;
   
   // MC templates (MCT) 
   // Each template is a 2D array, with (reco,true) bins linearised in whatever kinematic space we need.
@@ -212,8 +221,7 @@ private:
   SingleSampleKineBinning * fBinning;
   
   // The list of reaction modes we're using
-  size_t fNReacModes;
-  const conv::ReacMode_t * fReactionModes;
+  std::vector<conv::ReacMode_t> fReactionModes;
   
   // Spline library
   util::DuneRFL * fRFL;

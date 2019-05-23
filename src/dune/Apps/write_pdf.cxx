@@ -6,8 +6,10 @@
 \brief     Write out generic single sample PDFs and MC templates 
 
 \options
-           --fit-param-list      : Fit parameter list (see FitParam.cxx)                                                              
-                                     [def: "standard"]    				     
+           --fit-param-list      : Fit parameter list (see UtlParam.cxx)
+                                     [def: "nuosc3f"]
+           --fit-param-opt       : Options used when setting up the FitParamList
+                                     [def: "NONE"]
            --config              : Analysis configuration file [required]
            --write-opt           : Options defining what to write-out [def:pdft_vf]
            --output-name         : Output file name [def:test]
@@ -31,6 +33,7 @@
 #include "TObjArray.h"
 #include "TString.h"
 #include "TVirtualFitter.h"
+#include "TPRegexp.h"
 // fmwk
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -46,11 +49,12 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
-#include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/OscParams.h"
+#include "dune/Utilities/UtlParam.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
@@ -71,7 +75,8 @@ int main(int argc, char ** argv)
   arg.Read(argc,argv,"$VALOR_DUNE/config/apps/write_pdf.arg:$VALOR_DUNE/config/apps/oscparams.arg:$VALOR_DUNE/config/apps/seeds.arg");
   LOG("valor_dune", pNOTICE) << arg;
 
-  string fplname          = arg.GetString("fit-param-list"); 
+  string fplname          = arg.GetString("fit-param-list");
+  string fplopt           = arg.GetString("fit-param-opt");
   std::string write_opt   = arg.GetString("write-opt");
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string output_name      = arg.GetString("output-name");
@@ -92,9 +97,6 @@ int main(int argc, char ** argv)
   
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
-  // Set DUNE param names inside framework       
-  util::PopulateNameRegistry();
-
   // Set the random seeds                                                                                                          
   Rnd::Instance()->SetSeeds(arg);
 
@@ -107,11 +109,12 @@ int main(int argc, char ** argv)
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(util::CompleteConfigPath(config_file),readopt.Data());
   FitModelABC * model = elements->FitModel();
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
   // parameter limits, initial values etc).            
   CorrelatedSystematics * syst = model->GetSystematics();                                                                               
-  FitParamList * fp = util::GetFitParameterList(fplname.c_str(),syst);
+  FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
 
   //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
@@ -120,54 +123,34 @@ int main(int argc, char ** argv)
   Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
 
   // Update values of oscillation parameters 
-  
-  if (fp->Exists(conv::kPhypMixing12)) {
-    double mixing12 = arg.GetDouble("input-mixing12");
-    if ( std::fabs(mixing12 + 999. ) < conv::kASmallNum ) { 
-      mixing12 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing12);
+  RgKeyList input_args = arg.FindKeys("input-");
+  TPRegexp input_match("input-(\\w*)");
+  for (RgKey argname : input_args) { // RgKey is just a typename for std::string right now
+    TObjArray * matches = input_match.MatchS(argname.c_str());
+
+    if (matches->GetEntries() != 2) {
+      LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+      util::Die(-1);
     }
-    fp->Update      (util::PhysParamFromString("mixing12"), mixing12);
-    fp->SetInitValue(util::PhysParamFromString("mixing12"), mixing12);
-  }
+    TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
+    std::string param_name(tos_param_name->String().Data());
+    delete matches;
 
-  double mixing13 = arg.GetDouble("input-mixing13");
-  if ( std::fabs(mixing13 + 999. ) < conv::kASmallNum ) { 
-    mixing13 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing13);
-  }
-  fp->Update      (util::PhysParamFromString("mixing13"), mixing13);
-  fp->SetInitValue(util::PhysParamFromString("mixing13"), mixing13);
-  
-  double mixing23 = arg.GetDouble("input-mixing23");
-  if ( std::fabs(mixing23 + 999. ) < conv::kASmallNum ) { 
-    mixing23 = Opt::Instance()->GetGlobalBestFit(conv::kPhypMixing23);
-  }
-  
-  //~ if (flip_23_octant) {
-    //~ mixing23 = util::FlipOctantAroundMaxDisap(mixing23,mixing13);
-  //~ }
-  //~ fp->Update      (util::PhysParamFromString("mixing23"), mixing23);
-  //~ fp->SetInitValue(util::PhysParamFromString("mixing23"), mixing23);
-  
-  double dm23sq = arg.GetDouble("input-dm23sq");
-  if ( std::fabs(dm23sq + 999. ) < conv::kASmallNum ) {
-    dm23sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm23sq);
-  }
-  fp->Update      (util::PhysParamFromString("dm23sq"), dm23sq);
-  fp->SetInitValue(util::PhysParamFromString("dm23sq"), dm23sq);
+    conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
+    if (param == conv::kPhypUndefined) {
+      LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+      util::Die(-1);
+    }
 
-  double dm12sq = arg.GetDouble("input-dm12sq");
-  if ( std::fabs(dm12sq + 999. ) < conv::kASmallNum ) { 
-    dm12sq = Opt::Instance()->GetGlobalBestFit(conv::kPhypDm12sq);
+    double param_val = arg.GetDouble(argname);
+    if ( std::fabs(param_val + 999. ) < conv::kASmallNum ) {
+      param_val = Opt::Instance()->GetGlobalBestFit(param);
+    }
+    if(fp->Exists(param)) {
+      fp->Update      (param, param_val);
+      fp->SetInitValue(param, param_val);
+    }
   }
-  fp->Update      (util::PhysParamFromString("dm12sq"), dm12sq);
-  fp->SetInitValue(util::PhysParamFromString("dm12sq"), dm12sq);
-
-  double deltacp = arg.GetDouble("input-deltaCP");
-  if ( std::fabs(deltacp + 999. ) < conv::kASmallNum ) {
-    deltacp = Opt::Instance()->GetGlobalBestFit(conv::kPhypCPV);
-  }
-  fp->Update      (util::PhysParamFromString("cpv"), deltacp);
-  fp->SetInitValue(util::PhysParamFromString("cpv"), deltacp);
 
   // Generate predictions                                                                                                         
   Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                 
