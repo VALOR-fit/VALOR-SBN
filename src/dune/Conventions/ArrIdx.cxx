@@ -45,25 +45,25 @@ void valor::util::ArrIdx::Init(void)
 {
   
   // Init to -1
-  for(int i = 0; i < 2*kNBeamConf; i++) {
+  for(int i = 0; i < kNBeamsDefined; i++) {
      fBeamConfIdx [i] = -1;
   }//i
 
-  for(int i = 0; i < 2*kNBeamConf; i++) {
-    for(int j = 0; j < 2*kNSamples; j++) {
+  for(int i = 0; i < kNBeamsDefined; i++) {
+    for(int j = 0; j < kMaxNSamples; j++) {
        fSampleIdx [i][j] = -1;
     }//j
   }//i
 
-  for(int ib = 0; ib < 2 * kNBeamConf; ib++) {
-    for(int i = 0; i < 2 * kNSamples; i++) {
-      for(int j = 0; j < 2 * kNReacModes; j++) {
+  for(int ib = 0; ib < kNBeamsDefined; ib++) {
+    for(int i = 0; i < kMaxNSamples; i++) {
+      for(int j = 0; j < kNReacModes; j++) {
         fReacModeIdx[ib][i][j] = -1;
       }//i
     }//j
   }//ib
 
-  for(int i = 0; i < 2*knppmax; i++) {
+  for(int i = 0; i < knppmax; i++) {
      fFitParamIdx[i] = -1;
   }//i
 
