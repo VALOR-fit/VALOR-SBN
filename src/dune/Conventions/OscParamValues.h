@@ -8,8 +8,8 @@
 \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
            University of Liverpool & STFC Rutherford Appleton Laboratory
 
-	   Lorena Escudero <escudero \at hep.phy.cam.ac.uk>
-	   University of Cambridge
+           Lorena Escudero <escudero \at hep.phy.cam.ac.uk>
+           University of Cambridge
           
 \created   July, 2016
 
@@ -20,6 +20,9 @@
 
 #ifndef _valor_expt_oscparams_h_
 #define _valor_expt_oscparams_h_
+
+// fmwk
+#include "valor/Conventions/PhysParamId.h"
 
 namespace valor {
 namespace conv {
