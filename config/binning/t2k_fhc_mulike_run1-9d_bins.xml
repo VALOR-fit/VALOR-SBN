@@ -9,7 +9,7 @@
 
   <!-- Single edge-to-edge binning scheme for reco quantities -->
   <reco_simple>
-    binning/mondrian/reco/t2k_mondrian_Ereco_Mulike_binning.xml     <!-- Have left this the same as the opt binning. TODO: Can simple binning be Mondrian? -->
+    binning/e2e/reco/t2k_e2e_Ereco_mulike.xml
   </reco_simple>
 
   <!-- Single edge-to-edge binning scheme for true quantities.

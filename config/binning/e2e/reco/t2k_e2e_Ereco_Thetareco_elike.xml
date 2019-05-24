@@ -10,6 +10,12 @@
       edge-to-edge 
    </type>
 
+   <!--
+    NOTE: For e-like samples the upper edge of the highest energy Ereco bin is 1.25GeV. The SK MC tree will contain
+    events with large Erec values than this, but we ignore them because MC studies show that these are intrinsic nue +
+    NC events rather than oscillated nue events. See e.g. https://t2k.org/docs/technotes/355/v1r4 figure 14
+   -->
+
    <Ereco_binning>
        <bin_size> variable </bin_size>
        <nbins>    25       </nbins>
