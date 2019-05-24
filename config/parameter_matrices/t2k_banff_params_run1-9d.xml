@@ -56,7 +56,7 @@
   <parameter>	MAQE                 </parameter>
   <parameter>	MARES                </parameter>
   <parameter>	SCCA                 </parameter>
-  <parameter>	SCCV                 </parameter>
+  <parameter>	SCCV                 </parameter>  <!-- TODO: SCCA and SCCV are no longer used in the analysis, but are still present in the legacy VALOR BANFF matricies, so I'm leaving them in for now, but they should be removed eventually-->
   <parameter>	pF_O                 </parameter>
   <parameter>	CC_DIS               </parameter>
   <parameter>	CC_Coh_O             </parameter>
