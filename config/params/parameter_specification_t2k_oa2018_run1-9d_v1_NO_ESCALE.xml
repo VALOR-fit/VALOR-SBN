@@ -3897,7 +3897,60 @@
     
     <limits>  0.0, inf  </limits>
   </param>
-  
+
+  <!-- TODO: SCCA and SCCV are not used in the analysis. As there are no 'apply to nothing' apply masks yet, I'm setting it to apply to DUNE ND only, which will have the same effect-->
+  <param>
+    <name>
+      <simple>  SCCA  </simple>
+      <long>  SCCA  </long>
+      <rootex>  SCCA  </rootex>
+      <tex>  SCCA  </tex>
+    </name>
+
+    <apply_to_range>
+      <Etrue>  0, inf  </Etrue>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  BANFF  </category>
+      <category>  int  </category>
+    </categories>
+
+    <apply_to>
+      <detector>  dunend  </detector>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+  </param>
+
+  <!-- TODO: SCCA and SCCV are not used in the analysis. As there are no 'apply to nothing' apply masks yet, I'm setting it to apply to DUNE ND only, which will have the same effect-->
+  <param>
+    <name>
+      <simple>  SCCV  </simple>
+      <long>  SCCV  </long>
+      <rootex>  SCCV  </rootex>
+      <tex>  SCCV  </tex>
+    </name>
+
+    <apply_to_range>
+      <Etrue>  0, inf  </Etrue>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  BANFF  </category>
+      <category>  int  </category>
+    </categories>
+
+    <apply_to>
+      <detector>  dunend  </detector>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+  </param>
 
   <!--
   <param>
