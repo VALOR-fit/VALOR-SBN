@@ -1535,7 +1535,18 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         double true2_max  = 0.;
 
         std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
-        if (true_kinevars.size() == 2) {
+        if (true_kinevars.size() == 1) {
+          std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
+          true1_min = pair1.first;
+          true1_max = pair1.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+          LOG("GenericSingleSampleFitModel",pINFO)
+            << fName <<": "
+            << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+            << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]";
+#endif
+        }
+        else if (true_kinevars.size() == 2) {
           std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
           std::pair<double,double> pair2 = util::GetKineRange(p, true_kinevars[1]);
           true1_min = pair1.first;
@@ -1555,13 +1566,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           util::Die(-1); break;
         }
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          vector<double> true1_range (true_sb->BinRange(itrue,0));
-          vector<double> true2_range (true_sb->BinRange(itrue,1));
-          
           // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
-          double frac1 = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
-          double frac2 = util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
-          double effective_tweak = frac1*frac2*(f-1.) + 1;
+          vector<double> true1_range (true_sb->BinRange(itrue,0));
+          double frac = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+          if (true_kinevars.size() == 2) {
+            vector<double> true2_range (true_sb->BinRange(itrue,1));
+            frac *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+          }
+          double effective_tweak = frac*(f-1.) + 1;
           if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
           for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
             double & val = fMCTFinOb[imode]->GetEntryRef(ireco,itrue);
@@ -1678,7 +1690,18 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           double true2_max  = 0.;
 
           std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
-          if (true_kinevars.size() == 2) {
+          if (true_kinevars.size() == 1) {
+            std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
+            true1_min = pair1.first;
+            true1_max = pair1.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+            LOG("GenericSingleSampleFitModel",pINFO)
+              << fName <<": "
+              << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+              << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]";
+#endif
+          }
+          else if (true_kinevars.size() == 2) {
             std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
             std::pair<double,double> pair2 = util::GetKineRange(p, true_kinevars[1]);
             true1_min = pair1.first;
@@ -1699,12 +1722,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           }
           for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
             vector<double> true1_range (true_sb->BinRange(itrue,0));
-            vector<double> true2_range (true_sb->BinRange(itrue,1));
-            
-            // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
-            double frac1 = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
-            double frac2 = util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
-            double effective_tweak = frac1*frac2*(f-1.) + 1;
+            double frac = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+            if (true_kinevars.size() == 2) {
+              vector<double> true2_range (true_sb->BinRange(itrue,1));
+              frac *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+            }
+            double effective_tweak = frac*(f-1.) + 1;
             if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
             for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
               double & val = fMCTFinSb[imode]->GetEntryRef(ireco,itrue);
