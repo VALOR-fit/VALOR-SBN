@@ -3952,7 +3952,6 @@
     <limits>  0.0, inf  </limits>
   </param>
 
-  <!--
   <param>
     <name>
       <simple>  sk_e_scale  </simple>
@@ -3965,7 +3964,8 @@
       <Etrue>  0, inf  </Etrue>
     </apply_to_range>
     
-    <type>  lateral  </type>
+    <!-- <type>  lateral  </type>  TODO: implement lateral systs -->
+    <type>  normalisation  </type>
     
     <categories>
       <category>  SKDetFSI  </category>
@@ -3983,7 +3983,6 @@
     
     <limits>  -inf, inf  </limits>
   </param>
-  -->
   
 
 
