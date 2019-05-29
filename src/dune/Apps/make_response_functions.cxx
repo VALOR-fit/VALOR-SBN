@@ -40,14 +40,17 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/Detector.h"
 #include "valor/KineBinning/VALORBinning.h"
-
+#include "valor/Conventions/Parameter.h"
 #include "valor/Conventions/ReacMode.h"
+#include "valor/Conventions/ParameterPool.h"
+
 #include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/ArrIdx.h"
