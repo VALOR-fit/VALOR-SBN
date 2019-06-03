@@ -136,6 +136,10 @@ TH1D* Make1DHistogram(const VALORArray& v,
   const VALORArray* targetV = nullptr;
   const KBCubHcmbEdge2Edge * newRecoBinning = nullptr;
   if (recoKv.size() > 1) {
+     // TODO: Fix util::binning::Contract
+     LOG("UtlBinning", pWARN) <<
+       "util::binning::Contract is currently not working (see Git issue #5), so skipping Contract and returning null";
+     return nullptr;
      newRecoBinning = recoBinning->Contract(ks);
     // Need to integrate out the reco variables here, before integrating over
     // truth
