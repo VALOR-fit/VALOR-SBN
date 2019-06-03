@@ -9,7 +9,7 @@
 
   <!-- Single edge-to-edge binning scheme for reco quantities -->
   <reco_simple>
-    binning/e2e/reco/t2k_e2e_Ereco_mulike.xml
+    binning/e2e/reco/t2k_e2e_Ereco_rhc_mulike_plot.xml
   </reco_simple>
 
   <!-- Single edge-to-edge binning scheme for true quantities.
