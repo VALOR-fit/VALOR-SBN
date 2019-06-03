@@ -119,7 +119,7 @@ static const ReacModeCoarse_t kCoarseReacPriority[kNReacModes][kMaxCoarseReacOpt
 // /* kmNuMuNC2pi0                 */ {kmcNC2pi       , kmcNCoth      , kmcNC       , kmcNuMuNC   , kmcUndefined, kmcUndefined},
 // /* kmNuMuNCpiCpi0               */ {kmcNC2pi       , kmcNCoth      , kmcNC       , kmcNuMuNC   , kmcUndefined, kmcUndefined},
    /* kmNuMuNCcoh                  */ {kmcNC1pi0      , kmcNCoth      , kmcNC       , kmcNuMuNC   , kmcUndefined, kmcUndefined},
-   /* kmNuMuNC1Gamma               */ {kmcNCoth       , kmcNuMuNC     , kmcUndefined, kmcUndefined, kmcUndefined, kmcUndefined},
+   /* kmNuMuNC1Gamma               */ {kmcNCoth       , kmcNuMuNC     , kmcNC       , kmcUndefined, kmcUndefined, kmcUndefined},
    /* kmNuMuNCELScat               */ {kmcNCoth       , kmcNC         , kmcNuMuNC   , kmcUndefined, kmcUndefined, kmcUndefined},
    /* kmNuMuNCoth                  */ {kmcNCoth       , kmcNC         , kmcNuMuNC   , kmcUndefined, kmcUndefined, kmcUndefined},
    
@@ -141,7 +141,7 @@ static const ReacModeCoarse_t kCoarseReacPriority[kNReacModes][kMaxCoarseReacOpt
 // /* kmNuMuBarNC2pi0              */ {kmcNCoth    , kmcNC         , kmcNuMuBarNC, kmcUndefined, kmcUndefined, kmcUndefined},
 // /* kmNuMuBarNCpiCpi0            */ {kmcNCoth    , kmcNC         , kmcNuMuBarNC, kmcUndefined, kmcUndefined, kmcUndefined},
    /* kmNuMuBarNCcoh               */ {kmcNC1pi0   , kmcNCoth      , kmcNC       , kmcNuMuBarNC, kmcUndefined, kmcUndefined},
-   /* kmNuMuBarNC1Gamma            */ {kmcNCoth    , kmcNuMuBarNC  , kmcUndefined, kmcUndefined, kmcUndefined, kmcUndefined},
+   /* kmNuMuBarNC1Gamma            */ {kmcNCoth    , kmcNuMuBarNC  , kmcNC       , kmcUndefined, kmcUndefined, kmcUndefined},
    /* kmNuMuBarNCELScat            */ {kmcNCoth    , kmcNC         , kmcNuMuBarNC, kmcUndefined, kmcUndefined, kmcUndefined},
    /* kmNuMuBarNCoth               */ {kmcNCoth    , kmcNC         , kmcNuMuBarNC, kmcUndefined, kmcUndefined, kmcUndefined},
    
@@ -162,7 +162,7 @@ static const ReacModeCoarse_t kCoarseReacPriority[kNReacModes][kMaxCoarseReacOpt
 // /* kmNuENC2pi0                  */ {kmcNC2pi    , kmcNCoth      , kmcNC         , kmcNuENC      , kmcUndefined  , kmcUndefined},
 // /* kmNuENCpiCpi0                */ {kmcNC2pi    , kmcNCoth      , kmcNC         , kmcNuENC      , kmcUndefined  , kmcUndefined},
    /* kmNuENCcoh                   */ {kmcNC1pi0   , kmcNCoth      , kmcNC         , kmcNuENC      , kmcUndefined  , kmcUndefined},
-   /* kmNuENC1Gamma                */ {kmcNCoth    , kmcNuENC      , kmcUndefined  , kmcUndefined  , kmcUndefined  , kmcUndefined},
+   /* kmNuENC1Gamma                */ {kmcNCoth    , kmcNuENC      , kmcNC         , kmcUndefined  , kmcUndefined  , kmcUndefined},
    /* kmNuEELScat                  */ {kmcNuEElScat, kmcNCoth      , kmcNC         , kmcNuENC      , kmcUndefined  , kmcUndefined},
    /* kmNuENCoth                   */ {kmcNCoth    , kmcNC         , kmcNuENC      , kmcUndefined  , kmcUndefined  , kmcUndefined},
    
@@ -184,7 +184,7 @@ static const ReacModeCoarse_t kCoarseReacPriority[kNReacModes][kMaxCoarseReacOpt
 // /* kmNuEBarNC2pi0               */ {kmcNC2pi       , kmcNCoth         , kmcNC         , kmcNuEBarNC     , kmcUndefined    , kmcUndefined},
 // /* kmNuEBarNCpiCpi0             */ {kmcNC2pi       , kmcNCoth         , kmcNC         , kmcNuEBarNC     , kmcUndefined    , kmcUndefined},
    /* kmNuEBarNCcoh                */ {kmcNC1pi0      , kmcNCoth         , kmcNC         , kmcNuEBarNC     , kmcUndefined    , kmcUndefined},
-   /* kmNuMuNC1Gamma               */ {kmcNCoth       , kmcNuEBarNC      , kmcUndefined  , kmcUndefined    , kmcUndefined    , kmcUndefined},
+   /* kmNuMuNC1Gamma               */ {kmcNCoth       , kmcNuEBarNC      , kmcNC         , kmcUndefined    , kmcUndefined    , kmcUndefined},
    /* kmNuEBarELScat               */ {kmcNuEBarElScat, kmcNCoth         , kmcNC         , kmcNuEBarNC     , kmcUndefined    , kmcUndefined},
    /* kmNuEBarNCoth                */ {kmcNCoth       , kmcNC            , kmcNuEBarNC   , kmcUndefined    , kmcUndefined    , kmcUndefined},
    
