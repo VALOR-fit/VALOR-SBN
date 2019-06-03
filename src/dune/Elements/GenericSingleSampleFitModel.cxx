@@ -470,8 +470,8 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   //~ bool write_pdfcs_vf = (opt.find("pdfcs_vf") != string::npos) || write_all;
   bool write_pdfcs_rf = (opt.find("pdfcs_rf") != string::npos) || write_all;
 
-  if(write_pdft_rf || write_pdfc_rf) {
-    LOG("GenericSingleSampleFitModel",pWARN) << "Options pdft_rf, pdfc_rf are not yet implemented.";
+  if(write_pdfc_rf) {
+    LOG("GenericSingleSampleFitModel",pWARN) << "Options pdfc_rf are not yet implemented.";
   }
 
   if(!array) {
@@ -571,12 +571,68 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
         array->Add(fPDFTotOb);
       }
 
+      if (write_pdft_rf) {
+        const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
+        if(reco_vars.size() == 1) {
+          conv::KineSpace_t ks(util::KineSpaceFromKineVar(reco_vars[0]));
+          TH1 * hob = util::binning::Make1DHistogram(*fPDFTotOb,binning,ks,false);
+          if(hob) {
+            TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdft_ob_rf",fName.c_str(),util::AsString(reco_vars[0]).c_str());
+            hob->SetName(hobname.Data());
+            array->Add(hob);
+          }
+        }
+        else if(reco_vars.size() == 2) {
+          conv::KineSpace_t ks = util::KineSpaceFromKineVars(reco_vars);
+          if(ks != conv::kspUndefined) {
+            TH2 *hob = util::binning::Make2DOptimisedHistogram(*fPDFTotOb,binning,reco_vars);
+            if(hob) {
+              TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdft_ob_rf",fName.c_str(),util::AsString(ks).c_str());
+              hob->SetName(hobname.Data());
+              array->Add(hob);
+            }
+          }
+        }
+        else {
+          LOG("GenericSingleSampleFitModel", pWARN)
+            << "Tried writing PDFT to ROOT format, but number of kine vars != 1 or 2 (" << fPDFTotOb->GetName() << ")";
+        }
+      }
+
     if(write_sb) {
       // in VALORArray format
       if (write_pdft_vf) {
         fPDFTotSb->SetName(TString::Format("%s_%s_%s",tag,"pdft_sb_vf",fName.c_str()));
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotSb->GetName();
         array->Add(fPDFTotSb);
+      }
+
+      if (write_pdft_rf) {
+        const std::vector<KineVar_t>  & reco_vars = reco_smp.KineVars();
+        if(reco_vars.size() == 1) {
+          conv::KineSpace_t ks(util::KineSpaceFromKineVar(reco_vars[0]));
+          TH1 * hob = util::binning::Make1DHistogram(*fPDFTotSb,binning,ks,true);
+          if(hob) {
+            TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdft_sb_rf",fName.c_str(),util::AsString(reco_vars[0]).c_str());
+            hob->SetName(hobname.Data());
+            array->Add(hob);
+          }
+        }
+        else if(reco_vars.size() == 2) {
+          conv::KineSpace_t ks = util::KineSpaceFromKineVars(reco_vars);
+          if(ks != conv::kspUndefined) {
+            TH2 *hob = util::binning::Make2DSimpleHistogram(*fPDFTotSb,binning,reco_vars);
+            if(hob) {
+              TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdft_sb_rf",fName.c_str(),util::AsString(ks).c_str());
+              hob->SetName(hobname.Data());
+              array->Add(hob);
+            }
+          }
+        }
+        else {
+          LOG("GenericSingleSampleFitModel", pWARN)
+            << "Tried writing PDFT to ROOT format, but number of kine vars != 1 or 2 (" << fPDFTotOb->GetName() << ")";
+        }
       }
     }//+SB?
 
