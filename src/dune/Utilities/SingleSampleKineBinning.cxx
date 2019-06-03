@@ -349,19 +349,10 @@ bool SingleSampleKineBinning::Read(string file)
       fXsecTrueBinning[im] = fTrueSimpleBinning [im];
     }
   }
-  
-  // Should write a check here that makes sure that optimised bin edges each lie on a simple bin edge.
-  // For now just check there's more bins
-  if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
-    LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
-      <<") than optimised bins ("<<fRecoOptimizedBinning->NBins()<<"). You did something wrong.";
-    util::Die(-1); return false;
-  }
-  if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
-    LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
-      <<") than xsec bins ("<<fXsecRecoBinning->NBins()<<"). You did something wrong.";
-    util::Die(-1); return false;
-  }
+
+  // Check that optimised bin edges each lie on a simple bin edge.
+  CheckBinEdges(fRecoOptimizedBinning, fRecoSimpleBinning);
+  CheckBinEdges(fXsecRecoBinning     , fRecoSimpleBinning);
   
   // Copy our set of kinevars into the stored vector and then sort it
   fKineVars.insert(fKineVars.end(),kinevars.begin(),kinevars.end());
@@ -452,5 +443,47 @@ const std::vector<conv::KineVar_t> & SingleSampleKineBinning::KineVars() const
   return fKineVars;
 }
 //________________________________________________________________________________________
+void SingleSampleKineBinning::CheckBinEdges(VALORBinning *opt_binning, VALORBinning *smp_binning) const
+{
+  for(auto kv_opt : opt_binning->KineVars()) {
+    if(!smp_binning->Contains(kv_opt)) { continue; }
+    for(unsigned int ibin_opt = 0; ibin_opt < opt_binning->NBins(); ++ibin_opt) {
+      // Check if the bin lower edge matches
+      bool min_matches = false;
+      double bin_min_opt = opt_binning->BinMinimum(ibin_opt, kv_opt);
+      for(unsigned int ibin_smp = 0; ibin_smp < smp_binning->NBins(); ++ibin_smp) {
+        double bin_min_smp = smp_binning->BinMinimum(ibin_smp, kv_opt);
+        double bin_max_smp = smp_binning->BinMaximum(ibin_smp, kv_opt);
+        if((bin_min_smp - bin_min_opt < conv::kASmallNum) || (bin_max_smp - bin_min_opt < conv::kASmallNum)) {
+          min_matches = true;
+          break;
+        }
+      }
+      if(!min_matches) {
+        LOG("SampleBinning",pFATAL) << "The optimised lower bin edge " << bin_min_opt
+                                    << " for kinevar = " << util::AsString(kv_opt)
+                                    << " does not lie on a simple bin edge for binning = " << opt_binning->GetName();
+        util::Die(-1);
+      }
 
-
+      // Check if the bin upper edge matches
+      bool max_matches = false;
+      double bin_max_opt = opt_binning->BinMaximum(ibin_opt, kv_opt);
+      for(unsigned int ibin_smp = 0; ibin_smp < smp_binning->NBins(); ++ibin_smp) {
+        double bin_min_smp = smp_binning->BinMinimum(ibin_smp, kv_opt);
+        double bin_max_smp = smp_binning->BinMaximum(ibin_smp, kv_opt);
+        if((bin_min_smp - bin_max_opt < conv::kASmallNum) || (bin_max_smp - bin_max_opt < conv::kASmallNum)) {
+          max_matches = true;
+          break;
+        }
+      }
+      if(!max_matches) {
+        LOG("SampleBinning",pFATAL) << "The optimised upper bin edge " << bin_min_opt
+                                    << " for kinevar = " << util::AsString(kv_opt)
+                                    << " does not lie on a simple bin edge for binning = " << opt_binning->GetName();
+        util::Die(-1);
+      }
+    }
+  }
+}
+//________________________________________________________________________________________
