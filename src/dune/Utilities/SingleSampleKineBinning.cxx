@@ -353,6 +353,18 @@ bool SingleSampleKineBinning::Read(string file)
   // Check that optimised bin edges each lie on a simple bin edge.
   CheckBinEdges(fRecoOptimizedBinning, fRecoSimpleBinning);
   CheckBinEdges(fXsecRecoBinning     , fRecoSimpleBinning);
+
+  // Check that there're more bins in the simple binning scheme than the optimised
+  if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
+    LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
+                                <<") than optimised bins ("<<fRecoOptimizedBinning->NBins()<<"). You did something wrong.";
+    util::Die(-1); return false;
+  }
+  if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
+    LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
+                                <<") than xsec bins ("<<fXsecRecoBinning->NBins()<<"). You did something wrong.";
+    util::Die(-1); return false;
+  }
   
   // Copy our set of kinevars into the stored vector and then sort it
   fKineVars.insert(fKineVars.end(),kinevars.begin(),kinevars.end());
