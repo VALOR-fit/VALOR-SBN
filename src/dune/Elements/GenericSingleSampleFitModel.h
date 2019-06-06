@@ -126,14 +126,17 @@ private:
   void ApplyPhysics                      (Option_t * opt = 0);
   void ApplyOscProb                      (Option_t * opt = 0);
   void UpdatePDFs                        (Option_t * opt = 0);
+  void ApplyPostOscLateralSystematics    (VALORArray * pdf, bool simple_binning = false);
+  void ApplyLateralSystematic            (VALORArray * pdf, conv::PhysParamId_t p, bool simple_binning = false);
 
   const util::ArrIdx * fArrIdx;
   
   // Keep track of the parameters we need to loop over
-  // Normalisation and spline parameters divided
+  // Normalisation, spline and post-oscillation lateral parameters divided
   std::vector<conv::PhysParamId_t> fNormParams;
   std::vector<conv::PhysParamId_t> fSplineParams;
-  
+  std::vector<conv::PhysParamId_t> fLateralPostOscParams;
+
   // Keep a list of the parameters for every given mode
   std::vector<conv::PhysParamId_t> fNormParamsAppliedTo  [conv::kNReacModes];
   std::vector<conv::PhysParamId_t> fSplineParamsAppliedTo[conv::kNReacModes];
