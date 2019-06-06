@@ -414,9 +414,13 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
     vec.push_back(kPhypDm12sq  );
   }
 
+  // If we've failed to identify a set of parameters, try a single parameter
   if (vec.size()==0) {
-    LOG("FitParams",pWARN)<<"No parameters added to set: "<<set_name;
+    PhysParamId_t try_param = util::NameRegistry::Instance()->PhysParamFromString(set_name);
+    if(try_param != kPhypUndefined) { vec.push_back(try_param); }
+    else { LOG("FitParams",pWARN)<<"No parameters added to set: "<<set_name; }
   }
+
   return vec;
 }
 //____________________________________________________________________________
