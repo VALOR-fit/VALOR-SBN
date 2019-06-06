@@ -33,7 +33,8 @@
   <priority msgstream="GenericSingleSampleFitData">     NOTICE </priority>
   <priority msgstream="FitInputs">                      NOTICE </priority>
   <priority msgstream="UtlNumStat">                     NOTICE </priority>
-  
+  <priority msgstream="Lateral">                         DEBUG </priority>
+
   <priority msgstream="fitnt_conv">                     NOTICE </priority>
   
   <priority msgstream="make_minidst">                   NOTICE  </priority>

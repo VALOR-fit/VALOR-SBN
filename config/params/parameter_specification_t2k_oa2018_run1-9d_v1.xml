@@ -3963,10 +3963,10 @@
     </name>
     
     <apply_to_range>
-      <Etrue>  0, inf  </Etrue>
+      <Ereco>  0, inf  </Ereco>
     </apply_to_range>
     
-    <type>  lateral  </type>
+    <type>  lateral_post_osc  </type>
     
     <categories>
       <category>  SKDetFSI  </category>

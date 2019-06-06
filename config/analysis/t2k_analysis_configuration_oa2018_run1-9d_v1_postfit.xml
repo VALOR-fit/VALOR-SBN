@@ -71,7 +71,7 @@
 
   <!-- TODO: Put in handling for lateral systematics into DUNE, then change this to the correct config file -->
   <parameter_definitions>
-    <filename> params/parameter_specification_t2k_oa2018_run1-9d_v1_NO_ESCALE.xml </filename>
+    <filename> params/parameter_specification_t2k_oa2018_run1-9d_v1.xml </filename>
   </parameter_definitions>
 
 
