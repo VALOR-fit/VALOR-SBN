@@ -85,7 +85,8 @@ public:
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
-  
+  double AddExternalWeight(string mc_xmlfile, string sval, double val, Option_t *opt = ""); // new function to read external weight containing histo
+  std::vector<string> ReadTune(TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = "");
   void          SetSystConf            (CorrelatedSystematics * syst, Option_t * opt = "");
   CorrelatedSystematics *       GetSystematics(Option_t * opt = "");
   const CorrelatedSystematics * GetSystematics(Option_t * opt = "") const;
@@ -232,6 +233,9 @@ private:
   // Pointer to our systematics
   CorrelatedSystematics * fSystematics;
   bool fOwnerOfSystematics;
+
+  // mc file with weights
+  string fMCFileName; // TODO: remove
 };
 
 } // valor

@@ -41,6 +41,7 @@
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Oscillation/NuOsc3Flavour.h"
 #include "valor/Oscillation/SimpleOsc.h"
@@ -130,6 +131,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   
   TString ts_file = util::CompleteConfigPath(file).c_str();
 
+  fMCFileName = ts_file; //set mc with weights filename  ( Not the best way though....)   // TODO: remove
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(ts_file.Data());
@@ -779,6 +781,7 @@ void GenericSingleSampleFitModel::Init(void)
   fArrIdx = util::ArrIdx::Instance();
 
   fSystematics = 0;
+  fMCFileName = "none"; // TODO: remove
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Book(void)
@@ -1248,7 +1251,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     
     // Get the mode appropriate binning
     const VALORBinning * true_sb = fBinning->TrueSmpBinning(m);
-    
+    double ext_weight = 1.;
     // check kinematic values against built-in limits and make vectors
     std::vector<double> true_vars;
     std::vector<double> reco_vars;
@@ -1263,6 +1266,10 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         out_of_range = true;
       }
       true_vars.push_back(val);
+      // now check for external tuning files
+      string sval = util::KineVarAsString(kv);
+      ext_weight = AddExternalWeight(fMCFileName,sval,val); // TODO: move most of this to GSSFM::Read
+      wght = wght*ext_weight;
     }
     // and in reco
     for (conv::KineVar_t kv : reco_ob->KineVars()) {
@@ -1274,6 +1281,10 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         out_of_range = true;
       }
       reco_vars.push_back(val);
+      // now check for external tuning files
+      string sval = util::KineVarAsString(kv);
+      ext_weight = AddExternalWeight(fMCFileName,sval,val);
+      wght = wght*ext_weight;
     }
     if (out_of_range) {continue;}
     
@@ -1315,7 +1326,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       this_entry *= namewght.second;
     }
 #endif
-    
+
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode]->GetEntry(reco_bin_ob, true_bin);
     curr_wght += this_entry;
@@ -1334,6 +1345,118 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     fMCStatSb [imode]->SetEntry(           1, reco_bin_sb, true_bin);
   }//iev 
 }
+//________________________________________________________________________________________
+std::vector<string> GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt)
+{
+  std::vector<string> result;
+  string filename      = "";
+  string objname       = "";
+  string objtype       = "";
+  string apply_beam    = "";
+  string apply_flav    = "";
+  string apply_kinevar = "";
+
+
+  XMLNodePointer_t curr_node = xmleng->GetChild(top_node);
+
+  while(curr_node) {
+      string curr_node_name = xmleng->GetNodeName(curr_node);
+      if(xmleng->GetNodeContent(curr_node)) {
+        string content = util::TrimSpaces(xmleng->GetNodeContent(curr_node));
+        LOG("GenericSingleSampleFitModel", pNOTICE) << curr_node_name << " --> " << content;
+        if(curr_node_name == "filename"      ) { filename      = content; }
+        if(curr_node_name == "objname"       ) { objname       = content; }
+        if(curr_node_name == "objtype"       ) { objtype       = content; }
+        if(curr_node_name == "apply_beam"    ) { apply_beam    = content; }
+        if(curr_node_name == "apply_flav"    ) { apply_flav    = content; }
+        if(curr_node_name == "apply_kinevar" ) { apply_kinevar = content; }
+
+      }
+      curr_node = xmleng->GetNext(curr_node);
+  }
+
+  result.push_back(apply_kinevar);
+  result.push_back(filename);
+  result.push_back(objname);
+
+  return result;
+}
+//________________________________________________________________________________________
+double GenericSingleSampleFitModel::AddExternalWeight (string mc_xmlfile, string sval, double val, Option_t *opt)
+{
+  double wght_external = 1.;
+
+  std::vector<string> tune_param;
+  std::string used_base_dir = "";
+  TString full_filename = "";
+  std::string file_weight = "";
+  TString wght_input_name = "";
+  TH1D * wght_spectrum = 0;
+
+  TString ts_file = mc_xmlfile.c_str();
+  if (ts_file != ""){
+
+    gSystem->ExpandPathName(ts_file);
+
+
+    // Parse the input XML configuration file
+    TXMLEngine* xml = new TXMLEngine;
+    XMLDocPointer_t xmldoc = xml->ParseFile(ts_file.Data());
+    if (xmldoc==0) {
+      LOG("GenericSingleSampleFitModel",pERROR) << "Can not parse input XML file [" << ts_file << "]";
+      delete xml;
+      util::Die(1); return false;
+    }
+    //LOG("GenericSingleSampleFitModel",pNOTICE) << "Now parse input XML file [" << ts_file << "]";
+    XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+
+    XMLNodePointer_t curr_node_top = util::FindNode(xml,root_node,"tuning");// get to the tuning section
+    XMLNodePointer_t curr_node  = xml->GetChild(curr_node_top);
+    while(curr_node){
+      tune_param = this->ReadTune(xml,curr_node, opt);
+
+
+      tune_param = ReadTune(xml,curr_node, opt);
+
+      if (strcmp(tune_param[0].c_str(),"sval")){
+        file_weight = tune_param[1];
+        std::cout<< "file name "<< file_weight<<std::endl;
+        wght_input_name  = tune_param[2];
+        std::cout<< "histo name "<< wght_input_name<<std::endl;
+        used_base_dir = Env::Instance()->TopLevelDataDir();
+        full_filename = TString::Format("%s%s", used_base_dir.c_str(), file_weight.c_str());
+        TFile *fWeight = new TFile(full_filename.Data(),"READ");
+        if(!fWeight->IsOpen() || !fWeight){
+          //add error msg
+           LOG("GenericSingleSampleFitModel",pWARN)
+          << " No external weight file specified" ;
+          exit(1);
+        }
+
+        wght_spectrum = (TH1D*)fWeight->Get(wght_input_name.Data());
+        if (wght_spectrum->IsZombie() || !wght_input_name){
+          //add error msg
+          LOG("GenericSingleSampleFitModel",pWARN)
+          << " No external weight histo specified" ;
+          exit(1);
+        }
+
+        int bin = wght_spectrum->FindBin(val);
+        wght_external = wght_spectrum->GetBinContent(bin);
+        LOG("GenericSingleSampleFitModel",pNOTICE) << "found  a weight" << wght_external << "]";
+       fWeight->Close();
+      }
+      curr_node = xml->GetNext(curr_node);
+    }
+
+
+  }
+  else{ //LOG("GenericSingleSampleFitModel",pWARN)
+          //<< "No esternal weight MC file specified";
+  }
+  return wght_external;
+}
+
 //________________________________________________________________________________________
 
 bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag, double desired_POT)
@@ -2492,9 +2615,10 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   // Lateral systematics should just migrate events between bins, while keeping the total number of events constant.
   // Check that we haven't changed the total number of events
   if ( fabs((pdf->Integral()/orig_pdf_integral)-1) > conv::kASmallNum ) {
-    LOG("Lateral", pFATAL) << "Failed normalisation check after applying lateral systematic for PDF"
-                                               << pdf->GetName() << ". Original integral = " << orig_pdf_integral
-                                               << ", new integral = " << pdf->Integral();
+    LOG("Lateral", pFATAL) << std::fixed << std::setprecision(9)
+                           << "Failed normalisation check after applying lateral systematic for PDF"
+                           << pdf->GetName() << ". Original integral = " << orig_pdf_integral
+                           << ", new integral = " << pdf->Integral();
     util::Die(-1);
   }
 }
