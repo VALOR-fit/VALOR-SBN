@@ -25,6 +25,7 @@ brief      A generic implementation of the fit model for a single sample,
 #define _valor_generic_single_sample_model_h_
 
 #include <string>
+#include <utility>
 
 #include <TMatrixD.h>
 #include <TObjArray.h>
@@ -37,6 +38,8 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/VArray/VALORArrayBin.h"
+#include "valor/Conventions/KineVar.h"
+#include "valor/Conventions/FitParamApply.h"
 
 //dune
 #include "valor/Conventions/Detector.h"
@@ -85,8 +88,6 @@ public:
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
-  double AddExternalWeight(string mc_xmlfile, string sval, double val, Option_t *opt = ""); // new function to read external weight containing histo
-  std::vector<string> ReadTune(TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = "");
   void          SetSystConf            (CorrelatedSystematics * syst, Option_t * opt = "");
   CorrelatedSystematics *       GetSystematics(Option_t * opt = "");
   const CorrelatedSystematics * GetSystematics(Option_t * opt = "") const;
@@ -129,6 +130,22 @@ private:
   void UpdatePDFs                        (Option_t * opt = 0);
   void ApplyPostOscLateralSystematics    (VALORArray * pdf, bool simple_binning = false);
   void ApplyLateralSystematic            (VALORArray * pdf, conv::PhysParamId_t p, bool simple_binning = false);
+  void ReadExtTuningHists                (TXMLEngine* xmleng, XMLNodePointer_t top_node);
+  void ReadTune                          (TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = "");
+  double GetExternalWeight               (std::map<conv::KineVar_t,double> kinematics, conv::ReacMode_t m, conv::NuclearTarget_t nt); // new function to read external weight containing histo
+
+  // TODO: These are very nearly direct copies of functions from Parameter. Need to make the functions from Parameter more generic and then just use them here instead
+  conv::ApplyMask_t              ReadTuningApplyMaskAll          (TXMLEngine* xmleng, XMLNodePointer_t top_node                  ) const;
+  conv::DetectorApplyMask_t      ReadTuningDetectorApplyMask     (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
+  conv::BeamApplyMask_t          ReadTuningBeamApplyMask         (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
+  conv::FlavApplyMask_t          ReadTuningFlavApplyMask         (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
+  conv::OscModeApplyMask_t       ReadTuningOscModeApplyMask      (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
+  conv::SelecApplyMask_t         ReadTuningSelecApplyMask        (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
+  conv::ReacTypeApplyMask_t      ReadTuningReacTypeApplyMask     (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
+  conv::NuclearTargetApplyMask_t ReadTuningNuclearTargetApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
+  bool                           IsNodeSpecified                 (TXMLEngine* xmleng, XMLNodePointer_t top_node, const string node_path) const;
+  bool                           IsAppliedTo                     (conv::ApplyMask_t mask_to_check, conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, conv::ReacMode_t m, conv::NuclearTarget_t nt) const;
+    
 
   const util::ArrIdx * fArrIdx;
   
@@ -234,8 +251,8 @@ private:
   CorrelatedSystematics * fSystematics;
   bool fOwnerOfSystematics;
 
-  // mc file with weights
-  string fMCFileName; // TODO: remove
+  // Vector of tuning hists and the apply masks and kine vars that they should be used for
+  std::vector< std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > > fTuningHists;
 };
 
 } // valor
