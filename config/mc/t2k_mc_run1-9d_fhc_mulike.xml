@@ -81,9 +81,11 @@ External Tuning Histograms
         <filename>       official/2018/flux/tuned13av3/run1-9a_v1/sk_tuned13av3_13anom_run1-9a_numode_fine.root </filename> <!-- TODO: temp path -->
         <objname>        enu_sk_tuned13a_numu_ratio   </objname>
         <objtype>        TH1D                         </objtype>
-        <apply_beam>     jparc_fhc                    </apply_beam>
-        <apply_flav>     numu                         </apply_flav>
-        <apply_kinevar>  enu_true                     </apply_kinevar>
+        <kinevars>       enu_true                     </kinevars>
+        <apply_to>
+            <detector>  allt2k  </detector>
+            <flav>      numu    </flav>
+        </apply_to>
     </tune>
     <!-- TODO: add other tuning hists -->
 </tuning>
