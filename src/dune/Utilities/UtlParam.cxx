@@ -15,6 +15,7 @@ additional options
         - no-detector-systematics, no-nd-detector-systematics, no-fd-detector-systematics: as above for efficiencies
         - no-osc-params: skipping oscillation parameters in the list construction
         - only-nd: skipping far detector parameters in the list construction
+        - five-sigma-range: Set the parameter min/max value to using the 5 sigma error (depends on the syst type). Defaults to 3 sigma limits
 
 options after list construction
         - no-osc-params     : 
@@ -54,6 +55,7 @@ options after list construction
 #include "valor/Messenger/Messenger.h"
 #include "valor/Conventions/ParameterPool.h"
 #include "valor/Conventions/FitParamApply.h"
+#include "valor/Conventions/SystType.h"
 #include "valor/Utilities/UtlSystem.h"
 // dune
 #include "dune/Conventions/OscParamValues.h"
@@ -93,6 +95,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * 
   bool fix_mec_params         = (param_list_opt.find("fix-mec-syst"     ) != string::npos);
   bool fix_fsi_params         = (param_list_opt.find("fix-fsi-syst"     ) != string::npos);
   bool only_nd                = (param_list_opt.find("only-nd"          ) != string::npos);
+  bool use_five_sigma_range   = (param_list_opt.find("five-sigma-range" ) != string::npos);
 
   const std::vector<Parameter> & pool_params = ParameterPool::Instance()->GetParams();
   FitParamList * fparm = 0;
@@ -133,8 +136,37 @@ FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * 
     // And update their limits`
     for (unsigned int ip = 0 ; ip < syst->Size(); ip++) {
       conv::PhysParamId_t p = syst->WhichParam(ip);
-      fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,0.));  // TODO: Do we want these hard-coded values in a config file?
-      fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p,2.));
+      // If we don't know what type of syst param this is, use these default limits
+      double min_val = 0.;  // TODO: Do we want these hard-coded values in a config file?
+      double max_val = 2.;
+      // If the parameter is also present in the ParameterPool, set the limits based on what type of syst it is
+      if(ParameterPool::Instance()->IsParamInPool(p)) {
+        const Parameter & param = ParameterPool::Instance()->GetParam(p);
+        double sigma_limit = use_five_sigma_range ? 5. : 3.;  // TODO: Do we want these hard-coded values in a config file?
+        double central_val = syst->InitialValue(p);
+        bool min_set = false;
+        bool max_set = false;
+        if(param.HasLimits()) {
+          min_val = param.GetLimits().first;
+          max_val = param.GetLimits().second;
+          // The physical limits for a param can be e.g. +/- inf (stored as kALargeNum),
+          // but we don't actually want the param to vary beyond 3 or 5 sigma away from nominal (unless a specific
+          // non-infinite range is specified in the param config file)
+          if(min_val != -conv::kALargeNum) { min_set = true; }
+          if(max_val !=  conv::kALargeNum) { max_set = true; }
+        }
+        if(!min_set) { min_val = central_val - sigma_limit * syst->OneSigmaError(p); min_set = true; }
+        if(!max_set) { max_val = central_val + sigma_limit * syst->OneSigmaError(p); max_set = true; }
+        // Nomalisation and lateral params can't go negative
+        if(min_val < 0. &&
+          (param.GetType() == conv::kSystNorm ||
+           param.GetType() == conv::kSystLateral ||
+           param.GetType() == conv::kSystLateralPostOsc)) {
+          min_val = 0.;
+        }
+      }
+      fparm->SetMinValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p, min_val));
+      fparm->SetMaxValue(p, PhysicalParameterLimits::Instance()->GetNearestPhysicalValue(p, max_val));
     }
   }
   // Or add parameters from the ParameterPool
