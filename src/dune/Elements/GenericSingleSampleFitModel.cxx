@@ -2660,7 +2660,7 @@ void GenericSingleSampleFitModel::ReadExtTuningHists(TXMLEngine* xmleng_mc, XMLN
     XMLDocPointer_t xmldoc = xmleng->ParseFile(ts_file.Data());
     if (xmldoc==0) {
       LOG("CompoundFitElements", pERROR)
-        << "Can not parse input tuning XML file [" << xmlfile << "]";
+        << "Can not parse input tuning XML file [" << file << "]";
       util::Die(1); return false;
     }
     XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);
