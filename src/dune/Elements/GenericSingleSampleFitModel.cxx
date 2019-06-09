@@ -1345,7 +1345,31 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     fMCTSysSb [imode]->SetEntry(curr_wght_sb, reco_bin_sb, true_bin);
     fMCTFinSb [imode]->SetEntry(curr_wght_sb, reco_bin_sb, true_bin);
     fMCStatSb [imode]->SetEntry(           1, reco_bin_sb, true_bin);
-  }//iev 
+  }//iev
+
+  LOG("GenericSingleSampleFitModel",pDEBUG)
+    << "After filling MC templates from the input MC tree, the fMCTFinOb integrals for each mode are:";
+  double fMCTFinOb_tot_integral = 0;
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+    ReacMode_t m = fReactionModes[imode];
+    if(m == kmUndefined) continue;
+    fMCTFinOb_tot_integral += fMCTFinOb[imode]->Integral();
+    LOG("GenericSingleSampleFitModel",pDEBUG)
+      << "fMCTFinOb[" << util::AsString(m) << "] integral = " << fMCTFinOb[imode]->Integral();
+  }
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "fMCTFinOb integral summed over all modes = " << fMCTFinOb_tot_integral;
+
+  LOG("GenericSingleSampleFitModel",pDEBUG)
+    << "After filling MC templates from the input MC tree, the fMCTFinSb integrals for each mode are:";
+  double fMCTFinSb_tot_integral = 0;
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+    ReacMode_t m = fReactionModes[imode];
+    if(m == kmUndefined) continue;
+    fMCTFinSb_tot_integral += fMCTFinSb[imode]->Integral();
+    LOG("GenericSingleSampleFitModel",pDEBUG)
+      << "fMCTFinSb[" << util::AsString(m) << "] integral = " << fMCTFinSb[imode]->Integral();
+  }
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "fMCTFinSb integral summed over all modes = " << fMCTFinSb_tot_integral;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt)
@@ -2624,14 +2648,32 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   }
 }
 //________________________________________________________________________________________
-void GenericSingleSampleFitModel::ReadExtTuningHists(TXMLEngine* xmleng, XMLNodePointer_t top_node)
+void GenericSingleSampleFitModel::ReadExtTuningHists(TXMLEngine* xmleng_mc, XMLNodePointer_t top_node_mc)
 {
-  XMLNodePointer_t tuning_node = util::FindNode(xmleng,top_node,"tuning");// get to the tuning section
-  XMLNodePointer_t curr_node  = xmleng->GetChild(tuning_node);
-  // Loop over all tuning nodes
-  while(curr_node){
-    this->ReadTune(xmleng,curr_node);
-    curr_node = xmleng->GetNext(curr_node);
+  // Tuning info lives in a separate config file, the name of which is specified in the node named "tuning"
+  if(util::NodeExists(xmleng_mc, top_node_mc, "tuning")) {
+    std::string file = util::XML2String(xmleng_mc, top_node_mc, "tuning");
+    TString ts_file = util::CompleteConfigPath(file).c_str();
+
+    // Parse the input tuning XML configuration file
+    TXMLEngine* xmleng = new TXMLEngine;
+    XMLDocPointer_t xmldoc = xmleng->ParseFile(ts_file.Data());
+    if (xmldoc==0) {
+      LOG("CompoundFitElements", pERROR)
+        << "Can not parse input tuning XML file [" << xmlfile << "]";
+      util::Die(1); return false;
+    }
+    XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);
+
+    if(util::NodeExists(xmleng, root_node, "tuning")) {
+      XMLNodePointer_t tuning_node = util::FindNode(xmleng, root_node, "tuning");// get to the tuning section
+      XMLNodePointer_t curr_node = xmleng->GetChild(tuning_node);
+      // Loop over all tuning nodes
+      while(curr_node) {
+        this->ReadTune(xmleng, curr_node);
+        curr_node = xmleng->GetNext(curr_node);
+      }
+    }
   }
 }
 //________________________________________________________________________________________

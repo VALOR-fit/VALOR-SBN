@@ -76,18 +76,9 @@ Input MC templates
 External Tuning Histograms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
+
 <tuning>
-    <tune name="flux_fhc_numu">
-        <filename>       official/2018/flux/tuned13av3/run1-9a_v1/sk_tuned13av3_13anom_run1-9a_numode_fine.root </filename> <!-- TODO: temp path -->
-        <objname>        enu_sk_tuned13a_numu_ratio   </objname>
-        <objtype>        TH1D                         </objtype>
-        <kinevars>       Etrue                       </kinevars>
-        <apply_to>
-            <detector>  allt2k  </detector>
-            <flav>      numu    </flav>
-        </apply_to>
-    </tune>
-    <!-- TODO: add other tuning hists -->
+  mc/tuning/t2k_flux_tuning.xml
 </tuning>
 
 <!--
