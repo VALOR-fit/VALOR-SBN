@@ -2661,19 +2661,16 @@ void GenericSingleSampleFitModel::ReadExtTuningHists(TXMLEngine* xmleng_mc, XMLN
     if (xmldoc==0) {
       LOG("CompoundFitElements", pERROR)
         << "Can not parse input tuning XML file [" << file << "]";
-      util::Die(1); return false;
+      util::Die(1);
     }
-    XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);
+    XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);   // <tuning>
+    XMLNodePointer_t curr_node = xmleng->GetChild(root_node);         // <tune>
+    // Loop over all tuning nodes
+    while(curr_node) {
+      this->ReadTune(xmleng, curr_node);
+      curr_node = xmleng->GetNext(curr_node);
+    }
 
-    if(util::NodeExists(xmleng, root_node, "tuning")) {
-      XMLNodePointer_t tuning_node = util::FindNode(xmleng, root_node, "tuning");// get to the tuning section
-      XMLNodePointer_t curr_node = xmleng->GetChild(tuning_node);
-      // Loop over all tuning nodes
-      while(curr_node) {
-        this->ReadTune(xmleng, curr_node);
-        curr_node = xmleng->GetNext(curr_node);
-      }
-    }
   }
 }
 //________________________________________________________________________________________
