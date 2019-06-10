@@ -289,28 +289,34 @@ def group_NIWG_weights(event, neut_mode):
 
 #___________________________________________________________________________
 def NeutIsCCQE(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 1
 
 #___________________________________________________________________________
 def NeutIsCC1piC(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 11 or neut_reaction_mode == 13
 
 #___________________________________________________________________________
 def NeutIsCC1pi0(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 12
 
 #___________________________________________________________________________
 def NeutIsCCcoh(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 16
 
 #___________________________________________________________________________
 def NeutIs2p2h(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 2
 
 #___________________________________________________________________________
 def NeutIsCCoth(neut_reaction_mode):
   #this is a catch all for everything CC that is not QE, 1pi, or coh
   # needs to be updated if another subcategory is added
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return ( neut_reaction_mode == 17 or
            neut_reaction_mode == 21 or
            neut_reaction_mode == 22 or
@@ -319,24 +325,29 @@ def NeutIsCCoth(neut_reaction_mode):
 
 #___________________________________________________________________________
 def NeutIsNC1pi0(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 31 or neut_reaction_mode == 32
 
 #___________________________________________________________________________
 def NeutIsNC1Gamma(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 38 or neut_reaction_mode == 39
 
 #___________________________________________________________________________
 def NeutIsNC1piC(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 33 or neut_reaction_mode == 34
 
 #___________________________________________________________________________
 def NeutIsNCcoh(neut_reaction_mode):
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return neut_reaction_mode == 36
 
 #___________________________________________________________________________
 def NeutIsNCoth(neut_reaction_mode):
   #this is a catch all for everything NC that is not 1pi0, 1piC or coh
   # needs to be updated if another subcategory is added
+  neut_reaction_mode = ROOT.TMath.Abs(neut_reaction_mode)
   return ( neut_reaction_mode == 41 or
            neut_reaction_mode == 42 or
            neut_reaction_mode == 43 or
