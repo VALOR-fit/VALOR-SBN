@@ -1,7 +1,7 @@
 // Intrinsic numu modes
 kmNuMuCCQE,
-kmNuMuCC1piC,   // TODO: In legacy T2K, we had 1piC and 1pi0 grouped as a single mode. Does this matter?
-kmNuMuCC1pi0,   // TODO: In legacy T2K, we had 1piC and 1pi0 grouped as a single mode. Does this matter?
+kmNuMuCC1piC,
+kmNuMuCC1pi0,
 kmNuMuCCcoh,
 kmNuMuCCMEC,
 kmNuMuCCoth,
@@ -13,8 +13,8 @@ kmNuMuNC1Gamma,
 
 // Intrinsic numubar modes
 kmNuMuBarCCQE,
-kmNuMuBarCC1piC,   // TODO: In legacy T2K, we had CC1piC and CC1pi0 grouped as a single mode. Does this matter?
-kmNuMuBarCC1pi0,   // TODO: In legacy T2K, we had CC1piC and CC1pi0 grouped as a single mode. Does this matter?
+kmNuMuBarCC1piC,
+kmNuMuBarCC1pi0,
 kmNuMuBarCCcoh,
 kmNuMuBarCCMEC,
 kmNuMuBarCCoth,
@@ -26,8 +26,8 @@ kmNuMuBarNC1Gamma,
 
 // Intrinsic nue modes
 kmNuECCQE,
-kmNuECC1piC,   // TODO: In legacy T2K, we had 1piC and 1pi0 grouped as a single mode. Does this matter?
-kmNuECC1pi0,   // TODO: In legacy T2K, we had 1piC and 1pi0 grouped as a single mode. Does this matter?
+kmNuECC1piC,
+kmNuECC1pi0,
 kmNuECCcoh,
 kmNuECCMEC,
 kmNuECCoth,
@@ -39,8 +39,8 @@ kmNuENC1Gamma,
 
 // Oscillated numu -> nue modes
 kmNuMuToNuECCQE,
-kmNuMuToNuECC1piC,  // TODO: In legacy T2K, we had CC1piC and CC1pi0 grouped as a single mode. Does this matter?
-kmNuMuToNuECC1pi0,  // TODO: In legacy T2K, we had CC1piC and CC1pi0 grouped as a single mode. Does this matter?
+kmNuMuToNuECC1piC,
+kmNuMuToNuECC1pi0,
 kmNuMuToNuECCcoh,
 kmNuMuToNuECCMEC,
 kmNuMuToNuECCcoh,
@@ -48,8 +48,8 @@ kmNuMuToNuECCoth,
 
 // Intrinsic nuebar modes
 kmNuEBarCCQE,
-kmNuEBarCC1piC,   // TODO: In legacy T2K, we had 1piC and 1pi0 grouped as a single mode. Does this matter?
-kmNuEBarCC1pi0,   // TODO: In legacy T2K, we had 1piC and 1pi0 grouped as a single mode. Does this matter?
+kmNuEBarCC1piC,
+kmNuEBarCC1pi0,
 kmNuEBarCCcoh,
 kmNuEBarCCMEC,
 kmNuEBarCCoth,
@@ -61,11 +61,10 @@ kmNuEBarNC1Gamma,
 
 // Oscillated numubar -> nuebar modes
 kmNuMuBarToNuEBarCCQE,
-kmNuMuBarToNuEBarCC1piC,  // TODO: In legacy T2K, we had CC1piC and CC1pi0 grouped as a single mode. Does this matter?
-kmNuMuBarToNuEBarCC1pi0,  // TODO: In legacy T2K, we had CC1piC and CC1pi0 grouped as a single mode. Does this matter?
+kmNuMuBarToNuEBarCC1piC,
+kmNuMuBarToNuEBarCC1pi0,
 kmNuMuBarToNuEBarCCcoh,
 kmNuMuBarToNuEBarCCMEC,
-kmNuMuBarToNuEBarCCcoh,
 kmNuMuBarToNuEBarCCoth,
 
 // Oscillated nue -> numu modes are not used in the T2K analysis
@@ -85,6 +84,7 @@ kmUndefined,  //kmNuEBarToNuMuBarCCMEC,
 kmUndefined,  //kmNuEBarToNuMuBarCCcoh,
 
 // Non T2K modes:
+kmUndefined,
 kmUndefined,
 kmUndefined,
 kmUndefined,
