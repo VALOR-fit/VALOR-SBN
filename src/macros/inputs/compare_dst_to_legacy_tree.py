@@ -72,23 +72,22 @@ def main(sdk_filename, t2k_filename, sample_str, beam_str, mode_str):
 
   # Loop over the SDK tree and extract the selected events
   print "Extracting SDK selected events..."
+  n_duplicates_sdk = 0
   for event in tree_sdk:
     theta_reco = 0
     if util.IsELike(sample):
       theta_reco = event.kv_reco2
 
-    events_sdk.append(
-      event_info(
-        sample     = event.sample,
-        beam       = event.beam,
-        reac_mode  = event.mode,
-        enu_true   = event.kv_true1,
-        enu_reco   = event.kv_reco1,
-        Theta_reco = theta_reco,
-        wght       = event.wght,
-        wght_pot   = event.wght_pot,
-        wght_tun   = event.wght_tun
-      )
+    this_event = event_info(
+      sample     = event.sample,
+      beam       = event.beam,
+      reac_mode  = event.mode,
+      enu_true   = event.kv_true1,
+      enu_reco   = event.kv_reco1,
+      Theta_reco = theta_reco,
+      wght       = event.wght,
+      wght_pot   = event.wght_pot,
+      wght_tun   = event.wght_tun
     )
 
     if event.sample != sample:
@@ -97,33 +96,48 @@ def main(sdk_filename, t2k_filename, sample_str, beam_str, mode_str):
       print "WARNING: SDK beam ["+ util.BeamConfAsString(event.beam)+ "] doesn't match the input beam. Something's gone wrong in the event selection."
     if event.mode != mode:
       print "WARNING: SDK mode ["+ util.ModeAsString(event.mode)+ "] doesn't match the input mode. Something's gone wrong in the event selection."
-  print "  ...finished extracting SDK selected events"
+
+    # Check for duplicate events
+    for event_stored in events_sdk:
+      if namedtuples_are_equal(event_stored, this_event):
+        n_duplicates_sdk += 1
+        break
+
+    events_sdk.append(this_event)
+  print "  ...finished extracting SDK selected events. Found", n_duplicates_sdk, "duplicate events"
 
   # Loop over the T2K legacy tree and extract the selected events
   print "Extracting T2K selected events..."
+  n_duplicates_t2k = 0
   for event in tree_t2k:
     t2k_sample = t2k_sample_to_sdk_sample(event.sample_str)
     theta_reco = 0
     if util.IsELike(sample):
       theta_reco = event.kv_reco2
-    events_t2k.append(
-      event_info(
-        sample     = t2k_sample_to_sdk_sample(event.sample_str),
-        beam       = t2k_beam_to_sdk_beam(event.sample_str),
-        reac_mode  = mode,            # TODO: Ideally this should be converted from the legacy T2K mode and checked against the input mode, but for now I'm just going to trust that I set the mode correctly when extracting these events to make the input trees
-        enu_true   = event.enu_true,
-        enu_reco   = event.enu_reco,
-        Theta_reco = theta_reco,
-        wght       = event.wght,
-        wght_pot   = event.wght_pot,
-        wght_tun   = event.wght_tun
-      )
+    this_event = event_info(
+      sample     = t2k_sample_to_sdk_sample(event.sample_str),
+      beam       = t2k_beam_to_sdk_beam(event.sample_str),
+      reac_mode  = mode,            # TODO: Ideally this should be converted from the legacy T2K mode and checked against the input mode, but for now I'm just going to trust that I set the mode correctly when extracting these events to make the input trees
+      enu_true   = event.enu_true,
+      enu_reco   = event.enu_reco,
+      Theta_reco = theta_reco,
+      wght       = event.wght,
+      wght_pot   = event.wght_pot,
+      wght_tun   = event.wght_tun
     )
     if t2k_sample_to_sdk_sample(event.sample_str) != sample:
       print "WARNING: T2K sample ["+ util.SampleAsString(sample)+ "] doesn't match the input sample. Something's gone wrong in the event selection."
     if t2k_beam_to_sdk_beam(event.sample_str) != beam:
       print "WARNING: T2K beam ["+ util.BeamConfAsString(sample)+ "] doesn't match the input beam. Something's gone wrong in the event selection."
-  print "  ...finished extracting T2K selected events"
+
+    # Check for duplicate events
+    for event_stored in events_t2k:
+      if namedtuples_are_equal(event_stored, this_event):
+        n_duplicates_t2k += 1
+        break
+
+    events_t2k.append(this_event)
+  print "  ...finished extracting T2K selected events. Found", n_duplicates_t2k, "duplicate events"
 
   print "Number of selected SDK events =", len(events_sdk)
   print "Number of selected T2K events =", len(events_t2k)
@@ -212,7 +226,21 @@ def t2k_beam_to_sdk_beam(sample_str):
   else:
     print "ERROR: could not a convert T2K legacy sample into an SDK beam. Exiting"
     sys.exit()
-  
+
+#_______________________________________________________________________
+def namedtuples_are_equal(nt1, nt2):
+  if ROOT.TMath.Abs(nt1.sample     - nt2.sample    ) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.beam       - nt2.beam      ) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.reac_mode  - nt2.reac_mode ) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.enu_true   - nt2.enu_true  ) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.enu_reco   - nt2.enu_reco  ) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.Theta_reco - nt2.Theta_reco) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.wght       - nt2.wght      ) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.wght_pot   - nt2.wght_pot  ) < conv.kASmallNum and \
+     ROOT.TMath.Abs(nt1.wght_tun   - nt2.wght_tun  ) < conv.kASmallNum:
+    return True
+  return False
+
 # def t2k_mode_to_sdk_mode(mode_str):
 #   if mode_str == "numuccqe"       : return conv.kmNuMuCCQE
 #   if mode_str == "numucc1pi"      : return conv.
