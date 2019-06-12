@@ -94,19 +94,6 @@ t2k_beam_dir = [0.669764, -0.742179, 0.024223]  # This is a direct copy of kBeam
 
 def main(fhc_dir, rhc_dir, output_filename):
 
-  # # Check the conversion between NEUT and VALOR modes
-  # for osc in [False, True]:
-  #   print "\n\n\nOscillated?", osc
-  #   for bar in [False, True]:
-  #     print "\n\n  bar?", bar
-  #     for flav in [conv.kNuMu, conv.kNuMuBar, conv.kNuE, conv.kNuEBar]:
-  #       print "\n    flav =", util.FlavourAsString(flav)
-  #       for nmode in [1, 2, 11, 12, 13 ,16, 17, 21, 22, 23, 26, 31, 32, 33, 34, 36, 38, 39, 41, 42, 43, 44, 45, 46, 51, 52]:
-  #         neut_mode = nmode
-  #         if bar:
-  #           neut_mode *= -1.
-  #         print "NEUT mode =", neut_mode, "; VALOR mode =", util.ModeAsString(NeutModeToValorMode(neut_mode, flav, osc))
-
   files_fhc = glob.glob(fhc_dir+"/*root")
   files_rhc = glob.glob(rhc_dir+"/*root")
   print "Registered the following FHC files, will select the relevant files\n", [f.rsplit("/")[-1] for f in files_fhc], "\n\n"
@@ -150,6 +137,7 @@ def main(fhc_dir, rhc_dir, output_filename):
   iev = 0
   nev_input = [0 for i in appropriate_files]
   entries_per_beam_sample_mode = [[[0 for i in range(0, conv.kmOther)] for j in range(0, conv.kMaxNSamples)] for k in range(0, conv.kNBeamsDefined)]
+  files_found_selected_mode_in = dict()
   for ifile in range(0, len(appropriate_files)):
     file_in_name = appropriate_files[ifile]
     file_in = ROOT.TFile(file_in_name, "read")
@@ -171,42 +159,29 @@ def main(fhc_dir, rhc_dir, output_filename):
       Theta_reco[0] = calc_theta_degrees(event.fq1rdir, event.fqnse, sample[0])  # event.fq1rdir is a 3D list that contains info on the lepton direction and is dependant on the sample
       wght[0]       = group_NIWG_weights(event, neut_mode)          # Group all of the standard multiplicative NIWG weights into a single weight
 
-      if enu_reco[0] < 0.:
+      if enu_reco[0] < 0. \
+         or (is_oscillated and not util.ModeIsCC(reac_mode[0])):
+        # Skip oscillated NC events, because NC is always just the sum of events in numu, nue, nutau. So the oscillation
+        # is already accounted for.
         nev_input[ifile] -= 1
         continue
 
+      # Debug selected events
       # if sample[0] == conv.ks1Rmu and beam[0] == conv.kbJPARC_FHC:
-      #   #if reac_mode[0] == conv.kmNuMuBarCCMEC         :
-      #   #if reac_mode[0] == conv.kmNuENC1piC or reac_mode[0] == conv.kmNuENC1pi0:
       #   if reac_mode[0] == conv.kmNuENC1piC           :
-      #   #if reac_mode[0] == conv.kmNuENC1pi0           :
-      #   #if reac_mode[0] == conv.kmNuENCoth            :
-      #   #if reac_mode[0] == conv.kmNuEBarCCMEC         :
-      #   #if reac_mode[0] == conv.kmNuEBarNC1piC        :
-      #   #if reac_mode[0] == conv.kmNuEBarNC1pi0        :
-      #   #if reac_mode[0] == conv.kmNuEBarNCoth         :
-      #   #if reac_mode[0] == conv.kmNuMuBarToNuEBarCCMEC:
-      #     weight_SF_RFG   = event.wgtsfrfg
-      #     weight_BeRPA    = event.wgtBeRPA_nom
-      #     weight_CCcoh    = event.wght_CCcoh
-      #     weight_NC1Gamma = 1.
-      #     if NeutIsNC1Gamma(neut_mode) or NeutIs2p2h(neut_mode):
-      #       weight_CCcoh = 1.
-      #     if NeutIsNC1Gamma(neut_mode):
-      #       weight_NC1Gamma = 2.
-      #     print "Inserting to MC tree --> MC event #" + str(iev) + \
-      #           "\n sample       =", str(sample[0]      ) , "(" + util.SampleAsString(sample[0])  + ")" + \
-      #           "\n beam         =", str(beam[0]        ) , "(" + util.BeamConfAsString(beam[0])  + ")" + \
-      #           "\n imode        =", str(reac_mode[0]   ) , "(" + util.ModeAsString(reac_mode[0]) + ")" + \
-      #           "\n fBrWghtBeRPA =", str(weight_BeRPA   ) + \
-      #           "\n fBrWghtSFRFG =", str(weight_SF_RFG  ) + \
-      #           "\n fBrWghtCCcoh =", str(weight_CCcoh   ) + \
-      #           "\n NC1GammaWght =", str(weight_NC1Gamma) + \
-      #           "\n wght         =", str(wght[0]        ) + \
-      #           "\n is NC 1gamma?" , str(NeutIsNC1Gamma(neut_mode)) + \
-      #           "\n is 2p2h?"      , str(NeutIs2p2h(neut_mode)) + \
-      #           "\n  True:", str(enu_true[0]) + \
-      #           "\n  Reco:", str(enu_reco[0]), ",", str(Theta_reco[0]), "\n\n"
+      #     if file_in_name in files_found_selected_mode_in:
+      #         files_found_selected_mode_in[file_in_name] += 1
+      #     else:
+      #         files_found_selected_mode_in[file_in_name] = 1
+          # print "Inserting to MC tree --> MC event #" + str(iev) + \
+          #       "\n sample       =", str(sample[0]      ) , "(" + util.SampleAsString(sample[0])  + ")" + \
+          #       "\n beam         =", str(beam[0]        ) , "(" + util.BeamConfAsString(beam[0])  + ")" + \
+          #       "\n imode        =", str(reac_mode[0]   ) , "(" + util.ModeAsString(reac_mode[0]) + ")" + \
+          #       "\n wght         =", str(wght[0]        ) + \
+          #       "\n is NC 1gamma?" , str(NeutIsNC1Gamma(neut_mode)) + \
+          #       "\n is 2p2h?"      , str(NeutIs2p2h(neut_mode)) + \
+          #       "\n  True:", str(enu_true[0]) + \
+          #       "\n  Reco:", str(enu_reco[0]), ",", str(Theta_reco[0]), "\n\n"
 
       entries_per_beam_sample_mode[beam[0]][sample[0]][reac_mode[0]] += 1
       iev += 1
@@ -218,6 +193,7 @@ def main(fhc_dir, rhc_dir, output_filename):
   output_file.Close()
   print "Written the MC DST to the output file", output_filename
 
+  # Print debug info
   print "The number of events in each mode are:"
   for ibeam in range(0, conv.kNBeamsDefined):
     if arridx.BeamConfIdx(ibeam) == -1 or arridx.BeamConfIdx(ibeam) == python_undefined:
@@ -244,6 +220,9 @@ def main(fhc_dir, rhc_dir, output_filename):
     print " ", appropriate_files[ifile], ":", nev_input[ifile]
   print "The total number of events across all input files is = ", nev_input_tot
   print "The total number of events in the output DST = ", nev_output_tot
+
+  if len(files_found_selected_mode_in) > 0:
+    print "The selected mode/sample/beam combination was found in events from the following files:\n", files_found_selected_mode_in
 
   print "Done!"
 
