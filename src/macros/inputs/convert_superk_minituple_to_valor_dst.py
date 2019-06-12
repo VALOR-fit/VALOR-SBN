@@ -31,7 +31,9 @@ util =  valor.util
 conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
+arridx = util.ArrIdx.Instance()
 
+python_undefined = 2L*sys.maxint+1
 
 types = ["nuebar_x_nuebar"  ,  # The naming conventions used by the input SK MC files
          "nue_x_nue"        ,
@@ -77,13 +79,33 @@ scales_RHC["numubar_x_nuebar"   ] = ( 376.420 , 126812. )
 orig_treename = "mtuple"
 rhc_file_name_conv = "m250ka"   # All RHC file names contain this string, search for this before FHC
 fhc_file_name_conv = "250ka"    # All FHC file names contain this string
-t2k_beam_dir = [0.669764, -0.742179, 0.024223]  # This is a direct copy of kBeamDir from VALOR-SDK/src/Conventions/Constants.h. The reason for this is that pyROOT often completely fails to read 1D C arrays.
+t2k_beam_dir = [0.669764, -0.742179, 0.024223]  # This is a direct copy of kBeamDir from VALOR-SDK/src/Conventions/Constants.h. The reason for this is that pyROOT often completely fails to read 1D C arrays.  # TODO: use a getter function instead
 
 # NOTE: See https://www.t2k.org/t2ksk/code/ntuplevariables  for reading in any other variables from the input MC trees
+
+# TODO: Make the sample/mode/beam enumerations more robust. Currently they're just stored in the trees as the integer
+# TODO: of the enumeration, which can silently cause problems with filling MCTs when the enumerations change (e.g. by
+# TODO: adding another sample or mode). So in the TFile with the tree, store a lookup table (+ additional info e.g. the
+# TODO: generation date) that relates the integer enumeration to AsString(enumeration). Then in GSSFM::FillFromDST read
+# TODO: the int from the tree, use the lookup table (map<int,string>?) to convert this to a string, and then call
+# TODO: FromString(string) to get the current VALOR enumeration.
 
 #_______________________________________________________________________
 
 def main(fhc_dir, rhc_dir, output_filename):
+
+  # # Check the conversion between NEUT and VALOR modes
+  # for osc in [False, True]:
+  #   print "\n\n\nOscillated?", osc
+  #   for bar in [False, True]:
+  #     print "\n\n  bar?", bar
+  #     for flav in [conv.kNuMu, conv.kNuMuBar, conv.kNuE, conv.kNuEBar]:
+  #       print "\n    flav =", util.FlavourAsString(flav)
+  #       for nmode in [1, 2, 11, 12, 13 ,16, 17, 21, 22, 23, 26, 31, 32, 33, 34, 36, 38, 39, 41, 42, 43, 44, 45, 46, 51, 52]:
+  #         neut_mode = nmode
+  #         if bar:
+  #           neut_mode *= -1.
+  #         print "NEUT mode =", neut_mode, "; VALOR mode =", util.ModeAsString(NeutModeToValorMode(neut_mode, flav, osc))
 
   files_fhc = glob.glob(fhc_dir+"/*root")
   files_rhc = glob.glob(rhc_dir+"/*root")
@@ -125,9 +147,14 @@ def main(fhc_dir, rhc_dir, output_filename):
   tree_out.Branch("wght_pot"     , wght_pot      , "wght_pot/D"  )
 
   # Loop over the input files and fill the output tree
-  for file_in_name in appropriate_files:
+  iev = 0
+  nev_input = [0 for i in appropriate_files]
+  entries_per_beam_sample_mode = [[[0 for i in range(0, conv.kmOther)] for j in range(0, conv.kMaxNSamples)] for k in range(0, conv.kNBeamsDefined)]
+  for ifile in range(0, len(appropriate_files)):
+    file_in_name = appropriate_files[ifile]
     file_in = ROOT.TFile(file_in_name, "read")
     in_tree = file_in.Get(orig_treename)
+    nev_input[ifile] += in_tree.GetEntries()
 
     sample[0]       = get_selection(file_in_name)
     beam[0]         = get_beam(file_in_name)
@@ -145,14 +172,79 @@ def main(fhc_dir, rhc_dir, output_filename):
       wght[0]       = group_NIWG_weights(event, neut_mode)          # Group all of the standard multiplicative NIWG weights into a single weight
 
       if enu_reco[0] < 0.:
+        nev_input[ifile] -= 1
         continue
 
+      # if sample[0] == conv.ks1Rmu and beam[0] == conv.kbJPARC_FHC:
+      #   #if reac_mode[0] == conv.kmNuMuBarCCMEC         :
+      #   #if reac_mode[0] == conv.kmNuENC1piC or reac_mode[0] == conv.kmNuENC1pi0:
+      #   if reac_mode[0] == conv.kmNuENC1piC           :
+      #   #if reac_mode[0] == conv.kmNuENC1pi0           :
+      #   #if reac_mode[0] == conv.kmNuENCoth            :
+      #   #if reac_mode[0] == conv.kmNuEBarCCMEC         :
+      #   #if reac_mode[0] == conv.kmNuEBarNC1piC        :
+      #   #if reac_mode[0] == conv.kmNuEBarNC1pi0        :
+      #   #if reac_mode[0] == conv.kmNuEBarNCoth         :
+      #   #if reac_mode[0] == conv.kmNuMuBarToNuEBarCCMEC:
+      #     weight_SF_RFG   = event.wgtsfrfg
+      #     weight_BeRPA    = event.wgtBeRPA_nom
+      #     weight_CCcoh    = event.wght_CCcoh
+      #     weight_NC1Gamma = 1.
+      #     if NeutIsNC1Gamma(neut_mode) or NeutIs2p2h(neut_mode):
+      #       weight_CCcoh = 1.
+      #     if NeutIsNC1Gamma(neut_mode):
+      #       weight_NC1Gamma = 2.
+      #     print "Inserting to MC tree --> MC event #" + str(iev) + \
+      #           "\n sample       =", str(sample[0]      ) , "(" + util.SampleAsString(sample[0])  + ")" + \
+      #           "\n beam         =", str(beam[0]        ) , "(" + util.BeamConfAsString(beam[0])  + ")" + \
+      #           "\n imode        =", str(reac_mode[0]   ) , "(" + util.ModeAsString(reac_mode[0]) + ")" + \
+      #           "\n fBrWghtBeRPA =", str(weight_BeRPA   ) + \
+      #           "\n fBrWghtSFRFG =", str(weight_SF_RFG  ) + \
+      #           "\n fBrWghtCCcoh =", str(weight_CCcoh   ) + \
+      #           "\n NC1GammaWght =", str(weight_NC1Gamma) + \
+      #           "\n wght         =", str(wght[0]        ) + \
+      #           "\n is NC 1gamma?" , str(NeutIsNC1Gamma(neut_mode)) + \
+      #           "\n is 2p2h?"      , str(NeutIs2p2h(neut_mode)) + \
+      #           "\n  True:", str(enu_true[0]) + \
+      #           "\n  Reco:", str(enu_reco[0]), ",", str(Theta_reco[0]), "\n\n"
+
+      entries_per_beam_sample_mode[beam[0]][sample[0]][reac_mode[0]] += 1
+      iev += 1
       tree_out.Fill()
 
   output_file.cd()
+  nev_output_tot = tree_out.GetEntries()
   tree_out.Write("valor_t2k_dst")
   output_file.Close()
   print "Written the MC DST to the output file", output_filename
+
+  print "The number of events in each mode are:"
+  for ibeam in range(0, conv.kNBeamsDefined):
+    if arridx.BeamConfIdx(ibeam) == -1 or arridx.BeamConfIdx(ibeam) == python_undefined:
+      continue
+    print "\n\nbeam =", util.BeamConfAsString(ibeam)
+    for isample in range(0, conv.kMaxNSamples):
+      if arridx.SampleIdx(ibeam, isample) == -1 or arridx.SampleIdx(ibeam, isample) == python_undefined:
+        continue
+      print "\n  sample =", util.SampleAsString(isample)
+      tot_entries_sample = 0
+      for imode in range(0, conv.kmOther):
+        if arridx.ReacModeIdx(ibeam, isample, imode) == -1 or arridx.ReacModeIdx(ibeam, isample, imode) == python_undefined:
+          continue
+        nevents = entries_per_beam_sample_mode[ibeam][isample][imode]
+        tot_entries_sample += nevents
+        print "    " + util.ModeAsString(imode) + ": " + str(nevents)
+      print "Total", util.BeamConfAsString(ibeam), util.SampleAsString(isample), \
+        " number of events across all modes =", tot_entries_sample
+
+  print "The number of events in each input file are (minus any events with Erec < 0):"
+  nev_input_tot = 0
+  for ifile in range(0, len(appropriate_files)):
+    nev_input_tot += nev_input[ifile]
+    print " ", appropriate_files[ifile], ":", nev_input[ifile]
+  print "The total number of events across all input files is = ", nev_input_tot
+  print "The total number of events in the output DST = ", nev_output_tot
+
   print "Done!"
 
 
