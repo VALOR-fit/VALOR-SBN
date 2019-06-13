@@ -88,7 +88,6 @@ public:
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
-  void          SetSystConf            (CorrelatedSystematics * syst, Option_t * opt = "");
   CorrelatedSystematics *       GetSystematics(Option_t * opt = "");
   const CorrelatedSystematics * GetSystematics(Option_t * opt = "") const;
 
@@ -246,10 +245,6 @@ private:
   
   // Spline library
   util::DuneRFL * fRFL;
-  
-  // Pointer to our systematics
-  CorrelatedSystematics * fSystematics;
-  bool fOwnerOfSystematics;
 
   // Vector of tuning hists and the apply masks and kine vars that they should be used for
   std::vector< std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > > fTuningHists;

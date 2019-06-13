@@ -76,9 +76,7 @@ const util::ArrIdx * arridx = util::ArrIdx::Instance();
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC(),
   fBinning(NULL),
-  fReactionModes(),
-  fSystematics(NULL),
-  fOwnerOfSystematics(false)
+  fReactionModes()
 {
   this->Init();
 }
@@ -2439,21 +2437,6 @@ CorrelatedSystematics * GenericSingleSampleFitModel::GetSystematics(Option_t * /
 const CorrelatedSystematics * GenericSingleSampleFitModel::GetSystematics(Option_t * /*opt*/) const
 {
   return fSystematics;
-}
-//________________________________________________________________________________________
-void GenericSingleSampleFitModel::SetSystConf(CorrelatedSystematics * syst, Option_t * opt)
-{
-  TString ts(opt);
-  if (ts.Contains("copy") ) {
-    fSystematics = dynamic_cast<CorrelatedSystematics *>(syst->Clone());
-    fOwnerOfSystematics = true;
-  }
-  else {
-    fSystematics = syst;
-    fOwnerOfSystematics = ts.Contains("adopt");
-  }
-  
-  return;
 }
 //________________________________________________________________________________________
 const util::DuneRFL * GenericSingleSampleFitModel::GetRFL() const

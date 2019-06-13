@@ -15,7 +15,9 @@ using namespace valor;
 
 //________________________________________________________________________________________
 SingleSampleFitModelABC::SingleSampleFitModelABC() :
-FitModelABC()
+FitModelABC(),
+fSystematics(NULL),
+fOwnerOfSystematics(false)
 {
   fDetector = conv::kdUndefined;
   fBeam     = conv::kbUndefined;
@@ -41,5 +43,20 @@ void SingleSampleFitModelABC::Configure(
   if (fSample   == conv::ksUndefined ) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad Sample"    << fSample   ; util::Die(-1); }
   if (fKSp      == conv::kspUndefined) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad KineSpace" << fKSp      ; util::Die(-1); }
 
+}
+//________________________________________________________________________________________
+void SingleSampleFitModelABC::SetSystConf(CorrelatedSystematics * syst, Option_t * opt)
+{
+  TString ts(opt);
+  if (ts.Contains("copy") ) {
+    fSystematics = dynamic_cast<CorrelatedSystematics *>(syst->Clone());
+    fOwnerOfSystematics = true;
+  }
+  else {
+    fSystematics = syst;
+    fOwnerOfSystematics = ts.Contains("adopt");
+  }
+
+  return;
 }
 //________________________________________________________________________________________

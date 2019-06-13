@@ -96,8 +96,36 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * opt)
     }
     curr_node = xmleng->GetNext(curr_node);
   }
-      
-  // Now we'll go over to get the elements and the list of parameter matrices in the fit
+
+  // Now we'll go over the list of parameter matrices in the fit
+  curr_node = xmleng->GetChild(root_node);
+  while(curr_node) {
+    string curr_node_name = xmleng->GetNodeName(curr_node);
+    if (curr_node_name == "systematics") {
+      const char * syst_name_cstr = xmleng->GetAttr(curr_node,"name");
+      string syst_list_name = (syst_name_cstr ? syst_name_cstr : "NoNameFoundInXML");
+      LOG("CompoundFitElements", pNOTICE) << "Found systematic list named: " << syst_list_name;
+
+      // Read the systematics
+      XMLNodePointer_t group_node = xmleng->GetChild(curr_node);
+      while (group_node) {
+        syst_objects.push_back(this->ReadSystematicGroup(xmleng,group_node,opt));
+        group_node = xmleng->GetNext(group_node);
+      }
+    }
+
+    curr_node = xmleng->GetNext(curr_node);
+  }
+
+  if (syst_objects.size() == 0 ) {
+    LOG("CompoundFitElements", pNOTICE) << "No systematics found in config file.";
+  }
+
+  // The compound fit model must have the syst conf set before it's read
+  CorrelatedSystematics * syst = new CompoundCorrelatedSystematics(syst_objects);
+  fCompoundFitModel->SetSystConf(syst,"adopt");
+
+  // Now we'll go over to get the elements
   curr_node = xmleng->GetChild(root_node);
   while(curr_node) {
     string curr_node_name = xmleng->GetNodeName(curr_node);
@@ -116,31 +144,12 @@ bool CompoundFitElements::Read(string xmlfile, Option_t * opt)
        
        LOG("CompoundFitElements", pNOTICE) << "Created model with "<<fCompoundFitModel->GetNSubModels()<<" submodels.";
     }
-    else if (curr_node_name == "systematics") {
-      const char * syst_name_cstr = xmleng->GetAttr(curr_node,"name");
-      string syst_list_name = (syst_name_cstr ? syst_name_cstr : "NoNameFoundInXML");
-      LOG("CompoundFitElements", pNOTICE) << "Found systematic list named: " << syst_list_name;
-      
-      // Read the systematics
-      XMLNodePointer_t group_node = xmleng->GetChild(curr_node);
-      while (group_node) {
-        syst_objects.push_back(this->ReadSystematicGroup(xmleng,group_node,opt));
-        group_node = xmleng->GetNext(group_node);
-      }
-    }
     
     curr_node = xmleng->GetNext(curr_node);
   }
   
   xmleng->FreeDoc(xmldoc);
   delete xmleng;
-  
-  if (syst_objects.size() == 0 ) {
-    LOG("CompoundFitElements", pNOTICE) << "No systematics found in config file.";
-  }
-  
-  CorrelatedSystematics * syst = new CompoundCorrelatedSystematics(syst_objects);
-  fCompoundFitModel->SetSystConf(syst,"adopt");
 
   return true;
 }
@@ -305,6 +314,7 @@ FitModelABC * CompoundFitElements::AdoptFitModel(
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   SingleSampleFitModelABC * s_model = (SingleSampleFitModelABC *) (vbase);
   s_model->Configure(d,b,s,o);
+  s_model->SetSystConf(fCompoundFitModel->GetSystematics(), "");
   s_model->Read(config_file, opt);
   FitModelABC * model = (FitModelABC *) (s_model);
   return model;

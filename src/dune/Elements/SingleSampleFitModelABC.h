@@ -36,6 +36,8 @@ public:
   virtual ~SingleSampleFitModelABC();
 
   void Configure(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t k);
+
+  void SetSystConf(CorrelatedSystematics * syst, Option_t * opt = "");
   
   conv::Detector_t  GetDetector () const { return fDetector;}
   conv::BeamConf_t  GetBeam     () const { return fBeam;    }
@@ -52,6 +54,10 @@ protected:
   conv::BeamConf_t  fBeam;
   conv::Sample_t    fSample;
   conv::KineSpace_t fKSp;
+
+  // Pointer to our systematics
+  CorrelatedSystematics * fSystematics;
+  bool fOwnerOfSystematics;
   
 };
 
