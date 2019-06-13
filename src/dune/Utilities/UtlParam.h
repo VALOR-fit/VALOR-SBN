@@ -62,6 +62,10 @@ namespace util {
   // Get a vector of osc + syst params from the PhysHypothesis and ParameterPool
   std::vector<conv::PhysParamId_t> GetActiveParameters(const PhysHypothesis & ph);
 
+  // Multiply the content of each bin in the hist (within range) by the inital values of the input parameters
+  void ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs,
+                                 CorrelatedSystematics* syst, std::string param_set_str, bool use_current_vals = true);
+
 } //util
 
 } // valor

@@ -481,3 +481,94 @@ std::vector<conv::PhysParamId_t> util::GetActiveParameters(const PhysHypothesis 
   return vec;
 }
 //____________________________________________________________________________
+void util::ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs,
+                                     CorrelatedSystematics* syst, std::string param_set_str, bool use_current_vals)
+{
+  int hndim = hist_to_reweight->GetDimension();
+  if(hndim != kvs.size()) {
+    LOG("FitParams",pERROR)
+      << "Tried to reweight a hist with " << hist_to_reweight->GetDimension() << " dimensions, but "
+      << kvs.size() << " were input.";
+      util::Die(-1);
+  }
+
+  std::vector<PhysParamId_t> param_set = util::GetParameterSet(param_set_str);
+  for (PhysParamId_t p : param_set) {
+    if(!ParameterPool::Instance()->IsParamInPool(p)) {
+      LOG("FitParams",pWARN)
+        << "Skipping parameter " << util::NameRegistry::Instance()->ParamAsString(p)
+        << ", as it was not in the ParameterPool";
+      continue;
+    }
+    Parameter param = ParameterPool::Instance()->GetParam(p);
+
+    // Check that this parameter has matching kinevars
+    if(!param.HasKinematicRange()) {
+      LOG("FitParams",pWARN)
+        << "Skipping parameter " << util::NameRegistry::Instance()->ParamAsString(p)
+        << ", as it has no kinematic dependence";
+      continue;
+    }
+    for (const conv::KineVar_t param_kv : param.GetKineVars()) {
+      bool found = false;
+      for (conv::KineVar_t input_kv : kvs) {
+        if(param_kv == input_kv) {
+          found = true;
+          break;
+        }
+      }
+      if(!found) {
+        LOG("FitParams",pERROR)
+          << "Parameter " << util::NameRegistry::Instance()->ParamAsString(p)
+          << " could not be applied, as all of its applied kine vars don't match the input kinevars";
+        util::Die(-1);
+      }
+    }
+
+    // Get the weight
+    double weight = 1.;
+    if(use_current_vals) {
+      weight = syst->CurrentValue(p);
+    }
+    else {
+      weight = syst->InitialValue(p);
+    }
+
+    // Get the bins this parameter applies to. Here I've assumed that the order of kinevars in kvs matches the order of
+    // dimensions in the input hist
+    int bin_low_glob  = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).first);
+    int bin_high_glob = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).second);
+    int bin_low_x  = -1;
+    int bin_high_x = -1;
+    int dummy = -1;
+    hist_to_reweight->GetBinXYZ(bin_low_glob , bin_low_x , dummy, dummy);
+    hist_to_reweight->GetBinXYZ(bin_high_glob, bin_high_x, dummy, dummy);
+    for (int ibinx = bin_low_x; ibinx <= bin_high_x; ibinx++) {
+      if(kvs.size() > 1) {
+        bin_low_glob  = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).first,  param.GetKineRange(kvs[1]).first);
+        bin_high_glob = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).second, param.GetKineRange(kvs[1]).second);
+        int bin_low_y  = -1;
+        int bin_high_y = -1;
+        hist_to_reweight->GetBinXYZ(bin_low_glob , dummy, bin_low_y,  dummy);
+        hist_to_reweight->GetBinXYZ(bin_high_glob, dummy, bin_high_y, dummy);
+        for (int ibiny = bin_low_y; ibiny <= bin_high_y; ibiny++) {
+          if(kvs.size() > 2) {
+            // TODO: Put in 3D hist reweighting if needed
+            LOG("FitParams",pFATAL)
+              << "Reweighting a 3D hist is not yet supported.";
+            util::Die(-1);
+          }
+          else {
+            double current_content = hist_to_reweight->GetBinContent(ibinx, ibiny);
+            hist_to_reweight->SetBinContent(ibinx, ibiny, current_content * weight);
+          }
+        }
+      }
+      else {
+        double current_content = hist_to_reweight->GetBinContent(ibinx);
+        hist_to_reweight->SetBinContent(ibinx, current_content * weight);
+      }
+    }
+  }
+}
+//____________________________________________________________________________
