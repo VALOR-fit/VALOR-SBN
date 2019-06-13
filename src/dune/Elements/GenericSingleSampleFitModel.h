@@ -121,7 +121,7 @@ private:
   bool FillFromTemplateFile (TFile * f, std::string tag, double desired_POT); // If desired_POT is a positive number, assume template being read is 1E21 and reweight accordingly.
   bool FillSplines(string file, Option_t * opt);
 
-  void ApplyTuning                       (TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = 0);
+  void ApplyTuning                       (Option_t * opt = 0);
   void FluctuateMCStat                   (Option_t * opt = 0);
   void ApplySystematics                  (Option_t * opt = 0);
   void ApplyPhysics                      (Option_t * opt = 0);
@@ -250,7 +250,9 @@ private:
   // TODO: Should really be using a simple struct here instead of this unwieldy object
   typedef std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > TuningInfo;
   std::vector<TuningInfo> fEventByEventTuningHists;
-  std::vector<TuningInfo> fReweightedRatioTuningHists;
+  std::vector<TuningInfo> fReweightedRatioTuningHistsNoWght;    // Tuning hists without reweighting applied.
+  std::vector<TuningInfo> fReweightedRatioTuningHistsInitWght;  // Tuning hists with syst param initial values used to reweight. Reweighted and subsequently used during Read()
+  std::vector<TuningInfo> fReweightedRatioTuningHistsCurrWght;  // Tuning hists with syst param current values used to reweight. Reweighted and subsequently used during Generate()
 };
 
 } // valor

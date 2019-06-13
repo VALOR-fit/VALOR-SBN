@@ -1037,8 +1037,13 @@ void GenericSingleSampleFitModel::Clean(void)
   for(TuningInfo pairpair : fEventByEventTuningHists) {
     delete pairpair.second;
   }
-
-  for(TuningInfo pairpair : fReweightedRatioTuningHists) {
+  for(TuningInfo pairpair : fReweightedRatioTuningHistsNoWght) {
+    delete pairpair.second;
+  }
+  for(TuningInfo pairpair : fReweightedRatioTuningHistsInitWght) {
+    delete pairpair.second;
+  }
+  for(TuningInfo pairpair : fReweightedRatioTuningHistsCurrWght) {
     delete pairpair.second;
   }
 
@@ -1563,8 +1568,28 @@ void GenericSingleSampleFitModel::ApplyTuning(Option_t * /*opt*/)
 {
   // This method maps nom -> tun MC templates
   // This is applied once when the model is constructed, not everytime Generate() is called.
-  // No external tuning available for the time-being
 
+  if(fReweightedRatioTuningHistsInitWght.size() > 0) {
+    if(fReweightedRatioTuningHistsInitWght.size() != fReweightedRatioTuningHistsNoWght.size() ||
+       fReweightedRatioTuningHistsInitWght.size() != fReweightedRatioTuningHistsCurrWght.size()) {
+      LOG("GenericSingleSampleFitModel",pFATAL)
+        << "Different number of tuning hists in the NoWght, InitWght and/or CurrWght tuning hists. This should not happen!";
+      util::Die(-1);
+    }
+    // TODO: loop through the vectors of TuningInfo in ApplyTuning or ApplyBinnedRatioTuningToTemplates (where the latter calls a function called e.g. ApplyBinnedRatioTuneToTemplates)?
+    // TODO: Check the apply mask and kinevars in the loop
+    std::vector<VALORArray *> templates_to_update_ob;
+    templates_to_update_ob.push_back((VALORArray *)fMCTTunOb);
+    templates_to_update_ob.push_back((VALORArray *)fMCTSysOb);
+    templates_to_update_ob.push_back((VALORArray *)fMCTFinOb);
+    std::vector<VALORArray *> templates_to_update_sb;
+    templates_to_update_sb.push_back((VALORArray *)fMCTTunSb);
+    templates_to_update_sb.push_back((VALORArray *)fMCTSysSb);
+    templates_to_update_sb.push_back((VALORArray *)fMCTFinSb);
+    // TODO: Implement this function (1st vec<TuningInfo> is the numerator; 2nd vec<TuningInfo> is the denominator; bool is use_simple_binning)
+    //this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update_ob, false);
+    //this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update_sb, true);
+  }
 
 }
 //________________________________________________________________________________________
@@ -2656,7 +2681,7 @@ void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, X
         hist_vec = (std::vector<TuningInfo> *) &fEventByEventTuningHists;
       }
       else if(tuning_type == "reweighted_ratio") {
-        hist_vec = (std::vector<TuningInfo> *) &fReweightedRatioTuningHists;
+        hist_vec = (std::vector<TuningInfo> *) &fReweightedRatioTuningHistsNoWght;
         param_set_str = util::XML2String(xmleng_mc, tuning_group_node, "param_set"); // <param_set>
         param_set_str = util::ToLowerCase(util::RemoveAllWhitespace(param_set_str));
       }
@@ -2687,12 +2712,16 @@ void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, X
         curr_node = xmleng->GetNext(curr_node);
 
         if(tuning_type == "reweighted_ratio") {
-          // Reweight the hist we just added to the list
-          TuningInfo & pairpair = hist_vec->back();
+          // Copy the hist that we just added to the 'NoWght' vector into the 'InitWght' and 'CurrWght' vectors. Then
+          // reweight the 'InitWght' hist using the systematic parameter init values (in the user-specified param
+          // set). The 'CurrWght' hist is reweighted in the Generate() function, not here.
+          fReweightedRatioTuningHistsInitWght.push_back(TuningInfo(hist_vec->back()));  // Want to store a copy, not a reference
+          fReweightedRatioTuningHistsCurrWght.push_back(TuningInfo(hist_vec->back()));  // Want to store a copy, not a reference
+
+          TuningInfo & pairpair = fReweightedRatioTuningHistsInitWght.back();
           TH1* hist_to_reweight = pairpair.second;
           std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair = pairpair.first;
           std::vector<conv::KineVar_t> kvs = pair.second;
-
           util::ReweightHistUsingParamSet(hist_to_reweight, kvs, fSystematics, param_set_str, false);
         }
 
