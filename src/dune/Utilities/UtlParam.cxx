@@ -418,7 +418,7 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
   vector<PhysParamId_t> vec;
   set_name = util::ToLowerCase(set_name);
 
-  if(set_name == "all" || set_name != "3fosc") {
+  if(set_name != "all" && set_name != "3fosc") {
     const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
     for (const Parameter & param : params) {
       // Search both the param name and categories
@@ -433,6 +433,12 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
         ) {
         vec.push_back(param.GetID());
       }
+    }
+  }
+  else if(set_name == "all") {
+    const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+    for (const Parameter & param : params) {
+      vec.push_back(param.GetID());
     }
   }
 
