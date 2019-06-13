@@ -78,7 +78,20 @@ External Tuning Histograms
 -->
 
 <tuning>
-  mc/tuning/t2k_flux_tuning.xml
+
+    <tuning_group name="event-by-event_flux_tuning">
+        <type>  event-by-event                                </type>
+        <file>  mc/tuning/t2k_event_by_event_flux_tuning.xml  </file>
+    </tuning_group>
+
+    <tuning_group name="reweighted_ratio_flux_tuning">
+        <!-- Apply weights to the tuned MC template by taking weight = reweighted_hist(kine_vars) / hist(kine_vars),
+             where the hist is reweighted by the initial values of all params in the specified param set -->
+        <type>       reweighted_ratio                                </type>
+        <param_set>  flux                                            </param_set>
+        <file>       mc/tuning/t2k_reweighted_ratio_flux_tuning.xml  </file>
+    </tuning_group>
+
 </tuning>
 
 <!--
