@@ -121,7 +121,7 @@ private:
   bool FillFromTemplateFile (TFile * f, std::string tag, double desired_POT); // If desired_POT is a positive number, assume template being read is 1E21 and reweight accordingly.
   bool FillSplines(string file, Option_t * opt);
 
-  void ApplyTuning                       (Option_t * opt = 0);
+  void ApplyTuning                       (TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = 0);
   void FluctuateMCStat                   (Option_t * opt = 0);
   void ApplySystematics                  (Option_t * opt = 0);
   void ApplyPhysics                      (Option_t * opt = 0);
@@ -129,8 +129,8 @@ private:
   void UpdatePDFs                        (Option_t * opt = 0);
   void ApplyPostOscLateralSystematics    (VALORArray * pdf, bool simple_binning = false);
   void ApplyLateralSystematic            (VALORArray * pdf, conv::PhysParamId_t p, bool simple_binning = false);
-  void ReadExtTuningHists                (TXMLEngine* xmleng, XMLNodePointer_t top_node);
-  void ReadTune                          (TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt = "");
+  void ReadExtTuningHistsAll             (TXMLEngine* xmleng, XMLNodePointer_t top_node);
+  void ReadTune                          (TXMLEngine* xmleng, XMLNodePointer_t top_node, std::vector< std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > > * hist_vec, Option_t * opt = "");
   double GetExternalWeight               (std::map<conv::KineVar_t,double> kinematics, conv::ReacMode_t m, conv::NuclearTarget_t nt); // new function to read external weight containing histo
 
   // TODO: These are very nearly direct copies of functions from Parameter. Need to make the functions from Parameter more generic and then just use them here instead
@@ -247,7 +247,10 @@ private:
   util::DuneRFL * fRFL;
 
   // Vector of tuning hists and the apply masks and kine vars that they should be used for
-  std::vector< std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > > fTuningHists;
+  // TODO: Should really be using a simple struct here instead of this unwieldy object
+  typedef std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > TuningInfo;
+  std::vector<TuningInfo> fEventByEventTuningHists;
+  std::vector<TuningInfo> fReweightedRatioTuningHists;
 };
 
 } // valor

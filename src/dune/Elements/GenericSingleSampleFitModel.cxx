@@ -199,7 +199,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   }
 
   // Read in any external tuning hists that we might have
-  this->ReadExtTuningHists(xml, root_node);
+  this->ReadExtTuningHistsAll(xml, root_node);
 
   //
   // Using input in VALOR DST format?
@@ -244,7 +244,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.
   // It is the tuned templates that be the starting point in the Generate() method.
-  this->ApplyTuning();
+  this->ApplyTuning(xml, root_node);
 
   // Release memory
   xml->FreeDoc(xmldoc);
@@ -1034,9 +1034,14 @@ void GenericSingleSampleFitModel::Clean(void)
   
   if (fSystematics && fOwnerOfSystematics) { delete fSystematics; fSystematics = 0; }
 
-  for( std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > pairpair : fTuningHists) {
+  for(TuningInfo pairpair : fEventByEventTuningHists) {
     delete pairpair.second;
   }
+
+  for(TuningInfo pairpair : fReweightedRatioTuningHists) {
+    delete pairpair.second;
+  }
+
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Zero(void)
@@ -1306,6 +1311,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     LOG("GenericSingleSampleFitModel",pDEBUG) 
       << "Inserting to MC teplates --> MC event #" << iev 
       << "\n sample      = " << s        << " (" << util::AsString(s) << ")"
+      << "\n beam        = " << beam     << " (" << util::AsString(b) << ")"
       << "\n imode       = " << imode    << " (" << util::AsString(m) << ")"
       << "\n wght        = " << wght 
       << "\n pot_wght    = " << pot_wght
@@ -1370,7 +1376,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   LOG("GenericSingleSampleFitModel",pDEBUG) << "fMCTFinSb integral summed over all modes = " << fMCTFinSb_tot_integral;
 }
 //________________________________________________________________________________________
-void GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t top_node, Option_t * opt)
+void GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t top_node, std::vector<TuningInfo> * hist_vec, Option_t * opt)
 {
   LOG("GenericSingleSampleFitModel", pNOTICE)
     << "Will apply tune with name [" << xmleng->GetAttr(top_node,"name") << "]";
@@ -1429,15 +1435,15 @@ void GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t 
   // Add the tuning hist, apply mask and kine vars to the vector
   std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t>> pair = std::make_pair(tuning_apply_mask, kvs);
   std::pair<std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t>>, TH1*> pairpair = std::make_pair(pair, tuning_hist);
-  fTuningHists.push_back(pairpair);
+  hist_vec->push_back(pairpair);
 }
 //________________________________________________________________________________________
 double GenericSingleSampleFitModel::GetExternalWeight(std::map<KineVar_t,double> kinematics, conv::ReacMode_t m, conv::NuclearTarget_t nt)
 {
   double wght_external = 1.;
-  if(fTuningHists.size() < 1) { return wght_external; }
+  if(fEventByEventTuningHists.size() < 1) { return wght_external; }
 
-  for( std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > pairpair : fTuningHists) {
+  for(TuningInfo pairpair : fEventByEventTuningHists) {
     std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > apply_pair = pairpair.first;
     TH1* tuning_hist = pairpair.second;
     if(!tuning_hist) { LOG("GenericSingleSampleFitModel", pERROR) << "Tuning apply hist not found!"; util::Die(-1); }
@@ -2631,29 +2637,69 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   }
 }
 //________________________________________________________________________________________
-void GenericSingleSampleFitModel::ReadExtTuningHists(TXMLEngine* xmleng_mc, XMLNodePointer_t top_node_mc)
+void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, XMLNodePointer_t top_node_mc)
 {
-  // Tuning info lives in a separate config file, the name of which is specified in the node named "tuning"
   if(util::NodeExists(xmleng_mc, top_node_mc, "tuning")) {
-    std::string file = util::XML2String(xmleng_mc, top_node_mc, "tuning");
-    TString ts_file = util::CompleteConfigPath(file).c_str();
+    XMLNodePointer_t tuning_node = util::FindNode(xmleng_mc, top_node_mc, "tuning");  // <tuning>
+    XMLNodePointer_t tuning_group_node = xmleng_mc->GetChild(tuning_node);            // <tuning_group>
+    // Loop over all tuning group nodes
+    while(tuning_group_node) {
+      LOG("GenericSingleSampleFitModel", pINFO)
+        << "Reading tuning group named [" << xmleng_mc->GetAttr(tuning_group_node, "name") << "]";
 
-    // Parse the input tuning XML configuration file
-    TXMLEngine* xmleng = new TXMLEngine;
-    XMLDocPointer_t xmldoc = xmleng->ParseFile(ts_file.Data());
-    if (xmldoc==0) {
-      LOG("CompoundFitElements", pERROR)
-        << "Can not parse input tuning XML file [" << file << "]";
-      util::Die(1);
-    }
-    XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);   // <tuning>
-    XMLNodePointer_t curr_node = xmleng->GetChild(root_node);         // <tune>
-    // Loop over all tuning nodes
-    while(curr_node) {
-      this->ReadTune(xmleng, curr_node);
-      curr_node = xmleng->GetNext(curr_node);
-    }
+      // Work out the type of tuning to apply and therefore how to treat the input tuning hists
+      std::string tuning_type = util::XML2String(xmleng_mc, tuning_group_node, "type"); // <type>
+      tuning_type = util::ToLowerCase(util::RemoveAllWhitespace(tuning_type));
+      std::vector<TuningInfo> * hist_vec = nullptr;
+      std::string param_set_str = "";
+      if(tuning_type == "event-by-event") {
+        hist_vec = (std::vector<TuningInfo> *) &fEventByEventTuningHists;
+      }
+      else if(tuning_type == "reweighted_ratio") {
+        hist_vec = (std::vector<TuningInfo> *) &fReweightedRatioTuningHists;
+        param_set_str = util::XML2String(xmleng_mc, tuning_group_node, "param_set"); // <param_set>
+        param_set_str = util::ToLowerCase(util::RemoveAllWhitespace(param_set_str));
+      }
+      else {
+        LOG("GenericSingleSampleFitModel", pFATAL)
+          << "Can not parse input tuning type [" << tuning_type << "] for tuning group ["
+          << xmleng_mc->GetAttr(tuning_group_node, "name") << "]";
+        util::Die(-1);
+      }
 
+      // The actual tuning hist info lives in a separate config file, the name of which is specified in the node named "file"
+      std::string file = util::RemoveAllWhitespace(util::XML2String(xmleng_mc, tuning_group_node, "file"));
+      TString ts_file = util::CompleteConfigPath(file).c_str();
+
+      // Parse the input tuning XML configuration file
+      TXMLEngine* xmleng = new TXMLEngine;
+      XMLDocPointer_t xmldoc = xmleng->ParseFile(ts_file.Data());
+      if (xmldoc==0) {
+        LOG("GenericSingleSampleFitModel", pERROR)
+          << "Can not parse input tuning XML file [" << file << "]";
+        util::Die(1);
+      }
+      XMLNodePointer_t root_node = xmleng->DocGetRootElement(xmldoc);   // <tuning>
+      XMLNodePointer_t curr_node = xmleng->GetChild(root_node);         // <tune>
+      // Loop over all tuning nodes
+      while(curr_node) {
+        this->ReadTune(xmleng, curr_node, hist_vec);
+        curr_node = xmleng->GetNext(curr_node);
+
+        if(tuning_type == "reweighted_ratio") {
+          // Reweight the hist we just added to the list
+          TuningInfo & pairpair = hist_vec->back();
+          TH1* hist_to_reweight = pairpair.second;
+          std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair = pairpair.first;
+          std::vector<conv::KineVar_t> kvs = pair.second;
+
+          util::ReweightHistUsingParamSet(hist_to_reweight, kvs, fSystematics, param_set_str, false);
+        }
+
+      } // Loop over tune nodes in the separate tuning file
+
+      tuning_group_node = xmleng->GetNext(tuning_group_node);
+    } // Loop over tuning group nodes
   }
 }
 //________________________________________________________________________________________
