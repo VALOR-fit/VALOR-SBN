@@ -841,6 +841,18 @@ void GenericSingleSampleFitModel::Book(void)
     fMCTFinSb [imode] = new VALORArray(n_reco_bins_sb, n_true_bins);
     fMCStatSb [imode] = new VALORArray(n_reco_bins_sb, n_true_bins);
     
+    fMCTNomSb [imode]->SetDimensionName(0,"reco");
+    fMCTTunSb [imode]->SetDimensionName(0,"reco");
+    fMCTSysSb [imode]->SetDimensionName(0,"reco");
+    fMCTFinSb [imode]->SetDimensionName(0,"reco");
+    fMCStatSb [imode]->SetDimensionName(0,"reco");
+    
+    fMCTNomSb [imode]->SetDimensionName(1,"true");
+    fMCTTunSb [imode]->SetDimensionName(1,"true");
+    fMCTSysSb [imode]->SetDimensionName(1,"true");
+    fMCTFinSb [imode]->SetDimensionName(1,"true");
+    fMCStatSb [imode]->SetDimensionName(1,"true");
+    
     fMCTNomSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
     fMCTTunSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
     fMCTSysSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctsys_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
@@ -879,6 +891,18 @@ void GenericSingleSampleFitModel::Book(void)
     fMCTSysOb [imode] = new VALORArray(n_reco_bins_ob, n_true_bins);
     fMCTFinOb [imode] = new VALORArray(n_reco_bins_ob, n_true_bins);
     fMCStatOb [imode] = new VALORArray(n_reco_bins_ob, n_true_bins);
+    
+    fMCTNomOb [imode]->SetDimensionName(0,"reco");
+    fMCTTunOb [imode]->SetDimensionName(0,"reco");
+    fMCTSysOb [imode]->SetDimensionName(0,"reco");
+    fMCTFinOb [imode]->SetDimensionName(0,"reco");
+    fMCStatOb [imode]->SetDimensionName(0,"reco");
+    
+    fMCTNomOb [imode]->SetDimensionName(1,"true");
+    fMCTTunOb [imode]->SetDimensionName(1,"true");
+    fMCTSysOb [imode]->SetDimensionName(1,"true");
+    fMCTFinOb [imode]->SetDimensionName(1,"true");
+    fMCStatOb [imode]->SetDimensionName(1,"true");
     
     fMCTNomOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
     fMCTTunOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
