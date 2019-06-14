@@ -6,6 +6,7 @@
 // valor
 #include "valor/Conventions/Constants.h"
 #include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Messenger/Messenger.h"
 
 namespace valor
@@ -165,6 +166,7 @@ TH1D* Make1DHistogram(const VALORArray& v,
 
   if (std::fabs(v.Integral() - histo->Integral()) > conv::kASmallNum) {
     LOG("UtlBinning",pFATAL) << "Histogram contents don't match VALORArray contents ("<<v.GetName()<<")";
+    LOG("UtlBinning",pFATAL) << "Array = "<<v.Integral()<< " ; Histogram = "<<histo->Integral();
     util::Die(-1);
   }
   
@@ -290,86 +292,82 @@ VALORArray* Contract(const VALORArray& v,
     LOG("UtlBinning", pERROR) << currentBinning.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
     util::Die(-1); return nullptr;
   }
-
-  auto targetKs = targetBinning.KineVars();
-  auto integrationKs = recoBinning->KineVars();
-
-  for(auto it = integrationKs.begin(); it != integrationKs.end(); )
-  {
-     if(std::find(targetKs.begin(), targetKs.end(), *it) != targetKs.end())
-     {  // Found kinematic variable in target, remove
-        // This retains the iterator validity on erase
-        it = integrationKs.erase(it);
-     }
-     else
-     {  // Did not find kinematic variable in target, move on
-        ++it;
-     }
+  
+  bool has_truth = true;
+  if (v.GetNDim() == 1) {
+    LOG("UtlBinning", pDEBUG) << v.GetName()<<" has "<<v.GetNDim()<<" dimensions - treating as reco only";
+    has_truth = false;
+    // Check our size is right for this
+    if ((unsigned int)v.GetSize() != recoBinning->NBins()) {
+      LOG("UtlBinning",pFATAL) << "Trying to contract array "<<v.GetName()<<" of size "<<v.GetSize()<< " - expecting "<<recoBinning->NBins();
+      util::Die(-1); return nullptr;
+    }
   }
-
-  VALORArray* targetV = new VALORArray(targetBinning.NBins(), trueBinning->NBins());
- 
-  // Permute all bin combinations for the integration variable binning
-  std::vector<std::vector<int>> permRecoInt = BinPermutation(*recoBinning,
-        integrationKs);
-  // Permute all bin combinations for the new binning
-  std::vector<std::vector<int>> permRecoTarget = BinPermutation(targetBinning,
-        targetBinning.KineSpace());
-
-  // Get the dimensions of the various kinematic variables in the current reco
-  // binning
-  std::vector<int> targetIndices;
-  std::vector<int> integrationIndices;
-  for(auto kv : targetKs)
-  {
-     targetIndices.push_back(recoBinning->Dimension(kv));
+  else if (v.GetNDim() > 2) {
+    LOG("UtlBinning", pFATAL) << v.GetName()<<" has "<<v.GetNDim()<<" dimensions - expected either (reco) or (reco,true)";
+    util::Die(-1); return nullptr;
   }
-  for(auto kv : integrationKs)
-  {
-     integrationIndices.push_back(recoBinning->Dimension(kv));
+  else {
+    // Check reco * true size
+    if ((unsigned int)v.GetSize(0) != recoBinning  ->NBins()) {
+      LOG("UtlBinning", pFATAL) << v.GetName()<<" has "<<v.GetSize(0)<<" reco dimensions - expecting "<<recoBinning->NBins();
+      util::Die(-1); return nullptr;
+    }
+    if ((unsigned int)v.GetSize(1) != trueBinning  ->NBins()) {
+      LOG("UtlBinning", pFATAL) << v.GetName()<<" has "<<v.GetSize(1)<<" true dimensions - expecting "<<trueBinning->NBins();
+      util::Die(-1); return nullptr;
+    }
   }
-
-  int ndims = targetIndices.size() + integrationIndices.size();
-  for(auto tbin : permRecoTarget)
-  {  // Loop through all of the target reco bins
-     // Need a sum for each truth bin
-     std::vector<double> sum(trueBinning->NBins(),0.);
-     for(auto ibin : permRecoInt)
-     {  // Loop through all of the integration reco bins
-        std::vector<double> currentBin(ndims);
-
-        for(unsigned int i = 0; i < targetIndices.size(); ++i)
-        {
-           const double* edges = recoBinning->BinEdgeArr(targetIndices[i]);
-           double centre = 0.5 * (edges[tbin[i]] + edges[tbin[i] + 1]);
-           currentBin[targetIndices[i]] = centre;
-        }
-        for(unsigned int i = 0; i < integrationIndices.size(); ++i)
-        {
-           const double* edges = recoBinning->BinEdgeArr(integrationIndices[i]);
-           double centre = 0.5 * (edges[ibin[i]] + edges[ibin[i] + 1]);
-           currentBin[integrationIndices[i]] = centre;
-        }
-        int currentIndex = recoBinning->FindBin(currentBin);
-        for(unsigned int t = 0; t < trueBinning->NBins(); ++t)
-        {  // Loop over all truth bins
-           sum[t] += v.GetEntry(currentIndex, t);
-        }
-     }
-     std::vector<double> newBin(tbin.size());
-     for(unsigned int i = 0; i < targetIndices.size(); ++i)
-     {
-        const double* edges = targetBinning.BinEdgeArr(i);
-        double centre = 0.5 * (edges[tbin[i]] + edges[tbin[i] + 1]);
-        newBin[i] = centre;
-     }
-     int newIndex = targetBinning.FindBin(newBin);
-     for(unsigned int t = 0; t < trueBinning->NBins(); ++t)
-     {  // Loop over all truth bins
-        targetV->SetEntry(sum[t], newIndex, t);
-     }
+  
+  // Record which dimension in the old binning corresponds to this entry in the new binning
+  std::vector<unsigned int> kinevar_indices;
+  for (conv::KineVar_t kv : targetBinning.KineVars()) {
+    if (!recoBinning->Contains(kv)) {
+      LOG("UtlBinning",pFATAL) << recoBinning->GetName() << " does not contain " << util::AsString(kv);
+      util::Die(-1); return nullptr;
+    }
+    kinevar_indices.push_back(recoBinning->Dimension(kv));
   }
+  
+  size_t n_true_bins       = (has_truth ? trueBinning  ->NBins() : 1);
+  size_t n_old_reco_bins   = recoBinning  ->NBins();
 
+  VALORArray* targetV = nullptr;
+  if (has_truth) {
+    targetV = new VALORArray(targetBinning.NBins(), trueBinning->NBins());
+  }
+  else {
+    targetV = new VALORArray(targetBinning.NBins());
+  }
+  
+  for (size_t old_reco_bin = 0 ; old_reco_bin < n_old_reco_bins ; old_reco_bin++) {
+    // Identify bin multidimensional bin centre
+    std::vector<double> old_bin_centre = recoBinning->BinCentre(old_reco_bin);
+    // Reorder to get new bin centre
+    std::vector<double> new_bin_centre;
+    for (unsigned int kvidx : kinevar_indices) {
+      new_bin_centre.push_back(old_bin_centre[kvidx]);
+    }
+    unsigned int new_reco_bin = targetBinning.FindBin(new_bin_centre);
+    // Loop over true bins and fill
+    if (has_truth) {
+      for (size_t true_bin = 0 ; true_bin < n_true_bins ; true_bin++) {
+        double bin_content = v.GetEntry(old_reco_bin,true_bin);
+        targetV->AddToEntry(bin_content,new_reco_bin,true_bin);
+      }
+    }
+    else { // or don't
+      double bin_content = v.GetEntry(old_reco_bin);
+      targetV->AddToEntry(bin_content,new_reco_bin);
+    }
+  }
+  
+  if (std::fabs(v.Integral() - targetV->Integral()) > conv::kASmallNum) {
+    LOG("UtlBinning",pFATAL) << "Contracted contents don't match input array contents ("<<v.GetName()<<")";
+    LOG("UtlBinning",pFATAL) << "Old = "<<v.Integral()<< " ; New = "<<targetV->Integral();
+    util::Die(-1);
+  }
+    
   return targetV;
 }
 
