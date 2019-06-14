@@ -15,6 +15,7 @@
 #include <map>
 #include <set>
 #include <utility>
+#include <algorithm>
 
 #include <TXMLEngine.h>
 #include <TFile.h>
@@ -1576,20 +1577,147 @@ void GenericSingleSampleFitModel::ApplyTuning(Option_t * /*opt*/)
         << "Different number of tuning hists in the NoWght, InitWght and/or CurrWght tuning hists. This should not happen!";
       util::Die(-1);
     }
-    // TODO: loop through the vectors of TuningInfo in ApplyTuning or ApplyBinnedRatioTuningToTemplates (where the latter calls a function called e.g. ApplyBinnedRatioTuneToTemplates)?
-    // TODO: Check the apply mask and kinevars in the loop
-    std::vector<VALORArray *> templates_to_update_ob;
-    templates_to_update_ob.push_back((VALORArray *)fMCTTunOb);
-    templates_to_update_ob.push_back((VALORArray *)fMCTSysOb);
-    templates_to_update_ob.push_back((VALORArray *)fMCTFinOb);
-    std::vector<VALORArray *> templates_to_update_sb;
-    templates_to_update_sb.push_back((VALORArray *)fMCTTunSb);
-    templates_to_update_sb.push_back((VALORArray *)fMCTSysSb);
-    templates_to_update_sb.push_back((VALORArray *)fMCTFinSb);
-    // TODO: Implement this function (1st vec<TuningInfo> is the numerator; 2nd vec<TuningInfo> is the denominator; bool is use_simple_binning)
-    //this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update_ob, false);
-    //this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update_sb, true);
+    std::vector<std::string> templates_to_update;
+    templates_to_update.push_back("Tun");
+    templates_to_update.push_back("Sys");
+    templates_to_update.push_back("Fin");
+    this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update);
+    this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update);
   }
+
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector<TuningInfo> & numerator_vec,
+    std::vector<TuningInfo> & denominator_vec, std::vector<std::string> templates_to_update)
+{
+  if(numerator_vec.size() != denominator_vec.size()) {
+    LOG("GenericSingleSampleFitModel",pFATAL)
+      << "Different number of tuning hists in the numerator and denominator vectors. This should not happen!";
+    util::Die(-1);
+  }
+
+  for (int itune = 0; itune < numerator_vec.size(); itune++) {
+    // Unpack the tuning information
+    TuningInfo & tune_numerator   = numerator_vec  [itune];
+    TuningInfo & tune_denominator = denominator_vec[itune];
+    std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair_numerator   = tune_numerator  .first;
+    std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair_denominator = tune_denominator.first;
+    TH1* hist_numerator   = tune_numerator  .second;
+    TH1* hist_denominator = tune_denominator.second;
+    conv::ApplyMask_t mask_numerator   = pair_numerator  .first;
+    conv::ApplyMask_t mask_denominator = pair_denominator.first;
+
+    // Get the apply mask for this tune to see whether we should apply it here
+    std::map<conv::ReacMode_t, bool> apply_to_mode;
+    bool apply_this_tune = false;
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+      ReacMode_t m = fReactionModes[imode];
+      if(m == kmUndefined) continue;
+      bool apply_numerator   = this->IsAppliedTo(mask_numerator  , fBeam, fSample, fDetector, m, conv::kntInclusive);   // TODO: Add support for different nuclear targets?
+      bool apply_denominator = this->IsAppliedTo(mask_denominator, fBeam, fSample, fDetector, m, conv::kntInclusive);
+      bool apply = false;
+      if (apply_numerator == apply_denominator) { apply = true; }
+      apply_to_mode[m] = apply;
+      apply_this_tune = apply_this_tune || apply;
+    }
+    if(!apply_this_tune) { continue; }
+
+    // Get the kine vars that this tune applies to to see whether we should apply it here
+    std::vector<conv::KineVar_t> kvs_numerator   = pair_numerator  .second;
+    std::vector<conv::KineVar_t> kvs_denominator = pair_denominator.second;
+    const std::vector<conv::KineVar_t> & binning_kvs = fBinning->KineVars();
+    bool kinevar_mismatch = false;
+    for(conv::KineVar_t kv : kvs_numerator) {
+      if(std::find(binning_kvs.begin(), binning_kvs.end(), kv) == binning_kvs.end()) { kinevar_mismatch = true; }
+    }
+    if(kvs_numerator.size() != kvs_denominator.size()) { kinevar_mismatch = true; }
+    for(conv::KineVar_t kv_numerator : kvs_numerator) {
+      if(std::find(kvs_denominator.begin(), kvs_denominator.end(), kv_numerator) == kvs_denominator.end()) { kinevar_mismatch = true; }
+    }
+    if(kinevar_mismatch) { continue; }
+
+    if(kvs_numerator.size() == 0) { LOG("GenericSingleSampleFitModel", pERROR) << "Tuning kine vars not found!" ; util::Die(-1); }
+    if(kvs_numerator.size() != hist_numerator->GetDimension()) {
+      LOG("GenericSingleSampleFitModel", pERROR) << "Tuning kine vars size not equal to the number of tuning hist dimensions!";
+      util::Die(-1);
+    }
+    if(hist_denominator->GetDimension() != hist_numerator->GetDimension()) {
+      LOG("GenericSingleSampleFitModel", pERROR) << "Numerator and denominator hists should have the same number of dimensions!";
+      util::Die(-1);
+    }
+
+    // Apply the bin-by-bin tune
+    this->ApplyBinnedRatioTuningToTemplates(hist_numerator, hist_denominator, apply_to_mode, kvs_numerator, templates_to_update, false);
+    this->ApplyBinnedRatioTuningToTemplates(hist_numerator, hist_denominator, apply_to_mode, kvs_numerator, templates_to_update, true);
+  }
+
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numerator_hist, TH1* denominator_hist,
+    std::map<conv::ReacMode_t, bool> apply_to_mode, std::vector<conv::KineVar_t> tuning_kine_vars,
+    std::vector<std::string> templates_to_update, bool use_simple_binning)
+{
+  // Create a single weights hist from numerator_hist and denominator_hist
+  TH1* wght_hist = (TH1*) numerator_hist->Clone("ratio_wght_hist");
+  wght_hist->Divide(denominator_hist);
+
+  const VALORBinning * reco_binning = use_simple_binning ? fBinning->RecoSmpBinning() : fBinning->RecoOptBinning();
+  const int n_reco_bins  = reco_binning->NBins();
+
+  // Loop over all true and reco bins. Calculate and apply the weight to each bin.
+  for(int ireco = 0; ireco < n_reco_bins; ireco++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+      ReacMode_t m = fReactionModes[imode];
+      if(m == kmUndefined) continue;
+      if(!apply_to_mode.at(m)) continue;
+      bool is_null = fMCTNullOb[imode];
+      if(is_null) continue;
+
+      const VALORBinning * true_binning = fBinning->TrueSmpBinning(m);
+      const int n_true_bins  = true_binning->NBins();
+      for(int itrue = 0; itrue < n_true_bins; itrue++) {
+
+        // Get the MC template bin center at each kv
+        std::vector<double> mct_bin_centers;
+        for (conv::KineVar_t kv : tuning_kine_vars) {
+          double bin_center = 0.;
+          if(util::IsTrue(kv)) { bin_center = true_binning->BinCentre(itrue, kv); }
+          else                 { bin_center = reco_binning->BinCentre(ireco, kv); }
+          mct_bin_centers.push_back(bin_center);
+        }
+
+        // Get the weight from the ratio hist
+        // Assume that the order of kine vars in tuning_kine_vars corresponds to the relevant dimension of the tuning hist
+        int global_bin = 0;
+        if     (tuning_kine_vars.size() == 1) { global_bin = wght_hist->FindBin(mct_bin_centers[0]); }
+        else if(tuning_kine_vars.size() == 2) { global_bin = wght_hist->FindBin(mct_bin_centers[0],
+                                                                                mct_bin_centers[1]); }
+        else if(tuning_kine_vars.size() == 3) { global_bin = wght_hist->FindBin(mct_bin_centers[0],
+                                                                                mct_bin_centers[1],
+                                                                                mct_bin_centers[2]); }
+        if(wght_hist->IsBinOverflow(global_bin) || wght_hist->IsBinUnderflow(global_bin)) { continue; }
+        double wght = wght_hist->GetBinContent(global_bin);
+        if(wght < 0) continue;
+        LOG("GenericSingleSampleFitModel", pDEBUG) << "Getting ration weight from tuning hist bin " << global_bin
+                                                   << " with content " << wght;
+        // TODO: the weight is coming out at 1 all the time, why?
+
+        // Apply the weight to all requested templates
+        for(std::string template_name : templates_to_update) {
+          if(use_simple_binning){
+            if     (template_name == "Tun") { fMCTTunSb[imode]->GetEntryRef(ireco, itrue) *= wght; }
+            else if(template_name == "Sys") { fMCTSysSb[imode]->GetEntryRef(ireco, itrue) *= wght; }
+            else if(template_name == "Fin") { fMCTFinSb[imode]->GetEntryRef(ireco, itrue) *= wght; }
+          }
+          else {
+            if     (template_name == "Tun") { fMCTTunOb[imode]->GetEntryRef(ireco, itrue) *= wght; }
+            else if(template_name == "Sys") { fMCTSysOb[imode]->GetEntryRef(ireco, itrue) *= wght; }
+            else if(template_name == "Fin") { fMCTFinOb[imode]->GetEntryRef(ireco, itrue) *= wght; }
+          }
+        }//template_name: name of the MC template to update
+      }//itrue: true bins
+    }//imode: reac mode
+  }//ireco: reco bins
 
 }
 //________________________________________________________________________________________

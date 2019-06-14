@@ -133,6 +133,18 @@ private:
   void ReadTune                          (TXMLEngine* xmleng, XMLNodePointer_t top_node, std::vector< std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > > * hist_vec, Option_t * opt = "");
   double GetExternalWeight               (std::map<conv::KineVar_t,double> kinematics, conv::ReacMode_t m, conv::NuclearTarget_t nt); // new function to read external weight containing histo
 
+  // TODO: Should really be using a simple struct here instead of this unwieldy object
+  typedef std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > TuningInfo;
+
+  // Apply bin-by-bin tuning to the input MC templates based on the ratio of the input tuning hists.
+  // Loops over the input vectors of TuningInfo to determine which tunes to apply.
+  void ApplyBinnedRatioTuningToTemplates (std::vector<TuningInfo> & numerator_vec, std::vector<TuningInfo> & denominator_vec,
+                                          std::vector<std::string> templates_to_update);
+  // Apply a single bin-by-bin tune
+  void ApplyBinnedRatioTuningToTemplates (TH1* numerator_hist, TH1* denominator_hist, std::map<conv::ReacMode_t, bool> apply_to_mode,
+                                          std::vector<conv::KineVar_t> kvs, std::vector<std::string> templates_to_update,
+                                          bool use_simple_binning);
+
   // TODO: These are very nearly direct copies of functions from Parameter. Need to make the functions from Parameter more generic and then just use them here instead
   conv::ApplyMask_t              ReadTuningApplyMaskAll          (TXMLEngine* xmleng, XMLNodePointer_t top_node                  ) const;
   conv::DetectorApplyMask_t      ReadTuningDetectorApplyMask     (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
@@ -144,7 +156,7 @@ private:
   conv::NuclearTargetApplyMask_t ReadTuningNuclearTargetApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
   bool                           IsNodeSpecified                 (TXMLEngine* xmleng, XMLNodePointer_t top_node, const string node_path) const;
   bool                           IsAppliedTo                     (conv::ApplyMask_t mask_to_check, conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, conv::ReacMode_t m, conv::NuclearTarget_t nt) const;
-    
+
 
   const util::ArrIdx * fArrIdx;
   
@@ -247,8 +259,6 @@ private:
   util::DuneRFL * fRFL;
 
   // Vector of tuning hists and the apply masks and kine vars that they should be used for
-  // TODO: Should really be using a simple struct here instead of this unwieldy object
-  typedef std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > TuningInfo;
   std::vector<TuningInfo> fEventByEventTuningHists;
   std::vector<TuningInfo> fReweightedRatioTuningHistsNoWght;    // Tuning hists without reweighting applied.
   std::vector<TuningInfo> fReweightedRatioTuningHistsInitWght;  // Tuning hists with syst param initial values used to reweight. Reweighted and subsequently used during Read()
