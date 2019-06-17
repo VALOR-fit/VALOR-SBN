@@ -29,6 +29,13 @@ arridx= util.ArrIdx.Instance()
 pattern = "[VERSION]_t2ksk.14a.neut5.3.2.13a_tuned_v1r1.[CURRENT].fine.[TYPE]_[SELECTION].root"
 models = dict()
 
+def get_file_suffix(sample):
+    if "1Rmu" in sample:
+        return ""
+    else:
+        return "erectheta"
+    
+
 def get_systematics():
     return ["maqe_ccqe", "pfo_ccqe",
         "ebo_cc1pi", "ebo_cccoh", "ebo_ccoth", "ebo_ccqe", "ebo_mec",
@@ -96,7 +103,7 @@ def build_spline_name(sample, syst, flavour, mode, true_bin, reco_bin):
     new_syst = syst
     for (old, new) in get_param_map():
         new_syst = new_syst.replace(old, new)
-    return "spl_%s_%s_%s%s_%s_%d_%d".format(beam, selection, flavour, mode, new_syst, true_bin, reco_bin)
+    return "spl_{}_{}_{}{}_{}_{}_{}".format(beam, selection, flavour, mode, new_syst, true_bin, reco_bin)
 
 def get_fit_elements():
     valor.Env.Instance().AutoSet("dune")
@@ -247,5 +254,5 @@ if __name__=="__main__":
     parser.add_argument('-l', '--location', help="Input spline location.")
     parser.add_argument('-s', '--sample', help="The SK sample.")
     args = parser.parse_args()
-    main(args.version, args.location, args.sample)
+    main(args.version + get_file_suffix(args.sample), args.location, args.sample)
  
