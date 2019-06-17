@@ -1711,9 +1711,8 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numera
         if(wght_hist->IsBinOverflow(global_bin) || wght_hist->IsBinUnderflow(global_bin)) { continue; }
         double wght = wght_hist->GetBinContent(global_bin);
         if(wght < 0) continue;
-        LOG("GenericSingleSampleFitModel", pDEBUG) << "Getting ration weight from tuning hist bin " << global_bin
+        LOG("GenericSingleSampleFitModel", pDEBUG) << "Getting ratio weight from tuning hist bin " << global_bin
                                                    << " with content " << wght;
-        // TODO: the weight is coming out at 1 all the time, why?
 
         // Apply the weight to all requested templates
         for(std::string template_name : templates_to_update) {
@@ -2856,8 +2855,11 @@ void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, X
           // Copy the hist that we just added to the 'NoWght' vector into the 'InitWght' and 'CurrWght' vectors. Then
           // reweight the 'InitWght' hist using the systematic parameter init values (in the user-specified param
           // set). The 'CurrWght' hist is reweighted in the Generate() function, not here.
-          fReweightedRatioTuningHistsInitWght.push_back(TuningInfo(hist_vec->back()));  // Want to store a copy, not a reference
-          fReweightedRatioTuningHistsCurrWght.push_back(TuningInfo(hist_vec->back()));  // Want to store a copy, not a reference
+          TuningInfo to_copy = hist_vec->back();
+          std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair_to_copy = to_copy.first;
+
+          fReweightedRatioTuningHistsInitWght.push_back(std::make_pair(pair_to_copy, (TH1*) to_copy.second->Clone()));  // Want to store pointers to different objects, not the same pointer
+          fReweightedRatioTuningHistsCurrWght.push_back(std::make_pair(pair_to_copy, (TH1*) to_copy.second->Clone()));
 
           TuningInfo & pairpair = fReweightedRatioTuningHistsInitWght.back();
           TH1* hist_to_reweight = pairpair.second;
