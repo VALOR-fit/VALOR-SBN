@@ -536,8 +536,8 @@ void util::ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::Ki
 
     // Get the bins this parameter applies to. Here I've assumed that the order of kinevars in kvs matches the order of
     // dimensions in the input hist
-    int bin_low_glob  = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).first);
-    int bin_high_glob = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).second);
+    int bin_low_glob  = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).first  + conv::kASmallNum);  // + kASmallNum because searching for the right bin can go wrong if we search using the bin edges
+    int bin_high_glob = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).second - conv::kASmallNum);
     int bin_low_x  = -1;
     int bin_high_x = -1;
     int dummy = -1;
