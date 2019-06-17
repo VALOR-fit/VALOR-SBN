@@ -40,6 +40,7 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Conventions/BeamConf.h"
