@@ -413,50 +413,82 @@ bool util::HasKinematicDependence(conv::PhysParamId_t p)
   }
 }
 //____________________________________________________________________________
-std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name)
+std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in)
+{
+  // Set the default apply mask (apply to all)
+  conv::DetectorApplyMask_t      detector = conv::kdApplyToAll;
+  conv::BeamApplyMask_t          beam     = conv::kbApplyToAll;
+  conv::FlavApplyMask_t          flav     = conv::kfApplyToAll;
+  conv::OscModeApplyMask_t       osc      = conv::koApplyToAll;
+  conv::SelecApplyMask_t         selec    = conv::ksApplyToAll;
+  conv::ReacTypeApplyMask_t      reactype = conv::ktApplyToAll;
+  conv::NuclearTargetApplyMask_t target   = conv::kntApplyToAll;
+  conv::ApplyMask_t apply_mask = {detector, beam, flav, osc, selec, reactype, target};
+
+  return util::GetParameterSet(set_name_in, apply_mask);
+}
+//____________________________________________________________________________
+std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::ApplyMask_t mask)
 {
   vector<PhysParamId_t> vec;
-  set_name = util::ToLowerCase(set_name);
+  std::string set_names = util::RemoveAllWhitespace(util::ToLowerCase(set_name_in));
+  std::vector<string> set_names_vec = util::Tokens(set_names, ",");
 
-  if(set_name != "all" && set_name != "3fosc") {
-    const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
-    for (const Parameter & param : params) {
-      // Search both the param name and categories
-      if(param.GetName().find(set_name) != string::npos ||                                           // Search param name
-         param.SearchCategories(set_name) ||                                                         // Search param category for a direct match
-         // Special cases:
-         set_name == "ndflux"  && param.SearchCategories("nd") && param.SearchCategories("flux") ||  // ND flux
-         set_name == "fdflux"  && param.SearchCategories("fd") && param.SearchCategories("flux") ||  // FD flux
-         set_name == "nddet"   && param.SearchCategories("nd") && param.SearchCategories("det")  ||  // ND Detector
-         set_name == "fddet"   && param.SearchCategories("fd") && param.SearchCategories("det")  ||  // FD Detector
-         set_name == "allsyst"                                                                       // All systematic params
-        ) {
-        vec.push_back(param.GetID());
+  for(std::string set_name : set_names_vec) {
+    vector<PhysParamId_t> vec_to_append;
+    if(set_name != "all" && set_name != "3fosc") {
+      const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+      for (const Parameter & param : params) {
+        // Search both the param name and categories
+        if(param.GetName().find(set_name) != string::npos ||                                           // Search param name
+           param.SearchCategories(set_name) ||                                                         // Search param category for a direct match
+           // Special cases:
+           set_name == "ndflux"  && param.SearchCategories("nd") && param.SearchCategories("flux") ||  // ND flux
+           set_name == "fdflux"  && param.SearchCategories("fd") && param.SearchCategories("flux") ||  // FD flux
+           set_name == "nddet"   && param.SearchCategories("nd") && param.SearchCategories("det")  ||  // ND Detector
+           set_name == "fddet"   && param.SearchCategories("fd") && param.SearchCategories("det")  ||  // FD Detector
+           set_name == "allsyst"                                                                       // All systematic params
+          ) {
+          vec_to_append.push_back(param.GetID());
+        }
       }
     }
-  }
-  else if(set_name == "all") {
-    const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
-    for (const Parameter & param : params) {
-      vec.push_back(param.GetID());
+    else if(set_name == "all") {
+      const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
+      for (const Parameter & param : params) {
+        vec_to_append.push_back(param.GetID());
+      }
     }
+
+    // OA parameters
+    if (set_name == "all" || set_name == "3fosc") {
+      vec_to_append.push_back(kPhypMixing23);
+      vec_to_append.push_back(kPhypMixing13);
+      vec_to_append.push_back(kPhypMixing12);
+      vec_to_append.push_back(kPhypCPV     );
+      vec_to_append.push_back(kPhypDm23sq  );
+      vec_to_append.push_back(kPhypDm12sq  );
+    }
+
+    // If we've failed to identify a set of parameters, try a single parameter
+    if (vec_to_append.size()==0) {
+      PhysParamId_t try_param = util::NameRegistry::Instance()->PhysParamFromString(set_name);
+      if(try_param != kPhypUndefined) { vec_to_append.push_back(try_param); }
+      else { LOG("FitParams",pWARN)<<"No parameters added to set: "<<set_name; }
+    }
+
+    // Append the vector for this param set to the main vector
+    vec.insert(vec.end(), vec_to_append.begin(), vec_to_append.end());
   }
 
-  // OA parameters
-  if (set_name == "all" || set_name == "3fosc") {
-    vec.push_back(kPhypMixing23);
-    vec.push_back(kPhypMixing13);
-    vec.push_back(kPhypMixing12);
-    vec.push_back(kPhypCPV     );
-    vec.push_back(kPhypDm23sq  );
-    vec.push_back(kPhypDm12sq  );
-  }
-
-  // If we've failed to identify a set of parameters, try a single parameter
-  if (vec.size()==0) {
-    PhysParamId_t try_param = util::NameRegistry::Instance()->PhysParamFromString(set_name);
-    if(try_param != kPhypUndefined) { vec.push_back(try_param); }
-    else { LOG("FitParams",pWARN)<<"No parameters added to set: "<<set_name; }
+  // Loop over the vector and remove any params that aren't compatible with the input apply mask
+  for(int ip = 0; ip < vec.size(); ip++) {
+    PhysParamId_t p = vec[ip];
+    Parameter param = ParameterPool::Instance()->GetParam(p);
+    if(!param.IsAppliedTo(mask)) {
+      vec.erase(vec.begin()+ip);
+      ip--;
+    }
   }
 
   return vec;
