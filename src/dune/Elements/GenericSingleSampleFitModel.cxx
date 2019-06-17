@@ -245,7 +245,20 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   // At the point the nominal MC templates are filled-in.
   // Apply any fixed tuning here, not on an event by event basis.
   // It is the tuned templates that be the starting point in the Generate() method.
-  this->ApplyTuning(xml, root_node);
+  this->ApplyTuning();
+
+  // Print the tuned MC templates
+  LOG("GenericSingleSampleFitModel",pDEBUG)
+    << "\n\nAfter applying bin-by-bin tuning, the fMCTTunOb integrals for each mode are:";
+  double fMCTTunOb_tot_integral = 0;
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+    ReacMode_t m = fReactionModes[imode];
+    if(m == kmUndefined) continue;
+    fMCTTunOb_tot_integral += fMCTTunOb[imode]->Integral();
+    LOG("GenericSingleSampleFitModel",pDEBUG)
+      << "fMCTTunOb[" << util::AsString(m) << "] integral = " << fMCTTunOb[imode]->Integral();
+  }
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "fMCTTunOb integral summed over all modes = " << fMCTTunOb_tot_integral;
 
   // Release memory
   xml->FreeDoc(xmldoc);
