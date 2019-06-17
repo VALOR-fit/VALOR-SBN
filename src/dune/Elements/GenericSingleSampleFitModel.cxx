@@ -1595,7 +1595,6 @@ void GenericSingleSampleFitModel::ApplyTuning(Option_t * /*opt*/)
     templates_to_update.push_back("Sys");
     templates_to_update.push_back("Fin");
     this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update);
-    this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update);
   }
 
 }
@@ -1629,7 +1628,7 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector
       bool apply_numerator   = this->IsAppliedTo(mask_numerator  , fBeam, fSample, fDetector, m, conv::kntInclusive);   // TODO: Add support for different nuclear targets?
       bool apply_denominator = this->IsAppliedTo(mask_denominator, fBeam, fSample, fDetector, m, conv::kntInclusive);
       bool apply = false;
-      if (apply_numerator == apply_denominator) { apply = true; }
+      if ((apply_numerator == apply_denominator) && apply_numerator) { apply = true; }
       apply_to_mode[m] = apply;
       apply_this_tune = apply_this_tune || apply;
     }
@@ -1671,7 +1670,8 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numera
     std::vector<std::string> templates_to_update, bool use_simple_binning)
 {
   // Create a single weights hist from numerator_hist and denominator_hist
-  TH1* wght_hist = (TH1*) numerator_hist->Clone("ratio_wght_hist");
+  std::string new_name = (std::string) numerator_hist->GetName() + "_ratio_wght_hist";
+  TH1* wght_hist = (TH1*) numerator_hist->Clone(new_name.c_str());
   wght_hist->Divide(denominator_hist);
 
   const VALORBinning * reco_binning = use_simple_binning ? fBinning->RecoSmpBinning() : fBinning->RecoOptBinning();
@@ -2864,8 +2864,9 @@ void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, X
           TuningInfo & pairpair = fReweightedRatioTuningHistsInitWght.back();
           TH1* hist_to_reweight = pairpair.second;
           std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair = pairpair.first;
+          conv::ApplyMask_t mask = pair.first;
           std::vector<conv::KineVar_t> kvs = pair.second;
-          util::ReweightHistUsingParamSet(hist_to_reweight, kvs, fSystematics, param_set_str, false);
+          this->ReweightHistUsingParamSet(hist_to_reweight, kvs, fSystematics, param_set_str, mask, false);
         }
 
       } // Loop over tune nodes in the separate tuning file
