@@ -31,6 +31,7 @@
 #include "valor/Conventions/PhysParamId.h"
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/FitParamApply.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/PhysHypothesis.h"
@@ -53,6 +54,8 @@ namespace util {
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
   // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
   std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
+  // Same as above, but only get params that are compatible with an input apply mask
+  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name, conv::ApplyMask_t mask);
 
   std::pair<double,double> GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k);
 
@@ -61,10 +64,6 @@ namespace util {
 
   // Get a vector of osc + syst params from the PhysHypothesis and ParameterPool
   std::vector<conv::PhysParamId_t> GetActiveParameters(const PhysHypothesis & ph);
-
-  // Multiply the content of each bin in the hist (within range) by the inital values of the input parameters
-  void ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs,
-                                 CorrelatedSystematics* syst, std::string param_set_str, bool use_current_vals = true);
 
 } //util
 

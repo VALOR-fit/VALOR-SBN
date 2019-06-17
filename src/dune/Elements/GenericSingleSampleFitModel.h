@@ -145,6 +145,10 @@ private:
                                           std::vector<conv::KineVar_t> kvs, std::vector<std::string> templates_to_update,
                                           bool use_simple_binning);
 
+  // Multiply the content of each bin in the hist (within range) by the initial values of the input parameters, but only use params that are compatible with an input apply mask
+  void ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs, CorrelatedSystematics* syst,
+                                 std::string param_set_str, conv::ApplyMask_t mask, bool use_current_vals = true);
+
   // TODO: These are very nearly direct copies of functions from Parameter. Need to make the functions from Parameter more generic and then just use them here instead
   conv::ApplyMask_t              ReadTuningApplyMaskAll          (TXMLEngine* xmleng, XMLNodePointer_t top_node                  ) const;
   conv::DetectorApplyMask_t      ReadTuningDetectorApplyMask     (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;

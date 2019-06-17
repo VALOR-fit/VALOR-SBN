@@ -1595,7 +1595,6 @@ void GenericSingleSampleFitModel::ApplyTuning(Option_t * /*opt*/)
     templates_to_update.push_back("Sys");
     templates_to_update.push_back("Fin");
     this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update);
-    this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update);
   }
 
 }
@@ -1629,7 +1628,7 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector
       bool apply_numerator   = this->IsAppliedTo(mask_numerator  , fBeam, fSample, fDetector, m, conv::kntInclusive);   // TODO: Add support for different nuclear targets?
       bool apply_denominator = this->IsAppliedTo(mask_denominator, fBeam, fSample, fDetector, m, conv::kntInclusive);
       bool apply = false;
-      if (apply_numerator == apply_denominator) { apply = true; }
+      if ((apply_numerator == apply_denominator) && apply_numerator) { apply = true; }
       apply_to_mode[m] = apply;
       apply_this_tune = apply_this_tune || apply;
     }
@@ -1671,7 +1670,8 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numera
     std::vector<std::string> templates_to_update, bool use_simple_binning)
 {
   // Create a single weights hist from numerator_hist and denominator_hist
-  TH1* wght_hist = (TH1*) numerator_hist->Clone("ratio_wght_hist");
+  std::string new_name = (std::string) numerator_hist->GetName() + "_ratio_wght_hist";
+  TH1* wght_hist = (TH1*) numerator_hist->Clone(new_name.c_str());
   wght_hist->Divide(denominator_hist);
 
   const VALORBinning * reco_binning = use_simple_binning ? fBinning->RecoSmpBinning() : fBinning->RecoOptBinning();
@@ -2864,14 +2864,113 @@ void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, X
           TuningInfo & pairpair = fReweightedRatioTuningHistsInitWght.back();
           TH1* hist_to_reweight = pairpair.second;
           std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair = pairpair.first;
+          conv::ApplyMask_t mask = pair.first;
           std::vector<conv::KineVar_t> kvs = pair.second;
-          util::ReweightHistUsingParamSet(hist_to_reweight, kvs, fSystematics, param_set_str, false);
+          this->ReweightHistUsingParamSet(hist_to_reweight, kvs, fSystematics, param_set_str, mask, false);
         }
 
       } // Loop over tune nodes in the separate tuning file
 
       tuning_group_node = xmleng->GetNext(tuning_group_node);
     } // Loop over tuning group nodes
+  }
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs,
+    CorrelatedSystematics* syst, std::string param_set_str, conv::ApplyMask_t mask, bool use_current_vals)
+{
+  int hndim = hist_to_reweight->GetDimension();
+  if(hndim != kvs.size()) {
+    LOG("FitParams",pERROR)
+      << "Tried to reweight a hist with " << hist_to_reweight->GetDimension() << " dimensions, but "
+      << kvs.size() << " were input.";
+    util::Die(-1);
+  }
+
+  std::vector<PhysParamId_t> param_set = util::GetParameterSet(param_set_str, mask);
+  std::string param_set_output_str = "";
+  for (PhysParamId_t p : param_set) {
+    param_set_output_str += "\n  " + util::NameRegistry::Instance()->ParamAsString(p);
+  }
+  // TODO: Demote from pFATAL back to pDEBUG when done testing
+  LOG("FitParams",pDEBUG) << "Reweighting hist " << hist_to_reweight->GetName()
+                          << " with the curr or init vals of the following params: " << param_set_output_str;
+  for (PhysParamId_t p : param_set) {
+    if(!ParameterPool::Instance()->IsParamInPool(p)) {
+      LOG("FitParams",pWARN)
+        << "Skipping parameter " << util::NameRegistry::Instance()->ParamAsString(p)
+        << ", as it was not in the ParameterPool";
+      continue;
+    }
+    Parameter param = ParameterPool::Instance()->GetParam(p);
+
+    // Check that this parameter has matching kinevars
+    if(!param.HasKinematicRange()) {
+      LOG("FitParams",pWARN)
+        << "Skipping parameter " << util::NameRegistry::Instance()->ParamAsString(p)
+        << ", as it has no kinematic dependence";
+      continue;
+    }
+    for (const conv::KineVar_t param_kv : param.GetKineVars()) {
+      bool found = false;
+      for (conv::KineVar_t input_kv : kvs) {
+        if(param_kv == input_kv) {
+          found = true;
+          break;
+        }
+      }
+      if(!found) {
+        LOG("FitParams",pERROR)
+          << "Parameter " << util::NameRegistry::Instance()->ParamAsString(p)
+          << " could not be applied, as all of its applied kine vars don't match the input kinevars";
+        util::Die(-1);
+      }
+    }
+
+    // Get the weight
+    double weight = 1.;
+    if(use_current_vals) {
+      weight = syst->CurrentValue(p);
+    }
+    else {
+      weight = syst->InitialValue(p);
+    }
+
+    // Get the bins this parameter applies to. Here I've assumed that the order of kinevars in kvs matches the order of
+    // dimensions in the input hist
+    int bin_low_glob  = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).first  + conv::kASmallNum);  // + kASmallNum because searching for the right bin can go wrong if we search using the bin edges
+    int bin_high_glob = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).second - conv::kASmallNum);
+    int bin_low_x  = -1;
+    int bin_high_x = -1;
+    int dummy = -1;
+    hist_to_reweight->GetBinXYZ(bin_low_glob , bin_low_x , dummy, dummy);
+    hist_to_reweight->GetBinXYZ(bin_high_glob, bin_high_x, dummy, dummy);
+    for (int ibinx = bin_low_x; ibinx <= bin_high_x; ibinx++) {
+      if(kvs.size() > 1) {
+        bin_low_glob  = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).first,  param.GetKineRange(kvs[1]).first);
+        bin_high_glob = hist_to_reweight->FindBin(param.GetKineRange(kvs[0]).second, param.GetKineRange(kvs[1]).second);
+        int bin_low_y  = -1;
+        int bin_high_y = -1;
+        hist_to_reweight->GetBinXYZ(bin_low_glob , dummy, bin_low_y,  dummy);
+        hist_to_reweight->GetBinXYZ(bin_high_glob, dummy, bin_high_y, dummy);
+        for (int ibiny = bin_low_y; ibiny <= bin_high_y; ibiny++) {
+          if(kvs.size() > 2) {
+            // TODO: Put in 3D hist reweighting if needed
+            LOG("FitParams",pFATAL)
+              << "Reweighting a 3D hist is not yet supported.";
+            util::Die(-1);
+          }
+          else {
+            double current_content = hist_to_reweight->GetBinContent(ibinx, ibiny);
+            hist_to_reweight->SetBinContent(ibinx, ibiny, current_content * weight);
+          }
+        }
+      }
+      else {
+        double current_content = hist_to_reweight->GetBinContent(ibinx);
+        hist_to_reweight->SetBinContent(ibinx, current_content * weight);
+      }
+    }
   }
 }
 //________________________________________________________________________________________
