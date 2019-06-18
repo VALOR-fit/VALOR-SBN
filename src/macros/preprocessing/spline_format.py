@@ -105,9 +105,8 @@ def build_spline_name(sample, syst, flavour, mode, true_bin, reco_bin):
         new_syst = new_syst.replace(old, new)
     return "spl_{}_{}_{}{}_{}_{}_{}".format(beam, selection, flavour, mode, new_syst, true_bin, reco_bin)
 
-def get_fit_elements():
+def get_fit_elements(config_file):
     valor.Env.Instance().AutoSet("dune")
-    config_file = os.environ[env_var] + "/config/analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml"
     elements = valor.CompoundFitElements()
     elements.Read(config_file, "nomc+nosplines")
     return elements
@@ -138,21 +137,17 @@ def get_new_binning(sample, flavour, mode, true_bin, reco_bin1, reco_bin2=0):
     reco_centre1 = 0.5 * (reco_edges1[reco_bin1] + reco_edges1[reco_bin1 + 1])
     # Even the muon samples are 2D internally, so reco_bin2 default value works
     reco_centre2 = 0.5 * (reco_edges2[reco_bin2] + reco_edges2[reco_bin2 + 1])
-    print "Bin centres(", true_bin, reco_bin1, reco_bin2, ") = ", reco_centre1, reco_centre2,
     reco_vec = ROOT.vector('double')()
     reco_vec.push_back(reco_centre1)
     reco_vec.push_back(reco_centre2)
     new_true_bin = true_bin
     new_reco_bin = reco_binning.FindBin(reco_vec)
-    print " =>", new_true_bin, new_reco_bin
     return new_true_bin, new_reco_bin
 
-def main(version, path, sample):
+def main(version, path, sample, config):
     modes = set()
     params = set()
-    location = "/data/neutrino/t2k/phrdqd/analysis/valor/softw/t2xk/branches/neutrino2018_v1.0.0/inputs/official/2018/xsec/" + path
-#    location = os.environ[env_var]+"/inputs/official/2017/xsec/" + path
-    elements = get_fit_elements()
+    elements = get_fit_elements(config)
     compound_model = elements.FitModel()
     for i in range(compound_model.GetNSubModels()):
         selection_model = compound_model.GetSubModel(i)
@@ -166,7 +161,7 @@ def main(version, path, sample):
     for orig_type,valor_type in get_flavour_map():
         # Find the right input file
         infile = pattern
-        indir  = location
+        indir  = path
         for old,new in [("[CURRENT]"  ,current),
                         ("[TYPE]"     ,orig_type),
                         ("[SELECTION]",selection),
@@ -214,7 +209,6 @@ def main(version, path, sample):
             # Loop over the splines - rename them and write them to the file.
             for orig_spl_name, spline in spline_dict.iteritems():
                 junk,bins = orig_spl_name.rsplit("_sp_")
-                print "Bin check ", junk, bins
        
                 all_bins = map(int,bins.split("_"))
                 if len(all_bins) == 2:
@@ -249,10 +243,12 @@ def main(version, path, sample):
   
 if __name__=="__main__":
     import argparse
+    samples = ["1Rmu", "RHC1Rmu", "1Re", "RHC1Re", "MultiRe"]
     parser = argparse.ArgumentParser(usage="%prog [options]..",description="Reformat splines")
-    parser.add_argument('-v', '--version', help="Current spline version.")
-    parser.add_argument('-l', '--location', help="Input spline location.")
-    parser.add_argument('-s', '--sample', help="The SK sample.")
+    parser.add_argument('-p', '--prefix', default='spline2018v1', help="Spline filename prefix.")
+    parser.add_argument('-i', '--input', help="Input spline directory.")
+    parser.add_argument('-s', '--sample', choices=samples, help="The SK sample.")
+    parser.add_argument('-c', '--config', help="Analysis configuration file.")
     args = parser.parse_args()
-    main(args.version + get_file_suffix(args.sample), args.location, args.sample)
+    main(args.prefix + get_file_suffix(args.sample), args.input, args.sample, args.config)
  
