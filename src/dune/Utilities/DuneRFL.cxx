@@ -264,7 +264,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
       if(p == conv::kPhypUndefined) continue;
 
       const Parameter & param = ParameterPool::Instance()->GetParam(p);
-      bool param_applied_to_mode = param.IsAppliedTo(fBeam,fSample,fDetector,m,nt);
+      bool param_applied_to_mode = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
       
       for (int ireco = 0 ; ireco < n_bins_reco ; ireco++) {
         for (int itrue = 0 ; itrue < n_bins_true ; itrue++) {

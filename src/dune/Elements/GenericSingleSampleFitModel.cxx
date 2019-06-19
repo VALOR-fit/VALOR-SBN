@@ -929,7 +929,7 @@ void GenericSingleSampleFitModel::BuildParamLists()
       
       for (size_t itarget = 0; itarget < kNNuclearTarget ; itarget++ ) {
         NuclearTarget_t nt = static_cast<NuclearTarget_t>(itarget);
-        is_applied = is_applied || param.IsAppliedTo(fBeam,fSample,fDetector,m,nt);
+        is_applied = is_applied || util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
       } // itarget
       
       // Add them to our lists. This will be need to be updated if new parameter types are added
@@ -1400,7 +1400,7 @@ void GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t 
   LOG("GenericSingleSampleFitModel", pNOTICE)
     << "Will apply tune with name [" << xmleng->GetAttr(top_node,"name") << "]";
 
-  conv::ApplyMask_t tuning_apply_mask = this->ReadTuningApplyMaskAll(xmleng, top_node);
+  conv::ApplyMask_t tuning_apply_mask = util::ReadApplyMaskAll(xmleng, top_node);
   std::vector<conv::KineVar_t> kvs;
   TH1* tuning_hist = nullptr;
 
@@ -1476,7 +1476,7 @@ double GenericSingleSampleFitModel::GetExternalWeight(std::map<KineVar_t,double>
     }
 
     // Does this tuning hist apply to this event?
-    bool do_apply = this->IsAppliedTo(tuning_apply_mask, fBeam, fSample, fDetector, m, nt);
+    bool do_apply = util::IsAppliedTo(tuning_apply_mask, fBeam, fSample, fDetector, m, nt);
     LOG("GenericSingleSampleFitModel", pDEBUG) << "Apply tuning hist to event with: " << util::AsString(fBeam) << ", "
                                                << util::AsString(fSample) << ", " << util::AsString(m) << ", "
                                                << util::AsString(nt) << "? " << do_apply;
@@ -1625,8 +1625,8 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector
     for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
-      bool apply_numerator   = this->IsAppliedTo(mask_numerator  , fBeam, fSample, fDetector, m, conv::kntInclusive);   // TODO: Add support for different nuclear targets?
-      bool apply_denominator = this->IsAppliedTo(mask_denominator, fBeam, fSample, fDetector, m, conv::kntInclusive);
+      bool apply_numerator   = util::IsAppliedTo(mask_numerator  , fBeam, fSample, fDetector, m, conv::kntInclusive);   // TODO: Add support for different nuclear targets?
+      bool apply_denominator = util::IsAppliedTo(mask_denominator, fBeam, fSample, fDetector, m, conv::kntInclusive);
       bool apply = false;
       if ((apply_numerator == apply_denominator) && apply_numerator) { apply = true; }
       apply_to_mode[m] = apply;

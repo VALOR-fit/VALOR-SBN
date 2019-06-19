@@ -24,8 +24,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -58,8 +58,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -92,8 +92,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -126,8 +126,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -160,8 +160,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -194,8 +194,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -228,8 +228,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -262,8 +262,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -296,8 +296,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -330,8 +330,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -364,8 +364,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -398,8 +398,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -432,8 +432,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -466,8 +466,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -500,8 +500,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -534,8 +534,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -568,8 +568,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -602,8 +602,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -636,8 +636,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -670,8 +670,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -704,8 +704,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -738,8 +738,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -772,8 +772,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -806,8 +806,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -840,8 +840,8 @@
       <beam>  FHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -874,8 +874,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -908,8 +908,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -942,8 +942,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -976,8 +976,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1010,8 +1010,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numu  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1044,8 +1044,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1078,8 +1078,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1112,8 +1112,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1146,8 +1146,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1180,8 +1180,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1214,8 +1214,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1248,8 +1248,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1282,8 +1282,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1316,8 +1316,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1350,8 +1350,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1384,8 +1384,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  numubar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1418,8 +1418,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1452,8 +1452,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1486,8 +1486,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1520,8 +1520,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1554,8 +1554,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1588,8 +1588,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1622,8 +1622,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1656,8 +1656,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1690,8 +1690,8 @@
       <beam>  RHC  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1724,8 +1724,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC 2p2h  </reac_type>
-      <flav>  nu any  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nu any  </flav_init>
+      <flav_final>  nu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1758,8 +1758,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  all 1pi  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1792,8 +1792,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  all 1pi  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1826,8 +1826,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1860,8 +1860,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  all 1pi  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1894,8 +1894,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1928,8 +1928,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC oth  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1962,8 +1962,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC coh  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -1996,8 +1996,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  NC coh  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2030,8 +2030,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  NC oth  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2064,8 +2064,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nu any  </flav_init>
+      <flav_final>  nue  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2098,8 +2098,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  NC 1gamma  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2132,8 +2132,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nuebar  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nubar any  </flav_init>
+      <flav_final>  nuebar  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2166,8 +2166,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC 2p2h  </reac_type>
-      <flav>  nubar any  </flav>
-      <osc>  all  </osc>
+      <flav_init>  nubar any  </flav_init>
+      <flav_final>  nubar any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2200,8 +2200,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2234,8 +2234,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2268,8 +2268,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2302,8 +2302,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2336,8 +2336,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2370,8 +2370,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC 2p2h  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2404,8 +2404,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC 2p2h  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2438,8 +2438,8 @@
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2471,8 +2471,8 @@
       <beam>  FHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC QE like  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2504,8 +2504,8 @@
       <beam>  FHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC QE like  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2537,8 +2537,8 @@
       <beam>  FHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC QE like  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2570,8 +2570,8 @@
       <beam>  FHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC nQE  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2603,8 +2603,8 @@
       <beam>  FHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2636,8 +2636,8 @@
       <beam>  FHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2669,8 +2669,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2702,8 +2702,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2735,8 +2735,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2768,8 +2768,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2801,8 +2801,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2834,8 +2834,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2867,8 +2867,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2900,8 +2900,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2933,8 +2933,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2966,8 +2966,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -2999,8 +2999,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3032,8 +3032,8 @@
       <beam>  FHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3065,8 +3065,8 @@
       <beam>  RHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC QE like  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3098,8 +3098,8 @@
       <beam>  RHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC QE like  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3131,8 +3131,8 @@
       <beam>  RHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC QE like  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3164,8 +3164,8 @@
       <beam>  RHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  CC nQE  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3197,8 +3197,8 @@
       <beam>  RHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3230,8 +3230,8 @@
       <beam>  RHC  </beam>
       <selection>  1Rmu  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3263,8 +3263,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3296,8 +3296,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3329,8 +3329,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3362,8 +3362,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3395,8 +3395,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3428,8 +3428,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3461,8 +3461,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3494,8 +3494,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3527,8 +3527,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3560,8 +3560,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3593,8 +3593,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3626,8 +3626,8 @@
       <beam>  RHC  </beam>
       <selection>  1Re  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3659,8 +3659,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3692,8 +3692,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  osc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3725,8 +3725,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3758,8 +3758,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  numu any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  numu any  </flav_init>
+      <flav_final>  numu any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3791,8 +3791,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3824,8 +3824,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all CC  </reac_type>
-      <flav>  nue any  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  nue any  </flav_init>
+      <flav_final>  nue any  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3857,8 +3857,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3890,8 +3890,8 @@
       <beam>  FHC  </beam>
       <selection>  MultiRe  </selection>
       <reac_type>  all NC  </reac_type>
-      <flav>  all  </flav>
-      <osc>  unosc  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     
@@ -3977,8 +3977,8 @@
       <beam>  all  </beam>
       <selection>  all  </selection>
       <reac_type>  all  </reac_type>
-      <flav>  all  </flav>
-      <osc>  all  </osc>
+      <flav_init>  all  </flav_init>
+      <flav_final>  all  </flav_final>
       <target>  all  </target>
     </apply_to>
     

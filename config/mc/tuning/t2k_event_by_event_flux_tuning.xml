@@ -13,7 +13,8 @@ External Tuning Histograms
         <kinevars>  Etrue                       </kinevars>
         <apply_to>
             <detector>  allt2k  </detector>
-            <flav>      numu    </flav>
+            <flav_init> numu    </flav_init>
+            <flav_final>nu any  </flav_final>
             <beam>      FHC     </beam>
         </apply_to>
     </tune>
@@ -25,7 +26,8 @@ External Tuning Histograms
         <kinevars>  Etrue                         </kinevars>
         <apply_to>
             <detector>  allt2k   </detector>
-            <flav>      numubar  </flav>
+            <flav_init> numubar  </flav_init>
+            <flav_final>nubar any</flav_final>
             <beam>      FHC      </beam>
         </apply_to>
     </tune>
@@ -37,7 +39,8 @@ External Tuning Histograms
         <kinevars>  Etrue                      </kinevars>
         <apply_to>
             <detector>  allt2k  </detector>
-            <flav>      nue     </flav>
+            <flav_init> nue     </flav_init>
+            <flav_final>nu any  </flav_final>
             <beam>      FHC     </beam>
         </apply_to>
     </tune>
@@ -49,7 +52,8 @@ External Tuning Histograms
         <kinevars>  Etrue                       </kinevars>
         <apply_to>
             <detector>  allt2k  </detector>
-            <flav>      nuebar  </flav>
+            <flav_init> nuebar  </flav_init>
+            <flav_final>nubar any</flav_final>
             <beam>      FHC     </beam>
         </apply_to>
     </tune>
@@ -61,7 +65,8 @@ External Tuning Histograms
         <kinevars>  Etrue                       </kinevars>
         <apply_to>
             <detector>  allt2k  </detector>
-            <flav>      numu    </flav>
+            <flav_init> numu    </flav_init>
+            <flav_final>nu any  </flav_final>
             <beam>      RHC     </beam>
         </apply_to>
     </tune>
@@ -73,7 +78,8 @@ External Tuning Histograms
         <kinevars>  Etrue                        </kinevars>
         <apply_to>
             <detector>  allt2k   </detector>
-            <flav>      numubar  </flav>
+            <flav_init> numubar  </flav_init>
+            <flav_final>nubar any</flav_final>
             <beam>      RHC      </beam>
         </apply_to>
     </tune>
@@ -85,7 +91,8 @@ External Tuning Histograms
         <kinevars>  Etrue                      </kinevars>
         <apply_to>
             <detector>  allt2k  </detector>
-            <flav>      nue     </flav>
+            <flav_init> nue     </flav_init>
+            <flav_final>nu any  </flav_final>
             <beam>      RHC     </beam>
         </apply_to>
     </tune>
@@ -97,7 +104,8 @@ External Tuning Histograms
         <kinevars>  Etrue                       </kinevars>
         <apply_to>
             <detector>  allt2k  </detector>
-            <flav>      nuebar  </flav>
+            <flav_init> nuebar  </flav_init>
+            <flav_final>nubar any</flav_final>
             <beam>      RHC     </beam>
         </apply_to>
     </tune>

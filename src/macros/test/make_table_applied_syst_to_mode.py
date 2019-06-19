@@ -131,7 +131,7 @@ def main(beam_mode_arg = None, sample_arg = None,
       entries = ["$"+param.GetTeXName().ljust(col1_width)+"$"]
       include_row = include_empty
       for m in modes:
-        if param.IsAppliedTo(beam_mode,sample,detector,m,conv.kntInclusive):
+        if util.IsAppliedTo(param.GetApplyMask(),beam_mode,sample,detector,m,conv.kntInclusive):
           entries.append("\\ck".ljust(coln_width))
           include_row = True
         else:

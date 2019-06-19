@@ -149,18 +149,6 @@ private:
   void ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs, CorrelatedSystematics* syst,
                                  std::string param_set_str, conv::ApplyMask_t mask, bool use_current_vals = true);
 
-  // TODO: These are very nearly direct copies of functions from Parameter. Need to make the functions from Parameter more generic and then just use them here instead
-  conv::ApplyMask_t              ReadTuningApplyMaskAll          (TXMLEngine* xmleng, XMLNodePointer_t top_node                  ) const;
-  conv::DetectorApplyMask_t      ReadTuningDetectorApplyMask     (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
-  conv::BeamApplyMask_t          ReadTuningBeamApplyMask         (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
-  conv::FlavApplyMask_t          ReadTuningFlavApplyMask         (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
-  conv::OscModeApplyMask_t       ReadTuningOscModeApplyMask      (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
-  conv::SelecApplyMask_t         ReadTuningSelecApplyMask        (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
-  conv::ReacTypeApplyMask_t      ReadTuningReacTypeApplyMask     (TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
-  conv::NuclearTargetApplyMask_t ReadTuningNuclearTargetApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const;
-  bool                           IsNodeSpecified                 (TXMLEngine* xmleng, XMLNodePointer_t top_node, const string node_path) const;
-  bool                           IsAppliedTo                     (conv::ApplyMask_t mask_to_check, conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, conv::ReacMode_t m, conv::NuclearTarget_t nt) const;
-
 
   const util::ArrIdx * fArrIdx;
   

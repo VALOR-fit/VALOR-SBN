@@ -65,7 +65,7 @@ void make_fake_splines(const char * version_number = "2016v0", const char * conf
 
           const Parameter & param = ParameterPool::Instance()->GetParam(p);
           conv::Detector_t d = util::DetectorFromString(detector);
-          if (! param.IsAppliedTo(b,s,d,m,conv::kntInclusive) ) {continue;}
+          if (! util::IsAppliedTo(param.GetApplyMask(),b,s,d,m,conv::kntInclusive) ) {continue;}
 
           const int n_q2_true_bins = util::NumQ2trueBinsXsec (s, m);
           

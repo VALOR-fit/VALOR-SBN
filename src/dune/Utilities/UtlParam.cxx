@@ -345,25 +345,57 @@ conv::FitParamGroup_t util::GetParameterGroup(conv::PhysParamId_t p)
     const Parameter & param = pool->GetParam(p);
     conv::ApplyMask_t mask = param.GetApplyMask();
 
-    bool apply_numu_only =     (conv::kfApplyToNuMu      & mask.flav).any() &&
-                              !(conv::kfApplyToNuMuBar  & mask.flav).any() &&
-                              !(conv::kfApplyToNuE      & mask.flav).any() &&
-                              !(conv::kfApplyToNuEBar   & mask.flav).any();
+    bool apply_numu_only =    (
+                                (conv::kfApplyToNuMu    & mask.flav_init) .any() &&
+                               !(conv::kfApplyToNuMuBar & mask.flav_init) .any() &&
+                               !(conv::kfApplyToNuE     & mask.flav_init) .any() &&
+                               !(conv::kfApplyToNuEBar  & mask.flav_init) .any()
+                              ) ||
+                              (
+                                (conv::kfApplyToNuMu    & mask.flav_final).any() &&
+                               !(conv::kfApplyToNuMuBar & mask.flav_final).any() &&
+                               !(conv::kfApplyToNuE     & mask.flav_final).any() &&
+                               !(conv::kfApplyToNuEBar  & mask.flav_final).any()
+                              );
 
-    bool apply_numubar_only = !(conv::kfApplyToNuMu    & mask.flav).any() &&
-                               (conv::kfApplyToNuMuBar & mask.flav).any() &&
-                              !(conv::kfApplyToNuE     & mask.flav).any() &&
-                              !(conv::kfApplyToNuEBar  & mask.flav).any();
+    bool apply_numubar_only = (
+                                !(conv::kfApplyToNuMu    & mask.flav_init) .any() &&
+                                 (conv::kfApplyToNuMuBar & mask.flav_init) .any() &&
+                                !(conv::kfApplyToNuE     & mask.flav_init) .any() &&
+                                !(conv::kfApplyToNuEBar  & mask.flav_init) .any()
+                              ) ||
+                              (
+                                !(conv::kfApplyToNuMu    & mask.flav_final).any() &&
+                                 (conv::kfApplyToNuMuBar & mask.flav_final).any() &&
+                                !(conv::kfApplyToNuE     & mask.flav_final).any() &&
+                                !(conv::kfApplyToNuEBar  & mask.flav_final).any()
+                              );
 
-    bool apply_nue_only =     !(conv::kfApplyToNuMu    & mask.flav).any() &&
-                              !(conv::kfApplyToNuMuBar & mask.flav).any() &&
-                               (conv::kfApplyToNuE     & mask.flav).any() &&
-                              !(conv::kfApplyToNuEBar  & mask.flav).any();
+    bool apply_nue_only =     (
+                                !(conv::kfApplyToNuMu    & mask.flav_init) .any() &&
+                                !(conv::kfApplyToNuMuBar & mask.flav_init) .any() &&
+                                 (conv::kfApplyToNuE     & mask.flav_init) .any() &&
+                                !(conv::kfApplyToNuEBar  & mask.flav_init) .any()
+                              ) ||
+                              (
+                                !(conv::kfApplyToNuMu    & mask.flav_final).any() &&
+                                !(conv::kfApplyToNuMuBar & mask.flav_final).any() &&
+                                 (conv::kfApplyToNuE     & mask.flav_final).any() &&
+                                !(conv::kfApplyToNuEBar  & mask.flav_final).any()
+                              );
 
-    bool apply_nuebar_only =  !(conv::kfApplyToNuMu    & mask.flav).any() &&
-                              !(conv::kfApplyToNuMuBar & mask.flav).any() &&
-                              !(conv::kfApplyToNuE     & mask.flav).any() &&
-                               (conv::kfApplyToNuEBar  & mask.flav).any();
+    bool apply_nuebar_only =  (
+                                !(conv::kfApplyToNuMu    & mask.flav_init) .any() &&
+                                !(conv::kfApplyToNuMuBar & mask.flav_init) .any() &&
+                                !(conv::kfApplyToNuE     & mask.flav_init) .any() &&
+                                 (conv::kfApplyToNuEBar  & mask.flav_init) .any()
+                              ) ||
+                              (
+                                !(conv::kfApplyToNuMu    & mask.flav_final).any() &&
+                                !(conv::kfApplyToNuMuBar & mask.flav_final).any() &&
+                                !(conv::kfApplyToNuE     & mask.flav_final).any() &&
+                                 (conv::kfApplyToNuEBar  & mask.flav_final).any()
+                              );
 
     bool apply_fhc_only = (conv::kbApplyToFHC & mask.beam).any() &&
                          !(conv::kbApplyToRHC & mask.beam).any();
@@ -416,14 +448,14 @@ bool util::HasKinematicDependence(conv::PhysParamId_t p)
 std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in)
 {
   // Set the default apply mask (apply to all)
-  conv::DetectorApplyMask_t      detector = conv::kdApplyToAll;
-  conv::BeamApplyMask_t          beam     = conv::kbApplyToAll;
-  conv::FlavApplyMask_t          flav     = conv::kfApplyToAll;
-  conv::OscModeApplyMask_t       osc      = conv::koApplyToAll;
-  conv::SelecApplyMask_t         selec    = conv::ksApplyToAll;
-  conv::ReacTypeApplyMask_t      reactype = conv::ktApplyToAll;
-  conv::NuclearTargetApplyMask_t target   = conv::kntApplyToAll;
-  conv::ApplyMask_t apply_mask = {detector, beam, flav, osc, selec, reactype, target};
+  conv::DetectorApplyMask_t      detector   = conv::kdApplyToAll;
+  conv::BeamApplyMask_t          beam       = conv::kbApplyToAll;
+  conv::FlavApplyMask_t          flav_init  = conv::kfApplyToAll;
+  conv::FlavApplyMask_t          flav_final = conv::kfApplyToAll;
+  conv::SelecApplyMask_t         selec      = conv::ksApplyToAll;
+  conv::ReacTypeApplyMask_t      reactype   = conv::ktApplyToAll;
+  conv::NuclearTargetApplyMask_t target     = conv::kntApplyToAll;
+  conv::ApplyMask_t apply_mask = {detector, beam, flav_init, flav_final, selec, reactype, target};
 
   return util::GetParameterSet(set_name_in, apply_mask);
 }
@@ -485,7 +517,7 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::
   for(int ip = 0; ip < vec.size(); ip++) {
     PhysParamId_t p = vec[ip];
     Parameter param = ParameterPool::Instance()->GetParam(p);
-    if(!param.IsAppliedTo(mask)) {
+    if(!util::IsAppliedTo(param.GetApplyMask(), mask)) {
       vec.erase(vec.begin()+ip);
       ip--;
     }
