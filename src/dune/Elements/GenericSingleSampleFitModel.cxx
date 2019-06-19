@@ -1659,6 +1659,14 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector
     }
 
     // Apply the bin-by-bin tune
+    LOG("GenericSingleSampleFitModel",pDEBUG)
+      << "About to apply bin-by-bin tuning from hist " << hist_numerator->GetName() << ", and apply mask "
+      << mask_numerator << " to modes:";
+    for(std::map<conv::ReacMode_t, bool>::iterator iter = apply_to_mode.begin(); iter != apply_to_mode.end(); ++iter) {
+      conv::ReacMode_t map_mode = iter->first;
+      bool map_apply = iter->second;
+      LOG("GenericSingleSampleFitModel", pDEBUG) << util::AsString(map_mode) << " : " << map_apply;
+    }
     this->ApplyBinnedRatioTuningToTemplates(hist_numerator, hist_denominator, apply_to_mode, kvs_numerator, templates_to_update, false);
     this->ApplyBinnedRatioTuningToTemplates(hist_numerator, hist_denominator, apply_to_mode, kvs_numerator, templates_to_update, true);
   }
@@ -1678,17 +1686,17 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numera
   const int n_reco_bins  = reco_binning->NBins();
 
   // Loop over all true and reco bins. Calculate and apply the weight to each bin.
-  for(int ireco = 0; ireco < n_reco_bins; ireco++) {
-    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
-      ReacMode_t m = fReactionModes[imode];
-      if(m == kmUndefined) continue;
-      if(!apply_to_mode.at(m)) continue;
-      bool is_null = fMCTNullOb[imode];
-      if(is_null) continue;
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+    ReacMode_t m = fReactionModes[imode];
+    if(m == kmUndefined) continue;
+    if(!apply_to_mode.at(m)) continue;
+    bool is_null = fMCTNullOb[imode];
+    if(is_null) continue;
 
-      const VALORBinning * true_binning = fBinning->TrueSmpBinning(m);
-      const int n_true_bins  = true_binning->NBins();
-      for(int itrue = 0; itrue < n_true_bins; itrue++) {
+    const VALORBinning * true_binning = fBinning->TrueSmpBinning(m);
+    const int n_true_bins  = true_binning->NBins();
+    for(int itrue = 0; itrue < n_true_bins; itrue++) {
+      for(int ireco = 0; ireco < n_reco_bins; ireco++) {
 
         // Get the MC template bin center at each kv
         std::vector<double> mct_bin_centers;
@@ -1711,8 +1719,12 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numera
         if(wght_hist->IsBinOverflow(global_bin) || wght_hist->IsBinUnderflow(global_bin)) { continue; }
         double wght = wght_hist->GetBinContent(global_bin);
         if(wght < 0) continue;
+        if(wght < conv::kASmallNum) wght = 1.;
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Getting ratio weight from tuning hist bin " << global_bin
-                                                   << " with content " << wght;
+                                                   << " with content " << wght
+                                                   << "; Applying to MCT bin ("<<ireco<<", "<<itrue<<") with old content = "
+                                                   << fMCTTunSb[imode]->GetEntry(ireco, itrue) << ", new content = "
+                                                   << fMCTTunSb[imode]->GetEntry(ireco, itrue) * wght;
 
         // Apply the weight to all requested templates
         for(std::string template_name : templates_to_update) {
@@ -1727,10 +1739,9 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numera
             else if(template_name == "Fin") { fMCTFinOb[imode]->GetEntryRef(ireco, itrue) *= wght; }
           }
         }//template_name: name of the MC template to update
-      }//itrue: true bins
-    }//imode: reac mode
-  }//ireco: reco bins
-
+      }//ireco: reco bins
+    }//itrue: true bins
+  }//imode: reac mode
 }
 //________________________________________________________________________________________
 
@@ -2892,7 +2903,6 @@ void GenericSingleSampleFitModel::ReweightHistUsingParamSet(TH1* hist_to_reweigh
   for (PhysParamId_t p : param_set) {
     param_set_output_str += "\n  " + util::NameRegistry::Instance()->ParamAsString(p);
   }
-  // TODO: Demote from pFATAL back to pDEBUG when done testing
   LOG("FitParams",pDEBUG) << "Reweighting hist " << hist_to_reweight->GetName()
                           << " with the curr or init vals of the following params: " << param_set_output_str;
   for (PhysParamId_t p : param_set) {
@@ -2974,202 +2984,3 @@ void GenericSingleSampleFitModel::ReweightHistUsingParamSet(TH1* hist_to_reweigh
   }
 }
 //________________________________________________________________________________________
-conv::ApplyMask_t GenericSingleSampleFitModel::ReadTuningApplyMaskAll(TXMLEngine* xmleng, XMLNodePointer_t top_node) const
-{
-  conv::DetectorApplyMask_t      detector = conv::kdApplyToAll;
-  conv::BeamApplyMask_t          beam     = conv::kbApplyToAll;
-  conv::FlavApplyMask_t          flav     = conv::kfApplyToAll;
-  conv::OscModeApplyMask_t       osc      = conv::koApplyToAll;
-  conv::SelecApplyMask_t         selec    = conv::ksApplyToAll;
-  conv::ReacTypeApplyMask_t      reactype = conv::ktApplyToAll;
-  conv::NuclearTargetApplyMask_t target   = conv::kntApplyToAll;
-  if(util::NodeExists(xmleng, top_node, "apply_to")) {
-    detector = this->ReadTuningDetectorApplyMask     (xmleng, top_node, "detector");
-    beam     = this->ReadTuningBeamApplyMask         (xmleng, top_node, "beam");
-    flav     = this->ReadTuningFlavApplyMask         (xmleng, top_node, "flav");
-    osc      = this->ReadTuningOscModeApplyMask      (xmleng, top_node, "osc");
-    selec    = this->ReadTuningSelecApplyMask        (xmleng, top_node, "selection");
-    reactype = this->ReadTuningReacTypeApplyMask     (xmleng, top_node, "reac_type");
-    target   = this->ReadTuningNuclearTargetApplyMask(xmleng, top_node, "target");
-  }
-  conv::ApplyMask_t tuning_apply_mask = {detector, beam, flav, osc, selec, reactype, target};
-  return tuning_apply_mask;
-}
-//________________________________________________________________________________________
-conv::DetectorApplyMask_t GenericSingleSampleFitModel::ReadTuningDetectorApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const
-{
-  conv::DetectorApplyMask_t mask = conv::kdApplyToAll;
-  string node_path = "apply_to/" + node_name;
-  if(this->IsNodeSpecified(xmleng, top_node, node_path)) {
-    string content = util::XML2String(xmleng, top_node, node_path);
-    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
-    try {
-      mask = util::DetectorMaskFromString(util::ToLowerCase(trimmed_content));
-    }
-    catch (const std::out_of_range& oor) {
-      LOG("GenericSingleSampleFitModel", pFATAL) << "When reading tuning hists for node '" << node_name << "' apply mask name \'" << trimmed_content
-                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
-      util::Die(1);
-    }
-  }
-  return mask;
-}
-//________________________________________________________________________________________
-conv::BeamApplyMask_t GenericSingleSampleFitModel::ReadTuningBeamApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const
-{
-  conv::BeamApplyMask_t mask = conv::kbApplyToAll;
-  string node_path = "apply_to/" + node_name;
-  if(this->IsNodeSpecified(xmleng, top_node, node_path)) {
-    string content = util::XML2String(xmleng, top_node, node_path);
-    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
-    try {
-      mask = util::BeamMaskFromString(util::ToLowerCase(trimmed_content));
-    }
-    catch (const std::out_of_range& oor) {
-      LOG("FitInputs", pFATAL) << "When reading tuning hists for node '" << node_name << "' apply mask name \'" << trimmed_content
-                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
-      util::Die(1);
-    }
-  }
-  return mask;
-}
-//________________________________________________________________________________________
-conv::FlavApplyMask_t GenericSingleSampleFitModel::ReadTuningFlavApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const
-{
-  FlavApplyMask_t mask = conv::kfApplyToAll;
-  string node_path = "apply_to/" + node_name;
-  if(this->IsNodeSpecified(xmleng, top_node, node_path)) {
-    string content = util::XML2String(xmleng, top_node, node_path);
-    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
-    try {
-      mask = util::FlavMaskFromString(trimmed_content);
-    }
-    catch (const std::out_of_range& oor) {
-      LOG("FitInputs", pFATAL) << "When reading tuning hists for node '" << node_name << "' apply mask name \'" << trimmed_content
-                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
-      util::Die(1);
-    }
-  }
-  return mask;
-}
-//________________________________________________________________________________________
-conv::OscModeApplyMask_t GenericSingleSampleFitModel::ReadTuningOscModeApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const
-{
-  OscModeApplyMask_t mask = conv::koApplyToAll;
-  string node_path = "apply_to/" + node_name;
-  if(this->IsNodeSpecified(xmleng, top_node, node_path)) {
-    string content = util::XML2String(xmleng, top_node, node_path);
-    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
-    try {
-      mask = util::OscModeMaskFromString(trimmed_content);
-    }
-    catch (const std::out_of_range& oor) {
-      LOG("FitInputs", pFATAL) << "When reading tuning hists for node '" << node_name << "' apply mask name \'" << trimmed_content
-                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
-      util::Die(1);
-    }
-  }
-  return mask;
-}
-//________________________________________________________________________________________
-conv::SelecApplyMask_t GenericSingleSampleFitModel::ReadTuningSelecApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const
-{
-  SelecApplyMask_t mask = conv::ksApplyToAll;
-  string node_path = "apply_to/" + node_name;
-  if(this->IsNodeSpecified(xmleng, top_node, node_path)) {
-    string content = util::XML2String(xmleng, top_node, node_path);
-    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
-    try {
-      mask = util::SelecMaskFromString(util::ToLowerCase(trimmed_content));
-    }
-    catch (const std::out_of_range& oor) {
-      LOG("FitInputs", pFATAL) << "When reading tuning hists for node '" << node_name << "' apply mask name \'" << trimmed_content
-                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
-      util::Die(1);
-    }
-  }
-  return mask;
-}
-//________________________________________________________________________________________
-conv::ReacTypeApplyMask_t GenericSingleSampleFitModel::ReadTuningReacTypeApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const
-{
-  ReacTypeApplyMask_t mask = conv::ktApplyToAll;
-  string node_path = "apply_to/" + node_name;
-  if(this->IsNodeSpecified(xmleng, top_node, node_path)) {
-    string content = util::XML2String(xmleng, top_node, node_path);
-    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
-    std::string reac_type_str = util::ReplaceAll(trimmed_content, "2p2h", "mec");  // 2p2h and MEC are the same thing, but we internally use MEC only
-    try {
-      mask = util::ReacTypeMaskFromString(util::ToLowerCase(reac_type_str));
-    }
-    catch (const std::out_of_range& oor) {
-      LOG("FitInputs", pFATAL) << "When reading tuning hists for node '" << node_name << "' apply mask name \'" << trimmed_content
-                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
-      util::Die(1);
-    }
-  }
-  return mask;
-}
-//________________________________________________________________________________________
-conv::NuclearTargetApplyMask_t GenericSingleSampleFitModel::ReadTuningNuclearTargetApplyMask(TXMLEngine* xmleng, XMLNodePointer_t top_node, string node_name) const
-{
-  NuclearTargetApplyMask_t mask = conv::kntApplyToAll;
-  string node_path = "apply_to/" + node_name;
-  if(this->IsNodeSpecified(xmleng, top_node, node_path)) {
-    string content = util::XML2String(xmleng, top_node, node_path);
-    std::string trimmed_content = util::ToLowerCase(util::RemoveAllWhitespace(content));
-    try {
-      mask = util::NuclearTargetMaskFromString(util::ToLowerCase(trimmed_content));
-    }
-    catch (const std::out_of_range& oor) {
-      LOG("FitInputs", pFATAL) << "When reading tuning hists for node '" << node_name << "' apply mask name \'" << trimmed_content
-                               << "\' (from user input \'" << content << "\') was not recognised - threw an out of range error: " << oor.what();
-      util::Die(1);
-    }
-  }
-  return mask;
-}
-//________________________________________________________________________________________
-bool GenericSingleSampleFitModel::IsNodeSpecified(TXMLEngine* xmleng, XMLNodePointer_t top_node, const string node_path) const
-{
-  bool specified = true;
-  if(util::NodeExists(xmleng, top_node, node_path)) {
-    std::string content = util::XML2String(xmleng, top_node, node_path);
-    if(content == "") {
-      specified = false;
-    }
-  }
-  else {
-    specified = false;
-  }
-  return specified;
-}
-//________________________________________________________________________________________
-bool GenericSingleSampleFitModel::IsAppliedTo(conv::ApplyMask_t mask_to_check, conv::BeamConf_t b, conv::Sample_t s, conv::Detector_t d, conv::ReacMode_t m, conv::NuclearTarget_t nt) const
-{
-  if(b  == conv::kbUndefined ) { return false; }
-  if(s  == conv::ksUndefined ) { return false; }
-  if(d  == conv::kdUndefined ) { return false; }
-  if(m  == conv::kmUndefined ) { return false; }
-  if(nt == conv::kntUndefined) { return false; }
-
-  conv::NuFlavour_t f = conv::kReacModeToInitFlavour[m];
-  conv::ReacType_t  t = conv::kReacModeToType[m];
-
-  if(f == kNuFlavourUndefined) { return false; }
-  if(t == kmtUndefined)        { return false; }
-
-  // Check whether or not to apply the param to this
-  bool apply_to_beam     = (util::ApplyToBeamMode     (b)  & mask_to_check.beam    ).any();
-  bool apply_to_sample   = (util::ApplyToSample       (s)  & mask_to_check.selec   ).any();
-  bool apply_to_flavour  = (util::ApplyToFlavour      (f)  & mask_to_check.flav    ).any();
-  bool apply_to_type     = (util::ApplyToReacType     (t)  & mask_to_check.reactype).any();
-  bool apply_to_detector = (util::ApplyToDetector     (d)  & mask_to_check.detector).any();
-  bool apply_to_target   = (util::ApplyToNuclearTarget(nt) & mask_to_check.target  ).any();
-
-  bool apply = (apply_to_beam && apply_to_sample && apply_to_flavour && apply_to_type && apply_to_detector && apply_to_target);
-
-  return apply;
-}
-//________________________________________________________________________________________
-
