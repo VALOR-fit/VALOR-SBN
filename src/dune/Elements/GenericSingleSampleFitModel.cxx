@@ -57,6 +57,7 @@
 //dune
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/Names.h"
+#include "dune/Conventions/Experiment.h"
 #include "dune/Utilities/UtlBinning.h"
 #include "dune/Utilities/KinematicPoint.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
@@ -1051,13 +1052,7 @@ void GenericSingleSampleFitModel::Clean(void)
   for(TuningInfo pairpair : fEventByEventTuningHists) {
     delete pairpair.second;
   }
-  for(TuningInfo pairpair : fReweightedRatioTuningHistsNoWght) {
-    delete pairpair.second;
-  }
-  for(TuningInfo pairpair : fReweightedRatioTuningHistsInitWght) {
-    delete pairpair.second;
-  }
-  for(TuningInfo pairpair : fReweightedRatioTuningHistsCurrWght) {
+  for(TuningInfo pairpair : fBinByBinTuningHists) {
     delete pairpair.second;
   }
 
@@ -1577,18 +1572,13 @@ void GenericSingleSampleFitModel::ApplyTuning(Option_t * /*opt*/)
   // This method maps nom -> tun MC templates
   // This is applied once when the model is constructed, not everytime Generate() is called.
 
-  if(fReweightedRatioTuningHistsInitWght.size() > 0) {
-    if(fReweightedRatioTuningHistsInitWght.size() != fReweightedRatioTuningHistsNoWght.size() ||
-       fReweightedRatioTuningHistsInitWght.size() != fReweightedRatioTuningHistsCurrWght.size()) {
-      LOG("GenericSingleSampleFitModel",pFATAL)
-        << "Different number of tuning hists in the NoWght, InitWght and/or CurrWght tuning hists. This should not happen!";
-      util::Die(-1);
-    }
-    std::vector<std::string> templates_to_update;
-    templates_to_update.push_back("Tun");
-    templates_to_update.push_back("Sys");
-    templates_to_update.push_back("Fin");
-    this->ApplyBinnedRatioTuningToTemplates(fReweightedRatioTuningHistsInitWght, fReweightedRatioTuningHistsNoWght, templates_to_update);
+  // No bin-by-bin tuning is supported yet (but event-by-event tuning is supported in FillFromDST).
+  // If bin-by-bin tuning is needed, slight modification to ApplyBinnedRatioTuningToTemplates (currently unused) is
+  // needed (see the notes within that function).
+
+  if(fBinByBinTuningHists.size() > 0) {
+    LOG("GenericSingleSampleFitModel",pFATAL) << "Bin-by-bin tuning is not yet implemented.";
+    util::Die(-1);
   }
 
 }
@@ -1596,6 +1586,10 @@ void GenericSingleSampleFitModel::ApplyTuning(Option_t * /*opt*/)
 void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector<TuningInfo> & numerator_vec,
     std::vector<TuningInfo> & denominator_vec, std::vector<std::string> templates_to_update)
 {
+  // TODO: This needs slightly modifying (and renaming) so that bin-by-bin tuning can be applied. Currently this
+  // TODO: function assumes that you've got 2 input vector<TuningInfo> and then their ratio is taken as weights. Instead
+  // TODO: just take in a single vector<TuningInfo>, and put in an operation type (multiply or divide) into the XML files
+
   if(numerator_vec.size() != denominator_vec.size()) {
     LOG("GenericSingleSampleFitModel",pFATAL)
       << "Different number of tuning hists in the numerator and denominator vectors. This should not happen!";
@@ -1671,6 +1665,15 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (TH1* numera
     std::map<conv::ReacMode_t, bool> apply_to_mode, std::vector<conv::KineVar_t> tuning_kine_vars,
     std::vector<std::string> templates_to_update, bool use_simple_binning)
 {
+  // TODO: This needs slightly modifying (and renaming) so that bin-by-bin tuning can be applied. Currently this
+  // TODO: function assumes that you've got 2 input hists and then their ratio is taken as weights. Instead
+  // TODO: just take in a single hist, and put in an operation type (multiply or divide) into the XML files
+
+  // TODO: This function needs some efficiency improvements, as it's too slow right now. Things to try:
+  // TODO: 1) Weights hist -> VALOR array
+  // TODO: 2) Just after (or during) filling nominal MC templates, store whether or not the MCT bin is empty in a VALOR array
+  // TODO: 3) If the weights hist only depends on true kvs (as in T2K), then read the weight outside of the reco loop
+
   // Create a single weights hist from numerator_hist and denominator_hist
   std::string new_name = (std::string) numerator_hist->GetName() + "_ratio_wght_hist";
   TH1* wght_hist = (TH1*) numerator_hist->Clone(new_name.c_str());
@@ -2991,8 +2994,8 @@ void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, X
       if(tuning_type == "event-by-event") {
         hist_vec = (std::vector<TuningInfo> *) &fEventByEventTuningHists;
       }
-      else if(tuning_type == "reweighted_ratio") {
-        hist_vec = (std::vector<TuningInfo> *) &fReweightedRatioTuningHistsNoWght;
+      else if(tuning_type == "bin-by-bin") {
+        hist_vec = (std::vector<TuningInfo> *) &fBinByBinTuningHists;
         param_set_str = util::XML2String(xmleng_mc, tuning_group_node, "param_set"); // <param_set>
         param_set_str = util::ToLowerCase(util::RemoveAllWhitespace(param_set_str));
       }
@@ -3021,25 +3024,6 @@ void GenericSingleSampleFitModel::ReadExtTuningHistsAll(TXMLEngine* xmleng_mc, X
       while(curr_node) {
         this->ReadTune(xmleng, curr_node, hist_vec);
         curr_node = xmleng->GetNext(curr_node);
-
-        if(tuning_type == "reweighted_ratio") {
-          // Copy the hist that we just added to the 'NoWght' vector into the 'InitWght' and 'CurrWght' vectors. Then
-          // reweight the 'InitWght' hist using the systematic parameter init values (in the user-specified param
-          // set). The 'CurrWght' hist is reweighted in the Generate() function, not here.
-          TuningInfo to_copy = hist_vec->back();
-          std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair_to_copy = to_copy.first;
-
-          fReweightedRatioTuningHistsInitWght.push_back(std::make_pair(pair_to_copy, (TH1*) to_copy.second->Clone()));  // Want to store pointers to different objects, not the same pointer
-          fReweightedRatioTuningHistsCurrWght.push_back(std::make_pair(pair_to_copy, (TH1*) to_copy.second->Clone()));
-
-          TuningInfo & pairpair = fReweightedRatioTuningHistsInitWght.back();
-          TH1* hist_to_reweight = pairpair.second;
-          std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> > pair = pairpair.first;
-          conv::ApplyMask_t mask = pair.first;
-          std::vector<conv::KineVar_t> kvs = pair.second;
-          this->ReweightHistUsingParamSet(hist_to_reweight, kvs, fSystematics, param_set_str, mask, false);
-        }
-
       } // Loop over tune nodes in the separate tuning file
 
       tuning_group_node = xmleng->GetNext(tuning_group_node);

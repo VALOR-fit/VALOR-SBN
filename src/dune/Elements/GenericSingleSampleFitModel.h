@@ -134,6 +134,7 @@ private:
   double GetExternalWeight               (std::map<conv::KineVar_t,double> kinematics, conv::ReacMode_t m, conv::NuclearTarget_t nt); // new function to read external weight containing histo
 
   // TODO: Should really be using a simple struct here instead of this unwieldy object
+  // TODO: Put in the operation type into TuningInfo (e.g. multiply or divide), but turn TuningInfo into a struct first!
   typedef std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > TuningInfo;
 
   // Apply bin-by-bin tuning to the input MC templates based on the ratio of the input tuning hists.
@@ -252,9 +253,7 @@ private:
 
   // Vector of tuning hists and the apply masks and kine vars that they should be used for
   std::vector<TuningInfo> fEventByEventTuningHists;
-  std::vector<TuningInfo> fReweightedRatioTuningHistsNoWght;    // Tuning hists without reweighting applied.
-  std::vector<TuningInfo> fReweightedRatioTuningHistsInitWght;  // Tuning hists with syst param initial values used to reweight. Reweighted and subsequently used during Read()
-  std::vector<TuningInfo> fReweightedRatioTuningHistsCurrWght;  // Tuning hists with syst param current values used to reweight. Reweighted and subsequently used during Generate()
+  std::vector<TuningInfo> fBinByBinTuningHists;
 };
 
 } // valor
