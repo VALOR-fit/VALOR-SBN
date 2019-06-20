@@ -170,10 +170,10 @@ def main(version, path, sample, config):
             indir    = indir.replace(old,new)
   
         print "Processing file: ",infile
-        path = indir+"/"+infile
-        tf = ROOT.TFile(path)
+        path_in = indir+"/"+infile
+        tf = ROOT.TFile(path_in)
         if not tf:
-            print "Failed to open file:\n",path
+            print "Failed to open file:\n",path_in
   
         # Loop over spline types - systematic+mode
         for syst in get_systematics():
