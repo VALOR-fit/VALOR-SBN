@@ -89,17 +89,23 @@ def get_selection_map(sample):
         print "Error: Unknown sample ", sample
         sys.exit()
 
-def build_spline_name(sample, syst, flavour, mode, true_bin, reco_bin):
-    if "RHC" in sample:
-        beam = "JPARC_RHC"
-    else:
-        beam  = "JPARC_FHC"
+def get_sdk_selection(sample):
     if "1Rmu" in sample:
-        selection = "1rmu"
+        return "1rmu"
     elif "1Re" in sample:
-        selection = "1re"
+        return "1re"
     else:
-        selection = "multire"
+        return "multire"
+
+def get_sdk_beam(sample):
+    if "RHC" in sample:
+        return "JPARC_RHC"
+    else:
+        return "JPARC_FHC"
+
+def build_spline_name(sample, syst, flavour, mode, true_bin, reco_bin):
+    beam = get_sdk_beam(sample)
+    selection = get_sdk_selection(sample)
     new_syst = syst
     for (old, new) in get_param_map():
         new_syst = new_syst.replace(old, new)
@@ -156,7 +162,7 @@ def main(version, path, sample, config):
     current   = get_beam(sample)
     selection = get_selection_map(sample)
 
-    output_file  = ROOT.TFile("splines_"+version+"_"+sample+".root","RECREATE") # Output for this sample's splines
+    output_file  = ROOT.TFile("splines_"+version+"_"+get_sdk_beam(sample)+"_"+get_sdk_selection(sample)+".root","RECREATE") # Output for this sample's splines
 
     for orig_type,valor_type in get_flavour_map():
         # Find the right input file
