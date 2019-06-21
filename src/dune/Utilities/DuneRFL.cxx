@@ -304,7 +304,6 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               this->SortSpline(dynamic_cast<TSpline3*>(spline));
 
               util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
-              derr<<"*** test:   got GSL spline"<<std::endl;
               delete spline;
               if (this->CheckForNegativeValues(gsl_spline,p)) {
                 LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
