@@ -238,6 +238,16 @@ def main(version, path, sample, config):
                 new_spline.SetName(new_spl_name)
                 
                 new_spline.Write(new_spl_name)
+
+                # The legacy T2K analysis did not distinguish between CC1piC and CC1pi0, but we do in the SDK. So
+                # copy the newly made CC1piC spline into CC1pi0 as well (use the same spline for both modes)
+                if mode == "CC1piC":
+                    new_spl_name = build_spline_name(sample, par, valor_type, "CC1pi0", true_bin, reco_bin)
+                    new_spline = ROOT.TSpline3(spline)
+                    new_spline.SetName(new_spl_name)
+                    new_spline.Write(new_spl_name)
+
+
         tf.Close()
     output_file.Close()
     print "Params:"
