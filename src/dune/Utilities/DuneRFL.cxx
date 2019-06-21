@@ -114,6 +114,7 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
   // Calculate max bin numbers
   for (int im = 0 ; im < fNModes ; im++) {
     conv::ReacMode_t m = fModes[im];
+    if (m == conv::kmUndefined) continue;
     const VALORBinning * true_sb = fBinning->XsecTrueBinning(m);
     fNBinsTrue = std::max(fNBinsTrue,true_sb->NBins());
   }
@@ -388,8 +389,8 @@ void valor::util::DuneRFL::SetSplineNamePattern(std::string pattern) {
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const
 {
-  double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
-  double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
+  double min_val = spl->GetXmin();
+  double max_val = spl->GetXmax();
   static const int evaluations = 30;
   for (int i = 0 ; i < evaluations; i++) {
     double x = min_val + (i+0.5)*(max_val-min_val)/evaluations;
@@ -400,8 +401,8 @@ bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::Phy
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl, conv::PhysParamId_t p) const
 {
-  double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
-  double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
+  double min_val = spl->Xmin();
+  double max_val = spl->Xmax();
   static const int evaluations = 30;
   for (int i = 0 ; i < evaluations; i++) {
     double x = min_val + (i+0.5)*(max_val-min_val)/evaluations;
