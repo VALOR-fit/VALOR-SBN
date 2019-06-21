@@ -124,6 +124,9 @@ private:
   // Check spline is positive
   bool CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const;
   bool CheckForNegativeValues(const valor::util::Interpolator * spl, conv::PhysParamId_t p) const;
+
+  // The input spline doesn't necessarily have the knots in the right order, so sort them
+  void SortSpline(TSpline3 * spl);
 };
 
 std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);

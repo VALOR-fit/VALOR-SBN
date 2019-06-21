@@ -282,8 +282,12 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
             // Read each file till we get one that contains our spline
             for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
               TFile * spline_file = spline_files[ifile];
+              LOG("DuneRFL",pDEBUG)<<"Searching for spline ["<<spl_name<<"] in file ["<< spline_file->GetName()<<"]...";
               spline_obj = spline_file->Get(spl_name.Data());
-              if (spline_obj) {break;}
+              if (spline_obj) {
+                LOG("DuneRFL",pDEBUG)<<"   ...found";
+                break;
+              }
             }
             TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
             if (spline) {
@@ -294,7 +298,13 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                 delete spline;
                 continue;
               }
+
+              // The input spline doesn't necessarily have the knots in the right order, so sort them
+              // TODO: In the legacy T2K analysis, the out of order knot seems to be ignored, so is doing this okay?
+              this->SortSpline(dynamic_cast<TSpline3*>(spline));
+
               util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
+              derr<<"*** test:   got GSL spline"<<std::endl;
               delete spline;
               if (this->CheckForNegativeValues(gsl_spline,p)) {
                 LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
@@ -409,5 +419,32 @@ bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl
     if (spl->Eval(x) < 0) {return true;}
   }
   return false;
+}
+//________________________________________________________________________________________
+void valor::util::DuneRFL::SortSpline(TSpline3 * spline)
+{
+  bool knots_in_order = true;
+  int n_knots = spline->GetNp();
+  std:map<double,double> knots;
+  std::vector<double> x_vals;
+  unsigned int iknot = 0;
+  double this_x = -conv::kALargeNum;
+
+  for (int i = 0 ; i < n_knots; i++) {
+    double x = 0;
+    double y = 0;
+    spline->GetKnot(i,x,y);
+    knots[x] = y;
+    if (x < this_x) { knots_in_order = false; }
+    this_x = x;
+    x_vals.push_back(x);
+  }
+
+  if(!knots_in_order){
+    std::sort(x_vals.begin(), x_vals.end());
+    for (int i = 0 ; i < n_knots; i++) {
+      spline->SetPoint(i, x_vals[i], knots.at(x_vals[i]));
+    }
+  }
 }
 //________________________________________________________________________________________
