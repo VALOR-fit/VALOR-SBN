@@ -94,9 +94,9 @@ Splines
 -->
 
 <splines>
-  <folder>  official/2018/xsec/splines2018v1/valor_format </folder>   <!-- TODO: Temp. path -->
-  <pattern> splines_v1_[SAMPLE].root    </pattern>     <!-- TODO: Does [SAMPLE] here include FHC/RHC? If not, I should instead do [BEAM CURRENT][SAMPLE]? -->
-    <!-- TODO: e-like sample spline have different names -->
+  <folder>  official/2018/xsec/splines2018v1/valor_format </folder>
+  <pattern> splines_spline2018v1_[BEAM]_[SAMPLE].root     </pattern>
+  <method>  tweak_ratio                                   </method>  <!-- This uses weight = spline->Eval(current - untuned) / spline->Eval(initial - untuned) -->
 </splines>
 
 <!--
