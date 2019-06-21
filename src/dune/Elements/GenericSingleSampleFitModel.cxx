@@ -2118,7 +2118,19 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               <<util::AsString(fSample)<<","<<util::AsString(m);
           }
           if (spl!=util::DuneRFL::kFlatSpline) {
-            response = spl->EvalWithLimits(f);
+            const std::string spline_wght_method = fRFL->GetSplineWeightingMethod();
+            if (spline_wght_method == "tweak_ratio") {
+              // Apply weights based on the ratio of the spline evaluated at the current - untuned and initial - untuned values
+              double untuned = fSystematics->UntunedValue(p);
+              double initial = fSystematics->InitialValue(p);
+              double current = f;
+              response = spl->EvalWithLimits(current - untuned) / spl->EvalWithLimits(initial - untuned);
+            }
+            else {
+              // Default spline weighting method: evaluate splines at the current value
+              response = spl->EvalWithLimits(f);
+            }
+
             if (response<0) {
               LOG("GenericSingleSampleFitModel",pINFO)
                <<"Negative response from spline (OB) "//<<spl->GetName()

@@ -82,6 +82,9 @@ public:
   
   // Get the bin corresponding to a point in kinematical space, returns pair<itrue,ireco>
   std::pair<int,int> GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m = conv::kmUndefined) const;
+
+  // Get the name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
+  const std::string GetSplineWeightingMethod(void) const { return fSplineWghtMethod; }
   
 private:
 
@@ -117,6 +120,9 @@ private:
   
   // Name for the splines (used in filename)
   TString fSplineNamePattern;
+
+  // Name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
+  std::string fSplineWghtMethod;
   
   // Array storing parameters mapped to indice within this object
   int fParam2Idx[conv::knppmax];

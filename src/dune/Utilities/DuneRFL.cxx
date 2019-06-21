@@ -220,6 +220,8 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   
   string spl_file_pattern = util::XML2String(xml,root_node,"splines/pattern");
 
+  string spl_wght_method = util::XML2String(xml,root_node,"splines/method");
+
   if (!spl_file_pattern.size()) {
     LOG("DuneRFL",pFATAL) << "Failed to open spline filename pattern from XML.";
     util::Die(-1); return false;
