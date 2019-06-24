@@ -123,6 +123,9 @@ private:
 
   // Name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
   std::string fSplineWghtMethod;
+
+  // If this is true, allow splines to go negative, but when this happens the weights will get set to 0
+  bool fAllowNegativeSplines;
   
   // Array storing parameters mapped to indice within this object
   int fParam2Idx[conv::knppmax];

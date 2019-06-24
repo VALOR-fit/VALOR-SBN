@@ -69,7 +69,8 @@ fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]"),
-fSplineWghtMethod("")
+fSplineWghtMethod(""),
+fAllowNegativeSplines(false)
 {
   
 }
@@ -92,7 +93,8 @@ fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]"),
-fSplineWghtMethod("")
+fSplineWghtMethod(""),
+fAllowNegativeSplines(false)
 {
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
@@ -230,6 +232,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   if (util::NodeExists(xml,root_node,"splines/method")) {
     fSplineWghtMethod  = util::XML2String(xml,root_node,"splines/method");
   }
+  if (util::NodeExists(xml,root_node,"splines/allow_negative")) {
+    fAllowNegativeSplines = util::XML2Bool(xml,root_node,"splines/allow_negative");
+  }
 
   if (!spl_file_pattern.size()) {
     LOG("DuneRFL",pFATAL) << "Failed to open spline filename pattern from XML.";
@@ -352,14 +357,18 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
 
               util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
               delete spline;
-              if (this->CheckForNegativeValues(gsl_spline,p)) {
-                LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
-                delete gsl_spline;
-                fSplines[spline_index] = kFlatSpline;
-                n_splines_neg++;
-                n_splines_read++;
+              bool use_gsl_spline = true;
+              if(!fAllowNegativeSplines) {
+                if (this->CheckForNegativeValues(gsl_spline,p)) {
+                  LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
+                  delete gsl_spline;
+                  fSplines[spline_index] = kFlatSpline;
+                  n_splines_neg++;
+                  n_splines_read++;
+                  use_gsl_spline = false;
+                }
               }
-              else {
+              if(use_gsl_spline) {
                 fSplines[spline_index] = gsl_spline;
                 n_splines_read++;
               }
@@ -471,22 +480,30 @@ void valor::util::DuneRFL::SortSpline(TSpline3 * spline)
 {
   bool knots_in_order = true;
   int n_knots = spline->GetNp();
-  std:map<double,double> knots;
-  std::vector<double> x_vals;
-  unsigned int iknot = 0;
   double this_x = -conv::kALargeNum;
 
   for (int i = 0 ; i < n_knots; i++) {
     double x = 0;
     double y = 0;
     spline->GetKnot(i,x,y);
-    knots[x] = y;
-    if (x < this_x) { knots_in_order = false; }
+    if (x < this_x) {
+      knots_in_order = false;
+      break;
+    }
     this_x = x;
-    x_vals.push_back(x);
   }
 
   if(!knots_in_order){
+    std:map<double,double> knots;
+    std::vector<double> x_vals;
+    for (int i = 0 ; i < n_knots; i++) {
+      double x = 0;
+      double y = 0;
+      spline->GetKnot(i,x,y);
+      knots[x] = y;
+      x_vals.push_back(x);
+    }
+
     std::sort(x_vals.begin(), x_vals.end());
     for (int i = 0 ; i < n_knots; i++) {
       spline->SetPoint(i, x_vals[i], knots.at(x_vals[i]));
