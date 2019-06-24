@@ -68,7 +68,8 @@ fNParams       (0),
 fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
-fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]")
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]"),
+fSplineWghtMethod("")
 {
   
 }
@@ -90,7 +91,8 @@ fNParams       (n_params),
 fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
-fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]"),
+fSplineWghtMethod("")
 {
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
@@ -218,9 +220,16 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     util::Die(-1); return false;
   }
   
-  string spl_file_pattern = util::XML2String(xml,root_node,"splines/pattern");
-
-  string spl_wght_method = util::XML2String(xml,root_node,"splines/method");
+  string spl_file_pattern  = util::XML2String(xml,root_node,"splines/pattern");
+  string spl_stored_as     = "";
+  string spl_array_pattern = "";
+  if (util::NodeExists(xml,root_node,"splines/stored_as") && util::NodeExists(xml,root_node,"splines/array_pattern")) {
+    spl_stored_as     = util::XML2String(xml,root_node,"splines/stored_as");
+    spl_array_pattern = util::XML2String(xml,root_node,"splines/array_pattern");
+  }
+  if (util::NodeExists(xml,root_node,"splines/method")) {
+    fSplineWghtMethod  = util::XML2String(xml,root_node,"splines/method");
+  }
 
   if (!spl_file_pattern.size()) {
     LOG("DuneRFL",pFATAL) << "Failed to open spline filename pattern from XML.";
@@ -268,6 +277,24 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
 
       const Parameter & param = ParameterPool::Instance()->GetParam(p);
       bool param_applied_to_mode = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
+
+      TObjArray* spline_array = nullptr;
+      if(spl_stored_as == "TObjArray") {
+        // Splines are not stored individually in the TFiles, but in TObjArrays
+        TString array_name = spl_array_pattern.c_str();
+        array_name = array_name.ReplaceAll("[PARAM]", util::NameRegistry::Instance()->AsString(p).c_str());
+        array_name = array_name.ReplaceAll("[MODE]" , util::AsString(m).c_str());
+        for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
+          TFile *spline_file = spline_files[ifile];
+          LOG("DuneRFL", pDEBUG) << "Searching for spline array [" << array_name << "] in file ["
+                                 << spline_file->GetName() << "]...";
+          spline_array = static_cast<TObjArray*>(spline_file->Get(array_name.Data()));
+          if (spline_array) {
+            LOG("DuneRFL",pDEBUG)<<"   ...found";
+            break;
+          }
+        }
+      }
       
       for (int ireco = 0 ; ireco < n_bins_reco ; ireco++) {
         for (int itrue = 0 ; itrue < n_bins_true ; itrue++) {
@@ -282,13 +309,31 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
           if (param_applied_to_mode) {
             TObject * spline_obj = NULL;
             // Read each file till we get one that contains our spline
-            for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
-              TFile * spline_file = spline_files[ifile];
-              LOG("DuneRFL",pDEBUG)<<"Searching for spline ["<<spl_name<<"] in file ["<< spline_file->GetName()<<"]...";
-              spline_obj = spline_file->Get(spl_name.Data());
-              if (spline_obj) {
-                LOG("DuneRFL",pDEBUG)<<"   ...found";
-                break;
+            if(spl_stored_as == "TObjArray") {
+              // Splines are not stored individually in the TFiles, but in TObjArrays
+              int in_idx = itrue * n_bins_reco + ireco;
+              spline_obj = static_cast<TSpline3*>(spline_array->At(in_idx));
+              if (!spline_obj) {
+                LOG("DuneRFL",pWARN)<<"Expected a spline at index: "<<in_idx<<" of array "<<spline_array->GetName()
+                                    << ", but could not find it";
+              }
+              else {
+                LOG("DuneRFL", pDEBUG) << "Found spline named [" << spline_obj->GetName() << "] at itrue = "
+                                       << itrue << ", ireco = " << ireco << ", in array named ["
+                                       << spline_array->GetName() << "]";
+              }
+            }
+            else{
+              // Splines are stored individually in the TFiles
+              for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
+                TFile *spline_file = spline_files[ifile];
+                LOG("DuneRFL", pDEBUG) << "Searching for spline [" << spl_name << "] in file ["
+                                       << spline_file->GetName() << "]...";
+                spline_obj = spline_file->Get(spl_name.Data());
+                if (spline_obj) {
+                  LOG("DuneRFL",pDEBUG)<<"   ...found";
+                  break;
+                }
               }
             }
             TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
