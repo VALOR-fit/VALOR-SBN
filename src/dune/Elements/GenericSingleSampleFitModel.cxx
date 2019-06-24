@@ -67,7 +67,7 @@ using std::endl;
 using namespace valor;
 using namespace valor::conv;
 
-#define SPLINE_WEIGHTS_ARE_ONE
+//#define SPLINE_WEIGHTS_ARE_ONE
 #define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
 #define APPLY_ALL_AUTOWGHT_BRANCHES
@@ -1881,7 +1881,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   const int n_reco_bins_sb  = reco_sb->NBins();
   const int n_reco_bins_ob  = reco_ob->NBins();
   const KineSpace_t reco_ks = reco_ob->KineSpace();
-  std::vector<conv::KineVar_t> reco_kinevars = util::KineVarTrue(reco_ks);
+  std::vector<conv::KineVar_t> reco_kinevars = util::KineVarReco(reco_ks);
 
   for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
@@ -2091,7 +2091,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
         continue;
       }
-      
+
+      Parameter param = ParameterPool::Instance()->GetParam(p);
+      bool spline_is_applied = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,conv::kntInclusive); // TODO: Put in handling for nuclear targets
+      if(!spline_is_applied) { continue; }
+
       double f = fPhysHypothesis.CurrValue(p);
       
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -2119,12 +2123,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           }
           if (spl!=util::DuneRFL::kFlatSpline) {
             const std::string spline_wght_method = fRFL->GetSplineWeightingMethod();
-            if (spline_wght_method == "tweak_ratio") {
-              // Apply weights based on the ratio of the spline evaluated at the current - untuned and initial - untuned values
+            if (spline_wght_method == "curr_tweak") {
+              // Apply weights based on the spline evaluated at the current - untuned values
               double untuned = fSystematics->UntunedValue(p);
-              double initial = fSystematics->InitialValue(p);
               double current = f;
-              response = spl->EvalWithLimits(current - untuned) / spl->EvalWithLimits(initial - untuned);
+              response = spl->EvalWithLimits(current - untuned);
             }
             else {
               // Default spline weighting method: evaluate splines at the current value
@@ -2332,42 +2335,68 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fSplineParams[ip];
         if (p == kPhypUndefined          ) {continue;}
-        
+
         if (!fPhysHypothesis.Contains(p)) {
           LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
           continue;
         }
-        
+
+        Parameter param = ParameterPool::Instance()->GetParam(p);
+        bool spline_is_applied = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,conv::kntInclusive); // TODO: Put in handling for nuclear targets
+        if(!spline_is_applied) { continue; }
+
         double f = fPhysHypothesis.CurrValue(p);
-        
-        util::KinematicPoint kp;
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+        LOG("GenericSingleSampleFitModel",pDEBUG)
+          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+          << " using splines.";
+#endif
+        VALORArrayBin bin;
+        VALORArrayBin splbin;
+        splbin.bin3 = ip;
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          vector<double> true1_range (true_sb->BinRange(itrue,0));
-          vector<double> true2_range (true_sb->BinRange(itrue,1));
-          kp.true1 = (true1_range[0]+true1_range[1])/2;
-          kp.true2 = (true2_range[0]+true2_range[1])/2;
-          for(int ireco_sb = 0; ireco_sb < n_reco_bins_sb; ireco_sb++) {
-            vector<double> reco1_range (reco_sb->BinRange(ireco_sb,0));
-            vector<double> reco2_range (reco_sb->BinRange(ireco_sb,1));
-            kp.reco1 = (reco1_range[0]+reco1_range[1])/2;
-            kp.reco2 = (reco2_range[0]+reco2_range[1])/2;
-            std::pair<int,int> kb = fRFL->GetBin(kp,m);
-            const util::Interpolator * spl = fRFL->GetSpline(m,p, kb.first,kb.second);
+          bin.bin2 = itrue;
+          splbin.bin2 = itrue;
+          for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
+            bin.bin1 = ireco;
+            splbin.bin1 = ireco;
+            double response = 1;
+            ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
+            const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(spl_addr);
             if (spl==util::DuneRFL::kNoSplineRequired) {
               LOG("GenericSingleSampleFitModel",pERROR)
-                <<"Got no spline required for simple bin expecting spline."
+                <<"Got no spline required for bin expecting spline."
                 <<util::NameRegistry::Instance()->ParamAsString(p)<<", "<<util::AsString(fBeam)<<", "
                 <<util::AsString(fSample)<<","<<util::AsString(m);
             }
-            double response = spl->EvalWithLimits(f);
-            if (response<0) {
-              LOG("GenericSingleSampleFitModel",pINFO)
-               <<"Negative response from spline (SB) "//<<spl->GetName()
-               <<" evaluated at "<<f<<" with result "<<response
-               <<". Using 0 instead.";
-              response = 0;
+            if (spl!=util::DuneRFL::kFlatSpline) {
+              const std::string spline_wght_method = fRFL->GetSplineWeightingMethod();
+              if (spline_wght_method == "curr_tweak") {
+                // Apply weights based on the spline evaluated at the current - untuned values
+                double untuned = fSystematics->UntunedValue(p);
+                double current = f;
+                response = spl->EvalWithLimits(current - untuned);
+              }
+              else {
+                // Default spline weighting method: evaluate splines at the current value
+                response = spl->EvalWithLimits(f);
+              }
+
+              LOG("GenericSingleSampleFitModel", pDEBUG)
+                << "Got response = " << response << " for param = " << util::NameRegistry::Instance()->ParamAsString(p)
+                << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << fSystematics->UntunedValue(p)
+                << ", current = " << f;
+
+              if (response<0) {
+                LOG("GenericSingleSampleFitModel",pINFO)
+                  <<"Negative response from spline (SB) "//<<spl->GetName()
+                  <<" evaluated at "<<f<<" with result "<<response
+                  <<". Using 0 instead.";
+                response = 0;
+              }
             }
-            double & val = fMCTFinSb[imode]->GetEntryRef(ireco_sb,itrue);
+            double & val = fMCTFinSb[imode]->GetEntryRef(bin);
             val *= response;
           }//ireco
         }//itrue
