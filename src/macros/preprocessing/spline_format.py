@@ -25,6 +25,9 @@ env  =  valor.Env.Instance()
 rnd  =  valor.Rnd.Instance()
 arridx= util.ArrIdx.Instance()
 
+python_undefined = 2L*sys.maxint+1
+python_undefined_short =2**32 -1
+
 # File naming convention
 pattern = "[VERSION]_t2ksk.14a.neut5.3.2.13a_tuned_v1r1.[CURRENT].fine.[TYPE]_[SELECTION].root"
 models = dict()
@@ -43,7 +46,7 @@ def get_systematics():
         "ca5_cc1pi", "ca5_ncpiz", "ca5_ncpipm",
         "manff_cc1pi", "manff_ncpiz", "manff_ncpipm",
         "bgscl_cc1pi", "bgscl_ncpiz", "bgscl_ncpipm",
-        "dismpishp_ccoth", "maqe_ccqe", "mecpdd_mec",
+        "dismpishp_ccoth", "mecpdd_mec",
         "erpa_A_ccqe", "erpa_B_ccqe", "erpa_D_ccqe", "erpa_E_ccqe"]
 
 def get_mode_map():
@@ -111,6 +114,12 @@ def build_spline_name(sample, syst, flavour, mode, true_bin, reco_bin):
         new_syst = new_syst.replace(old, new)
     return "spl_{}_{}_{}{}_{}_{}_{}".format(beam, selection, flavour, mode, new_syst, true_bin, reco_bin)
 
+def build_spline_array_name(syst, flavour, mode):
+    new_syst = syst
+    for (old, new) in get_param_map():
+        new_syst = new_syst.replace(old, new)
+    return "spl_{}{}_{}".format(flavour, mode, new_syst)
+
 def get_fit_elements(config_file):
     valor.Env.Instance().AutoSet("dune")
     elements = valor.CompoundFitElements()
@@ -149,6 +158,24 @@ def get_new_binning(sample, flavour, mode, true_bin, reco_bin1, reco_bin2=0):
     new_true_bin = true_bin
     new_reco_bin = reco_binning.FindBin(reco_vec)
     return new_true_bin, new_reco_bin
+
+def get_new_binning_nbins(sample, flavour, mode):
+    # Flavour included just in case this is required for true binning
+    # in the future.
+    reco_nbins = 1
+    true_nbins = 1
+    m = util.ReacModeFromString(flavour+mode)
+    if m == conv.kmUndefined or m == python_undefined or m == python_undefined_short:
+        print "ERROR: could not convert input mode [", mode, "] into a VALOR mode"
+        util.Die(-1)
+    binning = models[sample].GetBinning()
+    reco_binning = binning.XsecRecoBinning()
+    true_binning = binning.XsecTrueBinning(m)
+    for i in range(0, reco_binning.NDimensions()):
+        reco_nbins *= reco_binning.NBins(i)
+    for i in range(0, true_binning.NDimensions()):
+        true_nbins *= true_binning.NBins(i)
+    return true_nbins, reco_nbins
 
 def main(version, path, sample, config):
     modes = set()
@@ -192,6 +219,12 @@ def main(version, path, sample, config):
                 par,mode = syst.split("_")
             for (old,new) in get_mode_map():
                 mode = mode.replace(old,new)
+
+            mode_string = valor_type+mode
+            m_enum = util.ReacModeFromString(mode_string)
+            if m_enum == conv.kmUndefined or m_enum == python_undefined or m_enum == python_undefined_short:
+                print "Skipping param+mode combination with undefined mode:", par, mode_string
+                continue
         
             # Get all the splines for this systematic+mode
             spline_dict = dict()
@@ -211,8 +244,12 @@ def main(version, path, sample, config):
                 spline_dict[name] = key.ReadObj()
       
             output_file.cd()
-        
-            # Loop over the splines - rename them and write them to the file.
+
+            # Setup the array that holds all splines for this systematic + mode
+            nbins_true, nbins_reco = get_new_binning_nbins(sample, valor_type, mode)
+            spline_array = ROOT.TObjArray(nbins_true * nbins_reco)
+
+            # Loop over the splines - rename them and them to the spline array for this param/mode combination.
             for orig_spl_name, spline in spline_dict.iteritems():
                 junk,bins = orig_spl_name.rsplit("_sp_")
        
@@ -236,16 +273,19 @@ def main(version, path, sample, config):
               
                 new_spline = ROOT.TSpline3(spline)
                 new_spline.SetName(new_spl_name)
-                
-                new_spline.Write(new_spl_name)
 
-                # The legacy T2K analysis did not distinguish between CC1piC and CC1pi0, but we do in the SDK. So
-                # copy the newly made CC1piC spline into CC1pi0 as well (use the same spline for both modes)
-                if mode == "CC1piC":
-                    new_spl_name = build_spline_name(sample, par, valor_type, "CC1pi0", true_bin, reco_bin)
-                    new_spline = ROOT.TSpline3(spline)
-                    new_spline.SetName(new_spl_name)
-                    new_spline.Write(new_spl_name)
+                idx = true_bin * nbins_reco + reco_bin
+                #if build_spline_array_name(par, valor_type, mode) == "spl_numuCCQE_MAQE":
+                #    print "Adding spline", new_spl_name, "to array", build_spline_array_name(par, valor_type, mode), "at idx =", idx
+                spline_array.AddAt(new_spline, idx)
+
+            print "Saving spline array named", build_spline_array_name(par, valor_type, mode), "\n"
+            spline_array.Write(build_spline_array_name(par, valor_type, mode), 1)   # The 1 makes the array be written as a single object instead of saving each spline individually
+
+            # The legacy T2K analysis did not distinguish between CC1piC and CC1pi0, but we do in the SDK. So
+            # copy the newly made CC1piC spline into CC1pi0 as well (use the same spline for both modes)
+            if mode == "CC1piC":
+                spline_array.Write(build_spline_array_name(par, valor_type, "CC1pi0"), 1)
 
 
         tf.Close()
