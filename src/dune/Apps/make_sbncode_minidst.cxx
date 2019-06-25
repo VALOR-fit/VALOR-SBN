@@ -285,9 +285,8 @@ int main(int argc, char ** argv)
   Long64_t nev = analysis_tree->GetEntries();
   VLOG("make_sbncode_minidst", pNOTICE) 
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
-  analysis_tree->GetEntry(0);
   
-  event::RecoEvent *pevent;
+  event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
 
   //
