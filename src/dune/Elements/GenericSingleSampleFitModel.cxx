@@ -312,8 +312,8 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
         std::pair<int,int> binid = fRFL->GetBin(kp,m);
         int ispltrue = binid.first;
         int isplreco = binid.second;
-        for (unsigned int ip = 0 ; ip < fSplineParams.size(); ip++) {
-          PhysParamId_t p = fSplineParams[ip];
+        for (unsigned int ip = 0 ; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
+          PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
           Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
           Parameter param = ParameterPool::Instance()->GetParam(p);
           if (param.GetType() == conv::kSystResponse) {
@@ -2084,7 +2084,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     // Parameters with splines
 #ifndef SPLINE_WEIGHTS_ARE_ONE
     for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
-      PhysParamId_t p = fSplineParams[ip];
+      PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
       if (p == kPhypUndefined          ) {continue;}
       
       if (!fPhysHypothesis.Contains(p)) {
@@ -2333,7 +2333,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
 #ifndef SPLINE_WEIGHTS_ARE_ONE
       for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
-        PhysParamId_t p = fSplineParams[ip];
+        PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
         if (p == kPhypUndefined          ) {continue;}
 
         if (!fPhysHypothesis.Contains(p)) {
