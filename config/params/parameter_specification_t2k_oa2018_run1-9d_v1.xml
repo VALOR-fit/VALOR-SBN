@@ -2332,7 +2332,7 @@
     </categories>
     
     <apply_to>
-      <detector>  SuperK  </detector>
+      <detector>  dunend  </detector>       <!-- TODO: apply to nothing (in t2xk BeRPA_U has the weight forced to 1, so turn it off here) -->
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
