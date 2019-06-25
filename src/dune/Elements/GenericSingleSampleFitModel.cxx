@@ -923,8 +923,8 @@ void GenericSingleSampleFitModel::BuildParamLists()
   std::set<PhysParamId_t> lateral_post_osc_params_set;
   const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
   for (const Parameter & param : params) {
-    bool is_applied = false;
     for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+      bool is_applied = false;
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
       
@@ -1909,7 +1909,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     
     // First do the normalisation parameters
     for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
-      PhysParamId_t p = fNormParams[ip];
+      PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
       if (p == kPhypUndefined          ) {continue;}
       
       if (!fPhysHypothesis.Contains(p)) {
@@ -2160,7 +2160,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       
       // First do the normalisation parameters
       for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
-        PhysParamId_t p = fNormParams[ip];
+        PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
         if (p == kPhypUndefined          ) {continue;}
         
         if (!fPhysHypothesis.Contains(p)) {
