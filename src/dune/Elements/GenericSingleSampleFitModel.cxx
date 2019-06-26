@@ -2908,12 +2908,14 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
                                              << " to " << util::AsString(kv) << " with scale = " << scale;
 
   // Scale the bin edges for this kine var. Assuming uniform distribution of events within each bin.
+  // Note: We have underflow and overflow bins here. This is because as we scale the bin edges, events can drop off
+  // either end of the scaled binning. These under/overflow bins catch these events, which are then added back on to
+  // the first or last bin at the end, respectively.
   unsigned int nbins = recoBinning->NBins(); // number of reco bins across all reco kinevars in the binning scheme
   // TODO: Check that these have the correct dimensions (& are filled correctly) given that we may have > 1 reco kinevar in the same dimension of the binning scheme.
-  // TODO: VArrays don't have overflow bins, so maybe all this stuff about overflow bins isn't needed in this function at all?
-  std::vector<double> unscaled_bin_edges (nbins+1, conv::kBadResult);
+  std::vector<double> unscaled_bin_edges (nbins+2, conv::kBadResult);   // +2 because of the overflow bin // TODO: put in underflow bin too (after testing overflow)
   std::vector<double> scaled_bin_edges   (nbins+1, conv::kBadResult);
-  std::vector<double> new_events_per_bin (nbins  , 0.0             );
+  std::vector<double> new_events_per_bin (nbins+1, 0.0             );   // +1 because of the overflow bin // TODO: put in underflow bin too (after testing overflow)
   std::vector<double> old_events_per_bin (nbins  , 0.0             );
   for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
     // Add the low edge
@@ -2926,6 +2928,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     }
     old_events_per_bin[ireco] = pdf->GetEntry(ireco);
   }
+  unscaled_bin_edges[nbins+1] = conv::kALargeNum;  // Add the overflow bin as the final edge   // TODO: underflow
 
   // Check edges
   for(unsigned int iedge = 0 ; iedge < unscaled_bin_edges.size() ; iedge++) {
@@ -2947,7 +2950,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   for (int ibin_s = 0 ; ibin_s < nbins ; ibin_s++) { // Loop over scaled bins
     double bin_min_s = scaled_bin_edges[ibin_s]  ;
     double bin_max_s = scaled_bin_edges[ibin_s+1];
-    for (int ibin_u = 0 ; ibin_u < nbins ; ibin_u++) {  // Loop over unscaled bins
+    for (int ibin_u = 0 ; ibin_u < nbins+1 ; ibin_u++) {  // Loop over unscaled bins, +1 because of overflow // TODO: underflow
       double bin_min_u = unscaled_bin_edges[ibin_u]  ;
       double bin_max_u = unscaled_bin_edges[ibin_u+1];
 
@@ -3005,6 +3008,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
       << "bin " << ibin << " [" << recoBinning->BinMinimum(ibin, kv) << ", " << recoBinning->BinMaximum(ibin, kv) << "]"
       << "; old content = " << old_events_per_bin[ibin] << "; new content = " << new_events_per_bin[ibin];
   }
+  pdf->GetEntryRef(nbins-1) += new_events_per_bin[nbins];   // Put events in the overflow bin back into the PDF   // TODO: underflow
 
   // Lateral systematics should just migrate events between bins, while keeping the total number of events constant.
   // Check that we haven't changed the total number of events
