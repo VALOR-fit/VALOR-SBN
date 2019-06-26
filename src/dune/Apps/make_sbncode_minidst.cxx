@@ -289,7 +289,7 @@ int main(int argc, char ** argv)
   
   Event *pevent;
   analysis_tree->SetBranchAddress("events", &pevent);
-  Event & event = *pevent;
+  Event &event = *pevent;
 
 /*  TLeaf *l_initpdg;
   if(is_appearance)
@@ -309,6 +309,8 @@ int main(int argc, char ** argv)
   int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
   for(Long64_t iev = 0; iev < nev; iev++) {
+    
+    analysis_tree->GetEntry(iev);
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
       VLOG("make_sbncode_minidst", pNOTICE) << "** Reading event: " << iev;
@@ -327,10 +329,6 @@ int main(int argc, char ** argv)
     double enu_reco =  -999.;
     double Q2s      =  -999.;
 
-    int nin      = 0;
-    int nian     = 0;
-    int nip      = 0;
-    int niap     = 0;
     int nipip    = 0;
     int nipim    = 0;
     int nipi0    = 0;
@@ -338,6 +336,10 @@ int main(int argc, char ** argv)
     int nikm     = 0;
     int nik0     = 0;
     int niak0    = 0;
+    /*int nin      = 0;
+    int nian     = 0;
+    int nip      = 0;
+    int niap     = 0;
     int niem     = 0;
     int niep     = 0;
     int ninu     = 0;
@@ -345,12 +347,10 @@ int main(int argc, char ** argv)
     int nimup    = 0;
     int nig      = 0;
     int niother  = 0;
-    int ninuc    = 0;
+    int ninuc    = 0;*/
 
     int larsoft_mode = -1;
 
-    analysis_tree->GetEntry(iev);
-   
     std::vector<Event::Interaction> &truth = event.truth;
     std::vector<Event::RecoInteraction> &reco = event.reco;
 
@@ -360,26 +360,33 @@ int main(int argc, char ** argv)
       continue;      
     }
 
-    for(unsigned int t = 0; t < truth.size(); ++t){
-      std::vector<Event::FinalStateParticle> &fsps = truth[t].finalstate;
-      iscc = truth[t].neutrino.iscc;
-      isnc = truth[t].neutrino.isnc;
-      nu_pdg = truth[t].neutrino.pdg;
-      enu_true = truth[t].neutrino.energy;
-      Q2s = truth[t].neutrino.Q2;
-      larsoft_mode = truth[t].neutrino.genie_intcode;
+    //for(unsigned int t = 0; t < truth.size(); ++t){
+      std::vector<Event::FinalStateParticle> &fsps = truth[0].finalstate;
+      iscc = truth[0].neutrino.iscc;
+      isnc = truth[0].neutrino.isnc;
+      nu_pdg = truth[0].neutrino.pdg;
+      enu_true = truth[0].neutrino.energy;
+      Q2s = truth[0].neutrino.Q2;
+      larsoft_mode = truth[0].neutrino.genie_intcode;
+
+      if(fsps.size() == 0){
+        VLOG("make_sbncode_minidst", pNOTICE) 
+          << "The number of final state particles is " << fsps.size() << ", this shouldn't be 0, skipping truth block [no particles]";
+        continue;      
+      }
       // Particle counting
       for(unsigned int p = 0; p < fsps.size(); ++p){
-        if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
-        else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
-        else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
-        else if(fsps[p].pdg == genie::kPdgAntiNeutron ) nian++;
-        else if(fsps[p].pdg == genie::kPdgPiP         ) nipip++;
+  //      if(fsps[p].status_code != 1) continue;
+        if(     fsps[p].pdg == genie::kPdgPiP         ) nipip++;
         else if(fsps[p].pdg == genie::kPdgPiM         ) nipim++;
         else if(fsps[p].pdg == genie::kPdgPi0         ) nipi0++;
         else if(fsps[p].pdg == genie::kPdgKP          ) nikp++;
         else if(fsps[p].pdg == genie::kPdgKM          ) nikm++;
         else if(fsps[p].pdg == genie::kPdgK0          ) nik0++;
+       /* else if(fsps[p].pdg == genie::kPdgProton      ) nip++;
+        else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
+        else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
+        else if(fsps[p].pdg == genie::kPdgAntiNeutron ) nian++;
         else if(fsps[p].pdg == genie::kPdgAntiK0      ) niak0++;
         else if(fsps[p].pdg == genie::kPdgGamma       ) nig++;
         else if(fsps[p].pdg == genie::kPdgElectron    ) niem++;
@@ -389,7 +396,7 @@ int main(int argc, char ** argv)
         else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
         else if(fsps[p].pdg == 14 || fsps[p].pdg == -14 || fsps[p].pdg == 12 || fsps[p].pdg == -12) ninu++;
         else if(fsps[p].pdg > 1e4) ninuc++;
-        else niother++; 
+        else niother++; */
         // Currently not using niother as the only others seem to be deltas and etas
         // These will eventually be removed when isStableFinalState variable is available in the analysis trees
       }
@@ -440,7 +447,7 @@ int main(int argc, char ** argv)
       
       // If we are looking at the appearance samples, get the initial neutrino pdg from the file
       if(is_appearance){
-        init_pdg = truth[t].neutrino.initpdg;
+        init_pdg = truth[0].neutrino.initpdg;
         init_flav = valor::util::FlavourFromPDG(init_pdg);
       }
 
@@ -458,11 +465,11 @@ int main(int argc, char ** argv)
           VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode]\n"; 
           continue;
         }
-        if(isnc && init_flav != final_flav){
+        if(is_appearance && isnc && init_flav != final_flav){
           VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc]\n"; 
           continue;
         }
-        if((init_pdg == 12 || init_pdg == -12) && (!is_intrinsic)){
+        if(is_appearance && (init_pdg == 12 || init_pdg == -12) && (!is_intrinsic)){
           VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic]\n"; 
           continue;
         }
@@ -494,10 +501,10 @@ int main(int argc, char ** argv)
         << "\n POT weight    = " << valor_minidst_wght_pot
         << "\n Smear weight  = " << valor_minidst_wght_smear;
 
-    } // true loop
+    //} // true loop
 
-    for(unsigned int r = 0; r < reco.size(); ++r){
-      enu_reco = reco[r].reco_energy;
+    //for(unsigned int r = 0; r < reco.size(); ++r){
+      enu_reco = reco[0].reco_energy;
       
       VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
         << "Ereco         = "<< enu_reco  << " GeV; ";
@@ -518,7 +525,7 @@ int main(int argc, char ** argv)
       VLOG("make_sbncode_minidst", pNOTICE) 
         << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV"; 
       
-    } // reco loop 
+    //} // reco loop 
     valor_minidst->Fill();
   } // event loop
 

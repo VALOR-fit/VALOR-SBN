@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> sbn/selection/valor_recoselection_fhc_numuccinc_disappearance_nd_minidst.root  </filename> 
+      <filename> sbn/selection/new_energy_valor_recoselection_fhc_numuccinc_disappearance_nd_minidst.root </filename> 
        <objname>  valor_recoselection_mini_dst </objname> 
        <objtype>  TTree    </objtype> 
     </bnb_fhc>
