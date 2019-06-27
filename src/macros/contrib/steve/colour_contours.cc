@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////
-//														  //
+//														                            //
 // Scrip to draw sensitivity contours onto a coloured     //
 // background giving the chi-squared values.              //
-//														  //
+//													                          	  //
 // Use the output of the macro "fit_results_to_graphs.py" //
-//														  //
+//														                            //
 ////////////////////////////////////////////////////////////
 
 #include <iostream>
@@ -92,12 +92,6 @@ leg->Draw("same");
 // Add label to colour legend
 TLatex *latex = new TLatex();
 latex->DrawLatexNDC(0.92,0.88,"#Delta#chi^{2}");
-
-
-
-
-
-
 
 
 
