@@ -29,6 +29,8 @@ void test_binning_iterate()
     std::map<conv::KineVar_t, double> other_kv_central_vals;
     other_kv_central_vals[conv::kvEreco] = 0.075;
 
+    std::cout << "Nbins (local) = " << binning_mond->NBins(kv, other_kv_central_vals) << std::endl;
+
     int ibin_global = -1;
     int ix = 0;
     while(true) {
@@ -47,6 +49,8 @@ void test_binning_iterate()
     conv::KineVar_t kv = conv::kvEreco;
     std::map<conv::KineVar_t, double> other_kv_central_vals;
     other_kv_central_vals[conv::kvThetareco] = 45;
+
+    std::cout << "Nbins (local) = " << binning_mond->NBins(kv, other_kv_central_vals) << std::endl;
 
     int ibin_global = -1;
     int ix = 0;
