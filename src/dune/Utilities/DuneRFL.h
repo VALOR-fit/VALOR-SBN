@@ -126,6 +126,10 @@ private:
 
   // If this is true, allow splines to go negative, but when this happens the weights will get set to 0
   bool fAllowNegativeSplines;
+
+  // The type of GSL spline to use. Options are: linear, polynomial, cubic, cubic_periodic, akima, or akima_periodic.
+  // Defaults to Akima.
+  ROOT::Math::Interpolation::Type fSplineType;
   
   // Array storing parameters mapped to indice within this object
   int fParam2Idx[conv::knppmax];

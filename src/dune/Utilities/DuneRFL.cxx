@@ -18,6 +18,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlNumStat.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Conventions/NuclearTarget.h"
 #include "valor/Conventions/ParameterPool.h"
@@ -235,6 +236,17 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   if (util::NodeExists(xml,root_node,"splines/allow_negative")) {
     fAllowNegativeSplines = util::XML2Bool(xml,root_node,"splines/allow_negative");
   }
+  if (util::NodeExists(xml,root_node,"splines/type")) {
+    std::string type_str = util::XML2String(xml,root_node,"splines/type");
+    type_str = util::ToLowerCase(util::RemoveAllWhitespace(type_str));
+         if(type_str == "linear")         { fSplineType = ROOT::Math::Interpolation::kLINEAR;          }
+    else if(type_str == "polynomial")     { fSplineType = ROOT::Math::Interpolation::kPOLYNOMIAL;      }
+    else if(type_str == "cubic")          { fSplineType = ROOT::Math::Interpolation::kCSPLINE;         }
+    else if(type_str == "cubic_periodic") { fSplineType = ROOT::Math::Interpolation::kCSPLINE_PERIODIC;}
+    else if(type_str == "akima")          { fSplineType = ROOT::Math::Interpolation::kAKIMA;           }
+    else if(type_str == "akima_periodic") { fSplineType = ROOT::Math::Interpolation::kAKIMA_PERIODIC;  }
+    else                                  { fSplineType = ROOT::Math::Interpolation::kAKIMA;           }
+  }
 
   if (!spl_file_pattern.size()) {
     LOG("DuneRFL",pFATAL) << "Failed to open spline filename pattern from XML.";
@@ -352,10 +364,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               }
 
               // The input spline doesn't necessarily have the knots in the right order, so sort them
-              // TODO: In the legacy T2K analysis, the out of order knot seems to be ignored, so is doing this okay?
               this->SortSpline(dynamic_cast<TSpline3*>(spline));
 
-              util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
+              util::Interpolator * gsl_spline = new util::Interpolator(spline,fSplineType);
               delete spline;
               bool use_gsl_spline = true;
               if(!fAllowNegativeSplines) {
