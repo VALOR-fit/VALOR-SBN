@@ -29,7 +29,7 @@ namespace binning
 */
 VALORArray* Contract(const VALORArray& v,
       const SingleSampleKineBinning& curentBinning,
-      const KBCubHcmbEdge2Edge& targetBinning);
+      const VALORBinning& targetBinning);
 
 /**
   Maps the events associated with the specified binning to a 1D
@@ -39,7 +39,7 @@ VALORArray* Contract(const VALORArray& v,
   \param b The simple binning.
   \return A ROOT-compatible 1D histogram representing the simple binning.
 */
-TH1D* Remap1D(const double* events, const KBCubHcmbEdge2Edge& b);
+TH1D* Remap1D(const double* events, const VALORBinning& b);
 
 /**
    Maps the events associated with the specified binning to a 2D
@@ -104,10 +104,9 @@ TH1D* Make1DHistogram(const VALORArray& v,
       bool use_simple)
 {
   // Get the reco binning and associated kinematic variables for the VALORArray
-  const VALORBinning * tmpb = use_simple ? b.RecoSmpBinning() : b.RecoOptBinning();
-  const KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<const KBCubHcmbEdge2Edge*>(tmpb);
+  const VALORBinning * recoBinning = use_simple ? b.RecoSmpBinning() : b.RecoOptBinning();
   if (!recoBinning) {
-    LOG("UtlBinning", pWARN) << tmpb->GetName()<<" is not a KBCubHcmbEdge2Edge, so will skip this";
+    LOG("UtlBinning", pERROR) << "Could not get the reco binning [" << recoBinning->GetName() << "], so will skip this";
     return nullptr;
   }
   
@@ -135,9 +134,9 @@ TH1D* Make1DHistogram(const VALORArray& v,
 
   // If necessary, contract the binning to 1D
   const VALORArray* targetV = nullptr;
-  const KBCubHcmbEdge2Edge * newRecoBinning = nullptr;
+  const VALORBinning * newRecoBinning = nullptr;
   if (recoKv.size() > 1) {
-     newRecoBinning = recoBinning->Contract(ks);
+     newRecoBinning = dynamic_cast<VALORBinning*>(recoBinning->Contract(ks));
     // Need to integrate out the reco variables here, before integrating over
     // truth
     targetV = Contract(v, b, *newRecoBinning);
@@ -168,7 +167,7 @@ TH1D* Make1DHistogram(const VALORArray& v,
   
   if (targetV != &v) { delete targetV; }
   if (newRecoBinning != recoBinning) {
-    delete const_cast<KBCubHcmbEdge2Edge*>(newRecoBinning);
+    delete const_cast<VALORBinning*>(newRecoBinning);
   }
 
   return histo;
@@ -276,14 +275,14 @@ TH2D* Make2DSimpleHistogram(const VALORArray& v,
 
 VALORArray* Contract(const VALORArray& v,
       const SingleSampleKineBinning& currentBinning,
-      const KBCubHcmbEdge2Edge& targetBinning)
+      const VALORBinning& targetBinning)
 {
-  KBCubHcmbEdge2Edge * trueBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(currentBinning.TrueSmpBinning(0));
+  VALORBinning * trueBinning = currentBinning.TrueSmpBinning(0);
   if (!trueBinning) {
     LOG("UtlBinning", pERROR) << currentBinning.TrueSmpBinning(0)->GetName()<<" is not a KBCubHcmbEdge2Edge";
     util::Die(-1); return nullptr;
   }
-  KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(currentBinning.RecoSmpBinning());
+  VALORBinning * recoBinning = currentBinning.RecoSmpBinning();
   if (!recoBinning) {
     LOG("UtlBinning", pERROR) << currentBinning.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
     util::Die(-1); return nullptr;
@@ -367,7 +366,7 @@ VALORArray* Contract(const VALORArray& v,
   return targetV;
 }
 
-TH1D* Remap1D(const double* events, const KBCubHcmbEdge2Edge& b)
+TH1D* Remap1D(const double* events, const VALORBinning& b)
 {
   // Find all bin edges
   std::set<double> dimEdges;

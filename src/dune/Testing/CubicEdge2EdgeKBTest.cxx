@@ -20,7 +20,7 @@ bool CubicEdge2EdgeKBTestCase::TestContract()
    bool passed = true;
 
    // Ereco
-   KBCubHcmbEdge2Edge* newBinning = recoBinning.Contract(conv::kspEreco);
+   KBCubHcmbEdge2Edge* newBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(recoBinning.Contract(conv::kspEreco));
 
    passed = Test::Equal(newBinning->NBins(), 4) && passed;
 
