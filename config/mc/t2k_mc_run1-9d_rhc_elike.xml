@@ -95,7 +95,8 @@ Splines
     <stored_as>      TObjArray                                          </stored_as>
     <array_pattern>  spl_[MODE]_[PARAM]                                 </array_pattern>
     <method>         curr_tweak                                         </method>  <!-- This uses weight = spline->Eval(current - untuned) -->
-    <allow_negative> true                                               </allow_negative>      <!-- Splines that go negativr are no longer replaced with flat splines, but the weight cannot go below 0 -->
+    <type>           akima                                              </type>
+    <allow_negative> true                                               </allow_negative>      <!-- Splines that go negative are no longer replaced with flat splines, but the weight cannot go below 0 -->
 </splines>
 
 <!--
