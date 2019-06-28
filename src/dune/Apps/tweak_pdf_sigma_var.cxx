@@ -12,6 +12,7 @@
              --config              : Analysis configuration file [required]
              --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
              --params              : Which parameters to tweak [def: allsyst]
+             --kinevar             : The kine var to store 1D PDFs for
 
              --input-mixing12,etc  : Option to give input values to osc params (in .arg)
 
@@ -64,6 +65,7 @@
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
+#include "dune/Conventions/Names.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
 
@@ -72,8 +74,8 @@ using namespace valor;
 using namespace valor::conv;
 
 
-void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, vector<TH1D *> & pdf, vector<TH1D *> & pdf_werr);
-void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, vector<vector<TH1D *> >  & pdf, PhysParamId_t p, double tweak_dial);
+void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<TH1D *> & pdf);
+void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,  vector<vector<TH1D *> >  & pdf, PhysParamId_t p, double tweak_dial);
 
 
 int main(int argc, char ** argv)
@@ -91,7 +93,15 @@ int main(int argc, char ** argv)
   string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
-  
+  string kinevar_str      = arg.GetString("kinevar");
+
+  KineVar_t kv = util::KineVarFromString(util::RemoveAllWhitespace(kinevar_str));
+  if(kv == kvUndefined) {
+    cerr << "ERROR: input kine var string [" << util::RemoveAllWhitespace(kinevar_str)
+         << "] was not understood. Exiting." << std::endl;
+    util::Die(-1);
+  }
+
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   int prior_fit_number = arg.GetInt("prior-fit-number");
   
@@ -155,8 +165,7 @@ int main(int argc, char ** argv)
   }
 
   // Vectors to store the spectra for the default, +/- 1 and 3 sigma variations
-  vector<TH1D *> nom_pdf_werr;
-  vector<TH1D *> nom_pdf     ;
+  vector<TH1D *>          nom_pdf   (cm->GetNSubModels());
   vector<vector<TH1D *> > twk_pdf_p1(cm->GetNSubModels());
   vector<vector<TH1D *> > twk_pdf_m1(cm->GetNSubModels());
   vector<vector<TH1D *> > twk_pdf_p3(cm->GetNSubModels());
@@ -177,12 +186,12 @@ int main(int argc, char ** argv)
   assert(param_set.size());
 
   // Generate pdfs
-  GeneratePDFNominal(model, cm, fp, nom_pdf, nom_pdf_werr);
+  GeneratePDFNominal(model, cm, fp, kv, nom_pdf);
   for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
     PhysParamId_t p = param_set[ip];
-    double bestfit = fp->InitValue(p);                    // TODO: check that the T2K init values are correct     TODO: set the init value for SKEscale to 0
+    double bestfit = fp->InitValue(p);
     double sigma_err = syst->OneSigmaError(p);
-    double tweak_p1 = bestfit + (1 * sigma_err);   // TODO: check that the T2K errors are correct
+    double tweak_p1 = bestfit + (1 * sigma_err);
     double tweak_m1 = bestfit - (1 * sigma_err);
     double tweak_p3 = bestfit + (3 * sigma_err);
     double tweak_m3 = bestfit - (3 * sigma_err);
@@ -196,63 +205,50 @@ int main(int argc, char ** argv)
       << "\n  nominal +3 sigma tweak = " << tweak_p3
       << "\n  nominal -3 sigma tweak = " << tweak_m3;
 
-    GeneratePDFTweaked(model, cm, fp, twk_pdf_p1, p, tweak_p1);
-    GeneratePDFTweaked(model, cm, fp, twk_pdf_m1, p, tweak_m1);
-    GeneratePDFTweaked(model, cm, fp, twk_pdf_p3, p, tweak_p3);
-    GeneratePDFTweaked(model, cm, fp, twk_pdf_m3, p, tweak_m3);
-
-    // bestfit = 1 for all SKDetFSI params except SKEscale, which is 0
-    // skexp.GetBANFF()->InitialValues()(idx); for BANFF params
-    //tweak_p1 = bestfit + (1 * sqrt(skexp.GetSuperkDetectorFSI()->CovMatrix()(idx,idx)));  // skdetfsi
-    //tweak_m1 = bestfit - (1 * sqrt(skexp.GetSuperkDetectorFSI()->CovMatrix()(idx,idx)));  // skdetfsi
-    // for kNuisBANFFShape2p2h, tweak_p1 = bestfit + 0.5 and   tweak_p3 = bestfit + 1.0
-
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_p1, p, tweak_p1);
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_m1, p, tweak_m1);
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_p3, p, tweak_p3);
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_m3, p, tweak_m3);
   } // loop over params
 
   
   // Write to file (if requested)
   TFile * outfile = NULL;
   if (output_rootfile!="-" && output_rootfile!="none") {
-    output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
+    output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak) + "_" + util::AsString(kv) + ".root";
     outfile = new TFile(output_rootfile.c_str(),"RECREATE");
     LOG("valor_dune",pNOTICE)<<"Writing to file: "<<output_rootfile;
   }
-  
-  for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
-    BeamConf_t b = this_model->GetBeam();
-    Sample_t   s = this_model->GetSample();
+  if (outfile && outfile->IsOpen()) {
+    for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
+      SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
+      Detector_t d = this_model->GetDetector();
+      BeamConf_t b = this_model->GetBeam();
+      Sample_t   s = this_model->GetSample();
+      std::string model_name = util::nm::MdlName(d, b, s, util::KineSpaceFromKineVar(kv));
 
-    TString name_nom = TString::Format("env_sb_%s_%s",
-                                       util::AsString(b).c_str(), util::AsString(s).c_str());
+      TString save_name = TString::Format("env_sb_%s_%s", model_name.c_str(), "nom");
+      nom_pdf[imodel]->Write(save_name.Data());
 
-    // TODO: Work-around until util::binning::contract is fixed
-    if(nom_pdf[imodel] != nullptr) { nom_pdf[imodel]->Write((name_nom+"_nom").Data()); } else { LOG("valor_dune",pNOTICE)<<"Not saving null PDF [" << (name_nom+"_nom").Data() << "]"; }
+      for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
+        PhysParamId_t p = param_set[ip];
+        std::string param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
+        save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "p1" ); twk_pdf_p1 [imodel][ip]->Write(save_name.Data());
+        save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "m1" ); twk_pdf_m1 [imodel][ip]->Write(save_name.Data());
+        save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "p3" ); twk_pdf_p3 [imodel][ip]->Write(save_name.Data());
+        save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "m3" ); twk_pdf_m3 [imodel][ip]->Write(save_name.Data());
+      } // loop over tweaked params
+    }//imodel
 
-    for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
-      PhysParamId_t p = param_set[ip];
-      if (outfile->IsOpen()) {
-        TString name = TString::Format("env_sb_%s_%s_%s",
-                                       util::AsString(b).c_str(), util::AsString(s).c_str(),
-                                       util::NameRegistry::Instance()->ParamAsStringVerySimple(p) );
-        // TODO: Work-around until util::binning::contract is fixed
-        if(twk_pdf_p1 [imodel][ip] != nullptr) { twk_pdf_p1 [imodel][ip]->Write((name+"_p1" ).Data()); } else { LOG("valor_dune",pNOTICE)<<"Not saving null PDF [" << (name+"_p1" ).Data() << "]"; }
-        if(twk_pdf_m1 [imodel][ip] != nullptr) { twk_pdf_m1 [imodel][ip]->Write((name+"_m1" ).Data()); } else { LOG("valor_dune",pNOTICE)<<"Not saving null PDF [" << (name+"_m1" ).Data() << "]"; }
-        if(twk_pdf_p3 [imodel][ip] != nullptr) { twk_pdf_p3 [imodel][ip]->Write((name+"_p3" ).Data()); } else { LOG("valor_dune",pNOTICE)<<"Not saving null PDF [" << (name+"_p3" ).Data() << "]"; }
-        if(twk_pdf_m3 [imodel][ip] != nullptr) { twk_pdf_m3 [imodel][ip]->Write((name+"_m3" ).Data()); } else { LOG("valor_dune",pNOTICE)<<"Not saving null PDF [" << (name+"_m3" ).Data() << "]"; }
-      }
-    } // loop over tweaked params
-  }//imodel
-  
-  if (outfile) {
     outfile->Close();
     delete outfile;
   }
+
   
   std::cout <<"Done!"<<std::endl;
 }
 //________________________________________________________________________________________
-void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, vector<TH1D *> & pdf, vector<TH1D *> & pdf_werr)
+void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<TH1D *> & pdf)
 {
   model->ResetSystematics("all");
   fp->FromPhysParamList(model->Tweaks(),"current");
@@ -265,33 +261,30 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
   array->SetOwner(true);
 
   // Write stuff out
-  model->Write(array,"curr","pdfts_rf +SB");
+  model->Write(array,"nom","pdfts_rf+SB");
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
     SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
+    Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
-    TString name = TString::Format("curr_pdfts_sb_rf_%s_%s",
-                                   util::AsString(b).c_str(), util::AsString(s).c_str());
+    std::string model_name = util::nm::MdlName(d, b, s, util::KineSpaceFromKineVar(kv));
+    TString name = TString::Format("nom_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
     TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
     if (!curr_pdf) {
       cerr<<"Could not find histogram "<<name<<endl;
-      //exit(-1);
-      // TODO: Work-around until util::binning::contract is fixed
-      pdf_werr.push_back(nullptr);
-      pdf     .push_back(nullptr);
+      exit(-1);
     }
     else {
-      pdf_werr.push_back(new TH1D(*curr_pdf));
-      pdf     .push_back(new TH1D(*curr_pdf));
+      pdf[imodel] = new TH1D(*curr_pdf);
     }
   } //imodel
   array->Clear("C");
   delete array;
 }
 //________________________________________________________________________________________
-void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, vector<vector<TH1D *> >  & pdf, PhysParamId_t p, double tweak_dial)
+void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<vector<TH1D *> >  & pdf, PhysParamId_t p, double tweak_dial)
 {
   model->ResetSystematics("all");
 
@@ -306,22 +299,20 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   array->SetOwner(true);
 
   // Write stuff out
-  // TODO: Writing with PDFTS is currently broken for samples with 2D binning, as util::binning::contract is broken (see Git issue #5). So until that's fixed, this app is broken
-  model->Write(array,"curr","pdfts_rf +SB");
+  model->Write(array,"curr","pdfts_rf+SB");
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
     SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
+    Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
-    TString name = TString::Format("curr_pdfts_sb_rf_%s_%s",
-                                   util::AsString(b).c_str(), util::AsString(s).c_str());
+    std::string model_name = util::nm::MdlName(d, b, s, util::KineSpaceFromKineVar(kv));
+    TString name = TString::Format("curr_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
     TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
     if (!curr_pdf) {
-      // TODO: Work-around until util::binning::contract is fixed
       cerr<<"Could not find histogram "<<name<<endl;
-      //exit(-1);
-      pdf[imodel].push_back(nullptr);   // TODO: add a check for nullptr
+      exit(-1);
     }
     else {
       pdf[imodel].push_back(new TH1D(*curr_pdf));
