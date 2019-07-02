@@ -111,6 +111,9 @@ public:
   // Calculate the OB manually from the content of the simple bins. Can be used to verify the spectra are the same for SB/OB
   void UpdateObservableBinningFromSimple (Option_t * opt = 0);
 
+  // Get the model name
+  string GetName(void) const { return fName; }
+
 private:
 
   void Init  (void);
