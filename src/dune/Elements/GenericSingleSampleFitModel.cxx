@@ -72,6 +72,8 @@ using namespace valor::conv;
 
 #define APPLY_ALL_AUTOWGHT_BRANCHES
 
+//#define DEBUG_SINGLE_BIN
+
 const util::ArrIdx * arridx = util::ArrIdx::Instance();
 
 //________________________________________________________________________________________
@@ -357,11 +359,38 @@ bool GenericSingleSampleFitModel::Generate(const PhysHypothesis & ph, Option_t *
   this->FluctuateMCStat(opt);   // `tun' MC templates --> `tun' MC templates (NOTE: if important effect, will need to add a new type of templates
   //this->ApplySystematics(opt);  // `tun' MC templates --> `sys' MC templates
   this->ApplyPhysics(opt);      // `sys' MC templates --> `fin' MC templates
+
+  // Print the final MC templates before oscillations
+  LOG("GenericSingleSampleFitModel",pDEBUG)
+    << "\n\nAfter applying systematics, the fMCTFinOb integrals for sample "<<util::AsString(fBeam)<<" "<<util::AsString(fSample)<<" and each mode are:";
+  double fMCTFinOb_tot_integral = 0;
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+    ReacMode_t m = fReactionModes[imode];
+    if(m == kmUndefined) continue;
+    fMCTFinOb_tot_integral += fMCTFinOb[imode]->Integral();
+    LOG("GenericSingleSampleFitModel",pDEBUG)
+      << "fMCTFinOb[" << util::AsString(m) << "] integral = " << fMCTFinOb[imode]->Integral();
+  }
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "fMCTFinOb integral summed over all modes = " << fMCTFinOb_tot_integral;
+
   this->ApplyOscProb(opt);      // `fin' MC templates --> `fin' MC templates
   this->UpdatePDFs(opt);        // `fin' MC templates --> p.d.f
 #endif //__VALOR_FMWK_PENALTY_ONLY__
 
-  LOG("GenericSingleSampleFitModel",pINFO) << "Done generating predictions";
+  // Print the final MC templates
+  LOG("GenericSingleSampleFitModel",pDEBUG)
+    << "\n\nAt end of GSSFM::Generate, the fMCTFinOb integrals for sample "<<util::AsString(fBeam)<<" "<<util::AsString(fSample)<<" and each mode are:";
+  fMCTFinOb_tot_integral = 0;
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+    ReacMode_t m = fReactionModes[imode];
+    if(m == kmUndefined) continue;
+    fMCTFinOb_tot_integral += fMCTFinOb[imode]->Integral();
+    LOG("GenericSingleSampleFitModel",pDEBUG)
+      << "fMCTFinOb[" << util::AsString(m) << "] integral = " << fMCTFinOb[imode]->Integral();
+  }
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "fMCTFinOb integral summed over all modes = " << fMCTFinOb_tot_integral;
+
+  LOG("GenericSingleSampleFitModel",pDEBUG) << "Done generating predictions";
 
   return true;
 }
@@ -970,6 +999,7 @@ void GenericSingleSampleFitModel::BuildParamLists()
           case kSystNorm    :
             fNormParamsAppliedTo[imode].push_back(p);
             norm_params_set.insert(p);
+            LOG("GenericSingleSampleFitModel",pINFO) << "Will apply norm param ["<<param.GetName()<<"] to mode ["<<util::AsString(m)<<"]";
             // Check if the normalisations only depend on parameters we're actually binned in
 
             binning_kv.insert(binning_kv.end(),true_kv.begin(),true_kv.end());
@@ -985,10 +1015,12 @@ void GenericSingleSampleFitModel::BuildParamLists()
           case kSystResponse:
             fSplineParamsAppliedTo[imode].push_back(p);
             spline_params_set.insert(p);
+            LOG("GenericSingleSampleFitModel",pINFO) << "Will apply spline param ["<<param.GetName()<<"] to mode ["<<util::AsString(m)<<"]";
             break;
           case kSystLateralPostOsc:
             // Handle post-oscillation lateral systematics after all templates have been filled
             lateral_post_osc_params_set.insert(p);
+            LOG("GenericSingleSampleFitModel",pINFO) << "Will apply lateral (post-osc) param ["<<param.GetName()<<"] to mode ["<<util::AsString(m)<<"]";
             break;
           case kSystUndefined:
           case kSystLateral:
@@ -1898,6 +1930,22 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       update_mct_sb = true;
     }
   }
+
+#ifdef DEBUG_SINGLE_BIN
+  double              debug_true0  = 0.501;   // For T2K this is Etrue
+  double              debug_reco0  = 0.501;   // For T2K this is Ereco
+  double              debug_reco1  = 90.0;    // For T2K this is theta reco
+  conv::Sample_t      debug_sample = conv::ks1Rmu;
+  conv::BeamConf_t    debug_beam   = conv::kbJPARC_FHC;
+  conv::ReacMode_t    debug_mode   = conv::kmNuMuCCQE;
+  conv::PhysParamId_t debug_param  = util::NameRegistry::Instance()->PhysParamFromString("MAQE");  // Or leave as conv::kPhypUndefined to look at all applied params
+  if(fSample == debug_sample && fBeam == debug_beam) {
+    LOG("GenericSingleSampleFitModel",pNOTICE)
+      << "Will print weights info for true var 0 = " << debug_true0 << ", reco var 0 = " << debug_reco0
+      << ", reco var 1 = " << debug_reco1 << ", beam = " << util::AsString(debug_beam)
+      << ", sample = " << util::AsString(debug_sample) << ", mode = " << util::AsString(debug_mode);
+  }
+#endif
   
   const VALORBinning * reco_ob = fBinning->RecoOptBinning();
   const VALORBinning * reco_sb = fBinning->RecoSmpBinning();
@@ -1930,6 +1978,43 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     
     // copy sys -> fin MC templates
     fMCTFinOb[imode]->CopyDataOnlyFrom(*fMCTSysOb[imode]);
+
+#ifdef DEBUG_SINGLE_BIN
+    unsigned int debug_ireco = 999;
+    unsigned int debug_itrue = 999;
+    if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode) {
+      std::vector<double> debug_reco_vals;
+      std::vector<double> debug_xsec_reco_vals;
+      std::vector<double> debug_true_vals;
+      debug_reco_vals.push_back(debug_reco0);
+      debug_true_vals.push_back(debug_true0);
+      debug_xsec_reco_vals.push_back(debug_reco0);
+      debug_xsec_reco_vals.push_back(debug_reco1);
+      debug_ireco = reco_ob->FindBin(debug_reco_vals);
+      debug_itrue = true_sb->FindBin(debug_true_vals);
+      const VALORBinning * debug_xsec_true_binning = fBinning->XsecTrueBinning(m);
+      const VALORBinning * debug_xsec_reco_binning = fBinning->XsecRecoBinning();
+      double debug_xsec_ireco = debug_xsec_reco_binning->FindBin(debug_xsec_reco_vals);
+      double debug_xsec_itrue = debug_xsec_true_binning->FindBin(debug_true_vals);
+      LOG("GenericSingleSampleFitModel",pNOTICE)
+        << "At the start of apply physics, bin content = "
+        << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue) << ", debug_itrue = " << debug_itrue
+        << ", debug_ireco = " << debug_ireco << ", debug_xsec_itrue = " << debug_xsec_itrue
+        << ", debug_xsec_ireco = " << debug_xsec_ireco;
+      LOG("GenericSingleSampleFitModel",pNOTICE) << "list of norm params applied to this mode:";
+      for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
+        PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
+        if (p == kPhypUndefined          ) {continue;}
+        LOG("GenericSingleSampleFitModel",pNOTICE) << "  " << util::NameRegistry::Instance()->ParamAsString(p);
+      }
+      LOG("GenericSingleSampleFitModel",pNOTICE) << "list of spline params applied to this mode:";
+      for(size_t ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
+        PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
+        if (p == kPhypUndefined          ) {continue;}
+        LOG("GenericSingleSampleFitModel",pNOTICE) << "  " << util::NameRegistry::Instance()->ParamAsString(p);
+      }
+    }
+#endif
     
     // First do the normalisation parameters
     for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
@@ -1950,6 +2035,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       if (has_kinematic_dependence) {
         f = TMath::Max(0.,f);
         bool tweaked = TMath::Abs(f-1) > kASmallNum;
+#ifdef DEBUG_SINGLE_BIN
+        if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && !tweaked && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+          LOG("GenericSingleSampleFitModel",pNOTICE)
+            << "Skipping untweaked param [" << util::NameRegistry::Instance()->ParamAsString(p)
+            << "] with hypothesis curr val = " << f;
+        }
+#endif
         if(!tweaked) continue;
         
         double true1_min  = 0.;
@@ -2078,7 +2170,17 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             }
 
             double effective_tweak = frac*(f-1.) + 1;
-            if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
+            if (std::fabs(effective_tweak-1.) < conv::kASmallNum) {
+#ifdef DEBUG_SINGLE_BIN
+              if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue  && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+                LOG("GenericSingleSampleFitModel",pNOTICE)
+                  << "Skipping untweaked param [" << util::NameRegistry::Instance()->ParamAsString(p)
+                  << "] with curr val = " << f << ", effective tweak = " << effective_tweak
+                  << "(itrue = " << itrue << ", ireco = " << ireco << ")";
+              }
+#endif
+              continue;
+            }
 
             double & val = fMCTFinOb[imode]->GetEntryRef(ireco,itrue);
             val *= effective_tweak;
@@ -2086,6 +2188,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             LOG("GenericSingleSampleFitModel",pDEBUG) 
               << "MCT[" << imode << "] = " 
               << val/f << " --> " << val;
+#endif
+#ifdef DEBUG_SINGLE_BIN
+            if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+              LOG("GenericSingleSampleFitModel",pNOTICE)
+                << "Applying norm param with kinematic dependence [" << util::NameRegistry::Instance()->ParamAsString(p)
+                << "] with curr val = " << f << ", effective tweak = " << effective_tweak
+                << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue);
+            }
 #endif
           }//ireco: reco bins
         }//itrue: true bins
@@ -2102,6 +2212,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         noEt *= f;
         noEt = TMath::Max(0.,noEt);
         fMCTFinOb[imode]->Scale(noEt);
+#ifdef DEBUG_SINGLE_BIN
+        if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+          LOG("GenericSingleSampleFitModel",pNOTICE)
+            << "Applying norm param with NO kinematic dependence [" << util::NameRegistry::Instance()->ParamAsString(p)
+            << "] with curr val = " << noEt
+            << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue);
+        }
+#endif
       } // No spline, no kin dependence
     } //iparam (no splines)
     
@@ -2158,6 +2276,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               response = spl->EvalWithLimits(f);
             }
 
+            LOG("GenericSingleSampleFitModel", pDEBUG)
+              << "Got response = " << response << " for param = " << util::NameRegistry::Instance()->ParamAsString(p)
+              << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << fSystematics->UntunedValue(p)
+              << ", current = " << f << ", from spline with name [" << spl->GetName()
+              << "] and title [" << spl->GetTitle() << "]";
+
             if (response<0) {
               LOG("GenericSingleSampleFitModel",pINFO)
                <<"Negative response from spline (OB) "//<<spl->GetName()
@@ -2168,6 +2292,16 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           }
           double & val = fMCTFinOb[imode]->GetEntryRef(bin);
           val *= response;
+#ifdef DEBUG_SINGLE_BIN
+          if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+            LOG("GenericSingleSampleFitModel",pNOTICE)
+              << "Applying spline param [" << util::NameRegistry::Instance()->ParamAsString(p)
+              << "] with curr val = " << f << ", untuned val = " << fSystematics->UntunedValue(p)
+              << ", weight = " << response
+              << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue)
+              << ", from spline with name [" << spl->GetName() << "] and title [" << spl->GetTitle() << "]";
+          }
+#endif
         }//ireco
       }//itrue
     } // iparams (splines)
