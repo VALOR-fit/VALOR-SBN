@@ -66,6 +66,7 @@
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Conventions/Names.h"
+#include "dune/Conventions/ArrIdx.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
 
@@ -74,8 +75,11 @@ using namespace valor;
 using namespace valor::conv;
 
 
-void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<TH1D *> & pdf);
-void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,  vector<vector<TH1D *> >  & pdf, PhysParamId_t p, double tweak_dial);
+void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
+                        vector<TH1D *> & pdf, vector<vector<TH1D*>> & pdf_contrib);
+void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
+                        vector<vector<TH1D *> >  & pdf, vector<vector<vector<TH1D*>>> & pdf_contrib,
+                        unsigned int ip, PhysParamId_t p, double tweak_dial);
 
 
 int main(int argc, char ** argv)
@@ -164,12 +168,26 @@ int main(int argc, char ** argv)
     cout << "Using prefit"<<endl;
   }
 
+  // Get the parameters to vary
+  std::vector<PhysParamId_t> param_set = util::GetParameterSet(params_to_tweak);
+  assert(param_set.size());
+  unsigned int n_params = param_set.size();
+
   // Vectors to store the spectra for the default, +/- 1 and 3 sigma variations
+  // Total PDFs
   vector<TH1D *>          nom_pdf   (cm->GetNSubModels());
-  vector<vector<TH1D *> > twk_pdf_p1(cm->GetNSubModels());
-  vector<vector<TH1D *> > twk_pdf_m1(cm->GetNSubModels());
-  vector<vector<TH1D *> > twk_pdf_p3(cm->GetNSubModels());
-  vector<vector<TH1D *> > twk_pdf_m3(cm->GetNSubModels());
+  vector<vector<TH1D *> > twk_pdf_p1(cm->GetNSubModels(), vector<TH1D*>(n_params));
+  vector<vector<TH1D *> > twk_pdf_m1(cm->GetNSubModels(), vector<TH1D*>(n_params));
+  vector<vector<TH1D *> > twk_pdf_p3(cm->GetNSubModels(), vector<TH1D*>(n_params));
+  vector<vector<TH1D *> > twk_pdf_m3(cm->GetNSubModels(), vector<TH1D*>(n_params));
+
+  // Now broken down by mode
+  // TODO: This is getting horribly unwieldy. Write the hists directly to the output file instead of storing in these 1-3D vectors? Or will that be slow?
+  vector<vector<TH1D*>>         nom_pdf_contrib   (cm->GetNSubModels(), vector<TH1D*>(conv::kNReacModes));                                    // [imodel][imode]
+  vector<vector<vector<TH1D*>>> twk_pdf_contrib_p1(cm->GetNSubModels(), vector<vector<TH1D*>>(n_params, vector<TH1D*>(conv::kNReacModes)));   // [imodel][iparam][imode]
+  vector<vector<vector<TH1D*>>> twk_pdf_contrib_m1(cm->GetNSubModels(), vector<vector<TH1D*>>(n_params, vector<TH1D*>(conv::kNReacModes)));
+  vector<vector<vector<TH1D*>>> twk_pdf_contrib_p3(cm->GetNSubModels(), vector<vector<TH1D*>>(n_params, vector<TH1D*>(conv::kNReacModes)));
+  vector<vector<vector<TH1D*>>> twk_pdf_contrib_m3(cm->GetNSubModels(), vector<vector<TH1D*>>(n_params, vector<TH1D*>(conv::kNReacModes)));
 
   const CorrelatedSystematics * syst = cm->GetSystematics();
   FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
@@ -181,12 +199,8 @@ int main(int argc, char ** argv)
   if (fp->Exists(conv::kPhypDm23sq  )) { fp->Update(conv::kPhypDm23sq  ,dm23sq  ); }
   if (fp->Exists(conv::kPhypCPV     )) { fp->Update(conv::kPhypCPV     ,deltacp ); }
 
-  // Get the parameters to vary
-  std::vector<PhysParamId_t> param_set = util::GetParameterSet(params_to_tweak);
-  assert(param_set.size());
-
   // Generate pdfs
-  GeneratePDFNominal(model, cm, fp, kv, nom_pdf);
+  GeneratePDFNominal(model, cm, fp, kv, nom_pdf, nom_pdf_contrib);
   for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
     PhysParamId_t p = param_set[ip];
     double bestfit = fp->InitValue(p);
@@ -205,10 +219,10 @@ int main(int argc, char ** argv)
       << "\n  nominal +3 sigma tweak = " << tweak_p3
       << "\n  nominal -3 sigma tweak = " << tweak_m3;
 
-    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_p1, p, tweak_p1);
-    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_m1, p, tweak_m1);
-    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_p3, p, tweak_p3);
-    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_m3, p, tweak_m3);
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_p1, twk_pdf_contrib_p1, ip, p, tweak_p1);
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_m1, twk_pdf_contrib_m1, ip, p, tweak_m1);
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_p3, twk_pdf_contrib_p3, ip, p, tweak_p3);
+    GeneratePDFTweaked(model, cm, fp, kv, twk_pdf_m3, twk_pdf_contrib_m3, ip, p, tweak_m3);
   } // loop over params
 
   
@@ -230,13 +244,54 @@ int main(int argc, char ** argv)
       TString save_name = TString::Format("env_sb_%s_%s", model_name.c_str(), "nom");
       nom_pdf[imodel]->Write(save_name.Data());
 
+      // Write the nominal PDF broken down by mode contributions
+      for(int im = 0; im < conv::kNReacModes; ++im) {
+        conv::ReacMode_t m = util::ReacModeFromInt(im);
+        if(m == conv::kmUndefined) { continue; }
+        int mode_idx = util::ArrIdx::Instance()->ReacModeIdx(b, s, m);
+        if(mode_idx < 0) { continue; }
+        if(!nom_pdf_contrib[imodel][im]) { continue; }
+        save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(), "nom");
+        nom_pdf_contrib[imodel][im]->Write(save_name.Data());
+      }
+
       for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
         PhysParamId_t p = param_set[ip];
         std::string param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
+
+        // Write the total PDFs
         save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "p1" ); twk_pdf_p1 [imodel][ip]->Write(save_name.Data());
         save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "m1" ); twk_pdf_m1 [imodel][ip]->Write(save_name.Data());
         save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "p3" ); twk_pdf_p3 [imodel][ip]->Write(save_name.Data());
         save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), param_name.c_str(), "m3" ); twk_pdf_m3 [imodel][ip]->Write(save_name.Data());
+
+        // Write the PDF broken down by mode contributions
+        for(int im = 0; im < conv::kNReacModes; ++im) {
+          conv::ReacMode_t m = util::ReacModeFromInt(im);
+          if(m == conv::kmUndefined) { continue; }
+          int mode_idx = util::ArrIdx::Instance()->ReacModeIdx(b, s, m);
+          if (mode_idx < 0) { continue; }
+          if(twk_pdf_contrib_p1 [imodel][ip][im]) {
+            save_name = TString::Format("env_sb_%s_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(),
+                                        param_name.c_str(), "p1");
+            twk_pdf_contrib_p1[imodel][ip][im]->Write(save_name.Data());
+          }
+          if(twk_pdf_contrib_m1 [imodel][ip][im]) {
+            save_name = TString::Format("env_sb_%s_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(),
+                                        param_name.c_str(), "m1");
+            twk_pdf_contrib_m1[imodel][ip][im]->Write(save_name.Data());
+          }
+          if(twk_pdf_contrib_p3 [imodel][ip][im]) {
+            save_name = TString::Format("env_sb_%s_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(),
+                                        param_name.c_str(), "p3");
+            twk_pdf_contrib_p3[imodel][ip][im]->Write(save_name.Data());
+          }
+          if(twk_pdf_contrib_m3 [imodel][ip][im]) {
+            save_name = TString::Format("env_sb_%s_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(),
+                                        param_name.c_str(), "m3");
+            twk_pdf_contrib_m3[imodel][ip][im]->Write(save_name.Data());
+          }
+        } //imode
       } // loop over tweaked params
     }//imodel
 
@@ -244,11 +299,12 @@ int main(int argc, char ** argv)
     delete outfile;
   }
 
-  
+  LOG("valor_dune",pNOTICE)<<"Finished writing to file: "<<output_rootfile;
   std::cout <<"Done!"<<std::endl;
 }
 //________________________________________________________________________________________
-void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<TH1D *> & pdf)
+void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<TH1D*> & pdf,
+                        vector<vector<TH1D*>> & pdf_contrib)
 {
   model->ResetSystematics("all");
   fp->FromPhysParamList(model->Tweaks(),"current");
@@ -261,7 +317,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
   array->SetOwner(true);
 
   // Write stuff out
-  model->Write(array,"nom","pdfts_rf+SB");
+  model->Write(array,"nom","pdfcs_rf-pdfts_rf+SB");
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
@@ -269,22 +325,47 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
     Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
+
+    // Get the total PDF
     std::string model_name = util::nm::MdlName(d, b, s, util::KineSpaceFromKineVar(kv));
-    TString name = TString::Format("nom_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
-    TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
-    if (!curr_pdf) {
-      cerr<<"Could not find histogram "<<name<<endl;
+    TString name_tot     = TString::Format("nom_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
+    TH1D * curr_pdf_tot = (TH1D*) array->FindObject(name_tot.Data());
+    if (!curr_pdf_tot) {
+      cerr<<"Could not find histogram "<<name_tot<<endl;
       exit(-1);
     }
     else {
-      pdf[imodel] = new TH1D(*curr_pdf);
+      pdf[imodel] = new TH1D(*curr_pdf_tot);
     }
+
+    // Get the PDF broken down by mode contributions
+    for(int im = 0; im < conv::kNReacModes; ++im) {
+      conv::ReacMode_t m = util::ReacModeFromInt(im);
+      if(m == conv::kmUndefined) { continue; }
+      int mode_idx = util::ArrIdx::Instance()->ReacModeIdx(b, s, m);
+      if (mode_idx < 0) {
+        pdf_contrib[imodel][im] = nullptr;
+      }
+      else {
+        TString name_contrib = TString::Format("nom_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
+        TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
+        if (!curr_pdf_contrib) {
+          cerr<<"Could not find histogram "<<name_contrib<<endl;
+          exit(-1);
+        }
+        else {
+          pdf_contrib[imodel][im] = new TH1D(*curr_pdf_contrib);
+        }
+      }
+    } //imode
   } //imodel
   array->Clear("C");
   delete array;
 }
 //________________________________________________________________________________________
-void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<vector<TH1D *> >  & pdf, PhysParamId_t p, double tweak_dial)
+void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
+                        vector<vector<TH1D *> >  & pdf, vector<vector<vector<TH1D*>>> & pdf_contrib,
+                        unsigned int ip, PhysParamId_t p, double tweak_dial)
 {
   model->ResetSystematics("all");
 
@@ -299,7 +380,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   array->SetOwner(true);
 
   // Write stuff out
-  model->Write(array,"curr","pdfts_rf+SB");
+  model->Write(array,"curr","pdfcs_rf-pdfts_rf+SB");
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
@@ -307,6 +388,8 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
     Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
+
+    // Get the total PDF
     std::string model_name = util::nm::MdlName(d, b, s, util::KineSpaceFromKineVar(kv));
     TString name = TString::Format("curr_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
     TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
@@ -315,8 +398,29 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       exit(-1);
     }
     else {
-      pdf[imodel].push_back(new TH1D(*curr_pdf));
+      pdf[imodel][ip] = new TH1D(*curr_pdf);
     }
+
+    //Get the PDF broken down by mode contributions
+    for(int im = 0; im < conv::kNReacModes; ++im) {
+      conv::ReacMode_t m = util::ReacModeFromInt(im);
+      if(m == conv::kmUndefined) { continue; }
+      int mode_idx = util::ArrIdx::Instance()->ReacModeIdx(b, s, m);
+      if (mode_idx < 0) {
+        pdf_contrib[imodel][ip][im] = nullptr;
+      }
+      else {
+        TString name_contrib = TString::Format("curr_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
+        TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
+        if (!curr_pdf_contrib) {
+          cerr<<"Could not find histogram "<<name_contrib<<endl;
+          exit(-1);
+        }
+        else {
+          pdf_contrib[imodel][ip][im] = new TH1D(*curr_pdf_contrib);
+        }
+      }
+    } //imode
   } //imodel
   array->Clear("C");
   delete array;
