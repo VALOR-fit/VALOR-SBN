@@ -27,6 +27,7 @@
 #include "dune/Conventions/ReacModeCoarse.h"
 #include "dune/Conventions/Experiment.h"
 
+#include <vector>
 
 namespace valor {  
 namespace conv {
@@ -1757,7 +1758,8 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
 } // conv
 
 namespace util {
-conv::Sample_t GetActiveSample  (int ibeam, int isample);
+  conv::Sample_t GetActiveSample  (int ibeam, int isample);
+  std::vector<conv::ReacMode_t> GetActiveModes (int isample);
 } // util
 
 } // valor
