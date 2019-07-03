@@ -308,9 +308,11 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 {
   cout << "\n\nGenerating nominal PDF:" << std::endl;
   model->ResetSystematics("all");
-  fp->FromPhysParamList(model->Tweaks(),"current");
+  fp->FromPhysParamList(model->Tweaks(),"current-silent");
 
   // Generate predictions
+  cout << "with fit param list:" << std::endl;
+  fp->Print(cout);
   model->Generate(*fp,"+SB");
 
   // Array to store results
@@ -318,7 +320,9 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
   array->SetOwner(true);
 
   // Write stuff out
-  model->Write(array,"nom","pdfcs_rf-pdfts_rf+SB");
+  Option_t * write_opt = "pdfcs_rf-pdfts_rf+SB";
+  if (util::IsTrue(kv)) { write_opt = "pdfcs_rf+SB"; }    // The true PDFs don't have totals in GSSFM, only the mode breakdown // TODO: util::binning::Make1DHistogram currently doesn't work with truth...
+  model->Write(array,"nom",write_opt);
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
@@ -329,15 +333,18 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
     // Get the total PDF
     std::string model_name = util::nm::MdlName(d, b, s, util::KineSpaceFromKineVar(kv));
-    TString name_tot     = TString::Format("nom_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
-    TH1D * curr_pdf_tot = (TH1D*) array->FindObject(name_tot.Data());
-    if (!curr_pdf_tot) {
-      cerr<<"Could not find histogram "<<name_tot<<endl;
-      exit(-1);
+    if (util::IsReco(kv)) {
+      TString name_tot     = TString::Format("nom_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
+      TH1D * curr_pdf_tot = (TH1D*) array->FindObject(name_tot.Data());
+      if (!curr_pdf_tot) {
+        cerr<<"Could not find histogram "<<name_tot<<endl;
+        exit(-1);
+      }
+      else {
+        pdf[imodel] = new TH1D(*curr_pdf_tot);
+      }
     }
-    else {
-      pdf[imodel] = new TH1D(*curr_pdf_tot);
-    }
+
 
     // Get the PDF broken down by mode contributions
     for(int im = 0; im < conv::kNReacModes; ++im) {
@@ -372,7 +379,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   model->ResetSystematics("all");
 
   model->TweakSystematic(p, tweak_dial, "");
-  fp->FromPhysParamList(model->Tweaks(),"current");
+  fp->FromPhysParamList(model->Tweaks(),"current-silent");
 
   // Generate predictions
   model->Generate(*fp,"+SB");
@@ -382,7 +389,9 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   array->SetOwner(true);
 
   // Write stuff out
-  model->Write(array,"curr","pdfcs_rf-pdfts_rf+SB");
+  Option_t * write_opt = "pdfcs_rf-pdfts_rf+SB";
+  if (util::IsTrue(kv)) { write_opt = "pdfcs_rf+SB"; }    // The true PDFs don't have totals in GSSFM, only the mode breakdown
+  model->Write(array,"curr",write_opt);
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
@@ -393,14 +402,16 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
     // Get the total PDF
     std::string model_name = util::nm::MdlName(d, b, s, util::KineSpaceFromKineVar(kv));
-    TString name = TString::Format("curr_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
-    TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
-    if (!curr_pdf) {
-      cerr<<"Could not find histogram "<<name<<endl;
-      exit(-1);
-    }
-    else {
-      pdf[imodel][ip] = new TH1D(*curr_pdf);
+    if (util::IsReco(kv)) {
+      TString name = TString::Format("curr_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
+      TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
+      if (!curr_pdf) {
+        cerr<<"Could not find histogram "<<name<<endl;
+        exit(-1);
+      }
+      else {
+        pdf[imodel][ip] = new TH1D(*curr_pdf);
+      }
     }
 
     //Get the PDF broken down by mode contributions
