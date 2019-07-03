@@ -1991,16 +1991,30 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       debug_xsec_reco_vals.push_back(debug_reco0);
       debug_xsec_reco_vals.push_back(debug_reco1);
       debug_ireco = reco_ob->FindBin(debug_reco_vals);
-      debug_itrue = true_sb->FindBin(debug_true_vals);
+      if (debug_true0 != -999) {
+        debug_itrue = true_sb->FindBin(debug_true_vals);
+      }
+      else {
+        debug_itrue = 0;
+      }
       const VALORBinning * debug_xsec_true_binning = fBinning->XsecTrueBinning(m);
       const VALORBinning * debug_xsec_reco_binning = fBinning->XsecRecoBinning();
       double debug_xsec_ireco = debug_xsec_reco_binning->FindBin(debug_xsec_reco_vals);
       double debug_xsec_itrue = debug_xsec_true_binning->FindBin(debug_true_vals);
-      LOG("GenericSingleSampleFitModel",pNOTICE)
-        << "At the start of apply physics, bin content = "
-        << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue) << ", debug_itrue = " << debug_itrue
-        << ", debug_ireco = " << debug_ireco << ", debug_xsec_itrue = " << debug_xsec_itrue
-        << ", debug_xsec_ireco = " << debug_xsec_ireco;
+      if (debug_true0 != -999) {
+        LOG("GenericSingleSampleFitModel", pNOTICE)
+          << "At the start of apply physics, bin content = "
+          << fMCTFinOb[imode]->GetEntry(debug_ireco, debug_itrue) << ", debug_itrue = " << debug_itrue
+          << ", debug_ireco = " << debug_ireco << ", debug_xsec_itrue = " << debug_xsec_itrue
+          << ", debug_xsec_ireco = " << debug_xsec_ireco;
+      }
+      else {
+        LOG("GenericSingleSampleFitModel", pNOTICE)
+          << "At the start of apply physics, bin content (with true bin 0) = "
+          << fMCTFinOb[imode]->GetEntry(debug_ireco, 0)
+          << ", debug_ireco = " << debug_ireco
+          << ", debug_xsec_ireco = " << debug_xsec_ireco;
+      }
       LOG("GenericSingleSampleFitModel",pNOTICE) << "list of norm params applied to this mode:";
       for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
@@ -2173,10 +2187,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             if (std::fabs(effective_tweak-1.) < conv::kASmallNum) {
 #ifdef DEBUG_SINGLE_BIN
               if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue  && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+                unsigned int use_debug_itrue = debug_itrue;
+                if(debug_true0 == -999) { use_debug_itrue = itrue; }
                 LOG("GenericSingleSampleFitModel",pNOTICE)
                   << "Skipping untweaked param [" << util::NameRegistry::Instance()->ParamAsString(p)
                   << "] with curr val = " << f << ", effective tweak = " << effective_tweak
-                  << "(itrue = " << itrue << ", ireco = " << ireco << ")";
+                  << "(itrue = " << use_debug_itrue << ", ireco = " << ireco << ")";
               }
 #endif
               continue;
@@ -2190,11 +2206,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               << val/f << " --> " << val;
 #endif
 #ifdef DEBUG_SINGLE_BIN
-            if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+            if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && (itrue == debug_itrue || debug_true0 == -999) && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+              unsigned int use_debug_itrue = debug_itrue;
+              if(debug_true0 == -999) { use_debug_itrue = itrue; }
               LOG("GenericSingleSampleFitModel",pNOTICE)
                 << "Applying norm param with kinematic dependence [" << util::NameRegistry::Instance()->ParamAsString(p)
                 << "] with curr val = " << f << ", effective tweak = " << effective_tweak
-                << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue);
+                << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,use_debug_itrue);
             }
 #endif
           }//ireco: reco bins
@@ -2293,12 +2311,17 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           double & val = fMCTFinOb[imode]->GetEntryRef(bin);
           val *= response;
 #ifdef DEBUG_SINGLE_BIN
-          if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+          if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && (itrue == debug_itrue || debug_true0 == -999) && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+            unsigned int use_debug_itrue = debug_itrue;
+            if(debug_true0 == -999) {
+              use_debug_itrue = itrue;
+              LOG("GenericSingleSampleFitModel",pNOTICE) << "True kinevar 0 = " << true_sb->BinCentre(use_debug_itrue, 0);
+            }
             LOG("GenericSingleSampleFitModel",pNOTICE)
               << "Applying spline param [" << util::NameRegistry::Instance()->ParamAsString(p)
               << "] with curr val = " << f << ", untuned val = " << fSystematics->UntunedValue(p)
               << ", weight = " << response
-              << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue)
+              << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,use_debug_itrue)
               << ", from spline with name [" << spl->GetName() << "] and title [" << spl->GetTitle() << "]";
           }
 #endif

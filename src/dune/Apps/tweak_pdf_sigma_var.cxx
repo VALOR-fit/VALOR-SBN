@@ -306,6 +306,7 @@ int main(int argc, char ** argv)
 void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<TH1D*> & pdf,
                         vector<vector<TH1D*>> & pdf_contrib)
 {
+  cout << "\n\nGenerating nominal PDF:" << std::endl;
   model->ResetSystematics("all");
   fp->FromPhysParamList(model->Tweaks(),"current");
 
@@ -367,6 +368,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
                         vector<vector<TH1D *> >  & pdf, vector<vector<vector<TH1D*>>> & pdf_contrib,
                         unsigned int ip, PhysParamId_t p, double tweak_dial)
 {
+  cout << "\n\nGenerating PDF with tweak dial = " << tweak_dial << std::endl;
   model->ResetSystematics("all");
 
   model->TweakSystematic(p, tweak_dial, "");
