@@ -67,6 +67,7 @@
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Conventions/Names.h"
 #include "dune/Conventions/ArrIdx.h"
+#include "dune/Conventions/Experiment.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
 
@@ -74,7 +75,7 @@ using namespace std;
 using namespace valor;
 using namespace valor::conv;
 
-
+void SpecialCaseTweak(PhysParamId_t p, FitParamList * fp, double& tweak_p1, double& tweak_m1, double& tweak_p3, double& tweak_m3);
 void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
                         vector<TH1D *> & pdf, vector<vector<TH1D*>> & pdf_contrib);
 void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
@@ -210,6 +211,9 @@ int main(int argc, char ** argv)
     double tweak_p3 = bestfit + (3 * sigma_err);
     double tweak_m3 = bestfit - (3 * sigma_err);
 
+    // Apply any special cases here (e.g. to force the tweaks to a certain value)
+    SpecialCaseTweak(p, fp, tweak_p1, tweak_m1, tweak_p3, tweak_m3);
+
     LOG("valor_dune", pNOTICE)
       << "Tweak systematic parameter: "  << util::NameRegistry::Instance()->ParamAsString(p)
       << "\n  Nominal value = "          << bestfit
@@ -301,6 +305,21 @@ int main(int argc, char ** argv)
 
   LOG("valor_dune",pNOTICE)<<"Finished writing to file: "<<output_rootfile;
   std::cout <<"Done!"<<std::endl;
+}
+//________________________________________________________________________________________
+void SpecialCaseTweak(conv::PhysParamId_t p, FitParamList * fp, double& tweak_p1, double& tweak_m1, double& tweak_p3, double& tweak_m3)
+{
+#ifdef T2K
+  if(p == util::NameRegistry::Instance()->PhysParamFromString("2p2h_shape_O")) {
+    double bestfit = fp->InitValue(p);
+    double one_sigma_err   = 0.5;
+    double three_sigma_err = 1.0;
+    tweak_p1 = bestfit + one_sigma_err;
+    tweak_m1 = bestfit - one_sigma_err;
+    tweak_p3 = bestfit + three_sigma_err;
+    tweak_m3 = bestfit - three_sigma_err;
+  }
+#endif
 }
 //________________________________________________________________________________________
 void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, vector<TH1D*> & pdf,
