@@ -75,11 +75,11 @@ static const int gPrintEveryNEvents   = 50000;
  * POT calculated by adding together every subrun totgootpot value in the processed event file
  *
  */
-static const double proposalPOTSBND   = 1.4182069e19; 
+static const double proposalPOTSBND   = 4.5193055e19; // v2.1_fitters 
 static const double modernPOTSBND     = 1.4182069e19; 
-static const double proposalPOTUBOONE = 2.5698932e20; 
-static const double modernPOTUBOONE   = 2.5698932e20; 
-static const double proposalPOTICARUS = 2.8184718e19;
+static const double proposalPOTUBOONE = 2.5698932e20; // v2.1_fitters 
+static const double modernPOTUBOONE   = 9.8340311e20; 
+static const double proposalPOTICARUS = 1.1891063e20; // v2.1_fitters
 static const double modernPOTICARUS   = 2.8184718e19;
 
 static const double appProposalPOTSBNDNumu   = 1.3896325e19;
@@ -313,15 +313,16 @@ int main(int argc, char ** argv)
       VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev;
     }
 
-    int iscc        = false;
-    int isnc        = false;
-    int nu_pdg      = -1;
-    int init_pdg    = -1;
+    int iscc           = false;
+    int isnc           = false;
+    int nu_pdg         = -1;
+    int init_pdg       = -1;
 
     //int init_pdg    = -1;
-    double enu_true =  -999.;
-    double enu_reco =  -999.;
-    double Q2s      =  -999.;
+    double enu_true    =  -999.;
+    double enu_reco    =  -999.;
+    double reco_weight = 1.;
+    double Q2s         =  -999.;
 
     int nipip    = 0;
     int nipim    = 0;
@@ -368,7 +369,7 @@ int main(int argc, char ** argv)
     larsoft_mode = truth.neutrino.genie_intcode;
     // Particle counting
     for(unsigned int p = 0; p < fsps.size(); ++p){
-      if (fsps[p].status_code != event::FinalStateParticle::kIStInitialState) {continue;}
+      if (fsps[p].status_code != 1) {continue;}
       if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
       else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
       else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
@@ -471,14 +472,14 @@ int main(int argc, char ** argv)
       << "Etrue         = "<< enu_true  << " GeV; "
       << "LArSoft mode  = "<< larsoft_mode  << "; ";
 
-    valor_minidst_sample    = sample; 
-    valor_minidst_beam      = beam; 
-    valor_minidst_reac_mode = reac_mode;
-    valor_minidst_enu_true  = enu_true; 
-    valor_minidst_wght      = 1.;
-    valor_minidst_Q2_true   = Q2s;
-    valor_minidst_wght_pot  = 1./mcsample_pot; 
-    valor_minidst_target    = 1000180400; // Argon40
+    valor_minidst_sample     = sample; 
+    valor_minidst_beam       = beam; 
+    valor_minidst_reac_mode  = reac_mode;
+    valor_minidst_enu_true   = enu_true; 
+    valor_minidst_wght_smear = 1.;
+    valor_minidst_Q2_true    = Q2s;
+    valor_minidst_wght_pot   = 1./mcsample_pot; 
+    valor_minidst_target     = 1000180400; // Argon40
     //valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
 
     VLOG("make_sbncode_minidst", pINFO) 
@@ -495,6 +496,7 @@ int main(int argc, char ** argv)
 
 
     enu_reco = reco.reco_energy;
+    reco_weight = reco.weight;
 
     VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
       << "Ereco         = "<< enu_reco  << " GeV; ";
@@ -511,8 +513,9 @@ int main(int argc, char ** argv)
       VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
 
       valor_minidst_enu_reco  = enu_reco;
+      valor_minidst_wght      = reco_weight;
       VLOG("make_sbncode_minidst", pNOTICE) 
-        << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV"; 
+        << "\n Ev (reco)     = " << valor_minidst_enu_reco << ", GeV" << " weight : " << valor_minidst_wght; 
  
       valor_minidst->Fill();
     }
