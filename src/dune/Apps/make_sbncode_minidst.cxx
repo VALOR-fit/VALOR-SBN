@@ -82,15 +82,15 @@ static const double modernPOTUBOONE   = 9.8340311e20;
 static const double proposalPOTICARUS = 1.1891063e20; // v2.1_fitters
 static const double modernPOTICARUS   = 2.8184718e19;
 
-static const double appProposalPOTSBNDNumu   = 1.3896325e19;
-static const double appProposalPOTSBNDInt    = 5.1225376e21;
-static const double appProposalPOTSBNDOsc    = 3.3940737e19;
-static const double appProposalPOTUBOONENumu = 2.5698932e20;
-static const double appProposalPOTUBOONEInt  = 1.4193883e23;
-static const double appProposalPOTUBOONEOsc  = 9.5440115e20;
-static const double appProposalPOTICARUSNumu = 2.8184718e19;
-static const double appProposalPOTICARUSInt  = 8.3903526e21;
-static const double appProposalPOTICARUSOsc  = 9.8446183e19;
+static const double appProposalPOTSBNDNumu   = 4.5044828e19; // v2.1_fitters
+static const double appProposalPOTSBNDInt    = 4.4072340e21; // v2.1_fitters
+static const double appProposalPOTSBNDOsc    = 3.4284789e19; // v2.1_fitters
+static const double appProposalPOTUBOONENumu = 9.8153051e20; // v2.1_fitters
+static const double appProposalPOTUBOONEInt  = 1.4336024e23; // v2.1_fitters
+static const double appProposalPOTUBOONEOsc  = 9.1606841e20; // v2.1_fitters
+static const double appProposalPOTICARUSNumu = 1.1891063e20; // v2.1_fitters
+static const double appProposalPOTICARUSInt  = 8.3903526e21; // v2.1_fitters
+static const double appProposalPOTICARUSOsc  = 9.8446183e19; // v2.1_fitters
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
@@ -167,6 +167,7 @@ int main(int argc, char ** argv)
 
   bool is_appearance = false;
   bool is_intrinsic  = false;
+  bool is_oscillated = false;
 
   // Get the POT
   // Disappearance
@@ -192,13 +193,14 @@ int main(int argc, char ** argv)
     is_appearance = true;
   }
   if(opt_mcsample == kSBNDAppearanceIntProposal){
-    mcsample_pot = appProposalPOTSBNDInt;
+    mcsample_pot = appProposalPOTSBNDInt + appProposalPOTSBNDNumu;
     is_appearance = true;
     is_intrinsic = true;
   }
   if(opt_mcsample == kSBNDAppearanceOscProposal){
     mcsample_pot = appProposalPOTSBNDOsc;
     is_appearance = true;
+    is_oscillated = true;
   }
 
   if(opt_mcsample == kUBOONEAppearanceNumuProposal){
@@ -206,13 +208,14 @@ int main(int argc, char ** argv)
     is_appearance = true;
   }
   if(opt_mcsample == kUBOONEAppearanceIntProposal){
-    mcsample_pot = appProposalPOTUBOONEInt;
+    mcsample_pot = appProposalPOTUBOONEInt + appProposalPOTUBOONENumu;
     is_appearance = true;
     is_intrinsic = true;
   }
   if(opt_mcsample == kUBOONEAppearanceOscProposal){
     mcsample_pot = appProposalPOTUBOONEOsc;
     is_appearance = true;
+    is_oscillated = true;
   }
 
   if(opt_mcsample == kICARUSAppearanceNumuProposal){
@@ -220,13 +223,14 @@ int main(int argc, char ** argv)
     is_appearance = true;
   }
   if(opt_mcsample == kICARUSAppearanceIntProposal){
-    mcsample_pot = appProposalPOTICARUSInt;
+    mcsample_pot = appProposalPOTICARUSInt + appProposalPOTICARUSNumu;
     is_appearance = true;
     is_intrinsic = true;
   }
   if(opt_mcsample == kICARUSAppearanceOscProposal){
     mcsample_pot = appProposalPOTICARUSOsc;
     is_appearance = true;
+    is_oscillated = true;
   }
 
   if(mcsample_pot == -1.){
@@ -465,6 +469,11 @@ int main(int argc, char ** argv)
       if((init_pdg == 12 || init_pdg == -12) && (!is_intrinsic)){
         VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic]\n"; 
         continue;
+      }
+      if(is_oscillated && init_flav == final_flav){
+        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file]\n"; 
+        continue;
+      
       }
     }
 

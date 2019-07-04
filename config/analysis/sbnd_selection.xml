@@ -22,4 +22,16 @@
 
   </element_list>
   
+  <systematics name="sbn_nd_fhc_selection_systematics">
+    
+    <group name="interaction">
+      <class> valor::VALORInt2016a </class>
+      <covariance_matrix>
+        <filename>   dune/ndfit/2016a/xsec/xsec_covariance_2016a_gevgen_v2.root </filename>
+        <objname>    frac_cov_max    </objname>    
+        <objtype>    TMatrixD          </objtype>
+      </covariance_matrix>
+    </group>
+
+  </systematics>
 </valor> 
