@@ -71,7 +71,9 @@ fNBinsTrue     (1),
 fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]"),
 fSplineWghtMethod(""),
-fAllowNegativeSplines(false)
+fAllowNegativeSplines(false),
+fGSLSplineType(ROOT::Math::Interpolation::kAKIMA),
+fForceNegWghtTo(0.0)
 {
   
 }
@@ -96,7 +98,8 @@ fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]"),
 fSplineWghtMethod(""),
 fAllowNegativeSplines(false),
-fGSLSplineType(ROOT::Math::Interpolation::kAKIMA)
+fGSLSplineType(ROOT::Math::Interpolation::kAKIMA),
+fForceNegWghtTo(0.0)
 {
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
@@ -238,6 +241,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   }
   if (util::NodeExists(xml,root_node,"splines/allow_negative")) {
     fAllowNegativeSplines = util::XML2Bool(xml,root_node,"splines/allow_negative");
+    if (util::NodeExists(xml,root_node,"splines/set_neg_wght_to")) {
+      fForceNegWghtTo = util::XML2Dbl(xml,root_node,"splines/set_neg_wght_to");
+    }
   }
   if (util::NodeExists(xml,root_node,"splines/within_limits")) {
     use_spline_limits = util::XML2Bool(xml,root_node,"splines/within_limits");

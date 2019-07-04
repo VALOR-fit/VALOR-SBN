@@ -85,6 +85,9 @@ public:
 
   // Get the name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
   const std::string GetSplineWeightingMethod(void) const { return fSplineWghtMethod; }
+
+  // When spline weights come out negative, force them to this value instead
+  const double GetForceNegWghtTo(void) const { return fForceNegWghtTo; }
   
 private:
 
@@ -133,6 +136,9 @@ private:
   
   // Array storing parameters mapped to indice within this object
   int fParam2Idx[conv::knppmax];
+
+  // When spline weights come out negative, force them to this value instead
+  double fForceNegWghtTo;
   
   // Check spline is positive
   bool CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const;

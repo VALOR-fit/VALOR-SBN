@@ -2304,8 +2304,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               LOG("GenericSingleSampleFitModel",pINFO)
                <<"Negative response from spline (OB) "//<<spl->GetName()
                <<" evaluated at "<<f<<" with result "<<response
-               <<". Using 0 instead.";
-              response = 0;
+               <<". Using " << fRFL->GetForceNegWghtTo() << " instead.";
+              response = fRFL->GetForceNegWghtTo();
             }
           }
           double & val = fMCTFinOb[imode]->GetEntryRef(bin);
@@ -2573,8 +2573,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                 LOG("GenericSingleSampleFitModel",pINFO)
                   <<"Negative response from spline (SB) "//<<spl->GetName()
                   <<" evaluated at "<<f<<" with result "<<response
-                  <<". Using 0 instead.";
-                response = 0;
+                  <<". Using " << fRFL->GetForceNegWghtTo() << " instead.";
+                response = fRFL->GetForceNegWghtTo();
               }
             }
             double & val = fMCTFinSb[imode]->GetEntryRef(bin);
