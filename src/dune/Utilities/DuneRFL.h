@@ -129,7 +129,7 @@ private:
 
   // The type of GSL spline to use. Options are: linear, polynomial, cubic, cubic_periodic, akima, or akima_periodic.
   // Defaults to Akima.
-  ROOT::Math::Interpolation::Type fSplineType;
+  ROOT::Math::Interpolation::Type fGSLSplineType;
   
   // Array storing parameters mapped to indice within this object
   int fParam2Idx[conv::knppmax];

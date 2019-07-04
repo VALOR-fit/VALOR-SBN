@@ -95,7 +95,8 @@ fNBinsTrue     (1),
 fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]"),
 fSplineWghtMethod(""),
-fAllowNegativeSplines(false)
+fAllowNegativeSplines(false),
+fGSLSplineType(ROOT::Math::Interpolation::kAKIMA)
 {
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
@@ -226,6 +227,8 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   string spl_file_pattern  = util::XML2String(xml,root_node,"splines/pattern");
   string spl_stored_as     = "";
   string spl_array_pattern = "";
+  bool use_root_spline     = false;
+  bool use_spline_limits   = true;
   if (util::NodeExists(xml,root_node,"splines/stored_as") && util::NodeExists(xml,root_node,"splines/array_pattern")) {
     spl_stored_as     = util::XML2String(xml,root_node,"splines/stored_as");
     spl_array_pattern = util::XML2String(xml,root_node,"splines/array_pattern");
@@ -236,16 +239,23 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   if (util::NodeExists(xml,root_node,"splines/allow_negative")) {
     fAllowNegativeSplines = util::XML2Bool(xml,root_node,"splines/allow_negative");
   }
+  if (util::NodeExists(xml,root_node,"splines/within_limits")) {
+    use_spline_limits = util::XML2Bool(xml,root_node,"splines/within_limits");
+  }
   if (util::NodeExists(xml,root_node,"splines/type")) {
     std::string type_str = util::XML2String(xml,root_node,"splines/type");
     type_str = util::ToLowerCase(util::RemoveAllWhitespace(type_str));
-         if(type_str == "linear")         { fSplineType = ROOT::Math::Interpolation::kLINEAR;          }
-    else if(type_str == "polynomial")     { fSplineType = ROOT::Math::Interpolation::kPOLYNOMIAL;      }
-    else if(type_str == "cubic")          { fSplineType = ROOT::Math::Interpolation::kCSPLINE;         }
-    else if(type_str == "cubic_periodic") { fSplineType = ROOT::Math::Interpolation::kCSPLINE_PERIODIC;}
-    else if(type_str == "akima")          { fSplineType = ROOT::Math::Interpolation::kAKIMA;           }
-    else if(type_str == "akima_periodic") { fSplineType = ROOT::Math::Interpolation::kAKIMA_PERIODIC;  }
-    else                                  { fSplineType = ROOT::Math::Interpolation::kAKIMA;           }
+         if(type_str == "linear")         { fGSLSplineType = ROOT::Math::Interpolation::kLINEAR;          }
+    else if(type_str == "polynomial")     { fGSLSplineType = ROOT::Math::Interpolation::kPOLYNOMIAL;      }
+    else if(type_str == "cubic")          { fGSLSplineType = ROOT::Math::Interpolation::kCSPLINE;         }
+    else if(type_str == "cubic_periodic") { fGSLSplineType = ROOT::Math::Interpolation::kCSPLINE_PERIODIC;}
+    else if(type_str == "akima")          { fGSLSplineType = ROOT::Math::Interpolation::kAKIMA;           }
+    else if(type_str == "akima_periodic") { fGSLSplineType = ROOT::Math::Interpolation::kAKIMA_PERIODIC;  }
+    else if(type_str == "tspline3")       { use_root_spline = true; }
+    else {
+     LOG("DuneRFL",pFATAL) << "Did not recognise spline type [" << type_str << "]";
+     util::Die(-1); return false;
+    }
   }
 
   if (!spl_file_pattern.size()) {
@@ -366,21 +376,25 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               // The input spline doesn't necessarily have the knots in the right order, so sort them
               this->SortSpline(dynamic_cast<TSpline3*>(spline));
 
-              util::Interpolator * gsl_spline = new util::Interpolator(spline,fSplineType);
+              util::Interpolator *  valor_spline = nullptr;
+              if(use_root_spline) { valor_spline = new util::Interpolator(spline, false); }
+              else                { valor_spline = new util::Interpolator(spline, true, fGSLSplineType); }
+              valor_spline->SetUseLimits(use_spline_limits);
+
               delete spline;
-              bool use_gsl_spline = true;
+              bool use_valor_spline = true;
               if(!fAllowNegativeSplines) {
-                if (this->CheckForNegativeValues(gsl_spline,p)) {
+                if (this->CheckForNegativeValues(valor_spline,p)) {
                   LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
-                  delete gsl_spline;
+                  delete valor_spline;
                   fSplines[spline_index] = kFlatSpline;
                   n_splines_neg++;
                   n_splines_read++;
-                  use_gsl_spline = false;
+                  use_valor_spline = false;
                 }
               }
-              if(use_gsl_spline) {
-                fSplines[spline_index] = gsl_spline;
+              if(use_valor_spline) {
+                fSplines[spline_index] = valor_spline;
                 n_splines_read++;
               }
             }
