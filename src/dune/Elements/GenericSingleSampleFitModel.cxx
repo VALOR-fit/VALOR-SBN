@@ -2287,11 +2287,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               // Apply weights based on the spline evaluated at the current - untuned values
               double untuned = fSystematics->UntunedValue(p);
               double current = f;
-              response = spl->EvalWithLimits(current - untuned);
+              response = spl->Eval(current - untuned);
             }
             else {
               // Default spline weighting method: evaluate splines at the current value
-              response = spl->EvalWithLimits(f);
+              response = spl->Eval(f);
             }
 
             LOG("GenericSingleSampleFitModel", pDEBUG)
@@ -2557,11 +2557,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                 // Apply weights based on the spline evaluated at the current - untuned values
                 double untuned = fSystematics->UntunedValue(p);
                 double current = f;
-                response = spl->EvalWithLimits(current - untuned);
+                response = spl->Eval(current - untuned);
               }
               else {
                 // Default spline weighting method: evaluate splines at the current value
-                response = spl->EvalWithLimits(f);
+                response = spl->Eval(f);
               }
 
               LOG("GenericSingleSampleFitModel", pDEBUG)
