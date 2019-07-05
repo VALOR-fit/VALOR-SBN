@@ -227,11 +227,12 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     util::Die(-1); return false;
   }
   
-  string spl_file_pattern  = util::XML2String(xml,root_node,"splines/pattern");
-  string spl_stored_as     = "";
-  string spl_array_pattern = "";
-  bool use_root_spline     = false;
-  bool use_spline_limits   = true;
+  string spl_file_pattern           = util::XML2String(xml,root_node,"splines/pattern");
+  string spl_stored_as              = "";
+  string spl_array_pattern          = "";
+  bool use_root_spline              = false;
+  bool use_spline_limits            = true;
+  bool reorder_out_of_order_splines = false;
   if (util::NodeExists(xml,root_node,"splines/stored_as") && util::NodeExists(xml,root_node,"splines/array_pattern")) {
     spl_stored_as     = util::XML2String(xml,root_node,"splines/stored_as");
     spl_array_pattern = util::XML2String(xml,root_node,"splines/array_pattern");
@@ -247,6 +248,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   }
   if (util::NodeExists(xml,root_node,"splines/within_limits")) {
     use_spline_limits = util::XML2Bool(xml,root_node,"splines/within_limits");
+  }
+  if (util::NodeExists(xml,root_node,"splines/sort_knot_order")) {
+    reorder_out_of_order_splines = util::XML2Bool(xml,root_node,"splines/sort_knot_order");
   }
   if (util::NodeExists(xml,root_node,"splines/type")) {
     std::string type_str = util::XML2String(xml,root_node,"splines/type");
@@ -380,7 +384,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               }
 
               // The input spline doesn't necessarily have the knots in the right order, so sort them
-              this->SortSpline(dynamic_cast<TSpline3*>(spline));
+              if(reorder_out_of_order_splines) { this->SortSpline(dynamic_cast<TSpline3*>(spline)); }
 
               util::Interpolator *  valor_spline = nullptr;
               if(use_root_spline) { valor_spline = new util::Interpolator(spline, false); }
