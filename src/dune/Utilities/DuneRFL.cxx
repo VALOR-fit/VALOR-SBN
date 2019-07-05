@@ -384,7 +384,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               }
 
               // The input spline doesn't necessarily have the knots in the right order, so sort them
-              if(reorder_out_of_order_splines) { this->SortSpline(dynamic_cast<TSpline3*>(spline)); }
+              this->SortSpline(dynamic_cast<TSpline3*>(spline), reorder_out_of_order_splines);
 
               util::Interpolator *  valor_spline = nullptr;
               if(use_root_spline) { valor_spline = new util::Interpolator(spline, false); }
@@ -511,7 +511,7 @@ bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl
   return false;
 }
 //________________________________________________________________________________________
-void valor::util::DuneRFL::SortSpline(TSpline3 * spline)
+void valor::util::DuneRFL::SortSpline(TSpline3 * spline, bool sort_spline)
 {
   bool knots_in_order = true;
   int n_knots = spline->GetNp();
@@ -529,19 +529,25 @@ void valor::util::DuneRFL::SortSpline(TSpline3 * spline)
   }
 
   if(!knots_in_order){
-    std:map<double,double> knots;
-    std::vector<double> x_vals;
-    for (int i = 0 ; i < n_knots; i++) {
-      double x = 0;
-      double y = 0;
-      spline->GetKnot(i,x,y);
-      knots[x] = y;
-      x_vals.push_back(x);
-    }
+    if(sort_spline) {
+      std:map<double,double> knots;
+      std::vector<double> x_vals;
+      for (int i = 0 ; i < n_knots; i++) {
+        double x = 0;
+        double y = 0;
+        spline->GetKnot(i,x,y);
+        knots[x] = y;
+        x_vals.push_back(x);
+      }
 
-    std::sort(x_vals.begin(), x_vals.end());
-    for (int i = 0 ; i < n_knots; i++) {
-      spline->SetPoint(i, x_vals[i], knots.at(x_vals[i]));
+      std::sort(x_vals.begin(), x_vals.end());
+      for (int i = 0 ; i < n_knots; i++) {
+        spline->SetPoint(i, x_vals[i], knots.at(x_vals[i]));
+      }
+    }
+    else {
+      LOG("DuneRFL",pWARN) << "Spline [" << spline->GetName()
+                           << "] has knots that are out-of-order and the option to sort them was not specified";
     }
   }
 }
