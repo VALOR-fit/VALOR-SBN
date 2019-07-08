@@ -134,6 +134,20 @@ typedef enum EMCSample{
 
 } MCSample_t;
 
+// We don't want to store map<string,vector<float>> as our universe list
+// Let's just write that vector<vector<float>> out
+// We can get the string ID back later because map<string,...> is alphabetical
+std::vector<std::vector<float> > ReformatUniverses (
+ const std::map<std::string,std::vector<float> > & m)
+{
+  std::vector<std::vector<float> > out;
+  for (const auto & param_plus_weights : m) {
+    const std::vector<float> & weights = param_plus_weights.second;
+    out.emplace_back(weights);
+  }
+  return out;
+}
+
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
