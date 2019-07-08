@@ -54,15 +54,19 @@ title_size = 0.05
 label_size = 0.04
 title_offset = 0.9
 
+# The legacy T2K analysis does not track CC1piC and CC1pi0 modes separately, like we do in the SDK. So when comparing
+# systematic variations to the legacy analysis, sum these modes.
+_do_sum_cc1pi_modes = False
 
 #_______________________________________________________________________
 
-def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp_file, comp_format, x_max, by_mode, x_title):
+def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp_file, comp_format, x_max, by_mode, x_title, sum_t2k_cc1pi):
   global _det
   global _beam
   global _selec
   global _by_mode
-  global _kv
+  global _x_title
+  global _do_sum_cc1pi_modes
   _det     = det
   _beam    = beam
   _selec   = selec
@@ -103,6 +107,13 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
            selection_model .GetSample()   == util.SampleFromString  (_selec)):
       continue
 
+    if _by_mode and sum_t2k_cc1pi and selection_model.GetDetector() == conv.kdSuperK \
+            and comp_format == "t2k_legacy":
+      _do_sum_cc1pi_modes = True
+      print "Will sum T2K CC1piC and CC1pi0 modes"
+    else:
+      _do_sum_cc1pi_modes = False
+
     hnom      = get_nominal(fin, "valor", selection_name)
     hnom_comp = None
     if draw_comparison and not _by_mode:
@@ -123,6 +134,10 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
         m = modes[im]
         if m == conv.kmUndefined or m == python_undefined or m == python_undefined_short:
           continue
+        if _do_sum_cc1pi_modes and util.ReacModeToType(m) == conv.kmtCC1pi0:
+          # If comparing to the legacy T2K analysis, skip the CC1pi0 modes, because we've already summed them with CC1piC
+          continue
+
         canv_name = "sigma_var_ratio_" + selection_name + "_" + param_name
         if _by_mode:
           canv_name += "_" + util.ModeAsString(m)
@@ -165,7 +180,10 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
 
         title_text = selection_name + "  " + param_name
         if _by_mode:
-          title_text = selection_name + "  " + util.ModeAsString(m) + "  " + param_name
+          if not (_do_sum_cc1pi_modes and util.ReacModeToType(m) == conv.kmtCC1piC):
+            title_text = selection_name + "  " + util.ModeAsString(m) + "  " + param_name
+          else:
+            title_text = selection_name + "  " + util.ModeAsString(m).replace("CC1piC", "CC1pi(C+0)") + "  " + param_name
         title_box = make_title_box(title_text)
         title_box.Draw("SAME")
         leg.Draw("SAME")
@@ -218,6 +236,14 @@ def get_ratio_nom(fin, sigma_var, param_name, selection_name, m, hnom, is_compar
       hname = _name_prefix + "_" + selection_name + "_" + util.ModeAsString(m) + "_" + param_name + "_" + sigma_var
     h = fin.Get(hname)
 
+    if _do_sum_cc1pi_modes and util.ReacModeToType(m) == conv.kmtCC1piC:
+      # If comparing to the legacy T2K analysis, sum the PDFs of the CC1pi0 and CC1piC modes
+      hname = _name_prefix + "_" + selection_name + "_" + util.ModeAsString(m).replace("CC1piC", "CC1pi0") + "_" + param_name + "_" + sigma_var
+      hCC1pi0 = fin.Get(hname)
+      if not hCC1pi0:
+        print "WARNING: Could not get hist named [", hname, "] from the input file"
+      h.Add(hCC1pi0)
+
     # If we're considering the contribution from each mode, get the nominal hist here instead of using the input nominal hist
     if _by_mode:
       hnom = get_nominal(fin, "valor", selection_name, m)
@@ -228,6 +254,14 @@ def get_ratio_nom(fin, sigma_var, param_name, selection_name, m, hnom, is_compar
       if _by_mode:
         hname = _name_prefix + "_" + selection_name + "_" + util.ModeAsString(m) + "_" + param_name + "_" + sigma_var
       h = fin.Get(hname)
+
+      if _do_sum_cc1pi_modes and util.ReacModeToType(m) == conv.kmtCC1piC:
+        # If comparing to the legacy T2K analysis, sum the PDFs of the CC1pi0 and CC1piC modes
+        hname = _name_prefix + "_" + selection_name + "_" + util.ModeAsString(m).replace("CC1piC", "CC1pi0") + "_" + param_name + "_" + sigma_var
+        hCC1pi0 = fin.Get(hname)
+        if not hCC1pi0:
+          print "WARNING: Could not get hist named [", hname, "] from the input file"
+        h.Add(hCC1pi0)
 
       # If we're considering the contribution from each mode, get the nominal hist here instead of using the input nominal hist
       if _by_mode:
@@ -268,6 +302,14 @@ def get_nominal(fin, format, selection_name, mode = conv.kmUndefined):
     if _by_mode:
       nom_name = _name_prefix + "_" + selection_name + "_" + util.ModeAsString(mode) + "_nom"
     hnom = fin.Get(nom_name)
+
+    if _do_sum_cc1pi_modes and util.ReacModeToType(mode) == conv.kmtCC1piC:
+      # If comparing to the legacy T2K analysis, sum the PDFs of the CC1pi0 and CC1piC modes
+      hname = _name_prefix + "_" + selection_name + "_" + util.ModeAsString(mode).replace("CC1piC", "CC1pi0") + "_nom"
+      hCC1pi0 = fin.Get(hname)
+      if not hCC1pi0:
+        print "WARNING: Could not get hist named [", hname, "] from the input file"
+      hnom.Add(hCC1pi0)
   elif format == "t2k_legacy":
     # The legacy T2K syst var hists have already had the ratio taken, so do nothing here
     return None
@@ -391,22 +433,23 @@ if __name__=="__main__":
   import optparse
   parser = optparse.OptionParser(usage="%prog [options]..",description="Plot single-sample +/- 1 and 3 sigma variations produced by tweak_pdf_sigma_var.cxx")
   
-  parser.add_option('-o', '--out-file'   , dest='output_filename', default=""     , help="Name of the output image file")
-  parser.add_option('-i', '--in-file'    , dest='in_file'        , default=""     , help="Input file name produced by tweak_pdf_sigma_var.cxx")
-  parser.add_option('-p', '--params'     , dest='params'         , default=""     , help="Name of the tweak parameter set")
-  parser.add_option('-c', '--config'     , dest='config'         , default=""     , help="Name of the analysis config file")
-  parser.add_option('-d', '--det'        , dest='det'            , default=""     , help="The detector for this sample")
-  parser.add_option('-b', '--beam'       , dest='beam'           , default=""     , help="The beam mode for this sample")
-  parser.add_option('-s', '--selec'      , dest='selec'          , default=""     , help="The selection for this sample")
-  parser.add_option('-m', '--by-mode'    , dest='by_mode'        , default=False  , action="store_true", help="Display the variations broken down by mode")
-  parser.add_option(      '--x-title'    , dest='x_title'        , default="E_{rec.} (GeV)", help="The x-axis title of the 1D PDFs")
-  parser.add_option('-x', '--x-max'      , dest='x_max'          , type=float     , default=3.0, help="Maximum x-axis value")
-  parser.add_option(      '--comp-file'  , dest='comp_file'      , default=""     , help="Name of file to compare to")
-  parser.add_option(      '--comp-format', dest='comp_format'    , default=""     , help="Choose from: \'valor\', \'t2k_legacy\'")
+  parser.add_option('-o', '--out-file'     , dest='output_filename', default=""     , help="Name of the output image file")
+  parser.add_option('-i', '--in-file'      , dest='in_file'        , default=""     , help="Input file name produced by tweak_pdf_sigma_var.cxx")
+  parser.add_option('-p', '--params'       , dest='params'         , default=""     , help="Name of the tweak parameter set")
+  parser.add_option('-c', '--config'       , dest='config'         , default=""     , help="Name of the analysis config file")
+  parser.add_option('-d', '--det'          , dest='det'            , default=""     , help="The detector for this sample")
+  parser.add_option('-b', '--beam'         , dest='beam'           , default=""     , help="The beam mode for this sample")
+  parser.add_option('-s', '--selec'        , dest='selec'          , default=""     , help="The selection for this sample")
+  parser.add_option('-m', '--by-mode'      , dest='by_mode'        , default=False  , action="store_true", help="Display the variations broken down by mode")
+  parser.add_option(      '--x-title'      , dest='x_title'        , default="E_{rec.} (GeV)", help="The x-axis title of the 1D PDFs")
+  parser.add_option('-x', '--x-max'        , dest='x_max'          , type=float     , default=3.0, help="Maximum x-axis value")
+  parser.add_option(      '--comp-file'    , dest='comp_file'      , default=""     , help="Name of file to compare to")
+  parser.add_option(      '--comp-format'  , dest='comp_format'    , default=""     , help="Choose from: \'valor\', \'t2k_legacy\'")
+  parser.add_option(      '--sum-t2k-cc1pi', dest='sum_t2k_cc1pi'  , default=False  , action="store_true", help="Sum T2k CC1piC and CC1pi0 modes when comparing to T2K legacy")
 
   o,other = parser.parse_args()
 
-  main(o.output_filename, o.in_file, o.params, o.config, o.det, o.beam, o.selec, o.comp_file, o.comp_format, o.x_max, o.by_mode, o.x_title)
+  main(o.output_filename, o.in_file, o.params, o.config, o.det, o.beam, o.selec, o.comp_file, o.comp_format, o.x_max, o.by_mode, o.x_title, o.sum_t2k_cc1pi)
 
   if other:
     print "Warning - ignored arguments: ", other
