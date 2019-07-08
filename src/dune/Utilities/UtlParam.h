@@ -53,9 +53,9 @@ namespace util {
 
   conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
   // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
-  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name);
+  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name, bool only_exact_match = false);
   // Same as above, but only get params that are compatible with an input apply mask
-  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name, conv::ApplyMask_t mask);
+  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name, conv::ApplyMask_t mask, bool only_exact_match = false);
 
   std::pair<double,double> GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k);
 

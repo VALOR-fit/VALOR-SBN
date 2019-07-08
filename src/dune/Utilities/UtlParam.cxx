@@ -445,7 +445,7 @@ bool util::HasKinematicDependence(conv::PhysParamId_t p)
   }
 }
 //____________________________________________________________________________
-std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in)
+std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, bool only_exact_match)
 {
   // Set the default apply mask (apply to all)
   conv::DetectorApplyMask_t      detector   = conv::kdApplyToAll;
@@ -457,10 +457,10 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in)
   conv::NuclearTargetApplyMask_t target     = conv::kntApplyToAll;
   conv::ApplyMask_t apply_mask = {detector, beam, flav_init, flav_final, selec, reactype, target};
 
-  return util::GetParameterSet(set_name_in, apply_mask);
+  return util::GetParameterSet(set_name_in, apply_mask, only_exact_match);
 }
 //____________________________________________________________________________
-std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::ApplyMask_t mask)
+std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::ApplyMask_t mask, bool only_exact_match)
 {
   vector<PhysParamId_t> vec;
   std::string set_names = util::RemoveAllWhitespace(util::ToLowerCase(set_name_in));
@@ -472,7 +472,7 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::
       const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
       for (const Parameter & param : params) {
         // Search both the param name and categories
-        if(param.GetName().find(set_name) != string::npos ||                                           // Search param name
+        if((!only_exact_match && param.GetName().find(set_name) != string::npos) ||                    // Search param name (search for sub-string, not exact match)
            param.SearchCategories(set_name) ||                                                         // Search param category for a direct match
            // Special cases:
            set_name == "ndflux"  && param.SearchCategories("nd") && param.SearchCategories("flux") ||  // ND flux
@@ -502,7 +502,7 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::
       vec_to_append.push_back(kPhypDm12sq  );
     }
 
-    // If we've failed to identify a set of parameters, try a single parameter
+    // If we've failed to identify a set of parameters, try a single parameter. Look for an exact match
     if (vec_to_append.size()==0) {
       PhysParamId_t try_param = util::NameRegistry::Instance()->PhysParamFromString(set_name);
       if(try_param != kPhypUndefined) { vec_to_append.push_back(try_param); }
