@@ -303,8 +303,9 @@ int main(int argc, char ** argv)
   for (int im = 0 ; im < valor::conv::kNReacModes; im++) {
     nev_accept_by_mode.push_back(0);
   }
-
-  int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
+  
+  // Commented out now we only have one tree per sample. But remember if that changes!
+  //~ int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
@@ -518,33 +519,36 @@ int main(int argc, char ** argv)
         VLOG("make_sbncode_minidst", pINFO) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
         continue;
       }
-
-      VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
-
-      valor_minidst_enu_reco  = enu_reco;
-      valor_minidst_wght      = reco_weight;
-      VLOG("make_sbncode_minidst", pNOTICE) 
-        << "\n Ev (reco)     = " << valor_minidst_enu_reco << ", GeV" << " weight : " << valor_minidst_wght; 
- 
-      valor_minidst->Fill();
     }
+
+    VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
+
+    valor_minidst_enu_reco  = enu_reco;
+    valor_minidst_wght      = reco_weight;
+    VLOG("make_sbncode_minidst", pNOTICE) 
+      << "\n Ev (reco)     = " << valor_minidst_enu_reco << ", GeV" << " weight : " << valor_minidst_wght; 
+      
+
+    valor_minidst->Fill();
+      
+    nev_accept += 1;
+    nev_accept_by_mode[valor_minidst_reac_mode] += 1;
   } // event loop
 
   std::cout << " Number in valor tree : " << valor_minidst->GetEntries() << std::endl;
-  /*
-     for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
-     valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
-     VLOG("make_sbncode_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
-     }
+  
+  for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
+    valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
+    VLOG("make_sbncode_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
+  }
 
-     double f = 100. * (double)nev_accept / (double)nev;
-     VLOG("make_sbncode_minidst", pNOTICE) <<
-     "Used " << f << "% (" << nev_accept << "/" << nev 
-     << ") of input events.";
+  double f = 100. * (double)nev_accept / (double)nev;
+  VLOG("make_sbncode_minidst", pNOTICE) <<
+    "Used " << f << "% (" << nev_accept << "/" << nev 
+    << ") of input events.";
 
-  //~ VLOG("make_sbncode_minidst", pNOTICE) <<
-  //~ "Total POT read: "<<total_pot_read;
-  */
+  //~ VLOG("make_sbncode_minidst", pNOTICE) <<"Total POT read: "<<total_pot_read;
+  
   // Saving VALOR mini-FST to output file 
   VLOG("make_sbncode_minidst", pNOTICE) 
     << "Saving VALOR/DUNE mini-DST to: " << opt_output_name;
