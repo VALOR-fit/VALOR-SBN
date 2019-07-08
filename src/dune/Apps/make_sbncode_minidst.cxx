@@ -292,6 +292,23 @@ int main(int argc, char ** argv)
 
   event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
+  
+  
+  // First, let's read one true event map to get the universe details
+  { // just a scoping block
+    analysis_tree->GetEntry(0);
+    event::Interaction * ptruth = pevent->GetTruth();
+    assert(ptruth);
+    const auto & weights = ptruth->weights; // map<string,whatever>
+    TObjArray variation_names;
+    for (const auto & variation : weights) {
+      const std::string & variation_name = variation.first;
+      variation_names.Add(new TObjString(variation_name.c_str()));
+    }
+    variation_names.Sort(); // this better do alphabetical or this will be bugged
+    variation_names.Write("variation_names");
+  }
+  
 
   //
   // event loop
