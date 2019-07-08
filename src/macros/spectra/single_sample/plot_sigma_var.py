@@ -92,11 +92,12 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
     draw_comparison = True
     fin_comp = ROOT.TFile(comp_file, "READ")
 
-  param_set = list(util.GetParameterSet(param_set_str))
+  param_set = list(util.GetParameterSet(param_set_str, True))   # Only get exact matches to any input param names (otherwise problems can be caused)
   if len(param_set) == 0:
     print "ERROR: Got no prams to plot"
     sys.exit()
-  print "Plotting systematic variations for the following params:\n", param_set
+  print "Plotting systematic variations for the following params:\n", \
+      [util.NameRegistry.Instance().ParamAsString(ipar) for ipar in param_set]
 
   for i in range(compound_model.GetNSubModels()):
     # Check if this is the right sample, if not, then skip it
@@ -128,7 +129,8 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
         sample_idx = util.ArrIdx.Instance().SampleIdx(util.BeamConfFromString(_beam), util.SampleFromString(_selec))
         modes = list(util.GetActiveModes(sample_idx))
       if i == 0 and ip == 0:
-        print "Plotting systematic variations for the following modes:\n", modes
+        print "Plotting systematic variations for the following modes:\n", \
+            [util.ModeAsString(imode) for imode in modes]
 
       for im in range(0, len(modes)):
         m = modes[im]

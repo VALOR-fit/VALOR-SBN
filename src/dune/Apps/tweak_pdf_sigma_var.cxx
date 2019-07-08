@@ -170,7 +170,7 @@ int main(int argc, char ** argv)
   }
 
   // Get the parameters to vary
-  std::vector<PhysParamId_t> param_set = util::GetParameterSet(params_to_tweak);
+  std::vector<PhysParamId_t> param_set = util::GetParameterSet(params_to_tweak, true);    // Only get exact matches to any input param names (otherwise problems can be caused)
   assert(param_set.size());
   unsigned int n_params = param_set.size();
 
