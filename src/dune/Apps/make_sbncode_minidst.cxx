@@ -569,8 +569,8 @@ int main(int argc, char ** argv)
 
     valor_minidst_enu_reco  = enu_reco;
     valor_minidst_wght      = reco_weight;
-    VLOG("make_sbncode_minidst", pNOTICE) 
-      << "\n Ev (reco)     = " << valor_minidst_enu_reco << ", GeV" << " weight : " << valor_minidst_wght; 
+    //~ VLOG("make_sbncode_minidst", pNOTICE) 
+      //~ << "\n Ev (reco)     = " << valor_minidst_enu_reco << ", GeV" << " weight : " << valor_minidst_wght; 
       
 
     valor_minidst->Fill();
@@ -578,9 +578,7 @@ int main(int argc, char ** argv)
     nev_accept += 1;
     nev_accept_by_mode[valor_minidst_reac_mode] += 1;
   } // event loop
-
-  std::cout << " Number in valor tree : " << valor_minidst->GetEntries() << std::endl;
-  
+    
   for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
     valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
     VLOG("make_sbncode_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
