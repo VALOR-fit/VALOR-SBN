@@ -8,7 +8,7 @@
   \syntax    valor_dune-make_sbncode_minidst 
   --input  input_analysis_file.root
   --output output_file_containing_valor_minidst.root
-  --format format_of_the_input_file <hpgartpc, lartpc, fgt>
+  [--write-universes] optionally write out the systematic variations
   [--disable-checks]
 
   \author    Rhiannon Jones <rhiannon.jones \at liverpool.ac.uk>
@@ -137,7 +137,7 @@ typedef enum EMCSample{
 // We don't want to store map<string,vector<float>> as our universe list
 // Let's just write that vector<vector<float>> out
 // We can get the string ID back later because map<string,...> is alphabetical
-std::vector<std::vector<float> > ReformatUniverses (
+std::vector<std::vector<float> > ReformatVariations (
  const std::map<std::string,std::vector<float> > & m)
 {
   std::vector<std::vector<float> > out;
@@ -171,6 +171,7 @@ int main(int argc, char ** argv)
   string opt_input_name        = arg.GetString("input");
   int    opt_mcsample          = arg.GetInt("mcsample");
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
+  bool   write_universes       = arg.GetBool("write-universes");
 
   double mcsample_pot = -1.;
   if(opt_mcsample == kUnknownSample){
@@ -269,7 +270,9 @@ int main(int argc, char ** argv)
   double valor_minidst_y_reco       = -1.; // inelasticity
   double valor_minidst_wght_pot     = -1.; // POT weight 
   double valor_minidst_wght         = -1.; // misc weight 
-  double valor_minidst_wght_smear   = -1.; // energy smearing weight 
+  double valor_minidst_wght_smear   = -1.; // energy smearing weight
+  
+  std::vector<std::vector<float> > valor_minidst_variation_weights;
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -288,6 +291,10 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
   valor_minidst->Branch("wght_smear", &valor_minidst_wght_smear  ,"wght_smear/D" );
+  
+  if (write_universes) {
+    valor_minidst->Branch("variation_weights",&valor_minidst_variation_weights);
+  }
 
   // open the ROOT file and get the TTree & its header
 
@@ -317,9 +324,9 @@ int main(int argc, char ** argv)
     TObjArray variation_names;
     for (const auto & variation : weights) {
       const std::string & variation_name = variation.first;
-      variation_names.Add(new TObjString(variation_name.c_str()));
+      variation_names.AddLast(new TObjString(variation_name.c_str()));
     }
-    variation_names.Sort(); // this better do alphabetical or this will be bugged
+    //~ variation_names.Sort(); // this better do alphabetical or this will be bugged
     variation_names.Write("variation_names");
   }
   
@@ -343,10 +350,12 @@ int main(int argc, char ** argv)
     analysis_tree->GetEntry(iev);
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
-      VLOG("make_sbncode_minidst", pNOTICE) << "** Reading event: " << iev;
+      VLOG("make_sbncode_minidst", pNOTICE) << "** Reading event: " << iev
+        <<" - so far accepted " << nev_accept;
     }
     else {
-      VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev;
+      VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev
+        <<" - so far accepted " << nev_accept;
     }
 
     int iscc           = false;
@@ -532,8 +541,7 @@ int main(int argc, char ** argv)
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n y (reco)      = " << valor_minidst_y_reco    
-      << "\n POT weight    = " << valor_minidst_wght_pot
-      << "\n Smear weight  = " << valor_minidst_wght_smear;
+      << "\n POT weight    = " << valor_minidst_wght_pot;
 
 
     enu_reco = reco.reco_energy;
@@ -553,6 +561,11 @@ int main(int argc, char ** argv)
     }
 
     VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
+    
+    // Copy the systematic universes across
+    if (write_universes) {
+      valor_minidst_variation_weights = ReformatVariations(truth.weights);
+    }
 
     valor_minidst_enu_reco  = enu_reco;
     valor_minidst_wght      = reco_weight;

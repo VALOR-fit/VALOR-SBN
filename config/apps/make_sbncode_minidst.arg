@@ -7,3 +7,4 @@ disable-checks                     |   boolean      |  optional   |  false
 mesg-thresholds                    |   string       |  optional   |  verbosity.xml
 beam                               |   string       |  optional   |  BNB_FHC
 mcsample                           |   integer      |  mandatory  |  0
+write-universes,no-write-universes |   boolean_list |  optional   |  no-write-universes
