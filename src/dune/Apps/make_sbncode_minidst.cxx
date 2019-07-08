@@ -399,7 +399,7 @@ int main(int argc, char ** argv)
 
     if(ptruth==nullptr) {
       VLOG("make_sbncode_minidst", pNOTICE) 
-        << "The number of truth entries is 0, skipping event";
+        << "The number of truth entries is 0, skipping event "<<iev;
       continue;      
     }
 
@@ -492,27 +492,44 @@ int main(int argc, char ** argv)
     // If we are looking at the disappearance samples, initial flavour = final flavour
     else init_flav = final_flav;
 
-    // Get the real valor mode
+    // Get the real valor mode - this will only be defined for modes turned on right now
     conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+    // If we have any events that are in disabled modes, put them into other
+    if (reac_mode==conv::kmUndefined) {
+      if (isnc) {reac = conv::kmtNCoth;}
+      if (iscc) {reac = conv::kmtCCoth;}
+      reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+    }
 
     if(!opt_disable_checks) {
       //
       // ignore events that can not be used in the VALOR analysis
       //
       if(reac_mode == conv::kmUndefined) {
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode]\n"; 
+        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode] "<<iev;
+        VLOG("make_sbncode_minidst", pNOTICE)
+          <<"\n larsoft_mode = "<<larsoft_mode
+          <<"\n iscc="<<iscc<<" and isnc="<<isnc
+          <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+          <<"\n valor reaction="<<reac<<" which is "<<util::AsString(reac);
         continue;
       }
       if(isnc && init_flav != final_flav){
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc]\n"; 
+        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc] "<<iev; 
         continue;
       }
       if((init_pdg == 12 || init_pdg == -12) && (!is_intrinsic)){
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic]\n"; 
+        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic] "<<iev;
+        VLOG("make_sbncode_minidst", pINFO)
+          <<"\n is_intrinsic = "<<is_intrinsic
+          <<"\n larsoft_mode = "<<larsoft_mode
+          <<"\n iscc="<<iscc<<" and isnc="<<isnc
+          <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+          <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
         continue;
       }
       if(is_oscillated && init_flav == final_flav){
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file]\n"; 
+        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file] "<<iev; 
         continue;
       
       }
