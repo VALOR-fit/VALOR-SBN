@@ -2466,27 +2466,28 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
           for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
             // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
-            double frac = 1.;
+            double frac_true = 1.;
             if (apply_true_ndims == 1 || apply_true_ndims == 2) {
               vector<double> true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
-              frac *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+              frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
             }
             if (apply_true_ndims == 2) {
               vector<double> true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
-              frac *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+              frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
             }
             for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
               // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
+              double frac_reco = 1.;
               if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
                 vector<double> reco1_range (reco_sb->BinRange(ireco,reco_kinevars[0]));
-                frac *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
+                frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
               }
               if (apply_reco_ndims == 2) {
                 vector<double> reco2_range (reco_sb->BinRange(ireco,reco_kinevars[1]));
-                frac *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
+                frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
               }
 
-              double effective_tweak = frac*(f-1.) + 1;
+              double effective_tweak = frac_true * frac_reco * (f-1.) + 1;
               if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
 
               double & val = fMCTFinSb[imode]->GetEntryRef(ireco,itrue);
