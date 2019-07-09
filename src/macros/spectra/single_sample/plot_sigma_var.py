@@ -128,9 +128,9 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
       if _by_mode:
         sample_idx = util.ArrIdx.Instance().SampleIdx(util.BeamConfFromString(_beam), util.SampleFromString(_selec))
         modes = list(util.GetActiveModes(sample_idx))
-      if i == 0 and ip == 0:
-        print "Plotting systematic variations for the following modes:\n", \
-            [util.ModeAsString(imode) for imode in modes]
+        if i == 0 and ip == 0:
+          print "Plotting systematic variations for the following modes:\n", \
+              [util.ModeAsString(imode) for imode in modes]
 
       for im in range(0, len(modes)):
         m = modes[im]
