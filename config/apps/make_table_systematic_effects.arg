@@ -1,0 +1,12 @@
+# argument                           |   type         |  require?   |   default
+# .......................................................................................................
+ntoys                                |   integer      |  optional   |   200
+output                               |   string       |  optional   |   tweaks_[PARAMS].root
+fit-param-list                       |   string       |  optional   |   nuosc3f
+fit-param-opt                        |   string       |  optional   |   NONE
+config                               |   string       |  mandatory  |   -
+mesg-thresholds                      |   string       |  optional   |   verbosity.xml
+nthreads                             |   integer      |  optional   |   -1
+#
+params                               |   string       |  optional   |   allsyst
+rethrow-unphysical,accept-unphysical |   boolean_list |  optional   |   rethrow-unphysical

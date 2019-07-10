@@ -22,6 +22,7 @@ TGT = make_nd_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
       make_response_functions \
+      make_table_systematic_effects \
       run_fit \
       write_pdf \
       tweak_pdf_N \
@@ -96,6 +97,12 @@ ifdef GENIE
 else
 	@echo "Skipping make_response_functions due to no GENIE"
 endif
+
+# Throw a user-specified parameter set N times and output a table containing the mean, RMS and RMS/mean for all samples
+#
+make_table_systematic_effects: FORCE
+	$(CXX) $(CXXFLAGS) -c make_table_systematic_effects.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) make_table_systematic_effects.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_table_systematic_effects
 
 # Generate CAFs based DSTs
 #
@@ -180,6 +187,7 @@ clean: FORCE
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_recoselection_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-write_pdf
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
@@ -196,6 +204,7 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_recoselection_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/write_pdf
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/tweak_pdf_N
