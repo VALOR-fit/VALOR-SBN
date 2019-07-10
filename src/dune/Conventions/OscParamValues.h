@@ -21,6 +21,8 @@
 #ifndef _valor_expt_oscparams_h_
 #define _valor_expt_oscparams_h_
 
+#include "valor/Conventions/PhysParamId.h"
+
 namespace valor {
 namespace conv {
 namespace duneosc{
