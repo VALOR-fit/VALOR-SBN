@@ -35,6 +35,7 @@
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/Conventions/PDG.h"
+#include "valor/Conventions/Build.h"
 #include "valor/Utilities/Interpolator.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
@@ -2047,8 +2048,15 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       double f = fPhysHypothesis.CurrValue(p);
       
       if (has_kinematic_dependence) {
+#ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
         f = TMath::Max(0.,f);
-        bool tweaked = TMath::Abs(f-1) > kASmallNum;
+#else
+        if(f < 0) {
+          std::cerr << "Applying a negative normalisation for parameter "
+                    << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+          }
+#endif
+        bool tweaked = TMath::Abs(f-1) > kASmallNum;    // TODO: put in the untuned value instead of 1
 #ifdef DEBUG_SINGLE_BIN
         if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && !tweaked && (debug_param == conv::kPhypUndefined || p == debug_param)) {
           LOG("GenericSingleSampleFitModel",pNOTICE)
@@ -2229,7 +2237,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f << " to whole mode "<<util::AsString(m);
 #endif
         noEt *= f;
+#ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
         noEt = TMath::Max(0.,noEt);
+#else
+        if(noEt < 0) {
+          std::cerr << "Applying a negative normalisation for parameter "
+                    << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+        }
+#endif
         fMCTFinOb[imode]->Scale(noEt);
 #ifdef DEBUG_SINGLE_BIN
         if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && (debug_param == conv::kPhypUndefined || p == debug_param)) {
@@ -2357,7 +2372,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         double f = fPhysHypothesis.CurrValue(p);
         
         if (has_kinematic_dependence) {
+#ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
           f = TMath::Max(0.,f);
+#else
+          if(f < 0) {
+          std::cerr << "Applying a negative normalisation for parameter "
+                    << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+          }
+#endif
           bool tweaked = TMath::Abs(f-1) > kASmallNum;
           if(!tweaked) continue;
           
@@ -2505,11 +2527,26 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           // Ereco,yreco,Etrue bins just once)
           double fnoEt = 1.;
 
+#ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
           f = TMath::Max(0.,f);
+#else
+          if(f < 0) {
+            std::cerr << "Applying a negative normalisation for parameter "
+                      << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+        }
+#endif
+
           bool tweaked = TMath::Abs(f-1) > kASmallNum;
           if(!tweaked) continue;
           fnoEt *= f;
+#ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
           fnoEt = TMath::Max(0.,fnoEt);
+#else
+          if(fnoEt < 0) {
+            std::cerr << "Applying a negative normalisation for parameter "
+                      << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+        }
+#endif
           fMCTFinSb[imode]->Scale(fnoEt);
         }// (no energy dependence)
       }//ip (normalisations)
