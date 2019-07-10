@@ -1928,13 +1928,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   }
 
 #ifdef DEBUG_SINGLE_BIN
-  double              debug_true0  = 0.501;   // For T2K this is Etrue
-  double              debug_reco0  = 0.501;   // For T2K this is Ereco
+  double              debug_true0  = 1.101;   // For T2K this is Etrue      // Set to -999 to look at all bins for this kine var
+  double              debug_reco0  = 1.101;   // For T2K this is Ereco
   double              debug_reco1  = 90.0;    // For T2K this is theta reco
   conv::Sample_t      debug_sample = conv::ks1Rmu;
   conv::BeamConf_t    debug_beam   = conv::kbJPARC_FHC;
   conv::ReacMode_t    debug_mode   = conv::kmNuMuCCQE;
-  conv::PhysParamId_t debug_param  = util::NameRegistry::Instance()->PhysParamFromString("MAQE");  // Or leave as conv::kPhypUndefined to look at all applied params
+  conv::PhysParamId_t debug_param  = util::NameRegistry::Instance()->PhysParamFromString("skdetfsi002");  // Or leave as conv::kPhypUndefined to look at all applied params
   if(fSample == debug_sample && fBeam == debug_beam) {
     LOG("GenericSingleSampleFitModel",pNOTICE)
       << "Will print weights info for true var 0 = " << debug_true0 << ", reco var 0 = " << debug_reco0
@@ -2187,7 +2187,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
             }
 
-            double effective_tweak = frac_true * frac_reco * (f-1.) + 1;
+            double effective_tweak = frac_true * frac_reco * (f-1.) + 1;    // TODO: put in the untuned value here instead of 1 (in both occurrences)
             if (std::fabs(effective_tweak-1.) < conv::kASmallNum) {
 #ifdef DEBUG_SINGLE_BIN
               if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue  && (debug_param == conv::kPhypUndefined || p == debug_param)) {
@@ -3126,7 +3126,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   bool tweaked = TMath::Abs(scale-1) > kASmallNum;
   if(!tweaked) return;
 
-  LOG("Lateral",pNOTICE) << "Applying lateral systematic parameter: " << param.GetName()
+  LOG("Lateral",pDEBUG) << "Applying lateral systematic parameter: " << param.GetName()
                        << "to PDF [" << pdf->GetName() << "] "
                        << " with kine var " << util::AsString(kv) << " and scale = " << scale;
 
