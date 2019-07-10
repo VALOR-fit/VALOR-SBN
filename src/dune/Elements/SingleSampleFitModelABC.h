@@ -43,6 +43,9 @@ public:
   conv::BeamConf_t  GetBeam     () const { return fBeam;    }
   conv::Sample_t    GetSample   () const { return fSample;  }
   conv::KineSpace_t GetKineSpace() const { return fKSp;     }
+
+  // Get the model name
+  std::string Name(void) const { return fName; }
   
   UniqueSampleID GetUniqueSampleID() const { return UniqueSampleID(fDetector,fBeam,fSample); }
 
@@ -54,6 +57,9 @@ protected:
   conv::BeamConf_t  fBeam;
   conv::Sample_t    fSample;
   conv::KineSpace_t fKSp;
+
+  // Name of this VALOR fit model (see Conventions/Names.h)
+  string fName;
 
   // Pointer to our systematics
   CorrelatedSystematics * fSystematics;

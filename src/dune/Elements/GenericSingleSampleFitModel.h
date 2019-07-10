@@ -70,8 +70,6 @@ public:
   // Implement the FitModelABC interface
   // See FitModelABC for method decription
   //
-
-  string        Name                   (void) const;
   
   // Options available to Read() include nosplines, nomc, forcedst, pot_override, binning=myfile.xml 
   bool          Read                   (string file, Option_t * opt = 0);
@@ -110,9 +108,6 @@ public:
 
   // Calculate the OB manually from the content of the simple bins. Can be used to verify the spectra are the same for SB/OB
   void UpdateObservableBinningFromSimple (Option_t * opt = 0);
-
-  // Get the model name
-  string GetName(void) const { return fName; }
 
 private:
 
@@ -171,9 +166,6 @@ private:
   
   NuOsc3Flavour  fNuOsc3Flavour;
   PhysHypothesis fPhysHypothesis;
-
-  // Name of this VALOR fit model (see Conventions/Names.h)
-  string fName;
 
   // Exposure for corresponding sample (in POT)
   double fPOT;

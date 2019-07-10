@@ -96,11 +96,6 @@ GenericSingleSampleFitModel::~GenericSingleSampleFitModel()
 // FitModelABC interface implementation:
 //
 //________________________________________________________________________________________
-string GenericSingleSampleFitModel::Name(void) const
-{
-  return fName;
-}
-//________________________________________________________________________________________
 bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 {
   if (fDetector == conv::kdUndefined ) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad Detector"  << fDetector ; util::Die(-1); }

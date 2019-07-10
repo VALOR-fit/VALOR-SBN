@@ -23,6 +23,7 @@ fOwnerOfSystematics(false)
   fBeam     = conv::kbUndefined;
   fSample   = conv::ksUndefined;
   fKSp      = conv::kspUndefined;
+  fName     = "";
 }
 //________________________________________________________________________________________
 SingleSampleFitModelABC::~SingleSampleFitModelABC() 

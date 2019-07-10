@@ -102,7 +102,7 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
   for i in range(compound_model.GetNSubModels()):
     # Check if this is the right sample, if not, then skip it
     selection_model = compound_model.GetSubModel(i)
-    selection_name = selection_model.GetName()
+    selection_name = selection_model.Name()
     if not(selection_model.GetBeam()      == util.BeamConfFromString(_beam) and \
            selection_model .GetDetector() == util.DetectorFromString(_det)  and \
            selection_model .GetSample()   == util.SampleFromString  (_selec)):
