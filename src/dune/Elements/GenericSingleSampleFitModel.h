@@ -109,6 +109,11 @@ public:
 
   // Calculate the OB manually from the content of the simple bins. Can be used to verify the spectra are the same for SB/OB
   void UpdateObservableBinningFromSimple (Option_t * opt = 0);
+  
+  // Add information on which systematic universe to apply for which parameter
+  // Must be called *before* Read() since these are event-by-event
+  void ResetSystematicVariationIDs();
+  void SetSystematicVariationIDToApply(const std::string & param_name,size_t id);
 
 private:
 
@@ -229,6 +234,10 @@ private:
   // Pointer to our systematics
   CorrelatedSystematics * fSystematics;
   bool fOwnerOfSystematics;
+  
+  // For implementing of event-by-event systematics
+  // eg for making spectra that can be used for covariance matrices
+  std::map<std::string,size_t> fSystUniverseToApply; // param name in DST to universe ID in DST
 };
 
 } // valor

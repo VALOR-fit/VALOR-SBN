@@ -1048,6 +1048,8 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   
   std::map<KineVar_t,double> kinematics;
   
+  std::vector<std::vector<float> > variation_weights;
+  
   // Set up a list of the branches associated with each kinematic variable
   std::map<KineVar_t,std::string> kinematic_branch_names;
   for (const KineVar_t & kv : kinevars) {
@@ -1093,6 +1095,37 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       t->SetBranchAddress(branchname,&(wght_branches[branchname]));
     }
     delete matches;
+  }
+  
+  // Let's see if we need the universe weight branch
+  bool apply_universe_weights = fSystUniverseToApply.size();
+  // And if so, get the information we need
+  std::map<std::string,int> variation_name_to_index;
+  TObjArray * variation_names = nullptr;
+  if (apply_universe_weights) {
+    TFile * containing_file = t->GetCurrentFile();
+    if (!containing_file) {
+      LOG("GenericSingleSampleFitModel",pFATAL) << "Can't identify tree's parent file to get names of variation weights";
+      util::Die(-1);
+    }
+    TObject * tmp = containing_file->Get("variation_names");
+    variation_names = dynamic_cast<TObjArray*>(containing_file->Get("variation_names"));
+    if (!variation_names) {
+      LOG("GenericSingleSampleFitModel",pFATAL) << "Can't get names of variation weights";
+      util::Die(-1);
+    }
+    for (int i = 0 ; i < variation_names->GetEntries(); i++) {
+      TObjString * tos = dynamic_cast<TObjString*>(variation_names->At(i));
+      assert(tos);
+      std::string proper_string(tos->GetString().Data());
+      variation_name_to_index[proper_string] = i;
+    }
+    // and set up to read the tree
+    bool bstat_var_weights = t->SetBranchAddress("variation_weights", &variation_weights);
+    if (!bstat_var_weights) {
+      LOG("GenericSingleSampleFitModel",pFATAL) << "Trying to apply variation weights but cannot read branch.";
+      util::Die(-1);
+    }
   }
   
   Long_t nev = t->GetEntries();
@@ -1268,6 +1301,14 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       this_entry *= namewght.second;
     }
 #endif
+
+    // If necessary, get the weight from the systematic variations
+    for (const auto & variation_name_and_id : fSystUniverseToApply) {
+      const std::string & name = variation_name_and_id.first;
+      const int & universe_id  = variation_name_and_id.second;
+      const int & parameter_id = variation_name_to_index.at(name);
+      this_entry *= variation_weights[parameter_id][universe_id];
+    }
     
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode]->GetEntry(reco_bin_ob, true_bin);
@@ -1285,7 +1326,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     fMCTSysSb [imode]->SetEntry(curr_wght_sb, reco_bin_sb, true_bin);
     fMCTFinSb [imode]->SetEntry(curr_wght_sb, reco_bin_sb, true_bin);
     fMCStatSb [imode]->SetEntry(           1, reco_bin_sb, true_bin);
-  }//iev 
+  }//iev
+  
+  if (variation_names) {delete variation_names;}
 }
 //________________________________________________________________________________________
 
@@ -2246,5 +2289,15 @@ const std::vector<conv::ReacMode_t> GenericSingleSampleFitModel::GetReactionMode
 const double &  GenericSingleSampleFitModel::GetPOT() const
 {
   return fPOT;
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::ResetSystematicVariationIDs()
+{
+  fSystUniverseToApply.clear();
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::SetSystematicVariationIDToApply(const std::string & param_name,size_t id)
+{
+  fSystUniverseToApply[param_name] = id;
 }
 //________________________________________________________________________________________
