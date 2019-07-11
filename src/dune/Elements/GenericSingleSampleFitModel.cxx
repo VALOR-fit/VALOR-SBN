@@ -1983,6 +1983,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       std::vector<double> debug_xsec_reco_vals;
       std::vector<double> debug_true_vals;
       debug_reco_vals.push_back(debug_reco0);
+      if(util::NDimReco(reco_ks) > 1) { debug_reco_vals.push_back(debug_reco1); }
       debug_true_vals.push_back(debug_true0);
       debug_xsec_reco_vals.push_back(debug_reco0);
       debug_xsec_reco_vals.push_back(debug_reco1);
