@@ -1127,6 +1127,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       util::Die(-1);
     }
   }
+  else {
+    t->SetBranchStatus("variation_weights",0);
+  }
   
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
