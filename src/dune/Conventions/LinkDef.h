@@ -28,3 +28,4 @@
 #pragma link C++ class valor::ParameterPool+;
 
 #endif
+

@@ -61,6 +61,28 @@ bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
+bool GenericSingleSampleFitData::Read(std::ifstream& stream, Option_t * read_opt)
+{
+   string opt = (read_opt) ? read_opt : "";
+   assert(fDataOb);
+   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
+   fDataOb->ReadStream(stream);
+
+   if(opt.find("+SB") != string::npos)
+   {
+      assert(fDataSb);
+      fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
+      fDataSb->ReadStream(stream);
+   } //+SB
+
+   LOG("GenericSingleSampleFitData",pINFO)
+      << fName << ": N_{Data} SB = " << fDataSb->Integral()
+      <<" ; N_{Data} OB = "<< fDataOb->Integral();
+
+   return true;
+}
+
+//________________________________________________________________________________________
 bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
   LOG("GenericSingleSampleFitData", pINFO)  
@@ -132,6 +154,23 @@ bool GenericSingleSampleFitData::Write(
   f.Close();
 
   return true;
+}
+//________________________________________________________________________________________
+bool GenericSingleSampleFitData::Write(std::ofstream& stream, Option_t * write_opt)
+{
+   string opt = (write_opt) ? write_opt : "";
+   assert(fDataOb);
+   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
+   fDataOb->WriteStream(stream);
+
+   if(opt.find("+SB") != string::npos)
+   {
+      assert(fDataSb);
+      fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
+      fDataSb->WriteStream(stream);
+   } //+SB
+
+   return true;
 }
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(
@@ -214,10 +253,9 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     fDataOb->GetArray()[ibin_ob] += ndata;
   }//ibin_sb
 #endif //__VALOR_FMWK_PENALTY_ONLY__
-  
-  LOG("GenericSingleSampleFitData",pNOTICE) 
-    << fName<< ": N_{Data} SB = " << fDataSb->Integral()
-    <<" ; N_{Data} OB = "<<fDataOb->Integral();
+ 
+   LOG("GenericSingleSampleFitData",pNOTICE) << fName << ": N_{Data} SB = " <<
+      fDataSb->Integral() << " ; N_{Data} OB = " << fDataOb->Integral();
 
   return true;
 }

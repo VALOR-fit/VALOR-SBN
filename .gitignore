@@ -1,0 +1,8 @@
+*.o
+*_RootDict_*
+*~
+make/Make.config
+src/dune/Conventions/Version.h
+
+bin/
+lib/
