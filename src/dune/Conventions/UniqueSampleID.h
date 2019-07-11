@@ -23,6 +23,8 @@
 
 #include <TObject.h>
 
+#include "dune/Conventions/DuneBuild.h"
+
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/BeamConf.h"

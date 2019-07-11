@@ -1,6 +1,8 @@
 #ifndef valor_genie_includes
 #define valor_genie_includes
 
+#include "dune/Conventions/DuneBuild.h"
+
 #if GENIE_VERSION >= 3
 #include "Framework/Conventions/GBuild.h"
 #include "Framework/Conventions/Units.h"

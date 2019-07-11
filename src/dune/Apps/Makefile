@@ -19,6 +19,8 @@ TGT = make_nd_minidst \
       make_sbncode_minidst \
       make_recoselection_minidst \
       make_fastmc_minidst \
+      make_caf_minidst \
+      make_nd_caf_minidst \
       make_response_functions \
       make_table_systematic_effects \
       run_fit \
@@ -121,16 +123,6 @@ ifdef GENIE
 	$(LD) $(LDFLAGS) make_nd_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_caf_minidst
 else
 	@echo "Skipping make_nd_caf_minidst due to no GENIE"
-endif
-
-# Generate CAFs based DSTs
-#
-make_caf_minidst: FORCE
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_caf_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_caf_minidst
-else
-	@echo "Skipping make_caf_minidst due to no GENIE"
 endif
 
 # Run a generic fit
