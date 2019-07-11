@@ -259,7 +259,7 @@ void Fit(CmdLnArgList& arg)
 
 void Init(CmdLnArgList& arg)
 {
-   Messenger::Instance()->Configure(arg.GetString("mesg-thresholds"));
+   Messenger::Instance()->Configure(util::CompleteConfigPath(arg.GetString("mesg-thresholds")));
 
    Opt::Instance()->gMassHierarchyAssumed = util::HierarchyFromString("normal");
    Opt::Instance()->gOscDmsqScheme = util::DmsqSchemeFromString("abs23");
