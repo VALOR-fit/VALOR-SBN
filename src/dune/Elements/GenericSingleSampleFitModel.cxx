@@ -273,7 +273,6 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   return true;
 }
 //________________________________________________________________________________________
-// TODO: Update this
 bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt)
 {
    LOG("GenericSingleSampleFitModel",pDEBUG) << "Reading model from stream";
@@ -284,9 +283,9 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
    // Read in the MC templates
    if(opt.find("mct") != string::npos)
    {
-      for(int imode = 0; imode < kNReacModes; imode++)
+      for(int imode = 0; imode < fReactionModes.size(); imode++)
       {
-         ReacMode_t m = kReactionModes[isample][imode];
+         ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
          {
             continue;
@@ -313,9 +312,9 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
    // Write out the PDF components
    if(opt.find("pdfc") != string::npos)
    {
-      for(int imode = 0; imode < kNReacModes; imode++)
+      for(int imode = 0; imode < fReactionModes.size(); imode++)
       {
-         ReacMode_t m = kReactionModes[isample][imode];
+         ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
          {
             continue;
@@ -837,7 +836,6 @@ bool GenericSingleSampleFitModel::Write(
   return true;
 }
 //________________________________________________________________________________________
-// TODO: Update this
 bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_opt)
 {
    LOG("GenericSingleSampleFitModel",pINFO) << "Writing results to stream";
@@ -848,9 +846,9 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
    // Write out the MC templates
    if(opt.find("mct") != string::npos)
    {
-      for(int imode = 0; imode < kNReacModes; imode++)
+      for(int imode = 0; imode < fReactionModes.size(); imode++)
       {
-         ReacMode_t m = kReactionModes[isample][imode];
+         ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
          {
             continue;
@@ -877,9 +875,9 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
    // Write out the PDF components
    if(opt.find("pdfc") != string::npos)
    {
-      for(int imode = 0; imode < kNReacModes; imode++)
+      for(int imode = 0; imode < fReactionModes.size(); imode++)
       {
-         ReacMode_t m = kReactionModes[isample][imode];
+         ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
          {
             continue;
