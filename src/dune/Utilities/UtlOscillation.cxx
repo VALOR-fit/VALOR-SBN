@@ -1,6 +1,7 @@
 #include "dune/Utilities/UtlOscillation.h"
 
 #include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/NameRegistry.h"
 
 namespace valor
 {
@@ -18,7 +19,7 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
 
    for(int i = 0; i < 7; ++i)
    {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
+      valor::conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(
             osc_parameters[i].c_str());
       if(fpl.Exists(p))
       {
@@ -31,8 +32,8 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
             fpl.Update(p, fix_value);
             fpl.SetInitValue(p, fix_value);
             fpl.FixParameter(p);
-            LOG("UtlOscillation", pNOTICE) << "Setting fixed parameter " <<
-               util::AsString(p) << " := " << fix_value;
+            LOG("UtlOscillation", pNOTICE) << "Setting fixed parameter "
+                                           << util::NameRegistry::Instance()->ParamAsString(p) << " := " << fix_value;
          }
          else if(free_param1 == osc_parameters[i] ||
             free_param2 == osc_parameters[i])
@@ -73,28 +74,29 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
 
 void SetOscillationParameterPriors(CmdLnArgList& arg, FitParamList& fpl)
 {
-   // This should all be done from xml
-   valor::conv::PhysParamId_t p = util::PhysParamFromString("mixing12");
+   // TODO: This should all be done from xml
+   const util::NameRegistry * nr = util::NameRegistry::Instance();
+   valor::conv::PhysParamId_t p = nr->PhysParamFromString("mixing12");
    fpl.SetPriorMode(p, "gaus");
    fpl.SetMeanGaus(p, 0.307); fpl.SetSigmaGaus(p, 0.013);
 
-   p = util::PhysParamFromString("dm12sq");
+   p = nr->PhysParamFromString("dm12sq");
    fpl.SetPriorMode(p, "gaus");
    fpl.SetMeanGaus(p, 7.53e-5); fpl.SetSigmaGaus(p, 0.18e-5);
 
-   p = util::PhysParamFromString("mixing13");
+   p = nr->PhysParamFromString("mixing13");
    fpl.SetPriorMode(p, "gaus");
    fpl.SetMeanGaus(p, 2.12e-2); fpl.SetSigmaGaus(p, 0.8e-2);
 
-   p = util::PhysParamFromString("mixing23");
+   p = nr->PhysParamFromString("mixing23");
    fpl.SetPriorMode(p, "flat");
    fpl.SetMinValueFlat(p, 0.3); fpl.SetMaxValueFlat(p, 0.7);
 
-   p = util::PhysParamFromString("dm23sq");
+   p = nr->PhysParamFromString("dm23sq");
    fpl.SetPriorMode(p, "flat");
    fpl.SetMinValueFlat(p, 2.3e-3); fpl.SetMaxValueFlat(p, 2.7e-3);
 
-   p = util::PhysParamFromString("cpv");
+   p = nr->PhysParamFromString("cpv");
    fpl.SetPriorMode(p, "flat");
    fpl.SetMinValueFlat(p, -3.14159265358979312); fpl.SetMaxValueFlat(p, +3.14159265358979312);
 }
@@ -106,7 +108,7 @@ void ThrowOscillationParameters(FitParamList& fpl)
 
    for(int i = 0; i < 7; ++i)
    {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
+      valor::conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(
             osc_parameters[i].c_str());
       if(fpl.Exists(p) && fpl.IsMarginalized(p))
       {
@@ -126,7 +128,7 @@ void SetUnoscillated(FitParamList& fpl)
 
    for(int i = 0; i < 4; ++i)
    {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
+      valor::conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(
             osc_parameters[i].c_str());
       if(fpl.Exists(p))
       {
@@ -137,7 +139,7 @@ void SetUnoscillated(FitParamList& fpl)
 
    for(int i = 0; i < 3; ++i)
    {
-      valor::conv::PhysParamId_t p = util::PhysParamFromString(
+      valor::conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(
             dm_parameters[i].c_str());
       if(fpl.Exists(p))
       {
