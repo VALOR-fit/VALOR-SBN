@@ -23,6 +23,7 @@
 
 // fmwk
 #include "valor/Conventions/PhysParamId.h"
+#include "valor/FitCore/FitParamList.h"
 
 namespace valor {
 namespace conv {
@@ -89,6 +90,7 @@ namespace util {
   double OscParamStepSize (conv::PhysParamId_t p);
 
   double GetRandomizedOscParam (conv::PhysParamId_t p, string mode);
+  double GetRandomizedOscParam (conv::PhysParamId_t p, FitParamList& fpl);
 
   void InitializeOAPriors();
 
