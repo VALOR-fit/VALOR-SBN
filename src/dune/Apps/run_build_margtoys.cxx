@@ -8,8 +8,10 @@
 \options     --tag                 : Tag for output file [def: "margtoy"]
              --run                 : Run # [def: 0]
              --nmargtoy            : Number of marginalisation toys [def: 1]
-             --fit-param-list      : Fit parameter list (see FitParam.cxx) 
-                                     [def: "standard"]
+             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
+                                     [def: "nuosc3f"]
+             --fit-param-opt       : Options used when setting up the FitParamList
+                                     [def: "NONE"]
              --param-values-option : Decide how to set the values of physics 
                                      params used for toy-MC generation 
                                     [def:"randomize-all;prefit-errors"]
@@ -28,7 +30,7 @@
 
 \created   October 10, 2018
 
-\copyright (c) 2010-2018, The VALOR Fitting Group, All Rights Reserved
+\copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________
@@ -67,8 +69,8 @@
 //#include "valor/FitCore/LikelihoodABC.h"
 //#include "valor/Marginalisation/MarginalLikelihood.h"
 // dune
-#include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/OscParams.h"
+#include "dune/Utilities/UtlParam.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 
@@ -107,6 +109,7 @@ void BuildToys(CmdLnArgList& arg)
 
    // Get arguments
    string fpl_name = arg.GetString("fit-param-list");
+   string fplopt   = arg.GetString("fit-param-opt");
    string param_val_opts = arg.GetString("param-values-option");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
@@ -131,13 +134,13 @@ void BuildToys(CmdLnArgList& arg)
    }
 
    CompoundFitElements * elements = new CompoundFitElements();
-   elements->Read(arg.GetString("config"), "nosplines");
+   elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
 
    // GetSystematics will be added to CorrelatedSystematics in the future
    CorrelatedSystematics* systematics =
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-   FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), systematics);
+   FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
    // Set the priors
    util::oscillation::SetOscillationParameterPriors(arg, *fpl);
    // Fix or set marginalisation flag for oscillation parameters
@@ -183,10 +186,7 @@ void Init(CmdLnArgList& arg)
          "sinsqtheta");
    Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
 
-   // Set DUNE param names inside framework
-   util::PopulateNameRegistry();
-
-   util::InitializeOAPriors();
+   util::InitializeOAPriors();   // TODO: this should be read from XML
 
    Rnd::Instance()->SetSeeds(arg);
 }
