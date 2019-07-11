@@ -8,8 +8,10 @@
 \options     --tag                 : Tag for input marginalisation toy file [def: "margtoy"]
              --run                 : Run # [def: 0]
              --nmargtoy            : Number of marginalisation toys [def: 1]
-             --fit-param-list      : Fit parameter list (see FitParam.cxx) 
-                                     [def: "standard"]
+             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
+                                     [def: "nuosc3f"]
+             --fit-param-opt       : Options used when setting up the FitParamList
+                                     [def: "NONE"]
              --param-values-option : Decide how to set the values of physics 
                                      params used for toy-MC generation 
                                     [def:"randomize-all;prefit-errors"]
@@ -67,8 +69,8 @@
 //#include "valor/FitCore/LikelihoodABC.h"
 //#include "valor/Marginalisation/MarginalLikelihood.h"
 // dune
-#include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/OscParams.h"
+#include "dune/Utilities/UtlParam.h"
+#include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 
@@ -105,18 +107,19 @@ void Fit(CmdLnArgList& arg)
    Init(arg);
 
    // Get arguments
-   string fpl_name = arg.GetString("fit-param-list");
-   string param_val_opts = arg.GetString("param-values-option");
-   string fitter_name = arg.GetString("fitter");
-   bool with_stat_fluct = arg.GetBool("with-stat-fluct");
+   string fpl_name         = arg.GetString("fit-param-list");
+   string fplopt           = arg.GetString("fit-param-opt");
+   string param_val_opts   = arg.GetString("param-values-option");
+   string fitter_name      = arg.GetString("fitter");
+   bool with_stat_fluct    = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
 
-   string fp1_name = arg.GetString("fit-param1");
-   const double fp1_val = arg.GetDouble("fit-param1-value");
-   const int fp1_bin = arg.GetInt("fit-param1-bin");
+   string fp1_name         = arg.GetString("fit-param1");
+   const double fp1_val    = arg.GetDouble("fit-param1-value");
+   const int fp1_bin       = arg.GetInt("fit-param1-bin");
    const double fp1_minval = arg.GetDouble("fit-param1-min-value");
    const double fp1_maxval = arg.GetDouble("fit-param1-max-value");
-   const int fp1_nbins = arg.GetInt("fit-param1-nbins");
+   const int fp1_nbins     = arg.GetInt("fit-param1-nbins");
 
    string fp2_name;
    double fp2_val = 0.0;
@@ -131,35 +134,36 @@ void Fit(CmdLnArgList& arg)
 
    if(arg.Exists("fit-param2"))
    {
-      fp2_name = arg.GetString("fit-param2");
-      fp2_val = arg.GetDouble("fit-param2-value");
-      fp2_bin = arg.GetInt("fit-param2-bin");
+      fp2_name   = arg.GetString("fit-param2");
+      fp2_val    = arg.GetDouble("fit-param2-value");
+      fp2_bin    = arg.GetInt("fit-param2-bin");
       fp2_minval = arg.GetDouble("fit-param2-min-value");
       fp2_maxval = arg.GetDouble("fit-param2-max-value");
-      fp2_nbins = arg.GetInt("fit-param2-nbins");
+      fp2_nbins  = arg.GetInt("fit-param2-nbins");
       LOG("valor_dune", pNOTICE) << "Fit parameter " << fp2_name << "(" <<
          fp2_bin << ") = " << fp2_val << " [" << fp2_nbins << ": " <<
          fp2_minval << ", " << fp2_maxval << "]";
    }
 
    CompoundFitElements* elements = new CompoundFitElements();
-   elements->Read(arg.GetString("config"), "nosplines");
+   elements->Read(arg.GetString("config"));
    FitModelABC* model = elements->FitModel();
 
    // GetSystematics will be added to CorrelatedSystematics in the future
    CorrelatedSystematics* systematics =
       dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-   FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), systematics);
+   FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
 
    // Set the priors
    util::oscillation::SetOscillationParameterPriors(arg, *fpl);
    // Fix or set marginalisation flag for oscillation parameters
    util::oscillation::SetOscillationParameters(arg, *fpl);
    // Overwrite the free parameters with fixed values for the fake data
-   valor::conv::PhysParamId_t p = util::PhysParamFromString("cpv");
+   // TODO: This shouldn't be hard-coded, we need an option to read in a data file too.
+   valor::conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString("cpv");
    fpl->Update(p, -1.570796327);
    fpl->SetInitValue(p, -1.570796327);
-   p = util::PhysParamFromString("mixing23");
+   p = util::NameRegistry::Instance()->PhysParamFromString("mixing23");
    fpl->Update(p, 0.53);
    fpl->SetInitValue(p, 0.53);
 
@@ -262,10 +266,7 @@ void Init(CmdLnArgList& arg)
          "sinsqtheta");
    Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
 
-   // Set DUNE param names inside framework
-   util::PopulateNameRegistry();
-
-   util::InitializeOAPriors();
+   util::InitializeOAPriors();      // TODO: this should be read from XML files
 
    Rnd::Instance()->SetSeeds(arg);
 }
