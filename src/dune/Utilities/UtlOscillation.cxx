@@ -60,13 +60,13 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
             fpl.SetInitValue(p, free_value);
             fpl.FreeParameter(p);
             LOG("UtlOscillation", pNOTICE) << "Setting free parameter " <<
-               util::AsString(p) << " := " << free_value;
+              util::NameRegistry::Instance()->ParamAsString(p) << " := " << free_value;
          }
          else
          {
             fpl.SetDoMarg(p, true);
             LOG("UtlOscillation", pNOTICE) << "Setting marginalised parameter " <<
-               util::AsString(p);
+              util::NameRegistry::Instance()->ParamAsString(p);
          }
       }
    }

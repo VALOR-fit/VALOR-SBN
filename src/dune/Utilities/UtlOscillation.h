@@ -17,8 +17,8 @@
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/FitParamList.h"
 
-#include "dune/Conventions/FitParam.h"
-#include "dune/Conventions/OscParams.h"
+#include "dune/Utilities/UtlParam.h"
+#include "dune/Conventions/OscParamValues.h"
 
 namespace valor
 {

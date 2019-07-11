@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
   std::string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(mesg_thresholds);
 
-  LOG("valor_dune",pINFO) << "Will rethrow unphysical toys" << std::endl;
+  LOG("valor_dune",pINFO) << "Will rethrow unphysical toys";
   
   // Set up the thread pool
   if(n_threads>0) {//without n-cores specified, use as many as the host has

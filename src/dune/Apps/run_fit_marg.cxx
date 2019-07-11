@@ -63,6 +63,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 //#include "valor/Marginalisation/MCMarginaliser.h"
@@ -264,7 +265,7 @@ void Init(CmdLnArgList& arg)
    Opt::Instance()->gOscDmsqScheme = util::DmsqSchemeFromString("abs23");
    Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
          "sinsqtheta");
-   Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
+   Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");      // TODO: remember to set this to the 2nd octant for T2K
 
    util::InitializeOAPriors();      // TODO: this should be read from XML files
 
