@@ -1606,7 +1606,7 @@ void GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t 
       string curr_node_name = xmleng->GetNodeName(curr_node);
       if(xmleng->GetNodeContent(curr_node)) {
         string content = util::RemoveAllWhitespace(xmleng->GetNodeContent(curr_node));
-        LOG("GenericSingleSampleFitModel", pNOTICE) << curr_node_name << " --> " << content;
+        LOG("GenericSingleSampleFitModel", pINFO) << curr_node_name << " --> " << content;
         if(curr_node_name == "filename"      ) { filename      = content; }
         if(curr_node_name == "objname"       ) { objname       = content; }
         if(curr_node_name == "objtype"       ) { objtype       = content; }
@@ -2494,7 +2494,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 // Same again but for simple binning
     if(update_mct_sb) {
       if (!imode) {
-        LOG("GenericSingleSampleFitModel",pNOTICE) << "Updating simple binning templates for "<<fName<<".";
+        LOG("GenericSingleSampleFitModel",pINFO) << "Updating simple binning templates for "<<fName<<".";
       }
       
       if(fMCTNullSb[imode]) {continue;}
@@ -2771,7 +2771,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     }//update_mct_sb?
   }//imode
   if (update_mct_sb) {
-    LOG("GenericSingleSampleFitModel",pNOTICE) << "Simple binning update completed.";
+    LOG("GenericSingleSampleFitModel",pINFO) << "Simple binning update completed.";
   }
 }
 //________________________________________________________________________________________
