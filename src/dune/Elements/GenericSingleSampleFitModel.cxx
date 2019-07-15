@@ -2196,6 +2196,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
         f = TMath::Max(0.,f);
 #else
+#ifdef T2K
+        if(f < 0) {
+          Parameter param = ParameterPool::Instance()->GetParam(p);
+          if(param.SearchCategories("int")) { f = fRFL->GetForceNegWghtTo(); }
+        }
+#endif
         if(f < 0) {
           std::cerr << "Applying a negative normalisation for parameter "
                     << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
@@ -2385,6 +2391,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
         noEt = TMath::Max(0.,noEt);
 #else
+#ifdef T2K
+        if(noEt < 0) {
+          Parameter param = ParameterPool::Instance()->GetParam(p);
+          if(param.SearchCategories("int")) { noEt = fRFL->GetForceNegWghtTo(); }
+        }
+#endif
         if(noEt < 0) {
           std::cerr << "Applying a negative normalisation for parameter "
                     << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
@@ -2520,6 +2532,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
           f = TMath::Max(0.,f);
 #else
+#ifdef T2K
+        if(f < 0) {
+          Parameter param = ParameterPool::Instance()->GetParam(p);
+          if(param.SearchCategories("int")) { f = fRFL->GetForceNegWghtTo(); }
+        }
+#endif
           if(f < 0) {
           std::cerr << "Applying a negative normalisation for parameter "
                     << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
@@ -2675,6 +2693,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
           f = TMath::Max(0.,f);
 #else
+#ifdef T2K
+          if(f < 0) {
+            Parameter param = ParameterPool::Instance()->GetParam(p);
+            if(param.SearchCategories("int")) { f = fRFL->GetForceNegWghtTo(); }
+          }
+#endif
           if(f < 0) {
             std::cerr << "Applying a negative normalisation for parameter "
                       << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
@@ -2687,6 +2711,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
           fnoEt = TMath::Max(0.,fnoEt);
 #else
+#ifdef T2K
+          if(fnoEt < 0) {
+            Parameter param = ParameterPool::Instance()->GetParam(p);
+            if(param.SearchCategories("int")) { fnoEt = fRFL->GetForceNegWghtTo(); }
+          }
+#endif
           if(fnoEt < 0) {
             std::cerr << "Applying a negative normalisation for parameter "
                       << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
