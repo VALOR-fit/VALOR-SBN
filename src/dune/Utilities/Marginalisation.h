@@ -50,7 +50,7 @@ public:
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
    */
-   Marginalisation(CompoundFitElements& elements, string filePrefix);
+   Marginalisation(CompoundFitElements& elements, string filePrefix, bool use_simple_binning);
 
    /**
       Constructs a Marginalisation object.
@@ -59,7 +59,7 @@ public:
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
    */
-   Marginalisation(FitModelABC& model, string filePrefix);
+   Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning);
 
    /**
       Destructor.
@@ -328,6 +328,7 @@ private:
    TH1D* _chi2_1D;
    TH2D* _chi2_2D;
    FitResult* _fitResult;
+   bool _use_simple_binning;
 };
 
 } // valor

@@ -13,15 +13,16 @@ namespace valor
 {
 
 Marginalisation::Marginalisation(CompoundFitElements& elements,
-      string filePrefix):
-   Marginalisation(*elements.FitModel(), filePrefix)
+      string filePrefix, bool use_simple_binning):
+   Marginalisation(*elements.FitModel(), filePrefix, use_simple_binning)
 {
 }
 //______________________________________________________________________________
-Marginalisation::Marginalisation(FitModelABC& model, string filePrefix):
+Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning):
    _filePrefix(filePrefix), _model(&model), _likelihood(0.0), _chi2(0.0),
    _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
-   _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr)
+   _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr),
+   _use_simple_binning(use_simple_binning)
 {
 }
 //______________________________________________________________________________
@@ -95,8 +96,10 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       // Generate a toy-MC experiment 
       LOG("valor_dune", pDEBUG) << "Generating toy-MC data";
       LOG("valor_dune", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
-      this->_model->Generate(fpl, "+SB");
-      this->_model->Write(os_toys, "pdft+SB");
+      const char* write_opt = "pdft";
+      if (_use_simple_binning) { write_opt = "pdft+SB"; }
+      this->_model->Generate(fpl, write_opt);
+      this->_model->Write(os_toys, write_opt);
    }
    os_toys.close();
 }
@@ -130,7 +133,9 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       {
          // Read a toy-MC experiment 
          LOG("valor_dune", pDEBUG) << "Reading toy-MC data";
-         this->_model->Read(is_toys, "pdft+SB");
+         const char* read_opt = "pdft";
+         if (_use_simple_binning) { read_opt = "pdft+SB"; }
+         this->_model->Read(is_toys, read_opt);
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          double likelihood = TMath::Exp(-chi2 * 0.5);
          likelihood_sum += likelihood;

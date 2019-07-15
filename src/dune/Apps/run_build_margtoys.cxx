@@ -24,6 +24,7 @@
              --discard-spectra   ] 
              --n-sigma-limit       : The limit to apply to systematic parameter
                                      throws
+             --use-simple-binning  : Update simple binning templates too [def: no-simple-binning]
 
 \author    Andy Chappell <A.Chappell \at warwick.ac.uk>
            University of Warwick
@@ -108,14 +109,15 @@ void BuildToys(CmdLnArgList& arg)
    Init(arg);
 
    // Get arguments
-   string fpl_name = arg.GetString("fit-param-list");
-   string fplopt   = arg.GetString("fit-param-opt");
-   string param_val_opts = arg.GetString("param-values-option");
+   string fpl_name         = arg.GetString("fit-param-list");
+   string fplopt           = arg.GetString("fit-param-opt");
+   string param_val_opts   = arg.GetString("param-values-option");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
+   bool use_simple_binning = arg.GetBool("use-simple-binning");
 
-   string fp_name1 = arg.GetString("fit-param1");
+   string fp_name1      = arg.GetString("fit-param1");
    const double fp_val1 = arg.GetDouble("fit-param1-value");
-   const int fp_bin1 = arg.GetInt("fit-param1-bin");
+   const int fp_bin1    = arg.GetInt("fit-param1-bin");
 
    string fp_name2;
    double fp_val2;
@@ -156,14 +158,16 @@ void BuildToys(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, arg.GetString("tag"));
+   Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning);
    if(!arg.Exists("fit-param2"))
    {  // Build toys for 1D fit
-      marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl);
+      marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl,
+                                true, "randomize-all;prefit-errors", rethrow_unphysical);
    }
    else
    {  // Build toys for 2D fit
-      marginalisation.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl);
+      marginalisation.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl,
+                                true, "randomize-all;prefit-errors", rethrow_unphysical);
    }
    clock.Stop();
 

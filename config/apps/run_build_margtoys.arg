@@ -13,6 +13,7 @@ with-stat-fluct,without-stat-fluct   |   boolean_list |  optional   |   without-
 store-spectra,discard-spectra        |   boolean_list |  optional   |   discard-spectra
 start-at-true,start-at-central       |   boolean_list |  optional   |   start-at-true
 rethrow-unphysical,accept-unphysical |   boolean_list |  optional   |   rethrow-unphysical
+no-simple-binning,use-simple-binning |   boolean_list |  optional   |   no-simple-binning
 fit-param1                           |   string       |  mandatory  |   -
 fit-param1-value                     |   double       |  mandatory  |   0.0
 fit-param1-bin                       |   integer      |  mandatory  |   -1

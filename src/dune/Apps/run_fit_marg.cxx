@@ -24,6 +24,7 @@
              --discard-spectra   ] 
              --n-sigma-limit       : The limit to apply to systematic parameter
                                      throws
+             --use-simple-binning  : Update simple binning templates too [def: no-simple-binning]
 
 \author    Andy Chappell <A.Chappell \at warwick.ac.uk>
            University of Warwick
@@ -114,6 +115,7 @@ void Fit(CmdLnArgList& arg)
    string fitter_name      = arg.GetString("fitter");
    bool with_stat_fluct    = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
+   bool use_simple_binning = arg.GetBool("use-simple-binning");
 
    string fp1_name         = arg.GetString("fit-param1");
    const double fp1_val    = arg.GetDouble("fit-param1-value");
@@ -184,7 +186,7 @@ void Fit(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, arg.GetString("margtoy-tag"));
+   Marginalisation marginalisation(*elements, arg.GetString("margtoy-tag"), use_simple_binning);
    if(!arg.Exists("fit-param2"))
    {  // Initialise for 1D fit
       marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval);
