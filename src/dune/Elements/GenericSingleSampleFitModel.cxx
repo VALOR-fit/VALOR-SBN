@@ -69,7 +69,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //#define SPLINE_WEIGHTS_ARE_ONE
-#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+//#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
 #define APPLY_ALL_AUTOWGHT_BRANCHES
 
@@ -2124,6 +2124,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     // copy sys -> fin MC templates
     fMCTFinOb[imode]->CopyDataOnlyFrom(*fMCTSysOb[imode]);
 
+    // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
+    // Hard to read, so should only be used in code for which speed is essential.
+    typedef double (templtype)[n_reco_bins_ob][n_true_bins_sb];
+    templtype & templFinOb = *reinterpret_cast<templtype *>(&(fMCTFinOb[imode]->GetEntryRef(0,0)));
+
 #ifdef DEBUG_SINGLE_BIN
     unsigned int debug_ireco = 999;
     unsigned int debug_itrue = 999;
@@ -2150,14 +2155,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       if (debug_true0 != -999) {
         LOG("GenericSingleSampleFitModel", pNOTICE)
           << "At the start of apply physics, bin content = "
-          << fMCTFinOb[imode]->GetEntry(debug_ireco, debug_itrue) << ", debug_itrue = " << debug_itrue
+          << templFinOb[debug_ireco][debug_itrue] << ", debug_itrue = " << debug_itrue
           << ", debug_ireco = " << debug_ireco << ", debug_xsec_itrue = " << debug_xsec_itrue
           << ", debug_xsec_ireco = " << debug_xsec_ireco;
       }
       else {
         LOG("GenericSingleSampleFitModel", pNOTICE)
           << "At the start of apply physics, bin content (with true bin 0) = "
-          << fMCTFinOb[imode]->GetEntry(debug_ireco, 0)
+          << templFinOb[debug_ireco][0]
           << ", debug_ireco = " << debug_ireco
           << ", debug_xsec_ireco = " << debug_xsec_ireco;
       }
@@ -2358,7 +2363,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               continue;
             }
 
-            double & val = fMCTFinOb[imode]->GetEntryRef(ireco,itrue);
+            double & val = templFinOb[ireco][itrue];
             val *= effective_tweak;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -2372,7 +2377,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               LOG("GenericSingleSampleFitModel",pNOTICE)
                 << "Applying norm param with kinematic dependence [" << util::NameRegistry::Instance()->ParamAsString(p)
                 << "] with curr val = " << f << ", effective tweak = " << effective_tweak
-                << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,use_debug_itrue);
+                << "; new bin content = " << templFinOb[debug_ireco][use_debug_itrue];
             }
 #endif
           }//ireco: reco bins
@@ -2402,13 +2407,17 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                     << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
         }
 #endif
-        fMCTFinOb[imode]->Scale(noEt);
+        for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+          for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+            templFinOb[ireco][itrue] *= noEt;
+          }
+        }
 #ifdef DEBUG_SINGLE_BIN
         if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && (debug_param == conv::kPhypUndefined || p == debug_param)) {
           LOG("GenericSingleSampleFitModel",pNOTICE)
             << "Applying norm param with NO kinematic dependence [" << util::NameRegistry::Instance()->ParamAsString(p)
             << "] with curr val = " << noEt
-            << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,debug_itrue);
+            << "; new bin content = " << templFinOb[debug_ireco][debug_itrue];
         }
 #endif
       } // No spline, no kin dependence
@@ -2436,14 +2445,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
           << " using splines.";
 #endif
-      VALORArrayBin bin;
       VALORArrayBin splbin;
       splbin.bin3 = ip;
       for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-        bin.bin2 = itrue;
         splbin.bin2 = itrue;
         for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-          bin.bin1 = ireco;
           splbin.bin1 = ireco;
           double response = 1;
           ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
@@ -2481,7 +2487,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               response = fRFL->GetForceNegWghtTo();
             }
           }
-          double & val = fMCTFinOb[imode]->GetEntryRef(bin);
+          double & val = templFinOb[ireco][itrue];
           val *= response;
 #ifdef DEBUG_SINGLE_BIN
           if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && (itrue == debug_itrue || debug_true0 == -999) && (debug_param == conv::kPhypUndefined || p == debug_param)) {
@@ -2494,7 +2500,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               << "Applying spline param [" << util::NameRegistry::Instance()->ParamAsString(p)
               << "] with curr val = " << f << ", untuned val = " << fSystematics->UntunedValue(p)
               << ", weight = " << response
-              << "; new bin content = " << fMCTFinOb[imode]->GetEntry(debug_ireco,use_debug_itrue)
+              << "; new bin content = " << templFinOb[debug_ireco][use_debug_itrue]
               << ", from spline with name [" << spl->GetName() << "] and title [" << spl->GetTitle() << "]";
           }
 #endif
@@ -2511,7 +2517,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       
       if(fMCTNullSb[imode]) {continue;}
       fMCTFinSb[imode]->CopyDataOnlyFrom(*(fMCTSysSb[imode]));
-      
+
+      // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
+      // Hard to read, so should only be used in code for which speed is essential.
+      typedef double (templtypeSb)[n_reco_bins_sb][n_true_bins_sb];
+      templtypeSb & templFinSb = *reinterpret_cast<templtypeSb *>(&(fMCTFinSb[imode]->GetEntryRef(0,0)));
+
       // First do the normalisation parameters
       for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
@@ -2675,7 +2686,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               double effective_tweak = frac_true * frac_reco * (f-1.) + 1;
               if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
 
-              double & val = fMCTFinSb[imode]->GetEntryRef(ireco,itrue);
+              double & val = templFinSb[ireco][itrue];
               val *= effective_tweak;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
               LOG("GenericSingleSampleFitModel",pDEBUG)
@@ -2722,7 +2733,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                       << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
         }
 #endif
-          fMCTFinSb[imode]->Scale(fnoEt);
+          for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+            for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+              templFinSb[ireco][itrue] *= fnoEt;
+            }
+          }
         }// (no energy dependence)
       }//ip (normalisations)
 
@@ -2747,14 +2762,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
           << " using splines.";
 #endif
-        VALORArrayBin bin;
         VALORArrayBin splbin;
         splbin.bin3 = ip;
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          bin.bin2 = itrue;
           splbin.bin2 = itrue;
           for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
-            bin.bin1 = ireco;
             splbin.bin1 = ireco;
             double response = 1;
             ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
@@ -2791,7 +2803,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                 response = fRFL->GetForceNegWghtTo();
               }
             }
-            double & val = fMCTFinSb[imode]->GetEntryRef(bin);
+            double & val = templFinSb[ireco][itrue];
             val *= response;
           }//ireco
         }//itrue
