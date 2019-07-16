@@ -2324,22 +2324,22 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
           double frac_true = 1.;
           if (apply_true_ndims == 1 || apply_true_ndims == 2) {
-            vector<double> true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
+            const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
             frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
           }
           if (apply_true_ndims == 2) {
-            vector<double> true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
+            const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
             frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
           }
           for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
             // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
             double frac_reco = 1.;
             if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
-              vector<double> reco1_range (reco_ob->BinRange(ireco,reco_kinevars[0]));
+              const vector<double> & reco1_range (reco_ob->BinRange(ireco,reco_kinevars[0]));
               frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
             }
             if (apply_reco_ndims == 2) {
-              vector<double> reco2_range (reco_ob->BinRange(ireco,reco_kinevars[1]));
+              const vector<double> & reco2_range (reco_ob->BinRange(ireco,reco_kinevars[1]));
               frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
             }
 
@@ -2653,22 +2653,22 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
             double frac_true = 1.;
             if (apply_true_ndims == 1 || apply_true_ndims == 2) {
-              vector<double> true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
+              const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
               frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
             }
             if (apply_true_ndims == 2) {
-              vector<double> true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
+              const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
               frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
             }
             for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
               // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
               double frac_reco = 1.;
               if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
-                vector<double> reco1_range (reco_sb->BinRange(ireco,reco_kinevars[0]));
+                const vector<double> & reco1_range (reco_sb->BinRange(ireco,reco_kinevars[0]));
                 frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
               }
               if (apply_reco_ndims == 2) {
-                vector<double> reco2_range (reco_sb->BinRange(ireco,reco_kinevars[1]));
+                const vector<double> & reco2_range (reco_sb->BinRange(ireco,reco_kinevars[1]));
                 frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
               }
 
@@ -3185,14 +3185,14 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
         // Now loop over the truth bins
         for(int itrue_sb = 0; itrue_sb < n_true_bins_sb; itrue_sb++) {
           // Fraction of the observable bin held in the simple bin.
-          std::vector<double> frac_sb_range1 = reco_sb->BinRange(ireco_sb,0);
-          std::vector<double> frac_ob_range1 = reco_ob->BinRange(ireco_ob,0);
+          const vector<double> & frac_sb_range1 = reco_sb->BinRange(ireco_sb,0);
+          const vector<double> & frac_ob_range1 = reco_ob->BinRange(ireco_ob,0);
           double frac_sb_1 = util::FractionOfBinContained(frac_sb_range1[0],frac_sb_range1[1], frac_ob_range1[0],frac_ob_range1[1]);
           
           double frac_sb_2 = 1;
           if (reco_sb->NDimensions() > 1) {
-            std::vector<double> frac_sb_range2 = reco_sb->BinRange(ireco_sb,1);
-            std::vector<double> frac_ob_range2 = reco_ob->BinRange(ireco_ob,1);
+            const vector<double> & frac_sb_range2 = reco_sb->BinRange(ireco_sb,1);
+            const vector<double> & frac_ob_range2 = reco_ob->BinRange(ireco_ob,1);
             frac_sb_1 = util::FractionOfBinContained(frac_sb_range2[0],frac_sb_range2[1],frac_ob_range2[0],frac_ob_range2[1]);
           }
           
