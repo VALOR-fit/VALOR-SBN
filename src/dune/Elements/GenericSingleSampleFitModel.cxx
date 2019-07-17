@@ -881,7 +881,7 @@ void GenericSingleSampleFitModel::BuildParamLists()
       
       for (size_t itarget = 0; itarget < kNNuclearTarget ; itarget++ ) {
         NuclearTarget_t nt = static_cast<NuclearTarget_t>(itarget);
-        is_applied = is_applied || param.IsAppliedTo(fBeam,fSample,fDetector,m,nt);
+        is_applied = is_applied || util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
       } // itarget
       
       // Add them to our lists. This will be need to be updated if new parameter types are added

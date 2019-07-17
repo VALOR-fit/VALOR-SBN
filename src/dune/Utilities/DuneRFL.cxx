@@ -18,6 +18,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlNumStat.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Conventions/NuclearTarget.h"
 #include "valor/Conventions/ParameterPool.h"
@@ -114,6 +115,7 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
   // Calculate max bin numbers
   for (int im = 0 ; im < fNModes ; im++) {
     conv::ReacMode_t m = fModes[im];
+    if (m == conv::kmUndefined) continue;
     const VALORBinning * true_sb = fBinning->XsecTrueBinning(m);
     fNBinsTrue = std::max(fNBinsTrue,true_sb->NBins());
   }
@@ -264,7 +266,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
       if(p == conv::kPhypUndefined) continue;
 
       const Parameter & param = ParameterPool::Instance()->GetParam(p);
-      bool param_applied_to_mode = param.IsAppliedTo(fBeam,fSample,fDetector,m,nt);
+      bool param_applied_to_mode = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
       
       for (int ireco = 0 ; ireco < n_bins_reco ; ireco++) {
         for (int itrue = 0 ; itrue < n_bins_true ; itrue++) {
