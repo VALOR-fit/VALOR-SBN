@@ -1652,7 +1652,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
         // Get the true kine var ranges
         if (apply_true_ndims == 1) {
-          std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
+          const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
           true1_min = pair1.first;
           true1_max = pair1.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1663,8 +1663,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
         }
         else if (apply_true_ndims == 2) {
-          std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
-          std::pair<double,double> pair2 = util::GetKineRange(p, true_kinevars[1]);
+          const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
+          const std::pair<double,double> & pair2 = param.GetKineRange(true_kinevars[1]);
           true1_min = pair1.first;
           true1_max = pair1.second;
           true2_min = pair2.first;
@@ -1684,7 +1684,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
         // Get the reco kine var ranges
         if (apply_reco_ndims == 1) {
-          std::pair<double,double> pair1 = util::GetKineRange(p, reco_kinevars[0]);
+          const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
           reco1_min = pair1.first;
           reco1_max = pair1.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1695,8 +1695,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
         }
         else if (apply_reco_ndims == 2) {
-          std::pair<double,double> pair1 = util::GetKineRange(p, reco_kinevars[0]);
-          std::pair<double,double> pair2 = util::GetKineRange(p, reco_kinevars[1]);
+          const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
+          const std::pair<double,double> & pair2 = param.GetKineRange(reco_kinevars[1]);
           reco1_min = pair1.first;
           reco1_max = pair1.second;
           reco2_min = pair2.first;
@@ -1894,7 +1894,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
           // Get the true kine var ranges
           if (apply_true_ndims == 1) {
-            std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
+            const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
             true1_min = pair1.first;
             true1_max = pair1.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1905,8 +1905,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
           }
           else if (apply_true_ndims == 2) {
-            std::pair<double,double> pair1 = util::GetKineRange(p, true_kinevars[0]);
-            std::pair<double,double> pair2 = util::GetKineRange(p, true_kinevars[1]);
+            const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
+            const std::pair<double,double> & pair2 = param.GetKineRange(true_kinevars[1]);
             true1_min = pair1.first;
             true1_max = pair1.second;
             true2_min = pair2.first;
@@ -1926,7 +1926,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
           // Get the reco kine var ranges
           if (apply_reco_ndims == 1) {
-            std::pair<double,double> pair1 = util::GetKineRange(p, reco_kinevars[0]);
+            const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
             reco1_min = pair1.first;
             reco1_max = pair1.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -1937,8 +1937,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
           }
           else if (apply_reco_ndims == 2) {
-            std::pair<double,double> pair1 = util::GetKineRange(p, reco_kinevars[0]);
-            std::pair<double,double> pair2 = util::GetKineRange(p, reco_kinevars[1]);
+            const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
+            const std::pair<double,double> & pair2 = param.GetKineRange(reco_kinevars[1]);
             reco1_min = pair1.first;
             reco1_max = pair1.second;
             reco2_min = pair2.first;
