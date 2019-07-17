@@ -327,7 +327,7 @@ int main(int argc, char ** argv)
       variation_names.AddLast(new TObjString(variation_name.c_str()));
     }
     //~ variation_names.Sort(); // this better do alphabetical or this will be bugged
-    variation_names.Write("variation_names");
+    variation_names.Write("variation_names",TObject::kSingleKey);
   }
   
 
