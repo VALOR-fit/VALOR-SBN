@@ -74,7 +74,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * 
   string param_list_name_str = ((param_list_name) ? param_list_name : "nuosc3f");
   string param_list_opt      = ((param_opt)       ? param_opt       : "NONE");
 
-  LOG("FitParams", pNOTICE)
+  LOG("FitParams", pDEBUG)
     << "Instantiating a fit parameter list object with named parameter list: " << param_list_name_str
     << "\n and option: " << param_list_opt;
 
