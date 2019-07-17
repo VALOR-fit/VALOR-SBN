@@ -251,7 +251,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * 
                                << "\' was not found in the ParameterPool so could not be categorised.";
         util::Die(-1); return fparm;
       }
-      Parameter param = ParameterPool::Instance()->GetParam(p);
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
 
       // toggle detector related params on/off
       if(fix_detector_params && param.SearchCategories("det")) {
@@ -425,7 +425,7 @@ std::pair<double,double> util::GetKineRange(conv::PhysParamId_t p, conv::KineVar
   std::pair<double,double> range = util::PhysicalLimits(k);
   // If it's not an osc param, get the kine range from the parameter pool
   if(!util::IsOscParam(p)) {
-    Parameter param = ParameterPool::Instance()->GetParam(p);
+    const Parameter & param = ParameterPool::Instance()->GetParam(p);
     if(!param.HasKinematicRange()) {
       LOG("FitParams",pERROR)<<"Parameter " << param.GetName() << " has no kinematic range";
       util::Die(-1);
@@ -439,7 +439,7 @@ bool util::HasKinematicDependence(conv::PhysParamId_t p)
 {
   if(util::IsOscParam(p)) { return true; }
   else {
-    Parameter param = ParameterPool::Instance()->GetParam(p);
+    const Parameter & param = ParameterPool::Instance()->GetParam(p);
     if(!param.HasKinematicRange()) { return false; }
     return true;
   }
