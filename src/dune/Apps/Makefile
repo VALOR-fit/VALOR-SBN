@@ -27,7 +27,8 @@ TGT = make_nd_minidst \
       fitnt_conv \
       adaptive_mcmc \
       run_tests \
-      batch_tests
+      batch_tests \
+      write_sbn_spectra_using_universes
 
 all: $(TGT)
 
@@ -130,7 +131,12 @@ write_pdf: FORCE
 tweak_pdf_N: FORCE
 	$(CXX) $(CXXFLAGS) -c tweak_pdf_N.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) tweak_pdf_N.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
-
+	
+#
+write_sbn_spectra_using_universes: FORCE
+	$(CXX) $(CXXFLAGS) -c write_sbn_spectra_using_universes.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) write_sbn_spectra_using_universes.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-write_sbn_spectra_using_universes
+	
 # Run an Adaptive Metropolis Hastings around the results of a fit
 #
 adaptive_mcmc: FORCE
