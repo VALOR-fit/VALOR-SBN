@@ -2033,13 +2033,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         
         util::KinematicPoint kp;
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          vector<double> true1_range (true_sb->BinRange(itrue,0));
-          vector<double> true2_range (true_sb->BinRange(itrue,1));
+          const vector<double> & true1_range (true_sb->BinRange(itrue,0));
+          const vector<double> & true2_range (true_sb->BinRange(itrue,1));
           kp.true1 = (true1_range[0]+true1_range[1])/2;
           kp.true2 = (true2_range[0]+true2_range[1])/2;
           for(int ireco_sb = 0; ireco_sb < n_reco_bins_sb; ireco_sb++) {
-            vector<double> reco1_range (reco_sb->BinRange(ireco_sb,0));
-            vector<double> reco2_range (reco_sb->BinRange(ireco_sb,1));
+            const vector<double> & reco1_range (reco_sb->BinRange(ireco_sb,0));
+            const vector<double> & reco2_range (reco_sb->BinRange(ireco_sb,1));
             kp.reco1 = (reco1_range[0]+reco1_range[1])/2;
             kp.reco2 = (reco2_range[0]+reco2_range[1])/2;
             std::pair<int,int> kb = fRFL->GetBin(kp,m);
@@ -2442,14 +2442,14 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
         // Now loop over the truth bins
         for(int itrue_sb = 0; itrue_sb < n_true_bins_sb; itrue_sb++) {
           // Fraction of the observable bin held in the simple bin.
-          std::vector<double> frac_sb_range1 = reco_sb->BinRange(ireco_sb,0);
-          std::vector<double> frac_ob_range1 = reco_ob->BinRange(ireco_ob,0);
+          const std::vector<double> & frac_sb_range1 = reco_sb->BinRange(ireco_sb,0);
+          const std::vector<double> & frac_ob_range1 = reco_ob->BinRange(ireco_ob,0);
           double frac_sb_1 = util::FractionOfBinContained(frac_sb_range1[0],frac_sb_range1[1], frac_ob_range1[0],frac_ob_range1[1]);
           
           double frac_sb_2 = 1;
           if (reco_sb->NDimensions() > 1) {
-            std::vector<double> frac_sb_range2 = reco_sb->BinRange(ireco_sb,1);
-            std::vector<double> frac_ob_range2 = reco_ob->BinRange(ireco_ob,1);
+            const std::vector<double> & frac_sb_range2 = reco_sb->BinRange(ireco_sb,1);
+            const std::vector<double> & frac_ob_range2 = reco_ob->BinRange(ireco_ob,1);
             frac_sb_1 = util::FractionOfBinContained(frac_sb_range2[0],frac_sb_range2[1],frac_ob_range2[0],frac_ob_range2[1]);
           }
           
