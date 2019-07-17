@@ -1560,7 +1560,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   const int n_reco_bins_sb  = reco_sb->NBins();
   const int n_reco_bins_ob  = reco_ob->NBins();
   const KineSpace_t reco_ks = reco_ob->KineSpace();
-  std::vector<conv::KineVar_t> reco_kinevars = util::KineVarReco(reco_ks);
+  const std::vector<conv::KineVar_t> reco_kinevars = util::KineVarReco(reco_ks);
 
   for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     //~ derr<<"Getting mode "<<imode<<" from "<<fReactionModes<<std::endl;
@@ -1572,6 +1572,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     
     const int n_true_bins_sb = true_sb->NBins();
     const KineSpace_t true_ks = true_sb->KineSpace();
+    const std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
     LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1622,8 +1623,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         double reco1_max  = 0.;
         double reco2_min  = 0.;
         double reco2_max  = 0.;
-        
-        std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
                 
         // Work out whether the parameter is applied to true, reco or both
         unsigned int param_true_kv_size = 0;
@@ -1873,7 +1872,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           double reco2_min  = 0.;
           double reco2_max  = 0.;
           
-          std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
           // Work out whether the parameter is applied to true, reco or both
           unsigned int param_true_kv_size = 0;
           unsigned int param_reco_kv_size = 0;
