@@ -299,7 +299,7 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
         for (unsigned int ip = 0 ; ip < fSplineParams.size(); ip++) {
           PhysParamId_t p = fSplineParams[ip];
           Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
-          Parameter param = ParameterPool::Instance()->GetParam(p);
+          const Parameter & param = ParameterPool::Instance()->GetParam(p);
           if (param.GetType() == conv::kSystResponse) {
             const util::Interpolator * spl = fRFL->GetSpline(m,p,ispltrue,isplreco);
             if (spl == NULL) {
@@ -1597,16 +1597,18 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
       PhysParamId_t p = fNormParams[ip];
       if (p == kPhypUndefined          ) {continue;}
-      std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
       
       if (!fPhysHypothesis.Contains(p)) {
         LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
         continue;
       }
       
+      assert(!util::IsOscParam(p));
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
+      
       int iparr = arridx->FitParamIdx(p);
       
-      bool has_kinematic_dependence = util::HasKinematicDependence(p);
+      bool has_kinematic_dependence = param.HasKinematicRange();
          
       double f = fPhysHypothesis.CurrValue(p);
       
@@ -1627,18 +1629,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         // Work out whether the parameter is applied to true, reco or both
         unsigned int param_true_kv_size = 0;
         unsigned int param_reco_kv_size = 0;
-        if(!util::IsOscParam(p)) {
-          // Syst params
-          Parameter param = ParameterPool::Instance()->GetParam(p);
-          std::vector<conv::KineVar_t> kvs = param.GetKineVars();
-          for (conv::KineVar_t kv : kvs) {
-            if (util::IsTrue(kv)) param_true_kv_size++;
-            else                  param_reco_kv_size++;
-          }
-        }
-        else {
-          // Osc params
-          param_true_kv_size = true_kinevars.size();
+
+        // Syst params
+        const std::vector<conv::KineVar_t> & kvs = param.GetKineVars();
+        for (conv::KineVar_t kv : kvs) {
+          if (util::IsTrue(kv)) param_true_kv_size++;
+          else                  param_reco_kv_size++;
         }
 
         if(param_true_kv_size > true_kinevars.size()) {
@@ -1777,14 +1773,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
       PhysParamId_t p = fSplineParams[ip];
       if (p == kPhypUndefined          ) {continue;}
-      std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
       
       if (!fPhysHypothesis.Contains(p)) {
         LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
         continue;
       }
 
-      Parameter param = ParameterPool::Instance()->GetParam(p);
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
       bool spline_is_applied = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,conv::kntInclusive); // TODO: Put in handling for nuclear targets
       if(!spline_is_applied) { continue; }
 
@@ -1845,8 +1840,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fNormParams[ip];
         if (p == kPhypUndefined          ) {continue;}
-        std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
-        
+         
         if (!fPhysHypothesis.Contains(p)) {
           LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
           continue;
@@ -1854,7 +1848,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         
         int iparr = arridx->FitParamIdx(p);
 
-        bool has_kinematic_dependence = util::HasKinematicDependence(p);
+        assert(!util::IsOscParam(p));
+        const Parameter & param = ParameterPool::Instance()->GetParam(p);
+        bool has_kinematic_dependence = param.HasKinematicRange();
          
         double f = fPhysHypothesis.CurrValue(p);
         
@@ -1875,18 +1871,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           // Work out whether the parameter is applied to true, reco or both
           unsigned int param_true_kv_size = 0;
           unsigned int param_reco_kv_size = 0;
-          if(!util::IsOscParam(p)) {
-            // Syst params
-            Parameter param = ParameterPool::Instance()->GetParam(p);
-            std::vector<conv::KineVar_t> kvs = param.GetKineVars();
-            for (conv::KineVar_t kv : kvs) {
-              if (util::IsTrue(kv)) param_true_kv_size++;
-              else                  param_reco_kv_size++;
-            }
-          }
-          else {
-            // Osc params
-            param_true_kv_size = true_kinevars.size();
+          
+          // Syst params
+          const std::vector<conv::KineVar_t> & kvs = param.GetKineVars();
+          for (conv::KineVar_t kv : kvs) {
+            if (util::IsTrue(kv)) param_true_kv_size++;
+            else                  param_reco_kv_size++;
           }
 
           if(param_true_kv_size > true_kinevars.size()) {
