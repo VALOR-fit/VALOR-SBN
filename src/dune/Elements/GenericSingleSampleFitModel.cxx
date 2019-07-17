@@ -2185,9 +2185,10 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
       PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
       if (p == kPhypUndefined          ) {continue;}
+      std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
       
       if (!fPhysHypothesis.Contains(p)) {
-        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
+        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
         continue;
       }
       
@@ -2209,14 +2210,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
         if(f < 0) {
           std::cerr << "Applying a negative normalisation for parameter "
-                    << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+                    << param_name << std::endl;
           }
 #endif
         bool tweaked = TMath::Abs(f-1) > kASmallNum;    // TODO: put in the untuned value instead of 1
 #ifdef DEBUG_SINGLE_BIN
         if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && !tweaked && (debug_param == conv::kPhypUndefined || p == debug_param)) {
           LOG("GenericSingleSampleFitModel",pNOTICE)
-            << "Skipping untweaked param [" << util::NameRegistry::Instance()->ParamAsString(p)
+            << "Skipping untweaked param [" << param_name
             << "] with hypothesis curr val = " << f;
         }
 #endif
@@ -2269,7 +2270,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
-            << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+            << "Applying parameter: " << param_name << " with value = " << f
             << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]";
 #endif
         }
@@ -2283,7 +2284,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
-            << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+            << "Applying parameter: " << param_name << " with value = " << f
             << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
             << " and " << util::AsString(true_kinevars[1]) << " bin range: [" << true2_min << ", " << true2_max << "]";
 #endif
@@ -2301,7 +2302,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
-            << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+            << "Applying parameter: " << param_name << " with value = " << f
             << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]";
 #endif
         }
@@ -2315,7 +2316,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
-            << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+            << "Applying parameter: " << param_name << " with value = " << f
             << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]"
             << " and " << util::AsString(reco_kinevars[1]) << " bin range: [" << reco2_min << ", " << reco2_max << "]";
 #endif
@@ -2338,6 +2339,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           }
           for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
             // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
+            if(std::fabs(templFinOb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
             double frac_reco = 1.;
             if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
               const vector<double> & reco1_range (reco_ob->BinRange(ireco,reco_kinevars[0]));
@@ -2355,7 +2357,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                 unsigned int use_debug_itrue = debug_itrue;
                 if(debug_true0 == -999) { use_debug_itrue = itrue; }
                 LOG("GenericSingleSampleFitModel",pNOTICE)
-                  << "Skipping untweaked param [" << util::NameRegistry::Instance()->ParamAsString(p)
+                  << "Skipping untweaked param [" << param_name
                   << "] with curr val = " << f << ", effective tweak = " << effective_tweak
                   << "(itrue = " << use_debug_itrue << ", ireco = " << ireco << ")";
               }
@@ -2375,7 +2377,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               unsigned int use_debug_itrue = debug_itrue;
               if(debug_true0 == -999) { use_debug_itrue = itrue; }
               LOG("GenericSingleSampleFitModel",pNOTICE)
-                << "Applying norm param with kinematic dependence [" << util::NameRegistry::Instance()->ParamAsString(p)
+                << "Applying norm param with kinematic dependence [" << param_name
                 << "] with curr val = " << f << ", effective tweak = " << effective_tweak
                 << "; new bin content = " << templFinOb[debug_ireco][use_debug_itrue];
             }
@@ -2390,7 +2392,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pINFO)
           << fName <<": "
-          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f << " to whole mode "<<util::AsString(m);
+          << "Applying parameter: " << param_name << " with value = " << f << " to whole mode "<<util::AsString(m);
 #endif
         noEt *= f;
 #ifndef __LET_ME_DO_STUPID_STUFF_WITH_MY_NORMALISATIONS__
@@ -2404,7 +2406,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
         if(noEt < 0) {
           std::cerr << "Applying a negative normalisation for parameter "
-                    << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+                    << param_name << std::endl;
         }
 #endif
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
@@ -2415,7 +2417,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef DEBUG_SINGLE_BIN
         if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && (debug_param == conv::kPhypUndefined || p == debug_param)) {
           LOG("GenericSingleSampleFitModel",pNOTICE)
-            << "Applying norm param with NO kinematic dependence [" << util::NameRegistry::Instance()->ParamAsString(p)
+            << "Applying norm param with NO kinematic dependence [" << param_name
             << "] with curr val = " << noEt
             << "; new bin content = " << templFinOb[debug_ireco][debug_itrue];
         }
@@ -2428,9 +2430,10 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
       PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
       if (p == kPhypUndefined          ) {continue;}
+      std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
       
       if (!fPhysHypothesis.Contains(p)) {
-        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
+        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
         continue;
       }
 
@@ -2442,14 +2445,16 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pDEBUG) 
-          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+          << "Applying parameter: " << param_name << " with value = " << f
           << " using splines.";
 #endif
+      double untuned = fSystematics->UntunedValue(p);
       VALORArrayBin splbin;
       splbin.bin3 = ip;
       for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
         splbin.bin2 = itrue;
         for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+          if(std::fabs(templFinOb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
           splbin.bin1 = ireco;
           double response = 1;
           ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
@@ -2457,27 +2462,27 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           if (spl==util::DuneRFL::kNoSplineRequired) {
             LOG("GenericSingleSampleFitModel",pERROR)
               <<"Got no spline required for bin expecting spline."
-              <<util::NameRegistry::Instance()->ParamAsString(p)<<", "<<util::AsString(fBeam)<<", "
+              <<param_name<<", "<<util::AsString(fBeam)<<", "
               <<util::AsString(fSample)<<","<<util::AsString(m);
           }
           if (spl!=util::DuneRFL::kFlatSpline) {
             const std::string spline_wght_method = fRFL->GetSplineWeightingMethod();
             if (spline_wght_method == "curr_tweak") {
               // Apply weights based on the spline evaluated at the current - untuned values
-              double untuned = fSystematics->UntunedValue(p);
-              double current = f;
-              response = spl->Eval(current - untuned);
+              response = spl->Eval(f - untuned);
             }
             else {
               // Default spline weighting method: evaluate splines at the current value
               response = spl->Eval(f);
             }
 
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel", pDEBUG)
-              << "Got response = " << response << " for param = " << util::NameRegistry::Instance()->ParamAsString(p)
-              << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << fSystematics->UntunedValue(p)
+              << "Got response = " << response << " for param = " << param_name
+              << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << untuned
               << ", current = " << f << ", from spline with name [" << spl->GetName()
               << "] and title [" << spl->GetTitle() << "]";
+#endif
 
             if (response<0) {
               LOG("GenericSingleSampleFitModel",pINFO)
@@ -2497,8 +2502,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               LOG("GenericSingleSampleFitModel",pNOTICE) << "True kinevar 0 = " << true_sb->BinCentre(use_debug_itrue, 0);
             }
             LOG("GenericSingleSampleFitModel",pNOTICE)
-              << "Applying spline param [" << util::NameRegistry::Instance()->ParamAsString(p)
-              << "] with curr val = " << f << ", untuned val = " << fSystematics->UntunedValue(p)
+              << "Applying spline param [" << param_name
+              << "] with curr val = " << f << ", untuned val = " << untuned
               << ", weight = " << response
               << "; new bin content = " << templFinOb[debug_ireco][use_debug_itrue]
               << ", from spline with name [" << spl->GetName() << "] and title [" << spl->GetTitle() << "]";
@@ -2527,9 +2532,10 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
         if (p == kPhypUndefined          ) {continue;}
+        std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
         
         if (!fPhysHypothesis.Contains(p)) {
-          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
           continue;
         }
         
@@ -2551,7 +2557,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
           if(f < 0) {
           std::cerr << "Applying a negative normalisation for parameter "
-                    << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+                    << param_name << std::endl;
           }
 #endif
           bool tweaked = TMath::Abs(f-1) > kASmallNum;
@@ -2604,7 +2610,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
-              << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+              << "Applying parameter: " << param_name << " with value = " << f
               << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]";
 #endif
           }
@@ -2618,7 +2624,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
-              << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+              << "Applying parameter: " << param_name << " with value = " << f
               << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
               << " and " << util::AsString(true_kinevars[1]) << " bin range: [" << true2_min << ", " << true2_max << "]";
 #endif
@@ -2636,7 +2642,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
-              << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+              << "Applying parameter: " << param_name << " with value = " << f
               << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]";
 #endif
           }
@@ -2650,7 +2656,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
-              << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+              << "Applying parameter: " << param_name << " with value = " << f
               << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]"
               << " and " << util::AsString(reco_kinevars[1]) << " bin range: [" << reco2_min << ", " << reco2_max << "]";
 #endif
@@ -2673,6 +2679,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             }
             for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
               // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
+              if(std::fabs(templFinSb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
               double frac_reco = 1.;
               if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
                 const vector<double> & reco1_range (reco_sb->BinRange(ireco,reco_kinevars[0]));
@@ -2712,7 +2719,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
           if(f < 0) {
             std::cerr << "Applying a negative normalisation for parameter "
-                      << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+                      << param_name << std::endl;
         }
 #endif
 
@@ -2730,7 +2737,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #endif
           if(fnoEt < 0) {
             std::cerr << "Applying a negative normalisation for parameter "
-                      << util::NameRegistry::Instance()->ParamAsString(p) << std::endl;
+                      << param_name << std::endl;
         }
 #endif
           for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
@@ -2745,9 +2752,10 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
         if (p == kPhypUndefined          ) {continue;}
+        std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
 
         if (!fPhysHypothesis.Contains(p)) {
-          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
           continue;
         }
 
@@ -2759,14 +2767,16 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pDEBUG)
-          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+          << "Applying parameter: " << param_name << " with value = " << f
           << " using splines.";
 #endif
+        double untuned = fSystematics->UntunedValue(p);
         VALORArrayBin splbin;
         splbin.bin3 = ip;
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
           splbin.bin2 = itrue;
           for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
+            if(std::fabs(templFinSb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
             splbin.bin1 = ireco;
             double response = 1;
             ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
@@ -2774,26 +2784,26 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             if (spl==util::DuneRFL::kNoSplineRequired) {
               LOG("GenericSingleSampleFitModel",pERROR)
                 <<"Got no spline required for bin expecting spline."
-                <<util::NameRegistry::Instance()->ParamAsString(p)<<", "<<util::AsString(fBeam)<<", "
+                <<param_name<<", "<<util::AsString(fBeam)<<", "
                 <<util::AsString(fSample)<<","<<util::AsString(m);
             }
             if (spl!=util::DuneRFL::kFlatSpline) {
               const std::string spline_wght_method = fRFL->GetSplineWeightingMethod();
               if (spline_wght_method == "curr_tweak") {
                 // Apply weights based on the spline evaluated at the current - untuned values
-                double untuned = fSystematics->UntunedValue(p);
-                double current = f;
-                response = spl->Eval(current - untuned);
+                response = spl->Eval(f - untuned);
               }
               else {
                 // Default spline weighting method: evaluate splines at the current value
                 response = spl->Eval(f);
               }
 
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
               LOG("GenericSingleSampleFitModel", pDEBUG)
-                << "Got response = " << response << " for param = " << util::NameRegistry::Instance()->ParamAsString(p)
-                << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << fSystematics->UntunedValue(p)
+                << "Got response = " << response << " for param = " << param_name
+                << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << untuned
                 << ", current = " << f;
+#endif
 
               if (response<0) {
                 LOG("GenericSingleSampleFitModel",pINFO)
