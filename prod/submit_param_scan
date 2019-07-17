@@ -185,7 +185,7 @@ if($resource ne "fnal") {
 	}
     }
     
-    
+    $jobID = 0;
     for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
 	
 	$program   = "valor_dune-run_fit";
