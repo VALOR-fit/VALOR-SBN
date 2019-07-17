@@ -84,7 +84,7 @@ public:
   std::pair<int,int> GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m = conv::kmUndefined) const;
 
   // Get the name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
-  const std::string GetSplineWeightingMethod(void) const { return fSplineWghtMethod; }
+  const std::string & GetSplineWeightingMethod(void) const { return fSplineWghtMethod; }
 
   // When spline weights come out negative, force them to this value instead
   const double GetForceNegWghtTo(void) const { return fForceNegWghtTo; }

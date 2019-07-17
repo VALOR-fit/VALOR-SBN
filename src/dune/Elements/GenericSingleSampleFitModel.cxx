@@ -2449,6 +2449,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           << " using splines.";
 #endif
       double untuned = fSystematics->UntunedValue(p);
+      const std::string & spline_wght_method = fRFL->GetSplineWeightingMethod();
+      bool use_spline_wght_curr_tweak_method = false;
+      if (spline_wght_method == "curr_tweak") {
+        use_spline_wght_curr_tweak_method = true;
+      }
       VALORArrayBin splbin;
       splbin.bin3 = ip;
       for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
@@ -2466,8 +2471,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               <<util::AsString(fSample)<<","<<util::AsString(m);
           }
           if (spl!=util::DuneRFL::kFlatSpline) {
-            const std::string spline_wght_method = fRFL->GetSplineWeightingMethod();
-            if (spline_wght_method == "curr_tweak") {
+            if (use_spline_wght_curr_tweak_method) {
               // Apply weights based on the spline evaluated at the current - untuned values
               response = spl->Eval(f - untuned);
             }
@@ -2771,6 +2775,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           << " using splines.";
 #endif
         double untuned = fSystematics->UntunedValue(p);
+        const std::string & spline_wght_method = fRFL->GetSplineWeightingMethod();
+        bool use_spline_wght_curr_tweak_method = false;
+        if (spline_wght_method == "curr_tweak") {
+          use_spline_wght_curr_tweak_method = true;
+        }
         VALORArrayBin splbin;
         splbin.bin3 = ip;
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
@@ -2788,8 +2797,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                 <<util::AsString(fSample)<<","<<util::AsString(m);
             }
             if (spl!=util::DuneRFL::kFlatSpline) {
-              const std::string spline_wght_method = fRFL->GetSplineWeightingMethod();
-              if (spline_wght_method == "curr_tweak") {
+              if (use_spline_wght_curr_tweak_method) {
                 // Apply weights based on the spline evaluated at the current - untuned values
                 response = spl->Eval(f - untuned);
               }
