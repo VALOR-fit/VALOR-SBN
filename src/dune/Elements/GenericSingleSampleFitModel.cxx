@@ -1590,8 +1590,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     
     // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
     // Hard to read, so should only be used in code for which speed is essential.
-    typedef double (templtype)[n_reco_bins_ob][n_true_bins_sb];
-    templtype & templFinOb = *reinterpret_cast<templtype *>(&(fMCTFinOb[imode]->GetEntryRef(0,0)));
+    typedef double (templtypeOb)[n_reco_bins_ob][n_true_bins_sb];
+    templtypeOb & templFinOb = *reinterpret_cast<templtypeOb *>(&(fMCTFinOb[imode]->GetEntryRef(0,0)));
 
     // First do the normalisation parameters
     for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
@@ -2213,12 +2213,13 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     const VALORBinning * true_sb = fBinning->TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
     
-    VALORArrayBin bin;
-    VALORArrayBin sbin;
+    // Recast our VALORarrays as simple C-arrays to speed up the many rapid accesses this function needs
+    typedef double (templtypeOb)[n_reco_bins_ob][n_true_bins_sb];
+    templtypeOb & templFinOb = *reinterpret_cast<templtypeOb *>(&(fMCTFinOb[imode]->GetEntryRef(0,0)));
+    typedef double (templtypeSb)[n_reco_bins_sb][n_true_bins_sb];
+    templtypeSb & templFinSb = *reinterpret_cast<templtypeSb *>(&(fMCTFinSb[imode]->GetEntryRef(0,0)));
 
     for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-      bin .bin2 = itrue;
-      sbin.bin2 = itrue;
       //get the true energy to calculate osc prob 
       double Etrue = true_sb->BinCentre(itrue,conv::kvEtrue);
       
@@ -2280,18 +2281,14 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
       
       if(fMCTNullOb[imode]) {continue;}
       
-      for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-        bin.bin1 = ireco;
-        double & val = fMCTFinOb[imode]->GetEntryRef(bin);
-        val *= posc;
+      for(int ireco_ob = 0; ireco_ob < n_reco_bins_ob; ireco_ob++) {
+        templFinOb[ireco_ob][itrue] *= posc;
       }//ireco
         
       if(update_mct_sb) {
         if(fMCTNullSb[imode]) {continue;}
         for(int ireco_sb = 0; ireco_sb < n_reco_bins_sb; ireco_sb++) {
-          sbin.bin1 = ireco_sb;
-          double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
-          val *= posc;
+          templFinSb[ireco_sb][itrue] *= posc;
         }//ireco_sb
       }//update_mct_sb
     }//itrue
