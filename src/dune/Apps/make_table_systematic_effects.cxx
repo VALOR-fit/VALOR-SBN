@@ -157,8 +157,6 @@ int main(int argc, char ** argv)
 
   // Generate pdfs
   for(int itoy = 0; itoy < ntoys; itoy++) {
-    if(itoy % 100 == 0) { cout << "** Toy-MC: #" << itoy << endl; }
-
     // Randomise the systematics in the model, and copy them to the FPL
     model->ResetSystematics("all");
     model->RandomizeSystematics(syst_param_map);
@@ -214,14 +212,15 @@ int main(int argc, char ** argv)
       }
     }
 
-    fp->FromPhysParamList(model->Tweaks(),"current");
+    fp->FromPhysParamList(model->Tweaks(),"current-silent");
 
     // Check that the parameter values are physical. Rethrow if they aren't
     if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp) && rethrow_unphysical) {
-      LOG("valor_dune", pNOTICE) << "At least one parameter thrown outside expected limits. Regenerating...";
       itoy--;
       continue;
     }
+
+    if(itoy % 100 == 0) { cout << "** Toy-MC: #" << itoy << endl; }
     
     // Generate predictions
     model->Generate(*fp,"+SB");
