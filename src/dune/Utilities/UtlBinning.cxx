@@ -137,7 +137,8 @@ TH1D* Make1DHistogram(const VALORArray& v,
   const VALORArray* targetV = nullptr;
   const KBCubHcmbEdge2Edge * newRecoBinning = nullptr;
   if (recoKv.size() > 1) {
-     newRecoBinning = recoBinning->Contract(ks);
+     newRecoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(recoBinning->Contract(ks));
+     assert(newRecoBinning);
     // Need to integrate out the reco variables here, before integrating over
     // truth
     targetV = Contract(v, b, *newRecoBinning);
