@@ -79,10 +79,12 @@ foreach (@ARGV) {
   elsif($_ eq '--min-value1'             ) { $min_value1           = $ARGV[$iarg+1]; }
   elsif($_ eq '--max-value1'             ) { $max_value1           = $ARGV[$iarg+1]; }
   elsif($_ eq '--log-param1'             ) { $log_param1           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--input-value1'           ) { $input_value1         = $ARGV[$iarg+1]; }
   elsif($_ eq '--npoints2'               ) { $npoints2             = $ARGV[$iarg+1]; }
   elsif($_ eq '--param2'                 ) { $param2               = $ARGV[$iarg+1]; }
   elsif($_ eq '--min-value2'             ) { $min_value2           = $ARGV[$iarg+1]; }
   elsif($_ eq '--max-value2'             ) { $max_value2           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--input-value2'           ) { $input_value2         = $ARGV[$iarg+1]; }
   elsif($_ eq '--log-param2'             ) { $log_param2           = $ARGV[$iarg+1]; }
   elsif($_ eq '--discovery'              ) { $discovery            = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
@@ -115,11 +117,13 @@ $param1                 = "cpv"                                   unless defined
 $min_value1             = -3.141592653589793                      unless defined $min_value1;
 $max_value1             = 3.141592653589793                       unless defined $max_value1;
 $log_param1             = 0                                       unless defined $log_param1;
+$input_value1           = "none"                                  unless defined $input_value1;
 $npoints2               = 50                                      unless defined $npoints2;
 $param2                 = "none"                                  unless defined $param2;
 $min_value2             = "none"                                  unless defined $min_value2;
 $max_value2             = "none"                                  unless defined $max_value2;
 $log_param2             = 0                                       unless defined $log_param2;
+$input_value2           = "none"                                  unless defined $input_value2;
 $discovery              = 0                                       unless defined $discovery;
 $fitparamlist           = "standard"                              unless defined $fitparamlist;
 $mhchoice               = "normal"                                unless defined $mhchoice;
@@ -226,12 +230,18 @@ if($resource ne "fnal") {
         "--first-octant ".$standard_options.
         " --fix-at-$param1 $param_val1 ".
         " --fix-$param1 ";
+        if ($input_value1 ne "none") {
+          $arguments = $arguments." --input-$param1 $input_value1 ";
+        }
         if (!$only1dscan) {
           $arguments = $arguments.
           " --fix-at-$param2 $param_val2 ".
           " --fix-$param2 ";
+          if ($input_value2 ne "none") {
+            $arguments = $arguments." --input-$param2 $input_value2 ";
+          }
         }
-      }
+      } #!discovery
       else {
         $arguments = "--tag $tag-$param1-$param2 ".
         "--first-octant ".$standard_options.
