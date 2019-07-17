@@ -13,4 +13,6 @@
 #pragma link C++ class valor::GenericSingleSampleFitModel+;
 #pragma link C++ class valor::GenericSingleSampleFitData+;
 
+#pragma link C++ class std::vector<std::vector<float> >;
+
 #endif

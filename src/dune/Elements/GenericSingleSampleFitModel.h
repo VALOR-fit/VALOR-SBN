@@ -100,6 +100,8 @@ public:
   // Get POT
   const double & GetPOT() const;
   
+  const std::string & GetLastConfigFileRead() const;
+  
   // Get the response function library and binning
   const util::DuneRFL * GetRFL(void) const;
   const SingleSampleKineBinning * GetBinning(void) const;
@@ -157,6 +159,9 @@ private:
 
   // Fiducial mass (ktonnes)
   double fFiducialMass;
+  
+  // Name of the config file read
+  std::string fConfigFileRead;
 
   // Input VALOR MC DSTs
   bool fUseMCDST;
