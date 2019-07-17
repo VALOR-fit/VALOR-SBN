@@ -262,7 +262,7 @@ if($resource ne "fnal") {
 		$fmwk_setup_script = "$fmwk_softw_dir/setup/setup_at_cvmfs_root6.sh";
 		$dune_setup_script = "$dune_softw_dir/setup/setup_at_cvmfs_root6.sh";
 		
-		$jobname = "${tag}-${param1}-${param2}-${jobID}";
+		$jobname = "${tag}-${param1}-${param2}_${jobID}";
 		$shellfn = "$job_dir/${jobname}.sh";
 		
 		open(shell,">".$shellfn);
@@ -287,8 +287,8 @@ if($resource ne "fnal") {
 		$cndfn = "$job_dir/${jobname}.condor";
 		open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
 		print CND "Arguments                = $shellfn \n";
-		print CND "Error                    = ${jobname}_\$\(Process\).err \n";
-		print CND "Output                   = ${jobname}_\$\(Process\).out \n";
+		print CND "Error                    = ${jobname}.err \n";
+		print CND "Output                   = ${jobname}.out \n";
 		print CND $default_cnd_options;
 		close(CND);
 		system("condor_submit",$cndfn);
