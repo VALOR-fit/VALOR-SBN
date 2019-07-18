@@ -150,6 +150,7 @@ private:
   void ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs, CorrelatedSystematics* syst,
                                  std::string param_set_str, conv::ApplyMask_t mask, bool use_current_vals = true);
 
+  void FillNonEmptyBinVectors(void);
 
   const util::ArrIdx * fArrIdx;
   
@@ -251,6 +252,12 @@ private:
   // Vector of tuning hists and the apply masks and kine vars that they should be used for
   std::vector<TuningInfo> fEventByEventTuningHists;
   std::vector<TuningInfo> fBinByBinTuningHists;
+
+  // Vector of non-empty bins in each MC template. Built as vec[imode][ibin] = Ntrue * ireco + itrue
+  std::vector<std::vector<int>> fNonEmptyBinsOb;
+  std::vector<std::vector<int>> fNonEmptyBinsSb;
+  std::vector<int> fNumOfNonEmptyBinsOb;   // The number of non-empty bins in each mode
+  std::vector<int> fNumOfNonEmptyBinsSb;
 };
 
 } // valor

@@ -81,7 +81,11 @@ const util::ArrIdx * arridx = util::ArrIdx::Instance();
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC(),
   fBinning(NULL),
-  fReactionModes()
+  fReactionModes(),
+  fNonEmptyBinsOb(),
+  fNonEmptyBinsSb(),
+  fNumOfNonEmptyBinsOb(),
+  fNumOfNonEmptyBinsSb()
 {
   this->Init();
 }
@@ -266,6 +270,8 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   if (!skip_spline_read) {
     if (! this->FillSplines(file,opt)) { return false; }
   }
+
+  this->FillNonEmptyBinVectors();
     
 
   LOG("GenericSingleSampleFitModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
@@ -986,6 +992,10 @@ void GenericSingleSampleFitModel::Book(void)
   // And we may have to completely merge Book/Read
   int isample = fArrIdx->SampleIdx(fBeam,fSample);
   fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
+  fNonEmptyBinsOb = std::vector<std::vector<int>>(fReactionModes.size());
+  fNonEmptyBinsSb = std::vector<std::vector<int>>(fReactionModes.size());
+  fNumOfNonEmptyBinsOb = std::vector<int>(fReactionModes.size());
+  fNumOfNonEmptyBinsSb = std::vector<int>(fReactionModes.size());
 
   this->BuildParamLists();
 
@@ -998,6 +1008,9 @@ void GenericSingleSampleFitModel::Book(void)
     const int n_reco_bins_ob = reco_ob->NBins();
     const int n_reco_bins_sb = reco_sb->NBins();
     const int n_true_bins    = true_sb->NBins();
+
+    fNonEmptyBinsOb[imode] = std::vector<int>(n_reco_bins_ob * n_true_bins);
+    fNonEmptyBinsSb[imode] = std::vector<int>(n_reco_bins_sb * n_true_bins);
 
     LOG("GenericSingleSampleFitModel",pDEBUG) 
       << "Booking MC template (simple binning) for " 
@@ -2061,7 +2074,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 {
   // This method maps sys -> fin MC templates.
   // Applying correlated flux and cross-section systematics
-  
+
   LOG("GenericSingleSampleFitModel",pINFO) 
     << fName
     << " - Applying physics params (option: " 
@@ -2322,34 +2335,40 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           util::Die(-1); break;
         }
 
-        for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
-          double frac_true = 1.;
-          if (apply_true_ndims == 1 || apply_true_ndims == 2) {
-            const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
-            frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
-          }
-          if (apply_true_ndims == 2) {
-            const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
-            frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
-          }
-          for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-            // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
-            if(std::fabs(templFinOb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
-            double frac_reco = 1.;
-            if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
-              const vector<double> & reco1_range (reco_ob->BinRange(ireco,reco_kinevars[0]));
-              frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
-            }
-            if (apply_reco_ndims == 2) {
-              const vector<double> & reco2_range (reco_ob->BinRange(ireco,reco_kinevars[1]));
-              frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
-            }
+        int last_itrue = -1;
+        double frac_true = 1.;
+        for(int i_non_empty = 0; i_non_empty < fNumOfNonEmptyBinsOb[imode]; i_non_empty++) {
+          // Only loop over non-empty MC template bins
+          int itrue =  fNonEmptyBinsOb[imode][i_non_empty] % n_true_bins_sb;
+          int ireco = (fNonEmptyBinsOb[imode][i_non_empty] - itrue) / n_true_bins_sb;
 
-            double effective_tweak = frac_true * frac_reco * (f-1.) + 1;    // TODO: put in the untuned value here instead of 1 (in both occurrences)
-            if (std::fabs(effective_tweak-1.) < conv::kASmallNum) {
+          // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
+          if(itrue != last_itrue) {
+            // Only calculate the frac_true when entering a new true bin
+            frac_true = 1.;
+            if (apply_true_ndims == 1 || apply_true_ndims == 2) {
+              const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
+              frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+            }
+            if (apply_true_ndims == 2) {
+              const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
+              frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+            }
+          }
+          double frac_reco = 1.;
+          if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
+            const vector<double> & reco1_range (reco_ob->BinRange(ireco,reco_kinevars[0]));
+            frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
+          }
+          if (apply_reco_ndims == 2) {
+            const vector<double> & reco2_range (reco_ob->BinRange(ireco,reco_kinevars[1]));
+            frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
+          }
+
+          double effective_tweak = frac_true * frac_reco * (f-1.) + 1;    // TODO: put in the untuned value here instead of 1? (in both occurrences)
+          if (std::fabs(effective_tweak-1.) < conv::kASmallNum) {
 #ifdef DEBUG_SINGLE_BIN
-              if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue  && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+            if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && itrue == debug_itrue  && (debug_param == conv::kPhypUndefined || p == debug_param)) {
                 unsigned int use_debug_itrue = debug_itrue;
                 if(debug_true0 == -999) { use_debug_itrue = itrue; }
                 LOG("GenericSingleSampleFitModel",pNOTICE)
@@ -2358,18 +2377,18 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                   << "(itrue = " << use_debug_itrue << ", ireco = " << ireco << ")";
               }
 #endif
-              continue;
-            }
+            continue;
+          }
 
-            double & val = templFinOb[ireco][itrue];
-            val *= effective_tweak;
+          double & val = templFinOb[ireco][itrue];
+          val *= effective_tweak;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-            LOG("GenericSingleSampleFitModel",pDEBUG) 
-              << "MCT[" << imode << "] = " 
+          LOG("GenericSingleSampleFitModel",pDEBUG)
+              << "MCT[" << imode << "] = "
               << val/f << " --> " << val;
 #endif
 #ifdef DEBUG_SINGLE_BIN
-            if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && (itrue == debug_itrue || debug_true0 == -999) && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+          if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && (itrue == debug_itrue || debug_true0 == -999) && (debug_param == conv::kPhypUndefined || p == debug_param)) {
               unsigned int use_debug_itrue = debug_itrue;
               if(debug_true0 == -999) { use_debug_itrue = itrue; }
               LOG("GenericSingleSampleFitModel",pNOTICE)
@@ -2378,8 +2397,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                 << "; new bin content = " << templFinOb[debug_ireco][use_debug_itrue];
             }
 #endif
-          }//ireco: reco bins
-        }//itrue: true bins
+          last_itrue = itrue;
+        } // i non-empty bin
       }// has kinematic dependence
 
       // then apply the non-Etrue-dependent factors (use scale - not loop)
@@ -2405,10 +2424,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                     << param_name << std::endl;
         }
 #endif
-        for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-            templFinOb[ireco][itrue] *= noEt;
-          }
+        for(int i_non_empty = 0; i_non_empty < fNumOfNonEmptyBinsOb[imode]; i_non_empty++) {
+          // Only loop over non-empty MC template bins
+          int itrue =  fNonEmptyBinsOb[imode][i_non_empty] % n_true_bins_sb;
+          int ireco = (fNonEmptyBinsOb[imode][i_non_empty] - itrue) / n_true_bins_sb;
+          templFinOb[ireco][itrue] *= noEt;
         }
 #ifdef DEBUG_SINGLE_BIN
         if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && (debug_param == conv::kPhypUndefined || p == debug_param)) {
@@ -2448,50 +2468,55 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       const conv::SplEvalType_t & spline_eval_type = fRFL->GetSplineEvalType();
       VALORArrayBin splbin;
       splbin.bin3 = ip;
-      for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-        splbin.bin2 = itrue;
-        for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-          if(std::fabs(templFinOb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
-          splbin.bin1 = ireco;
-          double response = 1;
-          ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
-          const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(spl_addr);
-          if (spl==util::DuneRFL::kNoSplineRequired) {
-            LOG("GenericSingleSampleFitModel",pERROR)
-              <<"Got no spline required for bin expecting spline."
-              <<param_name<<", "<<util::AsString(fBeam)<<", "
-              <<util::AsString(fSample)<<","<<util::AsString(m);
+
+      int last_itrue = -1;
+      for(int i_non_empty = 0; i_non_empty < fNumOfNonEmptyBinsOb[imode]; i_non_empty++) {
+        // Only loop over non-empty MC template bins
+        int itrue =  fNonEmptyBinsOb[imode][i_non_empty] % n_true_bins_sb;
+        int ireco = (fNonEmptyBinsOb[imode][i_non_empty] - itrue) / n_true_bins_sb;
+
+        if(itrue != last_itrue) { splbin.bin2 = itrue; }
+        splbin.bin1 = ireco;
+
+        double response = 1;
+        ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
+        const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(spl_addr);
+        if (spl==util::DuneRFL::kNoSplineRequired) {
+          LOG("GenericSingleSampleFitModel",pERROR)
+            <<"Got no spline required for bin expecting spline."
+            <<param_name<<", "<<util::AsString(fBeam)<<", "
+            <<util::AsString(fSample)<<","<<util::AsString(m);
+        }
+        if (spl!=util::DuneRFL::kFlatSpline) {
+          if (spline_eval_type == conv::kSplEvalCurrTweak) {
+            // Apply weights based on the spline evaluated at the current - untuned values
+            response = spl->Eval(f - untuned);
           }
-          if (spl!=util::DuneRFL::kFlatSpline) {
-            if (spline_eval_type == conv::kSplEvalCurrTweak) {
-              // Apply weights based on the spline evaluated at the current - untuned values
-              response = spl->Eval(f - untuned);
-            }
-            else {
-              // Default spline weighting method: evaluate splines at the current value
-              response = spl->Eval(f);
-            }
+          else {
+            // Default spline weighting method: evaluate splines at the current value
+            response = spl->Eval(f);
+          }
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-            LOG("GenericSingleSampleFitModel", pDEBUG)
+          LOG("GenericSingleSampleFitModel", pDEBUG)
               << "Got response = " << response << " for param = " << param_name
               << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << untuned
               << ", current = " << f << ", from spline with name [" << spl->GetName()
               << "] and title [" << spl->GetTitle() << "]";
 #endif
 
-            if (response<0) {
-              LOG("GenericSingleSampleFitModel",pINFO)
-               <<"Negative response from spline (OB) "//<<spl->GetName()
-               <<" evaluated at "<<f<<" with result "<<response
-               <<". Using " << fRFL->GetForceNegWghtTo() << " instead.";
-              response = fRFL->GetForceNegWghtTo();
-            }
+          if (response<0) {
+            LOG("GenericSingleSampleFitModel",pINFO)
+              <<"Negative response from spline (OB) "//<<spl->GetName()
+              <<" evaluated at "<<f<<" with result "<<response
+              <<". Using " << fRFL->GetForceNegWghtTo() << " instead.";
+            response = fRFL->GetForceNegWghtTo();
           }
-          double & val = templFinOb[ireco][itrue];
-          val *= response;
+        }
+        double & val = templFinOb[ireco][itrue];
+        val *= response;
 #ifdef DEBUG_SINGLE_BIN
-          if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && (itrue == debug_itrue || debug_true0 == -999) && (debug_param == conv::kPhypUndefined || p == debug_param)) {
+        if(fSample == debug_sample && fBeam == debug_beam && m == debug_mode && ireco == debug_ireco && (itrue == debug_itrue || debug_true0 == -999) && (debug_param == conv::kPhypUndefined || p == debug_param)) {
             unsigned int use_debug_itrue = debug_itrue;
             if(debug_true0 == -999) {
               use_debug_itrue = itrue;
@@ -2505,8 +2530,8 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               << ", from spline with name [" << spl->GetName() << "] and title [" << spl->GetTitle() << "]";
           }
 #endif
-        }//ireco
-      }//itrue
+        last_itrue = itrue;
+      } // i non-empty bin
     } // iparams (splines)
 #endif //SPLINE_WEIGHTS_ARE_ONE
     
@@ -2658,42 +2683,50 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             util::Die(-1); break;
           }
 
-          for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+          int last_itrue = -1;
+          double frac_true = 1.;
+          for(int i_non_empty = 0; i_non_empty < fNumOfNonEmptyBinsSb[imode]; i_non_empty++) {
+            // Only loop over non-empty MC template bins
+            int itrue =  fNonEmptyBinsSb[imode][i_non_empty] % n_true_bins_sb;
+            int ireco = (fNonEmptyBinsSb[imode][i_non_empty] - itrue) / n_true_bins_sb;
+
             // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
-            double frac_true = 1.;
-            if (apply_true_ndims == 1 || apply_true_ndims == 2) {
-              const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
-              frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
-            }
-            if (apply_true_ndims == 2) {
-              const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
-              frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
-            }
-            for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
-              // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
-              if(std::fabs(templFinSb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
-              double frac_reco = 1.;
-              if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
-                const vector<double> & reco1_range (reco_sb->BinRange(ireco,reco_kinevars[0]));
-                frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
+            if(itrue != last_itrue) {
+              // Only calculate the frac_true when entering a new true bin
+              frac_true = 1.;
+              if (apply_true_ndims == 1 || apply_true_ndims == 2) {
+                const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
+                frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
               }
-              if (apply_reco_ndims == 2) {
-                const vector<double> & reco2_range (reco_sb->BinRange(ireco,reco_kinevars[1]));
-                frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
+              if (apply_true_ndims == 2) {
+                const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
+                frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
               }
+            }
+            double frac_reco = 1.;
+            if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
+              const vector<double> & reco1_range (reco_sb->BinRange(ireco,reco_kinevars[0]));
+              frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
+            }
+            if (apply_reco_ndims == 2) {
+              const vector<double> & reco2_range (reco_sb->BinRange(ireco,reco_kinevars[1]));
+              frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
+            }
 
-              double effective_tweak = frac_true * frac_reco * (f-1.) + 1;
-              if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
+            double effective_tweak = frac_true * frac_reco * (f-1.) + 1;    // TODO: put in the untuned value here instead of 1? (in both occurrences)
+            if (std::fabs(effective_tweak-1.) < conv::kASmallNum) {
+              continue;
+            }
 
-              double & val = templFinSb[ireco][itrue];
-              val *= effective_tweak;
+            double & val = templFinSb[ireco][itrue];
+            val *= effective_tweak;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-              LOG("GenericSingleSampleFitModel",pDEBUG)
-                << "MCT[" << imode << "] = "
-                << val/f << " --> " << val;
+            LOG("GenericSingleSampleFitModel",pDEBUG)
+              << "MCT[" << imode << "] = "
+              << val/f << " --> " << val;
 #endif
-            }//ireco: reco bins
-          }//itrue: true bins
+            last_itrue = itrue;
+          } // i non-empty bin
         }// has kinematic dependence
         else {
           // then apply the non-Etrue-dependent factors (bundle them together to loop over the
@@ -2732,10 +2765,11 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
                       << param_name << std::endl;
         }
 #endif
-          for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-            for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-              templFinSb[ireco][itrue] *= fnoEt;
-            }
+          for(int i_non_empty = 0; i_non_empty < fNumOfNonEmptyBinsSb[imode]; i_non_empty++) {
+            // Only loop over non-empty MC template bins
+            int itrue =  fNonEmptyBinsSb[imode][i_non_empty] % n_true_bins_sb;
+            int ireco = (fNonEmptyBinsSb[imode][i_non_empty] - itrue) / n_true_bins_sb;
+            templFinSb[ireco][itrue] *= fnoEt;
           }
         }// (no energy dependence)
       }//ip (normalisations)
@@ -2766,49 +2800,55 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         const conv::SplEvalType_t & spline_eval_type = fRFL->GetSplineEvalType();
         VALORArrayBin splbin;
         splbin.bin3 = ip;
-        for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          splbin.bin2 = itrue;
-          for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
-            if(std::fabs(templFinSb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
-            splbin.bin1 = ireco;
-            double response = 1;
-            ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
-            const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(spl_addr);
-            if (spl==util::DuneRFL::kNoSplineRequired) {
-              LOG("GenericSingleSampleFitModel",pERROR)
-                <<"Got no spline required for bin expecting spline."
-                <<param_name<<", "<<util::AsString(fBeam)<<", "
-                <<util::AsString(fSample)<<","<<util::AsString(m);
+
+        int last_itrue = -1;
+        for(int i_non_empty = 0; i_non_empty < fNumOfNonEmptyBinsSb[imode]; i_non_empty++) {
+          // Only loop over non-empty MC template bins
+          int itrue =  fNonEmptyBinsSb[imode][i_non_empty] % n_true_bins_sb;
+          int ireco = (fNonEmptyBinsSb[imode][i_non_empty] - itrue) / n_true_bins_sb;
+
+          if(itrue != last_itrue) { splbin.bin2 = itrue; }
+          splbin.bin1 = ireco;
+
+          double response = 1;
+          ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
+          const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(spl_addr);
+          if (spl==util::DuneRFL::kNoSplineRequired) {
+            LOG("GenericSingleSampleFitModel",pERROR)
+              <<"Got no spline required for bin expecting spline."
+              <<param_name<<", "<<util::AsString(fBeam)<<", "
+              <<util::AsString(fSample)<<","<<util::AsString(m);
+          }
+          if (spl!=util::DuneRFL::kFlatSpline) {
+            if (spline_eval_type == conv::kSplEvalCurrTweak) {
+              // Apply weights based on the spline evaluated at the current - untuned values
+              response = spl->Eval(f - untuned);
             }
-            if (spl!=util::DuneRFL::kFlatSpline) {
-              if (spline_eval_type == conv::kSplEvalCurrTweak) {
-                // Apply weights based on the spline evaluated at the current - untuned values
-                response = spl->Eval(f - untuned);
-              }
-              else {
-                // Default spline weighting method: evaluate splines at the current value
-                response = spl->Eval(f);
-              }
+            else {
+              // Default spline weighting method: evaluate splines at the current value
+              response = spl->Eval(f);
+            }
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-              LOG("GenericSingleSampleFitModel", pDEBUG)
-                << "Got response = " << response << " for param = " << param_name
-                << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << untuned
-                << ", current = " << f;
+            LOG("GenericSingleSampleFitModel", pDEBUG)
+              << "Got response = " << response << " for param = " << param_name
+              << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << untuned
+              << ", current = " << f << ", from spline with name [" << spl->GetName()
+              << "] and title [" << spl->GetTitle() << "]";
 #endif
 
-              if (response<0) {
-                LOG("GenericSingleSampleFitModel",pINFO)
-                  <<"Negative response from spline (SB) "//<<spl->GetName()
-                  <<" evaluated at "<<f<<" with result "<<response
-                  <<". Using " << fRFL->GetForceNegWghtTo() << " instead.";
-                response = fRFL->GetForceNegWghtTo();
-              }
+            if (response<0) {
+              LOG("GenericSingleSampleFitModel",pINFO)
+                <<"Negative response from spline (SB) "//<<spl->GetName()
+                <<" evaluated at "<<f<<" with result "<<response
+                <<". Using " << fRFL->GetForceNegWghtTo() << " instead.";
+              response = fRFL->GetForceNegWghtTo();
             }
-            double & val = templFinSb[ireco][itrue];
-            val *= response;
-          }//ireco
-        }//itrue
+          }
+          double & val = templFinSb[ireco][itrue];
+          val *= response;
+          last_itrue = itrue;
+        } // i non-empty bin
       } //iparam (with splines)
 #endif
         
@@ -3680,6 +3720,39 @@ void GenericSingleSampleFitModel::ReweightHistUsingParamSet(TH1* hist_to_reweigh
         hist_to_reweight->SetBinContent(ibinx, current_content * weight);
       }
     }
+  }
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::FillNonEmptyBinVectors()
+{
+  const VALORBinning  * reco_ob = fBinning->RecoOptBinning();
+  const VALORBinning  * reco_sb = fBinning->RecoSmpBinning();
+  const int n_reco_bins_ob = reco_ob->NBins();
+  const int n_reco_bins_sb = reco_sb->NBins();
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+    ReacMode_t m = fReactionModes[imode];
+    if(m == kmUndefined) continue;
+
+    const VALORBinning *true_sb = fBinning->TrueSmpBinning(m);
+    const int n_true_bins = true_sb->NBins();
+
+    unsigned int i_nonempty_bin_ob = 0;
+    unsigned int i_nonempty_bin_sb = 0;
+    for(int itrue = 0; itrue < n_true_bins; itrue++) {
+      for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+        if(fMCTFinOb[imode]->GetEntryRef(ireco,itrue) > conv::kASmallNum) {
+          fNonEmptyBinsOb[imode][i_nonempty_bin_ob++] = n_true_bins * ireco + itrue;
+        }
+      }
+      for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
+        if(fMCTFinSb[imode]->GetEntryRef(ireco,itrue) > conv::kASmallNum) {
+          fNonEmptyBinsSb[imode][i_nonempty_bin_sb++] = n_true_bins * ireco + itrue;
+        }
+      }
+    }
+
+    fNumOfNonEmptyBinsOb[imode] = i_nonempty_bin_ob;
+    fNumOfNonEmptyBinsSb[imode] = i_nonempty_bin_sb;
   }
 }
 //________________________________________________________________________________________
