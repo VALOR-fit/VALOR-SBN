@@ -3366,6 +3366,19 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 
   unsigned int nbins = recoBinning->NBins(); // number of reco bins across all reco kinevars in the binning scheme
 
+  // Calculating the bin centres is computationally very expensive, so pre-calculate them here, outside of the big loop
+  std::vector<std::map<conv::KineVar_t, double>> unapplied_kv_bin_centres(nbins);
+  for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
+    for(conv::KineVar_t unapplied_binning_kv : unapplied_kvs) {
+      unapplied_kv_bin_centres[ireco][unapplied_binning_kv] = recoBinning->BinCentre(ireco, unapplied_binning_kv);
+    }
+  }
+
+  // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
+  // Hard to read, so should only be used in code for which speed is essential.
+  typedef double (pdftype)[nbins];
+  pdftype & pdfArr = *reinterpret_cast<pdftype *>(&(pdf->GetEntryRef(0)));
+
   // Get the number of overflow bins expected (1 for each time the binning loops)
   // TODO: Put in an underflow bin
   std::vector<unsigned int> end_bins;
@@ -3438,7 +3451,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 #endif
 
       }
-      old_events_per_bin[ireco] = pdf->GetEntry(ireco);
+      old_events_per_bin[ireco] = pdfArr[ireco];
     }
   }
 
@@ -3491,8 +3504,8 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
           // Set the overflow bin kine var value to that of the last bin
           check_ibin_u = ibin_u - 1;
         }
-        double unapplied_kv_val_s = recoBinning->BinCentre(  scaled_bin_to_global_bin.at(check_ibin_s), unapplied_binning_kv);  // TODO: calculate this outside the big loop and store in a vector?
-        double unapplied_kv_val_u = recoBinning->BinCentre(unscaled_bin_to_global_bin.at(check_ibin_u), unapplied_binning_kv);
+        const double & unapplied_kv_val_s = unapplied_kv_bin_centres[  scaled_bin_to_global_bin.at(check_ibin_s)].at(unapplied_binning_kv);
+        const double & unapplied_kv_val_u = unapplied_kv_bin_centres[unscaled_bin_to_global_bin.at(check_ibin_u)].at(unapplied_binning_kv);
         if(fabs(unapplied_kv_val_s - unapplied_kv_val_u) > conv::kASmallNum) {
           skip = true;
           break;
@@ -3546,14 +3559,14 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
       }
 
       const unsigned int & glob_bin_s = scaled_bin_to_global_bin.at(ibin_s);
-      double new_events = pdf->GetEntry(glob_bin_s) * factor;
+      double new_events = pdfArr[glob_bin_s] * factor;
       new_events_per_bin[ibin_u] += new_events;
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("Lateral", pDEBUG)
         << "scaled bin "    << ibin_s << " [" << bin_min_s << ", " << bin_max_s << "]; "
         << "un-scaled bin " << ibin_u << " [" << bin_min_u << ", " << bin_max_u << "]; "
-        << "factor = " << factor << "; old Nevents = " << pdf->GetEntry(glob_bin_s) << "; new Nevents = " << new_events;
+        << "factor = " << factor << "; old Nevents = " << pdfArr[glob_bin_s] << "; new Nevents = " << new_events;
 #endif
 
     }
@@ -3561,7 +3574,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 
   // Modify the PDF and print debug info
   for (int ibin = 0 ; ibin < nbins ; ibin++) {  // Loop over global bins
-    pdf->SetEntry(0, ibin);
+    pdfArr[ibin] = 0.;
   }
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -3575,12 +3588,12 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     if(bin_min_u < bin_max_u) { ibin_u++; }
     else                      { continue; }
     const unsigned int & ibin = unscaled_bin_to_global_bin.at(ibin_u);
-    pdf->GetEntryRef(ibin) += new_events_per_bin[ibin_u];
+    pdfArr[ibin] += new_events_per_bin[ibin_u];
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
     LOG("Lateral", pDEBUG)
       << "bin " << ibin << " [" << recoBinning->BinMinimum(ibin, kv) << ", " << recoBinning->BinMaximum(ibin, kv) << "]"
-      << "; old content = " << old_events_per_bin[ibin] << "; new content = " << pdf->GetEntry(ibin);
+      << "; old content = " << old_events_per_bin[ibin] << "; new content = " << pdfArr[ibin];
 #endif
 
   }
