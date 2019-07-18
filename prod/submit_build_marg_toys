@@ -38,11 +38,11 @@
 #  --rethrow-unphysical     : Toys that are generated with unphysical parameter values are rethrown
 #  --use-simple-binning     : Update the simple binning MC templates
 #
-#  --dmsq-scheme            : abs23 or fogli
-#  --hierarchy              : normal or inverted
+#  --dmsq-scheme            : abs23 or fogli		                 # TODO: Not yet implemented
+#  --hierarchy              : normal or inverted		              # TODO: Not yet implemented
 #  --marg-hierarchy         : Marginalise the mass hierarchy			# TODO: Not yet implemented
-#  --mix-param-choice       : sinsq2theta or sinsqtheta
-#  --mix-param-octant       : one or two
+#  --mix-param-choice       : sinsq2theta or sinsqtheta	  	    # TODO: Not yet implemented
+#  --mix-param-octant       : one or two		                     # TODO: Not yet implemented
 #
 #  --seed-syst              : Seed used for randomising systematic parameters
 #  --seed-osc               : Seed used for randomising oscillation parameters
@@ -139,7 +139,7 @@ $npt_job_par1        = 1                                                        
 $npt_job_par2        = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
 $fit_param_list      = "nuosc3f"                                                           unless defined $fit_param_list;
 $fit_param_opt       = ""                                                                  unless defined $fit_param_opt;
-$param_values_option = "randomize-all;prefit-errors"                                       unless defined $param_values_option;
+$param_values_option = "randomize-all\\;prefit-errors"                                      unless defined $param_values_option;
 $mesg_thresholds     = "verbosity.xml"                                                     unless defined $mesg_thresholds;
 $stat_fluct          = 1                                                                   unless defined $stat_fluct;
 $store_specra        = 0                                                                   unless defined $store_specra;
@@ -367,9 +367,9 @@ $step_par1 = ($max_par1 - $min_par1) / $npt_par1;
 $step_par2 = ($max_par2 - $min_par2) / $npt_par2;
 
 for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
-  $val_par1 = $min_par1 + $ibin1 * $step_par1
+  $val_par1 = $min_par1 + $ibin1 * $step_par1;
   for($ibin2 = 0; $ibin2 < $npt_par2; $ibin2++) {
-		$val_par2 = $min_par2 + $ibin2 * $step_par2
+		$val_par2 = $min_par2 + $ibin2 * $step_par2;
 
 		print "/////////////////////////////// \n \n";
 		print "File output ID: $fileid \n";
@@ -377,12 +377,21 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		print "   - bin param 2: $ibin2 \n";
 		print "\n";
 
+		# If we have only a single parameter of interest defined, set the options for par2 appropriately
+		$sub_par2  = $par2;
+		$sub_ibin2 = $ibin2;
+    if($par2 == "") {
+      $sub_par2  = "-";
+    	$sub_ibin2 = -1;		# This tells the Marginalisation class that we have a 1D fit
+    }
+
 		$program = "valor_dune-run_build_margtoys ";
 
+		# TODO: Put in the options like the hierarchy, octant etc.
 		$arguments = "--tag $tag --batch $batch --nmargtoy $nmargtoy --fit-param-list $fit_param_list " .
 		             "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 		             "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
-		             "--fit-param1-bin $ibin1 --fit-param2 $par2 --fit-param2-value $val_par2 --fit-param2-bin $ibin2 ";
+		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 --fit-param2-bin $sub_ibin2 ";
 
     if($stat_fluct         == 1) { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
     if($store_specra       == 1) { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
