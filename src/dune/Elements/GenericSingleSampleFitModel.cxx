@@ -2185,15 +2185,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
       PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
       if (p == kPhypUndefined          ) {continue;}
-      std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
+      assert(!util::IsOscParam(p));
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
+      const std::string & param_name = param.GetName();
 
       if (!fPhysHypothesis.Contains(p)) {
         LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
         continue;
       }
-      
-      assert(!util::IsOscParam(p));
-      const Parameter & param = ParameterPool::Instance()->GetParam(p);
       
       int iparr = arridx->FitParamIdx(p);
       
@@ -2427,14 +2426,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
       PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
       if (p == kPhypUndefined          ) {continue;}
-      std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
+      const std::string & param_name = param.GetName();
 
       if (!fPhysHypothesis.Contains(p)) {
         LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
         continue;
       }
 
-      const Parameter & param = ParameterPool::Instance()->GetParam(p);
       bool spline_is_applied = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,conv::kntInclusive); // TODO: Put in handling for nuclear targets
       if(!spline_is_applied) { continue; }
 
@@ -2529,7 +2528,9 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fNormParamsAppliedTo[imode][ip];
         if (p == kPhypUndefined          ) {continue;}
-        std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
+        assert(!util::IsOscParam(p));
+        const Parameter & param = ParameterPool::Instance()->GetParam(p);
+        const std::string & param_name = param.GetName();
 
         if (!fPhysHypothesis.Contains(p)) {
           LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
@@ -2538,8 +2539,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         
         int iparr = arridx->FitParamIdx(p);
 
-        assert(!util::IsOscParam(p));
-        const Parameter & param = ParameterPool::Instance()->GetParam(p);
         bool has_kinematic_dependence = param.HasKinematicRange();
          
         double f = fPhysHypothesis.CurrValue(p);
@@ -2745,14 +2744,14 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       for(unsigned int ip = 0; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
         if (p == kPhypUndefined          ) {continue;}
-        std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
+        const Parameter & param = ParameterPool::Instance()->GetParam(p);
+        const std::string & param_name = param.GetName();
 
         if (!fPhysHypothesis.Contains(p)) {
           LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
           continue;
         }
 
-        Parameter param = ParameterPool::Instance()->GetParam(p);
         bool spline_is_applied = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,conv::kntInclusive); // TODO: Put in handling for nuclear targets
         if(!spline_is_applied) { continue; }
 
