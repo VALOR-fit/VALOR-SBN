@@ -3118,21 +3118,37 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
 
+  // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
+  // Hard to read, so should only be used in code for which speed is essential.
+  typedef double (pdfTypeOb)[n_reco_bins_ob];
+  typedef double (pdfTypeSb)[n_reco_bins_sb];
+  pdfTypeOb & pdfTotObArr  = *reinterpret_cast<pdfTypeOb *>(&(fPDFTotOb->GetEntryRef(0)));
+  pdfTypeSb & pdfTotSbArr  = *reinterpret_cast<pdfTypeSb *>(&(fPDFTotSb->GetEntryRef(0)));
+
   for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     
     const VALORBinning * true_sb = fBinning->TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
-    
+
+    // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
+    // Hard to read, so should only be used in code for which speed is essential.
+    typedef double (mctTypeOb)[n_reco_bins_ob][n_true_bins_sb];
+    typedef double (mctTypeSb)[n_reco_bins_sb][n_true_bins_sb];
+    pdfTypeOb & pdfCompObArr = *reinterpret_cast<pdfTypeOb *>(&(fPDFCompOb[imode]->GetEntryRef(0)));
+    pdfTypeSb & pdfCompSbArr = *reinterpret_cast<pdfTypeSb *>(&(fPDFCompSb[imode]->GetEntryRef(0)));
+    mctTypeOb & mctFinObArr  = *reinterpret_cast<mctTypeOb *>(&(fMCTFinOb [imode]->GetEntryRef(0,0)));
+    mctTypeSb & mctFinSbArr  = *reinterpret_cast<mctTypeSb *>(&(fMCTFinSb [imode]->GetEntryRef(0,0)));
+
     if(fMCTNullOb[imode]) continue;
     
     for(int ireco=0; ireco < n_reco_bins_ob; ireco++) {
       double sum = 0.;
       for(int itrue=0; itrue < n_true_bins_sb; itrue++) {
-        sum += fMCTFinOb[imode]->GetEntry(ireco,itrue);
+        sum += mctFinObArr[ireco][itrue];
       }//itrue
-      fPDFCompOb[imode]->SetEntry(sum, ireco);
+      pdfCompObArr[ireco] = sum;
     }//ireco
 
     if(update_mct_sb) {
@@ -3141,9 +3157,9 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
       for(int ireco=0; ireco < n_reco_bins_sb; ireco++) {
         double sum = 0.;
         for(int itrue=0; itrue < n_true_bins_sb; itrue++) {
-          sum += fMCTFinSb[imode]->GetEntry(ireco,itrue);
+          sum += mctFinSbArr[ireco][itrue];
         }//itrue
-        fPDFCompSb[imode]->SetEntry(sum, ireco);
+        pdfCompSbArr[ireco] = sum;
       }//ireco
     }//update_mct_sb?
 
@@ -3154,14 +3170,15 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   // and calculate the total PDF
   //
     for(int ireco=0; ireco < n_reco_bins_ob; ireco++) {
-        double sum = 0.;
-        for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
-          ReacMode_t m = fReactionModes[imode];
-          if(m == kmUndefined) continue;
-          if(fMCTNullOb[imode]) continue;
-          sum += fPDFCompOb[imode]->GetEntry(ireco);
-        }//imode
-        fPDFTotOb->SetEntry(sum, ireco);
+      double sum = 0.;
+      for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
+        ReacMode_t m = fReactionModes[imode];
+        if(m == kmUndefined) continue;
+        if(fMCTNullOb[imode]) continue;
+        pdfTypeOb & pdfCompObArr = *reinterpret_cast<pdfTypeOb *>(&(fPDFCompOb[imode]->GetEntryRef(0)));
+        sum += pdfCompObArr[ireco];
+      }//imode
+      pdfTotObArr[ireco] = sum;
     }//ireco
 
   if(update_mct_sb) {
@@ -3171,21 +3188,26 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
         ReacMode_t m = fReactionModes[imode];
         if(m == kmUndefined) continue;
         if(fMCTNullOb[imode]) continue;
-        sum += fPDFCompSb[imode]->GetEntry(ireco);
+        pdfTypeSb & pdfCompSbArr = *reinterpret_cast<pdfTypeSb *>(&(fPDFCompSb[imode]->GetEntryRef(0)));
+        sum += pdfCompSbArr[ireco];
       }//imode
-      fPDFTotSb->SetEntry(sum, ireco);
+      pdfTotSbArr[ireco] = sum;
     }//ireco
   }//update_mct_sb?
 
   // Apply post-oscillation lateral systematics to each PDF (e.g. the energy scale systematic)
   this->ApplyPostOscLateralSystematics(fPDFTotOb, false);
-  this->ApplyPostOscLateralSystematics(fPDFTotSb, true);
+  if(update_mct_sb) {
+    this->ApplyPostOscLateralSystematics(fPDFTotSb, true);
+  }
   for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     if(fMCTNullOb[imode]) continue;
     this->ApplyPostOscLateralSystematics(fPDFCompOb[imode], false);
-    this->ApplyPostOscLateralSystematics(fPDFCompSb[imode], true);
+    if(update_mct_sb) {
+      this->ApplyPostOscLateralSystematics(fPDFCompSb[imode], true);
+    }
   }
 }
 //________________________________________________________________________________________
@@ -3497,14 +3519,13 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
       // Note: We end up with bins that go from the upper edge of an overflow to the lower edge of next
       // set of bins. This is fine, as this check automatically skips these bins
       bool skip = false;
-      for(conv::KineVar_t unapplied_binning_kv : unapplied_kvs) {
-        unsigned int check_ibin_s = ibin_s;
+      for(const conv::KineVar_t & unapplied_binning_kv : unapplied_kvs) {
         unsigned int check_ibin_u = ibin_u;
         if(is_unscaled_bin_overflow[ibin_u]) {
           // Set the overflow bin kine var value to that of the last bin
           check_ibin_u = ibin_u - 1;
         }
-        const double & unapplied_kv_val_s = unapplied_kv_bin_centres[  scaled_bin_to_global_bin.at(check_ibin_s)].at(unapplied_binning_kv);
+        const double & unapplied_kv_val_s = unapplied_kv_bin_centres[  scaled_bin_to_global_bin.at(ibin_s)].at(unapplied_binning_kv);
         const double & unapplied_kv_val_u = unapplied_kv_bin_centres[unscaled_bin_to_global_bin.at(check_ibin_u)].at(unapplied_binning_kv);
         if(fabs(unapplied_kv_val_s - unapplied_kv_val_u) > conv::kASmallNum) {
           skip = true;
@@ -3559,8 +3580,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
       }
 
       const unsigned int & glob_bin_s = scaled_bin_to_global_bin.at(ibin_s);
-      double new_events = pdfArr[glob_bin_s] * factor;
-      new_events_per_bin[ibin_u] += new_events;
+      new_events_per_bin[ibin_u] += pdfArr[glob_bin_s] * factor;
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("Lateral", pDEBUG)
