@@ -3314,22 +3314,23 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     return;
   }
 
-  Parameter param = ParameterPool::Instance()->GetParam(p);
+  const Parameter & param = ParameterPool::Instance()->GetParam(p);
+  const std::string & param_name = param.GetName();
   if(!param.HasKinematicRange()) {
-    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param.GetName()
+    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
                           << " has no kinematic range. Cannot apply";
     util::Die(-1);
   }
 
-  const std::vector<conv::KineVar_t> kvs = param.GetKineVars();
+  const std::vector<conv::KineVar_t> & kvs = param.GetKineVars();
   if(kvs.size() != 1) {
-    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param.GetName()
+    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
                           << " is applied to " << kvs.size() << " kinematic variables. Cannot apply";
     util::Die(-1);
   }
-  const conv::KineVar_t kv = kvs[0];
+  const conv::KineVar_t & kv = kvs[0];
   if(!util::IsReco(kv)) {
-    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param.GetName()
+    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
                           << " is applied to " << util::AsString(kv)
                           << ", but only reco kinevars can be applied";
     util::Die(-1);
@@ -3337,7 +3338,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 
   const VALORBinning * recoBinning = simple_binning ? fBinning->RecoSmpBinning() : fBinning->RecoOptBinning();
   if(!recoBinning->Contains(kv)) {
-    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param.GetName()
+    LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
                           << " is applied to " << util::AsString(kv)
                           << ", but this kine var is not in the binning scheme";
     util::Die(-1);
@@ -3357,9 +3358,11 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   bool tweaked = TMath::Abs(scale-1) > kASmallNum;
   if(!tweaked) return;
 
-  LOG("Lateral",pDEBUG) << "Applying lateral systematic parameter: " << param.GetName()
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+  LOG("Lateral",pDEBUG) << "Applying lateral systematic parameter: " << param_name
                        << "to PDF [" << pdf->GetName() << "] "
                        << " with kine var " << util::AsString(kv) << " and scale = " << scale;
+#endif
 
   unsigned int nbins = recoBinning->NBins(); // number of reco bins across all reco kinevars in the binning scheme
 
@@ -3405,12 +3408,15 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
       scaled_bin_edges  [iedge_s] = bin_min * scale; iedge_s++;
       scaled_bin_to_global_bin  [iedge_s-1 - n_up_edges_added] = ireco;
       unscaled_bin_to_global_bin[iedge_u-1 - n_up_edges_added] = ireco;
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("Lateral", pDEBUG) << "ireco = " << ireco << "; scaled bin = " << iedge_s-1 - n_up_edges_added
                              << "; un-scaled bin = " << iedge_u-1 - n_up_edges_added
                              << "; iedge_u = " << iedge_u-1 << "; iedge_s = " << iedge_s-1
                              << "; un-scaled edge = " << unscaled_bin_edges[iedge_u-1]
                              << "; scaled edge = "    << scaled_bin_edges[iedge_s-1]
                              << "; next end bin index = " << *end_bins_it;
+#endif
 
       // Add the high edge of the last bin, as well as an overflow bin
       if(ireco == *end_bins_it) {
@@ -3422,11 +3428,15 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
         is_unscaled_bin_overflow[iedge_u-2 - n_up_edges_added] = true;
         n_up_edges_added++;
         end_bins_it++;
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("Lateral", pDEBUG) << "un-scaled bin = " << iedge_u-2 - (n_up_edges_added-1)
                                << "; iedge_u = " << iedge_u-2 << "; iedge_s = " << iedge_s-1
                                << "; un-scaled edge = " << unscaled_bin_edges[iedge_u-2]
                                << "; scaled edge = "    << scaled_bin_edges[iedge_s-1]
                                << "; with overflow un-scaled edge = " << unscaled_bin_edges[iedge_u-1];
+#endif
+
       }
       old_events_per_bin[ireco] = pdf->GetEntry(ireco);
     }
@@ -3455,8 +3465,8 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   double factor = 0.0;
   int ibin_s = -1;
   for (unsigned int iedge_s = 0 ; iedge_s < scaled_bin_edges.size() - 1 ; iedge_s++) { // Loop over scaled edges
-    double bin_min_s = scaled_bin_edges[iedge_s]  ;
-    double bin_max_s = scaled_bin_edges[iedge_s+1];
+    const double & bin_min_s = scaled_bin_edges[iedge_s]  ;
+    const double & bin_max_s = scaled_bin_edges[iedge_s+1];
 
     // If the binning scheme is > 1D, looping over the edges of the scaled and unscaled bins will give a number of
     // nonsense 'bins', where the 'lower' edge will be greater than the 'upper' edge, so account for that here when
@@ -3465,8 +3475,8 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 
     int ibin_u = -1;
     for (int iedge_u = 0 ; iedge_u < unscaled_bin_edges.size() - 1 ; iedge_u++) {  // Loop over unscaled bins
-      double bin_min_u = unscaled_bin_edges[iedge_u]  ;
-      double bin_max_u = unscaled_bin_edges[iedge_u+1];
+      const double & bin_min_u = unscaled_bin_edges[iedge_u]  ;
+      const double & bin_max_u = unscaled_bin_edges[iedge_u+1];
       if(bin_min_u < bin_max_u) { ibin_u++; }
 
       // Only consider unscaled bins for the same kine var values as the scaled bin
@@ -3481,17 +3491,21 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
           // Set the overflow bin kine var value to that of the last bin
           check_ibin_u = ibin_u - 1;
         }
-        double unapplied_kv_val_s = recoBinning->BinCentre(  scaled_bin_to_global_bin.at(check_ibin_s), unapplied_binning_kv);
+        double unapplied_kv_val_s = recoBinning->BinCentre(  scaled_bin_to_global_bin.at(check_ibin_s), unapplied_binning_kv);  // TODO: calculate this outside the big loop and store in a vector?
         double unapplied_kv_val_u = recoBinning->BinCentre(unscaled_bin_to_global_bin.at(check_ibin_u), unapplied_binning_kv);
         if(fabs(unapplied_kv_val_s - unapplied_kv_val_u) > conv::kASmallNum) {
           skip = true;
           break;
         }
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("Lateral", pDEBUG)
              << "scaled bin "    << ibin_s << " [" << bin_min_s << ", " << bin_max_s << "]; "
              << "un-scaled bin " << ibin_u << " [" << bin_min_u << ", " << bin_max_u << "]; "
              << "For unapplied kv ["<<util::AsString(unapplied_binning_kv)<<"], val s = "
              <<unapplied_kv_val_s<<", val u = "<<unapplied_kv_val_u<<", skip? "<<skip;
+#endif
+
       }
       if(skip) { continue; }
 
@@ -3531,14 +3545,17 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
         continue;
       }
 
-      unsigned int glob_bin_s = scaled_bin_to_global_bin.at(ibin_s);
+      const unsigned int & glob_bin_s = scaled_bin_to_global_bin.at(ibin_s);
       double new_events = pdf->GetEntry(glob_bin_s) * factor;
       new_events_per_bin[ibin_u] += new_events;
 
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("Lateral", pDEBUG)
         << "scaled bin "    << ibin_s << " [" << bin_min_s << ", " << bin_max_s << "]; "
         << "un-scaled bin " << ibin_u << " [" << bin_min_u << ", " << bin_max_u << "]; "
         << "factor = " << factor << "; old Nevents = " << pdf->GetEntry(glob_bin_s) << "; new Nevents = " << new_events;
+#endif
+
     }
   }
 
@@ -3546,18 +3563,26 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   for (int ibin = 0 ; ibin < nbins ; ibin++) {  // Loop over global bins
     pdf->SetEntry(0, ibin);
   }
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
   LOG("Lateral", pDEBUG) << "PDF contents before and after applying lateral systematic:";
+#endif
+
   int ibin_u = -1;
   for (int iedge_u = 0 ; iedge_u < unscaled_bin_edges.size() - 1 ; iedge_u++) {  // Loop over unscaled bins
-    double bin_min_u = unscaled_bin_edges[iedge_u]  ;
-    double bin_max_u = unscaled_bin_edges[iedge_u+1];
+    const double & bin_min_u = unscaled_bin_edges[iedge_u]  ;
+    const double & bin_max_u = unscaled_bin_edges[iedge_u+1];
     if(bin_min_u < bin_max_u) { ibin_u++; }
     else                      { continue; }
-    unsigned int ibin = unscaled_bin_to_global_bin.at(ibin_u);
+    const unsigned int & ibin = unscaled_bin_to_global_bin.at(ibin_u);
     pdf->GetEntryRef(ibin) += new_events_per_bin[ibin_u];
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
     LOG("Lateral", pDEBUG)
       << "bin " << ibin << " [" << recoBinning->BinMinimum(ibin, kv) << ", " << recoBinning->BinMaximum(ibin, kv) << "]"
       << "; old content = " << old_events_per_bin[ibin] << "; new content = " << pdf->GetEntry(ibin);
+#endif
+
   }
 
   // Lateral systematics should just migrate events between bins, while keeping the total number of events constant.
