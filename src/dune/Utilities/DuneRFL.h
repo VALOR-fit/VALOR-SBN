@@ -37,6 +37,7 @@
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
+#include "valor/Conventions/SplineEvalType.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Utilities/KinematicPoint.h"
 
@@ -84,7 +85,7 @@ public:
   std::pair<int,int> GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m = conv::kmUndefined) const;
 
   // Get the name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
-  const std::string & GetSplineWeightingMethod(void) const { return fSplineWghtMethod; }
+  const conv::SplEvalType_t & GetSplineEvalType(void) const { return fSplineWghtMethod; }
 
   // When spline weights come out negative, force them to this value instead
   const double GetForceNegWghtTo(void) const { return fForceNegWghtTo; }
@@ -124,8 +125,8 @@ private:
   // Name for the splines (used in filename)
   TString fSplineNamePattern;
 
-  // Name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
-  std::string fSplineWghtMethod;
+  // The method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
+  conv::SplEvalType_t fSplineWghtMethod;
 
   // If this is true, allow splines to go negative, but when this happens the weights will get set to 0
   bool fAllowNegativeSplines;

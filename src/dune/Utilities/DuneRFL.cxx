@@ -70,7 +70,7 @@ fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]"),
-fSplineWghtMethod(""),
+fSplineWghtMethod(conv::kSplEvalUndefined),
 fAllowNegativeSplines(false),
 fGSLSplineType(ROOT::Math::Interpolation::kAKIMA),
 fForceNegWghtTo(0.0)
@@ -96,7 +96,7 @@ fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
 fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]"),
-fSplineWghtMethod(""),
+fSplineWghtMethod(conv::kSplEvalUndefined),
 fAllowNegativeSplines(false),
 fGSLSplineType(ROOT::Math::Interpolation::kAKIMA),
 fForceNegWghtTo(0.0)
@@ -238,7 +238,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     spl_array_pattern = util::XML2String(xml,root_node,"splines/array_pattern");
   }
   if (util::NodeExists(xml,root_node,"splines/method")) {
-    fSplineWghtMethod  = util::XML2String(xml,root_node,"splines/method");
+    std::string spline_eval_type_str  = util::XML2String(xml,root_node,"splines/method");
+    if(spline_eval_type_str != "") { fSplineWghtMethod = util::SplEvalTypeFromString(spline_eval_type_str); }
+    else                           { fSplineWghtMethod = conv::kSplEvalCurrVal; }
   }
   if (util::NodeExists(xml,root_node,"splines/allow_negative")) {
     fAllowNegativeSplines = util::XML2Bool(xml,root_node,"splines/allow_negative");
