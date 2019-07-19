@@ -9,6 +9,8 @@
 #include "dune/Utilities/UtlOscillation.h"
 #include "valor/Messenger/Messenger.h"
 
+//#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+
 namespace valor
 {
 
@@ -63,6 +65,7 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
    // Create a file to store this batch of marginalisation toys
    std::ofstream os_toys(filename, std::ios::binary | std::ios::out);
 
+   unsigned int n_rethrows = 0;
    for(int t = 0; t < Ntoys; ++t)
    {
       for( ; ; )
@@ -83,8 +86,11 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
          // Check parameter name, maybe rethrow
          if(rethrowUnphysical && !limits->AllWithinLimits(fpl))
          {
+            n_rethrows++;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("valor_dune", pDEBUG) << "At least one parameter thrown " <<
                "outside expected limits. Rethrowing.";
+#endif
          }
          else
          {
@@ -93,7 +99,7 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       }
       PhysParamList true_params = fpl.AsPhysParamList("current");
        
-      // Generate a toy-MC experiment 
+      // Generate a toy-MC experiment
       LOG("valor_dune", pDEBUG) << "Generating toy-MC data";
       LOG("valor_dune", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
       const char* write_opt = "pdft";
@@ -102,6 +108,8 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       this->_model->Write(os_toys, write_opt);
    }
    os_toys.close();
+   LOG("valor_dune", pNOTICE) << "Finished building marginalisation toys. Generated " << Ntoys
+                              << ", re-threw " << n_rethrows;
 }
 //______________________________________________________________________________
 void Marginalisation::ComputeStatistics(const int fitParamBin, FitDataABC* data,
