@@ -48,6 +48,7 @@
   <priority msgstream="SampleBinning">                  ERROR  </priority>
   <priority msgstream="Marginalisation">                NOTICE </priority>
   <priority msgstream="UtlOscillation">                 NOTICE </priority>
+  <priority msgstream="Interpolator">                   WARN   </priority>
 
 
 </messenger_config>
