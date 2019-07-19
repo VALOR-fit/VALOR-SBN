@@ -96,8 +96,9 @@ int main(int argc, char** argv)
    CmdLnArgList arg;
    arg.Read(argc,argv,
       "$VALOR_DUNE/config/apps/run_build_margtoys.arg"
-      ":$VALOR_DUNE/config/apps/seeds.arg");
-   LOG("valor_dune", pNOTICE) << arg;  
+      ":$VALOR_DUNE/config/apps/seeds.arg"
+      ":$VALOR_DUNE/config/apps/oscparams.arg");
+   LOG("valor_dune", pNOTICE) << arg;
    BuildToys(arg);
    LOG("valor_dune", pNOTICE) << "Finished";
   
@@ -184,11 +185,10 @@ void Init(CmdLnArgList& arg)
 {
    Messenger::Instance()->Configure(util::CompleteConfigPath(arg.GetString("mesg-thresholds")));
 
-   Opt::Instance()->gMassHierarchyAssumed = util::HierarchyFromString("normal");
-   Opt::Instance()->gOscDmsqScheme = util::DmsqSchemeFromString("abs23");
-   Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
-         "sinsqtheta");
-   Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");
+   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
+   Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
+   Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
+   Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
 
    util::InitializeOAPriors();   // TODO: this should be read from XML
 

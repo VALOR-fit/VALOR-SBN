@@ -38,11 +38,11 @@
 #  --rethrow-unphysical     : Toys that are generated with unphysical parameter values are rethrown
 #  --use-simple-binning     : Update the simple binning MC templates
 #
-#  --dmsq-scheme            : abs23 or fogli		                 # TODO: Not yet implemented
-#  --hierarchy              : normal or inverted		              # TODO: Not yet implemented
+#  --dmsq-scheme            : abs23 or fogli
+#  --hierarchy              : normal or inverted
 #  --marg-hierarchy         : Marginalise the mass hierarchy			# TODO: Not yet implemented
-#  --mix-param-choice       : sinsq2theta or sinsqtheta	  	    # TODO: Not yet implemented
-#  --mix-param-octant       : one or two		                     # TODO: Not yet implemented
+#  --mix-param-choice       : sinsq2theta or sinsqtheta
+#  --mix-param-octant       : one or two
 #
 #  --seed-syst              : Seed used for randomising systematic parameters
 #  --seed-osc               : Seed used for randomising oscillation parameters
@@ -116,7 +116,6 @@ foreach (@ARGV) {
 # Set unspecfied arguments to their default values
 #
 
-# TODO: remove all the stuff from this list that needs to be set according to presets?
 $resource            = "interactive"                                                       unless defined $resource;
 $cput                = "8:00:00"                                                           unless (defined $cput || $use_t2k_presets == 1);
 $mem                 = "3500M"                                                             unless (defined $mem  || $use_t2k_presets == 1);
@@ -387,18 +386,20 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
     	$sub_ibin2 = -1;		# This tells the Marginalisation class that we have a 1D fit
     }
 
-		$program = "valor_dune-run_build_margtoys ";
+		$program = "valor_dune-run_build_margtoys";
 
-		# TODO: Put in the options like the hierarchy, octant etc.
 		$arguments = "--tag $tag --batch $batch --nmargtoy $nmargtoy --fit-param-list $fit_param_list " .
 		             "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 		             "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
-		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 --fit-param2-bin $sub_ibin2 ";
+		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
+		             "--fit-param2-bin $sub_ibin2 --$hierarchy --$mix_param_choice";
 
-    if($stat_fluct         == 1) { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
-    if($store_specra       == 1) { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
-    if($rethrow_unphysical == 1) { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
-    if($use_simple_binning == 1) { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
+    if($stat_fluct         == 1)       { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
+    if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
+    if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
+    if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
+    if($mix_param_octant   == "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
+    if($dmsq_scheme        == "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
 
 		$command = "$program $arguments";
 		print "$command \n";
