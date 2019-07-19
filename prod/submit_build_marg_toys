@@ -33,7 +33,6 @@
 #  --fit-param-opt          : Options used when setting up the FitParamList
 #  --param-values-option    : Decide how to set the values of physics params used for toy-MC generation
 #  --mesg-thresholds        : Message thresholds config file
-#  --stat-fluct             : Include statistical fluctuation in toy
 #  --store-specra           : Store toy-MC/best-fit spectra?
 #  --rethrow-unphysical     : Toys that are generated with unphysical parameter values are rethrown
 #  --use-simple-binning     : Update the simple binning MC templates
@@ -92,7 +91,6 @@ foreach (@ARGV) {
   elsif($_ eq '--fit-param-opt'      ) { $fit_param_opt       = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values-option') { $param_values_option = $ARGV[$iarg+1]; }
   elsif($_ eq '--mesg-thresholds'    ) { $mesg_thresholds     = $ARGV[$iarg+1]; }
-  elsif($_ eq '--stat-fluct'         ) { $stat_fluct          = $ARGV[$iarg+1]; }
   elsif($_ eq '--store-specra'       ) { $store_specra        = $ARGV[$iarg+1]; }
   elsif($_ eq '--rethrow-unphysical' ) { $rethrow_unphysical  = $ARGV[$iarg+1]; }
   elsif($_ eq '--use-simple-binning' ) { $use_simple_binning  = $ARGV[$iarg+1]; }
@@ -140,7 +138,6 @@ $fit_param_list      = "nuosc3f"                                                
 $fit_param_opt       = ""                                                                  unless defined $fit_param_opt;
 $param_values_option = "randomize-all\\;prefit-errors"                                      unless defined $param_values_option;
 $mesg_thresholds     = "verbosity.xml"                                                     unless defined $mesg_thresholds;
-$stat_fluct          = 1                                                                   unless defined $stat_fluct;
 $store_specra        = 0                                                                   unless defined $store_specra;
 $rethrow_unphysical  = 1                                                                   unless defined $rethrow_unphysical;
 $use_simple_binning  = 0                                                                   unless defined $use_simple_binning;
@@ -392,9 +389,9 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		             "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 		             "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
 		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
-		             "--fit-param2-bin $sub_ibin2 --$hierarchy --$mix_param_choice";
+		             "--fit-param2-bin $sub_ibin2 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
+		             "--seed-toys-osc $seed_osc --seed-other $seed_other";
 
-    if($stat_fluct         == 1)       { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
     if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
     if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
     if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
