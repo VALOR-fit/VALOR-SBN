@@ -1863,7 +1863,7 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector
     // Apply the bin-by-bin tune
     LOG("GenericSingleSampleFitModel",pDEBUG)
       << "About to apply bin-by-bin tuning from hist " << hist_numerator->GetName() << ", and apply mask "
-      << mask_numerator << " to modes:";
+      << util::AsString(mask_numerator) << " to modes:";
     for(std::map<conv::ReacMode_t, bool>::iterator iter = apply_to_mode.begin(); iter != apply_to_mode.end(); ++iter) {
       conv::ReacMode_t map_mode = iter->first;
       bool map_apply = iter->second;
