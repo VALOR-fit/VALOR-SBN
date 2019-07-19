@@ -81,7 +81,9 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
          PhysParamList tweaks = this->_model->Tweaks();
          fpl.FromPhysParamList(tweaks, "current silent");
 
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pINFO) << fpl;
+#endif
 
          // Check parameter name, maybe rethrow
          if(rethrowUnphysical && !limits->AllWithinLimits(fpl))
@@ -100,8 +102,11 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       PhysParamList true_params = fpl.AsPhysParamList("current");
        
       // Generate a toy-MC experiment
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("valor_dune", pDEBUG) << "Generating toy-MC data";
       LOG("valor_dune", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
+#endif
+      if(t % 100 == 0) { LOG("valor_dune", pNOTICE) << "Generating toy-MC #" << t; }
       const char* write_opt = "pdft";
       if (_use_simple_binning) { write_opt = "pdft+SB"; }
       this->_model->Generate(fpl, write_opt);
