@@ -85,7 +85,21 @@ GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   fNonEmptyBinsOb(),
   fNonEmptyBinsSb(),
   fNumOfNonEmptyBinsOb(),
-  fNumOfNonEmptyBinsSb()
+  fNumOfNonEmptyBinsSb(),
+  fUnscaledBinEdgesOb(),
+  fScaledBinEdgesOb(),
+  fIsUnscaledBinOverflowOb(),
+  fScaledBinToGlobalBinOb(),
+  fUnscaledBinToGlobalBinOb(),
+  fSkipBinOb(),
+  fNOverflowBinsOb(),
+  fUnscaledBinEdgesSb(),
+  fScaledBinEdgesSb(),
+  fIsUnscaledBinOverflowSb(),
+  fScaledBinToGlobalBinSb(),
+  fUnscaledBinToGlobalBinSb(),
+  fSkipBinSb(),
+  fNOverflowBinsSb()
 {
   this->Init();
 }
@@ -272,7 +286,9 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   }
 
   this->FillNonEmptyBinVectors();
-    
+  this->PreComputeLateralSystVectors(false);
+  this->PreComputeLateralSystVectors(true);
+
 
   LOG("GenericSingleSampleFitModel",pNOTICE) << "Done configuring DUNE/ND model... \n\n";
 
@@ -1120,6 +1136,46 @@ void GenericSingleSampleFitModel::Book(void)
     }
 
   }//imode
+
+  std::vector<conv::KineVar_t> kvs_already_considered;
+  for(size_t ip = 0; ip < fLateralPostOscParams.size(); ip++) {
+    PhysParamId_t p = fLateralPostOscParams[ip];
+    if(p == kPhypUndefined) { continue; }
+
+    const Parameter & param = ParameterPool::Instance()->GetParam(p);
+    const std::string & param_name = param.GetName();
+    if(!param.HasKinematicRange()) {
+      LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
+                            << " has no kinematic range. Cannot apply";
+      util::Die(-1);
+    }
+
+    const std::vector<conv::KineVar_t> & kvs = param.GetKineVars();
+    if(kvs.size() != 1) {
+      LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
+                            << " is applied to " << kvs.size() << " kinematic variables. Cannot apply";
+      util::Die(-1);
+    }
+    const conv::KineVar_t & kv = kvs[0];
+    if(std::find(kvs_already_considered.begin(), kvs_already_considered.end(), kv) != kvs_already_considered.end()) { continue; }
+    kvs_already_considered.push_back(kv);
+
+    fUnscaledBinEdgesOb      [kv] = std::vector<double>           ();
+    fScaledBinEdgesOb        [kv] = std::vector<double>           ();
+    fIsUnscaledBinOverflowOb [kv] = std::vector<bool>             ();
+    fScaledBinToGlobalBinOb  [kv] = std::vector<unsigned int>     ();
+    fUnscaledBinToGlobalBinOb[kv] = std::vector<unsigned int>     ();
+    fSkipBinOb               [kv] = std::vector<std::vector<bool>>();
+    fNOverflowBinsOb         [kv] = 0;
+    fUnscaledBinEdgesSb      [kv] = std::vector<double>           ();
+    fScaledBinEdgesSb        [kv] = std::vector<double>           ();
+    fIsUnscaledBinOverflowSb [kv] = std::vector<bool>             ();
+    fScaledBinToGlobalBinSb  [kv] = std::vector<unsigned int>     ();
+    fUnscaledBinToGlobalBinSb[kv] = std::vector<unsigned int>     ();
+    fSkipBinSb               [kv] = std::vector<std::vector<bool>>();
+    fNOverflowBinsSb         [kv] = 0;
+
+  } // ip: lateral post-oscillation systematics
   
   // Write will initialise the names of the arrays - useful for debugging in read
   TObjArray tmp_array;
@@ -3388,115 +3444,47 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 
   unsigned int nbins = recoBinning->NBins(); // number of reco bins across all reco kinevars in the binning scheme
 
-  // Calculating the bin centres is computationally very expensive, so pre-calculate them here, outside of the big loop
-  std::vector<std::map<conv::KineVar_t, double>> unapplied_kv_bin_centres(nbins);
-  for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
-    for(conv::KineVar_t unapplied_binning_kv : unapplied_kvs) {
-      unapplied_kv_bin_centres[ireco][unapplied_binning_kv] = recoBinning->BinCentre(ireco, unapplied_binning_kv);
-    }
+  std::vector<double>            * unscaled_bin_edges         = & fUnscaledBinEdgesOb      .at(kv);
+  std::vector<double>            * bin_edges_to_scale         = & fScaledBinEdgesOb        .at(kv);
+  std::vector<bool>              * is_unscaled_bin_overflow   = & fIsUnscaledBinOverflowOb .at(kv);
+  std::vector<unsigned int>      * scaled_bin_to_global_bin   = & fScaledBinToGlobalBinOb  .at(kv);
+  std::vector<unsigned int>      * unscaled_bin_to_global_bin = & fUnscaledBinToGlobalBinOb.at(kv);
+  std::vector<std::vector<bool>> * bins_to_skip               = & fSkipBinOb               .at(kv);
+  unsigned int                   * n_overflow_bins            = & fNOverflowBinsOb         .at(kv);
+  if(simple_binning) {
+    unscaled_bin_edges         = & fUnscaledBinEdgesSb      .at(kv);
+    bin_edges_to_scale         = & fScaledBinEdgesSb        .at(kv);
+    is_unscaled_bin_overflow   = & fIsUnscaledBinOverflowSb .at(kv);
+    scaled_bin_to_global_bin   = & fScaledBinToGlobalBinSb  .at(kv);
+    unscaled_bin_to_global_bin = & fUnscaledBinToGlobalBinSb.at(kv);
+    bins_to_skip               = & fSkipBinSb               .at(kv);
+    n_overflow_bins            = & fNOverflowBinsSb         .at(kv);
   }
+  std::vector<double> scaled_bin_edges = *bin_edges_to_scale;
 
   // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
   // Hard to read, so should only be used in code for which speed is essential.
   typedef double (pdftype)[nbins];
   pdftype & pdfArr = *reinterpret_cast<pdftype *>(&(pdf->GetEntryRef(0)));
 
-  // Get the number of overflow bins expected (1 for each time the binning loops)
-  // TODO: Put in an underflow bin
-  std::vector<unsigned int> end_bins;
-  double last_bin_min = recoBinning->BinMinimum(0, kv);
-  for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
-    double bin_min = recoBinning->BinMinimum(ireco, kv);
-    if(bin_min < last_bin_min) {
-      // When this happens in a > 1D binning scheme, we've reached the end of this kine var's binning and started
-      // back at the beginning, so we'll need to add the high edge of the last bin and then an overflow bin
-      end_bins.push_back(ireco-1);
-    }
-    last_bin_min = bin_min;
-  }
-  end_bins.push_back(nbins-1);  // The above loop won't catch the very last bin in the entire binning scheme, so add it here
-  unsigned int n_overflow_bins  = end_bins.size();
-  unsigned int n_upper_edges    = end_bins.size();
-
   // Scale the bin edges for this kine var. Assuming uniform distribution of events within each bin.
+  for(double & edge : scaled_bin_edges) {
+    edge *= scale;
+  }
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+  // Copy the un-modified PDF contents into a vector, so we can print comparisons later
+  std::vector<double> old_events_per_bin (nbins, 0.0);
+  for(unsigned int ireco = 0; ireco < nbins; ireco++) {
+    old_events_per_bin[ireco] = pdfArr[ireco];
+  }
+#endif
+
+  // Calculate the new number of events per bin by seeing how much overlap there is between scaled and unscaled bins.
   // Note: We have underflow and overflow bins here. This is because as we scale the bin edges, events can drop off
   // either end of the scaled binning. These under/overflow bins catch these events, which are then added back on to
   // the first or last bin at the end, respectively.
-  std::vector<double> unscaled_bin_edges      (nbins + n_upper_edges + n_overflow_bins, conv::kBadResult);
-  std::vector<double> scaled_bin_edges        (nbins + n_upper_edges                  , conv::kBadResult);
-  std::vector<double> new_events_per_bin      (nbins + n_overflow_bins                , 0.0             );
-  std::vector<double> old_events_per_bin      (nbins                                  , 0.0             );
-  std::vector<bool>   is_unscaled_bin_overflow(nbins + n_overflow_bins                , false           );
-  std::map<unsigned int, unsigned int>   scaled_bin_to_global_bin;
-  std::map<unsigned int, unsigned int> unscaled_bin_to_global_bin;
-
-  unsigned int n_up_edges_added = 0;
-  {
-    vector<unsigned int>::iterator end_bins_it;
-    end_bins_it = end_bins.begin();
-    unsigned int iedge_u = 0;
-    unsigned int iedge_s = 0;
-    for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
-      // Add the low edge
-      double bin_min = recoBinning->BinMinimum(ireco, kv);
-      unscaled_bin_edges[iedge_u] = bin_min;         iedge_u++;
-      scaled_bin_edges  [iedge_s] = bin_min * scale; iedge_s++;
-      scaled_bin_to_global_bin  [iedge_s-1 - n_up_edges_added] = ireco;
-      unscaled_bin_to_global_bin[iedge_u-1 - n_up_edges_added] = ireco;
-
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-      LOG("Lateral", pDEBUG) << "ireco = " << ireco << "; scaled bin = " << iedge_s-1 - n_up_edges_added
-                             << "; un-scaled bin = " << iedge_u-1 - n_up_edges_added
-                             << "; iedge_u = " << iedge_u-1 << "; iedge_s = " << iedge_s-1
-                             << "; un-scaled edge = " << unscaled_bin_edges[iedge_u-1]
-                             << "; scaled edge = "    << scaled_bin_edges[iedge_s-1]
-                             << "; next end bin index = " << *end_bins_it;
-#endif
-
-      // Add the high edge of the last bin, as well as an overflow bin
-      if(ireco == *end_bins_it) {
-        double bin_max = recoBinning->BinMaximum(ireco, kv);
-        unscaled_bin_edges[iedge_u] = bin_max;          iedge_u++;         // PDF bin maximum
-        unscaled_bin_edges[iedge_u] = conv::kALargeNum; iedge_u++;         // Overflow bin maximum
-        scaled_bin_edges  [iedge_s] = bin_max * scale;  iedge_s++;         // PDF bin maximum
-        unscaled_bin_to_global_bin[iedge_u-2 - n_up_edges_added] = ireco;  // Overflow bin
-        is_unscaled_bin_overflow[iedge_u-2 - n_up_edges_added] = true;
-        n_up_edges_added++;
-        end_bins_it++;
-
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-        LOG("Lateral", pDEBUG) << "un-scaled bin = " << iedge_u-2 - (n_up_edges_added-1)
-                               << "; iedge_u = " << iedge_u-2 << "; iedge_s = " << iedge_s-1
-                               << "; un-scaled edge = " << unscaled_bin_edges[iedge_u-2]
-                               << "; scaled edge = "    << scaled_bin_edges[iedge_s-1]
-                               << "; with overflow un-scaled edge = " << unscaled_bin_edges[iedge_u-1];
-#endif
-
-      }
-      old_events_per_bin[ireco] = pdfArr[ireco];
-    }
-  }
-
-  // Check edges
-  for(unsigned int iedge = 0 ; iedge < unscaled_bin_edges.size() ; iedge++) {
-    if(iedge == 0 && fabs(unscaled_bin_edges[0]) > conv::kASmallNum) {
-      LOG("Lateral", pFATAL)
-        << "Tried to apply a lateral systematic when the first reco bin edge != 0. Currently there's no underflow bin to support this, it needs putting in.";
-      util::Die(-1);
-    }
-    if(unscaled_bin_edges[iedge] == conv::kBadResult) {
-      LOG("Lateral", pFATAL) << "Un-scaled bin edge for index " << iedge << " not set.";
-      util::Die(-1);
-    }
-  }
-  for(unsigned int iedge = 0 ; iedge < scaled_bin_edges.size() ; iedge++) {
-    if(scaled_bin_edges[iedge] == conv::kBadResult) {
-      LOG("Lateral", pFATAL) << "Scaled bin edge for index " << iedge << " not set.";
-      util::Die(-1);
-    }
-  }
-
-  // Calculate the new number of events per bin by seeing how much overlap there is between scaled and unscaled bins
+  std::vector<double> new_events_per_bin (nbins + *n_overflow_bins, 0.0);
   double factor = 0.0;
   int ibin_s = -1;
   for (unsigned int iedge_s = 0 ; iedge_s < scaled_bin_edges.size() - 1 ; iedge_s++) { // Loop over scaled edges
@@ -3509,39 +3497,17 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     if(bin_min_s < bin_max_s) { ibin_s++; }
 
     int ibin_u = -1;
-    for (int iedge_u = 0 ; iedge_u < unscaled_bin_edges.size() - 1 ; iedge_u++) {  // Loop over unscaled bins
-      const double & bin_min_u = unscaled_bin_edges[iedge_u]  ;
-      const double & bin_max_u = unscaled_bin_edges[iedge_u+1];
+    for (int iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
+      const double & bin_min_u = (*unscaled_bin_edges)[iedge_u]  ;
+      const double & bin_max_u = (*unscaled_bin_edges)[iedge_u+1];
       if(bin_min_u < bin_max_u) { ibin_u++; }
 
       // Only consider unscaled bins for the same kine var values as the scaled bin
       // (for the kine vars that we're not applying the lateral syst to).
       // Note: We end up with bins that go from the upper edge of an overflow to the lower edge of next
       // set of bins. This is fine, as this check automatically skips these bins
-      bool skip = false;
-      for(const conv::KineVar_t & unapplied_binning_kv : unapplied_kvs) {
-        unsigned int check_ibin_u = ibin_u;
-        if(is_unscaled_bin_overflow[ibin_u]) {
-          // Set the overflow bin kine var value to that of the last bin
-          check_ibin_u = ibin_u - 1;
-        }
-        const double & unapplied_kv_val_s = unapplied_kv_bin_centres[  scaled_bin_to_global_bin.at(ibin_s)].at(unapplied_binning_kv);
-        const double & unapplied_kv_val_u = unapplied_kv_bin_centres[unscaled_bin_to_global_bin.at(check_ibin_u)].at(unapplied_binning_kv);
-        if(fabs(unapplied_kv_val_s - unapplied_kv_val_u) > conv::kASmallNum) {
-          skip = true;
-          break;
-        }
-
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-        LOG("Lateral", pDEBUG)
-             << "scaled bin "    << ibin_s << " [" << bin_min_s << ", " << bin_max_s << "]; "
-             << "un-scaled bin " << ibin_u << " [" << bin_min_u << ", " << bin_max_u << "]; "
-             << "For unapplied kv ["<<util::AsString(unapplied_binning_kv)<<"], val s = "
-             <<unapplied_kv_val_s<<", val u = "<<unapplied_kv_val_u<<", skip? "<<skip;
-#endif
-
-      }
-      if(skip) { continue; }
+      if((*is_unscaled_bin_overflow)[ibin_u] && (*bins_to_skip)[ibin_s][ibin_u - 1]) { continue; }  // Set the overflow bin kine var value to that of the last bin
+      else if((*bins_to_skip)[ibin_s][ibin_u]) { continue; }
 
       if(bin_min_u > bin_max_s)
       {  // Unscaled bin entirely larger than scaled bin, stop checking higher unscaled
@@ -3579,7 +3545,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
         continue;
       }
 
-      const unsigned int & glob_bin_s = scaled_bin_to_global_bin.at(ibin_s);
+      const unsigned int & glob_bin_s = (*scaled_bin_to_global_bin)[ibin_s];
       new_events_per_bin[ibin_u] += pdfArr[glob_bin_s] * factor;
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -3602,12 +3568,12 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 #endif
 
   int ibin_u = -1;
-  for (int iedge_u = 0 ; iedge_u < unscaled_bin_edges.size() - 1 ; iedge_u++) {  // Loop over unscaled bins
-    const double & bin_min_u = unscaled_bin_edges[iedge_u]  ;
-    const double & bin_max_u = unscaled_bin_edges[iedge_u+1];
+  for (int iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
+    const double & bin_min_u = (*unscaled_bin_edges)[iedge_u]  ;
+    const double & bin_max_u = (*unscaled_bin_edges)[iedge_u+1];
     if(bin_min_u < bin_max_u) { ibin_u++; }
     else                      { continue; }
-    const unsigned int & ibin = unscaled_bin_to_global_bin.at(ibin_u);
+    const unsigned int & ibin = (*unscaled_bin_to_global_bin)[ibin_u];
     pdfArr[ibin] += new_events_per_bin[ibin_u];
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -3812,5 +3778,236 @@ void GenericSingleSampleFitModel::FillNonEmptyBinVectors()
     fNumOfNonEmptyBinsOb[imode] = i_nonempty_bin_ob;
     fNumOfNonEmptyBinsSb[imode] = i_nonempty_bin_sb;
   }
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_binning)
+{
+  if(fLateralPostOscParams.size() == 0) { return; }
+
+  const VALORBinning * recoBinning = use_simple_binning ? fBinning->RecoSmpBinning() : fBinning->RecoOptBinning();
+  unsigned int nbins = recoBinning->NBins(); // number of reco bins across all reco kinevars in the binning scheme
+
+  std::vector<conv::KineVar_t> kvs_already_considered;
+  for(size_t ip = 0; ip < fLateralPostOscParams.size(); ip++) {
+    PhysParamId_t p = fLateralPostOscParams[ip];
+    if(p == kPhypUndefined) { continue; }
+
+    const Parameter & param = ParameterPool::Instance()->GetParam(p);
+    const std::string & param_name = param.GetName();
+    if(!param.HasKinematicRange()) {
+      LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
+                            << " has no kinematic range. Cannot apply";
+      util::Die(-1);
+    }
+
+    const std::vector<conv::KineVar_t> & kvs = param.GetKineVars();
+    if(kvs.size() != 1) {
+      LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
+                            << " is applied to " << kvs.size() << " kinematic variables. Cannot apply";
+      util::Die(-1);
+    }
+    const conv::KineVar_t & kv = kvs[0];
+    if(std::find(kvs_already_considered.begin(), kvs_already_considered.end(), kv) != kvs_already_considered.end()) { continue; }
+    kvs_already_considered.push_back(kv);
+
+
+    if(!util::IsReco(kv)) {
+      LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
+                            << " is applied to " << util::AsString(kv)
+                            << ", but only reco kinevars can be applied";
+      util::Die(-1);
+    }
+
+    if(!recoBinning->Contains(kv)) {
+      LOG("Lateral",pFATAL) << "Lateral systematic parameter " << param_name
+                            << " is applied to " << util::AsString(kv)
+                            << ", but this kine var is not in the binning scheme";
+      util::Die(-1);
+    }
+
+    // Get a vector of kine vars that are present in the binning scheme, but without the kine var we're
+    // applying the lateral syst to
+    std::vector<conv::KineVar_t> unapplied_kvs;
+    for(conv::KineVar_t binning_kv : recoBinning->KineVars()) {
+      if(binning_kv != kv) { unapplied_kvs.push_back(binning_kv); }
+    }
+
+    // Calculating the bin centres is computationally very expensive, so pre-calculate them here
+    std::vector<std::map<conv::KineVar_t, double>> unapplied_kv_bin_centres(nbins);
+    for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
+      for(conv::KineVar_t unapplied_binning_kv : unapplied_kvs) {
+        unapplied_kv_bin_centres[ireco][unapplied_binning_kv] = recoBinning->BinCentre(ireco, unapplied_binning_kv);
+      }
+    }
+
+    std::vector<double>            * unscaled_bin_edges         = & fUnscaledBinEdgesOb      .at(kv);
+    std::vector<double>            * scaled_bin_edges           = & fScaledBinEdgesOb        .at(kv);
+    std::vector<bool>              * is_unscaled_bin_overflow   = & fIsUnscaledBinOverflowOb .at(kv);
+    std::vector<unsigned int>      * scaled_bin_to_global_bin   = & fScaledBinToGlobalBinOb  .at(kv);
+    std::vector<unsigned int>      * unscaled_bin_to_global_bin = & fUnscaledBinToGlobalBinOb.at(kv);
+    std::vector<std::vector<bool>> * bins_to_skip               = & fSkipBinOb               .at(kv);
+    unsigned int                   * n_overflow_bins            = & fNOverflowBinsOb         .at(kv);
+    if(use_simple_binning) {
+      unscaled_bin_edges         = & fUnscaledBinEdgesSb      .at(kv);
+      scaled_bin_edges           = & fScaledBinEdgesSb        .at(kv);
+      is_unscaled_bin_overflow   = & fIsUnscaledBinOverflowSb .at(kv);
+      scaled_bin_to_global_bin   = & fScaledBinToGlobalBinSb  .at(kv);
+      unscaled_bin_to_global_bin = & fUnscaledBinToGlobalBinSb.at(kv);
+      bins_to_skip               = & fSkipBinSb               .at(kv);
+      n_overflow_bins            = & fNOverflowBinsSb         .at(kv);
+    }
+
+    // Fill the vector of indices corresponding to end bins. Also get the number of overflow bins expected (1 for each time the binning loops)
+    // TODO: Put in an underflow bin
+    std::vector<unsigned int> end_bins;
+    double last_bin_min = recoBinning->BinMinimum(0, kv);
+    for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
+      double bin_min = recoBinning->BinMinimum(ireco, kv);
+      if(bin_min < last_bin_min) {
+        // When this happens in a > 1D binning scheme, we've reached the end of this kine var's binning and started
+        // back at the beginning, so we'll need to add the high edge of the last bin and then an overflow bin
+        end_bins.push_back(ireco-1);
+      }
+      last_bin_min = bin_min;
+    }
+    end_bins.push_back(nbins-1);  // The above loop won't catch the very last bin in the entire binning scheme, so add it here
+    *n_overflow_bins           = end_bins.size();
+    unsigned int n_upper_edges = end_bins.size();
+
+    *unscaled_bin_edges         = std::vector<double>            (nbins + n_upper_edges + *n_overflow_bins, conv::kBadResult);
+    *scaled_bin_edges           = std::vector<double>            (nbins + n_upper_edges                   , conv::kBadResult);
+    *is_unscaled_bin_overflow   = std::vector<bool>              (nbins + *n_overflow_bins                , false           );
+      *scaled_bin_to_global_bin = std::vector<unsigned int>      (nbins                                   , conv::kBadResult);
+    *unscaled_bin_to_global_bin = std::vector<unsigned int>      (nbins + *n_overflow_bins                , conv::kBadResult);
+    *bins_to_skip               = std::vector<std::vector<bool>> (nbins, std::vector<bool>(nbins + *n_overflow_bins, false));
+
+    // Fill the unscaled bin edge vector. For the scaled bin edge vector, fill with unscaled edges for now,
+    // and scale in ApplyLateralSystematic
+    unsigned int n_up_edges_added = 0;
+    {
+      vector<unsigned int>::iterator end_bins_it;
+      end_bins_it = end_bins.begin();
+      unsigned int iedge_u = 0;
+      unsigned int iedge_s = 0;
+      for(unsigned int ireco = 0 ; ireco < nbins ; ireco++) {
+        // Add the low edge
+        double bin_min = recoBinning->BinMinimum(ireco, kv);
+        (*unscaled_bin_edges)[iedge_u] = bin_min; iedge_u++;
+        (*scaled_bin_edges  )[iedge_s] = bin_min; iedge_s++;
+        (*scaled_bin_to_global_bin  )[iedge_s-1 - n_up_edges_added] = ireco;
+        (*unscaled_bin_to_global_bin)[iedge_u-1 - n_up_edges_added] = ireco;
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+        LOG("Lateral", pDEBUG) << "ireco = " << ireco << "; scaled bin = " << iedge_s-1 - n_up_edges_added
+                             << "; un-scaled bin = " << iedge_u-1 - n_up_edges_added
+                             << "; iedge_u = " << iedge_u-1 << "; iedge_s = " << iedge_s-1
+                             << "; un-scaled edge = " << (*unscaled_bin_edges([iedge_u-1]
+                             << "; scaled edge = "    << (*scaled_bin_edges)[iedge_s-1]
+                             << "; next end bin index = " << *end_bins_it;
+#endif
+
+        // Add the high edge of the last bin, as well as an overflow bin
+        if(ireco == *end_bins_it) {
+          double bin_max = recoBinning->BinMaximum(ireco, kv);
+          (*unscaled_bin_edges)[iedge_u] = bin_max;          iedge_u++;         // PDF bin maximum
+          (*unscaled_bin_edges)[iedge_u] = conv::kALargeNum; iedge_u++;         // Overflow bin maximum
+          (*scaled_bin_edges  )[iedge_s] = bin_max;          iedge_s++;         // PDF bin maximum
+          (*unscaled_bin_to_global_bin)[iedge_u-2 - n_up_edges_added] = ireco;  // Overflow bin
+          (*is_unscaled_bin_overflow  )[iedge_u-2 - n_up_edges_added] = true;
+          n_up_edges_added++;
+          end_bins_it++;
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+          LOG("Lateral", pDEBUG) << "un-scaled bin = " << iedge_u-2 - (n_up_edges_added-1)
+                               << "; iedge_u = " << iedge_u-2 << "; iedge_s = " << iedge_s-1
+                               << "; un-scaled edge = " << (*unscaled_bin_edges)[iedge_u-2]
+                               << "; scaled edge = "    << (*scaled_bin_edges)[iedge_s-1]
+                               << "; with overflow un-scaled edge = " << (*unscaled_bin_edges)[iedge_u-1];
+#endif
+        } // if is an end bin
+      } // ireco
+    }
+
+    // Check edges
+    for(unsigned int iedge = 0 ; iedge < (*unscaled_bin_edges).size() ; iedge++) {
+      if(iedge == 0 && fabs((*unscaled_bin_edges)[0]) > conv::kASmallNum) {
+        LOG("Lateral", pFATAL)
+          << "Tried to apply a lateral systematic when the first reco bin edge != 0. Currently there's no underflow bin to support this, it needs putting in.";
+        util::Die(-1);
+      }
+      if((*unscaled_bin_edges)[iedge] == conv::kBadResult) {
+        LOG("Lateral", pFATAL) << "Un-scaled bin edge for index " << iedge << " not set.";
+        util::Die(-1);
+      }
+    }
+    for(unsigned int iedge = 0 ; iedge < (*scaled_bin_edges).size() ; iedge++) {
+      if((*scaled_bin_edges)[iedge] == conv::kBadResult) {
+        LOG("Lateral", pFATAL) << "Scaled bin edge for index " << iedge << " not set.";
+        util::Die(-1);
+      }
+    }
+
+    // Check bins
+    for(unsigned int ibin = 0 ; ibin < nbins ; ibin++) {
+      if((*scaled_bin_to_global_bin)[ibin] == conv::kBadResult) {
+        LOG("Lateral", pFATAL) << "Scaled bin to global bin vector: index " << ibin << " not set.";
+        util::Die(-1);
+      }
+    }
+    for(unsigned int ibin = 0 ; ibin < nbins + *n_overflow_bins ; ibin++) {
+      if((*unscaled_bin_to_global_bin)[ibin] == conv::kBadResult) {
+        LOG("Lateral", pFATAL) << "Un-scaled bin to global bin vector: index " << ibin << " not set.";
+        util::Die(-1);
+      }
+    }
+
+    // Work out which combinations of scaled and un-scaled bins we need to skip.
+    // It's fine that the bin edges haven't actually been scaled yet - the relative values of the edges is what
+    // matters here, and they're all scaled by the same amount.
+    int ibin_s = -1;
+    for (unsigned int iedge_s = 0 ; iedge_s < (*scaled_bin_edges).size() - 1 ; iedge_s++) { // Loop over scaled edges
+      const double & bin_min_s = (*scaled_bin_edges)[iedge_s]  ;
+      const double & bin_max_s = (*scaled_bin_edges)[iedge_s+1];
+
+      // If the binning scheme is > 1D, looping over the edges of the scaled and unscaled bins will give a number of
+      // nonsense 'bins', where the 'lower' edge will be greater than the 'upper' edge, so account for that here when
+      // calculating the bin number (as we don't assign these nonsense bins a bin number, we skip them at a later check).
+      if(bin_min_s < bin_max_s) { ibin_s++; }
+
+      int ibin_u = -1;
+      for (int iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
+        const double & bin_min_u = (*unscaled_bin_edges)[iedge_u]  ;
+        const double & bin_max_u = (*unscaled_bin_edges)[iedge_u+1];
+        if(bin_min_u < bin_max_u) { ibin_u++; }
+
+        // Only consider unscaled bins for the same kine var values as the scaled bin
+        // (for the kine vars that we're not applying the lateral syst to).
+        // Note: We end up with bins that go from the upper edge of an overflow to the lower edge of next
+        // set of bins. This is fine, as this check automatically skips these bins
+        unsigned int check_ibin_u = ibin_u;
+        if((*is_unscaled_bin_overflow)[ibin_u]) {
+          // Set the overflow bin kine var value to that of the last bin
+          check_ibin_u = ibin_u - 1;
+        }
+        for(const conv::KineVar_t & unapplied_binning_kv : unapplied_kvs) {
+          const double & unapplied_kv_val_s = unapplied_kv_bin_centres[  (*scaled_bin_to_global_bin)[ibin_s]].at(unapplied_binning_kv);
+          const double & unapplied_kv_val_u = unapplied_kv_bin_centres[(*unscaled_bin_to_global_bin)[check_ibin_u]].at(unapplied_binning_kv);
+          if(fabs(unapplied_kv_val_s - unapplied_kv_val_u) > conv::kASmallNum) {
+            (*bins_to_skip)[ibin_s][check_ibin_u] = true;
+            break;
+          }
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+          LOG("Lateral", pDEBUG)
+             << "scaled bin "    << ibin_s << " [" << bin_min_s << ", " << bin_max_s << "]; "
+             << "un-scaled bin " << ibin_u << " [" << bin_min_u << ", " << bin_max_u << "]; "
+             << "For unapplied kv ["<<util::AsString(unapplied_binning_kv)<<"], val s = "
+             <<unapplied_kv_val_s<<", val u = "<<unapplied_kv_val_u<<", skip? "<<skip;
+#endif
+
+        } // loop over unapplied kine vars
+      } // iedge_u
+    } // iedge_s
+  } // ip: loop over lateral post-osc params
 }
 //________________________________________________________________________________________

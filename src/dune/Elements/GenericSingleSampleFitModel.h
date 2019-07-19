@@ -152,6 +152,10 @@ private:
 
   void FillNonEmptyBinVectors(void);
 
+  // There are many large vectors used when applying lateral systematics. They only depend on the PDF reco binning
+  // and the applied kine var, so pre-compute them instead of calculating them for every event and mode.
+  void PreComputeLateralSystVectors(bool use_simple_binning);
+
   const util::ArrIdx * fArrIdx;
   
   // Keep track of the parameters we need to loop over
@@ -258,6 +262,24 @@ private:
   std::vector<std::vector<int>> fNonEmptyBinsSb;
   std::vector<int> fNumOfNonEmptyBinsOb;   // The number of non-empty bins in each mode
   std::vector<int> fNumOfNonEmptyBinsSb;
+
+  // Vectors used when applying lateral systematics. Pre-compute these during Read().
+  std::map<conv::KineVar_t, std::vector<double>             > fUnscaledBinEdgesOb;
+  std::map<conv::KineVar_t, std::vector<double>             > fScaledBinEdgesOb;
+  std::map<conv::KineVar_t, std::vector<bool>               > fIsUnscaledBinOverflowOb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fScaledBinToGlobalBinOb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fUnscaledBinToGlobalBinOb;
+  std::map<conv::KineVar_t, std::vector<std::vector<bool> > > fSkipBinOb;
+  std::map<conv::KineVar_t, unsigned int                    > fNOverflowBinsOb;
+
+  // Same as above, but for the simple binning scheme
+  std::map<conv::KineVar_t, std::vector<double>             > fUnscaledBinEdgesSb;
+  std::map<conv::KineVar_t, std::vector<double>             > fScaledBinEdgesSb;
+  std::map<conv::KineVar_t, std::vector<bool>               > fIsUnscaledBinOverflowSb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fScaledBinToGlobalBinSb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fUnscaledBinToGlobalBinSb;
+  std::map<conv::KineVar_t, std::vector<std::vector<bool> > > fSkipBinSb;
+  std::map<conv::KineVar_t, unsigned int                    > fNOverflowBinsSb;
 };
 
 } // valor
