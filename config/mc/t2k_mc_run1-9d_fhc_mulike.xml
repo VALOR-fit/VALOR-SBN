@@ -91,9 +91,13 @@ External Tuning Histograms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Splines
 
-    TODO: ONLY allow splines to go outside the limits when going syst var checks. This should not happen in the actual analysis.
-     If you do need splines to go outside their limits, configure the SDK with the enable-spline-stupidity flag as well
-     as setting within_limits to false below.
+    On T2K we allow splines to go outside of their limits during both the validation and the actual analysis.
+     The spline behaviour slightly outside of the limits has been studied, and the behaviour is sensible.
+     Also, the splines go out to 3 sigma either side of the nominal param values (as of July 2019),
+     therefore any throws outside of the limits will be negligible.
+
+    TODO: By default in VALOR, splines are not allowed to vary outside of their limits. To enable this,
+    TODO: configure the SDK with the enable-spline-stupidity flag as well as setting within_limits to false below.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 
