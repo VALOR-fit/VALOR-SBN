@@ -363,8 +363,10 @@ die("$job_dir doesn't exist") unless -d $job_dir;
 
 $ijob=0;
 $irun=0;
-$step_par1 = ($max_par1 - $min_par1) / $npt_par1;
-$step_par2 = ($max_par2 - $min_par2) / $npt_par2;
+$step_par1 = 0;
+$step_par2 = 0;
+if($npt_par1 > 1) { $step_par1 = ($max_par1 - $min_par1) / ($npt_par1 - 1); }
+if($npt_par2 > 1) { $step_par2 = ($max_par2 - $min_par2) / ($npt_par2 - 1); }
 
 for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
   $val_par1 = $min_par1 + $ibin1 * $step_par1;
