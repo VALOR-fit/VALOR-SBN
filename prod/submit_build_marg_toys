@@ -156,7 +156,7 @@ $tag                 = "toys"                                                   
 $config              = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml" unless defined $config;
 
 # If we have only a single parameter of interest defined, set the options for par2 appropriately
-if($par2 == "") {
+if($par2 eq "") {
 	$min_par2     = 0.;
 	$max_par2     = 0.;
 	$npt_par2     = 1;
@@ -381,7 +381,7 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		# If we have only a single parameter of interest defined, set the options for par2 appropriately
 		$sub_par2  = $par2;
 		$sub_ibin2 = $ibin2;
-    if($par2 == "") {
+    if($par2 eq "") {
       $sub_par2  = "-";
     	$sub_ibin2 = -1;		# This tells the Marginalisation class that we have a 1D fit
     }
@@ -398,8 +398,8 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
     if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
     if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
     if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
-    if($mix_param_octant   == "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
-    if($dmsq_scheme        == "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
+    if($mix_param_octant   eq "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
+    if($dmsq_scheme        eq "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
 
 		$command = "$program $arguments";
 		print "$command \n";
