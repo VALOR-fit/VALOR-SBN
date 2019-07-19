@@ -74,7 +74,7 @@ void SetOscillationParameters(CmdLnArgList& arg, FitParamList& fpl)
 
 void SetOscillationParameterPriors(CmdLnArgList& arg, FitParamList& fpl)
 {
-   // TODO: This should all be done from xml
+   // TODO: This should all be done from xml, see FitMarginalization::SetPriorsFromXML in the old analysis
    const util::NameRegistry * nr = util::NameRegistry::Instance();
    valor::conv::PhysParamId_t p = nr->PhysParamFromString("mixing12");
    fpl.SetPriorMode(p, "gaus");
