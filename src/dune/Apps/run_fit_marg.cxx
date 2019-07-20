@@ -96,8 +96,9 @@ int main(int argc, char** argv)
    CmdLnArgList arg;
    arg.Read(argc,argv,
       "$VALOR_DUNE/config/apps/run_fit_marg.arg"
-      ":$VALOR_DUNE/config/apps/seeds.arg");
-   LOG("valor_dune", pNOTICE) << arg;  
+      ":$VALOR_DUNE/config/apps/seeds.arg"
+      ":$VALOR_DUNE/config/apps/oscparams.arg");
+   LOG("valor_dune", pNOTICE) << arg;
    Fit(arg);
    LOG("valor_dune", pNOTICE) << "Finished";
   

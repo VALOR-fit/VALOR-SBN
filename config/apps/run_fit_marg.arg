@@ -30,10 +30,3 @@ fit-param2-min-value                 |   double       |  optional   |   0.0
 fit-param2-max-value                 |   double       |  optional   |   0.0
 fit-param2-nbins                     |   integer      |  optional   |   0
 n-sigma-limit                        |   double       |  optional   |   0.0
-fix-at-mixing12                      |   double       |  optional   |   -999
-fix-at-mixing13                      |   double       |  optional   |   -999
-fix-at-mixing23                      |   double       |  optional   |   -999
-fix-at-dm23sq                        |   double       |  optional   |   -999
-fix-at-dm12sq                        |   double       |  optional   |   -999
-fix-at-dm13sq                        |   double       |  optional   |   -999
-fix-at-cpv                           |   double       |  optional   |   -1.570796327
