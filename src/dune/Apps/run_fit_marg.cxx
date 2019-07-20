@@ -264,11 +264,10 @@ void Init(CmdLnArgList& arg)
 {
    Messenger::Instance()->Configure(util::CompleteConfigPath(arg.GetString("mesg-thresholds")));
 
-   Opt::Instance()->gMassHierarchyAssumed = util::HierarchyFromString("normal");
-   Opt::Instance()->gOscDmsqScheme = util::DmsqSchemeFromString("abs23");
-   Opt::Instance()->gOscMixingParamChoice = util::MixingTypeFromString(
-         "sinsqtheta");
-   Opt::Instance()->gOscOctantChoice = util::OctantFromString("one");      // TODO: remember to set this to the 2nd octant for T2K
+   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
+   Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
+   Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
+   Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
 
    util::InitializeOAPriors();      // TODO: this should be read from XML files
 
