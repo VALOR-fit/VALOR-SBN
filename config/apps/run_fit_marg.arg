@@ -12,6 +12,8 @@ fit-param-opt                        |   string       |  optional   |   NONE
 param-values-option                  |   string       |  optional   |   randomize-all;prefit-errors
 config                               |   string       |  mandatory  |   -
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
+gen-fakedata                         |   integer      |  optional   |   1
+data-file                            |   string       |  optional   |   -
 with-stat-fluct,without-stat-fluct   |   boolean_list |  optional   |   without-stat-fluct
 store-spectra,discard-spectra        |   boolean_list |  optional   |   discard-spectra
 start-at-true,start-at-central       |   boolean_list |  optional   |   start-at-true

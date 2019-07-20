@@ -153,31 +153,34 @@ void Fit(CmdLnArgList& arg)
    elements->Read(arg.GetString("config"));
    FitModelABC* model = elements->FitModel();
 
-   // GetSystematics will be added to CorrelatedSystematics in the future
-   CorrelatedSystematics* systematics =
-      dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-   FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
-
-   // Set the priors
-   util::oscillation::SetOscillationParameterPriors(arg, *fpl);
-   // Fix or set marginalisation flag for oscillation parameters
-   util::oscillation::SetOscillationParameters(arg, *fpl);
-   // Overwrite the free parameters with fixed values for the fake data
-   // TODO: This shouldn't be hard-coded, we need an option to read in a data file too.
-   valor::conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString("cpv");
-   fpl->Update(p, -1.570796327);
-   fpl->SetInitValue(p, -1.570796327);
-   p = util::NameRegistry::Instance()->PhysParamFromString("mixing23");
-   fpl->Update(p, 0.53);
-   fpl->SetInitValue(p, 0.53);
-
-   // Initialize non delta M squared oscillation parameters to zero
-   // util::oscillation::SetUnoscillated(*fpl);
-   LOG("valor_dune", pNOTICE) << *fpl;
-
    FitDataABC* data = elements->FitData();
-   // Call Generate - forces a call to Book as well as providing the fake data
-   data->Generate(model, *fpl, with_stat_fluct);
+   if(arg.GetInt("gen-fakedata")) {
+      // Generate a fake data set to fit to
+
+      // GetSystematics will be added to CorrelatedSystematics in the future
+      CorrelatedSystematics* systematics =
+         dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
+      FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
+
+      // Set the priors
+      util::oscillation::SetOscillationParameterPriors(arg, *fpl);
+      // Fix or set marginalisation flag for oscillation parameters
+      util::oscillation::SetOscillationParameters(arg, *fpl);
+
+      // Initialize non delta M squared oscillation parameters to zero
+      // util::oscillation::SetUnoscillated(*fpl);
+      LOG("valor_dune", pNOTICE) << *fpl;
+
+      // Call Generate - forces a call to Book as well as providing the fake data
+      data->Generate(model, *fpl, with_stat_fluct);
+   }
+   else {
+      // Fit to data read from an input file
+      std::string data_file_name = arg.GetString("data-file");
+      // TODO: Read in the data file
+      LOG("valor_dune", pFATAL) << "Fitting to data from an input file is not yet supported. Exiting.";
+      util::Die(-1);
+   }
 
    // Get the requested batch number and number of marginalisation toys for the
    // batch
