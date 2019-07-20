@@ -125,6 +125,7 @@ void Fit(CmdLnArgList& arg)
    const double fp1_maxval = arg.GetDouble("fit-param1-max-value");
    const int fp1_nbins     = arg.GetInt("fit-param1-nbins");
 
+   bool fit_is_2D = false;
    string fp2_name;
    double fp2_val = 0.0;
    int fp2_bin = 0;
@@ -136,8 +137,9 @@ void Fit(CmdLnArgList& arg)
       fp1_bin << ") = " << fp1_val << " [" << fp1_nbins << ": " << fp1_minval <<
       ", " << fp1_maxval << "]";
 
-   if(arg.Exists("fit-param2"))
+   if(arg.Exists("fit-param2") and arg.GetString("fit-param2") != "-")
    {
+      fit_is_2D  = true;
       fp2_name   = arg.GetString("fit-param2");
       fp2_val    = arg.GetDouble("fit-param2-value");
       fp2_bin    = arg.GetInt("fit-param2-bin");
@@ -191,7 +193,7 @@ void Fit(CmdLnArgList& arg)
    TStopwatch clock;
    clock.Start();
    Marginalisation marginalisation(*elements, arg.GetString("margtoy-tag"), use_simple_binning);
-   if(!arg.Exists("fit-param2"))
+   if(!fit_is_2D)
    {  // Initialise for 1D fit
       marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval);
    }
@@ -205,7 +207,7 @@ void Fit(CmdLnArgList& arg)
    // This version of the fit works for both 1D and 2D
    result = marginalisation.Fit(data, Ntoys, Nbatches, firstBatch);
    // Perform an optimised fit starting at the specified value
-/*   if(!arg.Exists("fit-param2"))
+/*   if(!fit_is_2D)
    {
       result = marginalisation.Fit(fp1_val, data, Ntoys, Nbatches, firstBatch);
    }
@@ -215,7 +217,7 @@ void Fit(CmdLnArgList& arg)
             firstBatch);
    }*/
 
-   if(!arg.Exists("fit-param2"))
+   if(!fit_is_2D)
    {
       LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
          result->GetParam1BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
@@ -234,7 +236,7 @@ void Fit(CmdLnArgList& arg)
    oss << "_result.root";
    string filename = oss.str();
    TFile* fitFile = new TFile(filename.c_str(), "RECREATE");
-   if(!arg.Exists("fit-param2"))
+   if(!fit_is_2D)
    {
       TH1D* chi2Surface = result->GetChi2Surface1D();
       TH1D* likelihoodSurface = result->GetLikelihoodSurface1D();
