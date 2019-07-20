@@ -492,7 +492,7 @@ if($resource eq "cedar") {
 	print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
 	print Slurm "cd $job_dir \n";
 	print Slurm "source $softw_dir/setup/setup_at_cedar_root6.sh $softw_dir $fmwk_dir\n";
-	if($time_command == 1) { print Slurm "time $command \n"; }
+	if($time_command == 1) { print Slurm "command time $command \n"; }
 	else { print Slurm "$command \n"; }
 	close(Slurm);
 	`sbatch $job_dir/$tag-$irun.slurm`;
