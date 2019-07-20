@@ -117,7 +117,7 @@ foreach (@ARGV) {
 $resource            = "interactive"                                                       unless defined $resource;
 $cput                = "8:00:00"                                                           unless (defined $cput || $use_t2k_presets == 1);
 $mem                 = "3500M"                                                             unless (defined $mem  || $use_t2k_presets == 1);
-$job_dir             = "."                                                                 unless defined $job_dir;
+$job_dir             = $ENV{'PWD'}                                                         unless defined $job_dir;
 $softw_dir           = $ENV{'VALOR_DUNE'}                                                  unless defined $softw_dir;
 $fmwk_dir            = $ENV{'VALOR_FMWK'}                                                  unless defined $fmwk_dir;
 $time_command        = 0                                                                   unless defined $time_command;
@@ -160,8 +160,8 @@ if($par2 eq "") {
 	$npt_job_par2 = 1;
 }
 
-# Add the parameters of interest to the file tag
-$tag = "${tag}_${par1}";
+# Add the hierarchy and the parameters of interest to the file tag
+$tag = "${tag}_${hierarchy}_${par1}";
 if($par2 != "") {
 	$tag = "${tag}_${par2}";
 }
