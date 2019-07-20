@@ -189,11 +189,11 @@ $param_set           = "random"                                                 
 if($par2 eq "") {
 	$min_par2     = 0.;
 	$max_par2     = 0.;
-	$npt_par2     = 1;
+	$npt_par2     = 0;
 	$npt_job_par2 = 1;
 }
 
-# Add the parameters of interest to the file tag		# TODO: update the tag for the fit. Hierarchy?
+# Add the parameters of interest to the file tag
 $tag = "${tag}_${hierarchy}_${par1}";
 if($par2 != "") {
 	$tag = "${tag}_${par2}";
@@ -231,8 +231,8 @@ if($use_t2k_presets == 1) {
         "--fix-at-mixing13 0.0212 " .
         "--fix-at-mixing12 0.304 " .
         "--fix-at-cpv -1.601 ";
-      $mixparamoctant  = "two"
-      $hierarchy       = "normal"
+      $mixparamoctant  = "two";
+      $hierarchy       = "normal";		# TODO: is forcing the hierarchy correct?
 	  }
 	  elsif($param_set eq "AsimovB") {
       $fake_data_args = "" .
@@ -242,8 +242,8 @@ if($use_t2k_presets == 1) {
         "--fix-at-mixing13 0.0212 " .
         "--fix-at-mixing12 0.304 " .
         "--fix-at-cpv 0. ";
-      $mixparamoctant  = "one"
-      $hierarchy       = "normal"
+      $mixparamoctant  = "one";
+      $hierarchy       = "normal";
 	  }
 	  else {
 	  	print "ERROR: Unrecognised param set [$param_set]. Exiting.";
@@ -440,12 +440,13 @@ if($par2 eq "") {
 
 $program = "valor_dune-run_fit_marg";
 
-# TODO: check the names of all of the arguments
 $arguments = "--tag $tag --nbatches $nbatches --first-batch $first_batch --fitter $fitter " .
 						 "--margtoy-tag $margtoy_tag --nmargtoy $nmargtoy --fit-param-list $fit_param_list " .
 						 "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 						 "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
+						 "--fit-param1-min-value $min_par1 --fit-param1-max-value $max_par1 " .
 						 "--fit-param1-bin -1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
+						 "--fit-param2-min-value $min_par2 --fit-param2-max-value $max_par2 " .
 						 "--fit-param2-bin -1 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
 						 "--fit-param1-nbins $npt_par1 --fit-param2-nbins $npt_par2 $fake_data_args --data-file $data_file " .
 						 "--gen-fakedata $gen_fakedata --seed-toys-osc $seed_osc --seed-other $seed_other ";
