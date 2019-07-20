@@ -532,7 +532,7 @@ void valor::util::DuneRFL::SortSpline(TSpline3 * spline, bool sort_spline)
 
   if(!knots_in_order){
     if(sort_spline) {
-      std:map<double,double> knots;
+      std::map<double,double> knots;
       std::vector<double> x_vals;
       for (int i = 0 ; i < n_knots; i++) {
         double x = 0;
