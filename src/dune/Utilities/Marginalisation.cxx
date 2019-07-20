@@ -144,8 +144,10 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
       for(int t = 0; t < Ntoys; ++t)
       {
-         // Read a toy-MC experiment 
+         // Read a toy-MC experiment
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("valor_dune", pDEBUG) << "Reading toy-MC data";
+#endif
          const char* read_opt = "pdft";
          if (_use_simple_binning) { read_opt = "pdft+SB"; }
          this->_model->Read(is_toys, read_opt);
@@ -153,8 +155,10 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
          double likelihood = TMath::Exp(-chi2 * 0.5);
          likelihood_sum += likelihood;
 
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("valor_dune", pDEBUG) << "chi2(" << t << "): " << chi2 <<
             " L(" << t << "): " << likelihood;
+#endif
       }
       is_toys.close();
    }
