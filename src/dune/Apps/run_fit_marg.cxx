@@ -150,7 +150,7 @@ void Fit(CmdLnArgList& arg)
    }
 
    CompoundFitElements* elements = new CompoundFitElements();
-   elements->Read(arg.GetString("config"));
+   elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
 
    FitDataABC* data = elements->FitData();
