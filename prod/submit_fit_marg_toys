@@ -148,7 +148,7 @@ $time_command        = 0                                                        
 $margtoy_tag         = ""                                                                  unless defined $margtoy_tag;
 $nmargtoy            = 40000                                                               unless (defined $nmargtoy || $use_t2k_presets == 1);
 $nbatches            = 1                                                                   unless defined $nbatches;
-$first_batch         = 0                                                                   unless defined $first_batch;
+$first_batch         = 1                                                                   unless defined $first_batch;
 $fitter              = "minuit"                                                            unless defined $fitter;
 $par1                = "cpv"                                                               unless defined $par1;
 $par2                = ""                                                                  unless defined $par2;
