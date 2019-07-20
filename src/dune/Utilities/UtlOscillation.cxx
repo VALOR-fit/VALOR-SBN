@@ -78,7 +78,7 @@ void SetOscillationParameterPriors(CmdLnArgList& arg, FitParamList& fpl)
    const util::NameRegistry * nr = util::NameRegistry::Instance();
    valor::conv::PhysParamId_t p = nr->PhysParamFromString("mixing12");
    fpl.SetPriorMode(p, "gaus");
-   fpl.SetMeanGaus(p, 0.307); fpl.SetSigmaGaus(p, 0.013);
+   fpl.SetMeanGaus(p, 0.307); fpl.SetSigmaGaus(p, 0.005025);
 
    p = nr->PhysParamFromString("dm12sq");
    fpl.SetPriorMode(p, "gaus");
