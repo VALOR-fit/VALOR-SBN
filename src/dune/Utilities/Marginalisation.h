@@ -33,6 +33,8 @@
 #include "TH1.h"
 #include "TH2.h"
 
+#include <TTree.h>
+
 using std::string;
 using namespace valor;
 
@@ -50,7 +52,8 @@ public:
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
    */
-   Marginalisation(CompoundFitElements& elements, string filePrefix, bool use_simple_binning);
+   Marginalisation(CompoundFitElements& elements, string filePrefix, bool use_simple_binning,
+                   bool save_throws_to_tree = false);
 
    /**
       Constructs a Marginalisation object.
@@ -59,7 +62,8 @@ public:
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
    */
-   Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning);
+   Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning,
+                   bool save_throws_to_tree = false);
 
    /**
       Destructor.
@@ -317,6 +321,15 @@ private:
          const int gridSizeX, const int gridSizeY, FitDataABC* data,
          const int Ntoys, const int Nbatches, const int firstBatch = 0);
 
+   /**
+      Saves all parameter values in the input FitParamList to a tree.
+
+      \param fpl The fit param list to save.
+
+      \param write_tree Write the tree to an output file
+   */
+   void SaveParamThrows(FitParamList& fpl, bool write_tree, std::string binary_file_name);
+
 private:
    string _filePrefix; 
    FitModelABC* _model;
@@ -329,6 +342,8 @@ private:
    TH2D* _chi2_2D;
    FitResult* _fitResult;
    bool _use_simple_binning;
+   bool _save_throws_to_tree;
+   TTree* _tree_pars;
 };
 
 } // valor

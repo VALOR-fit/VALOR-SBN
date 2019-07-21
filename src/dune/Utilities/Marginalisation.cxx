@@ -8,6 +8,8 @@
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/UtlOscillation.h"
 #include "valor/Messenger/Messenger.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/NameRegistry.h"
 
 //#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
@@ -15,16 +17,17 @@ namespace valor
 {
 
 Marginalisation::Marginalisation(CompoundFitElements& elements,
-      string filePrefix, bool use_simple_binning):
-   Marginalisation(*elements.FitModel(), filePrefix, use_simple_binning)
+      string filePrefix, bool use_simple_binning, bool save_throws_to_tree):
+   Marginalisation(*elements.FitModel(), filePrefix, use_simple_binning, save_throws_to_tree)
 {
 }
 //______________________________________________________________________________
-Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning):
+Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning, bool save_throws_to_tree):
    _filePrefix(filePrefix), _model(&model), _likelihood(0.0), _chi2(0.0),
    _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
    _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr),
-   _use_simple_binning(use_simple_binning)
+   _use_simple_binning(use_simple_binning), _save_throws_to_tree(save_throws_to_tree),
+   _tree_pars(nullptr)
 {
 }
 //______________________________________________________________________________
@@ -36,6 +39,7 @@ Marginalisation::~Marginalisation()
    delete this->_chi2_1D;
    delete this->_chi2_2D;
    delete this->_fitResult;
+   delete this->_tree_pars;
 }
 //______________________________________________________________________________
 void Marginalisation::BuildToys(const int fitParamBin, const int batch,
@@ -111,10 +115,63 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       if (_use_simple_binning) { write_opt = "pdft+SB"; }
       this->_model->Generate(fpl, write_opt);
       this->_model->Write(os_toys, write_opt);
+      this->SaveParamThrows(fpl, t == Ntoys-1, filename);
    }
    os_toys.close();
    LOG("valor_dune", pNOTICE) << "Finished building marginalisation toys. Generated " << Ntoys
                               << ", re-threw " << n_rethrows;
+}
+//______________________________________________________________________________
+void Marginalisation::SaveParamThrows(FitParamList& fpl, bool write_tree, std::string binary_file_name)
+{
+   if(!_save_throws_to_tree) { return; }
+
+   // Set up an array to hold all of the parameter values that we'll save to the output tree
+   double param_values[conv::knppmax];
+   for(int ip = 0; ip < conv::knppmax; ip++){
+      param_values[ip] = -999;
+   }
+
+   // Set up the tree, if we haven't done so already
+   if(!_tree_pars) {
+       _tree_pars = new TTree("marg_parameter_values","Input parameters used for marginalisation");
+       for (int ip = 0 ; ip < conv::knppmax ; ip++) {
+          conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
+          std::string param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
+          std::string branch_info = param_name + "/D";
+          if (fpl.Exists(p)) {
+             _tree_pars->Branch(param_name.c_str(), &(param_values[ip]), branch_info.c_str() );
+          }
+       }
+   }
+
+   // Save this throw to the tree
+   for (int ip = 0 ; ip < conv::knppmax ; ip++) {
+      conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
+      if (fpl.Exists(p)) {
+         param_values[ip] = fpl.CurrValue(p);
+      }
+   }
+   _tree_pars->Fill();
+
+   // If this is the final toy, write the tree to a new file
+   if(write_tree) {
+      // Construct the output file name
+      std::string file_name = binary_file_name;
+      std::string to_replace = ".bin";
+      size_t start_pos = file_name.find(to_replace);
+      if(start_pos == std::string::npos) {
+         LOG("Marginalisation", pERROR) << "Could not construct output file name.";
+         util::Die(-1);
+      }
+      file_name.replace(start_pos, to_replace.length(), "_toy_throws.root");
+
+      TFile *out_file = new TFile(file_name.c_str(), "RECREATE");
+      out_file->cd();
+      _tree_pars->Write();
+      out_file->Close();
+      delete out_file;
+   }
 }
 //______________________________________________________________________________
 void Marginalisation::ComputeStatistics(const int fitParamBin, FitDataABC* data,

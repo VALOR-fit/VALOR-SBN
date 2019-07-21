@@ -115,6 +115,7 @@ void BuildToys(CmdLnArgList& arg)
    string param_val_opts   = arg.GetString("param-values-option");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
    bool use_simple_binning = arg.GetBool("use-simple-binning");
+   bool save_throws        = arg.GetBool("save-throws");
 
    string fp_name1      = arg.GetString("fit-param1");
    const double fp_val1 = arg.GetDouble("fit-param1-value");
@@ -159,7 +160,7 @@ void BuildToys(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning);
+   Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning, save_throws);
    if(!arg.Exists("fit-param2"))
    {  // Build toys for 1D fit
       marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl,

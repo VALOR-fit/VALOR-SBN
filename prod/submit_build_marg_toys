@@ -36,6 +36,7 @@
 #  --store-specra           : Store toy-MC/best-fit spectra?
 #  --rethrow-unphysical     : Toys that are generated with unphysical parameter values are rethrown
 #  --use-simple-binning     : Update the simple binning MC templates
+#  --save-throws-to-tree    : Save all toy parameter values to a tree
 #
 #  --dmsq-scheme            : abs23 or fogli
 #  --hierarchy              : normal or inverted
@@ -65,44 +66,45 @@ $iarg=0;
 foreach (@ARGV) {
   if($iarg % 2 == 1) {$iarg++; next;}
 
-     if($_ eq '--resource'           ) { $resource            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--cpu-time'           ) { $cput                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mem'                ) { $mem                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--job-dir'            ) { $job_dir             = $ARGV[$iarg+1]; }
-  elsif($_ eq '--softw-dir'          ) { $softw_dir           = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fmwk-dir'           ) { $fmwk_dir            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--time-command'       ) { $time_command        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--nmargtoy'           ) { $nmargtoy            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--batch'              ) { $batch               = $ARGV[$iarg+1]; }
-  elsif($_ eq '--par1'               ) { $par1                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--par2'               ) { $par2                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-par1'           ) { $npt_par1            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-par2'           ) { $npt_par2            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--min-par1'           ) { $min_par1            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--min-par2'           ) { $min_par2            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--max-par1'           ) { $max_par1            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--max-par2'           ) { $max_par2            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-job-par1'       ) { $npt_job_par1        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-job-par2'       ) { $npt_job_par2        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--prior-file'         ) { $prior_file          = $ARGV[$iarg+1]; }
-  elsif($_ eq '--tag'                ) { $tag                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--config'             ) { $config              = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'     ) { $fit_param_list      = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-opt'      ) { $fit_param_opt       = $ARGV[$iarg+1]; }
-  elsif($_ eq '--param-values-option') { $param_values_option = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mesg-thresholds'    ) { $mesg_thresholds     = $ARGV[$iarg+1]; }
-  elsif($_ eq '--store-specra'       ) { $store_specra        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--rethrow-unphysical' ) { $rethrow_unphysical  = $ARGV[$iarg+1]; }
-  elsif($_ eq '--use-simple-binning' ) { $use_simple_binning  = $ARGV[$iarg+1]; }
-  elsif($_ eq '--dmsq-scheme'        ) { $dmsq_scheme         = $ARGV[$iarg+1]; }
-  elsif($_ eq '--hierarchy'          ) { $hierarchy           = $ARGV[$iarg+1]; }
-  elsif($_ eq '--marg-hierarchy'     ) { $marg_hierarchy      = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mix-param-choice'   ) { $mix_param_choice    = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mix-param-octant'   ) { $mix_param_octant    = $ARGV[$iarg+1]; }
-  elsif($_ eq '--seed-syst'          ) { $seed_syst           = $ARGV[$iarg+1]; }
-  elsif($_ eq '--seed-osc'           ) { $seed_osc            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--seed-other'         ) { $seed_other          = $ARGV[$iarg+1]; }
-  elsif($_ eq '--use-t2k-presets'    ) { $use_t2k_presets     = $ARGV[$iarg+1]; }
+     if($_ eq '--resource'            ) { $resource            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--cpu-time'            ) { $cput                = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mem'                 ) { $mem                 = $ARGV[$iarg+1]; }
+  elsif($_ eq '--job-dir'             ) { $job_dir             = $ARGV[$iarg+1]; }
+  elsif($_ eq '--softw-dir'           ) { $softw_dir           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--fmwk-dir'            ) { $fmwk_dir            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--time-command'        ) { $time_command        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--nmargtoy'            ) { $nmargtoy            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--batch'               ) { $batch               = $ARGV[$iarg+1]; }
+  elsif($_ eq '--par1'                ) { $par1                = $ARGV[$iarg+1]; }
+  elsif($_ eq '--par2'                ) { $par2                = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-par1'            ) { $npt_par1            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-par2'            ) { $npt_par2            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--min-par1'            ) { $min_par1            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--min-par2'            ) { $min_par2            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--max-par1'            ) { $max_par1            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--max-par2'            ) { $max_par2            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-job-par1'        ) { $npt_job_par1        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-job-par2'        ) { $npt_job_par2        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--prior-file'          ) { $prior_file          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--tag'                 ) { $tag                 = $ARGV[$iarg+1]; }
+  elsif($_ eq '--config'              ) { $config              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--fit-param-list'      ) { $fit_param_list      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--fit-param-opt'       ) { $fit_param_opt       = $ARGV[$iarg+1]; }
+  elsif($_ eq '--param-values-option' ) { $param_values_option = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mesg-thresholds'     ) { $mesg_thresholds     = $ARGV[$iarg+1]; }
+  elsif($_ eq '--store-specra'        ) { $store_specra        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--rethrow-unphysical'  ) { $rethrow_unphysical  = $ARGV[$iarg+1]; }
+  elsif($_ eq '--use-simple-binning'  ) { $use_simple_binning  = $ARGV[$iarg+1]; }
+  elsif($_ eq '--save-throws-to-tree' ) { $save_throws         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--dmsq-scheme'         ) { $dmsq_scheme         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--hierarchy'           ) { $hierarchy           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--marg-hierarchy'      ) { $marg_hierarchy      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mix-param-choice'    ) { $mix_param_choice    = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mix-param-octant'    ) { $mix_param_octant    = $ARGV[$iarg+1]; }
+  elsif($_ eq '--seed-syst'           ) { $seed_syst           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--seed-osc'            ) { $seed_osc            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--seed-other'          ) { $seed_other          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--use-t2k-presets'     ) { $use_t2k_presets     = $ARGV[$iarg+1]; }
 
   else {
       print "Unrecognised argument ".$_."\n"; exit;
@@ -141,6 +143,7 @@ $mesg_thresholds     = "verbosity.xml"                                          
 $store_specra        = 0                                                                   unless defined $store_specra;
 $rethrow_unphysical  = 1                                                                   unless defined $rethrow_unphysical;
 $use_simple_binning  = 0                                                                   unless defined $use_simple_binning;
+$save_throws         = 0                                                                   unless defined $save_throws;
 $dmsq_scheme         = "auto"                                                              unless defined $dmsq_scheme;
 $hierarchy           = "normal"                                                            unless defined $hierarchy;
 $marg_hierarchy      = 0                                                                   unless defined $marg_hierarchy;
@@ -395,6 +398,7 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
     if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
     if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
     if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
+    if($save_throws        == 1)       { $arguments = "$arguments --save-throws"        } else { $arguments = "$arguments --discard-throws"     }
     if($mix_param_octant   eq "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
     if($dmsq_scheme        eq "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
 
