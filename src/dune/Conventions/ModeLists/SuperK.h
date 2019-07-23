@@ -43,7 +43,6 @@ kmNuMuToNuECC1piC,
 kmNuMuToNuECC1pi0,
 kmNuMuToNuECCcoh,
 kmNuMuToNuECCMEC,
-kmNuMuToNuECCcoh,
 kmNuMuToNuECCoth,
 
 // Intrinsic nuebar modes
@@ -84,6 +83,7 @@ kmUndefined,  //kmNuEBarToNuMuBarCCMEC,
 kmUndefined,  //kmNuEBarToNuMuBarCCcoh,
 
 // Non T2K modes:
+kmUndefined,
 kmUndefined,
 kmUndefined,
 kmUndefined,
