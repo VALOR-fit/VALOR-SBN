@@ -232,11 +232,13 @@ void Marginalisation::InitFit(const int param1Nbins,
    if(param2Nbins > 0)
    {
       this->_isFit2D = true;
-      double step = (param1MaxValue - param1MinValue) / (param1Nbins - 1);
+      double step = 0.0;
+      if(param1Nbins > 1) { step = (param1MaxValue - param1MinValue) / (param1Nbins - 1); }
       double shift = 0.5 * step;
       double xMin = param1MinValue - shift;
       double xMax = param1MaxValue + shift;
-      step = (param2MaxValue - param2MinValue) / (param2Nbins - 1);
+      step = 0.0;
+      if(param2Nbins > 1) { step = (param2MaxValue - param2MinValue) / (param2Nbins - 1); }
       shift = 0.5 * step;
       double yMin = param2MinValue - shift;
       double yMax = param2MaxValue + shift;
@@ -258,7 +260,8 @@ void Marginalisation::InitFit(const int param1Nbins,
    else
    {
       this->_isFit2D = false;
-      double step = (param1MaxValue - param1MinValue) / (param1Nbins - 1);
+      double step = 0.0;
+      if(param1Nbins > 1) { step = (param1MaxValue - param1MinValue) / (param1Nbins - 1); }
       double shift = 0.5 * step;
       double xMin = param1MinValue - shift;
       double xMax = param1MaxValue + shift;
