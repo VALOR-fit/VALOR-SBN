@@ -344,6 +344,15 @@ private:
    bool _use_simple_binning;
    bool _save_throws_to_tree;
    TTree* _tree_pars;
+
+  // TODO: update this description - the stuff about floats is not relevant anymore
+  // When calculating the marginal likelihood:
+  // Rescale the likelihood by exp(scale) when sum over the toys, then scale back at the end (of ComputeStatistics())
+  // Avoid precision problems w/ floats or double when chisq~200 and like=exp(-0.5*chisq) becomes too small
+  // floats support numbers until exp(+88). The likelihood becomes like=exp(-0.5*chisq+88) >= exp(+88)
+  // When chisq gets larger, the scaling factor can be increased, paying attention that -200 < -0.5*chisq+scale < 89
+  // Now double are used for chisq and likelihood, but the scale factor could be needed anyway
+   double _scale_precision = 80.;
 };
 
 } // valor

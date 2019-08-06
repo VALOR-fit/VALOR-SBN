@@ -185,7 +185,8 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       const int Nbatches, const int firstBatch)
 {
    const int lastBatch = firstBatch + Nbatches - 1;
-   double likelihood_sum = 0.0;
+   const int N = Nbatches * Ntoys;
+   vector<double> vec_chi2_toy(N);  // Index constructed (ibatch - firstBatch) * Ntoys + itoy
    for(int b = firstBatch; b <= lastBatch; ++b)
    {
       std::ostringstream oss;
@@ -201,7 +202,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
       for(int t = 0; t < Ntoys; ++t)
       {
-         // Read a toy-MC experiment
+         // Read the chi2 of each toy-MC experiment into a vector
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("valor_dune", pDEBUG) << "Reading toy-MC data";
 #endif
@@ -209,9 +210,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
          if (_use_simple_binning) { read_opt = "pdft+SB"; }
          this->_model->Read(is_toys, read_opt);
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
-         double likelihood = TMath::Exp(-chi2 * 0.5);
-         likelihood_sum += likelihood;
-
+         vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("valor_dune", pDEBUG) << "chi2(" << t << "): " << chi2 <<
             " L(" << t << "): " << likelihood;
@@ -219,9 +218,28 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       }
       is_toys.close();
    }
-   const int N = Nbatches * Ntoys;
-   this->_likelihood = likelihood_sum / N;
-   this->_chi2 = -2 * TMath::Log(this->_likelihood);
+
+   // Now sort the vector of chi2 values in descending order. This is so that the contributions from tiny
+   // likelihood values are summed (and could become significant), instead of being lost when added to relatively
+   // large likelihood values. (Note: rbegin/rend is the reverse beginning/end, i.e. the end/beginning).
+   std::sort(vec_chi2_toy.rbegin(),vec_chi2_toy.rend());
+
+   // TODO: I don't like this and it's arbitrary anyway. So after the initial round of testing, change diff_chi2 to be the median and then re-test.
+   // Use the median chisq as a scale factor to guard against precision issues
+   double diff_chi2 = (vec_chi2_toy[0] - vec_chi2_toy[vec_chi2_toy.size()-1]) / 2.;
+   diff_chi2 /= 2.;   // TODO: why divide by 2 twice?
+   double scale = diff_chi2;
+   if(diff_chi2 > _scale_precision) scale = _scale_precision;
+   scale = TMath::Min(_scale_precision, scale);
+
+   // Calculate the scaled likelihood sum
+   double likelihood_sum = 0.0;
+   for (std::vector<double>::iterator it=vec_chi2_toy.begin(); it!=vec_chi2_toy.end(); ++it){
+      double arg = -*it/2. + scale;
+      likelihood_sum += exp(arg) / N;
+   }
+   this->_chi2 = 2*scale - 2*log(likelihood_sum);  // The scale cancels out at this stage of the calculation, so this is the un-scaled chi2
+   this->_likelihood = exp(-this->_chi2/2.);
 }
 
 void Marginalisation::InitFit(const int param1Nbins,
