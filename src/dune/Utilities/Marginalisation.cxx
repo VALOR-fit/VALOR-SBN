@@ -224,10 +224,9 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
    // large likelihood values. (Note: rbegin/rend is the reverse beginning/end, i.e. the end/beginning).
    std::sort(vec_chi2_toy.rbegin(),vec_chi2_toy.rend());
 
-   // TODO: I don't like this and it's arbitrary anyway. So after the initial round of testing, change diff_chi2 to be the median and then re-test.
    // Use the median chisq as a scale factor to guard against precision issues
-   double diff_chi2 = (vec_chi2_toy[0] - vec_chi2_toy[vec_chi2_toy.size()-1]) / 2.;
-   diff_chi2 /= 2.;   // TODO: why divide by 2 twice?
+   double median_index = (vec_chi2_toy.size() + 1) / 2.;
+   double diff_chi2 = (vec_chi2_toy[(int)std::floor(median_index)] + vec_chi2_toy[(int)std::ceil(median_index)]) / 2.;
    double scale = diff_chi2;
    if(diff_chi2 > _scale_precision) scale = _scale_precision;
    scale = TMath::Min(_scale_precision, scale);
