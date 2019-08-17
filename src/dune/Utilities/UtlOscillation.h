@@ -16,6 +16,7 @@
 
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/FitParamList.h"
+#include "valor/Utilities/UtlXML.h"
 
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
@@ -39,14 +40,22 @@ namespace oscillation
       Set the oscillation parameter priors (and associated minimum and maximum
       values in the FitParamList.
 
-      NOTE: Currently this is hard-coded, but should be set according in an XML
-      file specified in the CmdLnArgList.
-
       \param arg The CmdLnArgList containing the XML filename from which the
                  priors should be read.
       \param fpl The FitParamList to be updated with the values determined by arg.
    */
    void SetOscillationParameterPriors(CmdLnArgList& arg, FitParamList& fpl);
+
+  /**
+     Set a single prior from an XML file. The prior can be on a single parameter,
+     or a 2D prior on two correlated parameters.
+
+     \param xmleng The XML engine for the prior XML file.
+     \param top_node A pointer to a <prior> node.
+     \param fpl The FitParamList to be updated with the prior.
+     \return True if successful.
+  */
+   bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList& fpl);
 
    /**
       Throw any marginalised oscillation parameters according to the content of

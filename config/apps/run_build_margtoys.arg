@@ -22,3 +22,4 @@ fit-param2                           |   string       |  optional   |   -
 fit-param2-value                     |   double       |  optional   |   0.0
 fit-param2-bin                       |   integer      |  optional   |   -1
 n-sigma-limit                        |   double       |  optional   |   0.0
+prior-file                           |   string       |  mandatory  |   -

@@ -25,7 +25,7 @@
 #  --max-par2               : Maximum value of the 2nd fit parameter
 #  --npt-job-par1           : Number of points of the 1st fit parameter to run in each job	# TODO: Not yet implemented
 #  --npt-job-par2           : Number of points of the 2nd fit parameter to run in each job	# TODO: Not yet implemented
-#  --prior-file             : Config file containing the priors used to throw toys					# TODO: Not yet implemented
+#  --prior-file             : Config file containing the priors used to throw toys
 #
 #  --tag                    : Naming tag for output files
 #  --config                 : Analysis configuration file from the config/analysis directory
@@ -47,6 +47,12 @@
 #  --seed-syst              : Seed used for randomising systematic parameters
 #  --seed-osc               : Seed used for randomising oscillation parameters
 #  --seed-other             : Seed used for randomising things that are not parameters
+#
+#  --gen-fc-toys            : Generate Feldman-Cousins toys instead of marginalisation toys.
+#                             Structurally, these are identical to marginalisation toys and can be generated in the same
+#                             way, but are typically generated at a fewer number of grid points and the toys are used in
+#                             different ways after they've been generated. So reuse this script, for convenience and
+#                             to reduce maintenance.
 #
 #  --use-t2k-presets        : Use hard-coded T2K values for the number of marg toys, parameter ranges, job grouping,
 #                             CPU time etc. for the parameter(s) of interest
@@ -105,6 +111,7 @@ foreach (@ARGV) {
   elsif($_ eq '--seed-osc'            ) { $seed_osc            = $ARGV[$iarg+1]; }
   elsif($_ eq '--seed-other'          ) { $seed_other          = $ARGV[$iarg+1]; }
   elsif($_ eq '--use-t2k-presets'     ) { $use_t2k_presets     = $ARGV[$iarg+1]; }
+  elsif($_ eq '--gen-fc-toys'         ) { $gen_fc_toys         = $ARGV[$iarg+1]; }
 
   else {
       print "Unrecognised argument ".$_."\n"; exit;
@@ -138,7 +145,7 @@ $npt_job_par1        = 1                                                        
 $npt_job_par2        = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
 $fit_param_list      = "nuosc3f"                                                           unless defined $fit_param_list;
 $fit_param_opt       = ""                                                                  unless defined $fit_param_opt;
-$param_values_option = "randomize-all\\;prefit-errors"                                      unless defined $param_values_option;
+$param_values_option = "randomize-all\\;prefit-errors"                                     unless defined $param_values_option;
 $mesg_thresholds     = "verbosity.xml"                                                     unless defined $mesg_thresholds;
 $store_specra        = 0                                                                   unless defined $store_specra;
 $rethrow_unphysical  = 1                                                                   unless defined $rethrow_unphysical;
@@ -154,6 +161,7 @@ $seed_osc            = 1                                                        
 $seed_other          = 1                                                                   unless defined $seed_other;
 $tag                 = "toys"                                                              unless defined $tag;
 $config              = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml" unless defined $config;
+$gen_fc_toys         = 0                                                                   unless defined $gen_fc_toys;
 
 # If we have only a single parameter of interest defined, set the options for par2 appropriately
 if($par2 eq "") {
@@ -187,6 +195,16 @@ if($use_t2k_presets == 1) {
 	  $tag = "${tag}_reactor";
 	}
 
+	# Do we really want to generate FC toys instead of marginalisation toys? If so, set presets accordingly
+	if($gen_fc_toys == 1) {
+	  if(!(($par1 eq "cpv") and ($par2 eq "")) || $use_reactors == 0) {
+	  	die("ERROR: FC presets for T2K are currently ony defined for 1D deltacp with reactors");
+	  }
+	  if($prior_hist_file eq "") {
+	  	die("ERROR: When running FC for T2K, a 2D prior file should be specified");
+	  }
+	}
+
 	# 1D fit - beta
   if(($par1 eq "beta") and ($par2 eq "")) {
 		if($use_reactors == 1) {
@@ -208,20 +226,33 @@ if($use_t2k_presets == 1) {
 
   # 1D fit - CPV
 	if(($par1 eq "cpv") and ($par2 eq "")) {
-		if($use_reactors == 1) {
-			$nmargtoy   = 40000                    unless defined $nmargtoy;
-			$cput       = "8:00:00"                unless defined $cput;
-			$mem        = "3500M"                  unless defined $mem;
+		if($gen_fc_toys == 1) {
+			# Feldman-Cousins presets
+			$nmargtoy        = 10000                    unless defined $nmargtoy;
+			$cput            = "3:00:00"                unless defined $cput;
+      $mem             = "3500M"                  unless defined $mem;
+      $npt_par1        = 9                        unless defined $npt_par1;
+      $min_par1        = -3.14159265358979312e+00 unless defined $min_par1;
+      $max_par1        = +3.14159265358979312e+00 unless defined $max_par1;
+      $npt_job_par1    = 1                        unless defined $npt_job_par1;
 		}
 		else {
-			$nmargtoy   = 80000                    unless defined $nmargtoy;
-			$cput       = "15:00:00"               unless defined $cput;
-			$mem        = "5000M"                  unless defined $mem;
+		  # Marginalisation presets
+			if($use_reactors == 1) {
+				$nmargtoy   = 40000                    unless defined $nmargtoy;
+				$cput       = "8:00:00"                unless defined $cput;
+				$mem        = "3500M"                  unless defined $mem;
+			}
+			else {
+				$nmargtoy   = 80000                    unless defined $nmargtoy;
+				$cput       = "15:00:00"               unless defined $cput;
+				$mem        = "5000M"                  unless defined $mem;
+			}
+			$npt_par1     = 101                      unless defined $npt_par1;
+			$min_par1     = -3.14159265358979312e+00 unless defined $min_par1;
+			$max_par1     = +3.14159265358979312e+00 unless defined $max_par1;
+			$npt_job_par1 = 1                        unless defined $npt_job_par1;
 		}
-		$npt_par1     = 101                      unless defined $npt_par1;
-		$min_par1     = -3.14159265358979312e+00 unless defined $min_par1;
-		$max_par1     = +3.14159265358979312e+00 unless defined $max_par1;
-		$npt_job_par1 = 1                        unless defined $npt_job_par1;
 	} # 1D CPV
 
   # 1D fit - sinsqth13
@@ -393,7 +424,8 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		             "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
 		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
 		             "--fit-param2-bin $sub_ibin2 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
-		             "--seed-toys-osc $seed_osc --seed-other $seed_other";
+		             "--seed-toys-osc $seed_osc --seed-other $seed_other " .
+		             "--prior-file $prior_file ";
 
     if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
     if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
