@@ -8,6 +8,7 @@
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/NuMassHierarchy.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Utilities/Env.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -200,6 +201,7 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
    std::vector<std::string> tokens = util::Tokens(param_names, ",");
    std::vector<conv::PhysParamId_t> params;
    for(std::string param_name : tokens) {
+      param_name = util::RemoveAllWhitespace(param_name);
       conv::PhysParamId_t p = nr->PhysParamFromString(param_name);
       if(p == conv::kPhypUndefined) {
          LOG("UtlOscillation", pERROR) << "Could not parse parameter [" << param_name << "]";
@@ -222,38 +224,38 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
    // TODO is this the correct handling for the 'auto' dmsq scheme?
    if(util::IsMassSplitting(params[0]) &&
          !(opt.find("auto") != std::string::npos) &&
-           opt.find(util::DmsqSchemeAsString(Opt::Instance()->gOscDmsqScheme)) == std::string::npos ) {
+           opt.find(util::DmsqSchemeAsStringSimple(Opt::Instance()->gOscDmsqScheme)) == std::string::npos ) {
       LOG("UtlOscillation", pERROR) << "The input prior dmsq scheme [" << opt << "] did not match the set scheme";
       exit(1);
    }
    if(prior_type == "user" &&
          util::IsMixingAngle(params[0]) &&
-         opt.find(util::MixingTypeAsString(Opt::Instance()->gOscMixingParamChoice)) == std::string::npos) {
+         opt.find(util::MixingTypeAsStringSimple(Opt::Instance()->gOscMixingParamChoice)) == std::string::npos) {
       LOG("UtlOscillation", pERROR) << "The input prior mixing angle scheme [" << opt << "] did not match the set scheme";
       exit(1);
    }
    if(prior_type == "user" &&
          util::IsPhase(params[0]) &&
-         opt.find(util::CPVChoiceAsString(Opt::Instance()->gOscDeltaCP)) == std::string::npos) {
+         opt.find(util::CPVChoiceAsStringSimple(Opt::Instance()->gOscDeltaCP)) == std::string::npos) {
       LOG("UtlOscillation", pERROR) << "The input delta scheme [" << opt << "] did not match the set scheme";
       exit(1);
    }
    if(params.size() == 2) {
       if(util::IsMassSplitting(params[1]) &&
             !(opt.find("auto") != std::string::npos) &&
-              opt.find(util::DmsqSchemeAsString(Opt::Instance()->gOscDmsqScheme)) == std::string::npos ) {
+              opt.find(util::DmsqSchemeAsStringSimple(Opt::Instance()->gOscDmsqScheme)) == std::string::npos ) {
          LOG("UtlOscillation", pERROR) << "The input prior dmsq scheme [" << opt << "] did not match the set scheme";
          exit(1);
       }
       if(prior_type == "user" &&
             util::IsMixingAngle(params[1]) &&
-            opt.find(util::MixingTypeAsString(Opt::Instance()->gOscMixingParamChoice)) == std::string::npos) {
+            opt.find(util::MixingTypeAsStringSimple(Opt::Instance()->gOscMixingParamChoice)) == std::string::npos) {
          LOG("UtlOscillation", pERROR) << "The input prior mixing angle scheme [" << opt << "] did not match the set scheme";
          exit(1);
       }
       if(prior_type == "user" &&
             util::IsPhase(params[1]) &&
-            opt.find(util::CPVChoiceAsString(Opt::Instance()->gOscDeltaCP)) == std::string::npos) {
+            opt.find(util::CPVChoiceAsStringSimple(Opt::Instance()->gOscDeltaCP)) == std::string::npos) {
          LOG("UtlOscillation", pERROR) << "The input delta scheme [" << opt << "] did not match the set scheme";
          exit(1);
       }
@@ -349,10 +351,20 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
       else {
          prior_hist_file_name = prior_attribute2;
       }
-      TFile prior_root_file(prior_hist_file_name.c_str(), "read");
+      TString base_dir = Env::Instance()->TopLevelDataDir().c_str();
+      TFile* prior_root_file = new TFile((base_dir + "/" + prior_hist_file_name.c_str()).Data(), "read");
+      if(!prior_root_file->IsOpen()) {
+         LOG("UtlOscillation", pERROR) << "Could not find prior hist file [" << prior_hist_file_name << "]";
+         exit(1);
+      }
 
       if(params.size() == 1) {
-         TH1D* prior_hist = (TH1D*) prior_root_file.Get(prior_attribute3.c_str());
+         TH1D* prior_hist = (TH1D*) prior_root_file->Get(prior_attribute3.c_str());
+         if(!prior_hist) {
+            LOG("UtlOscillation", pERROR) << "Could not find 1D prior hist [" << prior_attribute3 << "] in file ["
+                                          << prior_hist_file_name << "]";
+            exit(1);
+         }
          fpl.SetPriorMode (params[0], "user");
          fpl.SetPriorHisto(params[0], prior_hist);
          LOG("UtlOscillation", pNOTICE) << "Setting 1D hist prior for param " << param_names
@@ -360,7 +372,12 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
       }
       else {
          // Set the axis titles to the parameter names they correspond to, so we know which is which when we come to throw from the hist
-         TH2D* prior_hist = (TH2D*) prior_root_file.Get(prior_attribute3.c_str());
+         TH2D* prior_hist = (TH2D*) prior_root_file->Get(prior_attribute3.c_str());
+         if(!prior_hist) {
+            LOG("UtlOscillation", pERROR) << "Could not find 1D prior hist [" << prior_attribute3 << "] in file ["
+                                          << prior_hist_file_name << "]";
+            exit(1);
+         }
          prior_hist->GetXaxis()->SetTitle(nr->ParamAsStringVerySimple(params[0]).c_str());
          prior_hist->GetYaxis()->SetTitle(nr->ParamAsStringVerySimple(params[1]).c_str());
          fpl.SetPriorMode   (params[0], "user");
@@ -370,7 +387,8 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
          LOG("UtlOscillation", pNOTICE) << "Setting 2D hist prior for params " << param_names
                                         << ": file = " << prior_hist_file_name;
       }
-      prior_root_file.Close();
+      prior_root_file->Close();
+      delete prior_root_file;
    }
 
    return true;
