@@ -39,8 +39,9 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
 
     for param_name in param_names:
         print "Considering param: ", param_name
-        if convert_param_name(param_name, param_map) == "" or convert_param_name(param_name, param_map) == "-":
-            continue
+        if param_map:
+            if convert_param_name(param_name, param_map) == "" or convert_param_name(param_name, param_map) == "-":
+                continue
 
         # First get all the values for this param across all trees, so that we can get the hist ranges
         param_vals_all = []
@@ -55,11 +56,11 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
                 param_vals = [-999]*ntoys
                 for itoy, toy in enumerate(tree):
                     name = param_name
-                    if itree > 0 and param_name:
+                    if itree > 0 and param_name and param_map:
                         name = convert_param_name(name, param_map)
                     param_vals[itoy] = getattr(toy, name)
                     if itoy == ntoys -1:
-                        break;
+                        break
                 param_vals_all.append(param_vals)
                 del param_vals
             else:
