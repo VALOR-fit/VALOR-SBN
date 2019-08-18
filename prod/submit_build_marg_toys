@@ -200,9 +200,6 @@ if($use_t2k_presets == 1) {
 	  if(!(($par1 eq "cpv") and ($par2 eq "")) || $use_reactors == 0) {
 	  	die("ERROR: FC presets for T2K are currently ony defined for 1D deltacp with reactors");
 	  }
-	  if($prior_hist_file eq "") {
-	  	die("ERROR: When running FC for T2K, a 2D prior file should be specified");
-	  }
 	}
 
 	# 1D fit - beta
