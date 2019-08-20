@@ -385,7 +385,9 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
          fpl.SetPriorMode   (params[1], "user");
          fpl.SetPriorHisto2D(params[1], prior_hist);
          LOG("UtlOscillation", pNOTICE) << "Setting 2D hist prior for params " << param_names
-                                        << ": file = " << prior_hist_file_name;
+                                        << ": file = " << prior_hist_file_name
+                                        << "; Associating x-axis with " << nr->ParamAsStringVerySimple(params[0])
+                                        << "; Associating y-axis with " << nr->ParamAsStringVerySimple(params[1]);
       }
       prior_root_file->Close();
       delete prior_root_file;
@@ -456,19 +458,19 @@ void ThrowOscillationParameters(FitParamList& fpl)
    // Finally do the 0 or 2 parameters that have a 2D prior. Throw them together to maintain correlations
    if(pars_with_2D_prior_hists.size() == 2) {
       // Make sure we know which param corresponds to the x and y axes of the prior hist
-      std::string xtitle = fpl.GetPriorHisto2D(pars_with_2D_prior_hists[0])->GetXaxis()->GetTitle();
-      std::string ytitle = fpl.GetPriorHisto2D(pars_with_2D_prior_hists[0])->GetYaxis()->GetTitle();
+      std::string xtitle = ((TH2D*)fpl.GetPriorHisto2D(pars_with_2D_prior_hists[0]))->GetXaxis()->GetTitle();
+      std::string ytitle = ((TH2D*)fpl.GetPriorHisto2D(pars_with_2D_prior_hists[0]))->GetYaxis()->GetTitle();
       int xindex = -1;
       int yindex = -1;
-      if     (util::NameRegistry::Instance()->AsString(pars_with_2D_prior_hists[0]) == xtitle) { xindex = 0; }
-      else if(util::NameRegistry::Instance()->AsString(pars_with_2D_prior_hists[0]) == ytitle) { yindex = 0; }
-      if     (util::NameRegistry::Instance()->AsString(pars_with_2D_prior_hists[1]) == xtitle) { xindex = 1; }
-      else if(util::NameRegistry::Instance()->AsString(pars_with_2D_prior_hists[1]) == ytitle) { yindex = 1; }
+      if     (util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[0]) == xtitle) { xindex = 0; }
+      else if(util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[0]) == ytitle) { yindex = 0; }
+      if     (util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[1]) == xtitle) { xindex = 1; }
+      else if(util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[1]) == ytitle) { yindex = 1; }
       if(xindex == -1 || yindex == -1) {
          LOG("UtlOscillation", pERROR) << "Failed to associate parameter "
-                                       << util::NameRegistry::Instance()->AsString(pars_with_2D_prior_hists[0])
+                                       << util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[0])
                                        << " and/or "
-                                       << util::NameRegistry::Instance()->AsString(pars_with_2D_prior_hists[1])
+                                       << util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[1])
                                        << " with the x (" << xtitle << ") or y  (" << ytitle
                                        << ") titles of the 2D prior hist.";
          exit(1);
