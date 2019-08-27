@@ -559,9 +559,9 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 				if($resource eq "Liverpool_Slurm") {
 					open(Slurm, ">$job_dir/$tag.slurm") or die("Can not create the Slurm batch script");
 					print Slurm "#!/bin/bash \n";
-					print Slurm "#SBATCH -J $tag-$irun \n";
-					print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
-					print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
+					print Slurm "#SBATCH -J $tag \n";
+					print Slurm "#SBATCH -o $job_dir/$tag.slurm.out \n";
+					print Slurm "#SBATCH -e $job_dir/$tag.slurm.err \n";
 					print Slurm "#SBATCH -t $cput \n";
 					print Slurm "#SBATCH --mem=$mem \n";
 					print Slurm "cd $job_dir \n";
@@ -576,21 +576,21 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 				# Cedar
 				#
 				if($resource eq "cedar") {
-					open(Slurm, ">$job_dir/$tag-$irun.slurm") or die("Can not create the Slurm batch script");
+					open(Slurm, ">$job_dir/$tag.slurm") or die("Can not create the Slurm batch script");
 					print Slurm "#!/bin/bash \n";
 					print Slurm "#SBATCH --account=def-tanaka-ac \n";		# A larger allocation is available on "rpp-tanaka-ab", but it's only available on cedar
 					print Slurm "#SBATCH --nodes=1 \n";
 					print Slurm "#SBATCH --time=$cput \n";
 					print Slurm "#SBATCH --mem=$mem \n";
-					print Slurm "#SBATCH --job-name=$tag-$irun \n";
-					print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
-					print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
+					print Slurm "#SBATCH --job-name=$tag \n";
+					print Slurm "#SBATCH -o $job_dir/$tag.slurm.out \n";
+					print Slurm "#SBATCH -e $job_dir/$tag.slurm.err \n";
 					print Slurm "cd $job_dir \n";
 					print Slurm "source $softw_dir/setup/setup_at_cedar_root6.sh $softw_dir $fmwk_dir\n";
 					if($time_command == 1) { print Slurm "command time $command \n"; }
 					else { print Slurm "$command \n"; }
 					close(Slurm);
-					`sbatch $job_dir/$tag-$irun.slurm`;
+					`sbatch $job_dir/$tag.slurm`;
 				}
 
 				#
@@ -599,23 +599,23 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 
 				if($resource eq "cedar_opt")
 				{
-					open(Slurm, ">$job_dir/temp_${irun}.txt") or die("Cannot create temp");
+					open(Slurm, ">$job_dir/temp.txt") or die("Cannot create temp");
 					print Slurm "$command";
 					close(Slurm);
 					print Slurm "rm -rf \$node_dir \n";
-					open(Slurm, ">$job_dir/${tag}_${irun}.slurm") or die("Can not create the Slurm batch script");
+					open(Slurm, ">$job_dir/${tag}.slurm") or die("Can not create the Slurm batch script");
 					print Slurm "#!/bin/bash \n";
 					print Slurm "#SBATCH --account=rpp-tanaka-ab \n";
 					print Slurm "#SBATCH --nodes=1 \n";
 					print Slurm "#SBATCH --time=$cput \n";
 					print Slurm "#SBATCH --mem=$mem \n";
-					print Slurm "#SBATCH --job-name=$tag-$irun \n";
-					print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
-					print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
-					print Slurm "the_command=\$(cat $job_dir/temp_${irun}.txt) \n";
+					print Slurm "#SBATCH --job-name=$tag \n";
+					print Slurm "#SBATCH -o $job_dir/$tag.slurm.out \n";
+					print Slurm "#SBATCH -e $job_dir/$tag.slurm.err \n";
+					print Slurm "the_command=\$(cat $job_dir/temp.txt) \n";
 
 					print Slurm "IFS=',' read -r -a tokens <<< \"\$the_command\" \n";
-					print Slurm "rm -f $job_dir/temp_${irun}.txt \n";
+					print Slurm "rm -f $job_dir/temp.txt \n";
 					print Slurm "newarray=() \n";
 					print Slurm "numtok=\$\{#tokens[@]\} \n";
 					print Slurm "for (( i=0; i<\$\{#tokens[@]\}; i++ )); do \n";
@@ -638,7 +638,7 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 					print Slurm "cp -r \$node_dir/* . \n";
 
 					close(Slurm);
-					`sbatch $job_dir/${tag}_${irun}.slurm`;
+					`sbatch $job_dir/${tag}.slurm`;
 				}
 
 				#
