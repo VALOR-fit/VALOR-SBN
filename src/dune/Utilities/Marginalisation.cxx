@@ -94,7 +94,7 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
          {
             n_rethrows++;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-            LOG("valor_dune", pDEBUG) << "At least one parameter thrown " <<
+            LOG("Marginalisation", pDEBUG) << "At least one parameter thrown " <<
                "outside expected limits. Rethrowing.";
 #endif
          }
@@ -107,10 +107,10 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
        
       // Generate a toy-MC experiment
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-      LOG("valor_dune", pDEBUG) << "Generating toy-MC data";
-      LOG("valor_dune", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
+      LOG("Marginalisation", pDEBUG) << "Generating toy-MC data";
+      LOG("Marginalisation", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
 #endif
-      if(t % 100 == 0) { LOG("valor_dune", pNOTICE) << "Generating toy-MC #" << t; }
+      if(t % 100 == 0) { LOG("Marginalisation", pNOTICE) << "Generating toy-MC #" << t; }
       const char* write_opt = "pdft";
       if (_use_simple_binning) { write_opt = "pdft+SB"; }
       this->_model->Generate(fpl, write_opt);
@@ -118,7 +118,7 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       this->SaveParamThrows(fpl, t == Ntoys-1, filename);
    }
    os_toys.close();
-   LOG("valor_dune", pNOTICE) << "Finished building marginalisation toys. Generated " << Ntoys
+   LOG("Marginalisation", pNOTICE) << "Finished building marginalisation toys. Generated " << Ntoys
                               << ", re-threw " << n_rethrows;
 }
 //______________________________________________________________________________
@@ -197,14 +197,14 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       }
       oss << "_" << b << "_" << Ntoys << ".bin";
       std::string filename = oss.str();
-      LOG("valor_dune", pINFO) << "Filename: " << filename;
+      LOG("Marginalisation", pINFO) << "Filename: " << filename;
 
       std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
       for(int t = 0; t < Ntoys; ++t)
       {
          // Read the chi2 of each toy-MC experiment into a vector
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-         LOG("valor_dune", pDEBUG) << "Reading toy-MC data";
+         LOG("Marginalisation", pDEBUG) << "Reading toy-MC data";
 #endif
          const char* read_opt = "pdft";
          if (_use_simple_binning) { read_opt = "pdft+SB"; }
@@ -212,7 +212,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-         LOG("valor_dune", pDEBUG) << "chi2(" << t << "): " << chi2 <<
+         LOG("Marginalisation", pDEBUG) << "chi2(" << t << "): " << chi2 <<
             " L(" << t << "): " << likelihood;
 #endif
       }
