@@ -114,9 +114,13 @@ void Fit(CmdLnArgList& arg)
    string fplopt           = arg.GetString("fit-param-opt");
    string param_val_opts   = arg.GetString("param-values-option");
    string fitter_name      = arg.GetString("fitter");
+   int NtoysFakeData       = arg.GetInt("ntoys-fakedata");
    bool with_stat_fluct    = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
    bool use_simple_binning = arg.GetBool("use-simple-binning");
+
+   const char* read_opt = "pdft";
+   if (use_simple_binning) { read_opt = "pdft+SB"; }
 
    string fp1_name         = arg.GetString("fit-param1");
    const double fp1_val    = arg.GetDouble("fit-param1-value");
@@ -154,10 +158,17 @@ void Fit(CmdLnArgList& arg)
    CompoundFitElements* elements = new CompoundFitElements();
    elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
-
    FitDataABC* data = elements->FitData();
+
+   std::ifstream * is_fakedata = nullptr;
    if(arg.GetInt("gen-fakedata")) {
       // Generate a fake data set to fit to
+
+      if(NtoysFakeData > 1) {
+         LOG("valor_dune", pFATAL) << "Currently only fits with 1 fakedata toy supported when generating on the fly. "
+                                      "It should be relatively easy to add support for > 1 toy if you need it!";
+         util::Die(-1);
+      }
 
       // GetSystematics will be added to CorrelatedSystematics in the future
       CorrelatedSystematics* systematics =
@@ -179,9 +190,8 @@ void Fit(CmdLnArgList& arg)
    else {
       // Fit to data read from an input file
       std::string data_file_name = arg.GetString("data-file");
-      // TODO: Read in the data file
-      LOG("valor_dune", pFATAL) << "Fitting to data from an input file is not yet supported. Exiting.";
-      util::Die(-1);
+      LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
+      is_fakedata = new std::ifstream(data_file_name, std::ios::binary | std::ios::in);
    }
 
    // Get the requested batch number and number of marginalisation toys for the
@@ -203,32 +213,49 @@ void Fit(CmdLnArgList& arg)
             fp2_minval, fp2_maxval);
    }
    FitResult* result = nullptr;
-   // Perform a fit and populate the entire chi2 and likelihood surfaces
-   // This version of the fit works for both 1D and 2D
-   result = marginalisation.Fit(data, Ntoys, Nbatches, firstBatch);
-   // Perform an optimised fit starting at the specified value
-/*   if(!fit_is_2D)
-   {
-      result = marginalisation.Fit(fp1_val, data, Ntoys, Nbatches, firstBatch);
-   }
-   else
-   {
-      result = marginalisation.Fit(fp1_val, fp2_val, data, Ntoys, Nbatches,
-            firstBatch);
-   }*/
 
-   if(!fit_is_2D)
+   std::vector<double>* chi2_best_fit_toy = new std::vector<double>(NtoysFakeData);
+   for(int ifake = 0; ifake < NtoysFakeData; ifake++)    // TODO: have the option of starting from a particular toy number
    {
-      LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
-         result->GetParam1BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
-         " " << " L = " << result->GetLikelihoodBestFit();
-   }
-   else
-   {
-      LOG("valor_dune", pNOTICE) << "Best fit: cpv = " <<
-         result->GetParam1BestFit() << " mixing23 = " <<
-         result->GetParam2BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
-         " " << " L = " << result->GetLikelihoodBestFit();
+      // Read a fakedata toy, if requested
+      if(arg.GetInt("gen-fakedata") == 0)
+      {
+         data->Read(*is_fakedata, model, read_opt);
+      }
+
+      // Perform a fit and populate the entire chi2 and likelihood surfaces
+      // This version of the fit works for both 1D and 2D
+      result = marginalisation.Fit(data, Ntoys, Nbatches, firstBatch);
+
+      // Perform an optimised fit starting at the specified value
+   /*   if(!fit_is_2D)
+      {
+         result = marginalisation.Fit(fp1_val, data, Ntoys, Nbatches, firstBatch);
+      }
+      else
+      {
+         result = marginalisation.Fit(fp1_val, fp2_val, data, Ntoys, Nbatches,
+               firstBatch);
+      }*/
+
+      if(ifake % 100 == 0) {
+         if(!fit_is_2D)
+         {
+            LOG("valor_dune", pNOTICE) << "For fakedata toy #" << ifake <<
+               ", Best fit: " << fp1_name << " = " <<
+               result->GetParam1BestFit() << " Chi^2 = " << result->GetChi2BestFit() <<
+               " " << " L = " << result->GetLikelihoodBestFit();
+         }
+         else
+         {
+            LOG("valor_dune", pNOTICE) << "For fakedata toy #" << ifake <<
+               ", Best fit param 1: " << fp1_name << " = " << result->GetParam1BestFit() <<
+               ", Best fit param 2: " << fp2_name << " = " << result->GetParam2BestFit() <<
+               result->GetChi2BestFit() << " " << " L = "  << result->GetLikelihoodBestFit();
+         }
+      }
+
+      chi2_best_fit_toy->at(ifake) = result->GetChi2BestFit();
    }
 
    std::ostringstream oss;
@@ -236,6 +263,9 @@ void Fit(CmdLnArgList& arg)
    oss << "_result.root";
    string filename = oss.str();
    TFile* fitFile = new TFile(filename.c_str(), "RECREATE");
+
+   // Store surfaces
+   LOG("valor_dune", pNOTICE) << "Only storing the chi2 and likelihood surfaces of the last fakedata toy (to avoid bloat)";
    if(!fit_is_2D)
    {
       TH1D* chi2Surface = result->GetChi2Surface1D();
@@ -250,6 +280,10 @@ void Fit(CmdLnArgList& arg)
       chi2Surface->Write("chi2");
       likelihoodSurface->Write("likelihood");
    }
+
+   // Store vector of marginal chi2 values
+   fitFile->WriteObject(chi2_best_fit_toy, "chi2_best_fit_toy");
+
    fitFile->Close();
    delete fitFile;
 
@@ -260,7 +294,7 @@ void Fit(CmdLnArgList& arg)
       likelihood;*/
    clock.Stop();
 
-   LOG("valor_dune", pNOTICE) << "Read: " << Ntoys <<
+   LOG("valor_dune", pNOTICE) << "Read: " << Ntoys * NtoysFakeData <<
       " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
       clock.CpuTime();
 }
@@ -273,8 +307,6 @@ void Init(CmdLnArgList& arg)
    Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
    Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
    Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
-
-   util::InitializeOAPriors();      // TODO: this should be read from XML files
 
    Rnd::Instance()->SetSeeds(arg);
 }

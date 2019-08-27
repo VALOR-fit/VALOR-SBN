@@ -13,6 +13,7 @@ param-values-option                  |   string       |  optional   |   randomiz
 config                               |   string       |  mandatory  |   -
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
 gen-fakedata                         |   integer      |  optional   |   1
+ntoys-fakedata                       |   integer      |  optional   |   1
 data-file                            |   string       |  optional   |   -
 with-stat-fluct,without-stat-fluct   |   boolean_list |  optional   |   without-stat-fluct
 store-spectra,discard-spectra        |   boolean_list |  optional   |   discard-spectra
@@ -32,3 +33,4 @@ fit-param2-min-value                 |   double       |  optional   |   0.0
 fit-param2-max-value                 |   double       |  optional   |   0.0
 fit-param2-nbins                     |   integer      |  optional   |   0
 n-sigma-limit                        |   double       |  optional   |   0.0
+prior-file                           |   string       |  mandatory  |   -
