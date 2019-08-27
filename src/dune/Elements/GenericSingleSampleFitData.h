@@ -60,7 +60,7 @@ public:
 
   string Name           (void) const;
   bool   Read           (string file, Option_t * opt = 0);
-  virtual bool Read(std::ifstream& stream, Option_t* read_opt = 0);
+  virtual bool Read     (std::ifstream& stream, FitModelABC * model = 0, Option_t* read_opt = 0);
   bool   Generate       (FitModelABC * pred, const FitParamList & fp,   bool fluctuate=true);
   bool   Generate       (FitModelABC * pred, const PhysHypothesis & ph, bool fluctuate=true);
   bool   Generate       (FitModelABC * pred, bool fluctuate=true);

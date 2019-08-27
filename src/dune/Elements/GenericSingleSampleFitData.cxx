@@ -61,9 +61,21 @@ bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Read(std::ifstream& stream, Option_t * read_opt)
+bool GenericSingleSampleFitData::Read(std::ifstream& stream, FitModelABC * model_abc, Option_t * read_opt)
 {
    string opt = (read_opt) ? read_opt : "";
+
+   // Get the binning from the input model, if needed
+   if(!fDataOb && model_abc) {
+     GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
+     assert(model);
+     if(fBinning!=model->GetBinning()){
+       this->Clean();
+       fBinning = model->GetBinning();
+       this->Book();
+     }
+   }
+
    assert(fDataOb);
    fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
    fDataOb->ReadStream(stream);
