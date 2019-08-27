@@ -33,10 +33,13 @@
 #  --max-par2               : Maximum value of the 2nd fit parameter
 #  --npt-job-par1           : Number of points of the 1st fit parameter to run in each job	# TODO: Not yet implemented
 #  --npt-job-par2           : Number of points of the 2nd fit parameter to run in each job	# TODO: Not yet implemented
-#  --prior-file             : Config file containing the priors used to throw toys					# TODO: Not yet implemented
+#  --prior-file             : Config file containing the priors used to throw toys
 #  --gen-fakedata           : Generate fakedata to fit to instead of fitting data from an input file.
-#                           : Use this with the --param-set option				                                   # TODO: Not yet implemented
-#  --data-file              : If --gen-fakedata is switched off, read data from this input file instead.		# TODO: Not yet implemented
+#                           : Use this with the --param-set option
+#  --ntoys-fakedata         : The number of fakedata toys to read. Use with --gen-fakedata 0
+#  --data-file              : If --gen-fakedata is switched off, read data from this input file instead.
+#                             If marginalising FC toys, write '[x]' (and '[y]', if 2D) instead of the FC grid point
+#                             number. This will then be automatically replaced to find the correct file.
 #
 #  --tag                    : Naming tag for output files
 #  --config                 : Analysis configuration file from the config/analysis directory
@@ -58,6 +61,14 @@
 #  --seed-syst              : Seed used for randomising systematic parameters
 #  --seed-osc               : Seed used for randomising oscillation parameters
 #  --seed-other             : Seed used for randomising things that are not parameters
+#
+#  --marg-fc-toys						 : Indicates that each fakedata toy is to be fit at every marginalisation toy grid point.
+#                             In this way, as many marginalisation jobs as grid points are submitted for each set of
+#                             FC toys (so that we only send one set of marg toys to each job to cut down on I/O load)
+#  --npt-fc-par1            : If marginalising FC toys, loop over this many input FC toy files.
+#  --npt-fc-par2            : If marginalising FC toys, loop over this many input FC toy files.
+#  --start-pt-fc-par1       : If marginalising FC toys, start at this point number and loop up to this + npt-fc-par1
+#  --start-pt-fc-par2       : If marginalising FC toys, start at this point number and loop up to this + npt-fc-par1
 #
 #  --use-t2k-presets        : Use hard-coded T2K values for the number of marg toys, parameter ranges, job grouping,
 #                             CPU time etc. for the parameter(s) of interest
@@ -105,6 +116,7 @@ foreach (@ARGV) {
   elsif($_ eq '--npt-job-par2'       ) { $npt_job_par2        = $ARGV[$iarg+1]; }
   elsif($_ eq '--prior-file'         ) { $prior_file          = $ARGV[$iarg+1]; }
   elsif($_ eq '--gen-fakedata'       ) { $gen_fakedata        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--ntoys-fakedata'     ) { $ntoys_fakedata      = $ARGV[$iarg+1]; }
   elsif($_ eq '--data-file'          ) { $data_file           = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                ) { $tag                 = $ARGV[$iarg+1]; }
   elsif($_ eq '--config'             ) { $config              = $ARGV[$iarg+1]; }
@@ -124,6 +136,11 @@ foreach (@ARGV) {
   elsif($_ eq '--seed-syst'          ) { $seed_syst           = $ARGV[$iarg+1]; }
   elsif($_ eq '--seed-osc'           ) { $seed_osc            = $ARGV[$iarg+1]; }
   elsif($_ eq '--seed-other'         ) { $seed_other          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--marg-fc-toys'       ) { $marg_fc_toys        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-fc-par1'        ) { $npt_fc_par1         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-fc-par2'        ) { $npt_fc_par2         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--start-pt-fc-par1'   ) { $start_pt_fc_par1    = $ARGV[$iarg+1]; }
+  elsif($_ eq '--start-pt-fc-par2'   ) { $start_pt_fc_par2    = $ARGV[$iarg+1]; }
   elsif($_ eq '--use-t2k-presets'    ) { $use_t2k_presets     = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-set'          ) { $param_set           = $ARGV[$iarg+1]; }
 
@@ -155,13 +172,14 @@ $par2                = ""                                                       
 $val_par1            = 0.                                                                  unless $val_par1;
 $val_par2            = 0.                                                                  unless $val_par2;
 $npt_par1            = 101                                                                 unless (defined $npt_par1 || $use_t2k_presets == 1);
-$npt_par2            = 0.                                                                  unless (defined $npt_par2 || $use_t2k_presets == 1);
+$npt_par2            = 1                                                                   unless (defined $npt_par2 || $use_t2k_presets == 1);
 $min_par1            = -3.14159265358979312e+00                                            unless (defined $min_par1 || $use_t2k_presets == 1);
 $min_par2            = 0.                                                                  unless (defined $min_par2 || $use_t2k_presets == 1);
 $max_par1            = +3.14159265358979312e+00                                            unless (defined $max_par1 || $use_t2k_presets == 1);
 $max_par2            = 0                                                                   unless (defined $max_par2 || $use_t2k_presets == 1);
 $prior_file          = "-"                                                                 unless defined $prior_file;
 $gen_fakedata        = 1                                                                   unless defined $gen_fakedata;
+$ntoys_fakedata      = 1                                                                   unless defined $ntoys_fakedata;
 $data_file           = "-"                                                                 unless defined $data_file;
 $npt_job_par1        = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
 $npt_job_par2        = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
@@ -184,12 +202,17 @@ $seed_other          = 1                                                        
 $tag                 = "fit"                                                               unless defined $tag;
 $config              = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml" unless defined $config;
 $param_set           = "random"                                                            unless defined $param_set;
+$marg_fc_toys        = 0                                                                   unless defined $marg_fc_toys;
+$npt_fc_par1         = 1                                                                   unless defined $npt_fc_par1;
+$npt_fc_par2         = 1                                                                   unless defined $npt_fc_par2;
+$start_pt_fc_par1    = 0                                                                   unless defined $start_pt_fc_par1;
+$start_pt_fc_par2    = 0                                                                   unless defined $start_pt_fc_par2;
 
 # If we have only a single parameter of interest defined, set the options for par2 appropriately
 if($par2 eq "") {
 	$min_par2     = 0.;
 	$max_par2     = 0.;
-	$npt_par2     = 0;
+	$npt_par2     = 1;
 	$npt_job_par2 = 1;
 }
 
@@ -273,19 +296,26 @@ if($use_t2k_presets == 1) {
   # 1D fit - CPV
 	if(($par1 eq "cpv") and ($par2 eq "")) {
 		if($use_reactors == 1) {
-			$nmargtoy   = 40000                    unless defined $nmargtoy;
-			$cput       = "00:15:00"                unless defined $cput;
-			$mem        = "2500M"                  unless defined $mem;
+			$nmargtoy      = 40000                    unless defined $nmargtoy;
+			if($marg_fc_toys == 1) {
+        $cput        = "04:00:00"               unless defined $cput;
+        $npt_fc_par1 = 9                        unless defined $npt_fc_par1;
+        $npt_fc_par2 = 1                        unless defined $npt_fc_par2;
+      }
+      else {
+        $cput        = "00:15:00"               unless defined $cput;
+      }
+			$mem           = "2500M"                  unless defined $mem;
 		}
 		else {
-			$nmargtoy   = 80000                    unless defined $nmargtoy;
-			$cput       = "00:30:00"               unless defined $cput;
-			$mem        = "3500M"                  unless defined $mem;
+			$nmargtoy      = 80000                    unless defined $nmargtoy;
+			$cput          = "00:30:00"               unless defined $cput;
+			$mem           = "3500M"                  unless defined $mem;
 		}
-		$npt_par1     = 101                      unless defined $npt_par1;
-		$min_par1     = -3.14159265358979312e+00 unless defined $min_par1;
-		$max_par1     = +3.14159265358979312e+00 unless defined $max_par1;
-		$npt_job_par1 = 1                        unless defined $npt_job_par1;
+		$npt_par1        = 101                      unless defined $npt_par1;
+		$min_par1        = -3.14159265358979312e+00 unless defined $min_par1;
+		$max_par1        = +3.14159265358979312e+00 unless defined $max_par1;
+		$npt_job_par1    = 1                        unless defined $npt_job_par1;
 	} # 1D CPV
 
   # 1D fit - sinsqth13
@@ -440,111 +470,186 @@ if($par2 eq "") {
 
 $program = "valor_dune-run_fit_marg";
 
-$arguments = "--tag $tag --nbatches $nbatches --first-batch $first_batch --fitter $fitter " .
-						 "--margtoy-tag $margtoy_tag --nmargtoy $nmargtoy --fit-param-list $fit_param_list " .
-						 "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
-						 "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
-						 "--fit-param1-min-value $min_par1 --fit-param1-max-value $max_par1 " .
-						 "--fit-param1-bin -1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
-						 "--fit-param2-min-value $min_par2 --fit-param2-max-value $max_par2 " .
-						 "--fit-param2-bin -1 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
-						 "--fit-param1-nbins $npt_par1 --fit-param2-nbins $npt_par2 $fake_data_args --data-file $data_file " .
-						 "--gen-fakedata $gen_fakedata --seed-toys-osc $seed_osc --seed-other $seed_other ";
+# For FC we want marginalise each FC point at every marginalisation toy point,
+# but only marginalise at a single marginalisation point per job (so submit many parallelised jobs)
 
-if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
-if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
-if($stat_fluct         == 1)       { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
-if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
-if($mix_param_octant   eq "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
-if($dmsq_scheme        eq "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
-
-$command = "$program $arguments";
-print "$command \n";
-
-#
-# Liverpool_Slurm
-#
-if($resource eq "Liverpool_Slurm") {
-	open(Slurm, ">$job_dir/$tag.slurm") or die("Can not create the Slurm batch script");
-	print Slurm "#!/bin/bash \n";
-	print Slurm "#SBATCH -J $tag-$irun \n";
-	print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
-	print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
-	print Slurm "#SBATCH -t $cput \n";
-	print Slurm "#SBATCH --mem=$mem \n";
-	print Slurm "cd $job_dir \n";
-	print Slurm "source $softw_dir/setup/setup_at_cvmfs_root6.sh $softw_dir $fmwk_dir\n";
-	if($time_command == 1) { print Slurm "/usr/bin/time $command \n"; }
-	else { print Slurm "$command \n"; }
-	close(Slurm);
-	`sbatch -p compute $job_dir/$tag.slurm`;
+# If not running FC, make sure the number of FC points to loop over is forced to 1
+if($marg_fc_toys == 0 && $npt_fc_par1 != 1) {
+	$npt_fc_par1 = 1;
+	print "WARNING: The number of par1 points to loop over was not 1 and we are not running FC. So forcing number of points to 1.\n";
+}
+if($marg_fc_toys == 0 && $npt_fc_par2 != 1) {
+	$npt_fc_par2 = 1;
+	print "WARNING: The number of par2 points to loop over was not 1 and we are not running FC. So forcing number of points to 1.\n";
 }
 
-if($resource eq "cedar") {
-	open(Slurm, ">$job_dir/$tag-$irun.slurm") or die("Can not create the Slurm batch script");
-	print Slurm "#!/bin/bash \n";
-	print Slurm "#SBATCH --account=def-tanaka-ac \n";		# A larger allocation is available on "rpp-tanaka-ab", but it's only available on cedar
-	print Slurm "#SBATCH --nodes=1 \n";
-	print Slurm "#SBATCH --time=$cput \n";
-	print Slurm "#SBATCH --mem=$mem \n";
-	print Slurm "#SBATCH --job-name=$tag-$irun \n";
-	print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
-	print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
-	print Slurm "cd $job_dir \n";
-	print Slurm "source $softw_dir/setup/setup_at_cedar_root6.sh $softw_dir $fmwk_dir\n";
-	if($time_command == 1) { print Slurm "command time $command \n"; }
-	else { print Slurm "$command \n"; }
-	close(Slurm);
-	`sbatch $job_dir/$tag-$irun.slurm`;
+$step_par1 = 0;
+$step_par2 = 0;
+if($npt_par1 > 1) { $step_par1 = ($max_par1 - $min_par1) / ($npt_par1 - 1); }
+if($npt_par2 > 1) { $step_par2 = ($max_par2 - $min_par2) / ($npt_par2 - 1); }
+
+$npt_marg_jobs_par1 = 1;
+$npt_marg_jobs_par2 = 1;
+if($marg_fc_toys == 1) {
+	$npt_marg_jobs_par1 = $npt_par1;
+	$npt_marg_jobs_par2 = $npt_par2;
 }
 
-if($resource eq "cedar_opt")
-{
-	open(Slurm, ">$job_dir/temp_${irun}.txt") or die("Cannot create temp");
-	print Slurm "$command";
-	close(Slurm);
-	print Slurm "rm -rf \$node_dir \n";
-	open(Slurm, ">$job_dir/${tag}_${irun}.slurm") or die("Can not create the Slurm batch script");
-	print Slurm "#!/bin/bash \n";
-	print Slurm "#SBATCH --account=rpp-tanaka-ab \n";
-	print Slurm "#SBATCH --nodes=1 \n";
-	print Slurm "#SBATCH --time=$cput \n";
-	print Slurm "#SBATCH --mem=$mem \n";
-	print Slurm "#SBATCH --job-name=$tag-$irun \n";
-	print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
-	print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
-	print Slurm "the_command=\$(cat $job_dir/temp_${irun}.txt) \n";
+# Loop over all par1 and par2 FC points (number of points set to 1 when not running FC!)
+for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par2; $i_fc_par2++) {
+	for($i_fc_par1 = $start_pt_fc_par1; $i_fc_par1 < $start_pt_fc_par1 + $npt_fc_par1; $i_fc_par1++) {
+		# If doing FC, work out the correct input FC toy file name
+		$data_file_use = $data_file;
+		if($marg_fc_toys == 1) {
+			my $tmpstr = $data_file =~ s/\[x\]/$i_fc_par1/r;
+			my $fc_filename = $tmpstr =~ s/\[y\]/$i_fc_par2/r;
+			$data_file_use = $fc_filename;
+			print "\n======================================\n";
+			print "= Submitting jobs for FC point \#$i_fc_par1, $i_fc_par2 =\n";
+			print "======================================\n\n";
+		}
 
-	print Slurm "IFS=',' read -r -a tokens <<< \"\$the_command\" \n";
-	print Slurm "rm -f $job_dir/temp_${irun}.txt \n";
-	print Slurm "newarray=() \n";
-	print Slurm "numtok=\$\{#tokens[@]\} \n";
-	print Slurm "for (( i=0; i<\$\{#tokens[@]\}; i++ )); do \n";
-	print Slurm "   if [ \$i == 5 ]; then \n";
-	print Slurm "      tag=`eval echo -e \$\{tokens[i]\}` \n";
-	print Slurm "      newarray+=\"\\\"\$\{SLURM_TMPDIR\}/${tag}\\\",\" \n";
-	print Slurm "   elif [ \$i == \$\[\$\{numtok\} - 1\] ]; then \n";
-	print Slurm "      newarray+=\"\$\{tokens[i]\}\" \n";
-	print Slurm "   else \n";
-	print Slurm "      newarray+=\"\$\{tokens[i]\},\" \n";
-	print Slurm "   fi \n";
-	print Slurm "done \n";
+		# Loop over all marginalisation grid points for FC so that we only send 1 set of marg toys to each job (when not
+		# running FC, the number of points is set to 1, to send all marg toy sets to the marginalisation job)
 
-	print Slurm "cmd=\"\$\{newarray[*]\}\" \n";
-	print Slurm "export node_dir=\$SLURM_TMPDIR \n";
-	print Slurm "cd $job_dir \n";
-	print Slurm "source $softw_dir/setup/setup_at_cedar_root6.sh $softw_dir $fmwk_dir\n";
-	print Slurm "eval \"\$cmd\" \n";
+		for($i_marg_par2 = 0; $i_marg_par2 < $npt_marg_jobs_par2; $i_marg_par2++) {
+			for($i_marg_par1 = 0; $i_marg_par1 < $npt_marg_jobs_par1; $i_marg_par1++) {
+				$npt_par1_use = $npt_par1;
+        $npt_par2_use = $npt_par2;
+        $min_par1_use = $min_par1;
+        $min_par2_use = $min_par2;
+        $max_par1_use = $max_par1;
+        $max_par2_use = $max_par2;
+				if($marg_fc_toys == 1) {
+					$npt_par1_use = 1;
+					$npt_par2_use = 1;
+					$min_par1_use = $min_par1 + $i_marg_par1 * $step_par1;
+					$min_par2_use = $min_par2 + $i_marg_par2 * $step_par2;
+					$max_par1_use = $min_par1_use;	# Set max = min because we only want to marginalise at a single marg grid point in a single job
+					$max_par2_use = $min_par2_use;
+					print "\n** Submitting FC marginalisation at marg. grid point \#$i_marg_par1, $i_marg_par2: ** \n\n";
+				}
 
-	print Slurm "cp -r \$node_dir/* . \n";
+				# Submit the job
+				$arguments = "--tag $tag --nbatches $nbatches --first-batch $first_batch --fitter $fitter " .
+										 "--margtoy-tag $margtoy_tag --nmargtoy $nmargtoy --fit-param-list $fit_param_list " .
+										 "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
+										 "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
+										 "--fit-param1-min-value $min_par1_use --fit-param1-max-value $max_par1_use " .
+										 "--fit-param1-bin -1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
+										 "--fit-param2-min-value $min_par2_use --fit-param2-max-value $max_par2_use " .
+										 "--fit-param2-bin -1 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
+										 "--fit-param1-nbins $npt_par1_use --fit-param2-nbins $npt_par2_use $fake_data_args --data-file $data_file_use " .
+										 "--seed-toys-osc $seed_osc --seed-other $seed_other " .
+										 "--prior-file $prior_file --gen-fakedata $gen_fakedata --ntoys-fakedata $ntoys_fakedata ";
 
-	close(Slurm);
-	`sbatch $job_dir/${tag}_${irun}.slurm`;
-}
+				if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
+				if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
+				if($stat_fluct         == 1)       { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
+				if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
+				if($mix_param_octant   eq "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
+				if($dmsq_scheme        eq "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
 
-#
-# interactive
-#
-if($resource eq "interactive") {
-	system($command);
-}
+				$command = "$program $arguments";
+				print "$command \n";
+
+				#
+				# Liverpool_Slurm
+				#
+				if($resource eq "Liverpool_Slurm") {
+					open(Slurm, ">$job_dir/$tag.slurm") or die("Can not create the Slurm batch script");
+					print Slurm "#!/bin/bash \n";
+					print Slurm "#SBATCH -J $tag-$irun \n";
+					print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
+					print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
+					print Slurm "#SBATCH -t $cput \n";
+					print Slurm "#SBATCH --mem=$mem \n";
+					print Slurm "cd $job_dir \n";
+					print Slurm "source $softw_dir/setup/setup_at_cvmfs_root6.sh $softw_dir $fmwk_dir\n";
+					if($time_command == 1) { print Slurm "/usr/bin/time $command \n"; }
+					else { print Slurm "$command \n"; }
+					close(Slurm);
+					`sbatch -p compute $job_dir/$tag.slurm`;
+				}
+
+				#
+				# Cedar
+				#
+				if($resource eq "cedar") {
+					open(Slurm, ">$job_dir/$tag-$irun.slurm") or die("Can not create the Slurm batch script");
+					print Slurm "#!/bin/bash \n";
+					print Slurm "#SBATCH --account=def-tanaka-ac \n";		# A larger allocation is available on "rpp-tanaka-ab", but it's only available on cedar
+					print Slurm "#SBATCH --nodes=1 \n";
+					print Slurm "#SBATCH --time=$cput \n";
+					print Slurm "#SBATCH --mem=$mem \n";
+					print Slurm "#SBATCH --job-name=$tag-$irun \n";
+					print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
+					print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
+					print Slurm "cd $job_dir \n";
+					print Slurm "source $softw_dir/setup/setup_at_cedar_root6.sh $softw_dir $fmwk_dir\n";
+					if($time_command == 1) { print Slurm "command time $command \n"; }
+					else { print Slurm "$command \n"; }
+					close(Slurm);
+					`sbatch $job_dir/$tag-$irun.slurm`;
+				}
+
+				#
+				# Cedar (using node storage)
+				#
+
+				if($resource eq "cedar_opt")
+				{
+					open(Slurm, ">$job_dir/temp_${irun}.txt") or die("Cannot create temp");
+					print Slurm "$command";
+					close(Slurm);
+					print Slurm "rm -rf \$node_dir \n";
+					open(Slurm, ">$job_dir/${tag}_${irun}.slurm") or die("Can not create the Slurm batch script");
+					print Slurm "#!/bin/bash \n";
+					print Slurm "#SBATCH --account=rpp-tanaka-ab \n";
+					print Slurm "#SBATCH --nodes=1 \n";
+					print Slurm "#SBATCH --time=$cput \n";
+					print Slurm "#SBATCH --mem=$mem \n";
+					print Slurm "#SBATCH --job-name=$tag-$irun \n";
+					print Slurm "#SBATCH -o $job_dir/$tag-$irun.slurm.out \n";
+					print Slurm "#SBATCH -e $job_dir/$tag-$irun.slurm.err \n";
+					print Slurm "the_command=\$(cat $job_dir/temp_${irun}.txt) \n";
+
+					print Slurm "IFS=',' read -r -a tokens <<< \"\$the_command\" \n";
+					print Slurm "rm -f $job_dir/temp_${irun}.txt \n";
+					print Slurm "newarray=() \n";
+					print Slurm "numtok=\$\{#tokens[@]\} \n";
+					print Slurm "for (( i=0; i<\$\{#tokens[@]\}; i++ )); do \n";
+					print Slurm "   if [ \$i == 5 ]; then \n";
+					print Slurm "      tag=`eval echo -e \$\{tokens[i]\}` \n";
+					print Slurm "      newarray+=\"\\\"\$\{SLURM_TMPDIR\}/${tag}\\\",\" \n";
+					print Slurm "   elif [ \$i == \$\[\$\{numtok\} - 1\] ]; then \n";
+					print Slurm "      newarray+=\"\$\{tokens[i]\}\" \n";
+					print Slurm "   else \n";
+					print Slurm "      newarray+=\"\$\{tokens[i]\},\" \n";
+					print Slurm "   fi \n";
+					print Slurm "done \n";
+
+					print Slurm "cmd=\"\$\{newarray[*]\}\" \n";
+					print Slurm "export node_dir=\$SLURM_TMPDIR \n";
+					print Slurm "cd $job_dir \n";
+					print Slurm "source $softw_dir/setup/setup_at_cedar_root6.sh $softw_dir $fmwk_dir\n";
+					print Slurm "eval \"\$cmd\" \n";
+
+					print Slurm "cp -r \$node_dir/* . \n";
+
+					close(Slurm);
+					`sbatch $job_dir/${tag}_${irun}.slurm`;
+				}
+
+				#
+				# interactive
+				#
+				if($resource eq "interactive") {
+					system($command);
+				}
+			} # Loop over par1 marg grid points
+		} 	# Loop over par2 marg grid points
+	}			# Loop over par1 FC grid points
+}				# Loop over par2 FC grid points
+
+
