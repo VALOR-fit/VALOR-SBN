@@ -118,7 +118,7 @@ foreach (@ARGV) {
   elsif($_ eq '--gen-fakedata'       ) { $gen_fakedata        = $ARGV[$iarg+1]; }
   elsif($_ eq '--ntoys-fakedata'     ) { $ntoys_fakedata      = $ARGV[$iarg+1]; }
   elsif($_ eq '--data-file'          ) { $data_file           = $ARGV[$iarg+1]; }
-  elsif($_ eq '--tag'                ) { $tag                 = $ARGV[$iarg+1]; }
+  elsif($_ eq '--tag'                ) { $tag_prefix          = $ARGV[$iarg+1]; }
   elsif($_ eq '--config'             ) { $config              = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-list'     ) { $fit_param_list      = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-opt'      ) { $fit_param_opt       = $ARGV[$iarg+1]; }
@@ -199,7 +199,7 @@ $mix_param_octant    = "two"                                                    
 $seed_syst           = 1                                                                   unless defined $seed_syst;
 $seed_osc            = 1                                                                   unless defined $seed_osc;
 $seed_other          = 1                                                                   unless defined $seed_other;
-$tag                 = "fit"                                                               unless defined $tag;
+$tag_prefix          = "fit"                                                               unless defined $tag_prefix;
 $config              = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml" unless defined $config;
 $param_set           = "random"                                                            unless defined $param_set;
 $marg_fc_toys        = 0                                                                   unless defined $marg_fc_toys;
@@ -217,9 +217,9 @@ if($par2 eq "") {
 }
 
 # Add the parameters of interest to the file tag
-$tag = "${tag}_${hierarchy}_${par1}";
+$tag_prefix = "${tag_prefix}_${hierarchy}_${par1}";
 if($par2 != "") {
-	$tag = "${tag}_${par2}";
+	$tag_prefix = "${tag_prefix}_${par2}";
 }
 
 #
@@ -234,10 +234,10 @@ if($use_t2k_presets == 1) {
   $use_reactors = 1;
   if (index($prior_file, "reactor") == -1) {
 		$use_reactors = 0;
-		$tag = "${tag}_t2k";
+		$tag_prefix = "${tag_prefix}_t2k";
 	}
 	else {
-	  $tag = "${tag}_reactor";
+	  $tag_prefix = "${tag_prefix}_reactor";
 	}
 
 	# Parameter values at which we generate the fake data set, if requested
@@ -520,6 +520,7 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
         $min_par2_use = $min_par2;
         $max_par1_use = $max_par1;
         $max_par2_use = $max_par2;
+        $tag          = $tag_prefix;
 				if($marg_fc_toys == 1) {
 					$npt_par1_use = 1;
 					$npt_par2_use = 1;
@@ -527,7 +528,18 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 					$min_par2_use = $min_par2 + $i_marg_par2 * $step_par2;
 					$max_par1_use = $min_par1_use;	# Set max = min because we only want to marginalise at a single marg grid point in a single job
 					$max_par2_use = $min_par2_use;
-					print "\n** Submitting FC marginalisation at marg. grid point \#$i_marg_par1, $i_marg_par2: ** \n\n";
+
+					# Construct the output file tag
+					$tag = "${tag_prefix}__FCpt_${i_fc_par1}";
+					if($par2 != "") {
+						$tag = "${tag}_${i_fc_par2}";
+					}
+					$tag = "${tag}__margpt_${i_marg_par1}";
+					if($par2 != "") {
+						$tag = "${tag}_${i_marg_par2}";
+					}
+
+					print "\n** Submitting FC marginalisation at marg. grid point \#$i_marg_par1, $i_marg_par2 ** \n\n";
 				}
 
 				# Submit the job
