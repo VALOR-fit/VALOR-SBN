@@ -128,6 +128,7 @@ void Fit(CmdLnArgList& arg)
    const double fp1_minval = arg.GetDouble("fit-param1-min-value");
    const double fp1_maxval = arg.GetDouble("fit-param1-max-value");
    const int fp1_nbins     = arg.GetInt("fit-param1-nbins");
+   const int fp1_start_bin = arg.GetInt("fit-param1-start-bin");
 
    bool fit_is_2D = false;
    string fp2_name;
@@ -136,20 +137,22 @@ void Fit(CmdLnArgList& arg)
    double fp2_minval = 0.0;
    double fp2_maxval = 0.0;
    int fp2_nbins = 0;
+   int fp2_start_bin = 0;
 
-   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
+  LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
       fp1_bin << ") = " << fp1_val << " [" << fp1_nbins << ": " << fp1_minval <<
       ", " << fp1_maxval << "]";
 
    if(arg.Exists("fit-param2") and arg.GetString("fit-param2") != "-")
    {
-      fit_is_2D  = true;
-      fp2_name   = arg.GetString("fit-param2");
-      fp2_val    = arg.GetDouble("fit-param2-value");
-      fp2_bin    = arg.GetInt("fit-param2-bin");
-      fp2_minval = arg.GetDouble("fit-param2-min-value");
-      fp2_maxval = arg.GetDouble("fit-param2-max-value");
-      fp2_nbins  = arg.GetInt("fit-param2-nbins");
+      fit_is_2D     = true;
+      fp2_name      = arg.GetString("fit-param2");
+      fp2_val       = arg.GetDouble("fit-param2-value");
+      fp2_bin       = arg.GetInt("fit-param2-bin");
+      fp2_minval    = arg.GetDouble("fit-param2-min-value");
+      fp2_maxval    = arg.GetDouble("fit-param2-max-value");
+      fp2_nbins     = arg.GetInt("fit-param2-nbins");
+      fp2_start_bin = arg.GetInt("fit-param2-start-bin");
       LOG("valor_dune", pNOTICE) << "Fit parameter " << fp2_name << "(" <<
          fp2_bin << ") = " << fp2_val << " [" << fp2_nbins << ": " <<
          fp2_minval << ", " << fp2_maxval << "]";
@@ -205,12 +208,12 @@ void Fit(CmdLnArgList& arg)
    Marginalisation marginalisation(*elements, arg.GetString("margtoy-tag"), use_simple_binning);
    if(!fit_is_2D)
    {  // Initialise for 1D fit
-      marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval);
+      marginalisation.InitFit(fp1_nbins, fp1_start_bin, fp1_minval, fp1_maxval);
    }
    else
    {  // Initalise for 2D fit
-      marginalisation.InitFit(fp1_nbins, fp1_minval, fp1_maxval, fp2_nbins,
-            fp2_minval, fp2_maxval);
+      marginalisation.InitFit(fp1_nbins, fp1_start_bin, fp1_minval, fp1_maxval,
+                              fp2_nbins, fp2_start_bin, fp2_minval, fp2_maxval);
    }
    FitResult* result = nullptr;
 

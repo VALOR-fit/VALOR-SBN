@@ -191,8 +191,8 @@ public:
              (i.e. 1D fit).
 
    */
-   void InitFit(const int param1Nbins, const double param1MinValue, const double param1MaxValue,
-         const int param2Nbins = -1, const double param2MinValue = -1.0,
+   void InitFit(const int param1Nbins, const int param1StartBin, const double param1MinValue, const double param1MaxValue,
+         const int param2Nbins = -1, const int param2StartBin = -1, const double param2MinValue = -1.0,
          const double param2MaxValue = -1.0);
 
    /**
@@ -344,6 +344,8 @@ private:
    bool _use_simple_binning;
    bool _save_throws_to_tree;
    TTree* _tree_pars;
+   int _param1_start_bin;
+   int _param2_start_bin;
 
   // TODO: update this description - the stuff about floats is not relevant anymore
   // When calculating the marginal likelihood:

@@ -27,7 +27,7 @@ Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use
    _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
    _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr),
    _use_simple_binning(use_simple_binning), _save_throws_to_tree(save_throws_to_tree),
-   _tree_pars(nullptr)
+   _tree_pars(nullptr), _param1_start_bin(0), _param2_start_bin(-1)
 {
 }
 //______________________________________________________________________________
@@ -241,10 +241,10 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
    this->_likelihood = exp(-this->_chi2/2.);
 }
 
-void Marginalisation::InitFit(const int param1Nbins,
+void Marginalisation::InitFit(const int param1Nbins, const int param1StartBin,
       const double param1MinValue, const double param1MaxValue,
-      const int param2Nbins, const double param2MinValue,
-      const double param2MaxValue)
+      const int param2Nbins, const int param2StartBin,
+      const double param2MinValue, const double param2MaxValue)
 {
    if(param2Nbins > 0)
    {
@@ -273,6 +273,8 @@ void Marginalisation::InitFit(const int param1Nbins,
             this->_chi2_2D->SetBinContent(i, j, std::numeric_limits<double>::max());
          }
       }
+      _param1_start_bin = param1StartBin;
+      _param2_start_bin = param2StartBin;
    }
    else
    {
@@ -293,6 +295,7 @@ void Marginalisation::InitFit(const int param1Nbins,
       {
          this->_chi2_1D->SetBinContent(i, std::numeric_limits<double>::max());
       }
+      _param1_start_bin = param1StartBin;
    }
 }
 
@@ -304,13 +307,13 @@ FitResult* Marginalisation::Fit(FitDataABC* data, const int Ntoys, const int Nba
       const int Nx =  this->_chi2_2D->GetXaxis()->GetNbins();
       const int Ny =  this->_chi2_2D->GetYaxis()->GetNbins();
       // Get the likelihood and chi2 statistics for the entire grid
-      for(int i = 0; i < Nx; ++i)
+      for(int i = _param1_start_bin; i < _param1_start_bin + Nx; ++i)
       {
-         for(int j = 0; j < Ny; ++j)
+         for(int j = _param2_start_bin; j < _param2_start_bin + Ny; ++j)
          {
             this->ComputeStatistics(i, j, data, Ntoys, Nbatches, firstBatch);
-            this->_likelihood_2D->SetBinContent(i + 1, j + 1, this->_likelihood);
-            this->_chi2_2D->SetBinContent(i + 1, j + 1, this->_chi2);
+            this->_likelihood_2D->SetBinContent(i + 1 - _param1_start_bin, j + 1 - _param2_start_bin, this->_likelihood);
+            this->_chi2_2D->SetBinContent(i + 1 - _param1_start_bin, j + 1 - _param2_start_bin, this->_chi2);
          }
       }
 
@@ -323,11 +326,11 @@ FitResult* Marginalisation::Fit(FitDataABC* data, const int Ntoys, const int Nba
    {
       const int N =  this->_chi2_1D->GetXaxis()->GetNbins();
       // Get the likelihood and chi2 statistics for the entire grid
-      for(int i = 0; i < N; ++i)
+      for(int i = _param1_start_bin; i < _param1_start_bin + N; ++i)
       {
          this->ComputeStatistics(i, data, Ntoys, Nbatches, firstBatch);
-         this->_likelihood_1D->SetBinContent(i + 1, this->_likelihood);
-         this->_chi2_1D->SetBinContent(i + 1, this->_chi2);
+         this->_likelihood_1D->SetBinContent(i + 1 - _param1_start_bin, this->_likelihood);
+         this->_chi2_1D->SetBinContent(i + 1 - _param1_start_bin, this->_chi2);
       }
 
       // Store the result of the fit

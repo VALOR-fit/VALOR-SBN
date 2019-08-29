@@ -53,7 +53,7 @@
 #  --use-simple-binning     : Update the simple binning MC templates
 #
 #  --dmsq-scheme            : abs23 or fogli
-#  --hierarchy              : normal or inverted
+#  --hierarchy              : The mass hierarchy that the marginalisation toys were generated with. Use 'normal' or 'inverted'
 #  --marg-hierarchy         : Marginalise the mass hierarchy			# TODO: Not yet implemented
 #  --mix-param-choice       : sinsq2theta or sinsqtheta
 #  --mix-param-octant       : one or two
@@ -514,20 +514,24 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 
 		for($i_marg_par2 = 0; $i_marg_par2 < $npt_marg_jobs_par2; $i_marg_par2++) {
 			for($i_marg_par1 = 0; $i_marg_par1 < $npt_marg_jobs_par1; $i_marg_par1++) {
-				$npt_par1_use = $npt_par1;
-        $npt_par2_use = $npt_par2;
-        $min_par1_use = $min_par1;
-        $min_par2_use = $min_par2;
-        $max_par1_use = $max_par1;
-        $max_par2_use = $max_par2;
-        $tag          = $tag_prefix;
+				$npt_par1_use   = $npt_par1;
+        $npt_par2_use   = $npt_par2;
+        $start_bin_par1 = 0;
+        $start_bin_par2 = 0;
+        $min_par1_use   = $min_par1;
+        $min_par2_use   = $min_par2;
+        $max_par1_use   = $max_par1;
+        $max_par2_use   = $max_par2;
+        $tag            = $tag_prefix;
 				if($marg_fc_toys == 1) {
-					$npt_par1_use = 1;
-					$npt_par2_use = 1;
-					$min_par1_use = $min_par1 + $i_marg_par1 * $step_par1;
-					$min_par2_use = $min_par2 + $i_marg_par2 * $step_par2;
-					$max_par1_use = $min_par1_use;	# Set max = min because we only want to marginalise at a single marg grid point in a single job
-					$max_par2_use = $min_par2_use;
+					$npt_par1_use   = 1;
+					$npt_par2_use   = 1;
+					$start_bin_par1 = $i_marg_par1;
+					$start_bin_par2 = $i_marg_par2;
+					$min_par1_use   = $min_par1 + $i_marg_par1 * $step_par1;
+					$min_par2_use   = $min_par2 + $i_marg_par2 * $step_par2;
+					$max_par1_use   = $min_par1_use;	# Set max = min because we only want to marginalise at a single marg grid point in a single job
+					$max_par2_use   = $min_par2_use;
 
 					# Construct the output file tag
 					$tag = "${tag_prefix}__FCpt_${i_fc_par1}";
@@ -548,9 +552,11 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 										 "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 										 "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
 										 "--fit-param1-min-value $min_par1_use --fit-param1-max-value $max_par1_use " .
-										 "--fit-param1-bin -1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
+										 "--fit-param1-bin -1 --fit-param1-start-bin $start_bin_par1 " .
+										 "--fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
 										 "--fit-param2-min-value $min_par2_use --fit-param2-max-value $max_par2_use " .
-										 "--fit-param2-bin -1 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
+										 "--fit-param2-bin -1  --fit-param2-start-bin $start_bin_par2 " .
+										 "--$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
 										 "--fit-param1-nbins $npt_par1_use --fit-param2-nbins $npt_par2_use $fake_data_args --data-file $data_file_use " .
 										 "--seed-toys-osc $seed_osc --seed-other $seed_other " .
 										 "--prior-file $prior_file --gen-fakedata $gen_fakedata --ntoys-fakedata $ntoys_fakedata ";
