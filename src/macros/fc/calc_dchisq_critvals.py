@@ -40,7 +40,6 @@ _hier_to_index["normal"]   = 0
 _hier_to_index["inverted"] = 1
 
 _conf_levels = [conv.kCL1Sigma, conv.kCL90, conv.kCL2Sigma]
-#_conf_levels = [conv.kCL1Sigma]
 
 
 #_______________________________________________________________________
@@ -94,6 +93,18 @@ def main(output_tag, in_tag,
         sys.exit()
       ntoys = len(dchisq_vals)
 
+      # Calculate the grid point value(s) and print
+      fc_grid_p1_val = fc_pt_to_par_value(ifc_p1, npt_fc_par1, min_val_fc_par1, max_val_fc_par1)
+      fc_grid_p2_val = -999
+      if fc_2d:
+        fc_grid_p2_val = fc_pt_to_par_value(ifc_p2, npt_fc_par2, min_val_fc_par2, max_val_fc_par2)
+
+      print_str = "For x = " + str(fc_grid_p1_val)
+      if fc_2d:
+        print_str += ", y = " + str(fc_grid_p2_val)
+      print_str += ":"
+      print print_str
+
       # TODO: copy the cpv -pi value onto the +pi value?
       for conf_level_enum in _conf_levels:
         # Calculate the critical Delta chisq
@@ -105,19 +116,6 @@ def main(output_tag, in_tag,
         critval_p1 = get_critical_dchisq(dchisq_vals, conf_level, +err_conf_level)
         critval_m1 = get_critical_dchisq(dchisq_vals, conf_level, -err_conf_level)
 
-        # Calculate the grid point value(s)
-        fc_grid_p1_val = fc_pt_to_par_value(ifc_p1, npt_fc_par1, min_val_fc_par1, max_val_fc_par1)
-        fc_grid_p2_val = -999
-        if fc_2d:
-          fc_grid_p2_val = fc_pt_to_par_value(ifc_p2, npt_fc_par2, min_val_fc_par2, max_val_fc_par2)
-
-      print_str = "For x = " + str(fc_grid_p1_val)
-      if fc_2d:
-        print_str += ", y = " + str(fc_grid_p2_val)
-      print_str += ":"
-      print print_str
-
-      for conf_level_enum in _conf_levels:
         # Store the critical values in a TGraph
         if not fc_2d:
           graphs   [conf_level_enum].SetPoint( graphs   [conf_level_enum].GetN(), fc_grid_p1_val, critval    )
@@ -144,7 +142,7 @@ def main(output_tag, in_tag,
       graphs_p1[conf_level_enum].Sort()
       graphs_m1[conf_level_enum].Sort()
 
-  # Save to an output file  # TODO
+  # Save to an output file
   output_file_name = output_tag + ".root"
   print "Saving critical value graphs to file", output_file_name
   output_file = ROOT.TFile(output_file_name, "recreate")
