@@ -63,7 +63,7 @@ public:
   virtual bool Read     (std::ifstream& stream, FitModelABC * model = 0, Option_t* read_opt = 0);
   bool   Generate       (FitModelABC * pred, const FitParamList & fp,   bool fluctuate=true);
   bool   Generate       (FitModelABC * pred, const PhysHypothesis & ph, bool fluctuate=true);
-  bool   Generate       (FitModelABC * pred, bool fluctuate=true);
+  bool   Generate       (FitModelABC * pred, bool fluctuate=true, Option_t* read_opt = "+SB");
   bool   Write          (TObjArray * data_collection, const char * tag = "data", Option_t * write_opt = 0);
   bool   Write          (const char * filename, const char * tag = "data", const char * option_file="update", Option_t * file_opt = 0);
   virtual bool Write (std::ofstream& stream, Option_t * write_opt = 0);
