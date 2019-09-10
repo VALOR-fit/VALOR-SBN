@@ -334,10 +334,11 @@ double GenericSingleSampleFitData::GetFitStatistic(
   
   double S_rate_only = TMath::Max(0.,util::ChisqPoisson(tot_ndata, tot_nmc));
 
-  LOG("GenericSingleSampleFitData",pINFO) 
+  LOG("GenericSingleSampleFitData",pINFO)
     << fName<<" - Current fit statistic (rate+shape) = " << S;
-  LOG("GenericSingleSampleFitData",pINFO) 
-    << fName<<" - Current fit statistic (rate only) = " << S_rate_only;
+  LOG("GenericSingleSampleFitData",pINFO)
+    << fName<<" - Current fit statistic (rate only) = " << S_rate_only
+    << ", from N data = " << tot_ndata << ", N MC = " << tot_nmc;
   
   // Write our contribution to the likelihood
   if (likelihood_components) {
