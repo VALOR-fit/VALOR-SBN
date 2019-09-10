@@ -82,19 +82,19 @@ int main(int argc, char ** argv)
   cut_upper_limit_nue ["cvnnumu"] = 0.50;
   cut_upper_limit_numu["cvnnue" ] = 0.85;
 
-  //~ cut_lower_limit_numu["nuvtxx_truth"] = -310. ;
-  //~ cut_upper_limit_numu["nuvtxx_truth"] =  310. ;
-  //~ cut_lower_limit_numu["nuvtxy_truth"] = -550. ;
-  //~ cut_upper_limit_numu["nuvtxy_truth"] =  550. ;
-  //~ cut_lower_limit_numu["nuvtxz_truth"] =  50.  ;
-  //~ cut_upper_limit_numu["nuvtxz_truth"] =  1244.;
+  cut_lower_limit_numu["vtx_x"] = -310. ;
+  cut_upper_limit_numu["vtx_x"] =  310. ;
+  cut_lower_limit_numu["vtx_y"] = -550. ;
+  cut_upper_limit_numu["vtx_y"] =  550. ;
+  cut_lower_limit_numu["vtx_z"] =  50.  ;
+  cut_upper_limit_numu["vtx_z"] =  1244.;
 
-  //~ cut_lower_limit_nue ["nuvtxx_truth"] = -310. ;
-  //~ cut_upper_limit_nue ["nuvtxx_truth"] =  310. ;
-  //~ cut_lower_limit_nue ["nuvtxy_truth"] = -550. ;
-  //~ cut_upper_limit_nue ["nuvtxy_truth"] =  550. ;
-  //~ cut_lower_limit_nue ["nuvtxz_truth"] =  50.  ;
-  //~ cut_upper_limit_nue ["nuvtxz_truth"] =  1244.;
+  cut_lower_limit_nue ["vtx_x"] = -310. ;
+  cut_upper_limit_nue ["vtx_x"] =  310. ;
+  cut_lower_limit_nue ["vtx_y"] = -550. ;
+  cut_upper_limit_nue ["vtx_y"] =  550. ;
+  cut_lower_limit_nue ["vtx_z"] =  50.  ;
+  cut_upper_limit_nue ["vtx_z"] =  1244.;
 
   using namespace valor;
   

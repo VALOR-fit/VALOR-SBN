@@ -122,15 +122,16 @@ private:
   const util::ArrIdx * fArrIdx;
   
   // Keep track of the parameters we need to loop over
-  std::vector<conv::PhysParamId_t> fParams;
   // Normalisation and spline parameters divided
   std::vector<conv::PhysParamId_t> fNormParams;
   std::vector<conv::PhysParamId_t> fSplineParams;
   
-  // Cache whether each parameter is applied to each entry
-  std::vector<bool> fParamIsAppliedTo      [conv::kNReacModes];
-  std::vector<bool> fNormParamIsAppliedTo  [conv::kNReacModes];
-  std::vector<bool> fSplineParamIsAppliedTo[conv::kNReacModes];
+  // Keep a list of the parameters for every given mode
+  std::vector<conv::PhysParamId_t> fNormParamsAppliedTo  [conv::kNReacModes];
+  std::vector<conv::PhysParamId_t> fSplineParamsAppliedTo[conv::kNReacModes];
+  
+  // Fill these arrays
+  void BuildParamLists();
   
   NuOsc3Flavour  fNuOsc3Flavour;
   PhysHypothesis fPhysHypothesis;
@@ -207,6 +208,10 @@ private:
   
   // Binning
   SingleSampleKineBinning * fBinning;
+  
+  // The list of reaction modes we're using
+  size_t fNReacModes;
+  const conv::ReacMode_t * fReactionModes;
   
   // Spline library
   util::DuneRFL * fRFL;

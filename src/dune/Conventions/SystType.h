@@ -30,11 +30,11 @@ namespace valor {
 
     typedef enum ESystType
     {
-      ksystUndefined = -1,
-      ksystNormSimple,
-      ksystNormKinDep,
-      ksystLateral,
-      ksystResponse
+      kSystUndefined = -1,
+      kSystNormSimple,
+      kSystNormKinDep,
+      kSystLateral,
+      kSystResponse
     }
     SystType_t;
 

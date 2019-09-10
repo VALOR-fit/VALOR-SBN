@@ -22,10 +22,10 @@ string util::AsString(SystType_t t, Option_t * opt)
   string name = "";
 
   switch(t) {
-    case (ksystNormSimple) : name = "normalisation";     break;
-    case (ksystNormKinDep) : name = "kinematic dependent normalisation";     break;
-    case (ksystLateral )   : name = "lateral";           break;
-    case (ksystResponse)   : name = "response function"; break;
+    case (kSystNormSimple) : name = "normalisation";     break;
+    case (kSystNormKinDep) : name = "kinematic dependent normalisation";     break;
+    case (kSystLateral )   : name = "lateral";           break;
+    case (kSystResponse)   : name = "response function"; break;
     default : name = "--";
   }
 
@@ -47,14 +47,14 @@ SystType_t util::SystTypeFromInt(int t)
 {
 // Cast an integer to SystType_t, but with boundary check
 //              [first]                   [last]
-  if(t >= 0 && t <= (int) ksystResponse) return (SystType_t)t;
+  if(t >= 0 && t <= (int) kSystResponse) return (SystType_t)t;
   return ksystUndefined;
 }
 //________________________________________________________________________________________
 SystType_t util::SystTypeFromString(string type)
 {
   string lc_type = util::ToLowerCase(type);
-  for (int i = 0 ; i <= (int)ksystResponse ; i++ ) {
+  for (int i = 0 ; i <= (int)kSystResponse ; i++ ) {
     SystType_t t = (SystType_t)i;
     string this_type = util::ToLowerCase(util::AsString(t));
     if(lc_type==this_type && this_type!="--") {
@@ -62,6 +62,6 @@ SystType_t util::SystTypeFromString(string type)
     }
   }
     
-  return ksystUndefined;
+  return kSystUndefined;
 }
 //________________________________________________________________________________________
