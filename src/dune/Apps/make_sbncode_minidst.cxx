@@ -134,20 +134,6 @@ typedef enum EMCSample{
 
 } MCSample_t;
 
-// We don't want to store map<string,vector<float>> as our universe list
-// Let's just write that vector<vector<float>> out
-// We can get the string ID back later because map<string,...> is alphabetical
-std::vector<std::vector<float> > ReformatVariations (
- const std::map<std::string,std::vector<float> > & m)
-{
-  std::vector<std::vector<float> > out;
-  for (const auto & param_plus_weights : m) {
-    const std::vector<float> & weights = param_plus_weights.second;
-    out.emplace_back(weights);
-  }
-  return out;
-}
-
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -271,8 +257,6 @@ int main(int argc, char ** argv)
   double valor_minidst_wght_pot     = -1.; // POT weight 
   double valor_minidst_wght         = -1.; // misc weight 
   double valor_minidst_wght_smear   = -1.; // energy smearing weight
-  
-  std::vector<std::vector<float> > valor_minidst_variation_weights;
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -291,10 +275,6 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
   valor_minidst->Branch("wght_smear", &valor_minidst_wght_smear  ,"wght_smear/D" );
-  
-  if (write_universes) {
-    valor_minidst->Branch("variation_weights",&valor_minidst_variation_weights);
-  }
 
   // open the ROOT file and get the TTree & its header
 
@@ -314,20 +294,35 @@ int main(int argc, char ** argv)
   event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
   
-  
+  std::map<std::string,float *> variation_entries;
+  std::map<std::string,size_t>  variation_nentries;
+  //~ std::map<std::string,TBranch *> variation_branches;
   // First, let's read one true event map to get the universe details
-  { // just a scoping block
+  if (write_universes) {
     analysis_tree->GetEntry(0);
     event::Interaction * ptruth = pevent->GetTruth();
     assert(ptruth);
     const auto & weights = ptruth->weights; // map<string,whatever>
     TObjArray variation_names;
     for (const auto & variation : weights) {
-      const std::string & variation_name = variation.first;
-      variation_names.AddLast(new TObjString(variation_name.c_str()));
+      // make a list of the variation names
+      const std::string & vname = variation.first;
+      variation_names.AddLast(new TObjString(vname.c_str()));
+      
+      // Get the number of universes
+      const size_t n_universes = variation.second.size();
+      // and a branch to store them all in
+      variation_entries[vname] = new float[n_universes];
+      for (size_t ii = 0 ; ii < n_universes ; ii++) {
+        variation_entries[vname][ii] = conv::kBadResult;
+      }
+      std::string branch_name (Form("variation_%s"  ,vname.c_str()));
+      std::string branch_nameF(Form("variation_%s[%lu]/F",vname.c_str(),n_universes));
+      valor_minidst->Branch(branch_name.c_str(),&variation_entries[vname],branch_nameF.c_str());
+      
     }
-    //~ variation_names.Sort(); // this better do alphabetical or this will be bugged
     variation_names.Write("variation_names",TObject::kSingleKey);
+    
   }
   
 
@@ -356,6 +351,17 @@ int main(int argc, char ** argv)
     else {
       VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev
         <<" - so far accepted " << nev_accept;
+    }
+    
+    // reset the systematic universes
+    if (write_universes) {
+      for (const auto & entry : variation_entries) {
+        const std::string & name = entry.first;
+        float * arr = entry.second;
+        for (size_t ii = 0 ; ii < variation_nentries[name] ; ii++) {
+          arr[ii] = conv::kBadResult;
+        }
+      }
     }
 
     int iscc           = false;
@@ -581,7 +587,13 @@ int main(int argc, char ** argv)
     
     // Copy the systematic universes across
     if (write_universes) {
-      valor_minidst_variation_weights = ReformatVariations(truth.weights);
+      for (const auto & entry : truth.weights) {
+        const std::string & name = entry.first;
+        const auto & vec = truth.weights[name];
+        for (size_t ii = 0 ; ii < vec.size() ; ii++) {
+          variation_entries[name][ii] = static_cast<float>(vec[ii]);
+        }
+      }
     }
 
     valor_minidst_enu_reco  = enu_reco;
