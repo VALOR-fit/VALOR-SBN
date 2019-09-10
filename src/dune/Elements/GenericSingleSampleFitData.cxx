@@ -61,40 +61,6 @@ bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Read(std::ifstream& stream, FitModelABC * model_abc, Option_t * read_opt)
-{
-   string opt = (read_opt) ? read_opt : "";
-
-   // Get the binning from the input model, if needed
-   if(!fDataOb && model_abc) {
-     GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
-     assert(model);
-     if(fBinning!=model->GetBinning()){
-       this->Clean();
-       fBinning = model->GetBinning();
-       this->Book();
-     }
-   }
-
-   assert(fDataOb);
-   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
-   fDataOb->ReadStream(stream);
-
-   if(opt.find("+SB") != string::npos)
-   {
-      assert(fDataSb);
-      fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
-      fDataSb->ReadStream(stream);
-   } //+SB
-
-   LOG("GenericSingleSampleFitData",pINFO)
-      << fName << ": N_{Data} SB = " << fDataSb->Integral()
-      <<" ; N_{Data} OB = "<< fDataOb->Integral();
-
-   return true;
-}
-
-//________________________________________________________________________________________
 bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Option_t * write_opt)
 {
   LOG("GenericSingleSampleFitData", pINFO)  
@@ -297,7 +263,7 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
   }
 #endif //__VALOR_FMWK_PENALTY_ONLY__
  
-   LOG("GenericSingleSampleFitData",pNOTICE) << fName << ": N_{Data} SB = " <<
+   LOG("GenericSingleSampleFitData",pINFO) << fName << ": N_{Data} SB = " <<
       fDataSb->Integral() << " ; N_{Data} OB = " << fDataOb->Integral();
 
   return true;
