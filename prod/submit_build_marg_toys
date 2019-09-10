@@ -58,6 +58,11 @@
 #                             CPU time etc. for the parameter(s) of interest
 #
 #
+#  --read-throws-from       : If this is specified, then read throws from this file instead of generating toys.
+#                             This is used e.g. to convert T2K legacy toy throws into SDK marginalisation toys.
+#  --read-throws-param-map  : If using --read-throws-from, also specify this argument, which is used to convert
+#                             SDK parameter names into the parameter names used by the toy_throw_file_to_read.
+#
 # F.Bench
 #-------------------------------------------------------------------------------------------------------------------------------
 #
@@ -72,46 +77,48 @@ $iarg=0;
 foreach (@ARGV) {
   if($iarg % 2 == 1) {$iarg++; next;}
 
-     if($_ eq '--resource'            ) { $resource            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--cpu-time'            ) { $cput                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mem'                 ) { $mem                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--job-dir'             ) { $job_dir             = $ARGV[$iarg+1]; }
-  elsif($_ eq '--softw-dir'           ) { $softw_dir           = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fmwk-dir'            ) { $fmwk_dir            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--time-command'        ) { $time_command        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--nmargtoy'            ) { $nmargtoy            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--batch'               ) { $batch               = $ARGV[$iarg+1]; }
-  elsif($_ eq '--par1'                ) { $par1                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--par2'                ) { $par2                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-par1'            ) { $npt_par1            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-par2'            ) { $npt_par2            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--min-par1'            ) { $min_par1            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--min-par2'            ) { $min_par2            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--max-par1'            ) { $max_par1            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--max-par2'            ) { $max_par2            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-job-par1'        ) { $npt_job_par1        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--npt-job-par2'        ) { $npt_job_par2        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--prior-file'          ) { $prior_file          = $ARGV[$iarg+1]; }
-  elsif($_ eq '--tag'                 ) { $tag                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--config'              ) { $config              = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'      ) { $fit_param_list      = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-opt'       ) { $fit_param_opt       = $ARGV[$iarg+1]; }
-  elsif($_ eq '--param-values-option' ) { $param_values_option = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mesg-thresholds'     ) { $mesg_thresholds     = $ARGV[$iarg+1]; }
-  elsif($_ eq '--store-specra'        ) { $store_specra        = $ARGV[$iarg+1]; }
-  elsif($_ eq '--rethrow-unphysical'  ) { $rethrow_unphysical  = $ARGV[$iarg+1]; }
-  elsif($_ eq '--use-simple-binning'  ) { $use_simple_binning  = $ARGV[$iarg+1]; }
-  elsif($_ eq '--save-throws-to-tree' ) { $save_throws         = $ARGV[$iarg+1]; }
-  elsif($_ eq '--dmsq-scheme'         ) { $dmsq_scheme         = $ARGV[$iarg+1]; }
-  elsif($_ eq '--hierarchy'           ) { $hierarchy           = $ARGV[$iarg+1]; }
-  elsif($_ eq '--marg-hierarchy'      ) { $marg_hierarchy      = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mix-param-choice'    ) { $mix_param_choice    = $ARGV[$iarg+1]; }
-  elsif($_ eq '--mix-param-octant'    ) { $mix_param_octant    = $ARGV[$iarg+1]; }
-  elsif($_ eq '--seed-syst'           ) { $seed_syst           = $ARGV[$iarg+1]; }
-  elsif($_ eq '--seed-osc'            ) { $seed_osc            = $ARGV[$iarg+1]; }
-  elsif($_ eq '--seed-other'          ) { $seed_other          = $ARGV[$iarg+1]; }
-  elsif($_ eq '--use-t2k-presets'     ) { $use_t2k_presets     = $ARGV[$iarg+1]; }
-  elsif($_ eq '--gen-fc-toys'         ) { $gen_fc_toys         = $ARGV[$iarg+1]; }
+     if($_ eq '--resource'             ) { $resource              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--cpu-time'             ) { $cput                  = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mem'                  ) { $mem                   = $ARGV[$iarg+1]; }
+  elsif($_ eq '--job-dir'              ) { $job_dir               = $ARGV[$iarg+1]; }
+  elsif($_ eq '--softw-dir'            ) { $softw_dir             = $ARGV[$iarg+1]; }
+  elsif($_ eq '--fmwk-dir'             ) { $fmwk_dir              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--time-command'         ) { $time_command          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--nmargtoy'             ) { $nmargtoy              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--batch'                ) { $batch                 = $ARGV[$iarg+1]; }
+  elsif($_ eq '--par1'                 ) { $par1                  = $ARGV[$iarg+1]; }
+  elsif($_ eq '--par2'                 ) { $par2                  = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-par1'             ) { $npt_par1              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-par2'             ) { $npt_par2              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--min-par1'             ) { $min_par1              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--min-par2'             ) { $min_par2              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--max-par1'             ) { $max_par1              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--max-par2'             ) { $max_par2              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-job-par1'         ) { $npt_job_par1          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--npt-job-par2'         ) { $npt_job_par2          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--prior-file'           ) { $prior_file            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--tag'                  ) { $tag                   = $ARGV[$iarg+1]; }
+  elsif($_ eq '--config'               ) { $config                = $ARGV[$iarg+1]; }
+  elsif($_ eq '--fit-param-list'       ) { $fit_param_list        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--fit-param-opt'        ) { $fit_param_opt         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--param-values-option'  ) { $param_values_option   = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mesg-thresholds'      ) { $mesg_thresholds       = $ARGV[$iarg+1]; }
+  elsif($_ eq '--store-specra'         ) { $store_specra          = $ARGV[$iarg+1]; }
+  elsif($_ eq '--rethrow-unphysical'   ) { $rethrow_unphysical    = $ARGV[$iarg+1]; }
+  elsif($_ eq '--use-simple-binning'   ) { $use_simple_binning    = $ARGV[$iarg+1]; }
+  elsif($_ eq '--save-throws-to-tree'  ) { $save_throws           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--dmsq-scheme'          ) { $dmsq_scheme           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--hierarchy'            ) { $hierarchy             = $ARGV[$iarg+1]; }
+  elsif($_ eq '--marg-hierarchy'       ) { $marg_hierarchy        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mix-param-choice'     ) { $mix_param_choice      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--mix-param-octant'     ) { $mix_param_octant      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--seed-syst'            ) { $seed_syst             = $ARGV[$iarg+1]; }
+  elsif($_ eq '--seed-osc'             ) { $seed_osc              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--seed-other'           ) { $seed_other            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--use-t2k-presets'      ) { $use_t2k_presets       = $ARGV[$iarg+1]; }
+  elsif($_ eq '--gen-fc-toys'          ) { $gen_fc_toys           = $ARGV[$iarg+1]; }
+  elsif($_ eq '--read-throws-from'     ) { $read_throws_from      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--read-throws-param-map') { $read_throws_param_map = $ARGV[$iarg+1]; }
 
   else {
       print "Unrecognised argument ".$_."\n"; exit;
@@ -123,45 +130,47 @@ foreach (@ARGV) {
 # Set unspecfied arguments to their default values
 #
 
-$resource            = "interactive"                                                       unless defined $resource;
-$cput                = "8:00:00"                                                           unless (defined $cput || $use_t2k_presets == 1);
-$mem                 = "3500M"                                                             unless (defined $mem  || $use_t2k_presets == 1);
-$job_dir             = $ENV{'PWD'}                                                         unless defined $job_dir;
-$softw_dir           = $ENV{'VALOR_DUNE'}                                                  unless defined $softw_dir;
-$fmwk_dir            = $ENV{'VALOR_FMWK'}                                                  unless defined $fmwk_dir;
-$time_command        = 0                                                                   unless defined $time_command;
-$nmargtoy            = 40000                                                               unless (defined $nmargtoy || $use_t2k_presets == 1);
-$batch               = 1                                                                   unless defined $batch;
-$par1                = "cpv"                                                               unless defined $par1;
-$par2                = ""                                                                  unless defined $par2;
-$npt_par1            = 101                                                                 unless (defined $npt_par1 || $use_t2k_presets == 1);
-$npt_par2            = 0.                                                                  unless (defined $npt_par2 || $use_t2k_presets == 1);
-$min_par1            = -3.14159265358979312e+00                                            unless (defined $min_par1 || $use_t2k_presets == 1);
-$min_par2            = 0.                                                                  unless (defined $min_par2 || $use_t2k_presets == 1);
-$max_par1            = +3.14159265358979312e+00                                            unless (defined $max_par1 || $use_t2k_presets == 1);
-$max_par2            = 0                                                                   unless (defined $max_par2 || $use_t2k_presets == 1);
-$prior_file          = ""                                                                  unless defined $prior_file;
-$npt_job_par1        = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
-$npt_job_par2        = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
-$fit_param_list      = "nuosc3f"                                                           unless defined $fit_param_list;
-$fit_param_opt       = ""                                                                  unless defined $fit_param_opt;
-$param_values_option = "randomize-all\\;prefit-errors"                                     unless defined $param_values_option;
-$mesg_thresholds     = "verbosity.xml"                                                     unless defined $mesg_thresholds;
-$store_specra        = 0                                                                   unless defined $store_specra;
-$rethrow_unphysical  = 1                                                                   unless defined $rethrow_unphysical;
-$use_simple_binning  = 0                                                                   unless defined $use_simple_binning;
-$save_throws         = 0                                                                   unless defined $save_throws;
-$dmsq_scheme         = "auto"                                                              unless defined $dmsq_scheme;
-$hierarchy           = "normal"                                                            unless defined $hierarchy;
-$marg_hierarchy      = 0                                                                   unless defined $marg_hierarchy;
-$mix_param_choice    = "sinsqtheta"                                                        unless defined $mix_param_choice;
-$mix_param_octant    = "two"                                                               unless defined $mix_param_octant;
-$seed_syst           = 1                                                                   unless defined $seed_syst;
-$seed_osc            = 1                                                                   unless defined $seed_osc;
-$seed_other          = 1                                                                   unless defined $seed_other;
-$tag                 = "toys"                                                              unless defined $tag;
-$config              = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml" unless defined $config;
-$gen_fc_toys         = 0                                                                   unless defined $gen_fc_toys;
+$resource              = "interactive"                                                       unless defined $resource;
+$cput                  = "8:00:00"                                                           unless (defined $cput || $use_t2k_presets == 1);
+$mem                   = "3500M"                                                             unless (defined $mem  || $use_t2k_presets == 1);
+$job_dir               = $ENV{'PWD'}                                                         unless defined $job_dir;
+$softw_dir             = $ENV{'VALOR_DUNE'}                                                  unless defined $softw_dir;
+$fmwk_dir              = $ENV{'VALOR_FMWK'}                                                  unless defined $fmwk_dir;
+$time_command          = 0                                                                   unless defined $time_command;
+$nmargtoy              = 40000                                                               unless (defined $nmargtoy || $use_t2k_presets == 1);
+$batch                 = 1                                                                   unless defined $batch;
+$par1                  = "cpv"                                                               unless defined $par1;
+$par2                  = ""                                                                  unless defined $par2;
+$npt_par1              = 101                                                                 unless (defined $npt_par1 || $use_t2k_presets == 1);
+$npt_par2              = 0.                                                                  unless (defined $npt_par2 || $use_t2k_presets == 1);
+$min_par1              = -3.14159265358979312e+00                                            unless (defined $min_par1 || $use_t2k_presets == 1);
+$min_par2              = 0.                                                                  unless (defined $min_par2 || $use_t2k_presets == 1);
+$max_par1              = +3.14159265358979312e+00                                            unless (defined $max_par1 || $use_t2k_presets == 1);
+$max_par2              = 0                                                                   unless (defined $max_par2 || $use_t2k_presets == 1);
+$prior_file            = ""                                                                  unless defined $prior_file;
+$npt_job_par1          = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
+$npt_job_par2          = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
+$fit_param_list        = "nuosc3f"                                                           unless defined $fit_param_list;
+$fit_param_opt         = ""                                                                  unless defined $fit_param_opt;
+$param_values_option   = "randomize-all\\;prefit-errors"                                     unless defined $param_values_option;
+$mesg_thresholds       = "verbosity.xml"                                                     unless defined $mesg_thresholds;
+$store_specra          = 0                                                                   unless defined $store_specra;
+$rethrow_unphysical    = 1                                                                   unless defined $rethrow_unphysical;
+$use_simple_binning    = 0                                                                   unless defined $use_simple_binning;
+$save_throws           = 0                                                                   unless defined $save_throws;
+$dmsq_scheme           = "auto"                                                              unless defined $dmsq_scheme;
+$hierarchy             = "normal"                                                            unless defined $hierarchy;
+$marg_hierarchy        = 0                                                                   unless defined $marg_hierarchy;
+$mix_param_choice      = "sinsqtheta"                                                        unless defined $mix_param_choice;
+$mix_param_octant      = "two"                                                               unless defined $mix_param_octant;
+$seed_syst             = 1                                                                   unless defined $seed_syst;
+$seed_osc              = 1                                                                   unless defined $seed_osc;
+$seed_other            = 1                                                                   unless defined $seed_other;
+$tag                   = "toys"                                                              unless defined $tag;
+$config                = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml" unless defined $config;
+$gen_fc_toys           = 0                                                                   unless defined $gen_fc_toys;
+$read_throws_from      = ""                                                                  unless defined $read_throws_from;
+$read_throws_param_map = ""                                                                  unless defined $read_throws_param_map;
 
 # If we have only a single parameter of interest defined, set the options for par2 appropriately
 if($par2 eq "") {
@@ -421,8 +430,8 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		             "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
 		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
 		             "--fit-param2-bin $sub_ibin2 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
-		             "--seed-toys-osc $seed_osc --seed-other $seed_other " .
-		             "--prior-file $prior_file ";
+		             "--seed-toys-osc $seed_osc --seed-other $seed_other --prior-file $prior_file " .
+		             "--read-throws-from $read_throws_from --read-throws-param-map $read_throws_param_map ";
 
     if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
     if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }

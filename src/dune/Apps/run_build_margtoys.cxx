@@ -125,6 +125,11 @@ void BuildToys(CmdLnArgList& arg)
    double fp_val2;
    int fp_bin2;
 
+   string toy_throw_file_to_read = arg.GetString("read-throws-from");
+   string param_name_map_file    = arg.GetString("read-throws-param-map");
+   bool randomise_systematics (!(toy_throw_file_to_read != "" && toy_throw_file_to_read != "NONE" &&
+                                 param_name_map_file    != "" && param_name_map_file    != "NONE"));
+
    LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name1 << "(" <<
       fp_bin1 << ") = " << fp_val1;
 
@@ -163,13 +168,15 @@ void BuildToys(CmdLnArgList& arg)
    Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning, save_throws);
    if(!arg.Exists("fit-param2"))
    {  // Build toys for 1D fit
-      marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl,
-                                true, "randomize-all;prefit-errors", rethrow_unphysical);
+      marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl, randomise_systematics,
+                                param_val_opts.c_str(), rethrow_unphysical,
+                                toy_throw_file_to_read, param_name_map_file);
    }
    else
    {  // Build toys for 2D fit
-      marginalisation.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl,
-                                true, "randomize-all;prefit-errors", rethrow_unphysical);
+      marginalisation.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl, randomise_systematics,
+                                param_val_opts.c_str(), rethrow_unphysical,
+                                toy_throw_file_to_read, param_name_map_file);
    }
    clock.Stop();
 

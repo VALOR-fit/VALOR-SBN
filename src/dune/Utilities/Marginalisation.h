@@ -96,11 +96,20 @@ public:
              their physical boundaries (Cholesky decomposition can cause
              parameters to move beyond bounds even if they are thrown with
              limits). Default true.
+      \param toy_throw_file_to_read Read throws from a pre-existing file instead of
+             generating them. This is used e.g. to convert T2K legacy toy throws
+             into SDK marginalisation toys.
+             NOTE: As this reads thrown parameter values, statistical fluctuations
+             are not copied
+      \param param_name_map_file If using toy_throw_file_to_read, also specify this
+             argument, which is used to convert SDK parameter names into the parameter
+             names used by the toy_throw_file_to_read.
    */
    void BuildToys(const int fitParamBin, const int batch, const int Ntoys,
          FitParamList& fpl, bool randomizeSystematics = true,
          const char* options = "randomize-all;prefit-errors",
-         bool rethrowUnphysical = true);
+         bool rethrowUnphysical = true, std::string toy_throw_file_to_read = "",
+         std::string param_name_map_file = "");
 
    /**
       Builds a batch of marginalisation toys.
@@ -128,12 +137,21 @@ public:
              their physical boundaries (Cholesky decomposition can cause
              parameters to move beyond bounds even if they are thrown with
              limits). Default true.
+      \param toy_throw_file_to_read Read throws from a pre-existing file instead of
+             generating them. This is used e.g. to convert T2K legacy toy throws
+             into SDK marginalisation toys.
+             NOTE: As this reads thrown parameter values, statistical fluctuations
+             are not copied
+      \param param_name_map_file If using toy_throw_file_to_read, also specify this
+             argument, which is used to convert SDK parameter names into the parameter
+             names used by the toy_throw_file_to_read.
    */
    void BuildToys(const int fitParam1Bin, const int fitParam2Bin,
          const int batch, const int Ntoys, FitParamList& fpl,
          bool randomizeSystematics = true,
          const char* options = "randomize-all;prefit-errors",
-         bool rethrowUnphysical = true);
+         bool rethrowUnphysical = true, std::string toy_throw_file_to_read = "",
+         std::string param_name_map_file = "");
 
    /**
       Computes the marginal likelihood and chi-squared statistics for a given
@@ -329,6 +347,21 @@ private:
       \param write_tree Write the tree to an output file
    */
    void SaveParamThrows(FitParamList& fpl, bool write_tree, std::string binary_file_name);
+
+  /**
+     Read a single set of parameter throws from a T2K legacy toy throw file into the input FitParamList.
+
+     \param fpl Store the read parameter throws in this FitParamList
+     \param toy_throw_file_to_read Read throws from a pre-existing file instead of
+            generating them. This is used e.g. to convert T2K legacy toy throws
+            into SDK marginalisation toys.
+            NOTE: As this reads thrown parameter values, statistical fluctuations
+            are not copied
+     \param param_name_map_file This file is used to convert SDK parameter names
+            into the parameter names used by the toy_throw_file_to_read.
+  */
+  void ReadParamsFromThrowFile(FitParamList& fpl, std::string toy_throw_file_to_read,
+                               std::string param_name_map_file, const char* options, int toy_number);
 
 private:
    string _filePrefix; 
