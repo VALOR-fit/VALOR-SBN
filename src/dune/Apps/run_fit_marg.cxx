@@ -119,8 +119,12 @@ void Fit(CmdLnArgList& arg)
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
    bool use_simple_binning = arg.GetBool("use-simple-binning");
 
-   const char* read_opt = "pdft";
-   if (use_simple_binning) { read_opt = "pdft+SB"; }
+   const char* read_opt      = "pdft";
+   const char* read_opt_data = "";
+   if (use_simple_binning) {
+     read_opt      = "pdft+SB";
+     read_opt_data = "+SB";
+   }
 
    string fp1_name         = arg.GetString("fit-param1");
    const double fp1_val    = arg.GetDouble("fit-param1-value");
@@ -223,7 +227,8 @@ void Fit(CmdLnArgList& arg)
       // Read a fakedata toy, if requested
       if(arg.GetInt("gen-fakedata") == 0)
       {
-         data->Read(*is_fakedata, model, read_opt);
+         model->Read(*is_fakedata, read_opt);   // The input fakedata toy stream must be first read into the model, as they were generated as models.
+         data->Generate(model, with_stat_fluct, read_opt_data);
       }
 
       // Perform a fit and populate the entire chi2 and likelihood surfaces
