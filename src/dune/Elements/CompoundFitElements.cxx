@@ -18,8 +18,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/FitCore/CompoundFitData.h"
 #include "valor/FitCore/CompoundFitModel.h"
 #include "valor/FitCore/CompoundCorrelatedSystematics.h"
+#include "valor/Conventions/ParameterPool.h"
 // dune
-#include "dune/Conventions/ParameterPool.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitDataABC.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"

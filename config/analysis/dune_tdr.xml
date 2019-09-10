@@ -90,6 +90,10 @@
     </element>
     
   </element_list>
+
+  <parameter_definitions>
+    <filename> params/dune_default_params.xml </filename>
+  </parameter_definitions>
   
   <systematics name="DUNE_2018aFD">
 

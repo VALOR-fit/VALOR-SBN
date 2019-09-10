@@ -23,12 +23,128 @@
 
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/ReacModeCoarse.h"
 
 
+#define SBN
+
 namespace valor {  
 namespace conv {
+      
+// ---------------------------------------------------------------------
+// NOTE:
+// This is used to loop over all beam configurations / samples.
+// Probably could be removed once we start using the Compound* classes
+
+static const int kNBeamConf = 2;  
+
+static const BeamConf_t kBeamConf[kNBeamConf] =
+{
+#ifdef SBN
+  kbBNB_FHC, 
+  kbBNB_RHC
+#else
+  kbLBNF_FHC, 
+  kbLBNF_RHC
+#endif
+};
+// ---------------------------------------------------------------------
+
+// 
+// ...........................................................................
+// Define the list of samples used in present analysis.
+//
+// Note: The order and position of samples in the array is important for other arrays. Maintain the not remove or re-arrange.
+// If you want to remove a sample from the fit, just comment-out the corresponding line and replace with ksUndefined.
+// kSample array elements that contain the ksUndefined flag are ignored.
+//
+// To add a new sample in the fit, do the following:
+// - Edit Sample.cxx: Add a new case (for the new sample) is all switch statements and make sure the boundaries defined
+//   in SampleFromInt() are correct.
+// - Edit SampleReacMode.h: Add an entry for the new sample in each array (to define modes for the new sample etc)
+// - Edit SampleKineBinning.h/cxx: Check that an appropriate binning scheme exists, and add a new case (for the new sample)
+//   all switch statements.
+// - Edit FitParams.h: Add instructions on how to apply systematics for the new sample 
+// -
+ 
+//this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
+// For 2016b = total except: undefined, numuCC, 2piC, nueCC, NC, wrong numu, and only 4 for FD (either nu in FHC or nubar in RHC)
+ static const int kNSamples = 27;
+
+// ---------------------------------------------------------------------
+// NOTE:
+// This is used to loop over all beam configurations / samples.
+// Probably could be removed once we start using the Compound* classes
+// This is now for 2016b, should include only the kNSamples above
+ static const Sample_t kSample[kNBeamConf][kNSamples] =
+{
+   // kbLBNF_FHC
+   {
+     //2016b near detector selections
+     ksNuMuCC0pi1trk, 
+     ksNuMuCC0pi2trk,
+     ksNuMuCC0piNtrk,
+     ksNuMuCC3trkDelta,
+     ksNuMuCC1piC,
+     ksNuMuCC1pi0,
+     ksNuMuCC1piC1pi0,
+     ksNuMuCCoth,
+     ksNuMuCCWS0pi,
+     ksNuMuCCWS1piC,
+     ksNuMuCCWS1pi0,
+     ksNuMuCCWSoth,
+     ksNuECC0pi,
+     ksNuECC1piC,
+     ksNuECC1pi0,
+     ksNuECCoth,
+     ksNC0pi,
+     ksNC1piC,
+     ksNC1pi0,
+     ksNCoth,
+     ksNeutrinoElec,
+     ksInvMuDecay,
+     ksNuECCWS,
+     //2016b far detector selections
+     ksNuMuLikeCChigh,  
+     ksNuMuLikeCClow,  
+     ksNuELikeCChigh,           
+     ksNuELikeCClow          
+   },
+
+   {
+     //2016b near detector selections
+     ksNuMuCC0pi1trk, 
+     ksNuMuCC0pi2trk,
+     ksNuMuCC0piNtrk,
+     ksNuMuCC3trkDelta,
+     ksNuMuCC1piC,
+     ksNuMuCC1pi0,
+     ksNuMuCC1piC1pi0,
+     ksNuMuCCoth,
+     ksNuMuCCWS0pi,
+     ksNuMuCCWS1piC,
+     ksNuMuCCWS1pi0,
+     ksNuMuCCWSoth,
+     ksNuECC0pi,
+     ksNuECC1piC,
+     ksNuECC1pi0,
+     ksNuECCoth,
+     ksNC0pi,
+     ksNC1piC,
+     ksNC1pi0,
+     ksNCoth,
+     ksNeutrinoElec,
+     ksInvMuDecay,
+     ksNuECCWS,
+     //2016b far detector selections //LORENA
+     ksNuMuLikeCChigh,   
+     ksNuMuLikeCClow,  
+     ksNuELikeCChigh,     
+     ksNuELikeCClow        
+   }
+};
+// ---------------------------------------------------------------------
 
 //
 // ---------------------------------------------------------------------------
@@ -140,6 +256,24 @@ namespace conv {
       {
         #include "dune/Conventions/ModeLists/OscLowE.h"
       },
+#ifdef SBN
+      // selection: ksNuMuCChigh/ksNuMuBarCChigh
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      },
+      // selection: ksNuMuCClow/ksNuMuBarCClow
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      },
+      // selection: ksNuECChigh/ksNuEBarCChigh
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      },
+      // selection: ksNuECClow/ksNuEBarCClow
+      {
+        #include "dune/Conventions/ModeLists/OscLowE.h"
+      }
+#else
       //far detector
       // selection: ksNuMuCChigh/ksNuMuBarCChigh
       {
@@ -157,6 +291,7 @@ namespace conv {
       {
         #include "dune/Conventions/ModeLists/OscHighE.h"
       }
+#endif
 };
   
    
@@ -455,6 +590,17 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
     //2016b far detector selections
     // sample: ksNuMuCChigh
     {
+#ifdef SBN
+      kmcNuMuCCQE,    
+      kmcNuMuCCMEC,    
+      kmcNuMuCC1pi,   
+      kmcNuMuCC2pi,   
+      kmcNuMuCCoth,   
+      kmcNuMuBarCC,   
+      kmcNuENuEBarCC, 
+      kmcNC,
+      kmcUndefined
+#else
       kmcNuMuCC,    
       kmcNuMuBarCC,   
       kmcOscNuMuCC,
@@ -463,10 +609,22 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuEBarCC,
       kmcNuTauCC,
       kmcNuTauBarCC,
-      kmcNC           
+      kmcNC
+#endif
     },
     // sample: ksNuMuCClow
     {
+#ifdef SBN
+      kmcNuMuCCQE,    
+      kmcNuMuCCMEC,    
+      kmcNuMuCC1pi,   
+      kmcNuMuCC2pi,   
+      kmcNuMuCCoth,   
+      kmcNuMuBarCC,   
+      kmcNuENuEBarCC, 
+      kmcNC,
+      kmcUndefined
+#else
       kmcNuMuCC,    
       kmcNuMuBarCC,   
       kmcOscNuMuCC,
@@ -475,8 +633,23 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuEBarCC,
       kmcNuTauCC,
       kmcNuTauBarCC,
-      kmcNC           
+      kmcNC
+#endif
     },
+#ifdef SBN
+    // sample: ksNuECChigh
+    {
+      kmcNuECC,   
+      kmcNuEBarCC,   
+      kmcNuMuCC,    
+      kmcNuMuBarCC,   
+      kmcNC,
+      kmcOscNuECC,
+      kmcOscNuEBarCC,
+      kmcUndefined,
+      kmcUndefined
+    },
+#else
     // sample: ksNuECChigh
     {
       kmcOscNuECC,
@@ -489,6 +662,7 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuTauBarCC,
       kmcNC
     },
+#endif
     // sample: ksNuECClow
     {
       kmcOscNuECC,
@@ -1473,6 +1647,11 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
 };
 
 } // conv
+
+namespace util {
+conv::Sample_t GetActiveSample  (int ibeam, int isample);
+} // util
+
 } // valor
 
 #endif 

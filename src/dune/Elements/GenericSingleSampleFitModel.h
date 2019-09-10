@@ -43,7 +43,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
@@ -69,6 +69,8 @@ public:
   //
 
   string        Name                   (void) const;
+  
+  // Options available to Read() include nosplines, nomc, forcedst, pot_override, binning=myfile.xml 
   bool          Read                   (string file, Option_t * opt = 0);
   bool          Generate               (const PhysHypothesis & ph, Option_t * opt = 0);
   void          RandomizeSystematics   (Option_t * opt = 0);
@@ -92,6 +94,14 @@ public:
   // Auxiliary methods, not part of the  FitModelABC interface (needed?)
   //
   
+  // Get the modelist we're using
+  const std::vector<conv::ReacMode_t> GetReactionModes(Option_t * opt = "") const;
+  
+  // Get POT
+  const double & GetPOT() const;
+  
+  const std::string & GetLastConfigFileRead() const;
+  
   // Get the response function library and binning
   const util::DuneRFL * GetRFL(void) const;
   const SingleSampleKineBinning * GetBinning(void) const;
@@ -101,6 +111,11 @@ public:
 
   // Calculate the OB manually from the content of the simple bins. Can be used to verify the spectra are the same for SB/OB
   void UpdateObservableBinningFromSimple (Option_t * opt = 0);
+  
+  // Add information on which systematic universe to apply for which parameter
+  // Must be called *before* Read() since these are event-by-event
+  void ResetSystematicVariationIDs();
+  void SetSystematicVariationIDToApply(const std::string & param_name,size_t id);
 
 private:
 
@@ -144,9 +159,15 @@ private:
 
   // Fiducial mass (ktonnes)
   double fFiducialMass;
+  
+  // Name of the config file read
+  std::string fConfigFileRead;
 
   // Input VALOR MC DSTs
   bool fUseMCDST;
+
+  // Whether or not we should apply the osc prob to ALL detectors (i.e. skipping the util::OscProbIsAppliedTo check)
+  bool fSkipOscProbApplyCheck;
   
   // MC templates (MCT) 
   // Each template is a 2D array, with (reco,true) bins linearised in whatever kinematic space we need.
@@ -210,8 +231,7 @@ private:
   SingleSampleKineBinning * fBinning;
   
   // The list of reaction modes we're using
-  size_t fNReacModes;
-  const conv::ReacMode_t * fReactionModes;
+  std::vector<conv::ReacMode_t> fReactionModes;
   
   // Spline library
   util::DuneRFL * fRFL;
@@ -219,6 +239,10 @@ private:
   // Pointer to our systematics
   CorrelatedSystematics * fSystematics;
   bool fOwnerOfSystematics;
+  
+  // For implementing of event-by-event systematics
+  // eg for making spectra that can be used for covariance matrices
+  std::map<std::string,size_t> fSystUniverseToApply; // param name in DST to universe ID in DST
 };
 
 } // valor

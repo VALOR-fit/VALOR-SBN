@@ -52,7 +52,6 @@ string GenericSingleSampleFitData::Name(void) const
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
 {
-  LOG("valor_dune", pNOTICE) << "******************* HERE!";    // TODO: remove when done testing
   
   if (!fBinning) {
     LOG("GenericSingleSampleFitData", pERROR) << "Must call Generate() with FitModel before attempting to read file.";

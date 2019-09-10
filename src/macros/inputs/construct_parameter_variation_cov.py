@@ -23,8 +23,12 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(prefit_file, postfit_file, output_file, scale, params, prefit_num=0, postfit_num=0):
-  
+def main(prefit_file, postfit_file, output_file, scale, params, prefit_num=0, postfit_num=0, config="analysis/dune_tdr.xml"):
+
+  # Read the config file to populate the ParameterPool
+  fit_elements = valor.CompoundFitElements()
+  fit_elements.Read(util.CompleteConfigPath(config))
+
   prefit_tf = R.TFile(prefit_file)
   prefit_tree = prefit_tf.Get("valor_dune_nd_ntp")
   
@@ -56,14 +60,14 @@ def main(prefit_file, postfit_file, output_file, scale, params, prefit_num=0, po
   for ip in xrange(prefit_fp.Size()):
     p = prefit_fp.WhichParam(ip)
     for sel_p in params.split(","):
-      if sel_p.lower() in util.ParamAsString(p).lower():
+      if sel_p.lower() in util.NameRegistry.Instance().ParamAsString(p).lower():
         selected_params.append(p)
   
   for p in selected_params:
     ip = prefit_fp.Id(p)
     assert(ip == postfit_fp.Id(p))
     final_err[ip] = prefit_err[ip] * scale
-    print "Setting value of",util.ParamAsString(p),"error to",final_err[ip]
+    print "Setting value of",util.NameRegistry.Instance().ParamAsString(p),"error to",final_err[ip]
     
   final_cov = util.CorrelationAndErrorToCovarianceMatrix(prefit_corr,final_err)
   
@@ -85,10 +89,11 @@ if __name__=="__main__":
   parser.add_option('-p','--params', dest='params',default="flux",help='The set of parameters to rescale')
   parser.add_option('--prefit_num', dest='pref_num',default=0,help='Prefit tree entry number to use',type=int)
   parser.add_option('--postfit_num', dest='post_num',default=0,help='Postfit tree entry number to use',type=int)
+  parser.add_option('-c','--config', dest='config',default="analysis/dune_tdr.xml",help='Analysis configuration file')
   
   options,files = parser.parse_args()
   
   assert(len(files)==2)
   prefit,postfit=files
   
-  main(prefit,postfit,options.output,options.scale,options.params,options.pref_num,options.post_num)
+  main(prefit,postfit,options.output,options.scale,options.params,options.pref_num,options.post_num,options.config)

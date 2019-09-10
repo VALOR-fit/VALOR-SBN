@@ -45,6 +45,8 @@
   <priority msgstream="Binning">                        ERROR  </priority>
   <priority msgstream="SingleSampleKineBinning">        ERROR  </priority>
   <priority msgstream="SampleBinning">                  ERROR  </priority>
+  
+  <priority msgstream="make_sbncode_minidst">           NOTICE  </priority>
 
 
 </messenger_config>

@@ -21,9 +21,9 @@ void fit_param_sensitivity
   int          run                   = 0,                                     /* run # */
   int          subrun                = 0,                                     /* sub-run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list        = "standard",                            /* fit parameter list (see FitParam.cxx) */
+  const char * fit_param_list        = "nuosc3f",                             /* fit parameter list (see UtlParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
-  const char * s_param_name          = 0,                                     /* specify the param name (see FitParam.cxx) whose sensitivity to is studied */
+  const char * s_param_name          = 0,                                     /* specify the param name (see UtlParam.cxx) whose sensitivity to is studied */
   double       s_param_value_gen     = 1,                                     /* value for above param for toy-MC generation */
   int          nfits                 = 11,                                    /* number of fits for each toy-MC (for different fixed values of above param) */
   double       s_param_value_fit_min = 0.9,                                   /* min fixed value of above param */
@@ -33,7 +33,8 @@ void fit_param_sensitivity
   bool         store_spectra         = false,                                 /* store toy-MC and best-fit spectra? (default: store only true and best-fit parameters) */
   int          rndseed_toymc_stat    = 0,                                     /* rnd seed, set (usefull if want to fit same toy-MC across different batch jobs) or leave 0 to randomize */
   int          rndseed_toymc_syst    = 0,                                     /* rnd seed, set (usefull if want to fit same toy-MC across different batch jobs) or leave 0 to randomize */
-  const char * config_file           = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
+  const char * config_file           = "dune_ndfit-2015v1-FGTv1.xml",         /* analysis configuration file */
+  const char * fit_param_opt         = ""                                     /* FitParamList options */
 )
 
 {
@@ -42,14 +43,19 @@ void fit_param_sensitivity
   using namespace valor::conv;
 
   // Analysis configuration
+  cout << "Getting and configuring fit model" << endl;
   TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config.Data());
+  FitModelABC * model = elements->FitModel();
+
  
   assert(s_param_name);
   
   TString param_values_ts(param_values); // TString version for useful methods
 
-  PhysParamId_t sp = util::PhysParamFromString(s_param_name);
-  cout << util::AsString(sp) << endl;
+  PhysParamId_t sp = util::NameRegistry::Instance()-PhysParamFromString(s_param_name);
+  cout << util::NameRegistry::Instance()-AsString(sp) << endl;
   if(sp == kPhypUndefined) {
     cerr << "Undefined parameter: " << s_param_name << endl;
     exit(1);
@@ -105,11 +111,6 @@ void fit_param_sensitivity
   fitnt->Branch("best_fit_model",  "TObjArray",            &best_fit_model_array, 1280000,0);
   fitnt->Branch("data",            "TObjArray",            &data_array,           1280000,0);
 
-  // Get ND model & configure
-  cout << "Getting and configuring fit model" << endl;
-  FitModelABC * model = new SDModel;
-  model->Read(config.Data());
-
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
     cout << "\n\n *** Toy-MC experiment #" << itoymc << endl;
@@ -122,7 +123,7 @@ void fit_param_sensitivity
 
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generatio below.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list, param_values);
+    FitParamList * fp = util::GetFitParameterList(fit_param_list, fit_param_opt, param_values);
 
     // Make sure the specified parameter exists in the specified list of parameters
     if(! fp->Exists(sp)) {

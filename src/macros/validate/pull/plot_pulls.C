@@ -21,9 +21,14 @@ double range_y_max =  3.;
 
 void FixMEC(valor::FitParamList & fp)
 {
-  fp.FixParameter(conv::kNuisIntNuCCMEC);
-  fp.FixParameter(conv::kNuisIntNuBarCCMEC);
   cout<< "Fixing MEC"<<endl;
+  for (const Parameter & param_search : ParameterPool::Instance()->GetParams()) {
+    if((util::ToLowerCase(param_search.GetName()).find("mec")  != std::string::npos ||
+        util::ToLowerCase(param_search.GetName()).find("2p2h") != std::string::npos) &&
+        fp.Exists(param_search.GetID())) {
+      fp.FixParameter(param_search.GetID());
+    }
+  }
 }
 
 
@@ -32,12 +37,18 @@ void plot_pulls(
   const char * input_pattern = "/opt/ppd/t2k/users/nick/DUNE/macros/fit/nd/pull_migrad_mcstatfluc/toymc*.root",
   int nParamsPerPage = -999,
   const char * options = "",
-  const char * img_format = "png"
+  const char * img_format = "png",
+  const char * config = "analysis/dune_tdr.xml"
 )
 {
   using namespace valor;
   using namespace valor::conv;
-  
+
+  // Read the config file to populate the ParameterPool
+  std::string config_path = util::CompleteConfigPath(config);
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config_path.c_str());
+
   TString ts_options(options);
   
   bool plot_errors                 = ts_options.Contains("showerrors" );
@@ -278,7 +289,7 @@ void plot_pulls(
       PullCanv->cd(ihist+1);
       gPad->SetTopMargin(0.15);
       PhysParamId_t p = params_to_fit[iparam];
-      string label = util::AsString(p);
+      string label = util::NameRegistry::Instance()->ParamAsString(p);
       tPull[iparam] = new TPaveText(0.05,0.85,1.0,0.95,"NDC");
       histtitle[iparam] = tPull[iparam]->AddText(label.c_str());
       //SetTextAlign(11) to left justify, 21 to centre and 31 to right justify 
@@ -419,7 +430,7 @@ void plot_pulls(
     //~ {
     //~ PhysParamId_t p = params_to_fit[param];
     //~ //const char * label = util::AsStringTeX(p,true).c_str();
-    //~ const char * label = util::AsString(p).c_str();
+    //~ const char * label = util::NameRegistry::Instance()->ParamAsString(p).c_str();
     //~ x_low = param + 0.5;
     //~ x_high = x_low + 1.0;
     //~ tResidualSummary[param] = new TPaveText(x_low,-1.45,x_high,-1.05);

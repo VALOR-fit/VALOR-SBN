@@ -65,7 +65,7 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
-#include "dune/Conventions/FitParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 
@@ -109,9 +109,6 @@ int main(int argc, char ** argv)
   const double target_n_attempts = 3;
   const int recalculate_step_every = 50;
   const int print_step_every = 500;
-  
-  // Set DUNE param names inside framework
-  util::PopulateNameRegistry();
   
   // Set the random seeds
   Rnd::Instance()->SetSeeds(arg);

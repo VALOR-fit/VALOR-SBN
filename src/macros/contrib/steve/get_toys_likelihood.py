@@ -27,11 +27,12 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 rnd  =  valor.Rnd.Instance()
+nr   =  util.NameRegistry.Instance()
 
 opt.gOscMixingParamChoice = conv.kNuMixSinsqTheta
 opt.SetDefaultParameterValues()
 
-default_fit_param_list = "standard+no-osc-params"
+default_fit_param_list = "nuosc3f"
 
 to3sf = "{0:.3g}"
 python_undefined = 2L*sys.maxint+1
@@ -43,11 +44,7 @@ input_deltacp      = -1.55
 input_dm12sq       = 7.53E-5
 input_dm23sq       = 2.51E-3
 
-def main(param,param_value,config_file,outfile,ntoys,seed=0):
-  
-  # Pattern replacement for output filename
-  outfile = outfile.replace("[PARAM]",util.ParamAsString(param))
-  outfile = outfile.replace("[VALUE]",to3sf.format(value))
+def main(param_s,param_value_s,config_file,outfile,ntoys,fit_param_opt,seed=0):
   
   if (seed):
     rnd.SetSeeds(seed,seed+1,seed+2,seed+3,seed+4)
@@ -62,8 +59,16 @@ def main(param,param_value,config_file,outfile,ntoys,seed=0):
   elements.Read(config)
   model = elements.FitModel()
   data = elements.FitData()
-  
-  fpl = util.GetFitParameterList(default_fit_param_list)
+
+  param = util.NameRegistry.Instance().PhysParamFromString(param_s)
+  assert(param>=0 and param < python_undefined)
+  value = float(param_value_s)
+
+  # Pattern replacement for output filename
+  outfile = outfile.replace("[PARAM]",nr.ParamAsString(param))
+  outfile = outfile.replace("[VALUE]",to3sf.format(value))
+
+  fpl = util.GetFitParameterList(default_fit_param_list, fit_param_opt)
   fit_inputs = valor.FitInputs(data,model,fpl)
   
   # Set true parameter value and generate 'data'
@@ -110,12 +115,10 @@ if __name__=="__main__":
   parser.add_option('--seed', dest='seed',default=0, type=int,help="Random seed")
   parser.add_option('-o', dest='outfile',default="toys_[PARAM]=[VALUE].root",help="Output file")
   parser.add_option('-n', dest='ntoys',default=1000,type=int,help="Number of toys to run")
-  
+  parser.add_option('--fit-param-opt', dest='fpl_opt',default="no-osc-params",help="FPL options.")
+
   opt,pv = parser.parse_args()
   assert(len(pv)==2)
   param_s,value_s = pv
-  param = util.PhysParamFromString(param_s)
-  assert(param>=0 and param < python_undefined)
-  value = float(value_s)
   
-  main(param,value,opt.config,opt.outfile,opt.ntoys,opt.seed)
+  main(param_s,value_s,opt.config,opt.outfile,opt.ntoys,opt.fpl_opt,opt.seed)

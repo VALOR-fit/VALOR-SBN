@@ -23,6 +23,8 @@
 */
 //____________________________________________________________________________
 
+// WARNING - this probably still assumes that binning is 2D even though it's moved to the ND interface
+
 #include <string>
 
 //
@@ -38,19 +40,23 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/Detector.h"
+#include "valor/KineBinning/VALORBinning.h"
+#include "valor/Conventions/Parameter.h"
+#include "valor/Conventions/ReacMode.h"
+#include "valor/Conventions/ParameterPool.h"
 
-#include "dune/Conventions/ReacMode.h"
 #include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
-#include "dune/Conventions/FitParam.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/DuneRFL.h"
 #include "dune/Utilities/KinematicBin.h"
@@ -95,35 +101,42 @@ int main(int argc, char ** argv)
   Detector_t detector  = util::DetectorFromString (arg_detector  );
   GSyst_t    syst      = GSyst::FromString        (arg_systematic);
   
-  PhysParamId_t fit_param = kPhypUndefined;
-  if      (syst == kINukeTwkDial_MFP_pi     ) fit_param = kNuisIntPiMeanFreePath; 
-  else if (syst == kINukeTwkDial_MFP_N      ) fit_param = kNuisIntNucMeanFreePath;
-  else if (syst == kINukeTwkDial_FrCEx_pi   ) fit_param = kNuisIntFracPiChargeExchange; 
-  else if (syst == kINukeTwkDial_FrInel_pi  ) fit_param = kNuisIntFracPiInelastic; 
-  else if (syst == kINukeTwkDial_FrAbs_pi   ) fit_param = kNuisIntFracPiAbsorb; 
-  else if (syst == kINukeTwkDial_FrPiProd_pi) fit_param = kNuisIntFracPiProduction; 
-  else if (syst == kINukeTwkDial_FrCEx_N    ) fit_param = kNuisIntFracNucChargeExchange; 
-  else if (syst == kINukeTwkDial_FrInel_N   ) fit_param = kNuisIntFracNucInelastic; 
-  else if (syst == kINukeTwkDial_FrAbs_N    ) fit_param = kNuisIntFracNucAbsorb; 
-  else if (syst == kINukeTwkDial_FrPiProd_N ) fit_param = kNuisIntFracNucProduction; 
-  
+  // Read the config to get the relevant binning and the parameters
+  CompoundFitElements * elements = new CompoundFitElements();
+  std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
+  elements->Read(config_path);
+
+  Parameter p = ParameterPool::Instance()->ParamFromString(arg_systematic);
+  PhysParamId_t fit_param = p.GetID();
+  // TODO: Now that FitParam has been deleted, all of these PhysParamId_t enumerations are gone.
+  // TODO: Here I've assumed that arg_systematic can be used with both GSyst::FromString and
+  // TODO: ParameterPool::ParamFromString (I don't have a GENIE installation to test this).
+  // TODO: If this is not the case, then hard-code special cases below:
+//  PhysParamId_t fit_param = kPhypUndefined;
+//  if      (syst == kINukeTwkDial_MFP_pi     ) fit_param = kNuisIntPiMeanFreePath;
+//  else if (syst == kINukeTwkDial_MFP_N      ) fit_param = kNuisIntNucMeanFreePath;
+//  else if (syst == kINukeTwkDial_FrCEx_pi   ) fit_param = kNuisIntFracPiChargeExchange;
+//  else if (syst == kINukeTwkDial_FrInel_pi  ) fit_param = kNuisIntFracPiInelastic;
+//  else if (syst == kINukeTwkDial_FrAbs_pi   ) fit_param = kNuisIntFracPiAbsorb;
+//  else if (syst == kINukeTwkDial_FrPiProd_pi) fit_param = kNuisIntFracPiProduction;
+//  else if (syst == kINukeTwkDial_FrCEx_N    ) fit_param = kNuisIntFracNucChargeExchange;
+//  else if (syst == kINukeTwkDial_FrInel_N   ) fit_param = kNuisIntFracNucInelastic;
+//  else if (syst == kINukeTwkDial_FrAbs_N    ) fit_param = kNuisIntFracNucAbsorb;
+//  else if (syst == kINukeTwkDial_FrPiProd_N ) fit_param = kNuisIntFracNucProduction;
+
   if (beam==kbUndefined || sample == ksUndefined || fit_param == kPhypUndefined) {
     std::cerr<<"Bad configuration."<<std::endl;
     std::cerr<<"Beam:       "<<arg_beam       <<"\t => "<< util::AsString(beam)    <<std::endl;
     std::cerr<<"Sample:     "<<arg_sample     <<"\t => "<< util::AsString(sample)  <<std::endl;
     std::cerr<<"Detector:   "<<arg_detector   <<"\t => "<< util::AsString(detector)<<std::endl;
     std::cerr<<"GENIE Syst: "<<arg_systematic <<"\t => "<<GSyst::AsString(syst)    <<std::endl;
-    std::cerr<<" to VALOR   "<< "\t => "<<util::AsString(fit_param)<<std::endl;
+    std::cerr<<" to VALOR   "<< "\t => "<<util::NameRegistry::Instance()->AsString(fit_param)<<std::endl;
   }
   assert(beam      != kbUndefined   );
   assert(sample    != ksUndefined   );
   assert(detector  != kdUndefined   );
   assert(fit_param != kPhypUndefined);
-  
-  // Read the config to get the relevant binning
-  CompoundFitElements * elements = new CompoundFitElements();
-  std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
-  elements->Read(config_path);
+
   CompoundFitModel * compound_model = dynamic_cast<CompoundFitModel*>(elements->FitModel());
   assert(compound_model);
   GenericSingleSampleFitModel * fit_model = 0;
@@ -143,8 +156,8 @@ int main(int argc, char ** argv)
   const SingleSampleKineBinning & binning  = *(fit_model->GetBinning());
   
   // Make it an option here to use the Xsec binning instead
-  const KBCubHcmbMondrian  * reco_ob = static_cast<KBCubHcmbMondrian*>  (binning.RecoOptBinning());
-  const KBCubHcmbEdge2Edge * reco_sb = static_cast<KBCubHcmbEdge2Edge*> (binning.RecoSmpBinning());
+  const VALORBinning * reco_ob = (binning.RecoOptBinning());
+  const VALORBinning * reco_sb = (binning.RecoSmpBinning());
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
   
@@ -168,7 +181,7 @@ int main(int argc, char ** argv)
     for(int imode = 0; imode < kNReacModes; imode++) {
       ReacMode_t m = kReactionModes[isample][imode];
       if(m == kmUndefined) continue;
-      const KBCubHcmbEdge2Edge * true_sb = static_cast<KBCubHcmbEdge2Edge*>(binning.TrueSmpBinning(m));
+      const VALORBinning * true_sb = binning.TrueSmpBinning(m);
       const int n_true_bins_sb  = true_sb->NBins();
       if (include_sb) {
         mc_templ_sb [itwk][imode] = 
@@ -338,7 +351,7 @@ int main(int argc, char ** argv)
       recovec.push_back(curr_enu_reco);
       recovec.push_back(curr_y_reco);
       
-      const KBCubHcmbEdge2Edge * true_sb = static_cast<KBCubHcmbEdge2Edge*>(binning.TrueSmpBinning(curr_mode));
+      const VALORBinning * true_sb = binning.TrueSmpBinning(curr_mode);
       const int itrue_sb = true_sb->FindBin(truevec);
       const int ireco_ob = reco_ob->FindBin(recovec);
       const int ireco_sb = reco_sb->FindBin(recovec);
@@ -357,9 +370,9 @@ int main(int argc, char ** argv)
 
   // Output file - first make the substitutions for sample/parameter
   TString ts_outfile = arg_out_file.c_str();
-  ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam     ).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample   ).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , util::AsString(fit_param).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::                          AsString(beam     ).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::                          AsString(sample   ).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , util::NameRegistry::Instance()->AsString(fit_param).c_str());
   VLOG("make_response_func", pNOTICE) 
     << "Saving VALOR response functions to: "<<ts_outfile;
   TFile fout(ts_outfile.Data(),"recreate");
@@ -369,7 +382,7 @@ int main(int argc, char ** argv)
   for(int imode = 0; imode < kNReacModes; imode++) {
     ReacMode_t m = kReactionModes[isample][imode];
     if(m == kmUndefined) continue;
-    const KBCubHcmbEdge2Edge * true_sb = static_cast<KBCubHcmbEdge2Edge*>(binning.TrueSmpBinning(m));
+    const VALORBinning * true_sb = binning.TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
     
     if (include_sb) {

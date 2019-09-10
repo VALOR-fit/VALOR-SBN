@@ -18,6 +18,10 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlNumStat.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/NameRegistry.h"
+#include "valor/Conventions/NuclearTarget.h"
+#include "valor/Conventions/ParameterPool.h"
 
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
@@ -111,6 +115,7 @@ fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
   // Calculate max bin numbers
   for (int im = 0 ; im < fNModes ; im++) {
     conv::ReacMode_t m = fModes[im];
+    if (m == conv::kmUndefined) continue;
     const VALORBinning * true_sb = fBinning->XsecTrueBinning(m);
     fNBinsTrue = std::max(fNBinsTrue,true_sb->NBins());
   }
@@ -162,7 +167,7 @@ TString valor::util::DuneRFL::BuildSplineName (
   name = name.ReplaceAll("[SAMPLE]" , util::AsString(fSample).c_str());
   
   name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
-  name = name.ReplaceAll("[PARAM]"  , util::AsString(p).c_str());
+  name = name.ReplaceAll("[PARAM]"  , util::NameRegistry::Instance()->AsString(p).c_str());
   
   name = name.ReplaceAll("[TRUE]" , TString::Format("%d", itrue ));
   name = name.ReplaceAll("[RECO]" , TString::Format("%d", ireco ));
@@ -229,7 +234,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     filename = filename.ReplaceAll("[BEAM]"   , util::AsString(fBeam    ).c_str());
     filename = filename.ReplaceAll("[SAMPLE]" , util::AsString(fSample  ).c_str());
     filename = filename.ReplaceAll("[DET]"    , util::AsString(fDetector).c_str());
-    filename = filename.ReplaceAll("[PARAM]"  , util::AsString(p).c_str());
+    filename = filename.ReplaceAll("[PARAM]"  , util::NameRegistry::Instance()->AsString(p).c_str());
     
     TString base_dir = Env::Instance()->TopLevelDataDir().c_str();
     
@@ -245,7 +250,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   int n_splines_expected = fSplineBlockSize;
   int n_splines_flat = 0;
   int n_splines_neg = 0;
-  
+
+  conv::NuclearTarget_t nt = conv::kntInclusive; // Make this an argument
+
   for(int imode = 0; imode < conv::kNReacModes; imode++) {
     conv::ReacMode_t m = conv::kReactionModes[isample][imode];
     if(m == conv::kmUndefined) continue;
@@ -257,8 +264,9 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     for (int ip = 0 ; ip < fNParams ; ip++) {
       conv::PhysParamId_t p = fParams[ip];
       if(p == conv::kPhypUndefined) continue;
-      
-      bool param_applied_to_mode = util::ParamIsAppliedTo(fBeam,fSample,fDetector,m,p);
+
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
+      bool param_applied_to_mode = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
       
       for (int ireco = 0 ; ireco < n_bins_reco ; ireco++) {
         for (int itrue = 0 ; itrue < n_bins_true ; itrue++) {
@@ -371,7 +379,7 @@ std::pair<int,int> valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp,
 int valor::util::DuneRFL::Param2Idx(conv::PhysParamId_t p) const
 {
   if (p < 0 || p > conv::knppmax) {
-    LOG("DuneRFL",pFATAL) << "Parameter out of range "<<p<<"\t"<<util::AsString(p);
+    LOG("DuneRFL",pFATAL) << "Parameter out of range "<<p<<"\t"<<util::NameRegistry::Instance()->AsString(p).c_str();
   }
   return fParam2Idx[p];
 }

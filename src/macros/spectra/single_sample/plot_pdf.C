@@ -6,35 +6,26 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-#ifndef __CINT__
-#include "ValorInc.h"
-#include "DuneInc.h"
-#include "TCanvas.h"
-#include "THStack.h"
-#include "TLatex.h"
-#include "TLegend.h"
-#endif
+std::string kinevar = "Ereco"; // make this configurable later
 
 void plot_pdf(
   const char * config_file,
   const char * filename,
   const char * tag = "valor",
+  double       per_range = -999., // Show events per what ereco (GeV). If negative, show per bin 
+  const char * data_filename = "", // if we want to plot a dataset on top, this is that file
+  const char * data_tag = "valor",
   TString   option = "",
   const char * out_tag = "valor",
   const char * image_save_format = "",
   int canv_size_x = 700,
   int canv_size_y = 700,
-  double enu_reco_max = 12.;
+  double enu_reco_max = 3.
 )
 {
   using namespace std;
   using namespace valor;
-  
-#ifndef __CINT__
-  valor::Env * env = valor::Env::Instance();
-  env->AutoSet("dune");
-  valor::util::PopulateNameRegistry();
-#endif
+  namespace vutil = valor::util;
 
   const int n_pdf_slices = 10; //
   
@@ -50,6 +41,13 @@ void plot_pdf(
   TFile * fin = new TFile(filename);
   assert(fin); assert(fin->IsOpen());
   
+  bool plot_data(data_filename[0]);
+  TFile * fdata = 0;
+  if (plot_data) {
+    fdata = new TFile(data_filename);
+    assert(fdata);
+  }
+
   const char * binning = (option.Contains("OB")?"ob":"sb");
   
   
@@ -58,7 +56,7 @@ void plot_pdf(
   vector<TH1*> all_hists;
   
   // First build a FitElements to tell us which samples we're plotting
-  std::string config_path = util::CompleteConfigPath(config_file);
+  std::string config_path = vutil::CompleteConfigPath(config_file);
   CompoundFitElements elems;
   elems.Read(config_path.c_str(),"nomc nosplines");
   FitModelABC * modelabc = elems.FitModel();
@@ -126,29 +124,29 @@ void plot_pdf(
     conv::BeamConf_t b = submodel.GetBeam();
     conv::Sample_t   s = submodel.GetSample();
     
-    // make a canvas for the 2d plots
-    TString c_name_pdf_tot  = TString::Format("c_pdf_tot_%s_%s_%u",
-      util::AsString(d).c_str(),util::AsString(b).c_str(),icanvas);
-    TString c_title_pdf_tot = TString::Format("Total PDF %s %s %u",
-      util::AsString(d).c_str(),util::AsString(b).c_str(),icanvas);
-    TCanvas * c_pdf_tot = new TCanvas(c_name_pdf_tot.Data(),c_title_pdf_tot.Data(),20,20,canv_size_x,canv_size_y);
-    c_pdf_tot->Divide(nrows,ncols);
-    all_canvases.push_back(c_pdf_tot);
+    //~ // make a canvas for the 2d plots
+    //~ TString c_name_pdf_tot  = TString::Format("c_pdf_tot_%s_%s_%u",
+      //~ vutil::AsString(d).c_str(),vutil::AsString(b).c_str(),icanvas);
+    //~ TString c_title_pdf_tot = TString::Format("Total PDF %s %s %u",
+      //~ vutil::AsString(d).c_str(),vutil::AsString(b).c_str(),icanvas);
+    //~ TCanvas * c_pdf_tot = new TCanvas(c_name_pdf_tot.Data(),c_title_pdf_tot.Data(),20,20,canv_size_x,canv_size_y);
+    //~ c_pdf_tot->Divide(nrows,ncols);
+    //~ all_canvases.push_back(c_pdf_tot);
     
-    // Make a canvas for the 1D y-sliced plots
-    TString c_name_pdf_slice  = TString::Format("c_pdf_slice_%s_%s_%u",
-      util::AsString(d).c_str(),util::AsString(b).c_str(),icanvas);
-    TString c_title_pdf_slice = TString::Format("PDF (by y_reco) %s %s %u",
-      util::AsString(d).c_str(),util::AsString(b).c_str(),icanvas);
-    TCanvas * c_pdf_slice = new TCanvas(c_name_pdf_slice.Data(),c_title_pdf_slice.Data(),20,20,canv_size_x,canv_size_y);
-    c_pdf_slice->Divide(nrows,ncols);
-    all_canvases.push_back(c_pdf_slice);
+    //~ // Make a canvas for the 1D y-sliced plots
+    //~ TString c_name_pdf_slice  = TString::Format("c_pdf_slice_%s_%s_%u",
+      //~ vutil::AsString(d).c_str(),vutil::AsString(b).c_str(),icanvas);
+    //~ TString c_title_pdf_slice = TString::Format("PDF (by y_reco) %s %s %u",
+      //~ vutil::AsString(d).c_str(),vutil::AsString(b).c_str(),icanvas);
+    //~ TCanvas * c_pdf_slice = new TCanvas(c_name_pdf_slice.Data(),c_title_pdf_slice.Data(),20,20,canv_size_x,canv_size_y);
+    //~ c_pdf_slice->Divide(nrows,ncols);
+    //~ all_canvases.push_back(c_pdf_slice);
     
     // Make a canvas for the mode plots
     TString c_name_contrib  = TString::Format("c_pdf_contrib_%s_%s_%u",
-      util::AsString(d).c_str(),util::AsString(b).c_str(),icanvas);
+      vutil::AsString(d).c_str(),vutil::AsString(b).c_str(),icanvas);
     TString c_title_contrib = TString::Format("PDF (by mode) %s %s %u",
-      util::AsString(d).c_str(),util::AsString(b).c_str(),icanvas);
+      vutil::AsString(d).c_str(),vutil::AsString(b).c_str(),icanvas);
     TCanvas * c_pdf_contrib = new TCanvas(c_name_contrib.Data(),c_title_contrib.Data(),20,20,canv_size_x,canv_size_y);
     c_pdf_contrib->Divide(nrows,ncols);
     all_canvases.push_back(c_pdf_contrib);
@@ -162,90 +160,95 @@ void plot_pdf(
       b = submodel.GetBeam();
       s = submodel.GetSample();
       
-      int isample = util::ArrIdx::Instance()->SampleIdx(b, s);
-      int ibeam   = util::ArrIdx::Instance()->BeamConfIdx(b);
+      std::string model_name = submodel.Name();
       
-      { // 2D PDF
-        TString pdf_tot_name = TString::Format("%s_%s_%s_%s_%s_%s", 
-           tag, "pdft",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str());
+      int isample = vutil::ArrIdx::Instance()->SampleIdx(b, s);
+      int ibeam   = vutil::ArrIdx::Instance()->BeamConfIdx(b);
+      
+      //~ { // 2D PDF
+        //~ TString pdf_tot_name = TString::Format("%s_%s_%s_%s_%s_%s", 
+           //~ tag, "pdft",binning,"rf", vutil::AsString(b).c_str(), vutil::AsString(s).c_str());
            
-        TObject * tmp_obj = fin->Get(pdf_tot_name.Data());
-        assert(tmp_obj);
-        TH2D * pdf_tot = new TH2D(*((TH2D*)tmp_obj));
-        all_hists.push_back(pdf_tot);
+        //~ TObject * tmp_obj = fin->Get(pdf_tot_name.Data());
+        //~ assert(tmp_obj);
+        //~ TH2D * pdf_tot = new TH2D(*((TH2D*)tmp_obj));
+        //~ all_hists.push_back(pdf_tot);
         
-        // Draw the 2D plots
-        TVirtualPad * this_pad = c_pdf_tot->cd(iplot+1); // Pad for this plot
-        TH1F * pdf_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1);
-        pdf_frame->Draw();
-        pdf_tot->Draw("colzsame");
-      }
+        //~ // Draw the 2D plots
+        //~ TVirtualPad * this_pad = c_pdf_tot->cd(iplot+1); // Pad for this plot
+        //~ TH1F * pdf_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1);
+        //~ pdf_frame->Draw();
+        //~ pdf_tot->Draw("colzsame");
+      //~ }
       
       
-      { // Sliced in Y
-        THStack * slice_stack = new THStack("stack","spectrum contributions");
-        const int n_y_reco_bins_sb = util::NumYrecoBinsSb(s);
-        const double * y_reco_bin_edges_sb = util::YrecoBinEdgesSb(s);
-        vector<TH1*> pdf_slice;
-        for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-          TString slice_name = TString::Format("%s_%s_%s_%s_%s_%s_y%d",
-            tag, "pdfts",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), iy);
-            TObject * tmp_obj = fin->Get( slice_name );
-            pdf_slice.push_back((TH1D*)tmp_obj);
-        }//iy
+      //~ { // Sliced in Y
+        //~ THStack * slice_stack = new THStack("stack","spectrum contributions");
+        //~ const int n_y_reco_bins_sb = vutil::NumYrecoBinsSb(s);
+        //~ const double * y_reco_bin_edges_sb = vutil::YrecoBinEdgesSb(s);
+        //~ vector<TH1*> pdf_slice;
+        //~ for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
+          //~ TString slice_name = TString::Format("%s_%s_%s_%s_%s_%s_y%d",
+            //~ tag, "pdfts",binning,"rf", vutil::AsString(b).c_str(), vutil::AsString(s).c_str(), iy);
+            //~ TObject * tmp_obj = fin->Get( slice_name );
+            //~ pdf_slice.push_back((TH1D*)tmp_obj);
+        //~ }//iy
         
-        double max_n = 0.;
-        // Scan for max in desired Erange
-        for(int ebin = 1; ebin <= pdf_slice[0]->GetNbinsX(); ebin++) {
-           if(pdf_slice[0]->GetBinCenter(ebin) < enu_reco_max ) {
-             double sum = 0;
-             for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-                double val = pdf_slice[iy]->GetBinContent(ebin);
-                sum += val;
-             }
-             max_n = TMath::Max(max_n, sum);           
-            }//<emax
-        }//ebin
+        //~ double max_n = 0.;
+        //~ // Scan for max in desired Erange
+        //~ for(int ebin = 1; ebin <= pdf_slice[0]->GetNbinsX(); ebin++) {
+           //~ if(pdf_slice[0]->GetBinCenter(ebin) < enu_reco_max ) {
+             //~ double sum = 0;
+             //~ for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
+                //~ double val = pdf_slice[iy]->GetBinContent(ebin);
+                //~ sum += val;
+             //~ }
+             //~ max_n = TMath::Max(max_n, sum);           
+            //~ }//<emax
+        //~ }//ebin
         
-        // Make slice legend
-        TLegend * slice_legend = new TLegend(0.70,0.40,0.88,0.80);
-        slice_legend->SetFillColor(0);
-        for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
-          pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
-          pdf_slice[iy]->SetLineWidth(1); 
-          slice_stack->Add(pdf_slice[iy]);
-          slice_legend->AddEntry(pdf_slice[iy],Form("y = [%.2f,%.2f]", y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),"LF");
-        }
+        //~ // Make slice legend
+        //~ TLegend * slice_legend = new TLegend(0.70,0.40,0.88,0.80);
+        //~ slice_legend->SetFillColor(0);
+        //~ for(int iy = 0; iy < n_y_reco_bins_sb; iy++) {
+          //~ pdf_slice[iy]->SetFillColor(pdf_slice_color[iy]); 
+          //~ pdf_slice[iy]->SetLineWidth(1); 
+          //~ slice_stack->Add(pdf_slice[iy]);
+          //~ slice_legend->AddEntry(pdf_slice[iy],Form("y = [%.2f,%.2f]", y_reco_bin_edges_sb[iy], y_reco_bin_edges_sb[iy+1]),"LF");
+        //~ }
         
-        // Draw the slice plots
-        TVirtualPad * this_pad = c_pdf_slice->cd(iplot+1); // Pad for this plot
-        TH1F * slice_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*max_n);
-        slice_frame->Draw();
-        TString slice_title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-        TLatex * slice_title = new TLatex(1,1.07*max_n,slice_title_str.Data());
-        slice_title->Draw(); 
-        if(util::IsCC(s)) {
-          slice_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
-        } else {
-          slice_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
-        }
-        slice_frame->GetYaxis()->SetTitle("Events /bin");
-        slice_stack->Draw("same");
-        slice_legend->Draw();
-      } // end slice in y
+        //~ // Draw the slice plots
+        //~ TVirtualPad * this_pad = c_pdf_slice->cd(iplot+1); // Pad for this plot
+        //~ TH1F * slice_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*max_n);
+        //~ slice_frame->Draw();
+        //~ TString slice_title_str = TString::Format("%s / %s", vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
+        //~ TLatex * slice_title = new TLatex(1,1.07*max_n,slice_title_str.Data());
+        //~ slice_title->Draw(); 
+        //~ if(vutil::IsCC(s)) {
+          //~ slice_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+        //~ } else {
+          //~ slice_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
+        //~ }
+        //~ slice_frame->GetYaxis()->SetTitle("Events /bin");
+        //~ slice_stack->Draw("same");
+        //~ slice_legend->Draw();
+      //~ } // end slice in y
       
       
       { // Divided by mode
         THStack * contrib_stack = new THStack("stack","spectrum contributions");
-        TH1D * pdf_contrib        [conv::kNReacModes]       = { 0 };
-        TH1D * pdf_contrib_coarse [conv::kNReacModesCoarse] = { 0 };
+        TH1D * pdf_contrib              [conv::kNReacModes]       = { 0 };
+        TH1D * pdf_contrib_width        [conv::kNReacModes]       = { 0 };
+        TH1D * pdf_contrib_coarse       [conv::kNReacModesCoarse] = { 0 };
+        TH1D * pdf_contrib_coarse_width [conv::kNReacModesCoarse] = { 0 };
         for(int imode = 0; imode < conv::kNReacModes; imode++) {
           conv::ReacMode_t m = conv::kReactionModes[isample][imode];
           if(m == conv::kmUndefined) continue;
-          cout << "Taking mode: " << util::AsString(m) << endl;
+          cout << "Taking mode: " << vutil::AsString(m) <<" for "<<model_name<< endl;
           cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
           TString contrib_name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
-            tag, "pdfcs",binning,"rf", util::AsString(b).c_str(), util::AsString(s).c_str(), util::AsString(m).c_str());
+            tag, "pdfcs",binning,"rf", model_name.c_str(),kinevar.c_str(), vutil::AsString(m).c_str());
+          cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
           TObject * tmp_obj = fin->Get(contrib_name.Data());
           pdf_contrib[imode] = (TH1D*) tmp_obj;
           if(pdf_contrib[imode]) {
@@ -257,32 +260,54 @@ void plot_pdf(
               for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
                 if(mc == conv::kReactionModesCoarse[ibeam][isample][imodec]) {
                     found = true;
-                    cout << "Mode: " << util::AsString(m) << " is mapped to plot type: " << util::AsString(mc) << endl;
+                    cout << "Mode: " << vutil::AsString(m) << " is mapped to plot type: " << vutil::AsString(mc) << endl;
                     break;
                 }
               }
               if (found) break;
             }
             if(!found) {
-              cout << "WTF! Did not find coarse reaction mode for mode: " << util::AsString(m) 
-                   << " beam: " << util::AsString(b) << " / sample: " << util::AsString(s) << endl;
+              cout << "WTF! Did not find coarse reaction mode for mode: " << vutil::AsString(m) 
+                   << " beam: " << vutil::AsString(b) << " / sample: " << vutil::AsString(s) << endl;
               cout << "Options were: "<<std::endl;
               for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
-                cout<<"\t"<<util::AsString(conv::kReactionModesCoarse[ibeam][isample][imodec])<<std::endl;
+                cout<<"\t"<<vutil::AsString(conv::kReactionModesCoarse[ibeam][isample][imodec])<<std::endl;
               }
               exit(1);
             }                  
             for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
               if(mc != conv::kReactionModesCoarse[ibeam][isample][imodec]) continue;
+              
+              // Do we renormalise the bin-width before adding it?
+              if (per_range > 0) {
+                TH1D * width_norm = new TH1D(*pdf_contrib[imode]);
+                for (int ibin = 1 ; ibin <= width_norm->GetXaxis()->GetNbins(); ibin++) {
+                  double old_bin_content = width_norm->GetBinContent(ibin);
+                  double bin_width = width_norm->GetXaxis()->GetBinWidth(ibin);
+                  double new_bin_content = old_bin_content * per_range / bin_width;
+                  width_norm->SetBinContent(ibin,new_bin_content);
+                }
+                if(pdf_contrib_coarse_width[imodec] == 0) {
+                   pdf_contrib_coarse_width[imodec] = new TH1D(*width_norm);
+                }
+                else {
+                   pdf_contrib_coarse_width[imodec]->Add(width_norm);
+                }
+                pdf_contrib_width[imode] = width_norm;
+              }// per width
               if(pdf_contrib_coarse[imodec] == 0) {
                  pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
-              } else {
+              }
+              else {
                  pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
-              }           
+              }
             }//imodec
           }//!null
           else {
             cerr << "Null [" << contrib_name << "]" << endl;
+            cerr << "Giving up." << endl;
+            cerr << "This is usually caused by running this script with a different config file to write_pdf"<<std::endl;
+            exit(-1);
           }
         }//imode
         
@@ -292,8 +317,9 @@ void plot_pdf(
            if(pdf_contrib[0]->GetBinCenter(ebin) < enu_reco_max ) {
              double sum = 0;
              for(int imode = 0; imode < conv::kNReacModes; imode++) {
-                if (pdf_contrib[imode]) {
-                  double val = pdf_contrib[imode]->GetBinContent(ebin);
+                TH1D * hist = (per_range > 0 ? pdf_contrib_width[imode] : pdf_contrib[imode]);
+                if (hist) {
+                  double val = hist->GetBinContent(ebin);
                   sum += val;
                 }
              }
@@ -301,34 +327,69 @@ void plot_pdf(
            }//<emax
         }//ebin
         
+        TH1D * data_hist = 0;
+        // If we need data, get that histogram now
+        if (plot_data) {
+          TString data_name = TString::Format("%s_%s_%s_%s_%s_%s",
+              data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
+          TObject * tmp = fdata->Get(data_name.Data());
+          std::cout<<data_name<<"\t"<<tmp<<std::endl;
+          TH1D * htmp = (TH1D*)tmp;
+          data_hist = new TH1D(*htmp);
+
+          // and if necessary normalise to bin width
+          if (per_range > 0) {
+            for (int ibin = 1 ; ibin <= data_hist->GetXaxis()->GetNbins(); ibin++) {
+              double old_bin_content = data_hist->GetBinContent(ibin);
+              double bin_width = data_hist->GetXaxis()->GetBinWidth(ibin);
+              double new_bin_content = old_bin_content * per_range / bin_width;
+              data_hist->SetBinContent(ibin,new_bin_content);
+            }
+          }
+
+          data_hist->SetLineStyle(0);
+          data_hist->SetMarkerColor(kRed);
+          data_hist->SetMarkerStyle(kFullTriangleDown);
+        }
+
         // Start drawing
         TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
         contrib_legend->SetFillColor(0);
         for(int imodec = 0; imodec < conv::kNReacModesCoarse; imodec++) {
             conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
-            //~ cout<<"Drawing: "<<util::AsString(b)<<" "<<util::AsString(s)<<"\t"<<imodec<<"\t"<<util::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
+            //~ cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
             if(mc == conv::kmcUndefined) continue;
-            pdf_contrib_coarse[imodec]->SetLineWidth(1); 
-            pdf_contrib_coarse[imodec]->SetLineColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][0]); 
-            pdf_contrib_coarse[imodec]->SetFillColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][1]); 
-            pdf_contrib_coarse[imodec]->SetFillStyle(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][2]); 
-            contrib_stack->Add(pdf_contrib_coarse[imodec]);
-            contrib_legend->AddEntry(pdf_contrib_coarse[imodec],Form("%s",util::AsStringTex(mc,true).c_str()), "LF");
+            TH1D * relevant_hist = per_range > 0. ? pdf_contrib_coarse_width[imodec] : pdf_contrib_coarse[imodec];
+            relevant_hist->SetLineWidth(1);
+            relevant_hist->SetLineColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][0]);
+            relevant_hist->SetFillColor(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][1]);
+            relevant_hist->SetFillStyle(conv::kReactionModesCoarseFormatting[ibeam][isample][imodec][2]);
+            contrib_stack->Add(relevant_hist);
+            contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
         }//imodec
         
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
+        this_pad->SetLeftMargin(0.2);
         TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*max_n);
         contrib_frame->Draw();
-        TString contrib_title_str = TString::Format("%s / %s", util::AsString(b).c_str(), util::AsStringTeX(s,true).c_str());
-        TLatex * contrib_title = new TLatex(1,1.07*max_n,contrib_title_str.Data());
+        TString contrib_title_str = TString::Format("%s / %s / %s",
+          vutil::AsString(d).c_str(), vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
+        TLatex * contrib_title = new TLatex(0.3,1.07*max_n,contrib_title_str.Data());
         contrib_title->Draw(); 
-        if(util::IsCC(s)) {  
+        if(vutil::IsCC(s)) {  
            contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
         } else {
            contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
         }
-        contrib_frame->GetYaxis()->SetTitle("Events /bin");
+        if (per_range > 0.) {
+          TString title = TString::Format("Events /%lg GeV",per_range);
+          contrib_frame->GetYaxis()->SetTitle(title.Data());
+        }
+        else {
+          contrib_frame->GetYaxis()->SetTitle("Events /bin");
+        }
         contrib_stack->Draw("same");
+        if (plot_data) {data_hist->Draw("e same");}
         contrib_legend->Draw();
         
         double tot_event_rate = 0.;
@@ -338,13 +399,12 @@ void plot_pdf(
           conv::ReacModeCoarse_t mc = conv::kReactionModesCoarse[ibeam][isample][imodec];
           if (mc == conv::kmcUndefined) {continue;}
           TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
-          tmphist->GetXaxis()->SetRangeUser(0.5,20.);
           double rate = tmphist->Integral();
-          sample_event_rates<<"    "<<util::AsString(mc)<<": "<<rate<<std::endl;
+          sample_event_rates<<"    "<<vutil::AsString(mc)<<": "<<rate<<std::endl;
           tot_event_rate += rate;
           delete tmphist;
         }
-        event_rates<<util::AsString(b)<<" "<<util::AsString(d)<<" "<<util::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
+        event_rates<<vutil::AsString(b)<<" "<<vutil::AsString(d)<<" "<<vutil::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
         event_rates<<sample_event_rates.str()<<std::endl;
         
       } // imodec
@@ -353,22 +413,22 @@ void plot_pdf(
     } //iplot
     
     // Update the canvases
-    c_pdf_tot    ->Update();
-    c_pdf_slice  ->Update();
+    //~ c_pdf_tot    ->Update();
+    //~ c_pdf_slice  ->Update();
     c_pdf_contrib->Update();
     
     // And write to files if needed
     if (write_image) {
-      TString pdf_tot_filename = TString::Format("%s_spectrum_%s_%s_%u_2D.%s",
-          out_tag, util::AsString(d).c_str(), util::AsString(b).c_str(),icanvas,image_save_format);
-      c_pdf_tot->SaveAs(pdf_tot_filename.Data());
+      //~ TString pdf_tot_filename = TString::Format("%s_spectrum_%s_%s_%u_2D.%s",
+          //~ out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),icanvas,image_save_format);
+      //~ c_pdf_tot->SaveAs(pdf_tot_filename.Data());
       
-      TString slice_filename = TString::Format("%s_spectrum_%s_%s_%u_y.%s",
-          out_tag, util::AsString(d).c_str(), util::AsString(b).c_str(),icanvas,image_save_format);
-      c_pdf_slice->Print(slice_filename.Data());
+      //~ TString slice_filename = TString::Format("%s_spectrum_%s_%s_%u_y.%s",
+          //~ out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),icanvas,image_save_format);
+      //~ c_pdf_slice->Print(slice_filename.Data());
       
       TString contrib_filename = TString::Format("%s_spectrum_%s_%s_%u_modes.%s",
-        out_tag, util::AsString(d).c_str(), util::AsString(b).c_str(),icanvas, image_save_format);
+        out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),icanvas, image_save_format);
       c_pdf_contrib->Print(contrib_filename.Data());
     } //write_image
       
@@ -378,11 +438,3 @@ void plot_pdf(
     
   return;
 }
-
-#ifndef __CINT__
-int main() {
-  //~ plot_pdf("fit/dunend_ndtf_lartpc_3passthrough_46selection_toymc_fit.xml","lar_pdfs.root");
-  plot_pdf("fit/dunefd_testing.xml","fd_osc_pdfs.root");
-  return 0;
-}
-#endif

@@ -14,6 +14,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <utility>
 
 #include <TXMLEngine.h>
 #include <TFile.h>
@@ -40,17 +41,21 @@
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/NameRegistry.h"
 #include "valor/Oscillation/NuOsc3Flavour.h"
 #include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Messenger/Messenger.h"
-//dune
-#include "dune/Conventions/DuneBuild.h"
-#include "dune/Conventions/ReacMode.h"
-#include "dune/Conventions/ParameterPool.h"
+#include "valor/Conventions/ReacMode.h"
+#include "valor/Conventions/ParameterPool.h"
 #include "valor/Conventions/Baseline.h"
 #include "valor/Conventions/BeamConf.h"
-#include "dune/Conventions/FitParamApply.h"
+#include "valor/Conventions/Detector.h"
+#include "valor/Conventions/SystType.h"
+#include "valor/Conventions/FitParamApply.h"
+//dune
+#include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/Names.h"
+#include "dune/Utilities/UtlBinning.h"
 #include "dune/Utilities/KinematicPoint.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
 
@@ -60,7 +65,7 @@ using namespace valor;
 using namespace valor::conv;
 
 #define SPLINE_WEIGHTS_ARE_ONE
-#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+//~ #define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
 #define APPLY_ALL_AUTOWGHT_BRANCHES
 
@@ -70,8 +75,7 @@ const util::ArrIdx * arridx = util::ArrIdx::Instance();
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   SingleSampleFitModelABC(),
   fBinning(NULL),
-  fNReacModes(0),
-  fReactionModes(NULL),
+  fReactionModes(),
   fSystematics(NULL),
   fOwnerOfSystematics(false)
 {
@@ -107,8 +111,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     util::Die(-1);
   }
   
-  fNReacModes = kNReacModes;
-  fReactionModes = kReactionModes[isample];
+  fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
 
   fName = util::nm::MdlName(fDetector, fBeam, fSample, fKSp);
   
@@ -124,22 +127,9 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   // Set up the initial XML reader
   LOG("GenericSingleSampleFitModel", pNOTICE) 
     << "Reading configuration from XML file [" << file << "]";
-
-  TString ts_file = file.c_str();
-  gSystem->ExpandPathName(ts_file);
-
-  // Check for config file.
-  // See if it works as a normal path
-  FileStat_t dummy;
-  if (gSystem->GetPathInfo(ts_file.Data(), dummy)) 
-  {
-    // If not, try the config folder
-    ts_file = TString::Format("%s/%s",Env::Instance()->TopLevelConfDir().c_str(),ts_file.Data());
-    if (gSystem->GetPathInfo(ts_file.Data(), dummy)) {
-      LOG("GenericSingleSampleFitModel",pERROR) << "Config file not found: "<<file;
-      util::Die(1); return false;
-    }
-  }
+  
+  fConfigFileRead = util::CompleteConfigPath(file);
+  TString ts_file = fConfigFileRead.c_str();
 
   // Parse the input XML configuration file
   TXMLEngine* xml = new TXMLEngine;   
@@ -188,6 +178,13 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   LOG("GenericSingleSampleFitModel",pINFO)
     << "Fiducial mass = " << fFiducialMass*1000 << " tonnes";
 
+  // Check whether or not we should apply the osc prob to ALL detectors (i.e. skipping the util::OscProbIsAppliedTo check)
+  name = "force_apply_osc_prob_to_all_detectors";
+  if(util::NodeExists(xml,root_node,name)) {
+    fSkipOscProbApplyCheck = util::XML2Bool(xml,root_node,name);
+    LOG("GenericSingleSampleFitModel",pINFO)
+      << "Apply osc prob to all detectors (regardless of util::OscProbIsAppliedTo)? " << fSkipOscProbApplyCheck << " tonnes";
+  }
   // Get assumed exposure for each beam configuration
   {
     // Optionally over-ride the POT
@@ -236,7 +233,7 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   }
   
   double n_events = 0.;
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     n_events+=fMCTNomSb[imode]->Integral();
@@ -277,7 +274,7 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
   const int n_reco_bins_ob = reco_ob->NBins();
   const int n_reco_bins_sb = reco_sb->NBins();
   
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
 
@@ -302,7 +299,8 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
         for (unsigned int ip = 0 ; ip < fSplineParams.size(); ip++) {
           PhysParamId_t p = fSplineParams[ip];
           Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
-          if (util::ParamHasSplines(p)) {
+          const Parameter & param = ParameterPool::Instance()->GetParam(p);
+          if (param.GetType() == conv::kSystResponse) {
             const util::Interpolator * spl = fRFL->GetSpline(m,p,ispltrue,isplreco);
             if (spl == NULL) {
               LOG("GenericSingleSampleFitModel",pINFO) << "Got null spline.\n";
@@ -370,7 +368,7 @@ void GenericSingleSampleFitModel::RandomizeSystematics(std::map<valor::conv::Phy
 void GenericSingleSampleFitModel::TweakSystematic(
     string syst_name, double twkdial, Option_t * opt)
 {
-  PhysParamId_t p = util::PhysParamFromString(syst_name);
+  PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(syst_name);
   this->TweakSystematic(p,twkdial,opt);
   return;
 }
@@ -382,7 +380,8 @@ void GenericSingleSampleFitModel::TweakSystematic(
     fSystematics->SetCurrentValue(syst,twkdial);
   }
   else {
-    LOG("GenericSingleSampleFitModel",pWARN) << "No systematic model - not tweaking requested parameter: "<<util::AsString(syst);
+    LOG("GenericSingleSampleFitModel",pWARN) << "No systematic model - not tweaking requested parameter: "
+                                             << util::NameRegistry::Instance()->AsString(syst);
   }
 }
 //________________________________________________________________________________________
@@ -440,40 +439,58 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   // - include the string "+SB" to write-out versions of the above in simpler binning
   //
   // Key:
-  //  mct   -> MC template                    CC: f(Ereco,yreco,Etrue;s,m)
-  //  pdft  -> PDF total                      CC: f(Ereco,yreco;s)
-  //  pdfc  -> PDF component                  CC: f(Ereco,yreco;s,m)
-  //  pdfts -> 1-D slice of PDF total         CC: f(Ereco;s)|yreco
-  //  pdfcs -> 1-D slice of PDF component     CC: f(Ereco;s,m)|yreco
+  //  mct   -> MC template                    CC: f(reco,true;s,m)
+  //  pdft  -> PDF total                      CC: f(reco,true;s)
+  //  pdfc  -> PDF component                  CC: f(reco,true;s,m)
+  //  pdfts -> 1-D slice of PDF total         CC: f(Ereco;s)|other_reco,true
+  //  pdfcs -> 1-D slice of PDF component     CC: f(Ereco;s,m)|other_reco,true
   //  vf    -> VALOR format
   //  rf    -> ROOT format (TH1 or TH2)
-  //  rfp   -> ROOT format (TH2Poly for 2-d histograms)
+  //  rpf   -> ROOT format (TH2Poly for 2-d histograms)
   //  ob    -> Optimized binning (for fit)
   //  sb    -> Simple binning (for plots)
   
-  write_opt = NULL;
-  
+    
   LOG("GenericSingleSampleFitModel", pINFO)  << "Writing results to input object array...";
-  LOG("GenericSingleSampleFitModel", pDEBUG) << "tag = " << tag << ", write option = " << write_opt;
+  LOG("GenericSingleSampleFitModel", pINFO) << "tag = " << tag << ", write option = " << write_opt;
+  LOG("GenericSingleSampleFitModel", pINFO)  << "sample = " << util::AsString(fSample) << ", detector = "
+                                             << util::AsString(fDetector) << ", beam = " << util::AsString(fBeam);
 
   string opt = (write_opt) ? write_opt : "pdft_vf";
-  if(opt.find("all") != string::npos) {
-    opt = "mct_vf + pdfc_vf + pdfc_rf + pdft_vf + pdft_rf + pdfcs_rf + pdfts_rf +SB";
-    LOG("GenericSingleSampleFitModel", pDEBUG) << "Write option replaced with = " << opt;
+  
+  bool write_all = opt.find("all") != string::npos;
+  bool write_sb  = opt.find("+SB") != string::npos;
+    
+  bool write_mct_vf   = (opt.find("mct_vf"  ) != string::npos) || write_all;
+  bool write_pdft_vf  = (opt.find("pdft_vf" ) != string::npos) || write_all;
+  bool write_pdft_rf  = (opt.find("pdft_rf" ) != string::npos) || write_all;
+  bool write_pdfc_vf  = (opt.find("pdfc_vf" ) != string::npos) || write_all;
+  bool write_pdfc_rf  = (opt.find("pdfc_rf" ) != string::npos) || write_all;
+  //~ bool write_pdfts_vf = (opt.find("pdfts_vf") != string::npos) || write_all;
+  bool write_pdfts_rf = (opt.find("pdfts_rf") != string::npos) || write_all;
+  //~ bool write_pdfcs_vf = (opt.find("pdfcs_vf") != string::npos) || write_all;
+  bool write_pdfcs_rf = (opt.find("pdfcs_rf") != string::npos) || write_all;
+
+  if(write_pdft_rf || write_pdfc_rf) {
+    LOG("GenericSingleSampleFitModel",pWARN) << "Options pdft_rf, pdfc_rf are not yet implemented.";
   }
 
   if(!array) {
     LOG("GenericSingleSampleFitModel",pERROR) << "Null input object array.";
     return false;
   }
+  
+  const SingleSampleKineBinning & binning = *fBinning;
+  const VALORBinning & reco_smp = *(binning.RecoSmpBinning());
+  const VALORBinning & reco_opt = *(binning.RecoOptBinning());
 
   //
   // Write out MC templates (VALORArray format)
   //
 
-  if(opt.find("mct_vf") != string::npos) {
+  if(write_mct_vf) {
 
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
 
@@ -491,7 +508,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
       array -> Add ( fMCTSysOb [imode] ); 
       array -> Add ( fMCTFinOb [imode] );
 
-      if(opt.find("+SB") != string::npos) {
+      if(write_sb) {
         if(fMCTNullSb[imode]) continue;
         fMCTNomSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
         fMCTTunSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
@@ -514,25 +531,25 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   // Write out the PDF components (VALORArray or bare ROOT format)
   //
 
-  if(opt.find("pdfc_vf") != string::npos || opt.find("pdfc_rf") != string::npos) {
+  if(write_pdfc_vf || write_pdfc_rf) {
 
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
 
       if(fMCTNullOb[imode]) continue;
       
       // in VALORArray format
-      if (opt.find("pdfc_vf") != string::npos) {
+      if (write_pdfc_vf) {
         fPDFCompOb [imode]->SetName(TString::Format("%s_%s_%s_%s",tag,"pdfc_ob_vf",fName.c_str(),util::AsString(m).c_str()).Data());
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompOb[imode]->GetName();
         array->Add(fPDFCompOb[imode]);
       }
 
-      if(opt.find("+SB") != string::npos) {
+      if(write_sb) {
         if(fMCTNullSb[imode]) continue;
         // in VALORArray format
-        if (opt.find("pdfc_vf") != string::npos) {
+        if (write_pdfc_vf) {
           fPDFCompSb[imode]->SetName(TString::Format("%s_%s_%s_%s",tag,"pdfc_sb_vf",fName.c_str(),util::AsString(m).c_str()));
           LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFCompSb[imode]->GetName();
           array->Add(fPDFCompSb[imode]);
@@ -547,17 +564,17 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   // Write out the total PDF (VALORArray or bare ROOT format)
   //
 
-  if(opt.find("pdft_vf") != string::npos || opt.find("pdft_rf") != string::npos) {
+  if(write_pdft_vf || write_pdft_rf) {
       // in VALORArray format
-      if (opt.find("pdft_vf") != string::npos) {
+      if (write_pdft_vf) {
         fPDFTotOb->SetName(TString::Format("%s_%s_%s",tag,"pdft_ob_vf",fName.c_str()).Data());
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotOb->GetName();
         array->Add(fPDFTotOb);
       }
 
-    if(opt.find("+SB") != string::npos) {
+    if(write_sb) {
       // in VALORArray format
-      if (opt.find("pdft_vf") != string::npos) {
+      if (write_pdft_vf) {
         fPDFTotSb->SetName(TString::Format("%s_%s_%s",tag,"pdft_sb_vf",fName.c_str()));
         LOG("GenericSingleSampleFitModel", pDEBUG) << "Adding: " << fPDFTotSb->GetName();
         array->Add(fPDFTotSb);
@@ -565,26 +582,68 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
     }//+SB?
 
   }//pdft_vf,pdft_rf
-
-
-  //
-  // Write out the slices of the PDF components (bare ROOT format)
-  //
-  // -----
-  // NOTE: The following could be simplified substantially (conversion from VALOR 2-D
-  // array to ROOT TH1D slices could happen elsewhere generically)
-  // -----
-
-  if(opt.find("pdfcs_rf") != string::npos) {
-
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+  
+  // Write 1d slices for the total in reco only
+  if (write_pdfts_rf) {
+    const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
+    for (const conv::KineVar_t kv : reco_vars) {
+      conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
+      if (ks == conv::kspUndefined) {continue;}
+      TH1 * hob = util::binning::Make1DHistogram(*fPDFTotOb,binning,ks,false);
+      if(hob) {
+        TString hobname = TString::Format("%s_%s_%s_%s",tag,"pdfts_ob_rf",fName.c_str(),util::AsString(kv).c_str());
+        hob->SetName(hobname.Data());
+        array->Add(hob);
+      }
+      
+      if (write_sb) {
+        TH1 * hsb = util::binning::Make1DHistogram(*fPDFTotSb,binning,ks,true);
+        if(hsb) {
+          TString hsbname = TString::Format("%s_%s_%s_%s",tag,"pdfts_sb_rf",fName.c_str(),util::AsString(kv).c_str());
+          hsb->SetName(hsbname.Data());
+          array->Add(hsb);
+        }
+      }
+    }
+  }
+  
+  // Write 1d slices for the components in both reco and true
+  
+  if (write_pdfcs_rf) {
+    const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
+    
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
       
-      // This should happen elsewhere.
-
-    }//imode
-  }//pdfcs_rf
+      // This will work when we fix Make1DHistogram() to be happy using truth
+      std::vector<KineVar_t> vars;//= binning.TrueSmpBinning(imode)->KineVars();
+      vars.insert(vars.end(),reco_vars.begin(),reco_vars.end());
+      
+      for (const conv::KineVar_t kv : vars) {
+        conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
+        if (ks == conv::kspUndefined) {continue;}
+        TH1 * hob = util::binning::Make1DHistogram(*fPDFCompOb[imode],binning,ks,false);
+        if(hob) {
+          TString hobname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_ob_rf",
+            fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
+          hob->SetName(hobname.Data());
+          array->Add(hob);
+        }
+        
+        if (write_sb) {
+          TH1 * hsb = util::binning::Make1DHistogram(*fPDFCompSb[imode],binning,ks,true);
+          if(hsb) {
+            TString hsbname = TString::Format("%s_%s_%s_%s_%s",tag,"pdfcs_sb_rf",
+              fName.c_str(),util::AsString(kv).c_str(),util::AsString(m).c_str());
+            hsb->SetName(hsbname.Data());
+            array->Add(hsb);
+          }
+        }
+      }
+    }
+  }
+  
 
   return true;
 }
@@ -627,8 +686,16 @@ void GenericSingleSampleFitModel::Init(void)
   fPOT          = 0;
   fUseMCDST     = false;
   fRFL          = 0;
+  
+  fPDFTotOb      = 0;
+  fPDFTotNullOb  = true;
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  fPDFTotSb     = 0;
+  fPDFTotNullSb = true;
+
+  fSkipOscProbApplyCheck = false;
+
+  for(size_t imode = 0; imode < conv::kNReacModes; imode++) {
 
     // MC templates (simple binning)
     fMCTNullSb[imode] = true;
@@ -639,10 +706,6 @@ void GenericSingleSampleFitModel::Init(void)
     fMCStatSb [imode] = 0;
     // PDF (simple binning)
     fPDFCompSb[imode] = 0;
-    if(imode == 0) {
-      fPDFTotSb     = 0;
-      fPDFTotNullSb = true;
-    }
 
     // MC templates
     fMCTNullOb [imode] = true;
@@ -655,10 +718,6 @@ void GenericSingleSampleFitModel::Init(void)
     fRFPtr     [imode] = 0;
     // PDF
     fPDFCompOb [imode] = 0;
-    if(imode == 0) {
-      fPDFTotOb      = 0;
-      fPDFTotNullOb  = true;
-    }
     
   }//imode
   
@@ -676,9 +735,15 @@ void GenericSingleSampleFitModel::Book(void)
   
   const char * tag = "init"; // initial name for the array on booking
   
+  // Modes should eventually move to being fully runtime configurable
+  // Which means that this will end up going in read
+  // And we may have to completely merge Book/Read
+  int isample = fArrIdx->SampleIdx(fBeam,fSample);
+  fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
+
   this->BuildParamLists();
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     
@@ -703,6 +768,18 @@ void GenericSingleSampleFitModel::Book(void)
     fMCTSysSb [imode] = new VALORArray(n_reco_bins_sb, n_true_bins);
     fMCTFinSb [imode] = new VALORArray(n_reco_bins_sb, n_true_bins);
     fMCStatSb [imode] = new VALORArray(n_reco_bins_sb, n_true_bins);
+    
+    fMCTNomSb [imode]->SetDimensionName(0,"reco");
+    fMCTTunSb [imode]->SetDimensionName(0,"reco");
+    fMCTSysSb [imode]->SetDimensionName(0,"reco");
+    fMCTFinSb [imode]->SetDimensionName(0,"reco");
+    fMCStatSb [imode]->SetDimensionName(0,"reco");
+    
+    fMCTNomSb [imode]->SetDimensionName(1,"true");
+    fMCTTunSb [imode]->SetDimensionName(1,"true");
+    fMCTSysSb [imode]->SetDimensionName(1,"true");
+    fMCTFinSb [imode]->SetDimensionName(1,"true");
+    fMCStatSb [imode]->SetDimensionName(1,"true");
     
     fMCTNomSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
     fMCTTunSb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_sb_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
@@ -742,6 +819,18 @@ void GenericSingleSampleFitModel::Book(void)
     fMCTSysOb [imode] = new VALORArray(n_reco_bins_ob, n_true_bins);
     fMCTFinOb [imode] = new VALORArray(n_reco_bins_ob, n_true_bins);
     fMCStatOb [imode] = new VALORArray(n_reco_bins_ob, n_true_bins);
+    
+    fMCTNomOb [imode]->SetDimensionName(0,"reco");
+    fMCTTunOb [imode]->SetDimensionName(0,"reco");
+    fMCTSysOb [imode]->SetDimensionName(0,"reco");
+    fMCTFinOb [imode]->SetDimensionName(0,"reco");
+    fMCStatOb [imode]->SetDimensionName(0,"reco");
+    
+    fMCTNomOb [imode]->SetDimensionName(1,"true");
+    fMCTTunOb [imode]->SetDimensionName(1,"true");
+    fMCTSysOb [imode]->SetDimensionName(1,"true");
+    fMCTFinOb [imode]->SetDimensionName(1,"true");
+    fMCStatOb [imode]->SetDimensionName(1,"true");
     
     fMCTNomOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mctnom_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
     fMCTTunOb [imode] -> SetName( TString::Format("%s_%s_%s_%s", tag, "mcttun_ob_vf", fName.c_str(),util::AsString(m).c_str()).Data() );
@@ -786,13 +875,13 @@ void GenericSingleSampleFitModel::BuildParamLists()
   const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
   for (const Parameter & param : params) {
     bool is_applied = false;
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) continue;
       
       for (size_t itarget = 0; itarget < kNNuclearTarget ; itarget++ ) {
         NuclearTarget_t nt = static_cast<NuclearTarget_t>(itarget);
-        is_applied = is_applied || param.IsAppliedTo(fBeam,fSample,fDetector,m,nt);
+        is_applied = is_applied || util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
       } // itarget
       
       // Add them to our lists. This will be need to be updated if new parameter types are added
@@ -826,8 +915,10 @@ void GenericSingleSampleFitModel::BuildParamLists()
             break;
           case kSystUndefined:
           case kSystLateral:
-          LOG("GenericSingleSampleFitModel",pFATAL) << "Cannot handle parameter "<<param.GetName()<<" ("<<fName<<")";
-          util::Die(-1); return;
+            LOG("GenericSingleSampleFitModel",pFATAL) << "Cannot handle parameter "<<param.GetName()<<" ("<<fName<<")";
+            util::Die(-1); return;
+          case kSystDisabled:
+            break;
         } // switch type
       } // is applied
     
@@ -847,7 +938,7 @@ void GenericSingleSampleFitModel::Clean(void)
 {
   LOG("GenericSingleSampleFitModel",pDEBUG) << "Cleaning-up...";
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < conv::kNReacModes; imode++) {
 
     if(!fMCTNullSb[imode]) {
       fMCTNullSb[imode] = true;
@@ -896,13 +987,17 @@ void GenericSingleSampleFitModel::Clean(void)
   if (fBinning) { delete fBinning ; fBinning = 0; }
   
   if (fSystematics && fOwnerOfSystematics) { delete fSystematics; fSystematics = 0; }
+  
+  this->ResetSystematicVariationIDs();
+  
+  fConfigFileRead = "";
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitModel::Zero(void)
 {
   LOG("GenericSingleSampleFitModel",pDEBUG) << "Zeroing MC templates and/or PDFs...";
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
 
     if(!fMCTNullSb[imode]) {
       fMCTNomSb [imode] -> SetAll(0.);
@@ -947,42 +1042,48 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 
   if(!t) return;
   
+  // Get a list of all the kinematic variables we care about
+  const std::vector<conv::KineVar_t> & kinevars = fBinning->KineVars();
+  
   bool old_format = false;
 
   int    sample        = 0;
   int    beam          = 0;
   int    reac_mode     = 0;
-  double enu_true      = 0.;
-  double enu_reco      = 0.;
-  double y_reco        = 0.;
-  double Q2_true       = 0.;
   double wght          = 1.;
   double wght_pot      = 1.;
   
+  std::map<KineVar_t,double> kinematics;
+  
+  std::vector<std::vector<float> > * variation_weights = nullptr;
+  
+  // Set up a list of the branches associated with each kinematic variable
+  std::map<KineVar_t,std::string> kinematic_branch_names;
+  for (const KineVar_t & kv : kinevars) {
+    kinematic_branch_names[kv] = util::DSTBranchName(kv);
+  }
+  
   int bstat_sample     = 0; 
   int bstat_beam       = 0; 
-  int bstat_reac_mode  = 0; 
-  int bstat_enu_true   = 0; 
-  int bstat_enu_reco   = 0; 
-  int bstat_y_reco     = 0; 
-  int bstat_Q2_true    = 0;   
+  int bstat_reac_mode  = 0;  
   int bstat_wght       = 0;   
-  int bstat_wght_pot   = 0; 
+  int bstat_wght_pot   = 0;
+  std::map<KineVar_t,int> bstat_kinematics;
   
   bstat_sample    = t->SetBranchAddress("sample",    &sample);
   bstat_sample    = t->SetBranchAddress("beam"  ,    &beam);
   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
-  bstat_enu_true  = t->SetBranchAddress("enu_true",  &enu_true);
-  bstat_enu_reco  = t->SetBranchAddress("enu_reco",  &enu_reco);
-  bstat_y_reco    = t->SetBranchAddress("y_reco",    &y_reco);
-  bstat_Q2_true   = t->SetBranchAddress("Q2_true",   &Q2_true);
   
   // Weight is not required - use one if failed
   bstat_wght       = t->SetBranchAddress("wght"       , &wght);
   bstat_wght_pot   = t->SetBranchAddress("wght_pot"   , &wght_pot);
   
-  bool any_bad_status = (bstat_sample || bstat_beam || bstat_reac_mode || bstat_enu_true || 
-      bstat_enu_reco || bstat_y_reco || bstat_wght_pot || bstat_Q2_true);
+  bool any_bad_status = (bstat_sample || bstat_beam || bstat_reac_mode);
+  
+  for(const conv::KineVar_t & kv : kinevars) {
+    bool bstat = t->SetBranchAddress(kinematic_branch_names[kv].c_str(),&kinematics[kv]);
+    any_bad_status = any_bad_status || bstat;
+  }
 
   if (any_bad_status) {
     LOG("GenericSingleSampleFitModel",pWARN)<<"MiniDST branches not found - giving up";
@@ -1003,13 +1104,40 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     delete matches;
   }
   
-  // Build a map of the branches to the kinematic variables
-  std::map<conv::KineVar_t,double*> kinematics;
-  kinematics[kvEtrue]  = &enu_true;
-  kinematics[kvQ2true] = &Q2_true;
-  kinematics[kvEreco]  = &enu_reco;
-  kinematics[kvYreco]  = &y_reco;
-
+  // Let's see if we need the universe weight branch
+  bool apply_universe_weights = fSystUniverseToApply.size();
+  // And if so, get the information we need
+  std::map<std::string,int> variation_name_to_index;
+  TObjArray * variation_names = nullptr;
+  if (apply_universe_weights) {
+    TFile * containing_file = t->GetCurrentFile();
+    if (!containing_file) {
+      LOG("GenericSingleSampleFitModel",pFATAL) << "Can't identify tree's parent file to get names of variation weights";
+      util::Die(-1);
+    }
+    TObject * tmp = containing_file->Get("variation_names");
+    variation_names = dynamic_cast<TObjArray*>(containing_file->Get("variation_names"));
+    if (!variation_names) {
+      LOG("GenericSingleSampleFitModel",pFATAL) << "Can't get names of variation weights";
+      util::Die(-1);
+    }
+    for (int i = 0 ; i < variation_names->GetEntries(); i++) {
+      TObjString * tos = dynamic_cast<TObjString*>(variation_names->At(i));
+      assert(tos);
+      std::string proper_string(tos->GetString().Data());
+      variation_name_to_index[proper_string] = i;
+    }
+    // and set up to read the tree
+    bool bstat_var_weights = t->SetBranchAddress("variation_weights", &variation_weights);
+    if (bstat_var_weights) {
+      LOG("GenericSingleSampleFitModel",pFATAL) << "Trying to apply variation weights but cannot read branch.";
+      util::Die(-1);
+    }
+  }
+  else {
+    t->SetBranchStatus("variation_weights",0);
+  }
+  
   Long_t nev = t->GetEntries();
   LOG("GenericSingleSampleFitModel",pINFO) << "Input VALOR DST has " << nev << " entries";
   
@@ -1098,23 +1226,12 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " (ignoring contribution to sample: " << util::AsString(s) << " from mode: " << util::AsString(m) << " ?)";
       util::Die(-1);return;
     }
-    // Get bin zone index
-    int izone = util::BinZone(s, enu_reco, y_reco);
-    if(izone < 0) {
-      //     LOG("GenericSingleSampleFitModel",pFATAL) - turn that to fatal after binning optimization is done
-      LOG("GenericSingleSampleFitModel",pWARN) 
-        << " ** No bin zone for MC event: " << iev 
-        << " (" << util::AsString(s) << "/" << util::AsString(m) 
-        << ", enu_reco = " << enu_reco << " GeV, " << " y_reco = " << y_reco << ")";
-      //     util::Die(-1);return;
-      continue;
-    }
 
     bool is_null = fMCTNullOb[imode];
     if(is_null) {
       LOG("GenericSingleSampleFitModel",pFATAL) 
         << "** Null MC template for sample: " << util::AsString(s) 
-        << ", mode: " << util::AsString(m) << ", bin zone = " << izone << " ??";
+        << ", mode: " << util::AsString(m);
       util::Die(-1);return;
     }
     bool is_null_sb = fMCTNullSb[imode];
@@ -1134,7 +1251,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     bool out_of_range = false;
     // in true
     for (conv::KineVar_t kv : true_sb->KineVars()) {
-      double val = *(kinematics.at(kv));
+      double val = kinematics.at(kv);
       if (val < true_sb->Minimum(kv) || val > true_sb->Maximum(kv)) {
         LOG("GenericSingleSampleFitModel",pWARN) 
           << "MC event: " << iev << " has true kinematic value outside range: "<<util::AsString(kv) << " = "<<val
@@ -1145,7 +1262,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     }
     // and in reco
     for (conv::KineVar_t kv : reco_ob->KineVars()) {
-      double val = *(kinematics.at(kv));
+      double val = kinematics.at(kv);
       if (val < reco_ob->Minimum(kv) || val > reco_ob->Maximum(kv)) {
         LOG("GenericSingleSampleFitModel",pWARN) 
           << "MC event: " << iev << " has reco kinematic value outside range: "<<util::AsString(kv) << " = "<<val
@@ -1194,6 +1311,14 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       this_entry *= namewght.second;
     }
 #endif
+
+    // If necessary, get the weight from the systematic variations
+    for (const auto & variation_name_and_id : fSystUniverseToApply) {
+      const std::string & name = variation_name_and_id.first;
+      const int & universe_id  = variation_name_and_id.second;
+      const int & parameter_id = variation_name_to_index.at(name);
+      this_entry *= (*variation_weights)[parameter_id][universe_id];
+    }
     
     // Add `nom' array entry (and init `tun', `sys' and `fin' arrays = `nom')
     double curr_wght = fMCTNomOb[imode]->GetEntry(reco_bin_ob, true_bin);
@@ -1211,7 +1336,9 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     fMCTSysSb [imode]->SetEntry(curr_wght_sb, reco_bin_sb, true_bin);
     fMCTFinSb [imode]->SetEntry(curr_wght_sb, reco_bin_sb, true_bin);
     fMCStatSb [imode]->SetEntry(           1, reco_bin_sb, true_bin);
-  }//iev 
+  }//iev
+  
+  if (variation_names) {delete variation_names;}
 }
 //________________________________________________________________________________________
 
@@ -1226,7 +1353,7 @@ bool GenericSingleSampleFitModel::FillFromTemplateFile (TFile * f, string tag, d
     LOG("GenericSingleSampleFitModel",pNOTICE) << "Scaling POT template by "<<desired_POT * 1E-21 << " to get template for "<<desired_POT<<" POT.";
   }
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     TString obj_name_ob = TString::Format("%s_%s_%s", tag.c_str(), "mctnom_ob_vf", fName.c_str());
@@ -1329,7 +1456,7 @@ void GenericSingleSampleFitModel::FluctuateMCStat(Option_t * option)
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
   
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
 
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
@@ -1430,10 +1557,12 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
   const VALORBinning * reco_ob = fBinning->RecoOptBinning();
   const VALORBinning * reco_sb = fBinning->RecoSmpBinning();
   
-  const int n_reco_bins_sb = reco_sb->NBins();
-  const int n_reco_bins_ob = reco_ob->NBins();
+  const int n_reco_bins_sb  = reco_sb->NBins();
+  const int n_reco_bins_ob  = reco_ob->NBins();
+  const KineSpace_t reco_ks = reco_ob->KineSpace();
+  const std::vector<conv::KineVar_t> reco_kinevars = util::KineVarReco(reco_ks);
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     //~ derr<<"Getting mode "<<imode<<" from "<<fReactionModes<<std::endl;
     ReacMode_t m = fReactionModes[imode];
     //~ derr<<"Got mode "<<m<<"\t"<<util::AsString(m)<<std::endl;
@@ -1443,6 +1572,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     
     const int n_true_bins_sb = true_sb->NBins();
     const KineSpace_t true_ks = true_sb->KineSpace();
+    const std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
     LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1458,21 +1588,27 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     // copy sys -> fin MC templates
     fMCTFinOb[imode]->CopyDataOnlyFrom(*fMCTSysOb[imode]);
     
+    // Recast VALORArray blocks so they can be used addressed like normal arrays (fast).
+    // Hard to read, so should only be used in code for which speed is essential.
+    typedef double (templtypeOb)[n_reco_bins_ob][n_true_bins_sb];
+    templtypeOb & templFinOb = *reinterpret_cast<templtypeOb *>(&(fMCTFinOb[imode]->GetEntryRef(0,0)));
+
     // First do the normalisation parameters
     for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
       PhysParamId_t p = fNormParams[ip];
       if (p == kPhypUndefined          ) {continue;}
       
       if (!fPhysHypothesis.Contains(p)) {
-        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
         continue;
       }
       
+      assert(!util::IsOscParam(p));
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
+      
       int iparr = arridx->FitParamIdx(p);
       
-      bool has_kinematic_dependence =
-        (kFitParamTrueKinematicDependence[iparr] ||
-         kFitParamRecoKinematicDependence[iparr]);
+      bool has_kinematic_dependence = param.HasKinematicRange();
          
       double f = fPhysHypothesis.CurrValue(p);
       
@@ -1485,35 +1621,129 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         double true1_max  = 0.;
         double true2_min  = 0.;
         double true2_max  = 0.;
-        
-        if (true_ks == conv::kspEtrueQ2true) {
-          true1_min  = kFitParamEtrueRange [iparr][0];
-          true1_max  = kFitParamEtrueRange [iparr][1];
-          true2_min  = kFitParamQ2trueRange[iparr][0];
-          true2_max  = kFitParamQ2trueRange[iparr][1];
+        double reco1_min  = 0.;
+        double reco1_max  = 0.;
+        double reco2_min  = 0.;
+        double reco2_max  = 0.;
+                
+        // Work out whether the parameter is applied to true, reco or both
+        unsigned int param_true_kv_size = 0;
+        unsigned int param_reco_kv_size = 0;
+
+        // Syst params
+        const std::vector<conv::KineVar_t> & kvs = param.GetKineVars();
+        for (conv::KineVar_t kv : kvs) {
+          if (util::IsTrue(kv)) param_true_kv_size++;
+          else                  param_reco_kv_size++;
+        }
+
+        if(param_true_kv_size > true_kinevars.size()) {
+          LOG("GenericSingleSampleFitModel",pWARN) << "Parameter is applied to more true kvs than is in the true binning";
+          util::Die(-1); break;
+        }
+        if(param_reco_kv_size > reco_kinevars.size()) {
+          LOG("GenericSingleSampleFitModel",pWARN) << "Parameter is applied to more true kvs than is in the true binning";
+          util::Die(-1); break;
+        }
+
+        // Work out how many true and reco dimensions to apply this param to
+        unsigned int apply_true_ndims = std::min(param_true_kv_size, (unsigned int)true_kinevars.size());
+        unsigned int apply_reco_ndims = std::min(param_reco_kv_size, (unsigned int)reco_kinevars.size());
+
+        // Get the true kine var ranges
+        if (apply_true_ndims == 1) {
+          const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
+          true1_min = pair1.first;
+          true1_max = pair1.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-          LOG("GenericSingleSampleFitModel",pINFO) 
-            << fName <<": "
-            << "Applying parameter: " << util::AsString(p) << " with value = " << f 
-            << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
-            << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
+          LOG("GenericSingleSampleFitModel",pINFO)
+            << fName << ", " << util::AsString(m) << ": "
+            << "Applying parameter: " << param_name << " with value = " << f
+            << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]";
 #endif
         }
-        else {
+        else if (apply_true_ndims == 2) {
+          const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
+          const std::pair<double,double> & pair2 = param.GetKineRange(true_kinevars[1]);
+          true1_min = pair1.first;
+          true1_max = pair1.second;
+          true2_min = pair2.first;
+          true2_max = pair2.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+          LOG("GenericSingleSampleFitModel",pINFO)
+            << fName <<": "
+            << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+            << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
+            << " and " << util::AsString(true_kinevars[1]) << " bin range: [" << true2_min << ", " << true2_max << "]";
+#endif
+        }
+        else if (apply_true_ndims > 2) {
           LOG("GenericSingleSampleFitModel",pWARN) << "Unsupported true kinespace "<<util::AsString(true_ks);
           util::Die(-1); break;
         }
+
+        // Get the reco kine var ranges
+        if (apply_reco_ndims == 1) {
+          const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
+          reco1_min = pair1.first;
+          reco1_max = pair1.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+          LOG("GenericSingleSampleFitModel",pINFO)
+            << fName << ", " << util::AsString(m) << ": "
+            << "Applying parameter: " << param_name << " with value = " << f
+            << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]";
+#endif
+        }
+        else if (apply_reco_ndims == 2) {
+          const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
+          const std::pair<double,double> & pair2 = param.GetKineRange(reco_kinevars[1]);
+          reco1_min = pair1.first;
+          reco1_max = pair1.second;
+          reco2_min = pair2.first;
+          reco2_max = pair2.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+          LOG("GenericSingleSampleFitModel",pINFO)
+            << fName << ", " << util::AsString(m) << ": "
+            << "Applying parameter: " << param_name << " with value = " << f
+            << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]"
+            << " and " << util::AsString(reco_kinevars[1]) << " bin range: [" << reco2_min << ", " << reco2_max << "]";
+#endif
+        }
+        else if (apply_reco_ndims > 2) {
+          LOG("GenericSingleSampleFitModel",pWARN) << "Unsupported true kinespace "<<util::AsString(true_ks);
+          util::Die(-1); break;
+        }
+
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          vector<double> true1_range (true_sb->BinRange(itrue,0));
-          vector<double> true2_range (true_sb->BinRange(itrue,1));
-          
           // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
-          double frac1 = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
-          double frac2 = util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
-          double effective_tweak = frac1*frac2*(f-1.) + 1;
-          if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
+          double frac_true = 1.;
+          if (apply_true_ndims == 1 || apply_true_ndims == 2) {
+            const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
+            frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+          }
+          if (apply_true_ndims == 2) {
+            const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
+            frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+          }
           for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-            double & val = fMCTFinOb[imode]->GetEntryRef(ireco,itrue);
+            // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
+            if(std::fabs(templFinOb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
+            double frac_reco = 1.;
+            if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
+              const vector<double> & reco1_range (reco_ob->BinRange(ireco,reco_kinevars[0]));
+              frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
+            }
+            if (apply_reco_ndims == 2) {
+              const vector<double> & reco2_range (reco_ob->BinRange(ireco,reco_kinevars[1]));
+              frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
+            }
+
+            double effective_tweak = frac_true * frac_reco * (f-1.) + 1;    // TODO: put in the untuned value here instead of 1 (in both occurrences)
+            if (std::fabs(effective_tweak-1.) < conv::kASmallNum) {
+              continue;
+            }
+
+            double & val = templFinOb[ireco][itrue];
             val *= effective_tweak;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1530,7 +1760,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pINFO)
           << fName <<": "
-          << "Applying parameter: " << util::AsString(p) << " with value = " << f << " to whole mode "<<util::AsString(m);
+          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f << " to whole mode "<<util::AsString(m);
 #endif
         noEt *= f;
         noEt = TMath::Max(0.,noEt);
@@ -1545,25 +1775,28 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       if (p == kPhypUndefined          ) {continue;}
       
       if (!fPhysHypothesis.Contains(p)) {
-        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+        LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
         continue;
       }
-      
+
+      const Parameter & param = ParameterPool::Instance()->GetParam(p);
+      bool spline_is_applied = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,conv::kntInclusive); // TODO: Put in handling for nuclear targets
+      if(!spline_is_applied) { continue; }
+
       double f = fPhysHypothesis.CurrValue(p);
       
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pDEBUG) 
-          << "Applying parameter: " << util::AsString(p) << " with value = " << f 
+          << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
           << " using splines.";
 #endif
-      VALORArrayBin bin;
+      double untuned = fSystematics->UntunedValue(p);
       VALORArrayBin splbin;
       splbin.bin3 = ip;
       for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-        bin.bin2 = itrue;
         splbin.bin2 = itrue;
         for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-          bin.bin1 = ireco;
+          if(std::fabs(templFinOb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
           splbin.bin1 = ireco;
           double response = 1;
           ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
@@ -1571,7 +1804,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           if (spl==util::DuneRFL::kNoSplineRequired) {
             LOG("GenericSingleSampleFitModel",pERROR)
               <<"Got no spline required for bin expecting spline."
-              <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+              <<util::NameRegistry::Instance()->ParamAsString(p)<<", "<<util::AsString(fBeam)<<", "
               <<util::AsString(fSample)<<","<<util::AsString(m);
           }
           if (spl!=util::DuneRFL::kFlatSpline) {
@@ -1600,21 +1833,24 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       if(fMCTNullSb[imode]) {continue;}
       fMCTFinSb[imode]->CopyDataOnlyFrom(*(fMCTSysSb[imode]));
       
+      typedef double (templtypeSb)[n_reco_bins_sb][n_true_bins_sb];
+      templtypeSb & templFinSb = *reinterpret_cast<templtypeSb *>(&(fMCTFinSb[imode]->GetEntryRef(0,0)));
+      
       // First do the normalisation parameters
       for(size_t ip = 0; ip < fNormParamsAppliedTo[imode].size(); ip++) {
         PhysParamId_t p = fNormParams[ip];
         if (p == kPhypUndefined          ) {continue;}
-        
+         
         if (!fPhysHypothesis.Contains(p)) {
-          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
           continue;
         }
         
         int iparr = arridx->FitParamIdx(p);
-        
-      bool has_kinematic_dependence =
-        (kFitParamTrueKinematicDependence[iparr] ||
-         kFitParamRecoKinematicDependence[iparr]);
+
+        assert(!util::IsOscParam(p));
+        const Parameter & param = ParameterPool::Instance()->GetParam(p);
+        bool has_kinematic_dependence = param.HasKinematicRange();
          
         double f = fPhysHypothesis.CurrValue(p);
         
@@ -1627,35 +1863,127 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           double true1_max  = 0.;
           double true2_min  = 0.;
           double true2_max  = 0.;
+          double reco1_min  = 0.;
+          double reco1_max  = 0.;
+          double reco2_min  = 0.;
+          double reco2_max  = 0.;
           
-          if (true_ks == conv::kspEtrueQ2true) {
-            true1_min  = kFitParamEtrueRange [iparr][0];
-            true1_max  = kFitParamEtrueRange [iparr][1];
-            true2_min  = kFitParamQ2trueRange[iparr][0];
-            true2_max  = kFitParamQ2trueRange[iparr][1];
+          // Work out whether the parameter is applied to true, reco or both
+          unsigned int param_true_kv_size = 0;
+          unsigned int param_reco_kv_size = 0;
+          
+          // Syst params
+          const std::vector<conv::KineVar_t> & kvs = param.GetKineVars();
+          for (conv::KineVar_t kv : kvs) {
+            if (util::IsTrue(kv)) param_true_kv_size++;
+            else                  param_reco_kv_size++;
+          }
+
+          if(param_true_kv_size > true_kinevars.size()) {
+            LOG("GenericSingleSampleFitModel",pWARN) << "Parameter is applied to more true kvs than is in the true binning";
+            util::Die(-1); break;
+          }
+          if(param_reco_kv_size > reco_kinevars.size()) {
+            LOG("GenericSingleSampleFitModel",pWARN) << "Parameter is applied to more true kvs than is in the true binning";
+            util::Die(-1); break;
+          }
+
+          // Work out how many true and reco dimensions to apply this param to
+          unsigned int apply_true_ndims = std::min(param_true_kv_size, (unsigned int)true_kinevars.size());
+          unsigned int apply_reco_ndims = std::min(param_reco_kv_size, (unsigned int)reco_kinevars.size());
+
+          // Get the true kine var ranges
+          if (apply_true_ndims == 1) {
+            const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
+            true1_min = pair1.first;
+            true1_max = pair1.second;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
-            LOG("GenericSingleSampleFitModel",pINFO) 
-              << fName <<": "
-              << "Applying parameter: " << util::AsString(p) << " with value = " << f 
-              << " in Etrue bin range: ["   << true1_min << ", " << true1_max << "]"
-              << " and Q2true bin range: [" << true2_min << ", " << true2_max << "]";
+            LOG("GenericSingleSampleFitModel",pINFO)
+              << fName << ", " << util::AsString(m) << ": "
+              << "Applying parameter: " << param_name << " with value = " << f
+              << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]";
 #endif
           }
-          else {
-            LOG("GenericSingleSampleFitModel",pWARN) << "Unsupported true kinespace "<<util::AsString(true_ks);
-            continue;
+          else if (apply_true_ndims == 2) {
+            const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
+            const std::pair<double,double> & pair2 = param.GetKineRange(true_kinevars[1]);
+            true1_min = pair1.first;
+            true1_max = pair1.second;
+            true2_min = pair2.first;
+            true2_max = pair2.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+            LOG("GenericSingleSampleFitModel",pINFO)
+              << fName <<": "
+              << "Applying parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " with value = " << f
+              << " in "  << util::AsString(true_kinevars[0]) << " bin range: [" << true1_min << ", " << true1_max << "]"
+              << " and " << util::AsString(true_kinevars[1]) << " bin range: [" << true2_min << ", " << true2_max << "]";
+#endif
           }
+          else if (apply_true_ndims > 2) {
+            LOG("GenericSingleSampleFitModel",pWARN) << "Unsupported true kinespace "<<util::AsString(true_ks);
+            util::Die(-1); break;
+          }
+
+          // Get the reco kine var ranges
+          if (apply_reco_ndims == 1) {
+            const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
+            reco1_min = pair1.first;
+            reco1_max = pair1.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+            LOG("GenericSingleSampleFitModel",pINFO)
+              << fName << ", " << util::AsString(m) << ": "
+              << "Applying parameter: " << param_name << " with value = " << f
+              << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]";
+#endif
+          }
+          else if (apply_reco_ndims == 2) {
+            const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
+            const std::pair<double,double> & pair2 = param.GetKineRange(reco_kinevars[1]);
+            reco1_min = pair1.first;
+            reco1_max = pair1.second;
+            reco2_min = pair2.first;
+            reco2_max = pair2.second;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+            LOG("GenericSingleSampleFitModel",pINFO)
+              << fName << ", " << util::AsString(m) << ": "
+              << "Applying parameter: " << param_name << " with value = " << f
+              << " in "  << util::AsString(reco_kinevars[0]) << " bin range: [" << reco1_min << ", " << reco1_max << "]"
+              << " and " << util::AsString(reco_kinevars[1]) << " bin range: [" << reco2_min << ", " << reco2_max << "]";
+#endif
+          }
+          else if (apply_reco_ndims > 2) {
+            LOG("GenericSingleSampleFitModel",pWARN) << "Unsupported true kinespace "<<util::AsString(true_ks);
+            util::Die(-1); break;
+          }
+
           for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-            vector<double> true1_range (true_sb->BinRange(itrue,0));
-            vector<double> true2_range (true_sb->BinRange(itrue,1));
-            
             // Determine how much the systematic bin and truth bin overlap so we know how 'much' of the parameter to apply
-            double frac1 = util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
-            double frac2 = util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
-            double effective_tweak = frac1*frac2*(f-1.) + 1;
-            if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
+            double frac_true = 1.;
+            if (apply_true_ndims == 1 || apply_true_ndims == 2) {
+              const vector<double> & true1_range (true_sb->BinRange(itrue,true_kinevars[0]));
+              frac_true *= util::FractionOfBinContained(true1_range[0],true1_range[1],true1_min,true1_max);
+            }
+            if (apply_true_ndims == 2) {
+              const vector<double> & true2_range (true_sb->BinRange(itrue,true_kinevars[1]));
+              frac_true *= util::FractionOfBinContained(true2_range[0],true2_range[1],true2_min,true2_max);
+            }
             for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
-              double & val = fMCTFinSb[imode]->GetEntryRef(ireco,itrue);
+              // Determine how much the systematic bin and reco bin overlap so we know how 'much' of the parameter to apply
+              if(std::fabs(templFinSb[ireco][itrue]) < conv::kASmallNum) { continue; }  // Skip empty bins
+              double frac_reco = 1.;
+              if (apply_reco_ndims == 1 || apply_reco_ndims == 2) {
+                const vector<double> & reco1_range (reco_sb->BinRange(ireco,reco_kinevars[0]));
+                frac_reco *= util::FractionOfBinContained(reco1_range[0],reco1_range[1],reco1_min,reco1_max);
+              }
+              if (apply_reco_ndims == 2) {
+                const vector<double> & reco2_range (reco_sb->BinRange(ireco,reco_kinevars[1]));
+                frac_reco *= util::FractionOfBinContained(reco2_range[0],reco2_range[1],reco2_min,reco2_max);
+              }
+
+              double effective_tweak = frac_true * frac_reco * (f-1.) + 1;
+              if (std::fabs(effective_tweak-1.) < conv::kASmallNum) { continue;}
+
+              double & val = templFinSb[ireco][itrue];
               val *= effective_tweak;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
               LOG("GenericSingleSampleFitModel",pDEBUG) 
@@ -1685,7 +2013,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         if (p == kPhypUndefined          ) {continue;}
         
         if (!fPhysHypothesis.Contains(p)) {
-          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::AsString(p);
+          LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<util::NameRegistry::Instance()->ParamAsString(p);
           continue;
         }
         
@@ -1693,13 +2021,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         
         util::KinematicPoint kp;
         for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          vector<double> true1_range (true_sb->BinRange(itrue,0));
-          vector<double> true2_range (true_sb->BinRange(itrue,1));
+          const vector<double> & true1_range (true_sb->BinRange(itrue,0));
+          const vector<double> & true2_range (true_sb->BinRange(itrue,1));
           kp.true1 = (true1_range[0]+true1_range[1])/2;
           kp.true2 = (true2_range[0]+true2_range[1])/2;
           for(int ireco_sb = 0; ireco_sb < n_reco_bins_sb; ireco_sb++) {
-            vector<double> reco1_range (reco_sb->BinRange(ireco_sb,0));
-            vector<double> reco2_range (reco_sb->BinRange(ireco_sb,1));
+            const vector<double> & reco1_range (reco_sb->BinRange(ireco_sb,0));
+            const vector<double> & reco2_range (reco_sb->BinRange(ireco_sb,1));
             kp.reco1 = (reco1_range[0]+reco1_range[1])/2;
             kp.reco2 = (reco2_range[0]+reco2_range[1])/2;
             std::pair<int,int> kb = fRFL->GetBin(kp,m);
@@ -1707,7 +2035,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             if (spl==util::DuneRFL::kNoSplineRequired) {
               LOG("GenericSingleSampleFitModel",pERROR)
                 <<"Got no spline required for simple bin expecting spline."
-                <<util::AsString(p)<<", "<<util::AsString(fBeam)<<", "
+                <<util::NameRegistry::Instance()->ParamAsString(p)<<", "<<util::AsString(fBeam)<<", "
                 <<util::AsString(fSample)<<","<<util::AsString(m);
             }
             double response = spl->EvalWithLimits(f);
@@ -1753,7 +2081,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   
   //first, check that there are actually osc params in the fit params list 
   bool apply_osc_prob = false;
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     for(int ip = 0; ip < conv::kNuis000; ip++) {
       PhysParamId_t p = (PhysParamId_t) ip;
       if(fPhysHypothesis.Contains(p)) {
@@ -1764,15 +2092,13 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
 
   // If not, just set the oscillated modes to zero and move on
   if (!apply_osc_prob) {
-    for(size_t imode = 0; imode < fNReacModes; imode++) {
+    for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
       ReacMode_t m = fReactionModes[imode];
       if(m == kmUndefined) {continue;}
       conv::NuFlavour_t init_flav   = util::ReacModeToInitFlavor(m);
       conv::NuFlavour_t final_flav  = util::ReacModeToFinalFlavor(m);
       if (init_flav != final_flav) {
-        for(int izone = 0; izone < kNMaxBinZones; izone++) {
-          fMCTFinOb[imode]->SetAll(0.);
-        }
+        fMCTFinOb[imode]->SetAll(0.);
         if (update_mct_sb) {fMCTFinSb[imode]->SetAll(0.);}
       }
     }
@@ -1781,7 +2107,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   
   PhysHypothesis_t hypid = fPhysHypothesis.Hypothesis();
   // Variables for the sterile oscillations if we need them, since they don't come in an object
-  double sinsq2thee = -1, sinsq2thmumu = -1, dm41sq = -1;
+  double sinsq2thmue = -1, sinsq2thmumu = -1, dm41sq = -1;
   
   // Set 3 flavour osc parameters
   if (hypid == kHypOsc3F) {
@@ -1847,7 +2173,7 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
     }
   }
   else if (hypid == kHypOscSterileEff) {
-    sinsq2thee   = fPhysHypothesis.CurrValue(kPhypMixingEE);
+    sinsq2thmue  = fPhysHypothesis.CurrValue(kPhypMixingMuE);
     sinsq2thmumu = fPhysHypothesis.CurrValue(kPhypMixingMuMu);
     dm41sq       = fPhysHypothesis.CurrValue(kPhypDm41sq);
   }
@@ -1872,23 +2198,28 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
   const int n_reco_bins_ob = reco_ob->NBins();
   const int n_reco_bins_sb = reco_sb->NBins();
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
-    if(m == kmUndefined) continue;
-    
-    //check if beam+sample+mode should be applied oscillation probabilities
-    if(!util::OscProbIsAppliedTo(fDetector,fBeam,fSample,m)) {continue; }
-    
+    if(m         == kmUndefined) continue;
+    if(fDetector == kdUndefined) continue;
+    if(fBeam     == kbUndefined) continue;
+    if(fSample   == ksUndefined) continue;
+
+    //check if oscillation probabilities should be applied to this combination of phys hypothesis and detector
+    if(!fSkipOscProbApplyCheck) {
+     if(!util::OscProbIsAppliedTo(hypid, fDetector)) {continue; }
+    }
 
     const VALORBinning * true_sb = fBinning->TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
     
-    VALORArrayBin bin;
-    VALORArrayBin sbin;
+    // Recast our VALORarrays as simple C-arrays to speed up the many rapid accesses this function needs
+    typedef double (templtypeOb)[n_reco_bins_ob][n_true_bins_sb];
+    templtypeOb & templFinOb = *reinterpret_cast<templtypeOb *>(&(fMCTFinOb[imode]->GetEntryRef(0,0)));
+    typedef double (templtypeSb)[n_reco_bins_sb][n_true_bins_sb];
+    templtypeSb & templFinSb = *reinterpret_cast<templtypeSb *>(&(fMCTFinSb[imode]->GetEntryRef(0,0)));
 
     for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-      bin .bin2 = itrue;
-      sbin.bin2 = itrue;
       //get the true energy to calculate osc prob 
       double Etrue = true_sb->BinCentre(itrue,conv::kvEtrue);
       
@@ -1914,18 +2245,18 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
       else if (hypid == kHypOscSterileEff) {
         double baseline = util::Baseline(fBeam,fDetector);
         double lOverE = baseline / Etrue;
-        p_numu_numu       = util::Calculate2FSterileOsc(conv::kPdgNuMu   , conv::kPdgNuMu   , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
-        p_numu_nue        = util::Calculate2FSterileOsc(conv::kPdgNuMu   , conv::kPdgNuE    , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_numu_numu       = util::Calculate2FSterileOscMuE(conv::kPdgNuMu   , conv::kPdgNuMu   , lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
+        p_numu_nue        = util::Calculate2FSterileOscMuE(conv::kPdgNuMu   , conv::kPdgNuE    , lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
         p_numu_nutau      = 0.;
-        p_numubar_numubar = util::Calculate2FSterileOsc(conv::kPdgNuMuBar, conv::kPdgNuMuBar, lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
-        p_numubar_nuebar  = util::Calculate2FSterileOsc(conv::kPdgNuMuBar, conv::kPdgNuEBar , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_numubar_numubar = util::Calculate2FSterileOscMuE(conv::kPdgNuMuBar, conv::kPdgNuMuBar, lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
+        p_numubar_nuebar  = util::Calculate2FSterileOscMuE(conv::kPdgNuMuBar, conv::kPdgNuEBar , lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
         p_numubar_nutaubar= 0.;
-        p_nue_nue         = util::Calculate2FSterileOsc(conv::kPdgNuE    , conv::kPdgNuE    , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
-        p_nue_numu        = util::Calculate2FSterileOsc(conv::kPdgNuE    , conv::kPdgNuMu   , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
+        p_nue_nue         = util::Calculate2FSterileOscMuE(conv::kPdgNuE    , conv::kPdgNuE    , lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
+        p_nue_numu        = util::Calculate2FSterileOscMuE(conv::kPdgNuE    , conv::kPdgNuMu   , lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
         p_nue_nutau       = 0;
-        p_nuebar_nuebar   = util::Calculate2FSterileOsc(conv::kPdgNuEBar , conv::kPdgNuEBar , lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
-        p_nuebar_numubar  = util::Calculate2FSterileOsc(conv::kPdgNuEBar , conv::kPdgNuMuBar, lOverE, sinsq2thee, sinsq2thmumu, dm41sq);
-        p_nuebar_nutaubar = 0;;
+        p_nuebar_nuebar   = util::Calculate2FSterileOscMuE(conv::kPdgNuEBar , conv::kPdgNuEBar , lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
+        p_nuebar_numubar  = util::Calculate2FSterileOscMuE(conv::kPdgNuEBar , conv::kPdgNuMuBar, lOverE, sinsq2thmue, sinsq2thmumu, dm41sq);
+        p_nuebar_nutaubar = 0;
       }
         
 
@@ -1950,18 +2281,14 @@ void GenericSingleSampleFitModel::ApplyOscProb(Option_t * option)
       
       if(fMCTNullOb[imode]) {continue;}
       
-      for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-        bin.bin1 = ireco;
-        double & val = fMCTFinOb[imode]->GetEntryRef(bin);
-        val *= posc;
+      for(int ireco_ob = 0; ireco_ob < n_reco_bins_ob; ireco_ob++) {
+        templFinOb[ireco_ob][itrue] *= posc;
       }//ireco
         
       if(update_mct_sb) {
         if(fMCTNullSb[imode]) {continue;}
         for(int ireco_sb = 0; ireco_sb < n_reco_bins_sb; ireco_sb++) {
-          sbin.bin1 = ireco_sb;
-          double & val = fMCTFinSb[imode]->GetEntryRef(sbin);
-          val *= posc;
+          templFinSb[ireco_sb][itrue] *= posc;
         }//ireco_sb
       }//update_mct_sb
     }//itrue
@@ -1992,7 +2319,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
 
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
     
@@ -2029,7 +2356,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   //
     for(int ireco=0; ireco < n_reco_bins_ob; ireco++) {
         double sum = 0.;
-        for(size_t imode = 0; imode < fNReacModes; imode++) {
+        for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
           ReacMode_t m = fReactionModes[imode];
           if(m == kmUndefined) continue;
           if(fMCTNullOb[imode]) continue;
@@ -2041,7 +2368,7 @@ void GenericSingleSampleFitModel::UpdatePDFs(Option_t * option)
   if(update_mct_sb) {
     for(int ireco=0; ireco < n_reco_bins_sb; ireco++) {
       double sum = 0.;
-      for(size_t imode = 0; imode < fNReacModes; imode++) {
+      for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
         ReacMode_t m = fReactionModes[imode];
         if(m == kmUndefined) continue;
         if(fMCTNullOb[imode]) continue;
@@ -2082,7 +2409,7 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
   
-  for(size_t imode = 0; imode < fNReacModes; imode++) {
+  for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     
     ReacMode_t m = fReactionModes[imode];
     if(m == kmUndefined) continue;
@@ -2100,14 +2427,14 @@ void valor::GenericSingleSampleFitModel::UpdateObservableBinningFromSimple(Optio
         // Now loop over the truth bins
         for(int itrue_sb = 0; itrue_sb < n_true_bins_sb; itrue_sb++) {
           // Fraction of the observable bin held in the simple bin.
-          std::vector<double> frac_sb_range1 = reco_sb->BinRange(ireco_sb,0);
-          std::vector<double> frac_ob_range1 = reco_ob->BinRange(ireco_ob,0);
+          const std::vector<double> & frac_sb_range1 = reco_sb->BinRange(ireco_sb,0);
+          const std::vector<double> & frac_ob_range1 = reco_ob->BinRange(ireco_ob,0);
           double frac_sb_1 = util::FractionOfBinContained(frac_sb_range1[0],frac_sb_range1[1], frac_ob_range1[0],frac_ob_range1[1]);
           
           double frac_sb_2 = 1;
           if (reco_sb->NDimensions() > 1) {
-            std::vector<double> frac_sb_range2 = reco_sb->BinRange(ireco_sb,1);
-            std::vector<double> frac_ob_range2 = reco_ob->BinRange(ireco_ob,1);
+            const std::vector<double> & frac_sb_range2 = reco_sb->BinRange(ireco_sb,1);
+            const std::vector<double> & frac_ob_range2 = reco_ob->BinRange(ireco_ob,1);
             frac_sb_1 = util::FractionOfBinContained(frac_sb_range2[0],frac_sb_range2[1],frac_ob_range2[0],frac_ob_range2[1]);
           }
           
@@ -2158,5 +2485,30 @@ const util::DuneRFL * GenericSingleSampleFitModel::GetRFL() const
 const SingleSampleKineBinning * GenericSingleSampleFitModel::GetBinning() const
 {
   return fBinning;
+}
+//________________________________________________________________________________________
+const std::vector<conv::ReacMode_t> GenericSingleSampleFitModel::GetReactionModes(Option_t * /*opt*/) const
+{
+  return fReactionModes;
+}
+//________________________________________________________________________________________
+const double &  GenericSingleSampleFitModel::GetPOT() const
+{
+  return fPOT;
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::ResetSystematicVariationIDs()
+{
+  fSystUniverseToApply.clear();
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitModel::SetSystematicVariationIDToApply(const std::string & param_name,size_t id)
+{
+  fSystUniverseToApply[param_name] = id;
+}
+//________________________________________________________________________________________
+const std::string & GenericSingleSampleFitModel::GetLastConfigFileRead() const
+{
+  return fConfigFileRead;
 }
 //________________________________________________________________________________________

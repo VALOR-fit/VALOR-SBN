@@ -14,8 +14,11 @@ ChangeLog:
 
 #include <TROOT.h>
 
-#include "dune/Conventions/FitParam.h"
+#include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
+
+#include "valor/Conventions/ParameterPool.h"
+#include "valor/Utilities/NameRegistry.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -56,7 +59,7 @@ double  valor::PhysicalParameterLimits::MinValue    (conv::PhysParamId_t p) cons
   map<int,double>::const_iterator it = fParamMinima.find(p);
   if(it == fParamMinima.end()) {
      cerr << "PhysicalParameterLimits >> Parameter [" 
-          << util::RawParamAsString(p) << "] was not set!" << endl;
+          << util::NameRegistry::Instance()->AsString(p) << "] was not set!" << endl;
      return -99999;
   } 
   return it->second;
@@ -72,7 +75,7 @@ double  valor::PhysicalParameterLimits::MaxValue    (conv::PhysParamId_t p) cons
   map<int,double>::const_iterator it = fParamMaxima.find(p);
   if(it == fParamMaxima.end()) {
      cerr << "PhysicalParameterLimits >> Parameter [" 
-          << util::RawParamAsString(p) << "] was not set!" << endl;
+          << util::NameRegistry::Instance()->AsString(p) << "] was not set!" << endl;
      return -99999;
   } 
   return it->second;
@@ -89,7 +92,7 @@ bool valor::PhysicalParameterLimits::IsWithinLimits(conv::PhysParamId_t p, doubl
     return true;
   }
 #ifdef show_debug_limits
-  std::cout<<"PhysicalParameterLimits/IsWithinLimits >> False for param "<<util::AsString(p)<<" with value "<<v<<std::endl;
+  std::cout<<"PhysicalParameterLimits/IsWithinLimits >> False for param "<<util::NameRegistry::Instance()->AsString(p)<<" with value "<<v<<std::endl;
 #endif
   return false;
 }
@@ -146,22 +149,15 @@ void valor::PhysicalParameterLimits::SetDefaults(void)
     if (util::IsNormalization(p)) {fParamMinima[p] = 0;}
     //~ if (util::IsEnergyScale  (p)) {fParamMinima[p] = 0;}
     if (util::IsMixingAngle  (p)) {fParamMinima[p] = -1; fParamMaxima[p] = 1;}
-    
-    
-    // FSI 2 sigma
-    if (p==kNuisIntPiMeanFreePath       ){ fParamMinima[p] = 0.6 ; fParamMaxima[p] = 1.4; }
-    if (p==kNuisIntNucMeanFreePath      ){ fParamMinima[p] = 0.6 ; fParamMaxima[p] = 1.4; }
-    if (p==kNuisIntFracPiChargeExchange ){ fParamMinima[p] = 0.0 ; fParamMaxima[p] = 2.0; }
-    if (p==kNuisIntFracPiInelastic      ){ fParamMinima[p] = 0.2 ; fParamMaxima[p] = 1.8; }
-    if (p==kNuisIntFracPiAbsorb         ){ fParamMinima[p] = 0.4 ; fParamMaxima[p] = 1.6; }
-    if (p==kNuisIntFracPiProduction     ){ fParamMinima[p] = 0.6 ; fParamMaxima[p] = 1.4; }
-    if (p==kNuisIntFracNucChargeExchange){ fParamMinima[p] = 0.0 ; fParamMaxima[p] = 2.0; }
-    if (p==kNuisIntFracNucInelastic     ){ fParamMinima[p] = 0.2 ; fParamMaxima[p] = 1.8; }
-    if (p==kNuisIntFracNucAbsorb        ){ fParamMinima[p] = 0.6 ; fParamMaxima[p] = 1.4; }
-    if (p==kNuisIntFracNucProduction    ){ fParamMinima[p] = 0.6 ; fParamMaxima[p] = 1.4; }    
-
   }
-  
+
+  for (const Parameter & param : ParameterPool::Instance()->GetParams()) {
+    if(param.HasLimits()) {
+      const std::pair<double, double> & limits = param.GetLimits();
+      fParamMinima[param.GetID()] = limits.first;
+      fParamMaxima[param.GetID()] = limits.second;
+    }
+  }
   
   return;
 }

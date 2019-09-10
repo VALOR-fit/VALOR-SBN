@@ -22,7 +22,7 @@
 #define _valor_dune_coarse_reaction_modes_h
 
 #include <string>
-#include "dune/Conventions/ReacMode.h"
+#include "valor/Conventions/ReacMode.h"
 
 using std::string;
 

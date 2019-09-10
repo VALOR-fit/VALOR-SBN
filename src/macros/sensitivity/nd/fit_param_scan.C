@@ -18,8 +18,8 @@ void fit_param_scan
   int          npv            = 21,                                    /* number of points between minimum and maximum */
   int          ntoymc         = 1,                                     /* number of toy-MC experiments */
   bool         stat_fluct     = false,                                 /* include statistical fluctuation in toy MC expts? */
-  const char * param_values   = "nominal",                             /* decide how to set the values of params used for toy-MC generation (see FitParam.cxx) */
-  const char * param_list     = "standard",                            /* model parameter list (see FitParam.cxx) */
+  const char * param_values   = "nominal",                             /* decide how to set the values of params used for toy-MC generation (see UtlParam.cxx) */
+  const char * param_list     = "standard",                            /* model parameter list (see UtlParam.cxx) */
   const char * config_file    = "dune_ndfit-2015v1-FGTv1.xml"    /* analysis configuration file */
 )
 {
@@ -44,29 +44,29 @@ void fit_param_scan
   cout << endl;
   cout << *Rnd::Instance() << endl;
 
-  PhysParamId_t p = util::PhysParamFromString(pname);
-  int pidx = util::ArrIdx::Instance()->FitParamIdx(p);
-
   // Get ND model & configure
   cout << "Getting and configuring fit model" << endl;
-  FitModelABC * model = new SDModel;
-  model->Read(config.Data());
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(config.Data());
+
+  PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(pname);
+  int pidx = util::ArrIdx::Instance()->FitParamIdx(p);
 
   // Create histogram to plot \Delta{fit statistic} vs parameter
   // Arrange so that the first bin is centered at pmin and the last bin is centered at pmax
   
   //
   double pstep = (pmax - pmin) / (npv-1);
-  const char * hndc_name    = Form("nd_constraint_%s", util::AsString(p).c_str());
-  const char * hndc_title   = Form("\Delta(lnL) as function of parameter %s in [%.2f,%.2f] range", util::AsString(p).c_str(),pmin,pmax);
-  const char * hprior_name  = Form("prior_%s", util::AsString(p).c_str());
-  const char * hprior_title = Form("\Delta(lnL) penalty term as function of parameter %s in [%.2f,%.2f] range", util::AsString(p).c_str(),pmin,pmax);
+  const char * hndc_name    = Form("nd_constraint_%s", util::NameRegistry::Instance()->ParamAsString(p).c_str());
+  const char * hndc_title   = Form("\Delta(lnL) as function of parameter %s in [%.2f,%.2f] range", util::NameRegistry::Instance()->ParamAsString(p).c_str(),pmin,pmax);
+  const char * hprior_name  = Form("prior_%s", util::NameRegistry::Instance()->ParamAsString(p).c_str());
+  const char * hprior_title = Form("\Delta(lnL) penalty term as function of parameter %s in [%.2f,%.2f] range", util::NameRegistry::Instance()->ParamAsString(p).c_str(),pmin,pmax);
   TH1D * hndc   = new TH1D(hndc_name,  hndc_title,  npv,pmin-0.5*pstep,pmax+0.5*pstep);
   TH1D * hprior = new TH1D(hprior_name,hprior_title,npv,pmin-0.5*pstep,pmax+0.5*pstep);
 
   for(int ipv = 0; ipv < npv; ipv++) {
     double pcurr = pmin + ipv * pstep;
-    cout << "Parameter: " << util::AsString(p) << " -> value = " << pcurr << endl;
+    cout << "Parameter: " << util::NameRegistry::Instance()->ParamAsString(p) << " -> value = " << pcurr << endl;
 
     double avg_fit_statistic = 0;
 
@@ -110,7 +110,7 @@ void fit_param_scan
     hndc->SetBinContent(ibin,valnew);
   }
 
-  hndc->GetXaxis()->SetTitle(util::AsStringTeX(p,true).c_str());
+  hndc->GetXaxis()->SetTitle(util::NameRegistry::Instance()->AsStringRooTeX(p).c_str());
   hndc->GetYaxis()->SetTitle("-#Delta(lnL)");
   hndc->SetMarkerSize(1.3);
   hndc->SetMarkerStyle(20);
@@ -118,7 +118,7 @@ void fit_param_scan
   hprior->SetLineColor(kRed);
   hprior->Draw("LSAME");
 
-  const char * outfilename =  Form("%s-%s.root", tag, util::AsString(p).c_str());
+  const char * outfilename =  Form("%s-%s.root", tag, util::NameRegistry::Instance()->ParamAsString(p).c_str());
   TFile outfile(outfilename, "recreate");
   hndc->Write();
   hprior->Write();

@@ -9,6 +9,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <cassert>
 #include <vector>
 
+#include "TString.h"
+
 // fmwk
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Messenger/Messenger.h"
@@ -21,7 +23,7 @@ using std::vector;
 string valor::util::nm::DSetName(
   string det_nm, string beam_nm, string sample_nm, string obsrv_nm)
 {
-  string dataset = det_nm + ":" + beam_nm + ":" + sample_nm /* + ":" + obsrv_nm */;
+  string dataset = det_nm + delimiter + beam_nm + delimiter + sample_nm /* + delimiter + obsrv_nm */;
   return dataset;
 }
 //________________________________________________________________________________________
@@ -34,7 +36,7 @@ string valor::util::nm::DSetName(
   string sample_nm = valor::util::AsString(sample);
   string obsrv_nm  = valor::util::AsString(obsrv);
 
-  string dataset = det_nm + ":" + beam_nm + ":" + sample_nm /* + ":" + obsrv_nm */;
+  string dataset = det_nm + delimiter + beam_nm + delimiter + sample_nm /* + delimiter + obsrv_nm */;
   return dataset;
 }
 //________________________________________________________________________________________
@@ -86,8 +88,8 @@ KSpace_t? valor::util::nm::DSetObsrv(string dataset)
 string valor::util::nm::DSetToken(string dataset, int i)
 {
   const int ntokens = 3; // change to 4 once KSpace_t is used
-  if(dataset.find(":") != string::npos) {
-    vector<string> tokens = valor::util::Tokens(dataset, ":");
+  if(dataset.find(delimiter) != string::npos) {
+    vector<string> tokens = valor::util::Tokens(dataset, delimiter);
     if(tokens.size() == ntokens) {
        if(i>=0 && i < ntokens) {
           return tokens[i];
@@ -95,7 +97,8 @@ string valor::util::nm::DSetToken(string dataset, int i)
     }
   }
   LOG("DUNE",pWARN) 
-    << "Dataset name doesn't follow `detector:beam:sample:observable' convention";
+    << Form("Dataset name doesn't follow `detector%sbeam%ssample%sobservable' convention",
+     delimiter.c_str(),delimiter.c_str(),delimiter.c_str());
 
   return "";
 }
@@ -166,8 +169,8 @@ string valor::util::nm::DatumName(
   string tag, string mother_obj_name, string quantity, string format)
 {
   string datum_name = (tag.size() == 0) ?
-     (             mother_obj_name + ":" + quantity + ":" + format ):
-     ( tag + ":" + mother_obj_name + ":" + quantity + ":" + format );
+     (                   mother_obj_name + delimiter + quantity + delimiter + format ):
+     ( tag + delimiter + mother_obj_name + delimiter + quantity + delimiter + format );
 
   return datum_name;
 }
