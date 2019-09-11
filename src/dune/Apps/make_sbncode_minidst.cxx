@@ -62,35 +62,10 @@ using std::string;
 using std::ostringstream;
 
 void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
-static const string gTreeName = "sbnreco";
+static const string gTreeName       = "sbnreco";
+static const string gSubRunTreeName = "sbnsubrun";
 
 static const int gPrintEveryNEvents   = 50000;
-
-/***
- *
- * This is for the /pnfs/sbnd/persistent/users/gputnam/numu_simulation_reweight/processed_2.a sample
- *
- * Wiki is here: https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample
- *
- * POT calculated by adding together every subrun totgootpot value in the processed event file
- *
- */
-static const double proposalPOTSBND   = 4.5193055e19; // v2.1_fitters 
-static const double modernPOTSBND     = 1.4182069e19; 
-static const double proposalPOTUBOONE = 2.5698932e20; // v2.1_fitters 
-static const double modernPOTUBOONE   = 9.8340311e20; 
-static const double proposalPOTICARUS = 1.1891063e20; // v2.1_fitters
-static const double modernPOTICARUS   = 2.8184718e19;
-
-static const double appProposalPOTSBNDNumu   = 4.5044828e19; // v2.1_fitters
-static const double appProposalPOTSBNDInt    = 4.4072340e21; // v2.1_fitters
-static const double appProposalPOTSBNDOsc    = 3.4284789e19; // v2.1_fitters
-static const double appProposalPOTUBOONENumu = 9.8153051e20; // v2.1_fitters
-static const double appProposalPOTUBOONEInt  = 1.4336024e23; // v2.1_fitters
-static const double appProposalPOTUBOONEOsc  = 9.1606841e20; // v2.1_fitters
-static const double appProposalPOTICARUSNumu = 1.1891063e20; // v2.1_fitters
-static const double appProposalPOTICARUSInt  = 8.3903526e21; // v2.1_fitters
-static const double appProposalPOTICARUSOsc  = 9.8446183e19; // v2.1_fitters
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
@@ -111,29 +86,6 @@ typedef enum ELarMode{
   kLArWeakMix            = 13
 } LArMode_t;
 
-// enum definition for the sbn mc sample we are looking at
-// For now, only important for accessing the correct POT from above
-typedef enum EMCSample{
-  kUnknownSample               = -1, 
-  kSBNDDisappearanceProposal   = 0,
-  kSBNDDisappearanceModern     = 1,
-  kUBOONEDisappearanceProposal = 2,
-  kUBOONEDisappearanceModern   = 3,
-  kICARUSDisappearanceProposal = 4,
-  kICARUSDisappearanceModern   = 5,
-
-  kSBNDAppearanceNumuProposal   = 6,
-  kSBNDAppearanceIntProposal    = 7,
-  kSBNDAppearanceOscProposal    = 8,
-  kUBOONEAppearanceNumuProposal = 9,
-  kUBOONEAppearanceIntProposal  = 10,
-  kUBOONEAppearanceOscProposal  = 11,
-  kICARUSAppearanceNumuProposal = 12,
-  kICARUSAppearanceIntProposal  = 13,
-  kICARUSAppearanceOscProposal  = 14
-
-} MCSample_t;
-
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -151,95 +103,117 @@ int main(int argc, char ** argv)
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(thresholds);
 
-  string opt_beam_name         = arg.GetString("beam");
-  string opt_sample_name       = arg.GetString("sample");
-  string opt_output_name       = arg.GetString("output");
-  string opt_input_name        = arg.GetString("input");
-  int    opt_mcsample          = arg.GetInt("mcsample");
-  bool   opt_disable_checks    = arg.GetBool("disable-checks");
-  bool   write_universes       = arg.GetBool("write-universes");
+  string opt_beam_name      = arg.GetString("beam");
+  string opt_sample_name    = arg.GetString("sample");
+  string opt_output_name    = arg.GetString("output");
+  string opt_input_name     = arg.GetString("input");
+  bool   opt_disable_checks = arg.GetBool("disable-checks");
+  bool   write_universes    = arg.GetBool("write-universes");
 
-  double mcsample_pot = -1.;
-  if(opt_mcsample == kUnknownSample){
+  // Determine sample-types
+  bool is_nueint  = false;
+  bool is_nueosc  = false;
+  bool is_nuenumu = false;
+  bool is_numu    = false;
+  string str_numu = "Numu";
+  string str_nue  = "Nue";
+  string str_int  = "_Int";
+  string str_osc  = "_Osc";
+
+  //Find substrings and check the appearance sample-type if necessary
+  size_t found_nue  = opt_input_name.find(str_nue);
+  size_t found_numu = opt_input_name.find(str_numu);
+
+  // Get disappearance from sample name
+  if(found_nue == string::npos && found_numu != string::npos)
+    is_numu = true;
+
+  if(found_nue != string::npos){
+    // We are looking at a nue sample, check if osc, intrinsic or numu
+    size_t found_nueosc  = opt_input_name.find(str_osc);
+    size_t found_nueint  = opt_input_name.find(str_int);
+    size_t found_nuenumu = opt_input_name.find(str_numu);
+    if(found_nueosc != string::npos && found_nueint == string::npos && found_nuenumu == string::npos)
+      is_nueosc = true;
+    else if(found_nueosc != string::npos){
+      VLOG("make_sbncode_minidst", pFATAL) 
+        << "Error: Found appearance oscillated file with hint of intrinsic and/or numu in the name - misleading: " << opt_input_name;
+      exit(1);
+    }
+    if(found_nueint != string::npos && found_nueosc == string::npos && found_nuenumu == string::npos)
+      is_nueint = true;
+    else if(found_nueint != string::npos){
+      VLOG("make_sbncode_minidst", pFATAL) 
+        << "Error: Found appearance intrinsic file with hint of oscillated and/or numu in the name - misleading: " << opt_input_name;
+      exit(1);
+    }
+    if(found_nuenumu != string::npos && found_nueosc == string::npos && found_nueint == string::npos)
+      is_nuenumu = true;
+    else if(found_nuenumu != string::npos){
+      VLOG("make_sbncode_minidst", pFATAL) 
+        << "Error: Found appearance numu file with hint of oscillated and/or intrinsic in the name - misleading: " << opt_input_name;
+      exit(1);
+    }
+  }
+
+  bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu};
+  if(found_nue && std::count(found_nues, found_nues+sizeof(found_nues), 1) > 1){
+      VLOG("make_sbncode_minidst", pFATAL) 
+        << "Error: Found multiple appearance types in filename - misleading: " << opt_input_name;
+      exit(1);
+  }
+  
+  // Make sure we are finding at least 1 of numu or nue in the name
+  bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu};
+  if(std::count(found, found+sizeof(found), 1) == 0){
     VLOG("make_sbncode_minidst", pFATAL) 
-      << "MCSample not defined ";
+      << "Error: Found hint of neither appearance (" << str_nue << ", " << str_int << ", " << str_osc << ") nor disappearance ( " << str_numu << ") in filename - misleading: " << opt_input_name;
     exit(1);
   }
 
-  bool is_appearance = false;
-  bool is_intrinsic  = false;
-  bool is_oscillated = false;
+  // CHECKING OUTPUT OF NEW CODE
+  std::cout << " Input filename : " << opt_input_name << " - ";
+  if(is_nueosc)
+    std::cout << " Appearance Oscillated " << std::endl;
+  if(is_nueint)
+    std::cout << " Appearance Intrinsic " << std::endl;
+  if(is_nuenumu)
+    std::cout << " Appearance NuMu " << std::endl;
+  if(is_numu)
+    std::cout << " Disappearance NuMu " << std::endl;
 
-  // Get the POT
-  // Disappearance
-  if(opt_mcsample == kSBNDDisappearanceProposal)
-    mcsample_pot = proposalPOTSBND;
-  if(opt_mcsample == kSBNDDisappearanceModern)
-    mcsample_pot = modernPOTSBND;
-
-  if(opt_mcsample == kUBOONEDisappearanceProposal)
-    mcsample_pot = proposalPOTUBOONE;
-  if(opt_mcsample == kUBOONEDisappearanceModern)
-    mcsample_pot = modernPOTUBOONE;
-
-  if(opt_mcsample == kICARUSDisappearanceProposal)
-    mcsample_pot = proposalPOTICARUS;
-  if(opt_mcsample == kICARUSDisappearanceModern)
-    mcsample_pot = modernPOTICARUS;
-
-
-  // Appearance POTs
-  if(opt_mcsample == kSBNDAppearanceNumuProposal){
-    mcsample_pot = appProposalPOTSBNDNumu;
-    is_appearance = true;
-  }
-  if(opt_mcsample == kSBNDAppearanceIntProposal){
-    mcsample_pot = appProposalPOTSBNDInt + appProposalPOTSBNDNumu;
-    is_appearance = true;
-    is_intrinsic = true;
-  }
-  if(opt_mcsample == kSBNDAppearanceOscProposal){
-    mcsample_pot = appProposalPOTSBNDOsc;
-    is_appearance = true;
-    is_oscillated = true;
+  // Get the POT of the sample from the subrun tree
+  double mcsample_pot = -1.;
+  TChain * subrun_tree = new TChain(gSubRunTreeName.c_str());
+  subrun_tree->Add(opt_input_name.c_str());
+  if(!subrun_tree || !subrun_tree->GetEntries()) {
+    VLOG("make_sbncode_minidst", pFATAL) 
+      << "Error: Unable to read " << gSubRunTreeName
+      <<" from "<< opt_input_name;
+    exit(1);
   }
 
-  if(opt_mcsample == kUBOONEAppearanceNumuProposal){
-    mcsample_pot = appProposalPOTUBOONENumu;
-    is_appearance = true;
+  Long64_t nev_subrun = subrun_tree->GetEntries();
+  VLOG("make_sbncode_minidst", pNOTICE) 
+    << "Input subrun tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
+  
+  TBranch *b = subrun_tree->GetBranch("totgoodpot"); 
+  unsigned int npot = subrun_tree->GetEntries();
+  for(unsigned int i = 0; i < npot; ++i){
+    b->GetEntry(i);
+    mcsample_pot += b->GetLeaf("totgoodpot")->GetValue();
   }
-  if(opt_mcsample == kUBOONEAppearanceIntProposal){
-    mcsample_pot = appProposalPOTUBOONEInt + appProposalPOTUBOONENumu;
-    is_appearance = true;
-    is_intrinsic = true;
-  }
-  if(opt_mcsample == kUBOONEAppearanceOscProposal){
-    mcsample_pot = appProposalPOTUBOONEOsc;
-    is_appearance = true;
-    is_oscillated = true;
-  }
-
-  if(opt_mcsample == kICARUSAppearanceNumuProposal){
-    mcsample_pot = appProposalPOTICARUSNumu;
-    is_appearance = true;
-  }
-  if(opt_mcsample == kICARUSAppearanceIntProposal){
-    mcsample_pot = appProposalPOTICARUSInt + appProposalPOTICARUSNumu;
-    is_appearance = true;
-    is_intrinsic = true;
-  }
-  if(opt_mcsample == kICARUSAppearanceOscProposal){
-    mcsample_pot = appProposalPOTICARUSOsc;
-    is_appearance = true;
-    is_oscillated = true;
-  }
-
+  
   if(mcsample_pot == -1.){
     VLOG("make_sbncode_minidst", pFATAL) 
-      << "Not able to access MCSample POT from " << opt_mcsample;
+      << "Error: Not able to access MCSample POT from " << gSubRunTreeName;
     exit(1);
   }
+  VLOG("make_sbncode_minidst", pNOTICE) 
+    << "POT in the input file is " << mcsample_pot;
 
+
+  // Get the sample and beam configuration
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
   assert(sample != conv::ksUndefined);
 
@@ -282,7 +256,7 @@ int main(int argc, char ** argv)
   analysis_tree->Add(opt_input_name.c_str());
   if(!analysis_tree || !analysis_tree->GetEntries()) {
     VLOG("make_sbncode_minidst", pFATAL) 
-      << "Unable to read " << gTreeName
+      << "Error: Unable to read " << gTreeName
       <<" from "<< opt_input_name;
     exit(1);
   }
@@ -322,7 +296,6 @@ int main(int argc, char ** argv)
       
     }
     variation_names.Write("variation_names",TObject::kSingleKey);
-    
   }
   
 
@@ -490,13 +463,8 @@ int main(int argc, char ** argv)
     conv::NuFlavour_t init_flav;
 
     // If we are looking at the appearance samples, get the initial neutrino pdg from the file
-    if(is_appearance){
-      init_pdg = truth.neutrino.initpdg;
-      init_flav = valor::util::FlavourFromPDG(init_pdg);
-    }
-
-    // If we are looking at the disappearance samples, initial flavour = final flavour
-    else init_flav = final_flav;
+    init_pdg  = truth.neutrino.initpdg;
+    init_flav = valor::util::FlavourFromPDG(init_pdg);
 
     // Get the real valor mode - this will only be defined for modes turned on right now
     conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
@@ -524,20 +492,23 @@ int main(int argc, char ** argv)
         VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc] "<<iev; 
         continue;
       }
-      if((init_pdg == 12 || init_pdg == -12) && (!is_intrinsic)){
+      if((init_pdg == 12 || init_pdg == -12) && (!is_nueint)){
         VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic] "<<iev;
         VLOG("make_sbncode_minidst", pINFO)
-          <<"\n is_intrinsic = "<<is_intrinsic
+          <<"\n is_nueint = "<<is_nueint
           <<"\n larsoft_mode = "<<larsoft_mode
           <<"\n iscc="<<iscc<<" and isnc="<<isnc
           <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
           <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
         continue;
       }
-      if(is_oscillated && init_flav == final_flav){
+      if(is_nueosc && init_flav == final_flav){
         VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file] "<<iev; 
         continue;
-      
+      }
+      if(is_numu && init_flav != final_flav){
+        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated event in non-oscillated file] "<<iev; 
+        continue;
       }
     }
 
