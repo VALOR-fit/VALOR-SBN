@@ -293,10 +293,10 @@ void CompoundFitElements::Clean(void)
 }
 //________________________________________________________________________________________
 FitDataABC * CompoundFitElements::AdoptFitData(
-  string config_file, 
+  string /*config_file*/, 
   conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t o, 
   string class_name,
-  Option_t * opt)
+  Option_t * /*opt*/)
 {
   void * vbase = this->InstantiateUsingDictionaryRegistration(class_name);
   SingleSampleFitDataABC * s_dataset = (SingleSampleFitDataABC *) (vbase);
