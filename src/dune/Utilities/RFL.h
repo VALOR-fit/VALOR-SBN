@@ -32,7 +32,7 @@
 #include "valor/Utilities/Interpolator.h"
 
 // DUNE
-#include "dune/Conventions/DuneBuild.h"
+#include "dune/Conventions/Build.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/ReacMode.h"

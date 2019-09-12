@@ -252,9 +252,9 @@ close(VRS_HEADER_FILE);
 # Automatically generate a header file with relevant build information that
 # can be used to make code conditional upon it
 #
-$BLD_HEADER_FILENAME = "$VALOR_DUNE/src/dune/Conventions/DuneBuild.h";
+$BLD_HEADER_FILENAME = "$VALOR_DUNE/src/dune/Conventions/Build.h";
 print "Automatically generating file: $BLD_HEADER_FILENAME \n";
-open(BLD_HEADER_FILE, ">$BLD_HEADER_FILENAME") or die("Can not write out the DuneBuild.h file!");
+open(BLD_HEADER_FILE, ">$BLD_HEADER_FILENAME") or die("Can not write out the Build.h file!");
 print BLD_HEADER_FILE "#ifndef _VALOR_DUNE_BUILD_H_ \n";
 print BLD_HEADER_FILE "#define _VALOR_DUNE_BUILD_H_ \n";
 print BLD_HEADER_FILE "/* \n";

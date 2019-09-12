@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "dune/Conventions/DuneBuild.h"
+#include "dune/Conventions/Build.h"
 
 namespace valor {
 namespace util {

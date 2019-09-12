@@ -56,7 +56,7 @@
 #include "valor/Conventions/SystType.h"
 #include "valor/Conventions/FitParamApply.h"
 //dune
-#include "dune/Conventions/DuneBuild.h"
+#include "dune/Conventions/Build.h"
 #include "dune/Conventions/Names.h"
 #include "dune/Conventions/Experiment.h"
 #include "dune/Utilities/UtlBinning.h"

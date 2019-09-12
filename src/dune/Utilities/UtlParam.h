@@ -39,7 +39,7 @@
 #include "valor/FitCore/PhysHypothesis.h"
 
 //dune
-#include "dune/Conventions/DuneBuild.h"
+#include "dune/Conventions/Build.h"
 #include "dune/Conventions/FitParamGroup.h"
 
 using std::string;
