@@ -309,11 +309,10 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
 
    string opt = (read_opt) ? read_opt : "pdft";
 
-   int isample = fArrIdx->SampleIdx(fBeam, fSample);
    // Read in the MC templates
    if(opt.find("mct") != string::npos)
    {
-      for(int imode = 0; imode < fReactionModes.size(); imode++)
+      for(size_t imode = 0; imode < fReactionModes.size(); imode++)
       {
          ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
@@ -342,7 +341,7 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
    // Write out the PDF components
    if(opt.find("pdfc") != string::npos)
    {
-      for(int imode = 0; imode < fReactionModes.size(); imode++)
+      for(size_t imode = 0; imode < fReactionModes.size(); imode++)
       {
          ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
@@ -386,11 +385,12 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
   
   bool null_warning = false;
 
-  const VALORBinning  * reco_ob = fBinning->RecoOptBinning();
-  const VALORBinning * reco_sb = fBinning->RecoSmpBinning();
-  
+  const VALORBinning * reco_ob = fBinning->RecoOptBinning();
   const int n_reco_bins_ob = reco_ob->NBins();
-  const int n_reco_bins_sb = reco_sb->NBins();
+  
+  // no SB splines for now
+  //~ const VALORBinning * reco_sb = fBinning->RecoSmpBinning();
+  //~ const int n_reco_bins_sb = reco_sb->NBins(); 
   
   for(size_t imode = 0; imode < fReactionModes.size(); imode++) {
     ReacMode_t m = fReactionModes[imode];
@@ -872,11 +872,10 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
 
    string opt = (write_opt) ? write_opt : "pdft";
 
-   int isample = fArrIdx->SampleIdx(fBeam, fSample);
    // Write out the MC templates
    if(opt.find("mct") != string::npos)
    {
-      for(int imode = 0; imode < fReactionModes.size(); imode++)
+      for(size_t imode = 0; imode < fReactionModes.size(); imode++)
       {
          ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
@@ -905,7 +904,7 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
    // Write out the PDF components
    if(opt.find("pdfc") != string::npos)
    {
-      for(int imode = 0; imode < fReactionModes.size(); imode++)
+      for(size_t imode = 0; imode < fReactionModes.size(); imode++)
       {
          ReacMode_t m = fReactionModes[imode];
          if(m == kmUndefined || fMCTNullOb[imode])
@@ -1392,8 +1391,6 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   
   // Get a list of all the kinematic variables we care about
   const std::vector<conv::KineVar_t> & kinevars = fBinning->KineVars();
-  
-  bool old_format = false;
 
   int    sample        = 0;
   int    beam          = 0;
@@ -1414,8 +1411,6 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   int bstat_sample     = 0; 
   int bstat_beam       = 0; 
   int bstat_reac_mode  = 0;  
-  int bstat_wght       = 0;   
-  int bstat_wght_pot   = 0;
   std::map<KineVar_t,int> bstat_kinematics;
   
   bstat_sample    = t->SetBranchAddress("sample",    &sample);
@@ -1423,8 +1418,8 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   bstat_reac_mode = t->SetBranchAddress("reac_mode", &reac_mode);
   
   // Weight is not required - use one if failed
-  bstat_wght       = t->SetBranchAddress("wght"       , &wght);
-  bstat_wght_pot   = t->SetBranchAddress("wght_pot"   , &wght_pot);
+  t->SetBranchAddress("wght"       , &wght);
+  t->SetBranchAddress("wght_pot"   , &wght_pot);
   
   bool any_bad_status = (bstat_sample || bstat_beam || bstat_reac_mode);
   
@@ -1464,7 +1459,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
       util::Die(-1);
     }
     TObject * tmp = containing_file->Get("variation_names");
-    variation_names = dynamic_cast<TObjArray*>(containing_file->Get("variation_names"));
+    variation_names = dynamic_cast<TObjArray*>(tmp);
     if (!variation_names) {
       LOG("GenericSingleSampleFitModel",pFATAL) << "Can't get names of variation weights";
       util::Die(-1);
@@ -1701,7 +1696,11 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
   if (variation_names) {delete variation_names;}
 }
 //________________________________________________________________________________________
-void GenericSingleSampleFitModel::ReadTune(TXMLEngine* xmleng, XMLNodePointer_t top_node, std::vector<TuningInfo> * hist_vec, Option_t * opt)
+void GenericSingleSampleFitModel::ReadTune(
+    TXMLEngine* xmleng,
+    XMLNodePointer_t top_node,
+    std::vector<TuningInfo> * hist_vec,
+    Option_t * /*opt*/)
 {
   LOG("GenericSingleSampleFitModel", pNOTICE)
     << "Will apply tune with name [" << xmleng->GetAttr(top_node,"name") << "]";
@@ -1776,7 +1775,7 @@ double GenericSingleSampleFitModel::GetExternalWeight(std::map<KineVar_t,double>
     conv::ApplyMask_t            tuning_apply_mask = apply_pair.first;
     std::vector<conv::KineVar_t> tuning_kine_vars  = apply_pair.second;
     if(tuning_kine_vars.size() == 0) { LOG("GenericSingleSampleFitModel", pERROR) << "Tuning kine vars not found!" ; util::Die(-1); }
-    if(tuning_kine_vars.size() != tuning_hist->GetDimension()) {
+    if((int)tuning_kine_vars.size() != tuning_hist->GetDimension()) {
       LOG("GenericSingleSampleFitModel", pERROR) << "Tuning kine vars size not equal to the number of tuning hist dimensions!";
       util::Die(-1);
     }
@@ -1913,7 +1912,7 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector
     util::Die(-1);
   }
 
-  for (int itune = 0; itune < numerator_vec.size(); itune++) {
+  for (size_t itune = 0; itune < numerator_vec.size(); itune++) {
     // Unpack the tuning information
     TuningInfo & tune_numerator   = numerator_vec  [itune];
     TuningInfo & tune_denominator = denominator_vec[itune];
@@ -1954,7 +1953,7 @@ void GenericSingleSampleFitModel::ApplyBinnedRatioTuningToTemplates (std::vector
     if(kinevar_mismatch) { continue; }
 
     if(kvs_numerator.size() == 0) { LOG("GenericSingleSampleFitModel", pERROR) << "Tuning kine vars not found!" ; util::Die(-1); }
-    if(kvs_numerator.size() != hist_numerator->GetDimension()) {
+    if((int)kvs_numerator.size() != hist_numerator->GetDimension()) {
       LOG("GenericSingleSampleFitModel", pERROR) << "Tuning kine vars size not equal to the number of tuning hist dimensions!";
       util::Die(-1);
     }
@@ -2310,8 +2309,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         continue;
       }
       
-      int iparr = arridx->FitParamIdx(p);
-      
       bool has_kinematic_dependence = param.HasKinematicRange();
          
       double f = fPhysHypothesis.CurrValue(p);
@@ -2664,8 +2661,6 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           LOG("GenericSingleSampleFitModel",pINFO) << "Skipping parameter not defined in PhysHypothesis "<<param_name;
           continue;
         }
-        
-        int iparr = arridx->FitParamIdx(p);
 
         assert(!util::IsOscParam(p));
         
@@ -3551,7 +3546,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   std::vector<double> new_events_per_bin (nbins + *n_overflow_bins, 0.0);
   double factor = 0.0;
   int ibin_s = -1;
-  for (unsigned int iedge_s = 0 ; iedge_s < scaled_bin_edges.size() - 1 ; iedge_s++) { // Loop over scaled edges
+  for (size_t iedge_s = 0 ; iedge_s < scaled_bin_edges.size() - 1 ; iedge_s++) { // Loop over scaled edges
     const double & bin_min_s = scaled_bin_edges[iedge_s]  ;
     const double & bin_max_s = scaled_bin_edges[iedge_s+1];
 
@@ -3561,7 +3556,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     if(bin_min_s < bin_max_s) { ibin_s++; }
 
     int ibin_u = -1;
-    for (int iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
+    for (size_t iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
       const double & bin_min_u = (*unscaled_bin_edges)[iedge_u]  ;
       const double & bin_max_u = (*unscaled_bin_edges)[iedge_u+1];
       if(bin_min_u < bin_max_u) { ibin_u++; }
@@ -3623,7 +3618,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   }
 
   // Modify the PDF and print debug info
-  for (int ibin = 0 ; ibin < nbins ; ibin++) {  // Loop over global bins
+  for (unsigned int ibin = 0 ; ibin < nbins ; ibin++) {  // Loop over global bins
     pdfArr[ibin] = 0.;
   }
 
@@ -3632,7 +3627,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
 #endif
 
   int ibin_u = -1;
-  for (int iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
+  for (size_t iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
     const double & bin_min_u = (*unscaled_bin_edges)[iedge_u]  ;
     const double & bin_max_u = (*unscaled_bin_edges)[iedge_u+1];
     if(bin_min_u < bin_max_u) { ibin_u++; }
@@ -3718,7 +3713,7 @@ void GenericSingleSampleFitModel::ReweightHistUsingParamSet(TH1* hist_to_reweigh
     CorrelatedSystematics* syst, std::string param_set_str, conv::ApplyMask_t mask, bool use_current_vals)
 {
   int hndim = hist_to_reweight->GetDimension();
-  if(hndim != kvs.size()) {
+  if(hndim != (int)kvs.size()) {
     LOG("FitParams",pERROR)
       << "Tried to reweight a hist with " << hist_to_reweight->GetDimension() << " dimensions, but "
       << kvs.size() << " were input.";
@@ -4039,7 +4034,7 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
       if(bin_min_s < bin_max_s) { ibin_s++; }
 
       int ibin_u = -1;
-      for (int iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
+      for (size_t iedge_u = 0 ; iedge_u < (*unscaled_bin_edges).size() - 1 ; iedge_u++) {  // Loop over unscaled bins
         const double & bin_min_u = (*unscaled_bin_edges)[iedge_u]  ;
         const double & bin_max_u = (*unscaled_bin_edges)[iedge_u+1];
         if(bin_min_u < bin_max_u) { ibin_u++; }
