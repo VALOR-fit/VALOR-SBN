@@ -110,6 +110,8 @@ private:
   void Init    (void);
   void CleanUp (void);
 
+  void CheckBinEdges(VALORBinning *opt_binning, VALORBinning *smp_binning) const;
+
   conv::Detector_t                  fDetector;
   conv::BeamConf_t                  fBeamConf;
   conv::Sample_t                    fSample;

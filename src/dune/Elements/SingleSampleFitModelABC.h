@@ -36,11 +36,16 @@ public:
   virtual ~SingleSampleFitModelABC();
 
   void Configure(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s, conv::KineSpace_t k);
+
+  void SetSystConf(CorrelatedSystematics * syst, Option_t * opt = "");
   
   conv::Detector_t  GetDetector () const { return fDetector;}
   conv::BeamConf_t  GetBeam     () const { return fBeam;    }
   conv::Sample_t    GetSample   () const { return fSample;  }
   conv::KineSpace_t GetKineSpace() const { return fKSp;     }
+
+  // Get the model name
+  std::string Name(void) const { return fName; }
   
   UniqueSampleID GetUniqueSampleID() const { return UniqueSampleID(fDetector,fBeam,fSample); }
 
@@ -52,6 +57,13 @@ protected:
   conv::BeamConf_t  fBeam;
   conv::Sample_t    fSample;
   conv::KineSpace_t fKSp;
+
+  // Name of this VALOR fit model (see Conventions/Names.h)
+  string fName;
+
+  // Pointer to our systematics
+  CorrelatedSystematics * fSystematics;
+  bool fOwnerOfSystematics;
   
 };
 

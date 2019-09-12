@@ -42,10 +42,10 @@ public:
     static const ArrIdx * Instance();
     static       ArrIdx * MutableInstance();
 
-    int BeamConfIdx (conv::BeamConf_t b)                   const { return fBeamConfIdx[b];    }
-    int SampleIdx   (conv::BeamConf_t b, conv::Sample_t s) const { return fSampleIdx[b][s];   }
-    int ReacModeIdx (conv::Sample_t s, conv::ReacMode_t m) const { return fReacModeIdx[s][m]; }
-    int FitParamIdx (conv::PhysParamId_t p)                const { return fFitParamIdx[p];    }
+    int BeamConfIdx (conv::BeamConf_t b)                                       const { return fBeamConfIdx[b];       }
+    int SampleIdx   (conv::BeamConf_t b, conv::Sample_t s)                     const { return fSampleIdx[b][s];      }
+    int ReacModeIdx (conv::BeamConf_t b, conv::Sample_t s, conv::ReacMode_t m) const { return fReacModeIdx[b][s][m]; }
+    int FitParamIdx (conv::PhysParamId_t p)                                    const { return fFitParamIdx[p];       }
 
 private:
 
@@ -55,10 +55,10 @@ private:
 
     void Init();
 
-    int fBeamConfIdx [2*conv::kNBeamConf];                      ///< maps each beam configuration to a kBeamConf array index
-    int fSampleIdx   [2*conv::kNBeamConf] [2*conv::kNSamples];  ///< maps each sample to a kSample array index
-    int fReacModeIdx [2*conv::kNSamples][2*conv::kNReacModes];  ///< maps each mode of each sample to a kReactionModes array index (same for a given sample in any beam)
-    int fFitParamIdx [2*conv::knppmax];                         ///< maps each physics param to a parameter within ParameterPool
+    int fBeamConfIdx [conv::kNBeamsDefined];                                        ///< maps each beam configuration to a kBeamConf array index
+    int fSampleIdx   [conv::kNBeamsDefined][conv::kMaxNSamples];                    ///< maps each sample to a kSample array index
+    int fReacModeIdx [conv::kNBeamsDefined][conv::kMaxNSamples][conv::kNReacModes]; ///< maps each mode of each sample and beam to a kReactionModes array index (same for a given sample in any beam)
+    int fFitParamIdx [conv::knppmax];                                               ///< maps each physics param to a parameter within ParameterPool
 
     static ArrIdx * fInstance;
 

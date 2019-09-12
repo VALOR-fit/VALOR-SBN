@@ -25,9 +25,9 @@
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/ReacModeCoarse.h"
+#include "dune/Conventions/Experiment.h"
 
-
-#define SBN
+#include <vector>
 
 namespace valor {  
 namespace conv {
@@ -37,6 +37,8 @@ namespace conv {
 // This is used to loop over all beam configurations / samples.
 // Probably could be removed once we start using the Compound* classes
 
+// TODO: Remove this mess of #ifdefs and move the beam, sample, reac mode, and coarse reac mode lists into the config files.
+
 static const int kNBeamConf = 2;  
 
 static const BeamConf_t kBeamConf[kNBeamConf] =
@@ -44,6 +46,9 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
 #ifdef SBN
   kbBNB_FHC, 
   kbBNB_RHC
+#elif defined T2K
+  kbJPARC_FHC,
+  kbJPARC_RHC
 #else
   kbLBNF_FHC, 
   kbLBNF_RHC
@@ -70,7 +75,11 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
  
 //this is the maximum number of selections except the ones not used in 2016a or 2016b analyses
 // For 2016b = total except: undefined, numuCC, 2piC, nueCC, NC, wrong numu, and only 4 for FD (either nu in FHC or nubar in RHC)
- static const int kNSamples = 27;
+#ifdef T2K
+  static const int kNSamples = 3;
+#else
+  static const int kNSamples = 27;
+#endif
 
 // ---------------------------------------------------------------------
 // NOTE:
@@ -79,6 +88,22 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
 // This is now for 2016b, should include only the kNSamples above
  static const Sample_t kSample[kNBeamConf][kNSamples] =
 {
+#ifdef T2K
+  // kbJPARC_FHC
+  {
+    // SuperK selections
+     ks1Rmu,
+     ks1Re,
+     ksMultiRe
+  },
+  // kbJPARC_RHC
+  {
+    // SuperK selections
+     ks1Rmu,
+     ks1Re,
+     ksMultiRe
+  }
+#else  // defined T2K
    // kbLBNF_FHC
    {
      //2016b near detector selections
@@ -143,6 +168,7 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
      ksNuELikeCChigh,     
      ksNuELikeCClow        
    }
+#endif  // ! defined T2K
 };
 // ---------------------------------------------------------------------
 
@@ -155,6 +181,21 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
   
   static const ReacMode_t kReactionModes[kNSamples][kNReacModes]  = 
     {
+#ifdef T2K
+      // SuperK Selections
+      // selection: ks1Rmu
+      {
+        #include "dune/Conventions/ModeLists/SuperK.h"
+      },
+      // selection: ks1Re
+      {
+        #include "dune/Conventions/ModeLists/SuperK.h"
+      },
+      // selection: ksMultiRe
+      {
+        #include "dune/Conventions/ModeLists/SuperK.h"
+      }
+#else   // if defined T2K
       // 2016b near detector selections
       // selection: ksNuMuCC0pi1trk
       {
@@ -290,8 +331,9 @@ static const BeamConf_t kBeamConf[kNBeamConf] =
       // selection: ksNuECClow/ksNuEBarCClow
       {
         #include "dune/Conventions/ModeLists/OscHighE.h"
-      }
-#endif
+      },
+#endif  // if ! defined SBN
+#endif  // if ! defined T2K
 };
   
    
@@ -308,7 +350,40 @@ static const int kNReacModesCoarse = 9;  // max coarse modes used per sample
 
 static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReacModesCoarse] = 
 {
-  // FHC
+#ifdef T2K
+  // T2K FHC   TODO: Revisit the SuperK coarse reac modes, see dune/Conventions/ModeLists/Coarse/SuperK.h
+  {
+    // sample: ks1Rmu
+    {
+      #include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+      #include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+      #include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    }
+  },  // end of T2K FHC
+
+  // T2K RHC
+  {
+    // sample: ks1Rmu
+    {
+			#include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+			#include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+			#include "dune/Conventions/ModeLists/Coarse/SuperK.h"
+    }
+  }  // end of T2K RHC
+#else   // if defined T2K
+  // DUNE FHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -675,8 +750,8 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuTauBarCC,
       kmcNC
     }
-  }, // end of FHC
-  //RHC
+  }, // end of DUNE FHC
+  //DUNE RHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -1004,7 +1079,8 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuTauBarCC,
       kmcNC
     }
-  }
+  } // End of DUNE RHC
+#endif  // if ! defined T2K
 };
 
 //
@@ -1013,7 +1089,40 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
 
 static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacModesCoarse][3] = 
 {
-  // FHC
+#ifdef T2K
+  // T2K FHC
+  {
+    // sample: ks1Rmu
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+      #include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    }
+  }, // end of T2K FHC
+
+  // T2K RHC
+  {
+    // sample: ks1Rmu
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ks1Re
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    },
+    // sample: ksMultiRe
+    {
+			#include "dune/Conventions/ModeLists/Coarse/Formatting/SuperK.h"
+    }
+  } // end of T2K RHC
+#else   // if defined T2K
+  // DUNE FHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -1338,8 +1447,8 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kOrange-1, 3001 }, // kmcNuTauBarCC 
       { kBlack, kRed,      3001 }  // kmcNC 
     }
-  }, // end of FHC
-  // RHC
+  }, // end of DUNE FHC
+  // DUNE RHC
   {
     // sample: ksNuMuCC0pi1trk
     {
@@ -1643,13 +1752,15 @@ static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacMod
       { kBlack, kOrange-1, 3001 }, // kmcNuTauBarCC 
       { kBlack, kRed,      3001 }  // kmcNC 
     }
-  } // end of RHC
+  } // end of DUNE RHC
+#endif  // if ! defined T2K
 };
 
 } // conv
 
 namespace util {
-conv::Sample_t GetActiveSample  (int ibeam, int isample);
+  conv::Sample_t GetActiveSample  (int ibeam, int isample);
+  std::vector<conv::ReacMode_t> GetActiveModes (int isample);
 } // util
 
 } // valor

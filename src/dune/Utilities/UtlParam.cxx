@@ -86,6 +86,7 @@ FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * 
   bool cons_atm_params        = (param_list_opt.find("cons-atm-params"  ) != string::npos);
   bool cons_solar_params      = (param_list_opt.find("cons-solar-params") != string::npos);
   bool cons_theta13           = (param_list_opt.find("cons-theta13"     ) != string::npos);
+  bool fix_all                = (param_list_opt.find("fix-all"          ) != string::npos);
   bool fix_detector_params    = (param_list_opt.find("fix-det-syst"     ) != string::npos);
   bool fix_nd_detector_params = (param_list_opt.find("fix-nd-det-syst"  ) != string::npos);
   bool fix_fd_detector_params = (param_list_opt.find("fix-fd-det-syst"  ) != string::npos);
@@ -231,7 +232,8 @@ FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * 
       }
 
       // toggle oscillation params on/off
-      if(fix_osc_params){
+      if(fix_osc_params || fix_all){
+        // TODO: update these with T2K values!
         double init_value = util::OscParamInitValue(p);   // TODO: This is DUNE specific and needs moving to a config file
         if(init != -1) {
           fparm->Update(p, init_value);
@@ -254,58 +256,73 @@ FitParamList * util::GetFitParameterList(Option_t * param_list_name, Option_t * 
       }
       const Parameter & param = ParameterPool::Instance()->GetParam(p);
 
+      // Set all systematic parameters to be marginalised. This is fine even if the FPL is not used in marginalisation,
+      // as in that case the flag is not used
+      fparm->SetDoMarg(p, true);
+
+      double init = 1.;
+      if (syst) {
+        init = syst->InitialValue(p);
+      }
+
+      // Fix all systematics
+      if(fix_all) {
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
+        fparm->FixParameter(p);
+      }
       // toggle detector related params on/off
       if(fix_detector_params && param.SearchCategories("det")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
       if(fix_nd_detector_params && param.SearchCategories("det") && param.SearchCategories("ND")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
       if(fix_fd_detector_params && param.SearchCategories("det") && param.SearchCategories("FD")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
       // toggle flux related params on/off
       if(fix_flux_params && param.SearchCategories("flux")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
       // toggle nd flux related params on/off
       if(fix_nd_flux_params && param.SearchCategories("ND") && param.SearchCategories("flux")){
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
       // toggle fd flux related params on/off
       if(fix_fd_flux_params && param.SearchCategories("FD") && param.SearchCategories("flux")){
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
       // toggle int related params on/off
       if(fix_int_params && param.SearchCategories("int")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
       // toggle mec related params on/off
       if(fix_mec_params && (util::ToLowerCase(param.GetName()).find("mec")  != std::string::npos ||
                             util::ToLowerCase(param.GetName()).find("2p2h") != std::string::npos)) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
 
       // toggle FSI related params on/off
       if(fix_fsi_params && param.SearchCategories("FSI")) {
-        fparm->Update(p, 1.);
-        fparm->SetInitValue(p, 1.);
+        fparm->Update(p, init);
+        fparm->SetInitValue(p, init);
         fparm->FixParameter(p);
       }
     }

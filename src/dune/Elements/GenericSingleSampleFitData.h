@@ -62,9 +62,10 @@ public:
   bool   Read           (string file, Option_t * opt = 0);
   bool   Generate       (FitModelABC * pred, const FitParamList & fp,   bool fluctuate=true);
   bool   Generate       (FitModelABC * pred, const PhysHypothesis & ph, bool fluctuate=true);
-  bool   Generate       (FitModelABC * pred, bool fluctuate=true);
+  bool   Generate       (FitModelABC * pred, bool fluctuate=true, Option_t* read_opt = "+SB");
   bool   Write          (TObjArray * data_collection, const char * tag = "data", Option_t * write_opt = 0);
   bool   Write          (const char * filename, const char * tag = "data", const char * option_file="update", Option_t * file_opt = 0);
+  virtual bool Write (std::ofstream& stream, Option_t * write_opt = 0);
   int    NumOfBins      (Option_t * opt = 0) const;
   double GetFitStatistic(FitModelABC * pred, const FitParamList & fp,   Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
   double GetFitStatistic(FitModelABC * pred, const PhysHypothesis & ph, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);

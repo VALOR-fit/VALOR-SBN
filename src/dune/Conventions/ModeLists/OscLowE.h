@@ -17,6 +17,7 @@
 	//kmNuMuNC2pi0,
 	//kmNuMuNCpiCpi0,
 	kmNuMuNCcoh,
+	kmUndefined,	// NC 1 gamma
 	kmNuMuNCELScat,
 	kmNuMuNCoth,
 	kmNuMuBarCCQE,
@@ -37,6 +38,7 @@
 	//kmNuMuBarNC2pi0,
 	//kmNuMuBarNCpiCpi0,
 	kmNuMuBarNCcoh,
+	kmUndefined,	// NC 1 gamma
 	kmNuMuBarNCELScat,
 	kmNuMuBarNCoth,
 	kmNuECCQE,
@@ -56,6 +58,7 @@
 	//kmNuENC2pi0,
 	//kmNuENCpiCpi0,
 	kmNuENCcoh,
+	kmUndefined,	// NC 1 gamma
 	kmNuEELScat,
 	kmNuENCoth,
 	kmNuEBarCCQE,
@@ -76,6 +79,7 @@
 	//kmNuEBarNC2pi0,
 	//kmNuEBarNCpiCpi0,
 	kmNuEBarNCcoh,
+	kmUndefined,	// NC 1 gamma
 	kmNuEBarELScat,
 	kmNuEBarNCoth,
 	kmNuMuToNuECCQE,

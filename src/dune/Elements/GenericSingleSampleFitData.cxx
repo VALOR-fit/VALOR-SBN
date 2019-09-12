@@ -134,6 +134,23 @@ bool GenericSingleSampleFitData::Write(
   return true;
 }
 //________________________________________________________________________________________
+bool GenericSingleSampleFitData::Write(std::ofstream& stream, Option_t * write_opt)
+{
+   string opt = (write_opt) ? write_opt : "";
+   assert(fDataOb);
+   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
+   fDataOb->WriteStream(stream);
+
+   if(opt.find("+SB") != string::npos)
+   {
+      assert(fDataSb);
+      fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
+      fDataSb->WriteStream(stream);
+   } //+SB
+
+   return true;
+}
+//________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(
     FitModelABC * model_abc, const FitParamList & fp, bool fluctuate)
 {
@@ -173,7 +190,7 @@ bool GenericSingleSampleFitData::Generate(
   return this->Generate(model_abc,fluctuate);
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate)
+bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate, Option_t * option)
 {
   
   GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
@@ -183,41 +200,71 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     fBinning = model->GetBinning();
     this->Book();
   }
-  
+
+  bool update_sb = false;
+  if(option) {
+    string opt = option;
+    if(opt.find("+SB") != string::npos) {
+      update_sb = true;
+    }
+  }
+  Option_t * write_opt = "pdft_vf";
+  if(update_sb) { write_opt = "pdft_vf +SB"; }
+
   TObjArray array;
-  model_abc->Write(&array, "curr", "pdft_vf +SB");
+  model_abc->Write(&array, "curr", write_opt);
 
   this->Zero("all");
 #ifndef __VALOR_FMWK_PENALTY_ONLY__
   LOG("GenericSingleSampleFitData",pINFO) 
     << "Generating toy-MC for: " 
     << fName;
-    
-  TString sb_name = TString::Format("curr_pdft_sb_vf_%s",fModelName.c_str());
-  VALORArray * pdf_sb = (VALORArray*) array.FindObject(sb_name.Data());
-  assert(pdf_sb);
-  const int nbins_sb = pdf_sb->GetSize();
-  assert(nbins_sb==fDataSb->GetSize());
-  
-  for(int ibin_sb = 0 ; ibin_sb < nbins_sb ; ibin_sb ++) {
-    double nmc   = pdf_sb->GetArray()[ibin_sb];
-    double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
-    fDataSb->GetArray()[ibin_sb] = ndata;
 
-    LOG("GenericSingleSampleFitData",pDEBUG) 
-      << "(reco_sb_idx = "<<ibin_sb
-      << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
-      
-    // Map to distributions with optimized binning
-    //
-    unsigned int ibin_ob = fBinning->GetRecoOptBin(ibin_sb);
-    fDataOb->GetArray()[ibin_ob] += ndata;
-  }//ibin_sb
+  if(!update_sb) {
+    // Updating only the templates using the optimized binning
+    TString ob_name = TString::Format("curr_pdft_ob_vf_%s",fModelName.c_str());
+    VALORArray * pdf_ob = (VALORArray*) array.FindObject(ob_name.Data());
+    assert(pdf_ob);
+    const int nbins_ob = pdf_ob->GetSize();
+    assert(nbins_ob==fDataOb->GetSize());
+
+    for(int ibin_ob = 0 ; ibin_ob < nbins_ob ; ibin_ob ++) {
+      double nmc   = pdf_ob->GetArray()[ibin_ob];
+      double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
+      fDataOb->GetArray()[ibin_ob] = ndata;
+
+      LOG("GenericSingleSampleFitData",pDEBUG)
+        << "(reco_ob_idx = "<<ibin_ob
+        << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
+    }//ibin_ob
+  }
+  else {
+    // Updating the templates using both the simple and optimised binning
+    TString sb_name = TString::Format("curr_pdft_sb_vf_%s",fModelName.c_str());
+    VALORArray * pdf_sb = (VALORArray*) array.FindObject(sb_name.Data());
+    assert(pdf_sb);
+    const int nbins_sb = pdf_sb->GetSize();
+    assert(nbins_sb==fDataSb->GetSize());
+
+    for(int ibin_sb = 0 ; ibin_sb < nbins_sb ; ibin_sb ++) {
+      double nmc   = pdf_sb->GetArray()[ibin_sb];
+      double ndata = (fluctuate) ? Rnd::Instance()->RndToyMCstat().Poisson(nmc) : nmc;
+      fDataSb->GetArray()[ibin_sb] = ndata;
+
+      LOG("GenericSingleSampleFitData",pDEBUG)
+        << "(reco_sb_idx = "<<ibin_sb
+        << "): N_{MC} = " << nmc << ", N_{Data} = " << ndata;
+
+      // Map to distributions with optimized binning
+      //
+      unsigned int ibin_ob = fBinning->GetRecoOptBin(ibin_sb);
+      fDataOb->GetArray()[ibin_ob] += ndata;
+    }//ibin_sb
+  }
 #endif //__VALOR_FMWK_PENALTY_ONLY__
-  
-  LOG("GenericSingleSampleFitData",pNOTICE) 
-    << fName<< ": N_{Data} SB = " << fDataSb->Integral()
-    <<" ; N_{Data} OB = "<<fDataOb->Integral();
+ 
+   LOG("GenericSingleSampleFitData",pINFO) << fName << ": N_{Data} SB = " <<
+      fDataSb->Integral() << " ; N_{Data} OB = " << fDataOb->Integral();
 
   return true;
 }
@@ -284,10 +331,11 @@ double GenericSingleSampleFitData::GetFitStatistic(
   
   double S_rate_only = TMath::Max(0.,util::ChisqPoisson(tot_ndata, tot_nmc));
 
-  LOG("GenericSingleSampleFitData",pINFO) 
+  LOG("GenericSingleSampleFitData",pINFO)
     << fName<<" - Current fit statistic (rate+shape) = " << S;
-  LOG("GenericSingleSampleFitData",pINFO) 
-    << fName<<" - Current fit statistic (rate only) = " << S_rate_only;
+  LOG("GenericSingleSampleFitData",pINFO)
+    << fName<<" - Current fit statistic (rate only) = " << S_rate_only
+    << ", from N data = " << tot_ndata << ", N MC = " << tot_nmc;
   
   // Write our contribution to the likelihood
   if (likelihood_components) {

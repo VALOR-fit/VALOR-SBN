@@ -15,6 +15,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include "valor/Conventions/Constants.h"
 #include "valor/Utilities/UtlXML.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Messenger/Messenger.h"
@@ -293,10 +294,37 @@ bool SingleSampleKineBinning::Read(string file)
     for(int im = 0; im < conv::kNReacModes; im++) {
       conv::ReacMode_t m = conv::kReactionModes[is][im];
       if(m == conv::kmUndefined) continue;
+      string mode_xsec_true_binning_file = "";
       string node_path = "xsec_true/" + util::AsString(m);
-      bool mode_xsec_true_exists = util::NodeExists(xml,root_node,node_path);
+      bool mode_xsec_true_exists = false;
+      if(util::NodeExists(xml,root_node,node_path)) {
+        mode_xsec_true_exists = true;
+        mode_xsec_true_binning_file = util::XML2String(xml, root_node, node_path);
+      }
+      else {
+        // Read binning that depends on the coarse reac mode, if specified
+        XMLNodePointer_t xsec_true_node = util::FindNode(xml, root_node, "xsec_true");
+        vector<XMLNodePointer_t> xsec_true_binning_vec = util::FindNodes(xml, xsec_true_node, "element");
+        if(xsec_true_binning_vec.size() != 0) {
+          for(XMLNodePointer_t element : xsec_true_binning_vec) {
+            if(util::NodeExists(xml, element, "coarse_modes") && util::NodeExists(xml, element, "binning")) {
+              string coarse_modes_str_all = util::XML2String(xml, element, "coarse_modes");
+              vector<string> coarse_modes_str_vec = util::Tokens(util::RemoveAllWhitespace(coarse_modes_str_all), ",");
+              for(string coarse_mode_str : coarse_modes_str_vec) {
+                if(util::ModeWithinCoarse(m, util::CoarseModeFromString(coarse_mode_str))) {
+                  mode_xsec_true_exists = true;
+                  mode_xsec_true_binning_file = util::XML2String(xml, element, "binning");
+                  break;
+                }
+              }
+            }
+            if(mode_xsec_true_exists) {
+              break;
+            }
+          }
+        }
+      }
       if(mode_xsec_true_exists) {
-        string mode_xsec_true_binning_file = util::XML2String(xml,root_node,node_path);
         LOG("SampleBinning", pINFO)
           << "\n ** Overriding default / Reading xsec true binning ** " 
           << "\n    For beam: " << util::AsString(fBeamConf) << " / sample: " << util::AsString(fSample) << " / mode: " <<  util::AsString(m)
@@ -321,9 +349,12 @@ bool SingleSampleKineBinning::Read(string file)
       fXsecTrueBinning[im] = fTrueSimpleBinning [im];
     }
   }
-  
-  // Should write a check here that makes sure that optimised bin edges each lie on a simple bin edge.
-  // For now just check there's more bins
+
+  // Check that optimised bin edges each lie on a simple bin edge.
+  CheckBinEdges(fRecoOptimizedBinning, fRecoSimpleBinning);
+  CheckBinEdges(fXsecRecoBinning     , fRecoSimpleBinning);
+
+  // Check that there're more bins in the simple binning scheme than the optimised
   if (fRecoOptimizedBinning->NBins() > fRecoSimpleBinning->NBins()) {
     LOG("SampleBinning",pFATAL) << "Fewer simple reco bins ("<<fRecoSimpleBinning->NBins()
       <<") than optimised bins ("<<fRecoOptimizedBinning->NBins()<<"). You did something wrong.";
@@ -348,14 +379,14 @@ bool SingleSampleKineBinning::Read(string file)
 VALORBinning * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
-  int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
+  int im = util::ArrIdx::Instance()->ReacModeIdx(fBeamConf,fSample,m);
   return this->TrueSmpBinning(im);
 }
 //________________________________________________________________________________________
 VALORBinning * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
-  int im = util::ArrIdx::Instance()->ReacModeIdx(fSample,m);
+  int im = util::ArrIdx::Instance()->ReacModeIdx(fBeamConf,fSample,m);
   return this->XsecTrueBinning(im);
 }
 //________________________________________________________________________________________
@@ -424,5 +455,47 @@ const std::vector<conv::KineVar_t> & SingleSampleKineBinning::KineVars() const
   return fKineVars;
 }
 //________________________________________________________________________________________
+void SingleSampleKineBinning::CheckBinEdges(VALORBinning *opt_binning, VALORBinning *smp_binning) const
+{
+  for(auto kv_opt : opt_binning->KineVars()) {
+    if(!smp_binning->Contains(kv_opt)) { continue; }
+    for(unsigned int ibin_opt = 0; ibin_opt < opt_binning->NBins(); ++ibin_opt) {
+      // Check if the bin lower edge matches
+      bool min_matches = false;
+      double bin_min_opt = opt_binning->BinMinimum(ibin_opt, kv_opt);
+      for(unsigned int ibin_smp = 0; ibin_smp < smp_binning->NBins(); ++ibin_smp) {
+        double bin_min_smp = smp_binning->BinMinimum(ibin_smp, kv_opt);
+        double bin_max_smp = smp_binning->BinMaximum(ibin_smp, kv_opt);
+        if((bin_min_smp - bin_min_opt < conv::kASmallNum) || (bin_max_smp - bin_min_opt < conv::kASmallNum)) {
+          min_matches = true;
+          break;
+        }
+      }
+      if(!min_matches) {
+        LOG("SampleBinning",pFATAL) << "The optimised lower bin edge " << bin_min_opt
+                                    << " for kinevar = " << util::AsString(kv_opt)
+                                    << " does not lie on a simple bin edge for binning = " << opt_binning->GetName();
+        util::Die(-1);
+      }
 
-
+      // Check if the bin upper edge matches
+      bool max_matches = false;
+      double bin_max_opt = opt_binning->BinMaximum(ibin_opt, kv_opt);
+      for(unsigned int ibin_smp = 0; ibin_smp < smp_binning->NBins(); ++ibin_smp) {
+        double bin_min_smp = smp_binning->BinMinimum(ibin_smp, kv_opt);
+        double bin_max_smp = smp_binning->BinMaximum(ibin_smp, kv_opt);
+        if((bin_min_smp - bin_max_opt < conv::kASmallNum) || (bin_max_smp - bin_max_opt < conv::kASmallNum)) {
+          max_matches = true;
+          break;
+        }
+      }
+      if(!max_matches) {
+        LOG("SampleBinning",pFATAL) << "The optimised upper bin edge " << bin_min_opt
+                                    << " for kinevar = " << util::AsString(kv_opt)
+                                    << " does not lie on a simple bin edge for binning = " << opt_binning->GetName();
+        util::Die(-1);
+      }
+    }
+  }
+}
+//________________________________________________________________________________________

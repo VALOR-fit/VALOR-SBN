@@ -17,18 +17,23 @@ DUNE_LIBRARIES =
 TGT = make_nd_minidst \
       make_fd_minidst \
       make_sbncode_minidst \
+      make_recoselection_minidst \
       make_fastmc_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
       make_response_functions \
+      make_table_systematic_effects \
       run_fit \
       write_pdf \
       tweak_pdf_N \
+      tweak_pdf_sigma_var \
       fitnt_conv \
       adaptive_mcmc \
       run_tests \
-      batch_tests \
-      write_sbn_spectra_using_universes
+      run_build_margtoys \
+      run_fit_marg \
+      make_dummy_samples \
+      batch_tests
 
 all: $(TGT)
 
@@ -96,6 +101,12 @@ else
 	@echo "Skipping make_response_functions due to no GENIE"
 endif
 
+# Throw a user-specified parameter set N times and output a table containing the mean, RMS and RMS/mean for all samples
+#
+make_table_systematic_effects: FORCE
+	$(CXX) $(CXXFLAGS) -c make_table_systematic_effects.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) make_table_systematic_effects.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_table_systematic_effects
+
 # Generate CAFs based DSTs
 #
 make_caf_minidst: FORCE
@@ -131,12 +142,13 @@ write_pdf: FORCE
 tweak_pdf_N: FORCE
 	$(CXX) $(CXXFLAGS) -c tweak_pdf_N.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) tweak_pdf_N.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
-	
+
+# Make +/- 1 and 3 sigma variations for each param
 #
-write_sbn_spectra_using_universes: FORCE
-	$(CXX) $(CXXFLAGS) -c write_sbn_spectra_using_universes.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) write_sbn_spectra_using_universes.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-write_sbn_spectra_using_universes
-	
+tweak_pdf_sigma_var: FORCE
+	$(CXX) $(CXXFLAGS) -c tweak_pdf_sigma_var.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) tweak_pdf_sigma_var.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_sigma_var
+
 # Run an Adaptive Metropolis Hastings around the results of a fit
 #
 adaptive_mcmc: FORCE
@@ -148,6 +160,18 @@ adaptive_mcmc: FORCE
 fitnt_conv: FORCE
 	$(CXX) $(CXXFLAGS) -c fitnt_conv.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) fitnt_conv.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
+
+run_build_margtoys: FORCE
+	$(CXX) $(CXXFLAGS) -c run_build_margtoys.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) run_build_margtoys.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_build_margtoys
+
+run_fit_marg: FORCE
+	$(CXX) $(CXXFLAGS) -c run_fit_marg.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) run_fit_marg.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_fit_marg
+
+make_dummy_samples: FORCE
+	$(CXX) $(CXXFLAGS) -c make_dummy_samples.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) make_dummy_samples.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_dummy_samples
 
 run_tests: FORCE
 ifdef GENIE
@@ -178,12 +202,17 @@ clean: FORCE
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_recoselection_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-write_pdf
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_sigma_var
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_tests
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit_marg
+	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_DUNE)/bin/valor_dune-batch_tests
 
 distclean: FORCE
@@ -193,12 +222,17 @@ distclean: FORCE
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_recoselection_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/write_pdf
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/tweak_pdf_N
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/tweak_pdf_sigma_var
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_tests
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit_marg
+	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-batch_tests
 
 FORCE:

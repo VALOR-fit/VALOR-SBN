@@ -25,6 +25,7 @@ brief      A generic implementation of the fit model for a single sample,
 #define _valor_generic_single_sample_model_h_
 
 #include <string>
+#include <utility>
 
 #include <TMatrixD.h>
 #include <TObjArray.h>
@@ -37,6 +38,8 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/VArray/VALORArrayBin.h"
+#include "valor/Conventions/KineVar.h"
+#include "valor/Conventions/FitParamApply.h"
 
 //dune
 #include "valor/Conventions/Detector.h"
@@ -72,6 +75,7 @@ public:
   
   // Options available to Read() include nosplines, nomc, forcedst, pot_override, binning=myfile.xml 
   bool          Read                   (string file, Option_t * opt = 0);
+  virtual bool  Read(std::ifstream& stream, Option_t* read_opt = 0);
   bool          Generate               (const PhysHypothesis & ph, Option_t * opt = 0);
   void          RandomizeSystematics   (Option_t * opt = 0);
   void          RandomizeSystematics   (bool (*should_randomize)(conv::PhysParamId_t), Option_t * opt = 0);
@@ -84,6 +88,7 @@ public:
   bool          Generate               (const FitParamList & fp, Option_t * opt = 0);
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
+  virtual bool  Write(std::ofstream& stream, Option_t* write_opt = 0);
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
   
   void          SetSystConf            (CorrelatedSystematics * syst, Option_t * opt = "");
@@ -133,14 +138,43 @@ private:
   void ApplyPhysics                      (Option_t * opt = 0);
   void ApplyOscProb                      (Option_t * opt = 0);
   void UpdatePDFs                        (Option_t * opt = 0);
+  void ApplyPostOscLateralSystematics    (VALORArray * pdf, bool simple_binning = false);
+  void ApplyLateralSystematic            (VALORArray * pdf, conv::PhysParamId_t p, bool simple_binning = false);
+  void ReadExtTuningHistsAll             (TXMLEngine* xmleng, XMLNodePointer_t top_node);
+  void ReadTune                          (TXMLEngine* xmleng, XMLNodePointer_t top_node, std::vector< std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > > * hist_vec, Option_t * opt = "");
+  double GetExternalWeight               (std::map<conv::KineVar_t,double> kinematics, conv::ReacMode_t m, conv::NuclearTarget_t nt); // new function to read external weight containing histo
+
+  // TODO: Should really be using a simple struct here instead of this unwieldy object
+  // TODO: Put in the operation type into TuningInfo (e.g. multiply or divide), but turn TuningInfo into a struct first!
+  typedef std::pair< std::pair<conv::ApplyMask_t, std::vector<conv::KineVar_t> >, TH1* > TuningInfo;
+
+  // Apply bin-by-bin tuning to the input MC templates based on the ratio of the input tuning hists.
+  // Loops over the input vectors of TuningInfo to determine which tunes to apply.
+  void ApplyBinnedRatioTuningToTemplates (std::vector<TuningInfo> & numerator_vec, std::vector<TuningInfo> & denominator_vec,
+                                          std::vector<std::string> templates_to_update);
+  // Apply a single bin-by-bin tune
+  void ApplyBinnedRatioTuningToTemplates (TH1* numerator_hist, TH1* denominator_hist, std::map<conv::ReacMode_t, bool> apply_to_mode,
+                                          std::vector<conv::KineVar_t> kvs, std::vector<std::string> templates_to_update,
+                                          bool use_simple_binning);
+
+  // Multiply the content of each bin in the hist (within range) by the initial values of the input parameters, but only use params that are compatible with an input apply mask
+  void ReweightHistUsingParamSet(TH1* hist_to_reweight, std::vector<conv::KineVar_t> kvs, CorrelatedSystematics* syst,
+                                 std::string param_set_str, conv::ApplyMask_t mask, bool use_current_vals = true);
+
+  void FillNonEmptyBinVectors(void);
+
+  // There are many large vectors used when applying lateral systematics. They only depend on the PDF reco binning
+  // and the applied kine var, so pre-compute them instead of calculating them for every event and mode.
+  void PreComputeLateralSystVectors(bool use_simple_binning);
 
   const util::ArrIdx * fArrIdx;
   
   // Keep track of the parameters we need to loop over
-  // Normalisation and spline parameters divided
+  // Normalisation, spline and post-oscillation lateral parameters divided
   std::vector<conv::PhysParamId_t> fNormParams;
   std::vector<conv::PhysParamId_t> fSplineParams;
-  
+  std::vector<conv::PhysParamId_t> fLateralPostOscParams;
+
   // Keep a list of the parameters for every given mode
   std::vector<conv::PhysParamId_t> fNormParamsAppliedTo  [conv::kNReacModes];
   std::vector<conv::PhysParamId_t> fSplineParamsAppliedTo[conv::kNReacModes];
@@ -243,6 +277,34 @@ private:
   // For implementing of event-by-event systematics
   // eg for making spectra that can be used for covariance matrices
   std::map<std::string,size_t> fSystUniverseToApply; // param name in DST to universe ID in DST
+
+  // Vector of tuning hists and the apply masks and kine vars that they should be used for
+  std::vector<TuningInfo> fEventByEventTuningHists;
+  std::vector<TuningInfo> fBinByBinTuningHists;
+
+  // Vector of non-empty bins in each MC template. Built as vec[imode][ibin] = Ntrue * ireco + itrue
+  std::vector<std::vector<int>> fNonEmptyBinsOb;
+  std::vector<std::vector<int>> fNonEmptyBinsSb;
+  std::vector<int> fNumOfNonEmptyBinsOb;   // The number of non-empty bins in each mode
+  std::vector<int> fNumOfNonEmptyBinsSb;
+
+  // Vectors used when applying lateral systematics. Pre-compute these during Read().
+  std::map<conv::KineVar_t, std::vector<double>             > fUnscaledBinEdgesOb;
+  std::map<conv::KineVar_t, std::vector<double>             > fScaledBinEdgesOb;
+  std::map<conv::KineVar_t, std::vector<bool>               > fIsUnscaledBinOverflowOb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fScaledBinToGlobalBinOb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fUnscaledBinToGlobalBinOb;
+  std::map<conv::KineVar_t, std::vector<std::vector<bool> > > fSkipBinOb;
+  std::map<conv::KineVar_t, unsigned int                    > fNOverflowBinsOb;
+
+  // Same as above, but for the simple binning scheme
+  std::map<conv::KineVar_t, std::vector<double>             > fUnscaledBinEdgesSb;
+  std::map<conv::KineVar_t, std::vector<double>             > fScaledBinEdgesSb;
+  std::map<conv::KineVar_t, std::vector<bool>               > fIsUnscaledBinOverflowSb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fScaledBinToGlobalBinSb;
+  std::map<conv::KineVar_t, std::vector<unsigned int>       > fUnscaledBinToGlobalBinSb;
+  std::map<conv::KineVar_t, std::vector<std::vector<bool> > > fSkipBinSb;
+  std::map<conv::KineVar_t, unsigned int                    > fNOverflowBinsSb;
 };
 
 } // valor

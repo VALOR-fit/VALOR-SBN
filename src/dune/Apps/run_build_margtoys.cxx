@@ -1,0 +1,205 @@
+//____________________________________________________________________________
+/*!
+
+\app       valor_dune-run_build_margtoys
+
+\brief     Generate marginalisation toys.
+
+\options     --tag                 : Tag for output file [def: "margtoy"]
+             --run                 : Run # [def: 0]
+             --nmargtoy            : Number of marginalisation toys [def: 1]
+             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
+                                     [def: "nuosc3f"]
+             --fit-param-opt       : Options used when setting up the FitParamList
+                                     [def: "NONE"]
+             --param-values-option : Decide how to set the values of physics 
+                                     params used for toy-MC generation 
+                                    [def:"randomize-all;prefit-errors"]
+             --config              : Analysis configuration file [required]
+             --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
+            [--with-stat-fluct |   : Include statistical fluctuation in toy 
+                                     MC generation? [def: yes]
+             --without-stat-fluct] 
+            [--store-spectra   |   : Store toy-MC/best-fit spectra? [def: no]
+             --discard-spectra   ] 
+             --n-sigma-limit       : The limit to apply to systematic parameter
+                                     throws
+             --use-simple-binning  : Update simple binning templates too [def: no-simple-binning]
+
+\author    Andy Chappell <A.Chappell \at warwick.ac.uk>
+           University of Warwick
+
+\created   October 10, 2018
+
+\copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved
+
+*/
+//____________________________________________________________________________
+
+// root
+#include "TFile.h"
+#include "TSystem.h"
+#include "TObjArray.h"
+#include "TString.h"
+#include "TVirtualFitter.h"
+#include "TMath.h"
+#include "TStopwatch.h"
+
+#include "cmath"
+#include "fstream"      // std::ofstream
+
+// fmwk
+#include "valor/CmdLine/CmdLnArgList.h"
+
+#include "valor/Conventions/KineSpace.h"
+#include "valor/FitCore/PhysParamList.h"
+#include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/FitModelABC.h"
+#include "valor/FitCore/FitDataABC.h"
+#include "valor/FitCore/FitInputs.h"
+#include "valor/FitCore/FitterABC.h"
+#include "valor/FitCore/UtlFit.h"
+#include "valor/Utilities/UtlStyle.h"
+#include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/Rnd.h"
+#include "valor/Utilities/Env.h"
+#include "valor/Messenger/Messenger.h"
+#include "valor/Ntuple/StdFitNtp.h"
+//#include "valor/Marginalisation/MCMarginaliser.h"
+//#include "valor/FitCore/LikelihoodABC.h"
+//#include "valor/Marginalisation/MarginalLikelihood.h"
+// dune
+#include "dune/Utilities/UtlParam.h"
+#include "dune/Conventions/OscParamValues.h"
+#include "dune/Conventions/PhysicalParameterLimits.h"
+#include "dune/Elements/CompoundFitElements.h"
+
+#include "valor/FitCore/CompoundFitData.h"
+#include "valor/FitCore/CompoundFitModel.h"
+#include "valor/Conventions/Opt.h"
+
+#include "dune/Utilities/UtlOscillation.h"
+#include "dune/Utilities/Marginalisation.h"
+
+using namespace valor;
+using namespace valor::conv;
+//using namespace valor::marginalisation;
+
+void BuildToys(CmdLnArgList& arg);
+void Init(CmdLnArgList& arg);
+
+int main(int argc, char** argv)
+{
+   gROOT->SetBatch(1);
+   Env::Instance()->AutoSet("dune");
+   CmdLnArgList arg;
+   arg.Read(argc,argv,
+      "$VALOR_DUNE/config/apps/run_build_margtoys.arg"
+      ":$VALOR_DUNE/config/apps/seeds.arg"
+      ":$VALOR_DUNE/config/apps/oscparams.arg");
+   LOG("valor_dune", pNOTICE) << arg;
+   BuildToys(arg);
+   LOG("valor_dune", pNOTICE) << "Finished";
+  
+   return 0;
+}
+
+void BuildToys(CmdLnArgList& arg)
+{
+   Init(arg);
+
+   // Get arguments
+   string fpl_name         = arg.GetString("fit-param-list");
+   string fplopt           = arg.GetString("fit-param-opt");
+   string param_val_opts   = arg.GetString("param-values-option");
+   bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
+   bool use_simple_binning = arg.GetBool("use-simple-binning");
+   bool save_throws        = arg.GetBool("save-throws");
+
+   string fp_name1      = arg.GetString("fit-param1");
+   const double fp_val1 = arg.GetDouble("fit-param1-value");
+   const int fp_bin1    = arg.GetInt("fit-param1-bin");
+
+   string fp_name2;
+   double fp_val2;
+   int fp_bin2;
+
+   string toy_throw_file_to_read = arg.GetString("read-throws-from");
+   string param_name_map_file    = arg.GetString("read-throws-param-map");
+   bool randomise_systematics (!(toy_throw_file_to_read != "" && toy_throw_file_to_read != "NONE" &&
+                                 param_name_map_file    != "" && param_name_map_file    != "NONE"));
+
+   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name1 << "(" <<
+      fp_bin1 << ") = " << fp_val1;
+
+   if(arg.Exists("fit-param2"))
+   {
+      fp_name2 = arg.GetString("fit-param2");
+      fp_val2 = arg.GetDouble("fit-param2-value");
+      fp_bin2 = arg.GetInt("fit-param2-bin");
+      LOG("valor_dune", pNOTICE) << "Fit parameter " << fp_name2 << "(" <<
+         fp_bin2 << ") = " << fp_val2;
+   }
+
+   CompoundFitElements * elements = new CompoundFitElements();
+   elements->Read(util::CompleteConfigPath(arg.GetString("config")));
+   FitModelABC* model = elements->FitModel();
+
+   // GetSystematics will be added to CorrelatedSystematics in the future
+   CorrelatedSystematics* systematics =
+      dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
+   FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
+   // Set the priors
+   util::oscillation::SetOscillationParameterPriors(arg, *fpl);
+   // Fix or set marginalisation flag for oscillation parameters
+   util::oscillation::SetOscillationParameters(arg, *fpl);
+
+   // Initialize non delta M squared oscillation parameters to zero
+   // util::oscillation::SetUnoscillated(*fpl);
+
+   // Get the requested batch number and number of marginalisation toys for the
+   // batch
+   int batch = arg.GetInt("batch");
+   int Ntoys = arg.GetInt("nmargtoy");
+
+   TStopwatch clock;
+   clock.Start();
+   Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning, save_throws);
+   if(!arg.Exists("fit-param2"))
+   {  // Build toys for 1D fit
+      marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl, randomise_systematics,
+                                param_val_opts.c_str(), rethrow_unphysical,
+                                toy_throw_file_to_read, param_name_map_file);
+   }
+   else
+   {  // Build toys for 2D fit
+      marginalisation.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl, randomise_systematics,
+                                param_val_opts.c_str(), rethrow_unphysical,
+                                toy_throw_file_to_read, param_name_map_file);
+   }
+   clock.Stop();
+
+   LOG("valor_dune", pNOTICE) << "Generate batch " << batch << ": " << Ntoys <<
+      " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
+      clock.CpuTime();
+   // The toy-MC was generated using the `current' values of the input parameter list.
+   // These values will be overwritten during the fit.
+   // Copy those values now so as to save them later in the output tree.
+   // ntp.TrueParamArr()->Append(true_params);
+}
+
+void Init(CmdLnArgList& arg)
+{
+   Messenger::Instance()->Configure(util::CompleteConfigPath(arg.GetString("mesg-thresholds")));
+
+   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
+   Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
+   Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
+   Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+   util::InitializeOAPriors();   // TODO: this should be read from XML
+
+   Rnd::Instance()->SetSeeds(arg);
+}
+

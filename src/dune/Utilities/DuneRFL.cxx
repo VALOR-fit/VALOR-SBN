@@ -69,7 +69,11 @@ fNParams       (0),
 fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
-fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]")
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[ZONE]_[TRUE1]_[TRUE2]_[RECO1]_[RECO2]"),
+fSplineWghtMethod(conv::kSplEvalUndefined),
+fAllowNegativeSplines(false),
+fGSLSplineType(ROOT::Math::Interpolation::kAKIMA),
+fForceNegWghtTo(0.0)
 {
   
 }
@@ -91,7 +95,11 @@ fNParams       (n_params),
 fParams        (NULL),
 fNBinsTrue     (1),
 fNBinsReco     (1),
-fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]")
+fSplineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]"),
+fSplineWghtMethod(conv::kSplEvalUndefined),
+fAllowNegativeSplines(false),
+fGSLSplineType(ROOT::Math::Interpolation::kAKIMA),
+fForceNegWghtTo(0.0)
 {
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
@@ -149,7 +157,7 @@ const util::Interpolator* valor::util::DuneRFL::GetSpline (
 {
   static const util::ArrIdx * arr_idx = util::ArrIdx::Instance();
   
-  const int im = arr_idx->ReacModeIdx(fSample,m);
+  const int im = arr_idx->ReacModeIdx(fBeam,fSample,m);
   const int ip = this->Param2Idx(p);
   
   const int splidx = SplineIndex(im,ip,itrue,ireco);
@@ -219,7 +227,48 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     util::Die(-1); return false;
   }
   
-  string spl_file_pattern = util::XML2String(xml,root_node,"splines/pattern");
+  string spl_file_pattern           = util::XML2String(xml,root_node,"splines/pattern");
+  string spl_stored_as              = "";
+  string spl_array_pattern          = "";
+  bool use_root_spline              = false;
+  bool use_spline_limits            = true;
+  bool reorder_out_of_order_splines = false;
+  if (util::NodeExists(xml,root_node,"splines/stored_as") && util::NodeExists(xml,root_node,"splines/array_pattern")) {
+    spl_stored_as     = util::XML2String(xml,root_node,"splines/stored_as");
+    spl_array_pattern = util::XML2String(xml,root_node,"splines/array_pattern");
+  }
+  if (util::NodeExists(xml,root_node,"splines/method")) {
+    std::string spline_eval_type_str  = util::XML2String(xml,root_node,"splines/method");
+    if(spline_eval_type_str != "") { fSplineWghtMethod = util::SplEvalTypeFromString(spline_eval_type_str); }
+    else                           { fSplineWghtMethod = conv::kSplEvalCurrVal; }
+  }
+  if (util::NodeExists(xml,root_node,"splines/allow_negative")) {
+    fAllowNegativeSplines = util::XML2Bool(xml,root_node,"splines/allow_negative");
+    if (util::NodeExists(xml,root_node,"splines/set_neg_wght_to")) {
+      fForceNegWghtTo = util::XML2Dbl(xml,root_node,"splines/set_neg_wght_to");
+    }
+  }
+  if (util::NodeExists(xml,root_node,"splines/within_limits")) {
+    use_spline_limits = util::XML2Bool(xml,root_node,"splines/within_limits");
+  }
+  if (util::NodeExists(xml,root_node,"splines/sort_knot_order")) {
+    reorder_out_of_order_splines = util::XML2Bool(xml,root_node,"splines/sort_knot_order");
+  }
+  if (util::NodeExists(xml,root_node,"splines/type")) {
+    std::string type_str = util::XML2String(xml,root_node,"splines/type");
+    type_str = util::ToLowerCase(util::RemoveAllWhitespace(type_str));
+         if(type_str == "linear")         { fGSLSplineType = ROOT::Math::Interpolation::kLINEAR;          }
+    else if(type_str == "polynomial")     { fGSLSplineType = ROOT::Math::Interpolation::kPOLYNOMIAL;      }
+    else if(type_str == "cubic")          { fGSLSplineType = ROOT::Math::Interpolation::kCSPLINE;         }
+    else if(type_str == "cubic_periodic") { fGSLSplineType = ROOT::Math::Interpolation::kCSPLINE_PERIODIC;}
+    else if(type_str == "akima")          { fGSLSplineType = ROOT::Math::Interpolation::kAKIMA;           }
+    else if(type_str == "akima_periodic") { fGSLSplineType = ROOT::Math::Interpolation::kAKIMA_PERIODIC;  }
+    else if(type_str == "tspline3")       { use_root_spline = true; }
+    else {
+     LOG("DuneRFL",pFATAL) << "Did not recognise spline type [" << type_str << "]";
+     util::Die(-1); return false;
+    }
+  }
 
   if (!spl_file_pattern.size()) {
     LOG("DuneRFL",pFATAL) << "Failed to open spline filename pattern from XML.";
@@ -267,6 +316,24 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
 
       const Parameter & param = ParameterPool::Instance()->GetParam(p);
       bool param_applied_to_mode = util::IsAppliedTo(param.GetApplyMask(),fBeam,fSample,fDetector,m,nt);
+
+      TObjArray* spline_array = nullptr;
+      if(spl_stored_as == "TObjArray") {
+        // Splines are not stored individually in the TFiles, but in TObjArrays
+        TString array_name = spl_array_pattern.c_str();
+        array_name = array_name.ReplaceAll("[PARAM]", util::NameRegistry::Instance()->AsString(p).c_str());
+        array_name = array_name.ReplaceAll("[MODE]" , util::AsString(m).c_str());
+        for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
+          TFile *spline_file = spline_files[ifile];
+          LOG("DuneRFL", pDEBUG) << "Searching for spline array [" << array_name << "] in file ["
+                                 << spline_file->GetName() << "]...";
+          spline_array = static_cast<TObjArray*>(spline_file->Get(array_name.Data()));
+          if (spline_array) {
+            LOG("DuneRFL",pDEBUG)<<"   ...found";
+            break;
+          }
+        }
+      }
       
       for (int ireco = 0 ; ireco < n_bins_reco ; ireco++) {
         for (int itrue = 0 ; itrue < n_bins_true ; itrue++) {
@@ -281,10 +348,32 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
           if (param_applied_to_mode) {
             TObject * spline_obj = NULL;
             // Read each file till we get one that contains our spline
-            for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
-              TFile * spline_file = spline_files[ifile];
-              spline_obj = spline_file->Get(spl_name.Data());
-              if (spline_obj) {break;}
+            if(spl_stored_as == "TObjArray") {
+              // Splines are not stored individually in the TFiles, but in TObjArrays
+              int in_idx = itrue * n_bins_reco + ireco;
+              spline_obj = static_cast<TSpline3*>(spline_array->At(in_idx));
+              if (!spline_obj) {
+                LOG("DuneRFL",pWARN)<<"Expected a spline at index: "<<in_idx<<" of array "<<spline_array->GetName()
+                                    << ", but could not find it";
+              }
+              else {
+                LOG("DuneRFL", pDEBUG) << "Found spline named [" << spline_obj->GetName() << "] at itrue = "
+                                       << itrue << ", ireco = " << ireco << ", in array named ["
+                                       << spline_array->GetName() << "]";
+              }
+            }
+            else{
+              // Splines are stored individually in the TFiles
+              for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
+                TFile *spline_file = spline_files[ifile];
+                LOG("DuneRFL", pDEBUG) << "Searching for spline [" << spl_name << "] in file ["
+                                       << spline_file->GetName() << "]...";
+                spline_obj = spline_file->Get(spl_name.Data());
+                if (spline_obj) {
+                  LOG("DuneRFL",pDEBUG)<<"   ...found";
+                  break;
+                }
+              }
             }
             TSpline* spline = dynamic_cast<TSpline*>(spline_obj);
             if (spline) {
@@ -295,17 +384,29 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
                 delete spline;
                 continue;
               }
-              util::Interpolator * gsl_spline = new util::Interpolator(spline,ROOT::Math::Interpolation::kAKIMA);
+
+              // The input spline doesn't necessarily have the knots in the right order, so sort them
+              this->SortSpline(dynamic_cast<TSpline3*>(spline), reorder_out_of_order_splines);
+
+              util::Interpolator *  valor_spline = nullptr;
+              if(use_root_spline) { valor_spline = new util::Interpolator(spline, false); }
+              else                { valor_spline = new util::Interpolator(spline, true, fGSLSplineType); }
+              valor_spline->SetUseLimits(use_spline_limits);
+
               delete spline;
-              if (this->CheckForNegativeValues(gsl_spline,p)) {
-                LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
-                delete gsl_spline;
-                fSplines[spline_index] = kFlatSpline;
-                n_splines_neg++;
-                n_splines_read++;
+              bool use_valor_spline = true;
+              if(!fAllowNegativeSplines) {
+                if (this->CheckForNegativeValues(valor_spline,p)) {
+                  LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
+                  delete valor_spline;
+                  fSplines[spline_index] = kFlatSpline;
+                  n_splines_neg++;
+                  n_splines_read++;
+                  use_valor_spline = false;
+                }
               }
-              else {
-                fSplines[spline_index] = gsl_spline;
+              if(use_valor_spline) {
+                fSplines[spline_index] = valor_spline;
                 n_splines_read++;
               }
             }
@@ -390,8 +491,8 @@ void valor::util::DuneRFL::SetSplineNamePattern(std::string pattern) {
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const
 {
-  double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
-  double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
+  double min_val = spl->GetXmin();
+  double max_val = spl->GetXmax();
   static const int evaluations = 30;
   for (int i = 0 ; i < evaluations; i++) {
     double x = min_val + (i+0.5)*(max_val-min_val)/evaluations;
@@ -402,13 +503,54 @@ bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::Phy
 //________________________________________________________________________________________
 bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl, conv::PhysParamId_t p) const
 {
-  double min_val = PhysicalParameterLimits::Instance()->MinValue(p);
-  double max_val = PhysicalParameterLimits::Instance()->MaxValue(p);
+  double min_val = spl->Xmin();
+  double max_val = spl->Xmax();
   static const int evaluations = 30;
   for (int i = 0 ; i < evaluations; i++) {
     double x = min_val + (i+0.5)*(max_val-min_val)/evaluations;
     if (spl->Eval(x) < 0) {return true;}
   }
   return false;
+}
+//________________________________________________________________________________________
+void valor::util::DuneRFL::SortSpline(TSpline3 * spline, bool sort_spline)
+{
+  bool knots_in_order = true;
+  int n_knots = spline->GetNp();
+  double this_x = -conv::kALargeNum;
+
+  for (int i = 0 ; i < n_knots; i++) {
+    double x = 0;
+    double y = 0;
+    spline->GetKnot(i,x,y);
+    if (x < this_x) {
+      knots_in_order = false;
+      break;
+    }
+    this_x = x;
+  }
+
+  if(!knots_in_order){
+    if(sort_spline) {
+      std::map<double,double> knots;
+      std::vector<double> x_vals;
+      for (int i = 0 ; i < n_knots; i++) {
+        double x = 0;
+        double y = 0;
+        spline->GetKnot(i,x,y);
+        knots[x] = y;
+        x_vals.push_back(x);
+      }
+
+      std::sort(x_vals.begin(), x_vals.end());
+      for (int i = 0 ; i < n_knots; i++) {
+        spline->SetPoint(i, x_vals[i], knots.at(x_vals[i]));
+      }
+    }
+    else {
+      LOG("DuneRFL",pWARN) << "Spline [" << spline->GetName()
+                           << "] has knots that are out-of-order and the option to sort them was not specified";
+    }
+  }
 }
 //________________________________________________________________________________________

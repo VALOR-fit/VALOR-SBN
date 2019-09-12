@@ -37,6 +37,7 @@
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
+#include "valor/Conventions/SplineEvalType.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Utilities/KinematicPoint.h"
 
@@ -82,6 +83,12 @@ public:
   
   // Get the bin corresponding to a point in kinematical space, returns pair<itrue,ireco>
   std::pair<int,int> GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m = conv::kmUndefined) const;
+
+  // Get the name of the method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
+  const conv::SplEvalType_t & GetSplineEvalType(void) const { return fSplineWghtMethod; }
+
+  // When spline weights come out negative, force them to this value instead
+  const double & GetForceNegWghtTo(void) const { return fForceNegWghtTo; }
   
 private:
 
@@ -117,13 +124,29 @@ private:
   
   // Name for the splines (used in filename)
   TString fSplineNamePattern;
+
+  // The method we'll use when applying weights. See GenericSingleSampleFitModel::ApplyPhysics for usage
+  conv::SplEvalType_t fSplineWghtMethod;
+
+  // If this is true, allow splines to go negative, but when this happens the weights will get set to 0
+  bool fAllowNegativeSplines;
+
+  // The type of GSL spline to use. Options are: linear, polynomial, cubic, cubic_periodic, akima, or akima_periodic.
+  // Defaults to Akima.
+  ROOT::Math::Interpolation::Type fGSLSplineType;
   
   // Array storing parameters mapped to indice within this object
   int fParam2Idx[conv::knppmax];
+
+  // When spline weights come out negative, force them to this value instead
+  double fForceNegWghtTo;
   
   // Check spline is positive
   bool CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const;
   bool CheckForNegativeValues(const valor::util::Interpolator * spl, conv::PhysParamId_t p) const;
+
+  // The input spline doesn't necessarily have the knots in the right order, so sort them
+  void SortSpline(TSpline3 * spl, bool sort_spline);
 };
 
 std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);

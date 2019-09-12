@@ -21,7 +21,7 @@ using std::vector;
 
 //________________________________________________________________________________________
 string valor::util::nm::DSetName(
-  string det_nm, string beam_nm, string sample_nm, string obsrv_nm)
+  string det_nm, string beam_nm, string sample_nm, string /*obsrv_nm*/)
 {
   string dataset = det_nm + delimiter + beam_nm + delimiter + sample_nm /* + delimiter + obsrv_nm */;
   return dataset;
