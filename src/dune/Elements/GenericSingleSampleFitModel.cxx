@@ -3932,12 +3932,14 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
     end_bins.push_back(nbins-1);  // The above loop won't catch the very last bin in the entire binning scheme, so add it here
     *n_overflow_bins           = end_bins.size();
     unsigned int n_upper_edges = end_bins.size();
+    
+    unsigned int bad_bin_number = 99999999;
 
     *unscaled_bin_edges         = std::vector<double>            (nbins + n_upper_edges + *n_overflow_bins, conv::kBadResult);
     *scaled_bin_edges           = std::vector<double>            (nbins + n_upper_edges                   , conv::kBadResult);
     *is_unscaled_bin_overflow   = std::vector<bool>              (nbins + *n_overflow_bins                , false           );
-      *scaled_bin_to_global_bin = std::vector<unsigned int>      (nbins                                   , conv::kBadResult);
-    *unscaled_bin_to_global_bin = std::vector<unsigned int>      (nbins + *n_overflow_bins                , conv::kBadResult);
+    *scaled_bin_to_global_bin   = std::vector<unsigned int>      (nbins                                   , bad_bin_number);
+    *unscaled_bin_to_global_bin = std::vector<unsigned int>      (nbins + *n_overflow_bins                , bad_bin_number);
     *bins_to_skip               = std::vector<std::vector<bool>> (nbins, std::vector<bool>(nbins + *n_overflow_bins, false));
 
     // Fill the unscaled bin edge vector. For the scaled bin edge vector, fill with unscaled edges for now,
@@ -4008,13 +4010,13 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
 
     // Check bins
     for(unsigned int ibin = 0 ; ibin < nbins ; ibin++) {
-      if((*scaled_bin_to_global_bin)[ibin] == conv::kBadResult) {
+      if((*scaled_bin_to_global_bin)[ibin] == bad_bin_number) {
         LOG("Lateral", pFATAL) << "Scaled bin to global bin vector: index " << ibin << " not set.";
         util::Die(-1);
       }
     }
     for(unsigned int ibin = 0 ; ibin < nbins + *n_overflow_bins ; ibin++) {
-      if((*unscaled_bin_to_global_bin)[ibin] == conv::kBadResult) {
+      if((*unscaled_bin_to_global_bin)[ibin] == bad_bin_number) {
         LOG("Lateral", pFATAL) << "Un-scaled bin to global bin vector: index " << ibin << " not set.";
         util::Die(-1);
       }
