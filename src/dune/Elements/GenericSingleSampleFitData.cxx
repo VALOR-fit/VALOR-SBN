@@ -271,17 +271,8 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
 //________________________________________________________________________________________
 int GenericSingleSampleFitData::NumOfBins(Option_t * /*opt*/) const
 {
-  int nbins = 0;
-
-  for(int izone = 0; izone < kNMaxBinZones; izone++) {
-    const int n_enu_reco_bins = util::NumErecoBins(fSample,izone);
-    const int n_y_reco_bins   = util::NumYrecoBins(fSample,izone);
-    if(n_enu_reco_bins <= 0 || n_y_reco_bins <= 0) continue;
-    int nbins_curr = n_enu_reco_bins * n_y_reco_bins;
-    nbins += nbins_curr;
-  }//izone
-
-  return nbins;
+  const VALORBinning * reco_ob = fBinning->RecoOptBinning();
+  return reco_ob->NBins();
 }
 //________________________________________________________________________________________
 double GenericSingleSampleFitData::GetFitStatistic(

@@ -32,16 +32,15 @@
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/FitParamApply.h"
+#include "valor/Conventions/ReacMode.h"
+#include "valor/Conventions/KineVar.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/PhysHypothesis.h"
 
 //dune
 #include "dune/Conventions/DuneBuild.h"
-#include "valor/Conventions/ReacMode.h"
 #include "dune/Conventions/FitParamGroup.h"
-
-#include "dune/Conventions/SampleKineBinning.h"
 
 using std::string;
 
