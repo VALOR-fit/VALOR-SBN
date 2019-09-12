@@ -46,14 +46,14 @@ class SingleSampleKineBinning;
   
 namespace util {
 
-class DuneRFL {
+class RFL {
 
 public:
 
-  DuneRFL();
-  DuneRFL(const SingleSampleKineBinning * binning, int n_params, const conv::PhysParamId_t * param_ids);
-  DuneRFL(const SingleSampleKineBinning * binning, const std::vector<conv::PhysParamId_t> & params);
- ~DuneRFL();
+  RFL();
+  RFL(const SingleSampleKineBinning * binning, int n_params, const conv::PhysParamId_t * param_ids);
+  RFL(const SingleSampleKineBinning * binning, const std::vector<conv::PhysParamId_t> & params);
+ ~RFL();
 
   // Define a dummy spline pointer to an object we know, so we can use its address as a special argument.
   static const valor::util::Interpolator * kNoSplineRequired;
@@ -62,7 +62,7 @@ public:
   static const valor::util::Interpolator * kFlatSpline; //A flat spline that we'll use if we're missing RFs in testing versions
   
   void Print(std::ostream & stream) const;
-  friend std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
+  friend std::ostream & operator << (std::ostream & stream, const RFL & rfl);
   
   const valor::util::Interpolator * GetSpline(
     conv::ReacMode_t m, conv::PhysParamId_t p,
@@ -148,7 +148,7 @@ private:
   static void SortSpline(TSpline3 * spl, bool sort_spline);
 };
 
-std::ostream & operator << (std::ostream & stream, const DuneRFL & rfl);
+std::ostream & operator << (std::ostream & stream, const RFL & rfl);
 
 }      // util namespace
 }      // valor namespace

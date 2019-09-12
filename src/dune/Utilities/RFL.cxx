@@ -25,7 +25,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 
 #include "dune/Conventions/DuneBuild.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
-#include "dune/Utilities/DuneRFL.h"
+#include "dune/Utilities/RFL.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
 
 #define USE_FLAT_SPLINE_FOR_MISSING
@@ -38,16 +38,16 @@ using namespace valor::util;
 
 // Initialise the flat spline
 static Double_t flat_knots_y[5] = {  1,  1, 1, 1,  1};
-const util::Interpolator * valor::util::DuneRFL::kFlatSpline =
+const util::Interpolator * valor::util::RFL::kFlatSpline =
   new util::Interpolator(TSpline3("flat_spline",-9E9,9E9,flat_knots_y,5));
 
 // We'll never use this address to dereference - it can be passed as a flag indicating that no spline should exist.
-const util::Interpolator* valor::util::DuneRFL::kNoSplineRequired = (util::Interpolator*)&conv::kBadResult;
+const util::Interpolator* valor::util::RFL::kNoSplineRequired = (util::Interpolator*)&conv::kBadResult;
 
 //________________________________________________________________________________________
 namespace valor {
 namespace util {
-  std::ostream & operator<<(std::ostream & stream, const DuneRFL & rfl)
+  std::ostream & operator<<(std::ostream & stream, const RFL & rfl)
   {
     rfl.Print(stream);
     return stream;
@@ -55,7 +55,7 @@ namespace util {
 }
 }
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL(void)
+valor::util::RFL::RFL(void)
  :
 fBinning       (NULL),
 fSplines       (NULL),
@@ -78,10 +78,10 @@ fForceNegWghtTo(0.0)
   
 }
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL(const SingleSampleKineBinning * binning, const std::vector<PhysParamId_t> & params)
- : DuneRFL(binning,params.size(),params.data()) {}
+valor::util::RFL::RFL(const SingleSampleKineBinning * binning, const std::vector<PhysParamId_t> & params)
+ : RFL(binning,params.size(),params.data()) {}
 //________________________________________________________________________________________
-valor::util::DuneRFL::DuneRFL(const SingleSampleKineBinning * binning, int n_params, const PhysParamId_t * param_ids)
+valor::util::RFL::RFL(const SingleSampleKineBinning * binning, int n_params, const PhysParamId_t * param_ids)
  :
 fBinning       (binning),
 fSplines       (NULL),
@@ -129,11 +129,11 @@ fForceNegWghtTo(0.0)
   }
 }
 //________________________________________________________________________________________
-//~ valor::util::DuneRFL::DuneRFL(const DuneRFL &) 
+//~ valor::util::RFL::RFL(const RFL &) 
 //~ {
 //~ }
 //________________________________________________________________________________________
-valor::util::DuneRFL::~DuneRFL()
+valor::util::RFL::~RFL()
 {
   for (unsigned int ispl = 0 ; ispl < fSplineBlockSize; ispl++) {
     if (fSplines[ispl] && fSplines[ispl]!=kFlatSpline && fSplines[ispl]!=kNoSplineRequired) {
@@ -146,12 +146,12 @@ valor::util::DuneRFL::~DuneRFL()
   if (fParams       )  {delete[] fParams;       }
 }
 //________________________________________________________________________________________
-void valor::util::DuneRFL::Print(ostream & stream) const
+void valor::util::RFL::Print(ostream & stream) const
 {
   stream << "[response functions]" << endl;
 }
 //________________________________________________________________________________________
-const util::Interpolator* valor::util::DuneRFL::GetSpline (
+const util::Interpolator* valor::util::RFL::GetSpline (
   conv::ReacMode_t m, conv::PhysParamId_t p,
   const int & itrue, const int & ireco) const
 {
@@ -165,7 +165,7 @@ const util::Interpolator* valor::util::DuneRFL::GetSpline (
   return fSplines[splidx];
 }
 //________________________________________________________________________________________
-TString valor::util::DuneRFL::BuildSplineName (
+TString valor::util::RFL::BuildSplineName (
   conv::ReacMode_t m, conv::PhysParamId_t p,
   const int& itrue, const int& ireco) const
 {
@@ -183,12 +183,12 @@ TString valor::util::DuneRFL::BuildSplineName (
   return name;
 }
 //________________________________________________________________________________________
-bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
+bool valor::util::RFL::Read(std::string config_file, Option_t * /*option*/)
 {
   // Get binning details, allocate the spline block
   fSplineBlockSize = fNModes * fNParams * fNBinsTrue * fNBinsReco;
     
-  LOG("DuneRFL",pDEBUG) << "Spline binning for sample "<<util::AsString(fBeam)<<" "<<util::AsString(fSample)<<"\n"
+  LOG("RFL",pDEBUG) << "Spline binning for sample "<<util::AsString(fBeam)<<" "<<util::AsString(fSample)<<"\n"
    <<std::setw(7)<<fNModes<<" modes.\n"
    <<std::setw(7)<<fNParams<<" parameters with splines.\n"
    <<std::setw(7)<<fNBinsTrue<<" true bins.\n"
@@ -208,14 +208,14 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     // If not, try the config folder
     ts_file = TString::Format("%s/%s",Env::Instance()->TopLevelConfDir().c_str(),ts_file.Data());
     if (gSystem->GetPathInfo(ts_file.Data(), dummy)) {
-      LOG("DuneRFL",pERROR) << "Config file not found: "<<ts_file;
+      LOG("RFL",pERROR) << "Config file not found: "<<ts_file;
       util::Die(1); return false;
     }
   }
   TXMLEngine* xml = new TXMLEngine;   
   XMLDocPointer_t xmldoc = xml->ParseFile(ts_file.Data());
   if (xmldoc==0) {
-    LOG("DuneRFL",pERROR) << "Can not parse input XML file [" << ts_file << "]";
+    LOG("RFL",pERROR) << "Can not parse input XML file [" << ts_file << "]";
     delete xml;
     util::Die(1); return false;
   }
@@ -223,7 +223,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   
   string folder = util::XML2String(xml,root_node,"splines/folder");
   if (!folder.size()) {
-    LOG("DuneRFL",pFATAL) << "Failed to read spline folder from XML.";
+    LOG("RFL",pFATAL) << "Failed to read spline folder from XML.";
     util::Die(-1); return false;
   }
   
@@ -265,13 +265,13 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     else if(type_str == "akima_periodic") { fGSLSplineType = ROOT::Math::Interpolation::kAKIMA_PERIODIC;  }
     else if(type_str == "tspline3")       { use_root_spline = true; }
     else {
-     LOG("DuneRFL",pFATAL) << "Did not recognise spline type [" << type_str << "]";
+     LOG("RFL",pFATAL) << "Did not recognise spline type [" << type_str << "]";
      util::Die(-1); return false;
     }
   }
 
   if (!spl_file_pattern.size()) {
-    LOG("DuneRFL",pFATAL) << "Failed to open spline filename pattern from XML.";
+    LOG("RFL",pFATAL) << "Failed to open spline filename pattern from XML.";
     util::Die(-1); return false;
   }
   
@@ -288,7 +288,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     TString base_dir = Env::Instance()->TopLevelDataDir().c_str();
     
     TFile * spline_file = new TFile((base_dir+"/"+folder.c_str()+"/"+filename).Data());
-    LOG("DuneRFL",pINFO) << "Will read splines from file "<<spline_file->GetName();
+    LOG("RFL",pINFO) << "Will read splines from file "<<spline_file->GetName();
     spline_files.push_back(spline_file);
   }
   
@@ -325,11 +325,11 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
         array_name = array_name.ReplaceAll("[MODE]" , util::AsString(m).c_str());
         for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
           TFile *spline_file = spline_files[ifile];
-          LOG("DuneRFL", pDEBUG) << "Searching for spline array [" << array_name << "] in file ["
+          LOG("RFL", pDEBUG) << "Searching for spline array [" << array_name << "] in file ["
                                  << spline_file->GetName() << "]...";
           spline_array = static_cast<TObjArray*>(spline_file->Get(array_name.Data()));
           if (spline_array) {
-            LOG("DuneRFL",pDEBUG)<<"   ...found";
+            LOG("RFL",pDEBUG)<<"   ...found";
             break;
           }
         }
@@ -341,7 +341,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
           
           const UInt_t spline_index = SplineIndex(imode,ip,itrue,ireco);
           if (spline_index >= fSplineBlockSize) {
-            LOG("DuneRFL",pFATAL) << "Bad spline index "<<spline_index; 
+            LOG("RFL",pFATAL) << "Bad spline index "<<spline_index; 
             util::Die(-1); return false;
           }
           
@@ -353,11 +353,11 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               int in_idx = itrue * n_bins_reco + ireco;
               spline_obj = static_cast<TSpline3*>(spline_array->At(in_idx));
               if (!spline_obj) {
-                LOG("DuneRFL",pWARN)<<"Expected a spline at index: "<<in_idx<<" of array "<<spline_array->GetName()
+                LOG("RFL",pWARN)<<"Expected a spline at index: "<<in_idx<<" of array "<<spline_array->GetName()
                                     << ", but could not find it";
               }
               else {
-                LOG("DuneRFL", pDEBUG) << "Found spline named [" << spline_obj->GetName() << "] at itrue = "
+                LOG("RFL", pDEBUG) << "Found spline named [" << spline_obj->GetName() << "] at itrue = "
                                        << itrue << ", ireco = " << ireco << ", in array named ["
                                        << spline_array->GetName() << "]";
               }
@@ -366,11 +366,11 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               // Splines are stored individually in the TFiles
               for (unsigned int ifile = 0; ifile < spline_files.size(); ifile++) {
                 TFile *spline_file = spline_files[ifile];
-                LOG("DuneRFL", pDEBUG) << "Searching for spline [" << spl_name << "] in file ["
+                LOG("RFL", pDEBUG) << "Searching for spline [" << spl_name << "] in file ["
                                        << spline_file->GetName() << "]...";
                 spline_obj = spline_file->Get(spl_name.Data());
                 if (spline_obj) {
-                  LOG("DuneRFL",pDEBUG)<<"   ...found";
+                  LOG("RFL",pDEBUG)<<"   ...found";
                   break;
                 }
               }
@@ -397,7 +397,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               bool use_valor_spline = true;
               if(!fAllowNegativeSplines) {
                 if (this->CheckForNegativeValues(valor_spline)) {
-                  LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
+                  LOG("RFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
                   delete valor_spline;
                   fSplines[spline_index] = kFlatSpline;
                   n_splines_neg++;
@@ -411,7 +411,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               }
             }
             else {
-              LOG("DuneRFL",pWARN)<<"Spline not found: "<<spl_name;
+              LOG("RFL",pWARN)<<"Spline not found: "<<spl_name;
 #ifdef USE_FLAT_SPLINE_FOR_MISSING
               fSplines[spline_index] = kFlatSpline;
 #else
@@ -435,16 +435,16 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
     delete spline_file;
   }
   
-  LOG("DuneRFL",pINFO)<<"Read "<<n_splines_read<<" splines, of which "<<n_splines_flat<<" were flat.";
+  LOG("RFL",pINFO)<<"Read "<<n_splines_read<<" splines, of which "<<n_splines_flat<<" were flat.";
   if (n_splines_neg) {
-    LOG("DuneRFL",pWARN) << "Skipped "<<n_splines_neg<<" splines due to negative values. Fix this!";
+    LOG("RFL",pWARN) << "Skipped "<<n_splines_neg<<" splines due to negative values. Fix this!";
   }
 
   if (n_splines_missing) {
 #ifdef USE_FLAT_SPLINE_FOR_MISSING
-    LOG("DuneRFL",pERROR) << "Missing "<<n_splines_missing<<" splines of "<<n_splines_expected<<" expected. Continuing.";
+    LOG("RFL",pERROR) << "Missing "<<n_splines_missing<<" splines of "<<n_splines_expected<<" expected. Continuing.";
 #else
-    LOG("DuneRFL",pFATAL) << "Missing "<<n_splines_missing<<" splines of "<<n_splines_expected<<" expected. Exiting.";
+    LOG("RFL",pFATAL) << "Missing "<<n_splines_missing<<" splines of "<<n_splines_expected<<" expected. Exiting.";
     util::Die(-1);return false;
 #endif
   }
@@ -455,7 +455,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
   return true;
 }
 //________________________________________________________________________________________
-std::pair<int,int> valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m) const
+std::pair<int,int> valor::util::RFL::GetBin(const util::KinematicPoint & kp, conv::ReacMode_t m) const
 {
   const VALORBinning * true_binning = fBinning->XsecTrueBinning(m);
   const VALORBinning * reco_binning = fBinning->XsecRecoBinning();
@@ -477,19 +477,19 @@ std::pair<int,int> valor::util::DuneRFL::GetBin(const util::KinematicPoint & kp,
   return std::pair<int,int>(itrue,ireco);
 }
 //________________________________________________________________________________________
-int valor::util::DuneRFL::Param2Idx(conv::PhysParamId_t p) const
+int valor::util::RFL::Param2Idx(conv::PhysParamId_t p) const
 {
   if (p < 0 || p > conv::knppmax) {
-    LOG("DuneRFL",pFATAL) << "Parameter out of range "<<p<<"\t"<<util::NameRegistry::Instance()->AsString(p).c_str();
+    LOG("RFL",pFATAL) << "Parameter out of range "<<p<<"\t"<<util::NameRegistry::Instance()->AsString(p).c_str();
   }
   return fParam2Idx[p];
 }
 //________________________________________________________________________________________
-void valor::util::DuneRFL::SetSplineNamePattern(std::string pattern) {
+void valor::util::RFL::SetSplineNamePattern(std::string pattern) {
   fSplineNamePattern = pattern.c_str();
 }
 //________________________________________________________________________________________
-bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl)
+bool valor::util::RFL::CheckForNegativeValues(const util::Interpolator * spl)
 {
   double min_val = spl->Xmin();
   double max_val = spl->Xmax();
@@ -501,7 +501,7 @@ bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl
   return false;
 }
 //________________________________________________________________________________________
-void valor::util::DuneRFL::SortSpline(TSpline3 * spline, bool sort_spline)
+void valor::util::RFL::SortSpline(TSpline3 * spline, bool sort_spline)
 {
   bool knots_in_order = true;
   int n_knots = spline->GetNp();
@@ -536,7 +536,7 @@ void valor::util::DuneRFL::SortSpline(TSpline3 * spline, bool sort_spline)
       }
     }
     else {
-      LOG("DuneRFL",pWARN) << "Spline [" << spline->GetName()
+      LOG("RFL",pWARN) << "Spline [" << spline->GetName()
                            << "] has knots that are out-of-order and the option to sort them was not specified";
     }
   }

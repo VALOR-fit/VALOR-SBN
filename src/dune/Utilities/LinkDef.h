@@ -15,7 +15,7 @@
 
 #pragma link C++ class valor::util::KinematicBin;
 #pragma link C++ class valor::util::KinematicPoint;
-#pragma link C++ class valor::util::DuneRFL;
+#pragma link C++ class valor::util::RFL;
 
 // Vector types for use in macros:
 #pragma link C++ class std::vector<std::vector<int>>;

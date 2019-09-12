@@ -381,7 +381,7 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
 {
   LOG("GenericSingleSampleFitModel",pINFO) << "Configuring the Response Function Library... \n\n";
   // And now get the RFL
-  fRFL = new util::DuneRFL(fBinning, fSplineParams);
+  fRFL = new util::RFL(fBinning, fSplineParams);
   fRFL->Read(file, opt);
   
   bool null_warning = false;
@@ -416,7 +416,7 @@ bool GenericSingleSampleFitModel::FillSplines(string file, Option_t * opt)
         int isplreco = binid.second;
         for (unsigned int ip = 0 ; ip < fSplineParamsAppliedTo[imode].size(); ip++) {
           PhysParamId_t p = fSplineParamsAppliedTo[imode][ip];
-          Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::DuneRFL::kNoSplineRequired);
+          Long64_t spl_as_int = reinterpret_cast<Long64_t>(util::RFL::kNoSplineRequired);
           const Parameter & param = ParameterPool::Instance()->GetParam(p);
           if (param.GetType() == conv::kSystResponse) {
             const util::Interpolator * spl = fRFL->GetSpline(m,p,ispltrue,isplreco);
@@ -2584,13 +2584,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
         double response = 1;
         ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
         const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(spl_addr);
-        if (spl==util::DuneRFL::kNoSplineRequired) {
+        if (spl==util::RFL::kNoSplineRequired) {
           LOG("GenericSingleSampleFitModel",pERROR)
             <<"Got no spline required for bin expecting spline."
             <<param_name<<", "<<util::AsString(fBeam)<<", "
             <<util::AsString(fSample)<<","<<util::AsString(m);
         }
-        if (spl!=util::DuneRFL::kFlatSpline) {
+        if (spl!=util::RFL::kFlatSpline) {
           if (spline_eval_type == conv::kSplEvalCurrTweak) {
             // Apply weights based on the spline evaluated at the current - untuned values
             response = spl->Eval(f - untuned);
@@ -2918,13 +2918,13 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           double response = 1;
           ULong64_t spl_addr = fRFPtr[imode]->GetEntry(splbin);
           const util::Interpolator * spl = reinterpret_cast<util::Interpolator*>(spl_addr);
-          if (spl==util::DuneRFL::kNoSplineRequired) {
+          if (spl==util::RFL::kNoSplineRequired) {
             LOG("GenericSingleSampleFitModel",pERROR)
               <<"Got no spline required for bin expecting spline."
               <<param_name<<", "<<util::AsString(fBeam)<<", "
               <<util::AsString(fSample)<<","<<util::AsString(m);
           }
-          if (spl!=util::DuneRFL::kFlatSpline) {
+          if (spl!=util::RFL::kFlatSpline) {
             if (spline_eval_type == conv::kSplEvalCurrTweak) {
               // Apply weights based on the spline evaluated at the current - untuned values
               response = spl->Eval(f - untuned);
@@ -3413,7 +3413,7 @@ void GenericSingleSampleFitModel::SetSystConf(CorrelatedSystematics * syst, Opti
   return;
 }
 //________________________________________________________________________________________
-const util::DuneRFL * GenericSingleSampleFitModel::GetRFL() const
+const util::RFL * GenericSingleSampleFitModel::GetRFL() const
 {
   return fRFL;
 }

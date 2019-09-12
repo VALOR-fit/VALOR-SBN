@@ -48,7 +48,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/ArrIdx.h"
-#include "dune/Utilities/DuneRFL.h"
+#include "dune/Utilities/RFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
 
 
@@ -107,7 +107,7 @@ public:
   const std::string & GetLastConfigFileRead() const;
   
   // Get the response function library and binning
-  const util::DuneRFL * GetRFL(void) const;
+  const util::RFL * GetRFL(void) const;
   const SingleSampleKineBinning * GetBinning(void) const;
   
   PhysParamList OneSigmaErrors (Option_t * opt = "");
@@ -267,7 +267,7 @@ private:
   std::vector<conv::ReacMode_t> fReactionModes;
   
   // Spline library
-  util::DuneRFL * fRFL;
+  util::RFL * fRFL;
   
   // Pointer to our systematics
   CorrelatedSystematics * fSystematics;
