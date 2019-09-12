@@ -493,11 +493,11 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::
         if((!only_exact_match && param.GetName().find(set_name) != string::npos) ||                    // Search param name (search for sub-string, not exact match)
            param.SearchCategories(set_name) ||                                                         // Search param category for a direct match
            // Special cases:
-           set_name == "ndflux"  && param.SearchCategories("nd") && param.SearchCategories("flux") ||  // ND flux
-           set_name == "fdflux"  && param.SearchCategories("fd") && param.SearchCategories("flux") ||  // FD flux
-           set_name == "nddet"   && param.SearchCategories("nd") && param.SearchCategories("det")  ||  // ND Detector
-           set_name == "fddet"   && param.SearchCategories("fd") && param.SearchCategories("det")  ||  // FD Detector
-           set_name == "allsyst"                                                                       // All systematic params
+           (set_name == "ndflux"  && param.SearchCategories("nd") && param.SearchCategories("flux") ) ||  // ND flux
+           (set_name == "fdflux"  && param.SearchCategories("fd") && param.SearchCategories("flux") ) ||  // FD flux
+           (set_name == "nddet"   && param.SearchCategories("nd") && param.SearchCategories("det")  ) ||  // ND Detector
+           (set_name == "fddet"   && param.SearchCategories("fd") && param.SearchCategories("det")  ) ||  // FD Detector
+           (set_name == "allsyst" )                                                                       // All systematic params
           ) {
           vec_to_append.push_back(param.GetID());
         }
@@ -532,7 +532,7 @@ std::vector<PhysParamId_t> util::GetParameterSet(std::string set_name_in, conv::
   }
 
   // Loop over the vector and remove any params that aren't compatible with the input apply mask
-  for(int ip = 0; ip < vec.size(); ip++) {
+  for(size_t ip = 0; ip < vec.size(); ip++) {
     PhysParamId_t p = vec[ip];
     Parameter param = ParameterPool::Instance()->GetParam(p);
     if(!util::IsAppliedTo(param.GetApplyMask(), mask)) {
