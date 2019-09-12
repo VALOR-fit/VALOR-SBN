@@ -586,7 +586,11 @@ void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy
            break;
         }
      }
-     bool branch_okay = tree_input_pars->SetBranchAddress(read_param_name.c_str(), &(read_params[p]));
+     int branch_status = tree_input_pars->SetBranchAddress(read_param_name.c_str(), &(read_params[p]));
+     if (branch_status) {
+        LOG("Marginalisation",pFATAL) << "Failed to get input branch for "<<read_param_name;
+        util::Die(-1);
+     }
   }
 
   // Read the toy from the tree and fill the FPL
