@@ -396,7 +396,7 @@ bool valor::util::DuneRFL::Read(std::string config_file, Option_t * /*option*/)
               delete spline;
               bool use_valor_spline = true;
               if(!fAllowNegativeSplines) {
-                if (this->CheckForNegativeValues(valor_spline,p)) {
+                if (this->CheckForNegativeValues(valor_spline)) {
                   LOG("DuneRFL",pWARN)<<"Spline has negative values: "<<spl_name<<" - using flat spline instead.";
                   delete valor_spline;
                   fSplines[spline_index] = kFlatSpline;
@@ -489,19 +489,7 @@ void valor::util::DuneRFL::SetSplineNamePattern(std::string pattern) {
   fSplineNamePattern = pattern.c_str();
 }
 //________________________________________________________________________________________
-bool valor::util::DuneRFL::CheckForNegativeValues(const TSpline * spl, conv::PhysParamId_t p) const
-{
-  double min_val = spl->GetXmin();
-  double max_val = spl->GetXmax();
-  static const int evaluations = 30;
-  for (int i = 0 ; i < evaluations; i++) {
-    double x = min_val + (i+0.5)*(max_val-min_val)/evaluations;
-    if (spl->Eval(x) < 0) {return true;}
-  }
-  return false;
-}
-//________________________________________________________________________________________
-bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl, conv::PhysParamId_t p) const
+bool valor::util::DuneRFL::CheckForNegativeValues(const util::Interpolator * spl)
 {
   double min_val = spl->Xmin();
   double max_val = spl->Xmax();
