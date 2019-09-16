@@ -51,7 +51,6 @@
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/ParameterPool.h"
 
-#include "dune/Conventions/SampleKineBinning.h"
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/GENIEUtilities/GENIEIncludes.h"
