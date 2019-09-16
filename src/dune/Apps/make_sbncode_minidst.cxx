@@ -115,6 +115,7 @@ int main(int argc, char ** argv)
   bool is_nueosc  = false;
   bool is_nuenumu = false;
   bool is_numu    = false;
+  bool is_nue     = false;
   string str_numu = "Numu";
   string str_nue  = "Nue";
   string str_int  = "_Int";
@@ -129,6 +130,7 @@ int main(int argc, char ** argv)
     is_numu = true;
 
   if(found_nue != string::npos){
+    is_nue = true;
     // We are looking at a nue sample, check if osc, intrinsic or numu
     size_t found_nueosc  = opt_input_name.find(str_osc);
     size_t found_nueint  = opt_input_name.find(str_int);
@@ -492,7 +494,7 @@ int main(int argc, char ** argv)
         VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc] "<<iev; 
         continue;
       }
-      if((init_pdg == 12 || init_pdg == -12) && (!is_nueint)){
+      if(is_nue && (init_pdg == 12 || init_pdg == -12) && (!is_nueint)){
         VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic] "<<iev;
         VLOG("make_sbncode_minidst", pINFO)
           <<"\n is_nueint = "<<is_nueint
