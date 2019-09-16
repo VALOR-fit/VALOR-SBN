@@ -17,11 +17,9 @@ DUNE_LIBRARIES =
 TGT = make_nd_minidst \
       make_fd_minidst \
       make_sbncode_minidst \
-      make_recoselection_minidst \
       make_fastmc_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
-      make_response_functions \
       make_table_systematic_effects \
       run_fit \
       write_pdf \
