@@ -24,7 +24,7 @@
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/ReacMode.h"
-#include "dune/Conventions/ReacModeCoarse.h"
+#include "valor/Conventions/ReacModeCoarse.h"
 #include "dune/Conventions/Experiment.h"
 
 #include <vector>
