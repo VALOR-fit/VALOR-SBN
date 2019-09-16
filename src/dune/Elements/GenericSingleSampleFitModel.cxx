@@ -147,6 +147,16 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   skip_spline_read = true;
 #endif
   
+  bool any_splines_needed = false;
+  // Check there are actually any splines needed for this sample/parameterisation
+  for (int im = 0 ; im < conv::kNReacModes ; im++) {
+    if (fSplineParamsAppliedTo[im].size()) {
+      any_splines_needed = true;
+      break;
+    }
+  }
+  
+  if (!any_splines_needed) {skip_spline_read = true;}
   
   // Set up the initial XML reader
   LOG("GenericSingleSampleFitModel", pNOTICE) 
