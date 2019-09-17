@@ -197,7 +197,8 @@ bool SingleSampleKineBinning::Read(string file)
      }
      fTrueSimpleBinningUnique.push_back(def_true_smp_binning);
      for(size_t im = 0; im < fReactionModes.size(); im++) {
-        fTrueSimpleBinning [im] = def_true_smp_binning;
+        assert(im==fTrueSimpleBinning.size());
+        fTrueSimpleBinning.push_back(def_true_smp_binning);
      }
      
      const std::vector<conv::KineVar_t> & true_smp_kvs = def_true_smp_binning->KineVars();
@@ -292,7 +293,8 @@ bool SingleSampleKineBinning::Read(string file)
        }
        fXsecTrueBinningUnique.push_back(def_xsec_true_binning);
        for(size_t im = 0; im < fReactionModes.size(); im++) {
-          fXsecTrueBinning [im] = def_xsec_true_binning;
+          assert(fXsecTrueBinning.size()==im);
+          fXsecTrueBinning.push_back(def_xsec_true_binning);
        }
     }
 

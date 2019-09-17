@@ -21,7 +21,6 @@
 #pragma link C++ struct valor::UniqueSampleID;
 #pragma link C++ class std::vector<valor::UniqueSampleID>+;
 
-#pragma link C++ class valor::util::ArrIdx+;
 #pragma link C++ class valor::util::PhysicalParameterLimits+;
 
 #pragma link C++ class valor::Parameter+;

@@ -54,6 +54,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
 #include "dune/Utilities/UtlParam.h"
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
@@ -65,6 +66,8 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
+  
+  valor::DoExperimentSetup();
 
   Env::Instance()->AutoSet("dune");
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
