@@ -169,8 +169,8 @@ $seed_other            = 1                                                      
 $tag                   = "toys"                                                              unless defined $tag;
 $config                = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml" unless defined $config;
 $gen_fc_toys           = 0                                                                   unless defined $gen_fc_toys;
-$read_throws_from      = ""                                                                  unless defined $read_throws_from;
-$read_throws_param_map = ""                                                                  unless defined $read_throws_param_map;
+$read_throws_from      = "NONE"                                                              unless defined $read_throws_from;
+$read_throws_param_map = "NONE"                                                              unless defined $read_throws_param_map;
 
 # If we have only a single parameter of interest defined, set the options for par2 appropriately
 if($par2 eq "") {
