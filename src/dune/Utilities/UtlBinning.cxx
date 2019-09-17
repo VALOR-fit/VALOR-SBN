@@ -179,7 +179,7 @@ TH2D* Make2DOptimisedHistogram(const VALORArray& v,
       const SingleSampleKineBinning& b, const std::vector<conv::KineVar_t>& ks)
 {
   // Get the reco binning and associated kinematic variables for the VALORArray
-  KBCubHcmbMondrian * recoBinning = dynamic_cast<KBCubHcmbMondrian*>(b.RecoOptBinning());
+  const KBCubHcmbMondrian * recoBinning = dynamic_cast<const KBCubHcmbMondrian*>(b.RecoOptBinning());
   if (!recoBinning) {
     LOG("UtlBinning", pERROR) << b.RecoOptBinning()->GetName()<<" is not a KBCubHcmbMondrian";
      util::Die(-1);
@@ -229,7 +229,7 @@ TH2D* Make2DSimpleHistogram(const VALORArray& v,
       const SingleSampleKineBinning& b, const std::vector<conv::KineVar_t>& ks)
 {
   // Get the reco binning and associated kinematic variables for the VALORArray
-  KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(b.RecoSmpBinning());
+  const KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<const KBCubHcmbEdge2Edge*>(b.RecoSmpBinning());
   if (!recoBinning) {
     LOG("UtlBinning", pERROR) << b.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
     util::Die(-1);
@@ -279,12 +279,12 @@ VALORArray* Contract(const VALORArray& v,
       const SingleSampleKineBinning& currentBinning,
       const KBCubHcmbEdge2Edge& targetBinning)
 {
-  KBCubHcmbEdge2Edge * trueBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(currentBinning.TrueSmpBinning(0));
+  const KBCubHcmbEdge2Edge * trueBinning = dynamic_cast<const KBCubHcmbEdge2Edge*>(currentBinning.TrueSmpBinning(0));
   if (!trueBinning) {
     LOG("UtlBinning", pERROR) << currentBinning.TrueSmpBinning(0)->GetName()<<" is not a KBCubHcmbEdge2Edge";
     util::Die(-1); return nullptr;
   }
-  KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(currentBinning.RecoSmpBinning());
+  const KBCubHcmbEdge2Edge * recoBinning = dynamic_cast<const KBCubHcmbEdge2Edge*>(currentBinning.RecoSmpBinning());
   if (!recoBinning) {
     LOG("UtlBinning", pERROR) << currentBinning.RecoSmpBinning()->GetName()<<" is not a KBCubHcmbEdge2Edge";
     util::Die(-1); return nullptr;
