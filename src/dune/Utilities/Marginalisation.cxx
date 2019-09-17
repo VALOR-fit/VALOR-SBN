@@ -228,7 +228,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "chi2(" << t << "): " << chi2 <<
-            " L(" << t << "): " << likelihood;
+            " L(" << t << "): " << exp(-chi2/2.);
 #endif
       }
       is_toys.close();
