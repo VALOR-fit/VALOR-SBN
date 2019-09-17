@@ -73,7 +73,6 @@ Input MC templates
 </splines>
 
 
-<default_binning> test/marginalisation/default_binning.xml </default_binning>
 
 </analysis_inputs>
 

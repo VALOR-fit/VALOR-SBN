@@ -1,5 +1,5 @@
 
-<!ELEMENT analysis_inputs (data,fiducial_mass?,mc,splines,default_binning) >
+<!ELEMENT analysis_inputs (data,fiducial_mass?,mc,splines) >
   <!ATTLIST analysis_inputs type    CDATA #IMPLIED>
   <!ATTLIST analysis_inputs version CDATA #IMPLIED>
   
@@ -29,5 +29,4 @@
   <!ELEMENT splines (folder,pattern) >
    <!ELEMENT folder  (#PCDATA) >
    <!ELEMENT pattern (#PCDATA) >
-   
-  <!ELEMENT default_binning (#PCDATA) >
+

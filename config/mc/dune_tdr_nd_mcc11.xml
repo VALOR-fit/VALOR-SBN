@@ -77,13 +77,6 @@ Splines
   <pattern> valor_splines_[BEAM]_[SAMPLE]_[PARAM].root    </pattern>
 </splines>
 
-<!--
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Default binning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-<default_binning> binning/dune_fd_fhc_numulikecchigh_bins.xml </default_binning>
-
 </analysis_inputs>
 
 
