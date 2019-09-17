@@ -169,9 +169,10 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
     }
     LOG("GenericSingleSampleFitModel",pNOTICE) << fName<< ": Reading binning from "<<binning_file;
   }
-  else {
-    binning_file = util::XML2String(xml,root_node,"default_binning");
-    LOG("GenericSingleSampleFitModel",pNOTICE) << fName<< ": No sample-specific binning in options \""<<opt<<"\" , falling back to default: "<<binning_file;
+  if(binning_file.empty()) {
+    LOG("GenericSingleSampleFitModel",pFATAL) << fName<< ": No sample-specific binning in options \""<<opt
+					      <<"\". Can set in XML valor/element_list/element/binning. Dying";
+    util::Die(-1); return false;
   }
   delete matches;
   
