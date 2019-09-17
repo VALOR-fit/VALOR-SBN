@@ -88,6 +88,8 @@ bool valor::DoExperimentSetup()
     es.fPlotStyle.push_back(styles_per_sample);
   }
   
-  return true;
+  es.fIsSetup = true;
+  
+  return es.fIsSetup;
 }
 //________________________________________________________________________________________

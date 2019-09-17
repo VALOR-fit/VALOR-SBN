@@ -33,7 +33,6 @@
 
 // DUNE
 #include "dune/Conventions/Build.h"
-#include "dune/Conventions/ArrIdx.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
@@ -113,10 +112,9 @@ private:
   conv::Detector_t fDetector;
   
   // Details of binning
-  int                   fNModes;        //
-  conv::ReacMode_t *    fModes;         //[fNModes]
-  int                   fNParams;       //
-  conv::PhysParamId_t * fParams;        //[fParams]
+  std::vector<conv::ReacMode_t> fModes;   //[fNModes]
+  int                           fNParams; //
+  conv::PhysParamId_t *         fParams;  //[fParams]
   
   // These numbers store the largest number of bins for any mode
   unsigned int fNBinsTrue;    //

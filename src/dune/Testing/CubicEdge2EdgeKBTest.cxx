@@ -13,9 +13,9 @@ bool CubicEdge2EdgeKBTestCase::TestContract()
    SingleSampleKineBinning& binning = 
       *(dynamic_cast<CubicEdge2EdgeKBTest*>(_test)->_binning);
       
-   KBCubHcmbEdge2Edge * tmpb = dynamic_cast<KBCubHcmbEdge2Edge*>(binning.RecoSmpBinning());
+   const KBCubHcmbEdge2Edge * tmpb = dynamic_cast<const KBCubHcmbEdge2Edge*>(binning.RecoSmpBinning());
    if (!tmpb) { return false; }
-   KBCubHcmbEdge2Edge& recoBinning = *tmpb;
+   const KBCubHcmbEdge2Edge& recoBinning = *tmpb;
 
    bool passed = true;
 

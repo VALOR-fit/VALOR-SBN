@@ -27,6 +27,9 @@
 #include <TPRegexp.h>
 
 //fmwk
+#include "valor/Conventions/Build.h"
+#include "valor/Conventions/ExperimentSetup.h"
+
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/PhysHypothesisId.h"
 #include "valor/Conventions/PhysParamId.h"
@@ -35,7 +38,6 @@
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/Conventions/PDG.h"
-#include "valor/Conventions/Build.h"
 #include "valor/Utilities/Interpolator.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
@@ -75,7 +77,7 @@ using namespace valor::conv;
 
 //#define DEBUG_SINGLE_BIN
 
-const util::ArrIdx * arridx = util::ArrIdx::Instance();
+static const ExperimentSetup & es = *ExperimentSetup::Instance();
 
 //________________________________________________________________________________________
 GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
@@ -128,14 +130,15 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   if (fSample   == conv::ksUndefined ) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad Sample"    << fSample   ; util::Die(-1); }
   if (fKSp      == conv::kspUndefined) { LOG("SingleSampleFitModelABC",pFATAL) << "Bad KineSpace" << fKSp      ; util::Die(-1); }
   
-  int isample = fArrIdx->SampleIdx(fBeam,fSample);
+  int ibeam   = es.BeamConfIndex(fBeam);
+  int isample = es.SampleIndex(fBeam,fSample);
   if (isample == -1) {
     LOG("GenericSingleSampleFitModel",pFATAL)
       << "Sample not included in analysis build: "<<util::AsString(fBeam)<<" "<<util::AsString(fSample);
     util::Die(-1);
   }
   
-  fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
+  fReactionModes = es.ReactionModes()[ibeam][isample];
 
   fName = util::nm::MdlName(fDetector, fBeam, fSample, fKSp);
   
@@ -1005,8 +1008,6 @@ void GenericSingleSampleFitModel::Init(void)
     fPDFCompOb [imode] = 0;
     
   }//imode
-  
-  fArrIdx = util::ArrIdx::Instance();
 
   fSystematics = 0;
 }
@@ -1023,8 +1024,10 @@ void GenericSingleSampleFitModel::Book(void)
   // Modes should eventually move to being fully runtime configurable
   // Which means that this will end up going in read
   // And we may have to completely merge Book/Read
-  int isample = fArrIdx->SampleIdx(fBeam,fSample);
-  fReactionModes = std::vector<ReacMode_t>(kReactionModes[isample],kReactionModes[isample]+kNReacModes);
+  int ibeam   = es.BeamConfIndex(fBeam);
+  int isample = es.SampleIndex(fBeam,fSample);
+  fReactionModes = es.ReactionModes()[ibeam][isample];
+  
   fNonEmptyBinsOb = std::vector<std::vector<int>>(fReactionModes.size());
   fNonEmptyBinsSb = std::vector<std::vector<int>>(fReactionModes.size());
   fNumOfNonEmptyBinsOb = std::vector<int>(fReactionModes.size());
@@ -1569,7 +1572,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
         << " (value stored in DST: " << reac_mode << "). Ignoring event.";
       continue;
     }
-    int imode = fArrIdx->ReacModeIdx(b, s, m);
+    int imode = es.ReacModeIndex(b, s, m);
     if(imode < 0) {
       // For a given sample we should consider a complete list of
       // true reaction modes (otherwise there are true contributions to the

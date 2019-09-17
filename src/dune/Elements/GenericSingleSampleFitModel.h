@@ -45,9 +45,7 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
-#include "dune/Conventions/SampleReacMode.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/RFL.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
 
@@ -165,8 +163,6 @@ private:
   // There are many large vectors used when applying lateral systematics. They only depend on the PDF reco binning
   // and the applied kine var, so pre-compute them instead of calculating them for every event and mode.
   void PreComputeLateralSystVectors(bool use_simple_binning);
-
-  const util::ArrIdx * fArrIdx;
   
   // Keep track of the parameters we need to loop over
   // Normalisation, spline and post-oscillation lateral parameters divided

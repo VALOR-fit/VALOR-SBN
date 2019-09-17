@@ -67,11 +67,11 @@
 #include <vector>
 
 #include "valor/KineBinning/VALORBinning.h"
-
 #include "valor/Conventions/BeamConf.h"
-#include "dune/Conventions/UniqueSampleID.h"
 #include "valor/Conventions/Sample.h"
-#include "dune/Conventions/SampleReacMode.h"
+#include "valor/Conventions/ReacMode.h"
+
+#include "dune/Conventions/UniqueSampleID.h"
 
 namespace valor {
 
@@ -84,16 +84,16 @@ public:
 
   bool Read(string file);
 
-  VALORBinning * RecoOptBinning(void)   const { return fRecoOptimizedBinning;    }
-  VALORBinning * RecoSmpBinning(void)   const { return fRecoSimpleBinning;       }
-  VALORBinning * TrueSmpBinning(int im) const { return fTrueSimpleBinning [im];  }
+  const VALORBinning * RecoOptBinning(void)   const { return fRecoOptimizedBinning;    }
+  const VALORBinning * RecoSmpBinning(void)   const { return fRecoSimpleBinning;       }
+  const VALORBinning * TrueSmpBinning(int im) const { return fTrueSimpleBinning [im];  }
   // Return Simple Binning for the reaction mode, m
-  VALORBinning * TrueSmpBinning(conv::ReacMode_t m) const;
+  const VALORBinning * TrueSmpBinning(conv::ReacMode_t m) const;
   
   // Cross sections binnings. For now truth is always the same as the simple binning, and reco is always optimised
-  VALORBinning * XsecRecoBinning(void              )  const { return fXsecRecoBinning  ;}
-  VALORBinning * XsecTrueBinning(conv::ReacMode_t m)  const;
-  VALORBinning * XsecTrueBinning(int im            )  const { return fXsecTrueBinning[im];}
+  const VALORBinning * XsecRecoBinning(void              )  const { return fXsecRecoBinning  ;}
+  const VALORBinning * XsecTrueBinning(conv::ReacMode_t m)  const;
+  const VALORBinning * XsecTrueBinning(int im            )  const { return fXsecTrueBinning[im];}
 
   conv::BeamConf_t     GetBeamConf(void)      const { return fBeamConf; }
   conv::Sample_t       GetSample  (void)      const { return fSample;   }
@@ -111,19 +111,22 @@ private:
   void CleanUp (void);
 
   void CheckBinEdges(VALORBinning *opt_binning, VALORBinning *smp_binning) const;
+  
+  // The list of reaction modes we're using
+  std::vector<conv::ReacMode_t> fReactionModes;
 
   conv::Detector_t                  fDetector;
   conv::BeamConf_t                  fBeamConf;
   conv::Sample_t                    fSample;
-  VALORBinning *                    fRecoOptimizedBinning;                   //
-  VALORBinning *                    fRecoSimpleBinning;                      //
-  VALORBinning *                    fTrueSimpleBinning [conv::kNReacModes];  //
-  std::vector<VALORBinning *>       fTrueSimpleBinningUnique;           // 
+  VALORBinning *                    fRecoOptimizedBinning;     //
+  VALORBinning *                    fRecoSimpleBinning;        //
+  std::vector<VALORBinning *>       fTrueSimpleBinning;        // Per mode
+  std::vector<VALORBinning *>       fTrueSimpleBinningUnique;  // 
   
   
-  VALORBinning *              fXsecRecoBinning;                     // Binning for Xsec splines
-  VALORBinning *              fXsecTrueBinning [conv::kNReacModes]; //
-  std::vector<VALORBinning *> fXsecTrueBinningUnique;          // 
+  VALORBinning *              fXsecRecoBinning;        // Binning for Xsec splines
+  std::vector<VALORBinning *> fXsecTrueBinning;        // Per mode
+  std::vector<VALORBinning *> fXsecTrueBinningUnique;  // 
   
   std::vector<conv::KineVar_t> fKineVars;
 };

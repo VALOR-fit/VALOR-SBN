@@ -13,6 +13,9 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "TString.h"
 #include "TSystem.h"
 
+#include "valor/Conventions/NuclearTarget.h"
+#include "valor/Conventions/ParameterPool.h"
+#include "valor/Conventions/ExperimentSetup.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/UtlNumStat.h"
@@ -20,8 +23,6 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/UtlXML.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/NameRegistry.h"
-#include "valor/Conventions/NuclearTarget.h"
-#include "valor/Conventions/ParameterPool.h"
 
 #include "dune/Conventions/Build.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
@@ -44,6 +45,9 @@ const util::Interpolator * valor::util::RFL::kFlatSpline =
 // We'll never use this address to dereference - it can be passed as a flag indicating that no spline should exist.
 const util::Interpolator* valor::util::RFL::kNoSplineRequired = (util::Interpolator*)&conv::kBadResult;
 
+// Experiment setup
+static const ExperimentSetup & es = *ExperimentSetup::Instance();
+
 //________________________________________________________________________________________
 namespace valor {
 namespace util {
@@ -63,8 +67,6 @@ fSplineBlockSize(0),
 fBeam          (conv::kbUndefined),
 fSample        (conv::ksUndefined),
 fDetector      (conv::kdUndefined),
-fNModes        (0),
-fModes         (NULL),
 fNParams       (0),
 fParams        (NULL),
 fNBinsTrue     (1),
@@ -89,8 +91,6 @@ fSplineBlockSize(0),
 fBeam          (fBinning->GetBeamConf()),
 fSample        (fBinning->GetSample()),
 fDetector      (fBinning->GetDetector()),
-fNModes        (conv::kNReacModes),
-fModes         (NULL),
 fNParams       (n_params),
 fParams        (NULL),
 fNBinsTrue     (1),
@@ -103,8 +103,10 @@ fForceNegWghtTo(0.0)
 {
   fParams = new PhysParamId_t[fNParams];
   memcpy(fParams, param_ids, fNParams*sizeof(PhysParamId_t));
-  fModes = new ReacMode_t[fNModes];
-  memcpy(fModes,conv::kReactionModes[ArrIdx::Instance()->SampleIdx(fBeam,fSample)], fNModes*sizeof(ReacMode_t));
+  
+  int beam_idx = es.BeamConfIndex(fBeam);
+  int sample_idx = es.SampleIndex(fBeam,fSample);
+  fModes = es.ReactionModes()[beam_idx][sample_idx];
   
   // Fill parameter to index
   for (int ip = 0 ; ip < conv::knppmax ; ip++ ) {
@@ -121,7 +123,7 @@ fForceNegWghtTo(0.0)
 
   fNBinsReco  = reco_ob->NBins();
   // Calculate max bin numbers
-  for (int im = 0 ; im < fNModes ; im++) {
+  for (size_t im = 0 ; im < fModes.size() ; im++) {
     conv::ReacMode_t m = fModes[im];
     if (m == conv::kmUndefined) continue;
     const VALORBinning * true_sb = fBinning->XsecTrueBinning(m);
@@ -142,7 +144,6 @@ valor::util::RFL::~RFL()
     delete[] fSplines;
   }
   
-  if (fModes        )  {delete[] fModes;        }
   if (fParams       )  {delete[] fParams;       }
 }
 //________________________________________________________________________________________
@@ -155,9 +156,8 @@ const util::Interpolator* valor::util::RFL::GetSpline (
   conv::ReacMode_t m, conv::PhysParamId_t p,
   const int & itrue, const int & ireco) const
 {
-  static const util::ArrIdx * arr_idx = util::ArrIdx::Instance();
   
-  const int im = arr_idx->ReacModeIdx(fBeam,fSample,m);
+  const int im = es.ReacModeIndex(fBeam,fSample,m);
   const int ip = this->Param2Idx(p);
   
   const int splidx = SplineIndex(im,ip,itrue,ireco);
@@ -186,10 +186,11 @@ TString valor::util::RFL::BuildSplineName (
 bool valor::util::RFL::Read(std::string config_file, Option_t * /*option*/)
 {
   // Get binning details, allocate the spline block
-  fSplineBlockSize = fNModes * fNParams * fNBinsTrue * fNBinsReco;
+  unsigned long n_modes = fModes.size();
+  fSplineBlockSize = n_modes * fNParams * fNBinsTrue * fNBinsReco;
     
   LOG("RFL",pDEBUG) << "Spline binning for sample "<<util::AsString(fBeam)<<" "<<util::AsString(fSample)<<"\n"
-   <<std::setw(7)<<fNModes<<" modes.\n"
+   <<std::setw(7)<<fModes.size()<<" modes.\n"
    <<std::setw(7)<<fNParams<<" parameters with splines.\n"
    <<std::setw(7)<<fNBinsTrue<<" true bins.\n"
    <<std::setw(7)<<fNBinsReco<<" reco bins \n"
@@ -291,9 +292,7 @@ bool valor::util::RFL::Read(std::string config_file, Option_t * /*option*/)
     LOG("RFL",pINFO) << "Will read splines from file "<<spline_file->GetName();
     spline_files.push_back(spline_file);
   }
-  
-  int isample = ArrIdx::Instance()->SampleIdx(fBeam, fSample);
-  
+
   int n_splines_read = 0;
   int n_splines_missing = 0;
   int n_splines_expected = fSplineBlockSize;
@@ -302,8 +301,8 @@ bool valor::util::RFL::Read(std::string config_file, Option_t * /*option*/)
 
   conv::NuclearTarget_t nt = conv::kntInclusive; // Make this an argument
 
-  for(int imode = 0; imode < conv::kNReacModes; imode++) {
-    conv::ReacMode_t m = conv::kReactionModes[isample][imode];
+  for(size_t imode = 0; imode < fModes.size(); imode++) {
+    conv::ReacMode_t m = fModes[imode];
     if(m == conv::kmUndefined) continue;
     
     const VALORBinning * true_sb = fBinning->XsecTrueBinning(m);

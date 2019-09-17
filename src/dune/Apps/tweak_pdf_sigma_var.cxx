@@ -42,6 +42,7 @@
 #include "TString.h"
 #include "TSystem.h"
 // fmwk
+#include "valor/Conventions/ExperimentSetup.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
@@ -66,7 +67,6 @@
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Conventions/Names.h"
-#include "dune/Conventions/ArrIdx.h"
 #include "dune/Conventions/Experiment.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/SingleSampleFitModelABC.h"
@@ -80,6 +80,8 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
                         unsigned int ip, PhysParamId_t p, double tweak_dial, TFile * outfile, std::string tag);
 
+
+static const ExperimentSetup & es = *ExperimentSetup::Instance();
 
 int main(int argc, char ** argv)
 {
@@ -265,7 +267,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
     for(int im = 0; im < conv::kNReacModes; ++im) {
       conv::ReacMode_t m = util::ReacModeFromInt(im);
       if(m == conv::kmUndefined) { continue; }
-      int mode_idx = util::ArrIdx::Instance()->ReacModeIdx(b, s, m);
+      int mode_idx = es.ReacModeIndex(b, s, m);
       if (mode_idx < 0) { continue; }
       TString name_contrib = TString::Format("nom_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
@@ -328,7 +330,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
     for(int im = 0; im < conv::kNReacModes; ++im) {
       conv::ReacMode_t m = util::ReacModeFromInt(im);
       if(m == conv::kmUndefined) { continue; }
-      int mode_idx = util::ArrIdx::Instance()->ReacModeIdx(b, s, m);
+      int mode_idx = es.ReacModeIndex(b, s, m);
       if (mode_idx < 0) { continue; }
       TString name_contrib = TString::Format("curr_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());

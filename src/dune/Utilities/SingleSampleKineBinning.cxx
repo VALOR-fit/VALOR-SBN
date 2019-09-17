@@ -14,6 +14,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include <TSystem.h>
 
 #include "valor/Conventions/Constants.h"
+#include "valor/Conventions/ExperimentSetup.h"
 #include "valor/Utilities/UtlXML.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -21,10 +22,12 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Messenger/Messenger.h"
 #include "valor/KineBinning/VALORBinning.h"
 
-#include "dune/Conventions/ArrIdx.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
 
 using namespace valor;
+
+// Keep a static copy of the experimental setup
+static const ExperimentSetup & es = *ExperimentSetup::Instance();
 
 //________________________________________________________________________________________
 SingleSampleKineBinning::SingleSampleKineBinning(conv::Detector_t d, conv::BeamConf_t b, conv::Sample_t s)
@@ -66,6 +69,11 @@ bool SingleSampleKineBinning::Read(string file)
   std::set<conv::KineVar_t> kinevars;
 
   this->CleanUp();
+  
+  // Get relevant modes
+  int ibeam   = es.BeamConfIndex(fBeamConf);
+  int isample = es.SampleIndex(fBeamConf,fSample);
+  fReactionModes = es.ReactionModes()[ibeam][isample];
 
   TString ts_file = file.c_str();
   gSystem->ExpandPathName(ts_file);
@@ -188,7 +196,7 @@ bool SingleSampleKineBinning::Read(string file)
         return false;
      }
      fTrueSimpleBinningUnique.push_back(def_true_smp_binning);
-     for(int im = 0; im < conv::kNReacModes; im++) {
+     for(size_t im = 0; im < fReactionModes.size(); im++) {
         fTrueSimpleBinning [im] = def_true_smp_binning;
      }
      
@@ -200,11 +208,11 @@ bool SingleSampleKineBinning::Read(string file)
   // True/Simple [per mode]
   //
 
-  int is = util::ArrIdx::Instance()->SampleIdx(fBeamConf,fSample);
+  int is = es.SampleIndex(fBeamConf,fSample);
   LOG("SampleBinning", pDEBUG) << "Sample idx = " << is;
 
-  for(int im = 0; im < conv::kNReacModes; im++) {
-    conv::ReacMode_t m = conv::kReactionModes[is][im];
+  for(size_t im = 0; im < fReactionModes.size(); im++) {
+    conv::ReacMode_t m = fReactionModes[im];
     if(m == conv::kmUndefined) continue;
     string node_path = "true_simple/" + util::AsString(m);
     bool mode_true_smp_exists = util::NodeExists(xml,root_node,node_path);
@@ -283,7 +291,7 @@ bool SingleSampleKineBinning::Read(string file)
           return false;
        }
        fXsecTrueBinningUnique.push_back(def_xsec_true_binning);
-       for(int im = 0; im < conv::kNReacModes; im++) {
+       for(size_t im = 0; im < fReactionModes.size(); im++) {
           fXsecTrueBinning [im] = def_xsec_true_binning;
        }
     }
@@ -291,8 +299,8 @@ bool SingleSampleKineBinning::Read(string file)
     //
     // True/Simple [per mode]
     //
-    for(int im = 0; im < conv::kNReacModes; im++) {
-      conv::ReacMode_t m = conv::kReactionModes[is][im];
+    for(size_t im = 0; im < fReactionModes.size(); im++) {
+      conv::ReacMode_t m = fReactionModes[im];
       if(m == conv::kmUndefined) continue;
       string mode_xsec_true_binning_file = "";
       string node_path = "xsec_true/" + util::AsString(m);
@@ -345,7 +353,7 @@ bool SingleSampleKineBinning::Read(string file)
      LOG("SampleBinning", pNOTICE)
        << "No xsec true binning specified. Using default true binning for xsec model.";
     fXsecTrueBinningUnique = fTrueSimpleBinningUnique;
-    for (int im = 0 ; im <  conv::kNReacModes; im++) {
+    for (size_t im = 0 ; im <  fReactionModes.size(); im++) {
       fXsecTrueBinning[im] = fTrueSimpleBinning [im];
     }
   }
@@ -376,17 +384,17 @@ bool SingleSampleKineBinning::Read(string file)
   return true;
 }
 //________________________________________________________________________________________
-VALORBinning * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m) const
+const VALORBinning * SingleSampleKineBinning::TrueSmpBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
-  int im = util::ArrIdx::Instance()->ReacModeIdx(fBeamConf,fSample,m);
+  int im = es.ReacModeIndex(fBeamConf,fSample,m);
   return this->TrueSmpBinning(im);
 }
 //________________________________________________________________________________________
-VALORBinning * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m) const
+const VALORBinning * SingleSampleKineBinning::XsecTrueBinning(conv::ReacMode_t m) const
 {
   if(m == conv::kmUndefined) return 0;
-  int im = util::ArrIdx::Instance()->ReacModeIdx(fBeamConf,fSample,m);
+  int im = es.ReacModeIndex(fBeamConf,fSample,m);
   return this->XsecTrueBinning(im);
 }
 //________________________________________________________________________________________
@@ -399,11 +407,6 @@ void SingleSampleKineBinning::Init(void)
   fRecoOptimizedBinning = nullptr;
   fRecoSimpleBinning    = nullptr;
   fXsecRecoBinning      = nullptr;
-
-  for(int im = 0; im < conv::kNReacModes; im++) {
-     fTrueSimpleBinning [im] = nullptr;
-     fXsecTrueBinning   [im] = nullptr;
-  }
 
   fTrueSimpleBinningUnique.clear();
   fXsecTrueBinningUnique  .clear();
@@ -426,7 +429,7 @@ void SingleSampleKineBinning::CleanUp(void)
   delete_binning(fRecoSimpleBinning);  
   delete_binning(fXsecRecoBinning);
   
-  for(int im = 0; im < conv::kNReacModes; im++) {
+  for(size_t im = 0; im < fReactionModes.size(); im++) {
     delete_binning(fTrueSimpleBinning [im]);
     delete_binning(fXsecTrueBinning   [im]);
   }

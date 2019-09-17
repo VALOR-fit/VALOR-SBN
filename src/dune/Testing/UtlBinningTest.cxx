@@ -123,12 +123,12 @@ void UtlBinningTest::Setup()
         conv::ksNuMuCC);
    _binning->Read(fullFilename);
 
-   VALORBinning& recoOptBinning = *(_binning->RecoOptBinning());
-   VALORBinning& recoSmpBinning = *(_binning->RecoSmpBinning());
-   VALORBinning& trueBinning    = *(_binning->TrueSmpBinning(0));
+   const VALORBinning& recoOptBinning = *(_binning->RecoOptBinning());
+   const VALORBinning& recoSmpBinning = *(_binning->RecoSmpBinning());
+   const VALORBinning& trueBinning    = *(_binning->TrueSmpBinning(0));
 
    _vOpt = new VALORArray(recoOptBinning.NBins(), trueBinning.NBins());
-   for(int i = 0; i < recoOptBinning.NBins(); ++i)
+   for(unsigned int i = 0; i < recoOptBinning.NBins(); ++i)
    {
       for(unsigned int j = 0; j < trueBinning.NBins(); ++j)
       {
