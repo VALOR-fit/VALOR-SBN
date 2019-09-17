@@ -231,7 +231,7 @@ if __name__=="__main__":
   parser.add_option(     '--hierarchy'          , dest="hierarchy"     , default="normal"    , help='Mass hierarchy: "normal" or "inverted"')
   parser.add_option('-m','--mixing-param-choice', dest="mixparamchoice", default="sinsqtheta", help='Mixing param coice: "sinsqtheta" or "sinsq2theta"')
   parser.add_option('-t','--mixing-param-octant', dest="mixparamoctant", default="two"       , help='Mixing param octant: "one" or "two"')
-  parser.add_option('-a','--dmsq-scheme', dest="dmsqscheme", default="abs23"       , help='"abs23", "abs31" or "fogli"')
+  parser.add_option('-a','--dmsq-scheme'        , dest="dmsqscheme"    , default="auto"      , help='"auto", "abs23", "abs31" or "fogli"')
   
   parser.add_option('-f', '--file', dest='output_file', default="validation.tex", help="Name for output TeX file.")
   

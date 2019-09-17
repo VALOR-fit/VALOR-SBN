@@ -579,14 +579,14 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 										 "--$hierarchy --$mix_param_choice --fit-param1-nbins $npt_par1_use " .
 										 "--fit-param2-nbins $npt_par2_use $fake_data_args --data-file $data_file_use " .
 										 "--seed-toys-osc $seed_osc --seed-toys-stat $seed_stat --seed-toys-syst $seed_syst --seed-other $seed_other " .
-										 "--prior-file $prior_file --gen-fakedata $gen_fakedata --ntoys-fakedata $ntoys_fakedata ";
+										 "--prior-file $prior_file --gen-fakedata $gen_fakedata --ntoys-fakedata $ntoys_fakedata " .
+										 "--dmsq-scheme $dmsq_scheme";
 
 				if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
 				if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
 				if($stat_fluct         == 1)       { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
 				if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
 				if($mix_param_octant   eq "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
-				if($dmsq_scheme        eq "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
 
 				$command = "$program $arguments";
 				print "$command \n";

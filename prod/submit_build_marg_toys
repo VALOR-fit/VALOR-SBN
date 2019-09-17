@@ -431,14 +431,14 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .
 		             "--fit-param2-bin $sub_ibin2 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
 		             "--seed-toys-osc $seed_osc --seed-other $seed_other --prior-file $prior_file " .
-		             "--read-throws-from $read_throws_from --read-throws-param-map $read_throws_param_map ";
+		             "--read-throws-from $read_throws_from --read-throws-param-map $read_throws_param_map " .
+		             "--dmsq-scheme $dmsq_scheme";
 
     if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
     if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
     if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
     if($save_throws        == 1)       { $arguments = "$arguments --save-throws"        } else { $arguments = "$arguments --discard-throws"     }
     if($mix_param_octant   eq "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
-    if($dmsq_scheme        eq "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
 
 		$command = "$program $arguments";
 		print "$command \n";
