@@ -246,6 +246,9 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("beam"      , &valor_minidst_beam        ,"beam/I"       );
   valor_minidst->Branch("sample"    , &valor_minidst_sample      ,"sample/I"     );
   valor_minidst->Branch("reac_mode" , &valor_minidst_reac_mode   ,"reac_mode/I"  );
+  valor_minidst->Branch("reac_type" , &valor_minidst_reac_type   ,"reac_type/I"  );
+  valor_minidst->Branch("init_pdg"  , &valor_minidst_init_nupdg  ,"init_pdg/I"   );
+  valor_minidst->Branch("final_pdg" , &valor_minidst_final_nupdg ,"final_pdg/I"  );
   valor_minidst->Branch("target"    , &valor_minidst_target      ,"target/I"     );
   valor_minidst->Branch("enu_true"  , &valor_minidst_enu_true    ,"enu_true/D"   );
   valor_minidst->Branch("Q2_true"   , &valor_minidst_Q2_true     ,"q2_true/D"    );
