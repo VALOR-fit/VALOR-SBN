@@ -221,11 +221,14 @@ int main(int argc, char ** argv)
 
   conv::BeamConf_t beam = util::BeamConfFromString(opt_beam_name);
   assert(beam != conv::kbUndefined);
-
+  
   int    valor_minidst_sample       = sample;
   int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h 
   int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h 
+  int    valor_minidst_reac_type    = -1;  // see Conventions/ReacMode.h 
   int    valor_minidst_target       = -1;  // nuclear target -  GENIE PDG convention
+  int    valor_minidst_init_nupdg   = -1;  // Initial PDG
+  int    valor_minidst_final_nupdg  = -1;  // Final PDG
   double valor_minidst_enu_true     = -1.; // true neutrino energy, in GeV
   double valor_minidst_Q2_true      = -1.; // true neutrino energy, in GeV
   double valor_minidst_enu_reco     = -1.; // reco neutrino energy, in GeV
@@ -518,15 +521,18 @@ int main(int argc, char ** argv)
       << "Etrue         = "<< enu_true  << " GeV; "
       << "LArSoft mode  = "<< larsoft_mode  << "; ";
 
-    valor_minidst_sample     = sample; 
-    valor_minidst_beam       = beam; 
-    valor_minidst_reac_mode  = reac_mode;
-    valor_minidst_enu_true   = enu_true; 
-    valor_minidst_wght_smear = 1.;
-    valor_minidst_Q2_true    = Q2s;
-    valor_minidst_wght_pot   = 1./mcsample_pot; 
-    valor_minidst_target     = 1000180400; // Argon40
-    //valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
+    valor_minidst_sample       = sample; 
+    valor_minidst_beam         = beam; 
+    valor_minidst_reac_mode    = reac_mode;
+    valor_minidst_enu_true     = enu_true; 
+    valor_minidst_wght_smear   = 1.;
+    valor_minidst_Q2_true      = Q2s;
+    valor_minidst_wght_pot     = 1./mcsample_pot; 
+    valor_minidst_target       = 1000180400; // Argon40
+    //valor_minidst_y_reco      = 0.5; // FORCE y=0.5 for now
+    valor_minidst_reac_type    = reac;
+    valor_minidst_init_nupdg   = init_pdg;
+    valor_minidst_final_nupdg  = nu_pdg;
 
     VLOG("make_sbncode_minidst", pINFO) 
       << "\n Information copied to VALOR DUNE/SBNCode Mini-DST: "
