@@ -13,6 +13,7 @@ Copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved.
 
 // dune
 #include "dune/Conventions/SampleReacMode.h"
+#include "dune/Utilities/DoExperimentSetup.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -91,5 +92,10 @@ bool valor::DoExperimentSetup()
   es.fIsSetup = true;
   
   return es.fIsSetup;
+}
+//________________________________________________________________________________________
+ExperimentInitialiser::ExperimentInitialiser()
+{
+  DoExperimentSetup();
 }
 //________________________________________________________________________________________

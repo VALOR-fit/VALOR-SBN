@@ -17,6 +17,8 @@
 #pragma link C++ class valor::util::KinematicPoint;
 #pragma link C++ class valor::util::RFL;
 
+#pragma link C++ class valor::ExperimentInitialiser;
+
 // Vector types for use in macros:
 #pragma link C++ class std::vector<std::vector<int>>;
 #pragma link C++ class std::vector<TCanvas*>;

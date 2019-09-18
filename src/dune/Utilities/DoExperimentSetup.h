@@ -22,8 +22,15 @@
 
 
 namespace valor {
+  
+  // Dumb hacked class because Cling didn't play nice with the externally linked function
+  // Just calls DoExperimentSetup when constructed, nothing else
+  class ExperimentInitialiser {
+    public:
+      ExperimentInitialiser();
+  };
 
-  bool DoExperimentSetup(); // Defined as extern in ExperimentSetup.h
+  bool DoExperimentSetup(); // Defined as extern in SDK ExperimentSetup.h
 
 } // valor
 
