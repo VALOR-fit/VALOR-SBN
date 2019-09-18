@@ -414,6 +414,20 @@ void plot_pdf(
         event_rates<<vutil::AsString(b)<<" "<<vutil::AsString(d)<<" "<<vutil::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
         event_rates<<sample_event_rates.str()<<std::endl;
         
+        // And I guess compare them to the total spectra as a sanity check.
+        TString total_name = TString::Format("%s_%s_%s_%s_%s",
+          tag, "pdft",binning,"vf", model_name.c_str());
+        VALORArray * tot_arr = dynamic_cast<VALORArray*>(fin->Get(total_name.Data()));
+        std::cerr<<total_name.Data()<<std::endl;
+        assert(tot_arr);
+        double tot_event_rate_from_varray = tot_arr->Integral();
+        if (std::fabs(tot_event_rate_from_varray-tot_event_rate) > conv::kASmallNum) {
+          event_rates<<"\033[1;31m"<<"Warning - stack total is "<<tot_event_rate
+                     <<" while array total is "<<tot_event_rate_from_varray
+                     <<" - something went wrong!\n\n"
+                     <<"\033[0m"<<std::endl;
+        }
+        
       } // imodec
       
     
