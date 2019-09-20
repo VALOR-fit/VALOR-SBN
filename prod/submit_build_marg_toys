@@ -525,6 +525,30 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		}
 
 		#
+		# Lancaster
+		#
+		if($resource eq "Lancaster") {
+		    $fullprogram = `which $program`;
+		    $fullprogram = `readlink -m $fullprogram`;
+		    $arguments =~ s/\"/\\\"/g;        # All double quotes must be escaped for Condor
+		    $arguments =~ s/\'//g;            # and apparently single quotes are unnecessary but break it
+		    open(JDL, ">$job_dir/$tag-$irun.jdl") or die("Cannot create the JDL script");
+		    print JDL "executable     = $fullprogram \n";
+		    print JDL "universe       = vanilla \n";
+		    print JDL "arguments      = $arguments \n";
+		    print JDL "output         = $job_dir/$tag-$irun.out \n";
+		    print JDL "error          = $job_dir/$tag-$irun.err \n";
+		    print JDL "log            = $job_dir/$tag-$irun.log \n";
+		    print JDL "request_memory = 4000 \n";
+		    print JDL "getenv         = True \n";
+		    print JDL "should_transfer_files    = YES \n";
+		    print JDL "when_to_transfer_output  = ON_EXIT \n";
+		    print JDL "queue 1 \n";
+		    close(JDL);
+		    `condor_submit $job_dir/$tag-$irun.jdl`;
+		}
+
+		#
 		# interactive
 		#
 		if($resource eq "interactive") {
