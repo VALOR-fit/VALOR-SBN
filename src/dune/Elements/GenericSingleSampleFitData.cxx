@@ -28,6 +28,7 @@
 #include "dune/Conventions/Names.h"
 #include "dune/Elements/GenericSingleSampleFitData.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
+#include "dune/Utilities/UtlBinning.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -79,6 +80,10 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
     LOG("GenericSingleSampleFitData", pERROR) << "Null input object array.";
     return false;
   }
+
+  const SingleSampleKineBinning & binning = *fBinning;
+  const VALORBinning & reco_smp = *(binning.RecoSmpBinning());
+  const VALORBinning & reco_opt = *(binning.RecoOptBinning());
   
   //
   // Write out data distributions (VALORArray or bare ROOT format)
@@ -99,9 +104,40 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
       array->Add(fDataOb);
     }
 
+    // Add data in ROOT histogram format
+    if(opt.find("data_rf") != string::npos) {
+      assert(fDataOb);
+      const std::vector<KineVar_t>  & reco_vars = reco_opt.KineVars();
+      if(reco_vars.size() == 1) {
+        conv::KineSpace_t ks(util::KineSpaceFromKineVar(reco_vars[0]));
+        TH1 * hob = util::binning::Make1DHistogram(*fDataOb,binning,ks,false);
+        if(hob) {
+          TString hobname = TString::Format("%s_%s_%s",tag,"data_ob_rf",fName.c_str());
+          hob->SetName(hobname.Data());
+          array->Add(hob);
+        }
+      }
+      else if(reco_vars.size() == 2) {
+        conv::KineSpace_t ks = util::KineSpaceFromKineVars(reco_vars);
+        if(ks != conv::kspUndefined) {
+          TH2 *hob = util::binning::Make2DOptimisedHistogram(*fDataOb,binning,reco_vars);
+          if(hob) {
+            TString hobname = TString::Format("%s_%s_%s",tag,"data_ob_rf",fName.c_str());
+            hob->SetName(hobname.Data());
+            array->Add(hob);
+          }
+        }
+      }
+      else {
+        LOG("GenericSingleSampleFitData", pWARN)
+          << "Tried writing data to ROOT format, but number of kine vars != 1 or 2 (" << fDataOb->GetName() << ")";
+      }
+    }
+
     // regular/fine binning for plotting
     if(opt.find("+SB") != string::npos) {
       assert(!fDataSbNull);
+
       // Add data in VALOR array format
       if(opt.find("data_vf") != string::npos) {
         assert(fDataSb);
@@ -109,6 +145,37 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
         LOG("GenericSingleSampleFitData", pDEBUG) << "Adding: " << fDataSb->GetName();
         array->Add(fDataSb);
       }//data_vf
+
+      // Add data in ROOT histogram format
+      if(opt.find("data_rf") != string::npos) {
+        assert(fDataSb);
+        const std::vector<KineVar_t>  & reco_vars = reco_smp.KineVars();
+        if(reco_vars.size() == 1) {
+          conv::KineSpace_t ks(util::KineSpaceFromKineVar(reco_vars[0]));
+          TH1 * hsb = util::binning::Make1DHistogram(*fDataSb,binning,ks,false);
+          if(hsb) {
+            TString hsbname = TString::Format("%s_%s_%s",tag,"data_sb_rf",fName.c_str());
+            hsb->SetName(hsbname.Data());
+            array->Add(hsb);
+          }
+        }
+        else if(reco_vars.size() == 2) {
+          conv::KineSpace_t ks = util::KineSpaceFromKineVars(reco_vars);
+          if(ks != conv::kspUndefined) {
+            TH2 *hsb = util::binning::Make2DSimpleHistogram(*fDataSb,binning,reco_vars);
+            if(hsb) {
+              TString hsbname = TString::Format("%s_%s_%s",tag,"data_sb_rf",fName.c_str());
+              hsb->SetName(hsbname.Data());
+              array->Add(hsb);
+            }
+          }
+        }
+        else {
+          LOG("GenericSingleSampleFitData", pWARN)
+            << "Tried writing data to ROOT format, but number of kine vars != 1 or 2 (" << fDataSb->GetName() << ")";
+        }
+      }
+
     }//+SB
   }//data_vf, data_rf
 
