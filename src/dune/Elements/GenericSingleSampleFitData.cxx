@@ -132,6 +132,21 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
         LOG("GenericSingleSampleFitData", pWARN)
           << "Tried writing data to ROOT format, but number of kine vars != 1 or 2 (" << fDataOb->GetName() << ")";
       }
+
+      // Write 1d slices for the total in reco only
+      if (opt.find("slices") != string::npos) {
+        for (const conv::KineVar_t kv : reco_vars) {
+          conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
+          if (ks == conv::kspUndefined) {continue;}
+          TH1 * hob = util::binning::Make1DHistogram(*fDataOb,binning,ks,false);
+          if(hob) {
+            TString hobname = TString::Format("%s_%s_%s_%s",tag,"data_ob_rf_slice",fName.c_str(),util::AsString(kv).c_str());
+            hob->SetName(hobname.Data());
+            array->Add(hob);
+          }
+        }
+      }
+
     }
 
     // regular/fine binning for plotting
@@ -174,6 +189,22 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
           LOG("GenericSingleSampleFitData", pWARN)
             << "Tried writing data to ROOT format, but number of kine vars != 1 or 2 (" << fDataSb->GetName() << ")";
         }
+
+        // Write 1d slices for the total in reco only
+        if (opt.find("slices") != string::npos) {
+          for (const conv::KineVar_t kv : reco_vars) {
+            conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
+            if (ks == conv::kspUndefined) {continue;}
+
+            TH1 * hsb = util::binning::Make1DHistogram(*fDataSb,binning,ks,true);
+            if(hsb) {
+              TString hsbname = TString::Format("%s_%s_%s_%s",tag,"data_sb_rf_slice",fName.c_str(),util::AsString(kv).c_str());
+              hsb->SetName(hsbname.Data());
+              array->Add(hsb);
+            }
+          }
+        }
+
       }
 
     }//+SB
