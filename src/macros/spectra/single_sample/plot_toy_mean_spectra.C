@@ -15,8 +15,8 @@ void plot_toy_mean_spectra(
   const char * config_file,
   const char * filename,
   int ntoys = 10000,
-  bool plot_1sigma_1D_error = true,           // If true, projects all spectra to 1D (according to project_to_kinevar) and plots RMS error bands
-  const char * project_to_kinevar = "Ereco",  // Only used if plot_1sigma_1D_error = true. See KineSpace.cxx
+  bool plot_1D_RMS_error = true,              // If true, projects all spectra to 1D (according to project_to_kinevar) and plots RMS error bands
+  const char * project_to_kinevar = "Ereco",  // Only used if plot_1D_RMS_error = true. See KineSpace.cxx
   const char * out_tag = "mean_spectra",
   const char * image_save_format = "pdf",
   bool stat_fluct = true,
@@ -44,7 +44,7 @@ void plot_toy_mean_spectra(
   const char * tag       = "fakedata";
 
   std::string save_name = ((std::string)out_tag);
-  if(plot_1sigma_1D_error) {
+  if(plot_1D_RMS_error) {
     save_name += "_error_band";
   }
 
@@ -80,8 +80,8 @@ void plot_toy_mean_spectra(
       GenericSingleSampleFitData * subdata = dynamic_cast<GenericSingleSampleFitData*>(cd->GetSubData(isubdata));
 
       TString ob_name;
-      if(plot_1sigma_1D_error) { ob_name = TString::Format("%s_data_ob_rf_slice_%s_%s", tag, subdata->Name().c_str(), project_to_kinevar); }
-      else {                     ob_name = TString::Format("%s_data_ob_rf_%s", tag, subdata->Name().c_str()); }
+      if(plot_1D_RMS_error) { ob_name = TString::Format("%s_data_ob_rf_slice_%s_%s", tag, subdata->Name().c_str(), project_to_kinevar); }
+      else {                  ob_name = TString::Format("%s_data_ob_rf_%s", tag, subdata->Name().c_str()); }
 
       TH1 * hist_ob = (TH1*) data_array->FindObject(ob_name.Data());
       if(!hist_ob) {
@@ -95,7 +95,7 @@ void plot_toy_mean_spectra(
         mean_hists.at(isubdata) = (TH1*) hist_ob->Clone(subdata->Name().c_str());
 
         // Initialise a vector which we'll use to store the content of each bin for each toy in order to generate error bands
-        if(plot_1sigma_1D_error) {
+        if(plot_1D_RMS_error) {
           toy_bin_content.push_back( vector<vector<double>>( hist_ob->GetNbinsX(), vector<double>(ntoys) ) );
         }
       }
@@ -104,7 +104,7 @@ void plot_toy_mean_spectra(
         mean_hists.at(isubdata)->Add(hist_ob);
       }
 
-      if(plot_1sigma_1D_error) {
+      if(plot_1D_RMS_error) {
         for(int ibin_1D = 0; ibin_1D < hist_ob->GetNbinsX(); ++ibin_1D) {
           toy_bin_content[isubdata][ibin_1D][itoy] = hist_ob->GetBinContent(ibin_1D +1);  // +1 because the 1st hist bin is an underflow
         }
@@ -131,7 +131,7 @@ void plot_toy_mean_spectra(
       std::cerr << "ERROR: The number of reco dimensions to plot was != 1 or 2." << endl;
       vutil::Die(-1);
     }
-    bool is_1D = ( reco_vars.size() == 1 || plot_1sigma_1D_error );
+    bool is_1D = ( reco_vars.size() == 1 || plot_1D_RMS_error );
 
     TCanvas* canv = new TCanvas(subdata->Name().c_str(), subdata->Name().c_str(), canv_size_x, canv_size_y);
 
@@ -148,7 +148,7 @@ void plot_toy_mean_spectra(
       err_up_hist  ->Reset();
       err_down_hist->Reset();
 
-      if(plot_1sigma_1D_error) {
+      if(plot_1D_RMS_error) {
         // Calculate the RMS error for each bin
         for(int ibin = 0; ibin < mean_hist->GetNbinsX(); ++ibin) {
           double err = TMath::RMS(toy_bin_content[isubdata][ibin].begin(), toy_bin_content[isubdata][ibin].end());
@@ -170,7 +170,7 @@ void plot_toy_mean_spectra(
       pdf_frame->GetYaxis()->SetTitle("Number of Events");
       pdf_frame->Draw();
 
-      if(plot_1sigma_1D_error) {
+      if(plot_1D_RMS_error) {
         err_up_hist  ->SetFillColor(kRed);
         err_up_hist  ->SetFillStyle(1001);
         err_up_hist  ->SetLineWidth(1);
@@ -189,7 +189,7 @@ void plot_toy_mean_spectra(
 
       root_file_out->cd();
       root_file_out  ->WriteObject(mean_hist    , TString::Format("%s_%s", subdata->Name().c_str(), "mean_PDF").Data());
-      if(plot_1sigma_1D_error) {
+      if(plot_1D_RMS_error) {
         root_file_out->WriteObject(err_up_hist  , TString::Format("%s_%s", subdata->Name().c_str(), "mean_PDF_err_up").Data());
         root_file_out->WriteObject(err_down_hist, TString::Format("%s_%s", subdata->Name().c_str(), "mean_PDF_err_down").Data());
       }
