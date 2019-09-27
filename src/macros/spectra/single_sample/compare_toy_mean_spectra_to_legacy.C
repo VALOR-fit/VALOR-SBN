@@ -107,14 +107,14 @@ void compare_toy_mean_spectra_to_legacy(
         // Initialise the vector of mean histograms
         if(is_1D) {
           assert(legacy_hist_1D);
-          mean_hists.at(isample) = (TH1*) legacy_hist_1D->Clone(legacy_sample_names.at(isample).c_str()); // TODO: need to convert to TH1D* instead?
+          mean_hists.at(isample) = (TH1*) legacy_hist_1D->Clone(legacy_sample_names.at(isample).c_str());
 
           // Initialise a vector which we'll use to store the content of each bin for each toy in order to generate error bands
           toy_bin_content.push_back( vector<vector<double>>( legacy_hist_1D->GetNbinsX(), vector<double>(ntoys) ) );
         }
         else {
           assert(legacy_hist_2D);
-          mean_hists.at(isample) = (TH1*) legacy_hist_2D->Clone(legacy_sample_names.at(isample).c_str()); // TODO: need to convert to TH2D* instead?
+          mean_hists.at(isample) = (TH1*) legacy_hist_2D->Clone(legacy_sample_names.at(isample).c_str());
         }
         mean_hists.at(isample)->SetDirectory(0);
       }
