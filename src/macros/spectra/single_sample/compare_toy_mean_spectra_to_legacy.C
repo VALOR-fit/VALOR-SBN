@@ -10,8 +10,30 @@
 //
 
 double get_max_in_range_1D(TH1D* hist, double xmax);
+double get_nonzero_min_in_range_1D(TH1D* hist, double xmax);
 bool sample_is_mu_like(int isample);
 void make_palette();
+void draw_title(int isample, double min_x, double max_x, double min_y, double max_y);
+void draw_frame(TCanvas* canv, bool is_1D, std::string title_x, std::string title_y, std::string title_z, double min_x, double max_x, double min_y, double max_y);
+void set_empty_bins_to_one(TH1D* hist);
+void set_negative_bins_to_zero(TH1D* hist);
+
+int n_samples = 5;
+vector<std::string> legacy_sample_names = {
+  "1Rmu",
+  "RHC1Rmu",
+  "1Re",
+  "RHC1Re",
+  "MultiRe"
+};
+
+vector<std::string> sdk_sample_names = {
+  "superk__JPARC_FHC__1rmu",
+  "superk__JPARC_RHC__1rmu",
+  "superk__JPARC_FHC__1re",
+  "superk__JPARC_RHC__1re",
+  "superk__JPARC_FHC__multire"
+};
 
 //___________________________________________________________________________
 void compare_toy_mean_spectra_to_legacy(
@@ -36,23 +58,6 @@ void compare_toy_mean_spectra_to_legacy(
   using namespace valor;
   using namespace valor::conv;
   namespace vutil = valor::util;
-
-  int n_samples = 5;
-  vector<std::string> legacy_sample_names = {
-    "1Rmu",
-    "RHC1Rmu",
-    "1Re",
-    "RHC1Re",
-    "MultiRe"
-  };
-
-  vector<std::string> sdk_sample_names = {
-    "superk__JPARC_FHC__1rmu",
-    "superk__JPARC_RHC__1rmu",
-    "superk__JPARC_FHC__1re",
-    "superk__JPARC_RHC__1re",
-    "superk__JPARC_FHC__multire"
-  };
 
   std::string save_name = ((std::string)out_tag);
   if(plot_1D_RMS_error) {
@@ -193,9 +198,12 @@ void compare_toy_mean_spectra_to_legacy(
         // Calculate the RMS error for each bin
         for(int ibin = 0; ibin < mean_hist->GetNbinsX(); ++ibin) {
           double err = TMath::RMS(toy_bin_content[isample][ibin].begin(), toy_bin_content[isample][ibin].end());
-          err_up_hist  ->SetBinContent(ibin +1, mean_hist->GetBinContent(ibin +1) + err);  // +1 because the 1st hist bin is an underflow
-          err_down_hist->SetBinContent(ibin +1, mean_hist->GetBinContent(ibin +1) - err);  // +1 because the 1st hist bin is an underflow
+          err_up_hist  ->SetBinContent(ibin +1, mean_hist->GetBinContent(ibin +1) + err);                  // +1 because the 1st hist bin is an underflow
+          err_down_hist->SetBinContent(ibin +1, TMath::Max(mean_hist->GetBinContent(ibin +1) - err, 0.));  // +1 because the 1st hist bin is an underflow
         }
+        set_negative_bins_to_zero((TH1D*) sdk_mean_hists    .at(isample));
+        set_negative_bins_to_zero((TH1D*) sdk_up_err_hists  .at(isample));
+        set_negative_bins_to_zero((TH1D*) sdk_down_err_hists.at(isample));
       }
 
       // Draw within the limits given at the command line
@@ -206,13 +214,10 @@ void compare_toy_mean_spectra_to_legacy(
       }
       max_y *= 1.2;
       min_x = mean_hist->GetXaxis()->GetBinLowEdge(1);
-      max_x = kinevar_x_max_1D;
-      TVirtualPad * this_pad = canv->cd(1);
-      this_pad->SetLeftMargin(0.2);
-      TH1F * pdf_frame = (TH1F*)this_pad->DrawFrame(0, 0, max_x, max_y);
-      pdf_frame->GetXaxis()->SetTitle(title_x);
-      pdf_frame->GetYaxis()->SetTitle("Number of Events");
-      pdf_frame->Draw();
+      if(sample_is_mu_like(isample)) { max_x = kinevar_x_max_1D; }
+      else                           { max_x = kinevar_x_max_2D; }
+
+      draw_frame(canv, true, title_x, "Number of Events", "", 0, max_x, 0, max_y);
 
       mean_hist->SetLineColor(kBlue);
       if(plot_1D_RMS_error) {
@@ -243,6 +248,68 @@ void compare_toy_mean_spectra_to_legacy(
 
       mean_hist->DrawClone("hist,same");
       sdk_mean_hists.at(isample)->DrawClone("hist,same");
+      draw_title(isample, min_x, max_x, 0, max_y);
+
+      // Save canvas to the output file
+      std::string canv_save_name = save_name + "." + ((std::string)image_save_format);
+      if(isample == 0            && n_samples > 1) { canv_save_name += "("; }
+      canv->SaveAs(canv_save_name.c_str());
+      delete canv;
+
+      // Draw ratio plots (SDK mean / legacy mean, SDK +err / legacy +err, etc.)
+      if(plot_1D_RMS_error) {
+        TString canv_ratio_name = TString::Format("%s_%s", sdk_sample_names.at(isample).c_str(), "ratio");
+        TCanvas* canv_ratio = new TCanvas(canv_ratio_name, canv_ratio_name, canv_size_x, canv_size_y);
+        TH1D* mean_ratio_hist     = (TH1D*) sdk_mean_hists    .at(isample)->Clone();
+        TH1D* up_err_ratio_hist   = (TH1D*) sdk_up_err_hists  .at(isample)->Clone();
+        TH1D* down_err_ratio_hist = (TH1D*) sdk_down_err_hists.at(isample)->Clone();
+        mean_ratio_hist    ->Divide(mean_hist);
+        up_err_ratio_hist  ->Divide(err_up_hist);
+        down_err_ratio_hist->Divide(err_down_hist);
+        set_empty_bins_to_one(mean_ratio_hist);
+        set_empty_bins_to_one(up_err_ratio_hist);
+        set_empty_bins_to_one(down_err_ratio_hist);
+
+        up_err_ratio_hist  ->SetLineColor(kBlue);
+        down_err_ratio_hist->SetLineColor(kRed);
+        up_err_ratio_hist  ->SetLineStyle(2);
+        down_err_ratio_hist->SetLineStyle(3);
+        up_err_ratio_hist  ->SetLineWidth(2);
+        down_err_ratio_hist->SetLineWidth(2);
+        up_err_ratio_hist  ->SetFillStyle(0);
+        down_err_ratio_hist->SetFillStyle(0);
+
+        // Draw a faint grey line at ratio = 1, to guide the eye
+        TLine* line = new TLine(0, 1., max_x, 1.);
+        line->SetLineColor(15);
+
+        max_y = 1.1 * TMath::Max(get_max_in_range_1D(mean_ratio_hist  , max_x),
+                                 get_max_in_range_1D(up_err_ratio_hist, max_x));
+        //double min_y = 0.8 * TMath::Min(get_nonzero_min_in_range_1D(mean_ratio_hist    , max_x),
+        //                                get_nonzero_min_in_range_1D(down_err_ratio_hist, max_x));
+        double min_y = 0.9 * get_nonzero_min_in_range_1D(mean_ratio_hist, max_x);
+
+        draw_frame(canv_ratio, true, title_x, "SDK / Legacy", "", 0, max_x, min_y, max_y);
+        line->DrawClone("same");
+        mean_ratio_hist    ->DrawClone("hist,same");
+        up_err_ratio_hist  ->DrawClone("hist,same");
+        //down_err_ratio_hist->DrawClone("hist,same");  // I've decided to not draw this, as the number of events is usually close to 0, so the ratio is all over the place (a small absolute change is a much larger fractional change to the ratio close to 0 than further away)
+
+        TLegend* leg_ratio = new TLegend(0.70, 0.80, 0.90, 0.95);
+        leg_ratio->AddEntry(mean_ratio_hist    , "Mean"      , "l");
+        leg_ratio->AddEntry(up_err_ratio_hist  , "Mean + RMS", "l");
+        //leg_ratio->AddEntry(down_err_ratio_hist, "Mean - RMS", "l");
+        leg_ratio->DrawClone();
+        draw_title(isample, min_x, max_x, min_y, max_y);
+
+        if(isample == n_samples -1 && n_samples > 1) { canv_save_name += ")"; }
+        canv_ratio->SaveAs(canv_save_name.c_str());
+
+        delete mean_ratio_hist;
+        delete up_err_ratio_hist;
+        delete down_err_ratio_hist;
+        delete leg_ratio;
+      }
 
       delete mean_hist;
       delete err_up_hist;
@@ -277,40 +344,25 @@ void compare_toy_mean_spectra_to_legacy(
       min_x = diff_hist->GetXaxis()->GetBinLowEdge(1);
       max_x = kinevar_x_max_2D;
       double max_abs_z = TMath::Max(diff_hist->GetMaximum(), TMath::Abs(diff_hist->GetMinimum()));
-      TVirtualPad *this_pad = canv->cd(1);
-      this_pad->SetLeftMargin(0.16);
-      this_pad->SetRightMargin(0.12);
-      TH1F *pdf_frame = (TH1F *) this_pad->DrawFrame(0, 0, kinevar_x_max_2D, kinevar_y_max_2D);
-      pdf_frame->GetXaxis()->SetTitle(title_x);
-      pdf_frame->GetYaxis()->SetTitle(title_y);
-      pdf_frame->GetZaxis()->SetTitle("(SDK - legacy) / SDK");
-      pdf_frame->Draw();
+
+      draw_frame(canv, false, title_x, title_y, "(SDK - legacy) / SDK", 0, max_x, 0, max_y);
 
       make_palette();
       diff_hist->GetZaxis()->SetRangeUser(-max_abs_z, max_abs_z);
       diff_hist->DrawClone("colz,same");
+      draw_title(isample, min_x, max_x, 0, max_y);
 
+      // Save canvas to the output file
+      std::string canv_save_name = save_name + "." + ((std::string)image_save_format);
+      if(isample == 0            && n_samples > 1) { canv_save_name += "("; }
+      if(isample == n_samples -1 && n_samples > 1) { canv_save_name += ")"; }
+      canv->SaveAs(canv_save_name.c_str());
+
+      delete canv;
       delete mean_hist;
       delete mean_hist_sdk;
       delete diff_hist;
     } // is 2D
-
-    // Draw title
-    TString title_str = TString::Format("%s", sdk_sample_names.at(isample).c_str());
-    TPaveText * title = new TPaveText(min_x * 1.05, max_y, max_x, max_y * 1.07 );
-    title->SetShadowColor(0);
-    title->SetFillColor(0);
-    title->SetFillStyle(0);
-    title->SetLineColor(0);
-    title->AddText(title_str);
-    title->SetTextSize(0.035);
-    title->Draw("NB,same");
-
-    // Save canvas to the output file
-    std::string canv_save_name = save_name + "." + ((std::string)image_save_format);
-    if(isample == 0            && n_samples > 1) { canv_save_name += "("; }
-    if(isample == n_samples -1 && n_samples > 1) { canv_save_name += ")"; }
-    canv->SaveAs(canv_save_name.c_str());
   } // isample
 
   file_sdk->Close();
@@ -328,6 +380,17 @@ double get_max_in_range_1D(TH1D* hist, double xmax)
     } //<xmax
   } //xbin
   return max_n;
+}
+//___________________________________________________________________________
+double get_nonzero_min_in_range_1D(TH1D* hist, double xmax)
+{
+  double min_n = 999.;
+  for(int xbin = 1; xbin <= hist->GetNbinsX(); xbin++) {
+    if(hist->GetBinCenter(xbin) < xmax && hist->GetBinContent(xbin) != 0) {
+      min_n = TMath::Min(min_n, hist->GetBinContent(xbin));
+    } //<xmax
+  } //xbin
+  return min_n;
 }
 //___________________________________________________________________________
 bool sample_is_mu_like(int isample)
@@ -352,5 +415,56 @@ void make_palette()
   Int_t ncontours = 255;
   TColor::CreateGradientColorTable(npoints, s, r, g, b, ncontours);
   gStyle->SetNumberContours(ncontours);
+}
+//___________________________________________________________________________
+void draw_title(int isample, double min_x, double max_x, double min_y, double max_y)
+{
+  TString title_str = TString::Format("%s", sdk_sample_names.at(isample).c_str());
+  TPaveText * title = new TPaveText(min_x * 1.05, max_y, max_x, max_y + (max_y-min_y) * 0.07 );
+  title->SetShadowColor(0);
+  title->SetFillColor(0);
+  title->SetFillStyle(0);
+  title->SetLineColor(0);
+  title->AddText(title_str);
+  title->SetTextSize(0.035);
+  title->Draw("NB,same");
+}
+//___________________________________________________________________________
+void draw_frame(TCanvas* canv, bool is_1D, std::string title_x, std::string title_y, std::string title_z, double min_x, double max_x, double min_y, double max_y)
+{
+  TVirtualPad * this_pad = canv->cd(1);
+  if(is_1D) {
+    this_pad->SetLeftMargin(0.2);
+  }
+  else {
+    this_pad->SetLeftMargin(0.16);
+    this_pad->SetRightMargin(0.12);
+  }
+  TH1F * pdf_frame = (TH1F*)this_pad->DrawFrame(min_x, min_y, max_x, max_y);
+  pdf_frame->SetDirectory(0);
+  pdf_frame->GetXaxis()->SetTitle(title_x.c_str());
+  pdf_frame->GetYaxis()->SetTitle(title_y.c_str());
+  if(!is_1D) {
+    pdf_frame->GetZaxis()->SetTitle(title_z.c_str());
+  }
+  pdf_frame->Draw();
+}
+//___________________________________________________________________________
+void set_empty_bins_to_one(TH1D* hist)
+{
+  for(int ibin = 1; ibin < hist->GetNbinsX() +1; ++ibin) {
+    if(hist->GetBinContent(ibin) == 0) {
+      hist->SetBinContent(ibin, 1);
+    }
+  }
+}
+//___________________________________________________________________________
+void set_negative_bins_to_zero(TH1D* hist)
+{
+  for(int ibin = 1; ibin < hist->GetNbinsX() +1; ++ibin) {
+    if(hist->GetBinContent(ibin) < 0) {
+      hist->SetBinContent(ibin, 0);
+    }
+  }
 }
 //___________________________________________________________________________
