@@ -7,6 +7,7 @@
 ###                                                                                             ###
 ### To submit the job run a command such as:                                                    ###
 ### "jobsub_submit -G $group --role=Analysis --memory=$memory --expected-lifetime=$cput  \      ###
+##    --append_condor_requirements='(TARGET.HAS_CVMFS_sbnd_opensciencegrid_org==true)'   \      ###   
 ###   --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE       \      ###
 ###   --OS=SL6 -N $numjobs --generate-email-summary                                      \      ###
 ###   file://$ENV{VALOR_DUNE}/prod/jobsub_submit_param_scan.sh                           \      ###
@@ -35,6 +36,10 @@
 ### $tarball: is the valor tarball sent to the node. Please put your $VALOR-DUNE                ###
 ###           and $VALOR_FRMK in the same directory and tar the file using:                     ###
 ###           "tar -C /path/to/valor/ -czf valor.tar ."                                         ###
+###           and $VALOR_FRMK in the same directory and tar the file using:                     ###                                                                                  
+###           "tar -C /path/to/valor/ -czf valor.tar ."                                         ###                                                                                  
+###           Please put the tarball, config file and jobdir on dCache. The tarball             ###                                                                                  
+##            is best on resilient                                                              ### 
 ### $job_dir: This is where your output files go and it must be on pnfs.                        ###
 ### $numjobs: $numjobs should be the same as -N $numjobs in the jobsub section                  ###
 ###                                                                                             ###
@@ -459,7 +464,7 @@ echo "Copying  tar file"
 echo $_CONDOR_SCRATCH_DIR
 echo $TARBALL
 cd $_CONDOR_SCRATCH_DIR
-timeout 200s ifdh cp $TARBALL local.tar
+ifdh cp $TARBALL local.tar
 if [ $? -ne 0 ]; then
   echo "Error $? when copying tar file from dCache"
   exit 73
@@ -585,7 +590,7 @@ timeout 200s ifdh rm  local.tar
 for filename in $_CONDOR_SCRATCH_DIR/*; do
     if [ -f "$filename" ]; then
 	echo "Copying $filename"
-	timeout 200s ifdh cp -D $filename $JOBSUBDIR
+	ifdh cp -D $filename $JOBSUBDIR
     fi
 done
 
