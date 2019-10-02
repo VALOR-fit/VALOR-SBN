@@ -263,42 +263,57 @@ void compare_toy_mean_spectra_to_legacy(
         TH1D* mean_ratio_hist     = (TH1D*) sdk_mean_hists    .at(isample)->Clone();
         TH1D* up_err_ratio_hist   = (TH1D*) sdk_up_err_hists  .at(isample)->Clone();
         TH1D* down_err_ratio_hist = (TH1D*) sdk_down_err_hists.at(isample)->Clone();
+        TH1D* RMS_ratio_hist      = (TH1D*) up_err_ratio_hist->Clone();
+        RMS_ratio_hist->Add(mean_ratio_hist, -1.);
+        TH1D* RMS_hist_legacy = (TH1D*) err_up_hist->Clone();
+        RMS_hist_legacy->Add(mean_hist, -1.);
+        RMS_ratio_hist     ->Divide(RMS_hist_legacy);
         mean_ratio_hist    ->Divide(mean_hist);
         up_err_ratio_hist  ->Divide(err_up_hist);
         down_err_ratio_hist->Divide(err_down_hist);
         set_empty_bins_to_one(mean_ratio_hist);
         set_empty_bins_to_one(up_err_ratio_hist);
         set_empty_bins_to_one(down_err_ratio_hist);
+        set_empty_bins_to_one(RMS_ratio_hist);
 
         up_err_ratio_hist  ->SetLineColor(kBlue);
         down_err_ratio_hist->SetLineColor(kRed);
+        RMS_ratio_hist     ->SetLineColor(kGreen);
         up_err_ratio_hist  ->SetLineStyle(2);
         down_err_ratio_hist->SetLineStyle(3);
+        RMS_ratio_hist     ->SetLineStyle(4);
         up_err_ratio_hist  ->SetLineWidth(2);
         down_err_ratio_hist->SetLineWidth(2);
+        RMS_ratio_hist     ->SetLineWidth(2);
         up_err_ratio_hist  ->SetFillStyle(0);
         down_err_ratio_hist->SetFillStyle(0);
+        RMS_ratio_hist     ->SetFillStyle(0);
 
         // Draw a faint grey line at ratio = 1, to guide the eye
         TLine* line = new TLine(0, 1., max_x, 1.);
         line->SetLineColor(15);
 
-        max_y = 1.1 * TMath::Max(get_max_in_range_1D(mean_ratio_hist  , max_x),
-                                 get_max_in_range_1D(up_err_ratio_hist, max_x));
+        max_y = TMath::Max(get_max_in_range_1D(mean_ratio_hist  , max_x),
+                           get_max_in_range_1D(up_err_ratio_hist, max_x));
+        max_y = TMath::Max(max_y, get_max_in_range_1D(RMS_ratio_hist, max_x));
+        max_y *= 1.03;
         //double min_y = 0.8 * TMath::Min(get_nonzero_min_in_range_1D(mean_ratio_hist    , max_x),
         //                                get_nonzero_min_in_range_1D(down_err_ratio_hist, max_x));
-        double min_y = 0.9 * get_nonzero_min_in_range_1D(mean_ratio_hist, max_x);
+        double min_y = 0.97 * get_nonzero_min_in_range_1D(mean_ratio_hist, max_x);
 
         draw_frame(canv_ratio, true, title_x, "SDK / Legacy", "", 0, max_x, min_y, max_y);
         line->DrawClone("same");
         mean_ratio_hist    ->DrawClone("hist,same");
         up_err_ratio_hist  ->DrawClone("hist,same");
         //down_err_ratio_hist->DrawClone("hist,same");  // I've decided to not draw this, as the number of events is usually close to 0, so the ratio is all over the place (a small absolute change is a much larger fractional change to the ratio close to 0 than further away)
+        RMS_ratio_hist     ->DrawClone("hist,same");
 
-        TLegend* leg_ratio = new TLegend(0.70, 0.80, 0.90, 0.95);
+        //TLegend* leg_ratio = new TLegend(0.70, 0.80, 0.90, 0.95);
+        TLegend* leg_ratio = new TLegend(0.70, 0.16, 0.90, 0.31);
         leg_ratio->AddEntry(mean_ratio_hist    , "Mean"      , "l");
         leg_ratio->AddEntry(up_err_ratio_hist  , "Mean + RMS", "l");
         //leg_ratio->AddEntry(down_err_ratio_hist, "Mean - RMS", "l");
+        leg_ratio->AddEntry(RMS_ratio_hist     , "RMS", "l");
         leg_ratio->DrawClone();
         draw_title(isample, min_x, max_x, min_y, max_y);
 
@@ -308,6 +323,7 @@ void compare_toy_mean_spectra_to_legacy(
         delete mean_ratio_hist;
         delete up_err_ratio_hist;
         delete down_err_ratio_hist;
+        delete RMS_ratio_hist;
         delete leg_ratio;
       }
 
