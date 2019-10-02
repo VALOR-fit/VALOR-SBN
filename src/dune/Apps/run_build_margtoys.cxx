@@ -165,7 +165,8 @@ void BuildToys(CmdLnArgList& arg)
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning, save_throws);
+   Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning, save_throws,
+                                   arg.GetString("valor-array-format"));
    if(!arg.Exists("fit-param2"))
    {  // Build toys for 1D fit
       marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl, randomise_systematics,

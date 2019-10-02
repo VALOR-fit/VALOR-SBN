@@ -51,9 +51,10 @@ public:
              spectra.
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
+      \param va_format The format that VALORArrays are stored as.
    */
    Marginalisation(CompoundFitElements& elements, string filePrefix, bool use_simple_binning,
-                   bool save_throws_to_tree = false);
+                   bool save_throws_to_tree = false, string va_format = "pdft");
 
    /**
       Constructs a Marginalisation object.
@@ -61,9 +62,10 @@ public:
       \param model The FitModelABC object used to generate the MC spectra.
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
+      \param va_format The format that VALORArrays are stored as.
    */
    Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning,
-                   bool save_throws_to_tree = false);
+                   bool save_throws_to_tree = false, string va_format = "pdft");
 
    /**
       Destructor.
@@ -379,6 +381,7 @@ private:
    TTree* _tree_pars;
    int _param1_start_bin;
    int _param2_start_bin;
+   string _va_format;
 
   // TODO: update this description - the stuff about floats is not relevant anymore
   // When calculating the marginal likelihood:

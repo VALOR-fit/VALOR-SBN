@@ -26,6 +26,9 @@
 #  --npt-job-par1           : Number of points of the 1st fit parameter to run in each job	# TODO: Not yet implemented
 #  --npt-job-par2           : Number of points of the 2nd fit parameter to run in each job	# TODO: Not yet implemented
 #  --prior-file             : Config file containing the priors used to throw toys
+#  --valor-array-format     : Option string used to format the stored VALOR arrays. Choices:
+#                             "pdft" - Store total PDFs (default); "mct" - store Mc templates;
+#                             "pdfc" - Store PDFs by mode. Combinations of these can be used.
 #
 #  --tag                    : Naming tag for output files
 #  --config                 : Analysis configuration file from the config/analysis directory
@@ -97,6 +100,7 @@ foreach (@ARGV) {
   elsif($_ eq '--npt-job-par1'         ) { $npt_job_par1          = $ARGV[$iarg+1]; }
   elsif($_ eq '--npt-job-par2'         ) { $npt_job_par2          = $ARGV[$iarg+1]; }
   elsif($_ eq '--prior-file'           ) { $prior_file            = $ARGV[$iarg+1]; }
+  elsif($_ eq '--valor-array-format'   ) { $valor_array_format    = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                  ) { $tag                   = $ARGV[$iarg+1]; }
   elsif($_ eq '--config'               ) { $config                = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-list'       ) { $fit_param_list        = $ARGV[$iarg+1]; }
@@ -148,6 +152,7 @@ $min_par2              = 0.                                                     
 $max_par1              = +3.14159265358979312e+00                                            unless (defined $max_par1 || $use_t2k_presets == 1);
 $max_par2              = 0                                                                   unless (defined $max_par2 || $use_t2k_presets == 1);
 $prior_file            = ""                                                                  unless defined $prior_file;
+$valor_array_format    = "pdft"                                                              unless defined $valor_array_format;
 $npt_job_par1          = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
 $npt_job_par2          = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
 $fit_param_list        = "nuosc3f"                                                           unless defined $fit_param_list;
@@ -432,7 +437,7 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		             "--fit-param2-bin $sub_ibin2 --$hierarchy --$mix_param_choice --seed-toys-syst $seed_syst " .
 		             "--seed-toys-osc $seed_osc --seed-other $seed_other --prior-file $prior_file " .
 		             "--read-throws-from $read_throws_from --read-throws-param-map $read_throws_param_map " .
-		             "--dmsq-scheme $dmsq_scheme";
+		             "--dmsq-scheme $dmsq_scheme --valor-array-format $valor_array_format";
 
     if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
     if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }

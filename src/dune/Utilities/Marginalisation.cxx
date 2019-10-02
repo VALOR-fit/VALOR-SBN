@@ -17,18 +17,19 @@
 namespace valor
 {
 
-Marginalisation::Marginalisation(CompoundFitElements& elements,
-      string filePrefix, bool use_simple_binning, bool save_throws_to_tree):
-   Marginalisation(*elements.FitModel(), filePrefix, use_simple_binning, save_throws_to_tree)
+Marginalisation::Marginalisation(CompoundFitElements& elements, string filePrefix,  bool use_simple_binning,
+                                 bool save_throws_to_tree, string va_format):
+   Marginalisation(*elements.FitModel(), filePrefix, use_simple_binning, save_throws_to_tree, va_format)
 {
 }
 //______________________________________________________________________________
-Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning, bool save_throws_to_tree):
+Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning,
+                                 bool save_throws_to_tree, string va_format):
    _filePrefix(filePrefix), _model(&model), _likelihood(0.0), _chi2(0.0),
    _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
    _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr),
    _use_simple_binning(use_simple_binning), _save_throws_to_tree(save_throws_to_tree),
-   _tree_pars(nullptr), _param1_start_bin(0), _param2_start_bin(-1)
+   _tree_pars(nullptr), _param1_start_bin(0), _param2_start_bin(-1), _va_format(va_format)
 {
 }
 //______________________________________________________________________________
@@ -125,8 +126,8 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       LOG("Marginalisation", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
 #endif
       if(t % 100 == 0) { LOG("Marginalisation", pNOTICE) << "Generating toy-MC #" << t; }
-      const char* write_opt = "pdft";
-      if (_use_simple_binning) { write_opt = "pdft+SB"; }
+      const char* write_opt = _va_format.c_str();
+      if (_use_simple_binning) { write_opt = (_va_format + "+SB").c_str(); }
       this->_model->Generate(fpl, write_opt);
       this->_model->Write(os_toys, write_opt);
       this->SaveParamThrows(fpl, t == Ntoys-1, filename);
@@ -221,8 +222,8 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "Reading toy-MC data";
 #endif
-         const char* read_opt = "pdft";
-         if (_use_simple_binning) { read_opt = "pdft+SB"; }
+         const char* read_opt = _va_format.c_str();
+         if (_use_simple_binning) { read_opt = (_va_format + "+SB").c_str(); }
          this->_model->Read(is_toys, read_opt);
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
