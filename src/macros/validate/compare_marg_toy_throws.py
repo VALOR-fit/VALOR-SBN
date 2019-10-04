@@ -75,6 +75,14 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
 
         min_val = min([min(vals) for vals in param_vals_all])
         max_val = max([max(vals) for vals in param_vals_all])
+        if min_val < 0:
+            min_val *= 1.1
+        else:
+            min_val *= 0.9
+        if max_val < 0:
+            max_val *= 1.1
+        else:
+            max_val *= 0.9
 
         # 2 sample K-S test:
         if len(tree_names) == 2:
@@ -90,7 +98,7 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
         hists_to_draw = []
         for i in range(0, len(tree_names)):
             hname = param_name + "_" + str(i)
-            hist = ROOT.TH1D(hname, hname, _nbins, 0.9 * min_val, 1.1 * max_val)
+            hist = ROOT.TH1D(hname, hname, _nbins, min_val, max_val)
             hist.SetDirectory(0)
             for val in param_vals_all[i]:
                 hist.Fill(val)
