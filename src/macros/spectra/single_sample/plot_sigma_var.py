@@ -54,6 +54,8 @@ title_size = 0.05
 label_size = 0.04
 title_offset = 0.9
 
+_ratio_diff_warn_threshold_percent = 0.1
+
 # The legacy T2K analysis does not track CC1piC and CC1pi0 modes separately, like we do in the SDK. So when comparing
 # systematic variations to the legacy analysis, sum these modes.
 _do_sum_cc1pi_modes = False
@@ -176,6 +178,19 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
               hist_max_var = max(hist_max_var, get_max_var_in_range(h_comp, x_max))
               if sigma_var == "m3":
                 leg.AddEntry(h_comp, "comparison", "l")
+
+          # Throw a warning if the ratios have a difference greater than some threshold
+          for ibin in range(1, h.GetNbinsX()):
+            diff = 100 * ROOT.TMath.Abs(1.0 - (h_comp.GetBinContent(ibin) / h.GetBinContent(ibin)))
+            if diff > _ratio_diff_warn_threshold_percent:
+              if _by_mode:
+                print "WARNING: For param =", param_name, "; sample =", selection_name, "; mode =", util.ModeAsString(m), "; kinevar val =", \
+                  h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
+                  "% in the ratios of input and compaison hist"
+              else:
+                print "WARNING: For param =", param_name, "; sample =", selection_name, "; kinevar val =", \
+                  h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
+                  "% in the ratios of input and compaison hist"
 
         hvar_list[0].SetMaximum(1 + 1.1 * hist_max_var)
         hvar_list[0].SetMinimum(1 - 1.1 * hist_max_var)
