@@ -4,6 +4,7 @@ import argparse
 import ROOT
 import sys
 import re
+from array import array
 
 ROOT.PyConfig.IgnoreCommandLineOptions = True
 
@@ -24,6 +25,8 @@ env  =  valor.Env.Instance()
 
 _nbins = 50
 _text_size = 0.03
+
+_pval_threshold = 0.01  # Used for comparing 2 toy throw distributions witht he Kolmogorov-Smirnov test
 
 def compare(in_filenames, labels, colours, styles, tree_names, out_filename, param_map = None, toy_limit = -1):
 
@@ -63,13 +66,25 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
                         break
                 param_vals_all.append(param_vals)
                 del param_vals
+                del tree
             else:
                 print "ERROR: Could not find requested tree:", treename
                 sys.exit()
             file.Close()
+            del file
 
         min_val = min([min(vals) for vals in param_vals_all])
         max_val = max([max(vals) for vals in param_vals_all])
+
+        # 2 sample K-S test:
+        if len(tree_names) == 2:
+            gof = ROOT.Math.GoFTest(len(param_vals_all[0]), array('d', param_vals_all[0]),
+                                    len(param_vals_all[1]), array('d', param_vals_all[1]))
+            pval = gof.KolmogorovSmirnov2SamplesTest()
+            if(pval < _pval_threshold):
+                print "WARNING: The toy throw distributions for param", param_name, \
+                    " have a K-S test p-value of", pval
+            del gof
 
         # Fill the hists for this param
         hists_to_draw = []
@@ -124,9 +139,10 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
         canvas.SaveAs(save_name, "RECREATE")
 
         # Free up memory
-        for hist in hists_to_draw:
-            del hist
-        del param_vals_all
+        del hists_to_draw[:]
+        del param_vals_all[:]
+        del legend
+        del canvas
 
 
 def convert_param_name(param_name, arg_file_name):
