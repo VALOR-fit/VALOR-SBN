@@ -12,7 +12,7 @@
 void make_sdk_legacy_hybrid_toy_throw_tree(
   const char * sdk_tree_file    = "migrated_run1-9d_fc_normal_cpv_reactor_0_1_40k_combined_toy_throws.root",
   const char * legacy_tree_file = "fit_fc_deltacp_normal_nexp_40000_-3.142_-999.000-job0-_0_39999_toy_throws.root",
-  const char * out_tag          = "hybrid_ebo_run1-9d_fc_normal_cpv_reactor_0_1_40k_combined.bin",
+  const char * out_tag          = "hybrid_ebo_run1-9d_fc_normal_cpv_reactor_0_1_40k_toy_throws.root",
   const char * replace_param    = "ebo",
   const int    n_toys           = 40000,
   const char * param_map        = "maps/t2xk_sdk_param_name_map.arg",
