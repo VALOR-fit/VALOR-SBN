@@ -29,7 +29,7 @@ Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use
    _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
    _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr),
    _use_simple_binning(use_simple_binning), _save_throws_to_tree(save_throws_to_tree),
-   _tree_pars(nullptr), _param1_start_bin(0), _param2_start_bin(-1), _va_format(va_format)
+   _tree_pars(nullptr), _read_params(new double[conv::knppmax]), _param1_start_bin(0), _param2_start_bin(-1), _va_format(va_format)
 {
 }
 //______________________________________________________________________________
@@ -534,63 +534,65 @@ void Marginalisation::CheckLocalMinimum(int& binX, int& binY,
 void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy_throw_file_to_read,
                                               std::string param_name_map_file, const char* options, int toy_number)
 {
-  if(toy_throw_file_to_read == "" || param_name_map_file == "") {
-     LOG("valor_dune", pERROR) << "No input toy throw file or parameter name map file was specified.";
-     util::Die(-1);
-  }
-
   TString ts(options);
 
-  // Opening the tree file for every toy is horribly inefficient, but this function will likely just be used
-  // to debug a few events, so it's fine for now, as I'd rather have this as self-contained as possible, since
-  // it's related to a specific analysis rather than being generic.
-  TFile * in_file = new TFile(toy_throw_file_to_read.c_str(), "READ");
-  in_file->cd();
-  TTree * tree_input_pars = (TTree*) in_file->Get("marg_parameter_values");
-
-  // Set up an array to hold all of the parameter values that we'll read
-  double read_params[conv::knppmax];
-  for(int ip = 0; ip < conv::knppmax; ip++){
-     read_params[ip] = -999;
-  }
-
-  // Set up the branches to read
-  //std::map<conv::PhysParamId_t, double> read_params;
-  for (int ip = 0 ; ip < conv::knppmax ; ip++) {
-     conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
-     if (p == conv::kPhypUndefined) { continue; }
-     if (!fpl.Exists(p)) { continue; }
-     std::string sdk_param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
-     std::string read_param_name = "";
-
-     // Put in special cases here, where we may need to skip params
-     if (ts.Contains("compare-t2k-legacy") &&
-         (p == util::NameRegistry::Instance()->PhysParamFromString("SCCA") ||
-          p == util::NameRegistry::Instance()->PhysParamFromString("SCCV"))) {
-        read_params[ip] = 1.0;
-        continue;
+  // Open the tree containing thrown parameter values, if we don't have it already
+  if(!_tree_pars) {
+     if(toy_throw_file_to_read == "" || param_name_map_file == "") {
+        LOG("valor_dune", pERROR) << "No input toy throw file or parameter name map file was specified.";
+        util::Die(-1);
      }
 
-     // Open the parameter map file
-     std::ifstream map(param_name_map_file);
-     std::string arg_file_line = "";
-     while (std::getline(map, arg_file_line))
-     {
-        // Find the read parameter name that corresponds to this parameter
-        vector<std::string> tokens = util::Tokens(arg_file_line, ",");
-        std::string search_sdk_name    = util::GetStringBetweenDelimiters(util::RemoveAllWhitespace(tokens[0]), "'", "'");
-        std::string search_read_name = util::GetStringBetweenDelimiters(util::RemoveAllWhitespace(tokens[1]), "'", "'");
-        if (search_sdk_name == sdk_param_name) {
-           read_param_name = search_read_name;
-           break;
+     TFile *in_file = new TFile(toy_throw_file_to_read.c_str(), "READ");
+     in_file->cd();
+     _tree_pars = (TTree *) in_file->Get("marg_parameter_values");
+     _tree_pars->SetDirectory(0);   // So that the tree stays in memory after the file is closed
+     in_file->Close();
+     delete in_file;
+
+     // Set up an array to hold all of the parameter values that we'll read
+     for(int ip = 0; ip < conv::knppmax; ip++){
+        _read_params[ip] = -999;
+     }
+
+     // Set up the branches to read
+     for (int ip = 0 ; ip < conv::knppmax ; ip++) {
+        conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
+        if (p == conv::kPhypUndefined) { continue; }
+        if (!fpl.Exists(p)) { continue; }
+        std::string sdk_param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
+        std::string read_param_name = "";
+
+        // Put in special cases here, where we may need to skip params
+        if (ts.Contains("compare-t2k-legacy") &&
+            (p == util::NameRegistry::Instance()->PhysParamFromString("SCCA") ||
+             p == util::NameRegistry::Instance()->PhysParamFromString("SCCV"))) {
+           _read_params[ip] = 1.0;
+           continue;
         }
+
+        // Open the parameter map file
+        std::ifstream map(param_name_map_file);
+        std::string arg_file_line = "";
+        while (std::getline(map, arg_file_line))
+        {
+           // Find the read parameter name that corresponds to this parameter
+           vector<std::string> tokens = util::Tokens(arg_file_line, ",");
+           std::string search_sdk_name    = util::GetStringBetweenDelimiters(util::RemoveAllWhitespace(tokens[0]), "'", "'");
+           std::string search_read_name = util::GetStringBetweenDelimiters(util::RemoveAllWhitespace(tokens[1]), "'", "'");
+           if (search_sdk_name == sdk_param_name) {
+              read_param_name = search_read_name;
+              break;
+           }
+        }
+        bool branch_okay = _tree_pars->SetBranchAddress(read_param_name.c_str(), &(_read_params[p]));
      }
-     bool branch_okay = tree_input_pars->SetBranchAddress(read_param_name.c_str(), &(read_params[p]));
-  }
+  }   // setup the input tree
+
+  FitParamList * free_par_list = fpl.ParameterOfInterestSubset();
 
   // Read the toy from the tree and fill the FPL
-  FitParamList * free_par_list = fpl.ParameterOfInterestSubset();
-  tree_input_pars->GetEntry(toy_number);
+  _tree_pars->GetEntry(toy_number);
   for (int ip = 0 ; ip < conv::knppmax ; ip++) {
      conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
      if (p == conv::kPhypUndefined) { continue; }
@@ -602,14 +604,14 @@ void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy
         continue;
      }
 
-     if (read_params[p] + 999 < conv::kASmallNum) {
+     if (_read_params[p] + 999 < conv::kASmallNum) {
         LOG("valor_dune", pERROR) << "The thrown value for param ["
                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(p)
                                   << "] could not be found.";
         util::Die(-1);
      }
 
-     double param_value = read_params[p];
+     double param_value = _read_params[p];
 
      // Put in special cases here, where the param value needs changing too
      if (ts.Contains("compare-t2k-legacy") && p == util::NameRegistry::Instance()->PhysParamFromString("sk_e_scale")) {
@@ -619,10 +621,9 @@ void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy
      fpl.SetCurrentValue(p, param_value);
   }
 
-  LOG("valor_dune", pFATAL) << "Reading toy from input throw file with FPL = " << fpl;   // TODO: demote back to pDEBUG when done testing
-
-  in_file->Close();
-  delete in_file;
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+  LOG("valor_dune", pDEBUG) << "Reading toy from input throw file with FPL = " << fpl;
+#endif
 }
 
 } // valor

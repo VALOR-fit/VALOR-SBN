@@ -379,6 +379,7 @@ private:
    bool _use_simple_binning;
    bool _save_throws_to_tree;
    TTree* _tree_pars;
+   double* _read_params;
    int _param1_start_bin;
    int _param2_start_bin;
    string _va_format;
