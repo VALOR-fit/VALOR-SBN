@@ -86,7 +86,8 @@ public:
   bool          Generate               (const FitParamList & fp, Option_t * opt = 0);
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
-  virtual bool  Write(std::ofstream& stream, Option_t* write_opt = 0);
+  virtual bool  Write                  (std::ofstream& stream, Option_t* write_opt = 0);
+  virtual long  StreamSize             (Option_t * opt = 0) const;
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
   CorrelatedSystematics *       GetSystematics(Option_t * opt = "");
   const CorrelatedSystematics * GetSystematics(Option_t * opt = "") const;

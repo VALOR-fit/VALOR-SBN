@@ -934,6 +934,74 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
    return true;
 }
 //________________________________________________________________________________________
+long GenericSingleSampleFitModel::StreamSize (Option_t* opt_in) const
+{
+  string opt = (opt_in) ? opt_in : "pdft";
+  long size = 0;
+
+  int isample = fArrIdx->SampleIdx(fBeam, fSample);
+  if(opt.find("mct") != string::npos)
+  {
+    for(int imode = 0; imode < fReactionModes.size(); imode++)
+    {
+      ReacMode_t m = fReactionModes[imode];
+      if(m == kmUndefined || fMCTNullOb[imode])
+      {
+        continue;
+      }
+      size += fMCTNomOb[imode]->StreamSize();
+      size += fMCTTunOb[imode]->StreamSize();
+      size += fMCTSysOb[imode]->StreamSize();
+      size += fMCTFinOb[imode]->StreamSize();
+
+      if(opt.find("+SB") != string::npos)
+      {
+        if(fMCTNullSb[imode])
+        {
+          continue;
+        }
+        size += fMCTNomSb[imode]->StreamSize();
+        size += fMCTTunSb[imode]->StreamSize();
+        size += fMCTSysSb[imode]->StreamSize();
+        size += fMCTFinSb[imode]->StreamSize();
+      }
+    }
+  }
+
+  if(opt.find("pdfc") != string::npos)
+  {
+    for(int imode = 0; imode < fReactionModes.size(); imode++)
+    {
+      ReacMode_t m = fReactionModes[imode];
+      if(m == kmUndefined || fMCTNullOb[imode])
+      {
+        continue;
+      }
+      size += fPDFCompOb[imode]->StreamSize();
+
+      if(opt.find("+SB") != string::npos)
+      {
+        if(fMCTNullSb[imode])
+        {
+          continue;
+        }
+        size += fPDFCompSb[imode]->StreamSize();
+      }
+    }
+  }
+
+  if(opt.find("pdft") != string::npos)
+  {
+    size += fPDFTotOb->StreamSize();
+    if(opt.find("+SB") != string::npos)
+    {
+      size += fPDFTotSb->StreamSize();
+    }
+  }
+
+  return size;
+}
+//________________________________________________________________________________________
 double GenericSingleSampleFitModel::GetFitStatisticPenalty (Option_t * /*opt*/) const
 {
   double Sp = (fSystematics-> ChisqPenalty());
