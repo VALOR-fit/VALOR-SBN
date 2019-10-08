@@ -114,7 +114,8 @@ void Fit(CmdLnArgList& arg)
    string fplopt           = arg.GetString("fit-param-opt");
    string param_val_opts   = arg.GetString("param-values-option");
    string fitter_name      = arg.GetString("fitter");
-   int NtoysFakeData       = arg.GetInt("ntoys-fakedata");
+   int Ntoys_fake_data     = arg.GetInt("ntoys-fakedata");
+   int start_toy_fake_data = arg.GetInt("start-toy-fakedata");
    bool with_stat_fluct    = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
    bool use_simple_binning = arg.GetBool("use-simple-binning");
@@ -171,7 +172,7 @@ void Fit(CmdLnArgList& arg)
    if(arg.GetInt("gen-fakedata")) {
       // Generate a fake data set to fit to
 
-      if(NtoysFakeData > 1) {
+      if(Ntoys_fake_data > 1) {
          LOG("valor_dune", pFATAL) << "Currently only fits with 1 fakedata toy supported when generating on the fly. "
                                       "It should be relatively easy to add support for > 1 toy if you need it!";
          util::Die(-1);
@@ -221,14 +222,22 @@ void Fit(CmdLnArgList& arg)
    }
    FitResult* result = nullptr;
 
-   std::vector<double>* chi2_best_fit_toy = new std::vector<double>(NtoysFakeData);
-   for(int ifake = 0; ifake < NtoysFakeData; ifake++)    // TODO: have the option of starting from a particular toy number
+   std::vector<double>* chi2_best_fit_toy = new std::vector<double>(Ntoys_fake_data);
+
+   // Skip forward in the input fakedata binary file to the position of the first toy to read
+   if(arg.GetInt("gen-fakedata") == 0 && start_toy_fake_data != 0)
+   {
+     long toy_size = model->StreamSize(read_opt);
+     is_fakedata->seekg(start_toy_fake_data * toy_size, std::ios_base::beg);
+   }
+
+   for(int ifake = start_toy_fake_data; ifake < start_toy_fake_data + Ntoys_fake_data; ifake++)
    {
       // Read a fakedata toy, if requested
       if(arg.GetInt("gen-fakedata") == 0)
       {
-         model->Read(*is_fakedata, read_opt);   // The input fakedata toy stream must be first read into the model, as they were generated as models.
-         data->Generate(model, with_stat_fluct, read_opt_data);
+        model->Read(*is_fakedata, read_opt);   // The input fakedata toy stream must be first read into the model, as they were generated as models.
+        data->Generate(model, with_stat_fluct, read_opt_data);
       }
 
       // Perform a fit and populate the entire chi2 and likelihood surfaces
@@ -263,11 +272,12 @@ void Fit(CmdLnArgList& arg)
          }
       }
 
-      chi2_best_fit_toy->at(ifake) = result->GetChi2BestFit();
+      chi2_best_fit_toy->at(ifake - start_toy_fake_data) = result->GetChi2BestFit();
    }
 
    std::ostringstream oss;
    oss << arg.GetString("tag");
+   oss << "_" << start_toy_fake_data << "_" << start_toy_fake_data + Ntoys_fake_data;
    oss << "_result.root";
    string filename = oss.str();
    TFile* fitFile = new TFile(filename.c_str(), "RECREATE");
@@ -302,7 +312,7 @@ void Fit(CmdLnArgList& arg)
       likelihood;*/
    clock.Stop();
 
-   LOG("valor_dune", pNOTICE) << "Read: " << Ntoys * NtoysFakeData <<
+   LOG("valor_dune", pNOTICE) << "Read: " << Ntoys * Ntoys_fake_data <<
       " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
       clock.CpuTime();
 }

@@ -37,6 +37,7 @@
 #  --gen-fakedata           : Generate fakedata to fit to instead of fitting data from an input file.
 #                           : Use this with the --param-set option
 #  --ntoys-fakedata         : The number of fakedata toys to read. Use with --gen-fakedata 0
+#  --start-toy-fakedata     : Read the toys numbered start-toy-fakedata to start-toy-fakedata + ntoys-fakedata
 #  --data-file              : If --gen-fakedata is switched off, read data from this input file instead.
 #                             If marginalising FC toys, write '[x]' (and '[y]', if 2D) instead of the FC grid point
 #                             number. This will then be automatically replaced to find the correct file.
@@ -118,6 +119,7 @@ foreach (@ARGV) {
   elsif($_ eq '--prior-file'         ) { $prior_file          = $ARGV[$iarg+1]; }
   elsif($_ eq '--gen-fakedata'       ) { $gen_fakedata        = $ARGV[$iarg+1]; }
   elsif($_ eq '--ntoys-fakedata'     ) { $ntoys_fakedata      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--start-toy-fakedata' ) { $start_toy_fakedata  = $ARGV[$iarg+1]; }
   elsif($_ eq '--data-file'          ) { $data_file           = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                ) { $tag_prefix          = $ARGV[$iarg+1]; }
   elsif($_ eq '--config'             ) { $config              = $ARGV[$iarg+1]; }
@@ -182,6 +184,7 @@ $max_par2            = 0                                                        
 $prior_file          = "-"                                                                 unless defined $prior_file;
 $gen_fakedata        = 1                                                                   unless defined $gen_fakedata;
 $ntoys_fakedata      = 1                                                                   unless defined $ntoys_fakedata;
+$start_toy_fakedata  = 0                                                                   unless defined $start_toy_fakedata;
 $data_file           = "-"                                                                 unless defined $data_file;
 $npt_job_par1        = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
 $npt_job_par2        = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
@@ -580,7 +583,7 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 										 "--fit-param2-nbins $npt_par2_use $fake_data_args --data-file $data_file_use " .
 										 "--seed-toys-osc $seed_osc --seed-toys-stat $seed_stat --seed-toys-syst $seed_syst --seed-other $seed_other " .
 										 "--prior-file $prior_file --gen-fakedata $gen_fakedata --ntoys-fakedata $ntoys_fakedata " .
-										 "--dmsq-scheme $dmsq_scheme";
+										 "--start-toy-fakedata $start_toy_fakedata --dmsq-scheme $dmsq_scheme";
 
 				if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
 				if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
