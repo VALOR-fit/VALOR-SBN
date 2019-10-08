@@ -29,7 +29,8 @@ Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use
    _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
    _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr),
    _use_simple_binning(use_simple_binning), _save_throws_to_tree(save_throws_to_tree),
-   _tree_pars(nullptr), _read_params(new double[conv::knppmax]), _param1_start_bin(0), _param2_start_bin(-1), _va_format(va_format)
+   _tree_pars(nullptr), _param1_start_bin(0), _param2_start_bin(-1), _va_format(va_format),
+   _read_params(new double[conv::knppmax]), _toy_throw_file(nullptr)
 {
 }
 //______________________________________________________________________________
@@ -42,6 +43,10 @@ Marginalisation::~Marginalisation()
    delete this->_chi2_2D;
    delete this->_fitResult;
    delete this->_tree_pars;
+   if(this->_toy_throw_file) {
+      this->_toy_throw_file->Close();
+   }
+   delete this->_toy_throw_file;
 }
 //______________________________________________________________________________
 void Marginalisation::BuildToys(const int fitParamBin, const int batch,
@@ -534,21 +539,22 @@ void Marginalisation::CheckLocalMinimum(int& binX, int& binY,
 void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy_throw_file_to_read,
                                               std::string param_name_map_file, const char* options, int toy_number)
 {
-  TString ts(options);
+   TString ts(options);
 
-  // Open the tree containing thrown parameter values, if we don't have it already
-  if(!_tree_pars) {
+   // Open the tree containing thrown parameter values, if we don't have it already
+   if(!_tree_pars) {
      if(toy_throw_file_to_read == "" || param_name_map_file == "") {
         LOG("valor_dune", pERROR) << "No input toy throw file or parameter name map file was specified.";
         util::Die(-1);
      }
 
-     TFile *in_file = new TFile(toy_throw_file_to_read.c_str(), "READ");
-     in_file->cd();
-     _tree_pars = (TTree *) in_file->Get("marg_parameter_values");
-     _tree_pars->SetDirectory(0);   // So that the tree stays in memory after the file is closed
-     in_file->Close();
-     delete in_file;
+     _toy_throw_file = new TFile(toy_throw_file_to_read.c_str(), "READ");
+     if(!_toy_throw_file->IsOpen()) {
+        LOG("valor_dune", pERROR) << "Could not open file [" << toy_throw_file_to_read << "]";
+        util::Die(-1);
+     }
+     _toy_throw_file->cd();
+     _tree_pars = (TTree *) _toy_throw_file->Get("marg_parameter_values");
 
      // Set up an array to hold all of the parameter values that we'll read
      for(int ip = 0; ip < conv::knppmax; ip++){
@@ -585,7 +591,12 @@ void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy
               break;
            }
         }
-        bool branch_okay = _tree_pars->SetBranchAddress(read_param_name.c_str(), &(_read_params[p]));
+        int branch_status = _tree_pars->SetBranchAddress(read_param_name.c_str(), &(_read_params[ip]));
+        if(branch_status != 0) {
+           LOG("valor_dune", pERROR) << "Could not assign parameter [" << read_param_name
+                                     << "] (ip = " << ip << ") to a branch in the input thrown tree.";
+           util::Die(-1);
+        }
      }
   }   // setup the input tree
 
@@ -604,14 +615,14 @@ void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy
         continue;
      }
 
-     if (_read_params[p] + 999 < conv::kASmallNum) {
+     if (_read_params[ip] + 999 < conv::kASmallNum) {
         LOG("valor_dune", pERROR) << "The thrown value for param ["
                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(p)
                                   << "] could not be found.";
         util::Die(-1);
      }
 
-     double param_value = _read_params[p];
+     double param_value = _read_params[ip];
 
      // Put in special cases here, where the param value needs changing too
      if (ts.Contains("compare-t2k-legacy") && p == util::NameRegistry::Instance()->PhysParamFromString("sk_e_scale")) {
