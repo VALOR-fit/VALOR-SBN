@@ -226,7 +226,7 @@ void plot_toy_mean_spectra(
         }
 
         TString canv_name(subdata->Name().c_str());
-        if(!by_mode) {
+        if(by_mode) {
           canv_name = TString::Format("%s_%s", submodel->Name().c_str(), vutil::AsString(m).c_str());
         }
         TCanvas* canv = new TCanvas(canv_name, canv_name, canv_size_x, canv_size_y);
