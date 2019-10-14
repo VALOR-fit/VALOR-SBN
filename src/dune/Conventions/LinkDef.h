@@ -12,15 +12,6 @@
 #pragma link C++ namespace valor::util;
 #pragma link C++ namespace valor::util::nm;
 
-#pragma link C++ enum valor::conv::ReacMode_t;
-#pragma link C++ enum valor::conv::ReacModeCoarse_t;
-#pragma link C++ enum valor::conv::ReacType_t;
-#pragma link C++ enum valor::conv::FitParamGroup_t;
-#pragma link C++ enum valor::conv::SystType_t;
-
 #pragma link C++ class valor::util::PhysicalParameterLimits+;
-
-#pragma link C++ class valor::Parameter+;
-#pragma link C++ class valor::ParameterPool+;
 
 #endif

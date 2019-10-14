@@ -25,7 +25,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Messenger/Messenger.h"
 // dune
-#include "dune/Conventions/Names.h"
+#include "valor/Conventions/Names.h"
 #include "dune/Elements/GenericSingleSampleFitData.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
 

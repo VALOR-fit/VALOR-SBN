@@ -61,7 +61,7 @@
 #include "valor/Conventions/FitParamApply.h"
 //dune
 #include "dune/Conventions/Build.h"
-#include "dune/Conventions/Names.h"
+#include "valor/Conventions/Names.h"
 #include "dune/Conventions/Experiment.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
 
