@@ -36,9 +36,9 @@ print-make-info: FORCE
 copy-scripts-to-bin: | make-bin-lib-dir FORCE
 	@echo " "
 	@echo "** Copying scripts to bin..."
-	cp ${VALOR_DUNE}/make/valor_dune-config ${VALOR_DUNE}/bin
-	cp ${VALOR_DUNE}/root/valor_dune        ${VALOR_DUNE}/bin
-	cp ${VALOR_DUNE}/root/pydune            ${VALOR_DUNE}/bin
+	cp ${VALOR_DUNE}/make/valor_expt-config ${VALOR_DUNE}/bin
+	cp ${VALOR_DUNE}/root/valor             ${VALOR_DUNE}/bin
+	cp ${VALOR_DUNE}/root/pyvalor           ${VALOR_DUNE}/bin
 	
 build-conventions: | copy-scripts-to-bin FORCE
 	@echo " "
@@ -112,7 +112,7 @@ force-clean: clean-files force-clean-dir clean-etc
 clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
-	rm -f ${VALOR_DUNE}/bin/valor_dune-config; \
+	rm -f ${VALOR_DUNE}/bin/valor_expt-config; \
 	$(MAKE) -C src/dune/Apps            clean && \
 	$(MAKE) -C src/dune/Conventions     clean && \
 	$(MAKE) -C src/dune/Utilities       clean && \

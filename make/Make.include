@@ -40,7 +40,7 @@ VALOR_APP_INCLUDES := -I$(VALOR_DUNE)/src/
 # VALOR application libraries
 #
 ifeq ("false",$(is_cln))
-  VALOR_APP_LIBRARIES = $(shell $(VALOR_DUNE)/make/valor_dune-config --libs)
+  VALOR_APP_LIBRARIES = $(shell $(VALOR_DUNE)/make/valor_expt-config --libs)
 endif
 
 #-------------------------------------------------------------------
@@ -429,7 +429,7 @@ ifdef GENIE
  GINCLUDES  := $(GINCLUDES) $(INCLUDES)
  GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
  ifeq ("false",$(is_cln))
-  VALOR_GLIBRARIES := $(shell valor_dune-config --glibs)
+  VALOR_GLIBRARIES := $(shell valor_expt-config --glibs)
  endif
 endif
 

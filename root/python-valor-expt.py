@@ -6,7 +6,7 @@ import math
 import itertools
 
 print "\n=============================="
-print   "Loading python with VALOR DUNE"
+print   "Loading python with VALOR"
 
 # If GENIE available, load that too
 try:
@@ -17,12 +17,8 @@ except KeyError:
   pass
 print   "==============================\n"
 
-try:
-  import numpy as np
-except:
-  print "Warning: Numpy not loaded"
+ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_expt.C");
 
-ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
 
 ROOT.gROOT.ProcessLine("using namespace valor;");
 ROOT.gROOT.ProcessLine("using namespace valor::util;");
@@ -34,11 +30,17 @@ valor = ROOT.valor
 conv  = valor.conv
 util  = valor.util
 opt   = valor.Opt.Instance()
-#~ t2kopt = valor.T2KOpt.Instance()
-rnd    = valor.Rnd.Instance()
-#~ arridx = util.ArrIdx.Instance()
-#~ physlim = util.T2KPhysicalParameterLimits.Instance()
-nr = util.NameRegistry.Instance()
+rnd   = valor.Rnd.Instance()
+nr    = util.NameRegistry.Instance()
+es    = valor.ExperimentSetup.Instance()
+
+expt_name = es.ExperimentName();
+print "Experiment:",expt_name
+
+try:
+  import numpy as np
+except:
+  print "Warning: Numpy not loaded"
 
 opt.gDoNotDie = True # We're interactive, so don't die unless you have to.
 

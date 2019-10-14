@@ -1,7 +1,7 @@
 #!/bin/sh
 # -*- sh-indentation: 3 -*-
 #
-# valor_dune-config a la ROOT's root-config
+# valor_expt-config a la ROOT's root-config
 #
 
 # VALOR/DUNE top directory path:
@@ -24,7 +24,7 @@ glibs="-lValorDuneGenieUtil -lValorDuneTesting"
 #
 
 usage="\
-Usage: valor_dune-config [--libs] [--libdir] [--glibs] [--srcdir] [--topdir]" 
+Usage: valor_expt-config [--libs] [--libdir] [--glibs] [--srcdir] [--topdir]" 
 
 if test $# -eq 0; then
    echo "${usage}" 1>&2

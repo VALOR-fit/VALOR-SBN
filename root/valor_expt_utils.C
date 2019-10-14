@@ -118,23 +118,21 @@ void config_mesg()
 
 void valor_expt_utils()
 {
-    valor::util::ChangeInterpreterPrompt("VALOR/DUNE: [%d] ");
+    valor::Env * env = valor::Env::Instance();
+    env->AutoSet("dune");
+    // Configure the messenger.
+    config_mesg();
+    
+    valor::ExperimentInitialiser();
+    
+    const ExperimentSetup & es = *ExperimentSetup::Instance();
+    std::string prompt = std::string("VALOR/")+es.ExperimentName()+": [%d] ";
+    valor::util::ChangeInterpreterPrompt(prompt);
     
     define_valor_style();
     gROOT->SetStyle("VALOR");
 
-    valor::Env * env = valor::Env::Instance();
-    env->AutoSet("dune");
     
     print_banner();
     
-    // Configure the messenger.
-    config_mesg();
-    
-    // Instantiate a singleton
-    // Something funny happens in CLING where we need to ask for an object in a library before any standalone functions
-    valor::util::ArrIdx::Instance();
-
-  // Set up some OA priors
-  valor::util::InitializeOAPriors();
 }
