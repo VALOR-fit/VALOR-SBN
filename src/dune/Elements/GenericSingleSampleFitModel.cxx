@@ -42,6 +42,7 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/KinematicPoint.h"
+#include "valor/KineBinning/UtlBinning.h"
 #include "valor/Utilities/UtlNumStat.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -62,7 +63,6 @@
 #include "dune/Conventions/Build.h"
 #include "dune/Conventions/Names.h"
 #include "dune/Conventions/Experiment.h"
-#include "dune/Utilities/UtlBinning.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
 
 using std::endl;
