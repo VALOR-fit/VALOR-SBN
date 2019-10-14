@@ -22,11 +22,10 @@
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/Conventions/KineSpace.h"
-// dune
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/Detector.h"
-#include "dune/Conventions/UniqueSampleID.h"
+#include "valor/Conventions/UniqueSampleID.h"
 
 namespace valor {
 

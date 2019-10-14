@@ -70,8 +70,7 @@
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/ReacMode.h"
-
-#include "dune/Conventions/UniqueSampleID.h"
+#include "valor/Conventions/UniqueSampleID.h"
 
 namespace valor {
 
