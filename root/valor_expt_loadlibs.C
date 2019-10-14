@@ -1,19 +1,21 @@
 int valor_expt_loadlibs()
 {
-  TString fmwk_loadlibs = ".x $VALOR_FMWK/root/valor_sdk_loadlibs.C";
-  gSystem->ExpandPathName(fmwk_loadlibs);
+  TString fmwk_dir = gSystem->Getenv("VALOR_FMWK");
+  TString fmwk_loadlibs = "#include \""+fmwk_dir+"/root/valor_sdk_loadlibs.C\"";
   gROOT->ProcessLine(fmwk_loadlibs.Data());
+  int valor_fmwk_libs_status = 0;
+  gROOT->ProcessLine(TString::Format("*(int*)%p = valor_sdk_loadlibs();",&valor_fmwk_libs_status));
   
   TString baselibs = gSystem->GetDynamicPath();
-  TString dune_libs = "$VALOR_DUNE/lib:";
-  dune_libs += baselibs;
+  TString expt_libs = "$VALOR_DUNE/lib:";
+  expt_libs += baselibs;
   
-  gSystem->SetDynamicPath(dune_libs.Data());
+  gSystem->SetDynamicPath(expt_libs.Data());
   
   gSystem->Load("libValorDuneConv.so");
   gSystem->Load("libValorDuneUtil.so");
   gSystem->Load("libValorDuneElements.so");
   
-  return 0;
+  return valor_fmwk_libs_status;
 }
 

@@ -5,17 +5,13 @@ import glob
 import math
 import itertools
 
-print "\n=============================="
-print   "Loading python with VALOR"
-
-# If GENIE available, load that too
+# If GENIE available, load that first
 try:
   genv = os.environ["GENIE"]
   ROOT.gROOT.ProcessLine(".x ${GENIE}/src/scripts/gcint/loadlibs.C");
-  print "          and GENIE"
+  has_genie = True
 except KeyError:
-  pass
-print   "==============================\n"
+  has_genie = False
 
 ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_expt.C");
 
@@ -35,7 +31,11 @@ nr    = util.NameRegistry.Instance()
 es    = valor.ExperimentSetup.Instance()
 
 expt_name = es.ExperimentName();
-print "Experiment:",expt_name
+print "\n=============================="
+print   "Loading Python with ",
+if has_genie: print "GENIE and",
+print "\n       ",expt_name
+print   "==============================\n"
 
 try:
   import numpy as np
