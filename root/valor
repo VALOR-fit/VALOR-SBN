@@ -1,3 +1,6 @@
 #!/bin/sh
 
-root -l $VALOR_EXPT/root/valor_expt.C $*
+VALOR_EXPT_ROOTDIR=$(valor_expt-config --rootdir)
+VALOR_ROOT_SETUP="${VALOR_EXPT_ROOTDIR}/valor_expt.C"
+ls "${VALOR_ROOT_SETUP}" $*
+root -l "${VALOR_ROOT_SETUP}" $*
