@@ -4,7 +4,7 @@
 \class     valor::RFL
 
 \brief     Pre-computed response function library for non-linear parameters
-           of the VALOR/DUNE analysis.
+           of the VALOR analysis.
 
 \author    Steve Dennis <s.r.dennis \at University of Liverpool>
            University of Liverpool
@@ -19,8 +19,8 @@
 */
 //____________________________________________________________________________
 
-#ifndef __valor_dune_response_function_library__
-#define __valor_dune_response_function_library__
+#ifndef __valor_response_function_library__
+#define __valor_response_function_library__
 
 #include <iostream>
 #include <utility>
@@ -29,16 +29,14 @@
 
 // FMWK
 #include "valor/Conventions/Constants.h"
+#include "valor/Conventions/PhysParamId.h"
 #include "valor/Utilities/Interpolator.h"
-
-// DUNE
-#include "dune/Conventions/Build.h"
+#include "valor/Utilities/KinematicPoint.h"
+#include "valor/Utilities/KinematicBin.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/SplineEvalType.h"
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Utilities/KinematicPoint.h"
 
 namespace valor {
 class SingleSampleKineBinning;

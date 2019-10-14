@@ -29,12 +29,12 @@
 #include <string>
 
 //fmwk
-#include "valor/VArray/VALORArray.h"
-//dune
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/Detector.h"
-#include "dune/Elements/SingleSampleFitDataABC.h"
+#include "valor/FitCore/SingleSampleFitDataABC.h"
+#include "valor/VArray/VALORArray.h"
+//dune
 #include "dune/Utilities/SingleSampleKineBinning.h"
 
 class TObjArray;

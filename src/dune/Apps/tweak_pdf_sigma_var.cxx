@@ -70,7 +70,7 @@
 #include "dune/Conventions/Names.h"
 #include "dune/Conventions/Experiment.h"
 #include "dune/Elements/CompoundFitElements.h"
-#include "dune/Elements/SingleSampleFitModelABC.h"
+#include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;
 using namespace valor;

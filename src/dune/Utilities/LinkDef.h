@@ -13,8 +13,6 @@
 
 #pragma link C++ class valor::SingleSampleKineBinning;
 
-#pragma link C++ class valor::util::KinematicBin;
-#pragma link C++ class valor::util::KinematicPoint;
 #pragma link C++ class valor::util::RFL;
 
 #pragma link C++ class valor::ExperimentInitialiser;
