@@ -51,6 +51,7 @@
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
 using std::string;
@@ -94,7 +95,7 @@ int main(int argc, char ** argv)
   
   using namespace valor;
   
-  Env::Instance()->AutoSet("dune");
+  valor::ExperimentInitialiser();
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_fd_minidst.arg");

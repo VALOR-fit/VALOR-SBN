@@ -70,6 +70,7 @@
 //#include "valor/FitCore/LikelihoodABC.h"
 //#include "valor/Marginalisation/MarginalLikelihood.h"
 // dune
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
@@ -92,7 +93,7 @@ void Init(CmdLnArgList& arg);
 int main(int argc, char** argv)
 {
    gROOT->SetBatch(1);
-   Env::Instance()->AutoSet("dune");
+   valor::ExperimentInitialiser();
    CmdLnArgList arg;
    arg.Read(argc,argv,
       "$VALOR_EXPT/config/apps/run_build_margtoys.arg"

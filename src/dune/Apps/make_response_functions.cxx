@@ -54,6 +54,7 @@
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/RFL.h"
@@ -75,7 +76,7 @@ int main(int argc, char ** argv)
   gSystem->ExpandPathName(gmesg_path);
   genie::utils::app_init::MesgThresholds(gmesg_path.Data());
   
-  Env::Instance()->AutoSet("dune");
+  valor::ExperimentInitialiser();
   
   // Read command line arguments
   CmdLnArgList arg;

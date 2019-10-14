@@ -36,7 +36,10 @@
 #include <TPRegexp.h>
 
 // valor/dune
+#include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Constants.h"
+#include "valor/Conventions/Sample.h"
+#include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/NuclearTarget.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
@@ -47,10 +50,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 
-#include "valor/Conventions/BeamConf.h"
-#include "valor/Conventions/Sample.h"
-
-#include "valor/Conventions/ReacMode.h"
+#include "dune/Utilities/DoExperimentSetup.h"
 
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 
@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
 
   using namespace valor;
   
-  Env::Instance()->AutoSet("dune");
+  valor::ExperimentInitialiser();
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_caf_minidst.arg");

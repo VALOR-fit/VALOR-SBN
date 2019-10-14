@@ -22,6 +22,7 @@
 #include "valor/Utilities/UtlInit.h"
 
 // dune
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Testing/StandardTests.h"
 
 // genie

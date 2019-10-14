@@ -48,6 +48,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Conventions/ParameterPool.h"
 // dune
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Elements/CompoundFitElements.h"
 

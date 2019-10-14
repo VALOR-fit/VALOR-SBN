@@ -25,6 +25,7 @@
 #include "valor/Utilities/UtlInit.h"
 
 // dune
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Testing/StandardTests.h"
 
 // genie
@@ -82,7 +83,7 @@ void Configure(CmdLnArgList& arg)
    // Usually this is handled by util::init::Init, but in this case the call
    // to BatchArgs, which must precede Init, depends on the environment being
    // set.
-   Env::Instance()->AutoSet("dune");
+   valor::ExperimentInitialiser();
    std::vector<string> args = BatchArgs();
    const int argc = args.size();
    char* argv[argc];

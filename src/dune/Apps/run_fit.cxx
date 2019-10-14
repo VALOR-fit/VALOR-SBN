@@ -79,6 +79,7 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
@@ -92,7 +93,7 @@ const char * fit_result_tree_name = "valor_dune_nd_ntp";
 
 int main(int argc, char ** argv)
 {  
-  Env::Instance()->AutoSet("dune");
+  valor::ExperimentInitialiser();
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
   
   util::InitializeOAPriors();

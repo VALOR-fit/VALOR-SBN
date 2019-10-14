@@ -75,6 +75,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/KineBinning/VALORBinning.h"
 // dune
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
@@ -90,7 +91,7 @@ const double enu_reco_max = 10;
 
 int main(int argc, char ** argv)
 {
-  Env::Instance()->AutoSet("dune");
+  valor::ExperimentInitialiser();
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;

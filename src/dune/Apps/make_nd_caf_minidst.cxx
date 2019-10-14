@@ -51,6 +51,7 @@
 
 #include "valor/Conventions/ReacMode.h"
 
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 
 using std::string;
@@ -69,7 +70,7 @@ int main(int argc, char ** argv)
 
   using namespace valor;
   
-  Env::Instance()->AutoSet("dune");
+  valor::ExperimentInitialiser();
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_caf_minidst.arg");

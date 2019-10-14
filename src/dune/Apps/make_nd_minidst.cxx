@@ -37,6 +37,8 @@
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 
+#include "dune/Utilities/DoExperimentSetup.h"
+
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
 

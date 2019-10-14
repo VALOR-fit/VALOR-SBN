@@ -53,6 +53,7 @@
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 
+#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/GENIEUtilities/GENIEIncludes.h"
 #include "dune/GENIEUtilities/UtlEventRec.h"
 
@@ -131,7 +132,7 @@ int main(int argc, char ** argv)
 
   using namespace valor;
 
-  Env::Instance()->AutoSet("dune");
+  valor::ExperimentInitialiser();
 
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_recoselection_minidst.arg");
