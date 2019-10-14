@@ -28,42 +28,23 @@
 #include <utility>
 
 //fmwk
+#include "valor/Utilities/UtlParam.h"
+
 #include "valor/Conventions/PhysParamId.h"
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/FitParamApply.h"
+#include "valor/Conventions/FitParamGroup.h"
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/KineVar.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/PhysHypothesis.h"
 
-//dune
-#include "dune/Conventions/Build.h"
-#include "dune/Conventions/FitParamGroup.h"
-
-using std::string;
-
 namespace valor {
 namespace util {
   // If you give a CorrelatedSystematics object, it'll ignore your list's standard systematics and use this set instead
   FitParamList * GetFitParameterList (Option_t * param_list_name = "nuosc3f", Option_t * param_opt = "", const CorrelatedSystematics * syst = 0);
-
-
-  conv::FitParamGroup_t GetParameterGroup(conv::PhysParamId_t p);
-  // Get the list of parameters associated with a set name (eg flux, int, ccqe, fsi, 3fosc)
-  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name, bool only_exact_match = false);
-  // Same as above, but only get params that are compatible with an input apply mask
-  std::vector<conv::PhysParamId_t> GetParameterSet(std::string set_name, conv::ApplyMask_t mask, bool only_exact_match = false);
-
-  std::pair<double,double> GetKineRange(conv::PhysParamId_t p, conv::KineVar_t k);
-
-  // Does the input parameter depend on any kine var?
-  bool HasKinematicDependence(conv::PhysParamId_t p);
-
-  // Get a vector of osc + syst params from the PhysHypothesis and ParameterPool
-  std::vector<conv::PhysParamId_t> GetActiveParameters(const PhysHypothesis & ph);
-
 } //util
 
 } // valor
