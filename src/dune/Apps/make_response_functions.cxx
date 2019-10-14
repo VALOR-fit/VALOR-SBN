@@ -56,7 +56,7 @@
 #include "dune/GENIEUtilities/UtlEventRec.h"
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Utilities/SingleSampleKineBinning.h"
+#include "valor/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/RFL.h"
 #include "dune/Utilities/KinematicBin.h"
 #include "dune/Elements/CompoundFitElements.h"

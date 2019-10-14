@@ -81,7 +81,7 @@
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
 #include "dune/Elements/GenericSingleSampleFitModel.h"
-#include "dune/Utilities/SingleSampleKineBinning.h"
+#include "valor/Utilities/SingleSampleKineBinning.h"
 
 using namespace std;
 using namespace valor;

@@ -24,9 +24,7 @@
 #include "valor/Conventions/KineSpace.h"
 #include "valor/KineBinning/KBCubHcmbMondrian.h"
 #include "valor/KineBinning/KBCubHcmbEdge2Edge.h"
-
-// dune
-#include "dune/Utilities/SingleSampleKineBinning.h"
+#include "valor/Utilities/SingleSampleKineBinning.h"
 
 namespace valor
 {

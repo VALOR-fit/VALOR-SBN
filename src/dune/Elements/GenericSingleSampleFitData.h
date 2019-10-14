@@ -34,8 +34,7 @@
 #include "valor/Conventions/Detector.h"
 #include "valor/FitCore/SingleSampleFitDataABC.h"
 #include "valor/VArray/VALORArray.h"
-//dune
-#include "dune/Utilities/SingleSampleKineBinning.h"
+#include "valor/Utilities/SingleSampleKineBinning.h"
 
 class TObjArray;
 class TH1D;

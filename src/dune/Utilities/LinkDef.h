@@ -11,10 +11,6 @@
 #pragma link C++ namespace valor::util;
 #pragma link C++ namespace valor::util::binning;
 
-#pragma link C++ class valor::SingleSampleKineBinning;
-
-#pragma link C++ class valor::util::RFL;
-
 #pragma link C++ class valor::ExperimentInitialiser;
 
 // Vector types for use in macros:

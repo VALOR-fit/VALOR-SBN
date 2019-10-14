@@ -37,17 +37,17 @@ brief      A generic implementation of the fit model for a single sample,
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/KineVar.h"
 #include "valor/Conventions/FitParamApply.h"
-#include "valor/FitCore/PhysHypothesis.h"
-#include "valor/Oscillation/NuOsc3Flavour.h"
-#include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
+#include "valor/FitCore/PhysHypothesis.h"
+#include "valor/FitCore/PhysParamList.h"
+#include "valor/FitCore/SingleSampleFitModelABC.h"
+#include "valor/Oscillation/NuOsc3Flavour.h"
 #include "valor/VArray/VALORArray.h"
 #include "valor/VArray/VALORArrayBin.h"
-#include "valor/FitCore/SingleSampleFitModelABC.h"
+#include "valor/Utilities/RFL.h"
 
 //dune
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Utilities/RFL.h"
 
 
 using std::string;
