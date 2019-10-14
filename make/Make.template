@@ -6,10 +6,10 @@
 
 #
 #
-PACKAGE_LIBDIR                = $(VALOR_DUNE)/lib/
-PACKAGE_LIB                   = $(VALOR_DUNE)/lib/$(LIBNAME)-$(VALOR_APP_VERSION)-$(VALOR_FMWK_VERSION).$(DllSuf)
-PACKAGE_LIBNOVRS              = $(VALOR_DUNE)/lib/$(LIBNAME).$(DllSuf)
-PACKAGE_LIBMACLINK            = $(VALOR_DUNE)/lib/$(LIBNAME).$(DllLinkSuf)
+PACKAGE_LIBDIR                = $(VALOR_EXPT_TOPDIR)/lib/
+PACKAGE_LIB                   = $(VALOR_EXPT_TOPDIR)/lib/$(LIBNAME)-$(VALOR_APP_VERSION)-$(VALOR_FMWK_VERSION).$(DllSuf)
+PACKAGE_LIBNOVRS              = $(VALOR_EXPT_TOPDIR)/lib/$(LIBNAME).$(DllSuf)
+PACKAGE_LIBMACLINK            = $(VALOR_EXPT_TOPDIR)/lib/$(LIBNAME).$(DllLinkSuf)
 
 PACKAGE_ALL_SOURCES          := $(wildcard *.cxx)
 DICTGEN_HEADERS              := $(addsuffix .h, $(basename $(PACKAGE_ALL_SOURCES)))

@@ -2,9 +2,12 @@
 # Costas Andreopoulos (Rutherford Lab.) <costas.andreopoulos \at stfc.ac.uk>
 #
 
-include $(VALOR_FMWK)/make/Make.config
+VALOR_SDK_TOPDIR  = $(VALOR_FMWK)
+VALOR_EXPT_TOPDIR = $(VALOR_DUNE)
 
-include $(VALOR_DUNE)/make/Make.config
+include $(VALOR_SDK_TOPDIR)/make/Make.config
+
+include $(VALOR_EXPT_TOPDIR)/make/Make.config
 
 ifndef OPT_WITH_CXX_USERDEF_FLAGS
  OPT_WITH_CXX_USERDEF_FLAGS=
@@ -31,16 +34,16 @@ IS_MACOSX =
 
 # VALOR application release info
 #
-VALOR_APP_VERSION  = $(shell awk '{print $0}' $(VALOR_DUNE)/VERSION)
+VALOR_APP_VERSION  = $(shell awk '{print $0}' $(VALOR_EXPT_TOPDIR)/VERSION)
 
 # VALOR application include path
 #
-VALOR_APP_INCLUDES := -I$(VALOR_DUNE)/src/
+VALOR_APP_INCLUDES := -I$(VALOR_EXPT_TOPDIR)/src/
 
 # VALOR application libraries
 #
 ifeq ("false",$(is_cln))
-  VALOR_APP_LIBRARIES = $(shell $(VALOR_DUNE)/make/valor_expt-config --libs)
+  VALOR_APP_LIBRARIES = $(shell $(VALOR_EXPT_TOPDIR)/make/valor_expt-config --libs)
 endif
 
 #-------------------------------------------------------------------
@@ -58,7 +61,7 @@ VALOR_FMWK_INCLUDES  := -I$(OPT_WITH_VALOR_FRAMEWORK)/src/
 # VALOR framework libraries
 #
 ifeq ("false",$(is_cln))
-  VALOR_FMWK_LIBRARIES = $(shell $(VALOR_FMWK)/make/valor_fmwk-config --libs)
+  VALOR_FMWK_LIBRARIES = $(shell $(VALOR_SDK_TOPDIR)/make/valor_fmwk-config --libs)
 endif
 
 #-------------------------------------------------------------------
