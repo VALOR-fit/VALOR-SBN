@@ -67,7 +67,7 @@ void compare_toy_mean_spectra_to_legacy(
   vector<TH1*> mean_hists(n_samples, nullptr);
 
   // Vector which we'll use to store the content of each bin for each toy in order to generate error bands
-  vector<vector<vector<double>>> toy_bin_content;   // 1st index = sample; 2nd index = bin; 3rd index = toy
+  vector<vector<double>> toy_bin_content;   // 1st index = sample; 2nd index = bin; content = running sum of bin content^2
 
   // Read the legacy toys from a tree
   TFile* file_legacy = new TFile(filename_legacy, "read");
@@ -115,7 +115,7 @@ void compare_toy_mean_spectra_to_legacy(
           mean_hists.at(isample) = (TH1*) legacy_hist_1D->Clone(legacy_sample_names.at(isample).c_str());
 
           // Initialise a vector which we'll use to store the content of each bin for each toy in order to generate error bands
-          toy_bin_content.push_back( vector<vector<double>>( legacy_hist_1D->GetNbinsX(), vector<double>(ntoys) ) );
+          toy_bin_content.push_back( vector<double>( legacy_hist_1D->GetNbinsX(), 0. ) );
         }
         else {
           assert(legacy_hist_2D);
@@ -137,7 +137,7 @@ void compare_toy_mean_spectra_to_legacy(
 
       if(is_1D) {
         for(int ibin_1D = 0; ibin_1D < legacy_hist_1D->GetNbinsX(); ++ibin_1D) {
-          toy_bin_content[isample][ibin_1D][itoy] = legacy_hist_1D->GetBinContent(ibin_1D +1);  // +1 because the 1st hist bin is an underflow
+          toy_bin_content[isample][ibin_1D] += TMath::Power(legacy_hist_1D->GetBinContent(ibin_1D +1), 2.);  // +1 because the 1st hist bin is an underflow
         }
       }
 
@@ -197,9 +197,13 @@ void compare_toy_mean_spectra_to_legacy(
       if(plot_1D_RMS_error) {
         // Calculate the RMS error for each bin
         for(int ibin = 0; ibin < mean_hist->GetNbinsX(); ++ibin) {
-          double err = TMath::RMS(toy_bin_content[isample][ibin].begin(), toy_bin_content[isample][ibin].end());
-          err_up_hist  ->SetBinContent(ibin +1, mean_hist->GetBinContent(ibin +1) + err);                  // +1 because the 1st hist bin is an underflow
-          err_down_hist->SetBinContent(ibin +1, TMath::Max(mean_hist->GetBinContent(ibin +1) - err, 0.));  // +1 because the 1st hist bin is an underflow
+          double n = (double) ntoys;
+          double mean = mean_hist->GetBinContent(ibin +1);
+          double rms_sq = toy_bin_content[isample][ibin] / n;
+          double err = TMath::Sqrt( (n/(n-1.)) * (rms_sq - TMath::Power(mean,2)) );   // Sample standard deviation
+
+          err_up_hist  ->SetBinContent(ibin +1, mean + err);  // +1 because the 1st hist bin is an underflow
+          err_down_hist->SetBinContent(ibin +1, mean - err);  // +1 because the 1st hist bin is an underflow
         }
         set_negative_bins_to_zero((TH1D*) sdk_mean_hists    .at(isample));
         set_negative_bins_to_zero((TH1D*) sdk_up_err_hists  .at(isample));

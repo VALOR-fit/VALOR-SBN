@@ -245,15 +245,16 @@ void plot_toy_mean_spectra(
         if(plot_1D_std_error) {
           // Calculate the std error for each bin
           for(int ibin = 0; ibin < mean_hist->GetNbinsX(); ++ibin) {
-            double err = -1.;
+            double rms_sq = -1.;
             double n = (double) ntoys;
             double mean = mean_hist->GetBinContent(ibin +1);
             if(!by_mode) {
-              err = TMath::Sqrt(TMath::Abs((toy_bin_content[isubdata][ibin] / n) - TMath::Power(mean, 2) ));
+              rms_sq = toy_bin_content[isubdata][ibin] / n;
             }
             else {
-              err = TMath::Sqrt(TMath::Abs((toy_bin_content_mode[isubdata][im][ibin] / n) - TMath::Power(mean, 2) ));
+              rms_sq = toy_bin_content_mode[isubdata][im][ibin] / n;
             }
+            double err = TMath::Sqrt( (n/(n-1.)) * (rms_sq - TMath::Power(mean,2)) );   // Sample standard deviation
 
             err_up_hist  ->SetBinContent(ibin +1, mean + err);  // +1 because the 1st hist bin is an underflow
             err_down_hist->SetBinContent(ibin +1, mean - err);  // +1 because the 1st hist bin is an underflow
