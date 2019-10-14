@@ -118,8 +118,6 @@ void config_mesg()
 
 void valor_expt_utils()
 {
-    valor::Env * env = valor::Env::Instance();
-    env->AutoSet("dune");
     // Configure the messenger.
     config_mesg();
     
