@@ -14,7 +14,7 @@ void test_FitParamNew
   using namespace valor::conv;
 
   // Analysis configuration
-  TString param_file_full = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), param_file);
+  TString param_file_full = Form("%s/config/%s", gSystem->Getenv("VALOR_EXPT"), param_file);
 
   // Parse the input XML param file file
   TXMLEngine* xmleng = new TXMLEngine;

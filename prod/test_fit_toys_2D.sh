@@ -11,7 +11,7 @@ for ((i=0; i<=maxbinx; i++)); do
       stepy=$(echo "0.4 / ${maxbiny}" | bc -l)
       mixing23=$(bc <<< "0.3+${j}*${stepy}")
       valor_dune-run_fit_marg \
-         --config $VALOR_DUNE/config/test/marginalisation/analysis.xml \
+         --config $VALOR_EXPT/config/test/marginalisation/analysis.xml \
          --seed-toys-syst 1 \
          --seed-toys-osc 1 \
          --seed-other 1 \

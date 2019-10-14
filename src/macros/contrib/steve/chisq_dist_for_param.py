@@ -10,11 +10,11 @@ import numpy as np
 import sys
 import os
 
-env_var = "VALOR_DUNE";
+env_var = "VALOR_EXPT";
 try:
   ROOT.valor
 except:
-  ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
+  ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
   
 ROOT.gROOT.SetBatch(1)
 

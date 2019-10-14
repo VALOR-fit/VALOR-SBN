@@ -2,7 +2,7 @@ nmargtoys=50
 param1nbins=101
 cpv=-1.570796327
 valor_dune-run_fit_marg \
-   --config $VALOR_DUNE/config/test/marginalisation/analysis.xml \
+   --config $VALOR_EXPT/config/test/marginalisation/analysis.xml \
    --seed-toys-syst 1 \
    --seed-toys-osc 1 \
    --seed-other 1 \

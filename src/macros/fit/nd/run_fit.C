@@ -26,7 +26,7 @@ void run_fit
   using namespace valor::conv;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_EXPT"), config_file);
   
   TString param_values_ts(param_values); // TString version for useful methods
 

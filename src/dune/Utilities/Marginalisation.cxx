@@ -14,7 +14,7 @@
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/UtlOscillation.h"
 
-//#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+//#define VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
 
 namespace valor
 {
@@ -101,7 +101,7 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
             fpl.FromPhysParamList(tweaks, "current silent");
          }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pINFO) << fpl;
 #endif
 
@@ -109,7 +109,7 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
          if(rethrowUnphysical && !limits->AllWithinLimits(fpl))
          {
             n_rethrows++;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("Marginalisation", pDEBUG) << "At least one parameter thrown " <<
                "outside expected limits. Rethrowing.";
 #endif
@@ -122,7 +122,7 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       PhysParamList true_params = fpl.AsPhysParamList("current");
        
       // Generate a toy-MC experiment
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
       LOG("Marginalisation", pDEBUG) << "Generating toy-MC data";
       LOG("Marginalisation", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
 #endif
@@ -220,7 +220,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       for(int t = 0; t < Ntoys; ++t)
       {
          // Read the chi2 of each toy-MC experiment into a vector
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "Reading toy-MC data";
 #endif
          const char* read_opt = "pdft";
@@ -228,7 +228,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
          this->_model->Read(is_toys, read_opt);
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "chi2(" << t << "): " << chi2 <<
             " L(" << t << "): " << likelihood;
 #endif

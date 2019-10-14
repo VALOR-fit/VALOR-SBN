@@ -21,17 +21,17 @@ if [ -z ${VALOR_FWMK} ] ; then
   fi
 fi
 
-if [ -z $VALOR_DUNE ]; then
+if [ -z $VALOR_EXPT ]; then
   source="$( greadlink -m "${BASH_SOURCE[0]}" )"
-  export VALOR_DUNE="$( dirname "$( dirname "${source}" )" )/" # Directory above the one containing this file
+  export VALOR_EXPT="$( dirname "$( dirname "${source}" )" )/" # Directory above the one containing this file
 fi
 
 export ROOTSYS=/Users/chrisbarry/software/root_v5.34.34_osx
 export PYTHONPATH=${ROOTSYS}/lib:${ROOTSYS}/bin:${ROOTSYS}/bindings/pyroot
 
 echo -e "VALOR_FMWK: \n $VALOR_FMWK"
-echo -e "VALOR_DUNE: \n $VALOR_DUNE"
+echo -e "VALOR_EXPT: \n $VALOR_EXPT"
 
-export DYLD_LIBRARY_PATH="${VALOR_DUNE}/lib:${LD_LIBRARY_PATH}"
-export PATH="${VALOR_DUNE}/bin:${VALOR_DUNE}/prod:${PATH}"
+export DYLD_LIBRARY_PATH="${VALOR_EXPT}/lib:${LD_LIBRARY_PATH}"
+export PATH="${VALOR_EXPT}/bin:${VALOR_EXPT}/prod:${PATH}"
 

@@ -4,7 +4,7 @@ param2nbins=22
 cpv=-1.570796327
 mixing23=0.53
 valor_dune-run_fit_marg \
-   --config $VALOR_DUNE/config/test/marginalisation/analysis.xml \
+   --config $VALOR_EXPT/config/test/marginalisation/analysis.xml \
    --seed-toys-syst 1 \
    --seed-toys-osc 1 \
    --seed-other 1 \

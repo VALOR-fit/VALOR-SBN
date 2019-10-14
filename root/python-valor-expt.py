@@ -13,7 +13,7 @@ try:
 except KeyError:
   has_genie = False
 
-ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_expt.C");
+ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C");
 
 
 ROOT.gROOT.ProcessLine("using namespace valor;");
@@ -52,7 +52,7 @@ for n in xrange(1,9):
   
 # Touch every VALOR object so they appear in tab completion
 import os
-for root, dirs, files in itertools.chain(os.walk(os.environ['VALOR_FMWK']),os.walk(os.environ['VALOR_DUNE'])):
+for root, dirs, files in itertools.chain(os.walk(os.environ['VALOR_FMWK']),os.walk(os.environ['VALOR_EXPT'])):
   for f in files:
     if f.endswith(".cxx"):
       classname = f[:-4]

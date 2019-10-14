@@ -31,7 +31,7 @@ void coverage_1dlim
   using namespace valor::conv;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_EXPT"), config_file);
 
   // Read the config file to populate the ParameterPool
   CompoundFitElements * elements = new CompoundFitElements();

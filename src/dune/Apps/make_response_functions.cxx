@@ -79,7 +79,7 @@ int main(int argc, char ** argv)
   
   // Read command line arguments
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/make_response_functions.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_response_functions.arg");
   VLOG("valor_dune", pNOTICE) << arg;
 
   string arg_beam        = arg.GetString("beam");

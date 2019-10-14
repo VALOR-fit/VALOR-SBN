@@ -95,9 +95,9 @@ int main(int argc, char** argv)
    Env::Instance()->AutoSet("dune");
    CmdLnArgList arg;
    arg.Read(argc,argv,
-      "$VALOR_DUNE/config/apps/run_build_margtoys.arg"
-      ":$VALOR_DUNE/config/apps/seeds.arg"
-      ":$VALOR_DUNE/config/apps/oscparams.arg");
+      "$VALOR_EXPT/config/apps/run_build_margtoys.arg"
+      ":$VALOR_EXPT/config/apps/seeds.arg"
+      ":$VALOR_EXPT/config/apps/oscparams.arg");
    LOG("valor_dune", pNOTICE) << arg;
    BuildToys(arg);
    LOG("valor_dune", pNOTICE) << "Finished";

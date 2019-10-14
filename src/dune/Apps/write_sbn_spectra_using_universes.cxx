@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
   util::InitializeOAPriors();
   
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/universes.arg:$VALOR_DUNE/config/apps/oscparams.arg:");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/oscparams.arg:");
   LOG("valor_dune", pNOTICE) << arg;
   
   string mesg_thresholds  = arg.GetString("mesg-thresholds");

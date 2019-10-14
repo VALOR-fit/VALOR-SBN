@@ -95,8 +95,8 @@ int main(int argc, char** argv)
    Env::Instance()->AutoSet("dune");
    CmdLnArgList arg;
    arg.Read(argc,argv,
-      "$VALOR_DUNE/config/apps/run_fitmarg.arg"
-      ":$VALOR_DUNE/config/apps/seeds.arg");
+      "$VALOR_EXPT/config/apps/run_fitmarg.arg"
+      ":$VALOR_EXPT/config/apps/seeds.arg");
    LOG("valor_dune", pNOTICE) << arg;  
    Fit(arg);
    //Validate(arg);

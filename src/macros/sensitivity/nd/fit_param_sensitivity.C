@@ -44,7 +44,7 @@ void fit_param_sensitivity
 
   // Analysis configuration
   cout << "Getting and configuring fit model" << endl;
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_EXPT"), config_file);
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config.Data());
   FitModelABC * model = elements->FitModel();

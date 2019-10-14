@@ -3,7 +3,7 @@ void valor_expt()
     TString curr_dir = gSystem->pwd();
     gSystem->cd(curr_dir.Data());
 
-    TString top_dir = gSystem->Getenv("VALOR_DUNE");
+    TString top_dir = gSystem->Getenv("VALOR_EXPT");
     
     int valor_incs_status = -999;
     int valor_libs_status = -999;

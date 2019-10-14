@@ -4,13 +4,13 @@ import os
 import ROOT as R
 import array
 
-R.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
+R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
 
 valor = R.valor
 util = R.valor.util
 conv = R.valor.conv
 
-base = os.environ["VALOR_DUNE"]
+base = os.environ["VALOR_EXPT"]
 
 files_fhc = (
  "fhc",

@@ -4,7 +4,7 @@ for ((i=0; i<=maxbin; i++)); do
    step=$(echo "2 * 3.141592654 / ${maxbin}" | bc -l)
    cpv=$(bc <<< "-3.141592654+${i}*${step}")
    valor_dune-run_build_margtoys \
-      --config $VALOR_DUNE/config/test/marginalisation/analysis.xml \
+      --config $VALOR_EXPT/config/test/marginalisation/analysis.xml \
       --seed-toys-syst 1 \
       --seed-toys-osc 1 \
       --seed-other 1 \

@@ -7,7 +7,7 @@ int valor_expt_loadlibs()
   gROOT->ProcessLine(TString::Format("*(int*)%p = valor_sdk_loadlibs();",&valor_fmwk_libs_status));
   
   TString baselibs = gSystem->GetDynamicPath();
-  TString expt_libs = "$VALOR_DUNE/lib:";
+  TString expt_libs = "$VALOR_EXPT/lib:";
   expt_libs += baselibs;
   
   gSystem->SetDynamicPath(expt_libs.Data());

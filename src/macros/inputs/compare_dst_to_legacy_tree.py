@@ -26,7 +26,7 @@ ROOT.gROOT.SetBatch(1)
 try:
   ROOT.valor
 except:
-  ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C")
+  ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C")
 
 valor = ROOT.valor
 util =  valor.util
@@ -306,7 +306,7 @@ def namedtuples_are_equal(nt1, nt2):
 #_______________________________________________________________________
 # def get_legacy_mc_tree(sample, beam, mode):
 #   # file name depends on sample, tree name depends on flavour
-#   file_name = os.environ["VALOR_DUNE"] + "/data/"
+#   file_name = os.environ["VALOR_EXPT"] + "/data/"
 #   if sample == conv.ks1Rmu and beam == conv.kbJPARC_FHC:
 #     file_name += "official/2018/superk/mc/mtuples_v2/valor_format/t2ksk.14a.neut5.3.2.13a_tuned_v1r1.250ka.numuselec.root"
 #   elif sample == conv.ks1Rmu and beam == conv.kbJPARC_RHC:

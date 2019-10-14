@@ -1,5 +1,5 @@
 int valor_expt_loadincs () {
-  TString topdir = gSystem->Getenv("VALOR_DUNE");
+  TString topdir = gSystem->Getenv("VALOR_EXPT");
 
   TString mp = gROOT->GetMacroPath();
   TString ip;

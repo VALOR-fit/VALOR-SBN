@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# VALOR_DUNE oscillation analysis code setup script for Steve Dennis' laptop
+# VALOR_EXPT oscillation analysis code setup script for Steve Dennis' laptop
 #
 # Input arguments: experiment code, framework code
 #
@@ -19,13 +19,13 @@ if [ -z "${VALOR_FMWK}" ] ; then
   . "${VALOR_FMWK}/setup/setup_at_cvmfs_root6.sh" "${VALOR_FMWK}"
 fi
 
-export VALOR_DUNE="$(readlink -m "$1")"
+export VALOR_EXPT="$(readlink -m "$1")"
 
-if [ -z "${VALOR_DUNE}" ]; then
+if [ -z "${VALOR_EXPT}" ]; then
   sdir="$( readlink -m "${BASH_SOURCE[0]}" )"
-  export VALOR_DUNE="$( dirname "$( dirname "${sdir}" )" )/" # Directory above the one containing this file
+  export VALOR_EXPT="$( dirname "$( dirname "${sdir}" )" )/" # Directory above the one containing this file
 fi
 
-export LD_LIBRARY_PATH="${VALOR_DUNE}/lib:${LD_LIBRARY_PATH}"
-export PATH="${VALOR_DUNE}/bin:${VALOR_DUNE}/prod:${PATH}"
+export LD_LIBRARY_PATH="${VALOR_EXPT}/lib:${LD_LIBRARY_PATH}"
+export PATH="${VALOR_EXPT}/bin:${VALOR_EXPT}/prod:${PATH}"
 

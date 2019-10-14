@@ -34,7 +34,7 @@ plot_opt = ""
 try:
   ROOT.valor
 except:
-  ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
+  ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
   
 valor = ROOT.valor
 util =  valor.util
@@ -43,7 +43,7 @@ opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
 def main(config, postfit_fn,output_tag,img_format,entry):
-  config_path = os.environ["VALOR_DUNE"]+"config/"+config
+  config_path = os.environ["VALOR_EXPT"]+"config/"+config
   
   elem = valor.CompoundFitElements()
   elem.Read(config_path,"nosplines nomc")

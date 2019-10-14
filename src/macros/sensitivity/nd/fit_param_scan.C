@@ -28,7 +28,7 @@ void fit_param_scan
   using namespace valor::conv;
 
   // Analysis configuration
-  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  TString config = Form("%s/config/%s", gSystem->Getenv("VALOR_EXPT"), config_file);
 
   // Print settings
   cout << "\n[Job inputs]" << endl;

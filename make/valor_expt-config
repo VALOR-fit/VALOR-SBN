@@ -5,13 +5,13 @@
 #
 
 # VALOR/DUNE top directory path:
-topdir=$VALOR_DUNE
+topdir=$VALOR_EXPT
 
 # VALOR/DUNE libraries path:
-libdir=$VALOR_DUNE/lib
+libdir=$topdir/lib
 
 # VALOR/DUNE src top level directory:
-srcdir=$VALOR_DUNE/src
+srcdir=$topdir/src
 
 # VALOR/DUNE libraries:
 libs="-lValorDuneConv -lValorDuneUtil -lValorDuneElements "

@@ -58,7 +58,7 @@ int main(int argc, char ** argv)
   // Set GENIE print level
   genie::GHepRecord::SetPrintLevel(genie::RunOpt::Instance()->EventRecordPrintLevel());
   
-  TString messenger_config("$VALOR_DUNE/config/verbosity.xml");
+  TString messenger_config("$VALOR_EXPT/config/verbosity.xml");
   gSystem->ExpandPathName(messenger_config);
   valor::Messenger::Instance()->Configure(messenger_config.Data());
   

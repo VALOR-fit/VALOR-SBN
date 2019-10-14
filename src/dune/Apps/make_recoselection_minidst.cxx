@@ -134,7 +134,7 @@ int main(int argc, char ** argv)
   Env::Instance()->AutoSet("dune");
 
   CmdLnArgList arg;
-  arg.Read(argc,argv, "$VALOR_DUNE/config/apps/make_recoselection_minidst.arg");
+  arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_recoselection_minidst.arg");
   LOG("make_recoselection_minidst", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));

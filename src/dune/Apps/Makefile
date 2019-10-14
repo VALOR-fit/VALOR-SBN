@@ -10,7 +10,7 @@ MAKEFILE = Makefile
 
 # Include machine specific flags and locations (inc. files & libs)
 #
-include $(VALOR_DUNE)/make/Make.include
+include $(VALOR_EXPT)/make/Make.include
 
 DUNE_LIBRARIES = 
 
@@ -40,7 +40,7 @@ all: $(TGT)
 make_nd_minidst: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
+	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_nd_minidst
 else
 	@echo "Skipping make_nd_minidst due to no GENIE"
 endif
@@ -50,7 +50,7 @@ endif
 make_fd_minidst: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_fd_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_fd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_fd_minidst
+	$(LD) $(LDFLAGS) make_fd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_fd_minidst
 else
 	@echo "Skipping make_fd_minidst due to no GENIE"
 endif
@@ -59,7 +59,7 @@ endif
 #
 make_fastmc_minidst: FORCE
 	$(CXX) $(CXXFLAGS) -c make_fastmc_minidst.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) make_fastmc_minidst.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
+	$(LD) $(LDFLAGS) make_fastmc_minidst.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_fastmc_minidst
 
 # Generate DSTs for SBNCode fit
 #
@@ -67,7 +67,7 @@ make_sbncode_minidst: FORCE
 ifeq ($(SBNANALYSIS_ENABLED),1)
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
-	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
+	$(LD) $(LDFLAGS) make_sbncode_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_EXPT)/bin/valor_dune-make_sbncode_minidst
 else
 	@echo "Skipping make_sbncode_minidst due to no GENIE"
 endif
@@ -81,7 +81,7 @@ make_recoselection_minidst: FORCE
 ifeq ($(SBNANALYSIS_ENABLED),1)
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_recoselection_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
-	$(LD) $(LDFLAGS) make_recoselection_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB)  -o $(VALOR_DUNE)/bin/valor_dune-make_recoselection_minidst
+	$(LD) $(LDFLAGS) make_recoselection_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB)  -o $(VALOR_EXPT)/bin/valor_dune-make_recoselection_minidst
 else
 	@echo "Skipping make_recoselection_minidst due to no GENIE"
 endif
@@ -94,7 +94,7 @@ endif
 make_response_functions: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_response_functions
+	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_response_functions
 else
 	@echo "Skipping make_response_functions due to no GENIE"
 endif
@@ -103,14 +103,14 @@ endif
 #
 make_table_systematic_effects: FORCE
 	$(CXX) $(CXXFLAGS) -c make_table_systematic_effects.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) make_table_systematic_effects.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_table_systematic_effects
+	$(LD) $(LDFLAGS) make_table_systematic_effects.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_table_systematic_effects
 
 # Generate CAFs based DSTs
 #
 make_caf_minidst: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_caf_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_caf_minidst
+	$(LD) $(LDFLAGS) make_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_caf_minidst
 else
 	@echo "Skipping make_caf_minidst due to no GENIE"
 endif
@@ -118,7 +118,7 @@ endif
 make_nd_caf_minidst: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_nd_caf_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_nd_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_nd_caf_minidst
+	$(LD) $(LDFLAGS) make_nd_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_nd_caf_minidst
 else
 	@echo "Skipping make_nd_caf_minidst due to no GENIE"
 endif
@@ -127,54 +127,54 @@ endif
 #
 run_fit: FORCE
 	$(CXX) $(CXXFLAGS) -c run_fit.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) run_fit.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_fit
+	$(LD) $(LDFLAGS) run_fit.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-run_fit
 
 # Write out pdf
 # 
 write_pdf: FORCE
 	$(CXX) $(CXXFLAGS) -c write_pdf.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) write_pdf.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-write_pdf
+	$(LD) $(LDFLAGS) write_pdf.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-write_pdf
 	
 # Randomly throw the pdf t o make envelopes
 # 
 tweak_pdf_N: FORCE
 	$(CXX) $(CXXFLAGS) -c tweak_pdf_N.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) tweak_pdf_N.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
+	$(LD) $(LDFLAGS) tweak_pdf_N.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
 
 # Make +/- 1 and 3 sigma variations for each param
 #
 tweak_pdf_sigma_var: FORCE
 	$(CXX) $(CXXFLAGS) -c tweak_pdf_sigma_var.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) tweak_pdf_sigma_var.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_sigma_var
+	$(LD) $(LDFLAGS) tweak_pdf_sigma_var.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_sigma_var
 
 # Run an Adaptive Metropolis Hastings around the results of a fit
 #
 adaptive_mcmc: FORCE
 	$(CXX) $(CXXFLAGS) -c adaptive_mcmc.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) adaptive_mcmc.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
+	$(LD) $(LDFLAGS) adaptive_mcmc.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-adaptive_mcmc
 
 # Pick info from the VALOR fit n-tuple and convert to bare ROOT format
 #
 fitnt_conv: FORCE
 	$(CXX) $(CXXFLAGS) -c fitnt_conv.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) fitnt_conv.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
+	$(LD) $(LDFLAGS) fitnt_conv.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
 
 run_build_margtoys: FORCE
 	$(CXX) $(CXXFLAGS) -c run_build_margtoys.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) run_build_margtoys.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_build_margtoys
+	$(LD) $(LDFLAGS) run_build_margtoys.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-run_build_margtoys
 
 run_fit_marg: FORCE
 	$(CXX) $(CXXFLAGS) -c run_fit_marg.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) run_fit_marg.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_fit_marg
+	$(LD) $(LDFLAGS) run_fit_marg.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-run_fit_marg
 
 make_dummy_samples: FORCE
 	$(CXX) $(CXXFLAGS) -c make_dummy_samples.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) make_dummy_samples.o $(LIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-make_dummy_samples
+	$(LD) $(LDFLAGS) make_dummy_samples.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_dummy_samples
 
 run_tests: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c run_tests.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) run_tests.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-run_tests
+	$(LD) $(LDFLAGS) run_tests.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-run_tests
 else
 	@echo "Skipping run_tests due to no GENIE"
 endif
@@ -182,7 +182,7 @@ endif
 batch_tests: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c batch_tests.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) batch_tests.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_DUNE)/bin/valor_dune-batch_tests
+	$(LD) $(LDFLAGS) batch_tests.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-batch_tests
 else
 	@echo "Skipping run_tests due to no GENIE"
 endif
@@ -194,44 +194,44 @@ purge: FORCE
 
 clean: FORCE
 	$(RM) *.o *~ core
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_nd_minidst
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fd_minidst
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_sbncode_minidst
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_recoselection_minidst
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_fastmc_minidst
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_response_functions
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_table_systematic_effects
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-write_pdf
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_N
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-tweak_pdf_sigma_var
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-fitnt_conv
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-adaptive_mcmc
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_tests
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_build_margtoys
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-run_fit_marg
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-make_dummy_samples
-	$(RM) $(VALOR_DUNE)/bin/valor_dune-batch_tests
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_nd_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_fd_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_sbncode_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_recoselection_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_fastmc_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_response_functions
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_table_systematic_effects
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_pdf
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_sigma_var
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-adaptive_mcmc
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_tests
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit_marg
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_dummy_samples
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-batch_tests
 
 distclean: FORCE
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fd_minidst
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_sbncode_minidst
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_recoselection_minidst
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_table_systematic_effects
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/write_pdf
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/tweak_pdf_N
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/tweak_pdf_sigma_var
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_tests
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_build_margtoys
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-run_fit_marg
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-make_dummy_samples
-	$(RM) $(VALOR_DUNE_INSTALLATION_PATH)/bin/valor_dune-batch_tests
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_fd_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_sbncode_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_recoselection_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_table_systematic_effects
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/write_pdf
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_N
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_sigma_var
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_tests
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit_marg
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_dummy_samples
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-batch_tests
 
 FORCE:
 	

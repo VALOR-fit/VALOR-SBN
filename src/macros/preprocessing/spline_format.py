@@ -11,9 +11,9 @@ import ctypes
 try:
     ROOT.valor
 except:
-    ROOT.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
+    ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
 
-env_var = "VALOR_DUNE"
+env_var = "VALOR_EXPT"
   
 ROOT.gROOT.SetBatch(1)
   

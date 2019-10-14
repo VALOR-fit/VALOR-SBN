@@ -8,7 +8,7 @@ void convert_generic_dst_tree_to_varray_format(
   using namespace std;
   using namespace valor;
   
-  TString config = TString::Format("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  TString config = util::CompleteConfigPath(config_file);
   
   // Get ND model & configure
   CompoundFitElements * elements = new CompoundFitElements();

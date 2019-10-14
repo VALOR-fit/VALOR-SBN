@@ -3,13 +3,13 @@
 import os
 import ROOT as R
 
-R.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
+R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
 
 valor = R.valor
 
 def main(config,outfile):
   
-  config_path = os.environ["VALOR_DUNE"]+"config/"+config
+  config_path = os.environ["VALOR_EXPT"]+"config/"+config
   
   elements = valor.CompoundFitElements()
   elements.Read(config_path)

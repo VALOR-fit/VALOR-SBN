@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
   Env::Instance()->AutoSet("dune");
  
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/make_fd_minidst.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_fd_minidst.arg");
   LOG("valor_dune", pNOTICE) << arg;
   
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
@@ -113,7 +113,7 @@ int main(int argc, char ** argv)
   assert(sample != conv::ksUndefined);
   
   //~ // Read the smearing histograms - ugly hack for now, but best option while we're still using these files of Dan's.
-  //~ TString smearing_path = "$VALOR_DUNE/data/dune/fdfit/2016b/smearing_histograms.root";
+  //~ TString smearing_path = "$VALOR_EXPT/data/dune/fdfit/2016b/smearing_histograms.root";
   //~ gSystem->ExpandPathName(smearing_path);
   //~ TFile smearing_file(smearing_path.Data());
   //~ TString hname = TString::Format("smearing_%s_NC_%s",opt_beam_name.c_str(),opt_sample_name.c_str());

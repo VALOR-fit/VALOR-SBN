@@ -94,7 +94,7 @@ int main(int argc, char ** argv)
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/make_table_systematic_effects.arg:$VALOR_DUNE/config/apps/seeds.arg:$VALOR_DUNE/config/apps/oscparams.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_table_systematic_effects.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
   LOG("valor_dune", pNOTICE) << arg;
   
   // Read the command line

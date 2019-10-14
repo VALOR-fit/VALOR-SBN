@@ -8,7 +8,7 @@ import os
 
 R.PyConfig.IgnoreCommandLineOptions = True
 
-base_dir = os.environ["VALOR_DUNE"]
+base_dir = os.environ["VALOR_EXPT"]
 try:
   R.valor
 except:

@@ -5,11 +5,11 @@ import numpy as np
 import math
 import os
 
-env_var = "VALOR_DUNE";
+env_var = "VALOR_EXPT";
 try:
   R.valor
 except:
-  R.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
+  R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
   
 R.gROOT.SetBatch(1)
 

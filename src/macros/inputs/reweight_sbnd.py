@@ -4,13 +4,13 @@ import os
 import ROOT as R
 import array
 
-R.gROOT.ProcessLine(".x $VALOR_DUNE/root/valor_dune.C");
+R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
 
 valor = R.valor
 util = R.valor.util
 conv = R.valor.conv
 
-base = os.environ["VALOR_DUNE"]
+base = os.environ["VALOR_EXPT"]
 
 def wrong_sign_sample_to_right_sign(s):
   if (s == conv.ksNuMuCCWS)     : return conv.ksNuMuCCoth
@@ -96,9 +96,9 @@ def read_all_objects_of_class(tfile,oftype="TH1D"):
   
 def main():
   do_reweight(
-    os.environ['VALOR_DUNE']+'data/dune/ndfit/2017a/fgt_nu_minidst_pt4.root',
-    os.environ['VALOR_DUNE']+'data/sbn/2017a/flux/sbn_flux_ratio_hist_fhc.root',
-    os.environ['VALOR_DUNE']+'data/sbn/2017a/sbnd_fhc_from_dune_fgt.root'
+    os.environ['VALOR_EXPT']+'data/dune/ndfit/2017a/fgt_nu_minidst_pt4.root',
+    os.environ['VALOR_EXPT']+'data/sbn/2017a/flux/sbn_flux_ratio_hist_fhc.root',
+    os.environ['VALOR_EXPT']+'data/sbn/2017a/sbnd_fhc_from_dune_fgt.root'
     )
 
 if __name__=="__main__":

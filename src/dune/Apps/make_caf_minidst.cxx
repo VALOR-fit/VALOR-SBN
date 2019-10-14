@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
   Env::Instance()->AutoSet("dune");
  
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_DUNE/config/apps/make_caf_minidst.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_caf_minidst.arg");
   LOG("valor_dune", pNOTICE) << arg;
   
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));

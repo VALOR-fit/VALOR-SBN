@@ -10,7 +10,7 @@
 ##    --append_condor_requirements='(TARGET.HAS_CVMFS_sbnd_opensciencegrid_org==true)'   \      ###   
 ###   --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE       \      ###
 ###   --OS=SL6 -N $numjobs --generate-email-summary                                      \      ###
-###   file://$ENV{VALOR_DUNE}/prod/jobsub_submit_param_scan.sh                           \      ###
+###   file://$ENV{VALOR_EXPT}/prod/jobsub_submit_param_scan.sh                           \      ###
 ###       --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2  \      ###
 ###       --fit-param-list $fitparamlist --config-file $config_file  --param1 $param1    \      ###
 ###       --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1     \      ###

@@ -22,13 +22,13 @@ if [ -z ${VALOR_FWMK} ] ; then
   fi
 fi
 
-export VALOR_DUNE=$1
+export VALOR_EXPT=$1
 
-if [ -z $VALOR_DUNE ]; then
+if [ -z $VALOR_EXPT ]; then
   source="$( readlink -m "${BASH_SOURCE[0]}" )"
-  export VALOR_DUNE="$( dirname "$( dirname "${source}" )" )/" # Directory above the one containing this file
+  export VALOR_EXPT="$( dirname "$( dirname "${source}" )" )/" # Directory above the one containing this file
 fi
 
-export LD_LIBRARY_PATH="${VALOR_DUNE}/lib:${LD_LIBRARY_PATH}"
-export PATH="${VALOR_DUNE}/bin:${VALOR_DUNE}/prod:${PATH}"
+export LD_LIBRARY_PATH="${VALOR_EXPT}/lib:${LD_LIBRARY_PATH}"
+export PATH="${VALOR_EXPT}/bin:${VALOR_EXPT}/prod:${PATH}"
 

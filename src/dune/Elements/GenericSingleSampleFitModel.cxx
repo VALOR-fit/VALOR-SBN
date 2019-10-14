@@ -71,7 +71,7 @@ using namespace valor;
 using namespace valor::conv;
 
 //#define SPLINE_WEIGHTS_ARE_ONE
-//#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+//#define VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
 
 #define APPLY_ALL_AUTOWGHT_BRANCHES
 
@@ -1541,7 +1541,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
 
     //  ==============================================
     if(s != fSample) {
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
       LOG("GenericSingleSampleFitModel",pDEBUG) 
         << "Ignoring MC event: " << iev 
         << " (sample ID: " << s << " "<< util::AsString(s) 
@@ -1553,7 +1553,7 @@ void GenericSingleSampleFitModel::FillFromDST(TTree * t)
     
     BeamConf_t b = util::BeamConfFromInt(beam);
     if(b != fBeam) {
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
       LOG("GenericSingleSampleFitModel",pDEBUG) 
         << "Ignoring MC event: " << iev 
         << " (beam ID: " << b << " "<< util::AsString(b) 
@@ -2238,7 +2238,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
     const KineSpace_t true_ks = true_sb->KineSpace();
     const std::vector<conv::KineVar_t> true_kinevars = util::KineVarTrue(true_ks);
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
     LOG("GenericSingleSampleFitModel",pDEBUG) 
       << "Handing templates for: " 
       << util::AsString(fBeam) << ", " << util::AsString(fSample) << ", " << util::AsString(m);
@@ -2389,7 +2389,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
           true1_min = pair1.first;
           true1_max = pair1.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
             << "Applying parameter: " << param_name << " with value = " << f
@@ -2403,7 +2403,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           true1_max = pair1.second;
           true2_min = pair2.first;
           true2_max = pair2.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
             << "Applying parameter: " << param_name << " with value = " << f
@@ -2421,7 +2421,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
           reco1_min = pair1.first;
           reco1_max = pair1.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
             << "Applying parameter: " << param_name << " with value = " << f
@@ -2435,7 +2435,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
           reco1_max = pair1.second;
           reco2_min = pair2.first;
           reco2_max = pair2.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel",pINFO)
             << fName << ", " << util::AsString(m) << ": "
             << "Applying parameter: " << param_name << " with value = " << f
@@ -2495,7 +2495,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
             double & val = templFinOb[ireco][itrue];
             val *= effective_tweak;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pDEBUG) 
               << "MCT[" << imode << "] = " 
               << val/f << " --> " << val;
@@ -2517,7 +2517,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
       // then apply the non-Etrue-dependent factors (use scale - not loop)
       else {
         double noEt = 1 ;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pINFO)
           << fName <<": "
           << "Applying parameter: " << param_name << " with value = " << f << " to whole mode "<<util::AsString(m);
@@ -2572,7 +2572,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
       double f = fPhysHypothesis.CurrValue(p);
       
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pDEBUG) 
           << "Applying parameter: " << param_name << " with value = " << f
           << " using splines.";
@@ -2610,7 +2610,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             response = spl->Eval(f);
           }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
           LOG("GenericSingleSampleFitModel", pDEBUG)
               << "Got response = " << response << " for param = " << param_name
               << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << untuned
@@ -2737,7 +2737,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             const std::pair<double,double> & pair1 = param.GetKineRange(true_kinevars[0]);
             true1_min = pair1.first;
             true1_max = pair1.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
               << "Applying parameter: " << param_name << " with value = " << f
@@ -2751,7 +2751,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             true1_max = pair1.second;
             true2_min = pair2.first;
             true2_max = pair2.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
               << "Applying parameter: " << param_name << " with value = " << f
@@ -2769,7 +2769,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             const std::pair<double,double> & pair1 = param.GetKineRange(reco_kinevars[0]);
             reco1_min = pair1.first;
             reco1_max = pair1.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
               << "Applying parameter: " << param_name << " with value = " << f
@@ -2783,7 +2783,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
             reco1_max = pair1.second;
             reco2_min = pair2.first;
             reco2_max = pair2.second;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pINFO)
               << fName << ", " << util::AsString(m) << ": "
               << "Applying parameter: " << param_name << " with value = " << f
@@ -2833,7 +2833,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
               double & val = templFinSb[ireco][itrue];
               val *= effective_tweak;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel",pDEBUG)
               << "MCT[" << imode << "] = "
               << val/f << " --> " << val;
@@ -2904,7 +2904,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
 
         double f = fPhysHypothesis.CurrValue(p);
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
         LOG("GenericSingleSampleFitModel",pDEBUG)
           << "Applying parameter: " << param_name << " with value = " << f
           << " using splines.";
@@ -2942,7 +2942,7 @@ void GenericSingleSampleFitModel::ApplyPhysics(Option_t * option)
               response = spl->Eval(f);
             }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("GenericSingleSampleFitModel", pDEBUG)
               << "Got response = " << response << " for param = " << param_name
               << ", itrue = " << itrue << ", ireco = " << ireco << ", untuned = " << untuned
@@ -3508,7 +3508,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
   bool tweaked = TMath::Abs(scale-1) > kASmallNum;
   if(!tweaked) return;
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
   LOG("Lateral",pDEBUG) << "Applying lateral systematic parameter: " << param_name
                        << "to PDF [" << pdf->GetName() << "] "
                        << " with kine var " << util::AsString(kv) << " and scale = " << scale;
@@ -3544,7 +3544,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     edge *= scale;
   }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
   // Copy the un-modified PDF contents into a vector, so we can print comparisons later
   std::vector<double> old_events_per_bin (nbins, 0.0);
   for(unsigned int ireco = 0; ireco < nbins; ireco++) {
@@ -3620,7 +3620,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
       const unsigned int & glob_bin_s = (*scaled_bin_to_global_bin)[ibin_s];
       new_events_per_bin[ibin_u] += pdfArr[glob_bin_s] * factor;
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
       LOG("Lateral", pDEBUG)
         << "scaled bin "    << ibin_s << " [" << bin_min_s << ", " << bin_max_s << "]; "
         << "un-scaled bin " << ibin_u << " [" << bin_min_u << ", " << bin_max_u << "]; "
@@ -3635,7 +3635,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     pdfArr[ibin] = 0.;
   }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
   LOG("Lateral", pDEBUG) << "PDF contents before and after applying lateral systematic:";
 #endif
 
@@ -3648,7 +3648,7 @@ void GenericSingleSampleFitModel::ApplyLateralSystematic(VALORArray * pdf, conv:
     const unsigned int & ibin = (*unscaled_bin_to_global_bin)[ibin_u];
     pdfArr[ibin] += new_events_per_bin[ibin_u];
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
     LOG("Lateral", pDEBUG)
       << "bin " << ibin << " [" << recoBinning->BinMinimum(ibin, kv) << ", " << recoBinning->BinMaximum(ibin, kv) << "]"
       << "; old content = " << old_events_per_bin[ibin] << "; new content = " << pdfArr[ibin];
@@ -3971,7 +3971,7 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
         (*scaled_bin_to_global_bin  )[iedge_s-1 - n_up_edges_added] = ireco;
         (*unscaled_bin_to_global_bin)[iedge_u-1 - n_up_edges_added] = ireco;
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
         LOG("Lateral", pDEBUG) << "ireco = " << ireco << "; scaled bin = " << iedge_s-1 - n_up_edges_added
                              << "; un-scaled bin = " << iedge_u-1 - n_up_edges_added
                              << "; iedge_u = " << iedge_u-1 << "; iedge_s = " << iedge_s-1
@@ -3991,7 +3991,7 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
           n_up_edges_added++;
           end_bins_it++;
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
           LOG("Lateral", pDEBUG) << "un-scaled bin = " << iedge_u-2 - (n_up_edges_added-1)
                                << "; iedge_u = " << iedge_u-2 << "; iedge_s = " << iedge_s-1
                                << "; un-scaled edge = " << (*unscaled_bin_edges)[iedge_u-2]
@@ -4071,7 +4071,7 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
             break;
           }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
           LOG("Lateral", pDEBUG)
              << "scaled bin "    << ibin_s << " [" << bin_min_s << ", " << bin_max_s << "]; "
              << "un-scaled bin " << ibin_u << " [" << bin_min_u << ", " << bin_max_u << "]; "

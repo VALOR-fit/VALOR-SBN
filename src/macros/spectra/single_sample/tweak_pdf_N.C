@@ -26,7 +26,7 @@ void tweak_pdf_N
   const double enu_reco_max = 10;
 
   // Analysis configuration
-  TString config = TString::Format("%s/config/%s", gSystem->Getenv("VALOR_DUNE"), config_file);
+  TString config = TString::Format("%s/config/%s", gSystem->Getenv("VALOR_EXPT"), config_file);
 
   // Print settings
   cout << "\n[Job inputs]" << endl;

@@ -1,13 +1,13 @@
 #!/bin/bash 
 
 #
-# VALOR_DUNE oscillation analysis code setup script for RAL/PPD Tier2
+# VALOR_EXPT oscillation analysis code setup script for RAL/PPD Tier2
 #
 # Input argument: oscillation analysis code top-level directory
 #
 
-export VALOR_DUNE=$PWD/trunk_GRID/
-echo ${VALOR_DUNE}
+export VALOR_EXPT=$PWD/trunk_GRID/
+echo ${VALOR_EXPT}
 
 #export ROOTSYS=$VO_T2K_ORG_SW_DIR/nd280v10r11p17/ROOT/v5r30p02n01/amd64_linux26/
 #export ROOTSYS=$VO_T2K_ORG_SW_DIR/nd280v9r9p1/ROOT/v5r28p00n01/
@@ -42,6 +42,6 @@ fi
 
 echo ${ROOTSYS}
 
-export LD_LIBRARY_PATH=${VALOR_DUNE}/lib:${ROOTSYS}/lib:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${VALOR_EXPT}/lib:${ROOTSYS}/lib:${LD_LIBRARY_PATH}
 
-export PATH=${VALOR_DUNE}/root:${VALOR_DUNE}/production:${ROOTSYS}/bin:${PATH}
+export PATH=${VALOR_EXPT}/root:${VALOR_EXPT}/production:${ROOTSYS}/bin:${PATH}
