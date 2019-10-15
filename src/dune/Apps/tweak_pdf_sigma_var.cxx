@@ -69,7 +69,7 @@
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "valor/Conventions/Names.h"
 #include "dune/Conventions/Experiment.h"
-#include "dune/Elements/CompoundFitElements.h"
+#include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;

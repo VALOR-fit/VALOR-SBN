@@ -20,7 +20,7 @@
 #include "valor/Testing/Test.h"
 
 // dune
-#include "dune/Utilities/UtlBinning.h"
+#include "valor/KineBinning/UtlBinning.h"
 
 namespace valor
 {

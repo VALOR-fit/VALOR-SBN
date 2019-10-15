@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include "dune/Elements/CompoundFitElements.h"
+#include "valor/FitCore/CompoundFitElements.h"
 
 #include "valor/FitCore/FitDataABC.h"
 #include "valor/FitCore/FitModelABC.h"

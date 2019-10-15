@@ -50,7 +50,7 @@
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Elements/CompoundFitElements.h"
+#include "valor/FitCore/CompoundFitElements.h"
 
 using std::string;
 using std::ostringstream;

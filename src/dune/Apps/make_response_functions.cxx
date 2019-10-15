@@ -59,8 +59,8 @@
 #include "valor/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/RFL.h"
 #include "dune/Utilities/KinematicBin.h"
-#include "dune/Elements/CompoundFitElements.h"
-#include "dune/Elements/GenericSingleSampleFitModel.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
 
 
 using std::string;

@@ -60,11 +60,6 @@ else
 	@echo "** GENIE not set up - skipping GENIEUtilities"
 endif
 
-build-elements: | copy-scripts-to-bin FORCE
-	@echo " "
-	@echo "** Building Elements package..."
-	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/dune/Elements;
-
 build-testing: | copy-scripts-to-bin FORCE
 ifdef GENIE
 	@echo " "
@@ -76,7 +71,7 @@ else
 endif
 
 build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions \
-  build-utilities build-genie-utilities build-elements build-testing
+  build-utilities build-genie-utilities build-testing
  
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
@@ -102,7 +97,6 @@ purge: FORCE
 	$(MAKE) -C src/dune/Conventions      purge && \
 	$(MAKE) -C src/dune/Utilities        purge && \
 	$(MAKE) -C src/dune/GENIEUtilities   purge && \
-	$(MAKE) -C src/dune/Elements         purge && \
 	$(MAKE) -C src/dune/Testing          purge; \
 
 clean: clean-files clean-dir clean-etc
@@ -117,7 +111,6 @@ clean-files: FORCE
 	$(MAKE) -C src/dune/Conventions     clean && \
 	$(MAKE) -C src/dune/Utilities       clean && \
 	$(MAKE) -C src/dune/GENIEUtilities  clean && \
-	$(MAKE) -C src/dune/Elements        clean && \
 	$(MAKE) -C src/dune/Testing         clean; \
 	cd $(VALOR_EXPT_TOPDIR);\
     [ ! -d ./bin ] || rm ./bin/*;\

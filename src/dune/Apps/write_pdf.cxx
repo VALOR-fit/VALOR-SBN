@@ -58,8 +58,8 @@
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
-#include "dune/Elements/CompoundFitElements.h"
-#include "dune/Elements/GenericSingleSampleFitModel.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
 
 using namespace std;
 using namespace valor;

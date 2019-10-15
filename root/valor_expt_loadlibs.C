@@ -14,7 +14,6 @@ int valor_expt_loadlibs()
   
   gSystem->Load("libValorDuneConv.so");
   gSystem->Load("libValorDuneUtil.so");
-  gSystem->Load("libValorDuneElements.so");
   
   return valor_fmwk_libs_status;
 }

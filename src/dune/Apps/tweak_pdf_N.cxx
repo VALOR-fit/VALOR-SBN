@@ -68,7 +68,7 @@
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
-#include "dune/Elements/CompoundFitElements.h"
+#include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;
