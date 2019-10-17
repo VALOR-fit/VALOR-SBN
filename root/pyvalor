@@ -5,5 +5,5 @@ else
     mypy=python
 fi
 
-"$mypy" -i "${VALOR_DUNE}/root/python-valor-expt.py" $*
+"$mypy" -i "${VALOR_EXPT}/root/python-valor-expt.py" $*
 
