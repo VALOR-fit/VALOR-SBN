@@ -28,7 +28,7 @@ _text_size = 0.03
 
 _pval_threshold = 0.01  # Used for comparing 2 toy throw distributions witht he Kolmogorov-Smirnov test
 
-def compare(in_filenames, labels, colours, styles, tree_names, out_filename, param_map = None, toy_limit = -1):
+def compare(in_filenames, labels, colours, styles, tree_names, out_filename, param_map = None, toy_limit = -1, param_names = None):
 
     if len(in_filenames) != len(tree_names):
         print "ERROR: input filename and tree name lists have different lengths."
@@ -38,7 +38,8 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
     first_file = ROOT.TFile(in_filenames[0], "READ")
     first_tree = first_file.Get(tree_names[0])
     branches = first_tree.GetListOfBranches()
-    param_names = [branch.GetName() for branch in branches]
+    if not param_names:
+        param_names = [branch.GetName() for branch in branches]
 
     for param_name in param_names:
         print "Considering param: ", param_name
@@ -72,6 +73,16 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
                 sys.exit()
             file.Close()
             del file
+
+        # Check that the number of read param values is the same in all trees
+        if len(tree_names) > 1:
+            for itree in range(1, len(tree_names)):
+                n_this_tree = len(param_vals_all[itree])
+                n_prev_tree = len(param_vals_all[itree-1])
+                if n_this_tree != n_prev_tree:
+                    print "ERROR: The tree named", tree_names[itree], "has", n_this_tree, \
+                        "entries, but the tree named", tree_names[itree-1], "has", n_prev_tree
+                    sys.exit()
 
         min_val = min([min(vals) for vals in param_vals_all])
         max_val = max([max(vals) for vals in param_vals_all])
@@ -140,10 +151,11 @@ def compare(in_filenames, labels, colours, styles, tree_names, out_filename, par
 
         # Save to the output file
         save_name = out_filename
-        if param_name == param_names[0]:
-            save_name += "("
-        elif param_name == param_names[len(param_names) -1]:
-            save_name += ")"
+        if len(param_names) > 1:
+            if param_name == param_names[0]:
+                save_name += "("
+            elif param_name == param_names[len(param_names) -1]:
+                save_name += ")"
         canvas.SaveAs(save_name, "RECREATE")
 
         # Free up memory
@@ -187,6 +199,7 @@ if __name__=="__main__":
     parser.add_argument("-o", "--output"        , dest="out_filename"                       , help="Output PDF filename")
     parser.add_argument("-m", "--param-map"     , dest="param_map"                          , help="File name of the parameter name map, used to convert the param names read from the first file into parm names for the other files.")
     parser.add_argument(      "--toy-limit"     , dest="toy_limit"   , type=int, default=-1 , help="Only consider the first X toys in each tree. set to -1 (default) to look at all toys.")
+    parser.add_argument(      "--params"        , dest="params"      , nargs="+"            , help="A list of parameters to plot. If this is not specified, all params are plot.")
     args = parser.parse_args()
     labels = []
     if args.labels:
@@ -202,6 +215,6 @@ if __name__=="__main__":
     if args.styles:
         styles = [int(i) for i in args.styles]
 
-    compare(args.in_filenames, labels, colours, styles, args.tree_names, args.out_filename, args.param_map, args.toy_limit)
+    compare(args.in_filenames, labels, colours, styles, args.tree_names, args.out_filename, args.param_map, args.toy_limit, args.params)
 
 
