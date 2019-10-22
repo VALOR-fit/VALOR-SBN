@@ -8,6 +8,12 @@
 #
 
 if [ -z ${VALOR_FWMK} ] ; then
+  if [ ! -z "${2}" ] ; then
+    source "${2}/setup/setup_at_steve_laptop.sh" "${2}"
+  fi
+fi
+
+if [ -z ${VALOR_FMWK} ] ; then
   if [ $USER == steve ] ; then 
     source "/home/steve/steve/analysis/github/VALOR-SDK/setup/setup_at_steve_laptop.sh"
   fi
@@ -22,7 +28,9 @@ if [ -z ${VALOR_FWMK} ] ; then
   fi
 fi
 
-export VALOR_EXPT=$1
+if [ ! -z ${1} ] ; then
+  export VALOR_EXPT="$(readlink -m ${1})"
+fi
 
 if [ -z $VALOR_EXPT ]; then
   source="$( readlink -m "${BASH_SOURCE[0]}" )"
