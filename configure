@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# VALOR/DUNE configuration script
+# VALOR/EXPT configuration script
 #
 # For help, type ./configure --help
 #
@@ -11,7 +11,7 @@
 #
 if(($match = grep(/--help/i, @ARGV)) > 0) { 
   print "\n";
-  print "*** VALOR/DUNE configure script *** \n\n";
+  print "*** VALOR/EXPT configure script *** \n\n";
   print "Usage: ./configure [option]... [flag=value]... \n\n";
   print "    FLAG              DESCRIPTION                                                 DEFAULT\n\n";
   print "    --prefix          installation location (for 'make install')                  /usr/local/\n";
@@ -22,17 +22,16 @@ if(($match = grep(/--help/i, @ARGV)) > 0) {
   print "\n options for 3rd party software, prefix with --with- (eg --with-lhapdf-lib=/some/path/)\n\n";
   print "    compiler          Compiler to use (any of clang,g++)                          default: use what the framework uses \n";
   print "    optimiz-level     Compiler optimization (any of O,O2,O3,OO,Os)                default: O2 \n";
-  print "    valor-framework   Mandatory path to VALOR framework code                      default: none (tries to auto-detect a path) \n\n";
   print "If the printout was too long then pipe it through a pager, eg: \n";
   print "./configure --help | more \n";
   exit 0;
 }
 
-# Check that $VALOR_DUNE is set
+# Check that $VALOR_EXPT is set
 #
-$VALOR_DUNE = $ENV{'VALOR_DUNE'};
-die ("*** Error *** The VALOR_DUNE environmental variable is not defined") 
-unless defined $VALOR_DUNE;
+$VALOR_EXPT = $ENV{'VALOR_EXPT'};
+die ("*** Error *** The VALOR_EXPT environmental variable is not defined") 
+unless defined $VALOR_EXPT;
 
 # Check that $ROOTSYS is set
 #
@@ -42,7 +41,7 @@ unless defined $ROOTSYS;
 
 # Enable auto-detection?
 #
-system("find $VALOR_DUNE/configure");
+system("find $VALOR_EXPT/configure");
 print "\n";
 $auto_detect = ($?==0) ? 1 : 0;
 if(! $auto_detect) {
@@ -53,9 +52,9 @@ print "\nYour input configuration options were: @ARGV";
 if($#ARGV < 0) { print "(none)" };
 print "\n\n";
 
-# Print VALOR/DUNE banner 
+# Print VALOR/EXPT banner 
 #
-$BANNER_FILE = "$VALOR_DUNE/data/banner/banner.dat";
+$BANNER_FILE = "$VALOR_EXPT/data/banner/banner.dat";
 if(-e $BANNER_FILE) {
   open(BANNER, "<$BANNER_FILE");
   @hdr=<BANNER>;
@@ -64,10 +63,10 @@ if(-e $BANNER_FILE) {
   print "\n";
 }
 
-# Read VALOR_DUNE version number
+# Read VALOR_EXPT version number
 #
-$VRS_FILENAME = "$VALOR_DUNE/VERSION";
-open(VRS_FILE, "<$VRS_FILENAME") or die("Can not read the VALOR_DUNE version information!");
+$VRS_FILENAME = "$VALOR_EXPT/VERSION";
+open(VRS_FILE, "<$VRS_FILENAME") or die("Can not read the VALOR_EXPT version information!");
 @vrs_file=<VRS_FILE>;
 close(VRS_FILE);
 chomp($release = $vrs_file[0]);
@@ -77,12 +76,12 @@ $release=~m/(\d+).(\d+).(\d+)/;
 $major = $1;
 $minor = $2;
 $revis = $3;
-print "Configuring VALOR/DUNE source tree version: $major.$minor.$revis\n";
+print "Configuring VALOR/EXPT source tree version: $major.$minor.$revis\n";
 
-# Read VALOR_DUNE requirements
+# Read VALOR_EXPT requirements
 #
-$REQ_FILENAME = "$VALOR_DUNE/REQUIREMENTS";
-open(REQ_FILE, "<$REQ_FILENAME") or die("Can not read the VALOR_DUNE requirements file!");
+$REQ_FILENAME = "$VALOR_EXPT/REQUIREMENTS";
+open(REQ_FILE, "<$REQ_FILENAME") or die("Can not read the VALOR_EXPT requirements file!");
 @requirements=<REQ_FILE>;
 close(REQ_FILE);
 
@@ -100,8 +99,8 @@ my $opt_prefix="/usr/local/";
 if(($match = grep(/--prefix/i, @ARGV)) > 0) { 
   $options=~m/--prefix=(\S*)/i;
   $opt_prefix = $1;
-  if( $VALOR_DUNE eq $opt_prefix ) {
-     print "*** Error *** --prefix can not point to the VALOR_DUNE top level directory!\n\n";
+  if( $VALOR_EXPT eq $opt_prefix ) {
+     print "*** Error *** --prefix can not point to the VALOR_EXPT top level directory!\n\n";
      exit 1;
   }
 }
@@ -137,34 +136,17 @@ if( $options=~m/--with-compiler=(\S*)/i ) {
 
 # Get VALOR framework path
 #
-my $opt_with_valor_framework = "";	
-if($options=~m/--with-valor-framework=(\S*)/i) {
-  $opt_with_valor_framework = $1;
-} else {
-  print "\n*** Warning *** You didn't specify the VALOR framework package \n";
-}
-# if it was not set, try to pick it up from the environment
-if(! -d $opt_with_valor_framework && defined $ENV{'VALOR_FMWK'}) { 
+if( defined $ENV{'VALOR_FMWK'} ) { 
   $opt_with_valor_framework = $ENV{'VALOR_FMWK'}; 
-  print "The \$VALOR_FMWK env var is defined. I will pick that and set --with-valor-framework=$opt_with_valor_framework\n";
-}
-# if it still not set, try autodetecting it
-if(! -d $opt_with_valor_framework && $auto_detect) 
-{
-  print "Auto-detecting the VALOR framework path...\n";
-  $matched = auto_detect("libValorFitCore*");
-  if( $matched=~m/(\S*)\/lib\/libValorFitCore\S*/i ) {
-     $opt_with_valor_framework = $1;
-  }
-  print "Setting --with-valor-framework=$opt_with_valor_framework\n";
+  print "The \$VALOR_FMWK env var is defined. Using framework at ${opt_with_valor_framework} \n";
 }
 if(! -d $opt_with_valor_framework) {
-    print "*** Error *** Could not locate the VALOR framework package. Please specify it using --with-valor-framework=/some/path/\n\n";
-    exit 1;
+  print "*** Error *** Could not locate the VALOR framework package. Please define \$VALOR_FMWK \n\n";
+  exit 1;
 } 
 
 if(($match = grep(/--disable-sbnana/i, @ARGV)) == 0) {
-  $SBNANALYSIS_ENABLED = int(!(`which sbn` eq ''));
+  $SBNANALYSIS_ENABLED = int(!(`which sbn 2>/dev/null` eq ''));
 }
 else {
   $SBNANALYSIS_ENABLED = 0;
@@ -227,24 +209,24 @@ else {
 # Read version info and automatically generate a header file with relevant flags that
 # can be used to make code conditional upon specific version numbers
 #
-$VRS_HEADER_FILENAME = "$VALOR_DUNE/src/dune/Conventions/Version.h";
+$VRS_HEADER_FILENAME = "$VALOR_EXPT/src/dune/Conventions/Version.h";
 print "Automatically generating file: $VRS_HEADER_FILENAME \n";
 open(VRS_HEADER_FILE, ">$VRS_HEADER_FILENAME") or die("Can not write out the Version.h file!");
-print VRS_HEADER_FILE "#ifndef _VALOR_DUNE_VERSION_H_ \n";
-print VRS_HEADER_FILE "#define _VALOR_DUNE_VERSION_H_ \n";
+print VRS_HEADER_FILE "#ifndef _VALOR_EXPT_VERSION_H_ \n";
+print VRS_HEADER_FILE "#define _VALOR_EXPT_VERSION_H_ \n";
 print VRS_HEADER_FILE "/* \n";
-print VRS_HEADER_FILE " * Version information automatically generated by the VALOR/DUNE installer \n";
+print VRS_HEADER_FILE " * Version information automatically generated by the VALOR/EXPT installer \n";
 print VRS_HEADER_FILE " * \n";
 print VRS_HEADER_FILE " * These macros can be used in the following way (as the ones at ROOT's RVersion.h): \n";
-print VRS_HEADER_FILE " * #if __VALOR_DUNE_RELEASE_CODE__ >= GRELCODE(2,4,11) \n";
+print VRS_HEADER_FILE " * #if __VALOR_EXPT_RELEASE_CODE__ >= GRELCODE(2,4,11) \n";
 print VRS_HEADER_FILE " * #include <newheader.h>\n";
 print VRS_HEADER_FILE " * #else\n";
 print VRS_HEADER_FILE " * #include <oldheader.h>\n";
 print VRS_HEADER_FILE " * #endif\n";
 print VRS_HEADER_FILE "*/ \n\n";
-print VRS_HEADER_FILE "#define VALOR_DUNE_RELEASE_CODE_BUILDER(a,b,c) (((a) << 16) + ((b) << 8) + (c)) \n\n";
-print VRS_HEADER_FILE "#define __VALOR_DUNE_RELEASE__      \"$release\"\n";
-print VRS_HEADER_FILE "#define __VALOR_DUNE_RELEASE_CODE__ VALOR_DUNE_RELEASE_CODE_BUILDER($major,$minor,$revis) \n\n";
+print VRS_HEADER_FILE "#define VALOR_EXPT_RELEASE_CODE_BUILDER(a,b,c) (((a) << 16) + ((b) << 8) + (c)) \n\n";
+print VRS_HEADER_FILE "#define __VALOR_EXPT_RELEASE__      \"$release\"\n";
+print VRS_HEADER_FILE "#define __VALOR_EXPT_RELEASE_CODE__ VALOR_EXPT_RELEASE_CODE_BUILDER($major,$minor,$revis) \n\n";
 print VRS_HEADER_FILE "#endif\n\n";
 close(VRS_HEADER_FILE);
 
@@ -252,17 +234,17 @@ close(VRS_HEADER_FILE);
 # Automatically generate a header file with relevant build information that
 # can be used to make code conditional upon it
 #
-$BLD_HEADER_FILENAME = "$VALOR_DUNE/src/dune/Conventions/Build.h";
+$BLD_HEADER_FILENAME = "$VALOR_EXPT/src/dune/Conventions/Build.h";
 print "Automatically generating file: $BLD_HEADER_FILENAME \n";
 open(BLD_HEADER_FILE, ">$BLD_HEADER_FILENAME") or die("Can not write out the Build.h file!");
-print BLD_HEADER_FILE "#ifndef _VALOR_DUNE_BUILD_H_ \n";
-print BLD_HEADER_FILE "#define _VALOR_DUNE_BUILD_H_ \n";
+print BLD_HEADER_FILE "#ifndef _VALOR_EXPT_BUILD_H_ \n";
+print BLD_HEADER_FILE "#define _VALOR_EXPT_BUILD_H_ \n";
 print BLD_HEADER_FILE "/* \n";
-print BLD_HEADER_FILE " * Version information automatically generated by the VALOR/DUNE installer \n";
+print BLD_HEADER_FILE " * Version information automatically generated by the VALOR/EXPT installer \n";
 print BLD_HEADER_FILE " */ \n\n\n\n";
 
 if ($opt_enable_low_level_messages eq "YES") {
-  print BLD_HEADER_FILE "#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED\n\n";
+  print BLD_HEADER_FILE "#define VALOR_EXPT_LOW_LEVEL_MESG_ENABLED\n\n";
 }
 
 print BLD_HEADER_FILE "#define GENIE_ENABLED $GENIE_ENABLED\n";
@@ -272,7 +254,7 @@ if ($GENIE_ENABLED) {
 
 print BLD_HEADER_FILE "#define SBNANALYSIS_ENABLED $SBNANALYSIS_ENABLED\n\n";
 
-print BLD_HEADER_FILE "\n\n#endif //_VALOR_DUNE_BUILD_H_ \n\n";
+print BLD_HEADER_FILE "\n\n#endif //_VALOR_EXPT_BUILD_H_ \n\n";
 close(BLD_HEADER_FILE);
 
 
@@ -282,12 +264,12 @@ close(BLD_HEADER_FILE);
 #
 # Open Make.config to write configuration options
 #
-$MKCONF_FILENAME = "$VALOR_DUNE/make/Make.config";
+$MKCONF_FILENAME = "$VALOR_EXPT/make/Make.config";
 print "Automatically generating file: $MKCONF_FILENAME \n";
 open(MKCONF, ">$MKCONF_FILENAME") or die("Can not write out the Make.config file!");
 print MKCONF "# \n";
 print MKCONF "# Make.config \n";
-print MKCONF "# This file was automatically generated by the VALOR/DUNE installer \n";
+print MKCONF "# This file was automatically generated by the VALOR/EXPT installer \n";
 print MKCONF "# for inclusion into the project Makefiles  \n";
 print MKCONF "# \n";
 print MKCONF "OPT_PREFIX=$opt_prefix\n";
@@ -325,7 +307,7 @@ if(-e $BLD_HEADER_FILENAME) {
   print "\n";
 }
 
-print "*** To continue building VALOR/DUNE type: make ";
+print "*** To continue building VALOR/EXPT type: make ";
 # Warning for SRT users  
 if(defined $ENV{'SRT_ENV_SET'}) {
   print "(Don't forget to 'srt_setup --unsetup' first)";
