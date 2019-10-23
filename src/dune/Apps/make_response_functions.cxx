@@ -52,8 +52,8 @@
 #include "valor/Conventions/ParameterPool.h"
 
 #include "dune/Conventions/ArrIdx.h"
-#include "dune/GENIEUtilities/GENIEIncludes.h"
-#include "dune/GENIEUtilities/UtlEventRec.h"
+#include "valor/GENIEUtilities/GENIEIncludes.h"
+#include "valor/GENIEUtilities/UtlEventRec.h"
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
 #include "valor/Utilities/SingleSampleKineBinning.h"

@@ -39,26 +39,16 @@ copy-scripts-to-bin: | make-bin-lib-dir FORCE
 	cp ${VALOR_EXPT_TOPDIR}/make/valor_expt-config ${VALOR_EXPT_TOPDIR}/bin
 	cp ${VALOR_EXPT_TOPDIR}/root/valor             ${VALOR_EXPT_TOPDIR}/bin
 	cp ${VALOR_EXPT_TOPDIR}/root/pyvalor           ${VALOR_EXPT_TOPDIR}/bin
-	
+
 build-conventions: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building Conventions package..."
 	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/dune/Conventions;
-	
+
 build-utilities: | copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building DUNE Utilities package..."
 	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/dune/Utilities;
-	
-build-genie-utilities: | copy-scripts-to-bin FORCE
-ifdef GENIE
-	@echo " "
-	@echo "** Building DUNE GENIE Utilities package..."
-	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/dune/GENIEUtilities;
-else
-	@echo " "
-	@echo "** GENIE not set up - skipping GENIEUtilities"
-endif
 
 build-testing: | copy-scripts-to-bin FORCE
 ifdef GENIE
@@ -71,7 +61,7 @@ else
 endif
 
 build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions \
-  build-utilities build-genie-utilities build-testing
+  build-utilities build-testing
  
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
@@ -96,8 +86,7 @@ purge: FORCE
 	$(MAKE) -C src/dune/Apps             purge && \
 	$(MAKE) -C src/dune/Conventions      purge && \
 	$(MAKE) -C src/dune/Utilities        purge && \
-	$(MAKE) -C src/dune/GENIEUtilities   purge && \
-	$(MAKE) -C src/dune/Testing          purge; \
+	$(MAKE) -C src/dune/Testing          purge; 
 
 clean: clean-files clean-dir clean-etc
 
@@ -110,8 +99,7 @@ clean-files: FORCE
 	$(MAKE) -C src/dune/Apps            clean && \
 	$(MAKE) -C src/dune/Conventions     clean && \
 	$(MAKE) -C src/dune/Utilities       clean && \
-	$(MAKE) -C src/dune/GENIEUtilities  clean && \
-	$(MAKE) -C src/dune/Testing         clean; \
+	$(MAKE) -C src/dune/Testing         clean;
 	cd $(VALOR_EXPT_TOPDIR);\
     [ ! -d ./bin ] || rm ./bin/*;\
 	cd $(VALOR_EXPT_TOPDIR)

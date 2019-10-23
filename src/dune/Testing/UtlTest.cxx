@@ -5,7 +5,7 @@
 #include <TTree.h>
 
 // genie
-#include "dune/GENIEUtilities/GENIEIncludes.h"
+#include "valor/GENIEUtilities/GENIEIncludes.h"
 
 // valor
 #include "valor/Utilities/UtlFile.h"

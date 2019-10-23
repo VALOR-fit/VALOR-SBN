@@ -21,7 +21,7 @@
 #include "valor/Testing/Test.h"
 
 // dune
-#include "dune/GENIEUtilities/UtlEventRec.h"
+#include "valor/GENIEUtilities/UtlEventRec.h"
 
 namespace valor
 {

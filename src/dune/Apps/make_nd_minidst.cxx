@@ -39,8 +39,8 @@
 
 #include "dune/Utilities/DoExperimentSetup.h"
 
-#include "dune/GENIEUtilities/GENIEIncludes.h"
-#include "dune/GENIEUtilities/UtlEventRec.h"
+#include "valor/GENIEUtilities/GENIEIncludes.h"
+#include "valor/GENIEUtilities/UtlEventRec.h"
 
 using std::string;
 using std::ostringstream;

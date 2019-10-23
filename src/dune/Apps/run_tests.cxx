@@ -26,7 +26,7 @@
 #include "dune/Testing/StandardTests.h"
 
 // genie
-#include "dune/GENIEUtilities/GENIEIncludes.h"
+#include "valor/GENIEUtilities/GENIEIncludes.h"
 
 using namespace valor;
 

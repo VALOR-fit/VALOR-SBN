@@ -52,7 +52,7 @@
 #include "valor/Conventions/ReacMode.h"
 
 #include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/GENIEUtilities/GENIEIncludes.h"
+#include "valor/GENIEUtilities/GENIEIncludes.h"
 
 using std::string;
 using std::ostringstream;
