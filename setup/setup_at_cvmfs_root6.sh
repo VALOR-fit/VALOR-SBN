@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# VALOR_EXPT oscillation analysis code setup script for Steve Dennis' laptop
+# VALOR_EXPT oscillation analysis code setup script for sites with CVMFS
 #
 # Input arguments: experiment code, framework code
 #
@@ -29,3 +29,5 @@ fi
 export LD_LIBRARY_PATH="${VALOR_EXPT}/lib:${LD_LIBRARY_PATH}"
 export PATH="${VALOR_EXPT}/bin:${VALOR_EXPT}/prod:${PATH}"
 
+export VALOR_DATA="${VALOR_EXPT}/data"
+echo "Set \$VALOR_DATA to ${VALOR_DATA} - you may want to change this."
