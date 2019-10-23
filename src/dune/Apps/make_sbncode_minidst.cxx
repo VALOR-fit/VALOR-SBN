@@ -110,6 +110,17 @@ int main(int argc, char ** argv)
   string opt_input_name     = arg.GetString("input");
   bool   opt_disable_checks = arg.GetBool("disable-checks");
   bool   write_universes    = arg.GetBool("write-universes");
+  bool   apply_weights      = arg.GetBool("apply-weights");
+  bool   no_truth           = arg.GetBool("no-truth");
+
+  if(no_truth && write_universes)
+    VLOG("make_sbncode_minidst", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
+
+  
+  if(apply_weights)
+    VLOG("make_sbncode_minidst", pNOTICE) << " Chosen to apply valor_minidst_wght ";
+  else
+    VLOG("make_sbncode_minidst", pNOTICE) << " Chosen not to apply valor_minidst_wght";
 
   // Determine sample-types
   bool is_nueint  = false;
@@ -222,12 +233,13 @@ int main(int argc, char ** argv)
 
   conv::BeamConf_t beam = util::BeamConfFromString(opt_beam_name);
   assert(beam != conv::kbUndefined);
-  
+
   int    valor_minidst_sample       = sample;
   int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h 
   int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h 
   int    valor_minidst_reac_type    = -1;  // see Conventions/ReacMode.h 
   int    valor_minidst_target       = -1;  // nuclear target -  GENIE PDG convention
+  double valor_minidst_baseline     = -1.; // true baseline of the event
   int    valor_minidst_init_nupdg   = -1;  // Initial PDG
   int    valor_minidst_final_nupdg  = -1;  // Final PDG
   double valor_minidst_enu_true     = -1.; // true neutrino energy, in GeV
@@ -236,7 +248,6 @@ int main(int argc, char ** argv)
   double valor_minidst_y_reco       = -1.; // inelasticity
   double valor_minidst_wght_pot     = -1.; // POT weight 
   double valor_minidst_wght         = -1.; // misc weight 
-  double valor_minidst_wght_smear   = -1.; // energy smearing weight
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -250,6 +261,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("reac_type" , &valor_minidst_reac_type   ,"reac_type/I"  );
   valor_minidst->Branch("init_pdg"  , &valor_minidst_init_nupdg  ,"init_pdg/I"   );
   valor_minidst->Branch("final_pdg" , &valor_minidst_final_nupdg ,"final_pdg/I"  );
+  valor_minidst->Branch("baseline"  , &valor_minidst_baseline    ,"baseline/D"   );
   valor_minidst->Branch("target"    , &valor_minidst_target      ,"target/I"     );
   valor_minidst->Branch("enu_true"  , &valor_minidst_enu_true    ,"enu_true/D"   );
   valor_minidst->Branch("Q2_true"   , &valor_minidst_Q2_true     ,"q2_true/D"    );
@@ -257,7 +269,6 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("y_reco"    , &valor_minidst_y_reco      ,"y_reco/D"     );
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
-  valor_minidst->Branch("wght_smear", &valor_minidst_wght_smear  ,"wght_smear/D" );
 
   // open the ROOT file and get the TTree & its header
 
@@ -281,7 +292,7 @@ int main(int argc, char ** argv)
   std::map<std::string,size_t>  variation_nentries;
   //~ std::map<std::string,TBranch *> variation_branches;
   // First, let's read one true event map to get the universe details
-  if (write_universes) {
+  if (!no_truth && write_universes) {
     analysis_tree->GetEntry(0);
     event::Interaction * ptruth = pevent->GetTruth();
     assert(ptruth);
@@ -336,7 +347,7 @@ int main(int argc, char ** argv)
     }
     
     // reset the systematic universes
-    if (write_universes) {
+    if (!no_truth && write_universes) {
       for (const auto & entry : variation_entries) {
         const std::string & name = entry.first;
         float * arr = entry.second;
@@ -346,197 +357,209 @@ int main(int argc, char ** argv)
       }
     }
 
-    int iscc           = false;
-    int isnc           = false;
-    int nu_pdg         = -1;
-    int init_pdg       = -1;
-
-    //int init_pdg    = -1;
-    double enu_true    =  -999.;
     double enu_reco    =  -999.;
     double reco_weight = 1.;
-    double Q2s         =  -999.;
-
-    int nipip    = 0;
-    int nipim    = 0;
-    int nipi0    = 0;
-    int nikp     = 0;
-    int nikm     = 0;
-    int nik0     = 0;
-    int niak0    = 0;
-    int nin      = 0;
-    int nian     = 0;
-    int nip      = 0;
-    int niap     = 0;
-    int niem     = 0;
-    int niep     = 0;
-    int ninu     = 0;
-    int nimu     = 0;
-    int nimup    = 0;
-    int nig      = 0;
-    int niother  = 0;
-    int ninuc    = 0;
-
-    int larsoft_mode = -1;
-
+    
     analysis_tree->GetEntry(iev);
 
     event::RecoEvent & event = *pevent;
     event::RecoInteraction &reco = event.reco;
     event::Interaction * ptruth = event.GetTruth();
-
-    if(ptruth==nullptr) {
-      VLOG("make_sbncode_minidst", pNOTICE) 
-        << "The number of truth entries is 0, skipping event "<<iev;
-      continue;      
-    }
-
     event::Interaction & truth = *ptruth;
+    
+    // If there is truth in the file, access the variables
+    if(!no_truth){
+      int iscc           = false;
+      int isnc           = false;
+      int nu_pdg         = -1;
+      int init_pdg       = -1;
+      double baseline    = -999.;
+      double enu_true    = -999.;
+      double Q2s         = -999.;
 
-    std::vector<event::FinalStateParticle> &fsps = truth.finalstate;
-    iscc = truth.neutrino.iscc;
-    isnc = truth.neutrino.isnc;
-    nu_pdg = truth.neutrino.pdg;
-    enu_true = truth.neutrino.energy;
-    Q2s = truth.neutrino.Q2;
-    larsoft_mode = truth.neutrino.genie_intcode;
-    // Particle counting
-    for(unsigned int p = 0; p < fsps.size(); ++p){
-      if (fsps[p].status_code != 1) {continue;}
-      if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
-      else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
-      else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
-      else if(fsps[p].pdg == genie::kPdgAntiNeutron ) nian++;
-      else if(fsps[p].pdg == genie::kPdgPiP         ) nipip++;
-      else if(fsps[p].pdg == genie::kPdgPiM         ) nipim++;
-      else if(fsps[p].pdg == genie::kPdgPi0         ) nipi0++;
-      else if(fsps[p].pdg == genie::kPdgKP          ) nikp++;
-      else if(fsps[p].pdg == genie::kPdgKM          ) nikm++;
-      else if(fsps[p].pdg == genie::kPdgK0          ) nik0++;
-      else if(fsps[p].pdg == genie::kPdgAntiK0      ) niak0++;
-      else if(fsps[p].pdg == genie::kPdgGamma       ) nig++;
-      else if(fsps[p].pdg == genie::kPdgElectron    ) niem++;
-      else if(fsps[p].pdg == genie::kPdgPositron    ) niep++;
-      else if(fsps[p].pdg == genie::kPdgMuon        ) nimu++;
-      else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
-      else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
-      else if(fsps[p].pdg == 14 || fsps[p].pdg == -14 || fsps[p].pdg == 12 || fsps[p].pdg == -12) ninu++;
-      else if(fsps[p].pdg > 1e4) ninuc++;
-      else niother++; 
-      // Currently not using niother as the only others seem to be deltas and etas
-      // These will eventually be removed when isStableFinalState variable is available in the analysis trees
-    }
+      int nipip    = 0;
+      int nipim    = 0;
+      int nipi0    = 0;
+      int nikp     = 0;
+      int nikm     = 0;
+      int nik0     = 0;
+      int niak0    = 0;
+      int nin      = 0;
+      int nian     = 0;
+      int nip      = 0;
+      int niap     = 0;
+      int niem     = 0;
+      int niep     = 0;
+      int ninu     = 0;
+      int nimu     = 0;
+      int nimup    = 0;
+      int nig      = 0;
+      int niother  = 0;
+      int ninuc    = 0;
 
-    // Construct the reaction mode
-    conv::ReacType_t reac = conv::kmtUndefined;
-    if (iscc) {
-      if      (larsoft_mode==kLArQE                ) { reac = conv::kmtCCQE;    }
-      else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtCCMEC;   }
-      else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtCCcoh;   }
-      else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtCCIMD;   }
-      else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
+      int larsoft_mode = -1;
 
-      else { // start counting pions
-        if      (nikp || nik0 || nikm           )  { reac = conv::kmtCCoth;}
-        else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtCC1piC;}
-        else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtCC1pi0;}
-        else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtCC2piC;}
-        else if (nipip+nipim == 0 && nipi0 == 2 )  { reac = conv::kmtCC2pi0;}
-        else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtCCpiCpi0;}
-        else                                       { reac = conv::kmtCCoth;}
+      /*
+         analysis_tree->GetEntry(iev);
+
+         event::RecoEvent & event = *pevent;
+         event::RecoInteraction &reco = event.reco;
+         */
+      if(ptruth==nullptr) {
+        VLOG("make_sbncode_minidst", pNOTICE) 
+          << "The number of truth entries is 0, skipping event "<<iev;
+        continue;      
       }
-    }
-    else if (isnc) {
-      if      (larsoft_mode==kLArQE                ) { reac = conv::kmtNCEL;    }
-      else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtNCMEC;   }
-      else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtNCcoh;   }
-      else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
 
-      else { // start counting pions
-        if      (nikp || nik0 || nikm           )  { reac = conv::kmtNCoth;}
-        else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtNC1piC;}
-        else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtNC1pi0;}
-        else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtNC2piC;}
-        else if (nipip+nipim == 0 && nipi0 == 2 )  { reac = conv::kmtNC2pi0;}
-        else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtNCpiCpi0;}
-        else                                       { reac = conv::kmtNCoth;}
+      std::vector<event::FinalStateParticle> &fsps = truth.finalstate;
+      iscc         = truth.neutrino.iscc;
+      isnc         = truth.neutrino.isnc;
+      baseline     = truth.neutrino.baseline;
+      nu_pdg       = truth.neutrino.pdg;
+      enu_true     = truth.neutrino.energy;
+      Q2s          = truth.neutrino.Q2;
+      larsoft_mode = truth.neutrino.genie_intcode;
+
+      // Particle counting
+      for(unsigned int p = 0; p < fsps.size(); ++p){
+        if (fsps[p].status_code != 1) {continue;}
+        if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
+        else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
+        else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
+        else if(fsps[p].pdg == genie::kPdgAntiNeutron ) nian++;
+        else if(fsps[p].pdg == genie::kPdgPiP         ) nipip++;
+        else if(fsps[p].pdg == genie::kPdgPiM         ) nipim++;
+        else if(fsps[p].pdg == genie::kPdgPi0         ) nipi0++;
+        else if(fsps[p].pdg == genie::kPdgKP          ) nikp++;
+        else if(fsps[p].pdg == genie::kPdgKM          ) nikm++;
+        else if(fsps[p].pdg == genie::kPdgK0          ) nik0++;
+        else if(fsps[p].pdg == genie::kPdgAntiK0      ) niak0++;
+        else if(fsps[p].pdg == genie::kPdgGamma       ) nig++;
+        else if(fsps[p].pdg == genie::kPdgElectron    ) niem++;
+        else if(fsps[p].pdg == genie::kPdgPositron    ) niep++;
+        else if(fsps[p].pdg == genie::kPdgMuon        ) nimu++;
+        else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
+        else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
+        else if(fsps[p].pdg == 14 || fsps[p].pdg == -14 || fsps[p].pdg == 12 || fsps[p].pdg == -12) ninu++;
+        else if(fsps[p].pdg > 1e4) ninuc++;
+        else niother++; 
+        // Currently not using niother as the only others seem to be deltas and etas
+        // These will eventually be removed when isStableFinalState variable is available in the analysis trees
       }
-    }
-    else if (larsoft_mode == kLArElectronScattering) {
-      reac = conv::kmtELScat;
-    }
 
-    else reac = conv::kmtOther;
+      // Construct the reaction mode
+      conv::ReacType_t reac = conv::kmtUndefined;
+      if (iscc) {
+        if      (larsoft_mode==kLArQE                ) { reac = conv::kmtCCQE;    }
+        else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtCCMEC;   }
+        else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtCCcoh;   }
+        else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtCCIMD;   }
+        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
 
-    conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
-    conv::NuFlavour_t init_flav;
-
-    // If we are looking at the appearance samples, get the initial neutrino pdg from the file
-    init_pdg  = truth.neutrino.initpdg;
-    init_flav = valor::util::FlavourFromPDG(init_pdg);
-
-    // Get the real valor mode - this will only be defined for modes turned on right now
-    conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
-    // If we have any events that are in disabled modes, put them into other
-    if (reac_mode==conv::kmUndefined) {
-      if (isnc) {reac = conv::kmtNCoth;}
-      if (iscc) {reac = conv::kmtCCoth;}
-      reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
-    }
-
-    if(!opt_disable_checks) {
-      //
-      // ignore events that can not be used in the VALOR analysis
-      //
-      if(reac_mode == conv::kmUndefined) {
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode] "<<iev;
-        VLOG("make_sbncode_minidst", pNOTICE)
-          <<"\n larsoft_mode = "<<larsoft_mode
-          <<"\n iscc="<<iscc<<" and isnc="<<isnc
-          <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
-          <<"\n valor reaction="<<reac<<" which is "<<util::AsString(reac);
-        continue;
+        else { // start counting pions
+          if      (nikp || nik0 || nikm           )  { reac = conv::kmtCCoth;}
+          else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtCC1piC;}
+          else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtCC1pi0;}
+          else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtCC2piC;}
+          else if (nipip+nipim == 0 && nipi0 == 2 )  { reac = conv::kmtCC2pi0;}
+          else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtCCpiCpi0;}
+          else                                       { reac = conv::kmtCCoth;}
+        }
       }
-      if(isnc && init_flav != final_flav){
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc] "<<iev; 
-        continue;
-      }
-      if(is_nue && (init_pdg == 12 || init_pdg == -12) && (!is_nueint)){
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic] "<<iev;
-        VLOG("make_sbncode_minidst", pINFO)
-          <<"\n is_nueint = "<<is_nueint
-          <<"\n larsoft_mode = "<<larsoft_mode
-          <<"\n iscc="<<iscc<<" and isnc="<<isnc
-          <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
-          <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
-        continue;
-      }
-      if(is_nueosc && init_flav == final_flav){
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file] "<<iev; 
-        continue;
-      }
-      if(is_numu && init_flav != final_flav){
-        VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated event in non-oscillated file] "<<iev; 
-        continue;
-      }
-    }
+      else if (isnc) {
+        if      (larsoft_mode==kLArQE                ) { reac = conv::kmtNCEL;    }
+        else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtNCMEC;   }
+        else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtNCcoh;   }
+        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
 
-    VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
-      << "Etrue         = "<< enu_true  << " GeV; "
-      << "LArSoft mode  = "<< larsoft_mode  << "; ";
+        else { // start counting pions
+          if      (nikp || nik0 || nikm           )  { reac = conv::kmtNCoth;}
+          else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtNC1piC;}
+          else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtNC1pi0;}
+          else if (nipip+nipim == 2 && nipi0 == 0 )  { reac = conv::kmtNC2piC;}
+          else if (nipip+nipim == 0 && nipi0 == 2 )  { reac = conv::kmtNC2pi0;}
+          else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtNCpiCpi0;}
+          else                                       { reac = conv::kmtNCoth;}
+        }
+      }
+      else if (larsoft_mode == kLArElectronScattering) {
+        reac = conv::kmtELScat;
+      }
 
-    valor_minidst_sample       = sample; 
-    valor_minidst_beam         = beam; 
-    valor_minidst_reac_mode    = reac_mode;
-    valor_minidst_enu_true     = enu_true; 
-    valor_minidst_wght_smear   = 1.;
-    valor_minidst_Q2_true      = Q2s;
-    valor_minidst_wght_pot     = 1./mcsample_pot; 
-    valor_minidst_target       = 1000180400; // Argon40
-    //valor_minidst_y_reco      = 0.5; // FORCE y=0.5 for now
-    valor_minidst_reac_type    = reac;
-    valor_minidst_init_nupdg   = init_pdg;
-    valor_minidst_final_nupdg  = nu_pdg;
+      else reac = conv::kmtOther;
+
+      conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
+      conv::NuFlavour_t init_flav;
+
+      // If we are looking at the appearance samples, get the initial neutrino pdg from the file
+      init_pdg  = truth.neutrino.initpdg;
+      init_flav = valor::util::FlavourFromPDG(init_pdg);
+
+      // Get the real valor mode - this will only be defined for modes turned on right now
+      conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+      // If we have any events that are in disabled modes, put them into other
+      if (reac_mode==conv::kmUndefined) {
+        if (isnc) {reac = conv::kmtNCoth;}
+        if (iscc) {reac = conv::kmtCCoth;}
+        reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+      }
+
+      if(!opt_disable_checks) {
+        //
+        // ignore events that can not be used in the VALOR analysis
+        //
+        if(reac_mode == conv::kmUndefined) {
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode] "<<iev;
+          VLOG("make_sbncode_minidst", pNOTICE)
+            <<"\n larsoft_mode = "<<larsoft_mode
+            <<"\n baseline = "<< baseline << " m"
+            <<"\n iscc="<<iscc<<" and isnc="<<isnc
+            <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+            <<"\n valor reaction="<<reac<<" which is "<<util::AsString(reac);
+          continue;
+        }
+        if(isnc && init_flav != final_flav){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc] "<<iev; 
+          continue;
+        }
+        if(is_nue && (init_pdg == 12 || init_pdg == -12) && (!is_nueint)){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic] "<<iev;
+          VLOG("make_sbncode_minidst", pINFO)
+            <<"\n is_nueint = "<<is_nueint
+            <<"\n larsoft_mode = "<<larsoft_mode
+            <<"\n baseline = "<< baseline << " m"
+            <<"\n iscc="<<iscc<<" and isnc="<<isnc
+            <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
+          continue;
+        }
+        if(is_nueosc && init_flav == final_flav){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file] "<<iev; 
+          continue;
+        }
+        if(is_numu && init_flav != final_flav){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated event in non-oscillated file] "<<iev; 
+          continue;
+        }
+      }
+
+      VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
+        << "Etrue         = "<< enu_true  << " GeV; "
+        << "LArSoft mode  = "<< larsoft_mode  << "; ";
+      valor_minidst_reac_mode  = reac_mode;
+      valor_minidst_enu_true   = enu_true; 
+      valor_minidst_baseline   = baseline/1000.;
+      valor_minidst_Q2_true    = Q2s;
+      valor_minidst_reac_type    = reac;
+      valor_minidst_init_nupdg   = init_pdg;
+      valor_minidst_final_nupdg  = nu_pdg;
+      valor_minidst_target       = 1000180400; // Argon40
+    } // !no-truth
+
+    valor_minidst_sample     = sample; 
+    valor_minidst_beam       = beam; 
+    valor_minidst_wght_pot   = 1./mcsample_pot; 
+    //valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
 
     VLOG("make_sbncode_minidst", pINFO) 
       << "\n Information copied to VALOR DUNE/SBNCode Mini-DST: "
@@ -544,6 +567,7 @@ int main(int argc, char ** argv)
       << "\n Sample        = " << valor_minidst_sample    
       << "\n Reaction mode = " << valor_minidst_reac_mode 
       << "\n Target        = " << valor_minidst_target
+      << "\n Baseline      = " << valor_minidst_baseline << " m"
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n y (reco)      = " << valor_minidst_y_reco    
@@ -569,7 +593,7 @@ int main(int argc, char ** argv)
     VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
     
     // Copy the systematic universes across
-    if (write_universes) {
+    if (!no_truth && write_universes) {
       for (const auto & entry : truth.weights) {
         const std::string & name = entry.first;
         const auto & vec = truth.weights[name];
@@ -580,20 +604,23 @@ int main(int argc, char ** argv)
     }
 
     valor_minidst_enu_reco  = enu_reco;
-    valor_minidst_wght      = reco_weight;
-    //~ VLOG("make_sbncode_minidst", pNOTICE) 
-      //~ << "\n Ev (reco)     = " << valor_minidst_enu_reco << ", GeV" << " weight : " << valor_minidst_wght; 
-      
+    if(apply_weights)
+      valor_minidst_wght = reco_weight;
+    else
+      valor_minidst_wght = 1.;
 
     valor_minidst->Fill();
       
     nev_accept += 1;
-    nev_accept_by_mode[valor_minidst_reac_mode] += 1;
+    if(!no_truth)
+      nev_accept_by_mode[valor_minidst_reac_mode] += 1;
   } // event loop
-    
-  for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
-    valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
-    VLOG("make_sbncode_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
+  
+  if(!no_truth){
+    for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
+      valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
+      VLOG("make_sbncode_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
+    }
   }
 
   double f = 100. * (double)nev_accept / (double)nev;
