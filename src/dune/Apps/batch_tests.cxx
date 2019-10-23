@@ -92,7 +92,7 @@ void Configure(CmdLnArgList& arg)
       argv[i] = const_cast<char*>(args[i].c_str());
    }
 
-   arg = util::init::Init("dune", "apps/run_tests.arg", "apps/seeds.arg",
+   arg = util::init::Init("apps/run_tests.arg", "apps/seeds.arg",
          argc, const_cast<const char**>(argv));
    //~ genie::Messenger::Instance()->SetPrioritiesFromXmlFile(
          //~ util::file::GetConfigurationFilename("mesg-thresholds"));

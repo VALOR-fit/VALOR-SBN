@@ -43,7 +43,7 @@ using namespace valor;
 */
 void Configure(const int argc, const char** argv, CmdLnArgList& arg)
 {
-   arg = util::init::Init("dune", "apps/run_tests.arg", "apps/seeds.arg",
+   arg = util::init::Init("apps/run_tests.arg", "apps/seeds.arg",
          argc, argv);
 
    //~ genie::Messenger::Instance()->SetPrioritiesFromXmlFile(
