@@ -76,6 +76,7 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/VThreadPool.h"
+#include "dune/Utilities/UtlOscillation.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
@@ -173,6 +174,7 @@ int main(int argc, char ** argv)
   CorrelatedSystematics * syst = model->GetSystematics();
   
   // If necessary, update the systematics prior from a previous fit
+  // TODO: This should be handled by the XML prior file, but priors trees are not yet supported
   if (read_prior_from_file!="-" && read_prior_from_file!="none") {
     TFile prior_file(read_prior_from_file.c_str());
     TTree * prior_tree = dynamic_cast<TTree*>(prior_file.Get(fit_result_tree_name));
@@ -267,6 +269,8 @@ int main(int argc, char ** argv)
     }
     Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
 
+    util::oscillation::SetOscillationParameterPriors(arg, *fp);
+
     // Set input parameters
     RgKeyList input_args = arg.FindKeys("input-");
     TPRegexp input_match("input-(\\w*)");
@@ -327,9 +331,7 @@ int main(int argc, char ** argv)
           fp->FixParameter(param);
         }
         else if(param_values_ts.Contains("randomize-all")) {
-          TString prior_arg = TString::Format("flat-prior-%s",param_name.c_str());
-          string mode = ( (arg.GetBool(prior_arg.Data())) ? "flat" : "gaus" );
-          double rnd_value = util::GetRandomizedOscParam(param,mode);
+          double rnd_value = util::oscillation::GetRandomizedOscParam(param,*fp);
           fp->Update      (param, rnd_value);
           fp->SetInitValue(param, rnd_value);
         }

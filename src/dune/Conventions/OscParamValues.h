@@ -83,14 +83,18 @@ namespace duneosc{
 //
 namespace util {
 
-  double OscParamInitValue(conv::PhysParamId_t p);
-  double OscParamInitError(conv::PhysParamId_t p);
-  double OscParamMaxValue (conv::PhysParamId_t p);
-  double OscParamMinValue (conv::PhysParamId_t p);
-  double OscParamStepSize (conv::PhysParamId_t p);
+  double OscParamInitValue(conv::PhysParamId_t p, std::string scheme_name = "");
+  double OscParamInitError(conv::PhysParamId_t p, std::string scheme_name = "");
+  double OscParamMaxValue (conv::PhysParamId_t p, std::string scheme_name = "");
+  double OscParamMinValue (conv::PhysParamId_t p, std::string scheme_name = "");
+  double OscParamStepSize (conv::PhysParamId_t p, std::string scheme_name = "");
 
-  double GetRandomizedOscParam (conv::PhysParamId_t p, string mode);
-  double GetRandomizedOscParam (conv::PhysParamId_t p, FitParamList& fpl);
+  // Given an osc param, p, and its value, val, which is given in a particular scheme: Convert the value from the
+  // value's scheme to another scheme. If a scheme name is left blank, then the scheme defined in Opt::Instance is used.
+  // e.g. Input a sinsq(2*theta) value and convert to a sinsq(theta) value.
+  // A dm12sq value can be optionally supplied. This is only used to convert between Dm23sq and Dm31sq (or vice-versa).
+  double ConvertOscParamToUsedScheme(conv::PhysParamId_t p, double val, std::string val_scheme_name = "",
+                                     std::string target_scheme_name = "", double dm12sq = -999);
 
   void InitializeOAPriors();
 

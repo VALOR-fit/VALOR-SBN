@@ -75,6 +75,26 @@ namespace oscillation
       \param fpl The FitParamList to be updated.
    */
    void SetUnoscillated(FitParamList& fpl);
+
+   /**
+    * Randomise a single oscillation parameter according to its prior,
+    * then convert the thrown value to the mixing/Dmsq/cpv scheme set in Opt::Instance, if needed.
+    *
+    * @param p Parameter to randomise
+    * @param fpl FPL containing a prior for this parameter
+    * @return Randomised value of parameter
+    */
+   double GetRandomizedOscParam(conv::PhysParamId_t p, FitParamList& fpl);
+
+   /**
+    * Randomise a pair of oscillation parameters according to a 2D histogram prior,
+    * then convert the thrown value to the mixing/Dmsq/cpv scheme set in Opt::Instance, if needed.
+    *
+    * @param params A pair of parameters to randomise from a 2D histogram, accounting for their correlations
+    * @param fpl FPL containing a 2D histogram prior for these parameters
+    * @return a mapping of the parameter IDs to their randomised values
+    */
+   std::map<conv::PhysParamId_t,double> GetRandomizedOscParams2DCorrelated (std::pair<conv::PhysParamId_t,conv::PhysParamId_t> params, FitParamList& fpl);
 }
 }
 }

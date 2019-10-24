@@ -18,12 +18,6 @@ fix-at-mixing13                      |   double       |  optional   |   -999
 fix-at-mixing23                      |   double       |  optional   |   -999
 fix-at-dm23sq                        |   double       |  optional   |   -999
 fix-at-dm12sq                        |   double       |  optional   |   -999
-flat-prior-mixing12                  |   boolean      |  optional   |   false
-flat-prior-mixing13                  |   boolean      |  optional   |   false
-flat-prior-mixing23                  |   boolean      |  optional   |   false
-flat-prior-dm12sq                    |   boolean      |  optional   |   false
-flat-prior-dm23sq                    |   boolean      |  optional   |   false
-flat-prior-cpv                       |   boolean      |  optional   |   false
 normal,inverted                      |   boolean_list |  optional   |   normal
 first-octant,second-octant           |   boolean_list |  optional   |   first-octant
 sinsqtheta, sinsq2theta              |   boolean_list |  optional   |   sinsqtheta
@@ -32,16 +26,12 @@ dmsq-scheme                          |   string       |  optional   |   auto
 input-dm41sq                         |   double       |  optional   |   -999
 fix-dm41sq                           |   boolean      |  optional   |   false
 fix-at-dm41sq                        |   double       |  optional   |   -999
-flat-prior-dm41sq                    |   boolean      |  optional   |   false
 input-sinsq2thMuMu                   |   double       |  optional   |   -999
 fix-sinsq2thMuMu                     |   boolean      |  optional   |   false
 fix-at-sinsq2thMuMu                  |   double       |  optional   |   -999
-flat-prior-sinsq2thMuMu              |   boolean      |  optional   |   false
 input-sinsq2thMuE                    |   double       |  optional   |   -999
 fix-sinsq2thMuE                      |   boolean      |  optional   |   false
 fix-at-sinsq2thMuE                   |   double       |  optional   |   -999
-flat-prior-sinsq2thMuE               |   boolean      |  optional   |   false
 input-sinsq2thEE                     |   double       |  optional   |   -999
 fix-sinsq2thEE                       |   boolean      |  optional   |   false
 fix-at-sinsq2thEE                    |   double       |  optional   |   -999
-flat-prior-sinsq2thEE                |   boolean      |  optional   |   false

@@ -71,6 +71,7 @@
 #include "valor/Utilities/VThreadPool.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "dune/Utilities/UtlOscillation.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/KineBinning/VALORBinning.h"
@@ -168,6 +169,7 @@ int main(int argc, char ** argv)
     model->RandomizeSystematics(syst_param_map);
 
     FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+    util::oscillation::SetOscillationParameterPriors(arg, *fp);
 
     // Set input parameters
     RgKeyList input_args = arg.FindKeys("input-");
@@ -204,9 +206,7 @@ int main(int argc, char ** argv)
       std::cerr << "Osc param randomisation is not yet supported. Exiting" << std::endl;
       util::Die(-1);
 
-      TString prior_arg = TString::Format("flat-prior-%s", nr->ParamAsString(p).c_str());
-      string mode = ( (arg.GetBool(prior_arg.Data())) ? "flat" : "gaus" );
-      double rnd_value = util::GetRandomizedOscParam(p,mode);           // TODO: set T2K osc param priors
+      double rnd_value = util::oscillation::GetRandomizedOscParam(p,*fp);
       fp->Update(p, rnd_value);
       if(p == conv::kPhypMixing14    || p == conv::kPhypMixing15    || p == conv::kPhypMixing24    ||
          p == conv::kPhypMixing25    || p == conv::kPhypMixing34    || p == conv::kPhypMixing35    ||

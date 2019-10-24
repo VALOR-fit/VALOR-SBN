@@ -8,14 +8,18 @@
 #include "valor/Conventions/NuOscDmsqScheme.h"
 #include "valor/Conventions/NuMassHierarchy.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/PhysParamId.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/UtlNumStat.h"
+#include "valor/Utilities/Rnd.h"
 
 #include <TSystem.h>
 #include <TMath.h>
+
+using namespace valor::conv;
 
 namespace valor
 {
@@ -210,6 +214,19 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
       params.push_back(p);
    }
 
+   // Get the mixing/dmsq/phase scheme(s) for this prior (1 scheme per parameter)
+   std::vector<std::string> scheme_tokens = util::Tokens(opt, ",");
+   std::vector<std::string> schemes;
+   for(std::string scheme_name : scheme_tokens) {
+      scheme_name = util::RemoveAllWhitespace(scheme_name);
+      schemes.push_back(scheme_name);
+   }
+   if(schemes.size() != params.size()) {
+      LOG("UtlOscillation", pERROR) << "The prior named [" << param_names
+                                    << "] has a mismatch in the number of schemes and parameters defined";
+      exit(1);
+   }
+
    // Check that the number of parameters is as expected
    if((prior_type == "flat" || prior_type == "gaus") && params.size() != 1) {
       LOG("UtlOscillation", pERROR) << "The number of parameters specified for flat or Gaussian prior named [" << param_names << "] was != 1";
@@ -220,127 +237,28 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
       exit(1);
    }
 
-   // Check the dmsq scheme for all prior. Also check the mixing param scheme and phase scheme for user priors
-   // TODO is this the correct handling for the 'auto' dmsq scheme?
-   if(util::IsMassSplitting(params[0]) &&
-         !(opt.find("auto") != std::string::npos) &&
-           opt.find(util::DmsqSchemeAsStringSimple(Opt::Instance()->gOscDmsqScheme)) == std::string::npos ) {
-      LOG("UtlOscillation", pERROR) << "The input prior dmsq scheme [" << opt << "] did not match the set scheme";
-      exit(1);
-   }
-   if(prior_type == "user" &&
-         util::IsMixingAngle(params[0]) &&
-         opt.find(util::MixingTypeAsStringSimple(Opt::Instance()->gOscMixingParamChoice)) == std::string::npos) {
-      LOG("UtlOscillation", pERROR) << "The input prior mixing angle scheme [" << opt << "] did not match the set scheme";
-      exit(1);
-   }
-   if(prior_type == "user" &&
-         util::IsPhase(params[0]) &&
-         opt.find(util::CPVChoiceAsStringSimple(Opt::Instance()->gOscDeltaCP)) == std::string::npos) {
-      LOG("UtlOscillation", pERROR) << "The input delta scheme [" << opt << "] did not match the set scheme";
-      exit(1);
-   }
-   if(params.size() == 2) {
-      if(util::IsMassSplitting(params[1]) &&
-            !(opt.find("auto") != std::string::npos) &&
-              opt.find(util::DmsqSchemeAsStringSimple(Opt::Instance()->gOscDmsqScheme)) == std::string::npos ) {
-         LOG("UtlOscillation", pERROR) << "The input prior dmsq scheme [" << opt << "] did not match the set scheme";
-         exit(1);
-      }
-      if(prior_type == "user" &&
-            util::IsMixingAngle(params[1]) &&
-            opt.find(util::MixingTypeAsStringSimple(Opt::Instance()->gOscMixingParamChoice)) == std::string::npos) {
-         LOG("UtlOscillation", pERROR) << "The input prior mixing angle scheme [" << opt << "] did not match the set scheme";
-         exit(1);
-      }
-      if(prior_type == "user" &&
-            util::IsPhase(params[1]) &&
-            opt.find(util::CPVChoiceAsStringSimple(Opt::Instance()->gOscDeltaCP)) == std::string::npos) {
-         LOG("UtlOscillation", pERROR) << "The input delta scheme [" << opt << "] did not match the set scheme";
-         exit(1);
-      }
-   }
-
    // Set the prior
    if(prior_type == "flat") {
       double low  = atof(prior_attribute1.c_str());
       double high = atof(prior_attribute2.c_str());
-
-      // Convert single to double angle (or vice-versa) based on settings, if needed
-      if(util::IsMixingAngle(params[0])) {
-         if(Opt::Instance()->gOscMixingParamChoice == util::MixingTypeFromString("sinsq2theta") &&
-               opt.find("sinsqtheta") != std::string::npos) {
-            // Convert input prior limits from single angle to double angle
-            low  = util::SingleAngleToDoubleAngle(low);
-            high = util::SingleAngleToDoubleAngle(high);
-         }
-         else if(Opt::Instance()->gOscMixingParamChoice == util::MixingTypeFromString("sinsqtheta") &&
-               opt.find("sinsq2theta") != std::string::npos) {
-            // Convert input prior limits from double angle to single angle
-            low  = util::DoubleAngleToSingleAngle(low);
-            high = util::DoubleAngleToSingleAngle(high);
-         }
-      }
-      // Convert delta to sin(delta) (or vice-versa) based on settings, if needed
-      else if(util::IsPhase(params[0])) { //gOscDeltaCP           = util::CPVChoiceFromString(cpvchoice);
-         if(Opt::Instance()->gOscDeltaCP == util::CPVChoiceFromString("sindelta") &&
-               opt.find("delta") != std::string::npos) {
-            // Convert input prior limits from delta to sin(delta)
-            low  = TMath::Sin(low);
-            high = TMath::Sin(high);
-         }
-         else if(Opt::Instance()->gOscDeltaCP == util::CPVChoiceFromString("delta") &&
-                 opt.find("sindelta") != std::string::npos) {
-            // Convert input prior limits from sin(delta) to delta
-            low  = TMath::ASin(low);
-            high = TMath::ASin(high);
-         }
-      }
-
-      fpl.SetPriorMode   (params[0], "flat");
-      fpl.SetMinValueFlat(params[0], low   );
-      fpl.SetMaxValueFlat(params[0], high  );
+      fpl.SetPriorMode   (params[0], "flat"    );
+      fpl.SetMinValueFlat(params[0], low       );
+      fpl.SetMaxValueFlat(params[0], high      );
+      fpl.SetPriorScheme (params[0], schemes[0]);
       LOG("UtlOscillation", pNOTICE) << "Setting flat prior for param " << param_names
-                                     << ": [" << low << ", " << high << "]";
+                                     << ": [" << low << ", " << high << "], using scheme: "
+                                     << schemes[0];
    }
    else if(prior_type == "gaus") {
       double mean  = atof(prior_attribute1.c_str());
       double sigma = atof(prior_attribute2.c_str());
-
-      // Convert single to double angle (or vice-versa) based on settings, if needed
-      if(Opt::Instance()->gOscMixingParamChoice == util::MixingTypeFromString("sinsq2theta") &&
-            opt.find("sinsqtheta") != std::string::npos) {
-         // Convert input prior mean and sigma from single angle to double angle
-         sigma = util::SingleAngleSigmaToDoubleAngleSigma(mean, sigma); // sigma must be converted first, as it requires the un-converted mean!
-         mean  = util::SingleAngleToDoubleAngle(mean);
-      }
-      else if(Opt::Instance()->gOscMixingParamChoice == util::MixingTypeFromString("sinsqtheta") &&
-              opt.find("sinsq2theta") != std::string::npos) {
-         // Convert input prior mean and sigma from double angle to single angle
-         sigma = util::DoubleAngleSigmaToSingleAngleSigma(mean, sigma);
-         mean  = util::DoubleAngleToSingleAngle(mean);
-      }
-      // Convert delta to sin(delta) (or vice-versa) based on settings, if needed
-      else if(util::IsPhase(params[0])) { //gOscDeltaCP           = util::CPVChoiceFromString(cpvchoice);
-         if(Opt::Instance()->gOscDeltaCP == util::CPVChoiceFromString("sindelta") &&
-               opt.find("delta") != std::string::npos) {
-            // Convert input prior limits from delta to sin(delta)
-            sigma = util::PhaseSigmaToSinPhaseSigma(mean, sigma);
-            mean  = TMath::Sin(mean);
-         }
-         else if(Opt::Instance()->gOscDeltaCP == util::CPVChoiceFromString("delta") &&
-                 opt.find("sindelta") != std::string::npos) {
-            // Convert input prior limits from sin(delta) to delta
-            sigma = util::SinPhaseSigmaToPhaseSigma(mean, sigma);
-            mean  = TMath::ASin(mean);
-         }
-      }
-
-      fpl.SetPriorMode(params[0], "gaus");
-      fpl.SetMeanGaus (params[0], mean  );
-      fpl.SetSigmaGaus(params[0], sigma );
+      fpl.SetPriorMode  (params[0], "gaus"    );
+      fpl.SetMeanGaus   (params[0], mean      );
+      fpl.SetSigmaGaus  (params[0], sigma     );
+      fpl.SetPriorScheme(params[0], schemes[0]);
       LOG("UtlOscillation", pNOTICE) << "Setting Gaussian prior for param " << param_names
-                                     << ": mean = " << mean << ", sigma = " << sigma;
+                                     << ": mean = " << mean << ", sigma = " << sigma
+                                     << ", using scheme: " << schemes[0];
    }
    else {
       // TODO: This will not work if we throw the mass hierarchy!
@@ -365,10 +283,12 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
                                           << prior_hist_file_name << "]";
             exit(1);
          }
-         fpl.SetPriorMode (params[0], "user");
-         fpl.SetPriorHisto(params[0], prior_hist);
+         fpl.SetPriorMode  (params[0], "user");
+         fpl.SetPriorHisto (params[0], prior_hist);
+         fpl.SetPriorScheme(params[0], schemes[0]);
          LOG("UtlOscillation", pNOTICE) << "Setting 1D hist prior for param " << param_names
-                                        << ": file = " << prior_hist_file_name;
+                                        << ": file = " << prior_hist_file_name
+                                        << ", using scheme: " << schemes[0];
       }
       else {
          // Set the axis titles to the parameter names they correspond to, so we know which is which when we come to throw from the hist
@@ -380,14 +300,18 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
          }
          prior_hist->GetXaxis()->SetTitle(nr->ParamAsStringVerySimple(params[0]).c_str());
          prior_hist->GetYaxis()->SetTitle(nr->ParamAsStringVerySimple(params[1]).c_str());
-         fpl.SetPriorMode   (params[0], "user");
+         fpl.SetPriorMode   (params[0], "user"    );
          fpl.SetPriorHisto2D(params[0], prior_hist);
-         fpl.SetPriorMode   (params[1], "user");
+         fpl.SetPriorScheme (params[0], schemes[0]);
+         fpl.SetPriorMode   (params[1], "user"    );
          fpl.SetPriorHisto2D(params[1], prior_hist);
+         fpl.SetPriorScheme (params[1], schemes[1]);
          LOG("UtlOscillation", pNOTICE) << "Setting 2D hist prior for params " << param_names
                                         << ": file = " << prior_hist_file_name
                                         << "; Associating x-axis with " << nr->ParamAsStringVerySimple(params[0])
-                                        << "; Associating y-axis with " << nr->ParamAsStringVerySimple(params[1]);
+                                        << " (scheme = " << schemes[0] << ")"
+                                        << "; Associating y-axis with " << nr->ParamAsStringVerySimple(params[1])
+                                        << " (scheme = " << schemes[1] << ")";
       }
       prior_root_file->Close();
       delete prior_root_file;
@@ -399,13 +323,16 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
 //____________________________________________________________________________
 void ThrowOscillationParameters(FitParamList& fpl)
 {
-   string osc_parameters[7] = { "mixing12", "mixing13", "mixing23", "dm23sq",
-      "dm12sq", "dm13sq", "cpv" };
+   // NOTE: make sure that dm12sq is always thrown before Dm23sq. This is because we might need to
+   // convert the thrown Dm23sq value based on the Dmsq convention, and this conversion requires dm12sq.
+   bool dm12sq_thrown = false;
+
+   string osc_parameters[7] = { "mixing12", "mixing13", "mixing23", "dm12sq",
+                                "dm23sq", "dm13sq", "cpv" };
 
    // First check if we're using any 1D or 2D hists as priors
-   std::vector<conv::PhysParamId_t> pars_with_1D_prior_hists;
+   std::vector<conv::PhysParamId_t> pars_with_1D_priors;
    std::vector<conv::PhysParamId_t> pars_with_2D_prior_hists;
-   std::vector<conv::PhysParamId_t> pars_with_no_prior_hists;
    for(int i = 0; i < 7; ++i)
    {
       conv::PhysParamId_t p = util::NameRegistry::Instance()->PhysParamFromString(
@@ -414,11 +341,11 @@ void ThrowOscillationParameters(FitParamList& fpl)
       {
          if(fpl.GetPriorModeName(p) == "user") {
             // Is it a 1D or a 2D prior?
-            if     (fpl.GetPriorHisto(p)  ) { pars_with_1D_prior_hists.push_back(p); }
+            if     (fpl.GetPriorHisto(p)  ) { pars_with_1D_priors.push_back(p); }
             else if(fpl.GetPriorHisto2D(p)) { pars_with_2D_prior_hists.push_back(p); }
          }
          else {
-            pars_with_no_prior_hists.push_back(p);
+            pars_with_1D_priors.push_back(p);
          }
       }
    }
@@ -430,26 +357,17 @@ void ThrowOscillationParameters(FitParamList& fpl)
       exit(1);
    }
 
-   // First deal with parameters that have no prior hist
-   for(conv::PhysParamId_t p : pars_with_no_prior_hists) {
-      double value = util::GetRandomizedOscParam(p, fpl);
-      // Prior range is enforced in util::GetRandomizedOscParam, so no need
-      // to check here
-      fpl.Update(p, value);
-      fpl.SetInitValue(p, value);
-   }
-
-   // Now parameters with 1D prior hists
-   for(conv::PhysParamId_t p : pars_with_1D_prior_hists) {
-      // Rethrow until we get a value inside the physical limits
-      double min = util::OscParamMinValue(p);
-      double max = util::OscParamMaxValue(p);
-      double value = min - 1.0;
-      do
-      {
-         value = fpl.GetPriorHisto(p)->GetRandom();
+   // First deal with parameters that 1D priors
+   for(conv::PhysParamId_t p : pars_with_1D_priors) {
+      if(p == conv::kPhypDm12sq) { dm12sq_thrown = true; }
+      else if (p == conv::kPhypDm23sq && !dm12sq_thrown && ((conv::NuOscDmsqScheme_t) fpl.GetPriorScheme(p) != Opt::Instance()->GetEffectiveDmsqScheme())) {
+         LOG("UtlOscillation", pERROR) << "Attempted to throw Dm23sq before dm12sq when a conversion between Dmsq schemes was needed";
+         exit(1);
       }
-      while(value < min || value > max);
+
+      double value = util::oscillation::GetRandomizedOscParam(p, fpl);
+      // Prior range and conversion to the used mixing/dmsq/phase scheme
+      // is enforced in util::oscillation::GetRandomizedOscParam, so no need to check here
 
       fpl.Update(p, value);
       fpl.SetInitValue(p, value);
@@ -457,44 +375,31 @@ void ThrowOscillationParameters(FitParamList& fpl)
 
    // Finally do the 0 or 2 parameters that have a 2D prior. Throw them together to maintain correlations
    if(pars_with_2D_prior_hists.size() == 2) {
-      // Make sure we know which param corresponds to the x and y axes of the prior hist
-      std::string xtitle = ((TH2D*)fpl.GetPriorHisto2D(pars_with_2D_prior_hists[0]))->GetXaxis()->GetTitle();
-      std::string ytitle = ((TH2D*)fpl.GetPriorHisto2D(pars_with_2D_prior_hists[0]))->GetYaxis()->GetTitle();
-      int xindex = -1;
-      int yindex = -1;
-      if     (util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[0]) == xtitle) { xindex = 0; }
-      else if(util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[0]) == ytitle) { yindex = 0; }
-      if     (util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[1]) == xtitle) { xindex = 1; }
-      else if(util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[1]) == ytitle) { yindex = 1; }
-      if(xindex == -1 || yindex == -1) {
-         LOG("UtlOscillation", pERROR) << "Failed to associate parameter "
-                                       << util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[0])
-                                       << " and/or "
-                                       << util::NameRegistry::Instance()->ParamAsStringVerySimple(pars_with_2D_prior_hists[1])
-                                       << " with the x (" << xtitle << ") or y  (" << ytitle
-                                       << ") titles of the 2D prior hist.";
+      std::pair<conv::PhysParamId_t,conv::PhysParamId_t> params_2D =
+        std::make_pair(pars_with_2D_prior_hists[0], pars_with_2D_prior_hists[1]);
+
+      if(params_2D.first == conv::kPhypDm12sq || params_2D.second == conv::kPhypDm12sq) {
+         dm12sq_thrown = true;
+      }
+      else if (params_2D.first == conv::kPhypDm23sq && !dm12sq_thrown &&
+               ((conv::NuOscDmsqScheme_t) fpl.GetPriorScheme(params_2D.first) != Opt::Instance()->GetEffectiveDmsqScheme())) {
+         LOG("UtlOscillation", pERROR) << "Attempted to throw Dm23sq before dm12sq when a conversion between Dmsq schemes was needed";
+         exit(1);
+      }
+      else if (params_2D.second == conv::kPhypDm23sq && !dm12sq_thrown &&
+               ((conv::NuOscDmsqScheme_t) fpl.GetPriorScheme(params_2D.second) != Opt::Instance()->GetEffectiveDmsqScheme())) {
+         LOG("UtlOscillation", pERROR) << "Attempted to throw Dm23sq before dm12sq when a conversion between Dmsq schemes was needed";
          exit(1);
       }
 
-      conv::PhysParamId_t p0 = pars_with_2D_prior_hists[xindex];
-      conv::PhysParamId_t p1 = pars_with_2D_prior_hists[yindex];
+      std::map<conv::PhysParamId_t,double> thrown_values = util::oscillation::GetRandomizedOscParams2DCorrelated(params_2D, fpl);
+      // Prior range and conversion to the used mixing/dmsq/phase scheme
+      // is enforced in util::oscillation::GetRandomizedOscParams2DCorrelated, so no need to check here
 
-      // Rethrow until we get a value inside the physical limits
-      double min0 = util::OscParamMinValue(p0);
-      double max0 = util::OscParamMaxValue(p0);
-      double min1 = util::OscParamMinValue(p1);
-      double max1 = util::OscParamMaxValue(p1);
-      double value0 = min0 - 1.0;
-      double value1 = min1 - 1.0;
-      do
-      {
-         fpl.GetPriorHisto2D(p0)->GetRandom2(value0, value1);
-      }
-      while(value0 < min0 || value0 > max0 || value1 < min1 || value1 > max1);
-      fpl.Update(p0, value0);
-      fpl.SetInitValue(p0, value0);
-      fpl.Update(p1, value1);
-      fpl.SetInitValue(p1, value1);
+      fpl.Update      (params_2D.first , thrown_values.at(params_2D.first));
+      fpl.SetInitValue(params_2D.first , thrown_values.at(params_2D.first));
+      fpl.Update      (params_2D.second, thrown_values.at(params_2D.second));
+      fpl.SetInitValue(params_2D.second, thrown_values.at(params_2D.second));
    }
 }
 
@@ -527,7 +432,143 @@ void SetUnoscillated(FitParamList& fpl)
       }
    }
 }
+//____________________________________________________________________________
+double GetRandomizedOscParam(conv::PhysParamId_t p, FitParamList& fpl)
+{
+  // Here we throw the parameter according to the scheme set for its prior.
+  // After throwing, the value is converted to whichever scheme we're using internally.
+  string mode = fpl.GetPriorModeName(p);
+  string prior_scheme_name  = fpl.GetPriorSchemeName(p);
+  string target_scheme_name = ""; // Leave this as an empty string to allow util::ConvertOscParamToUsedScheme to set the target scheme according to the values set in Opt::Instance
 
+  double value = -999;
+
+  if(mode == "flat")
+  {
+     // Get the limits imposed by the prior
+     double min = fpl.GetMinValueFlat(p);
+     double max = fpl.GetMaxValueFlat(p);
+
+     value = min - 1.0;
+     do
+     {
+        value = Rnd::Instance()->RndToyMCosc().Uniform(min, max);
+     }
+     while(value < min || value > max);
+  }
+  else if(mode == "gaus")
+  {
+     double mean = fpl.GetMeanGaus(p);
+     double sigma = fpl.GetSigmaGaus(p);
+     // Get the absolute physical limits, these are hard-coded assuming some conventions,
+     // so are converted to the conventions used for the throw in e.g. OscParamMinValue
+     double min = util::OscParamMinValue(p, prior_scheme_name);
+     double max = util::OscParamMaxValue(p, prior_scheme_name);
+
+     value = min - 1.0;
+     do
+     {
+        value = Rnd::Instance()->RndToyMCosc().Gaus(mean, sigma);
+     }
+     while(value < min || value > max);
+  }
+  else if(fpl.GetPriorHisto(p)) {
+     double min = util::OscParamMinValue(p, prior_scheme_name);
+     double max = util::OscParamMaxValue(p, prior_scheme_name);
+     value = min - 1.0;
+     do
+     {
+        value = fpl.GetPriorHisto(p)->GetRandom();
+     }
+     while(value < min || value > max);
+  }
+  else {
+     LOG("UtlOscillation", pERROR) << "Invalid prior type, can not throw oscillation parameter, "
+                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
+     exit(1);
+  }
+
+  return util::ConvertOscParamToUsedScheme(p, value, prior_scheme_name, target_scheme_name, fpl.CurrValue(conv::kPhypDm12sq));
+}
+//________________________________________________________________________________________
+std::map<conv::PhysParamId_t,double> GetRandomizedOscParams2DCorrelated(std::pair<PhysParamId_t,PhysParamId_t> params, FitParamList& fpl)
+{
+  if(!fpl.GetPriorHisto2D(params.first)) {
+     LOG("UtlOscillation", pERROR) << "No 2D prior hist associated with parameter "
+                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(params.first);
+     exit(1);
+  }
+
+  // Make sure we know which param corresponds to the x and y axes of the prior hist
+  std::string xtitle = ((TH2D*)fpl.GetPriorHisto2D(params.first))->GetXaxis()->GetTitle();
+  std::string ytitle = ((TH2D*)fpl.GetPriorHisto2D(params.first))->GetYaxis()->GetTitle();
+  int xindex = -1;
+  int yindex = -1;
+  if     (util::NameRegistry::Instance()->ParamAsStringVerySimple(params.first)  == xtitle) { xindex = 0; }
+  else if(util::NameRegistry::Instance()->ParamAsStringVerySimple(params.first)  == ytitle) { yindex = 0; }
+  if     (util::NameRegistry::Instance()->ParamAsStringVerySimple(params.second) == xtitle) { xindex = 1; }
+  else if(util::NameRegistry::Instance()->ParamAsStringVerySimple(params.second) == ytitle) { yindex = 1; }
+  if(xindex == -1 || yindex == -1) {
+     LOG("UtlOscillation", pERROR) << "Failed to associate parameter "
+                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(params.first)
+                                   << " and/or "
+                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(params.second)
+                                   << " with the x (" << xtitle << ") or y  (" << ytitle
+                                   << ") titles of the 2D prior hist.";
+     exit(1);
+  }
+  if(xindex == yindex) {
+     LOG("UtlOscillation", pERROR) << "Parameters "
+                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(params.first)
+                                   << " and "
+                                   << util::NameRegistry::Instance()->ParamAsStringVerySimple(params.second)
+                                   << " are assigned to the same axis titles of the 2D prior hist!";
+     exit(1);
+  }
+
+  PhysParamId_t p0;
+  PhysParamId_t p1;
+  if(xindex == 0) { p0 = params.first;  }
+  else            { p0 = params.second; }
+  if(yindex == 0) { p1 = params.first;  }
+  else            { p1 = params.second; }
+
+  string prior_scheme_name_p0  = fpl.GetPriorSchemeName(p0);
+  string prior_scheme_name_p1  = fpl.GetPriorSchemeName(p1);
+  string target_scheme_name_p0 = ""; // Leave this as an empty string to allow util::ConvertOscParamToUsedScheme to set the target scheme according to the values set in Opt::Instance
+  string target_scheme_name_p1 = ""; // Leave this as an empty string to allow util::ConvertOscParamToUsedScheme to set the target scheme according to the values set in Opt::Instance
+
+  // Rethrow until we get a value inside the physical limits
+  double min0 = util::OscParamMinValue(p0, prior_scheme_name_p0);
+  double max0 = util::OscParamMaxValue(p0, prior_scheme_name_p0);
+  double min1 = util::OscParamMinValue(p1, prior_scheme_name_p1);
+  double max1 = util::OscParamMaxValue(p1, prior_scheme_name_p1);
+
+  double value0 = min0 - 1.0;
+  double value1 = min1 - 1.0;
+  do
+  {
+     fpl.GetPriorHisto2D(p0)->GetRandom2(value0, value1);
+  }
+  while(value0 < min0 || value0 > max0 || value1 < min1 || value1 > max1);
+
+  // If we need to convert a Dmsq value between different schemes, we need the dm12sq value.
+  // util::ThrowOscillationParameters enforces throwing dm12sq before Dmsq, so there's no need to do so here
+  double dm12sq = -999;
+  if     (p0 == kPhypDm12sq) { dm12sq = value0;                     }
+  else if(p1 == kPhypDm12sq) { dm12sq = value1;                     }
+  else                       { dm12sq = fpl.CurrValue(kPhypDm12sq); }
+
+  value0 = util::ConvertOscParamToUsedScheme(p0, value0, prior_scheme_name_p0, target_scheme_name_p0, dm12sq);
+  value1 = util::ConvertOscParamToUsedScheme(p1, value1, prior_scheme_name_p1, target_scheme_name_p1, dm12sq);
+
+  std::map<PhysParamId_t,double> return_values;
+  return_values[p0] = value0;
+  return_values[p1] = value1;
+
+  return return_values;
+}
+//________________________________________________________________________________________
 }
 }
 }
