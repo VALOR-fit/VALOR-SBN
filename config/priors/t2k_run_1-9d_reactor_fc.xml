@@ -7,7 +7,9 @@
     <type>   flat                     </type>
     <low>    -3.14159265358979312e+00 </low>
     <high>   +3.14159265358979312e+00 </high>
-    <scheme> delta                    </scheme>  <!-- NOTE: This just tells VALOR which scheme these values correspond to, it does not set the scheme.  -->
+    <scheme> delta                    </scheme>
+    <!-- NOTE: The scheme given here is just used to define the prior, i.e. is used when throwing the parameter.
+               Afterwards, the thrown value is converted to the scheme set in Opt::Instance -->
   </prior>
 
   <prior>
@@ -16,7 +18,7 @@
     <file_nh>   fc/likelihood_surfaces/fit_oa2018_normal_reactor_mixing23_dmsq23_fc_smeared_contour.root   </file_nh>
     <file_ih>   fc/likelihood_surfaces/fit_oa2018_inverted_reactor_mixing23_dmsq23_fc_smeared_contour.root </file_ih>
     <hist_name> likelihood_2D                                                                              </hist_name>
-    <scheme>    sinsqtheta, auto                                                                           </scheme>       <!-- NOTE: This just tells VALOR which scheme these values correspond to, it does not set the scheme.  -->
+    <scheme>    sinsqtheta, abs23                                                                          </scheme>
   </prior>
 
   <prior>
@@ -24,7 +26,7 @@
     <type>   gaus        </type>
     <mean>   0.0830      </mean>
     <sigma>  0.0031      </sigma>
-    <scheme> sinsq2theta </scheme>  <!-- NOTE: This just tells VALOR which scheme these values correspond to, it does not set the scheme.  -->
+    <scheme> sinsq2theta </scheme>
   </prior>
 
   <prior>
@@ -40,6 +42,6 @@
     <type>   gaus    </type>
     <mean>   7.53E-5 </mean>
     <sigma>  0.18E-5 </sigma>
-    <scheme> auto    </scheme>
+    <!-- NOTE: No need to set a scheme for dm12sq, as the mass splitting scheme only applies to dm23sq -->
   </prior>
 </prior_list>
