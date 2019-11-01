@@ -4,6 +4,7 @@ echo Start `date`
 echo Site:${GLIDEIN_ResourceName}
 echo "the worker node is " `hostname` "OS: " `uname -a`
 echo "You are running as user `whoami`"
+echo "The file you are executing is jobsub_submit_param_scan.sh"
 voms-proxy-info --all
 export IFDH_CP_MAXRETRIES=2
 
@@ -27,6 +28,7 @@ FITPARAMLIST=""
 HIERARCHY="" 
 FITOPTION=""  
 STORESPECTRA=0
+SHOULDSTORE="--discard-spectra"
 LOADPRORFROMFILE="-"
 POTOVERIDE=0
 CONFIGFILE=""
@@ -234,6 +236,10 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+# Do we want to store the spectra?
+if [ $STORESPECTRA == 1 ]; then
+  SHOULDSTORE="--store-spectra"
+fi
     
 echo "TAG = $TAG"
 echo "NPOINTS1 = $NPOINTS1"
@@ -250,7 +256,7 @@ echo "DISCOVERY = $DISCOVERY"
 echo "FITPARAMLIST = $FITPARAMLIST" 
 echo "HIERARCHY = $HIERARCHY" 
 echo "FITOPTION = $FITOPTION"
-echo "STORESPECTRA = $STORESPECTRA"
+echo "STORESPECTRA = $SHOULDSTORE"
 echo "LOADPRORFROMFILE = $LOADPRORFROMFILE"
 echo "POTOVERIDE = $POTOVERIDE"
 echo "CONFIGFILE = $CONFIGFILE" 
@@ -403,9 +409,10 @@ echo "VAL2 is $VAL2"
 
 #Make the valor command.
 standard_options=" --run $PROCESS --ntoymc 1  --fit-param-list $FITPARAMLIST \
- --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
- --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct  \
- --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE --pot-override $POTOVERIDE ";
+  --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
+  --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct \
+  $SHOULDSTORE --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE \
+  --pot-override $POTOVERIDE ";
 
 if [ $DISCOVERY == 0 ]; then 
 

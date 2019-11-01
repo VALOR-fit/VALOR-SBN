@@ -47,17 +47,7 @@ Input MC templates
        <objname>  valor_sbncode_mini_dst </objname> 
        <objtype>  TTree    </objtype> 
     </bnb_fhc>
-    <!--bnb_rhc>
-       <filename></filename> 
-       <objname></objname> 
-       <objtype></objtype> 
-     </bnb_rhc-->
   </dst>
-  
-  <!--template>
-    <filename> dune/ndfit/2016b/fd/nonexistent.root </filename>
-    <tag> pass </tag>
-  </template-->
   
   <!-- in kg, for calculating CCinc xsec-->
   <interaction_mass> 
@@ -65,17 +55,6 @@ Input MC templates
   </interaction_mass>
 
 </mc>
-
-<!--
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Splines
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-
-<!--splines>
-  <folder>  dune/tdr/splines </folder>
-  <pattern> valor_splines_[BEAM]_[SAMPLE]_[PARAM].root    </pattern>
-</splines-->
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
