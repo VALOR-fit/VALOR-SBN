@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> sbn/proposal/sample2.2/Proposal/valor_sbncode_fhc_numuccinc_disappearance_fd_minidst.root </filename> 
+      <filename> sbn/proposal/reco_weight_sample_2.2/valor_sbncode_fhc_numuccinc_disappearance_fd_minidst.root </filename>
        <objname>  valor_sbncode_mini_dst </objname> 
        <objtype>  TTree    </objtype> 
     </bnb_fhc>
