@@ -18,6 +18,7 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 #include "valor/Utilities/NameRegistry.h"
 
 //dune
+#include "dune/Conventions/Experiment.h"
 #include "dune/Conventions/OscParamValues.h"
 
 //ROOT
@@ -424,6 +425,12 @@ double util::ConvertOscParamToUsedScheme(PhysParamId_t p, double val, std::strin
           LOG("Parameter", pERROR) << "You need to supply a dm12sq value when converting between Dmsq schemes";
           exit(1);
         }
+
+#ifdef T2K
+        // In the legacy T2K analysis, this conversion was not made, so while testing, keep consistent with the legacy analysis
+        // TODO: Is this the correct thing to do?
+        dm12sq = 0.0;
+#endif
 
         // util::ThrowOscillationParameters enforces throwing dm12sq before Dmsq, so there's no need to do so here
         if(input_scheme == kNuDmsq12andAbs23 && output_scheme == kNuDmsq12andAbs31) {
