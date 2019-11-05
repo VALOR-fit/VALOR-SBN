@@ -41,7 +41,7 @@ bool CubicEdge2EdgeKBTestCase::TestContract()
    delete newBinning;
 
    // Yreco
-   newBinning = recoBinning.Contract(conv::kspYreco);
+   newBinning = dynamic_cast<KBCubHcmbEdge2Edge*>(recoBinning.Contract(conv::kspYreco));
 
    passed = Test::Equal(newBinning->NBins(), 3) && passed;
 
