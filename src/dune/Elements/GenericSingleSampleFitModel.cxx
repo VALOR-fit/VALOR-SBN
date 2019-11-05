@@ -299,6 +299,11 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
 bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt)
 {
    LOG("GenericSingleSampleFitModel",pDEBUG) << "Reading model from stream";
+   
+    if(stream.fail()) {
+     LOG("GenericSingleSampleFitModel",pFATAL) << "Failed to read toy from ifstream";
+     util::Die(-1); return false;
+   }
 
    string opt = (read_opt) ? read_opt : "pdft";
 
