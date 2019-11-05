@@ -261,7 +261,6 @@ if($use_t2k_presets == 1) {
         "--fix-at-mixing12 0.304 " .
         "--fix-at-cpv -1.601 ";
       $mixparamoctant  = "two";
-      $hierarchy       = "normal";		# TODO: is forcing the hierarchy correct?
 	  }
 	  elsif($param_set eq "AsimovB") {
       $fake_data_args = "" .
@@ -272,7 +271,6 @@ if($use_t2k_presets == 1) {
         "--fix-at-mixing12 0.304 " .
         "--fix-at-cpv 0. ";
       $mixparamoctant  = "one";
-      $hierarchy       = "normal";
 	  }
 	  else {
 	  	print "ERROR: Unrecognised param set [$param_set]. Exiting.";
