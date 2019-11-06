@@ -221,8 +221,16 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       LOG("Marginalisation", pINFO) << "Filename: " << filename;
 
       std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
+      if (is_toys.fail()) {
+         LOG("Marginalisation",pFATAL) <<"Failed to open "<<filename;
+         util::Die(-1); return;
+      }
       for(int t = 0; t < Ntoys; ++t)
       {
+         if (is_toys.fail()) {
+           LOG("Marginalisation",pFATAL) <<"Failed to read toy "<<t<<" from "<<filename;
+           util::Die(-1); return;
+         }
          // Read the chi2 of each toy-MC experiment into a vector
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "Reading toy-MC data";
@@ -579,6 +587,10 @@ void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy
 
         // Open the parameter map file
         std::ifstream map(param_name_map_file);
+        if (map.fail()) {
+           LOG("Marginalisation",pFATAL) << "Failed to open file "<<param_name_map_file;
+           util::Die(-1) ; return;
+        }
         std::string arg_file_line = "";
         while (std::getline(map, arg_file_line))
         {
