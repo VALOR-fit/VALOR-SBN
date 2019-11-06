@@ -243,7 +243,6 @@ void plot_pdf(
         const size_t NReacModesCoarse = es.ReactionModesCoarse()[ibeam][isample].size();
         const size_t NReacModes       = es.ReactionModes()[ibeam][isample].size();
 
-
         std::vector<TH1D *> pdf_contrib             (NReacModes      ,nullptr);
         std::vector<TH1D *> pdf_contrib_width       (NReacModes      ,nullptr);
         std::vector<TH1D *> pdf_contrib_coarse      (NReacModesCoarse,nullptr);

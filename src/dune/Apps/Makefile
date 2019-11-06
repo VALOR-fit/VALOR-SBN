@@ -23,6 +23,7 @@ TGT = make_nd_minidst \
       make_table_systematic_effects \
       run_fit \
       write_pdf \
+			write_fd_prediction_pdf \
       tweak_pdf_N \
       tweak_pdf_sigma_var \
       fitnt_conv \
@@ -135,6 +136,12 @@ write_pdf: FORCE
 	$(CXX) $(CXXFLAGS) -c write_pdf.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) write_pdf.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-write_pdf
 	
+# Write out fd prediction pdf
+# 
+write_fd_prediction_pdf: FORCE
+	$(CXX) $(CXXFLAGS) -c write_fd_prediction_pdf.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) write_fd_prediction_pdf.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-write_fd_prediction_pdf
+	
 # Randomly throw the pdf t o make envelopes
 # 
 tweak_pdf_N: FORCE
@@ -203,6 +210,7 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_pdf
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_fd_prediction_pdf
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_sigma_var
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
@@ -223,6 +231,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/write_pdf
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/write_fd_prediction_pdf
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_N
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_sigma_var
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
