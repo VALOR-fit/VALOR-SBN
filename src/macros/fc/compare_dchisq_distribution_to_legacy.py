@@ -74,6 +74,9 @@ def main(output_tag, in_filename_sdk, in_filename_legacy):
   hist_legacy.SetLineColor(2)
   hist_legacy.SetLineStyle(2)
 
+  maximum = max(hist_sdk.GetMaximum(), hist_legacy.GetMaximum())
+  hist_sdk.SetMaximum(1.05 * maximum)
+
   leg = ROOT.TLegend(0.70, 0.80, 0.90, 0.95)
   leg.AddEntry(hist_sdk   , "SDK"   , "l")
   leg.AddEntry(hist_legacy, "Legacy", "l")
