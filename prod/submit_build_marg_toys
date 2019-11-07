@@ -71,6 +71,7 @@
 #
 
 use File::Path;
+use Cwd 'abs_path';
 
 #
 # Read command line arguments
@@ -144,7 +145,7 @@ $time_command          = 0                                                      
 $nmargtoy              = 40000                                                               unless (defined $nmargtoy || $use_t2k_presets == 1);
 $batch                 = 1                                                                   unless defined $batch;
 $par1                  = "cpv"                                                               unless defined $par1;
-$par2                  = ""                                                                  unless defined $par2;
+$par2                  = "none"                                                              unless defined $par2;
 $npt_par1              = 101                                                                 unless (defined $npt_par1 || $use_t2k_presets == 1);
 $npt_par2              = 0.                                                                  unless (defined $npt_par2 || $use_t2k_presets == 1);
 $min_par1              = -3.14159265358979312e+00                                            unless (defined $min_par1 || $use_t2k_presets == 1);
@@ -178,7 +179,7 @@ $read_throws_from      = "NONE"                                                 
 $read_throws_param_map = "NONE"                                                              unless defined $read_throws_param_map;
 
 # If we have only a single parameter of interest defined, set the options for par2 appropriately
-if($par2 eq "") {
+if($par2 eq "none") {
 	$min_par2     = 0.;
 	$max_par2     = 0.;
 	$npt_par2     = 1;
@@ -211,13 +212,13 @@ if($use_t2k_presets == 1) {
 
 	# Do we really want to generate FC toys instead of marginalisation toys? If so, set presets accordingly
 	if($gen_fc_toys == 1) {
-	  if(!(($par1 eq "cpv") and ($par2 eq "")) || $use_reactors == 0) {
+	  if(!(($par1 eq "cpv") and ($par2 eq "none")) || $use_reactors == 0) {
 	  	die("ERROR: FC presets for T2K are currently ony defined for 1D deltacp with reactors");
 	  }
 	}
 
 	# 1D fit - beta
-  if(($par1 eq "beta") and ($par2 eq "")) {
+  if(($par1 eq "beta") and ($par2 eq "none")) {
 		if($use_reactors == 1) {
       $nmargtoy     = 200000      unless defined $nmargtoy;
       $cput         = "65:00:00"  unless defined $cput;
@@ -236,7 +237,7 @@ if($use_t2k_presets == 1) {
   } # 1D beta
 
   # 1D fit - CPV
-	if(($par1 eq "cpv") and ($par2 eq "")) {
+	if(($par1 eq "cpv") and ($par2 eq "none")) {
 		if($gen_fc_toys == 1) {
 			# Feldman-Cousins presets
 			$nmargtoy        = 10000                    unless defined $nmargtoy;
@@ -267,7 +268,7 @@ if($use_t2k_presets == 1) {
 	} # 1D CPV
 
   # 1D fit - sinsqth13
-	if(($par1 eq "mixing13") and ($par2 eq "")) {
+	if(($par1 eq "mixing13") and ($par2 eq "none")) {
 		$nmargtoy     = 40000     unless defined $nmargtoy;
     $cput         = "8:00:00" unless defined $cput;
     $mem          = "3500M"   unless defined $mem;
@@ -278,7 +279,7 @@ if($use_t2k_presets == 1) {
 	} # 1D sinsqth13
 
 	# 1D fit - sinsqth23
-	if(($par1 eq "mixing12") and ($par2 eq "")) {
+	if(($par1 eq "mixing12") and ($par2 eq "none")) {
 		if($use_reactors == 1) {
 			$nmargtoy   = 40000      unless defined $nmargtoy;
 			$cput       = "8:00:00"  unless defined $cput;
@@ -296,7 +297,7 @@ if($use_t2k_presets == 1) {
 	} # 1D sinsqth23
 
 	# 1D fit - dmsq23
-	if(($par1 eq "dmsq23") and ($par2 eq "")) {
+	if(($par1 eq "dmsq23") and ($par2 eq "none")) {
 		if($use_reactors == 1) {
 			$nmargtoy   = 40000      unless defined $nmargtoy;
 			$cput       = "8:00:00"  unless defined $cput;
@@ -402,7 +403,7 @@ die("$job_dir doesn't exist") unless -d $job_dir;
 # Submit jobs by looping over all point of both parameters of interest
 #
 
-$ijob=0;
+$jobID=0;
 $irun=0;
 $step_par1 = 0;
 $step_par2 = 0;
@@ -423,7 +424,7 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		# If we have only a single parameter of interest defined, set the options for par2 appropriately
 		$sub_par2  = $par2;
 		$sub_ibin2 = $ibin2;
-    if($par2 eq "") {
+    if($par2 eq "none") {
       $sub_par2  = "-";
     	$sub_ibin2 = -1;		# This tells the Marginalisation class that we have a 1D fit
     }
@@ -528,6 +529,50 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 			close(Slurm);
 			`sbatch $job_dir/${tag}_${irun}.slurm`;
 		}
+    
+		#
+		# HTCondor @ RAL
+		#
+		
+		if($resource eq "RAL" || $resource eq "RAL_HTC") {
+		  $fullprogram = abs_path(`which $program`);
+		  chomp($fullprogram);
+		
+		  $fmwk_setup_script = "$fmwk_dir/setup/setup_at_cvmfs_root6.sh";
+		  $dune_setup_script = "$softw_dir/setup/setup_at_cvmfs_root6.sh";
+		
+		  $jobname = "${tag}-${par1}-${par2}_${jobID}";
+		  $shellfn = "$job_dir/${jobname}.sh";
+		
+		  open(shell,">".$shellfn);
+		  print shell "hostname \n";
+		  print shell "date \n";
+		  print shell "source $fmwk_setup_script \n";
+		  print shell "source $dune_setup_script \n";
+		  print shell "$command \n";
+		  print shell "date \n";
+		  close(shell);
+		
+		  $default_cnd_options =
+		  "Executable               = /bin/bash \n".
+		  "initialdir               = $job_dir \n".
+		  "Universe                 = vanilla \n".
+		  "Getenv                   = False \n".
+		  "should_transfer_files    = YES \n".
+		  "when_to_transfer_output  = ON_EXIT \n".
+		  (ncores > 1 ? "request_cpus             = $ncores \n":"").
+		  "\nqueue\n";
+		  
+		  $cndfn = "$job_dir/${jobname}.condor";
+		  open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+		  print CND "Arguments                = $shellfn \n";
+		  print CND "Error                    = ${jobname}.err \n";
+		  print CND "Output                   = ${jobname}.out \n";
+		  print CND $default_cnd_options;
+		  close(CND);
+		  system("condor_submit",$cndfn);
+		  
+		}
 
 		#
 		# Lancaster
@@ -561,6 +606,8 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 		}
 
 	  $irun++;
+	  $jobID++;
 
   } # freepar 0
+  
 } # freepar 1

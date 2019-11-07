@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 
 #-------------------------------------------------------------------------------------------------------------------------------
@@ -83,6 +83,7 @@
 #
 
 use File::Path;
+use Cwd 'abs_path';
 
 #
 # Read command line arguments
@@ -516,14 +517,15 @@ if($marg_fc_toys == 1) {
 	$npt_marg_jobs_par2 = $npt_par2;
 }
 
+$jobID = 0;
 # Loop over all par1 and par2 FC points (number of points set to 1 when not running FC!)
 for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par2; $i_fc_par2++) {
 	for($i_fc_par1 = $start_pt_fc_par1; $i_fc_par1 < $start_pt_fc_par1 + $npt_fc_par1; $i_fc_par1++) {
 		# If doing FC, work out the correct input FC toy file name
 		$data_file_use = $data_file;
 		if($marg_fc_toys == 1) {
-			my $tmpstr = $data_file =~ s/\[x\]/$i_fc_par1/r;
-			my $fc_filename = $tmpstr =~ s/\[y\]/$i_fc_par2/r;
+			my $tmpstr = $data_file =~ "s/\[x\]/$i_fc_par1/r";
+			my $fc_filename = $tmpstr =~ "s/\[y\]/$i_fc_par2/r";
 			$data_file_use = $fc_filename;
 			print "\n======================================\n";
 			print "= Submitting jobs for FC point \#$i_fc_par1, $i_fc_par2 =\n";
@@ -679,13 +681,58 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 					close(Slurm);
 					`sbatch $job_dir/${tag}.slurm`;
 				}
-
+        
+        		#
+				# HTCondor @ RAL
+				#
+				
+				if($resource eq "RAL" || $resource eq "RAL_HTC") {
+				  $fullprogram = abs_path(`which $program`);
+				  chomp($fullprogram);
+				
+				  $fmwk_setup_script = "$fmwk_dir/setup/setup_at_cvmfs_root6.sh";
+				  $dune_setup_script = "$softw_dir/setup/setup_at_cvmfs_root6.sh";
+				
+				  $jobname = "${tag}-${jobID}";
+				  $shellfn = "$job_dir/${jobname}.sh";
+				
+				  open(shell,">".$shellfn);
+				  print shell "hostname \n";
+				  print shell "date \n";
+				  print shell "source $fmwk_setup_script \n";
+				  print shell "source $dune_setup_script \n";
+				  print shell "$command \n";
+				  print shell "date \n";
+				  close(shell);
+				
+				  $default_cnd_options =
+				  "Executable               = /bin/bash \n".
+				  "initialdir               = $job_dir \n".
+				  "Universe                 = vanilla \n".
+				  "Getenv                   = False \n".
+				  "should_transfer_files    = YES \n".
+				  "when_to_transfer_output  = ON_EXIT \n".
+				  (ncores > 1 ? "request_cpus             = $ncores \n":"").
+				  "\nqueue\n";
+				  
+				  $cndfn = "$job_dir/${jobname}.condor";
+				  open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+				  print CND "Arguments                = $shellfn \n";
+				  print CND "Error                    = ${jobname}.err \n";
+				  print CND "Output                   = ${jobname}.out \n";
+				  print CND $default_cnd_options;
+				  close(CND);
+				  system("condor_submit",$cndfn);
+				  
+				}
+    
 				#
 				# interactive
 				#
 				if($resource eq "interactive") {
 					system($command);
 				}
+				$jobID++;
 			} # Loop over par1 marg grid points
 		} 	# Loop over par2 marg grid points
 	}			# Loop over par1 FC grid points
