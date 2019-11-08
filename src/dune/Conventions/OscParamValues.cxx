@@ -73,7 +73,7 @@ double util::OscParamInitValue(conv::PhysParamId_t p, std::string target_scheme_
   std::string val_scheme_name = "";
   if(util::IsPhase(p)) {
     val_scheme_name = util::CPVChoiceAsStringSimple(conv::kNuDeltaCPPhase);
-    return util::ConvertOscParamToUsedScheme(p, val, val_scheme_name, target_scheme_name, valor::conv::duneosc::kInitDm12sq);
+    return util::ConvertOscParamToUsedScheme(p, val, val_scheme_name, target_scheme_name);
   }
   else if(util::IsMixingAngle(p) || util::IsMassSplitting(p)) {
     // Choice of scheme already handled above
@@ -147,8 +147,8 @@ double util::OscParamInitError(conv::PhysParamId_t p, std::string target_scheme_
 
   double init_unconverted = util::OscParamInitValue(p, val_scheme_name);
   double init_converted   = util::OscParamInitValue(p, target_scheme_name);
-  return (1./init_converted) * util::ConvertOscParamToUsedScheme(p, val * init_unconverted, val_scheme_name,
-                                                                 target_scheme_name, valor::conv::duneosc::kInitDm12sq);
+  return (1./init_converted) * util::ConvertOscParamToUsedScheme(p, val * init_unconverted,
+                                                                 val_scheme_name, target_scheme_name);
 }
 //________________________________________________________________________________________
 double util::OscParamMaxValue(conv::PhysParamId_t p, std::string target_scheme_name)
@@ -197,7 +197,7 @@ double util::OscParamMaxValue(conv::PhysParamId_t p, std::string target_scheme_n
     exit(1);
   }
 
-  return util::ConvertOscParamToUsedScheme(p, val, val_scheme_name, target_scheme_name, 0);
+  return util::ConvertOscParamToUsedScheme(p, val, val_scheme_name, target_scheme_name);
 }
 //________________________________________________________________________________________
 double util::OscParamMinValue(conv::PhysParamId_t p, std::string target_scheme_name)
@@ -246,7 +246,7 @@ double util::OscParamMinValue(conv::PhysParamId_t p, std::string target_scheme_n
     exit(1);
   }
 
-  return util::ConvertOscParamToUsedScheme(p, val, val_scheme_name, target_scheme_name, 0);
+  return util::ConvertOscParamToUsedScheme(p, val, val_scheme_name, target_scheme_name);
 }
 //________________________________________________________________________________________
 double util::OscParamStepSize (conv::PhysParamId_t p, std::string target_scheme_name)
@@ -358,7 +358,7 @@ void util::InitializeOAPriors()
 
 }
 //________________________________________________________________________________________
-double util::ConvertOscParamToUsedScheme(PhysParamId_t p, double val, std::string val_scheme_name, std::string target_scheme_name, double dm12sq)
+double util::ConvertOscParamToUsedScheme(PhysParamId_t p, double val, std::string val_scheme_name, std::string target_scheme_name)
 {
   double converted_val;
   val_scheme_name    = util::RemoveAllWhitespace(val_scheme_name);
@@ -395,58 +395,9 @@ double util::ConvertOscParamToUsedScheme(PhysParamId_t p, double val, std::strin
     }
   }
   else if(util::IsMassSplitting(p)) {
-    if(p != kPhypDm23sq) { converted_val = val; } // The mass splitting scheme only applies to Dmsq, not dmsq   TODO: what about sterile splittings?
-    else {
-      NuOscDmsqScheme_t input_scheme  = kNuDmsqUndefined;
-      NuOscDmsqScheme_t output_scheme = kNuDmsqUndefined;
-
-      // If the scheme names for the input value or output value are empty, use the schemes defined in the global options
-      if(!val_scheme_name.empty()) { input_scheme = util::DmsqSchemeFromString(val_scheme_name); }
-      else { input_scheme = Opt::Instance()->gOscDmsqScheme; }
-      if(input_scheme == kNuDmsqUndefined) {
-        LOG("Parameter", pERROR) << "Could not parse the input Dmsq scheme \'" << val_scheme_name << "\'";
-        exit(1);
-      }
-
-      if(!target_scheme_name.empty()) { output_scheme = util::DmsqSchemeFromString(target_scheme_name); }
-      else { output_scheme = Opt::Instance()->gOscDmsqScheme; }
-      if(output_scheme == kNuDmsqUndefined) {
-        LOG("Parameter", pERROR) << "Could not parse the output Dmsq scheme \'" << val_scheme_name << "\'";
-        exit(1);
-      }
-
-      if(input_scheme  == kNuDmsqAuto) { input_scheme  = util::GetAutoDmsqSchemeFromHierarchy(); }
-      if(output_scheme == kNuDmsqAuto) { output_scheme = util::GetAutoDmsqSchemeFromHierarchy(); }
-
-      // No need to convert the value if input scheme == output scheme
-      if(input_scheme == output_scheme) { converted_val = val; }
-      else {
-        if(dm12sq == -999) {
-          LOG("Parameter", pERROR) << "You need to supply a dm12sq value when converting between Dmsq schemes";
-          exit(1);
-        }
-
-#ifdef T2K
-        // In the legacy T2K analysis, this conversion was not made, so while testing, keep consistent with the legacy analysis
-        // TODO: Is this the correct thing to do?
-        dm12sq = 0.0;
-#endif
-
-        // util::ThrowOscillationParameters enforces throwing dm12sq before Dmsq, so there's no need to do so here
-        if(input_scheme == kNuDmsq12andAbs23 && output_scheme == kNuDmsq12andAbs31) {
-          if(Opt::Instance()->gMassHierarchyAssumed == kNmhNormal) { converted_val = val + dm12sq; }
-          else { converted_val = val - dm12sq; }
-        }
-        else if(input_scheme == kNuDmsq12andAbs31 && output_scheme == kNuDmsq12andAbs23) {
-          if(Opt::Instance()->gMassHierarchyAssumed == kNmhNormal) { converted_val = val - dm12sq; }
-          else { converted_val = val + dm12sq; }
-        }
-        else {
-          LOG("Parameter", pERROR) << "Unsupported Dmsq scheme conversion: " << val_scheme_name << " --> " << target_scheme_name;
-          exit(1);
-        }
-      }
-    }
+    // The conversion between Dmsq schemes is applied when calculating oscillation probabilities
+    // (see e.g. NuOsc3Flavour::SetOscParametersSinSqTAll), so there's no need to do anything here
+    converted_val = val;
   }
   else if(util::IsPhase(p)) {
     NuOscDeltaCP_t input_scheme  = kNuDeltaCPUndefined;

@@ -92,9 +92,10 @@ namespace util {
   // Given an osc param, p, and its value, val, which is given in a particular scheme: Convert the value from the
   // value's scheme to another scheme. If a scheme name is left blank, then the scheme defined in Opt::Instance is used.
   // e.g. Input a sinsq(2*theta) value and convert to a sinsq(theta) value.
-  // A dm12sq value can be optionally supplied. This is only used to convert between Dm23sq and Dm31sq (or vice-versa).
-  double ConvertOscParamToUsedScheme(conv::PhysParamId_t p, double val, std::string val_scheme_name = "",
-                                     std::string target_scheme_name = "", double dm12sq = -999);
+  // NOTE: The conversion between Dmsq schemes is applied when calculating oscillation probabilities
+  //       (see e.g. NuOsc3Flavour::SetOscParametersSinSqTAll), so this function does not convert Dmsq values.
+  double ConvertOscParamToUsedScheme(conv::PhysParamId_t p, double val,
+                                     std::string val_scheme_name = "", std::string target_scheme_name = "");
 
   void InitializeOAPriors();
 

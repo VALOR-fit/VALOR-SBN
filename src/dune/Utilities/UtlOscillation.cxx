@@ -323,10 +323,6 @@ bool SetSinglePrior(TXMLEngine* xmleng, XMLNodePointer_t top_node, FitParamList&
 //____________________________________________________________________________
 void ThrowOscillationParameters(FitParamList& fpl)
 {
-   // NOTE: make sure that dm12sq is always thrown before Dm23sq. This is because we might need to
-   // convert the thrown Dm23sq value based on the Dmsq convention, and this conversion requires dm12sq.
-   bool dm12sq_thrown = false;
-
    string osc_parameters[7] = { "mixing12", "mixing13", "mixing23", "dm12sq",
                                 "dm23sq", "dm13sq", "cpv" };
 
@@ -359,12 +355,6 @@ void ThrowOscillationParameters(FitParamList& fpl)
 
    // First deal with parameters that 1D priors
    for(conv::PhysParamId_t p : pars_with_1D_priors) {
-      if(p == conv::kPhypDm12sq) { dm12sq_thrown = true; }
-      else if (p == conv::kPhypDm23sq && !dm12sq_thrown && ((conv::NuOscDmsqScheme_t) fpl.GetPriorScheme(p) != Opt::Instance()->GetEffectiveDmsqScheme())) {
-         LOG("UtlOscillation", pERROR) << "Attempted to throw Dm23sq before dm12sq when a conversion between Dmsq schemes was needed";
-         exit(1);
-      }
-
       double value = util::oscillation::GetRandomizedOscParam(p, fpl);
       // Prior range and conversion to the used mixing/dmsq/phase scheme
       // is enforced in util::oscillation::GetRandomizedOscParam, so no need to check here
@@ -377,20 +367,6 @@ void ThrowOscillationParameters(FitParamList& fpl)
    if(pars_with_2D_prior_hists.size() == 2) {
       std::pair<conv::PhysParamId_t,conv::PhysParamId_t> params_2D =
         std::make_pair(pars_with_2D_prior_hists[0], pars_with_2D_prior_hists[1]);
-
-      if(params_2D.first == conv::kPhypDm12sq || params_2D.second == conv::kPhypDm12sq) {
-         dm12sq_thrown = true;
-      }
-      else if (params_2D.first == conv::kPhypDm23sq && !dm12sq_thrown &&
-               ((conv::NuOscDmsqScheme_t) fpl.GetPriorScheme(params_2D.first) != Opt::Instance()->GetEffectiveDmsqScheme())) {
-         LOG("UtlOscillation", pERROR) << "Attempted to throw Dm23sq before dm12sq when a conversion between Dmsq schemes was needed";
-         exit(1);
-      }
-      else if (params_2D.second == conv::kPhypDm23sq && !dm12sq_thrown &&
-               ((conv::NuOscDmsqScheme_t) fpl.GetPriorScheme(params_2D.second) != Opt::Instance()->GetEffectiveDmsqScheme())) {
-         LOG("UtlOscillation", pERROR) << "Attempted to throw Dm23sq before dm12sq when a conversion between Dmsq schemes was needed";
-         exit(1);
-      }
 
       std::map<conv::PhysParamId_t,double> thrown_values = util::oscillation::GetRandomizedOscParams2DCorrelated(params_2D, fpl);
       // Prior range and conversion to the used mixing/dmsq/phase scheme
@@ -488,7 +464,7 @@ double GetRandomizedOscParam(conv::PhysParamId_t p, FitParamList& fpl)
      exit(1);
   }
 
-  return util::ConvertOscParamToUsedScheme(p, value, prior_scheme_name, target_scheme_name, fpl.CurrValue(conv::kPhypDm12sq));
+  return util::ConvertOscParamToUsedScheme(p, value, prior_scheme_name, target_scheme_name);
 }
 //________________________________________________________________________________________
 std::map<conv::PhysParamId_t,double> GetRandomizedOscParams2DCorrelated(std::pair<PhysParamId_t,PhysParamId_t> params, FitParamList& fpl)
@@ -552,15 +528,8 @@ std::map<conv::PhysParamId_t,double> GetRandomizedOscParams2DCorrelated(std::pai
   }
   while(value0 < min0 || value0 > max0 || value1 < min1 || value1 > max1);
 
-  // If we need to convert a Dmsq value between different schemes, we need the dm12sq value.
-  // util::ThrowOscillationParameters enforces throwing dm12sq before Dmsq, so there's no need to do so here
-  double dm12sq = -999;
-  if     (p0 == kPhypDm12sq) { dm12sq = value0;                     }
-  else if(p1 == kPhypDm12sq) { dm12sq = value1;                     }
-  else                       { dm12sq = fpl.CurrValue(kPhypDm12sq); }
-
-  value0 = util::ConvertOscParamToUsedScheme(p0, value0, prior_scheme_name_p0, target_scheme_name_p0, dm12sq);
-  value1 = util::ConvertOscParamToUsedScheme(p1, value1, prior_scheme_name_p1, target_scheme_name_p1, dm12sq);
+  value0 = util::ConvertOscParamToUsedScheme(p0, value0, prior_scheme_name_p0, target_scheme_name_p0);
+  value1 = util::ConvertOscParamToUsedScheme(p1, value1, prior_scheme_name_p1, target_scheme_name_p1);
 
   std::map<PhysParamId_t,double> return_values;
   return_values[p0] = value0;
