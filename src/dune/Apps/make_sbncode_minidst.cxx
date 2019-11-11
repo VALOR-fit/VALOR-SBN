@@ -23,6 +23,7 @@
 
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <map>
 #include <utility>
@@ -69,6 +70,12 @@ static const string gSubRunTreeName = "sbnsubrun";
 static const int gPrintEveryNEvents   = 50000;
 
 static const int max_n_universes = 10000;
+
+// Should move this to a header file (eg DSTTypes or something).
+//~ typedef Double_t variation_output_type;
+//~ const char variation_output_type_root = 'D';
+typedef Float_t variation_output_type;
+const char variation_output_type_root = 'F';
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
@@ -296,7 +303,7 @@ int main(int argc, char ** argv)
   event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
   
-  std::map<std::string,float *> variation_entries;
+  std::map<std::string,variation_output_type *> variation_entries;
   std::map<std::string,int>     variation_nentries;
   //~ std::map<std::string,TBranch *> variation_branches;
   // First, let's read one true event map to get the universe details
@@ -324,12 +331,12 @@ int main(int argc, char ** argv)
       assert(n_universes <= max_n_universes);
       
       // and a branch to store them all in
-      variation_entries[vname] = new float[max_n_universes];
+      variation_entries[vname] = new variation_output_type[max_n_universes];
       for (size_t ii = 0 ; ii < n_universes ; ii++) {
-        variation_entries[vname][ii] = conv::kBadResult;
+        variation_entries[vname][ii] = static_cast<variation_output_type>(conv::kBadResult);
       }
       std::string branch_name (Form("variation_%s"  ,vname.c_str()));
-      std::string branch_nameF(Form("variation_%s[%s]/F",vname.c_str(),branch_name_n.c_str()));
+      std::string branch_nameF(Form("variation_%s[%s]/%c",vname.c_str(),branch_name_n.c_str(),variation_output_type_root));
       valor_minidst->Branch(branch_name.c_str(),&variation_entries[vname],branch_nameF.c_str());
       
     }
@@ -368,7 +375,7 @@ int main(int argc, char ** argv)
     if (!no_truth && write_universes) {
       for (const auto & entry : variation_entries) {
         //~ const std::string & name = entry.first;
-        float * arr = entry.second;
+        variation_output_type * arr = entry.second;
         for (int ii = 0 ; ii < max_n_universes ; ii++) {
           arr[ii] = conv::kBadResult;
         }
@@ -619,10 +626,18 @@ int main(int argc, char ** argv)
         variation_nentries[name] = nentries;
         assert(nentries<=max_n_universes);
         for (size_t ii = 0 ; ii < vec.size() ; ii++) {
-          float val = static_cast<float>(vec[ii]);
-          if (val > 1E5f || val < 0.f || (val < 1E-5 && val > 1E-15)) {
-            std::cerr<<"Ignoring bad weight: "<<name<<"\tEvent="<<iev<<" ; Universe="<<ii<<" ; wght = "<<Form("%.4g",val)<<std::endl;
-            val = 1.0f;
+          variation_output_type val = static_cast<variation_output_type>(vec[ii]);
+          if (val < 0.0) {
+            LOG("make_sbncode_minidst",pINFO) << "Setting negative event weight to zero: "
+              <<name<<"\tEvent="<<iev<<" ; Universe="<<ii
+              <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
+              val = 0.0;
+          }
+          else if (val > 1E5 || (val < 1E-5 && val > 1E-15)) {
+            LOG("make_sbncode_minidst",pWARN)<<"Setting bad event weight to one: "
+              <<name<<"\tEvent="<<iev<<" ; Universe="<<ii
+              <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
+            val = 1.0;
           }
           variation_entries[name][ii] = val;
         }
