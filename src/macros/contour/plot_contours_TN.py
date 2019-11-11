@@ -158,7 +158,7 @@ def plot_contours_1d(dchisq_objects, labels, pdf_filename, is_t2k_only, colours,
 
     canvas.Print(pdf_filename)
 
-def plot_contours_2d(dchisq_objs, labels, theta23, dm23, pdf_filename, colours, styles, best_fit_styles, best_fit_labels, prelim, title_x, title_y, line_width, marker_size, text_size, is_inverted=False):
+def plot_contours_2d(dchisq_objs, labels, theta23, dm23, pdf_filename, colours, styles, best_fit_styles, best_fit_labels, prelim, title_x, title_y, line_width, marker_size, text_size, draw_reactor=False, is_inverted=False):
     canvas = ROOT.TCanvas("canvas2d", "canvas2d", 700, 500)
     canvas.SetLeftMargin(0.13)
     canvas.SetRightMargin(0.05)
@@ -191,6 +191,20 @@ def plot_contours_2d(dchisq_objs, labels, theta23, dm23, pdf_filename, colours, 
     dchisq_objs[-1].SetTitle("")
     dchisq_objs[-1].Draw("axis")
 
+    # Draw the reactor constraint used in T2K, as a vertical yellow band
+    sinsqth13_nom = 0.0212
+    sinsqth13_err = 0.0008
+    breactors_label = "PDG 2018"
+    X1 = sinsqth13_nom + sinsqth13_err
+    X2 = sinsqth13_nom - sinsqth13_err
+    Y1 = dchisq_objs[-1].GetYaxis().GetXmin()
+    Y2 = dchisq_objs[-1].GetYaxis().GetXmax()
+    breactors = ROOT.TBox(X1, Y1, X2, Y2)
+    breactors.SetFillColor(ROOT.kYellow+1)
+    breactors.SetLineColor(ROOT.kYellow+1)
+    if draw_reactor:
+        breactors.Draw("same")
+
     multigraph = ROOT.TMultiGraph()
     if len(dchisq_objs) == 3 and not "nova" in pdf_filename:
         line_color = 2
@@ -221,17 +235,17 @@ def plot_contours_2d(dchisq_objs, labels, theta23, dm23, pdf_filename, colours, 
     multigraph.Draw()
 
     # Plot best-fit point marker
+    bf_lxmin = lxmin - 0.25 + lx_tsize_scale
+    bf_lxmax = lxmin + lx_tsize_scale
+    bf_lymin = lymax - (len(filter(None, best_fit_labels)) + int(draw_reactor) + 1) * text_size
+    bf_lymax = lymax
+    bf_legend = ROOT.TLegend(bf_lxmin, bf_lymin, bf_lxmax , bf_lymax)
+    bf_legend.SetFillStyle(0)
+    bf_legend.SetBorderSize(0)
+    bf_legend.SetTextFont(132)
+    bf_legend.SetTextSize(text_size)
     if best_fit_labels and best_fit_styles:
         bf_points = []
-        bf_lxmin = lxmin - 0.25 + lx_tsize_scale
-        bf_lxmax = lxmin + lx_tsize_scale
-        bf_lymin = lymax - (len(filter(None, best_fit_labels)) + 1) * text_size
-        bf_lymax = lymax
-        bf_legend = ROOT.TLegend(bf_lxmin, bf_lymin, bf_lxmax , bf_lymax)
-        bf_legend.SetFillStyle(0)
-        bf_legend.SetBorderSize(0)
-        bf_legend.SetTextFont(132)
-        bf_legend.SetTextSize(text_size)
         for i, dchisq_obj in enumerate(dchisq_objs):
             if best_fit_styles[i] != 0:
                 minx = ROOT.Long(0)
@@ -246,6 +260,11 @@ def plot_contours_2d(dchisq_objs, labels, theta23, dm23, pdf_filename, colours, 
                 bf_points[len(bf_points)-1].Draw("same")
                 if best_fit_labels[i].replace(" ", "") != "":
                     bf_legend.AddEntry(bf_points[len(bf_points)-1], best_fit_labels[i], "p")
+
+    if draw_reactor:
+        bf_legend.AddEntry(breactors, breactors_label, "f")
+
+    if bf_legend.GetNColumns() > 0:
         bf_legend.Draw()
 
     if "atmos" in pdf_filename:
@@ -407,6 +426,7 @@ if __name__=="__main__":
     parser.add_argument(      "--prelim"        , dest="prelim"         , action="store_true")
     parser.add_argument(      "--theta23"       , dest="theta23"        , type=float         , help="Input value of theta23.")
     parser.add_argument(      "--dm23"          , dest="dm23"           , type=float         , help="Input value of dm23.")
+    parser.add_argument(      "--draw-reactor"  , dest="draw_reactor"   , action="store_true", help="Draw a vertical band indicating the PDG 2018 reactor constraint on sinsq(theta13) used in the T2K oscillation analysis")
     args = parser.parse_args()
     labels = []
     if args.labels:
@@ -438,7 +458,7 @@ if __name__=="__main__":
     if num_var == 1:
         plot_contours_1d(dchisq_objects, labels, args.out_filename, args.is_t2k_only, colours, styles, args.prelim, args.title_x, "-2#Deltaln(L)", args.lwidth, args.tsize, args.FC)
     elif num_var == 2:
-        plot_contours_2d(dchisq_objects, labels, args.theta23, args.dm23, args.out_filename, colours, styles, best_fit_styles, args.best_fit_labels, args.prelim, args.title_x, args.title_y, args.lwidth, args.msize, args.tsize)
+        plot_contours_2d(dchisq_objects, labels, args.theta23, args.dm23, args.out_filename, colours, styles, best_fit_styles, args.best_fit_labels, args.prelim, args.title_x, args.title_y, args.lwidth, args.msize, args.tsize, args.draw_reactor)
     else:
         print "Error: Not all contours have the same dimensionality"
         sys.exit()
