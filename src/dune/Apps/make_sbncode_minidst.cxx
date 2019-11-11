@@ -68,6 +68,8 @@ static const string gSubRunTreeName = "sbnsubrun";
 
 static const int gPrintEveryNEvents   = 50000;
 
+static const int max_n_universes = 10000;
+
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
   kLArUnknownInteraction = -1,
@@ -112,6 +114,7 @@ int main(int argc, char ** argv)
   bool   write_universes    = arg.GetBool("write-universes");
   bool   apply_weights      = arg.GetBool("apply-weights");
   bool   no_truth           = arg.GetBool("no-truth");
+  int    max_n_events       = arg.GetInt("max-n-events");
 
   if(no_truth && write_universes)
     VLOG("make_sbncode_minidst", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
@@ -284,12 +287,17 @@ int main(int argc, char ** argv)
   Long64_t nev = analysis_tree->GetEntries();
   VLOG("make_sbncode_minidst", pNOTICE) 
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
+  if (max_n_events >= 0) {
+    nev = std::min((Long64_t)max_n_events,nev);
+    VLOG("make_sbncode_minidst", pNOTICE) <<
+      "Reading "<< nev << ((nev==1) ? " entry." : " entries.");
+  }
 
   event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
   
   std::map<std::string,float *> variation_entries;
-  std::map<std::string,size_t>  variation_nentries;
+  std::map<std::string,int>     variation_nentries;
   //~ std::map<std::string,TBranch *> variation_branches;
   // First, let's read one true event map to get the universe details
   if (!no_truth && write_universes) {
@@ -298,6 +306,7 @@ int main(int argc, char ** argv)
     assert(ptruth);
     const auto & weights = ptruth->weights; // map<string,whatever>
     TObjArray variation_names;
+      
     for (const auto & variation : weights) {
       // make a list of the variation names
       const std::string & vname = variation.first;
@@ -305,13 +314,22 @@ int main(int argc, char ** argv)
       
       // Get the number of universes
       const size_t n_universes = variation.second.size();
+      
+      // Make a branch to store the number of universes
+      std::string branch_name_n (Form("variation_n_%s"  ,vname.c_str()));
+      std::string branch_name_nI(Form("variation_n_%s/I",vname.c_str()));
+      variation_nentries[vname] = -999;
+      valor_minidst->Branch(branch_name_n.c_str(),&variation_nentries[vname],branch_name_nI.c_str());
+      
+      assert(n_universes <= max_n_universes);
+      
       // and a branch to store them all in
-      variation_entries[vname] = new float[n_universes];
+      variation_entries[vname] = new float[max_n_universes];
       for (size_t ii = 0 ; ii < n_universes ; ii++) {
         variation_entries[vname][ii] = conv::kBadResult;
       }
       std::string branch_name (Form("variation_%s"  ,vname.c_str()));
-      std::string branch_nameF(Form("variation_%s[%lu]/F",vname.c_str(),n_universes));
+      std::string branch_nameF(Form("variation_%s[%s]/F",vname.c_str(),branch_name_n.c_str()));
       valor_minidst->Branch(branch_name.c_str(),&variation_entries[vname],branch_nameF.c_str());
       
     }
@@ -349,9 +367,9 @@ int main(int argc, char ** argv)
     // reset the systematic universes
     if (!no_truth && write_universes) {
       for (const auto & entry : variation_entries) {
-        const std::string & name = entry.first;
+        //~ const std::string & name = entry.first;
         float * arr = entry.second;
-        for (size_t ii = 0 ; ii < variation_nentries[name] ; ii++) {
+        for (int ii = 0 ; ii < max_n_universes ; ii++) {
           arr[ii] = conv::kBadResult;
         }
       }
@@ -597,8 +615,16 @@ int main(int argc, char ** argv)
       for (const auto & entry : truth.weights) {
         const std::string & name = entry.first;
         const auto & vec = truth.weights[name];
+        const int nentries = (int)vec.size();
+        variation_nentries[name] = nentries;
+        assert(nentries<=max_n_universes);
         for (size_t ii = 0 ; ii < vec.size() ; ii++) {
-          variation_entries[name][ii] = static_cast<float>(vec[ii]);
+          float val = static_cast<float>(vec[ii]);
+          if (val > 1E5f || val < 0.f || (val < 1E-5 && val > 1E-15)) {
+            std::cerr<<"Ignoring bad weight: "<<name<<"\tEvent="<<iev<<" ; Universe="<<ii<<" ; wght = "<<Form("%.4g",val)<<std::endl;
+            val = 1.0f;
+          }
+          variation_entries[name][ii] = val;
         }
       }
     }

@@ -9,3 +9,4 @@ beam                               |   string       |  optional   |  BNB_FHC
 write-universes,no-write-universes |   boolean_list |  optional   |  no-write-universes
 apply-weights                      |   boolean      |  optional   |  false
 no-truth                           |   boolean      |  optional   |  false
+max-n-events                       |   integer      |  optional   |  -1
