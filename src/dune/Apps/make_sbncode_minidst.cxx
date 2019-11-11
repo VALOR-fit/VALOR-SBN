@@ -27,6 +27,7 @@
 #include <sstream>
 #include <map>
 #include <utility>
+#include <algorithm>
 
 //
 #include <TFile.h>
@@ -337,7 +338,7 @@ int main(int argc, char ** argv)
       }
       std::string branch_name (Form("variation_%s"  ,vname.c_str()));
       std::string branch_nameF(Form("variation_%s[%s]/%c",vname.c_str(),branch_name_n.c_str(),variation_output_type_root));
-      valor_minidst->Branch(branch_name.c_str(),&variation_entries[vname],branch_nameF.c_str());
+      valor_minidst->Branch(branch_name.c_str(),variation_entries[vname],branch_nameF.c_str());
       
     }
     variation_names.Write("variation_names",TObject::kSingleKey);
@@ -374,11 +375,14 @@ int main(int argc, char ** argv)
     // reset the systematic universes
     if (!no_truth && write_universes) {
       for (const auto & entry : variation_entries) {
-        //~ const std::string & name = entry.first;
         variation_output_type * arr = entry.second;
         for (int ii = 0 ; ii < max_n_universes ; ii++) {
-          arr[ii] = conv::kBadResult;
+          arr[ii] = static_cast<variation_output_type>(conv::kBadResult);
         }
+      }
+      for (auto & entry : variation_nentries) {
+        int & nentries = entry.second;
+        nentries = -1;
       }
     }
 
@@ -620,27 +624,29 @@ int main(int argc, char ** argv)
     // Copy the systematic universes across
     if (!no_truth && write_universes) {
       for (const auto & entry : truth.weights) {
-        const std::string & name = entry.first;
-        const auto & vec = truth.weights[name];
-        const int nentries = (int)vec.size();
-        variation_nentries[name] = nentries;
+        const std::string & vname = entry.first;
+        const auto & in_vec = truth.weights.at(vname);
+        const int nentries = (int)in_vec.size();
+        variation_nentries[vname] = nentries;
         assert(nentries<=max_n_universes);
-        for (size_t ii = 0 ; ii < vec.size() ; ii++) {
-          variation_output_type val = static_cast<variation_output_type>(vec[ii]);
+        for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
+          variation_output_type & destination = variation_entries[vname][ii];
+          variation_output_type val = static_cast<variation_output_type>(in_vec[ii]);
           if (val < 0.0) {
             LOG("make_sbncode_minidst",pINFO) << "Setting negative event weight to zero: "
-              <<name<<"\tEvent="<<iev<<" ; Universe="<<ii
+              <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
               <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
               val = 0.0;
           }
-          else if (val > 1E5 || (val < 1E-5 && val > 1E-15)) {
-            LOG("make_sbncode_minidst",pWARN)<<"Setting bad event weight to one: "
-              <<name<<"\tEvent="<<iev<<" ; Universe="<<ii
-              <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
-            val = 1.0;
-          }
-          variation_entries[name][ii] = val;
+          //~ else if (val > 1E5 || (val < 1E-5 && val > 1E-15)) {
+            //~ LOG("make_sbncode_minidst",pWARN)<<"Setting bad event weight to one: "
+              //~ <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
+              //~ <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
+            //~ val = 1.0;
+          //~ }
+          destination = val;
         }
+      
       }
     }
 
