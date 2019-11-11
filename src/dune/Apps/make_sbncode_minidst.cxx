@@ -23,9 +23,11 @@
 
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <map>
 #include <utility>
+#include <algorithm>
 
 //
 #include <TFile.h>
@@ -67,6 +69,14 @@ static const string gTreeName       = "sbnreco";
 static const string gSubRunTreeName = "sbnsubrun";
 
 static const int gPrintEveryNEvents   = 50000;
+
+static const int max_n_universes = 10000;
+
+// Should move this to a header file (eg DSTTypes or something).
+//~ typedef Double_t variation_output_type;
+//~ const char variation_output_type_root = 'D';
+typedef Float_t variation_output_type;
+const char variation_output_type_root = 'F';
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
 typedef enum ELarMode{
@@ -112,6 +122,7 @@ int main(int argc, char ** argv)
   bool   write_universes    = arg.GetBool("write-universes");
   bool   apply_weights      = arg.GetBool("apply-weights");
   bool   no_truth           = arg.GetBool("no-truth");
+  int    max_n_events       = arg.GetInt("max-n-events");
 
   if(no_truth && write_universes)
     VLOG("make_sbncode_minidst", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
@@ -284,12 +295,17 @@ int main(int argc, char ** argv)
   Long64_t nev = analysis_tree->GetEntries();
   VLOG("make_sbncode_minidst", pNOTICE) 
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
+  if (max_n_events >= 0) {
+    nev = std::min((Long64_t)max_n_events,nev);
+    VLOG("make_sbncode_minidst", pNOTICE) <<
+      "Reading "<< nev << ((nev==1) ? " entry." : " entries.");
+  }
 
   event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
   
-  std::map<std::string,float *> variation_entries;
-  std::map<std::string,size_t>  variation_nentries;
+  std::map<std::string,variation_output_type *> variation_entries;
+  std::map<std::string,int>     variation_nentries;
   //~ std::map<std::string,TBranch *> variation_branches;
   // First, let's read one true event map to get the universe details
   if (!no_truth && write_universes) {
@@ -298,6 +314,7 @@ int main(int argc, char ** argv)
     assert(ptruth);
     const auto & weights = ptruth->weights; // map<string,whatever>
     TObjArray variation_names;
+      
     for (const auto & variation : weights) {
       // make a list of the variation names
       const std::string & vname = variation.first;
@@ -305,14 +322,23 @@ int main(int argc, char ** argv)
       
       // Get the number of universes
       const size_t n_universes = variation.second.size();
+      
+      // Make a branch to store the number of universes
+      std::string branch_name_n (Form("variation_n_%s"  ,vname.c_str()));
+      std::string branch_name_nI(Form("variation_n_%s/I",vname.c_str()));
+      variation_nentries[vname] = -999;
+      valor_minidst->Branch(branch_name_n.c_str(),&variation_nentries[vname],branch_name_nI.c_str());
+      
+      assert(n_universes <= max_n_universes);
+      
       // and a branch to store them all in
-      variation_entries[vname] = new float[n_universes];
+      variation_entries[vname] = new variation_output_type[max_n_universes];
       for (size_t ii = 0 ; ii < n_universes ; ii++) {
-        variation_entries[vname][ii] = conv::kBadResult;
+        variation_entries[vname][ii] = static_cast<variation_output_type>(conv::kBadResult);
       }
       std::string branch_name (Form("variation_%s"  ,vname.c_str()));
-      std::string branch_nameF(Form("variation_%s[%lu]/F",vname.c_str(),n_universes));
-      valor_minidst->Branch(branch_name.c_str(),&variation_entries[vname],branch_nameF.c_str());
+      std::string branch_nameF(Form("variation_%s[%s]/%c",vname.c_str(),branch_name_n.c_str(),variation_output_type_root));
+      valor_minidst->Branch(branch_name.c_str(),variation_entries[vname],branch_nameF.c_str());
       
     }
     variation_names.Write("variation_names",TObject::kSingleKey);
@@ -349,11 +375,14 @@ int main(int argc, char ** argv)
     // reset the systematic universes
     if (!no_truth && write_universes) {
       for (const auto & entry : variation_entries) {
-        const std::string & name = entry.first;
-        float * arr = entry.second;
-        for (size_t ii = 0 ; ii < variation_nentries[name] ; ii++) {
-          arr[ii] = conv::kBadResult;
+        variation_output_type * arr = entry.second;
+        for (int ii = 0 ; ii < max_n_universes ; ii++) {
+          arr[ii] = static_cast<variation_output_type>(conv::kBadResult);
         }
+      }
+      for (auto & entry : variation_nentries) {
+        int & nentries = entry.second;
+        nentries = -1;
       }
     }
 
@@ -595,11 +624,29 @@ int main(int argc, char ** argv)
     // Copy the systematic universes across
     if (!no_truth && write_universes) {
       for (const auto & entry : truth.weights) {
-        const std::string & name = entry.first;
-        const auto & vec = truth.weights[name];
-        for (size_t ii = 0 ; ii < vec.size() ; ii++) {
-          variation_entries[name][ii] = static_cast<float>(vec[ii]);
+        const std::string & vname = entry.first;
+        const auto & in_vec = truth.weights.at(vname);
+        const int nentries = (int)in_vec.size();
+        variation_nentries[vname] = nentries;
+        assert(nentries<=max_n_universes);
+        for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
+          variation_output_type & destination = variation_entries[vname][ii];
+          variation_output_type val = static_cast<variation_output_type>(in_vec[ii]);
+          if (val < 0.0) {
+            LOG("make_sbncode_minidst",pINFO) << "Setting negative event weight to zero: "
+              <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
+              <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
+              val = 0.0;
+          }
+          //~ else if (val > 1E5 || (val < 1E-5 && val > 1E-15)) {
+            //~ LOG("make_sbncode_minidst",pWARN)<<"Setting bad event weight to one: "
+              //~ <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
+              //~ <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
+            //~ val = 1.0;
+          //~ }
+          destination = val;
         }
+      
       }
     }
 
