@@ -1,7 +1,7 @@
 //____________________________________________________________________________                                                       
 /*!                                                                                                                                  
                                                                                                                                       
-\app       valor_dune-write_pdf  
+\app       valor_dune-write_fd_prediction_pdf  
 
 \brief     Write out generic single sample PDFs and MC templates and make fd predictions from nd fits 
 
@@ -20,6 +20,7 @@
            --force-dst           : Ignore the XML requesting you use prebuilt templates and read the DST anyway (useful for making the prebuilt templates)
            --generate-fd-pred    : Generate the far detector prediction? If so, this requires the next parameter too [options: generate-fd-pred || no-fd-pred (def)]
            --fit-output-file     : File containing the fit output - this is where the FitParamList comes from to Generate the FD prediction
+           --fit-output-entry    : Desired entry in the tree [def: 0]
 
 \author    VALOR DUNE people, aka Costas, Steve, Lorena
 \created   March 27, 2014
@@ -77,7 +78,7 @@ int main(int argc, char ** argv)
   
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/write_fd_prediction_pdf.arg:$VALOR_EXPT/config/apps/oscparams.arg:$VALOR_EXPT/config/apps/seeds.arg");
-  LOG("valor_dune", pNOTICE) << arg;
+  LOG("write_fd_prediction_pdf", pNOTICE) << arg;
 
   string fplname          = arg.GetString("fit-param-list");
   string fplopt           = arg.GetString("fit-param-opt");
@@ -86,6 +87,7 @@ int main(int argc, char ** argv)
   string output_name      = arg.GetString("output-name");
   string config_file      = arg.GetString("config");
   string fit_output       = arg.GetString("fit-output-file");
+  int    output_entry     = arg.GetInt("fit-output-entry");
   
   // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
   double pot_override     = arg.GetDouble("pot-override");
@@ -113,7 +115,7 @@ int main(int argc, char ** argv)
   // Set the random seeds                                                                                                          
   Rnd::Instance()->SetSeeds(arg);
 
-  LOG("valor_dune", pNOTICE) << *Rnd::Instance();
+  LOG("write_fd_prediction_pdf", pNOTICE) << *Rnd::Instance();
 
   // Create file to store outputs
   TString outfilename = TString::Format("%s.root", output_name.c_str());
@@ -137,6 +139,9 @@ int main(int argc, char ** argv)
     TFile f(fit_output.c_str(), "read");
     TTree * fitnt = (TTree*)f.Get("valor_dune_nd_ntp");
     fitnt->SetBranchAddress("best_fit_params", &fp);
+    fitnt->GetEntry(output_entry);
+    LOG("write_fd_prediction_pdf",pNOTICE) << "FitParamList read from fit result";
+
   }
   if(fp == 0){ // Make sure that worked
     LOG("write_fd_prediction_pdf",pFATAL) << "FitParamList not filled";
@@ -156,7 +161,7 @@ int main(int argc, char ** argv)
     TObjArray * matches = input_match.MatchS(argname.c_str());
 
     if (matches->GetEntries() != 2) {
-      LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+      LOG("write_fd_prediction_pdf",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
       util::Die(-1);
     }
     TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
@@ -165,7 +170,7 @@ int main(int argc, char ** argv)
 
     conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
     if (param == conv::kPhypUndefined) {
-      LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+      LOG("write_fd_prediction_pdf",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
       util::Die(-1);
     }
 

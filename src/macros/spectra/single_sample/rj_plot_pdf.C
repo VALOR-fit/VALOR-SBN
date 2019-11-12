@@ -172,6 +172,7 @@ void rj_plot_pdf(
         
         const size_t NReacModesCoarse = es.ReactionModesCoarse()[ibeam][isample].size();
         const size_t NReacModes       = es.ReactionModes()[ibeam][isample].size();
+        std::cout << " Number of reaction modes : " << NReacModes << std::endl;
 
         std::vector<TH1D *> pdf_contrib             (NReacModes      ,nullptr);
         std::vector<TH1D *> pdf_contrib_width       (NReacModes      ,nullptr);
@@ -184,7 +185,6 @@ void rj_plot_pdf(
           cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
           TString contrib_name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
             tag, "pdfcs",binning,"rf", model_name.c_str(),kinevar.c_str(), vutil::AsString(m).c_str());
-          cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
           TObject * tmp_obj = fin->Get(contrib_name.Data());
           pdf_contrib[imode] = (TH1D*) tmp_obj;
           if(pdf_contrib[imode]) {
@@ -327,7 +327,7 @@ void rj_plot_pdf(
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
           conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
           TString mode_str = vutil::AsString(mc);
-          //~ cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
+          //cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
           if(mc == conv::kmcUndefined) continue;
           TH1D * relevant_hist = per_range > 0. ? pdf_contrib_coarse_width[imodec] : pdf_contrib_coarse[imodec];
           if(per_range > .0){

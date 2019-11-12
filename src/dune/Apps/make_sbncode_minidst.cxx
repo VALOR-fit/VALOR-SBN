@@ -120,7 +120,7 @@ int main(int argc, char ** argv)
   string opt_input_name     = arg.GetString("input");
   bool   opt_disable_checks = arg.GetBool("disable-checks");
   bool   write_universes    = arg.GetBool("write-universes");
-  bool   apply_weights      = arg.GetBool("apply-weights");
+  bool   apply_weights      = !(arg.GetBool("dont-apply-weights"));
   bool   no_truth           = arg.GetBool("no-truth");
   int    max_n_events       = arg.GetInt("max-n-events");
 
