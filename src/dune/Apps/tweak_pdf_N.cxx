@@ -77,6 +77,8 @@ using namespace valor::conv;
 
 const double enu_reco_max = 10;
 
+const KineVar_t kv = conv::kvEreco;
+
 int main(int argc, char ** argv)
 {
   valor::ExperimentInitialiser();
@@ -215,7 +217,7 @@ int main(int argc, char ** argv)
       BeamConf_t b = this_model->GetBeam();
       Sample_t   s = this_model->GetSample();
       TString name = TString::Format("curr_pdfts_sb_rf_%s_%s",
-         util::AsString(b).c_str(), util::AsString(s).c_str());
+         this_model->Name().c_str(),util::AsString(kv).c_str());
       TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
       if (!curr_pdf) {
         cerr<<"Could not find histogram "<<name<<endl;
