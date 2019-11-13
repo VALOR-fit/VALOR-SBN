@@ -674,7 +674,7 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuENuEBarCC, 
       kmcNC,
-      kmcUndefined
+      kmcCosmic
 #else
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -698,7 +698,7 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNuMuBarCC,   
       kmcNuENuEBarCC, 
       kmcNC,
-      kmcUndefined
+      kmcCosmic
 #else
       kmcNuMuCC,    
       kmcNuMuBarCC,   
@@ -721,7 +721,7 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
       kmcNC,
       kmcOscNuECC,
       kmcOscNuEBarCC,
-      kmcUndefined,
+      kmcCosmic,
       kmcUndefined
     },
 #else
