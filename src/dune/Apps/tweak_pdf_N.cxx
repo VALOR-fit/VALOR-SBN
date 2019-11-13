@@ -150,6 +150,10 @@ int main(int argc, char ** argv)
       std::cerr<<"Input matrix has "<<cov_m->GetNrows()<<" entries, need "<<fp->Size()<<endl;
       util::Die(-1);
     }
+    if (cov_m->GetNrows() != cm->GetSystematics()->Size()) {
+      std::cerr<<"Input matrix has "<<cov_m->GetNrows()<<" entries, systematics "<< cm->GetSystematics()->Size() <<endl;
+      util::Die(-1);
+    }
     cm->GetSystematics()->SetCovMatrix(*cov_m);
     cout<<"Read postfit matrix."<<endl;
   }
