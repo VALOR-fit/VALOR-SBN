@@ -18,7 +18,6 @@
 	//kmNuMuNCpiCpi0,
 	kmNuMuNCcoh,
   kmNuMuNC1Gamma,
-//	kmUndefined,	// NC 1 gamma
 	kmNuMuNCELScat,
 	kmNuMuNCoth,
 	kmNuMuBarCCQE,
@@ -61,7 +60,6 @@
 	//kmNuENCpiCpi0,
 	kmNuENCcoh,
   kmNuENC1Gamma,
-//	kmUndefined,	// NC 1 gamma
 	kmNuEELScat,
 	kmNuENCoth,
 	kmNuEBarCCQE,
@@ -83,7 +81,6 @@
 	//kmNuEBarNCpiCpi0,
 	kmNuEBarNCcoh,
   kmNuEBarNC1Gamma,
-//	kmUndefined,	// NC 1 gamma
 	kmNuEBarELScat,
 	kmNuEBarNCoth,
 	kmNuMuToNuECCQE,
@@ -167,4 +164,5 @@
 	kmNuEBarToNuTauBarCCpiCpi0,
 	kmNuEBarToNuTauBarCCcoh,
 	kmNuEBarToNuTauBarCCELScat,
-	kmNuEBarToNuTauBarCCoth
+	kmNuEBarToNuTauBarCCoth,
+  kmUndefined // Placeholder for cosmics - added for the SBN analysis 

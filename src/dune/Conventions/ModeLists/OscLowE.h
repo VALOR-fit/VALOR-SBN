@@ -18,7 +18,6 @@
 	//kmNuMuNCpiCpi0,
 	kmNuMuNCcoh,
   kmNuMuNC1Gamma,
-//	kmUndefined,	// NC 1 gamma
 	kmNuMuNCELScat,
 	kmNuMuNCoth,
 	kmNuMuBarCCQE,
@@ -40,7 +39,6 @@
 	//kmNuMuBarNCpiCpi0,
 	kmNuMuBarNCcoh,
   kmNuMuBarNC1Gamma,
-//	kmUndefined,	// NC 1 gamma
 	kmNuMuBarNCELScat,
 	kmNuMuBarNCoth,
 	kmNuECCQE,
@@ -61,7 +59,6 @@
 	//kmNuENCpiCpi0,
 	kmNuENCcoh,
   kmNuENC1Gamma,
-//	kmUndefined,	// NC 1 gamma
 	kmNuEELScat,
 	kmNuENCoth,
 	kmNuEBarCCQE,
@@ -83,7 +80,6 @@
 	//kmNuEBarNCpiCpi0,
 	kmNuEBarNCcoh,
   kmNuEBarNC1Gamma,
-//	kmUndefined,	// NC 1 gamma
 	kmNuEBarELScat,
 	kmNuEBarNCoth,
 	kmNuMuToNuECCQE,
@@ -107,6 +103,7 @@
 	kmNuMuBarToNuEBarCCIMD,
 	kmNuMuBarToNuEBarELScat,
 	kmNuMuBarToNuEBarCCoth,
+  kmCosmic,
 	kmUndefined,
 	kmUndefined,
 	kmUndefined,
