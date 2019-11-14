@@ -2,6 +2,8 @@
 *_RootDict_*
 *~
 make/Make.config
+src/dune/Conventions/Build.h
+src/dune/Conventions/DuneBuild.h
 src/dune/Conventions/ExptBuild.h
 src/dune/Conventions/Version.h
 
