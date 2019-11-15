@@ -34,7 +34,9 @@
              --prior-fit-number     : Option to specify the entry in the tree for above file [ 0 ]
              
              --tweak-parameter-set : Option to tweak a set of parameters [ default: none ]
-             --force-tweak-size      : Tweak the parameters to a given +n-sigma. If given 0, randomize [ randomize ]
+             --force-tweak-size    : Tweak the parameters to a given +n-sigma. If given 0, randomize [ randomize ]
+             [ --read-data, 
+             --generate-data ]     : Generate data or Read data given to the configuration file [default: --generate-data]
              
              [--nthreads ]         : Number of CPU threads to use [ std::thread::hardware_concurrency ]
              * 
@@ -116,6 +118,7 @@ int main(int argc, char ** argv)
   string true_values_file = arg.GetString("true-from-filename");
   string true_values_obj  = arg.GetString("true-from-objname"); // a physparamlist
   bool flip_23_octant     = arg.GetBool("flip-true-octant");
+  bool read_data           = arg.GetBool("read-data"); // if read-data-from-file then do not Generate the Mock Data
   
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   int prior_fit_number = arg.GetInt("prior-fit-number");
@@ -337,11 +340,25 @@ int main(int argc, char ** argv)
     PhysParamList true_params = fp->AsPhysParamList("current");
     
     // Generate a toy-MC experiment 
-    LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
-    LOG("valor_dune", pNOTICE) << "Toy-MC generation uses true parameters: " << true_params;
     FitDataABC * data = elements->FitData();
-    data->Generate(model,*fp,with_stat_fluct);
-    
+    if(!read_data){ // If we do not get told to read the data, Generate the mock data from the MC
+      if(!elements->DataGiven())
+        LOG("valor_dune", pNOTICE) << "No data given to Read, Generating the toy-MC instead";
+      else
+        LOG("valor_dune", pNOTICE) << "Data given but will be overwritten by Generate";
+
+      LOG("valor_dune", pNOTICE) << "Generating toy-MC data";
+      LOG("valor_dune", pNOTICE) << "Toy-MC generation uses true parameters: " << true_params;
+      data->Generate(model,*fp,with_stat_fluct);
+    }
+    else{
+      if(!elements->DataGiven()){
+        LOG("valor_dune",pFATAL) << "Told to Read data but no data file was given ";
+        util::Die(-1);
+      }
+      LOG("valor_dune", pNOTICE) << "Reading data from file, not Generating the toy-MC";
+    }
+
     // The toy-MC was generated using the `current' values of the input parameter list.
     // These values will be overwritten during the fit.
     // Copy those values now so as to save them later in the output tree.

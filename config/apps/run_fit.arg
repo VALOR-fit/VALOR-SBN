@@ -25,3 +25,4 @@ tweak-parameter-set                  |   string       |  optional   |   none
 force-tweak-size                     |   double       |  optional   |   0
 #
 flip-true-octant                     |   boolean      |  optional   |   0
+read-data, generate-data             |   boolean_list |  optional   |   generate-data
