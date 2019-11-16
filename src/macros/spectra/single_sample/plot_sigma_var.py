@@ -179,18 +179,18 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
               if sigma_var == "m3":
                 leg.AddEntry(h_comp, "comparison", "l")
 
-          # Throw a warning if the ratios have a difference greater than some threshold
-          for ibin in range(1, h.GetNbinsX()):
-            diff = 100 * ROOT.TMath.Abs(1.0 - (h_comp.GetBinContent(ibin) / h.GetBinContent(ibin)))
-            if diff > _ratio_diff_warn_threshold_percent:
-              if _by_mode:
-                print "WARNING: For param =", param_name, "; sample =", selection_name, "; mode =", util.ModeAsString(m), "; kinevar val =", \
-                  h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
-                  "% in the ratios of input and compaison hist"
-              else:
-                print "WARNING: For param =", param_name, "; sample =", selection_name, "; kinevar val =", \
-                  h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
-                  "% in the ratios of input and compaison hist"
+            # Throw a warning if the ratios have a difference greater than some threshold
+            for ibin in range(1, h.GetNbinsX()):
+              diff = 100 * ROOT.TMath.Abs(1.0 - (h_comp.GetBinContent(ibin) / h.GetBinContent(ibin)))
+              if diff > _ratio_diff_warn_threshold_percent:
+                if _by_mode:
+                  print "WARNING: For param =", param_name, "; sample =", selection_name, "; mode =", util.ModeAsString(m), "; kinevar val =", \
+                    h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
+                    "% in the ratios of input and compaison hist"
+                else:
+                  print "WARNING: For param =", param_name, "; sample =", selection_name, "; kinevar val =", \
+                    h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
+                    "% in the ratios of input and compaison hist"
 
         hvar_list[0].SetMaximum(1 + 1.1 * hist_max_var)
         hvar_list[0].SetMinimum(1 - 1.1 * hist_max_var)
