@@ -185,7 +185,7 @@ int main(int argc, char ** argv)
   }
 
   // Generate predictions                                                                                                         
-  Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                 
+  Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                
   model->Generate(*fp,generate_opt);
 
   CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);

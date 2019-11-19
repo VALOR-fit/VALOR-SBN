@@ -77,6 +77,8 @@ using namespace valor::conv;
 
 const double enu_reco_max = 10;
 
+const char * fit_result_tree_name = "valor_dune_nd_ntp";
+
 const KineVar_t kv = conv::kvEreco;
 
 int main(int argc, char ** argv)
@@ -135,32 +137,6 @@ int main(int argc, char ** argv)
   CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
   assert(cm);
   
-  TFile * postfit_matrix_file = NULL;
-  if (read_prior_from_file!="-" && read_prior_from_file!="none") {
-    postfit_matrix_file = new TFile(read_prior_from_file.c_str());
-    FitParamList * fp = new FitParamList;
-    cout << "Using postfit matrix "<<prior_fit_number<<" from "<<read_prior_from_file<<endl;
-    TTree * fit_tree = (TTree*)postfit_matrix_file->Get("valor_dune_nd_ntp");
-    assert(fit_tree);
-    fit_tree->SetBranchAddress("best_fit_params",&fp);
-    fit_tree->GetEntry(prior_fit_number);
-    TMatrixD * cov_m = new TMatrixD(*(fp->GetCovMatrix()));
-    
-    if (cov_m->GetNrows() != fp->Size()) {
-      std::cerr<<"Input matrix has "<<cov_m->GetNrows()<<" entries, need "<<fp->Size()<<endl;
-      util::Die(-1);
-    }
-    if (cov_m->GetNrows() != cm->GetSystematics()->Size()) {
-      std::cerr<<"Input matrix has "<<cov_m->GetNrows()<<" entries, systematics "<< cm->GetSystematics()->Size() <<endl;
-      util::Die(-1);
-    }
-    cm->GetSystematics()->SetCovMatrix(*cov_m);
-    cout<<"Read postfit matrix."<<endl;
-  }
-  else {
-    cout << "Using prefit"<<endl;
-  }
-
   // Arrays to store the spectra for the default, +1 sigma and -1 sigma variations
   
   vector<TH1D *> nom_pdf_werr;
@@ -170,8 +146,23 @@ int main(int argc, char ** argv)
   
   vector<double> max(cm->GetNSubModels());
   vector<vector<TH1D *> > twk_pdf(cm->GetNSubModels());
-  const CorrelatedSystematics * syst = cm->GetSystematics();
-      
+  CorrelatedSystematics * syst = cm->GetSystematics();
+    
+  // If necessary, update the systematics prior from a previous fit
+  TFile * postfit_matrix_file = NULL;
+  if (read_prior_from_file!="-" && read_prior_from_file!="none") {
+    postfit_matrix_file = new TFile(read_prior_from_file.c_str());
+    FitParamList * fp = new FitParamList;
+    cout << "Using postfit matrix "<<prior_fit_number<<" from "<<read_prior_from_file<<endl;
+    TTree * fit_tree = (TTree*)postfit_matrix_file->Get(fit_result_tree_name);
+    assert(fit_tree);
+    fit_tree->SetBranchAddress("best_fit_params",&fp);
+    fit_tree->GetEntry(prior_fit_number);
+    syst->UpdateCentralValuesAndCovarianceFromFPL(*fp);
+  }
+  else {
+    cout << "Using prefit"<<endl;
+  }
 
   // Generate pdfs
   for(int itoy = -1; itoy < ntoys; itoy++) {
