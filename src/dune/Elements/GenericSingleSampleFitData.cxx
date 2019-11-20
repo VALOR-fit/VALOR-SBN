@@ -249,6 +249,23 @@ bool GenericSingleSampleFitData::Write(std::ofstream& stream, Option_t * write_o
    return true;
 }
 //________________________________________________________________________________________
+long GenericSingleSampleFitData::StreamSize(Option_t* opt_in) const
+{
+  string opt = (opt_in) ? opt_in : "";
+  long size = 0;
+
+  assert(fDataOb);
+  size += fDataOb->StreamSize();
+
+  if(opt.find("+SB") != string::npos)
+  {
+    assert(fDataSb);
+    size += fDataSb->StreamSize();
+  } //+SB
+
+  return size;
+}
+//________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(
     FitModelABC * model_abc, const FitParamList & fp, bool fluctuate)
 {
