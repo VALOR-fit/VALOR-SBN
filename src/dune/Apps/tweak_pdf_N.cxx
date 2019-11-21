@@ -290,7 +290,7 @@ int main(int argc, char ** argv)
     //~ leg->AddEntry(nom_pdf_werr[imodel], "a-priori error", "F");
     //~ leg->Draw();
     
-    if (outfile->IsOpen()) {
+    if (outfile && outfile->IsOpen()) {
       TString name = TString::Format("env_sb_%s_%s",
          util::AsString(b).c_str(), util::AsString(s).c_str() );
       nom_pdf[imodel]->Write((name+"_nom").Data());
@@ -300,10 +300,10 @@ int main(int argc, char ** argv)
   }//imodel
   //~ c[ibeam]->Update();
   
-  //~ if (outfile) {
-    //~ outfile->Close();
-    //~ delete outfile;
-  //~ }
+  if (outfile) {
+    outfile->Close();
+    delete outfile;
+  }
   
   std::cout <<"Done!"<<std::endl;
 }
