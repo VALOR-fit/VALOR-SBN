@@ -65,6 +65,7 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/ToyStream.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 //#include "valor/Marginalisation/MCMarginaliser.h"
@@ -85,7 +86,6 @@
 
 using namespace valor;
 using namespace valor::conv;
-//using namespace valor::marginalisation;
 
 void Fit(CmdLnArgList& arg);
 void Init(CmdLnArgList& arg);
@@ -167,8 +167,9 @@ void Fit(CmdLnArgList& arg)
    elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
    FitDataABC* data = elements->FitData();
+   CompoundFitData* cdata = dynamic_cast<CompoundFitData*>(data);
 
-   std::ifstream * is_fakedata = nullptr;
+   util::ToyStream* toy_stream = nullptr;
    if(arg.GetInt("gen-fakedata")) {
       // Generate a fake data set to fit to
 
@@ -199,7 +200,7 @@ void Fit(CmdLnArgList& arg)
       // Fit to data read from an input file
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
-      is_fakedata = new std::ifstream(data_file_name, std::ios::binary | std::ios::in);
+      toy_stream = new util::ToyStream(data_file_name, "read", typeid(cdata), cdata->CompoundName(), read_opt_data, cdata->StreamSize());
    }
 
    // Get the requested batch number and number of marginalisation toys for the
@@ -228,7 +229,7 @@ void Fit(CmdLnArgList& arg)
    if(arg.GetInt("gen-fakedata") == 0 && start_toy_fake_data != 0)
    {
      long toy_size = model->StreamSize(read_opt);
-     is_fakedata->seekg(start_toy_fake_data * toy_size, std::ios_base::beg);
+     toy_stream->SetPositionToToy(start_toy_fake_data);
    }
 
    for(int ifake = start_toy_fake_data; ifake < start_toy_fake_data + Ntoys_fake_data; ifake++)
@@ -236,7 +237,8 @@ void Fit(CmdLnArgList& arg)
       // Read a fakedata toy, if requested
       if(arg.GetInt("gen-fakedata") == 0)
       {
-        model->Read(*is_fakedata, read_opt);   // The input fakedata toy stream must be first read into the model, as they were generated as models.
+        // TODO: Change this so that the fake data toys are read/written by CFD instead of CFM, while keeping marginalisation toys handled by CFM
+        model->Read(toy_stream, read_opt);   // The input fakedata toy stream must be first read into the model, as they were generated as models.
         data->Generate(model, with_stat_fluct, read_opt_data);
       }
 

@@ -296,14 +296,9 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt)
+bool GenericSingleSampleFitModel::Read(util::ToyStream* stream, Option_t* read_opt)
 {
    LOG("GenericSingleSampleFitModel",pDEBUG) << "Reading model from stream";
-   
-    if(stream.fail()) {
-     LOG("GenericSingleSampleFitModel",pFATAL) << "Failed to read toy from ifstream";
-     util::Die(-1); return false;
-   }
 
    string opt = (read_opt) ? read_opt : "pdft";
 
@@ -318,10 +313,10 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
          {
             continue;
          }
-         fMCTNomOb[imode]->ReadStream(stream);
-         fMCTTunOb[imode]->ReadStream(stream);
-         fMCTSysOb[imode]->ReadStream(stream);
-         fMCTFinOb[imode]->ReadStream(stream);
+         stream->Read(fMCTNomOb[imode]);
+         stream->Read(fMCTTunOb[imode]);
+         stream->Read(fMCTSysOb[imode]);
+         stream->Read(fMCTFinOb[imode]);
 
          if(opt.find("+SB") != string::npos)
          {
@@ -329,10 +324,10 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
             {
                continue;
             }
-            fMCTNomSb[imode]->ReadStream(stream);
-            fMCTTunSb[imode]->ReadStream(stream);
-            fMCTSysSb[imode]->ReadStream(stream);
-            fMCTFinSb[imode]->ReadStream(stream);
+            stream->Read(fMCTNomSb[imode]);
+            stream->Read(fMCTTunSb[imode]);
+            stream->Read(fMCTSysSb[imode]);
+            stream->Read(fMCTFinSb[imode]);
          }
       }
    }
@@ -347,7 +342,7 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
          {
             continue;
          }
-         fPDFCompOb[imode]->ReadStream(stream);
+         stream->Read(fPDFCompOb[imode]);
 
          if(opt.find("+SB") != string::npos)
          {
@@ -355,7 +350,7 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
             {
                continue;
             }
-            fPDFCompSb[imode]->ReadStream(stream);
+            stream->Read(fPDFCompSb[imode]);
          }
       }
    }
@@ -363,11 +358,11 @@ bool GenericSingleSampleFitModel::Read(std::ifstream& stream, Option_t* read_opt
    // Write out the total PDF
    if(opt.find("pdft") != string::npos)
    {
-      fPDFTotOb->ReadStream(stream);
+      stream->Read(fPDFTotOb);
 
       if(opt.find("+SB") != string::npos)
       {
-        fPDFTotSb->ReadStream(stream);
+        stream->Read(fPDFTotSb);
       }
    }
 
@@ -864,7 +859,7 @@ bool GenericSingleSampleFitModel::Write(
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_opt)
+bool GenericSingleSampleFitModel::Write(util::ToyStream* stream, Option_t* write_opt)
 {
    LOG("GenericSingleSampleFitModel",pINFO) << "Writing results to stream";
 
@@ -881,10 +876,10 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
          {
             continue;
          }
-         fMCTNomOb[imode]->WriteStream(stream);
-         fMCTTunOb[imode]->WriteStream(stream);
-         fMCTSysOb[imode]->WriteStream(stream);
-         fMCTFinOb[imode]->WriteStream(stream);
+         stream->Write(fMCTNomOb[imode]);
+         stream->Write(fMCTTunOb[imode]);
+         stream->Write(fMCTSysOb[imode]);
+         stream->Write(fMCTFinOb[imode]);
 
          if(opt.find("+SB") != string::npos)
          {
@@ -892,10 +887,10 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
             {
                continue;
             }
-            fMCTNomSb[imode]->WriteStream(stream);
-            fMCTTunSb[imode]->WriteStream(stream);
-            fMCTSysSb[imode]->WriteStream(stream);
-            fMCTFinSb[imode]->WriteStream(stream);
+            stream->Write(fMCTNomSb[imode]);
+            stream->Write(fMCTTunSb[imode]);
+            stream->Write(fMCTSysSb[imode]);
+            stream->Write(fMCTFinSb[imode]);
          }
       }
    }
@@ -910,7 +905,7 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
          {
             continue;
          }
-         fPDFCompOb[imode]->WriteStream(stream);
+         stream->Write(fPDFCompOb[imode]);
 
          if(opt.find("+SB") != string::npos)
          {
@@ -918,7 +913,7 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
             {
                continue;
             }
-            fPDFCompSb[imode]->WriteStream(stream);
+            stream->Write(fPDFCompSb[imode]);
          }
       }
    }
@@ -926,13 +921,13 @@ bool GenericSingleSampleFitModel::Write(std::ofstream& stream, Option_t *write_o
    // Write out the total PDF
    if(opt.find("pdft") != string::npos)
    {
-      fPDFTotOb->WriteStream(stream);
+      stream->Write(fPDFTotOb);
       LOG("GenericSingleSampleFitModel", pINFO) << "Sample integral: " <<
          fPDFTotOb->Integral();
 
       if(opt.find("+SB") != string::npos)
       {
-        fPDFTotSb->WriteStream(stream);
+        stream->Write(fPDFTotSb);
       }
    }
 

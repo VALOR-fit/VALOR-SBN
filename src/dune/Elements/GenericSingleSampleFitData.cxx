@@ -232,21 +232,38 @@ bool GenericSingleSampleFitData::Write(
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Write(std::ofstream& stream, Option_t * write_opt)
+bool GenericSingleSampleFitData::Write(util::ToyStream* stream, Option_t * write_opt)
 {
    string opt = (write_opt) ? write_opt : "";
    assert(fDataOb);
    fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
-   fDataOb->WriteStream(stream);
+   stream->Write(fDataOb);
 
    if(opt.find("+SB") != string::npos)
    {
       assert(fDataSb);
       fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
-      fDataSb->WriteStream(stream);
+      stream->Write(fDataSb);
    } //+SB
 
    return true;
+}
+//________________________________________________________________________________________
+bool GenericSingleSampleFitData::Read(util::ToyStream* stream, Option_t * read_opt)
+{
+  string opt = (read_opt) ? read_opt : "";
+  assert(fDataOb);
+  fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
+  stream->Read(fDataOb);
+
+  if(opt.find("+SB") != string::npos)
+  {
+    assert(fDataSb);
+    fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
+    stream->Read(fDataSb);
+  } //+SB
+
+  return true;
 }
 //________________________________________________________________________________________
 long GenericSingleSampleFitData::StreamSize(Option_t* opt_in) const

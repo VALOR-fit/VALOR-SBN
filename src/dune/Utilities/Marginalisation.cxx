@@ -11,6 +11,8 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/ToyStream.h"
+#include "valor/FitCore/CompoundFitModel.h"
 
 //#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
@@ -76,7 +78,9 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
    PhysicalParameterLimits* limits = PhysicalParameterLimits::Instance();
 
    // Create a file to store this batch of marginalisation toys
-   std::ofstream os_toys(filename, std::ios::binary | std::ios::out);
+   CompoundFitModel* cmodel = dynamic_cast<CompoundFitModel*>(this->_model);
+   const char* write_opt = _va_format.c_str();
+   util::ToyStream* toy_stream = new util::ToyStream(filename, "write", typeid(cmodel), cmodel->CompoundName(), write_opt, cmodel->StreamSize());
 
    // Will we read throws from a pre-existing file instead of generating them? (This is used e.g. to convert
    // T2K legacy toy throws into SDK marginalisation toys)
@@ -131,13 +135,12 @@ void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       LOG("Marginalisation", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
 #endif
       if(t % 100 == 0) { LOG("Marginalisation", pNOTICE) << "Generating toy-MC #" << t; }
-      const char* write_opt = _va_format.c_str();
       if (_use_simple_binning) { write_opt = (_va_format + "+SB").c_str(); }
       this->_model->Generate(fpl, write_opt);
-      this->_model->Write(os_toys, write_opt);
+      this->_model->Write(toy_stream, write_opt);
       this->SaveParamThrows(fpl, t == Ntoys-1, filename);
    }
-   os_toys.close();
+   delete toy_stream;
    LOG("Marginalisation", pNOTICE) << "Finished building marginalisation toys. Generated " << Ntoys
                               << ", re-threw " << n_rethrows;
 }
@@ -208,6 +211,9 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
    const int lastBatch = firstBatch + Nbatches - 1;
    const int N = Nbatches * Ntoys;
    vector<double> vec_chi2_toy(N);  // Index constructed (ibatch - firstBatch) * Ntoys + itoy
+   // TODO: Ideally, Marginalisation shouldn't derive from CFM or CFD, only FitModelABC and FitDataABC, so ToyStream needs changing, if possible?
+   CompoundFitModel* cmodel = dynamic_cast<CompoundFitModel*>(this->_model);
+   const char* read_opt = _va_format.c_str();
    for(int b = firstBatch; b <= lastBatch; ++b)
    {
       std::ostringstream oss;
@@ -220,24 +226,15 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       std::string filename = oss.str();
       LOG("Marginalisation", pINFO) << "Filename: " << filename;
 
-      std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
-      if (is_toys.fail()) {
-         LOG("Marginalisation",pFATAL) <<"Failed to open "<<filename;
-         util::Die(-1); return;
-      }
+      util::ToyStream* toy_stream = new util::ToyStream(filename, "read", typeid(cmodel), cmodel->CompoundName(), read_opt, cmodel->StreamSize());
       for(int t = 0; t < Ntoys; ++t)
       {
-         if (is_toys.fail()) {
-           LOG("Marginalisation",pFATAL) <<"Failed to read toy "<<t<<" from "<<filename;
-           util::Die(-1); return;
-         }
          // Read the chi2 of each toy-MC experiment into a vector
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "Reading toy-MC data";
 #endif
-         const char* read_opt = _va_format.c_str();
          if (_use_simple_binning) { read_opt = (_va_format + "+SB").c_str(); }
-         this->_model->Read(is_toys, read_opt);
+         this->_model->Read(toy_stream, read_opt);                               // TODO: Can read_opt be stored inside the ToyStream and read in Read?
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
@@ -245,7 +242,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
             " L(" << t << "): " << exp(-chi2/2.);
 #endif
       }
-      is_toys.close();
+      delete toy_stream;
    }
 
    // Now sort the vector of chi2 values in descending order. This is so that the contributions from tiny
