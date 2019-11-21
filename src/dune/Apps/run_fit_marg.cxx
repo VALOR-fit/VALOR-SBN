@@ -276,6 +276,7 @@ void Fit(CmdLnArgList& arg)
 
       chi2_best_fit_toy->at(ifake - start_toy_fake_data) = result->GetChi2BestFit();
    }
+   delete toy_stream;
 
    std::ostringstream oss;
    oss << arg.GetString("tag");
