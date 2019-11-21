@@ -1,13 +1,13 @@
 //____________________________________________________________________________
 /*!
 
-\app       valor_dune-run_build_margtoys
+\app       valor_dune-run_build_toys
 
-\brief     Generate marginalisation toys.
+\brief     Generate marginalisation and fake data toys.
 
 \options     --tag                 : Tag for output file [def: "margtoy"]
              --run                 : Run # [def: 0]
-             --nmargtoy            : Number of marginalisation toys [def: 1]
+             --ntoys               : Number of toys to build [def: 1]
              --fit-param-list      : Fit parameter list (see UtlParam.cxx)
                                      [def: "nuosc3f"]
              --fit-param-opt       : Options used when setting up the FitParamList
@@ -66,9 +66,6 @@
 #include "valor/Utilities/Env.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-//#include "valor/Marginalisation/MCMarginaliser.h"
-//#include "valor/FitCore/LikelihoodABC.h"
-//#include "valor/Marginalisation/MarginalLikelihood.h"
 // dune
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
@@ -80,11 +77,10 @@
 #include "valor/Conventions/Opt.h"
 
 #include "dune/Utilities/UtlOscillation.h"
-#include "dune/Utilities/Marginalisation.h"
+#include "dune/Utilities/ToyBuilder.h"
 
 using namespace valor;
 using namespace valor::conv;
-//using namespace valor::marginalisation;
 
 void BuildToys(CmdLnArgList& arg);
 void Init(CmdLnArgList& arg);
@@ -95,7 +91,7 @@ int main(int argc, char** argv)
    Env::Instance()->AutoSet("dune");
    CmdLnArgList arg;
    arg.Read(argc,argv,
-      "$VALOR_DUNE/config/apps/run_build_margtoys.arg"
+      "$VALOR_DUNE/config/apps/run_build_toys.arg"
       ":$VALOR_DUNE/config/apps/seeds.arg"
       ":$VALOR_DUNE/config/apps/oscparams.arg");
    LOG("valor_dune", pNOTICE) << arg;
@@ -158,26 +154,24 @@ void BuildToys(CmdLnArgList& arg)
    // Initialize non delta M squared oscillation parameters to zero
    // util::oscillation::SetUnoscillated(*fpl);
 
-   // Get the requested batch number and number of marginalisation toys for the
-   // batch
+   // Get the requested batch number and number of toys for the batch
    int batch = arg.GetInt("batch");
-   int Ntoys = arg.GetInt("nmargtoy");
+   int Ntoys = arg.GetInt("ntoys");
 
    TStopwatch clock;
    clock.Start();
-   Marginalisation marginalisation(*elements, arg.GetString("tag"), use_simple_binning, save_throws,
-                                   arg.GetString("valor-array-format"));
+   ToyBuilder toys(*elements, arg.GetString("tag"), use_simple_binning, save_throws, arg.GetString("valor-array-format"));
    if(!arg.Exists("fit-param2"))
    {  // Build toys for 1D fit
-      marginalisation.BuildToys(fp_bin1, batch, Ntoys, *fpl, randomise_systematics,
-                                param_val_opts.c_str(), rethrow_unphysical,
-                                toy_throw_file_to_read, param_name_map_file);
+      toys.BuildToys(fp_bin1, batch, Ntoys, *fpl, randomise_systematics,
+                     param_val_opts.c_str(), rethrow_unphysical,
+                     toy_throw_file_to_read, param_name_map_file);
    }
    else
    {  // Build toys for 2D fit
-      marginalisation.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl, randomise_systematics,
-                                param_val_opts.c_str(), rethrow_unphysical,
-                                toy_throw_file_to_read, param_name_map_file);
+      toys.BuildToys(fp_bin1, fp_bin2, batch, Ntoys, *fpl, randomise_systematics,
+                     param_val_opts.c_str(), rethrow_unphysical,
+                     toy_throw_file_to_read, param_name_map_file);
    }
    clock.Stop();
 

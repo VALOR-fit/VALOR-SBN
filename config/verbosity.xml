@@ -50,6 +50,7 @@
   <priority msgstream="UtlOscillation">                 NOTICE </priority>
   <priority msgstream="Interpolator">                   WARN   </priority>
   <priority msgstream="ToyStream">                      NOTICE </priority>
+  <priority msgstream="ToyBuilder">                     NOTICE </priority>
 
 
 </messenger_config>
