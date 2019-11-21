@@ -88,8 +88,7 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
-
-  util::
+  valor::ExperimentInitialiser();
   
   util::InitializeOAPriors();
   
