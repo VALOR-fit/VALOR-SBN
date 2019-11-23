@@ -55,7 +55,7 @@ bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
 {
   
   if (!fBinning) {
-    LOG("GenericSingleSampleFitData", pERROR) << "Must call Generate() with FitModel before attempting to read file.";
+    LOG("GenericSingleSampleFitData", pERROR) << "Must call AdoptBinningFromModel() with FitModel before attempting to read file.";
     return false;
   }
 
@@ -268,6 +268,12 @@ bool GenericSingleSampleFitData::Read(util::ToyStream* stream, Option_t * read_o
 //________________________________________________________________________________________
 long GenericSingleSampleFitData::StreamSize(Option_t* opt_in) const
 {
+  if (!fBinning) {
+    LOG("GenericSingleSampleFitData", pERROR) << "Must call AdoptBinningFromModel() with FitModel "
+                                              << "before attempting to determine the toy size.";
+    return false;
+  }
+
   string opt = (opt_in) ? opt_in : "";
   long size = 0;
 
@@ -324,14 +330,7 @@ bool GenericSingleSampleFitData::Generate(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate, Option_t * option)
 {
-  
-  GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
-  
-  if(fBinning!=model->GetBinning()){
-    this->Clean();
-    fBinning = model->GetBinning();
-    this->Book();
-  }
+  this->AdoptBinningFromModel(model_abc);
 
   bool update_sb = false;
   if(option) {
@@ -545,6 +544,26 @@ void GenericSingleSampleFitData::Zero(Option_t * opt)
 
   if (!fDataObNull) { fDataOb->SetAll(0.); }
   if (!fDataSbNull) { fDataSb->SetAll(0.); }
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitData::AdoptBinningFromModel(FitModelABC* model_abc)
+{
+  GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
+  if(fBinning != model->GetBinning()){
+    if(!model->GetBinning()) {
+      LOG("GenericSingleSampleFitData",pERROR)
+        << "Failed to adopt the binning from the model, as the model had no binning set";
+      util::Die(-1);
+    }
+    this->Clean();
+    fBinning = model->GetBinning();
+    this->Book();
+  }
+
+  if(!fBinning) {
+    LOG("GenericSingleSampleFitData",pERROR) << "Failed to adopt the binning from the model";
+    util::Die(-1);
+  }
 }
 //________________________________________________________________________________________
 
