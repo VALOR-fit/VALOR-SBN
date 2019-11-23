@@ -488,23 +488,6 @@ if($marg_fc_toys == 0 && $npt_fc_par2 != 1) {
 	print "WARNING: The number of par2 points to loop over was not 1 and we are not running FC. So forcing number of points to 1.\n";
 }
 
-# For FC, statistical fluctuations must be turned on
-if($marg_fc_toys == 1 && $stat_fluct == 0) {
-	$stat_fluct = 1;
-	print "WARNING: Forcing statistical fluctuations to be applied to FC toys.\n";
-}
-
-# For FC, statistical fluctuations must be generated with the same random seed.
-# This is because the same FC toys are sent to many marginalisation jobs and are fluctuated within each job, so if
-# the seeds are different, then you end up with different FC toys. The effect of this on the Delta chisq distributions
-# will be minimal, but it's better to be consistent. So if the seed is set to 0 (which randomises the random seed),
-# then force it to 1
-if($marg_fc_toys == 1 && $seed_stat == 0) {
-	$seed_stat = 1;
-	print "WARNING: Forcing the statistical fluctuation random seed to 1 instead of 0.\n";
-}
-
-
 $step_par1 = 0;
 $step_par2 = 0;
 if($npt_par1 > 1) { $step_par1 = ($max_par1 - $min_par1) / ($npt_par1 - 1); }

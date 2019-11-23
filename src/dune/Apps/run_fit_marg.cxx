@@ -68,9 +68,7 @@
 #include "valor/Utilities/ToyStream.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-//#include "valor/Marginalisation/MCMarginaliser.h"
-//#include "valor/FitCore/LikelihoodABC.h"
-//#include "valor/Marginalisation/MarginalLikelihood.h"
+
 // dune
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
@@ -200,6 +198,7 @@ void Fit(CmdLnArgList& arg)
       // Fit to data read from an input file
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
+      data->AdoptBinningFromModel(model);
       toy_stream = new util::ToyStream(data_file_name, "read", typeid(cdata), cdata->CompoundName(), read_opt_data, cdata->StreamSize());
    }
 
@@ -237,9 +236,7 @@ void Fit(CmdLnArgList& arg)
       // Read a fakedata toy, if requested
       if(arg.GetInt("gen-fakedata") == 0)
       {
-        // TODO: Change this so that the fake data toys are read/written by CFD instead of CFM, while keeping marginalisation toys handled by CFM
-        model->Read(toy_stream, read_opt);   // The input fakedata toy stream must be first read into the model, as they were generated as models.
-        data->Generate(model, with_stat_fluct, read_opt_data);
+        data->Read(toy_stream, read_opt_data);
       }
 
       // Perform a fit and populate the entire chi2 and likelihood surfaces

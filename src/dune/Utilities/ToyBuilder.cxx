@@ -20,12 +20,19 @@
 namespace valor
 {
 
-ToyBuilder::ToyBuilder(CompoundFitElements& elements, string filePrefix, bool use_simple_binning,
-                       bool save_throws_to_tree, string va_format):
-  _filePrefix(filePrefix), _model(elements.FitModel()), _data(elements.FitData()),
-  _use_simple_binning(use_simple_binning), _save_throws_to_tree(save_throws_to_tree),
-  _tree_pars(nullptr), _va_format(va_format),
-  _read_params(new double[conv::knppmax]), _toy_throw_file(nullptr)
+ToyBuilder::ToyBuilder(CompoundFitElements& elements, string filePrefix,
+                       bool use_simple_binning, bool store_mode_arrays,
+                       bool toys_are_marginalisation, bool save_throws_to_tree):
+  _filePrefix(filePrefix),
+  _model(elements.FitModel()),
+  _data(elements.FitData()),
+  _toys_are_marginalisation(toys_are_marginalisation),
+  _use_simple_binning(use_simple_binning),
+  _store_mode_arrays(store_mode_arrays),
+  _save_throws_to_tree(save_throws_to_tree),
+  _tree_pars(nullptr),
+  _read_params(new double[conv::knppmax]),
+  _toy_throw_file(nullptr)
 {
 }
 //______________________________________________________________________________
@@ -42,16 +49,16 @@ ToyBuilder::~ToyBuilder()
 //______________________________________________________________________________
 void ToyBuilder::BuildToys(const int fitParamBin, const int batch,
       const int Ntoys, FitParamList& fpl, bool randomizeSystematics,
-      const char* options, bool rethrowUnphysical,
+      bool fluctuateStatistics, const char* options, bool rethrowUnphysical,
       std::string toy_throw_file_to_read, std::string param_name_map_file)
 {
-   this->BuildToys(fitParamBin, -1, batch, Ntoys, fpl, randomizeSystematics,
+   this->BuildToys(fitParamBin, -1, batch, Ntoys, fpl, randomizeSystematics, fluctuateStatistics,
          options, rethrowUnphysical, toy_throw_file_to_read, param_name_map_file);
 }
 //______________________________________________________________________________
 void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
-      const int batch, const int Ntoys, FitParamList& fpl,
-      bool randomizeSystematics, const char* options, bool rethrowUnphysical,
+      const int batch, const int Ntoys, FitParamList& fpl, bool randomizeSystematics,
+      bool fluctuateStatistics, const char* options, bool rethrowUnphysical,
       std::string toy_throw_file_to_read, std::string param_name_map_file)
 {
    std::ostringstream oss;
@@ -66,15 +73,40 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
 
    PhysicalParameterLimits* limits = PhysicalParameterLimits::Instance();
 
+   const char* write_opt = "";
+   std::string write_opt_str = "";
+
    // Create a file to store this batch of toys
-   CompoundFitModel* cmodel = dynamic_cast<CompoundFitModel*>(this->_model);
-   const char* write_opt = _va_format.c_str();
-   util::ToyStream* toy_stream = new util::ToyStream(filename, "write", typeid(cmodel), cmodel->CompoundName(), write_opt, cmodel->StreamSize());
+   util::ToyStream* toy_stream = nullptr;
+   // TODO: I don't want ToyBuilder and/or Marginalisation to depend on CFM or CFD, so modify FitModelABC/FitDataABC to get the info I currently get from CFM/CFD. Then modify ToyStream so that the constructor takes either ABC. This wouldn't introduce circular dependencies?
+   if(_toys_are_marginalisation) {
+      // Build marginalisation toys
+      write_opt_str = "pdft_vf";
+      if(_store_mode_arrays ) { write_opt_str += "_pdfc_vf"; }
+      if(_use_simple_binning) { write_opt_str += "+SB";      }
+      write_opt = write_opt_str.c_str();
+      CompoundFitModel* cmodel = dynamic_cast<CompoundFitModel*>(this->_model);
+      toy_stream = new util::ToyStream(filename, "write", typeid(cmodel), cmodel->CompoundName(), write_opt, cmodel->StreamSize());
+   }
+   else {
+      // Build fake data toys
+      write_opt_str = "";
+      if(_use_simple_binning) { write_opt_str += "+SB"; }
+      write_opt = write_opt_str.c_str();
+      this->_data->AdoptBinningFromModel(this->_model);
+      CompoundFitData* cdata = dynamic_cast<CompoundFitData*>(this->_data);
+      toy_stream = new util::ToyStream(filename, "write", typeid(cdata), cdata->CompoundName(), write_opt, cdata->StreamSize());
+   }
 
    // Will we read throws from a pre-existing file instead of generating them? (This is used e.g. to convert
    // T2K legacy toy throws into SDK marginalisation toys)
    bool read_systematics (toy_throw_file_to_read != "" && toy_throw_file_to_read != "NONE" &&
                           param_name_map_file    != "" && param_name_map_file    != "NONE");
+
+   if(_toys_are_marginalisation && fluctuateStatistics){
+      LOG("ToyBuilder", pWARN) << "The option to fluctuate statistics was requested when building "
+                               << "marginalisation toys. This has been ignored, as it is not yet supported.";
+   }
 
    unsigned int n_rethrows = 0;
    for(int t = 0; t < Ntoys; ++t)
@@ -124,9 +156,14 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       LOG("ToyBuilder", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
 #endif
       if(t % 100 == 0) { LOG("ToyBuilder", pNOTICE) << "Generating toy-MC #" << t; }
-      if (_use_simple_binning) { write_opt = (_va_format + "+SB").c_str(); }
       this->_model->Generate(fpl, write_opt);
-      this->_model->Write(toy_stream, write_opt);
+      if(_toys_are_marginalisation) {
+         this->_model->Write(toy_stream, write_opt);
+      }
+      else {
+        this->_data->Generate(this->_model, fluctuateStatistics, write_opt);
+        this->_data->Write(toy_stream, write_opt);
+      }
       this->SaveParamThrows(fpl, t == Ntoys-1, filename);
    }
    delete toy_stream;

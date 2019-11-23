@@ -57,7 +57,7 @@ public:
       \param va_format The format that VALORArrays are stored as.
    */
    Marginalisation(CompoundFitElements& elements, string filePrefix, bool use_simple_binning,
-                   bool save_throws_to_tree = false, string va_format = "pdft");
+                   bool save_throws_to_tree = false, string va_format = "pdft_vf");
 
    /**
       Constructs a Marginalisation object.
@@ -68,7 +68,7 @@ public:
       \param va_format The format that VALORArrays are stored as.
    */
    Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning,
-                   bool save_throws_to_tree = false, string va_format = "pdft");
+                   bool save_throws_to_tree = false, string va_format = "pdft_vf");
 
    /**
       Destructor.

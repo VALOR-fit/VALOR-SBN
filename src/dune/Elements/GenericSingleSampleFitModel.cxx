@@ -300,7 +300,7 @@ bool GenericSingleSampleFitModel::Read(util::ToyStream* stream, Option_t* read_o
 {
    LOG("GenericSingleSampleFitModel",pDEBUG) << "Reading model from stream";
 
-   string opt = (read_opt) ? read_opt : "pdft";
+   string opt = (read_opt) ? read_opt : "pdft_vf";
 
    int isample = fArrIdx->SampleIdx(fBeam, fSample);
    // Read in the MC templates
@@ -861,7 +861,9 @@ bool GenericSingleSampleFitModel::Write(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitModel::Write(util::ToyStream* stream, Option_t* write_opt)
 {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
    LOG("GenericSingleSampleFitModel",pINFO) << "Writing results to stream";
+#endif
 
    string opt = (write_opt) ? write_opt : "pdft";
 
@@ -922,8 +924,10 @@ bool GenericSingleSampleFitModel::Write(util::ToyStream* stream, Option_t* write
    if(opt.find("pdft") != string::npos)
    {
       stream->Write(fPDFTotOb);
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
       LOG("GenericSingleSampleFitModel", pINFO) << "Sample integral: " <<
          fPDFTotOb->Integral();
+#endif
 
       if(opt.find("+SB") != string::npos)
       {
