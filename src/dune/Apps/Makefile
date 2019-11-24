@@ -23,7 +23,6 @@ TGT = make_nd_minidst \
       make_table_systematic_effects \
       run_fit \
       write_pdf \
-			write_fd_prediction_pdf \
       tweak_pdf_N \
       tweak_pdf_sigma_var \
       fitnt_conv \
@@ -32,7 +31,8 @@ TGT = make_nd_minidst \
       run_build_margtoys \
       run_fit_marg \
       make_dummy_samples \
-      batch_tests
+      batch_tests \
+      write_sbn_spectra_using_universes
 
 all: $(TGT)
 
@@ -178,6 +178,10 @@ make_dummy_samples: FORCE
 	$(CXX) $(CXXFLAGS) -c make_dummy_samples.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) make_dummy_samples.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_dummy_samples
 
+write_sbn_spectra_using_universes: FORCE
+	$(CXX) $(CXXFLAGS) -c write_sbn_spectra_using_universes.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) write_sbn_spectra_using_universes.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-write_sbn_spectra_using_universes
+
 run_tests: FORCE
 ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c run_tests.cxx $(GINCLUDES)
@@ -220,6 +224,7 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit_marg
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-batch_tests
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_sbn_spectra_using_universes
 
 distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
@@ -241,6 +246,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit_marg
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-batch_tests
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-write_sbn_spectra_using_universes
 
 FORCE:
 	
