@@ -3,7 +3,7 @@
                                                                                                                                       
 \app       valor_dune-write_pdf  
 
-\brief     Write out generic single sample PDFs and MC templates 
+\brief     Write out generic single sample PDFs and MC templates and make fd predictions from nd fits 
 
 \options
            --fit-param-list      : Fit parameter list (see UtlParam.cxx)
@@ -18,6 +18,9 @@
            --fix                 : Oscillation parameters to be fixed 
            --pot-override        : Fix all samples to given POT (use 1E21 when making template files)
            --force-dst           : Ignore the XML requesting you use prebuilt templates and read the DST anyway (useful for making the prebuilt templates)
+           --generate-fd-pred    : Generate the far detector prediction? If so, this requires the next parameter too [options: generate-fd-pred || no-fd-pred (def)]
+           --fit-output-file     : File containing the fit output - this is where the FitParamList comes from to Generate the FD prediction
+           --fit-output-entry    : Desired entry in the tree [def: 0]
 
 \author    VALOR DUNE people, aka Costas, Steve, Lorena
 \created   March 27, 2014
@@ -60,6 +63,7 @@
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/FitElements/GenericSingleSampleFitData.h"
 
 using namespace std;
 using namespace valor;
@@ -74,14 +78,16 @@ int main(int argc, char ** argv)
   
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/write_pdf.arg:$VALOR_EXPT/config/apps/oscparams.arg:$VALOR_EXPT/config/apps/seeds.arg");
-  LOG("valor_dune", pNOTICE) << arg;
+  LOG("write_pdf", pNOTICE) << arg;
 
   string fplname          = arg.GetString("fit-param-list");
   string fplopt           = arg.GetString("fit-param-opt");
-  std::string write_opt   = arg.GetString("write-opt");
+  string write_opt        = arg.GetString("write-opt");
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string output_name      = arg.GetString("output-name");
   string config_file      = arg.GetString("config");
+  string fit_output       = arg.GetString("fit-output-file");
+  int    output_entry     = arg.GetInt("fit-output-entry");
   
   // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
   double pot_override     = arg.GetDouble("pot-override");
@@ -95,13 +101,21 @@ int main(int argc, char ** argv)
   if (force_dst) {
     readopt += " forcedst";
   }
-  
+ 
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
+
+  bool generate_fd = arg.GetBool("generate-fd-pred");
+  if(generate_fd){
+    if(fit_output == "NONE"){
+      LOG("write_pdf",pFATAL) << "FD prediction requested but no fit result file given";
+      util::Die(-1);
+    }
+  }
 
   // Set the random seeds                                                                                                          
   Rnd::Instance()->SetSeeds(arg);
 
-  LOG("valor_dune", pNOTICE) << *Rnd::Instance();
+  LOG("write_pdf", pNOTICE) << *Rnd::Instance();
 
   // Create file to store outputs
   TString outfilename = TString::Format("%s.root", output_name.c_str());
@@ -114,8 +128,25 @@ int main(int argc, char ** argv)
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
   // parameter limits, initial values etc).            
-  CorrelatedSystematics * syst = model->GetSystematics();                                                                               
-  FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+  CorrelatedSystematics * syst = model->GetSystematics();                                                                              
+  FitParamList *fp = 0;
+  
+  // If we have not been asked to generate the FD prediction from fit result
+  if(!generate_fd) fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+  // If we have, get the FPL from the fit result output file
+  else {
+    // Get FitParamList from the fit result file
+    TFile f(fit_output.c_str(), "read");
+    TTree * fitnt = (TTree*)f.Get("valor_dune_nd_ntp");
+    fitnt->SetBranchAddress("best_fit_params", &fp);
+    fitnt->GetEntry(output_entry);
+    LOG("write_pdf",pNOTICE) << "FitParamList read from fit result";
+
+  }
+  if(fp == 0){ // Make sure that worked
+    LOG("write_pdf",pFATAL) << "FitParamList not filled";
+    util::Die(-1);
+  }
 
   //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
@@ -130,7 +161,7 @@ int main(int argc, char ** argv)
     TObjArray * matches = input_match.MatchS(argname.c_str());
 
     if (matches->GetEntries() != 2) {
-      LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+      LOG("write_pdf",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
       util::Die(-1);
     }
     TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
@@ -139,7 +170,7 @@ int main(int argc, char ** argv)
 
     conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
     if (param == conv::kPhypUndefined) {
-      LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+      LOG("write_pdf",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
       util::Die(-1);
     }
 
@@ -154,7 +185,7 @@ int main(int argc, char ** argv)
   }
 
   // Generate predictions                                                                                                         
-  Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                 
+  Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                
   model->Generate(*fp,generate_opt);
 
   CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);

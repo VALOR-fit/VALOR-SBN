@@ -8,3 +8,6 @@ output-name                          |   string       |  optional   |   valor_pd
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
 pot-override                         |   double       |  optional   |   -999
 force-dst,no-force-dst               |   boolean_list |  optional   |   no-force-dst
+generate-fd-pred,no-fd-pred          |   boolean_list |  optional   |   no-fd-pred
+fit-output-file                      |   string       |  optional   |   NONE
+fit-output-entry                     |   integer      |  optional   |   0
