@@ -12,7 +12,6 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/ToyStream.h"
-#include "valor/FitCore/CompoundFitModel.h"
 
 //#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
@@ -58,8 +57,6 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
    const int lastBatch = firstBatch + Nbatches - 1;
    const int N = Nbatches * Ntoys;
    vector<double> vec_chi2_toy(N);  // Index constructed (ibatch - firstBatch) * Ntoys + itoy
-   // TODO: Ideally, Marginalisation shouldn't derive from CFM or CFD, only FitModelABC and FitDataABC, so ToyStream needs changing, if possible?
-   CompoundFitModel* cmodel = dynamic_cast<CompoundFitModel*>(this->_model);
    const char* read_opt = _va_format.c_str();
    for(int b = firstBatch; b <= lastBatch; ++b)
    {
@@ -73,7 +70,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       std::string filename = oss.str();
       LOG("Marginalisation", pINFO) << "Filename: " << filename;
 
-      util::ToyStream* toy_stream = new util::ToyStream(filename, "read", typeid(cmodel), cmodel->CompoundName(), read_opt, cmodel->StreamSize());
+      util::ToyStream* toy_stream = this->_model->InitToyStream(filename, "read", read_opt);
       for(int t = 0; t < Ntoys; ++t)
       {
          // Read the chi2 of each toy-MC experiment into a vector

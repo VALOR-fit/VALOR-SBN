@@ -52,6 +52,7 @@
 #include "valor/CmdLine/CmdLnArgList.h"
 
 #include "valor/Conventions/KineSpace.h"
+#include "valor/Conventions/Opt.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
@@ -74,13 +75,10 @@
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Elements/CompoundFitElements.h"
-
-#include "valor/FitCore/CompoundFitData.h"
-#include "valor/FitCore/CompoundFitModel.h"
-#include "valor/Conventions/Opt.h"
-
 #include "dune/Utilities/Marginalisation.h"
 #include "dune/Utilities/UtlOscillation.h"
+
+//#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
 using namespace valor;
 using namespace valor::conv;
@@ -165,7 +163,6 @@ void Fit(CmdLnArgList& arg)
    elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
    FitDataABC* data = elements->FitData();
-   CompoundFitData* cdata = dynamic_cast<CompoundFitData*>(data);
 
    util::ToyStream* toy_stream = nullptr;
    if(arg.GetInt("gen-fakedata")) {
@@ -178,8 +175,7 @@ void Fit(CmdLnArgList& arg)
       }
 
       // GetSystematics will be added to CorrelatedSystematics in the future
-      CorrelatedSystematics* systematics =
-         dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
+      CorrelatedSystematics* systematics = model->GetSystematics();
       FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
 
       // Set the priors
@@ -199,7 +195,7 @@ void Fit(CmdLnArgList& arg)
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
       data->AdoptBinningFromModel(model);
-      toy_stream = new util::ToyStream(data_file_name, "read", typeid(cdata), cdata->CompoundName(), read_opt_data, cdata->StreamSize());
+      toy_stream = data->InitToyStream(data_file_name, "read", read_opt_data);
    }
 
    // Get the requested batch number and number of marginalisation toys for the

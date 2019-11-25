@@ -12,8 +12,6 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/ToyStream.h"
-#include "valor/FitCore/CompoundFitModel.h"
-#include "valor/FitCore/CompoundFitData.h"
 
 //#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
 
@@ -78,15 +76,13 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
 
    // Create a file to store this batch of toys
    util::ToyStream* toy_stream = nullptr;
-   // TODO: I don't want ToyBuilder and/or Marginalisation to depend on CFM or CFD, so modify FitModelABC/FitDataABC to get the info I currently get from CFM/CFD. Then modify ToyStream so that the constructor takes either ABC. This wouldn't introduce circular dependencies?
    if(_toys_are_marginalisation) {
       // Build marginalisation toys
       write_opt_str = "pdft_vf";
       if(_store_mode_arrays ) { write_opt_str += "_pdfc_vf"; }
       if(_use_simple_binning) { write_opt_str += "+SB";      }
       write_opt = write_opt_str.c_str();
-      CompoundFitModel* cmodel = dynamic_cast<CompoundFitModel*>(this->_model);
-      toy_stream = new util::ToyStream(filename, "write", typeid(cmodel), cmodel->CompoundName(), write_opt, cmodel->StreamSize());
+      toy_stream = this->_model->InitToyStream(filename, "write", write_opt);
    }
    else {
       // Build fake data toys
@@ -94,8 +90,7 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       if(_use_simple_binning) { write_opt_str += "+SB"; }
       write_opt = write_opt_str.c_str();
       this->_data->AdoptBinningFromModel(this->_model);
-      CompoundFitData* cdata = dynamic_cast<CompoundFitData*>(this->_data);
-      toy_stream = new util::ToyStream(filename, "write", typeid(cdata), cdata->CompoundName(), write_opt, cdata->StreamSize());
+      toy_stream = this->_data->InitToyStream(filename, "write", write_opt);
    }
 
    // Will we read throws from a pre-existing file instead of generating them? (This is used e.g. to convert
