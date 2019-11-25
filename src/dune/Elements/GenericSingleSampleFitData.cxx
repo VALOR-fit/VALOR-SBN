@@ -584,4 +584,8 @@ void GenericSingleSampleFitData::AdoptBinningFromModel(FitModelABC* model_abc)
   }
 }
 //________________________________________________________________________________________
-
+util::ToyStream* GenericSingleSampleFitData::InitToyStream(const string file_name, const string read_or_write, const string opt)
+{
+  return new util::ToyStream(file_name, read_or_write, typeid(this), this->Name(), opt, this->StreamSize());
+}
+//________________________________________________________________________________________

@@ -4102,3 +4102,8 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
   } // ip: loop over lateral post-osc params
 }
 //________________________________________________________________________________________
+util::ToyStream* GenericSingleSampleFitModel::InitToyStream(const string file_name, const string read_or_write, const string opt)
+{
+  return new util::ToyStream(file_name, read_or_write, typeid(this), this->Name(), opt, this->StreamSize());
+}
+//________________________________________________________________________________________

@@ -116,6 +116,9 @@ public:
   // Calculate the OB manually from the content of the simple bins. Can be used to verify the spectra are the same for SB/OB
   void UpdateObservableBinningFromSimple (Option_t * opt = 0);
 
+  // Initialise and return a new ToyStream object, with setting set appropriately for reading/writing using this class
+  virtual util::ToyStream* InitToyStream(const string file_name, const string read_or_write = "read", const string opt = "");
+
 private:
 
   void Init  (void);
