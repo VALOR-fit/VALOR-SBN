@@ -84,6 +84,11 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
          this->_model->Read(toy_stream, read_opt);                               // TODO: Can read_opt be stored inside the ToyStream and read in Read?
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+         LOG("Marginalisation", pNOTICE) << "Marg toy #" << t << " event rates:\n" << this->_model->GetPDFIntegralAsString();
+#endif
+
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "chi2(" << t << "): " << chi2 <<
             " L(" << t << "): " << exp(-chi2/2.);

@@ -110,6 +110,9 @@ public:
   PhysParamList OneSigmaErrors (Option_t * opt = "");
 //  TMatrixD CovarianceMatrix(Option_t * opt = "");
 
+  // Get a string including the model name and the total PDF integral
+  virtual std::string GetPDFIntegralAsString(Option_t * opt = 0);
+
   // Calculate the OB manually from the content of the simple bins. Can be used to verify the spectra are the same for SB/OB
   void UpdateObservableBinningFromSimple (Option_t * opt = 0);
 

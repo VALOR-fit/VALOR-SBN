@@ -165,6 +165,16 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
         this->_data->Write(toy_stream, write_opt);
       }
       this->SaveParamThrows(fpl, t == Ntoys-1, filename);
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+     if(_toys_are_marginalisation) {
+       LOG("ToyBuilder", pNOTICE) << "Marg toy #" << t << " event rates:\n" << this->_model->GetPDFIntegralAsString();
+     }
+     else {
+       LOG("ToyBuilder", pNOTICE) << "Fake data toy #" << t << " event rates:\n" << this->_data->GetPDFIntegralAsString();
+     }
+#endif
+
    }
    delete toy_stream;
    LOG("ToyBuilder", pNOTICE) << "Finished building toys. Generated " << Ntoys

@@ -3820,6 +3820,24 @@ void GenericSingleSampleFitModel::ReweightHistUsingParamSet(TH1* hist_to_reweigh
   }
 }
 //________________________________________________________________________________________
+std::string GenericSingleSampleFitModel::GetPDFIntegralAsString(Option_t * opt_in)
+{
+  double integral = -999;
+
+  std::string opt = (opt_in) ? opt_in : "";
+  if(opt.find("SB") != string::npos) {
+    integral = fPDFTotSb->Integral();
+  }
+  else {
+    integral = fPDFTotOb->Integral();
+  }
+
+  TString temp = TString::Format("%s total model PDF integral = %.5lf", this->Name().c_str(), integral);
+  std::string to_print = temp.Data();
+
+  return to_print;
+}
+//________________________________________________________________________________________
 void GenericSingleSampleFitModel::FillNonEmptyBinVectors()
 {
   const VALORBinning  * reco_ob = fBinning->RecoOptBinning();

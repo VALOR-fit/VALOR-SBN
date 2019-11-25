@@ -237,6 +237,10 @@ void Fit(CmdLnArgList& arg)
       if(arg.GetInt("gen-fakedata") == 0)
       {
         data->Read(toy_stream, read_opt_data);
+
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+        LOG("valor_dune", pNOTICE) << "Fake data toy #" << ifake << " event rates:\n" << data->GetPDFIntegralAsString();
+#endif
       }
 
       // Perform a fit and populate the entire chi2 and likelihood surfaces

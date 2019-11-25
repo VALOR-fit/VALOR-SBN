@@ -76,6 +76,9 @@ public:
 
   const SingleSampleKineBinning * GetBinning(void) const { return fBinning; };
 
+  // Get a string including the data name and the total PDF integral
+  virtual std::string GetPDFIntegralAsString(Option_t * opt = 0);
+
   virtual void AdoptBinningFromModel(FitModelABC* model);
   
 private:

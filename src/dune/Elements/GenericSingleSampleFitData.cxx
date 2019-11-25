@@ -546,6 +546,24 @@ void GenericSingleSampleFitData::Zero(Option_t * opt)
   if (!fDataSbNull) { fDataSb->SetAll(0.); }
 }
 //________________________________________________________________________________________
+std::string GenericSingleSampleFitData::GetPDFIntegralAsString(Option_t * opt_in)
+{
+  double integral = -999;
+
+  std::string opt = (opt_in) ? opt_in : "";
+  if(opt.find("SB") != string::npos) {
+    integral = fDataSb->Integral();
+  }
+  else {
+    integral = fDataOb->Integral();
+  }
+
+  TString temp = TString::Format("%s total data PDF integral = %.5lf", this->Name().c_str(), integral);
+  std::string to_print = temp.Data();
+
+  return to_print;
+}
+//________________________________________________________________________________________
 void GenericSingleSampleFitData::AdoptBinningFromModel(FitModelABC* model_abc)
 {
   GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
