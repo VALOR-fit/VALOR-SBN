@@ -296,10 +296,11 @@ bool GenericSingleSampleFitModel::Read(string file, Option_t * opt)
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitModel::Read(util::ToyStream* stream, Option_t* read_opt)
+bool GenericSingleSampleFitModel::Read(util::ToyStream* stream)
 {
    LOG("GenericSingleSampleFitModel",pDEBUG) << "Reading model from stream";
 
+   Option_t* read_opt = stream->GetVALORArrayFormat();
    string opt = (read_opt) ? read_opt : "pdft_vf";
 
    int isample = fArrIdx->SampleIdx(fBeam, fSample);
@@ -859,12 +860,13 @@ bool GenericSingleSampleFitModel::Write(
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitModel::Write(util::ToyStream* stream, Option_t* write_opt)
+bool GenericSingleSampleFitModel::Write(util::ToyStream* stream)
 {
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
    LOG("GenericSingleSampleFitModel",pINFO) << "Writing results to stream";
 #endif
 
+   Option_t* write_opt = stream->GetVALORArrayFormat();
    string opt = (write_opt) ? write_opt : "pdft";
 
    int isample = fArrIdx->SampleIdx(fBeam, fSample);

@@ -116,13 +116,6 @@ void Fit(CmdLnArgList& arg)
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
    bool use_simple_binning = arg.GetBool("use-simple-binning");
 
-   const char* read_opt      = "pdft";
-   const char* read_opt_data = "";
-   if (use_simple_binning) {
-     read_opt      = "pdft+SB";
-     read_opt_data = "+SB";
-   }
-
    string fp1_name         = arg.GetString("fit-param1");
    const double fp1_val    = arg.GetDouble("fit-param1-value");
    const int fp1_bin       = arg.GetInt("fit-param1-bin");
@@ -194,6 +187,12 @@ void Fit(CmdLnArgList& arg)
       // Fit to data read from an input file
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
+
+      const char* read_opt_data = "";
+      if (use_simple_binning) {
+         read_opt_data = "+SB";
+      }
+
       data->AdoptBinningFromModel(model);
       toy_stream = data->InitToyStream(data_file_name, "read", read_opt_data);
    }
@@ -223,7 +222,6 @@ void Fit(CmdLnArgList& arg)
    // Skip forward in the input fakedata binary file to the position of the first toy to read
    if(arg.GetInt("gen-fakedata") == 0 && start_toy_fake_data != 0)
    {
-     long toy_size = model->StreamSize(read_opt);
      toy_stream->SetPositionToToy(start_toy_fake_data);
    }
 
@@ -232,7 +230,7 @@ void Fit(CmdLnArgList& arg)
       // Read a fakedata toy, if requested
       if(arg.GetInt("gen-fakedata") == 0)
       {
-        data->Read(toy_stream, read_opt_data);
+        data->Read(toy_stream);
 
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
         LOG("valor_dune", pNOTICE) << "Fake data toy #" << ifake << " event rates:\n" << data->GetPDFIntegralAsString();

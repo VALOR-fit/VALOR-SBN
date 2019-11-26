@@ -58,6 +58,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
    const int N = Nbatches * Ntoys;
    vector<double> vec_chi2_toy(N);  // Index constructed (ibatch - firstBatch) * Ntoys + itoy
    const char* read_opt = _va_format.c_str();
+   if (_use_simple_binning) { read_opt = (_va_format + "+SB").c_str(); }
    for(int b = firstBatch; b <= lastBatch; ++b)
    {
       std::ostringstream oss;
@@ -77,8 +78,7 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
 #ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "Reading toy-MC data";
 #endif
-         if (_use_simple_binning) { read_opt = (_va_format + "+SB").c_str(); }
-         this->_model->Read(toy_stream, read_opt);                               // TODO: Can read_opt be stored inside the ToyStream and read in Read?
+         this->_model->Read(toy_stream);
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
 

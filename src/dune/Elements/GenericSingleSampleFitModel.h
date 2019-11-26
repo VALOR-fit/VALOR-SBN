@@ -74,7 +74,7 @@ public:
   
   // Options available to Read() include nosplines, nomc, forcedst, pot_override, binning=myfile.xml 
   bool          Read                   (string file, Option_t * opt = 0);
-  virtual bool  Read                   (util::ToyStream* stream, Option_t* read_opt = 0);
+  virtual bool  Read                   (util::ToyStream* stream);
   bool          Generate               (const PhysHypothesis & ph, Option_t * opt = 0);
   void          RandomizeSystematics   (Option_t * opt = 0);
   void          RandomizeSystematics   (bool (*should_randomize)(conv::PhysParamId_t), Option_t * opt = 0);
@@ -87,7 +87,7 @@ public:
   bool          Generate               (const FitParamList & fp, Option_t * opt = 0);
   bool          Write                  (TObjArray * collection, const char * tag = "model", Option_t * write_opt = 0);
   bool          Write                  (const char * filename,  const char * tag = "model", Option_t * write_opt = 0, Option_t * file_opt = 0);
-  virtual bool  Write                  (util::ToyStream* stream, Option_t* write_opt = 0);
+  virtual bool  Write                  (util::ToyStream* stream);
   virtual long  StreamSize             (Option_t * opt = 0) const;
   double        GetFitStatisticPenalty (Option_t * opt = 0) const;
   CorrelatedSystematics *       GetSystematics(Option_t * opt = "");

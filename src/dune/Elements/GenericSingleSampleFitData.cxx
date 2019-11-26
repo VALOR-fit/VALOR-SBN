@@ -232,8 +232,9 @@ bool GenericSingleSampleFitData::Write(
   return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Write(util::ToyStream* stream, Option_t * write_opt)
+bool GenericSingleSampleFitData::Write(util::ToyStream* stream)
 {
+   Option_t* write_opt = stream->GetVALORArrayFormat();
    string opt = (write_opt) ? write_opt : "";
    assert(fDataOb);
    fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
@@ -249,8 +250,9 @@ bool GenericSingleSampleFitData::Write(util::ToyStream* stream, Option_t * write
    return true;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Read(util::ToyStream* stream, Option_t * read_opt)
+bool GenericSingleSampleFitData::Read(util::ToyStream* stream)
 {
+  Option_t* read_opt = stream->GetVALORArrayFormat();
   string opt = (read_opt) ? read_opt : "";
   assert(fDataOb);
   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));

@@ -71,26 +71,21 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
 
    PhysicalParameterLimits* limits = PhysicalParameterLimits::Instance();
 
-   const char* write_opt = "";
-   std::string write_opt_str = "";
-
    // Create a file to store this batch of toys
    util::ToyStream* toy_stream = nullptr;
    if(_toys_are_marginalisation) {
       // Build marginalisation toys
-      write_opt_str = "pdft_vf";
+      std::string write_opt_str = "pdft_vf";
       if(_store_mode_arrays ) { write_opt_str += "_pdfc_vf"; }
       if(_use_simple_binning) { write_opt_str += "+SB";      }
-      write_opt = write_opt_str.c_str();
-      toy_stream = this->_model->InitToyStream(filename, "write", write_opt);
+      toy_stream = this->_model->InitToyStream(filename, "write", write_opt_str);
    }
    else {
       // Build fake data toys
-      write_opt_str = "";
+      std::string write_opt_str = "";
       if(_use_simple_binning) { write_opt_str += "+SB"; }
-      write_opt = write_opt_str.c_str();
       this->_data->AdoptBinningFromModel(this->_model);
-      toy_stream = this->_data->InitToyStream(filename, "write", write_opt);
+      toy_stream = this->_data->InitToyStream(filename, "write", write_opt_str);
    }
 
    // Will we read throws from a pre-existing file instead of generating them? (This is used e.g. to convert
@@ -151,13 +146,13 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       LOG("ToyBuilder", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
 #endif
       if(t % 100 == 0) { LOG("ToyBuilder", pNOTICE) << "Generating toy-MC #" << t; }
-      this->_model->Generate(fpl, write_opt);
+      this->_model->Generate(fpl, toy_stream->GetVALORArrayFormat());
       if(_toys_are_marginalisation) {
-         this->_model->Write(toy_stream, write_opt);
+         this->_model->Write(toy_stream);
       }
       else {
-        this->_data->Generate(this->_model, fluctuateStatistics, write_opt);
-        this->_data->Write(toy_stream, write_opt);
+        this->_data->Generate(this->_model, fluctuateStatistics, toy_stream->GetVALORArrayFormat());
+        this->_data->Write(toy_stream);
       }
       this->SaveParamThrows(fpl, t == Ntoys-1, filename);
 
