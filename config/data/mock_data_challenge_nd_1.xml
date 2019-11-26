@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="SBN-NDFIT" version="2019Modern" detector="ND">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mock data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+
+  <using_dst_format> 
+     true 
+  </using_dst_format> 
+
+  <dst> 
+    <bnb_fhc>
+      <filename>  sbn/mock-data-challenge/version1/sbnd/data/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_1.root </filename> 
+       <objname>  valor_sbncode_mini_dst </objname> 
+       <objtype>  TTree    </objtype> 
+    </bnb_fhc>
+  </dst>
+  
+</data>
+
+</analysis_inputs>
+
+
