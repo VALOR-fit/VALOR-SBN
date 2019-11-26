@@ -205,7 +205,7 @@ int main(int argc, char ** argv)
     */
     
     // Write stuff out                              
-    std::string write_opt = "pdfts_rf";
+    std::string write_opt = "pdfts_rf pdfcs_rf";
     TObjArray myarr;
     myarr.SetOwner(true);
     model->Write(&myarr,"valor",write_opt.c_str());
