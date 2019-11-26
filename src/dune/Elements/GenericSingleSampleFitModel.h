@@ -117,7 +117,7 @@ public:
   void UpdateObservableBinningFromSimple (Option_t * opt = 0);
 
   // Initialise and return a new ToyStream object, with setting set appropriately for reading/writing using this class
-  virtual util::ToyStream* InitToyStream(const string file_name, const string read_or_write = "read", const string opt = "");
+  virtual util::ToyStream* InitToyStream(const string file_name, const string read_or_write = "read", string valor_array_format = "");
 
 private:
 
@@ -288,6 +288,8 @@ private:
   std::map<conv::KineVar_t, std::vector<unsigned int>       > fUnscaledBinToGlobalBinSb;
   std::map<conv::KineVar_t, std::vector<std::vector<bool> > > fSkipBinSb;
   std::map<conv::KineVar_t, unsigned int                    > fNOverflowBinsSb;
+
+  std::string fDefVALORArrayFormat; // The default VALORArray format used to read/write toys
 };
 
 } // valor

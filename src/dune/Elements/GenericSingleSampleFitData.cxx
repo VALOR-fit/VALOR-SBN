@@ -23,6 +23,7 @@
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlNumStat.h"
 #include "valor/Utilities/UtlSystem.h"
+#include "valor/Utilities/UtlStr.h"
 #include "valor/Messenger/Messenger.h"
 // dune
 #include "dune/Conventions/Names.h"
@@ -36,7 +37,8 @@ using namespace valor::conv;
 //________________________________________________________________________________________
 GenericSingleSampleFitData::GenericSingleSampleFitData() :
   SingleSampleFitDataABC(),
-  fBinning(nullptr)
+  fBinning(nullptr),
+  fDefVALORArrayFormat("data_vf")
 {
   this->Init();
 }
@@ -69,7 +71,7 @@ bool GenericSingleSampleFitData::Write(TObjArray * array, const char * tag, Opti
   LOG("GenericSingleSampleFitData", pDEBUG) 
     << "tag = " << tag << ", write option = " << write_opt;
 
-  string opt = (write_opt) ? write_opt : "data_vf";
+  string opt = (write_opt) ? write_opt : fDefVALORArrayFormat;
 
   if(opt.find("all") != string::npos) {
     opt = "data_vf,data_rf +slices +SB";
@@ -235,7 +237,7 @@ bool GenericSingleSampleFitData::Write(
 bool GenericSingleSampleFitData::Write(util::ToyStream* stream)
 {
    Option_t* write_opt = stream->GetVALORArrayFormat();
-   string opt = (write_opt) ? write_opt : "";
+   string opt = (write_opt) ? write_opt : fDefVALORArrayFormat;
    assert(fDataOb);
    fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
    stream->Write(fDataOb);
@@ -253,7 +255,7 @@ bool GenericSingleSampleFitData::Write(util::ToyStream* stream)
 bool GenericSingleSampleFitData::Read(util::ToyStream* stream)
 {
   Option_t* read_opt = stream->GetVALORArrayFormat();
-  string opt = (read_opt) ? read_opt : "";
+  string opt = (read_opt) ? read_opt : fDefVALORArrayFormat;
   assert(fDataOb);
   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
   stream->Read(fDataOb);
@@ -276,7 +278,7 @@ long GenericSingleSampleFitData::StreamSize(Option_t* opt_in) const
     return false;
   }
 
-  string opt = (opt_in) ? opt_in : "";
+  string opt = (opt_in) ? opt_in : fDefVALORArrayFormat;
   long size = 0;
 
   assert(fDataOb);
@@ -586,8 +588,14 @@ void GenericSingleSampleFitData::AdoptBinningFromModel(FitModelABC* model_abc)
   }
 }
 //________________________________________________________________________________________
-util::ToyStream* GenericSingleSampleFitData::InitToyStream(const string file_name, const string read_or_write, const string opt)
+util::ToyStream* GenericSingleSampleFitData::InitToyStream(const string file_name, const string read_or_write, string valor_array_format)
 {
-  return new util::ToyStream(file_name, read_or_write, typeid(this), this->Name(), opt, this->StreamSize());
+  valor_array_format = util::RemoveAllWhitespace(valor_array_format);
+  if(valor_array_format.empty()) {
+    valor_array_format = fDefVALORArrayFormat;
+  }
+
+  return new util::ToyStream(file_name, read_or_write, typeid(this), this->Name(),
+                             valor_array_format, this->StreamSize());
 }
 //________________________________________________________________________________________

@@ -99,7 +99,8 @@ GenericSingleSampleFitModel::GenericSingleSampleFitModel() :
   fScaledBinToGlobalBinSb(),
   fUnscaledBinToGlobalBinSb(),
   fSkipBinSb(),
-  fNOverflowBinsSb()
+  fNOverflowBinsSb(),
+  fDefVALORArrayFormat("pdft_vf")
 {
   this->Init();
 }
@@ -301,7 +302,7 @@ bool GenericSingleSampleFitModel::Read(util::ToyStream* stream)
    LOG("GenericSingleSampleFitModel",pDEBUG) << "Reading model from stream";
 
    Option_t* read_opt = stream->GetVALORArrayFormat();
-   string opt = (read_opt) ? read_opt : "pdft_vf";
+   string opt = (read_opt) ? read_opt : fDefVALORArrayFormat;
 
    int isample = fArrIdx->SampleIdx(fBeam, fSample);
    // Read in the MC templates
@@ -595,7 +596,7 @@ bool GenericSingleSampleFitModel::Write(TObjArray * array, const char * tag, Opt
   LOG("GenericSingleSampleFitModel", pINFO)  << "sample = " << util::AsString(fSample) << ", detector = "
                                              << util::AsString(fDetector) << ", beam = " << util::AsString(fBeam);
 
-  string opt = (write_opt) ? write_opt : "pdft_vf";
+  string opt = (write_opt) ? write_opt : fDefVALORArrayFormat;
 
   bool write_all = opt.find("all") != string::npos;
   bool write_sb  = opt.find("+SB") != string::npos;
@@ -867,7 +868,7 @@ bool GenericSingleSampleFitModel::Write(util::ToyStream* stream)
 #endif
 
    Option_t* write_opt = stream->GetVALORArrayFormat();
-   string opt = (write_opt) ? write_opt : "pdft";
+   string opt = (write_opt) ? write_opt : fDefVALORArrayFormat;
 
    int isample = fArrIdx->SampleIdx(fBeam, fSample);
    // Write out the MC templates
@@ -942,7 +943,7 @@ bool GenericSingleSampleFitModel::Write(util::ToyStream* stream)
 //________________________________________________________________________________________
 long GenericSingleSampleFitModel::StreamSize (Option_t* opt_in) const
 {
-  string opt = (opt_in) ? opt_in : "pdft";
+  string opt = (opt_in) ? opt_in : fDefVALORArrayFormat;
   long size = 0;
 
   int isample = fArrIdx->SampleIdx(fBeam, fSample);
@@ -4104,8 +4105,14 @@ void GenericSingleSampleFitModel::PreComputeLateralSystVectors(bool use_simple_b
   } // ip: loop over lateral post-osc params
 }
 //________________________________________________________________________________________
-util::ToyStream* GenericSingleSampleFitModel::InitToyStream(const string file_name, const string read_or_write, const string opt)
+util::ToyStream* GenericSingleSampleFitModel::InitToyStream(const string file_name, const string read_or_write, string valor_array_format)
 {
-  return new util::ToyStream(file_name, read_or_write, typeid(this), this->Name(), opt, this->StreamSize());
+  valor_array_format = util::RemoveAllWhitespace(valor_array_format);
+  if(valor_array_format.empty()) {
+    valor_array_format = fDefVALORArrayFormat;
+  }
+
+  return new util::ToyStream(file_name, read_or_write, typeid(this), this->Name(),
+                             valor_array_format, this->StreamSize());
 }
 //________________________________________________________________________________________
