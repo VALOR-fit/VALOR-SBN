@@ -97,16 +97,16 @@ int main(int argc, char ** argv)
 {  
   valor::ExperimentInitialiser();
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
-  
+
   util::InitializeOAPriors();
- 
+
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/run_fit.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
   LOG("valor_dune", pNOTICE) << arg;
 
   TString param_values_ts(arg.GetString("param-values-option"));
   TString fit_options_ts (arg.GetString("fitter"));
-  
+
   bool with_stat_fluct    = arg.GetBool("with-stat-fluct");
   bool start_at_true      = arg.GetBool("start-at-true");
   bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
@@ -119,32 +119,32 @@ int main(int argc, char ** argv)
   string true_values_obj  = arg.GetString("true-from-objname"); // a physparamlist
   bool flip_23_octant     = arg.GetBool("flip-true-octant");
   bool read_data           = arg.GetBool("read-data"); // if read-data-from-file then do not Generate the Mock Data
-  
+
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   int prior_fit_number = arg.GetInt("prior-fit-number");
-  
+
   string tweak_parameter_set = arg.GetString("tweak-parameter-set");
   double force_tweak_size    = arg.GetDouble("force-tweak-size");
-  
+
   // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
   double pot_override     = arg.GetDouble("pot-override");
   if (pot_override > 0 ) {
     Opt::Instance()->MutableGlobalRegistry().Set("pot_override",pot_override);
   }
-  
+
   std::string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(mesg_thresholds);
-  
-    // Set up the thread pool
+
+  // Set up the thread pool
   if(n_threads>0) {//without n-cores specified, use as many as the host has
     util::VThreadPool::Instance()->SetNThreads(n_threads);
   }
 
   // Set the random seeds
   Rnd::Instance()->SetSeeds(arg);
-  
+
   LOG("valor_dune", pNOTICE) << *Rnd::Instance();
-  
+
   // Check if we have a PParm to read from file containing true values
   PhysParamList * true_values_from_file = 0;
   if (true_values_file.size() && util::ToLowerCase(true_values_file)!="none") {
@@ -164,7 +164,7 @@ int main(int argc, char ** argv)
   TString outfilename = TString::Format("%s_%d.root", arg.GetString("tag").c_str(), arg.GetInt("run"));
   StdFitNtp ntp;
   ntp.Create(outfilename.Data(), fit_result_tree_name, "VALOR DUNE / ND-Fit n-tuple");
-  
+
   // Get ND model & configure
   LOG("valor_dune", pNOTICE) << "Getting and configuring the fit elements";
   CompoundFitElements * elements = new CompoundFitElements();
@@ -175,7 +175,7 @@ int main(int argc, char ** argv)
 
   // Hack until we move GetSystematics() into FitModelABC
   CorrelatedSystematics * syst = model->GetSystematics();
-  
+
   // If necessary, update the systematics prior from a previous fit
   if (read_prior_from_file!="-" && read_prior_from_file!="none") {
     TFile prior_file(read_prior_from_file.c_str());
@@ -188,14 +188,14 @@ int main(int argc, char ** argv)
     delete prior_tree;
     prior_file.Close();
   }
-  
+
   // Use ND model to generate toy-MC experiments & fit
   for(int itoymc = 0; itoymc < ntoymc; itoymc++) {
     LOG("valor_dune", pNOTICE) << "\n\n *** Toy-MC experiment #" << itoymc;
-    
+
     // Reset output tree variables
     ntp.Reset();
-    
+
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
     FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
@@ -205,7 +205,7 @@ int main(int argc, char ** argv)
     if (param_values_ts.Contains("randomize")) {
       model->RandomizeSystematics(param_values_ts.Data());
     }
-    
+
     if (tweak_parameter_set != "none" && tweak_parameter_set != "-") {
       vector<PhysParamId_t> param_set = util::GetParameterSet(tweak_parameter_set);
       assert(param_set.size());
@@ -230,18 +230,18 @@ int main(int argc, char ** argv)
         model->RandomizeSystematics(param_map);
       }
     }
-      
+
     PhysParamList tweaks = model->Tweaks();
 
     //~ // Don't randomise fixed parameters
     //~ for (int ip = 0; ip < conv::knppmax ; ip++) {
-      //~ PhysParamId_t p = (PhysParamId_t)ip;
-      //~ if (tweaks.Contains(p) and fp->IsFixed(p) ) {
-        //~ double init = fp->InitValue(p);
-        //~ tweaks.SetValue(p,init);
-      //~ }
+    //~ PhysParamId_t p = (PhysParamId_t)ip;
+    //~ if (tweaks.Contains(p) and fp->IsFixed(p) ) {
+    //~ double init = fp->InitValue(p);
+    //~ tweaks.SetValue(p,init);
     //~ }
-    
+    //~ }
+
     fp->FromPhysParamList(tweaks,"current");
 
     // Check parameter name, maybe rethrow
@@ -253,7 +253,7 @@ int main(int argc, char ** argv)
         continue;
       }
     }
-    
+
     // If we have a set of true values read from file, use those.
     if (true_values_from_file) {
       fp->FromPhysParamList(*true_values_from_file,"current");
@@ -338,7 +338,7 @@ int main(int argc, char ** argv)
     } //argname
 
     PhysParamList true_params = fp->AsPhysParamList("current");
-    
+
     // Generate a toy-MC experiment 
     FitDataABC * data = elements->FitData();
     if(!read_data){ // If we do not get told to read the data, Generate the mock data from the MC
@@ -363,7 +363,7 @@ int main(int argc, char ** argv)
     // These values will be overwritten during the fit.
     // Copy those values now so as to save them later in the output tree.
     ntp.TrueParamArr()->Append(true_params);
-    
+
     if (start_at_true) {
       // Before we do our start-at-true, we'll reset our fixed parameters
       for (int ip = 0 ; ip < fp->GetNumberParameters() ; ip++) {
@@ -376,44 +376,44 @@ int main(int argc, char ** argv)
     }
 
 
-      //before reset for the fit, fix to a different value?
-      RgKeyList fix_at_args = arg.FindKeys("fix-at-");
-      TPRegexp fix_at_match("fix-at-(\\w*)");
-      for (RgKey argname : fix_at_args) { // RgKey is just a typename for std::string right now
-        TObjArray * matches = fix_at_match.MatchS(argname.c_str());
+    //before reset for the fit, fix to a different value?
+    RgKeyList fix_at_args = arg.FindKeys("fix-at-");
+    TPRegexp fix_at_match("fix-at-(\\w*)");
+    for (RgKey argname : fix_at_args) { // RgKey is just a typename for std::string right now
+      TObjArray * matches = fix_at_match.MatchS(argname.c_str());
 
-        if (matches->GetEntries() != 2) {
-          LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
-          util::Die(-1);
+      if (matches->GetEntries() != 2) {
+        LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
+        util::Die(-1);
+      }
+      TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
+      std::string param_name(tos_param_name->String().Data());
+      delete matches;
+
+      conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
+      if (param == conv::kPhypUndefined) {
+        LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
+        util::Die(-1);
+      }
+
+      if (fp->Exists(param) && fp->IsFixed(param)) {
+        double fix_param_at = arg.GetDouble(argname);
+        if ( std::fabs(fix_param_at + 999. ) < conv::kASmallNum ) {
+          continue;
         }
-        TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
-        std::string param_name(tos_param_name->String().Data());
-        delete matches;
-
-        conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
-        if (param == conv::kPhypUndefined) {
-          LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
-          util::Die(-1);
-        }
-
-        if (fp->Exists(param) && fp->IsFixed(param)) {
-          double fix_param_at = arg.GetDouble(argname);
-          if ( std::fabs(fix_param_at + 999. ) < conv::kASmallNum ) {
-            continue;
+        if (util::IsOscParam(param)) {
+          if((fix_param_at < util::OscParamMinValue(param)) ||
+              (fix_param_at > util::OscParamMaxValue(param))) {
+            LOG("valor_dune",pFATAL) << "Attempting to fix parameter "
+              <<nr->ParamAsString(param)<<" outside limits at "<<fix_param_at
+              <<" - limits are "<<util::OscParamMinValue(param)<< " to "<<util::OscParamMaxValue(param);
+            util::Die(-1);
           }
-          if (util::IsOscParam(param)) {
-            if((fix_param_at < util::OscParamMinValue(param)) ||
-               (fix_param_at > util::OscParamMaxValue(param))) {
-              LOG("valor_dune",pFATAL) << "Attempting to fix parameter "
-                                       <<nr->ParamAsString(param)<<" outside limits at "<<fix_param_at
-                                       <<" - limits are "<<util::OscParamMinValue(param)<< " to "<<util::OscParamMaxValue(param);
-              util::Die(-1);
-            }
-          } // is osc param
-          fp->Update(param, fix_param_at);
-          fp->SetInitValue(param, fix_param_at);
-        } // param exists in FPL
-      } // argname
+        } // is osc param
+        fp->Update(param, fix_param_at);
+        fp->SetInitValue(param, fix_param_at);
+      } // param exists in FPL
+    } // argname
 
     // Set our current values back to the fitter start point.
     // This will be central values unless start-at-true is defined.
@@ -431,8 +431,8 @@ int main(int argc, char ** argv)
     fitter->DoTheFit();
     LOG("valor_dune", pNOTICE) << "Fit ends with statistic: " << fit_inputs->Statistic();
 
-//  migradmin = fitter->FitStatusCode("migrad_min");
-//  migraderr = fitter->FitStatusCode("migrad_err");
+    //  migradmin = fitter->FitStatusCode("migrad_min");
+    //  migraderr = fitter->FitStatusCode("migrad_err");
 
     // Copy best-fit params
     ntp.BestFitParamArr()->Copy(*fp);  
@@ -462,14 +462,14 @@ int main(int argc, char ** argv)
   }//itoymc
 
   ntp.Save();
-  
+
   //~ // Write a PPL with the prior uncertainties used
   //~ SDModel * ndm =  dynamic_cast<SDModel*>(model);
   //~ PhysParamList ppl = ndm->OneSigmaErrors();
   //~ ppl.Write("initial_errors");
-  
+
   std::cout<<"Done."<< std::endl << " GO VALOR!!!" << std::endl;
-  
+
   return 0;
 }
 

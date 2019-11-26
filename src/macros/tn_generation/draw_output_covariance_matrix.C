@@ -5,19 +5,17 @@ void draw_output_covariance_matrix(
   const char * input_file,
   int entry = 0)
 {
-  const int n_tot_flux = 52;
-  const int n_int = 44;
+  const int n_tot_flux = 19*3;
+  const int n_int = 19;
   const int n_det = 0;
   
   const int n_params = n_tot_flux+n_int+n_det;
   
   TFile * tf = TFile::Open(input_file);
   
-  valor::PhysParamList * true_params     = 0; // input true params
   valor::FitParamList *  best_fit_params = 0; // best-fit params
 
   TTree * tree = (TTree*)tf->Get("valor_dune_nd_ntp");
-  tree->SetBranchAddress("true_params",        &true_params);
   tree->SetBranchAddress("best_fit_params",    &best_fit_params);
   
   assert(tree->GetEntries()>entry);
@@ -37,17 +35,20 @@ void draw_output_covariance_matrix(
   TCanvas *c0 = new TCanvas("c0","c0",500,500);
   gStyle->SetOptStat(0);
   cov.Draw("colz");
+  c0->Print("matrix.root");
 
   TCanvas *c1 = new TCanvas("c1","c1",750,750);
-  double xy_margin = 0.174;
-  c1->SetLogz();
+  double xy_margin = 0.124;
+  //c1->SetLogz();
   c1->SetLeftMargin(xy_margin);
-  c1->SetRightMargin(0.15);
+  c1->SetRightMargin(0.2);
   c1->SetBottomMargin(xy_margin);
+  c1->SetTopMargin(0.2);
   gStyle->SetOptStat(0);
   gStyle->SetOptTitle(0);
  
-  for (int iaxis = 0; iaxis < 2 ; iaxis++) {
+  
+  /*for (int iaxis = 0; iaxis < 2 ; iaxis++) {
     TAxis * axis = (iaxis ? h->GetYaxis() : h->GetXaxis() );
     axis->SetBinLabel(10 ,"FHC #nu_{#mu}");
     axis->SetBinLabel(30 ,"FHC #bar{#nu}_{#mu}");
@@ -85,17 +86,17 @@ void draw_output_covariance_matrix(
     //~ axis->LabelsOption("v");
 
     axis->SetTickLength(0.);
-  }
+  }*/
 
   h->GetYaxis()->LabelsOption("v");
 
-
-
   //  h->GetYaxis()->SetLabelSize("0.03");
+//  h->Draw("colz");
+  h->SetContour(200);
+//  h->GetZaxis()->SetRangeUser(-0.01,0.01);
   h->Draw("colz");
-  h->GetZaxis()->SetRangeUser(10E-10,10E-6);
-  //  h->Draw("colz");
   
+  /*
   TLine * lines[100] = {};
 
   lines[0] = new TLine(n_tot_flux,0,n_tot_flux,n_params);
@@ -151,7 +152,7 @@ void draw_output_covariance_matrix(
 
   lines[32] = new TLine(97,0,97,n_params);
   lines[33] = new TLine(0,97,n_params,97);
-
+*/
 /*
   lines[36] = new TLine(17,0,17,43);
   lines[37] = new TLine(0,17,43,17);
@@ -168,6 +169,7 @@ void draw_output_covariance_matrix(
   //~ lines[42] = new TLine(33+n_tot_flux,0,33+n_tot_flux,n_params);
   //~ lines[43] = new TLine(0,33+n_tot_flux,n_params,33+n_tot_flux);
   
+  /*
   for (int il = 0 ; il < 100 ; il++) {
     if (lines[il]) {
       // Don't draw any lines off the edges
@@ -178,8 +180,8 @@ void draw_output_covariance_matrix(
       }
     }
   }
-  
-  c1->Print("cov.eps");
+  */
+  c1->Print("cov.root");
   
   TMatrixD corr = valor::util::CovarianceMatrixToCorrelationMatrix(cov);
   TCanvas * corr_canv = new TCanvas("corrcanv","corrcanv",750,750);
@@ -193,13 +195,13 @@ void draw_output_covariance_matrix(
       corr_hist->SetBinContent(i+1,j+1,value);
     }
   }
-  const int nshades = 100;
+  const int nshades = 200;
   int red_blue_palette = valor::util::CreateRedToBlueColorPalette(nshades);
-  corr_hist->SetContour(nshades);
   
   corr_hist->Draw("colz");
+  corr_hist->SetContour(nshades);
   corr_hist->GetZaxis()->SetRangeUser(-1.,1.);
-  
+/*  
   for (int il = 0 ; il < 100 ; il++) {
     if (lines[il]) {
       // Don't draw any lines off the edges
@@ -209,7 +211,7 @@ void draw_output_covariance_matrix(
       }
     }
   }
-  
-  corr_canv->Print("corr.eps");
+  */
+  corr_canv->Print("corr.root");
 
 }

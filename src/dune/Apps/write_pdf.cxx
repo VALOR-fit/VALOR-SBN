@@ -21,6 +21,8 @@
            --generate-fd-pred    : Generate the far detector prediction? If so, this requires the next parameter too [options: generate-fd-pred || no-fd-pred (def)]
            --fit-output-file     : File containing the fit output - this is where the FitParamList comes from to Generate the FD prediction
            --fit-output-entry    : Desired entry in the tree [def: 0]
+           --write-data, 
+           --no-write-data       : Read and write data fro configuration file if desired
 
 \author    VALOR DUNE people, aka Costas, Steve, Lorena
 \created   March 27, 2014
@@ -88,6 +90,7 @@ int main(int argc, char ** argv)
   string config_file      = arg.GetString("config");
   string fit_output       = arg.GetString("fit-output-file");
   int    output_entry     = arg.GetInt("fit-output-entry");
+  bool write_data         = arg.GetBool("write-data");
   
   // If pot_override is set to a positive number, every sample will be initialised with the same POT - this number
   double pot_override     = arg.GetDouble("pot-override");
@@ -184,6 +187,24 @@ int main(int argc, char ** argv)
     }
   }
 
+  // If we want to read and write the mock data, do so
+  if(!write_data){
+    LOG("valor_dune", pNOTICE) << "Not writing any toy-MC data";
+  }
+
+  else{
+    if(!elements->DataGiven()){
+      LOG("valor_dune",pFATAL) << "Told to Read data but no data file was given ";
+      util::Die(-1);
+    }
+    LOG("valor_dune", pNOTICE) << "Reading data from file, and writing toy-MC PDFs";
+    // Write data PDFs if we want to 
+    FitDataABC * data = elements->FitData();
+    
+    // Write-out the mock data
+    data->Write(outfilename,"toymc","all", "recreate");
+  }
+
   // Generate predictions                                                                                                         
   Option_t * generate_opt = "+SB"; // also generate non-default (for fitting) predictions in extra binning schemes                
   model->Generate(*fp,generate_opt);
@@ -194,9 +215,20 @@ int main(int argc, char ** argv)
     gmodel->UpdateObservableBinningFromSimple();
   }
 
-  // Write stuff out                              
-  model->Write(outfilename,"valor",write_opt.c_str());
+  if(generate_fd)
+    if(write_data)
+      model->Write(outfilename,"fd_pred",write_opt.c_str(),"update");
+    else
+      model->Write(outfilename,"fd_pred",write_opt.c_str(),"recreate");
+  else 
+    if(write_data)
+      model->Write(outfilename,"valor",write_opt.c_str(),"update");
+    else
+      model->Write(outfilename,"valor",write_opt.c_str(),"recreate");
 
+  // Write stuff out                              
+  //model->Write(outfilename,"valor",write_opt.c_str());
+  
   std::cout<<"Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
   
   fp->Print(cout);

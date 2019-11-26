@@ -11,3 +11,4 @@ force-dst,no-force-dst               |   boolean_list |  optional   |   no-force
 generate-fd-pred,no-fd-pred          |   boolean_list |  optional   |   no-fd-pred
 fit-output-file                      |   string       |  optional   |   NONE
 fit-output-entry                     |   integer      |  optional   |   0
+write-data, no-write-data            |   boolean_list |  optional   |   no-write-data
