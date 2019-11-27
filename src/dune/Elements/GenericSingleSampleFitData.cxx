@@ -595,7 +595,7 @@ void GenericSingleSampleFitData::SetFromModel(void)
   fPOT          = fGSSFM->GetPOT();
   fFiducialMass = fGSSFM->GetFiducialMass();
 
-  LOG("GenericSingleSampleFitData",pNOTICE) << " POT set from model : " << fPOT << std::endl;
+  LOG("GenericSingleSampleFitData",pNOTICE) << " POT set from model : " << fPOT;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Book(void)
