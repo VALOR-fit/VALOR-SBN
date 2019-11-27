@@ -12,7 +12,7 @@ base_dir = os.environ["VALOR_EXPT"]
 try:
   ROOT.valor
 except:
-  ROOT.gROOT.ProcessLine(".x %s/root/valor_dune.C"%base_dir);
+  ROOT.gROOT.ProcessLine(".x %s/root/valor_expt.C"%base_dir);
   
 ROOT.gROOT.SetBatch(1)
   
@@ -22,8 +22,6 @@ conv  = valor.conv
 opt   = valor.Opt.Instance()
 env   = valor.Env.Instance()
 rnd   = valor.Rnd.Instance()
-
-arridx = util.ArrIdx.Instance()
 
 col1_width = 30
 coln_width = 3
