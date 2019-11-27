@@ -351,7 +351,7 @@ static const int kNReacModesCoarse = 9;  // max coarse modes used per sample
 static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReacModesCoarse] = 
 {
 #ifdef T2K
-  // T2K FHC   TODO: Revisit the SuperK coarse reac modes, see dune/Conventions/ModeLists/Coarse/SuperK.h
+  // T2K FHC
   {
     // sample: ks1Rmu
     {
