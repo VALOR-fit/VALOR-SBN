@@ -506,9 +506,18 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 	for($i_fc_par1 = $start_pt_fc_par1; $i_fc_par1 < $start_pt_fc_par1 + $npt_fc_par1; $i_fc_par1++) {
 		# If doing FC, work out the correct input FC toy file name
 		$data_file_use = $data_file;
+
+		# TODO: Find a different way of doing this that works both at RAL and elsewhere
 		if($marg_fc_toys == 1) {
-			my $tmpstr = $data_file =~ "s/\[x\]/$i_fc_par1/r";
-			my $fc_filename = $tmpstr =~ "s/\[y\]/$i_fc_par2/r";
+			if($resource eq "RAL" || $resource eq "RAL_HTC") {
+				my $tmpstr = $data_file =~ "s/\[x\]/$i_fc_par1/r";
+        my $fc_filename = $tmpstr =~ "s/\[y\]/$i_fc_par2/r";
+			}
+			else {
+				my $tmpstr = $data_file =~ s/\[x\]/$i_fc_par1/r;
+      	my $fc_filename = $tmpstr =~ s/\[y\]/$i_fc_par2/r;
+			}
+
 			$data_file_use = $fc_filename;
 			print "\n======================================\n";
 			print "= Submitting jobs for FC point \#$i_fc_par1, $i_fc_par2 =\n";
