@@ -233,12 +233,8 @@ bool CompoundFitElements::ReadElement(TXMLEngine* xmleng, XMLNodePointer_t top_n
     fDataFileGiven = true;
 
   if (success) {
-    FitDataABC *  fit_data  = 
-       this->AdoptFitData (data_file, detector, beam, sample, observable, data_class , opt);
     FitModelABC * fit_model = 
        this->AdoptFitModel(mc_file,   detector, beam, sample, observable, model_class, model_opt.Data());
-
-    assert(fit_data);
     assert(fit_model);
 
     FitDataABC *  fit_data  =
