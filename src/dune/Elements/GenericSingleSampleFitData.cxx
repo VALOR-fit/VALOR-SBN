@@ -66,7 +66,6 @@ bool GenericSingleSampleFitData::Read(string file, Option_t * opt)
     LOG("GenericSingleSampleFitData",pNOTICE)
       << "The associated model has not been set prior to calling Read, why is this?";
   }
-  this->SetFromModel();
 
   // This requires the binning, however we end up getting it
   this->Book();
@@ -335,7 +334,7 @@ bool GenericSingleSampleFitData::Read(util::ToyStream* stream)
 long GenericSingleSampleFitData::StreamSize(Option_t* opt_in) const
 {
   if (!fBinning) {
-    LOG("GenericSingleSampleFitData", pERROR) << "Must call AdoptBinningFromModel() with FitModel "
+    LOG("GenericSingleSampleFitData", pERROR) << "Must call SetAssociatedModel() and SetFromModel() with FitModel "
                                               << "before attempting to determine the toy size.";
     return false;
   }
@@ -403,8 +402,8 @@ bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuat
     LOG("GenericSingleSampleFitData",pNOTICE)
       << "The associated model has not been set prior to calling Generate, why is this?";
     this->SetAssociatedModel(model_abc);
+    this->SetFromModel();
   }
-  this->SetFromModel();
 
   // Book the information from the model for binning etc
   this->Book();
@@ -818,26 +817,6 @@ std::string GenericSingleSampleFitData::GetPDFIntegralAsString(Option_t * opt_in
   std::string to_print = temp.Data();
 
   return to_print;
-}
-//________________________________________________________________________________________
-void GenericSingleSampleFitData::AdoptBinningFromModel(FitModelABC* model_abc)
-{
-  GenericSingleSampleFitModel * model = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
-  if(fBinning != model->GetBinning()){
-    if(!model->GetBinning()) {
-      LOG("GenericSingleSampleFitData",pERROR)
-        << "Failed to adopt the binning from the model, as the model had no binning set";
-      util::Die(-1);
-    }
-    this->Clean();
-    fBinning = model->GetBinning();
-    this->Book();
-  }
-
-  if(!fBinning) {
-    LOG("GenericSingleSampleFitData",pERROR) << "Failed to adopt the binning from the model";
-    util::Die(-1);
-  }
 }
 //________________________________________________________________________________________
 util::ToyStream* GenericSingleSampleFitData::InitToyStream(const string file_name, const string read_or_write, string valor_array_format)

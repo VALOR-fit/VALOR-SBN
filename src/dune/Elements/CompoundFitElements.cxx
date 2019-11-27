@@ -306,6 +306,7 @@ FitDataABC * CompoundFitElements::AdoptFitData(
   SingleSampleFitDataABC * s_dataset = (SingleSampleFitDataABC *) (vbase);
   s_dataset->Configure(d,b,s,o);
   s_dataset->SetAssociatedModel(model_abc);
+  s_dataset->SetFromModel();
   if(fDataFileGiven){
     LOG("CompoundFitElements", pNOTICE)
       << "Data file given so will Read it. Will be overwritten if Generate is called later";

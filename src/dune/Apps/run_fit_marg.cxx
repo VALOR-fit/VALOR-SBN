@@ -133,7 +133,7 @@ void Fit(CmdLnArgList& arg)
    int fp2_nbins = 0;
    int fp2_start_bin = 0;
 
-  LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
+   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
       fp1_bin << ") = " << fp1_val << " [" << fp1_nbins << ": " << fp1_minval <<
       ", " << fp1_maxval << "]";
 
@@ -183,8 +183,8 @@ void Fit(CmdLnArgList& arg)
       // Call Generate - forces a call to Book as well as providing the fake data
       data->Generate(model, *fpl, with_stat_fluct);
    }
-   else {
-      // Fit to data read from an input file
+   else if(arg.GetString("data-file") != "-" && !arg.GetString("data-file").empty()) {
+      // Fit to data read from an input binary toy file
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
 
@@ -193,8 +193,14 @@ void Fit(CmdLnArgList& arg)
          read_opt_data = "+SB";
       }
 
-      data->AdoptBinningFromModel(model);
       toy_stream = data->InitToyStream(data_file_name, "read", read_opt_data);
+   }
+   else {
+     // Fit to a data file specified in the analysis configuration XML file.
+     // This has already been read in CompoundFitElements::AdoptFitData() (when reading the config file),
+     // so there's no need to do anything here.
+     LOG("valor_dune", pNOTICE) << "Will fit to fake/real data specified in the analysis configuration file";
+     // TODO: Put in a check to see if the data has actually been read...
    }
 
    // Get the requested batch number and number of marginalisation toys for the

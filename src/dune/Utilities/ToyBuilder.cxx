@@ -84,7 +84,6 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       // Build fake data toys
       std::string write_opt_str = "data_vf";
       if(_use_simple_binning) { write_opt_str += "+SB"; }
-      this->_data->AdoptBinningFromModel(this->_model);
       toy_stream = this->_data->InitToyStream(filename, "write", write_opt_str);
    }
 

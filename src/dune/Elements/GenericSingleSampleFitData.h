@@ -81,7 +81,7 @@ public:
   // Get a string including the data name and the total PDF integral
   virtual std::string GetPDFIntegralAsString(Option_t * opt = 0);
 
-  virtual void AdoptBinningFromModel(FitModelABC* model);
+  virtual void SetFromModel(void); // Set various parameters from the GSSFM
 
   // Initialise and return a new ToyStream object, with setting set appropriately for reading/writing using this class
   virtual util::ToyStream* InitToyStream(const string file_name, const string read_or_write = "read", string valor_array_format = "");
@@ -93,7 +93,6 @@ private:
   void Clean (void);
   void Zero  (Option_t * opt);
   void FillFromDST  (TTree * t); // <----- NOTE: Some code duplication with GSSFM - eliminate in future
-  void SetFromModel(void); // Set various parameters from the GSSFM
 
   // Name of this VALOR fit dataset (see Conventions/Names.h)
   string fName;
