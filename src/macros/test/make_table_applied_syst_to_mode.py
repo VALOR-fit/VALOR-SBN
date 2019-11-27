@@ -22,6 +22,7 @@ conv  = valor.conv
 opt   = valor.Opt.Instance()
 env   = valor.Env.Instance()
 rnd   = valor.Rnd.Instance()
+es    = valor.ExperimentSetup.Instance()
 
 col1_width = 30
 coln_width = 3
@@ -77,7 +78,7 @@ def main(beam_mode_arg = None, sample_arg = None,
     detector  = submodel.GetDetector()
     # Get the mode list for this sample
     modes_array      = array.array("i",[-1]*conv.kNReacModes)
-    isamp = arridx.SampleIdx(beam_mode,sample)
+    isamp = es.SampleIdx(beam_mode,sample)
     root_loop  = "{ int * mode_arr = (int*)%s;" % str(modes_array.buffer_info()[0])
     root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kReactionModes[%s][i];};};"%(str(isamp))
     ROOT.gROOT.ProcessLine(root_loop)
