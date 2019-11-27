@@ -104,6 +104,8 @@ public:
   
   // Get a list of all the kinematic variables included in this binning
   const std::vector<conv::KineVar_t> & KineVars() const;
+  const std::vector<conv::KineVar_t> & TrueKineVars() const;
+  const std::vector<conv::KineVar_t> & RecoKineVars() const;
 
 private:
 
@@ -126,6 +128,8 @@ private:
   std::vector<VALORBinning *> fXsecTrueBinningUnique;          // 
   
   std::vector<conv::KineVar_t> fKineVars;
+  std::vector<conv::KineVar_t> fRecoKineVars;
+  std::vector<conv::KineVar_t> fTrueKineVars;
 };
 
 } // valor namespace

@@ -64,6 +64,8 @@ bool SingleSampleKineBinning::Read(string file)
   }
   
   std::set<conv::KineVar_t> kinevars;
+  std::set<conv::KineVar_t> reco_kinevars;
+  std::set<conv::KineVar_t> true_kinevars;
 
   this->CleanUp();
 
@@ -120,7 +122,8 @@ bool SingleSampleKineBinning::Read(string file)
   }
   
   const std::vector<conv::KineVar_t> & reco_opt_kvs = fRecoOptimizedBinning->KineVars();
-  std::copy(reco_opt_kvs.begin(),reco_opt_kvs.end(),std::inserter( kinevars, kinevars.end()));
+  std::copy(reco_opt_kvs.begin(),reco_opt_kvs.end(),std::inserter( kinevars     , kinevars     .end()));
+  std::copy(reco_opt_kvs.begin(),reco_opt_kvs.end(),std::inserter( reco_kinevars, reco_kinevars.end()));
 
   //
   // Reco/Simple
@@ -147,8 +150,9 @@ bool SingleSampleKineBinning::Read(string file)
   }
   
   const std::vector<conv::KineVar_t> & reco_smp_kvs = fRecoSimpleBinning->KineVars();
-  std::copy(reco_smp_kvs.begin(),reco_smp_kvs.end(),std::inserter( kinevars, kinevars.end()));
-  
+  std::copy(reco_smp_kvs.begin(),reco_smp_kvs.end(),std::inserter( kinevars     , kinevars     .end()));
+  std::copy(reco_smp_kvs.begin(),reco_smp_kvs.end(),std::inserter( reco_kinevars, reco_kinevars.end()));
+
   // Check reco and true have the dimensions and limits
   if (fRecoSimpleBinning->KineSpace() != fRecoOptimizedBinning->KineSpace()) {
     LOG("SampleBinning",pERROR)<<"Simple and Optimized binnings do not have the kinematic dimensions.";
@@ -193,7 +197,8 @@ bool SingleSampleKineBinning::Read(string file)
      }
      
      const std::vector<conv::KineVar_t> & true_smp_kvs = def_true_smp_binning->KineVars();
-     std::copy(true_smp_kvs.begin(),true_smp_kvs.end(),std::inserter( kinevars, kinevars.end()));
+     std::copy(true_smp_kvs.begin(),true_smp_kvs.end(),std::inserter( kinevars     , kinevars     .end()));
+     std::copy(true_smp_kvs.begin(),true_smp_kvs.end(),std::inserter( true_kinevars, true_kinevars.end()));
   }
 
   //
@@ -225,8 +230,9 @@ bool SingleSampleKineBinning::Read(string file)
       fTrueSimpleBinning [im] = mode_true_smp_binning;
       
       const std::vector<conv::KineVar_t> & true_smp_kvs = mode_true_smp_binning->KineVars();
-      std::copy(true_smp_kvs.begin(),true_smp_kvs.end(),std::inserter( kinevars, kinevars.end()));
-     
+      std::copy(true_smp_kvs.begin(),true_smp_kvs.end(),std::inserter( kinevars     , kinevars     .end()));
+      std::copy(true_smp_kvs.begin(),true_smp_kvs.end(),std::inserter( true_kinevars, true_kinevars.end()));
+
     }    
   }
 
@@ -368,8 +374,12 @@ bool SingleSampleKineBinning::Read(string file)
   
   // Copy our set of kinevars into the stored vector and then sort it
   fKineVars.insert(fKineVars.end(),kinevars.begin(),kinevars.end());
+  if(reco_kinevars.size() > 0) { fRecoKineVars.insert(fRecoKineVars.end(),reco_kinevars.begin(),reco_kinevars.end()); }
+  if(true_kinevars.size() > 0) { fTrueKineVars.insert(fTrueKineVars.end(),true_kinevars.begin(),true_kinevars.end()); }
   std::sort(fKineVars.begin(),fKineVars.end());
-  
+  if(reco_kinevars.size() > 0) { std::sort(fRecoKineVars.begin(),fRecoKineVars.end()); }
+  if(true_kinevars.size() > 0) { std::sort(fTrueKineVars.begin(),fTrueKineVars.end()); }
+
   xml->FreeDoc(xmldoc);
   delete xml;
   
@@ -434,8 +444,10 @@ void SingleSampleKineBinning::CleanUp(void)
   for (auto & b : fTrueSimpleBinningUnique) {delete_binning(b);}
   for (auto & b : fXsecTrueBinningUnique  ) {delete_binning(b);}
   
-  fKineVars.clear();
-  
+  fKineVars    .clear();
+  fRecoKineVars.clear();
+  fTrueKineVars.clear();
+
   return;
 }
 //________________________________________________________________________________________
@@ -453,6 +465,16 @@ unsigned int SingleSampleKineBinning::GetRecoOptBin(unsigned int reco_smp_bin) c
 const std::vector<conv::KineVar_t> & SingleSampleKineBinning::KineVars() const
 {
   return fKineVars;
+}
+//________________________________________________________________________________________
+const std::vector<conv::KineVar_t> & SingleSampleKineBinning::RecoKineVars() const
+{
+  return fRecoKineVars;
+}
+//________________________________________________________________________________________
+const std::vector<conv::KineVar_t> & SingleSampleKineBinning::TrueKineVars() const
+{
+  return fTrueKineVars;
 }
 //________________________________________________________________________________________
 void SingleSampleKineBinning::CheckBinEdges(VALORBinning *opt_binning, VALORBinning *smp_binning) const

@@ -652,7 +652,7 @@ void GenericSingleSampleFitData::FillFromDST (TTree * t)
   if(!t) return;
 
   // Get a list of all the kinematic variables we care about
-  const std::vector<conv::KineVar_t> & kinevars = fBinning->KineVars();
+  const std::vector<conv::KineVar_t> & kinevars = fBinning->RecoKineVars();
 
   int    sample        = 0;
   int    beam          = 0;
