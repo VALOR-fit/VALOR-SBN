@@ -102,6 +102,9 @@ public:
   
   // Get POT
   const double & GetPOT() const;
+
+  // Get Fiducial mass
+  const double & GetFiducialMass(void) const;
   
   // Get the response function library and binning
   const util::DuneRFL * GetRFL(void) const;

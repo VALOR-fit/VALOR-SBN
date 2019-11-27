@@ -20,6 +20,7 @@
 
 // fmwk
 #include "valor/FitCore/FitDataABC.h"
+#include "valor/FitCore/FitModelABC.h"
 #include "valor/Conventions/KineSpace.h"
 // dune
 #include "valor/Conventions/BeamConf.h"

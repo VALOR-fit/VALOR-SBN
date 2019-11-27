@@ -38,6 +38,7 @@
 #include "dune/Conventions/SampleReacMode.h"
 #include "dune/Conventions/ArrIdx.h"
 #include "dune/Elements/SingleSampleFitDataABC.h"
+#include "dune/Elements/GenericSingleSampleFitModel.h"
 #include "dune/Utilities/SingleSampleKineBinning.h"
 
 class TObjArray;
@@ -59,20 +60,21 @@ public:
   // See FitDataABC for method decription
   //
 
-  string       Name           (void) const;
-  bool         Read           (string file, Option_t * opt = 0);
-  virtual bool Read           (util::ToyStream* stream);
-  bool         Generate       (FitModelABC * pred, const FitParamList & fp,   bool fluctuate=true);
-  bool         Generate       (FitModelABC * pred, const PhysHypothesis & ph, bool fluctuate=true);
-  bool         Generate       (FitModelABC * pred, bool fluctuate=true, Option_t* read_opt = "+SB");
-  bool         Write          (TObjArray * data_collection, const char * tag = "data", Option_t * write_opt = 0);
-  bool         Write          (const char * filename, const char * tag = "data", const char * option_file="update", Option_t * file_opt = 0);
-  virtual bool Write          (util::ToyStream* stream);
-  virtual long StreamSize     (Option_t * opt = 0) const;
-  int          NumOfBins      (Option_t * opt = 0) const;
-  double       GetFitStatistic(FitModelABC * pred, const FitParamList & fp,   Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
-  double       GetFitStatistic(FitModelABC * pred, const PhysHypothesis & ph, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
-  double       GetFitStatistic(FitModelABC * pred, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
+  string       Name              (void) const;
+  bool         Read              (string file, Option_t * opt = 0);
+  virtual bool Read              (util::ToyStream* stream);
+  bool         Generate          (FitModelABC * pred, const FitParamList & fp,   bool fluctuate=true);
+  bool         Generate          (FitModelABC * pred, const PhysHypothesis & ph, bool fluctuate=true);
+  bool         Generate          (FitModelABC * pred, bool fluctuate=true, Option_t* read_opt = "+SB");
+  bool         Write             (TObjArray * data_collection, const char * tag = "data", Option_t * write_opt = 0);
+  bool         Write             (const char * filename, const char * tag = "data", const char * option_file="update", Option_t * file_opt = 0);
+  virtual bool Write             (util::ToyStream* stream);
+  virtual long StreamSize        (Option_t * opt = 0) const;
+  int          NumOfBins         (Option_t * opt = 0) const;
+  double       GetFitStatistic   (FitModelABC * pred, const FitParamList & fp,   Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
+  double       GetFitStatistic   (FitModelABC * pred, const PhysHypothesis & ph, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
+  double       GetFitStatistic   (FitModelABC * pred, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
+  void         SetAssociatedModel(FitModelABC *model_abc); // Call this before Read to set the model which should be associated to the data
 
   const SingleSampleKineBinning * GetBinning(void) const { return fBinning; };
 
@@ -90,6 +92,8 @@ private:
   void Book  (void);
   void Clean (void);
   void Zero  (Option_t * opt);
+  void FillFromDST  (TTree * t); // <----- NOTE: Some code duplication with GSSFM - eliminate in future
+  void SetFromModel(void); // Set various parameters from the GSSFM
 
   // Name of this VALOR fit dataset (see Conventions/Names.h)
   string fName;
@@ -104,9 +108,18 @@ private:
   // Below are versions the use a simple (~fine and ~regular) binning throughout the whole range.
   bool         fDataSbNull;
   VALORArray * fDataSb;
-  
+
+  // Actual or fake/mock data?
+  bool fIsFakeData;
+
   // Binning booked with. Does not own
   const SingleSampleKineBinning * fBinning;
+
+  double fFiducialMass;
+  double fPOT;
+
+  // Define associated GSSFM
+  GenericSingleSampleFitModel *fGSSFM;
 
   std::string fDefVALORArrayFormat; // The default VALORArray format used to read/write toys
   

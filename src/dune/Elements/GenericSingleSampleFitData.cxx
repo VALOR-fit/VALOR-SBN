@@ -14,8 +14,10 @@
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TSystem.h>
+#include <TPRegexp.h>
 
 // fmwk
+#include "valor/Conventions/Opt.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/PhysHypothesis.h"
@@ -38,6 +40,9 @@ using namespace valor::conv;
 GenericSingleSampleFitData::GenericSingleSampleFitData() :
   SingleSampleFitDataABC(),
   fBinning(nullptr),
+  fFiducialMass(-99999.),
+  fPOT(-99999.),
+  fGSSFM(nullptr),
   fDefVALORArrayFormat("data_vf")
 {
   this->Init();
@@ -53,13 +58,70 @@ string GenericSingleSampleFitData::Name(void) const
   return fName;
 }
 //________________________________________________________________________________________
-bool GenericSingleSampleFitData::Read(string /*file*/, Option_t * /*opt*/)
+bool GenericSingleSampleFitData::Read(string file, Option_t * opt)
 {
-  
-  if (!fBinning) {
-    LOG("GenericSingleSampleFitData", pERROR) << "Must call AdoptBinningFromModel() with FitModel before attempting to read file.";
-    return false;
+
+  // Set various parameters from the associated GSSFM
+  if(!fGSSFM){
+    LOG("GenericSingleSampleFitData",pNOTICE)
+      << "The associated model has not been set prior to calling Read, why is this?";
   }
+  this->SetFromModel();
+
+  // This requires the binning, however we end up getting it
+  this->Book();
+
+  // Set up the initial XML reader
+  LOG("GenericSingleSampleFitData", pNOTICE)
+    << "Reading configuration from XML file [" << file << "]";
+
+  // string file_fullpath = util::CompleteConfigPath(file);
+  TString ts_file = util::CompleteConfigPath(file).c_str();
+
+  // Parse the input XML configuration file
+  TXMLEngine* xml = new TXMLEngine;
+  XMLDocPointer_t xmldoc = xml->ParseFile(ts_file.Data());
+  if (xmldoc==0) {
+    LOG("GenericSingleSampleFitData",pERROR)
+      << "Can not parse input XML file [" << ts_file << "]";
+    delete xml;
+    util::Die(1); return false;
+  }
+  XMLNodePointer_t root_node = xml->DocGetRootElement(xmldoc);
+
+  // Using input in VALOR DST format?
+  // If use_dst=true, read the ROOT TTree and fill-in the VALOR data arrays.
+  bool use_dst = util::XML2Bool(xml,root_node,"data/using_dst_format");
+  if(use_dst) {
+    LOG("GenericSingleSampleFitData",pINFO)
+      << "Populating VALOR data arrays from VALOR DSTs";
+    string node_name = "data/dst/" + util::AsString(fBeam, "lowercase");
+    TTree * data_dst = util::XML2TTree (xml,root_node,node_name);
+    if (!data_dst) {
+      LOG("GenericSingleSampleFitData",pFATAL) << "Failed to read DST tree";
+      util::Die(-1); return false;
+    }
+    this->FillFromDST(data_dst);
+    delete data_dst;
+  }
+    // If use_dst=false, read in the VALOR data arrays directly.
+    // In this case, the data arrays are pre-binned so the binning can not change.
+    // Make sure the arrays you read in correspond to the expected binning.
+  else {
+    LOG("GenericSingleSampleFitData",pINFO)
+      << "Reading stored VALOR data arrays";
+    // -------------------------------------------------
+    // TODO:
+    LOG("GenericSingleSampleFitData",pFATAL) << "Case not implemented yet";
+    util::Die(-1); return false;
+    // -------------------------------------------------
+  }
+
+  // Release memory
+  xml->FreeDoc(xmldoc);
+  delete xml;
+
+  LOG("GenericSingleSampleFitData",pNOTICE) << "Done reading data";
 
   return true;
 }
@@ -334,7 +396,18 @@ bool GenericSingleSampleFitData::Generate(
 //________________________________________________________________________________________
 bool GenericSingleSampleFitData::Generate(FitModelABC * model_abc, bool fluctuate, Option_t * option)
 {
-  this->AdoptBinningFromModel(model_abc);
+  fIsFakeData = true;
+
+  // Set various parameters from the associated GSSFM
+  if(!fGSSFM){
+    LOG("GenericSingleSampleFitData",pNOTICE)
+      << "The associated model has not been set prior to calling Generate, why is this?";
+    this->SetAssociatedModel(model_abc);
+  }
+  this->SetFromModel();
+
+  // Book the information from the model for binning etc
+  this->Book();
 
   bool update_sb = false;
   if(option) {
@@ -489,24 +562,47 @@ void GenericSingleSampleFitData::Init(void)
 {
   LOG("GenericSingleSampleFitData",pDEBUG) << "Initializing...";
 
-  fName = "none";
+  fName         = "none";
+  fModelName    = "none";
 
-  fDetector = kdUndefined;
-  fBeam     = kbUndefined;
-  fSample   = ksUndefined;
+  fDetector     = kdUndefined;
+  fBeam         = kbUndefined;
+  fSample       = ksUndefined;
 
-  fDataObNull= true;
-  fDataOb    = 0;
-  fDataSbNull = true;
-  fDataSb     = 0;
+  fDataObNull   = true;
+  fDataOb       = 0;
+  fDataSbNull   = true;
+  fDataSb       = 0;
 
-  fBinning = 0;
+  fIsFakeData   = false;
+  fGSSFM        = nullptr;
+  fBinning      = 0;
+  fPOT          = 0;
+  fFiducialMass = 0;
+
+  fDefVALORArrayFormat = "data_vf";
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitData::SetAssociatedModel(FitModelABC *model_abc)
+{
+  fGSSFM = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
+  std::cout << " Set the model with name: " << fGSSFM->Name() << std::endl;
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitData::SetFromModel(void)
+{
+  assert(fGSSFM);
+  fBinning      = fGSSFM->GetBinning();
+  fPOT          = fGSSFM->GetPOT();
+  fFiducialMass = fGSSFM->GetFiducialMass();
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Book(void)
 {
   LOG("GenericSingleSampleFitData",pDEBUG) << "Booking...";
   assert(fBinning);
+  assert(fGSSFM  );
+
   assert(fDetector != kdUndefined);
   assert(fBeam     != kbUndefined);
   assert(fSample   != ksUndefined);
@@ -522,6 +618,8 @@ void GenericSingleSampleFitData::Book(void)
   fDataOb     = new VALORArray(reco_ob->NBins());
   fDataSbNull = false;
   fDataSb     = new VALORArray(reco_sb->NBins());
+
+  std::cout << " POT set from model : " << fPOT << std::endl;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Clean(void)
@@ -548,6 +646,160 @@ void GenericSingleSampleFitData::Zero(Option_t * opt)
 
   if (!fDataObNull) { fDataOb->SetAll(0.); }
   if (!fDataSbNull) { fDataSb->SetAll(0.); }
+}
+//________________________________________________________________________________________
+void GenericSingleSampleFitData::FillFromDST (TTree * t)
+{
+  if(!t) return;
+
+  // Get a list of all the kinematic variables we care about
+  const std::vector<conv::KineVar_t> & kinevars = fBinning->KineVars();
+
+  int    sample        = 0;
+  int    beam          = 0;
+  double wght          = 1.;
+  double wght_pot      = 1.;
+
+  std::map<KineVar_t,double> kinematics;
+
+  // Set up a list of the branches associated with each kinematic variable
+  std::map<KineVar_t,std::string> kinematic_branch_names;
+  for (const KineVar_t & kv : kinevars) {
+    kinematic_branch_names[kv] = util::DSTBranchName(kv);
+  }
+
+  int bstat_sample     = 0;
+  int bstat_beam       = 0;
+  int bstat_wght       = 0;
+  int bstat_wght_pot   = 0;
+  std::map<KineVar_t,int> bstat_kinematics;
+
+  bstat_sample    = t->SetBranchAddress("sample",   &sample);
+  bstat_sample    = t->SetBranchAddress("beam",     &beam);
+  bstat_wght      = t->SetBranchAddress("wght",     &wght);
+  bstat_wght_pot  = t->SetBranchAddress("wght_pot", &wght_pot);
+
+  fIsFakeData = (bstat_wght_pot == TTree::kMatch);
+
+  bool any_bad_status = (bstat_sample || bstat_beam);
+
+  for(const conv::KineVar_t & kv : kinevars) {
+    bool bstat = t->SetBranchAddress(kinematic_branch_names[kv].c_str(),&kinematics[kv]);
+    any_bad_status = any_bad_status || bstat;
+  }
+
+  if (any_bad_status) {
+    LOG("GenericSingleSampleFitData", pWARN)
+      << "MiniDST branches not found";
+    util::Die(-1);
+  }
+
+  Long_t nev = t->GetEntries();
+  LOG("GenericSingleSampleFitData",pINFO)
+    << "Input VALOR DST has " << nev << " entries";
+
+  double tree_weight = t->GetWeight();
+
+  LOG("GenericSingleSampleFitData",pNOTICE)
+    << "Input VALOR DST has weight "<<tree_weight;
+
+  const VALORBinning * reco_ob = fBinning->RecoOptBinning();
+  const VALORBinning * reco_sb = fBinning->RecoSmpBinning();
+
+  for(Long_t iev = 0; iev < nev; iev++)
+  {
+    t->GetEntry(iev);
+
+    if(iev%(nev/20)==0) {
+      double pct = (100 * (double)(iev+1)) / (double)nev;
+      LOG("GenericSingleSampleFitData",pINFO)
+        << "Reading "<< util::AsString(fBeam)
+        <<" data DST: "<< TMath::Nint(pct) << "% done";
+    }
+
+    // Get sample index
+    Sample_t s = util::SampleFromInt(sample);
+    if(s == ksUndefined) {
+      LOG("GenericSingleSampleFitData",pWARN)
+        << " ** Undefined sample ID used in data event: " << iev
+        << " (value stored in DST: " << sample << ")";
+      //util::Die(-1);return;
+    }
+    if(s != fSample) {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+      LOG("GenericSingleSampleFitData",pDEBUG)
+        << "Ignoring data event: " << iev
+        << " (sample ID: " << s << " "<< util::AsString(s)
+        << " not matching one used for configuring this dataset: "
+        << fSample <<" "<<util::AsString(fSample) << ")";
+#endif
+      continue;
+    }
+    BeamConf_t b = util::BeamConfFromInt(beam);
+    if(b != fBeam) {
+#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+      LOG("GenericSingleSampleFitData",pDEBUG)
+        << "Ignoring data event: " << iev
+        << " (beam ID: " << b << " "<< util::AsString(b)
+        << " not matching one used for configuring this dataset: "
+        << fBeam <<" "<<util::AsString(fBeam) << ")";
+#endif
+      continue;
+    }
+
+    // check kinematic values against built-in limits and make vectors
+    std::vector<double> reco_vars;
+    bool out_of_range = false;
+    for (conv::KineVar_t kv : reco_ob->KineVars()) {
+      double val = kinematics.at(kv);
+      if (val < reco_ob->Minimum(kv) || val > reco_ob->Maximum(kv)) {
+        LOG("GenericSingleSampleFitData",pWARN)
+          << "MC event: " << iev << " has reco kinematic value outside range: "
+          << util::AsString(kv) << " = " << val
+          << ", range used: [" << reco_ob->Minimum(kv) << ", " << reco_ob->Maximum(kv) << "]";
+        out_of_range = true;
+      }
+      reco_vars.push_back(val);
+    }
+    if (out_of_range) {continue;}
+
+    // weight for this entry
+    double this_entry = wght;
+    if(fIsFakeData) {
+      // Exposure for assumed data - Weight MC templates to that exposure
+      double data_pot = fPOT;
+      // Calculate POT weight (assumed data exposure) / (generated MC exposure)
+      double pot_wght = wght_pot * data_pot * tree_weight;
+      if(fFiducialMass > 0) {
+        pot_wght = pot_wght*fFiducialMass;
+      }
+      this_entry *= pot_wght;
+    }
+
+    // Find the appropriate reconstructed kinematical variable bins
+    int reco_bin_sb = reco_sb->FindBin(reco_vars);
+    int reco_bin_ob = reco_ob->FindBin(reco_vars);
+
+    LOG("GenericSingleSampleFitData",pDEBUG)
+      << "Inserting to MC teplates --> MC event #" << iev
+      << "\n sample       = " << s        << " (" << util::AsString(s) << ")"
+      << "\n wght         = " << wght
+      << "\n overall wght = " << this_entry
+      << "\n reco_bin_ob  = " << reco_bin_ob
+      << "\n reco_bin_sb  = " << reco_bin_sb
+      << "\n  Reco: " << reco_vars[0] <<" , " <<reco_vars[1];
+
+    double curr_wght_ob = fDataOb->GetEntry(reco_bin_ob);
+    curr_wght_ob += this_entry;
+    fDataOb->SetEntry(curr_wght_ob, reco_bin_ob);
+
+    double curr_wght_sb = fDataSb->GetEntry(reco_bin_sb);
+    curr_wght_sb += this_entry;
+    fDataSb->SetEntry(curr_wght_sb, reco_bin_sb);
+  }//iev
+
+  fDataObNull = false;
+  fDataSbNull = false;
 }
 //________________________________________________________________________________________
 std::string GenericSingleSampleFitData::GetPDFIntegralAsString(Option_t * opt_in)
