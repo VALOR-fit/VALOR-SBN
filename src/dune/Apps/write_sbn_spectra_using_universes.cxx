@@ -125,32 +125,43 @@ int main(int argc, char ** argv)
   //~ TFile output_file(outfilename.Data(),"RECREATE");
   TFile output_file(output_name.c_str(),"RECREATE");
   
+  
+      
+  // Get model & configure
+  // Make an elements without reading the MC
+  std::string elem_readopt("nomc nosplines");
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
+  
+  // Then tell it about the universes and read the MC
+  FitModelABC * model = elements->FitModel();
+  CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
+  assert(cmodel);
+  for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
+    GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
+    assert(gmodel);
+    gmodel->SetUniverseRangeToRead(first_universe,first_universe+n_universes_to_run);
+    for (const std::string & param : param_list) {
+      gmodel->SetUniverseParameterToRead(param);
+    }
+    // And finally read the MC properly
+    std::string model_readopt("forcedst nosplines");
+    gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
+  }
+    
+  
   for (size_t iuniverse = 0 ; iuniverse < n_universes_to_run ; iuniverse++) {
     
     // Get which absolute universe we want
     size_t universe = first_universe + iuniverse;
     
-    // Get model & configure
-    
-    // Make an elements without reading the MC
-    std::string elem_readopt("nomc nosplines");
-    CompoundFitElements * elements = new CompoundFitElements();
-    elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
-    
-    // Then tell it about the universes and read the MC
-    FitModelABC * model = elements->FitModel();
-    CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
-    assert(cmodel);
+    // Set our variations
     for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
       GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
       assert(gmodel);
       for (const std::string & param : param_list) {
         gmodel->SetSystematicVariationIDToApply(param,universe);
       }
-      
-      // And finally read the MC again
-      std::string model_readopt("forcedst nosplines");
-      gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
     }
     
     
@@ -218,9 +229,12 @@ int main(int argc, char ** argv)
       hist->SetName(new_name.Data());
       output_file.cd();
       hist->Write();
+      
+      if (new_name.Contains("pdfts")) {
+        LOG("valor_dune", pNOTICE) << "Wrote histogram "<<new_name<<" with "<<hist->Integral()<<" events.";
+      }
+        
     }
-
-    delete elements;
   }
 
   std::cout<<"Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
