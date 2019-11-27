@@ -585,7 +585,7 @@ void GenericSingleSampleFitData::Init(void)
 void GenericSingleSampleFitData::SetAssociatedModel(FitModelABC *model_abc)
 {
   fGSSFM = dynamic_cast<GenericSingleSampleFitModel*>(model_abc);
-  std::cout << " Set the model with name: " << fGSSFM->Name() << std::endl;
+  LOG("GenericSingleSampleFitData",pNOTICE) << " Set the model with name: " << fGSSFM->Name();
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::SetFromModel(void)
@@ -594,6 +594,8 @@ void GenericSingleSampleFitData::SetFromModel(void)
   fBinning      = fGSSFM->GetBinning();
   fPOT          = fGSSFM->GetPOT();
   fFiducialMass = fGSSFM->GetFiducialMass();
+
+  LOG("GenericSingleSampleFitData",pNOTICE) << " POT set from model : " << fPOT << std::endl;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Book(void)
@@ -617,8 +619,6 @@ void GenericSingleSampleFitData::Book(void)
   fDataOb     = new VALORArray(reco_ob->NBins());
   fDataSbNull = false;
   fDataSb     = new VALORArray(reco_sb->NBins());
-
-  std::cout << " POT set from model : " << fPOT << std::endl;
 }
 //________________________________________________________________________________________
 void GenericSingleSampleFitData::Clean(void)
