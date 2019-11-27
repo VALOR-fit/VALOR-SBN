@@ -29,6 +29,7 @@ ToyBuilder::ToyBuilder(CompoundFitElements& elements, string filePrefix,
   _store_mode_arrays(store_mode_arrays),
   _save_throws_to_tree(save_throws_to_tree),
   _tree_pars(nullptr),
+  _file_pars(nullptr),
   _read_params(new double[conv::knppmax]),
   _toy_throw_file(nullptr)
 {
@@ -39,6 +40,12 @@ ToyBuilder::~ToyBuilder()
    this->_model = nullptr;
    this->_data  = nullptr;
    delete this->_tree_pars;
+
+   if(this->_file_pars) {
+      this->_file_pars->Close();
+   }
+   delete this->_file_pars;
+
    if(this->_toy_throw_file) {
       this->_toy_throw_file->Close();
    }
@@ -180,18 +187,33 @@ void ToyBuilder::SaveParamThrows(FitParamList& fpl, bool write_tree, std::string
       param_values[ip] = -999;
    }
 
+   // Set up the output file, if we haven't done so already
+   if(!_file_pars) {
+      // Construct the output file name
+      std::string file_name = binary_file_name;
+      std::string to_replace = ".bin";
+      size_t start_pos = file_name.find(to_replace);
+      if(start_pos == std::string::npos) {
+         LOG("ToyBuilder", pERROR) << "Could not construct output file name.";
+         util::Die(-1);
+      }
+      file_name.replace(start_pos, to_replace.length(), "_toy_throws.root");
+
+      _file_pars = new TFile(file_name.c_str(), "RECREATE");
+   }
+
    // Set up the tree, if we haven't done so already
    if(!_tree_pars) {
-       _tree_pars = new TTree("marg_parameter_values","Input parameters used for toys");
-       for (int ip = 0 ; ip < conv::knppmax ; ip++) {
-          conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
-          if(p == conv::kPhypUndefined) { continue; }
-          std::string param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
-          std::string branch_info = param_name + "/D";
-          if (fpl.Exists(p)) {
-             _tree_pars->Branch(param_name.c_str(), &(param_values[ip]), branch_info.c_str() );
-          }
-       }
+      _tree_pars = new TTree("marg_parameter_values","Input parameters used for toys");
+      for (int ip = 0 ; ip < conv::knppmax ; ip++) {
+         conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
+         if(p == conv::kPhypUndefined) { continue; }
+         std::string param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
+         std::string branch_info = param_name + "/D";
+         if (fpl.Exists(p)) {
+            _tree_pars->Branch(param_name.c_str(), &(param_values[ip]), branch_info.c_str() );
+         }
+      }
    }
 
    // Save this throw to the tree
@@ -205,21 +227,8 @@ void ToyBuilder::SaveParamThrows(FitParamList& fpl, bool write_tree, std::string
 
    // If this is the final toy, write the tree to a new file
    if(write_tree) {
-      // Construct the output file name
-      std::string file_name = binary_file_name;
-      std::string to_replace = ".bin";
-      size_t start_pos = file_name.find(to_replace);
-      if(start_pos == std::string::npos) {
-         LOG("ToyBuilder", pERROR) << "Could not construct output file name.";
-         util::Die(-1);
-      }
-      file_name.replace(start_pos, to_replace.length(), "_toy_throws.root");
-
-      TFile *out_file = new TFile(file_name.c_str(), "RECREATE");
-      out_file->cd();
+      _file_pars->cd();
       _tree_pars->Write();
-      out_file->Close();
-      delete out_file;
    }
 }
 //______________________________________________________________________________

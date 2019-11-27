@@ -195,6 +195,7 @@ private:
    bool         _toys_are_marginalisation;
    bool         _save_throws_to_tree;
    TTree*       _tree_pars;
+   TFile*       _file_pars;
 
    // For reading throws from an input file
    double*      _read_params;
