@@ -52,14 +52,17 @@ void make_sdk_legacy_hybrid_toy_throw_tree(
     // Read in the SDK tree
     TFile * sdk_file = new TFile(sdk_tree_file, "READ");
     TTree * tree_sdk_pars = (TTree*) sdk_file->Get("marg_parameter_values");
+    tree_sdk_pars->SetDirectory(0);
 
     // Read in the legacy tree
     TFile * leg_file = new TFile(legacy_tree_file, "READ");
     TTree * tree_leg_pars = (TTree*) leg_file->Get("marg_parameter_values");
+    tree_leg_pars->SetDirectory(0);
 
     // Set up the output hybrid tree
     TFile * out_file = new TFile(out_tag, "RECREATE");
     TTree * tree_out_pars = new TTree("marg_parameter_values", "Input parameters used for marginalisation");
+    tree_out_pars->SetDirectory(0);
 
     // Set up the branches to read/write
     for (int ip = 0 ; ip < conv::knppmax ; ip++) {
