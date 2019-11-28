@@ -152,6 +152,13 @@ void Fit(CmdLnArgList& arg)
          fp2_minval << ", " << fp2_maxval << "]";
    }
 
+   bool read_data_from_binary = (arg.GetString("data-file") != "-" && !arg.GetString("data-file").empty());
+   if(read_data_from_binary && arg.GetInt("gen-fakedata")) {
+      LOG("valor_dune", pFATAL) << "Can't both read a fake data file and generate fake data "
+                                << "(don't use --data-file and --gen-fakedata together)";
+      util::Die(-1);
+   }
+
    CompoundFitElements* elements = new CompoundFitElements();
    elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
@@ -183,7 +190,7 @@ void Fit(CmdLnArgList& arg)
       // Call Generate - forces a call to Book as well as providing the fake data
       data->Generate(model, *fpl, with_stat_fluct);
    }
-   else if(arg.GetString("data-file") != "-" && !arg.GetString("data-file").empty()) {
+   else if(read_data_from_binary) {
       // Fit to data read from an input binary toy file
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
@@ -226,7 +233,7 @@ void Fit(CmdLnArgList& arg)
    std::vector<double>* chi2_best_fit_toy = new std::vector<double>(Ntoys_fake_data);
 
    // Skip forward in the input fakedata binary file to the position of the first toy to read
-   if(arg.GetInt("gen-fakedata") == 0 && start_toy_fake_data != 0)
+   if(read_data_from_binary && arg.GetInt("gen-fakedata") == 0 && start_toy_fake_data != 0)
    {
      toy_stream->SetPositionToToy(start_toy_fake_data);
    }
@@ -234,7 +241,7 @@ void Fit(CmdLnArgList& arg)
    for(int ifake = start_toy_fake_data; ifake < start_toy_fake_data + Ntoys_fake_data; ifake++)
    {
       // Read a fakedata toy, if requested
-      if(arg.GetInt("gen-fakedata") == 0)
+      if(read_data_from_binary && arg.GetInt("gen-fakedata") == 0)
       {
         data->Read(toy_stream);
 
