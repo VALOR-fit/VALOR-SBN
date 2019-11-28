@@ -667,20 +667,26 @@ void GenericSingleSampleFitData::FillFromDST (TTree * t)
     kinematic_branch_names[kv] = util::DSTBranchName(kv);
   }
 
-  int bstat_sample     = 0;
-  int bstat_beam       = 0;
-  int bstat_wght       = 0;
-  int bstat_wght_pot   = 0;
+  int bstat_sample     = TTree::kNoCheck;
+  int bstat_beam       = TTree::kNoCheck;
+  int bstat_wght       = TTree::kNoCheck;
+  int bstat_wght_pot   = TTree::kNoCheck;
   std::map<KineVar_t,int> bstat_kinematics;
 
-  bstat_sample    = t->SetBranchAddress("sample",   &sample);
-  bstat_sample    = t->SetBranchAddress("beam",     &beam);
-  bstat_wght      = t->SetBranchAddress("wght",     &wght);
-  bstat_wght_pot  = t->SetBranchAddress("wght_pot", &wght_pot);
+  bstat_sample = t->SetBranchAddress("sample",   &sample);
+  bstat_beam   = t->SetBranchAddress("beam",     &beam);
+  bstat_wght   = t->SetBranchAddress("wght",     &wght);
+
+  // Note: Could have called t->SetBranchAddress() directly, but this avoids a non-fatal error being
+  //       thrown if the wght_pot branch doesn't exist (which it won't when reading real data)
+  bool br_wght_pot_exists = (t->GetListOfBranches()->FindObject("wght_pot") != nullptr);
+  if(br_wght_pot_exists){
+    bstat_wght_pot = t->SetBranchAddress("wght_pot", &wght_pot);
+  }
 
   fIsFakeData = (bstat_wght_pot == TTree::kMatch);
 
-  bool any_bad_status = (bstat_sample || bstat_beam);
+  bool any_bad_status = (bstat_sample || bstat_beam || bstat_wght);
 
   for(const conv::KineVar_t & kv : kinevars) {
     bool bstat = t->SetBranchAddress(kinematic_branch_names[kv].c_str(),&kinematics[kv]);
