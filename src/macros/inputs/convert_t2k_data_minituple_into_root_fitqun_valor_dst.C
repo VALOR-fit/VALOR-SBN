@@ -70,7 +70,6 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
   int    valor_minidst_sample     = -1;  // see Conventions/Sample.h
   double valor_minidst_enu_reco   = -1.; // reco neutrino energy, in GeV
   double valor_minidst_theta_reco = -1.; // reco angle between the outgoing lepton and the beam direction
-  double valor_minidst_wght_pot   = -1.; // POT weight
   double valor_minidst_wght       = -1.; // misc weight
 
   TTree * valor_minidst = new TTree(valor_minidst_name, "Mini-DST containing VALOR/T2K data");
@@ -79,7 +78,6 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
   valor_minidst->Branch("sample"    , &valor_minidst_sample      ,"sample/I"    );
   valor_minidst->Branch("enu_reco"  , &valor_minidst_enu_reco    ,"enu_reco/D"  );
   valor_minidst->Branch("Theta_reco", &valor_minidst_theta_reco  ,"Theta_reco/D");
-  valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"  );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"      );
 
   // Loop over the input tree to determine the kinematics, sample, beam and weights of each event and fill the output tree
@@ -146,8 +144,7 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
     valor_minidst_sample     = selection;
     valor_minidst_enu_reco   = erec;
     valor_minidst_theta_reco = theta;
-    valor_minidst_wght_pot   = 1.;    // The data has no weights, so set the weight branches to 1
-    valor_minidst_wght       = 1.;
+    valor_minidst_wght       = 1.; // The data has no weights, so set the weight branch to 1
     valor_minidst->Fill();
 
     if(i < 10 || print_low_level_info){
@@ -156,7 +153,6 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
                 << "\n Sample        = " << util::AsString(util::SampleFromInt(valor_minidst_sample))
                 << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV"
                 << "\n theta (reco)  = " << valor_minidst_theta_reco
-                << "\n POT weight    = " << valor_minidst_wght_pot
                 << "\n misc weight   = " << valor_minidst_wght
                 << std::endl;
     }
