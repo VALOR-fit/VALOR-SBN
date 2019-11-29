@@ -47,20 +47,20 @@
   </element_list>
   
   <parameter_definitions>
-    <filename> params/sbn/flux_sbn_nd_numu_ereco.xml </filename>
-    <filename> params/sbn/flux_sbn_ub_numu_ereco.xml </filename>
-    <filename> params/sbn/flux_sbn_fd_numu_ereco.xml </filename>
+    <filename> params/sbn/flux_sbn_nd_etrue.xml </filename>
+    <filename> params/sbn/flux_sbn_ub_etrue.xml </filename>
+    <filename> params/sbn/flux_sbn_fd_etrue.xml </filename>
     <filename> params/sbn/int_numu_ereco.xml </filename>
   </parameter_definitions>
 
   <systematics name="SBN">
     <group name="flux">
-      <format> SBNFluxNumu.xml </format>
+      <format> SBNFlux_Etrue.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/syst/proposal/flux_params.root </filename>
-        <objname>    frac_cov            </objname>    
-        <objtype>    TMatrixD                  </objtype>
+        <filename>   test/uncorr_matrices.root </filename>
+        <objname>    onepercent_63x63     </objname>    
+        <objtype>    TMatrixD             </objtype>
       </covariance_matrix> 
     </group>
     <group name="int">

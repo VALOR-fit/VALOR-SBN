@@ -47,14 +47,10 @@
   </element_list>
   
   <parameter_definitions>
-    <filename> params/sbn/flux_sbn_nd_numu_ereco.xml </filename>
-    <filename> params/sbn/flux_sbn_ub_numu_ereco.xml </filename>
-    <filename> params/sbn/flux_sbn_fd_numu_ereco.xml </filename>
+    <filename> params/sbn/flux_sbn_nd_etrue.xml </filename>
+    <filename> params/sbn/flux_sbn_ub_etrue.xml </filename>
+    <filename> params/sbn/flux_sbn_fd_etrue.xml </filename>
     <filename> params/sbn/int_numu_ereco.xml </filename>
   </parameter_definitions>
 
-  <systematics name="SBN">
-    
-  </systematics>
-    
 </valor> 
