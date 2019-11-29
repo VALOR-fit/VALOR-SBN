@@ -1,7 +1,7 @@
 # argument                           |   type         |  require?   |   default
 # .......................................................................................................
 config                               |   string       |  mandatory  |   -
-output-name                          |   string       |  optional   |   valor_spectra_universes
+tag                                  |   string       |  optional   |   valor_spectra_universes
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
 syst-list                            |   string       |  optional   |   flux
 first-universe                       |   integer      |  mandatory  |   0

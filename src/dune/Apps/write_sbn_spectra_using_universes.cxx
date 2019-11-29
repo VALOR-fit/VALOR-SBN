@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
   LOG("valor_dune", pNOTICE) << arg;
   
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
-  string output_name      = arg.GetString("output-name");
+  string tag              = arg.GetString("tag");
   string config_file      = arg.GetString("config");
   
   size_t n_universes_to_run = arg.GetInt("n-universes");
@@ -119,14 +119,8 @@ int main(int argc, char ** argv)
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
   LOG("valor_dune", pNOTICE) << *Rnd::Instance();
-
-  // Create file to store outputs
-  //~ TString outfilename = TString::Format("%s_%lu-%lu.root", output_name.c_str(),first_universe,first_universe+n_universes_to_run);
-  //~ TFile output_file(outfilename.Data(),"RECREATE");
-  TFile output_file(output_name.c_str(),"RECREATE");
   
   
-      
   // Get model & configure
   // Make an elements without reading the MC
   std::string elem_readopt("nomc nosplines");
@@ -221,17 +215,20 @@ int main(int argc, char ** argv)
     myarr.SetOwner(true);
     model->Write(&myarr,"valor",write_opt.c_str());
     
+    TString output_fn = TString::Format("%s_univ_%lu.root",tag.c_str(),universe);
+    TFile output_file(output_fn.Data(),"RECREATE");
+    
     for (int ihist = 0 ; ihist < myarr.GetEntries() ; ihist++) {
       TH1* hist = dynamic_cast<TH1*>(myarr[ihist]);
       assert(hist);
       TString old_name = hist->GetName();
-      TString new_name = TString::Format("%s_univ_%lu",old_name.Data(),universe);
-      hist->SetName(new_name.Data());
+      //~ TString new_name = TString::Format("%s_univ_%lu",old_name.Data(),universe);
+      //~ hist->SetName(new_name.Data());
       output_file.cd();
       hist->Write();
       
-      if (new_name.Contains("pdfts")) {
-        LOG("valor_dune", pNOTICE) << "Wrote histogram "<<new_name<<" with "<<hist->Integral()<<" events.";
+      if (old_name.Contains("pdfts")) {
+        LOG("valor_dune", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
       }
         
     }
