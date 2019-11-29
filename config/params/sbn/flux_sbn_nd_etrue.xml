@@ -1,0 +1,826 @@
+<?xml version="1.0"?>
+<param_list name="SBND">
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu00  </simple>
+      <long>  SBND numu flux; 0.0 - 0.4 GeV  </long>
+      <rootex>  f_{0; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 0.0 - 0.4 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.0, 0.4  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu01  </simple>
+      <long>  SBND numu flux; 0.4 - 0.5 GeV  </long>
+      <rootex>  f_{1; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 0.4 - 0.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.4, 0.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu02  </simple>
+      <long>  SBND numu flux; 0.5 - 0.6 GeV  </long>
+      <rootex>  f_{2; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 0.5 - 0.6 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.5, 0.6  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu03  </simple>
+      <long>  SBND numu flux; 0.6 - 0.7 GeV  </long>
+      <rootex>  f_{3; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 0.6 - 0.7 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.6, 0.7  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu04  </simple>
+      <long>  SBND numu flux; 0.7 - 1.0 GeV  </long>
+      <rootex>  f_{4; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 0.7 - 1.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.7, 1.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu05  </simple>
+      <long>  SBND numu flux; 1.0 - 1.5 GeV  </long>
+      <rootex>  f_{5; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 1.0 - 1.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.0, 1.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu06  </simple>
+      <long>  SBND numu flux; 1.5 - 2.5 GeV  </long>
+      <rootex>  f_{6; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 1.5 - 2.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.5, 2.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu07  </simple>
+      <long>  SBND numu flux; 2.5 - 3.5 GeV  </long>
+      <rootex>  f_{7; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 2.5 - 3.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.5, 3.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu08  </simple>
+      <long>  SBND numu flux; 3.5 - 5.0 GeV  </long>
+      <rootex>  f_{8; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 3.5 - 5.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  3.5, 5.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu09  </simple>
+      <long>  SBND numu flux; 5.0 - 7.0 GeV  </long>
+      <rootex>  f_{9; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 5.0 - 7.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  5.0, 7.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu10  </simple>
+      <long>  SBND numu flux; 7.0 - 30.0 GeV  </long>
+      <rootex>  f_{10; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numu flux, 7.0 - 30.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  7.0, 30.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numu  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar00  </simple>
+      <long>  SBND numubar flux; 0.0 - 0.7 GeV  </long>
+      <rootex>  f_{11; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numubar flux, 0.0 - 0.7 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.0, 0.7  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar01  </simple>
+      <long>  SBND numubar flux; 0.7 - 1.0 GeV  </long>
+      <rootex>  f_{12; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numubar flux, 0.7 - 1.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.7, 1.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar02  </simple>
+      <long>  SBND numubar flux; 1.0 - 1.5 GeV  </long>
+      <rootex>  f_{13; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numubar flux, 1.0 - 1.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.0, 1.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar03  </simple>
+      <long>  SBND numubar flux; 1.5 - 2.5 GeV  </long>
+      <rootex>  f_{14; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numubar flux, 1.5 - 2.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.5, 2.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar04  </simple>
+      <long>  SBND numubar flux; 2.5 - 30.0 GeV  </long>
+      <rootex>  f_{15; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND numubar flux, 2.5 - 30.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.5, 30.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue00  </simple>
+      <long>  SBND nue flux; 0.0 - 0.5 GeV  </long>
+      <rootex>  f_{16; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nue flux, 0.0 - 0.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.0, 0.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue01  </simple>
+      <long>  SBND nue flux; 0.5 - 0.7 GeV  </long>
+      <rootex>  f_{17; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nue flux, 0.5 - 0.7 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.5, 0.7  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue02  </simple>
+      <long>  SBND nue flux; 0.7 - 0.8 GeV  </long>
+      <rootex>  f_{18; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nue flux, 0.7 - 0.8 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.7, 0.8  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue03  </simple>
+      <long>  SBND nue flux; 0.8 - 1.5 GeV  </long>
+      <rootex>  f_{19; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nue flux, 0.8 - 1.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.8, 1.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue04  </simple>
+      <long>  SBND nue flux; 1.5 - 2.5 GeV  </long>
+      <rootex>  f_{20; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nue flux, 1.5 - 2.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.5, 2.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue05  </simple>
+      <long>  SBND nue flux; 2.5 - 4.0 GeV  </long>
+      <rootex>  f_{21; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nue flux, 2.5 - 4.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.5, 4.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue06  </simple>
+      <long>  SBND nue flux; 4.0 - 30.0 GeV  </long>
+      <rootex>  f_{22; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nue flux, 4.0 - 30.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  4.0, 30.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nuebar00  </simple>
+      <long>  SBND nuebar flux; 0.0 - 2.5 GeV  </long>
+      <rootex>  f_{23; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nuebar flux, 0.0 - 2.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.0, 2.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nuebar01  </simple>
+      <long>  SBND nuebar flux; 2.5 - 30.0 GeV  </long>
+      <rootex>  f_{24; t, r}^{flux,sbnd}  </rootex>
+      <tex>  SBND nuebar flux, 2.5 - 30.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.5, 30.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbn_nd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+</param_list>
