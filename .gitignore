@@ -9,3 +9,7 @@ src/dune/Conventions/Version.h
 
 bin/
 lib/
+data/
+*.root
+*.bin
+
