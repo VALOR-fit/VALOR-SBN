@@ -320,12 +320,14 @@ bool GenericSingleSampleFitData::Read(util::ToyStream* stream)
   assert(fDataOb);
   fDataOb->SetName(TString::Format("%s_%s", "data_ob_vf", fName.c_str()));
   stream->Read(fDataOb);
+  fDataObNull = false;
 
   if(opt.find("+SB") != string::npos)
   {
     assert(fDataSb);
     fDataSb->SetName(TString::Format("%s_%s", "data_sb_vf", fName.c_str()));
     stream->Read(fDataSb);
+    fDataSbNull = false;
   } //+SB
 
   return true;
@@ -834,5 +836,17 @@ util::ToyStream* GenericSingleSampleFitData::InitToyStream(const string file_nam
 
   return new util::ToyStream(file_name, read_or_write, typeid(this), this->Name(),
                              valor_array_format, this->StreamSize());
+}
+//________________________________________________________________________________________
+bool GenericSingleSampleFitData::DataExists(Option_t * opt_in) const
+{
+  bool exists = (fDataObNull == false);
+
+  std::string opt = (opt_in) ? opt_in : "";
+  if(opt.find("SB") != string::npos) {
+    exists = exists && (fDataSbNull == false);
+  }
+
+  return exists;
 }
 //________________________________________________________________________________________

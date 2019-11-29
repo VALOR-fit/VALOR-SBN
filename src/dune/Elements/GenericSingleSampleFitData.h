@@ -75,6 +75,7 @@ public:
   double       GetFitStatistic   (FitModelABC * pred, const PhysHypothesis & ph, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
   double       GetFitStatistic   (FitModelABC * pred, Option_t * opt = "likelihood-ratio", std::map<std::string,double> * likelihood_components = 0);
   void         SetAssociatedModel(FitModelABC *model_abc); // Call this before Read to set the model which should be associated to the data
+  virtual bool DataExists        (Option_t * opt = 0) const;  // Are the data arrays non-empty?
 
   const SingleSampleKineBinning * GetBinning(void) const { return fBinning; };
 

@@ -164,6 +164,11 @@ void Fit(CmdLnArgList& arg)
    FitModelABC* model = elements->FitModel();
    FitDataABC* data = elements->FitData();
 
+   const char* read_opt_data = "";
+   if (use_simple_binning) {
+      read_opt_data = "+SB";
+   }
+
    util::ToyStream* toy_stream = nullptr;
    if(arg.GetInt("gen-fakedata")) {
       // Generate a fake data set to fit to
@@ -194,20 +199,18 @@ void Fit(CmdLnArgList& arg)
       // Fit to data read from an input binary toy file
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
-
-      const char* read_opt_data = "";
-      if (use_simple_binning) {
-         read_opt_data = "+SB";
-      }
-
       toy_stream = data->InitToyStream(data_file_name, "read", read_opt_data);
    }
    else {
-     // Fit to a data file specified in the analysis configuration XML file.
-     // This has already been read in CompoundFitElements::AdoptFitData() (when reading the config file),
-     // so there's no need to do anything here.
-     LOG("valor_dune", pNOTICE) << "Will fit to fake/real data specified in the analysis configuration file";
-     // TODO: Put in a check to see if the data has actually been read...
+      // Fit to a data file specified in the analysis configuration XML file.
+      // This has already been read in CompoundFitElements::AdoptFitData() (when reading the config file),
+      // so there's no need to do anything here.
+      if(!data->DataExists(read_opt_data)) {
+         LOG("valor_dune", pFATAL) << "Tried to fit to fake/real data specified in the analysis configuration file, "
+                                   << "but the data arrays for one or more samples were empty";
+         util::Die(-1);
+      }
+      LOG("valor_dune", pNOTICE) << "Will fit to fake/real data specified in the analysis configuration file";
    }
 
    // Get the requested batch number and number of marginalisation toys for the
