@@ -47,8 +47,8 @@ public:
   bool AllWithinLimits(const FitParamList & fparm) const;
   bool AllWithinLimits(const PhysParamList & fparm) const;
 
-  const map<int,double> & Minima(void) const;
-  const map<int,double> & Maxima(void) const;
+  const std::map<int,double> & Minima(void) const;
+  const std::map<int,double> & Maxima(void) const;
   
   void SetDefaults(void);
 
