@@ -44,6 +44,7 @@
 // fmwk
 #include "valor/Conventions/ExperimentSetup.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/Names.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -53,6 +54,8 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/SingleSampleFitModelABC.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -67,10 +70,7 @@
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/Conventions/Names.h"
 #include "dune/Conventions/Experiment.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;
 using namespace valor;
@@ -88,9 +88,9 @@ int main(int argc, char ** argv)
 {
   valor::ExperimentInitialiser();
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
- 
+
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/tweak_pdf_sigma_var.arg:$VALOR_EXPT/config/apps/seeds.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/tweak_pdf_sigma_var.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
   LOG("valor_dune", pNOTICE) << arg;
   
   // Read the command line
@@ -124,7 +124,13 @@ int main(int argc, char ** argv)
   
   // And OA parameters
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
-  Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+  conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+  if(dmsq_scheme == kNuDmsqUndefined) {
+    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    util::Die(-1);
+  }
+  Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
 
   // TODO: Update this with the new input param search
   double mixing12 = arg.GetDouble("input-mixing12");

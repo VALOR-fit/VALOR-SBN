@@ -20,6 +20,7 @@ TGT = make_nd_minidst \
       make_fastmc_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
+      make_response_functions \
       make_table_systematic_effects \
       run_fit \
       write_pdf \
@@ -28,7 +29,7 @@ TGT = make_nd_minidst \
       fitnt_conv \
       adaptive_mcmc \
       run_tests \
-      run_build_margtoys \
+      run_build_toys \
       run_fit_marg \
       make_dummy_samples \
       batch_tests \
@@ -135,9 +136,9 @@ run_fit: FORCE
 write_pdf: FORCE
 	$(CXX) $(CXXFLAGS) -c write_pdf.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) write_pdf.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-write_pdf
-	
+
 # Write out fd prediction pdf
-# 
+#
 write_fd_prediction_pdf: FORCE
 	$(CXX) $(CXXFLAGS) -c write_fd_prediction_pdf.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) write_fd_prediction_pdf.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-write_fd_prediction_pdf
@@ -166,9 +167,9 @@ fitnt_conv: FORCE
 	$(CXX) $(CXXFLAGS) -c fitnt_conv.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) fitnt_conv.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
 
-run_build_margtoys: FORCE
-	$(CXX) $(CXXFLAGS) -c run_build_margtoys.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) run_build_margtoys.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-run_build_margtoys
+run_build_toys: FORCE
+	$(CXX) $(CXXFLAGS) -c run_build_toys.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) run_build_toys.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-run_build_toys
 
 run_fit_marg: FORCE
 	$(CXX) $(CXXFLAGS) -c run_fit_marg.cxx $(INCLUDES)
@@ -220,7 +221,7 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_tests
-	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_build_toys
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit_marg
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-batch_tests
@@ -242,7 +243,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_tests
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_build_margtoys
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_build_toys
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit_marg
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-batch_tests

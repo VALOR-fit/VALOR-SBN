@@ -29,7 +29,6 @@
 
 //fmwk
 #include "valor/Utilities/UtlParam.h"
-
 #include "valor/Conventions/PhysParamId.h"
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/BeamConf.h"

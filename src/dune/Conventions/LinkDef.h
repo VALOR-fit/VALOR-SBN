@@ -15,3 +15,4 @@
 #pragma link C++ class valor::util::PhysicalParameterLimits+;
 
 #endif
+

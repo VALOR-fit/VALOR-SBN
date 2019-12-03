@@ -10,6 +10,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStr.h"
+#include "valor/Utilities/ToyStream.h"
 
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/UtlOscillation.h"
@@ -19,18 +20,19 @@
 namespace valor
 {
 
-Marginalisation::Marginalisation(CompoundFitElements& elements,
-      string filePrefix, bool use_simple_binning, bool save_throws_to_tree):
-   Marginalisation(*elements.FitModel(), filePrefix, use_simple_binning, save_throws_to_tree)
+Marginalisation::Marginalisation(CompoundFitElements& elements, string filePrefix,  bool use_simple_binning,
+                                 bool save_throws_to_tree, string va_format):
+   Marginalisation(*elements.FitModel(), filePrefix, use_simple_binning, save_throws_to_tree, va_format)
 {
 }
 //______________________________________________________________________________
-Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning, bool save_throws_to_tree):
+Marginalisation::Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning,
+                                 bool save_throws_to_tree, string va_format):
    _filePrefix(filePrefix), _model(&model), _likelihood(0.0), _chi2(0.0),
    _isFit2D(false), _likelihood_1D(nullptr), _likelihood_2D(nullptr),
    _chi2_1D(nullptr), _chi2_2D(nullptr), _fitResult(nullptr),
-   _use_simple_binning(use_simple_binning), _save_throws_to_tree(save_throws_to_tree),
-   _tree_pars(nullptr), _param1_start_bin(0), _param2_start_bin(-1)
+   _use_simple_binning(use_simple_binning),
+   _param1_start_bin(0), _param2_start_bin(-1), _va_format(va_format)
 {
 }
 //______________________________________________________________________________
@@ -42,153 +44,6 @@ Marginalisation::~Marginalisation()
    delete this->_chi2_1D;
    delete this->_chi2_2D;
    delete this->_fitResult;
-   delete this->_tree_pars;
-}
-//______________________________________________________________________________
-void Marginalisation::BuildToys(const int fitParamBin, const int batch,
-      const int Ntoys, FitParamList& fpl, bool randomizeSystematics,
-      const char* options, bool rethrowUnphysical,
-      std::string toy_throw_file_to_read, std::string param_name_map_file)
-{
-   this->BuildToys(fitParamBin, -1, batch, Ntoys, fpl, randomizeSystematics,
-         options, rethrowUnphysical, toy_throw_file_to_read, param_name_map_file);
-}
-//______________________________________________________________________________
-void Marginalisation::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
-      const int batch, const int Ntoys, FitParamList& fpl,
-      bool randomizeSystematics, const char* options, bool rethrowUnphysical,
-      std::string toy_throw_file_to_read, std::string param_name_map_file)
-{
-   std::ostringstream oss;
-   oss << this->_filePrefix << "_" << fitParam1Bin;
-   if(fitParam2Bin > -1)
-   {  // Filename for 2D fit
-      oss << "_v_" << fitParam2Bin;
-   }
-   oss << "_" << batch << "_" << Ntoys << ".bin";
-
-   std::string filename = oss.str();
-
-   PhysicalParameterLimits* limits = PhysicalParameterLimits::Instance();
-
-   // Create a file to store this batch of marginalisation toys
-   std::ofstream os_toys(filename, std::ios::binary | std::ios::out);
-
-   // Will we read throws from a pre-existing file instead of generating them? (This is used e.g. to convert
-   // T2K legacy toy throws into SDK marginalisation toys)
-   bool read_systematics (toy_throw_file_to_read != "" && toy_throw_file_to_read != "NONE" &&
-                          param_name_map_file    != "" && param_name_map_file    != "NONE");
-
-   unsigned int n_rethrows = 0;
-   for(int t = 0; t < Ntoys; ++t)
-   {
-      for( ; ; )
-      {
-         this->_model->ResetSystematics("all");
-         // Randomise the systematics in the model
-         if(randomizeSystematics)
-         {
-            this->_model->RandomizeSystematics(options);
-            util::oscillation::ThrowOscillationParameters(fpl);
-         }
-         else if(read_systematics) {
-            this->ReadParamsFromThrowFile(fpl, toy_throw_file_to_read, param_name_map_file, options, t);
-            break;
-         }
-
-         if(!read_systematics) {
-            PhysParamList tweaks = this->_model->Tweaks();
-            fpl.FromPhysParamList(tweaks, "current silent");
-         }
-
-#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
-         LOG("Marginalisation", pINFO) << fpl;
-#endif
-
-         // Check parameter name, maybe rethrow
-         if(rethrowUnphysical && !limits->AllWithinLimits(fpl))
-         {
-            n_rethrows++;
-#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
-            LOG("Marginalisation", pDEBUG) << "At least one parameter thrown " <<
-               "outside expected limits. Rethrowing.";
-#endif
-         }
-         else
-         {
-            break;
-         }
-      }
-      PhysParamList true_params = fpl.AsPhysParamList("current");
-       
-      // Generate a toy-MC experiment
-#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
-      LOG("Marginalisation", pDEBUG) << "Generating toy-MC data";
-      LOG("Marginalisation", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
-#endif
-      if(t % 100 == 0) { LOG("Marginalisation", pNOTICE) << "Generating toy-MC #" << t; }
-      const char* write_opt = "pdft";
-      if (_use_simple_binning) { write_opt = "pdft+SB"; }
-      this->_model->Generate(fpl, write_opt);
-      this->_model->Write(os_toys, write_opt);
-      this->SaveParamThrows(fpl, t == Ntoys-1, filename);
-   }
-   os_toys.close();
-   LOG("Marginalisation", pNOTICE) << "Finished building marginalisation toys. Generated " << Ntoys
-                              << ", re-threw " << n_rethrows;
-}
-//______________________________________________________________________________
-void Marginalisation::SaveParamThrows(FitParamList& fpl, bool write_tree, std::string binary_file_name)
-{
-   if(!_save_throws_to_tree) { return; }
-
-   // Set up an array to hold all of the parameter values that we'll save to the output tree
-   double param_values[conv::knppmax];
-   for(int ip = 0; ip < conv::knppmax; ip++){
-      param_values[ip] = -999;
-   }
-
-   // Set up the tree, if we haven't done so already
-   if(!_tree_pars) {
-       _tree_pars = new TTree("marg_parameter_values","Input parameters used for marginalisation");
-       for (int ip = 0 ; ip < conv::knppmax ; ip++) {
-          conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
-          if(p == conv::kPhypUndefined) { continue; }
-          std::string param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
-          std::string branch_info = param_name + "/D";
-          if (fpl.Exists(p)) {
-             _tree_pars->Branch(param_name.c_str(), &(param_values[ip]), branch_info.c_str() );
-          }
-       }
-   }
-
-   // Save this throw to the tree
-   for (int ip = 0 ; ip < conv::knppmax ; ip++) {
-      conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
-      if (fpl.Exists(p)) {
-         param_values[ip] = fpl.CurrValue(p);
-      }
-   }
-   _tree_pars->Fill();
-
-   // If this is the final toy, write the tree to a new file
-   if(write_tree) {
-      // Construct the output file name
-      std::string file_name = binary_file_name;
-      std::string to_replace = ".bin";
-      size_t start_pos = file_name.find(to_replace);
-      if(start_pos == std::string::npos) {
-         LOG("Marginalisation", pERROR) << "Could not construct output file name.";
-         util::Die(-1);
-      }
-      file_name.replace(start_pos, to_replace.length(), "_toy_throws.root");
-
-      TFile *out_file = new TFile(file_name.c_str(), "RECREATE");
-      out_file->cd();
-      _tree_pars->Write();
-      out_file->Close();
-      delete out_file;
-   }
 }
 //______________________________________________________________________________
 void Marginalisation::ComputeStatistics(const int fitParamBin, FitDataABC* data,
@@ -204,6 +59,8 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
    const int lastBatch = firstBatch + Nbatches - 1;
    const int N = Nbatches * Ntoys;
    vector<double> vec_chi2_toy(N);  // Index constructed (ibatch - firstBatch) * Ntoys + itoy
+   const char* read_opt = _va_format.c_str();
+   if (_use_simple_binning) { read_opt = (_va_format + "+SB").c_str(); }
    for(int b = firstBatch; b <= lastBatch; ++b)
    {
       std::ostringstream oss;
@@ -216,24 +73,27 @@ void Marginalisation::ComputeStatistics(const int fitParam1Bin,
       std::string filename = oss.str();
       LOG("Marginalisation", pINFO) << "Filename: " << filename;
 
-      std::ifstream is_toys(filename, std::ios::binary | std::ios::in);
+      util::ToyStream* toy_stream = this->_model->InitToyStream(filename, "read", read_opt);
       for(int t = 0; t < Ntoys; ++t)
       {
          // Read the chi2 of each toy-MC experiment into a vector
 #ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "Reading toy-MC data";
 #endif
-         const char* read_opt = "pdft";
-         if (_use_simple_binning) { read_opt = "pdft+SB"; }
-         this->_model->Read(is_toys, read_opt);
+         this->_model->Read(toy_stream);
          double chi2 = data->GetFitStatistic(this->_model, "likelihood-ratio");
          vec_chi2_toy[(b - firstBatch) * Ntoys + t] = chi2;
+
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
+         LOG("Marginalisation", pNOTICE) << "Marg toy #" << t << " event rates:\n" << this->_model->GetPDFIntegralAsString();
+#endif
+
 #ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
          LOG("Marginalisation", pDEBUG) << "chi2(" << t << "): " << chi2 <<
-            " L(" << t << "): " << likelihood;
+            " L(" << t << "): " << exp(-chi2/2.);
 #endif
       }
-      is_toys.close();
+      delete toy_stream;
    }
 
    // Now sort the vector of chi2 values in descending order. This is so that the contributions from tiny
@@ -531,104 +391,5 @@ void Marginalisation::CheckLocalMinimum(int& binX, int& binY,
    binX = binMinX;
    binY = binMinY;
 }
-
-void Marginalisation::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy_throw_file_to_read,
-                                              std::string param_name_map_file, const char* options, int toy_number)
-{
-  if(toy_throw_file_to_read == "" || param_name_map_file == "") {
-     LOG("valor_dune", pERROR) << "No input toy throw file or parameter name map file was specified.";
-     util::Die(-1);
-  }
-
-  TString ts(options);
-
-  // Opening the tree file for every toy is horribly inefficient, but this function will likely just be used
-  // to debug a few events, so it's fine for now, as I'd rather have this as self-contained as possible, since
-  // it's related to a specific analysis rather than being generic.
-  TFile * in_file = new TFile(toy_throw_file_to_read.c_str(), "READ");
-  in_file->cd();
-  TTree * tree_input_pars = (TTree*) in_file->Get("marg_parameter_values");
-
-  // Set up an array to hold all of the parameter values that we'll read
-  double read_params[conv::knppmax];
-  for(int ip = 0; ip < conv::knppmax; ip++){
-     read_params[ip] = -999;
-  }
-
-  // Set up the branches to read
-  //std::map<conv::PhysParamId_t, double> read_params;
-  for (int ip = 0 ; ip < conv::knppmax ; ip++) {
-     conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
-     if (p == conv::kPhypUndefined) { continue; }
-     if (!fpl.Exists(p)) { continue; }
-     std::string sdk_param_name = util::NameRegistry::Instance()->ParamAsStringVerySimple(p);
-     std::string read_param_name = "";
-
-     // Put in special cases here, where we may need to skip params
-     if (ts.Contains("compare-t2k-legacy") &&
-         (p == util::NameRegistry::Instance()->PhysParamFromString("SCCA") ||
-          p == util::NameRegistry::Instance()->PhysParamFromString("SCCV"))) {
-        read_params[ip] = 1.0;
-        continue;
-     }
-
-     // Open the parameter map file
-     std::ifstream map(param_name_map_file);
-     std::string arg_file_line = "";
-     while (std::getline(map, arg_file_line))
-     {
-        // Find the read parameter name that corresponds to this parameter
-        vector<std::string> tokens = util::Tokens(arg_file_line, ",");
-        std::string search_sdk_name    = util::GetStringBetweenDelimiters(util::RemoveAllWhitespace(tokens[0]), "'", "'");
-        std::string search_read_name = util::GetStringBetweenDelimiters(util::RemoveAllWhitespace(tokens[1]), "'", "'");
-        if (search_sdk_name == sdk_param_name) {
-           read_param_name = search_read_name;
-           break;
-        }
-     }
-     int branch_status = tree_input_pars->SetBranchAddress(read_param_name.c_str(), &(read_params[p]));
-     if (branch_status) {
-        LOG("Marginalisation",pFATAL) << "Failed to get input branch for "<<read_param_name;
-        util::Die(-1);
-     }
-  }
-
-  // Read the toy from the tree and fill the FPL
-  FitParamList * free_par_list = fpl.ParameterOfInterestSubset();
-  tree_input_pars->GetEntry(toy_number);
-  for (int ip = 0 ; ip < conv::knppmax ; ip++) {
-     conv::PhysParamId_t p = (conv::PhysParamId_t)ip;
-     if (p == conv::kPhypUndefined) { continue; }
-     if (!fpl.Exists(p)) { continue; }
-
-     // Keep the parameter(s) of interest at their initial values
-     if(free_par_list->Exists(p)) {
-        fpl.SetCurrentValue(p, free_par_list->InitValue(p));
-        continue;
-     }
-
-     if (read_params[p] + 999 < conv::kASmallNum) {
-        LOG("valor_dune", pERROR) << "The thrown value for param ["
-                                  << util::NameRegistry::Instance()->ParamAsStringVerySimple(p)
-                                  << "] could not be found.";
-        util::Die(-1);
-     }
-
-     double param_value = read_params[p];
-
-     // Put in special cases here, where the param value needs changing too
-     if (ts.Contains("compare-t2k-legacy") && p == util::NameRegistry::Instance()->PhysParamFromString("sk_e_scale")) {
-        param_value += 1;
-     }
-
-     fpl.SetCurrentValue(p, param_value);
-  }
-
-  LOG("valor_dune", pFATAL) << "Reading toy from input throw file with FPL = " << fpl;   // TODO: demote back to pDEBUG when done testing
-
-  in_file->Close();
-  delete in_file;
-}
-
 } // valor
 

@@ -46,6 +46,8 @@
 #include "valor/Conventions/BeamConf.h"
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/Detector.h"
+#include "valor/Conventions/ParameterPool.h"
+#include "valor/Conventions/Parameter.h"
 #include "valor/KineBinning/VALORBinning.h"
 #include "valor/Conventions/Parameter.h"
 #include "valor/Conventions/ReacMode.h"

@@ -39,7 +39,7 @@ namespace conv {
 
 // TODO: Remove this mess of #ifdefs and move the beam, sample, reac mode, and coarse reac mode lists into the config files.
 
-static const int kNBeamConf = 2;  
+static const int kNBeamConf = 2;
 
 static const BeamConf_t kBeamConf[kNBeamConf] =
 {
@@ -351,7 +351,7 @@ static const int kNReacModesCoarse = 9;  // max coarse modes used per sample
 static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReacModesCoarse] = 
 {
 #ifdef T2K
-  // T2K FHC   TODO: Revisit the SuperK coarse reac modes, see dune/Conventions/ModeLists/Coarse/SuperK.h
+  // T2K FHC
   {
     // sample: ks1Rmu
     {
@@ -1085,7 +1085,6 @@ static const ReacModeCoarse_t kReactionModesCoarse[kNBeamConf][kNSamples][kNReac
 
 //
 // Also, specify formatting (line color, fill color, fill style)
-//
 
 static const int kReactionModesCoarseFormatting[kNBeamConf][kNSamples][kNReacModesCoarse][3] = 
 {

@@ -71,6 +71,7 @@
 #include "valor/Utilities/VThreadPool.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/UtlOscillation.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/KineBinning/VALORBinning.h"
@@ -93,7 +94,7 @@ int main(int argc, char ** argv)
 {
   valor::ExperimentInitialiser();
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
- 
+
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_table_systematic_effects.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
   LOG("valor_dune", pNOTICE) << arg;
@@ -120,11 +121,17 @@ int main(int argc, char ** argv)
   // Set the random seeds
   Rnd::Instance()->SetSeeds(arg);
 
-  //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)
+  //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23 (NH) / dmsq12abs31 (IH))
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
   Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
   Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
-  Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+  conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+  if(dmsq_scheme == kNuDmsqUndefined) {
+    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    util::Die(-1);
+  }
+  Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
 
   // Config
   std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
@@ -163,6 +170,7 @@ int main(int argc, char ** argv)
     model->RandomizeSystematics(syst_param_map);
 
     FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+    util::oscillation::SetOscillationParameterPriors(arg, *fp);
 
     // Set input parameters
     RgKeyList input_args = arg.FindKeys("input-");
@@ -199,9 +207,7 @@ int main(int argc, char ** argv)
       std::cerr << "Osc param randomisation is not yet supported. Exiting" << std::endl;
       util::Die(-1);
 
-      TString prior_arg = TString::Format("flat-prior-%s", nr->ParamAsString(p).c_str());
-      string mode = ( (arg.GetBool(prior_arg.Data())) ? "flat" : "gaus" );
-      double rnd_value = util::GetRandomizedOscParam(p,mode);           // TODO: set T2K osc param priors
+      double rnd_value = util::oscillation::GetRandomizedOscParam(p,*fp);
       fp->Update(p, rnd_value);
       if(p == conv::kPhypMixing14    || p == conv::kPhypMixing15    || p == conv::kPhypMixing24    ||
          p == conv::kPhypMixing25    || p == conv::kPhypMixing34    || p == conv::kPhypMixing35    ||

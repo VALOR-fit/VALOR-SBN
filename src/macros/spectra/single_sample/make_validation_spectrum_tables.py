@@ -23,14 +23,13 @@ env  =  valor.Env.Instance()
 
 col1_width = 12
 coln_width = 20
-to3dp = "{0:.3f}"
 min_channels_to_landscape = 7   # If we get more than this number of channels, then switch the page to landscape orientation
 
 #______________________________________________________________________________________________________________________________
 
-def main(config_file, hypothesis, param_values,
+def main(config_file, param_values,
     hierarchy,angle_scheme,octant,dmsqscheme,
-    output_file,label):
+    output_file,label,fplname,fplopt,num_decimal_places):
   
   opt.gMassHierarchyAssumed = util.HierarchyFromString(hierarchy)
   opt.gOscMixingParamChoice = util.MixingTypeFromString(angle_scheme)
@@ -38,18 +37,23 @@ def main(config_file, hypothesis, param_values,
   opt.gOscDmsqScheme = util.DmsqSchemeFromString(dmsqscheme)
   
   opt.SetDefaultParameterValues()
-  
-  phyp = valor.PhysHypothesis(hypothesis)
+
+  to_ndp = "{0:."+str(num_decimal_places)+"f}"
 
   fit_elements = valor.CompoundFitElements()
   fit_elements.Read(util.CompleteConfigPath(config_file))
 
+  model = fit_elements.FitModel()
+  syst = model.GetSystematics()
+  fpl = util.GetFitParameterList(fplname, fplopt, syst)
+
   relevant_params = []
   for (parname,val) in param_values.iteritems():
     p = util.NameRegistry.Instance().PhysParamFromString(parname)
-    if (phyp.Contains(p)):
-      phyp.SetCurrValue(p,val)
-      print util.NameRegistry.Instance().ParamAsString(p).ljust(25),phyp.CurrValue(p)
+    if (fpl.Exists(p)):
+      fpl.Update(p,val)
+      fpl.SetInitValue(p,val)
+      print util.NameRegistry.Instance().ParamAsString(p).ljust(25),fpl.CurrValue(p)
       relevant_params.append(p)
   relevant_params.sort()
   
@@ -75,20 +79,19 @@ def main(config_file, hypothesis, param_values,
   if len(relevant_params):
     tex_output.write("\n\\begin{itemize}\n")
     for param in relevant_params:
-      tex_output.write("\\item[] "+util.NameRegistry.Instance().ParamAsStringTex(param)+" = "+str(phyp.CurrValue(param))+"\n")
+      tex_output.write("\\item[] "+util.NameRegistry.Instance().ParamAsStringTex(param)+" = "+str(fpl.CurrValue(param))+"\n")
 
     tex_output.write("\\end{itemize}\n")
 
   tex_output.write("\\end{minipage}")
 
   tex_output.write("\n\\\\\n\n")
-
+  phyp = fpl.PhysicsHypothesis
   if (phyp=="3f_osc") :
     tex_output.write("Hierarchy: "+hierarchy.capitalize()+"\n\n")
   if label: tex_output.write(label+"\n\n")
-  
-  model = fit_elements.FitModel()
-  model.Generate(phyp)
+
+  model.Generate(fpl)
   
   n_submodels = model.GetNSubModels()
   
@@ -149,7 +152,7 @@ def main(config_file, hypothesis, param_values,
       nev_tot += nev
       total_event_counts_per_channel  [channel] += nev
       total_event_counts_per_reac_type[reac_type] += nev
-      event_counts_per_channel[reac_type][channel] = to3dp.format(nev)
+      event_counts_per_channel[reac_type][channel] = to_ndp.format(nev)
       
       # ~ if (signal_for_sample[sample_name]==spec): signal_events+=nev
       # ~ else: background_events+=nev
@@ -180,15 +183,15 @@ def main(config_file, hypothesis, param_values,
         except KeyError:
           ev_counts.append("N/A".ljust(coln_width))
       
-      ev_counts.append(to3dp.format(total_event_counts_per_reac_type[reac_type]).ljust(coln_width))
+      ev_counts.append(to_ndp.format(total_event_counts_per_reac_type[reac_type]).ljust(coln_width))
           
       tex_output.write(" & ".join(ev_counts) + " \\\\ \\hline\n")
     
     # Write totals
     tex_output.write("\\hline\n")
     tex_output.write(" "+"Total".ljust(col1_width)+" & ")
-    string_totals = [to3dp.format(total_event_counts_per_channel[channel]).ljust(coln_width) for channel in channels]
-    string_totals.append(to3dp.format(nev_tot).ljust(coln_width))
+    string_totals = [to_ndp.format(total_event_counts_per_channel[channel]).ljust(coln_width) for channel in channels]
+    string_totals.append(to_ndp.format(nev_tot).ljust(coln_width))
     tex_output.write(" & ".join(string_totals) + " \\\\ \\hline\n")
     
     tex_output.write("\n\\end{tabular}\n")
@@ -201,11 +204,11 @@ def main(config_file, hypothesis, param_values,
     
     print submodel_name,total_events
     
-    tex_output.write("\nTotal: "           +to3dp.format(total_events)     +"    ("+to3dp.format(nev_tot)+")\n\n")
-    # ~ tex_output.write("\nTotal signal: "    +to3dp.format(signal_events)    +"\n\n")
-    # ~ tex_output.write("\nTotal background: "+to3dp.format(background_events)+"\n\n")
+    tex_output.write("\nTotal: "           +to_ndp.format(total_events)     +"    ("+to_ndp.format(nev_tot)+")\n\n")
+    # ~ tex_output.write("\nTotal signal: "    +to_ndp.format(signal_events)    +"\n\n")
+    # ~ tex_output.write("\nTotal background: "+to_ndp.format(background_events)+"\n\n")
     
-    tex_output.write("POT: "+to3dp.format(submodel.GetPOT()*1E-20)+"E20\n\n")
+    tex_output.write("POT: "+to_ndp.format(submodel.GetPOT()*1E-20)+"E20\n\n")
 
     if len(channels) > min_channels_to_landscape:
       tex_output.write("\\end{landscape}\n")
@@ -223,18 +226,21 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options]..",description="Make tables of validation spectra")
 
 
-  parser.add_option("--hypothesis",dest="hypothesis",default="3f_osc",help="Physics hypotheis: eg 3f_osc,eff_sterile_osc")
+  parser.add_option("--fit-param-list"          , dest="fplname"       , default="nuosc3f"   , help="Name of FPL.")
+  parser.add_option("--fit-param-opt"           , dest="fplopt"        , default="NONE"      , help="FPL options.")
   parser.add_option(     '--hierarchy'          , dest="hierarchy"     , default="normal"    , help='Mass hierarchy: "normal" or "inverted"')
   parser.add_option('-m','--mixing-param-choice', dest="mixparamchoice", default="sinsqtheta", help='Mixing param coice: "sinsqtheta" or "sinsq2theta"')
   parser.add_option('-t','--mixing-param-octant', dest="mixparamoctant", default="two"       , help='Mixing param octant: "one" or "two"')
-  parser.add_option('-a','--dmsq-scheme', dest="dmsqscheme", default="abs23"       , help='"abs23", "abs31" or "fogli"')
+  parser.add_option('-a','--dmsq-scheme'        , dest="dmsqscheme"    , default="auto"      , help='"auto", "abs23", "abs31" or "fogli"')
   
   parser.add_option('-f', '--file', dest='output_file', default="validation.tex", help="Name for output TeX file.")
   
   parser.add_option('-c', '--config', dest='config', default="default_configuration.xml", help="Configuration file")
   
   parser.add_option('-l', '--label' , dest='label' , default=None, help="Label to put in file.")
-  
+
+  parser.add_option('-d', '--n-decimal-places' , dest='ndp' , default=3, type=int, help="Number of decimal places used to print event rates.")
+
   all_parnames = []
   for p in xrange(conv.kNuis000):
     parname = util.NameRegistry.Instance().ParamAsStringVerySimple(p)
@@ -250,9 +256,9 @@ if __name__=="__main__":
   # Make a dictionary of the parameter names to their argument values
   param_values = dict(((pname,getattr(o,pname)) for pname in all_parnames))
 
-  main(o.config, o.hypothesis, param_values,
+  main(o.config, param_values,
     o.hierarchy,o.mixparamchoice,o.mixparamoctant,o.dmsqscheme,
-    o.output_file,o.label)
+    o.output_file,o.label,o.fplname,o.fplopt,o.ndp)
   
   if other:
     print "Warning - ignored arguments: ",other

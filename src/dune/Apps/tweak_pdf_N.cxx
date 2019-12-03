@@ -114,7 +114,13 @@ int main(int argc, char ** argv)
   
   // And OA parameters
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
-  Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+  conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+  if(dmsq_scheme == kNuDmsqUndefined) {
+    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    util::Die(-1);
+  }
+  Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
   
   double mixing12 = arg.GetDouble("input-mixing12");
   double mixing13 = arg.GetDouble("input-mixing13");

@@ -117,11 +117,17 @@ int main(int argc, char ** argv)
   CorrelatedSystematics * syst = model->GetSystematics();                                                                               
   FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
 
-  //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
+  //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23 (NH) / dmsq12abs31 (IH))
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
   Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
   Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
-  Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+  conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+  if(dmsq_scheme == kNuDmsqUndefined) {
+    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    util::Die(-1);
+  }
+  Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
 
   // Update values of oscillation parameters 
   RgKeyList input_args = arg.FindKeys("input-");

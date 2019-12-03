@@ -5,11 +5,14 @@
 
 \brief     A class handling marginalisation toys.
 
-           Provides the methods for building and storing the toy spectra, along
-           with the computation of the marginal likelihood and chi2 statistic.
+           Provides the methods for the computation of the marginal likelihood and chi2 statistic.
+           Prerequisites: Marginalisation toys built using ToyStream, and data/fakedata
 
 \author    Andy Chappell <A.Chappell \at warwick.ac.uk>
            University of Warwick
+
+           Francis Bench <F.Bench \at liverpool.ac.uk>
+           University of Liverpool
 
 \created   January 22, 2019
 
@@ -51,9 +54,10 @@ public:
              spectra.
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
+      \param va_format The format that VALORArrays are stored as.
    */
    Marginalisation(CompoundFitElements& elements, string filePrefix, bool use_simple_binning,
-                   bool save_throws_to_tree = false);
+                   bool save_throws_to_tree = false, string va_format = "pdft_vf");
 
    /**
       Constructs a Marginalisation object.
@@ -61,9 +65,10 @@ public:
       \param model The FitModelABC object used to generate the MC spectra.
       \param filePrefix The prefix to be used for the marginalisation toy files
              to be written.
+      \param va_format The format that VALORArrays are stored as.
    */
    Marginalisation(FitModelABC& model, string filePrefix, bool use_simple_binning,
-                   bool save_throws_to_tree = false);
+                   bool save_throws_to_tree = false, string va_format = "pdft_vf");
 
    /**
       Destructor.
@@ -71,87 +76,6 @@ public:
       This class does not own the FitModel object, so it does not destroy it.
    */
    virtual ~Marginalisation();
-
-   /**
-      Builds a batch of marginalisation toys.
-
-      To facilitate incremental building of marginalisation toys, a complete set
-      of marginalisation toys can be split into batches, each of which should
-      have the same number of toys in it.
-
-      \param fitParamBin The bin associated with the current unmarginalised
-             oscillation parameter.
-      \param batch The numeric ID for the batch of toys to be generated. This
-             should start with batch 0.
-      \param Ntoys The number of marginalisation toys to be created in *this*
-             batch.
-      \param fpl The FitParamList defining the parameters to be used in
-             generating the marginalisation toys. This method will only throw
-             those parameters that return true for FitParamList::IsMarginalized.
-      \param randomizeSystematics Whether or not to randomize the systematics.
-             Default true (kind of the point of marginalisation, but might be
-             useful for testing).
-      \param options The options associated with randomizing systematics.
-      \param rethrowUnphysical Whether or not to rethrow parameters that exceed
-             their physical boundaries (Cholesky decomposition can cause
-             parameters to move beyond bounds even if they are thrown with
-             limits). Default true.
-      \param toy_throw_file_to_read Read throws from a pre-existing file instead of
-             generating them. This is used e.g. to convert T2K legacy toy throws
-             into SDK marginalisation toys.
-             NOTE: As this reads thrown parameter values, statistical fluctuations
-             are not copied
-      \param param_name_map_file If using toy_throw_file_to_read, also specify this
-             argument, which is used to convert SDK parameter names into the parameter
-             names used by the toy_throw_file_to_read.
-   */
-   void BuildToys(const int fitParamBin, const int batch, const int Ntoys,
-         FitParamList& fpl, bool randomizeSystematics = true,
-         const char* options = "randomize-all;prefit-errors",
-         bool rethrowUnphysical = true, std::string toy_throw_file_to_read = "",
-         std::string param_name_map_file = "");
-
-   /**
-      Builds a batch of marginalisation toys.
-
-      To facilitate incremental building of marginalisation toys, a complete set
-      of marginalisation toys can be split into batches, each of which should
-      have the same number of toys in it.
-
-      \param fitParam1Bin The bin associated with the first unmarginalised
-             oscillation parameter.
-      \param fitParam2Bin The bin associated with the second unmarginalised
-             oscillation parameter.
-      \param batch The numeric ID for the batch of toys to be generated. This
-             should start with batch 0.
-      \param Ntoys The number of marginalisation toys to be created in *this*
-             batch.
-      \param fpl The FitParamList defining the parameters to be used in
-             generating the marginalisation toys. This method will only throw
-             those parameters that return true for FitParamList::IsMarginalized.
-      \param randomizeSystematics Whether or not to randomize the systematics.
-             Default true (kind of the point of marginalisation, but might be
-             useful for testing).
-      \param options The options associated with randomizing systematics.
-      \param rethrowUnphysical Whether or not to rethrow parameters that exceed
-             their physical boundaries (Cholesky decomposition can cause
-             parameters to move beyond bounds even if they are thrown with
-             limits). Default true.
-      \param toy_throw_file_to_read Read throws from a pre-existing file instead of
-             generating them. This is used e.g. to convert T2K legacy toy throws
-             into SDK marginalisation toys.
-             NOTE: As this reads thrown parameter values, statistical fluctuations
-             are not copied
-      \param param_name_map_file If using toy_throw_file_to_read, also specify this
-             argument, which is used to convert SDK parameter names into the parameter
-             names used by the toy_throw_file_to_read.
-   */
-   void BuildToys(const int fitParam1Bin, const int fitParam2Bin,
-         const int batch, const int Ntoys, FitParamList& fpl,
-         bool randomizeSystematics = true,
-         const char* options = "randomize-all;prefit-errors",
-         bool rethrowUnphysical = true, std::string toy_throw_file_to_read = "",
-         std::string param_name_map_file = "");
 
    /**
       Computes the marginal likelihood and chi-squared statistics for a given
@@ -339,30 +263,6 @@ private:
          const int gridSizeX, const int gridSizeY, FitDataABC* data,
          const int Ntoys, const int Nbatches, const int firstBatch = 0);
 
-   /**
-      Saves all parameter values in the input FitParamList to a tree.
-
-      \param fpl The fit param list to save.
-
-      \param write_tree Write the tree to an output file
-   */
-   void SaveParamThrows(FitParamList& fpl, bool write_tree, std::string binary_file_name);
-
-  /**
-     Read a single set of parameter throws from a T2K legacy toy throw file into the input FitParamList.
-
-     \param fpl Store the read parameter throws in this FitParamList
-     \param toy_throw_file_to_read Read throws from a pre-existing file instead of
-            generating them. This is used e.g. to convert T2K legacy toy throws
-            into SDK marginalisation toys.
-            NOTE: As this reads thrown parameter values, statistical fluctuations
-            are not copied
-     \param param_name_map_file This file is used to convert SDK parameter names
-            into the parameter names used by the toy_throw_file_to_read.
-  */
-  void ReadParamsFromThrowFile(FitParamList& fpl, std::string toy_throw_file_to_read,
-                               std::string param_name_map_file, const char* options, int toy_number);
-
 private:
    string _filePrefix; 
    FitModelABC* _model;
@@ -375,12 +275,13 @@ private:
    TH2D* _chi2_2D;
    FitResult* _fitResult;
    bool _use_simple_binning;
-   bool _save_throws_to_tree;
-   TTree* _tree_pars;
    int _param1_start_bin;
    int _param2_start_bin;
+   string _va_format;
 
-  // TODO: update this description - the stuff about floats is not relevant anymore
+  // NOTE: The following desciption was added back when we still used floats. This may or may not be needed any more
+  // (since we're using doubles), but we're keeping it for now in case we need much greater precision in the future.
+  //
   // When calculating the marginal likelihood:
   // Rescale the likelihood by exp(scale) when sum over the toys, then scale back at the end (of ComputeStatistics())
   // Avoid precision problems w/ floats or double when chisq~200 and like=exp(-0.5*chisq) becomes too small
