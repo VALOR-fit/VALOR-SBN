@@ -83,7 +83,7 @@ $stat_fluct             = 1                                       unless defined
 $fitoption              = "minuit"                                unless defined $fitoption;
 $store_spectra          = 0                                       unless defined $store_spectra;
 $job_dir                = `pwd`                                   unless defined $job_dir;
-$dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
+$dune_softw_dir         = $ENV{'VALOR_EXPT'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dune_ndfit-2015v1-FGTv1.xml"           unless defined $config_file;
 

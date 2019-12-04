@@ -79,14 +79,14 @@ if (not defined $input or not defined $output) {
 
 $resource               = "interactive"      unless defined $resource;
 $job_dir                = `pwd`              unless defined $job_dir;
-$dune_softw_dir         = $ENV{'VALOR_DUNE'} unless defined $dune_softw_dir;
+$dune_softw_dir         = $ENV{'VALOR_EXPT'} unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'} unless defined $fmwk_softw_dir;
 $njobs                  = 1                  unless defined $njobs;
 $tag                    = "run"              unless defined $tag;
 $memory                 = "4G"               unless defined $memory;
 
 $config                 = "fit/dunend_ndtf_2ndpassthrough_18sample_toymc_fit.xml" unless defined $config;
-$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
+$mesg_thresholds        = $ENV{'VALOR_EXPT'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
 
 $nsteps                  = 50000   unless defined $nsteps;
 $ncores                  = 1       unless defined $ncores;

@@ -117,7 +117,7 @@ if [ ! -f $JOBDIR/valorsdk.tar ]; then
 fi
 
 if [ ! -f $JOBDIR/valordune.tar ]; then 
-    tar -C $VALOR_DUNE -czf  valordune.tar .
+    tar -C $VALOR_EXPT -czf  valordune.tar .
 fi
 
 cd $CURRENTDIR
@@ -134,14 +134,14 @@ fi
 
 chmod +x $JOBDIR/$SHELLSCRIPTNAME
 
-cp $VALOR_DUNE/generic_jobsub.sh $VALOR_DUNE/generic_jobsub_$SHELLSCRIPT.sh 
+cp $VALOR_EXPT/generic_jobsub.sh $VALOR_EXPT/generic_jobsub_$SHELLSCRIPT.sh
 
 #Run Jobsub
 if [ $INTERACTIVE = false ]; then 
 
-    jobsub_submit -G $GROUP --role=Analysis --memory=$MEMORY --expected-lifetime=$CPUTIME --disk=$DISK --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N 1 --generate-email-summary file://$VALOR_DUNE/prod/generic_jobsub_$SHELLSCRIPT.sh --shellscript $JOBDIR/$SHELLSCRIPTNAME --tarballsdk $JOBDIR/valorsdk.tar --tarballdune $JOBDIR/valordune.tar --jobdir $JOBDIR
-    rm -rf $VALOR_DUNE/generic_jobsub_$SHELLSCRIPT.sh
+    jobsub_submit -G $GROUP --role=Analysis --memory=$MEMORY --expected-lifetime=$CPUTIME --disk=$DISK --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N 1 --generate-email-summary file://$VALOR_EXPT/prod/generic_jobsub_$SHELLSCRIPT.sh --shellscript $JOBDIR/$SHELLSCRIPTNAME --tarballsdk $JOBDIR/valorsdk.tar --tarballdune $JOBDIR/valordune.tar --jobdir $JOBDIR
+    rm -rf $VALOR_EXPT/generic_jobsub_$SHELLSCRIPT.sh
 else
     echo "interactive"
-    $VALOR_DUNE/prod/generic_jobsub.sh --shellscript $JOBDIR/$SHELLSCRIPTNAME --tarballsdk $JOBDIR/valorsdk.tar --tarballdune $JOBDIR/valordune.tar --jobdir $JOBDIR --interactive
+    $VALOR_EXPT/prod/generic_jobsub.sh --shellscript $JOBDIR/$SHELLSCRIPTNAME --tarballsdk $JOBDIR/valorsdk.tar --tarballdune $JOBDIR/valordune.tar --jobdir $JOBDIR --interactive
 fi

@@ -39,7 +39,7 @@ double CalcThetaDegrees(float dir[][7][3], int iclass);
 void convert_t2k_data_minituple_into_root_fitqun_valor_dst
 (
  const char* output_tag     = "SK_data_Run1-9d_valor_minidst",
- const char* input_file     = "$VALOR_DUNE/data/official/2018/data/t2ksk.14c.fqv4r0.full_run1-9.data.minituple_cuts_applied.root",
+ const char* input_file     = "$VALOR_EXPT/data/official/2018/data/t2ksk.14c.fqv4r0.full_run1-9.data.minituple_cuts_applied.root",
  const char* input_treename = "minituple"
  )
 {

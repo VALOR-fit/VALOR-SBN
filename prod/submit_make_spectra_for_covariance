@@ -9,7 +9,7 @@
 #  --tag                    : Tag for output files. Default: "param_scan".
 
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`.
-#  --dune-softw-dir         : VALOR/DUNE code top-level directory. Default: $VALOR_DUNE
+#  --dune-softw-dir         : VALOR/DUNE code top-level directory. Default: $VALOR_EXPT
 #  --fmwk-softw-dir         : VALOR/FMWK code top-level directory. Default: $VALOR_FMWK
 #  --config-file            : Analysis configuration file. Default: "default_config.xml"
 #  --mesg-thresholds        : Message thresholds file. Default: "verbosity.xml"
@@ -50,10 +50,10 @@ $resource               = "interactive"                           unless defined
 $tag                    = "spectra_for_universe"                  unless defined $tag;
 $group                  = ""                                      unless defined $group;
 $job_dir                = `pwd`                                   unless defined $job_dir;
-$dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
+$dune_softw_dir         = $ENV{'VALOR_EXPT'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "default_config.xml"                    unless defined $config_file;
-#$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
+#$mesg_thresholds        = $ENV{'VALOR_EXPT'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
 $mesg_thresholds        = "verbosity.xml"                         unless defined $mesg_thresholds;
 $n_universe_per_job     = 20                                      unless defined $n_universe_per_job;
 $syst_list              = "flux"                                  unless defined $syst_list;

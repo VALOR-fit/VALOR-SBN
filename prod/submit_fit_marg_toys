@@ -11,7 +11,7 @@
 #  --cpu-time               : Requested CPU time
 #  --mem                    : Requested memory
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`
-#  --softw-dir              : Oscillation code top-level directory. Default: `VALOR_DUNE` environment variable
+#  --softw-dir              : Oscillation code top-level directory. Default: `VALOR_EXPT` environment variable
 #  --fmwk-dir               : SDK top-level directory. Default: `VALOR_FMWK` environment variable
 #  --time-command           : Time the jobs
 #
@@ -167,7 +167,7 @@ $resource            = "interactive"                                            
 $cput                = "8:00:00"                                                           unless (defined $cput || $use_t2k_presets == 1);
 $mem                 = "3500M"                                                             unless (defined $mem  || $use_t2k_presets == 1);
 $job_dir             = $ENV{'PWD'}                                                         unless defined $job_dir;
-$softw_dir           = $ENV{'VALOR_DUNE'}                                                  unless defined $softw_dir;
+$softw_dir           = $ENV{'VALOR_EXPT'}                                                  unless defined $softw_dir;
 $fmwk_dir            = $ENV{'VALOR_FMWK'}                                                  unless defined $fmwk_dir;
 $time_command        = 0                                                                   unless defined $time_command;
 $margtoy_tag         = ""                                                                  unless defined $margtoy_tag;

@@ -13,7 +13,7 @@
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/ToyStream.h"
 
-//#define VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+//#define VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
 
 namespace valor
 {
