@@ -63,8 +63,12 @@
 #include "valor/CmdLine/CmdLnArgList.h"
 
 #include "valor/Conventions/KineSpace.h"
+#include "valor/Conventions/Opt.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/CompoundFitData.h"
+#include "valor/FitCore/CompoundFitModel.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
 #include "valor/FitCore/FitInputs.h"
@@ -75,17 +79,13 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
+#include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
-#include "dune/Elements/CompoundFitElements.h"
-
-#include "valor/FitCore/CompoundFitData.h"
-#include "valor/FitCore/CompoundFitModel.h"
-#include "valor/Conventions/Opt.h"
 
 #include "dune/Utilities/UtlOscillation.h"
 #include "dune/Utilities/ToyBuilder.h"
