@@ -4,7 +4,7 @@ import os
 import ROOT as R
 import array
 
-R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
+R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C")
 
 valor = R.valor
 util = R.valor.util

@@ -13,7 +13,7 @@ R.PyConfig.IgnoreCommandLineOptions = True
 try:
   R.valor
 except:
-  R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
+  R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C");
   
 valor = ROOT.valor
 util =  valor.util
