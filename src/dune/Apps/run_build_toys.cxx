@@ -99,6 +99,7 @@ void Init(CmdLnArgList& arg);
 int main(int argc, char** argv)
 {
    gROOT->SetBatch(1);
+   valor::ExperimentInitialiser();
    Env::Instance()->AutoSet("dune");
    CmdLnArgList arg;
    arg.Read(argc,argv,
