@@ -42,7 +42,6 @@
 #include "TString.h"
 #include "TSystem.h"
 // fmwk
-#include "valor/Conventions/ExperimentSetup.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
@@ -62,15 +61,15 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/Conventions/Names.h"
+
 // dune
-#include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/Conventions/Names.h"
 #include "dune/Conventions/Experiment.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;
 using namespace valor;
@@ -81,12 +80,9 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
                         unsigned int ip, PhysParamId_t p, double tweak_dial, TFile * outfile, std::string tag);
 
-
-static const ExperimentSetup & es = *ExperimentSetup::Instance();
-
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
+  
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;
@@ -243,7 +239,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
+    GenericSingleSampleFitModel * this_model = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
     Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
@@ -265,11 +261,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
 
     // Get the PDF broken down by mode contributions
-    for(int im = 0; im < conv::kNReacModes; ++im) {
-      conv::ReacMode_t m = util::ReacModeFromInt(im);
-      if(m == conv::kmUndefined) { continue; }
-      int mode_idx = es.ReacModeIndex(b, s, m);
-      if (mode_idx < 0) { continue; }
+    for(conv::ReacMode_t m : this_model->GetReactionModes()) {
       TString name_contrib = TString::Format("nom_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
       if (!curr_pdf_contrib) {
@@ -309,7 +301,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
+    GenericSingleSampleFitModel * this_model = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
     Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
@@ -327,12 +319,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       curr_pdf->Write(save_name.Data());
     }
 
-    //Get the PDF broken down by mode contributions
-    for(int im = 0; im < conv::kNReacModes; ++im) {
-      conv::ReacMode_t m = util::ReacModeFromInt(im);
-      if(m == conv::kmUndefined) { continue; }
-      int mode_idx = es.ReacModeIndex(b, s, m);
-      if (mode_idx < 0) { continue; }
+    for (conv::ReacMode_t m : this_model->GetReactionModes()) {
       TString name_contrib = TString::Format("curr_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
       if (!curr_pdf_contrib) {
@@ -342,7 +329,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       TString save_name = TString::Format("env_sb_%s_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(),
                         param_name.c_str(), tag.c_str());
       curr_pdf_contrib->Write(save_name.Data());
-    } //imode
+    } //mode
   } //imodel
   array->Clear("C");
   delete array;

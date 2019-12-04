@@ -45,7 +45,7 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
-#include "dune/Utilities/DoExperimentSetup.h"
+
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
@@ -88,7 +88,7 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
+  
   
   util::InitializeOAPriors();
   

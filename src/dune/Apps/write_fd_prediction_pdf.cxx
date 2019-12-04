@@ -56,9 +56,9 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
-#include "dune/Utilities/DoExperimentSetup.h"
+
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Utilities/DoExperimentSetup.h"
+
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -71,7 +71,7 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
+  
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
   
   util::InitializeOAPriors();
