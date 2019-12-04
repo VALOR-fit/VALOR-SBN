@@ -2323,8 +2323,10 @@
     <apply_to_range>
       <Etrue>  0, inf  </Etrue>
     </apply_to_range>
-    
-    <type>  normalisation  </type>
+
+    <!-- Disabled: In the run 1-9 legacy analysis, BeRPA_U has the weight forced to 1,
+         so instead just turn it off here (which has the same effect) -->
+    <type>  disabled  </type>
     
     <categories>
       <category>  BANFF  </category>
@@ -2332,7 +2334,7 @@
     </categories>
     
     <apply_to>
-      <detector>  dunend  </detector>       <!-- TODO: apply to nothing (in t2xk BeRPA_U has the weight forced to 1, so turn it off here) -->
+      <detector>  SuperK  </detector>
       <beam>  all  </beam>
       <selection>  all rings  </selection>
       <reac_type>  CC QE  </reac_type>
