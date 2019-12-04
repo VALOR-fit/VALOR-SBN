@@ -8,7 +8,6 @@ void write_prefit_ntp(
 {
   using namespace std;
   using namespace valor;
-  Env::Instance()->AutoSet("dune");
   util::PrintBanner(Env::Instance()->Banner(),500);
   
   valor::StdFitNtp ntp;

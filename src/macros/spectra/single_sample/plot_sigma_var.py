@@ -77,7 +77,6 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
 
   # TODO: plot twice: 1) with the input kv on x-axis; 2) with the bin number on the x-axis
 
-  valor.Env.Instance().AutoSet("dune")
   elements = valor.CompoundFitElements()
   elements.Read(util.CompleteConfigPath(config), "nomc+nosplines")
   compound_model = elements.FitModel()
