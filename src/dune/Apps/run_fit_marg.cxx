@@ -248,7 +248,7 @@ void Fit(CmdLnArgList& arg)
       {
         data->Read(toy_stream);
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
         LOG("valor_dune", pNOTICE) << "Fake data toy #" << ifake << " event rates:\n" << data->GetPDFIntegralAsString();
 #endif
       }

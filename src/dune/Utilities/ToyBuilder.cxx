@@ -126,7 +126,7 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
             fpl.FromPhysParamList(tweaks, "current silent");
          }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
          LOG("ToyBuilder", pINFO) << fpl;
 #endif
 
@@ -134,7 +134,7 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
          if(rethrowUnphysical && !limits->AllWithinLimits(fpl))
          {
             n_rethrows++;
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
             LOG("ToyBuilder", pDEBUG) << "At least one parameter thrown " <<
                "outside expected limits. Rethrowing.";
 #endif
@@ -147,7 +147,7 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       PhysParamList true_params = fpl.AsPhysParamList("current");
 
       // Generate a toy-MC experiment
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
       LOG("ToyBuilder", pDEBUG) << "Generating toy-MC data";
       LOG("ToyBuilder", pDEBUG) << "Toy-MC generation uses true parameters: " << true_params;
 #endif
@@ -162,7 +162,7 @@ void ToyBuilder::BuildToys(const int fitParam1Bin, const int fitParam2Bin,
       }
       this->SaveParamThrows(fpl, t == Ntoys-1, filename);
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
      if(_toys_are_marginalisation) {
        LOG("ToyBuilder", pNOTICE) << "Marg toy #" << t << " event rates:\n" << this->_model->GetPDFIntegralAsString();
      }
@@ -332,7 +332,7 @@ void ToyBuilder::ReadParamsFromThrowFile(FitParamList& fpl, std::string toy_thro
      fpl.SetCurrentValue(p, param_value);
   }
 
-#ifdef VALOR_DUNE_LOW_LEVEL_MESG_ENABLED
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
   LOG("valor_dune", pDEBUG) << "Reading toy from input throw file with FPL = " << fpl;
 #endif
 }
