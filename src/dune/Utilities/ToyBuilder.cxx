@@ -7,6 +7,8 @@
 
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/UtlOscillation.h"
+
+#include "valor/Conventions/Constants.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/NameRegistry.h"
