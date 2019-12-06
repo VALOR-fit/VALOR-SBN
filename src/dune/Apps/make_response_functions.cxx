@@ -53,7 +53,6 @@
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/ParameterPool.h"
 
-#include "dune/Conventions/ArrIdx.h"
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
 #include "dune/Utilities/DoExperimentSetup.h"
@@ -69,6 +68,8 @@ using std::string;
 using genie::EventRecord;
 using namespace valor;
 using namespace valor::conv;
+
+static const ExperimentSetup & es = *ExperimentSetup::Instance();
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -175,8 +176,7 @@ int main(int argc, char ** argv)
   VALORArray * mc_templ_sb [n_twks] [kNReacModes]; 
   VALORArray * mc_templ_ob [n_twks] [kNReacModes]; 
 
-  const util::ArrIdx * arridx = util::ArrIdx::Instance();  
-  int isample = arridx->SampleIdx(beam,sample);
+  int isample = es.SampleIndex(beam,sample);
 
   for(int itwk = 0; itwk < n_twks; itwk++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
@@ -326,7 +326,7 @@ int main(int argc, char ** argv)
         curr_mcrec->Clear();
         continue;
       }
-      int imode = arridx->ReacModeIdx(beam, curr_sample, curr_mode);
+      int imode = es.ReacModeIndex(beam, curr_sample, curr_mode);
 
       // Get required true kinematical variables
       double curr_enu_true = event.Particle(0)->E();
