@@ -27,11 +27,11 @@ except:
   ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C")
 
 valor = ROOT.valor
-util =  valor.util
-conv =  valor.conv
-opt  =  valor.Opt.Instance()
-env  =  valor.Env.Instance()
-arridx = util.ArrIdx.Instance()
+util  =  valor.util
+conv  =  valor.conv
+opt   =  valor.Opt.Instance()
+env   =  valor.Env.Instance()
+es    =  valor.ExperimentSetup.Instance()
 
 python_undefined = 2L*sys.maxint+1
 
@@ -195,22 +195,21 @@ def main(fhc_dir, rhc_dir, output_filename):
 
   # Print debug info
   print "The number of events in each mode are:"
-  for ibeam in range(0, conv.kNBeamsDefined):
-    if arridx.BeamConfIdx(ibeam) == -1 or arridx.BeamConfIdx(ibeam) == python_undefined:
-      continue
-    print "\n\nbeam =", util.BeamConfAsString(ibeam)
-    for isample in range(0, conv.kMaxNSamples):
-      if arridx.SampleIdx(ibeam, isample) == -1 or arridx.SampleIdx(ibeam, isample) == python_undefined:
-        continue
-      print "\n  sample =", util.SampleAsString(isample)
+  for beam in es.BeamConfs():
+    ibeam = es.BeamConfIndex(beam)
+    print "\n\nbeam =", util.BeamConfAsString(beam)
+    for sample in es.Samples()[ibeam]:
+      isample = es.SampleIndex(beam, sample)
+      print "\n  sample =", util.SampleAsString(sample)
       tot_entries_sample = 0
-      for imode in range(0, conv.kmOther):
-        if arridx.ReacModeIdx(ibeam, isample, imode) == -1 or arridx.ReacModeIdx(ibeam, isample, imode) == python_undefined:
+      for mode in es.ReactionModes()[ibeam][isample]:
+        if mode == -1 or mode == python_undefined:
+          # Temporary fix until SampleReacMode.h is removed (as it is a fixed length, with unused modes being set to undefined)
           continue
-        nevents = entries_per_beam_sample_mode[ibeam][isample][imode]
+        nevents = entries_per_beam_sample_mode[beam][sample][mode]
         tot_entries_sample += nevents
-        print "    " + util.ModeAsString(imode) + ": " + str(nevents)
-      print "Total", util.BeamConfAsString(ibeam), util.SampleAsString(isample), \
+        print "    " + util.ModeAsString(mode) + ": " + str(nevents)
+      print "Total", util.BeamConfAsString(beam), util.SampleAsString(sample), \
         " number of events across all modes =", tot_entries_sample
 
   print "The number of events in each input file are (minus any events with Erec < 0):"
