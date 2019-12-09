@@ -28,13 +28,10 @@ util  = valor.util
 opt   = valor.Opt.Instance()
 rnd   = valor.Rnd.Instance()
 nr    = util.NameRegistry.Instance()
-es    = valor.ExperimentSetup.Instance()
 
-expt_name = es.ExperimentName();
 print "\n=============================="
 print   "Loading VALOR Python with ",
-if has_genie: print "GENIE and",
-print "\n       ",expt_name
+if has_genie: print "GENIE"
 print "==============================\n"
 
 try:

@@ -11,8 +11,6 @@
 #pragma link C++ namespace valor::util;
 #pragma link C++ namespace valor::util::binning;
 
-#pragma link C++ class valor::ExperimentInitialiser;
-
 // Vector types for use in macros:
 #pragma link C++ class std::vector<std::vector<int>>;
 #pragma link C++ class std::vector<TCanvas*>;
