@@ -12,7 +12,7 @@ ROOT.gROOT.SetBatch(1)
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
-def plot_contours_1d(dchisq_objects, labels, pdf_filename, is_t2k_only, colours, styles, prelim, title_x, title_y, line_width, text_size, FC=False, is_inverted=False):
+def plot_contours_1d(dchisq_objects, labels, pdf_filename, is_t2k_only, colours, styles, prelim, title_x, title_y, line_width, text_size, FC=False, is_inverted=False, force_max_y = -1):
     max_val = 0.0
     min_val = 999
     for dchisq_obj in dchisq_objects:
@@ -20,6 +20,8 @@ def plot_contours_1d(dchisq_objects, labels, pdf_filename, is_t2k_only, colours,
         min_val = min(min_val, dchisq_obj.GetMinimum())
     max_val = np.ceil(max_val)
     max_val = min(max_val, 25.0)    # Not meaningful above 5 sigma, so truncate the axis
+    if force_max_y > 0:
+        max_val = force_max_y
     min_val = np.floor(min_val)
     for dchisq_obj in dchisq_objects:
         dchisq_obj.GetYaxis().SetRangeUser(0, max_val)
@@ -427,6 +429,7 @@ if __name__=="__main__":
     parser.add_argument(      "--theta23"       , dest="theta23"        , type=float         , help="Input value of theta23.")
     parser.add_argument(      "--dm23"          , dest="dm23"           , type=float         , help="Input value of dm23.")
     parser.add_argument(      "--draw-reactor"  , dest="draw_reactor"   , action="store_true", help="Draw a vertical band indicating the PDG 2018 reactor constraint on sinsq(theta13) used in the T2K oscillation analysis")
+    parser.add_argument(      "--force-max-y"   , dest="force_max_y"    , type=float         , help="Set the maximum y-axis value in 1D plots to this.")
     args = parser.parse_args()
     labels = []
     if args.labels:
@@ -455,8 +458,10 @@ if __name__=="__main__":
     if args.best_fit_styles:
         best_fit_styles = [int(i) for i in args.best_fit_styles]
 
+    is_inverted = False     # TODO: deal with this. Should be specified individually?
+
     if num_var == 1:
-        plot_contours_1d(dchisq_objects, labels, args.out_filename, args.is_t2k_only, colours, styles, args.prelim, args.title_x, "-2#Deltaln(L)", args.lwidth, args.tsize, args.FC)
+        plot_contours_1d(dchisq_objects, labels, args.out_filename, args.is_t2k_only, colours, styles, args.prelim, args.title_x, "-2#Deltaln(L)", args.lwidth, args.tsize, args.FC, is_inverted, args.force_max_y)
     elif num_var == 2:
         plot_contours_2d(dchisq_objects, labels, args.theta23, args.dm23, args.out_filename, colours, styles, best_fit_styles, args.best_fit_labels, args.prelim, args.title_x, args.title_y, args.lwidth, args.msize, args.tsize, args.draw_reactor)
     else:
