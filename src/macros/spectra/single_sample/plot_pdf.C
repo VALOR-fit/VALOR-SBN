@@ -6,26 +6,30 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-std::string kinevar = "Ereco"; // make this configurable later
-bool t2k = false;              // make this configurable later
+bool t2k               = false;   // make this configurable later
+bool one_plot_per_canv = false;   // make this configurable later
+double title_text_size = 0.05;
+std::string caveat_text_str = "T2K Run1-9 Preliminary";
 
 void plot_pdf(
   const char * config_file,
   const char * filename,
-  const char * tag = "valor",
-  double       per_range = -999., // Show events per what ereco (GeV). If negative, show per bin 
-  const char * data_filename = "", // if we want to plot a dataset on top, this is that file
-  const char * data_tag = "valor",
-  TString   option = "",
-  const char * out_tag = "valor",
+  const char * tag               = "valor",
+  const char * kinevar_c         = "Ereco", // Plot slices in this kinematic variable
+  double       per_range         = -999.,   // Show events per what ereco (GeV). If negative, show per bin
+  const char * data_filename     = "",      // if we want to plot a dataset on top, this is that file
+  const char * data_tag          = "valor",
+  TString      option            = "",
+  const char * out_tag           = "valor",
   const char * image_save_format = "",
-  int canv_size_x = 700,
-  int canv_size_y = 700,
-  double kinevar_x_max_1D = 3.,      // Max value of the kinematic variable drawn on the x-axis (1D plots)
-  double kinevar_x_max_2D = 1.25,    // Max value of the kinematic variable drawn on the x-axis (2D plots)
-  double kinevar_y_max_2D = 180.,    // Max value of the kinematic variable drawn on the y-axis (2D plots)
-  const char * title_x = "#nu Reconstructed Energy (GeV)",  // Used for 2D plots only
-  const char * title_y = "#theta (degrees)"                 // Used for 2D plots only
+  int          canv_size_x       = 700,
+  int          canv_size_y       = 700,
+  double       kinevar_x_max_1D  = 3.,      // Max value of the kinematic variable drawn on the x-axis (1D plots)
+  double       kinevar_x_max_2D  = 1.25,    // Max value of the kinematic variable drawn on the x-axis (2D plots)
+  double       kinevar_y_max_2D  = 180.,    // Max value of the kinematic variable drawn on the y-axis (2D plots)
+  bool         draw_caveat       = false,   // Draws a text box in the top right containing the contents of caveat_text_str
+  const char * title_x           = "#nu Reconstructed Energy (GeV)",  // Used for 2D plots only
+  const char * title_y           = "#theta (degrees)"                 // Used for 2D plots only
 )
 {
   using namespace std;
@@ -42,6 +46,9 @@ void plot_pdf(
   {
      kRed+1,   kOrange+7,   kYellow, kGreen+2,  kAzure+1, kViolet-1
   };
+
+  std::string kinevar(kinevar_c);
+  std::cout << "Plotting " << kinevar << " slices" << std::endl;
   
   bool write_image(image_save_format[0]);
 
@@ -91,7 +98,7 @@ void plot_pdf(
     if (b == conv::kbUndefined) {continue;}
     
     // If we don't match the last detector/beam start a new TCanvas
-    if ((d!=last_det || b!= last_beam) && isubmodel) {
+    if ((((d!=last_det || b!= last_beam) && isubmodel) || one_plot_per_canv) && canvas_content.back().size() != 0) {
       canvas_content.push_back(vector<int>());
     }
     
@@ -99,7 +106,7 @@ void plot_pdf(
     last_beam = b;
     
     // If our canvas is full, start a new one
-    if (canvas_content.back().size() == max_plots_per_canv) {
+    if ((canvas_content.back().size() == max_plots_per_canv) && !one_plot_per_canv) {
       canvas_content.push_back(vector<int>());
     }
     
@@ -169,6 +176,14 @@ void plot_pdf(
       d = submodel.GetDetector();
       b = submodel.GetBeam();
       s = submodel.GetSample();
+
+      if(t2k) {
+        if(kinevar == "Ereco") {
+          if(vutil::SampleIsMuLike(s))  { kinevar_x_max_1D = 3.00; }
+          else                          { kinevar_x_max_1D = 1.25; }
+        }
+        else if(kinevar == "Thetareco") { kinevar_x_max_1D = 180.; }
+      }
       
       std::string model_name = submodel.Name();
       
@@ -186,34 +201,61 @@ void plot_pdf(
         ks = util::KineSpaceFromKineVars(reco_smp.KineVars());
       }
 
-      if(util::NDim(ks) == 2)
-      { // 2D PDF
-        std::string name = util::nm::MdlName(d, b, s, ks);
-        TString pdf_tot_name = TString::Format("%s_%s_%s_%s_%s_%s", tag, "pdft",binning,"rf", name.c_str(), util::AsString(ks).c_str());
+      if(util::NDim(ks) == 2) { // 2D PDF
+        TString pdf_tot_name = TString::Format("%s_%s_%s_%s_%s_%s", tag, "pdft", binning, "rf", model_name.c_str(),
+                                               util::AsString(ks).c_str());
 
-        TObject * tmp_obj = fin->Get(pdf_tot_name.Data());
+        TObject *tmp_obj = fin->Get(pdf_tot_name.Data());
         if(!tmp_obj) {
-          std::cout << "WARNING: Hist named [" << pdf_tot_name.Data() << "] not found. Skipping 2D PDFT draw." << std::endl;
+          std::cout << "WARNING: Hist named [" << pdf_tot_name.Data() << "] not found. Skipping 2D PDFT draw."
+                    << std::endl;
           draw_pdft_2D = false;
-        }
-        else {
+        } else {
           TH2D *pdf_tot = new TH2D(*((TH2D *) tmp_obj));
           all_hists.push_back(pdf_tot);
 
           // Draw the 2D plots
           TVirtualPad *this_pad = c_pdf_tot->cd(iplot + 1); // Pad for this plot
-          this_pad->SetLeftMargin(0.16);
-          this_pad->SetRightMargin(0.12);
+          this_pad->SetLeftMargin(0.12);  //0.16
+          this_pad->SetRightMargin(0.16); //0.12
           TH1F *pdf_frame = (TH1F *) this_pad->DrawFrame(0, 0, kinevar_x_max_2D, kinevar_y_max_2D);
           pdf_frame->GetXaxis()->SetTitle(title_x);
           pdf_frame->GetYaxis()->SetTitle(title_y);
-          pdf_frame->GetZaxis()->SetTitle("Number of Events");
           pdf_frame->Draw();
+
+          TLatex * pdf_title = nullptr;
+          if(!one_plot_per_canv) {
+            TString pdf_title_str = TString::Format("%s / %s / %s",
+                                                    vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),
+                                                    vutil::AsStringTeX(s,true).c_str());
+            double pdf_title_xlow = 0.0;
+            TLatex * pdf_title = new TLatex(pdf_title_xlow, 1.01*kinevar_y_max_2D, pdf_title_str.Data());
+            pdf_title->SetTextSize(title_text_size);
+            pdf_title->Draw();
+          }
+
+          TLatex * caveat = nullptr;
+          if(draw_caveat) {
+            double tx = pdf_tot->GetXaxis()->GetBinLowEdge(pdf_tot->GetXaxis()->GetLast());
+            caveat = new TLatex(0.5*tx, 1.01*kinevar_y_max_2D, caveat_text_str.c_str());
+            caveat->SetTextSize(title_text_size);
+            caveat->Draw();
+          }
+
+          pdf_tot->GetXaxis()->SetTitle(title_x);
+          pdf_tot->GetYaxis()->SetTitle(title_y);
+          pdf_tot->GetZaxis()->SetTitle("Number of Events");
+          pdf_tot->GetZaxis()->SetLabelSize(pdf_frame->GetXaxis()->GetLabelSize()); // The x and y axis labels and titles are set somewhere when running write_pdf, so just copy the styles here
+          pdf_tot->GetZaxis()->SetLabelOffset(pdf_frame->GetXaxis()->GetLabelOffset());
+          pdf_tot->GetZaxis()->SetLabelFont(pdf_frame->GetXaxis()->GetTitleFont());
+          pdf_tot->GetZaxis()->SetTitleSize(pdf_frame->GetXaxis()->GetTitleSize());
+          pdf_tot->GetZaxis()->SetTitleOffset(0.85);
+          pdf_tot->GetZaxis()->SetTitleFont(pdf_frame->GetXaxis()->GetTitleFont());
           pdf_tot->Draw("colzsame");
         }
       }
       
-      
+
       //~ { // Sliced in Y
         //~ THStack * slice_stack = new THStack("stack","spectrum contributions");
         //~ const int n_y_reco_bins_sb = vutil::NumYrecoBinsSb(s);
@@ -287,18 +329,18 @@ void plot_pdf(
           cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
           TObject * tmp_obj = fin->Get(contrib_name.Data());
           pdf_contrib[imode] = (TH1D*) tmp_obj;
-          if(t2k) {
-            // For T2K, the binning used in the FHC1Rmu and RHC1Rmu plots are coarser than the fit binning.
-            // As problems are caused when filling the MC templates when the simple binning has fewer bins than the opt
-            // binning, rebin the relevant hists here instead of changing the binning.
-            if(s == conv::ks1Rmu && b == conv::kbJPARC_FHC) {
-              pdf_contrib[imode]->Rebin(2);
-            }
-            else if(s == conv::ks1Rmu && b == conv::kbJPARC_RHC) {
-              pdf_contrib[imode]->Rebin(3);
-            }
-          }
           if(pdf_contrib[imode]) {
+            if(t2k && kinevar == "Ereco") {
+              // For T2K, the binning used in the FHC1Rmu and RHC1Rmu plots are coarser than the fit binning.
+              // As problems are caused when filling the MC templates when the simple binning has fewer bins than the opt
+              // binning, rebin the relevant hists here instead of changing the binning.
+              if(s == conv::ks1Rmu && b == conv::kbJPARC_FHC) {
+                pdf_contrib[imode]->Rebin(2);
+              }
+              else if(s == conv::ks1Rmu && b == conv::kbJPARC_RHC) {
+                pdf_contrib[imode]->Rebin(3);
+              }
+            }
             conv::ReacModeCoarse_t mc = conv::kmcUndefined;
             bool found = false;
             for (int imcp = 0 ; imcp < conv::kMaxCoarseReacOptions ; imcp++) {
@@ -399,74 +441,104 @@ void plot_pdf(
             data_hist->SetMarkerStyle(kFullTriangleDown);
           }
 
-        // Start drawing
-        TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
-        contrib_legend->SetFillColor(0);
-        for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
+          // Start drawing
+          TLegend * contrib_legend = new TLegend(0.7,0.45,0.9,0.95);
+          contrib_legend->SetFillColor(0);
+          for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
+              conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
+              //~ cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
+              if(mc == conv::kmcUndefined) continue;
+              TH1D * relevant_hist = per_range > 0. ? pdf_contrib_coarse_width[imodec] : pdf_contrib_coarse[imodec];
+              relevant_hist->SetLineWidth(1);
+              relevant_hist->SetLineColor(es.PlotStyle()[ibeam][isample][imodec][0]);
+              relevant_hist->SetFillColor(es.PlotStyle()[ibeam][isample][imodec][1]);
+              relevant_hist->SetFillStyle(es.PlotStyle()[ibeam][isample][imodec][2]);
+              contrib_stack->Add(relevant_hist);
+              contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "F");
+          }//imodec
+
+          double max_y_1D = 1.1 * max_n;
+          TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
+          this_pad->SetLeftMargin(0.12);
+          TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,kinevar_x_max_1D,max_y_1D);
+          contrib_frame->Draw();
+
+          TString contrib_title_str = TString::Format("%s / %s / %s",
+            vutil::AsString(d).c_str(), vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
+          double contrib_title_xlow = 0.0;
+          TLatex * contrib_title = new TLatex(contrib_title_xlow, 1.01*max_y_1D, contrib_title_str.Data());
+          contrib_title->SetTextSize(title_text_size);
+          if(!one_plot_per_canv) { contrib_title->Draw(); }
+
+          TLatex * caveat = nullptr;
+          if(draw_caveat) {
+            double tx = contrib_stack->GetXaxis()->GetBinLowEdge(contrib_stack->GetXaxis()->GetLast());
+            caveat = new TLatex(0.5*tx, 1.01*max_y_1D, caveat_text_str.c_str());
+            caveat->SetTextSize(title_text_size);
+            caveat->Draw();
+          }
+
+          // Set the x-axis title based on the kinevar we've projected to
+          if(kinevar == "Ereco") {
+            if(vutil::IsCC(s)) {
+              if(t2k) { contrib_frame->GetXaxis()->SetTitle("#nu Reconstructed Energy (GeV)"); }
+              else    { contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)"); }
+            } else {
+               contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
+            }
+          }
+          else if(kinevar == "Thetareco") {
+            contrib_frame->GetXaxis()->SetTitle("#theta (degrees)");
+          }
+          else {
+            std::cout << "WARNING: did not recogise kinevar name [" << kinevar
+                      << "], so could not set the x-axis title" << std::endl;
+          }
+
+          if (per_range > 0.) {
+            TString title = TString::Format("Events /%lg GeV",per_range);
+            contrib_frame->GetYaxis()->SetTitle(title.Data());
+          }
+          else {
+            if(t2k) { contrib_frame->GetYaxis()->SetTitle("Number of Events"); }
+            else    { contrib_frame->GetYaxis()->SetTitle("Events /bin"); }
+          }
+          contrib_stack->Draw("same");
+          if (plot_data) {data_hist->Draw("e same");}
+          gPad->RedrawAxis();  // Draw the axes again, so that the axis tick marks are not obscured by the stack
+          contrib_legend->SetTextFont(contrib_frame->GetXaxis()->GetTitleFont());
+          contrib_legend->SetTextSize(0.75 * contrib_frame->GetXaxis()->GetTitleSize());
+          contrib_legend->Draw();
+
+          double tot_event_rate = 0.;
+          std::ostringstream sample_event_rates;
+          // Write the event rates to the output stream
+          for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
             conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
-            //~ cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
-            if(mc == conv::kmcUndefined) continue;
-            TH1D * relevant_hist = per_range > 0. ? pdf_contrib_coarse_width[imodec] : pdf_contrib_coarse[imodec];
-            relevant_hist->SetLineWidth(1);
-            relevant_hist->SetLineColor(es.PlotStyle()[ibeam][isample][imodec][0]);
-            relevant_hist->SetFillColor(es.PlotStyle()[ibeam][isample][imodec][1]);
-            relevant_hist->SetFillStyle(es.PlotStyle()[ibeam][isample][imodec][2]);
-            contrib_stack->Add(relevant_hist);
-            contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
-        }//imodec
+            if (mc == conv::kmcUndefined) {continue;}
+            TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
+            double rate = tmphist->Integral();
+            sample_event_rates<<"    "<<vutil::AsString(mc)<<": "<<rate<<std::endl;
+            tot_event_rate += rate;
+            delete tmphist;
+          }
+          event_rates<<vutil::AsString(b)<<" "<<vutil::AsString(d)<<" "<<vutil::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
+          event_rates<<sample_event_rates.str()<<std::endl;
 
-        TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
-        this_pad->SetLeftMargin(0.2);
-        TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,kinevar_x_max_1D,1.2*max_n);
-        contrib_frame->Draw();
-        TString contrib_title_str = TString::Format("%s / %s / %s",
-          vutil::AsString(d).c_str(), vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
-        TLatex * contrib_title = new TLatex(0.3,1.07*max_n,contrib_title_str.Data());
-        contrib_title->Draw();
-        if(vutil::IsCC(s)) {
-           contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
-        } else {
-           contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
-        }
-        if (per_range > 0.) {
-          TString title = TString::Format("Events /%lg GeV",per_range);
-          contrib_frame->GetYaxis()->SetTitle(title.Data());
-        }
-        else {
-          contrib_frame->GetYaxis()->SetTitle("Events /bin");
-        }
-        contrib_stack->Draw("same");
-        if (plot_data) {data_hist->Draw("e same");}
-        contrib_legend->Draw();
-
-        double tot_event_rate = 0.;
-        std::ostringstream sample_event_rates;
-        // Write the event rates to the output stream
-        for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
-          conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
-          if (mc == conv::kmcUndefined) {continue;}
-          TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
-          double rate = tmphist->Integral();
-          sample_event_rates<<"    "<<vutil::AsString(mc)<<": "<<rate<<std::endl;
-          tot_event_rate += rate;
-          delete tmphist;
-        }
-        event_rates<<vutil::AsString(b)<<" "<<vutil::AsString(d)<<" "<<vutil::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
-        event_rates<<sample_event_rates.str()<<std::endl;
-
-        // And I guess compare them to the total spectra as a sanity check.
-        TString total_name = TString::Format("%s_%s_%s_%s_%s",
-          tag, "pdft",binning,"vf", model_name.c_str());
-        VALORArray * tot_arr = dynamic_cast<VALORArray*>(fin->Get(total_name.Data()));
-        std::cerr<<total_name.Data()<<std::endl;
-        assert(tot_arr);
-        double tot_event_rate_from_varray = tot_arr->Integral();
-        if (std::fabs(tot_event_rate_from_varray-tot_event_rate) > conv::kASmallNum) {
-          event_rates<<"\033[1;31m"<<"Warning - stack total is "<<tot_event_rate
-                     <<" while array total is "<<tot_event_rate_from_varray
-                     <<" - something went wrong!\n\n"
-                     <<"\033[0m"<<std::endl;
-        }
+          // And I guess compare them to the total spectra as a sanity check.
+          TString total_name = TString::Format("%s_%s_%s_%s_%s",
+            tag, "pdft",binning,"vf", model_name.c_str());
+          VALORArray * tot_arr = dynamic_cast<VALORArray*>(fin->Get(total_name.Data()));
+          std::cerr<<total_name.Data()<<std::endl;
+          assert(tot_arr);
+          double tot_event_rate_from_varray = tot_arr->Integral();
+          if (std::fabs(tot_event_rate_from_varray-tot_event_rate) > conv::kASmallNum) {
+            event_rates<<"\033[1;31m"<<"Warning - stack total is "<<tot_event_rate
+                       <<" while array total is "<<tot_event_rate_from_varray
+                       <<" - something went wrong!\n\n"
+                       <<"\033[0m"<<std::endl;
+          }
+        } // draw_pdfc
         
       } // imodec
       
@@ -481,9 +553,17 @@ void plot_pdf(
     // And write to files if needed
     if (write_image) {
       if(draw_pdft_2D) {
-        TString pdf_tot_filename = TString::Format("%s_spectrum_%s_%s_%u_2D.%s",
-                                                   out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),
-                                                   icanvas, image_save_format);
+        TString pdf_tot_filename("");
+        if(one_plot_per_canv) {
+          pdf_tot_filename = TString::Format("%s_spectrum_%s_2D.%s",
+                                             out_tag, submodel.Name().c_str(), image_save_format);
+        }
+        else {
+          pdf_tot_filename = TString::Format("%s_spectrum_%s_%s_%u_2D.%s",
+                                             out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),
+                                             icanvas, image_save_format);
+        }
+
         c_pdf_tot->SaveAs(pdf_tot_filename.Data());
       }
       
@@ -492,9 +572,16 @@ void plot_pdf(
       //~ c_pdf_slice->Print(slice_filename.Data());
 
       if(draw_pdfc) {
-        TString contrib_filename = TString::Format("%s_spectrum_%s_%s_%u_modes.%s",
-                                                   out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),
-                                                   icanvas, image_save_format);
+        TString contrib_filename("");
+        if(one_plot_per_canv) {
+          contrib_filename = TString::Format("%s_spectrum_%s_%s_modes.%s",
+                                             out_tag, submodel.Name().c_str(), kinevar.c_str(), image_save_format);
+        }
+        else {
+          contrib_filename = TString::Format("%s_spectrum_%s_%s_%s_%u_modes.%s",
+                                             out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),
+                                             kinevar.c_str(), icanvas, image_save_format);
+        }
         c_pdf_contrib->Print(contrib_filename.Data());
       }
     } //write_image
@@ -502,6 +589,8 @@ void plot_pdf(
   } // icanvas
   
   std::cout<<event_rates.str();
+
+  std::cout << "Done! (a following segfault is expected...)" << std::endl;
     
   return;
 }
