@@ -38,6 +38,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/UtlFitParamList.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
@@ -50,7 +51,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
+
 
 // Proposal list from here:
 // https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample

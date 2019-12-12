@@ -64,6 +64,7 @@
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitCore/Marginalisation.h"
 #include "valor/FitCore/UtlOscillation.h"
+#include "valor/FitCore/UtlFitParamList.h"
 #include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
@@ -77,7 +78,6 @@
 
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
 
 using namespace valor;
 using namespace valor::conv;

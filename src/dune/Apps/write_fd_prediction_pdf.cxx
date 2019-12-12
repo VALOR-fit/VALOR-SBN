@@ -50,6 +50,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/UtlFitParamList.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/FitElements/GenericSingleSampleFitData.h"
 #include "valor/Utilities/UtlStyle.h"
@@ -64,7 +65,6 @@
 
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
 #include "dune/Utilities/DoExperimentSetup.h"
 
 using namespace std;

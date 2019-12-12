@@ -56,12 +56,12 @@
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
 #include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
 #include "valor/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/RFL.h"
 #include "dune/Utilities/KinematicBin.h"
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/FitCore/UtlFitParamList.h"
 
 
 using std::string;

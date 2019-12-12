@@ -73,6 +73,7 @@
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/UtlOscillation.h"
+#include "valor/FitCore/UtlFitParamList.h"
 #include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/NameRegistry.h"
@@ -86,7 +87,6 @@
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
 
 using namespace std;
 using namespace valor;
