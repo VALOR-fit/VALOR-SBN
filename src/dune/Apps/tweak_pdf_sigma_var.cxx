@@ -271,11 +271,8 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
 
     // Get the PDF broken down by mode contributions
-    for(int im = 0; im < conv::kNReacModes; ++im) {
-      conv::ReacMode_t m = util::ReacModeFromInt(im);
-      if(m == conv::kmUndefined) { continue; }
-      int mode_idx = es.ReacModeIndex(b, s, m);
-      if (mode_idx < 0) { continue; }
+    for(conv::ReacMode_t m : es.ReactionModes(b, s)) {
+      if (m == conv::kmUndefined) { continue; }
       TString name_contrib = TString::Format("nom_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
       if (!curr_pdf_contrib) {
@@ -334,11 +331,8 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
     }
 
     //Get the PDF broken down by mode contributions
-    for(int im = 0; im < conv::kNReacModes; ++im) {
-      conv::ReacMode_t m = util::ReacModeFromInt(im);
-      if(m == conv::kmUndefined) { continue; }
-      int mode_idx = es.ReacModeIndex(b, s, m);
-      if (mode_idx < 0) { continue; }
+    for(conv::ReacMode_t m : es.ReactionModes(b, s)) {
+      if (m == conv::kmUndefined) { continue; }
       TString name_contrib = TString::Format("curr_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
       if (!curr_pdf_contrib) {
