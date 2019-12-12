@@ -75,6 +75,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/UtlOscillation.h"
+#include "valor/FitCore/ToyBuilder.h"
 #include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
@@ -87,7 +88,6 @@
 
 // dune
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Utilities/ToyBuilder.h"
 #include "dune/Utilities/DoExperimentSetup.h"
 
 using namespace valor;
