@@ -72,7 +72,6 @@
 
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Conventions/Experiment.h"
 
 using namespace std;
 using namespace valor;
@@ -215,17 +214,17 @@ int main(int argc, char ** argv)
 //________________________________________________________________________________________
 void SpecialCaseTweak(conv::PhysParamId_t p, FitParamList * fp, double& tweak_p1, double& tweak_m1, double& tweak_p3, double& tweak_m3)
 {
-#ifdef T2K
-  if(p == util::NameRegistry::Instance()->PhysParamFromString("2p2h_shape_O")) {
-    double bestfit = fp->InitValue(p);
-    double one_sigma_err   = 0.5;
-    double three_sigma_err = 1.0;
-    tweak_p1 = bestfit + one_sigma_err;
-    tweak_m1 = bestfit - one_sigma_err;
-    tweak_p3 = bestfit + three_sigma_err;
-    tweak_m3 = bestfit - three_sigma_err;
+  if(es.ExperimentName() == "T2K") {
+    if(p == util::NameRegistry::Instance()->PhysParamFromString("2p2h_shape_O")) {
+      double bestfit = fp->InitValue(p);
+      double one_sigma_err   = 0.5;
+      double three_sigma_err = 1.0;
+      tweak_p1 = bestfit + one_sigma_err;
+      tweak_m1 = bestfit - one_sigma_err;
+      tweak_p3 = bestfit + three_sigma_err;
+      tweak_m3 = bestfit - three_sigma_err;
+    }
   }
-#endif
 }
 //________________________________________________________________________________________
 void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, TFile * outfile)
