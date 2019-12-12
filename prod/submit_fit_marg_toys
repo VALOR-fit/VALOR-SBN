@@ -83,10 +83,7 @@
 #
 
 use File::Path;
-<<<<<<< HEAD
-=======
 use Cwd 'abs_path';
->>>>>>> reorder_t2k
 
 #
 # Read command line arguments
