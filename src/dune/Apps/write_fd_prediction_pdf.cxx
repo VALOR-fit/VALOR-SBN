@@ -40,7 +40,6 @@
 
 // fmwk
 #include "valor/Conventions/Opt.h"
-#include "valor/Conventions/OscParamValues.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysicalParameterLimits.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -59,6 +58,7 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 

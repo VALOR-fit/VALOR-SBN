@@ -36,7 +36,6 @@
 #include "TPRegexp.h"
 // fmwk
 #include "valor/Conventions/Opt.h"
-#include "valor/Conventions/OscParamValues.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysicalParameterLimits.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -48,6 +47,7 @@
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"

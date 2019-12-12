@@ -56,7 +56,6 @@
 
 // fmwk
 #include "valor/Conventions/Opt.h"
-#include "valor/Conventions/OscParamValues.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysicalParameterLimits.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
@@ -78,6 +77,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/SingleSampleKineBinning.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/KineBinning/VALORBinning.h"
