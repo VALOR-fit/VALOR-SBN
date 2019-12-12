@@ -74,8 +74,10 @@ void plot_pdf(
   CompoundFitElements elems;
   elems.Read(config_path.c_str(),"nomc nosplines");
   FitModelABC * modelabc = elems.FitModel();
+  FitDataABC  * dataabc  = elems.FitData();
   CompoundFitModel & model = *dynamic_cast<CompoundFitModel*>(modelabc);
-  
+  CompoundFitData  & data  = *dynamic_cast<CompoundFitData*> (dataabc);
+
   // A vector storing the list of submodels to plot on each canvas
   // Outer vector is per canvas, inner vector is plots on said canvas
   vector<vector<int> > canvas_content;
@@ -136,7 +138,9 @@ void plot_pdf(
     // Get the first submodel so we can get beam/detector info
     unsigned int isubmodel = canvas_content[icanvas][0];
     FitModelABC * submodelabc = model.GetSubModel(isubmodel);
+    FitDataABC  * subdataabc  = data .GetSubData (isubmodel);
     GenericSingleSampleFitModel & submodel = *dynamic_cast<GenericSingleSampleFitModel*>(submodelabc);
+    GenericSingleSampleFitData  & subdata  = *dynamic_cast<GenericSingleSampleFitData*> (subdataabc);
     conv::Detector_t d = submodel.GetDetector();
     conv::BeamConf_t b = submodel.GetBeam();
     conv::Sample_t   s = submodel.GetSample();
@@ -172,7 +176,9 @@ void plot_pdf(
     for (unsigned int iplot = 0 ; iplot < canvas_content[icanvas].size() ; iplot++) {
       isubmodel = canvas_content[icanvas][iplot];
       submodelabc = model.GetSubModel(isubmodel);
+      subdataabc  = data .GetSubData (isubmodel);
       submodel = *dynamic_cast<GenericSingleSampleFitModel*>(submodelabc);
+      subdata  = *dynamic_cast<GenericSingleSampleFitData*> (subdataabc);
       d = submodel.GetDetector();
       b = submodel.GetBeam();
       s = submodel.GetSample();
@@ -194,16 +200,16 @@ void plot_pdf(
       conv::KineSpace_t ks = conv::kspUndefined;
       if(binning == std::string("ob")) {
         const VALORBinning & reco_opt = *(sskb->RecoOptBinning());
-        ks = util::KineSpaceFromKineVars(reco_opt.KineVars());
+        ks = vutil::KineSpaceFromKineVars(reco_opt.KineVars());
       }
       else {
         const VALORBinning & reco_smp = *(sskb->RecoSmpBinning());
-        ks = util::KineSpaceFromKineVars(reco_smp.KineVars());
+        ks = vutil::KineSpaceFromKineVars(reco_smp.KineVars());
       }
 
-      if(util::NDim(ks) == 2) { // 2D PDF
+      if(vutil::NDim(ks) == 2) { // 2D PDF
         TString pdf_tot_name = TString::Format("%s_%s_%s_%s_%s_%s", tag, "pdft", binning, "rf", model_name.c_str(),
-                                               util::AsString(ks).c_str());
+                                               vutil::AsString(ks).c_str());
 
         TObject *tmp_obj = fin->Get(pdf_tot_name.Data());
         if(!tmp_obj) {
@@ -213,6 +219,55 @@ void plot_pdf(
         } else {
           TH2D *pdf_tot = new TH2D(*((TH2D *) tmp_obj));
           all_hists.push_back(pdf_tot);
+
+          TGraph * data_graph_inner = 0;
+          TGraph * data_graph_outer = 0;
+          // If we need data, get that TGraph now (TGraph because data should be unbinned on 2D plots)
+          if (plot_data) {
+            TString data_name = TString::Format("%s_%s_%s_%s_%s",
+                                                data_tag, "data", vutil::AsString(d).c_str(),
+                                                vutil::AsString(b).c_str(), vutil::AsString(s).c_str());
+            TObject * tmp = fdata->Get(data_name.Data());
+            std::cout << "Reading 2D data TGraph [" << data_name << "]\t pointer = " << tmp << std::endl;
+            TGraph * gtmp = (TGraph*)tmp;
+            data_graph_outer = new TGraph(*gtmp);
+            data_graph_inner = new TGraph(*gtmp);
+
+            // Make sure that the PDF kinevars match those of the TGraph
+            conv::KineVar_t kv_pdf_x = conv::kvUndefined;
+            conv::KineVar_t kv_pdf_y = conv::kvUndefined;
+            if(binning == std::string("ob")) {
+              const VALORBinning & reco_opt = *(sskb->RecoOptBinning());
+              kv_pdf_x = reco_opt.KineVars().at(0);
+              kv_pdf_y = reco_opt.KineVars().at(1);
+            }
+            else {
+              const VALORBinning & reco_smp = *(sskb->RecoSmpBinning());
+              kv_pdf_x = reco_smp.KineVars().at(0);
+              kv_pdf_y = reco_smp.KineVars().at(1);
+            }
+            if(data_graph_outer->GetXaxis()->GetTitle() != vutil::AsString(kv_pdf_x)) {
+              std::cerr << "ERROR: Data TGraph [" << data_name << "] x-axis kinevar ["
+                        << data_graph_outer->GetXaxis()->GetTitle() << "] does not match that of the PDF ["
+                        << vutil::AsString(kv_pdf_x) << "]" << std::endl;
+              vutil::Die(-1);
+            }
+            if(data_graph_outer->GetYaxis()->GetTitle() != vutil::AsString(kv_pdf_y)) {
+              std::cerr << "ERROR: Data TGraph [" << data_name << "] y-axis kinevar ["
+                        << data_graph_outer->GetYaxis()->GetTitle() << "] does not match that of the PDF ["
+                        << vutil::AsString(kv_pdf_y) << "]" << std::endl;
+              vutil::Die(-1);
+            }
+
+            // Draw the markers as a circle surrounded by a ring of a different colour.
+            // This helps the markers to be more visible to colourblind people
+            data_graph_outer->SetMarkerColor(kAzure - 3);
+            data_graph_outer->SetMarkerStyle(kFullCircle);
+            data_graph_outer->SetMarkerSize(2);
+            data_graph_inner->SetMarkerColor(10);
+            data_graph_inner->SetMarkerStyle(kFullCircle);
+            data_graph_inner->SetMarkerSize(1);
+          } // plot data?
 
           // Draw the 2D plots
           TVirtualPad *this_pad = c_pdf_tot->cd(iplot + 1); // Pad for this plot
@@ -252,6 +307,12 @@ void plot_pdf(
           pdf_tot->GetZaxis()->SetTitleOffset(0.85);
           pdf_tot->GetZaxis()->SetTitleFont(pdf_frame->GetXaxis()->GetTitleFont());
           pdf_tot->Draw("colzsame");
+
+          // Draw the data markers
+          if (plot_data) {
+            data_graph_outer->Draw("P0,same");
+            data_graph_inner->Draw("P0,same");
+          }
         }
       }
       
@@ -417,14 +478,58 @@ void plot_pdf(
           }//ebin
 
           TH1D * data_hist = 0;
-          // If we need data, get that histogram now
+          // If we need data, get that histogram now (as 1D data should be binned)
           if (plot_data) {
-            TString data_name = TString::Format("%s_%s_%s_%s_%s_%s",
-                data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
+            // First try reading data from a stored TGraph
+            TGraph * data_graph = 0;
+            TString data_name = TString::Format("%s_%s_%s_%s_%s",
+                                                data_tag, "data", vutil::AsString(d).c_str(),
+                                                vutil::AsString(b).c_str(), vutil::AsString(s).c_str());
             TObject * tmp = fdata->Get(data_name.Data());
-            std::cout<<data_name<<"\t"<<tmp<<std::endl;
-            TH1D * htmp = (TH1D*)tmp;
-            data_hist = new TH1D(*htmp);
+            std::cout << "Reading 2D data TGraph [" << data_name << "]\t pointer = " << tmp << std::endl;
+            TGraph * gtmp = (TGraph*)tmp;
+            data_graph = new TGraph(*gtmp);
+
+            if(data_graph) {
+              // Copy the binning of the hists in the stack
+              data_hist = new TH1D(*pdf_contrib_coarse[0]);
+              data_hist->Reset();
+
+              // Fill the data hist from the TGraph
+              for(int ipoint = 0; ipoint < data_graph->GetN(); ++ipoint) {
+                double kine_val = -999, x = -999, y = -999;
+                data_graph->GetPoint(ipoint, x, y);
+                if     (std::string(data_graph->GetXaxis()->GetTitle()) == kinevar) { kine_val = x; }
+                else if(std::string(data_graph->GetYaxis()->GetTitle()) == kinevar) { kine_val = y; }
+                else {
+                  std::cerr << "ERROR: Could not read 1D data from input Tgraph ["
+                            << data_name.Data() << "]" << std::endl;
+                  vutil::Die(-1);
+                }
+                data_hist->Fill(kine_val);
+              }
+
+              if(!data_hist) {
+                std::cerr << "ERROR: Could not fill 1D data hist from the TGraph ["
+                          << data_name.Data() << "]" << std::endl;
+                vutil::Die(-1);
+              }
+            } // found data graph
+            else {
+              // Look for a 1D data hist instead
+              data_name = TString::Format("%s_%s_%s_%s_%s_%s",
+                                          data_tag, "data", binning, "rf_slice", subdata.Name().c_str(), kinevar.c_str());
+              TObject * tmp = fdata->Get(data_name.Data());
+              std::cout << "Reading data array [" << data_name << "]\t pointer = " << tmp << std::endl;
+              TH1D * htmp = (TH1D*)tmp;
+              data_hist = new TH1D(*htmp);
+
+              if(!data_hist) {
+                std::cerr << "ERROR: Could not read 1D data hist directly ["
+                          << data_name.Data() << "]" << std::endl;
+                vutil::Die(-1);
+              }
+            } // did not find data graph
 
             // and if necessary normalise to bin width
             if (per_range > 0) {
@@ -436,13 +541,31 @@ void plot_pdf(
               }
             }
 
-            data_hist->SetLineStyle(0);
-            data_hist->SetMarkerColor(kRed);
-            data_hist->SetMarkerStyle(kFullTriangleDown);
-          }
+            if(t2k) {
+              data_hist->SetLineStyle(0);
+              data_hist->SetLineColor(kBlack);
+              data_hist->SetMarkerColor(kBlack);
+              data_hist->SetMarkerStyle(kFullCircle);
+              data_hist->SetMarkerSize(1.5);
+              data_hist->SetBarWidth(0.4);
+            }
+            else {
+              data_hist->SetLineStyle(0);
+              data_hist->SetMarkerColor(kRed);
+              data_hist->SetMarkerStyle(kFullTriangleDown);
+            }
+
+            // Scan the data + error for max in the desired range
+            for(int ebin = 1; ebin <= data_hist->GetNbinsX(); ebin++) {
+              if(data_hist->GetBinCenter(ebin) < kinevar_x_max_1D ) {
+                double val = data_hist->GetBinContent(ebin) +  data_hist->GetBinError(ebin);
+                max_n = TMath::Max(max_n, val);
+              }//<emax
+            }//ebin
+          } // plot data?
 
           // Start drawing
-          TLegend * contrib_legend = new TLegend(0.7,0.45,0.9,0.95);
+          TLegend * contrib_legend = new TLegend(0.7,0.55,0.9,0.95);
           contrib_legend->SetFillColor(0);
           for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
               conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
