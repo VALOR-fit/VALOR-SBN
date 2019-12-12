@@ -14,12 +14,10 @@
 #ifndef valor_util_oscillation
 #define valor_util_oscillation
 
+#include "valor/Conventions/OscParamValues.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/Utilities/UtlXML.h"
-
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
 
 namespace valor
 {

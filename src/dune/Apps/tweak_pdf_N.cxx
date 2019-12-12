@@ -46,6 +46,8 @@
 #include "TSystem.h"
 // fmwk
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/OscParamValues.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -55,6 +57,8 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/SingleSampleFitModelABC.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -66,10 +70,6 @@
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;
 using namespace valor;

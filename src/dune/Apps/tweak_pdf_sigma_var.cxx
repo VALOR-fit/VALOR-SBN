@@ -41,10 +41,13 @@
 #include "TObjArray.h"
 #include "TString.h"
 #include "TSystem.h"
+
 // fmwk
 #include "valor/Conventions/ExperimentSetup.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/Conventions/Names.h"
+#include "valor/Conventions/OscParamValues.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -65,11 +68,10 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
+
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "dune/Conventions/Experiment.h"
 
 using namespace std;

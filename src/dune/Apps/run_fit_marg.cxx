@@ -53,6 +53,8 @@
 
 #include "valor/Conventions/KineSpace.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/OscParamValues.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
@@ -75,8 +77,6 @@
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/UtlOscillation.h"
 
 using namespace valor;

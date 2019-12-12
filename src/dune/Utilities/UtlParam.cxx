@@ -57,11 +57,13 @@ options after list construction
 #include "valor/Conventions/ParameterPool.h"
 #include "valor/Conventions/FitParamApply.h"
 #include "valor/Conventions/SystType.h"
-#include "valor/Utilities/UtlSystem.h"
-// dune
-#include "dune/Conventions/OscParamValues.h"
-#include "dune/Utilities/UtlParam.h"
+#include "valor/Conventions/OscParamValues.h"
 #include "valor/Conventions/PhysicalParameterLimits.h"
+#include "valor/Utilities/UtlSystem.h"
+
+// dune
+#include "dune/Utilities/UtlParam.h"
+
 
 using namespace valor;
 using namespace valor::conv;

@@ -61,9 +61,10 @@
 
 // fmwk
 #include "valor/CmdLine/CmdLnArgList.h"
-
 #include "valor/Conventions/KineSpace.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/OscParamValues.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -82,11 +83,9 @@
 #include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
+
 // dune
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
-
 #include "dune/Utilities/UtlOscillation.h"
 #include "dune/Utilities/ToyBuilder.h"
 #include "dune/Utilities/DoExperimentSetup.h"

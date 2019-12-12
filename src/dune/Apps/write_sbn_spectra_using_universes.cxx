@@ -28,6 +28,8 @@
 #include "TPRegexp.h"
 // fmwk
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/OscParamValues.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
@@ -36,6 +38,8 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -47,10 +51,6 @@
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitElements/GenericSingleSampleFitModel.h"
 
 // Proposal list from here:
 // https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample

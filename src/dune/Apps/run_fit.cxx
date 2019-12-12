@@ -61,6 +61,8 @@
 // fmwk
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/OscParamValues.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -69,6 +71,7 @@
 #include "valor/FitCore/FitDataABC.h"
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
+#include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Utilities/NameRegistry.h"
@@ -84,9 +87,6 @@
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
 
 using namespace std;
 using namespace valor;
