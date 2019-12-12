@@ -61,7 +61,7 @@ options after list construction
 // dune
 #include "dune/Conventions/OscParamValues.h"
 #include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 
 using namespace valor;
 using namespace valor::conv;

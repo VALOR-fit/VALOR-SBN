@@ -85,7 +85,7 @@
 // dune
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 
 #include "dune/Utilities/UtlOscillation.h"
 #include "dune/Utilities/ToyBuilder.h"

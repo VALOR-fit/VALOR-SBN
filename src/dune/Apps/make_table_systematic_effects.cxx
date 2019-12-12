@@ -79,7 +79,7 @@
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Utilities/UtlOscillation.h"
 #include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
+#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/Utilities/SingleSampleKineBinning.h"
