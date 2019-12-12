@@ -38,6 +38,10 @@ void plot_pdf(
 
   const ExperimentSetup & es = *ExperimentSetup::Instance();
 
+  if(!vutil::plotting::SetupCustomPalette("valor_inverted_dark_body_radiator")) {
+    std::cout << "WARNING: the custom color palette could not be set up. Reverting to default" << std::endl;
+  }
+
   const int n_pdf_slices = 10; //
   
   const int max_plots_per_canv = 12;
