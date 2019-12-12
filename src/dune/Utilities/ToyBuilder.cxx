@@ -5,7 +5,6 @@
 #include <string>
 #include "TMath.h"
 
-#include "valor/Conventions/PhysicalParameterLimits.h"
 #include "dune/Utilities/UtlOscillation.h"
 
 #include "valor/Conventions/Constants.h"
@@ -14,6 +13,7 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/ToyStream.h"
+#include "valor/FitCore/PhysicalParameterLimits.h"
 
 //#define VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
 

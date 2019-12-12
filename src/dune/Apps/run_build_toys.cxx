@@ -64,7 +64,7 @@
 #include "valor/Conventions/KineSpace.h"
 #include "valor/Conventions/Opt.h"
 #include "valor/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
+#include "valor/FitCore/PhysicalParameterLimits.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/CompoundFitElements.h"

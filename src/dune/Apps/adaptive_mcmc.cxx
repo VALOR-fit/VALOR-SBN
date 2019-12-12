@@ -67,7 +67,7 @@
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 #include "dune/Utilities/UtlParam.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
+#include "valor/FitCore/PhysicalParameterLimits.h"
 #include "valor/FitCore/CompoundFitElements.h"
 
 using namespace std;

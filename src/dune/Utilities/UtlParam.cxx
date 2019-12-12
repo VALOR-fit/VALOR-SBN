@@ -58,7 +58,7 @@ options after list construction
 #include "valor/Conventions/FitParamApply.h"
 #include "valor/Conventions/SystType.h"
 #include "valor/Conventions/OscParamValues.h"
-#include "valor/Conventions/PhysicalParameterLimits.h"
+#include "valor/FitCore/PhysicalParameterLimits.h"
 #include "valor/Utilities/UtlSystem.h"
 
 // dune
