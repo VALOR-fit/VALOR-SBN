@@ -46,6 +46,8 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
   using namespace valor;
   using namespace valor::conv;
 
+  const ExperimentSetup & es = *ExperimentSetup::Instance();
+
   // Read in the input SK tree
   TFile * fin = new TFile(input_file,"OPEN");
   assert(fin);
@@ -80,9 +82,18 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
   valor_minidst->Branch("Theta_reco", &valor_minidst_theta_reco  ,"Theta_reco/D");
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"      );
 
+  // Also set up a vector for each sample, containing the (Erec, theta) values for each event
+  std::map<conv::BeamConf_t, std::map<conv::Sample_t, std::vector<std::map<conv::KineVar_t, double>>>> data_kinematics;
+  for(conv::BeamConf_t b : es.BeamConfs()) {
+    for(conv::Sample_t s : es.Samples(b)) {
+      data_kinematics[b][s] = std::vector<std::map<conv::KineVar_t, double>>();
+    }
+  }
+
   // Loop over the input tree to determine the kinematics, sample, beam and weights of each event and fill the output tree
   int n_fhc_mu=0,n_rhc_mu=0,n_fhc_e=0,n_rhc_e=0,n_multie=0;
   int nentries = tree->GetEntriesFast();
+  int nev_survived_cuts = 0;
   for(int i = 0; i < nentries; i++) {
     tree->GetEntry(i);
 
@@ -104,6 +115,7 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
     if(erec < 0.) { continue; }
     if(EventIsELike(iclass) && erec > 1.25) { continue; }
     if(theta < 0.) { continue; }
+    nev_survived_cuts++;
 
     // Determine the VALOR SK sample enum and count the total number of events in each sample
     int selection = -1;
@@ -139,6 +151,12 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
       exit(1);
     }
 
+    // Fill the vector of kinematic values
+    std::map<conv::KineVar_t, double> kinematic_map;
+    kinematic_map[conv::kvEreco]     = erec;
+    kinematic_map[conv::kvThetareco] = theta;
+    data_kinematics.at((conv::BeamConf_t)beam).at((conv::Sample_t)selection).push_back(kinematic_map);
+
     // Save event in VALOR format to the output VALOR mini-DST
     valor_minidst_beam       = beam;
     valor_minidst_sample     = selection;
@@ -171,6 +189,36 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
   // Write the output tree
   std::cout << "Writing the output VALOR data mini-DST to the file \'" << out_file_name.Data() << "\'" << std::endl;
   valor_minidst->Write(valor_minidst_name);
+
+  // Write a 2D TGraph for each sample with the kinematics of each event
+  conv::Detector_t d = conv::kdSuperK;
+  for(conv::BeamConf_t b : es.BeamConfs()) {
+    for(conv::Sample_t s : es.Samples(b)) {
+      std::vector <std::map<conv::KineVar_t, double>> v = data_kinematics.at(b).at(s);
+      const int n_data = v.size();
+      if(n_data == 0) { continue; }
+
+      TGraph* g = new TGraph();
+      TString graph_name = TString::Format("g_kinematics_data_%s_%s_%s", util::AsString(d).c_str(),
+                                           util::AsString(b).c_str(), util::AsString(s).c_str());
+      g->SetName(graph_name.Data());
+
+      TString graph_title = TString::Format("%s;%s;%s", graph_name.Data(),
+                                            util::AsString(conv::kvEreco).c_str(),
+                                            util::AsString(conv::kvThetareco).c_str());
+      g->SetTitle(graph_title.Data());
+
+      unsigned int i = 0;
+      for(std::map<conv::KineVar_t, double> event_kinematics : v) {
+        g->SetPoint(i, event_kinematics.at(conv::kvEreco), event_kinematics.at(conv::kvThetareco));
+        i++;
+      } // loop over events
+
+      g->Write(graph_name.Data());
+      delete g;
+    }
+  }
+
   fout->Close();
 }
 //___________________________________________________________________________
