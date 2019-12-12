@@ -72,6 +72,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/UtlOscillation.h"
 #include "valor/Oscillation/SimpleOsc.h"
 #include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/NameRegistry.h"
@@ -81,7 +82,6 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/VThreadPool.h"
-#include "dune/Utilities/UtlOscillation.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
