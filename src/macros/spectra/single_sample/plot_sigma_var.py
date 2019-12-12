@@ -24,11 +24,11 @@ except:
   ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C")
 
 valor = ROOT.valor
-util =  valor.util
-conv =  valor.conv
-opt  =  valor.Opt.Instance()
-env  =  valor.Env.Instance()
-arridx = util.ArrIdx.Instance()
+util  = valor.util
+conv  = valor.conv
+opt   = valor.Opt.Instance()
+env   = valor.Env.Instance()
+es    = valor.ExperimentSetup.Instance()
 
 python_undefined = 2L*sys.maxint+1
 python_undefined_short = 2**32 -1
@@ -127,8 +127,7 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
 
       modes = ["all"]
       if _by_mode:
-        sample_idx = util.ArrIdx.Instance().SampleIdx(util.BeamConfFromString(_beam), util.SampleFromString(_selec))
-        modes = list(util.GetActiveModes(sample_idx))
+        modes = es.ReactionModes(util.BeamConfFromString(_beam), util.SampleFromString(_selec))
         if i == 0 and ip == 0:
           print "Plotting systematic variations for the following modes:\n", \
               [util.ModeAsString(imode) for imode in modes]
@@ -353,7 +352,7 @@ def get_label(sigma_var):
 #_______________________________________________________________________
 def get_t2k_legacy_hist_name(param_name, sigma_var, m):
   # Open up a file containing a parameter name map
-  parameters = list_of_tuples("t2xk_sdk_param_name_map.arg")
+  parameters = list_of_tuples(util.CompleteConfigPath("maps/t2xk_sdk_param_name_map.arg"))
   comp_param_name = ""
   for iparam,(sdk_param,legacy_param) in enumerate(parameters):
     #print "considering SDK name", sdk_param, "; t2xk name", legacy_param
