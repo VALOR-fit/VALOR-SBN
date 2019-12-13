@@ -29,6 +29,16 @@
         </apply_to>
 
         <limits> 0, inf  </limits>
+
+        <!-- Options used to set the FitParamList -->
+        <init>        2.0     </init>
+        <error>       0.01    </error>
+        <range_mode>  value   </range_mode>
+        <range>       0.1, 10 </range>
+        <step>        0.01    </step>
+        <fixed>       true    </fixed>
+        <nuisance>    false   </nuisance>
+        <marginalise> false   </marginalise>
     </param>
 
     <!-- Test parameter to make sure the code dies when given bad information -->
@@ -37,15 +47,14 @@
             <simple> test_param2  </simple>
            <!-- <rootex>  </rootex> -->
         </name>
-        <!--
+
         <apply_to_range>
-            <etrue> -inf, 10  </etrue>
             <q2true> 0, 0.1 </q2true>
             <etrue> 0, 1  </etrue>
         </apply_to_range>
-        -->
 
-        <!-- <type> lateral </type> -->
+
+        <type> lateral </type>
 
         <categories>
             <category> whatever         </category>
