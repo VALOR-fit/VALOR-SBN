@@ -123,7 +123,7 @@ void valor_expt_utils()
     
     valor::ExperimentInitialiser();
     
-    const ExperimentSetup & es = *ExperimentSetup::Instance();
+    const valor::ExperimentSetup & es = *valor::ExperimentSetup::Instance();
     std::string prompt = std::string("VALOR/")+es.ExperimentName()+": [%d] ";
     valor::util::ChangeInterpreterPrompt(prompt);
     
