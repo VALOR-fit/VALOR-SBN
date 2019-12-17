@@ -11,7 +11,7 @@
 #  --min-value              : Min param value for the sensitivity study. Default: -pi
 #  --max-value              : Max param value for the sensitivity study. Default: +pi
 #  --cpu-time               : Required CPU time. Default: "8:00:00" for RAL, "11:50:00" for Oxford.
-#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --physics-hypothesis     : Specifies the physics hypothesis. Default: "3f_osc"
 #  --hierarchy              : Specifies the mass hierarchy option. Default: "normal"
 #  --fit-option             : Option passed to fitter. Default: "minuit".
 #  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
@@ -52,7 +52,7 @@ foreach (@ARGV) {
   elsif($_ eq '--max_value'              ) { $max_value            = $ARGV[$iarg+1]; }
   elsif($_ eq '--max_theta23_value'      ) { $max_theta23_value    = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--hierarchy'              ) { $mhchoice             = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-option'             ) { $fitoption            = $ARGV[$iarg+1]; }
   elsif($_ eq '--store-spectra'          ) { $store_spectra        = $ARGV[$iarg+1]; }
@@ -75,7 +75,7 @@ $min_value              = -3.141592653589793                      unless defined
 $max_value              = 3.141592653589793                       unless defined $max_value;
 $min_theta23_value      = 0.3                                     unless defined $min_theta23_value;
 $max_theta23_value      = 0.7                                     unless defined $max_theta23_value;
-$fitparamlist           = "standard"                              unless defined $fitparamlist;
+$fitparamlist           = "3f_osc"                                unless defined $fitparamlist;
 $mhchoice               = "normal"                                unless defined $mhchoice;
 $fitoption              = "minuit"                                unless defined $fitoption;
 $store_spectra          = 0                                       unless defined $store_spectra;
@@ -128,25 +128,25 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
     $program   = "valor_dune-run_fit";
     
     #first fit in first octanct, deltacp 0
-    $arguments1 = "--tag $tag --run $kpoint --ntoymc 1 --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-mixing23 $theta23_input_value --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --first-octant --start-at-true --cons-osc-from-init";
+    $arguments1 = "--tag $tag --run $kpoint --ntoymc 1 --physics-hypothesis $fitparamlist --param-values-option  $param_values --fitter $fitoption --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct --input-mixing23 $theta23_input_value --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --first-octant --start-at-true --cons-osc-from-init";
 
     #second fit in second octanct, deltacp 0
     $arguments2 = "--tag $tag-cp=0-octant=2 --run $kpoint --ntoymc 1 ".
-      " --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
+      " --physics-hypothesis $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
       " --input-mixing23 $theta23_input_value --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP 0  --$mhchoice --second-octant ".
       " --load-prior-from-file $prior_file";
 
     #third fit in first octanct, deltacp pi
     $arguments3 = "--tag $tag-cp=pi-octant=1 --run $kpoint --ntoymc 1 ".
-      " --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
+      " --physics-hypothesis $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
       " --input-mixing23 $theta23_input_value --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value  --$mhchoice --first-octant ".
       " --load-prior-from-file $prior_file";
 
     #forth fit in second octanct, deltacp pi
     $arguments4 = "--tag $tag-cp=pi-octant=2 --run $kpoint --ntoymc 1 ".
-      " --fit-param-list $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
+      " --physics-hypothesis $fitparamlist --param-values-option  $param_values --fitter $fitoption ".
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
       " --input-mixing23 $theta23_input_value --input-deltaCP $deltacp_input_value --fix-deltaCP --fix-at-deltaCP $max_value  --$mhchoice --second-octant ".
       " --load-prior-from-file $prior_file";

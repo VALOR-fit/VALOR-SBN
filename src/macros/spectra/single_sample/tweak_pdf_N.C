@@ -10,7 +10,7 @@
 
 void tweak_pdf_N
 (
-  const char * model_param_list   = "nuosc3f",               /* list of params included in model, see UtlParam.cxx */
+  const char * hypname            = "3f_osc",                /* physics hypothesis, see UtlParam.cxx */
   const char * config_file        = "fit/dune_ndfit.xml",    /* analysis configuration file */
   const char * output_rootfile    = "",                      /* Optionally write envelope histograms to file */
   const char * fit_file           = "",                      /* File to get postfit matrix from. If not given, uses prefit. */
@@ -31,7 +31,7 @@ void tweak_pdf_N
   // Print settings
   cout << "\n[Job inputs]" << endl;
   cout << "- Reading analysis configuration from: " << config << endl;
-  cout << "- Model parameter list used : " << model_param_list << endl;
+  cout << "- Physics hypothesis used : " << hypname << endl;
 
   TCanvas * c  [kNBeamConf];
   for(int ibeam = 0; ibeam < kNBeamConf; ibeam++) {
@@ -89,7 +89,7 @@ void tweak_pdf_N
     // Get a physics hypothesis by randomizing all params
     // (toy-MC #-1 is special: default)
     Option_t * model_param_values = (itoy<0) ? "nominal" : "randomize-all;prefit-errors";
-    FitParamList * fp = util::GetFitParameterList(model_param_list, fit_param_opt);
+    FitParamList * fp = util::GetFitParameterList(hypname, fit_param_opt);
     
     model->ResetSystematics("all");
     // Randomise the systematics in the model, and copy them to the FPL

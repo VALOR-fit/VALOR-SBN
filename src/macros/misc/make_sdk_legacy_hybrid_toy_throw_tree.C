@@ -17,16 +17,14 @@ void make_sdk_legacy_hybrid_toy_throw_tree(
   const int    n_toys           = 40000,
   const char * param_map        = "maps/t2xk_sdk_param_name_map.arg",
   const char * config           = "analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml",
-  const char * fpl_name         = "nuosc3f",
+  const char * hypname          = "3f_osc",
   const char * fplopt           = "NONE"
 )
 {
     CompoundFitElements * elements = new CompoundFitElements();
     elements->Read(util::CompleteConfigPath(config), "nomc nosplines");
     FitModelABC* model = elements->FitModel();
-    CorrelatedSystematics* systematics =
-      dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-    FitParamList* fpl = util::GetFitParameterList(fpl_name, fplopt, systematics);
+    FitParamList* fpl = util::GetFitParameterList(hypname, fplopt);
 
     // Set up an array to hold all of the parameter values that we'll read/write
     double sdk_params[conv::knppmax];

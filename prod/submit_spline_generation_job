@@ -36,7 +36,7 @@ foreach (@ARGV) {
   elsif($_ eq '--beam'                   ) { $beam                = $ARGV[$iarg+1]; }
   elsif($_ eq '--format'                 ) { $format              = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist        = $ARGV[$iarg+1]; }
   elsif($_ eq '--job-dir'                ) { $job_dir             = $ARGV[$iarg+1]; }
   elsif($_ eq '--dune-softw-dir'         ) { $dune_softw_dir      = $ARGV[$iarg+1]; }
   elsif($_ eq '--fmwk-softw-dir'         ) { $fmwk_softw_dir      = $ARGV[$iarg+1]; }

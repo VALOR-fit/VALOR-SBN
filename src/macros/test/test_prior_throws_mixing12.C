@@ -33,8 +33,7 @@ void test_prior_throws_mixing12
   elements->Read(util::CompleteConfigPath("analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml"));
   FitModelABC* model = elements->FitModel();
 
-  CorrelatedSystematics* systematics = dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-  FitParamList* fpl = util::GetFitParameterList("nuosc3f", "five-sigma-range", systematics);
+  FitParamList* fpl = util::GetFitParameterList("3f_osc", "");
 
   std::string file_priors_full = util::CompleteConfigPath("priors/t2k_run_1-9d_reactor_fc.xml");
   SetPriorsAll(file_priors_full, *fpl);

@@ -8,8 +8,8 @@
 \options     --tag                 : Tag for output file [def: "margtoy"]
              --run                 : Run # [def: 0]
              --ntoys               : Number of toys to build [def: 1]
-             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
-                                     [def: "nuosc3f"]
+             --physics-hypothesis  : Physics hypothesis (see UtlParam.cxx)
+                                     [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
              --param-values-option : Decide how to set the values of physics 
@@ -117,7 +117,7 @@ void BuildToys(CmdLnArgList& arg)
    Init(arg);
 
    // Get arguments
-   string fpl_name         = arg.GetString("fit-param-list");
+   string hypname         = arg.GetString("physics-hypothesis");
    string fplopt           = arg.GetString("fit-param-opt");
    string param_val_opts   = arg.GetString("param-values-option");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
@@ -159,10 +159,7 @@ void BuildToys(CmdLnArgList& arg)
    elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
 
-   // GetSystematics will be added to CorrelatedSystematics in the future
-   CorrelatedSystematics* systematics =
-      dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-   FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
+   FitParamList* fpl = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
    // Set the priors
    util::oscillation::SetOscillationParameterPriors(arg, *fpl);
    // Fix or set marginalisation flag for oscillation parameters

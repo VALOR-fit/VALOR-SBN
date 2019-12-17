@@ -2,7 +2,7 @@
 # .......................................................................................................
 ntoys                                |   integer      |  optional   |   200
 output                               |   string       |  optional   |   tweaks_[PARAMS].root
-fit-param-list                       |   string       |  optional   |   nuosc3f
+physics-hypothesis                   |   string       |  optional   |   3f_osc
 fit-param-opt                        |   string       |  optional   |   NONE
 config                               |   string       |  mandatory  |   -
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml

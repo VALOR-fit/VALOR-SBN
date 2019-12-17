@@ -29,7 +29,7 @@ min_channels_to_landscape = 7   # If we get more than this number of channels, t
 
 def main(config_file, param_values,
     hierarchy,angle_scheme,octant,dmsqscheme,
-    output_file,label,fplname,fplopt,num_decimal_places):
+    output_file,label,hypname,fplopt,num_decimal_places):
   
   opt.gMassHierarchyAssumed = util.HierarchyFromString(hierarchy)
   opt.gOscMixingParamChoice = util.MixingTypeFromString(angle_scheme)
@@ -44,8 +44,7 @@ def main(config_file, param_values,
   fit_elements.Read(util.CompleteConfigPath(config_file))
 
   model = fit_elements.FitModel()
-  syst = model.GetSystematics()
-  fpl = util.GetFitParameterList(fplname, fplopt, syst)
+  fpl = util.GetFitParameterList(hypname, fplopt)
 
   relevant_params = []
   for (parname,val) in param_values.iteritems():
@@ -226,7 +225,7 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options]..",description="Make tables of validation spectra")
 
 
-  parser.add_option("--fit-param-list"          , dest="fplname"       , default="nuosc3f"   , help="Name of FPL.")
+  parser.add_option("--physics-hypothesis"      , dest="hypname"       , default="3f_osc"    , help="Name of FPL.")
   parser.add_option("--fit-param-opt"           , dest="fplopt"        , default="NONE"      , help="FPL options.")
   parser.add_option(     '--hierarchy'          , dest="hierarchy"     , default="normal"    , help='Mass hierarchy: "normal" or "inverted"')
   parser.add_option('-m','--mixing-param-choice', dest="mixparamchoice", default="sinsqtheta", help='Mixing param coice: "sinsqtheta" or "sinsq2theta"')
@@ -258,7 +257,7 @@ if __name__=="__main__":
 
   main(o.config, param_values,
     o.hierarchy,o.mixparamchoice,o.mixparamoctant,o.dmsqscheme,
-    o.output_file,o.label,o.fplname,o.fplopt,o.ndp)
+    o.output_file,o.label,o.hypname,o.fplopt,o.ndp)
   
   if other:
     print "Warning - ignored arguments: ",other

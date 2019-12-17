@@ -44,7 +44,7 @@
 #
 #  --tag                    : Naming tag for output files
 #  --config                 : Analysis configuration file from the config/analysis directory
-#  --fit-param-list         : Fit parameter list name (see UtlParam.cxx)
+#  --physics-hypothesis     : Physics hypothesis name (see UtlParam.cxx)
 #  --fit-param-opt          : Options used when setting up the FitParamList
 #  --param-values-option    : Decide how to set the values of physics params used for toy-MC generation
 #  --mesg-thresholds        : Message thresholds config file
@@ -124,7 +124,7 @@ foreach (@ARGV) {
   elsif($_ eq '--data-file'          ) { $data_file           = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                ) { $tag_prefix          = $ARGV[$iarg+1]; }
   elsif($_ eq '--config'             ) { $config              = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'     ) { $fit_param_list      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis' ) { $fit_param_list      = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-opt'      ) { $fit_param_opt       = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values-option') { $param_values_option = $ARGV[$iarg+1]; }
   elsif($_ eq '--mesg-thresholds'    ) { $mesg_thresholds     = $ARGV[$iarg+1]; }
@@ -189,9 +189,9 @@ $start_toy_fakedata  = 0                                                        
 $data_file           = "-"                                                                 unless defined $data_file;
 $npt_job_par1        = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
 $npt_job_par2        = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
-$fit_param_list      = "nuosc3f"                                                           unless defined $fit_param_list;
-$fit_param_opt       = ""                                                                  unless defined $fit_param_opt;
-$param_values_option = "randomize-all\\;prefit-errors"                                      unless defined $param_values_option;
+$fit_param_list      = "3f_osc"                                                            unless defined $fit_param_list;
+$fit_param_opt       = "NONE"                                                              unless defined $fit_param_opt;
+$param_values_option = "randomize-all\\;prefit-errors"                                     unless defined $param_values_option;
 $mesg_thresholds     = "verbosity.xml"                                                     unless defined $mesg_thresholds;
 $store_specra        = 0                                                                   unless defined $store_specra;
 $rethrow_unphysical  = 1                                                                   unless defined $rethrow_unphysical;
@@ -563,7 +563,7 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 
 				# Submit the job
 				$arguments = "--tag $tag --nbatches $nbatches --first-batch $first_batch --fitter $fitter " .
-										 "--margtoy-tag $margtoy_tag --nmargtoy $nmargtoy --fit-param-list $fit_param_list " .
+										 "--margtoy-tag $margtoy_tag --nmargtoy $nmargtoy --physics-hypothesis $fit_param_list " .
 										 "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 										 "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
 										 "--fit-param1-min-value $min_par1_use --fit-param1-max-value $max_par1_use " .

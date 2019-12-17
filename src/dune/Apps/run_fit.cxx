@@ -8,8 +8,8 @@
 \options     --tag                 : Tag for output file [def: "toymc"]
              --run                 : Run # [def: 0]
              --ntoymc              : Number of toy-MC experiments [def: 1]
-             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
-                                     [def: "nuosc3f"]
+             --physics-hypothesis  : Physics hypothesis (see UtlParam.cxx)
+                                     [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
              --param-values-option : Decide how to set the values of physics 
@@ -83,6 +83,7 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/VThreadPool.h"
+#include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 // dune
@@ -113,7 +114,7 @@ int main(int argc, char ** argv)
   bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
   int  ntoymc             = arg.GetInt("ntoymc");
   int n_threads           = arg.GetInt("nthreads");
-  string fplname          = arg.GetString("fit-param-list");
+  string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string fittername       = arg.GetString("fitter");
   string true_values_file = arg.GetString("true-from-filename");
@@ -200,7 +201,7 @@ int main(int argc, char ** argv)
     
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+    FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
     model->ResetSystematics("all");
     // If required, randomise the systematics in the model, and copy them to the FPL

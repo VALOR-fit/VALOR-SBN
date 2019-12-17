@@ -32,7 +32,7 @@ nr   =  util.NameRegistry.Instance()
 opt.gOscMixingParamChoice = conv.kNuMixSinsqTheta
 opt.SetDefaultParameterValues()
 
-default_fit_param_list = "nuosc3f"
+default_hypname = "3f_osc"
 
 to3sf = "{0:.3g}"
 python_undefined = 2L*sys.maxint+1
@@ -68,7 +68,7 @@ def main(param_s,param_value_s,config_file,outfile,ntoys,fit_param_opt,seed=0):
   outfile = outfile.replace("[PARAM]",nr.ParamAsString(param))
   outfile = outfile.replace("[VALUE]",to3sf.format(value))
 
-  fpl = util.GetFitParameterList(default_fit_param_list, fit_param_opt)
+  fpl = util.GetFitParameterList(default_hypname, fit_param_opt)
   fit_inputs = valor.FitInputs(data,model,fpl)
   
   # Set true parameter value and generate 'data'
@@ -110,7 +110,7 @@ if __name__=="__main__":
   import optparse
   parser = optparse.OptionParser(usage="%prog [options] parameter value",description="Make tables of applied systematics")
   
-  #~ parser.add_option('-f', '--fit-param-list', dest='fpl', default=None, help="Name of FPL.")                   , help="Sample (1Rmu, 1Re, RHC1Rmu, RHC1Re)")
+  #~ parser.add_option('-f', '--physics-hypothesis', dest='hyp', default=None, help="Name of the physics hypothesis.")                   , help="Sample (1Rmu, 1Re, RHC1Rmu, RHC1Re)")
   parser.add_option('-c', '--config'        , dest='config' , default="analysis_configuration.xml", help="Configuration file")
   parser.add_option('--seed', dest='seed',default=0, type=int,help="Random seed")
   parser.add_option('-o', dest='outfile',default="toys_[PARAM]=[VALUE].root",help="Output file")

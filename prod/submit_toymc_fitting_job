@@ -10,7 +10,7 @@
 #  --nruns                  : Number of runs (jobs) to submit. Default: 1.
 #  --ntoymc                 : Number of toy-MC fits per run. Default: 1.
 #  --cpu-time               : Required CPU time. Default: "6:00:00" for RAL, "11:50:00" for Oxford.
-#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --physics-hypothesis     : Specifies the physics hypothesis. Default: "3f_osc"
 #  --param-values           : Specifies how to set model parameters in toy-MC generation. Default: "randomize-all;prefit-errors"
 #  --no-stat-fluctuations   : Disable statistical fluctuation in toy-MC generation. Default: enabled.
 #  --start-at-true          : The fitter starts at the true values of the parameters rather than the central values. Default: diabled.
@@ -43,7 +43,7 @@ foreach (@ARGV) {
   elsif($_ eq '--nruns'                  ) { $nruns               = $ARGV[$iarg+1]; }
   elsif($_ eq '--ntoymc'                 ) { $ntoymc              = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist        = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values'           ) { $param_values        = $ARGV[$iarg+1]; }
   elsif($_ eq '--no-stat-fluctuations'   ) { $stat_fluct          = $ARGV[$iarg+1]; }
   elsif($_ eq '--start-at-true'          ) { $start_at_true       = $ARGV[$iarg+1]; }
@@ -67,7 +67,7 @@ $resource               = "interactive"                                         
 $tag                    = "toymc"                                                 unless defined $tag;
 $nruns                  = 1                                                       unless defined $nruns;
 $ntoymc                 = 1                                                       unless defined $ntoymc;
-$fitparamlist           = "standard"                                              unless defined $fitparamlist;
+$fitparamlist           = "3f_osc"                                              unless defined $fitparamlist;
 $param_values           = "randomize-all;prefit-errors"                           unless defined $param_values;
 $fitoption              = "minuit"                                                unless defined $fitoption;
 #$stat_fluct             = 1                                                       unless defined $stat_fluct;
@@ -103,7 +103,7 @@ while($irun < $nruns) {
 
   $program = "valor_dune-run_fit";
   # use "" in some cases as the existence of ; as part of the name can wreak havoc
-  $arguments   = " --tag $tag --run $irun --ntoymc $ntoymc --fit-param-list \"$fitparamlist\" --param-values-option \"$param_values\" --fitter \"$fitoption\" --config $config --mesg-thresholds $mesg_thresholds --load-prior-from-file $prior_file --tweak-parameter-set $tweak_set ";
+  $arguments   = " --tag $tag --run $irun --ntoymc $ntoymc --physics-hypothesis \"$fitparamlist\" --param-values-option \"$param_values\" --fitter \"$fitoption\" --config $config --mesg-thresholds $mesg_thresholds --load-prior-from-file $prior_file --tweak-parameter-set $tweak_set ";
 
   if(defined $store_spectra) {
     $arguments = $arguments . " --store-spectra";

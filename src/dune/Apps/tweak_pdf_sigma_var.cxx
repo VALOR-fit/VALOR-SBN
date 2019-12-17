@@ -6,7 +6,7 @@
 \brief     Vary the MC spectra by setting systematics to +/- 1 and 3 sigma
 
 \options     --output              : Where to save tweaked histograms to. [def: sigma_var_[PARAMS].root]
-             --fit-param-list      : Fit parameter list [def: "nuosc3f"]
+             --physics-hypothesis  : Physics hypothesis [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
              --config              : Analysis configuration file [required]
@@ -67,6 +67,7 @@
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/VThreadPool.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 
@@ -96,7 +97,7 @@ int main(int argc, char ** argv)
   
   // Read the command line
   int n_threads           = arg.GetInt("nthreads");
-  string fplname          = arg.GetString("fit-param-list");
+  string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
@@ -147,7 +148,7 @@ int main(int argc, char ** argv)
   // Print settings
   cout << "\n[Job inputs]" << endl;
   cout << "- Reading analysis configuration from: " << config_path << endl;
-  cout << "- Model parameter list used : " << fplname << endl;
+  cout << "- Physics hypothesis : " << hypname << endl;
   
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config_path.c_str());
@@ -158,7 +159,6 @@ int main(int argc, char ** argv)
   // Get the parameters to vary
   std::vector<PhysParamId_t> param_set = util::GetParameterSet(params_to_tweak, true);    // Only get exact matches to any input param names (otherwise problems can be caused)
   assert(param_set.size());
-  unsigned int n_params = param_set.size();
 
   // Make the output file
   TFile * outfile = NULL;
@@ -167,7 +167,7 @@ int main(int argc, char ** argv)
   LOG("valor_dune",pNOTICE)<<"Writing to file: "<<output_rootfile;
 
   const CorrelatedSystematics * syst = cm->GetSystematics();
-  FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+  FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
   if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
   if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }

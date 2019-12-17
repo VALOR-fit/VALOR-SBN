@@ -6,19 +6,19 @@
 ### You might also need to "setup fife_utils"                                                   ###
 ###                                                                                             ###
 ### To submit the job run a command such as:                                                    ###
-### "jobsub_submit -G $group --role=Analysis --memory=$memory --expected-lifetime=$cput  \      ###
-###   --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE       \      ###
-###   --OS=SL6 -N $numjobs --generate-email-summary                                      \      ###
-###   file://$ENV{VALOR_EXPT}/prod/jobsub_submit_param_scan.sh                           \      ###
-###       --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2  \      ###
-###       --fit-param-list $fitparamlist --config-file $config_file  --param1 $param1    \      ###
-###       --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1     \      ###
-###       --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2                 \      ### 
-###       --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2         \      ###
-###       --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra    \      ###
-###       --fit-option $fitoption --load-prior-from-file $prior_file                     \      ### 
-###       --pot-override $pot_override --mesg-thresholds $mesg_thresholds                \      ###
-###       --param-values-option $param_values --tarball $tarball --jobdir $job_dir"      \      ###
+### "jobsub_submit -G $group --role=Analysis --memory=$memory --expected-lifetime=$cput   \     ###
+###   --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC,OFFSITE        \     ###
+###   --OS=SL6 -N $numjobs --generate-email-summary                                       \     ###
+###   file://$ENV{VALOR_EXPT}/prod/jobsub_submit_param_scan.sh                            \     ###
+###       --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2   \     ###
+###       --physics-hypothesis $fitparamlist --config-file $config_file  --param1 $param1 \     ###
+###       --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1      \     ###
+###       --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2                  \     ###
+###       --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2          \     ###
+###       --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra     \     ###
+###       --fit-option $fitoption --load-prior-from-file $prior_file                      \     ###
+###       --pot-override $pot_override --mesg-thresholds $mesg_thresholds                 \     ###
+###       --param-values-option $param_values --tarball $tarball --jobdir $job_dir"       \     ###
 ###       --njobs $numjobs                                                                      ###
 ###                                                                                             ###
 ### The first section are jobsub specific parameters:                                           ###
@@ -212,7 +212,7 @@ while [ $# -gt 0 ]; do
       fi
       ;;
 
-    --fit-param-list )
+    --physics-hypothesis )
       if [ $# -gt 1 ]; then
         FITPARAMLIST=$2
         shift
@@ -308,7 +308,7 @@ echo "MINVALUE2 = $MINVALUE2"
 echo "MAXVALUE2 = $MAXVALUE2"
 echo "LOGPARAM2 = $LOGPARAM2"
 echo "DISCOVERY = $DISCOVERY"
-echo "FITPARAMLIST = $FITPARAMLIST" 
+echo "PHYSHYPOTHESIS = $FITPARAMLIST"
 echo "HIERARCHY = $HIERARCHY" 
 echo "FITOPTION = $FITOPTION"
 echo "STORESPECTRA = $SHOULDSTORE"
@@ -539,7 +539,7 @@ do
   # Fixing the parameter each value in the scan
 
   #Make the valor command.
-  standard_options=" --run $PROCESS --ntoymc 1  --fit-param-list $FITPARAMLIST \
+  standard_options=" --run $PROCESS --ntoymc 1  --physics-hypothesis $FITPARAMLIST \
     --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
     --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct \
     $SHOULDSTORE --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE \

@@ -8,7 +8,7 @@
 
 \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
              --ntoys               : Number of toy-MC experiments [def: 200]
-             --fit-param-list      : Fit parameter list [def: "nuosc3f"]
+             --physics-hypothesis  : Physics hypothesis [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
              --config              : Analysis configuration file [required]
@@ -105,7 +105,7 @@ int main(int argc, char ** argv)
   // Read the command line
   int ntoys               = arg.GetInt("ntoys");
   int n_threads           = arg.GetInt("nthreads");
-  string fplname          = arg.GetString("fit-param-list");
+  string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
@@ -142,14 +142,13 @@ int main(int argc, char ** argv)
   // Print settings
   cout << "\n[Job inputs]" << endl;
   cout << "- Reading analysis configuration from: " << config_path << endl;
-  cout << "- Model parameter list used : " << fplname << endl;
+  cout << "- Physics hypothesis used : " << hypname << endl;
 
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config_path.c_str());
   FitModelABC * model = elements->FitModel();
   CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
   assert(cm);
-  const CorrelatedSystematics * syst = cm->GetSystematics();
   const util::NameRegistry * nr = util::NameRegistry::Instance();
 
   // Array to store the number of events in each sample for each toy
@@ -172,7 +171,7 @@ int main(int argc, char ** argv)
     model->ResetSystematics("all");
     model->RandomizeSystematics(syst_param_map);
 
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+    FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
     util::oscillation::SetOscillationParameterPriors(arg, *fp);
 
     // Set input parameters

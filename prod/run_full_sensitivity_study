@@ -8,7 +8,7 @@
 #  --nruns                  : Number of runs (jobs) to submit. Default: 1.
 #  --ntoymc                 : Number of toy-MC fits per run. Default: 1.
 #  --cpu-time               : Required CPU time. Default: "6:00:00" for RAL, "11:50:00" for Oxford.
-#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --physics-hypothesis     : Specifies the physics hypothesis. Default: "3f_osc"
 #  --param-values           : Specifies how to set model parameters in toy-MC generation. Default: "randomize-all;prefit-errors"
 #  --sens-param-value-min   : Min param value for \Delta\chi^2 = f(param value) plot
 #  --sens-param-value-max   : Max param value for \Delta\chi^2 = f(param value) plot
@@ -35,7 +35,7 @@ foreach (@ARGV) {
   elsif($_ eq '--nruns'                  ) { $nruns                = $ARGV[$iarg+1]; }
   elsif($_ eq '--ntoymc'                 ) { $ntoymc               = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values'           ) { $param_values         = $ARGV[$iarg+1]; }
   elsif($_ eq '--sens-param-value-min'   ) { $sens_param_value_min = $ARGV[$iarg+1]; }
   elsif($_ eq '--sens-param-value-max'   ) { $sens_param_value_max = $ARGV[$iarg+1]; }
@@ -58,7 +58,7 @@ $resource               = "interactive"                           unless defined
 $tag                    = "sens"                                  unless defined $tag;
 $nruns                  = 1                                       unless defined $nruns;
 $ntoymc                 = 1                                       unless defined $ntoymc;
-$fitparamlist           = "standard"                              unless defined $fitparamlist;
+$fitparamlist           = "3f_osc"                                unless defined $fitparamlist;
 $param_values           = "randomize-all;prefit-errors"           unless defined $param_values;
 $sens_param_value_min   = 0.9                                     unless defined $sens_param_value_min;
 $sens_param_value_max   = 1.1                                     unless defined $sens_param_value_max;
@@ -126,7 +126,7 @@ if( !defined $cput ) {
 foreach(@param_array)
 {
   $param = $_;
-  $command = "submit_nd_fit_param_sensitivity_job --split-in-subruns 1 --resource $resource --tag $tag-$param --nruns $nruns --ntoymc $ntoymc --sens-param-name \"$param\" --sens-param-value-gen 1.0 --npoints $npoints --sens-param-value-min $sens_param_value_min --sens-param-value-max $sens_param_value_max --no-stat-fluctuations 0 --fit-param-list \"$fitparamlist\" --param-values \"$param_values\" --job-dir $job_dir/$param --dune-softw-dir $dune_softw_dir --fmwk-softw-dir $fmwk_softw_dir";
+  $command = "submit_nd_fit_param_sensitivity_job --split-in-subruns 1 --resource $resource --tag $tag-$param --nruns $nruns --ntoymc $ntoymc --sens-param-name \"$param\" --sens-param-value-gen 1.0 --npoints $npoints --sens-param-value-min $sens_param_value_min --sens-param-value-max $sens_param_value_max --no-stat-fluctuations 0 --physics-hypothesis \"$fitparamlist\" --param-values \"$param_values\" --job-dir $job_dir/$param --dune-softw-dir $dune_softw_dir --fmwk-softw-dir $fmwk_softw_dir";
   print "Running:\n$command \n\n";
   system($command);
 }

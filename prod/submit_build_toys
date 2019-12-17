@@ -35,7 +35,7 @@
 #
 #  --tag                    : Naming tag for output files
 #  --config                 : Analysis configuration file from the config/analysis directory
-#  --fit-param-list         : Fit parameter list name (see UtlParam.cxx)
+#  --physics-hypothesis     : Physics hypothesis name (see UtlParam.cxx)
 #  --fit-param-opt          : Options used when setting up the FitParamList
 #  --param-values-option    : Decide how to set the values of physics params used for toy-MC generation
 #  --mesg-thresholds        : Message thresholds config file
@@ -111,7 +111,7 @@ foreach (@ARGV) {
   elsif($_ eq '--store-mode-arrays'    ) { $store_mode_arrays     = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                  ) { $tag                   = $ARGV[$iarg+1]; }
   elsif($_ eq '--config'               ) { $config                = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'       ) { $fit_param_list        = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'   ) { $fit_param_list        = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-opt'        ) { $fit_param_opt         = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values-option'  ) { $param_values_option   = $ARGV[$iarg+1]; }
   elsif($_ eq '--mesg-thresholds'      ) { $mesg_thresholds       = $ARGV[$iarg+1]; }
@@ -167,7 +167,7 @@ $prior_file            = ""                                                     
 $store_mode_arrays     = 0                                                                   unless defined $store_mode_arrays;
 $npt_job_par1          = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
 $npt_job_par2          = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
-$fit_param_list        = "nuosc3f"                                                           unless defined $fit_param_list;
+$fit_param_list        = "3f_osc"                                                            unless defined $fit_param_list;
 $fit_param_opt         = ""                                                                  unless defined $fit_param_opt;
 $param_values_option   = "randomize-all\\;prefit-errors"                                     unless defined $param_values_option;
 $mesg_thresholds       = "verbosity.xml"                                                     unless defined $mesg_thresholds;
@@ -458,7 +458,7 @@ for($ibin1 = 0; $ibin1 < $npt_par1; $ibin1++) {
 
 		$program = "valor_dune-run_build_toys";
 
-		$arguments = "--tag $tag --batch $batch --ntoys $ntoys --fit-param-list $fit_param_list " .
+		$arguments = "--tag $tag --batch $batch --ntoys $ntoys --physics-hypothesis $fit_param_list " .
 		             "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 		             "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
 		             "--fit-param1-bin $ibin1 --fit-param2 $sub_par2 --fit-param2-value $val_par2 " .

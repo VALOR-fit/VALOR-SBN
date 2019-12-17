@@ -8,7 +8,7 @@
 \options     --tag                 : Tag for input marginalisation toy file [def: "margtoy"]
              --run                 : Run # [def: 0]
              --nmargtoy            : Number of marginalisation toys [def: 1]
-             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
+             --physics-hypothesis  : Physics hypothesis (see UtlParam.cxx)
                                      [def: "nuosc3f"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
@@ -106,7 +106,7 @@ void Fit(CmdLnArgList& arg)
    Init(arg);
 
    // Get arguments
-   string fpl_name         = arg.GetString("fit-param-list");
+   string hypname         = arg.GetString("physics-hypothesis");
    string fplopt           = arg.GetString("fit-param-opt");
    string param_val_opts   = arg.GetString("param-values-option");
    string fitter_name      = arg.GetString("fitter");
@@ -179,9 +179,7 @@ void Fit(CmdLnArgList& arg)
          util::Die(-1);
       }
 
-      // GetSystematics will be added to CorrelatedSystematics in the future
-      CorrelatedSystematics* systematics = model->GetSystematics();
-      FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
+      FitParamList* fpl = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
       // Set the priors
       util::oscillation::SetOscillationParameterPriors(arg, *fpl);

@@ -2,7 +2,7 @@
 void write_prefit_ntp(
   TString config = "fit/dune_ndfit.xml",
   TString outfilename = "prefit_ntp.root",
-  TString fit_param_list = "nuosc3f",
+  TString hypname = "3f_osc",
   TString fit_param_opt = "no-osc-params"
 )
 {
@@ -27,7 +27,7 @@ void write_prefit_ntp(
   CorrelatedSystematics * syst = model->GetSystematics();
   // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
   // parameter limits, initial values etc).
-  FitParamList * fp = util::GetFitParameterList(fit_param_list.Data(), fit_param_opt ,syst);
+  FitParamList * fp = util::GetFitParameterList(hypname.Data(), fit_param_opt);
   PhysParamList true_params = fp->AsPhysParamList("current");
   ntp.TrueParamArr()->Append(true_params);
   
