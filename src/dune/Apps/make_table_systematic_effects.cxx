@@ -162,7 +162,7 @@ int main(int argc, char ** argv)
   std::vector<PhysParamId_t> osc_params;
   for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
     PhysParamId_t p = param_set[ip];
-    if(util::IsOscParam(p)) { osc_params.push_back(p); }
+    if(!util::IsSystematic(p)) { osc_params.push_back(p); }
     else                    { syst_param_map[p] = true; }
   }
 

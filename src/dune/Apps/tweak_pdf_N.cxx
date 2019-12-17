@@ -194,6 +194,7 @@ int main(int argc, char ** argv)
     
     for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
       PhysParamId_t p = param_set[ip];
+      if(!util::IsSystematic(p)) { continue; }
       param_map[p] = true;
     }
     

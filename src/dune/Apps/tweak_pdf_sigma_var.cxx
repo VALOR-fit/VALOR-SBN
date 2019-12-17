@@ -180,6 +180,7 @@ int main(int argc, char ** argv)
   GeneratePDFNominal(model, cm, fp, kv, outfile);
   for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
     PhysParamId_t p = param_set[ip];
+    if(!util::IsSystematic(p)) { continue; }
     double bestfit = fp->InitValue(p);
     double sigma_err = syst->OneSigmaError(p);
     double tweak_p1 = bestfit + (1 * sigma_err);

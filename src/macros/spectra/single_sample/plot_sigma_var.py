@@ -93,7 +93,8 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
     draw_comparison = True
     fin_comp = ROOT.TFile(comp_file, "READ")
 
-  param_set = list(util.GetParameterSet(param_set_str, True))   # Only get exact matches to any input param names (otherwise problems can be caused)
+  param_set_temp = list(util.GetParameterSet(param_set_str, True))   # Only get exact matches to any input param names (otherwise problems can be caused)
+  param_set = [ipar for ipar in param_set_temp if util.IsSystematic(ipar)]
   if len(param_set) == 0:
     print "ERROR: Got no prams to plot"
     sys.exit()

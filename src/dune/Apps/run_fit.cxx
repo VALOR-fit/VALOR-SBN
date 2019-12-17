@@ -409,7 +409,7 @@ int main(int argc, char ** argv)
           if ( std::fabs(fix_param_at + 999. ) < conv::kASmallNum ) {
             continue;
           }
-          if (util::IsOscParam(param)) {
+          if (!util::IsSystematic(param)) {
             if((fix_param_at < util::OscParamMinValue(param)) ||
                (fix_param_at > util::OscParamMaxValue(param))) {
               LOG("valor_dune",pFATAL) << "Attempting to fix parameter "
