@@ -187,8 +187,8 @@ int NDFitExtractsBareRoot(void)
     conv::PhysParamId_t p = nr->PhysParamFromString(best_fit_params->NameByIndex(ip));
     brPId = ip;
     strcpy(brPName, best_fit_params->Name(p).c_str());
-    std::pair<double,double> erange  = util::GetKineRange(p, conv::kvEtrue);
-    std::pair<double,double> q2range = util::GetKineRange(p, conv::kvQ2true);
+    std::pair<double,double> erange  = ParameterPool::Instance()->GetParam(p).GetKineRange(conv::kvEtrue);
+    std::pair<double,double> q2range = ParameterPool::Instance()->GetParam(p).GetKineRange(conv::kvQ2true);
     brPEmin  = erange.first;
     brPEmax  = erange.second;
     brPQ2min = q2range.first;
