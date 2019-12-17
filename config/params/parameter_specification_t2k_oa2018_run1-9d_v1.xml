@@ -30,6 +30,30 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+
+    <!-- Options used to set the FitParamList -->
+
+    <!-- The init val, error, step size and range will be updated based on the
+    covariance matrix and associated initial values vector -->
+    <update_from_cov_matrix> true </update_from_cov_matrix>
+
+    <!-- The values specified for the range are in units of sigmas away from
+    the initial value. The range will be recalculated using the init value
+    and error read from the covariance matrix & vector, if applicable -->
+    <range_mode> sigma </range_mode>
+
+    <!-- This is not to be confused with the physical limits above, this is
+    an optimised range used for searching a narrower area than the physical
+    limits. Internally, this is combined with the physical limits so that
+    both ranges are used and the parameter never takes unphysical values -->
+    <range> -5, 5 </range>
+
+    <!-- The step size value below is specified as a fraction of the total
+    range. This is updated when the range is updated using the covariance
+    matrix -->
+    <step_mode> frac </step_mode>
+    <step> 0.01 </step>
+
   </param>
   
 
@@ -64,7 +88,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -98,7 +129,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -132,7 +170,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -166,7 +211,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -200,7 +252,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -234,7 +293,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -268,7 +334,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -302,7 +375,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -336,7 +416,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -370,7 +457,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -404,7 +498,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -438,7 +539,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -472,7 +580,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -506,7 +621,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -540,7 +662,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -574,7 +703,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -608,7 +744,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -642,7 +785,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -676,7 +826,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -710,7 +867,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -744,7 +908,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -778,7 +949,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -812,7 +990,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -846,7 +1031,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -880,7 +1072,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -914,7 +1113,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -948,7 +1154,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -982,7 +1195,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1016,7 +1236,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1050,7 +1277,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1084,7 +1318,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1118,7 +1359,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1152,7 +1400,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1186,7 +1441,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1220,7 +1482,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1254,7 +1523,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1288,7 +1564,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1322,7 +1605,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1356,7 +1646,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1390,7 +1687,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1424,7 +1728,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1458,7 +1769,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1492,7 +1810,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1526,7 +1851,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1560,7 +1892,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1594,7 +1933,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1628,7 +1974,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1662,7 +2015,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1696,7 +2056,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1730,7 +2097,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1764,7 +2138,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1798,7 +2179,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1832,7 +2220,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1866,7 +2261,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1900,7 +2302,14 @@
     </apply_to>
     
     <limits>  0.89, 1.22  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1934,7 +2343,14 @@
     </apply_to>
     
     <limits>  -inf, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -1968,7 +2384,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2002,7 +2425,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2036,7 +2466,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2070,7 +2507,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2104,7 +2548,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2138,7 +2589,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2172,7 +2630,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2206,7 +2671,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2240,7 +2712,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2274,7 +2753,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2308,7 +2794,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2344,7 +2837,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2378,7 +2878,14 @@
     </apply_to>
     
     <limits>  -1.0, 1.0  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2412,7 +2919,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2446,7 +2960,14 @@
     </apply_to>
     
     <limits>  -3.0, 10.0  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2479,7 +3000,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2512,7 +3040,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2545,7 +3080,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2578,7 +3120,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2611,7 +3160,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2644,7 +3200,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2677,7 +3240,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2710,7 +3280,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2743,7 +3320,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2776,7 +3360,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2809,7 +3400,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2842,7 +3440,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2875,7 +3480,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2908,7 +3520,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2941,7 +3560,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -2974,7 +3600,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3007,7 +3640,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3040,7 +3680,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3073,7 +3720,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3106,7 +3760,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3139,7 +3800,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3172,7 +3840,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3205,7 +3880,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3238,7 +3920,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3271,7 +3960,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3304,7 +4000,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3337,7 +4040,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3370,7 +4080,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3403,7 +4120,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3436,7 +4160,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3469,7 +4200,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3502,7 +4240,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3535,7 +4280,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3568,7 +4320,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3601,7 +4360,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3634,7 +4400,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3667,7 +4440,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3700,7 +4480,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3733,7 +4520,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3766,7 +4560,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3799,7 +4600,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3832,7 +4640,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3865,7 +4680,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
@@ -3898,7 +4720,14 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
 
 
 
@@ -3931,7 +4760,14 @@
     </apply_to>
     
     <limits>  -inf, inf  </limits>
-  </param>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+</param>
   
 
 
