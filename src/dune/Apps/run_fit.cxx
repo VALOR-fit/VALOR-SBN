@@ -409,11 +409,19 @@ int main(int argc, char ** argv)
             continue;
           }
           if (!util::IsSystematic(param)) {
-            if((fix_param_at < util::OscParamMinValue(param)) ||
-               (fix_param_at > util::OscParamMaxValue(param))) {
+            if(!ParameterPool::Instance()->IsParamInPool(p)) {
+              LOG("UtlOscillation", pFATAL) << "The osc param \'" << util::NameRegistry::Instance()->ParamAsString(p)
+                                            << "\' was in the FPL but not the ParameterPool";
+              util::Die(-1);
+            }
+            const Parameter & parameter = ParameterPool::Instance()->GetParam(param);
+            double min = parameter.GetLimits().first;
+            double max = parameter.GetLimits().second;
+            if((fix_param_at < min) ||
+               (fix_param_at > max)) {
               LOG("valor_dune",pFATAL) << "Attempting to fix parameter "
                                        <<nr->ParamAsString(param)<<" outside limits at "<<fix_param_at
-                                       <<" - limits are "<<util::OscParamMinValue(param)<< " to "<<util::OscParamMaxValue(param);
+                                       <<" - limits are "<<min<< " to "<<max;
               util::Die(-1);
             }
           } // is osc param
