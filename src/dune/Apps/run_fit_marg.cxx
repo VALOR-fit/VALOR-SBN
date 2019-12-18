@@ -53,7 +53,6 @@
 
 #include "valor/Conventions/KineSpace.h"
 #include "valor/Conventions/Opt.h"
-#include "valor/FitCore/PhysicalParameterLimits.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"

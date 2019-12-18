@@ -11,7 +11,5 @@
 #pragma link C++ namespace valor::util;
 #pragma link C++ namespace valor::util::nm;
 
-#pragma link C++ class valor::util::PhysicalParameterLimits+;
-
 #endif
 
