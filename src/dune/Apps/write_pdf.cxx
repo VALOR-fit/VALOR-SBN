@@ -70,8 +70,6 @@ int main(int argc, char ** argv)
   valor::ExperimentInitialiser();
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
   
-  util::InitializeOAPriors();
-  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/write_pdf.arg:$VALOR_EXPT/config/apps/oscparams.arg:$VALOR_EXPT/config/apps/seeds.arg");
   LOG("valor_dune", pNOTICE) << arg;

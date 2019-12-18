@@ -211,8 +211,6 @@ void Init(CmdLnArgList& arg)
    }
    Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
 
-   util::InitializeOAPriors();   // TODO: this should be read from XML
-
    Rnd::Instance()->SetSeeds(arg);
 }
 

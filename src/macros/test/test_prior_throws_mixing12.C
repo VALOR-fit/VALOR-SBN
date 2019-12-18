@@ -27,8 +27,6 @@ void test_prior_throws_mixing12
   Opt::Instance()->gOscOctantChoice      = kNuOctantTwo;
   Opt::Instance()->gOscDmsqScheme        = kNuDmsqAuto;
 
-  util::InitializeOAPriors();
-
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(util::CompleteConfigPath("analysis/t2k_analysis_configuration_oa2018_run1-9d_v1_postfit.xml"));
   FitModelABC* model = elements->FitModel();
