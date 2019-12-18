@@ -224,7 +224,7 @@ int main(int argc, char ** argv)
     fp->FromPhysParamList(model->Tweaks(),"current-silent");
 
     // Check that the parameter values are physical. Rethrow if they aren't
-    if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp) && rethrow_unphysical) {
+    if (!util::AllWithinLimits(*fp) && rethrow_unphysical) {
       itoy--;
       continue;
     }

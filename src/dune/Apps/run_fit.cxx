@@ -246,7 +246,7 @@ int main(int argc, char ** argv)
     fp->FromPhysParamList(tweaks,"current");
 
     // Check parameter name, maybe rethrow
-    if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp)) {
+    if (!util::AllWithinLimits(*fp)) {
       LOG("valor_dune", pNOTICE) << "At least one parameter thrown outside expected limits.";
       if (rethrow_unphysical) {
         LOG("valor_dune", pNOTICE) << "Regenerating...";
