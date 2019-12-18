@@ -61,6 +61,7 @@
 // fmwk
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/ParameterPool.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -408,8 +409,8 @@ int main(int argc, char ** argv)
             continue;
           }
           if (!util::IsSystematic(param)) {
-            if(!ParameterPool::Instance()->IsParamInPool(p)) {
-              LOG("UtlOscillation", pFATAL) << "The osc param \'" << util::NameRegistry::Instance()->ParamAsString(p)
+            if(!ParameterPool::Instance()->IsParamInPool(param)) {
+              LOG("UtlOscillation", pFATAL) << "The osc param \'" << util::NameRegistry::Instance()->ParamAsString(param)
                                             << "\' was in the FPL but not the ParameterPool";
               util::Die(-1);
             }
