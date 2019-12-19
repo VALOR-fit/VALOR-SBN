@@ -73,6 +73,12 @@
 // dune
 #include "dune/Utilities/DoExperimentSetup.h"
 
+
+//---------- Hardcoded stuff ----------
+bool t2k = false;
+//-------------------------------------
+
+
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
@@ -214,7 +220,7 @@ int main(int argc, char ** argv)
 //________________________________________________________________________________________
 void SpecialCaseTweak(conv::PhysParamId_t p, FitParamList * fp, double& tweak_p1, double& tweak_m1, double& tweak_p3, double& tweak_m3)
 {
-  if(es.ExperimentName() == "T2K") {
+  if(t2k) {
     if(p == util::NameRegistry::Instance()->PhysParamFromString("2p2h_shape_O")) {
       double bestfit = fp->InitValue(p);
       double one_sigma_err   = 0.5;
