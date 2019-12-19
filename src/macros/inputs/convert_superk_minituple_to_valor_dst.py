@@ -14,6 +14,7 @@ import glob
 from array import array
 import sys
 import os
+import collections
 
 sys.path.append(os.path.abspath(os.environ["VALOR_FMWK"] + "/src/valor/Utilities/"))
 from UtlPy import c_to_pyroot_array_hack
@@ -31,9 +32,14 @@ util  =  valor.util
 conv  =  valor.conv
 opt   =  valor.Opt.Instance()
 env   =  valor.Env.Instance()
-es    =  valor.ExperimentSetup.Instance()
 
 python_undefined = 2L*sys.maxint+1
+
+# At this point, we don't have an MC, so can't load in the config files to read the beam and sample lists, so hard-code them here
+beams = [conv.kbJPARC_FHC, conv.kbJPARC_RHC]
+samples = collections.OrderedDict()
+samples[conv.kbJPARC_FHC] = [conv.ks1Rmu, conv.ks1Re, conv.ksMultiRe]
+samples[conv.kbJPARC_RHC] = [conv.ks1Rmu, conv.ks1Re]
 
 types = ["nuebar_x_nuebar"  ,  # The naming conventions used by the input SK MC files
          "nue_x_nue"        ,
@@ -92,7 +98,14 @@ t2k_beam_dir = [0.669764, -0.742179, 0.024223]  # This is a direct copy of kBeam
 
 #_______________________________________________________________________
 
-def main(fhc_dir, rhc_dir, output_filename):
+def main(fhc_dir, rhc_dir, output_filename, modelist_file):
+
+  # Get the modes
+  if not modelist_file:
+    print "ERROR: could not open the input mode list file!"
+    sys.exit()
+  ml = valor.ModeList(util.CompleteConfigPath(modelist_file))
+  modes = ml.Modes()
 
   files_fhc = glob.glob(fhc_dir+"/*root")
   files_rhc = glob.glob(rhc_dir+"/*root")
@@ -195,14 +208,12 @@ def main(fhc_dir, rhc_dir, output_filename):
 
   # Print debug info
   print "The number of events in each mode are:"
-  for beam in es.BeamConfs():
-    ibeam = es.BeamConfIndex(beam)
+  for beam in beams:
     print "\n\nbeam =", util.BeamConfAsString(beam)
-    for sample in es.Samples()[ibeam]:
-      isample = es.SampleIndex(beam, sample)
+    for sample in samples[beam]:
       print "\n  sample =", util.SampleAsString(sample)
       tot_entries_sample = 0
-      for mode in es.ReactionModes()[ibeam][isample]:
+      for mode in modes:
         if mode == -1 or mode == python_undefined:
           # Temporary fix until SampleReacMode.h is removed (as it is a fixed length, with unused modes being set to undefined)
           continue
@@ -567,13 +578,14 @@ if __name__=="__main__":
   import optparse
   parser = optparse.OptionParser(usage="%prog [options]..",description="Reformat and optionally reduce input SK MC trees")
   
-  parser.add_option('-o', '--out-file', dest='output_filename', default="", help="Name for output MC DST file.")
-  parser.add_option('-f', '--fhc-dir ', dest='fhc_dir'        , default="", help="Directory containing all FHC input files")
-  parser.add_option('-r', '--rhc-dir ', dest='rhc_dir'        , default="", help="Directory containing all RHC input files")
+  parser.add_option('-o', '--out-file' , dest='output_filename', default="", help="Name for output MC DST file.")
+  parser.add_option('-f', '--fhc-dir'  , dest='fhc_dir'        , default="", help="Directory containing all FHC input files")
+  parser.add_option('-r', '--rhc-dir'  , dest='rhc_dir'        , default="", help="Directory containing all RHC input files")
+  parser.add_option('-m', '--mode-list', dest='modelist_file'  , default="", help="XML file containing a list of active modes")
 
   o,other = parser.parse_args()
 
-  main(o.fhc_dir, o.rhc_dir, o.output_filename)
+  main(o.fhc_dir, o.rhc_dir, o.output_filename, o.modelist_file)
 
   if other:
     print "Warning - ignored arguments: ", other
