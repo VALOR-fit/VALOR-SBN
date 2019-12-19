@@ -22,7 +22,6 @@ conv  = valor.conv
 opt   = valor.Opt.Instance()
 env   = valor.Env.Instance()
 rnd   = valor.Rnd.Instance()
-es    = valor.ExperimentSetup.Instance()
 
 col1_width = 30
 coln_width = 3

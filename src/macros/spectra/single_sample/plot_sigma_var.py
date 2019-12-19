@@ -28,7 +28,6 @@ util  = valor.util
 conv  = valor.conv
 opt   = valor.Opt.Instance()
 env   = valor.Env.Instance()
-es    = valor.ExperimentSetup.Instance()
 
 python_undefined = 2L*sys.maxint+1
 python_undefined_short = 2**32 -1
@@ -62,7 +61,7 @@ _do_sum_cc1pi_modes = False
 
 #_______________________________________________________________________
 
-def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp_file, comp_format, x_max, by_mode, x_title, sum_t2k_cc1pi):
+def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp_file, comp_format, x_max, by_mode, x_title, sum_t2k_cc1pi, modelist_file):
   global _det
   global _beam
   global _selec
@@ -80,6 +79,13 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
   elements = valor.CompoundFitElements()
   elements.Read(util.CompleteConfigPath(config), "nomc+nosplines")
   compound_model = elements.FitModel()
+
+  # Get the modes
+  if not modelist_file:
+    print "ERROR: could not open the input mode list file!"
+    sys.exit()
+  ml = valor.ModeList(util.CompleteConfigPath(modelist_file))
+  read_modes = ml.Modes()
 
   print "Reading from input VALOR file", in_file
   fin = ROOT.TFile(in_file, "read")
@@ -128,7 +134,7 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
 
       modes = ["all"]
       if _by_mode:
-        modes = es.ReactionModes(util.BeamConfFromString(_beam), util.SampleFromString(_selec))
+        modes = read_modes
         if i == 0 and ip == 0:
           print "Plotting systematic variations for the following modes:\n", \
               [util.ModeAsString(imode) for imode in modes]
@@ -462,6 +468,7 @@ if __name__=="__main__":
   parser.add_option(      '--comp-file'    , dest='comp_file'      , default=""     , help="Name of file to compare to")
   parser.add_option(      '--comp-format'  , dest='comp_format'    , default=""     , help="Choose from: \'valor\', \'t2k_legacy\'")
   parser.add_option(      '--sum-t2k-cc1pi', dest='sum_t2k_cc1pi'  , default=False  , action="store_true", help="Sum T2k CC1piC and CC1pi0 modes when comparing to T2K legacy")
+  parser.add_option(      '--mode-list'    , dest='modelist_file'  , default=""     , help="File containing the list of used reaction modes")
 
   o,other = parser.parse_args()
 

@@ -27,6 +27,15 @@ const char* valor_minidst_name = "valor_t2k_data_mini_dst";
 
 bool print_low_level_info = false;
 
+// At this point, we don't have an MC, so can't load in the config files to read the beam and sample lists, so hard-code them here
+std::vector<conv::BeamConf_t> beams = {conv::kbJPARC_FHC, conv::kbJPARC_RHC};
+
+std::map<conv::BeamConf_t, std::vector<conv::Sample_t>> samples;
+std::vector<Sample_t> vs = {conv::ks1Rmu, conv::ks1Re, conv::ksMultiRe};
+samples.insert(std::make_pair(conv::kbJPARC_FHC, vs));
+vs = {conv::ks1Rmu, conv::ks1Re};
+samples.insert(std::make_pair(conv::kbJPARC_RHC, vs));
+
 //___________________________________________________________________________
 // Prototypes
 bool   EventIsMuLike   (int iclass);
@@ -45,8 +54,6 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
 {
   using namespace valor;
   using namespace valor::conv;
-
-  const ExperimentSetup & es = *ExperimentSetup::Instance();
 
   // Read in the input SK tree
   TFile * fin = new TFile(input_file,"OPEN");
@@ -84,8 +91,8 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
 
   // Also set up a vector for each sample, containing the (Erec, theta) values for each event
   std::map<conv::BeamConf_t, std::map<conv::Sample_t, std::vector<std::map<conv::KineVar_t, double>>>> data_kinematics;
-  for(conv::BeamConf_t b : es.BeamConfs()) {
-    for(conv::Sample_t s : es.Samples(b)) {
+  for(conv::BeamConf_t b : beams) {
+    for(conv::Sample_t s : samples.at(b)) {
       data_kinematics[b][s] = std::vector<std::map<conv::KineVar_t, double>>();
     }
   }
@@ -192,8 +199,8 @@ void convert_t2k_data_minituple_into_root_fitqun_valor_dst
 
   // Write a 2D TGraph for each sample with the kinematics of each event
   conv::Detector_t d = conv::kdSuperK;
-  for(conv::BeamConf_t b : es.BeamConfs()) {
-    for(conv::Sample_t s : es.Samples(b)) {
+  for(conv::BeamConf_t b : beams) {
+    for(conv::Sample_t s : samples.at(b)) {
       std::vector <std::map<conv::KineVar_t, double>> v = data_kinematics.at(b).at(s);
       const int n_data = v.size();
       if(n_data == 0) { continue; }
