@@ -83,9 +83,6 @@
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/KineBinning/VALORBinning.h"
 
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
@@ -94,9 +91,9 @@ const double enu_reco_max = 10;
 
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
-  valor::util::PrintBanner(Env::Instance()->Banner(),500);
 
+  valor::util::PrintBanner(Env::Instance()->Banner(),500);
+ 
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_table_systematic_effects.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
   LOG("valor_dune", pNOTICE) << arg;

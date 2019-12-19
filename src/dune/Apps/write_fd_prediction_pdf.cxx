@@ -62,19 +62,15 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/DoExperimentSetup.h"
-
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
-  
+
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/write_fd_prediction_pdf.arg:$VALOR_EXPT/config/apps/oscparams.arg:$VALOR_EXPT/config/apps/seeds.arg");
   LOG("write_fd_prediction_pdf", pNOTICE) << arg;

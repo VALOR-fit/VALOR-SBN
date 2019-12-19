@@ -86,8 +86,6 @@
 #include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
 
 using namespace std;
 using namespace valor;
@@ -97,7 +95,7 @@ const char * fit_result_tree_name = "valor_dune_nd_ntp";
 
 int main(int argc, char ** argv)
 {  
-  valor::ExperimentInitialiser();
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;

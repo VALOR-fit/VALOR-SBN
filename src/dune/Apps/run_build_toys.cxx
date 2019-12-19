@@ -86,9 +86,6 @@
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
 
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-
 using namespace valor;
 using namespace valor::conv;
 
@@ -98,7 +95,7 @@ void Init(CmdLnArgList& arg);
 int main(int argc, char** argv)
 {
    gROOT->SetBatch(1);
-   valor::ExperimentInitialiser();
+
    CmdLnArgList arg;
    arg.Read(argc,argv,
       "$VALOR_EXPT/config/apps/run_build_toys.arg"

@@ -121,10 +121,8 @@ void valor_expt_utils()
     // Configure the messenger.
     config_mesg();
     
-    valor::ExperimentInitialiser();
-    
-    const valor::ExperimentSetup & es = *valor::ExperimentSetup::Instance();
-    std::string prompt = std::string("VALOR/")+es.ExperimentName()+": [%d] ";
+    std::string experiment_name = "untitled";
+    std::string prompt = std::string("VALOR/")+experiment_name+": [%d] ";
     valor::util::ChangeInterpreterPrompt(prompt);
     
     define_valor_style();

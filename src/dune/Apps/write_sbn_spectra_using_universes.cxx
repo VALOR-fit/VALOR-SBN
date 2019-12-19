@@ -48,9 +48,6 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-
 
 // Proposal list from here:
 // https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample
@@ -88,8 +85,8 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
-  
+
+
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/oscparams.arg:");
   LOG("valor_dune", pNOTICE) << arg;

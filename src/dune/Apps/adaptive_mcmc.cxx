@@ -56,6 +56,7 @@
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/UtlFitParamList.h"
+#include "valor/FitCore/CompoundFitElements.h"
 #include "valor/Utilities/UtlNumStat.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
@@ -65,9 +66,6 @@
 #include "valor/Utilities/VThreadPool.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-#include "valor/FitCore/CompoundFitElements.h"
 
 using namespace std;
 using namespace valor;
@@ -75,7 +73,7 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {  
-  valor::ExperimentInitialiser();
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;

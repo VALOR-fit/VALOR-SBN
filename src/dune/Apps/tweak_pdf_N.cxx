@@ -68,8 +68,6 @@
 #include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
 
 using namespace std;
 using namespace valor;
@@ -83,7 +81,7 @@ const KineVar_t kv = conv::kvEreco;
 
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;

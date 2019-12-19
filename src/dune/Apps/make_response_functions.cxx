@@ -52,10 +52,8 @@
 #include "valor/Conventions/Parameter.h"
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/ParameterPool.h"
-
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
-#include "dune/Utilities/DoExperimentSetup.h"
 #include "valor/Utilities/SingleSampleKineBinning.h"
 #include "dune/Utilities/RFL.h"
 #include "dune/Utilities/KinematicBin.h"
@@ -69,8 +67,6 @@ using genie::EventRecord;
 using namespace valor;
 using namespace valor::conv;
 
-static const ExperimentSetup & es = *ExperimentSetup::Instance();
-
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -79,7 +75,7 @@ int main(int argc, char ** argv)
   gSystem->ExpandPathName(gmesg_path);
   genie::utils::app_init::MesgThresholds(gmesg_path.Data());
   
-  valor::ExperimentInitialiser();
+
   
   // Read command line arguments
   CmdLnArgList arg;
@@ -176,7 +172,9 @@ int main(int argc, char ** argv)
   VALORArray * mc_templ_sb [n_twks] [kNReacModes]; 
   VALORArray * mc_templ_ob [n_twks] [kNReacModes]; 
 
-  int isample = es.SampleIndex(beam,sample);
+  // TODO: ArrIdx has been deleted, so instead get the beam and sample from the model, and the modes from ModeList
+  const util::ArrIdx * arridx = util::ArrIdx::Instance();  
+  int isample = arridx->SampleIdx(beam,sample);
 
   for(int itwk = 0; itwk < n_twks; itwk++) {
     for(int imode = 0; imode < kNReacModes; imode++) {
@@ -326,7 +324,7 @@ int main(int argc, char ** argv)
         curr_mcrec->Clear();
         continue;
       }
-      int imode = es.ReacModeIndex(beam, curr_sample, curr_mode);
+      int imode = arridx->ReacModeIdx(beam, curr_sample, curr_mode);
 
       // Get required true kinematical variables
       double curr_enu_true = event.Particle(0)->E();
