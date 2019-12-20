@@ -14,7 +14,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_nd_modern_workshop.xml                        </mc>
+      <mc>           mc/sbn_nd_2-2.xml                                    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -26,7 +26,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_ub_modern_workshop.xml                        </mc>
+      <mc>           mc/sbn_ub_2-2.xml                                    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -38,7 +38,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_fd_modern_workshop.xml                        </mc>
+      <mc>           mc/sbn_fd_2-2.xml                                    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -47,32 +47,33 @@
   </element_list>
   
   <parameter_definitions>
-    <filename> params/sbn/flux_sbn_nd_etrue.xml </filename>
-    <filename> params/sbn/flux_sbn_ub_etrue.xml </filename>
-    <filename> params/sbn/flux_sbn_fd_etrue.xml </filename>
+    <filename> params/sbn/flux_sbn_nd_numu_ereco.xml </filename>
+    <filename> params/sbn/flux_sbn_ub_numu_ereco.xml </filename>
+    <filename> params/sbn/flux_sbn_fd_numu_ereco.xml </filename>
     <filename> params/sbn/int_numu_ereco.xml </filename>
   </parameter_definitions>
 
   <systematics name="SBN">
     <group name="flux">
-      <format> SBNFlux_Etrue.xml </format>
+      <format> SBNFluxNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   test/uncorr_matrices.root </filename>
-        <objname>    onepercent_63x63     </objname>    
-        <objtype>    TMatrixD             </objtype>
+        <filename>   sbn/syst/proposal/updated/flux.root </filename>
+        <objname>    frac_cov            </objname>    
+        <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
     </group>
     <group name="int">
       <format> SBNIntNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/syst/proposal/interaction_params.root </filename>
+        <filename>   sbn/syst/proposal/updated/interaction.root </filename>
         <objname>    frac_cov            </objname>    
-        <objtype>    TMatrixD                  </objtype>
+        <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
     </group>
     
   </systematics>
+    
     
 </valor> 
