@@ -472,7 +472,7 @@ if __name__=="__main__":
 
   o,other = parser.parse_args()
 
-  main(o.output_filename, o.in_file, o.params, o.config, o.det, o.beam, o.selec, o.comp_file, o.comp_format, o.x_max, o.by_mode, o.x_title, o.sum_t2k_cc1pi)
+  main(o.output_filename, o.in_file, o.params, o.config, o.det, o.beam, o.selec, o.comp_file, o.comp_format, o.x_max, o.by_mode, o.x_title, o.sum_t2k_cc1pi, o.modelist_file)
 
   if other:
     print "Warning - ignored arguments: ", other
