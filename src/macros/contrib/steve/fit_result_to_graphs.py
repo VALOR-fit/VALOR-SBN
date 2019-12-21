@@ -9,10 +9,11 @@ import sys
 R=ROOT
 
 env_var = "VALOR_EXPT";
+
 try:
   R.valor
 except:
-  R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
+  R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C");
 
 R.gROOT.SetBatch(1)
 
@@ -31,20 +32,20 @@ colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.k
 param_x = conv.kPhypMixingMuMu # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
 param_y = conv.kPhypDm41sq
 
-x_min = 1E-4
+x_min = 1E-3
 x_max = 1.
-x_npoints = 50
+x_npoints = 40
 
 y_min = 1E-2
 y_max = 1E2
-y_npoints = 50
+y_npoints = 40
 
 ndim = 2
-
 
 eps = 1E-10 # a small number to guarantee our point goes in its bin
 
 def GetLoggedHist(filename):
+  print(filename)
   chain = R.TChain("valor_dune_nd_ntp")
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
@@ -104,7 +105,7 @@ def main(files,tag):
   # ~ canv.SetLogx()
   # ~ canv.SetLogy()
 
-  f = R.TFile("contours_as_graphs.root","UPDATE")
+  f = R.TFile("contours_as_graphs.root","RECREATE")
 
   for h in logged_hists:
 
@@ -113,7 +114,7 @@ def main(files,tag):
 
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
-      dchisq = util.DeltaChisquare(cl,2)
+      dchisq = util.DeltaChisquareOneSided(cl,2)
 
       if (dchisq < 0): continue
       logged_graphs = MakeContour(h,dchisq)

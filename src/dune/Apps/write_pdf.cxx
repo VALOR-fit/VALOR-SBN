@@ -22,7 +22,7 @@
            --fit-output-file     : File containing the fit output - this is where the FitParamList comes from to Generate the FD prediction
            --fit-output-entry    : Desired entry in the tree [def: 0]
            --write-data, 
-           --no-write-data       : Read and write data fro configuration file if desired
+           --no-write-data       : Read and write data from configuration file if desired
 
 \author    VALOR DUNE people, aka Costas, Steve, Lorena
 \created   March 27, 2014
