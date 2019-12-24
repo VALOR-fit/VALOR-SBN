@@ -44,7 +44,7 @@ def main(config_file, param_values,
   fit_elements.Read(util.CompleteConfigPath(config_file))
 
   model = fit_elements.FitModel()
-  fpl = util.GetFitParameterList(hypname, fplopt)
+  fpl = util.GetFitParameterListFromHypothesisName(hypname, fplopt)
 
   relevant_params = []
   for (parname,val) in param_values.iteritems():
