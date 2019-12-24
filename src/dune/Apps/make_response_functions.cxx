@@ -48,6 +48,7 @@
 #include "valor/Conventions/Detector.h"
 #include "valor/Conventions/ParameterPool.h"
 #include "valor/Conventions/Parameter.h"
+#include "valor/Conventions/ModeList.h"
 #include "valor/KineBinning/VALORBinning.h"
 #include "valor/Conventions/Parameter.h"
 #include "valor/Conventions/ReacMode.h"
@@ -55,8 +56,8 @@
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
 #include "valor/Utilities/SingleSampleKineBinning.h"
-#include "dune/Utilities/RFL.h"
-#include "dune/Utilities/KinematicBin.h"
+#include "valor/Utilities/RFL.h"
+#include "valor/Utilities/KinematicBin.h"
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/FitCore/UtlFitParamList.h"
@@ -90,7 +91,10 @@ int main(int argc, char ** argv)
   string arg_inp_file    = arg.GetString("input");
   string arg_out_file    = arg.GetString("output");
   string arg_config_file = arg.GetString("config");
-  
+  string modelist_file   = arg.GetString("modes");
+  double max_ereco       = arg.GetDouble("max-ereco");
+  double max_yreco       = arg.GetDouble("max-yreco");
+
   bool include_sb       = arg.GetBool("include-simple-binning");
   int  max_events       = arg.GetInt("max-events");
 
@@ -167,29 +171,28 @@ int main(int argc, char ** argv)
   const float twk_dial_max  =  5.0;
   const float twk_dial_step = (twk_dial_max - twk_dial_min) / (n_twks-1);
 
+  ModeList ml = valor::ModeList(util::CompleteConfigPath(modelist_file));
+  const std::vector<conv::ReacMode_t> & read_modes = ml.Modes();
+
   // Arrays to store the number of events in each MC template bin
   // for each systematic parameter tweak
-  VALORArray * mc_templ_sb [n_twks] [kNReacModes]; 
-  VALORArray * mc_templ_ob [n_twks] [kNReacModes]; 
-
-  // TODO: ArrIdx has been deleted, so instead get the beam and sample from the model, and the modes from ModeList
-  const util::ArrIdx * arridx = util::ArrIdx::Instance();  
-  int isample = arridx->SampleIdx(beam,sample);
+  VALORArray * mc_templ_sb [n_twks] [read_modes.size()];
+  VALORArray * mc_templ_ob [n_twks] [read_modes.size()];
 
   for(int itwk = 0; itwk < n_twks; itwk++) {
-    for(int imode = 0; imode < kNReacModes; imode++) {
-      ReacMode_t m = kReactionModes[isample][imode];
-      if(m == kmUndefined) continue;
+    unsigned int imode = 0;
+    for(ReacMode_t m : read_modes) {
       const VALORBinning * true_sb = binning.TrueSmpBinning(m);
       const int n_true_bins_sb  = true_sb->NBins();
       if (include_sb) {
         mc_templ_sb [itwk][imode] = 
-          new VALORArray(kNErecoBinsSb, n_reco_bins_sb, n_true_bins_sb);
+          new VALORArray(n_reco_bins_sb, n_true_bins_sb);
         mc_templ_sb [itwk][imode] -> SetAll(0.);
       }
       mc_templ_ob [itwk][imode] = 
         new VALORArray(n_reco_bins_ob, n_true_bins_sb);
       mc_templ_ob [itwk][imode] -> SetAll(0.);
+      imode++;
     }
   }
 
@@ -324,7 +327,11 @@ int main(int argc, char ** argv)
         curr_mcrec->Clear();
         continue;
       }
-      int imode = arridx->ReacModeIdx(beam, curr_sample, curr_mode);
+      unsigned int imode = 0;
+      for(ReacMode_t m : read_modes) {
+        if(m == curr_mode) break;
+        imode++;
+      }
 
       // Get required true kinematical variables
       double curr_enu_true = event.Particle(0)->E();
@@ -338,8 +345,8 @@ int main(int argc, char ** argv)
       // Protect against vars at upper limit (eg y_reco = 1, set by hand for NC events) as
       // the binary search below will give an index out of limits
       const double epsilon = 1E-10;
-      if(curr_enu_reco >= kErecoMax) { curr_enu_reco = curr_enu_reco - epsilon; }
-      if(curr_y_reco   >= kYrecoMax) { curr_y_reco   = curr_y_reco   - epsilon; } 
+      if(curr_enu_reco >= max_ereco) { curr_enu_reco = curr_enu_reco - epsilon; }
+      if(curr_y_reco   >= max_yreco) { curr_y_reco   = curr_y_reco   - epsilon; }
       
       // MUST BE REPLACED WITH APPROPRIATE KINESPACE STUFF
       std::vector<double> truevec;
@@ -378,9 +385,8 @@ int main(int argc, char ** argv)
   
   int n_splines_written = 0;
 
-  for(int imode = 0; imode < kNReacModes; imode++) {
-    ReacMode_t m = kReactionModes[isample][imode];
-    if(m == kmUndefined) continue;
+  unsigned int imode = 0;
+  for(ReacMode_t m : read_modes) {
     const VALORBinning * true_sb = binning.TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
     
@@ -432,6 +438,7 @@ int main(int argc, char ** argv)
         }
       }//itrue
     }//ireco
+    imode++;
   }//imode
 
   fout.Close();

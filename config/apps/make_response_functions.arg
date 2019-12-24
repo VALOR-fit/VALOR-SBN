@@ -8,5 +8,8 @@ beam                               |   string       |  mandatory  |   -
 sample                             |   string       |  mandatory  |   -
 detector                           |   string       |  mandatory  |   -
 systematic                         |   string       |  mandatory  |   -
+modes                              |   string       |  mandatory  |   -
 include-simple-binning             |   boolean      |  optional   |  false
 max-events                         |   integer      |  optional   | -1
+max-ereco                          |   double       |  mandatory  |   -
+max-yreco                          |   double       |  mandatory  |   -
