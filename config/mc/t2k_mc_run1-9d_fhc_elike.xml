@@ -83,7 +83,8 @@ Input MC templates
 Modelist
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<modelist> modelists/SuperK.xml </modelist>
+<modelist>        modelists/SuperK.xml            </modelist>
+<coarse_modelist> modelists/coarse/t2k/SuperK.xml </coarse_modelist>
 
 
 <!--
