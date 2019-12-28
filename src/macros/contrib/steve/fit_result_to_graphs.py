@@ -114,7 +114,7 @@ def main(files,tag):
 
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
-      dchisq = util.DeltaChisquareOneSided(cl,2)
+      dchisq = util.DeltaChisquareOneSided(cl,1)
 
       if (dchisq < 0): continue
       logged_graphs = MakeContour(h,dchisq)
