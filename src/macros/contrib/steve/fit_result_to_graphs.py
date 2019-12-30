@@ -32,12 +32,12 @@ colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.k
 param_x = conv.kPhypMixingMuMu # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
 param_y = conv.kPhypDm41sq
 
-x_min = 1E-3
-x_max = 1.
+x_min = 1E-2
+x_max = 1E2
 x_npoints = 40
 
-y_min = 1E-2
-y_max = 1E2
+y_min = 1E-3
+y_max = 1.
 y_npoints = 40
 
 ndim = 2
@@ -96,7 +96,7 @@ def UnlogGraph(graph):
   new_graph = R.TGraph(n,10**x,10**y)
   return new_graph
 
-def main(files,tag):
+def main(files,tag,label):
 
   logged_hists = [GetLoggedHist(f) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
@@ -105,7 +105,7 @@ def main(files,tag):
   # ~ canv.SetLogx()
   # ~ canv.SetLogy()
 
-  f = R.TFile("contours_as_graphs.root","RECREATE")
+  f = R.TFile("%s_contours_as_graphs.root"%(label),"RECREATE")
 
   for h in logged_hists:
 
@@ -114,7 +114,7 @@ def main(files,tag):
 
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
-      dchisq = util.DeltaChisquareOneSided(cl,1)
+      dchisq = util.DeltaChisquare(cl,2)
 
       if (dchisq < 0): continue
       logged_graphs = MakeContour(h,dchisq)
@@ -131,7 +131,8 @@ if __name__=="__main__":
   import optparse
   parser = optparse.OptionParser(usage="%prog [options] patterns",description="Make plots of deltaCP sensitivity")
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
+  parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
 
   options,patterns = parser.parse_args()
 
-  main(patterns,options.tag)
+  main(patterns, options.tag, options.label)
