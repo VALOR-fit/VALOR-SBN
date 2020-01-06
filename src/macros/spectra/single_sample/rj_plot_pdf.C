@@ -317,9 +317,11 @@ void rj_plot_pdf(
         }
 
         // Start drawing
-        TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
+        TLegend * contrib_legend = new TLegend(0.65,0.3,0.85,0.8);  
         contrib_legend->SetFillColor(0);
+        contrib_legend->SetFillStyle(0);
         contrib_legend->SetLineColor(0);
+        contrib_legend->SetTextFont(132);
         TH1D * cc_hist    = nullptr;
         TH1D * nc_hist    = nullptr;
       
@@ -362,25 +364,36 @@ void rj_plot_pdf(
         if(format == 0) total_hist->GetYaxis()->SetRangeUser(0,max_y);
         
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
-        this_pad->SetLeftMargin(0.2);
+        this_pad->SetLeftMargin(0.15);
+        this_pad->SetBottomMargin(0.15);
+        this_pad->SetRightMargin(0.05);
         TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*mode_max);
         contrib_frame->Draw();
-        TString contrib_title_str = TString::Format("%s / %s / %s",
-          vutil::AsString(d).c_str(), vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
-        TLatex * contrib_title = new TLatex(0.3,1.07*mode_max,contrib_title_str.Data());
+        TString contrib_title_str = TString::Format("%s, %s",
+          vutil::AsStringTeX(d,true).c_str(), vutil::AsStringTeX(s,true).c_str());
+        TLatex * contrib_title = new TLatex(0.3,1.05*mode_max,contrib_title_str.Data());
+        contrib_title->SetTextSize(0.05);
         contrib_title->Draw(); 
         if(vutil::IsCC(s)) {  
-           contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+          contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+          contrib_frame->GetXaxis()->SetTitleSize(0.05);
+          contrib_frame->GetXaxis()->SetMaxDigits(3);
         } else {
-           contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
+          contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
+          contrib_frame->GetXaxis()->SetTitleSize(0.05);
+          contrib_frame->GetXaxis()->SetMaxDigits(3);
         }
         if (per_range > 0.) {
           TString title = TString::Format("Events / %lg GeV",per_range);
           contrib_frame->GetYaxis()->SetTitle(title.Data());
+          contrib_frame->GetYaxis()->SetTitleSize(0.05);
+          contrib_frame->GetYaxis()->SetMaxDigits(3);
         }
 
         else {
           contrib_frame->GetYaxis()->SetTitle("Events /bin");
+          contrib_frame->GetYaxis()->SetTitleSize(0.05);
+          contrib_frame->GetYaxis()->SetMaxDigits(3);
         }
         if(format == 1){
           contrib_stack->Draw("same");
@@ -391,7 +404,7 @@ void rj_plot_pdf(
           total_hist->Draw("same");
           if (plot_data) {data_hist->Draw("e same");}
         }
-       
+
         double tot_event_rate = 0.;
         std::ostringstream sample_event_rates;
         // Write the event rates to the output stream
@@ -411,14 +424,22 @@ void rj_plot_pdf(
         // If we have also included the data/oscillated spectra, save that too
         if(save_spectra){
           TFile spectra_plots(spectra_filename,"UPDATE");
-          contrib_stack->SetName((vutil::AsString(d)+"_stacked").c_str());
-          contrib_legend->SetName((vutil::AsString(d)+"_legend").c_str());
-          total_hist->SetName((vutil::AsString(d)+"_integrated").c_str());
+          if(format == 1){
+            contrib_stack->SetName((vutil::AsString(d)+"_stacked").c_str());
+            contrib_legend->SetName((vutil::AsString(d)+"_legend").c_str());
+          }
+          if(format == 0){
+            total_hist->SetName((vutil::AsString(d)+"_integrated").c_str());
+          }
           cc_hist->SetName((vutil::AsString(d)+"_cc").c_str());
           nc_hist->SetName((vutil::AsString(d)+"_nc").c_str());
-          contrib_stack->Write();
-          contrib_legend->Write();
-          total_hist->Write();
+          if(format == 1){
+            contrib_stack->Write();
+            contrib_legend->Write();
+          }
+          if(format == 0){
+            total_hist->Write();
+          }
           cc_hist->Write();
           nc_hist->Write();
           if(plot_data){
