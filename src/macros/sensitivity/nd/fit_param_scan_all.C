@@ -36,6 +36,7 @@ void fit_param_scan_all
   for(int ip = 0; ip < param.size(); ip++) {
      PhysParamId_t p = params.At(ip);
       if(p == kPhypUndefined) continue;
+      if(!util::IsSystematic(p)) continue;
 
      ostringstream command;
      command << ".x macros/fit/nd/fit_param_scan.C(\"" << tag << "\",\"" << util::NameRegistry::Instance()->ParamAsString(p) << "\","

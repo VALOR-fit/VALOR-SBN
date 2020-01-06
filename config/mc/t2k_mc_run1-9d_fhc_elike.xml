@@ -42,14 +42,24 @@ Input MC templates
      true
   </using_dst_format>
 
+  <!--
+    Loads of T2K events have Ereco values outside of the binning range.
+    This is fine because studies have shown that they're all intrinsic
+    nue so we don't care about them. So we use this flag to suppress
+    warnings about events going outside of this range.
+  -->
+  <suppress_out_of_binning_range_warning>
+      true
+  </suppress_out_of_binning_range_warning>
+
   <dst>
     <jparc_fhc>
-       <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst.root </filename>
+       <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst_v2.root </filename>
        <objname>  valor_t2k_dst </objname>
        <objtype>  TTree </objtype>
     </jparc_fhc>
     <jparc_rhc>
-        <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst.root </filename>
+        <filename> official/2018/superk/mc/mtuples_v2/valor_format/t2k_skmc14a_neut5.3.2.13a_tunedv1r1_valor_dst_v2.root </filename>
         <objname>  valor_t2k_dst </objname>
         <objtype>  TTree </objtype>
     </jparc_rhc>
@@ -66,6 +76,16 @@ Input MC templates
   </interaction_mass>
 
 </mc>
+
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Modelist
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+<modelist>        modelists/SuperK.xml            </modelist>
+<coarse_modelist> modelists/coarse/t2k/SuperK.xml </coarse_modelist>
+
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

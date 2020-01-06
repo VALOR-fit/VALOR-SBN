@@ -11,7 +11,7 @@
 #  --cpu-time               : Requested CPU time
 #  --mem                    : Requested memory
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`
-#  --softw-dir              : Oscillation code top-level directory. Default: `VALOR_DUNE` environment variable
+#  --softw-dir              : Oscillation code top-level directory. Default: `VALOR_EXPT` environment variable
 #  --fmwk-dir               : SDK top-level directory. Default: `VALOR_FMWK` environment variable
 #  --time-command           : Time the jobs
 #
@@ -37,13 +37,14 @@
 #  --gen-fakedata           : Generate fakedata to fit to instead of fitting data from an input file.
 #                           : Use this with the --param-set option
 #  --ntoys-fakedata         : The number of fakedata toys to read. Use with --gen-fakedata 0
+#  --start-toy-fakedata     : Read the toys numbered start-toy-fakedata to start-toy-fakedata + ntoys-fakedata
 #  --data-file              : If --gen-fakedata is switched off, read data from this input file instead.
 #                             If marginalising FC toys, write '[x]' (and '[y]', if 2D) instead of the FC grid point
 #                             number. This will then be automatically replaced to find the correct file.
 #
 #  --tag                    : Naming tag for output files
 #  --config                 : Analysis configuration file from the config/analysis directory
-#  --fit-param-list         : Fit parameter list name (see UtlParam.cxx)
+#  --physics-hypothesis     : Physics hypothesis name (see UtlParam.cxx)
 #  --fit-param-opt          : Options used when setting up the FitParamList
 #  --param-values-option    : Decide how to set the values of physics params used for toy-MC generation
 #  --mesg-thresholds        : Message thresholds config file
@@ -82,6 +83,7 @@
 #
 
 use File::Path;
+use Cwd 'abs_path';
 
 #
 # Read command line arguments
@@ -118,10 +120,11 @@ foreach (@ARGV) {
   elsif($_ eq '--prior-file'         ) { $prior_file          = $ARGV[$iarg+1]; }
   elsif($_ eq '--gen-fakedata'       ) { $gen_fakedata        = $ARGV[$iarg+1]; }
   elsif($_ eq '--ntoys-fakedata'     ) { $ntoys_fakedata      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--start-toy-fakedata' ) { $start_toy_fakedata  = $ARGV[$iarg+1]; }
   elsif($_ eq '--data-file'          ) { $data_file           = $ARGV[$iarg+1]; }
   elsif($_ eq '--tag'                ) { $tag_prefix          = $ARGV[$iarg+1]; }
   elsif($_ eq '--config'             ) { $config              = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'     ) { $fit_param_list      = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis' ) { $fit_param_list      = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-param-opt'      ) { $fit_param_opt       = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values-option') { $param_values_option = $ARGV[$iarg+1]; }
   elsif($_ eq '--mesg-thresholds'    ) { $mesg_thresholds     = $ARGV[$iarg+1]; }
@@ -161,7 +164,7 @@ $resource            = "interactive"                                            
 $cput                = "8:00:00"                                                           unless (defined $cput || $use_t2k_presets == 1);
 $mem                 = "3500M"                                                             unless (defined $mem  || $use_t2k_presets == 1);
 $job_dir             = $ENV{'PWD'}                                                         unless defined $job_dir;
-$softw_dir           = $ENV{'VALOR_DUNE'}                                                  unless defined $softw_dir;
+$softw_dir           = $ENV{'VALOR_EXPT'}                                                  unless defined $softw_dir;
 $fmwk_dir            = $ENV{'VALOR_FMWK'}                                                  unless defined $fmwk_dir;
 $time_command        = 0                                                                   unless defined $time_command;
 $margtoy_tag         = ""                                                                  unless defined $margtoy_tag;
@@ -182,12 +185,13 @@ $max_par2            = 0                                                        
 $prior_file          = "-"                                                                 unless defined $prior_file;
 $gen_fakedata        = 1                                                                   unless defined $gen_fakedata;
 $ntoys_fakedata      = 1                                                                   unless defined $ntoys_fakedata;
+$start_toy_fakedata  = 0                                                                   unless defined $start_toy_fakedata;
 $data_file           = "-"                                                                 unless defined $data_file;
 $npt_job_par1        = 1                                                                   unless (defined $npt_job_par1 || $use_t2k_presets == 1);
 $npt_job_par2        = 1                                                                   unless (defined $npt_job_par2 || $use_t2k_presets == 1);
-$fit_param_list      = "nuosc3f"                                                           unless defined $fit_param_list;
-$fit_param_opt       = ""                                                                  unless defined $fit_param_opt;
-$param_values_option = "randomize-all\\;prefit-errors"                                      unless defined $param_values_option;
+$fit_param_list      = "3f_osc"                                                            unless defined $fit_param_list;
+$fit_param_opt       = "NONE"                                                              unless defined $fit_param_opt;
+$param_values_option = "randomize-all\\;prefit-errors"                                     unless defined $param_values_option;
 $mesg_thresholds     = "verbosity.xml"                                                     unless defined $mesg_thresholds;
 $store_specra        = 0                                                                   unless defined $store_specra;
 $rethrow_unphysical  = 1                                                                   unless defined $rethrow_unphysical;
@@ -220,7 +224,7 @@ if($par2 eq "") {
 }
 
 # Add the parameters of interest to the file tag
-$tag_prefix = "${tag_prefix}_${hierarchy}_${par1}";
+$tag_prefix = "${tag_prefix}_${par1}";
 if($par2 != "") {
 	$tag_prefix = "${tag_prefix}_${par2}";
 }
@@ -258,7 +262,6 @@ if($use_t2k_presets == 1) {
         "--fix-at-mixing12 0.304 " .
         "--fix-at-cpv -1.601 ";
       $mixparamoctant  = "two";
-      $hierarchy       = "normal";		# TODO: is forcing the hierarchy correct?
 	  }
 	  elsif($param_set eq "AsimovB") {
       $fake_data_args = "" .
@@ -269,7 +272,6 @@ if($use_t2k_presets == 1) {
         "--fix-at-mixing12 0.304 " .
         "--fix-at-cpv 0. ";
       $mixparamoctant  = "one";
-      $hierarchy       = "normal";
 	  }
 	  else {
 	  	print "ERROR: Unrecognised param set [$param_set]. Exiting.";
@@ -486,23 +488,6 @@ if($marg_fc_toys == 0 && $npt_fc_par2 != 1) {
 	print "WARNING: The number of par2 points to loop over was not 1 and we are not running FC. So forcing number of points to 1.\n";
 }
 
-# For FC, statistical fluctuations must be turned on
-if($marg_fc_toys == 1 && $stat_fluct == 0) {
-	$stat_fluct = 1;
-	print "WARNING: Forcing statistical fluctuations to be applied to FC toys.\n";
-}
-
-# For FC, statistical fluctuations must be generated with the same random seed.
-# This is because the same FC toys are sent to many marginalisation jobs and are fluctuated within each job, so if
-# the seeds are different, then you end up with different FC toys. The effect of this on the Delta chisq distributions
-# will be minimal, but it's better to be consistent. So if the seed is set to 0 (which randomises the random seed),
-# then force it to 1
-if($marg_fc_toys == 1 && $seed_stat == 0) {
-	$seed_stat = 1;
-	print "WARNING: Forcing the statistical fluctuation random seed to 1 instead of 0.\n";
-}
-
-
 $step_par1 = 0;
 $step_par2 = 0;
 if($npt_par1 > 1) { $step_par1 = ($max_par1 - $min_par1) / ($npt_par1 - 1); }
@@ -515,14 +500,24 @@ if($marg_fc_toys == 1) {
 	$npt_marg_jobs_par2 = $npt_par2;
 }
 
+$jobID = 0;
 # Loop over all par1 and par2 FC points (number of points set to 1 when not running FC!)
 for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par2; $i_fc_par2++) {
 	for($i_fc_par1 = $start_pt_fc_par1; $i_fc_par1 < $start_pt_fc_par1 + $npt_fc_par1; $i_fc_par1++) {
 		# If doing FC, work out the correct input FC toy file name
 		$data_file_use = $data_file;
+
+		# TODO: Find a different way of doing this that works both at RAL and elsewhere
 		if($marg_fc_toys == 1) {
-			my $tmpstr = $data_file =~ s/\[x\]/$i_fc_par1/r;
-			my $fc_filename = $tmpstr =~ s/\[y\]/$i_fc_par2/r;
+			if($resource eq "RAL" || $resource eq "RAL_HTC") {
+				my $tmpstr = $data_file =~ "s/\[x\]/$i_fc_par1/r";
+        my $fc_filename = $tmpstr =~ "s/\[y\]/$i_fc_par2/r";
+			}
+			else {
+				my $tmpstr = $data_file =~ s/\[x\]/$i_fc_par1/r;
+      	my $fc_filename = $tmpstr =~ s/\[y\]/$i_fc_par2/r;
+			}
+
 			$data_file_use = $fc_filename;
 			print "\n======================================\n";
 			print "= Submitting jobs for FC point \#$i_fc_par1, $i_fc_par2 =\n";
@@ -568,7 +563,7 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 
 				# Submit the job
 				$arguments = "--tag $tag --nbatches $nbatches --first-batch $first_batch --fitter $fitter " .
-										 "--margtoy-tag $margtoy_tag --nmargtoy $nmargtoy --fit-param-list $fit_param_list " .
+										 "--margtoy-tag $margtoy_tag --nmargtoy $nmargtoy --physics-hypothesis $fit_param_list " .
 										 "--fit-param-opt $fit_param_opt --param-values-option $param_values_option --config $config " .
 										 "--mesg-thresholds $mesg_thresholds --fit-param1 $par1 --fit-param1-value $val_par1 " .
 										 "--fit-param1-min-value $min_par1_use --fit-param1-max-value $max_par1_use " .
@@ -579,14 +574,14 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 										 "--$hierarchy --$mix_param_choice --fit-param1-nbins $npt_par1_use " .
 										 "--fit-param2-nbins $npt_par2_use $fake_data_args --data-file $data_file_use " .
 										 "--seed-toys-osc $seed_osc --seed-toys-stat $seed_stat --seed-toys-syst $seed_syst --seed-other $seed_other " .
-										 "--prior-file $prior_file --gen-fakedata $gen_fakedata --ntoys-fakedata $ntoys_fakedata ";
+										 "--prior-file $prior_file --gen-fakedata $gen_fakedata --ntoys-fakedata $ntoys_fakedata " .
+										 "--start-toy-fakedata $start_toy_fakedata --dmsq-scheme $dmsq_scheme";
 
 				if($store_specra       == 1)       { $arguments = "$arguments --store-spectra"      } else { $arguments = "$arguments --discard-spectra"    }
 				if($rethrow_unphysical == 1)       { $arguments = "$arguments --rethrow-unphysical" } else { $arguments = "$arguments --accept-unphysical"  }
 				if($stat_fluct         == 1)       { $arguments = "$arguments --with-stat-fluct"    } else { $arguments = "$arguments --without-stat-fluct" }
 				if($use_simple_binning == 1)       { $arguments = "$arguments --use-simple-binning" } else { $arguments = "$arguments --no-simple-binning"  }
 				if($mix_param_octant   eq "two")   { $arguments = "$arguments --second-octant"      } else { $arguments = "$arguments --first-octant"       }
-				if($dmsq_scheme        eq "fogli") { $arguments = "$arguments --foglilisi"          } else { $arguments = "$arguments --dmsq12abs23"        }
 
 				$command = "$program $arguments";
 				print "$command \n";
@@ -679,12 +674,57 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 					`sbatch $job_dir/${tag}.slurm`;
 				}
 
+        #
+				# HTCondor @ RAL
+				#
+
+				if($resource eq "RAL" || $resource eq "RAL_HTC") {
+				  $fullprogram = abs_path(`which $program`);
+				  chomp($fullprogram);
+
+				  $fmwk_setup_script = "$fmwk_dir/setup/setup_at_cvmfs_root6.sh";
+				  $dune_setup_script = "$softw_dir/setup/setup_at_cvmfs_root6.sh";
+
+				  $jobname = "${tag}-${jobID}";
+				  $shellfn = "$job_dir/${jobname}.sh";
+
+				  open(shell,">".$shellfn);
+				  print shell "hostname \n";
+				  print shell "date \n";
+				  print shell "source $fmwk_setup_script \n";
+				  print shell "source $dune_setup_script \n";
+				  print shell "$command \n";
+				  print shell "date \n";
+				  close(shell);
+
+				  $default_cnd_options =
+				  "Executable               = /bin/bash \n".
+				  "initialdir               = $job_dir \n".
+				  "Universe                 = vanilla \n".
+				  "Getenv                   = False \n".
+				  "should_transfer_files    = YES \n".
+				  "when_to_transfer_output  = ON_EXIT \n".
+				  (ncores > 1 ? "request_cpus             = $ncores \n":"").
+				  "\nqueue\n";
+
+				  $cndfn = "$job_dir/${jobname}.condor";
+				  open(CND, ">".$cndfn) or die("Cannot create the Condor batch script");
+				  print CND "Arguments                = $shellfn \n";
+				  print CND "Error                    = ${jobname}.err \n";
+				  print CND "Output                   = ${jobname}.out \n";
+				  print CND $default_cnd_options;
+				  close(CND);
+				  system("condor_submit",$cndfn);
+
+				}
+
 				#
 				# interactive
 				#
 				if($resource eq "interactive") {
 					system($command);
 				}
+				$jobID++;
 			} # Loop over par1 marg grid points
 		} 	# Loop over par2 marg grid points
 	}			# Loop over par1 FC grid points

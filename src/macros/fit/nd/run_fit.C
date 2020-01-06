@@ -11,7 +11,7 @@ void run_fit
   const char * tag              = "toymc",                               /* tag for output file */
   int          run              = 0,                                     /* run # */
   int          ntoymc           = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list   = "nuosc3f",                             /* fit parameter list (see UtlParam.cxx) */
+  const char * hypname          = "3f_osc",                              /* physics hypothesis (see UtlParam.cxx) */
   const char * param_values     = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
   bool         stat_fluct       = true,                                  /* include statistical fluctuation in toy MC generation? */
   const char * fit_option       = "minuit",                              /* fitter option */
@@ -42,7 +42,7 @@ void run_fit
   cout << "   - Statistical fluctuations: "  << ((stat_fluct) ? "YES " : "NO") << endl;
   cout << "   - Option for setting parameter values: " << param_values << endl;
   cout << "- Fit" << endl;
-  cout << "   - Fit Parameter List: " << fit_param_list << endl;
+  cout << "   - Fit Parameter List: " << hypname << endl;
   cout << "   - Fitter option: " << fit_option << endl;
   cout << endl;
   cout << *Rnd::Instance() << endl;
@@ -87,7 +87,7 @@ void run_fit
 
     // Getting the fit parameter list that corresponds to the input option.
     // The second option determined the `current' values which are used for toy-MC generation below.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list, fit_param_opt, param_values);
+    FitParamList * fp = util::GetFitParameterList(hypname, fit_param_opt);
     
     
     // Randomise the systematics in the model, and copy them to the FPL

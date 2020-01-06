@@ -54,7 +54,5 @@ for the analysis.
 		<!-- in kg, for calculating CCinc xsec-->
 		<interaction_mass>-999</interaction_mass>
 	</mc>
-	<!-- Specify where to find the description of the binning to be applied -->
-	<default_binning>test/newxml/binning/binning.xml</default_binning>
 </mc_inputs>
 

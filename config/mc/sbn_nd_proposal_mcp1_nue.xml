@@ -77,13 +77,6 @@ Splines
   <pattern> valor_splines_[BEAM]_[SAMPLE]_[PARAM].root    </pattern>
 </splines-->
 
-<!--
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Default binning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-<default_binning> binning/sbn_proposal_binning_NuE.xml  </default_binning>
-
 </analysis_inputs>
 
 

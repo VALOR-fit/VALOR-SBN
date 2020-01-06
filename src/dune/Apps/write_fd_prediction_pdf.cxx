@@ -6,8 +6,8 @@
 \brief     Write out generic single sample PDFs and MC templates and make fd predictions from nd fits 
 
 \options
-           --fit-param-list      : Fit parameter list (see UtlParam.cxx)
-                                     [def: "nuosc3f"]
+           --physics-hypothesis  : physics hypothesis (see UtlParam.cxx)
+                                     [def: "3f_osc"]
            --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
            --config              : Analysis configuration file [required]
@@ -37,6 +37,7 @@
 #include "TString.h"
 #include "TVirtualFitter.h"
 #include "TPRegexp.h"
+
 // fmwk
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -47,23 +48,19 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/UtlFitParamList.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/FitElements/GenericSingleSampleFitData.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitElements/GenericSingleSampleFitModel.h"
-#include "valor/FitElements/GenericSingleSampleFitData.h"
 
 using namespace std;
 using namespace valor;
@@ -71,16 +68,14 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
-  
-  util::InitializeOAPriors();
-  
+
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/write_fd_prediction_pdf.arg:$VALOR_EXPT/config/apps/oscparams.arg:$VALOR_EXPT/config/apps/seeds.arg");
   LOG("write_fd_prediction_pdf", pNOTICE) << arg;
 
-  string fplname          = arg.GetString("fit-param-list");
+  string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string write_opt        = arg.GetString("write-opt");
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
@@ -127,12 +122,11 @@ int main(int argc, char ** argv)
   const util::NameRegistry * nr = util::NameRegistry::Instance();
 
   // Get the specified fit parameter list (specifies which parameters are floated/fixed,                                              
-  // parameter limits, initial values etc).            
-  CorrelatedSystematics * syst = model->GetSystematics();                                                                              
+  // parameter limits, initial values etc).
   FitParamList *fp = 0;
   
   // If we have not been asked to generate the FD prediction from fit result
-  if(!generate_fd) fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+  if(!generate_fd) fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
   // If we have, get the FPL from the fit result output file
   else {
     // Get FitParamList from the fit result file

@@ -12,7 +12,7 @@ base_dir = os.environ["VALOR_EXPT"]
 try:
   R.valor
 except:
-  R.gROOT.ProcessLine(".x %s/root/valor_dune.C"%base_dir);
+  R.gROOT.ProcessLine(".x %s/root/valor_expt.C"%base_dir);
   
 R.gROOT.SetBatch(1)
   

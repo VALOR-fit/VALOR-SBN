@@ -21,7 +21,7 @@ void fit_param_sensitivity
   int          run                   = 0,                                     /* run # */
   int          subrun                = 0,                                     /* sub-run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list        = "nuosc3f",                             /* fit parameter list (see UtlParam.cxx) */
+  const char * hypname               = "3f_osc",                              /* physics hypothesis (see UtlParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
   const char * s_param_name          = 0,                                     /* specify the param name (see UtlParam.cxx) whose sensitivity to is studied */
   double       s_param_value_gen     = 1,                                     /* value for above param for toy-MC generation */
@@ -84,7 +84,7 @@ void fit_param_sensitivity
   cout << "   - Option for setting parameter values: " << param_values << endl;
   cout << "   - *Fixing* parameter: " << s_param_name << " to value = " << s_param_value_gen << endl;
   cout << "- Fit" << endl;
-  cout << "   - Fit Parameter List: " << fit_param_list << endl;
+  cout << "   - Physics hypothesis: " << hypname << endl;
   cout << "   - Will perform " << nfits << " fits per toy-MC, fixing " 
        << s_param_name << " at regularly distributed values in range [" << s_param_value_fit_min << ", " << s_param_value_fit_max << "]" << endl;
   cout << "   - Fitter option: " << fit_option << endl;
@@ -123,11 +123,11 @@ void fit_param_sensitivity
 
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generatio below.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list, fit_param_opt, param_values);
+    FitParamList * fp = util::GetFitParameterList(hypname, fit_param_opt);
 
     // Make sure the specified parameter exists in the specified list of parameters
     if(! fp->Exists(sp)) {
-       cerr << "Parameter: " << s_param_name << " does not exist in list named: " << fit_param_list << endl;
+       cerr << "Parameter: " << s_param_name << " does not exist in list named: " << hypname << endl;
        exit(1);
     }
     

@@ -32,7 +32,7 @@ param_set_colors = dict(zip(all_param_sets,colors))
 try:
   ROOT.valor
 except:
-  ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
+  ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C")
   
 valor = ROOT.valor
 util =  valor.util

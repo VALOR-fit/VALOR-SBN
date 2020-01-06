@@ -12,7 +12,7 @@ void coverage_1dlim
   const char * tag                   = "toymc",                               /* tag for output file */
   int          run                   = 0,                                     /* run # */
   int          ntoymc                = 1,                                     /* number of toy-MC experiments */
-  const char * fit_param_list        = "nuosc3f",                             /* fit parameter list (see UtlParam.cxx) */
+  const char * hypname               = "3f_osc",                              /* fit parameter list (see UtlParam.cxx) */
   const char * param_values          = "randomize-all;prefit-errors",         /* decide how to set the values of params used for toy-MC generation */
   const char * lim_param_name        = 0,                                     /* specify the param name (see Parameter.h) for which a confidence limit is computed */
   int          lim_param_npoints     = 11,                                    /* coverage will be checked for a number of points within a range */
@@ -59,7 +59,7 @@ void coverage_1dlim
   cout << "   - Statistical fluctuations: "  << ((stat_fluct) ? "YES " : "NO") << endl;
   cout << "   - Option for setting parameter values: " << param_values << endl;
   cout << "- Fit" << endl;
-  cout << "   - Fit Parameter List: " << fit_param_list << endl;
+  cout << "   - Physics hypothesis: " << hypname << endl;
   cout << "   - Fit Parameter List option: " << fit_param_opt << endl;
   cout << "   - Fitter option: " << fit_option << endl;
   cout << "- Coverage check" << endl;  
@@ -107,11 +107,11 @@ void coverage_1dlim
 
     // Getting the fit parameter list that corresponds to the input option.
     // The secondd option determined the `current' values which are used for toy-MC generatio below.
-    FitParamList * fp = util::GetFitParameterList(fit_param_list, fit_param_opt, param_values);
+    FitParamList * fp = util::GetFitParameterList(hypname, fit_param_opt);
 
     // Make sure the specified parameter exists in the specified list of parameters
     if(! fp->Exists(sp)) {
-       cerr << "Parameter: " << lim_param_name << " does not exist in list named: " << fit_param_list << endl;
+       cerr << "Parameter: " << lim_param_name << " does not exist in list" << endl;
        exit(1);
     }
 

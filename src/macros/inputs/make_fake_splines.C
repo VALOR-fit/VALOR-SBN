@@ -50,7 +50,7 @@ void make_fake_splines(const char * version_number = "2016v0", const char * conf
       
       cout<<util::AsString(b)<<"\t"<<util::AsString(s)<<endl;
 
-      DuneRFL rfl(b,s,params_with_splines);
+      RFL rfl(b,s,params_with_splines);
 
       const int n_enu_true_bins = util::NumEtrueBinsXsec (s);
       const int n_enu_reco_bins = util::NumErecoBinsXsec (s, 0);

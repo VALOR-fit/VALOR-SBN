@@ -36,7 +36,7 @@ TString config = "analysis/dune_tdr.xml"
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config_path.c_str());
   const std::vector<Parameter> & params = ParameterPool::Instance()->GetParams();
-  const int n_fit_params = params.size();
+  const int n_fit_params = ParameterPool::Instance()->GetNumSystParams();
 
   // Open input file
   TFile f(inputfile, "read");
@@ -224,9 +224,10 @@ TString config = "analysis/dune_tdr.xml"
     hCovMatDiagonal[0]->SetLineWidth(2);
     hCovMatDiagonal[0]->Draw();
 
-    for(int param=0; param<n_params; param++)
+    for(Parameter param : params)
       {
-      PhysParamId_t p = params[param];
+      PhysParamId_t p = param.GetID();
+      if(!util::IsSystematic(p)) continue;
       //const char * label = util::AsStringTeX(p,true).c_str();
       const char * label = util::NameRegistry::Instance()->ParamAsString(p).c_str();
       x_low = param;

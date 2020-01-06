@@ -6,7 +6,7 @@
 \brief     Vary the MC spectra by setting systematics to +/- 1 and 3 sigma
 
 \options     --output              : Where to save tweaked histograms to. [def: sigma_var_[PARAMS].root]
-             --fit-param-list      : Fit parameter list [def: "nuosc3f"]
+             --physics-hypothesis  : Physics hypothesis [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
              --config              : Analysis configuration file [required]
@@ -41,9 +41,10 @@
 #include "TObjArray.h"
 #include "TString.h"
 #include "TSystem.h"
+
 // fmwk
-#include "valor/Conventions/ExperimentSetup.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/Names.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -53,6 +54,10 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/FitCore/UtlFitParamList.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -60,42 +65,35 @@
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/VThreadPool.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/Conventions/Names.h"
-#include "dune/Conventions/Experiment.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
+
+
+bool t2k = false;
+
 
 void SpecialCaseTweak(PhysParamId_t p, FitParamList * fp, double& tweak_p1, double& tweak_m1, double& tweak_p3, double& tweak_m3);
 void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, TFile * outfile);
 void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
                         unsigned int ip, PhysParamId_t p, double tweak_dial, TFile * outfile, std::string tag);
 
-
-static const ExperimentSetup & es = *ExperimentSetup::Instance();
-
 int main(int argc, char ** argv)
 {
-  valor::ExperimentInitialiser();
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/tweak_pdf_sigma_var.arg:$VALOR_EXPT/config/apps/seeds.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/tweak_pdf_sigma_var.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
   LOG("valor_dune", pNOTICE) << arg;
   
   // Read the command line
   int n_threads           = arg.GetInt("nthreads");
-  string fplname          = arg.GetString("fit-param-list");
+  string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
@@ -124,7 +122,13 @@ int main(int argc, char ** argv)
   
   // And OA parameters
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
-  Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+  conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+  if(dmsq_scheme == kNuDmsqUndefined) {
+    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    util::Die(-1);
+  }
+  Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
 
   // TODO: Update this with the new input param search
   double mixing12 = arg.GetDouble("input-mixing12");
@@ -140,7 +144,7 @@ int main(int argc, char ** argv)
   // Print settings
   cout << "\n[Job inputs]" << endl;
   cout << "- Reading analysis configuration from: " << config_path << endl;
-  cout << "- Model parameter list used : " << fplname << endl;
+  cout << "- Physics hypothesis : " << hypname << endl;
   
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config_path.c_str());
@@ -151,7 +155,6 @@ int main(int argc, char ** argv)
   // Get the parameters to vary
   std::vector<PhysParamId_t> param_set = util::GetParameterSet(params_to_tweak, true);    // Only get exact matches to any input param names (otherwise problems can be caused)
   assert(param_set.size());
-  unsigned int n_params = param_set.size();
 
   // Make the output file
   TFile * outfile = NULL;
@@ -160,7 +163,7 @@ int main(int argc, char ** argv)
   LOG("valor_dune",pNOTICE)<<"Writing to file: "<<output_rootfile;
 
   const CorrelatedSystematics * syst = cm->GetSystematics();
-  FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+  FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
   if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
   if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
@@ -173,6 +176,7 @@ int main(int argc, char ** argv)
   GeneratePDFNominal(model, cm, fp, kv, outfile);
   for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
     PhysParamId_t p = param_set[ip];
+    if(!util::IsSystematic(p)) { continue; }
     double bestfit = fp->InitValue(p);
     double sigma_err = syst->OneSigmaError(p);
     double tweak_p1 = bestfit + (1 * sigma_err);
@@ -207,17 +211,17 @@ int main(int argc, char ** argv)
 //________________________________________________________________________________________
 void SpecialCaseTweak(conv::PhysParamId_t p, FitParamList * fp, double& tweak_p1, double& tweak_m1, double& tweak_p3, double& tweak_m3)
 {
-#ifdef T2K
-  if(p == util::NameRegistry::Instance()->PhysParamFromString("2p2h_shape_O")) {
-    double bestfit = fp->InitValue(p);
-    double one_sigma_err   = 0.5;
-    double three_sigma_err = 1.0;
-    tweak_p1 = bestfit + one_sigma_err;
-    tweak_m1 = bestfit - one_sigma_err;
-    tweak_p3 = bestfit + three_sigma_err;
-    tweak_m3 = bestfit - three_sigma_err;
+  if(t2k) {
+    if(p == util::NameRegistry::Instance()->PhysParamFromString("2p2h_shape_O")) {
+      double bestfit = fp->InitValue(p);
+      double one_sigma_err   = 0.5;
+      double three_sigma_err = 1.0;
+      tweak_p1 = bestfit + one_sigma_err;
+      tweak_m1 = bestfit - one_sigma_err;
+      tweak_p3 = bestfit + three_sigma_err;
+      tweak_m3 = bestfit - three_sigma_err;
+    }
   }
-#endif
 }
 //________________________________________________________________________________________
 void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv, TFile * outfile)
@@ -243,7 +247,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
+    GenericSingleSampleFitModel * this_model = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
     Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
@@ -265,11 +269,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
 
     // Get the PDF broken down by mode contributions
-    for(int im = 0; im < conv::kNReacModes; ++im) {
-      conv::ReacMode_t m = util::ReacModeFromInt(im);
-      if(m == conv::kmUndefined) { continue; }
-      int mode_idx = es.ReacModeIndex(b, s, m);
-      if (mode_idx < 0) { continue; }
+    for(conv::ReacMode_t m : this_model->GetReactionModes()) {
       TString name_contrib = TString::Format("nom_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
       if (!curr_pdf_contrib) {
@@ -309,7 +309,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
+    GenericSingleSampleFitModel * this_model = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
     Detector_t d = this_model->GetDetector();
     BeamConf_t b = this_model->GetBeam();
     Sample_t   s = this_model->GetSample();
@@ -327,12 +327,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       curr_pdf->Write(save_name.Data());
     }
 
-    //Get the PDF broken down by mode contributions
-    for(int im = 0; im < conv::kNReacModes; ++im) {
-      conv::ReacMode_t m = util::ReacModeFromInt(im);
-      if(m == conv::kmUndefined) { continue; }
-      int mode_idx = es.ReacModeIndex(b, s, m);
-      if (mode_idx < 0) { continue; }
+    for (conv::ReacMode_t m : this_model->GetReactionModes()) {
       TString name_contrib = TString::Format("curr_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
       TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
       if (!curr_pdf_contrib) {
@@ -342,7 +337,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       TString save_name = TString::Format("env_sb_%s_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(),
                         param_name.c_str(), tag.c_str());
       curr_pdf_contrib->Write(save_name.Data());
-    } //imode
+    } //mode
   } //imodel
   array->Clear("C");
   delete array;

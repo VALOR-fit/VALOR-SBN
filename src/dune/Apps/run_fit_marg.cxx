@@ -8,7 +8,7 @@
 \options     --tag                 : Tag for input marginalisation toy file [def: "margtoy"]
              --run                 : Run # [def: 0]
              --nmargtoy            : Number of marginalisation toys [def: 1]
-             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
+             --physics-hypothesis  : Physics hypothesis (see UtlParam.cxx)
                                      [def: "nuosc3f"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
@@ -52,6 +52,7 @@
 #include "valor/CmdLine/CmdLnArgList.h"
 
 #include "valor/Conventions/KineSpace.h"
+#include "valor/Conventions/Opt.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
@@ -59,30 +60,20 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/Marginalisation.h"
+#include "valor/FitCore/UtlOscillation.h"
+#include "valor/FitCore/UtlFitParamList.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/NameRegistry.h"
+#include "valor/Utilities/ToyStream.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-//#include "valor/Marginalisation/MCMarginaliser.h"
-//#include "valor/FitCore/LikelihoodABC.h"
-//#include "valor/Marginalisation/MarginalLikelihood.h"
-// dune
-#include "dune/Utilities/DoExperimentSetup.h"
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
-
-#include "valor/FitCore/CompoundFitData.h"
-#include "valor/FitCore/CompoundFitModel.h"
-#include "valor/Conventions/Opt.h"
-
-#include "dune/Utilities/Marginalisation.h"
-#include "dune/Utilities/UtlOscillation.h"
 
 using namespace valor;
 using namespace valor::conv;
@@ -93,7 +84,7 @@ void Init(CmdLnArgList& arg);
 
 int main(int argc, char** argv)
 {
-   valor::ExperimentInitialiser();
+
    CmdLnArgList arg;
    arg.Read(argc,argv,
       "$VALOR_EXPT/config/apps/run_fit_marg.arg"
@@ -111,21 +102,15 @@ void Fit(CmdLnArgList& arg)
    Init(arg);
 
    // Get arguments
-   string fpl_name         = arg.GetString("fit-param-list");
+   string hypname         = arg.GetString("physics-hypothesis");
    string fplopt           = arg.GetString("fit-param-opt");
    string param_val_opts   = arg.GetString("param-values-option");
    string fitter_name      = arg.GetString("fitter");
-   int NtoysFakeData       = arg.GetInt("ntoys-fakedata");
+   int Ntoys_fake_data     = arg.GetInt("ntoys-fakedata");
+   int start_toy_fake_data = arg.GetInt("start-toy-fakedata");
    bool with_stat_fluct    = arg.GetBool("with-stat-fluct");
    bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
    bool use_simple_binning = arg.GetBool("use-simple-binning");
-
-   const char* read_opt      = "pdft";
-   const char* read_opt_data = "";
-   if (use_simple_binning) {
-     read_opt      = "pdft+SB";
-     read_opt_data = "+SB";
-   }
 
    string fp1_name         = arg.GetString("fit-param1");
    const double fp1_val    = arg.GetDouble("fit-param1-value");
@@ -144,7 +129,7 @@ void Fit(CmdLnArgList& arg)
    int fp2_nbins = 0;
    int fp2_start_bin = 0;
 
-  LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
+   LOG("valor_dune", pNOTICE) << "Fit parameter " << fp1_name << "(" <<
       fp1_bin << ") = " << fp1_val << " [" << fp1_nbins << ": " << fp1_minval <<
       ", " << fp1_maxval << "]";
 
@@ -163,25 +148,34 @@ void Fit(CmdLnArgList& arg)
          fp2_minval << ", " << fp2_maxval << "]";
    }
 
+   bool read_data_from_binary = (arg.GetString("data-file") != "-" && !arg.GetString("data-file").empty());
+   if(read_data_from_binary && arg.GetInt("gen-fakedata")) {
+      LOG("valor_dune", pFATAL) << "Can't both read a fake data file and generate fake data "
+                                << "(don't use --data-file and --gen-fakedata together)";
+      util::Die(-1);
+   }
+
    CompoundFitElements* elements = new CompoundFitElements();
    elements->Read(util::CompleteConfigPath(arg.GetString("config")));
    FitModelABC* model = elements->FitModel();
    FitDataABC* data = elements->FitData();
 
-   std::ifstream * is_fakedata = nullptr;
+   const char* read_opt_data = "";
+   if (use_simple_binning) {
+      read_opt_data = "+SB";
+   }
+
+   util::ToyStream* toy_stream = nullptr;
    if(arg.GetInt("gen-fakedata")) {
       // Generate a fake data set to fit to
 
-      if(NtoysFakeData > 1) {
+      if(Ntoys_fake_data > 1) {
          LOG("valor_dune", pFATAL) << "Currently only fits with 1 fakedata toy supported when generating on the fly. "
                                       "It should be relatively easy to add support for > 1 toy if you need it!";
          util::Die(-1);
       }
 
-      // GetSystematics will be added to CorrelatedSystematics in the future
-      CorrelatedSystematics* systematics =
-         dynamic_cast<CompoundFitModel*>(model)->GetSystematics();
-      FitParamList* fpl = util::GetFitParameterList(fpl_name.c_str(), fplopt.c_str(), systematics);
+      FitParamList* fpl = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
       // Set the priors
       util::oscillation::SetOscillationParameterPriors(arg, *fpl);
@@ -195,11 +189,22 @@ void Fit(CmdLnArgList& arg)
       // Call Generate - forces a call to Book as well as providing the fake data
       data->Generate(model, *fpl, with_stat_fluct);
    }
-   else {
-      // Fit to data read from an input file
+   else if(read_data_from_binary) {
+      // Fit to data read from an input binary toy file
       std::string data_file_name = arg.GetString("data-file");
       LOG("valor_dune", pNOTICE) << "Will read fake/real data from file [" << data_file_name << "]";
-      is_fakedata = new std::ifstream(data_file_name, std::ios::binary | std::ios::in);
+      toy_stream = data->InitToyStream(data_file_name, "read", read_opt_data);
+   }
+   else {
+      // Fit to a data file specified in the analysis configuration XML file.
+      // This has already been read in CompoundFitElements::AdoptFitData() (when reading the config file),
+      // so there's no need to do anything here.
+      if(!data->DataExists(read_opt_data)) {
+         LOG("valor_dune", pFATAL) << "Tried to fit to fake/real data specified in the analysis configuration file, "
+                                   << "but the data arrays for one or more samples were empty";
+         util::Die(-1);
+      }
+      LOG("valor_dune", pNOTICE) << "Will fit to fake/real data specified in the analysis configuration file";
    }
 
    // Get the requested batch number and number of marginalisation toys for the
@@ -222,14 +227,24 @@ void Fit(CmdLnArgList& arg)
    }
    FitResult* result = nullptr;
 
-   std::vector<double>* chi2_best_fit_toy = new std::vector<double>(NtoysFakeData);
-   for(int ifake = 0; ifake < NtoysFakeData; ifake++)    // TODO: have the option of starting from a particular toy number
+   std::vector<double>* chi2_best_fit_toy = new std::vector<double>(Ntoys_fake_data);
+
+   // Skip forward in the input fakedata binary file to the position of the first toy to read
+   if(read_data_from_binary && arg.GetInt("gen-fakedata") == 0 && start_toy_fake_data != 0)
+   {
+     toy_stream->SetPositionToToy(start_toy_fake_data);
+   }
+
+   for(int ifake = start_toy_fake_data; ifake < start_toy_fake_data + Ntoys_fake_data; ifake++)
    {
       // Read a fakedata toy, if requested
-      if(arg.GetInt("gen-fakedata") == 0)
+      if(read_data_from_binary && arg.GetInt("gen-fakedata") == 0)
       {
-         model->Read(*is_fakedata, read_opt);   // The input fakedata toy stream must be first read into the model, as they were generated as models.
-         data->Generate(model, with_stat_fluct, read_opt_data);
+        data->Read(toy_stream);
+
+#ifdef VALOR_EXPT_LOW_LEVEL_MESG_ENABLED
+        LOG("valor_dune", pNOTICE) << "Fake data toy #" << ifake << " event rates:\n" << data->GetPDFIntegralAsString();
+#endif
       }
 
       // Perform a fit and populate the entire chi2 and likelihood surfaces
@@ -264,11 +279,13 @@ void Fit(CmdLnArgList& arg)
          }
       }
 
-      chi2_best_fit_toy->at(ifake) = result->GetChi2BestFit();
+      chi2_best_fit_toy->at(ifake - start_toy_fake_data) = result->GetChi2BestFit();
    }
+   delete toy_stream;
 
    std::ostringstream oss;
    oss << arg.GetString("tag");
+   oss << "_" << start_toy_fake_data << "_" << start_toy_fake_data + Ntoys_fake_data;
    oss << "_result.root";
    string filename = oss.str();
    TFile* fitFile = new TFile(filename.c_str(), "RECREATE");
@@ -303,7 +320,7 @@ void Fit(CmdLnArgList& arg)
       likelihood;*/
    clock.Stop();
 
-   LOG("valor_dune", pNOTICE) << "Read: " << Ntoys * NtoysFakeData <<
+   LOG("valor_dune", pNOTICE) << "Read: " << Ntoys * Ntoys_fake_data <<
       " spectra. Real time: " << clock.RealTime() << "   CPU time: " <<
       clock.CpuTime();
 }
@@ -315,7 +332,13 @@ void Init(CmdLnArgList& arg)
    Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
    Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
    Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
-   Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+  conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+  if(dmsq_scheme == kNuDmsqUndefined) {
+    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    util::Die(-1);
+  }
+  Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
 
    Rnd::Instance()->SetSeeds(arg);
 }

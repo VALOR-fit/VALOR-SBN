@@ -10,7 +10,7 @@
 #  --nruns                  : Number of runs (jobs) to submit. Default: 1.
 #  --ntoymc                 : Number of toy-MC fits per run. Default: 1.
 #  --cpu-time               : Required CPU time. Default: "6:00:00" for RAL, "11:50:00" for Oxford.
-#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --physics-hypothesis     : Specifies the physics hypothesis. Default: "3f_osc"
 #  --param-values           : Specifies how to set model parameters in toy-MC generation. Default: "randomize-all;prefit-errors"
 #  --lim-param-name         : Specifies the name of the parameter on which confidence limits are quoted. Default: "" (needs to be set)
 #  --lim-param-value-np     : Number of points between the min and max value below.
@@ -41,7 +41,7 @@ foreach (@ARGV) {
   elsif($_ eq '--nruns'                  ) { $nruns                = $ARGV[$iarg+1]; }
   elsif($_ eq '--ntoymc'                 ) { $ntoymc               = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values'           ) { $param_values         = $ARGV[$iarg+1]; }
   elsif($_ eq '--lim-param-name'         ) { $lim_param_name       = $ARGV[$iarg+1]; }
   elsif($_ eq '--lim-param-value-np'     ) { $lim_param_value_np   = $ARGV[$iarg+1]; }
@@ -64,7 +64,7 @@ $resource               = "interactive"                           unless defined
 $tag                    = "toymc"                                 unless defined $tag;
 $nruns                  = 1                                       unless defined $nruns;
 $ntoymc                 = 1                                       unless defined $ntoymc;
-$fitparamlist           = "standard"                              unless defined $fitparamlist;
+$fitparamlist           = "3f_osc"                                unless defined $fitparamlist;
 $param_values           = "randomize-all;prefit-errors"           unless defined $param_values;
 $lim_param_name         = ""                                      unless defined $lim_param_name;
 $lim_param_value_np     = 11                                      unless defined $lim_param_value_np;
@@ -74,7 +74,7 @@ $stat_fluct             = 1                                       unless defined
 $fitoption              = "minuit"                                unless defined $fitoption;
 $store_spectra          = 0                                       unless defined $store_spectra;
 $job_dir                = `pwd`                                   unless defined $job_dir;
-$dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
+$dune_softw_dir         = $ENV{'VALOR_EXPT'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dune_ndfit-2015v1-FGTv1.xml"           unless defined $config_file;
 

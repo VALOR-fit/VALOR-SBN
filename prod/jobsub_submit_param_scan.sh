@@ -164,7 +164,7 @@ while [ $# -gt 0 ]; do
 	  fi
 	  ;;
 
-      --fit-param-list )
+      --physics-hypothesis )
 	  if [ $# -gt 1 ]; then
               FITPARAMLIST=$2
               shift
@@ -408,7 +408,7 @@ echo "VAL2 is $VAL2"
 # Fixing the parameter each value in the scan
 
 #Make the valor command.
-standard_options=" --run $PROCESS --ntoymc 1  --fit-param-list $FITPARAMLIST \
+standard_options=" --run $PROCESS --ntoymc 1  --physics-hypothesis $FITPARAMLIST \
   --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
   --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct \
   $SHOULDSTORE --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE \

@@ -5,6 +5,7 @@
 #include <TCanvas.h>
 
 // valor
+#include "valor/Conventions/ModeList.h"
 #include "valor/Utilities/UtlFile.h"
 #include "valor/Utilities/UtlPlotting.h"
 
@@ -19,7 +20,7 @@ bool UtlBinningTestCase::TestMake2DOptimisedHistogram()
       *(dynamic_cast<UtlBinningTest*>(_test)->_binning);
    VALORArray& v = *(dynamic_cast<UtlBinningTest*>(_test)->_vOpt);
 
-   TH2D* histo = util::binning::Make2DOptimisedHistogram(v, binning,
+   TH2D* histo = util::binning::Make2DHistogram(v, binning.RecoOptBinning(),
          util::KineVar(conv::kspErecoYreco));
 
    bool passed = true;
@@ -54,7 +55,7 @@ bool UtlBinningTestCase::TestMake2DSimpleHistogram()
       *(dynamic_cast<UtlBinningTest*>(_test)->_binning);
    VALORArray& v = *(dynamic_cast<UtlBinningTest*>(_test)->_vSmp);
 
-   TH2D* histo = util::binning::Make2DSimpleHistogram(v, binning,
+   TH2D* histo = util::binning::Make2DHistogram(v, binning.RecoSmpBinning(),
          util::KineVar(conv::kspErecoYreco));
 
    bool passed = true;
@@ -119,8 +120,10 @@ void UtlBinningTest::Setup()
    std::string filename = _arg->GetString("binning-file");
    std::string fullFilename = util::file::GetConfigurationFilename(filename);
    
+   ModeList ml(util::CompleteConfigPath("modelists/UnOscLowE.xml"));
+   
    _binning = new SingleSampleKineBinning(conv::kdDUNEFD1ph, conv::kbLBNF_FHC,
-        conv::ksNuMuCC);
+        conv::ksNuMuCC,ml.Modes());
    _binning->Read(fullFilename);
 
    const VALORBinning& recoOptBinning = *(_binning->RecoOptBinning());
