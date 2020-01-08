@@ -11,7 +11,7 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <bnb_fhc>
-      1.32e+21
+      13.2e+20
     </bnb_fhc>
     <bnb_rhc>
       0
@@ -55,6 +55,13 @@ Input MC templates
   </interaction_mass>
 
 </mc>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Modelist
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+<modelist> modelists/OscLowE.xml </modelist>
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
