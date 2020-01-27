@@ -47,7 +47,7 @@
 #include "valor/Conventions/Sample.h"
 #include "valor/Conventions/ReacMode.h"
 
-#include "dune/Utilities/DoExperimentSetup.h"
+
 
 using std::string;
 using std::ostringstream;
@@ -70,7 +70,7 @@ int main(int argc, char ** argv)
   
   using namespace valor;
   
-  valor::ExperimentInitialiser();
+  
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_fastmc_minidst.arg");

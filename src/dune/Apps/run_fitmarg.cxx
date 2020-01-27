@@ -60,7 +60,7 @@
 #include "valor/Ntuple/StdFitNtp.h"
 #include "valor/Marginalisation/MCMarginaliser.h"
 // dune
-#include "dune/Utilities/DoExperimentSetup.h"
+
 #include "dune/Utilities/UtlParam.h"
 #include "dune/Conventions/PhysicalParameterLimits.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -93,7 +93,7 @@ void InvertedHierarchyOscillationParameters(FitParamList& fp,
 
 int main(int argc, char** argv)
 {
-   valor::ExperimentInitialiser();
+   
    CmdLnArgList arg;
    arg.Read(argc,argv,
       "$VALOR_EXPT/config/apps/run_fitmarg.arg"

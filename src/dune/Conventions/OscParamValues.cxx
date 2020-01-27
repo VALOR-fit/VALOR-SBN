@@ -20,6 +20,8 @@ Copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved.
 using namespace valor;
 using namespace valor::conv;
 
+using std::string;
+
 //________________________________________________________________________________________
 double util::OscParamInitValue(conv::PhysParamId_t p)
 {
@@ -229,7 +231,7 @@ double util::GetRandomizedOscParam(conv::PhysParamId_t p, string mode)
 }
 //________________________________________________________________________________________
 double util::GetRandomizedOscParam(conv::PhysParamId_t p, FitParamList& fpl)
-  {
+{
   string mode = fpl.GetPriorModeName(p);
   if(mode == "flat")
   {

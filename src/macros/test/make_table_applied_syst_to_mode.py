@@ -39,9 +39,10 @@ def main(beam_mode_arg = None, sample_arg = None,
   model = elements.FitModel()
   
   syst = model.GetSystematics()
-  
-  
-  # Some ridiculous voodoo to go around ROOT's inability to identify arrays of enums or 2D arrays of bools
+  if not syst.Size():
+    print "You haven't got any systematics defined. This is never going to work."
+    exit(-1)
+    
   ROOT.gROOT.ProcessLine("using namespace valor;")
   ROOT.gROOT.ProcessLine("using namespace valor::util;")
   ROOT.gROOT.ProcessLine("using namespace valor::conv;")
@@ -77,12 +78,7 @@ def main(beam_mode_arg = None, sample_arg = None,
     beam_mode = submodel.GetBeam()
     detector  = submodel.GetDetector()
     # Get the mode list for this sample
-    modes_array      = array.array("i",[-1]*conv.kNReacModes)
-    isamp = es.SampleIdx(beam_mode,sample)
-    root_loop  = "{ int * mode_arr = (int*)%s;" % str(modes_array.buffer_info()[0])
-    root_loop += " for (int i = 0 ; i < kNReacModes;i++){mode_arr[i]=kReactionModes[%s][i];};};"%(str(isamp))
-    ROOT.gROOT.ProcessLine(root_loop)
-    modes  = [m for m in modes_array     if m != conv.kmUndefined]
+    modes  = [m for m in submodel.GetReactionModes() if m != conv.kmUndefined]
     
     if unosc:
       modes = [m for m in modes if util.ReacModeToInitFlavor(m) == util.ReacModeToFinalFlavor(m)]
@@ -127,6 +123,15 @@ def main(beam_mode_arg = None, sample_arg = None,
       if skipflux and param.SearchCategories("flux"): continue
       if skipint  and param.SearchCategories("int") : continue
       if skipdet  and param.SearchCategories("det") : continue
+      
+      # Add second line if we're at the beginning of a new group
+      if iparam:
+        this_categories = [c for c in param.GetCategories()]
+        last_categories = [c for c in last_param.GetCategories()]
+        print this_categories,last_categories
+        if this_categories!=last_categories:
+          tex_output.write(" \\hline ")
+          
       entries = ["$"+param.GetTeXName().ljust(col1_width)+"$"]
       include_row = include_empty
       for m in modes:
@@ -137,10 +142,8 @@ def main(beam_mode_arg = None, sample_arg = None,
           entries.append("".ljust(coln_width))
       if not include_row: continue
       tex_output.write("& ".join(entries) + " \\\\ \\hline ")
-      # Add second line if we're at the end of a group
-      if util.GetParameterGroup(param.GetID())!=util.GetParameterGroup(param.GetID()+1):
-        tex_output.write(" \\hline ")
       tex_output.write("\n")
+      last_param = param
     
     # Close table and finalise tex document
     tex_output.write("\n\\end{tabular}\n")
@@ -152,7 +155,8 @@ def main(beam_mode_arg = None, sample_arg = None,
   
   tex_output.write("\\end{document}\n")
   
-  print "\n\nTable output written to ",output_file
+  print "\n\nTable output written to",output_file
+  print "It's huge. I suggest using pdfcrop after building it."
 
 if __name__=="__main__":
   

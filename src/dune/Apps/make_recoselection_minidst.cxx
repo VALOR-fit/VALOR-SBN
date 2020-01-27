@@ -53,7 +53,7 @@
 #include "valor/Conventions/ReacMode.h"
 #include "valor/Conventions/Sample.h"
 
-#include "dune/Utilities/DoExperimentSetup.h"
+
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
 
@@ -132,7 +132,7 @@ int main(int argc, char ** argv)
 
   using namespace valor;
 
-  valor::ExperimentInitialiser();
+  
 
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_recoselection_minidst.arg");

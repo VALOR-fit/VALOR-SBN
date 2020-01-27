@@ -89,7 +89,7 @@ namespace util {
   double OscParamMinValue (conv::PhysParamId_t p);
   double OscParamStepSize (conv::PhysParamId_t p);
 
-  double GetRandomizedOscParam (conv::PhysParamId_t p, string mode);
+  double GetRandomizedOscParam (conv::PhysParamId_t p, std::string mode);
   double GetRandomizedOscParam (conv::PhysParamId_t p, FitParamList& fpl);
 
   void InitializeOAPriors();

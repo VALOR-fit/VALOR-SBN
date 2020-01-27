@@ -50,7 +50,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 
-#include "dune/Utilities/DoExperimentSetup.h"
+
 
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 
@@ -97,7 +97,7 @@ int main(int argc, char ** argv)
 
   using namespace valor;
   
-  valor::ExperimentInitialiser();
+  
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/make_caf_minidst.arg");
