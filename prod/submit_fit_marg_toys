@@ -511,14 +511,13 @@ for($i_fc_par2 = $start_pt_fc_par2; $i_fc_par2 < $start_pt_fc_par2 + $npt_fc_par
 		if($marg_fc_toys == 1) {
 			if($resource eq "RAL" || $resource eq "RAL_HTC") {
 				my $tmpstr = $data_file =~ "s/\[x\]/$i_fc_par1/r";
-        my $fc_filename = $tmpstr =~ "s/\[y\]/$i_fc_par2/r";
+        $data_file_use = $tmpstr =~ "s/\[y\]/$i_fc_par2/r";
 			}
 			else {
 				my $tmpstr = $data_file =~ s/\[x\]/$i_fc_par1/r;
-      	my $fc_filename = $tmpstr =~ s/\[y\]/$i_fc_par2/r;
+      	$data_file_use = $tmpstr =~ s/\[y\]/$i_fc_par2/r;
 			}
 
-			$data_file_use = $fc_filename;
 			print "\n======================================\n";
 			print "= Submitting jobs for FC point \#$i_fc_par1, $i_fc_par2 =\n";
 			print "======================================\n\n";
