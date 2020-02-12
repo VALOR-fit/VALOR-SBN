@@ -34,7 +34,7 @@
       <format> SBNFluxNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/syst/proposal/flux_params.root </filename>
+        <filename>   sbn/syst/proposal/updated/flux.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 
@@ -43,7 +43,7 @@
       <format> SBNIntNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/syst/proposal/interaction_params.root </filename>
+        <filename>   sbn/syst/proposal/updated/interaction.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 
