@@ -384,7 +384,7 @@ int main(int argc, char ** argv)
         int & nentries = entry.second;
         nentries = -1;
       }
-    }
+    } // Variations
 
     double enu_reco    =  -999.;
     double reco_weight = 1.;
@@ -549,6 +549,12 @@ int main(int argc, char ** argv)
         }
         if(isnc && init_flav != final_flav){
           VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc] "<<iev; 
+          VLOG("make_sbncode_minidst", pINFO)
+            <<"\n larsoft_mode = "<<larsoft_mode
+            <<"\n baseline = "<< baseline << " m"
+            <<"\n iscc="<<iscc<<" and isnc="<<isnc
+            <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
           continue;
         }
         if(is_nue && (init_pdg == 12 || init_pdg == -12) && (!is_nueint)){
@@ -564,10 +570,22 @@ int main(int argc, char ** argv)
         }
         if(is_nueosc && init_flav == final_flav){
           VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file] "<<iev; 
+          VLOG("make_sbncode_minidst", pINFO)
+            <<"\n larsoft_mode = "<<larsoft_mode
+            <<"\n baseline = "<< baseline << " m"
+            <<"\n iscc="<<iscc<<" and isnc="<<isnc
+            <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
           continue;
         }
         if(is_numu && init_flav != final_flav){
           VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated event in non-oscillated file] "<<iev; 
+          VLOG("make_sbncode_minidst", pINFO)
+            <<"\n larsoft_mode = "<<larsoft_mode
+            <<"\n baseline = "<< baseline << " m"
+            <<"\n iscc="<<iscc<<" and isnc="<<isnc
+            <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
           continue;
         }
       }
