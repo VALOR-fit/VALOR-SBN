@@ -411,14 +411,18 @@ void rj_plot_pdf(
         // If we have also included the data/oscillated spectra, save that too
         if(save_spectra){
           TFile spectra_plots(spectra_filename,"UPDATE");
-          contrib_stack->SetName((vutil::AsString(d)+"_stacked").c_str());
-          contrib_legend->SetName((vutil::AsString(d)+"_legend").c_str());
-          total_hist->SetName((vutil::AsString(d)+"_integrated").c_str());
+          if(format == 1){
+            contrib_stack->SetName((vutil::AsString(d)+"_stacked").c_str());
+            contrib_legend->SetName((vutil::AsString(d)+"_legend").c_str());
+          }
+          if(format == 0) total_hist->SetName((vutil::AsString(d)+"_integrated").c_str());
           cc_hist->SetName((vutil::AsString(d)+"_cc").c_str());
           nc_hist->SetName((vutil::AsString(d)+"_nc").c_str());
-          contrib_stack->Write();
-          contrib_legend->Write();
-          total_hist->Write();
+          if(format == 1){
+            contrib_stack->Write();
+            contrib_legend->Write();
+          }
+          if(format == 0) total_hist->Write();
           cc_hist->Write();
           nc_hist->Write();
           if(plot_data){

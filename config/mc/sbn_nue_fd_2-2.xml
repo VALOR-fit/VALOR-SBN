@@ -62,6 +62,7 @@ Modelist
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 <modelist> modelists/OscLowE.xml </modelist>
+<coarse_modelist> modelists/coarse/sbn/coarse_mode_list_SBN_BNB_FHC_nuelikeCChigh.xml </coarse_modelist>
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
