@@ -8,8 +8,8 @@
 \options     --tag                 : Tag for output file [def: "toymc"]
              --run                 : Run # [def: 0]
              --ntoymc              : Number of toy-MC experiments [def: 1]
-             --fit-param-list      : Fit parameter list (see UtlParam.cxx)
-                                     [def: "nuosc3f"]
+             --physics-hypothesis  : Physics hypothesis (see UtlParam.cxx)
+                                     [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
              --param-values-option : Decide how to set the values of physics 
@@ -61,6 +61,7 @@
 // fmwk
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
+#include "valor/Conventions/ParameterPool.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
 #include "valor/FitCore/PhysParamList.h"
@@ -69,8 +70,12 @@
 #include "valor/FitCore/FitDataABC.h"
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
+#include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/UtlOscillation.h"
+#include "valor/FitCore/UtlFitParamList.h"
 #include "valor/Oscillation/SimpleOsc.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
@@ -78,14 +83,9 @@
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/VThreadPool.h"
+#include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
 
 using namespace std;
 using namespace valor;
@@ -95,10 +95,10 @@ const char * fit_result_tree_name = "valor_dune_nd_ntp";
 
 int main(int argc, char ** argv)
 {  
-  
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
 
-  util::InitializeOAPriors();
+  //  util::InitializeOAPriors();
 
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/run_fit.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
@@ -112,7 +112,7 @@ int main(int argc, char ** argv)
   bool rethrow_unphysical = arg.GetBool("rethrow-unphysical");
   int  ntoymc             = arg.GetInt("ntoymc");
   int n_threads           = arg.GetInt("nthreads");
-  string fplname          = arg.GetString("fit-param-list");
+  string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string fittername       = arg.GetString("fitter");
   string true_values_file = arg.GetString("true-from-filename");
@@ -177,6 +177,7 @@ int main(int argc, char ** argv)
   CorrelatedSystematics * syst = model->GetSystematics();
 
   // If necessary, update the systematics prior from a previous fit
+  // TODO: This should be handled by the XML prior file, but priors trees are not yet supported
   if (read_prior_from_file!="-" && read_prior_from_file!="none") {
     TFile prior_file(read_prior_from_file.c_str());
     TTree * prior_tree = dynamic_cast<TTree*>(prior_file.Get(fit_result_tree_name));
@@ -198,7 +199,7 @@ int main(int argc, char ** argv)
 
     // Get the specified fit parameter list (specifies which parameters are floated/fixed, 
     // parameter limits, initial values etc).
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+    FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
     model->ResetSystematics("all");
     // If required, randomise the systematics in the model, and copy them to the FPL
@@ -245,7 +246,7 @@ int main(int argc, char ** argv)
     fp->FromPhysParamList(tweaks,"current");
 
     // Check parameter name, maybe rethrow
-    if (!PhysicalParameterLimits::Instance()->AllWithinLimits(*fp)) {
+    if (!util::AllWithinLimits(*fp)) {
       LOG("valor_dune", pNOTICE) << "At least one parameter thrown outside expected limits.";
       if (rethrow_unphysical) {
         LOG("valor_dune", pNOTICE) << "Regenerating...";
@@ -259,11 +260,19 @@ int main(int argc, char ** argv)
       fp->FromPhysParamList(*true_values_from_file,"current");
     }
 
-    //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)
+    //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23 (NH) / dmsq12abs31 (IH))
     Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
     Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
     Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
-    Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+    conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+    if(dmsq_scheme == kNuDmsqUndefined) {
+      LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+      util::Die(-1);
+    }
+    Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
+
+    util::oscillation::SetOscillationParameterPriors(arg, *fp);
 
     // Set input parameters
     RgKeyList input_args = arg.FindKeys("input-");
@@ -325,9 +334,7 @@ int main(int argc, char ** argv)
           fp->FixParameter(param);
         }
         else if(param_values_ts.Contains("randomize-all")) {
-          TString prior_arg = TString::Format("flat-prior-%s",param_name.c_str());
-          string mode = ( (arg.GetBool(prior_arg.Data())) ? "flat" : "gaus" );
-          double rnd_value = util::GetRandomizedOscParam(param,mode);
+          double rnd_value = util::oscillation::GetRandomizedOscParam(param,*fp);
           fp->Update      (param, rnd_value);
           fp->SetInitValue(param, rnd_value);
         }
@@ -401,12 +408,20 @@ int main(int argc, char ** argv)
         if ( std::fabs(fix_param_at + 999. ) < conv::kASmallNum ) {
           continue;
         }
-        if (util::IsOscParam(param)) {
-          if((fix_param_at < util::OscParamMinValue(param)) ||
-              (fix_param_at > util::OscParamMaxValue(param))) {
+        if (!util::IsSystematic(param)) {
+          if(!ParameterPool::Instance()->IsParamInPool(param)) {
+            LOG("UtlOscillation", pFATAL) << "The osc param \'" << util::NameRegistry::Instance()->ParamAsString(param)
+              << "\' was in the FPL but not the ParameterPool";
+            util::Die(-1);
+          }
+          const Parameter & parameter = ParameterPool::Instance()->GetParam(param);
+          double min = parameter.GetLimits().first;
+          double max = parameter.GetLimits().second;
+          if((fix_param_at < min) ||
+              (fix_param_at > max)) {
             LOG("valor_dune",pFATAL) << "Attempting to fix parameter "
               <<nr->ParamAsString(param)<<" outside limits at "<<fix_param_at
-              <<" - limits are "<<util::OscParamMinValue(param)<< " to "<<util::OscParamMaxValue(param);
+              <<" - limits are "<<min<< " to "<<max;
             util::Die(-1);
           }
         } // is osc param

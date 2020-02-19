@@ -2,9 +2,9 @@
 
 <sample_binning>
 
-  <!-- Single Mondrian binning scheme for reco quantities -->
+  <!-- Single edge-to-edge binning scheme for reco quantities -->
   <reco_optimized>
-    binning/mondrian/reco/t2k_mondrian_ErecoTheta_Elike_binning.xml
+    binning/e2e/reco/t2k_e2e_Ereco_Thetareco_elike.xml
   </reco_optimized>
 
   <!-- Single edge-to-edge binning scheme for reco quantities -->

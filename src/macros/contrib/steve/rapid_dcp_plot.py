@@ -9,7 +9,7 @@ env_var = "VALOR_EXPT";
 try:
   R.valor
 except:
-  R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
+  R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C")
   
 R.gROOT.SetBatch(1)
 

@@ -11,7 +11,7 @@ import ctypes
 try:
     ROOT.valor
 except:
-    ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
+    ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C")
 
 env_var = "VALOR_EXPT"
   
@@ -121,7 +121,6 @@ def build_spline_array_name(syst, flavour, mode):
     return "spl_{}{}_{}".format(flavour, mode, new_syst)
 
 def get_fit_elements(config_file):
-    valor.Env.Instance().AutoSet("dune")
     elements = valor.CompoundFitElements()
     elements.Read(config_file, "nomc+nosplines")
     return elements

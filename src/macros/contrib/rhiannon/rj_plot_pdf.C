@@ -165,9 +165,6 @@ void rj_plot_pdf(
       
       std::string model_name = submodel.Name();
       
-      int isample = ExperimentSetup::Instance()->SampleIndex(b, s);
-      int ibeam   = ExperimentSetup::Instance()->BeamConfIndex(b);
-      
       { // Divided by mode
         THStack * contrib_stack = new THStack("stack","spectrum contributions");
        
@@ -345,9 +342,9 @@ void rj_plot_pdf(
               nc_hist = (TH1D*)pdf_contrib_coarse[imodec]->Clone("nc_hist");
           }
           relevant_hist->SetLineWidth(1);
-          relevant_hist->SetLineColor(es.PlotStyle()[ibeam][isample][imodec][0]);
-          relevant_hist->SetFillColor(es.PlotStyle()[ibeam][isample][imodec][1]);
-          relevant_hist->SetFillStyle(es.PlotStyle()[ibeam][isample][imodec][2]);
+          relevant_hist->SetLineColor(ml->GetCoarseModeLineCol(mc));
+          relevant_hist->SetFillColor(ml->GetCoarseModeFillCol(mc));
+          relevant_hist->SetFillStyle(ml->GetCoarseModeFillSty(mc));
           contrib_stack->Add(relevant_hist);
           contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
 
@@ -399,7 +396,7 @@ void rj_plot_pdf(
         std::ostringstream sample_event_rates;
         // Write the event rates to the output stream
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
-          conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
+          conv::ReacModeCoarse_t mc = coarse_modes.at(imodec);
           if (mc == conv::kmcUndefined) {continue;}
           TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
           double rate = tmphist->Integral();

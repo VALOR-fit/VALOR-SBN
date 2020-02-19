@@ -7,7 +7,7 @@
 
 \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
              --ntoys               : Number of toy-MC experiments [def: 200]
-             --fit-param-list      : Fit parameter list [def: "nuosc3f"]
+             --physics-hypothesis  : physics hypothesis [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
              --config              : Analysis configuration file [required]
@@ -55,21 +55,19 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/SingleSampleFitModelABC.h"
+#include "valor/FitCore/UtlFitParamList.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/Utilities/Env.h"
 #include "valor/Utilities/VThreadPool.h"
+#include "valor/Utilities/UtlParam.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitCore/SingleSampleFitModelABC.h"
 
 using namespace std;
 using namespace valor;
@@ -83,7 +81,7 @@ const KineVar_t kv = conv::kvEreco;
 
 int main(int argc, char ** argv)
 {
-  
+
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
  
   CmdLnArgList arg;
@@ -93,7 +91,7 @@ int main(int argc, char ** argv)
   // Read the command line
   int ntoys               = arg.GetInt("ntoys");
   int n_threads           = arg.GetInt("nthreads");
-  string fplname          = arg.GetString("fit-param-list");
+  string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
@@ -114,7 +112,13 @@ int main(int argc, char ** argv)
   
   // And OA parameters
   Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
-  Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
+
+  conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
+  if(dmsq_scheme == kNuDmsqUndefined) {
+    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    util::Die(-1);
+  }
+  Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
   
   double mixing12 = arg.GetDouble("input-mixing12");
   double mixing13 = arg.GetDouble("input-mixing13");
@@ -129,7 +133,7 @@ int main(int argc, char ** argv)
   // Print settings
   cout << "\n[Job inputs]" << endl;
   cout << "- Reading analysis configuration from: " << config_path << endl;
-  cout << "- Model parameter list used : " << fplname << endl;
+  cout << "- Model physics hypothesis : " << hypname << endl;
   
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(config_path.c_str());
@@ -169,7 +173,7 @@ int main(int argc, char ** argv)
     cout << "** Toy-MC: #" << itoy << endl;
 
     // (toy-MC #-1 is special: default)
-    FitParamList * fp = util::GetFitParameterList(fplname.c_str(), fplopt.c_str(), syst);
+    FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
     
     if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
     if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
@@ -188,6 +192,7 @@ int main(int argc, char ** argv)
     
     for (unsigned int ip = 0 ; ip < param_set.size() ; ip++) {
       PhysParamId_t p = param_set[ip];
+      if(!util::IsSystematic(p)) { continue; }
       param_map[p] = true;
     }
     

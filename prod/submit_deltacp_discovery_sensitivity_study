@@ -11,7 +11,7 @@
 #  --min-value              : Min param value for the sensitivity study. Default: -pi
 #  --max-value              : Max param value for the sensitivity study. Default: +pi
 #  --cpu-time               : Required CPU time. Default: "8:00:00" for RAL, "11:50:00" for Oxford.
-#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --physics-hypothesis     : Specifies the physics hypothesis. Default: "3f_osc"
 #  --hierarchy              : Specifies the mass hierarchy option. Default: "normal"
 #  --fit-option             : Option passed to fitter. Default: "minuit".
 #  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
@@ -51,7 +51,7 @@ foreach (@ARGV) {
   elsif($_ eq '--min-value'              ) { $min_value            = $ARGV[$iarg+1]; }
   elsif($_ eq '--max-value'              ) { $max_value            = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--hierarchy'              ) { $mhchoice             = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-option'             ) { $fitoption            = $ARGV[$iarg+1]; }
   elsif($_ eq '--store-spectra'          ) { $store_spectra        = $ARGV[$iarg+1]; }
@@ -73,7 +73,7 @@ $tag                    = "deltaCP_discovery_sens_FGT"            unless defined
 $npoints                = 24                                      unless defined $npoints;
 $min_value              = -3.141592653589793                      unless defined $min_value;
 $max_value              = 3.141592653589793                       unless defined $max_value;
-$fitparamlist           = "standard"                              unless defined $fitparamlist;
+$fitparamlist           = "3f_osc"                                unless defined $fitparamlist;
 $mhchoice               = "normal"                                unless defined $mhchoice;
 $fitoption              = "minuit"                                unless defined $fitoption;
 $store_spectra          = 0                                       unless defined $store_spectra;
@@ -82,10 +82,10 @@ $ncores                 = 1                                       unless defined
 $pot_override           = -999                                    unless defined $pot_override;
 
 $job_dir                = `pwd`                                   unless defined $job_dir;
-$dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
+$dune_softw_dir         = $ENV{'VALOR_EXPT'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dunendfd_ndtf_fgt_3passthrough_46selection_toymc_fit.xml"           unless defined $config_file;
-#$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
+#$mesg_thresholds        = $ENV{'VALOR_EXPT'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
 $mesg_thresholds        = "verbosity.xml"                         unless defined $mesg_thresholds;
 
 $param_values    = "prefit-errors"; #not randomized-all now, Asimov dataset! 
@@ -120,7 +120,7 @@ for($ipoint = 0; $ipoint < $npoints; $ipoint++) {
 
     $program   = "valor_dune-run_fit";
     
-    $standard_options = " --run $ipoint --ntoymc 1  --fit-param-list $fitparamlist".
+    $standard_options = " --run $ipoint --ntoymc 1  --physics-hypothesis $fitparamlist".
       " --param-values-option  $param_values --fitter $fitoption".
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
       " --$mhchoice --input-deltaCP $deltacp_input_value --fix-deltaCP ".

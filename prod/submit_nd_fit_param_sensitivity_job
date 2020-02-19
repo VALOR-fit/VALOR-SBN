@@ -10,7 +10,7 @@
 #  --nruns                  : Number of runs (jobs) to submit. Default: 1.
 #  --ntoymc                 : Number of toy-MC fits per run. Default: 1.
 #  --cpu-time               : Required CPU time. Default: "6:00:00" for RAL, "11:50:00" for Oxford.
-#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --physics-hypothesis     : Specifies the physics hypothesis. Default: "3f_osc"
 #  --param-values           : Specifies how to set model parameters in toy-MC generation. Default: "randomize-all;prefit-errors"
 #  --sens-param-name        : Specifies the name of the parameter for which we are studying our sensitivity to. Default: "" (needs to be set)
 #  --sens-param-value-gen   : Value for above param for toy-MC generation purposes. Default: 1.
@@ -46,7 +46,7 @@ foreach (@ARGV) {
   elsif($_ eq '--nruns'                  ) { $nruns                = $ARGV[$iarg+1]; }
   elsif($_ eq '--ntoymc'                 ) { $ntoymc               = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--param-values'           ) { $param_values         = $ARGV[$iarg+1]; }
   elsif($_ eq '--sens-param-name'        ) { $sens_param_name      = $ARGV[$iarg+1]; }
   elsif($_ eq '--sens-param-value-gen'   ) { $sens_param_value_gen = $ARGV[$iarg+1]; }
@@ -71,7 +71,7 @@ $resource               = "interactive"                           unless defined
 $tag                    = "param_sensitivity"                     unless defined $tag;
 $nruns                  = 1                                       unless defined $nruns;
 $ntoymc                 = 1                                       unless defined $ntoymc;
-$fitparamlist           = "standard"                              unless defined $fitparamlist;
+$fitparamlist           = "3f_osc"                                unless defined $fitparamlist;
 $param_values           = "randomize-all;prefit-errors"           unless defined $param_values;
 $sens_param_name        = ""                                      unless defined $sens_param_name;
 $sens_param_value_gen   = 1                                       unless defined $sens_param_value_gen;
@@ -83,7 +83,7 @@ $stat_fluct             = 1                                       unless defined
 $fitoption              = "minuit"                                unless defined $fitoption;
 $store_spectra          = 0                                       unless defined $store_spectra;
 $job_dir                = `pwd`                                   unless defined $job_dir;
-$dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
+$dune_softw_dir         = $ENV{'VALOR_EXPT'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "dune_ndfit-2015v1-FGTv1.xml"           unless defined $config_file;
 

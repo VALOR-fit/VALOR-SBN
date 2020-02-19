@@ -3,7 +3,7 @@
 import ROOT as R
 
 R.gROOT.ProcessLine(".x $GENIE/src/scripts/gcint/loadlibs.C");
-#~ R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C");
+#~ R.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C");
 #~ 
 #~ valor = R.valor
 

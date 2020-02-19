@@ -4,7 +4,7 @@ tag                                  |   string       |  optional   |   toys/mar
 run                                  |   integer      |  optional   |   0
 batch                                |   integer      |  optional   |   1
 nmargtoy                             |   integer      |  mandatory  |   1
-fit-param-list                       |   string       |  optional   |   nuosc3f
+physics-hypothesis                   |   string       |  optional   |   3f_osc
 fit-param-opt                        |   string       |  optional   |   NONE
 param-values-option                  |   string       |  optional   |   randomize-all;prefit-errors
 config                               |   string       |  mandatory  |   -

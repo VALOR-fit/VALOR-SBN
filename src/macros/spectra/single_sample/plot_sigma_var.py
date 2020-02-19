@@ -21,14 +21,13 @@ ROOT.gROOT.SetBatch(1)
 try:
   ROOT.valor
 except:
-  ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_dune.C")
+  ROOT.gROOT.ProcessLine(".x $VALOR_EXPT/root/valor_expt.C")
 
 valor = ROOT.valor
-util =  valor.util
-conv =  valor.conv
-opt  =  valor.Opt.Instance()
-env  =  valor.Env.Instance()
-arridx = util.ArrIdx.Instance()
+util  = valor.util
+conv  = valor.conv
+opt   = valor.Opt.Instance()
+env   = valor.Env.Instance()
 
 python_undefined = 2L*sys.maxint+1
 python_undefined_short = 2**32 -1
@@ -54,13 +53,15 @@ title_size = 0.05
 label_size = 0.04
 title_offset = 0.9
 
+_ratio_diff_warn_threshold_percent = 0.1
+
 # The legacy T2K analysis does not track CC1piC and CC1pi0 modes separately, like we do in the SDK. So when comparing
 # systematic variations to the legacy analysis, sum these modes.
 _do_sum_cc1pi_modes = False
 
 #_______________________________________________________________________
 
-def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp_file, comp_format, x_max, by_mode, x_title, sum_t2k_cc1pi):
+def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp_file, comp_format, x_max, by_mode, x_title, sum_t2k_cc1pi, modelist_file):
   global _det
   global _beam
   global _selec
@@ -75,10 +76,16 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
 
   # TODO: plot twice: 1) with the input kv on x-axis; 2) with the bin number on the x-axis
 
-  valor.Env.Instance().AutoSet("dune")
   elements = valor.CompoundFitElements()
   elements.Read(util.CompleteConfigPath(config), "nomc+nosplines")
   compound_model = elements.FitModel()
+
+  # Get the modes
+  if not modelist_file:
+    print "ERROR: could not open the input mode list file!"
+    sys.exit()
+  ml = valor.ModeList(util.CompleteConfigPath(modelist_file))
+  read_modes = ml.Modes()
 
   print "Reading from input VALOR file", in_file
   fin = ROOT.TFile(in_file, "read")
@@ -92,7 +99,8 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
     draw_comparison = True
     fin_comp = ROOT.TFile(comp_file, "READ")
 
-  param_set = list(util.GetParameterSet(param_set_str, True))   # Only get exact matches to any input param names (otherwise problems can be caused)
+  param_set_temp = list(util.GetParameterSet(param_set_str, True))   # Only get exact matches to any input param names (otherwise problems can be caused)
+  param_set = [ipar for ipar in param_set_temp if util.IsSystematic(ipar)]
   if len(param_set) == 0:
     print "ERROR: Got no prams to plot"
     sys.exit()
@@ -126,8 +134,7 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
 
       modes = ["all"]
       if _by_mode:
-        sample_idx = util.ArrIdx.Instance().SampleIdx(util.BeamConfFromString(_beam), util.SampleFromString(_selec))
-        modes = list(util.GetActiveModes(sample_idx))
+        modes = read_modes
         if i == 0 and ip == 0:
           print "Plotting systematic variations for the following modes:\n", \
               [util.ModeAsString(imode) for imode in modes]
@@ -176,6 +183,19 @@ def main(output_filename, in_file, param_set_str, config, det, beam, selec, comp
               hist_max_var = max(hist_max_var, get_max_var_in_range(h_comp, x_max))
               if sigma_var == "m3":
                 leg.AddEntry(h_comp, "comparison", "l")
+
+            # Throw a warning if the ratios have a difference greater than some threshold
+            for ibin in range(1, h.GetNbinsX()):
+              diff = 100 * ROOT.TMath.Abs(1.0 - (h_comp.GetBinContent(ibin) / h.GetBinContent(ibin)))
+              if diff > _ratio_diff_warn_threshold_percent:
+                if _by_mode:
+                  print "WARNING: For param =", param_name, "; sample =", selection_name, "; mode =", util.ModeAsString(m), "; kinevar val =", \
+                    h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
+                    "% in the ratios of input and compaison hist"
+                else:
+                  print "WARNING: For param =", param_name, "; sample =", selection_name, "; kinevar val =", \
+                    h.GetBinCenter(ibin), "; variation =", sigma_var, "; difference of", diff, \
+                    "% in the ratios of input and compaison hist"
 
         hvar_list[0].SetMaximum(1 + 1.1 * hist_max_var)
         hvar_list[0].SetMinimum(1 - 1.1 * hist_max_var)
@@ -339,7 +359,7 @@ def get_label(sigma_var):
 #_______________________________________________________________________
 def get_t2k_legacy_hist_name(param_name, sigma_var, m):
   # Open up a file containing a parameter name map
-  parameters = list_of_tuples("t2xk_sdk_param_name_map.arg")
+  parameters = list_of_tuples(util.CompleteConfigPath("maps/t2xk_sdk_param_name_map.arg"))
   comp_param_name = ""
   for iparam,(sdk_param,legacy_param) in enumerate(parameters):
     #print "considering SDK name", sdk_param, "; t2xk name", legacy_param
@@ -448,10 +468,11 @@ if __name__=="__main__":
   parser.add_option(      '--comp-file'    , dest='comp_file'      , default=""     , help="Name of file to compare to")
   parser.add_option(      '--comp-format'  , dest='comp_format'    , default=""     , help="Choose from: \'valor\', \'t2k_legacy\'")
   parser.add_option(      '--sum-t2k-cc1pi', dest='sum_t2k_cc1pi'  , default=False  , action="store_true", help="Sum T2k CC1piC and CC1pi0 modes when comparing to T2K legacy")
+  parser.add_option(      '--mode-list'    , dest='modelist_file'  , default=""     , help="File containing the list of used reaction modes")
 
   o,other = parser.parse_args()
 
-  main(o.output_filename, o.in_file, o.params, o.config, o.det, o.beam, o.selec, o.comp_file, o.comp_format, o.x_max, o.by_mode, o.x_title, o.sum_t2k_cc1pi)
+  main(o.output_filename, o.in_file, o.params, o.config, o.det, o.beam, o.selec, o.comp_file, o.comp_format, o.x_max, o.by_mode, o.x_title, o.sum_t2k_cc1pi, o.modelist_file)
 
   if other:
     print "Warning - ignored arguments: ", other

@@ -36,6 +36,10 @@
 #include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitCore/UtlFitParamList.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
@@ -44,13 +48,6 @@
 #include "valor/Utilities/NameRegistry.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Ntuple/StdFitNtp.h"
-// dune
-
-#include "dune/Utilities/UtlParam.h"
-#include "dune/Conventions/OscParamValues.h"
-#include "dune/Conventions/PhysicalParameterLimits.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitElements/GenericSingleSampleFitModel.h"
 
 // Proposal list from here:
 // https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample
@@ -88,10 +85,8 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
-  
-  
-  util::InitializeOAPriors();
-  
+
+
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/oscparams.arg:");
   LOG("valor_dune", pNOTICE) << arg;

@@ -20,7 +20,7 @@ bool UtlBinningTestCase::TestMake2DOptimisedHistogram()
       *(dynamic_cast<UtlBinningTest*>(_test)->_binning);
    VALORArray& v = *(dynamic_cast<UtlBinningTest*>(_test)->_vOpt);
 
-   TH2D* histo = util::binning::Make2DOptimisedHistogram(v, binning,
+   TH2D* histo = util::binning::Make2DHistogram(v, binning.RecoOptBinning(),
          util::KineVar(conv::kspErecoYreco));
 
    bool passed = true;
@@ -55,7 +55,7 @@ bool UtlBinningTestCase::TestMake2DSimpleHistogram()
       *(dynamic_cast<UtlBinningTest*>(_test)->_binning);
    VALORArray& v = *(dynamic_cast<UtlBinningTest*>(_test)->_vSmp);
 
-   TH2D* histo = util::binning::Make2DSimpleHistogram(v, binning,
+   TH2D* histo = util::binning::Make2DHistogram(v, binning.RecoSmpBinning(),
          util::KineVar(conv::kspErecoYreco));
 
    bool passed = true;

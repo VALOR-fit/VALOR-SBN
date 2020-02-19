@@ -18,7 +18,7 @@
 #  --log-param2             : Should we loop over the parameter range using log scaling?
 #  --discovery              : If enabled, change the true parameter used for generating data, not the fixed value. Default: false
 #  --cpu-time               : Required CPU time. Default: "8:00:00" for RAL, "11:50:00" for Oxford.
-#  --fit-param-list         : Specifies the fit parameter list. Default: "standard"
+#  --physics-hypothesis     : Specifies the physics hypothesis. Default: "3f_osc"
 #  --hierarchy              : Specifies the mass hierarchy option. Default: "normal"
 #  --fit-option             : Option passed to fitter. Default: "minuit".
 #  --store-spectra          : Store the generated toy MC and best-fit spectra? Default: false.
@@ -26,7 +26,7 @@
 #  --pot-override           : Override the default POT in the config file with this value (for every beam mode) (default -999, use config POT)
 
 #  --job-dir                : Directory for job scripts and outputs. Default: `pwd`.
-#  --dune-softw-dir         : VALOR/DUNE code top-level directory. Default: $VALOR_DUNE
+#  --dune-softw-dir         : VALOR/DUNE code top-level directory. Default: $VALOR_EXPT
 #  --fmwk-softw-dir         : VALOR/FMWK code top-level directory. Default: $VALOR_FMWK
 #  --config-file            : Analysis configuration file. Default: "default_config.xml"
 #  --mesg-thresholds        : Message thresholds file. Default: "verbosity.xml"
@@ -71,7 +71,7 @@ foreach (@ARGV) {
   elsif($_ eq '--log-param2'             ) { $log_param2           = $ARGV[$iarg+1]; }
   elsif($_ eq '--discovery'              ) { $discovery            = $ARGV[$iarg+1]; }
   elsif($_ eq '--cpu-time'               ) { $cput                 = $ARGV[$iarg+1]; }
-  elsif($_ eq '--fit-param-list'         ) { $fitparamlist         = $ARGV[$iarg+1]; }
+  elsif($_ eq '--physics-hypothesis'     ) { $fitparamlist         = $ARGV[$iarg+1]; }
   elsif($_ eq '--hierarchy'              ) { $mhchoice             = $ARGV[$iarg+1]; }
   elsif($_ eq '--fit-option'             ) { $fitoption            = $ARGV[$iarg+1]; }
   elsif($_ eq '--store-spectra'          ) { $store_spectra        = $ARGV[$iarg+1]; }
@@ -101,7 +101,7 @@ $min_value2             = 0.3                                     unless defined
 $max_value2             = 0.7                                     unless defined $max_value2;
 $log_param2             = 0                                       unless defined $log_param2;
 $discovery              = 0                                       unless defined $discovery;
-$fitparamlist           = "standard"                              unless defined $fitparamlist;
+$fitparamlist           = "3f_osc"                                unless defined $fitparamlist;
 $mhchoice               = "normal"                                unless defined $mhchoice;
 $fitoption              = "minuit"                                unless defined $fitoption;
 $store_spectra          = 0                                       unless defined $store_spectra;
@@ -110,10 +110,10 @@ $ncores                 = 1                                       unless defined
 $pot_override           = -999                                    unless defined $pot_override;
 
 $job_dir                = `pwd`                                   unless defined $job_dir;
-$dune_softw_dir         = $ENV{'VALOR_DUNE'}                      unless defined $dune_softw_dir;
+$dune_softw_dir         = $ENV{'VALOR_EXPT'}                      unless defined $dune_softw_dir;
 $fmwk_softw_dir         = $ENV{'VALOR_FMWK'}                      unless defined $fmwk_softw_dir;
 $config_file            = "default_config.xml"                    unless defined $config_file;
-#$mesg_thresholds        = $ENV{'VALOR_DUNE'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
+#$mesg_thresholds        = $ENV{'VALOR_EXPT'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
 $mesg_thresholds        = "verbosity.xml"                         unless defined $mesg_thresholds;
 
 $param_values    = "prefit-errors"; #not randomized-all now, Asimov dataset! 
@@ -175,7 +175,7 @@ for($ipoint1 = 0; $ipoint1 < $npoints1; $ipoint1++) {
     # Perform all fits
     # Fixing the parameter each value in the scan
     
-    $standard_options = " --run $jobID --ntoymc 1  --fit-param-list $fitparamlist".
+    $standard_options = " --run $jobID --ntoymc 1  --physics-hypothesis $fitparamlist".
       " --param-values-option  $param_values --fitter $fitoption".
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
       " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
