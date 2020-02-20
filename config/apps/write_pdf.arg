@@ -1,6 +1,6 @@
 # argument                           |   type         |  require?   |   default
 # .......................................................................................................
-physics-hypothesis                   |   string       |  optional   |   3f_osc
+physics-hypothesis                   |   string       |  optional   |   nuosc3f
 fit-param-opt                        |   string       |  optional   |   NONE
 config                               |   string       |  mandatory  |   -
 write-opt                            |   string       |  optional   |   pdft_vf+pdft_rf+pdfcs_rf+pdfcs_vf+SB
