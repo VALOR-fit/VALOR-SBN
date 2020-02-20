@@ -105,7 +105,7 @@ int main(int argc, char ** argv)
 
   using namespace valor;
 
-  
+
 
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_sbncode_minidst.arg");
@@ -127,7 +127,7 @@ int main(int argc, char ** argv)
   if(no_truth && write_universes)
     VLOG("make_sbncode_minidst", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
 
-  
+
   if(apply_weights)
     VLOG("make_sbncode_minidst", pNOTICE) << " Chosen to apply valor_minidst_wght ";
   else
@@ -144,11 +144,11 @@ int main(int argc, char ** argv)
   string str_int  = "_Int";
   string str_osc  = "_Osc";
 
-  //Find substrings and check the appearance sample-type if necessary
+  //Find substrings and check the selected nuE sample-type if necessary
   size_t found_nue  = opt_input_name.find(str_nue);
   size_t found_numu = opt_input_name.find(str_numu);
 
-  // Get disappearance from sample name
+  // Get selected nuMu from sample name
   if(found_nue == string::npos && found_numu != string::npos)
     is_numu = true;
 
@@ -162,50 +162,50 @@ int main(int argc, char ** argv)
       is_nueosc = true;
     else if(found_nueosc != string::npos){
       VLOG("make_sbncode_minidst", pFATAL) 
-        << "Error: Found appearance oscillated file with hint of intrinsic and/or numu in the name - misleading: " << opt_input_name;
+        << "Error: Found selected nuE oscillated file with hint of intrinsic and/or numu in the name - misleading: " << opt_input_name;
       exit(1);
     }
     if(found_nueint != string::npos && found_nueosc == string::npos && found_nuenumu == string::npos)
       is_nueint = true;
     else if(found_nueint != string::npos){
       VLOG("make_sbncode_minidst", pFATAL) 
-        << "Error: Found appearance intrinsic file with hint of oscillated and/or numu in the name - misleading: " << opt_input_name;
+        << "Error: Found selected nuE intrinsic file with hint of oscillated and/or numu in the name - misleading: " << opt_input_name;
       exit(1);
     }
     if(found_nuenumu != string::npos && found_nueosc == string::npos && found_nueint == string::npos)
       is_nuenumu = true;
     else if(found_nuenumu != string::npos){
       VLOG("make_sbncode_minidst", pFATAL) 
-        << "Error: Found appearance numu file with hint of oscillated and/or intrinsic in the name - misleading: " << opt_input_name;
+        << "Error: Found selected nuE numu file with hint of oscillated and/or intrinsic in the name - misleading: " << opt_input_name;
       exit(1);
     }
   }
 
   bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu};
   if(found_nue && std::count(found_nues, found_nues+sizeof(found_nues), 1) > 1){
-      VLOG("make_sbncode_minidst", pFATAL) 
-        << "Error: Found multiple appearance types in filename - misleading: " << opt_input_name;
-      exit(1);
+    VLOG("make_sbncode_minidst", pFATAL) 
+      << "Error: Found multiple selected nuE types in filename - misleading: " << opt_input_name;
+    exit(1);
   }
-  
+
   // Make sure we are finding at least 1 of numu or nue in the name
   bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu};
   if(std::count(found, found+sizeof(found), 1) == 0){
     VLOG("make_sbncode_minidst", pFATAL) 
-      << "Error: Found hint of neither appearance (" << str_nue << ", " << str_int << ", " << str_osc << ") nor disappearance ( " << str_numu << ") in filename - misleading: " << opt_input_name;
+      << "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << opt_input_name;
     exit(1);
   }
 
   // CHECKING OUTPUT OF NEW CODE
   std::cout << " Input filename : " << opt_input_name << " - ";
   if(is_nueosc)
-    std::cout << " Appearance Oscillated " << std::endl;
+    std::cout << " Selected NuE Oscillated " << std::endl;
   if(is_nueint)
-    std::cout << " Appearance Intrinsic " << std::endl;
+    std::cout << " Selected NuE Intrinsic " << std::endl;
   if(is_nuenumu)
-    std::cout << " Appearance NuMu " << std::endl;
+    std::cout << " Selected NuE NuMu " << std::endl;
   if(is_numu)
-    std::cout << " Disappearance NuMu " << std::endl;
+    std::cout << " Selected NuMu NuMu " << std::endl;
 
   // Get the POT of the sample from the subrun tree
   double mcsample_pot = -1.;
@@ -221,14 +221,14 @@ int main(int argc, char ** argv)
   Long64_t nev_subrun = subrun_tree->GetEntries();
   VLOG("make_sbncode_minidst", pNOTICE) 
     << "Input subrun tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
-  
+
   TBranch *b = subrun_tree->GetBranch("totgoodpot"); 
   unsigned int npot = subrun_tree->GetEntries();
   for(unsigned int i = 0; i < npot; ++i){
     b->GetEntry(i);
     mcsample_pot += b->GetLeaf("totgoodpot")->GetValue();
   }
-  
+
   if(mcsample_pot == -1.){
     VLOG("make_sbncode_minidst", pFATAL) 
       << "Error: Not able to access MCSample POT from " << gSubRunTreeName;
@@ -303,7 +303,7 @@ int main(int argc, char ** argv)
 
   event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
-  
+
   std::map<std::string,variation_output_type *> variation_entries;
   std::map<std::string,int>     variation_nentries;
   //~ std::map<std::string,TBranch *> variation_branches;
@@ -314,23 +314,23 @@ int main(int argc, char ** argv)
     assert(ptruth);
     const auto & weights = ptruth->weights; // map<string,whatever>
     TObjArray variation_names;
-      
+
     for (const auto & variation : weights) {
       // make a list of the variation names
       const std::string & vname = variation.first;
       variation_names.AddLast(new TObjString(vname.c_str()));
-      
+
       // Get the number of universes
       const size_t n_universes = variation.second.size();
-      
+
       // Make a branch to store the number of universes
       std::string branch_name_n (Form("variation_n_%s"  ,vname.c_str()));
       std::string branch_name_nI(Form("variation_n_%s/I",vname.c_str()));
       variation_nentries[vname] = -999;
       valor_minidst->Branch(branch_name_n.c_str(),&variation_nentries[vname],branch_name_nI.c_str());
-      
+
       assert(n_universes <= max_n_universes);
-      
+
       // and a branch to store them all in
       variation_entries[vname] = new variation_output_type[max_n_universes];
       for (size_t ii = 0 ; ii < n_universes ; ii++) {
@@ -339,11 +339,11 @@ int main(int argc, char ** argv)
       std::string branch_name (Form("variation_%s"  ,vname.c_str()));
       std::string branch_nameF(Form("variation_%s[%s]/%c",vname.c_str(),branch_name_n.c_str(),variation_output_type_root));
       valor_minidst->Branch(branch_name.c_str(),variation_entries[vname],branch_nameF.c_str());
-      
+
     }
     variation_names.Write("variation_names",TObject::kSingleKey);
   }
-  
+
 
   //
   // event loop
@@ -355,7 +355,7 @@ int main(int argc, char ** argv)
   for (int im = 0 ; im < valor::conv::kNReacModes; im++) {
     nev_accept_by_mode.push_back(0);
   }
-  
+
   // Commented out now we only have one tree per sample. But remember if that changes!
   //~ int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
@@ -371,7 +371,7 @@ int main(int argc, char ** argv)
       VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev
         <<" - so far accepted " << nev_accept;
     }
-    
+
     // reset the systematic universes
     if (!no_truth && write_universes) {
       for (const auto & entry : variation_entries) {
@@ -388,14 +388,14 @@ int main(int argc, char ** argv)
 
     double enu_reco    =  -999.;
     double reco_weight = 1.;
-    
+
     analysis_tree->GetEntry(iev);
 
     event::RecoEvent & event = *pevent;
     event::RecoInteraction &reco = event.reco;
     event::Interaction * ptruth = event.GetTruth();
     event::Interaction & truth = *ptruth;
-    
+
     // If there is truth in the file, access the variables
     if(!no_truth){
       int iscc           = false;
@@ -520,7 +520,7 @@ int main(int argc, char ** argv)
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
       conv::NuFlavour_t init_flav;
 
-      // If we are looking at the appearance samples, get the initial neutrino pdg from the file
+      // If we are looking at the selected nuE samples, get the initial neutrino pdg from the file
       init_pdg  = truth.neutrino.initpdg;
       init_flav = valor::util::FlavourFromPDG(init_pdg);
 
@@ -601,7 +601,7 @@ int main(int argc, char ** argv)
       valor_minidst_init_nupdg   = init_pdg;
       valor_minidst_final_nupdg  = nu_pdg;
       valor_minidst_target       = 1000180400; // Argon40
-    } // !no-truth
+    }// !no-truth
 
     valor_minidst_sample     = sample; 
     valor_minidst_beam       = beam; 
@@ -638,7 +638,7 @@ int main(int argc, char ** argv)
     }
 
     VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
-    
+
     // Copy the systematic universes across
     if (!no_truth && write_universes) {
       for (const auto & entry : truth.weights) {
@@ -654,17 +654,16 @@ int main(int argc, char ** argv)
             LOG("make_sbncode_minidst",pINFO) << "Setting negative event weight to zero: "
               <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
               <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
-              val = 0.0;
+            val = 0.0;
           }
           //~ else if (val > 1E5 || (val < 1E-5 && val > 1E-15)) {
-            //~ LOG("make_sbncode_minidst",pWARN)<<"Setting bad event weight to one: "
-              //~ <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
-              //~ <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
-            //~ val = 1.0;
+          //~ LOG("make_sbncode_minidst",pWARN)<<"Setting bad event weight to one: "
+          //~ <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
+          //~ <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
+          //~ val = 1.0;
           //~ }
           destination = val;
         }
-      
       }
     }
 
@@ -675,12 +674,12 @@ int main(int argc, char ** argv)
       valor_minidst_wght = 1.;
 
     valor_minidst->Fill();
-      
+
     nev_accept += 1;
     if(!no_truth)
       nev_accept_by_mode[valor_minidst_reac_mode] += 1;
   } // event loop
-  
+
   if(!no_truth){
     for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
       valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
@@ -694,7 +693,7 @@ int main(int argc, char ** argv)
     << ") of input events.";
 
   //~ VLOG("make_sbncode_minidst", pNOTICE) <<"Total POT read: "<<total_pot_read;
-  
+
   // Saving VALOR mini-FST to output file 
   VLOG("make_sbncode_minidst", pNOTICE) 
     << "Saving VALOR/DUNE mini-DST to: " << opt_output_name;
