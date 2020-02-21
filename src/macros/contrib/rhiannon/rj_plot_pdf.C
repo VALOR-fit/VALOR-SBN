@@ -11,10 +11,10 @@ std::string kinevar = "Ereco"; // make this configurable later
 void rj_plot_pdf(
   const char * config_file,
   const char * filename,
-  const char * tag = "valor",
+  const char * tag = "valor", // Used to find the name of the histograms in the PDF files
   double       per_range = -999., // Show events per what ereco (GeV). If negative, show per bin 
   TString plotting_format = "", // If empty or 'stacked': plot stacked interaction breakdown (valor default). If 'total': plot total signal + bg.
-  const char * data_filename = "", // if we want to plot a dataset on top, this is that file
+  const char * data_filename = "", // if we want to plot a dataset on top, this is that file - we also use this to pass the oscillation pdf file
   const char * spectra_filename = "", // Save the stacked plot, total hist and data plot (if included) to a TFile with this name
   const char * data_tag = "valor",
   TString   option = "",
