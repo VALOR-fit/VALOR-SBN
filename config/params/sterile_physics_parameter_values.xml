@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<param_list name="dummy_physics_param_values">
+
+  <!--
+    EXPLANATION: This file specifies values for physics parameters which are read when
+    populating the fit parameter list. Note that the values and ranges specified here
+    do NOT specify the priors, as priors are specified in config files of a different
+    format (see config/priors/).
+    For a explanation of what each node is, see Parameter.h
+  -->
+
+  <!--
+     NOTE: The values specified for any physics parameters in this file must correspond to these schemes,
+     which must also match the schemes set in Opt::Instance()
+
+     This is used in the definition of the mass hierarchy so no modifications are needed in the sterile case
+  -->
+  <schemes>
+    <mixing> sinsqtheta </mixing>
+    <phase>  delta      </phase>
+    <Dmsq>   abs23      </Dmsq>
+  </schemes>
+
+
+  <param>
+    <name>
+      <simple>  sinsq2thEE  </simple>   <!-- The simple name is used to match up each XML param to the relevant PhysParamId_t -->
+    </name>
+    
+    <type>  special  </type>
+
+    <!-- The range is not to be confused with the physical limits, this is
+    an optimised range used for searching a narrower area than the physical
+    limits. Internally, this is combined with the physical limits so that
+    both ranges are used and the parameter never takes unphysical values -->
+    <range_mode>  value  </range_mode>
+    <range>  0.001, 1.0  </range>
+    
+    <init>  0.05310  </init>     <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  sinsq2thMuMu  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <range_mode>  value  </range_mode>
+    <range>  0.001, 1.0  </range>
+
+    <init>  0.07157  </init>      <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  sinsq2thMuE  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <range_mode>  value  </range_mode>
+    <range>  0.001, 1.0  </range>
+    
+    <init>  0.0009809  </init>      <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  dm41sq  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <range_mode>  value  </range_mode>
+    <range>  0.01, 10  </range>
+    
+    <init>  1.32  </init>     <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
+  </param>
+
+  <param>
+    <name>
+      <simple>  mixing23  </simple>   <!-- The simple name is used to match up each XML param to the relevant PhysParamId_t -->
+    </name>
+    
+    <type>  special  </type>
+    
+    <limits>  0, 1.0  </limits>
+    
+    <range_mode>  value  </range_mode>
+    <range>  0.0, 1.0  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.005  </step>
+    
+    <init>  0.58  </init>     <!-- NuFit 4.0 2018 -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  mixing13  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <limits>  0, 1.0  </limits>
+    
+    <range_mode>  value  </range_mode>
+    <range>  0.0, 1.0  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.001  </step>
+    
+    <init>  0.02241  </init>  <!-- NuFit 4.0 2018 -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  mixing12  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <limits>  0, 1.0  </limits>
+    
+    <range_mode>  value  </range_mode>
+    <range>  0.0, 1.0  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.01  </step>
+    
+    <init>  0.31  </init>     <!-- NuFit 4.0 2018 -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  cpv  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <limits>  -3.1416, 3.1416  </limits>
+    
+    <range_mode>  value  </range_mode>
+    <range>  -3.1416, 3.1416  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.01  </step>
+    
+    <init>  -1.55  </init>  <!-- T2K BF NH with reactor -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  dm23sq  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <range_mode>  value  </range_mode>
+    <range>  0.001, 0.005  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.0001  </step>
+    
+    <init>  0.002525  </init>     <!-- NuFit 4.0 2018 -->
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  dm12sq  </simple>
+    </name>
+    
+    <type>  special  </type>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <range_mode>  value  </range_mode>
+    <range>  1e-05, 0.00015  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  2e-06  </step>
+    
+    <init>  7.39e-05  </init>     <!-- NuFit 4.0 2018 -->
+  </param>
+  
+</param_list>
