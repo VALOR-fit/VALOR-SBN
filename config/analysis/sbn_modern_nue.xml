@@ -42,4 +42,8 @@
     </element>
 
   </element_list>
+  
+  <parameter_definitions>
+    <filename desc="physics_parameters"> params/default_physics_parameter_values.xml </filename>
+  </parameter_definitions>
 </valor> 
