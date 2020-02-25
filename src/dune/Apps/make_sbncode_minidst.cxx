@@ -118,6 +118,7 @@ int main(int argc, char ** argv)
   string opt_sample_name    = arg.GetString("sample");
   string opt_output_name    = arg.GetString("output");
   string opt_input_name     = arg.GetString("input");
+  string opt_oscillation    = arg.GetString("oscillation");
   bool   opt_disable_checks = arg.GetBool("disable-checks");
   bool   write_universes    = arg.GetBool("write-universes");
   bool   apply_weights      = !(arg.GetBool("dont-apply-weights"));
@@ -132,6 +133,20 @@ int main(int argc, char ** argv)
     VLOG("make_sbncode_minidst", pNOTICE) << " Chosen to apply valor_minidst_wght ";
   else
     VLOG("make_sbncode_minidst", pNOTICE) << " Chosen not to apply valor_minidst_wght";
+
+  // Check if we are looking at nue_disappearance from the opt_oscillation argument 
+  // so that we reject the nue appearance oscillated events later
+  string nue_dis = "nue-disappearance";
+  size_t found_nue_dis = opt_oscillation.find(nue_dis);
+  bool nue_disappearance = false;
+  if(found_nue_dis != string::npos){
+    nue_disappearance = true;
+    VLOG("make_sbncode_minidst", pINFO) 
+        << "Looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
+  }
+  else
+    VLOG("make_sbncode_minidst", pINFO) 
+        << "NOT looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
 
   // Determine sample-types
   bool is_nueint  = false;
@@ -199,13 +214,13 @@ int main(int argc, char ** argv)
   // CHECKING OUTPUT OF NEW CODE
   std::cout << " Input filename : " << opt_input_name << " - ";
   if(is_nueosc)
-    std::cout << " Selected NuE Oscillated " << std::endl;
+    std::cout << " Selected NuE, Oscillated " << std::endl;
   if(is_nueint)
-    std::cout << " Selected NuE Intrinsic " << std::endl;
+    std::cout << " Selected NuE, Intrinsic " << std::endl;
   if(is_nuenumu)
-    std::cout << " Selected NuE NuMu " << std::endl;
+    std::cout << " Selected NuE, NuMu " << std::endl;
   if(is_numu)
-    std::cout << " Selected NuMu NuMu " << std::endl;
+    std::cout << " Selected NuMu, NuMu " << std::endl;
 
   // Get the POT of the sample from the subrun tree
   double mcsample_pot = -1.;
@@ -587,6 +602,17 @@ int main(int argc, char ** argv)
             <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
             <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
           continue;
+        }
+        if(nue_disappearance && is_nueosc){
+          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [appearance oscillated event in nue disappearance template construction] "<<iev; 
+          VLOG("make_sbncode_minidst", pINFO)
+            <<"\n larsoft_mode = "<<larsoft_mode
+            <<"\n baseline = "<< baseline << " m"
+            <<"\n iscc="<<iscc<<" and isnc="<<isnc
+            <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
+          continue;
+        
         }
       }
 
