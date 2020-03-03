@@ -201,6 +201,11 @@ int main(int argc, char ** argv)
     // parameter limits, initial values etc).
     FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
+    if(fp == 0){ // Make sure that worked
+      LOG("valor_dune",pFATAL) << "FitParamList not filled";
+      util::Die(-1);
+    }
+
     model->ResetSystematics("all");
     // If required, randomise the systematics in the model, and copy them to the FPL
     if (param_values_ts.Contains("randomize")) {
@@ -244,6 +249,11 @@ int main(int argc, char ** argv)
     //~ }
 
     fp->FromPhysParamList(tweaks,"current");
+
+    if(fp == 0){ // Make sure that worked
+      LOG("valor_dune",pFATAL) << "FitParamList not filled after tweaks applied";
+      util::Die(-1);
+    }
 
     // Check parameter name, maybe rethrow
     if (!util::AllWithinLimits(*fp)) {
