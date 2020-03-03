@@ -5,8 +5,8 @@ void draw_output_covariance_matrix(
   const char * input_file,
   int entry = 0)
 {
-  const int n_tot_flux = 19*3;
-  const int n_flux     = 19;
+  const int n_tot_flux = 21*3;
+  const int n_flux     = 21;
   const int n_int      = 19;
   const int n_det      = 0;
   
@@ -21,7 +21,6 @@ void draw_output_covariance_matrix(
   
   assert(tree->GetEntries()>entry);
   tree->GetEntry(entry);
-  
   // Covariance matrix
   TMatrixD cov(*(best_fit_params->GetCovMatrix()));
   TVectorD cov_vector = valor::util::CovarianceMatrixToErrorVector(cov);
@@ -53,9 +52,9 @@ void draw_output_covariance_matrix(
 
   for(int i=0; i<n_int; i++){
     double value_sbnd_flux   = cov_vector(i);
-    double value_uboone_flux = cov_vector(i+19);
-    double value_icarus_flux = cov_vector(i+38);
-    double value_int         = cov_vector(i+57);
+    double value_uboone_flux = cov_vector(i+n_flux);
+    double value_icarus_flux = cov_vector(i+n_flux*2);
+    double value_int         = cov_vector(i+n_tot_flux);
 
     error_sbnd_flux->SetBinContent(i+1,value_sbnd_flux);
     error_uboone_flux->SetBinContent(i+1,value_uboone_flux);
@@ -71,7 +70,7 @@ void draw_output_covariance_matrix(
   for(int i=0; i<n_tot_flux; i++){
     for(int j=0; j<n_tot_flux; j++){
       double value = cov(i,j);
-      cov_flux_hist->SetBinContent(i+1,j+1,value);
+      cov_flux_hist->SetBinContent(i+1,j+1,abs(value));
     }
   }
   for(int i=0; i<n_int; i++){
@@ -122,11 +121,11 @@ void draw_output_covariance_matrix(
   canv->Print("raw_cov.root");
   canv->Clear();
   
-  unsigned int label_bin = floor(19/2);
+  unsigned int label_bin = floor(n_flux/2);
   for(unsigned int i = 0; i < 4; ++i){
     cov_hist->GetXaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
     cov_hist->GetYaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
-    label_bin += 20-floor(i/2);
+    label_bin += n_flux+1-floor(i/2);
   }
   cov_hist->GetXaxis()->LabelsOption("h");
   cov_hist->GetYaxis()->LabelsOption("v");
@@ -136,7 +135,7 @@ void draw_output_covariance_matrix(
   canv->Print("cov.root");
   canv->Clear();
   
-  label_bin = floor(19/2);
+  label_bin = floor(n_flux/2);
   for(unsigned int i = 0; i < 3; ++i){
     cov_flux_hist->GetXaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
     cov_flux_hist->GetYaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
@@ -146,11 +145,13 @@ void draw_output_covariance_matrix(
   cov_flux_hist->GetYaxis()->LabelsOption("v");
   cov_flux_hist->GetZaxis()->SetMaxDigits(3);
 //  cov_flux_hist->GetZaxis()->SetRangeUser(-0.1,0.1);
+//  cov_flux_hist->SetMinimum(0.001);
+//  cov_flux_hist->SetMaximum(0.01);
   cov_flux_hist->Draw("colz");
   canv->Print("flux_cov.root");
   canv->Clear();
   
-  label_bin = floor(19/2);
+  label_bin = floor(n_flux/2);
   for(unsigned int i = 3; i < 4; ++i){
     cov_int_hist->GetXaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
     cov_int_hist->GetYaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
@@ -158,7 +159,7 @@ void draw_output_covariance_matrix(
   cov_int_hist->GetXaxis()->LabelsOption("h");
   cov_int_hist->GetYaxis()->LabelsOption("v");
   cov_int_hist->GetZaxis()->SetMaxDigits(3);
-//  cov_int_hist->GetZaxis()->SetRangeUser(-0.1,0.1);
+//  cov_int_hist->GetZaxis()->SetRangeUser(0.001,0.01);
   cov_int_hist->Draw("colz");
   canv->Print("int_cov.root");
   canv->Clear();

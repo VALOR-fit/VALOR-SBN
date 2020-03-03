@@ -111,27 +111,32 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     b = m.GetBeam()
 
     hname_prefix = "env_sb_%s_%s" % (util.BeamConfAsString(b) , util.SampleAsString(s))
-    hname_nom = hname_prefix + "_nom;" + det
-    hname_p1  = hname_prefix + "_p1;" + det
-    hname_m1  = hname_prefix + "_m1;" + det
+    # When running all tweaks at the same time, specify using the detector identifier:
+    #hname_nom = hname_prefix + "_nom;" + det
+    #hname_p1  = hname_prefix + "_p1;" + det
+    #hname_m1  = hname_prefix + "_m1;" + det
+    # When running the tweaks for each detector individually:
+    hname_nom = hname_prefix + "_nom;1"
+    hname_p1  = hname_prefix + "_p1;1"
+    hname_m1  = hname_prefix + "_m1;1"
     #hname_data = "toymc_data_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
     if det == '1':
       if mdc is False:
         hname_data = "valor_pdfts_sb_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
       else:
-        hname_data = "toymc_data_sb_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "toymc_data_sb_rf_slice_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
 
     elif det == '2':
       if mdc is False:
         hname_data = "valor_pdfts_sb_rf_sbn_uboone__BNB_FHC__numulikeCChigh_Ereco"
       else:
-        hname_data = "toymc_data_sb_rf_sbn_uboone__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "toymc_data_sb_rf_slice_sbn_uboone__BNB_FHC__numulikeCChigh_Ereco"
 
     elif det == '3':
       if mdc is False:
         hname_data = "valor_pdfts_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
       else:
-        hname_data = "toymc_data_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "toymc_data_sb_rf_slice_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
 
     else:
       hname_data = "valor_pdfts_sb_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
