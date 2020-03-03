@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<param_list name="dummy_physics_param_values">
+<param_list name="sterile_physics_parameter_values">
 
   <!--
     EXPLANATION: This file specifies values for physics parameters which are read when
@@ -21,26 +21,25 @@
     <Dmsq>   abs23      </Dmsq>
   </schemes>
 
-
   <param>
     <name>
-      <simple>  sinsq2thEE  </simple>   <!-- The simple name is used to match up each XML param to the relevant PhysParamId_t -->
+      <simple>  sinsq2thEE  </simple>
     </name>
     
     <type>  special  </type>
-
-    <!-- The range is not to be confused with the physical limits, this is
-    an optimised range used for searching a narrower area than the physical
-    limits. Internally, this is combined with the physical limits so that
-    both ranges are used and the parameter never takes unphysical values -->
-    <range_mode>  value  </range_mode>
-    <range>  0.001, 1.0  </range>
     
-    <init>  0.05310  </init>     <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
+    <limits>  0.0, inf  </limits>
+    
+    <range_mode>  value  </range_mode>
+    <!--range>  0.0, 1.0  </range-->
+    <range>  0.0, 1000  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.01  </step>
+    
+    <init>  0.05310  </init>       <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
   </param>
   
-
-
   <param>
     <name>
       <simple>  sinsq2thMuMu  </simple>
@@ -48,29 +47,37 @@
     
     <type>  special  </type>
     
+    <limits>  0.0, inf  </limits>
+    
     <range_mode>  value  </range_mode>
-    <range>  0.001, 1.0  </range>
-
+    <!--range>  0.0, 1.0  </range-->
+    <range>  0.0, 1000  </range>
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.01  </step>
+    
     <init>  0.07157  </init>      <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
   </param>
   
-
-
   <param>
     <name>
       <simple>  sinsq2thMuE  </simple>
     </name>
     
     <type>  special  </type>
+  
+    <limits>  0.0, inf  </limits>
     
     <range_mode>  value  </range_mode>
-    <range>  0.001, 1.0  </range>
+    <range>  0.0, 1000  </range>
+    <!--range>  0.0, 1.0  </range-->
     
-    <init>  0.0009809  </init>      <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
+    <step_mode>  value  </step_mode>
+    <step>  0.01  </step>
+    
+    <init>  0.0009809 </init>      <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
   </param>
   
-
-
   <param>
     <name>
       <simple>  dm41sq  </simple>
@@ -78,10 +85,16 @@
     
     <type>  special  </type>
     
-    <range_mode>  value  </range_mode>
-    <range>  0.01, 10  </range>
+    <limits>  0, inf  </limits>
     
-    <init>  1.32  </init>     <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
+    <range_mode>  value  </range_mode>
+    <range>  0.0, 100  </range>
+    <!--range>  0.001, 100.0  </range-->
+    
+    <step_mode>  value  </step_mode>
+    <step>  0.01  </step>
+    
+    <init>  1.32  </init>      <!-- Global best fit: https://arxiv.org/pdf/1906.00045.pdf -->
   </param>
 
   <param>

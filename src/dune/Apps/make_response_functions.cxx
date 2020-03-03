@@ -154,8 +154,8 @@ int main(int argc, char ** argv)
     VLOG("make_response_func", pFATAL) << "Failed to identify appropriate fit model to get binning.";
   }
   
-  const util::RFL           & rfl      = *(fit_model->GetRFL());
-  const SingleSampleKineBinning & binning  = *(fit_model->GetBinning());
+  const util::RFL & rfl                   = *(fit_model->GetRFL());
+  const SingleSampleKineBinning & binning = *(fit_model->GetBinning());
   
   // Make it an option here to use the Xsec binning instead
   const VALORBinning * reco_ob = (binning.RecoOptBinning());
