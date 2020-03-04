@@ -116,7 +116,7 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       default  : name = "sbn_nd";  
     }
     // Now set the histogram names
-    TH1D * data       = (TH1D*) data_array->FindObject(("toymc_data_sb_rf_"+name+"__BNB_FHC__numulikeCChigh_Ereco").c_str());
+    TH1D * data       = (TH1D*) data_array->FindObject(("toymc_data_sb_rf_slice_"+name+"__BNB_FHC__numulikeCChigh_Ereco").c_str());
     TH1D * bestfit    = (TH1D*) bfmodel_array->FindObject(("best_fit_pdfts_sb_rf_"+name+"__BNB_FHC__numulikeCChigh_Ereco").c_str());
     
     // Fix binning to be per 1 GeV
@@ -129,7 +129,8 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
     bestfit->SetLineWidth(2);
     bestfit->SetLineStyle(7);
     bestfit->SetLineColor(postfit_line);
-    std::vector<TH1D*> hists, hists_width;
+    std::vector<TH1D*> hists;
+    std::vector<TH1D*> hists_width;
     hists.clear(); hists_width.clear();
     hists.push_back(data);
     hists.push_back(bestfit);
@@ -261,12 +262,15 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
 
       int nRows = cov.GetNrows();
       int nCols = cov.GetNcols();
-      TVectorD prefitE = TVectorD(nRows-3);
+      // Remove NPhysics parameters if they were included in the fit
+      TVectorD prefitE = TVectorD(nRows);
 
       int nFluxRows = flux_syst.GetNrows();
       int nFluxCols = flux_syst.GetNcols();
       int nIntRows  = int_syst.GetNrows();
       int nIntCols  = int_syst.GetNcols();
+
+      double singleFlux = nFluxRows/3.;
 
       float total_error   = 0.;
       float total_initial = 0.;
@@ -306,6 +310,15 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       const char *nameInit    = ("h_initial_"+name).c_str();
       const char *nameBestfit = ("h_bestfit_"+name).c_str();
 
+      // Neutrino flavour number of bins
+      int n_numu         = 8;
+      int n_numubar      = 5;
+      int n_nue          = 6;
+      int n_nuebar       = 2;
+      int n_numubar_bins = n_numubar+n_numu;
+      int n_nue_bins     = n_nue+n_numubar_bins;
+      int n_nuebar_bins  = n_nuebar+n_nue_bins;
+      
       // New canvas features 
       c->SetLeftMargin   (0.1); 
       c->SetRightMargin  (0.03);
@@ -315,7 +328,7 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TH1D *h_initial = new TH1D(nameInit,    "", nFluxRows+nIntRows, 0, nFluxRows+nIntRows);
       TH1D *h_bestfit = new TH1D(nameBestfit, "", nFluxRows+nIntRows, 0, nFluxRows+nIntRows);
 
-      TLegend *l = new TLegend(0.78,0.22,0.99,0.30);
+      TLegend *l = new TLegend(0.80,0.22,0.99,0.30);
       l->SetFillStyle(0);
 
       unsigned int nuisanceIt = 0;
@@ -333,21 +346,64 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
         h_bestfit->SetBinError(nuisanceBin,paramErrors[j]);
         h_initial->SetBinError(nuisanceBin,paramErrors[j]);
         h_in_clone->SetBinError(nuisanceBin,initialErrors[nuisanceIt]);
-       
+
+        // Define array of empty flux parameter bins
+        // Corresponding to 
+        //  bin expt.  flav.
+        //
+        //  14  SBND   nue00
+        //  35  uBooNE nue00
+        //  41  uBooNE nuebar00
+        //  56  ICARUS nue00
+        //  57  ICARUS nue01
+        //  62  ICARUS nuebar00
+        std::vector<int> empties      = {14,35,41,56,57,62};
+        std::vector<int>::iterator it = std::find(empties.begin(),empties.end(),nuisanceBin); 
+        if(it != empties.end()){
+          h_initial->SetBinError(nuisanceBin, 0);
+          h_in_clone->SetBinError(nuisanceBin, 0);
+          h_bestfit->SetBinError(nuisanceBin, 0);
+        }
         // Bin edges for labelling:
-        // 2, 21, 40, 59
-        // 19, 38, 57, 76
+        // Flux labels are the flavours
+        // Interaction labels are the Ereco limits
         // Nice label formatting
-        double singleFlux = nFluxRows/3.;
-        if(nuisanceBin == 2 || nuisanceBin == (singleFlux+2) || nuisanceBin == (singleFlux*2+2) || nuisanceBin == (nFluxRows+2)){ // SBND Flux
+        //
+        // Interaction bins
+        if(nuisanceBin == (nFluxRows+2)){
           h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"0.2");
           h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"0.2");
           h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"0.2");
         }
-        else if(nuisanceBin == singleFlux || nuisanceBin == (singleFlux*2) || nuisanceBin == nFluxRows || nuisanceBin == (nFluxRows+nIntRows)){ // SBND Flux
+        else if(nuisanceBin == (nFluxRows+nIntRows)){
           h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"3");
           h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"3");
           h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"3");
+        }
+        // Flux bins
+        // numu
+        if(nuisanceBin == (n_numu/2)+1 || nuisanceBin == singleFlux+(n_numu/2)+1 || nuisanceBin == singleFlux*2+(n_numu/2)+1){
+          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{#mu}");
+          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{#mu}");
+          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{#mu}");
+        }
+        // numubar
+        else if(nuisanceBin == n_numu+(n_numubar/2)+1 || nuisanceBin == singleFlux+n_numu+(n_numubar/2)+1 || nuisanceBin == singleFlux*2+n_numu+(n_numubar/2)+1){
+          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{#mu}");
+          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{#mu}");
+          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{#mu}");
+        }
+        // nue
+        else if(nuisanceBin == n_numubar_bins+(n_nue/2)+1 || nuisanceBin == singleFlux+n_numubar_bins+(n_nue/2)+1 || nuisanceBin == singleFlux*2+n_numubar_bins+(n_nue/2)+1){
+          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{e}");
+          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{e}");
+          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{e}");
+        }
+        // nuebar
+        else if(nuisanceBin == n_nue_bins+(n_nuebar/2)+1 || nuisanceBin == singleFlux+n_nue_bins+(n_nuebar/2)+1 || nuisanceBin == singleFlux*2+n_nue_bins+(n_nuebar/2)+1){
+          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
+          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
+          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
         }
       }
       TH1D *h_bf_clone = (TH1D*)h_bestfit->Clone("h_bf_clone");
@@ -356,29 +412,68 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       l->AddEntry(h_bestfit, "Postfit errors", "lf");
 
       std::cout << " Drawing nuisance parameters " << std::endl;
+ 
+      // Solid lines for detector and interaction separation
+      TLine line_sbnd  (singleFlux,   -0.07, singleFlux,   1.3);
+      TLine line_uboone(singleFlux*2, -0.07, singleFlux*2, 1.3);
+      TLine line_icarus(nFluxRows,    -0.07, nFluxRows,    1.3);
 
-      TLine line_sbnd1(19,0.995,19,1.3);
-      TLine line_uboone1(38,0.995,38,1.3);
-      TLine line_icarus1(57,0.995,57,1.3);
+      // Dashed neutrino flavour separation
+      TLine line_sbnd_numu   (n_numu,         -0.07, n_numu,         1.22);
+      TLine line_sbnd_numubar(n_numubar_bins, -0.07, n_numubar_bins, 1.22);
+      TLine line_sbnd_nue    (n_nue_bins,     -0.07, n_nue_bins,     1.22);
+      TLine line_sbnd_nuebar (n_nuebar_bins,  -0.07, n_nuebar_bins,  1.22);
+      
+      TLine line_uboone_numu   (singleFlux+n_numu,         -0.07, singleFlux+n_numu,         1.22);
+      TLine line_uboone_numubar(singleFlux+n_numubar_bins, -0.07, singleFlux+n_numubar_bins, 1.22);
+      TLine line_uboone_nue    (singleFlux+n_nue_bins,     -0.07, singleFlux+n_nue_bins,     1.22);
+      TLine line_uboone_nuebar (singleFlux+n_nuebar_bins,  -0.07, singleFlux+n_nuebar_bins,  1.22);
+      
+      TLine line_icarus_numu   ((singleFlux*2)+n_numu,         -0.07, (singleFlux*2)+n_numu,         1.22);
+      TLine line_icarus_numubar((singleFlux*2)+n_numubar_bins, -0.07, (singleFlux*2)+n_numubar_bins, 1.22);
+      TLine line_icarus_nue    ((singleFlux*2)+n_nue_bins,     -0.07, (singleFlux*2)+n_nue_bins,     1.22);
+      TLine line_icarus_nuebar ((singleFlux*2)+n_nuebar_bins,  -0.07, (singleFlux*2)+n_nuebar_bins,  1.22);
+      
+      std::vector<TLine> lines_sbnd = {line_sbnd, line_sbnd_numu, line_sbnd_numubar, line_sbnd_nue, line_sbnd_nuebar};
+      std::vector<TLine> lines_uboone = {line_uboone, line_uboone_numu, line_uboone_numubar, line_uboone_nue, line_uboone_nuebar};
+      std::vector<TLine> lines_icarus = {line_icarus, line_icarus_numu, line_icarus_numubar, line_icarus_nue, line_icarus_nuebar};
 
-      line_sbnd1.SetLineColor(kAzure+7);
-      line_uboone1.SetLineColor(kPink+5);
-      line_icarus1.SetLineColor(kOrange-3);
+      for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
+        lines_sbnd[i].SetLineColor(kAzure+7);
+        lines_uboone[i].SetLineColor(kPink+5);
+        lines_icarus[i].SetLineColor(kOrange-3);
 
-      h_bestfit->Draw("E4");
+        if(i == 0){
+          lines_sbnd[i].SetLineWidth(2);
+          lines_uboone[i].SetLineWidth(2);
+          lines_icarus[i].SetLineWidth(2);
+        }
+        else{
+          lines_sbnd[i].SetLineWidth(1);
+          lines_uboone[i].SetLineWidth(1);
+          lines_icarus[i].SetLineWidth(1);
+          lines_sbnd[i].SetLineStyle(7);
+          lines_uboone[i].SetLineStyle(7);
+          lines_icarus[i].SetLineStyle(7);
+        }
+      }
+
+      h_bestfit->Draw("E2");
+      h_bestfit->GetYaxis()->SetRangeUser(-0.05,1.2);
       h_bf_clone->Draw("same hist");
-      //h_initial->Draw("same hist");
-      line_sbnd1.Draw("same");
-      line_uboone1.Draw("same");
-      line_icarus1.Draw("same");
+      for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
+        lines_sbnd[i].Draw("same");
+        lines_uboone[i].Draw("same");
+        lines_icarus[i].Draw("same");
+      }
       h_bestfit->LabelsOption("h");
-      h_bestfit->GetXaxis()->SetLabelSize(0.035);
+      h_bestfit->GetXaxis()->SetLabelSize(0.04);
       h_bestfit->GetXaxis()->SetTitleSize(0.035);
       h_bestfit->GetXaxis()->SetTitleOffset(1.2);
-      h_bestfit->GetYaxis()->SetLabelSize(0.03);
+      h_bestfit->GetYaxis()->SetLabelSize(0.035);
       h_bestfit->GetYaxis()->SetTitleSize(0.035);
       h_bestfit->GetYaxis()->SetTitleOffset(1.4);
-      h_bestfit->GetXaxis()->SetTitle("Nuisance parameter in E_{Reco} [GeV] bins");
+      h_bestfit->GetXaxis()->SetTitle("Nuisance parameter - Flux: E_{True}, Int.: E_{Reco} [GeV]");
       h_bestfit->GetYaxis()->SetTitle("Parameter value");
       h_bestfit->SetMarkerSize(0);
       h_bestfit->SetLineColor(postfit_line);
@@ -393,10 +488,10 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TLatex latex;
       latex.SetTextAlign(11); // Align at bottom
       latex.SetTextSize(0.03);
-      latex.DrawLatex(4.60, 1.00485,"#color[867]{SBND Flux}");
-      latex.DrawLatex(21.60,1.00485,"#color[905]{#muBooNE Flux}");
-      latex.DrawLatex(40.66,1.00485,"#color[797]{ICARUS Flux}");
-      latex.DrawLatex(62.32,1.00485,"#color[835]{Interaction}");
+      latex.DrawLatex(5.70,  1.25,"#color[867]{SBND Flux}");
+      latex.DrawLatex(26.80, 1.25,"#color[905]{#muBooNE Flux}");
+      latex.DrawLatex(46.66, 1.25,"#color[797]{ICARUS Flux}");
+      latex.DrawLatex(68.68, 1.25,"#color[835]{Interaction}");
 
       l->Draw();
       l->SetBorderSize(0);
@@ -405,13 +500,13 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
 
       c->Update();
       c->Draw();
-      c->SaveAs(("nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
-      c->SaveAs(("nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
-      c->SaveAs(("nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
+      c->SaveAs(("postfit-only_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
+      c->SaveAs(("postfit-only_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
+      c->SaveAs(("postfit-only_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
       c->Clear();
       l->Clear();
 
-      TLegend *l_in = new TLegend(0.75,0.19,0.96,0.35);
+      TLegend *l_in = new TLegend(0.80,0.19,0.99,0.35);
       l_in->SetFillStyle(0);
       l_in->SetBorderSize(0);
       l_in->SetFillColor(0);
@@ -420,29 +515,39 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       l_in->AddEntry(h_initial, "Postfit errors", "lf");
       l_in->AddEntry(h_in_clone, "Prefit errors", "lf");
       
-      TLine line_sbnd(19,0.78,19,1.3);
-      TLine line_uboone(38,0.78,38,1.3);
-      TLine line_icarus(57,0.78,57,1.3);
-
-      line_sbnd.SetLineColor(kAzure+7);
-      line_uboone.SetLineColor(kPink+5);
-      line_icarus.SetLineColor(kOrange-3);
-
       h_in_clone->Draw("E4");
-      h_in_clone->GetYaxis()->SetRangeUser(0.8,1.2);
+      h_in_clone->GetYaxis()->SetRangeUser(0.4,1.6);
       h_initial->Draw("same E4");
-      line_sbnd.Draw("same");
-      line_uboone.Draw("same");
-      line_icarus.Draw("same");
+      for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
+        if(i == 0){
+          lines_sbnd[i].SetY2(1.7);
+          lines_sbnd[i].SetY1(0.38);
+          lines_uboone[i].SetY2(1.7);
+          lines_uboone[i].SetY1(0.38);
+          lines_icarus[i].SetY2(1.7);
+          lines_icarus[i].SetY1(0.38);
+        }
+        else{
+          lines_sbnd[i].SetY1(0.38);
+          lines_sbnd[i].SetY2(1.62);
+          lines_uboone[i].SetY1(0.38);
+          lines_uboone[i].SetY2(1.62);
+          lines_icarus[i].SetY1(0.38);
+          lines_icarus[i].SetY2(1.62);
+        }
+        lines_sbnd[i].Draw("same");
+        lines_uboone[i].Draw("same");
+        lines_icarus[i].Draw("same");
+      }
       h_in_clone2->Draw("hist same l");
       h_in_clone->LabelsOption("h");
-      h_in_clone->GetXaxis()->SetLabelSize(0.035);
+      h_in_clone->GetXaxis()->SetLabelSize(0.04);
       h_in_clone->GetXaxis()->SetTitleSize(0.035);
       h_in_clone->GetXaxis()->SetTitleOffset(1.2);
-      h_in_clone->GetYaxis()->SetLabelSize(0.03);
+      h_in_clone->GetYaxis()->SetLabelSize(0.035);
       h_in_clone->GetYaxis()->SetTitleSize(0.035);
       h_in_clone->GetYaxis()->SetTitleOffset(1.35);
-      h_in_clone->GetXaxis()->SetTitle("Nuisance parameter in E_{Reco} [GeV] bins");
+      h_in_clone->GetXaxis()->SetTitle("Nuisance parameter - Flux: E_{True}, Int.: E_{Reco} [GeV]");
       h_in_clone->GetYaxis()->SetTitle("Parameter value");
       h_initial->SetMarkerSize(0);
       h_initial->SetFillColor(postfit_color);
@@ -462,38 +567,41 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TLatex latex1;
       latex1.SetTextAlign(11); // Align at bottom
       latex1.SetTextSize(0.03);
-      latex1.DrawLatex(4.60, 1.21,"#color[867]{SBND Flux}");
-      latex1.DrawLatex(21.60,1.21,"#color[905]{#muBooNE Flux}");
-      latex1.DrawLatex(40.66,1.21,"#color[797]{ICARUS Flux}");
-      latex1.DrawLatex(62.32,1.21,"#color[835]{Interaction}");
-
+      latex1.DrawLatex(5.70,  1.65,"#color[867]{SBND Flux}");
+      latex1.DrawLatex(26.80, 1.65,"#color[905]{#muBooNE Flux}");
+      latex1.DrawLatex(46.66, 1.65,"#color[797]{ICARUS Flux}");
+      latex1.DrawLatex(68.68, 1.65,"#color[835]{Interaction}");
+ 
       c->Update();
       c->Draw();
-      c->SaveAs(("initial_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
-      c->SaveAs(("initial_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
-      c->SaveAs(("initial_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
+      c->SaveAs(("prefit-postfit_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
+      c->SaveAs(("prefit-postfit_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
+      c->SaveAs(("prefit-postfit_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
       c->Clear();
 
-      TLegend *l_pre = new TLegend(0.77,0.18,0.98,0.27);
+      TLegend *l_pre = new TLegend(0.80,0.18,0.99,0.27);
       l_pre->SetFillStyle(0);
       l_pre->SetBorderSize(0);
       l_pre->SetFillColor(0);
       l_pre->SetTextFont(132);
 
+      
       l_pre->AddEntry(h_in_clone, "Prefit errors", "lf");
       h_in_clone->Draw("E4");
-      h_in_clone->GetYaxis()->SetRangeUser(0.8,1.2);
+      h_in_clone->GetYaxis()->SetRangeUser(0.4,1.6);
       h_in_clone2->Draw("hist same l");
-      line_sbnd.Draw("same");
-      line_uboone.Draw("same");
-      line_icarus.Draw("same");
-      h_in_clone->GetXaxis()->SetLabelSize(0.035);
+      for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
+        lines_sbnd[i].Draw("same");
+        lines_uboone[i].Draw("same");
+        lines_icarus[i].Draw("same");
+      }
+      h_in_clone->GetXaxis()->SetLabelSize(0.04);
       h_in_clone->GetXaxis()->SetTitleSize(0.035);
       h_in_clone->GetXaxis()->SetTitleOffset(1.2);
-      h_in_clone->GetYaxis()->SetLabelSize(0.03);
+      h_in_clone->GetYaxis()->SetLabelSize(0.035);
       h_in_clone->GetYaxis()->SetTitleSize(0.035);
       h_in_clone->GetYaxis()->SetTitleOffset(1.35);
-      h_in_clone->GetXaxis()->SetTitle("Nuisance parameter in E_{Reco} [GeV] bins");
+      h_in_clone->GetXaxis()->SetTitle("Nuisance parameter - Flux: E_{True}, Int.: E_{Reco} [GeV]");
       h_in_clone->GetYaxis()->SetTitle("Parameter value");
       h_in_clone2->SetLineStyle(1);
       h_in_clone2->SetLineWidth(1);
@@ -508,17 +616,17 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TLatex latex2;
       latex2.SetTextAlign(11); // Align at bottom
       latex2.SetTextSize(0.03);
-      latex2.DrawLatex(4.60, 1.21,"#color[867]{SBND Flux}");
-      latex2.DrawLatex(21.60,1.21,"#color[905]{#muBooNE Flux}");
-      latex2.DrawLatex(40.66,1.21,"#color[797]{ICARUS Flux}");
-      latex2.DrawLatex(62.32,1.21,"#color[835]{Interaction}");
+      latex2.DrawLatex(5.70,  1.65,"#color[867]{SBND Flux}");
+      latex2.DrawLatex(26.80, 1.65,"#color[905]{#muBooNE Flux}");
+      latex2.DrawLatex(46.66, 1.65,"#color[797]{ICARUS Flux}");
+      latex2.DrawLatex(68.68, 1.65,"#color[835]{Interaction}");
 
 
       c->Update();
       c->Draw();
-      c->SaveAs(("prefit_only_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
-      c->SaveAs(("prefit_only_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
-      c->SaveAs(("prefit_only_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
+      c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
+      c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
+      c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
       c->Clear();
 
       prefitE.Draw();
