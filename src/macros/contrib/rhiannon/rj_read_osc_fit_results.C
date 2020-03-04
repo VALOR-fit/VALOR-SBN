@@ -71,7 +71,7 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
   fitnt->SetBranchAddress("best_fit_model",         &bfmodel_array);
   fitnt->SetBranchAddress("data",                   &data_array);
 
-  TCanvas *c = new TCanvas("c","",20,20,500,500);
+  TCanvas *c = new TCanvas("c","",0,20,1024,720);
   TLegend *l_bestfit = new TLegend(0.63,0.68,0.88,0.88);
   l_bestfit->SetBorderSize(0);
 
@@ -501,8 +501,6 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       c->Update();
       c->Draw();
       c->SaveAs(("postfit-only_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
-      c->SaveAs(("postfit-only_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
-      c->SaveAs(("postfit-only_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
       c->Clear();
       l->Clear();
 
@@ -515,9 +513,9 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       l_in->AddEntry(h_initial, "Postfit errors", "lf");
       l_in->AddEntry(h_in_clone, "Prefit errors", "lf");
       
-      h_in_clone->Draw("E4");
+      h_in_clone->Draw("E2");
       h_in_clone->GetYaxis()->SetRangeUser(0.4,1.6);
-      h_initial->Draw("same E4");
+      h_initial->Draw("same E2");
       for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
         if(i == 0){
           lines_sbnd[i].SetY2(1.7);
@@ -575,8 +573,6 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       c->Update();
       c->Draw();
       c->SaveAs(("prefit-postfit_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
-      c->SaveAs(("prefit-postfit_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
-      c->SaveAs(("prefit-postfit_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
       c->Clear();
 
       TLegend *l_pre = new TLegend(0.80,0.18,0.99,0.27);
@@ -587,7 +583,7 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
 
       
       l_pre->AddEntry(h_in_clone, "Prefit errors", "lf");
-      h_in_clone->Draw("E4");
+      h_in_clone->Draw("E2");
       h_in_clone->GetYaxis()->SetRangeUser(0.4,1.6);
       h_in_clone2->Draw("hist same l");
       for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
@@ -625,8 +621,6 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       c->Update();
       c->Draw();
       c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
-      c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+".pdf").c_str());
-      c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+".png").c_str());
       c->Clear();
 
       prefitE.Draw();
