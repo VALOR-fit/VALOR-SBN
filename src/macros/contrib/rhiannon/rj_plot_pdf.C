@@ -375,10 +375,10 @@ void rj_plot_pdf(
         if(found_cut_str != std::string::npos){
           title_sample.replace(found_cut_str,to_cut.length(),"");
         }
+
         TString contrib_title_str = TString::Format("%s, %s",
-          vutil::AsStringTeX(d).c_str(), title_sample.c_str());
+          vutil::AsStringTeX(d,true).c_str(), title_sample.c_str());
         TLatex * contrib_title = new TLatex(0.3,1.07*mode_max,contrib_title_str.Data());
-        std::cout << "Nice title: " << contrib_title_str.Data() << std::endl;
         contrib_title->Draw(); 
         if(vutil::IsCC(s)) {  
            contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
