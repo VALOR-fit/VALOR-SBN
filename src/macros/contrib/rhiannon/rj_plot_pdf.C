@@ -355,7 +355,10 @@ void rj_plot_pdf(
 
           mode_max += relevant_hist->GetMaximum();
         }//imodec
-        
+       
+        if(plot_data){
+          contrib_legend->AddEntry(data_hist, "Oscillated", "P");
+        }
         float max_y = std::max(mode_max, std::max(data_max, total_max)) * 1.1;
 
         if(format == 0) total_hist->GetYaxis()->SetRangeUser(0,max_y);
@@ -365,9 +368,17 @@ void rj_plot_pdf(
 
         TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*mode_max);
         contrib_frame->Draw();
-        TString contrib_title_str = TString::Format("%s / %s / %s",
-          vutil::AsString(d).c_str(), vutil::AsString(b).c_str(), vutil::AsStringTeX(s,true).c_str());
+        std::string nice_sample = "";
+        std::string to_cut = "high-resolution";
+        std::string title_sample = vutil::AsStringTeX(s,true);
+        std::size_t found_cut_str = title_sample.find(to_cut);
+        if(found_cut_str != std::string::npos){
+          title_sample.replace(found_cut_str,to_cut.length(),"");
+        }
+        TString contrib_title_str = TString::Format("%s, %s",
+          vutil::AsStringTeX(d).c_str(), title_sample.c_str());
         TLatex * contrib_title = new TLatex(0.3,1.07*mode_max,contrib_title_str.Data());
+        std::cout << "Nice title: " << contrib_title_str.Data() << std::endl;
         contrib_title->Draw(); 
         if(vutil::IsCC(s)) {  
            contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
