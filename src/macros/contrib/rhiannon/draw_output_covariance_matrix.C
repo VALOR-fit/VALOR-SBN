@@ -3,11 +3,18 @@
 
 void draw_output_covariance_matrix(
   const char * input_file,
+  int nFlux = -1, // Number of flux bins 
+  int nInt  = -1, // Number of interaction bins
   int entry = 0)
 {
-  const int n_tot_flux = 21*3;
-  const int n_flux     = 21;
-  const int n_int      = 19;
+
+  if(nFlux < 0 || nInt < 0){
+    std::cerr << "Either the number of flux bins or the number of interaction bins hasn't been specified properly, flux: " << nFlux << ", interaction: " << nInt << std::endl;
+    std::exit(1);
+  }
+  const int n_tot_flux = nFlux*3;
+  const int n_flux     = nFlux;
+  const int n_int      = nInt;
   const int n_det      = 0;
   
   const int n_params = n_tot_flux+n_int+n_det;
