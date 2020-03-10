@@ -86,6 +86,7 @@ TARBALL=""
 INTERACTIVE=0
 JOBDIR=""
 NJOBS=0
+PRIORFILE=""
 
 valorfailed=false
 
@@ -283,6 +284,13 @@ while [ $# -gt 0 ]; do
       fi
       ;;
 
+    --prior-file )
+      if [ $# -gt 1 ]; then
+        PRIORFILE=$2
+        shift
+      fi
+      ;;
+
       # Other.
       * )
       echo "Invalid Setting $1 with value $2"
@@ -319,6 +327,7 @@ echo "MESGTHRESHOLD $MESGTHRESHOLD"
 echo "TARBALL = $TARBALL"
 echo "INTERACTIVE = $INTERACTIVE"
 echo "NJOBS = $NJOBS" 
+echo "PRIORFILE = $PRIORFILE"
 
 if [ $INTERACTIVE -eq 1 ]; then
   rm -rf $PWD/scratch
@@ -337,6 +346,14 @@ if [ x$CONFIGFILE = x ]; then
   echo "No configuration was specified."
   exit 1
 fi
+
+#First Check that we have a prior file 
+if [ x$PRIORFILE = x ]; then
+  echo "No prior file was specified."
+  exit 1
+fi
+
+
 
 #Check we have a directory to put things
 if [ x$JOBDIR = x ]; then
@@ -369,6 +386,13 @@ CONFIGCUT=${CONFIGFILE:0:5}
 
 if [ "$CONFIGCUT" != "/pnfs" ] && ! [ $INTERACTIVE ]; then 
   echo "config file  is not on dCache. Please fix" 
+  exit 1
+fi 
+
+PRIORCUT=${PRIORFILE:0:5}
+
+if [ "$PRIORCUT" != "/pnfs" ] && ! [ $INTERACTIVE ]; then 
+  echo "prior file is not on dCache. Please fix" 
   exit 1
 fi 
 
@@ -459,6 +483,19 @@ if [ "$CONFIGCUT" == "/pnfs" ]; then
   mv $CONFIGNAME config.xml
 fi 
 
+if [ "$PRIORCUT" == "/pnfs" ]; then 
+  echo "Copying prior file"
+  timeout 20s ifdh cp -D $PRIORFILE $_CONDOR_SCRATCH_DIR
+  if [ $? -ne 0 ]; then
+    echo "Error $? when copying the prior file"
+    exit 73
+  fi
+
+  PRIORNAME="${PRIORFILE##*/}"
+  PRIORFILE="prior.xml"
+  mv $PRIORNAME prior.xml
+fi 
+
 
 #Copy the tarball over 
 echo "Copying  tar file"
@@ -543,7 +580,7 @@ do
     --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
     --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct \
     $SHOULDSTORE --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE \
-    --pot-override $POTOVERIDE ";
+    --pot-override $POTOVERIDE --prior-file $PRIORFILE ";
 
   if [ $DISCOVERY == 0 ]; then 
     arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant  --fix-at-$PARAM1 $VAL1 --fix-$PARAM1 ";
@@ -556,14 +593,14 @@ do
   else 
     arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant "
     arguments=$arguments$standard_options
-    argparam1=" --input-$PARAM1 $PARAM1NULLHYP \
-      --fix-at-$PARAM1 $VAL1 \
+    argparam1=" --input-$PARAM1 $VAL1 \
+      --fix-at-$PARAM1 $PARAM1NULLHYP \
       --fix-$PARAM1 ";
     arguments=$arguments$argparam1
     if  [ "$ONLY1DSCAN" = false  ]; then
       arguments=$arguments
-      argparam2=" --input-$PARAM2 $PARAM2NULLHYP \
-        --fix-at-$PARAM2 $VAL2 \
+      argparam2=" --input-$PARAM2 $VAL2 \
+        --fix-at-$PARAM2 $PARAM2NULLHYP \
         --fix-$PARAM2 ";
       arguments=$arguments$argparam2
     fi
@@ -604,7 +641,4 @@ if [ $valorfailed = true ]; then
 fi
 
 exit 0
-
-
-
 
