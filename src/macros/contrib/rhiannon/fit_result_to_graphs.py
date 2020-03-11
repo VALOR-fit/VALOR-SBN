@@ -32,29 +32,44 @@ colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.k
 param_x = conv.kPhypMixingMuMu # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
 param_y = conv.kPhypDm41sq
 
-x_min = 1E-3 #exlusion
-x_max = 1
-#x_min = 1E-2 #allowed
-#x_max = 5E-1
+ex_x_min = 1E-3 #exlusion
+ex_x_max = 1
+
+in_x_min = 1E-2 #allowed
+in_x_max = 5E-1
+
 x_npoints = 40
 
-y_min = 1E-2 #exlusion
-y_max = 1E2
-#y_min = 4E-1 #allowed
-#y_max = 4.
+ex_y_min = 1E-2 #exlusion
+ex_y_max = 1E2
+
+in_y_min = 4E-1 #allowed
+in_y_max = 4.
+
 y_npoints = 40
 
 ndim = 2
 
 eps = 1E-10 # a small number to guarantee our point goes in its bin
 
-def GetLoggedHist(filename):
+def GetLoggedHist(filename,exclusion):
   print(filename)
   chain = R.TChain("valor_dune_nd_ntp")
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())
   chain.GetEntry(0)
+
+  # Set the maximum and minimum axes limits based on contour type
+  x_max = ex_x_max
+  x_min = ex_x_min
+  y_max = ex_y_max
+  y_min = ex_y_min
+  if exclusion is False:
+    x_max = in_x_max
+    x_min = in_x_min
+    y_max = in_y_max
+    y_min = in_y_min
 
   hist = R.TH2D("hist","",
     x_npoints,math.log10(x_min),math.log10(x_max),
@@ -64,10 +79,10 @@ def GetLoggedHist(filename):
   for ev in chain:
     fp = ev.best_fit_params
     true = ev.true_params
-    x = fp.CurrValue(param_x)
-    y = fp.CurrValue(param_y)
-   # x = true.Value(param_x)
-   # y = true.Value(param_y)
+    #x = fp.CurrValue(param_x)
+    #y = fp.CurrValue(param_y)
+    x = true.Value(param_x)
+    y = true.Value(param_y)
     stat = max(0.,fp.GetBestFitStatistic())
 
     logx = math.log10(x)
@@ -102,9 +117,9 @@ def UnlogGraph(graph):
   new_graph = R.TGraph(n,10**x,10**y)
   return new_graph
 
-def main(files,tag,label):
+def main(files,tag,label,exclusion):
 
-  logged_hists = [GetLoggedHist(f) for f in files]
+  logged_hists = [GetLoggedHist(f,exclusion) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
   canv.SetTopMargin(0.03)
   canv.SetRightMargin(0.03)
@@ -120,8 +135,12 @@ def main(files,tag,label):
 
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
-      #dchisq = util.DeltaChisquare(cl,2)
-      dchisq = util.DeltaChisquareOneSided(cl,1)
+      # 1-sided scan if exclusion plot
+      if exclusion is True:
+        dchisq = util.DeltaChisquareOneSided(cl,1)
+      # 2-sided scan if acceptance plot
+      else:
+        dchisq = util.DeltaChisquare(cl,2)
 
       if (dchisq < 0): continue
       logged_graphs = MakeContour(h,dchisq)
@@ -139,7 +158,8 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options] patterns",description="Make plots of deltaCP sensitivity")
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
+  parser.add_option('-e','--exclusion', dest='exclusion',default="True",help='Boolean for whether we are producing exclusion or inclusion contours')
 
   options,patterns = parser.parse_args()
 
-  main(patterns,options.tag, options.label)
+  main(patterns,options.tag, options.label, options.exclusion)
