@@ -16,7 +16,7 @@ Mock data
 
   <dst> 
     <bnb_fhc>
-      <filename> /sbnd/data/users/rsjones/VALOR/VALOR-DUNE-LBL/data/sbn/mock-data-challenge/version3/sbnd/data/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_1.root </filename> 
+      <filename> sbn/mock-data-challenge/version4/sbnd/data/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_1.root </filename> 
       <objname>  valor_sbncode_mini_dst </objname> 
       <objtype>  TTree    </objtype> 
     </bnb_fhc>
