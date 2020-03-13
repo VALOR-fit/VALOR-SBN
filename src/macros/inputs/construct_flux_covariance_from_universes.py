@@ -169,10 +169,10 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
       # Check the diagonal case
       if n == m:
         if math.isnan(frac_cov[n][m]):
-          frac_cov[n][m] = 1 #100% for used table, 0 for printing
+          frac_cov[n][m] = 1 # 100% for used table
       else:
         if math.isnan(frac_cov[n][m]):
-          frac_cov[n][m] = 0.5 # setting the off-diagonal elements of the empty bins to have a 50% error to compare with setting them to 0
+          frac_cov[n][m] = 0 # setting the off-diagonal elements of the empty bins to be 0
 
   total_entries = 0
   for n in range(nRows):
@@ -185,6 +185,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
 
   outfile = R.TFile(output,"RECREATE")
   frac_cov.Write("frac_cov")
+  err.Write("frac_err")
   corr.Write("corr")
 
   print "Done"
