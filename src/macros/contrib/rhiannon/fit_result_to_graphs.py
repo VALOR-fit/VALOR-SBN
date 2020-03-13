@@ -66,6 +66,7 @@ def GetLoggedHist(filename,exclusion):
   y_max = ex_y_max
   y_min = ex_y_min
   if exclusion is False:
+    print "Exclusion is false, setting inclusion limits"
     x_max = in_x_max
     x_min = in_x_min
     y_max = in_y_max
@@ -79,10 +80,13 @@ def GetLoggedHist(filename,exclusion):
   for ev in chain:
     fp = ev.best_fit_params
     true = ev.true_params
-    #x = fp.CurrValue(param_x)
-    #y = fp.CurrValue(param_y)
     x = true.Value(param_x)
     y = true.Value(param_y)
+    if exclusion is False:
+      print "Exclusion is false, setting inclusion parameters"
+      x = fp.CurrValue(param_x)
+      y = fp.CurrValue(param_y)
+
     stat = max(0.,fp.GetBestFitStatistic())
 
     logx = math.log10(x)
@@ -119,6 +123,7 @@ def UnlogGraph(graph):
 
 def main(files,tag,label,exclusion):
 
+  print "Exclusion: ", exclusion
   logged_hists = [GetLoggedHist(f,exclusion) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
   canv.SetTopMargin(0.03)
@@ -136,10 +141,11 @@ def main(files,tag,label,exclusion):
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
       # 1-sided scan if exclusion plot
-      if exclusion is True:
-        dchisq = util.DeltaChisquareOneSided(cl,1)
+      print "One-sided delta chi-squared scan"
+      dchisq = util.DeltaChisquareOneSided(cl,1)
       # 2-sided scan if acceptance plot
-      else:
+      if exclusion is False:
+        print "Exclusion is false, getting two-sided delta chi-squared scan"
         dchisq = util.DeltaChisquare(cl,2)
 
       if (dchisq < 0): continue
