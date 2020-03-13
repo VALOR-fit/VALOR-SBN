@@ -138,12 +138,12 @@ void draw_output_covariance_matrix(
   error_int->SetLineStyle(7);
   error_int->SetLineWidth(2);
 
-  error_sbnd_flux->GetXaxis()->SetTitle("Energy bin number");
-  error_sbnd_flux->GetYaxis()->SetTitle("Parameter value");
-  error_sbnd_flux->GetYaxis()->SetRangeUser(0.028,0.11);
   error_sbnd_flux->Draw();
   error_uboone_flux->Draw("same");
   error_icarus_flux->Draw("same");
+  error_sbnd_flux->GetXaxis()->SetTitle("Energy bin number");
+  error_sbnd_flux->GetYaxis()->SetTitle("Parameter value");
+  error_sbnd_flux->GetYaxis()->SetRangeUser(0.028,0.11);
   error_int->Draw("same");
   l_error->Draw("same");
 
@@ -161,6 +161,7 @@ void draw_output_covariance_matrix(
   canv->Print("raw_cov.root");
   canv->Clear();
   
+  cov_hist->Draw("colz");
   unsigned int label_bin = floor(n_flux/2);
   for(unsigned int i = 0; i < 4; ++i){
     cov_hist->GetXaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
@@ -170,12 +171,13 @@ void draw_output_covariance_matrix(
   cov_hist->GetXaxis()->LabelsOption("h");
   cov_hist->GetYaxis()->LabelsOption("v");
   cov_hist->GetZaxis()->SetMaxDigits(3);
+  cov_hist->GetZaxis()->SetLabelSize(0.03);
   cov_hist->SetMinimum(all_min);
   cov_hist->SetMaximum(all_max);
-  cov_hist->Draw("colz");
   canv->Print("cov.root");
   canv->Clear();
   
+  cov_flux_hist->Draw("colz");
   label_bin = floor(n_flux/2);
   for(unsigned int i = 0; i < 3; ++i){
     cov_flux_hist->GetXaxis()->SetBinLabel(label_bin,bin_labels[i].c_str());
@@ -185,22 +187,22 @@ void draw_output_covariance_matrix(
   cov_flux_hist->GetXaxis()->LabelsOption("h");
   cov_flux_hist->GetYaxis()->LabelsOption("v");
   cov_flux_hist->GetZaxis()->SetMaxDigits(3);
+  cov_flux_hist->GetZaxis()->SetLabelSize(0.03);
   cov_flux_hist->SetMinimum(flux_min);
   cov_flux_hist->SetMaximum(flux_max);
-  cov_flux_hist->Draw("colz");
   canv->Print("flux_cov.root");
   canv->Clear();
 
+  cov_int_hist->Draw("colz");
   label_bin = floor(n_int/2);
   cov_int_hist->GetXaxis()->SetBinLabel(label_bin,bin_labels[3].c_str());
   cov_int_hist->GetYaxis()->SetBinLabel(label_bin,bin_labels[3].c_str());
-  
   cov_int_hist->GetXaxis()->LabelsOption("h");
   cov_int_hist->GetYaxis()->LabelsOption("v");
   cov_int_hist->GetZaxis()->SetMaxDigits(3);
+  cov_int_hist->GetZaxis()->SetLabelSize(0.03);
   cov_int_hist->SetMinimum(int_min);
   cov_int_hist->SetMaximum(int_max);
-  cov_int_hist->Draw("colz");
   canv->Print("int_cov.root");
   canv->Clear();
 
@@ -217,10 +219,11 @@ void draw_output_covariance_matrix(
 
   const int nshades = 200;
   int red_blue_palette = valor::util::CreateRedToBlueColorPalette(nshades);
+  corr_hist->Draw("colz");
   corr_hist->SetContour(nshades);
   corr_hist->GetZaxis()->SetRangeUser(-1.,1.);
   corr_hist->GetZaxis()->SetMaxDigits(3);
-  corr_hist->Draw("colz");
+  corr_hist->GetZaxis()->SetLabelSize(0.03);
   canv->Update();
   canv->Print("corr.root");
   canv->Clear();
@@ -266,22 +269,24 @@ void draw_output_covariance_matrix(
       label_bin += (n_flux+1)-floor(i/2);
     }
 
+    cov_flux_prefit_hist->Draw("colz");
     cov_flux_prefit_hist->GetXaxis()->LabelsOption("h");
     cov_flux_prefit_hist->GetYaxis()->LabelsOption("v");
     cov_flux_prefit_hist->GetZaxis()->SetMaxDigits(3);
+    cov_flux_prefit_hist->GetZaxis()->SetLabelSize(0.03);
     cov_flux_prefit_hist->SetMinimum(pre_flux_min);
     cov_flux_prefit_hist->SetMaximum(pre_flux_max);
-    cov_flux_prefit_hist->Draw("colz");
     canv->Print("flux_prefit_cov.root");
     canv->Clear();
 
     int flux_red_blue_palette = valor::util::CreateRedToBlueColorPalette(nshades);
+    corr_flux_prefit_hist->Draw("colz");
     corr_flux_prefit_hist->GetXaxis()->LabelsOption("h");
     corr_flux_prefit_hist->GetYaxis()->LabelsOption("v");
     corr_flux_prefit_hist->SetContour(nshades);
     corr_flux_prefit_hist->GetZaxis()->SetRangeUser(-1.,1.);
     corr_flux_prefit_hist->GetZaxis()->SetMaxDigits(3);
-    corr_flux_prefit_hist->Draw("colz");
+    corr_flux_prefit_hist->GetZaxis()->SetLabelSize(0.03);
     canv->Update();
     canv->Print("corr_flux_prefit.root");
     canv->Clear();
@@ -325,22 +330,24 @@ void draw_output_covariance_matrix(
     corr_int_prefit_hist->GetXaxis()->SetBinLabel(label_bin,bin_labels[3].c_str());
     corr_int_prefit_hist->GetYaxis()->SetBinLabel(label_bin,bin_labels[3].c_str());
 
+    cov_int_prefit_hist->Draw("colz");
     cov_int_prefit_hist->GetXaxis()->LabelsOption("h");
     cov_int_prefit_hist->GetYaxis()->LabelsOption("v");
     cov_int_prefit_hist->GetZaxis()->SetMaxDigits(3);
+    cov_int_prefit_hist->GetZaxis()->SetLabelSize(0.03);
     cov_int_prefit_hist->SetMinimum(pre_int_min);
     cov_int_prefit_hist->SetMaximum(pre_int_max);
-    cov_int_prefit_hist->Draw("colz");
     canv->Print("int_prefit_cov.root");
     canv->Clear();
   
     int int_red_blue_palette = valor::util::CreateRedToBlueColorPalette(nshades);
+    corr_int_prefit_hist->Draw("colz");
     corr_int_prefit_hist->GetXaxis()->LabelsOption("h");
     corr_int_prefit_hist->GetYaxis()->LabelsOption("v");
     corr_int_prefit_hist->SetContour(nshades);
     corr_int_prefit_hist->GetZaxis()->SetRangeUser(-1.,1.);
     corr_int_prefit_hist->GetZaxis()->SetMaxDigits(3);
-    corr_int_prefit_hist->Draw("colz");
+    corr_int_prefit_hist->GetZaxis()->SetLabelSize(0.03);
     canv->Update();
     canv->Print("corr_int_prefit.root");
     canv->Clear();
