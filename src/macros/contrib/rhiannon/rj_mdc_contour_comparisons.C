@@ -19,8 +19,8 @@ void rj_mdc_contour_comparisons() {
   TFile *f_stat_tb       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/mock_data_challenge/true_baseline/contours/new-stat-only_contours_as_graphs.root","read");
   TFile *f_syst_etrue_sb = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/mock_data_challenge/refactor_validation/contours/syst-flux-etrue_contours_as_graphs.root","read");
   TFile *f_syst_ereco_sb = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/mock_data_challenge/refactor_validation/contours/syst-flux-ereco_contours_as_graphs.root","read");
-//  TFile *f_syst_etrue_tb = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/mock_data_challenge/true_baseline/contours/syst-flux-etrue_contours_as_graphs.root","read");
-//  TFile *f_syst_ereco_tb = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/mock_data_challenge/true_baseline/contours/syst-flux-ereco_contours_as_graphs.root","read");
+  TFile *f_syst_etrue_tb = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/mock_data_challenge/true_baseline/contours/new-syst-etrue_contours_as_graphs.root","read");
+  TFile *f_syst_ereco_tb = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/mock_data_challenge/true_baseline/contours/new-syst-ereco_contours_as_graphs.root","read");
 
   // Get contours from file
   // Check names in .root file
@@ -28,8 +28,8 @@ void rj_mdc_contour_comparisons() {
   TGraph *contour_90_stat_tb       = (TGraph*) f_stat_tb      ->Get("stat-only_90pct_lin_0");
   TGraph *contour_90_syst_etrue_sb = (TGraph*) f_syst_etrue_sb->Get("syst-flux-etrue_90pct_lin_0");
   TGraph *contour_90_syst_ereco_sb = (TGraph*) f_syst_ereco_sb->Get("syst-flux-ereco_90pct_lin_0");
-//  TGraph *contour_90_syst_etrue_tb = (TGraph*) f_syst_etrue_tb->Get("syst-flux-etrue_90pct_lin_0");
-//  TGraph *contour_90_syst_ereco_tb = (TGraph*) f_syst_ereco_tb->Get("syst-flux-ereco_90pct_lin_0");
+  TGraph *contour_90_syst_etrue_tb = (TGraph*) f_syst_etrue_tb->Get("new-syst-etrue_90pct_lin_0");
+  TGraph *contour_90_syst_ereco_tb = (TGraph*) f_syst_ereco_tb->Get("new-syst-ereco_90pct_lin_0");
   
   gStyle->SetOptLogz();
 
@@ -86,7 +86,7 @@ void rj_mdc_contour_comparisons() {
   contour_90_syst_ereco_sb->SetMarkerStyle(0);
   contour_90_syst_ereco_sb->SetLineWidth(2);
   contour_90_syst_ereco_sb->SetLineColor(kOrange+1);
-/*  contour_90_syst_etrue_tb->Draw("same");
+  contour_90_syst_etrue_tb->Draw("same");
   contour_90_syst_etrue_tb->SetMarkerStyle(0);
   contour_90_syst_etrue_tb->SetLineWidth(2);
   contour_90_syst_etrue_tb->SetLineStyle(5);
@@ -95,11 +95,11 @@ void rj_mdc_contour_comparisons() {
   contour_90_syst_ereco_tb->SetMarkerStyle(0);
   contour_90_syst_ereco_tb->SetLineWidth(2);
   contour_90_syst_ereco_tb->SetLineStyle(5);
-  contour_90_syst_ereco_tb->SetLineColor(kOrange+1);*/
+  contour_90_syst_ereco_tb->SetLineColor(kOrange+1);
   
   // add the legend
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("mdc_flux_etrue-ereco_overlay_contour.root");
+  c1->SaveAs("new-mdc_flux_etrue-ereco_overlay_contour.root");
 }
