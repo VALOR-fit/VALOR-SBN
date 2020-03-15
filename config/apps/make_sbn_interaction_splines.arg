@@ -1,0 +1,9 @@
+# argument                         |   type         |  require?   |   default
+# .....................................................................................................
+output                             |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM].root
+config                             |   string       |  mandatory  |   -
+sample                             |   string       |  mandatory  |   -
+detector                           |   string       |  mandatory  |   -
+systematic                         |   string       |  mandatory  |   -
+include-simple-binning             |   boolean      |  optional   |  false
+max-events                         |   integer      |  optional   | -1
