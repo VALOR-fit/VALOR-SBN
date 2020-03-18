@@ -21,9 +21,12 @@
 */
 //____________________________________________________________________________
 
+// c++
 #include <string>
+#include <iostream>
+#include <fstream>
 
-//
+// ROOT
 #include <TFile.h>
 #include <TTree.h>
 #include <TLeaf.h>
@@ -73,6 +76,21 @@ std::vector<std::string> interaction_systematics =
    "genie_NonResRvp1pi_Genie",
    "genie_NonResRvp2pi_Genie",
  };
+std::vector<std::string> flux_systematics =
+ { "expskin_FluxUnisim",
+   "horncurrent_FluxUnisim",
+   "kminus_PrimaryHadronNormalization",
+   "kplus_PrimaryHadronFeynmanScaling",
+   "kzero_PrimaryHadronSanfordWang",
+   "nucleoninexsec_FluxUnisim",
+   "nucleonqexsec_FluxUnisim",
+   "nucleontotxsec_FluxUnisim",
+   "piminus_PrimaryHadronSWCentralSplineVariation",
+   "pioninexsec_FluxUnisim",
+   "pionqexsec_FluxUnisim",
+   "piontotxsec_FluxUnisim",
+   "piplus_PrimaryHadronSWCentralSplineVariation"
+ };
  
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -83,31 +101,129 @@ int main(int argc, char ** argv)
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_sbn_interaction_splines.arg");
   VLOG("valor_dune", pNOTICE) << arg;
 
+  /*
   string arg_sample      = arg.GetString("sample");
   string arg_detector    = arg.GetString("detector");
-  string arg_systematic  = arg.GetString("systematic");
   string arg_out_file    = arg.GetString("output");
   string arg_config_file = arg.GetString("config");
-
   bool include_sb       = arg.GetBool("include-simple-binning");
   int  max_events       = arg.GetInt("max-events");
   size_t n_universes    = arg.GetInt("n-universes");
-
   Sample_t   sample    = util::SampleFromString   (arg_sample    );
   Detector_t detector  = util::DetectorFromString (arg_detector  );
-  
+  */
+
+  string arg_output_file = arg.GetString("output");
+  string arg_input_file  = arg.GetString("input");
+  string arg_systematic  = arg.GetString("systematic");
   /*
    *  Get the systematic from the argument list and make sure it exists in the universes
    */
   string syst = "";
-  if(std::find(interaction_systematics.begin(), interaction_systematics.end(),arg_systematic) != interaction_systematics.end()){
-    syst = arg_systematic;
-    VLOG("valor_dune", pNOTICE) << "Generating spline for interaction systematic parameter: " << syst;
+  bool found_syst = false;
+  for(const std::string &s : interaction_systematics){
+    size_t found_s = s.find(arg_systematic);
+    if(found_s != std::string::npos){
+      syst = s;
+      VLOG("valor_dune", pNOTICE) << "Found the chosen interaction systematic: " << syst;
+      found_syst = true;
+      break;
+    }
   }
-  else{
-    VLOG("valor_dune",pFATAL) << "Interaction systematic " << arg_systematic << " does not exist in variation list";
+  if(!found_syst){
+    for(const std::string &s : flux_systematics){
+      size_t found_s = s.find(arg_systematic);
+      if(found_s != std::string::npos){
+        syst = s;
+        VLOG("valor_dune", pNOTICE) << "Found the chosen flux systematic: " << syst;
+        found_syst = true;
+        break;
+      }
+    }
+  }
+  if(!found_syst){
+    VLOG("valor_dune", pFATAL) << "Couldn't find the chosen systematic parameter: " << arg_systematic;
+    util::Die(-1);
   }
 
+  // 
+  // Read in the universe-variation txt file and use it to determine the best universes to generate the 13 knots
+  // for -3sigma -> +3sigma variations in steps of 0.5sigma
+  //
+  // 1) Read in the text file
+  // 2) Find the row which starts with the name of the variation we want
+  // 3) Pass the space-delimeted values to a vector
+  //
+  std::ifstream uFile;
+  uFile.open(arg_input_file);
+  if(!uFile){
+    VLOG("valor_dune",pFATAL) << "Unable to open universe file: " << arg_input_file;
+    exit(1);
+  }
+
+  std::vector<double> variations;
+  variations.clear();
+
+  while(!uFile.eof()){
+    std::string line = "";
+    std::getline(uFile,line);
+    size_t found_v = line.find(arg_systematic);
+    if(found_v != std::string::npos){
+      // Clean up the line to pass the variations to the vector
+      VLOG("valor_dune",pDEBUG) << "Found line containing " << syst << " parameters: \n" << line;
+      VLOG("valor_dune",pDEBUG) << "Removing systematic name from line";
+      line.erase(0, found_v+arg_systematic.length());
+      VLOG("valor_dune",pDEBUG) << "Line now contains: \n" << line;
+
+      // Pass the remaining contents of the line to a vector of doubles
+      double value;
+      std::stringstream lineValue(line);
+      while(lineValue >> value){
+        VLOG("valor_dune",pDEBUG) << "Variation: " << value;
+        variations.push_back(value);
+      }
+      break;
+    }  
+  } //variations text file
+
+  VLOG("valor_dune",pNOTICE) << syst << " variations in vector form of size " << variations.size();
+  
+  // 
+  // 4) Find the entries which most closely match the knot positions
+  // 5) Pass the universe entry (integer) and value (double) corresponding to these knots to a map
+  // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
+  //
+  std::vector<double> knots = {-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0};
+  std::map<unsigned int, double> vars;
+  std::map<unsigned int, double> kns;
+  for(const double &kn : knots){
+    double min_diff     = 999.;
+    double best_var     = -999.;
+    unsigned int min_id = 999; 
+    for(unsigned int v = 0; v < variations.size(); ++v){
+      //Check if the current variation is closest to the current knot
+      //At the end of the loop, push back the closest variation and it's location in the vector
+      double var = variations[v];
+      if(abs(kn-var) < abs(min_diff)){
+        min_diff  = abs(kn-var);
+        best_var  = var;
+        min_id    = v;
+      }
+    }
+    vars.insert({min_id,best_var});
+    kns.insert({min_id,kn});
+  }
+  if(vars.size() != knots.size()){
+    VLOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
+    VLOG("valor_dune",pFATAL) << "    NKnots: " << knots.size() << ", NVariations: " << vars.size();
+    util::Die(-1);
+  }
+  
+  VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
+  for (std::map<unsigned int,double>::iterator itr = vars.begin(); itr != vars.end(); ++itr) {
+    VLOG("valor_dune",pNOTICE) << "    ID: " << itr->first << ", variation: " << itr->second << " for knot: " << kns.at(itr->first);
+  }
+  /*
   // Get model & configure
   // Make an elements without reading the MC
   CompoundFitElements * elements = new CompoundFitElements();
@@ -121,12 +237,11 @@ int main(int argc, char ** argv)
   for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
     GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
     assert(gmodel);
-    /*
-     * Somehow here I should determine the universes to save for the given parameter, mode, and Ereco bin
+     * After dtermining the universes to save for the given parameter, mode, and Ereco bin
      * Then can define a function like SetUniversesToRead(std::vector<int>) where the vector of ints is the
      * list of universe entries to read and save 
-     * Then add/change all the analogous functions to those associated with SetUniverseRangeToReaD(0,n_universes)
-     */
+     * Then add/change all the analogous functions to those associated with SetUniverseRangeToRead(0,n_universes)
+     * This is how to create the templates for the spline knots.
     gmodel->SetUniverseRangeToRead(0,n_universes);
     gmodel->SetUniverseParameterToRead(syst);
 
@@ -136,7 +251,7 @@ int main(int argc, char ** argv)
 
     // Then generate the MC templates from the universes we have defined
   }
-
+*/
   /*
   Parameter p = ParameterPool::Instance()->ParamFromString(arg_systematic);
   PhysParamId_t fit_param = p.GetID();
