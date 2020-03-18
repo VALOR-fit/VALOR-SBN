@@ -92,6 +92,10 @@ std::vector<std::string> flux_systematics =
    "piplus_PrimaryHadronSWCentralSplineVariation"
  };
  
+void        GetVariations(std::vector<double> &vs, const std::string &in, const std::string &sy);
+void        GetKnots(const std::vector<double> &vars, std::map<unsigned int, double> &vs, std::map<unsigned int, double> &kns);
+std::string GetSystematic(const std::string &sy);
+
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -116,35 +120,16 @@ int main(int argc, char ** argv)
   string arg_output_file = arg.GetString("output");
   string arg_input_file  = arg.GetString("input");
   string arg_systematic  = arg.GetString("systematic");
-  /*
-   *  Get the systematic from the argument list and make sure it exists in the universes
-   */
-  string syst = "";
-  bool found_syst = false;
-  for(const std::string &s : interaction_systematics){
-    size_t found_s = s.find(arg_systematic);
-    if(found_s != std::string::npos){
-      syst = s;
-      VLOG("valor_dune", pNOTICE) << "Found the chosen interaction systematic: " << syst;
-      found_syst = true;
-      break;
-    }
-  }
-  if(!found_syst){
-    for(const std::string &s : flux_systematics){
-      size_t found_s = s.find(arg_systematic);
-      if(found_s != std::string::npos){
-        syst = s;
-        VLOG("valor_dune", pNOTICE) << "Found the chosen flux systematic: " << syst;
-        found_syst = true;
-        break;
-      }
-    }
-  }
-  if(!found_syst){
-    VLOG("valor_dune", pFATAL) << "Couldn't find the chosen systematic parameter: " << arg_systematic;
+  
+  //
+  // Get the systematic from the argument list and make sure it exists in the universes
+  //
+  std::string syst = GetSystematic(arg_systematic);
+  if(syst.empty()){
+    VLOG("valor_dune",pFATAL) << syst << "Systematic came back empty";
     util::Die(-1);
   }
+  VLOG("valor_dune",pNOTICE) << syst << "Systematic parameter " << syst << " found";
 
   // 
   // Read in the universe-variation txt file and use it to determine the best universes to generate the 13 knots
@@ -154,25 +139,58 @@ int main(int argc, char ** argv)
   // 2) Find the row which starts with the name of the variation we want
   // 3) Pass the space-delimeted values to a vector
   //
-  std::ifstream uFile;
-  uFile.open(arg_input_file);
-  if(!uFile){
-    VLOG("valor_dune",pFATAL) << "Unable to open universe file: " << arg_input_file;
-    exit(1);
-  }
-
+  // Get the variations
   std::vector<double> variations;
   variations.clear();
+  GetVariations(variations, arg_input_file, arg_systematic);
+  // Check the variations
+  if(!variations.size()){
+    VLOG("valor_dune",pFATAL) << syst << "Variations came back empty";
+    util::Die(-1);
+  }
+  VLOG("valor_dune",pNOTICE) << syst << "Variations in vector form of size " << variations.size();
+  
+  // 
+  // 4) Find the entries which most closely match the knot positions
+  // 5) Pass the universe entry (integer) and value (double) corresponding to these knots to a map
+  //
+  std::map<unsigned int, double> vars;
+  std::map<unsigned int, double> kns;
+  std::map<unsigned int, double>::iterator itr;
+  GetKnots(variations,vars,kns);
+  VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
+  for(itr = vars.begin(); itr != vars.end(); ++itr) {
+    VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << kns.at(itr->first);
+  }
+  // 
+  // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
+  // 
+  return 0;
+}
+//___________________________________________________________________
+
+void GetVariations(std::vector<double> &vs, const std::string &in, const std::string &sy){
+
+  std::ifstream uFile;
+  uFile.open(in);
+  if(!uFile){
+    VLOG("valor_dune",pFATAL) << "Unable to open universe file: " << in;
+    exit(1);
+  }
+  if(vs.size()){
+    VLOG("valor_dune",pFATAL) << "Vector to hold variations is not empty";
+    return;
+  }
 
   while(!uFile.eof()){
     std::string line = "";
     std::getline(uFile,line);
-    size_t found_v = line.find(arg_systematic);
+    size_t found_v = line.find(sy);
     if(found_v != std::string::npos){
       // Clean up the line to pass the variations to the vector
-      VLOG("valor_dune",pDEBUG) << "Found line containing " << syst << " parameters: \n" << line;
+      VLOG("valor_dune",pDEBUG) << "Found line containing " << sy << " parameters: \n" << line;
       VLOG("valor_dune",pDEBUG) << "Removing systematic name from line";
-      line.erase(0, found_v+arg_systematic.length());
+      line.erase(0, found_v+sy.length());
       VLOG("valor_dune",pDEBUG) << "Line now contains: \n" << line;
 
       // Pass the remaining contents of the line to a vector of doubles
@@ -180,49 +198,73 @@ int main(int argc, char ** argv)
       std::stringstream lineValue(line);
       while(lineValue >> value){
         VLOG("valor_dune",pDEBUG) << "Variation: " << value;
-        variations.push_back(value);
+        vs.push_back(value);
       }
       break;
     }  
-  } //variations text file
+  } // variations text file
+} // GetVariations
+//___________________________________________________________________
 
-  VLOG("valor_dune",pNOTICE) << syst << " variations in vector form of size " << variations.size();
-  
-  // 
-  // 4) Find the entries which most closely match the knot positions
-  // 5) Pass the universe entry (integer) and value (double) corresponding to these knots to a map
-  // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
-  //
+std::string GetSystematic(const std::string &sy){
+
+  std::string syst = "";
+  bool found_syst = false;
+  for(const std::string &s : interaction_systematics){
+    size_t found_s = s.find(sy);
+    if(found_s != std::string::npos){
+      syst = s;
+      VLOG("valor_dune", pNOTICE) << "Found the chosen interaction systematic: " << syst;
+      found_syst = true;
+      break;
+    }
+  }
+
+  if(!found_syst){
+    for(const std::string &s : flux_systematics){
+      size_t found_s = s.find(sy);
+      if(found_s != std::string::npos){
+        syst = s;
+        VLOG("valor_dune", pNOTICE) << "Found the chosen flux systematic: " << syst;
+        found_syst = true;
+        break;
+      }
+    }
+  }
+
+  if(!found_syst){
+    VLOG("valor_dune", pFATAL) << "Couldn't find the chosen systematic parameter: " << sy;
+    util::Die(-1);
+  }
+  return syst;
+}
+//___________________________________________________________________
+
+void GetKnots(const std::vector<double> & vars, std::map<unsigned int, double> &vs, std::map<unsigned int, double> &kns){
   std::vector<double> knots = {-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0};
-  std::map<unsigned int, double> vars;
-  std::map<unsigned int, double> kns;
   for(const double &kn : knots){
     double min_diff     = 999.;
     double best_var     = -999.;
     unsigned int min_id = 999; 
-    for(unsigned int v = 0; v < variations.size(); ++v){
+    for(unsigned int v = 0; v < vars.size(); ++v){
       //Check if the current variation is closest to the current knot
       //At the end of the loop, push back the closest variation and it's location in the vector
-      double var = variations[v];
+      double var = vars[v];
       if(abs(kn-var) < abs(min_diff)){
         min_diff  = abs(kn-var);
         best_var  = var;
         min_id    = v;
       }
     }
-    vars.insert({min_id,best_var});
+    vs.insert({min_id,best_var});
     kns.insert({min_id,kn});
   }
-  if(vars.size() != knots.size()){
+  if(vs.size() != kns.size()){
     VLOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
-    VLOG("valor_dune",pFATAL) << "    NKnots: " << knots.size() << ", NVariations: " << vars.size();
+    VLOG("valor_dune",pFATAL) << "NKnots: " << kns.size() << ", NVariations: " << vs.size();
     util::Die(-1);
   }
-  
-  VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
-  for (std::map<unsigned int,double>::iterator itr = vars.begin(); itr != vars.end(); ++itr) {
-    VLOG("valor_dune",pNOTICE) << "    ID: " << itr->first << ", variation: " << itr->second << " for knot: " << kns.at(itr->first);
-  }
+}
   /*
   // Get model & configure
   // Make an elements without reading the MC
@@ -392,6 +434,4 @@ int main(int argc, char ** argv)
 
   VLOG("make_sbn_interaction_splines", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
 */
-  return 0;
-}
 //___________________________________________________________________
