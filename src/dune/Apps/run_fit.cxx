@@ -58,6 +58,7 @@
 #include "TString.h"
 #include "TVirtualFitter.h"
 #include "TPRegexp.h"
+#include <time.h>
 // fmwk
 #include "valor/Conventions/Constants.h"
 #include "valor/Conventions/Opt.h"
@@ -453,6 +454,15 @@ int main(int argc, char ** argv)
     LOG("valor_dune", pNOTICE) << "Running the fitter";
     LOG("valor_dune", pNOTICE) << "Fit starts with the following fit parameter list: " << *fp;
     LOG("valor_dune", pNOTICE) << "Fit starts with statistic: " << fit_inputs->Statistic();
+    
+    time_t startrawtime;
+    struct tm * starttimeinfo;
+    time (&startrawtime);
+    starttimeinfo = localtime (&startrawtime);
+    std::cout << "-----------------------------------------------------------" << std::endl;
+    std::cout << " Start local time and date:  " << asctime(starttimeinfo);
+    std::cout << "-----------------------------------------------------------" << std::endl;
+
     fitter->DoTheFit();
     LOG("valor_dune", pNOTICE) << "Fit ends with statistic: " << fit_inputs->Statistic();
 
@@ -494,6 +504,14 @@ int main(int argc, char ** argv)
   //~ ppl.Write("initial_errors");
 
   std::cout<<"Done."<< std::endl << " GO VALOR!!!" << std::endl;
+
+  time_t endrawtime;
+  struct tm * endtimeinfo;
+  time (&endrawtime);
+  endtimeinfo = localtime (&endrawtime);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " End local time and date  :  " << asctime(endtimeinfo);
+  std::cout << "-----------------------------------------------------------" << std::endl;
 
   return 0;
 }
