@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<param_list name="sterile_physics_parameter_values">
-
+<param_list name="sbn_physics_parameter_values">
   <!--
     EXPLANATION: This file specifies values for physics parameters which are read when
     populating the fit parameter list. Note that the values and ranges specified here
@@ -215,4 +214,4 @@
     <init>  7.39e-05  </init>     <!-- NuFit 4.0 2018 -->
   </param>
   
-</param_list>
+</param_list>  
