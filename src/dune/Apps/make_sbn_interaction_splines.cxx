@@ -169,9 +169,10 @@ int main(int argc, char ** argv)
   // 
   // Get model & configure
   // Make an elements without reading the MC
+  std::string elem_readopt("nomc nosplines");
   CompoundFitElements * elements = new CompoundFitElements();
   std::string config_path = util::CompleteConfigPath(arg_config_file);
-  elements->Read(config_path);
+  elements->Read(config_path,elem_readopt.c_str());
 
   // Then tell it about the universes and read the MC
   FitModelABC * model = elements->FitModel();
