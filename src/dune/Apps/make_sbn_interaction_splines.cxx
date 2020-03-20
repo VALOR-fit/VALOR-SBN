@@ -108,8 +108,6 @@ int main(int argc, char ** argv)
   /*
   string arg_sample      = arg.GetString("sample");
   string arg_detector    = arg.GetString("detector");
-  string arg_out_file    = arg.GetString("output");
-  string arg_config_file = arg.GetString("config");
   bool include_sb       = arg.GetBool("include-simple-binning");
   int  max_events       = arg.GetInt("max-events");
   size_t n_universes    = arg.GetInt("n-universes");
@@ -117,6 +115,7 @@ int main(int argc, char ** argv)
   Detector_t detector  = util::DetectorFromString (arg_detector  );
   */
 
+  string arg_config_file = arg.GetString("config");
   string arg_output_file = arg.GetString("output");
   string arg_input_file  = arg.GetString("input");
   string arg_systematic  = arg.GetString("systematic");
@@ -154,17 +153,49 @@ int main(int argc, char ** argv)
   // 4) Find the entries which most closely match the knot positions
   // 5) Pass the universe entry (integer) and value (double) corresponding to these knots to a map
   //
+  std::vector<unsigned int> ids;
   std::map<unsigned int, double> vars;
   std::map<unsigned int, double> kns;
   std::map<unsigned int, double>::iterator itr;
+  ids.clear(); vars.clear(); kns.clear();
   GetKnots(variations,vars,kns);
   VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
   for(itr = vars.begin(); itr != vars.end(); ++itr) {
     VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << kns.at(itr->first);
+    ids.push_back(itr->first);
   }
   // 
   // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
   // 
+  // Get model & configure
+  // Make an elements without reading the MC
+  CompoundFitElements * elements = new CompoundFitElements();
+  std::string config_path = util::CompleteConfigPath(arg_config_file);
+  elements->Read(config_path);
+
+  // Then tell it about the universes and read the MC
+  FitModelABC * model = elements->FitModel();
+  CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
+  assert(cmodel);
+  for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
+    GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
+    assert(gmodel);
+    /*
+     * After dtermining the universes to save for the given parameter, mode, and Ereco bin
+     * Then can define a function like SetUniversesToRead(std::vector<int>) where the vector of ints is the
+     * list of universe entries to read and save 
+     * Then add/change all the analogous functions to those associated with SetUniverseRangeToRead(0,n_universes)
+     * This is how to create the templates for the spline knots.
+     */
+    gmodel->SetUniversesToRead(ids);
+    gmodel->SetUniverseParameterToRead(syst);
+
+    // And finally read the MC properly
+    std::string model_readopt("forcedst nosplines");
+    gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
+
+  }
+  
   return 0;
 }
 //___________________________________________________________________
@@ -265,35 +296,6 @@ void GetKnots(const std::vector<double> & vars, std::map<unsigned int, double> &
     util::Die(-1);
   }
 }
-  /*
-  // Get model & configure
-  // Make an elements without reading the MC
-  CompoundFitElements * elements = new CompoundFitElements();
-  std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
-  elements->Read(config_path);
-
-  // Then tell it about the universes and read the MC
-  FitModelABC * model = elements->FitModel();
-  CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
-  assert(cmodel);
-  for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
-    GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
-    assert(gmodel);
-     * After dtermining the universes to save for the given parameter, mode, and Ereco bin
-     * Then can define a function like SetUniversesToRead(std::vector<int>) where the vector of ints is the
-     * list of universe entries to read and save 
-     * Then add/change all the analogous functions to those associated with SetUniverseRangeToRead(0,n_universes)
-     * This is how to create the templates for the spline knots.
-    gmodel->SetUniverseRangeToRead(0,n_universes);
-    gmodel->SetUniverseParameterToRead(syst);
-
-    // And finally read the MC properly
-    std::string model_readopt("forcedst nosplines");
-    gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
-
-    // Then generate the MC templates from the universes we have defined
-  }
-*/
   /*
   Parameter p = ParameterPool::Instance()->ParamFromString(arg_systematic);
   PhysParamId_t fit_param = p.GetID();

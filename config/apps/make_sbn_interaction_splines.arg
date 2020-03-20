@@ -2,7 +2,7 @@
 # .....................................................................................................
 input                              |   string       |  mandatory  |   - # For SBN: $VALOR_DUNE/src/macros/contrib/steve/sbn_universe_variations_from_mastbaum.txt
 output                             |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM].root
-#config                             |   string       |  mandatory  |   -
+config                             |   string       |  mandatory  |   -
 #sample                             |   string       |  mandatory  |   -
 #detector                           |   string       |  mandatory  |   -
 systematic                         |   string       |  mandatory  |   -
