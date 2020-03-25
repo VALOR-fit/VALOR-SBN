@@ -302,6 +302,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_width.SetLineStyle(7)
       postfit_width.SetLineColor(postfit_line)
       postfit_width.Draw("same")
+      if plot_prefit:
+        prefit_width.SetLineStyle(5)
+        prefit_width.Draw("same")
 
       legend_postfit = ROOT.TH1D(postfit_width)
       legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
