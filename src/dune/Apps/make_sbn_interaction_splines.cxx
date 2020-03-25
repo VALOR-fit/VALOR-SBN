@@ -112,13 +112,15 @@ int main(int argc, char ** argv)
   */
 
   // Get arguments
-  string arg_config_file = arg.GetString("config");
-  string arg_output_file = arg.GetString("output");
-  string arg_input_file  = arg.GetString("input");
-  string arg_sample      = arg.GetString("sample");
-  string arg_detector    = arg.GetString("detector");
-  string arg_systematic  = arg.GetString("systematic");
-  bool include_sb        = arg.GetBool("include-simple-binning");
+  string arg_config_file   = arg.GetString("config");
+  string arg_analysis_file = arg.GetString("input-analysis");
+  string arg_output_file   = arg.GetString("output");
+  string arg_var_file      = arg.GetString("variations");
+  string arg_modelist_file = arg.GetString("modes");
+  string arg_sample        = arg.GetString("sample");
+  string arg_detector      = arg.GetString("detector");
+  string arg_systematic    = arg.GetString("systematic");
+  bool include_sb          = arg.GetBool("include-simple-binning");
   
   // From arguments
   Sample_t   sample      = util::SampleFromString   (arg_sample    );
@@ -133,7 +135,7 @@ int main(int argc, char ** argv)
     util::Die(-1);
   }
   VLOG("valor_dune",pNOTICE) << syst << "Systematic parameter " << syst << " found";
-
+  
   // 
   // Read in the universe-variation txt file and use it to determine the best universes to generate the 13 knots
   // for -3sigma -> +3sigma variations in steps of 0.5sigma
@@ -145,7 +147,7 @@ int main(int argc, char ** argv)
   // Get the variations
   std::vector<double> variations;
   variations.clear();
-  GetVariations(variations, arg_input_file, arg_systematic);
+  GetVariations(variations, arg_var_file, arg_systematic);
   // Check the variations
   if(!variations.size()){
     VLOG("valor_dune",pFATAL) << syst << "Variations came back empty";
@@ -160,10 +162,11 @@ int main(int argc, char ** argv)
   // Number of knots for the specified systematic parameter
   const std::vector<double> &knots = {-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0};
   const int   n_knots              = knots.size();
-  const int   inom                 = 5;
-  const float knot_dial_min        = -3.0;
+  const int   inom                 = 7; // Nominal template ID, 0-sigma variation
+  const float knot_dial_min        = -3.0; 
   const float knot_dial_max        =  3.0;
   const float knot_dial_step       = (knot_dial_max - knot_dial_min) / (n_knots-1);
+  
 
   // Chosen universe specifications
   std::vector<unsigned int> ids;
@@ -188,7 +191,7 @@ int main(int argc, char ** argv)
   CompoundFitElements * elements = new CompoundFitElements();
   std::string config_path = util::CompleteConfigPath(arg_config_file);
   elements->Read(config_path,elem_readopt.c_str());
-
+  
   // Then tell it about the universes and read the MC
   FitModelABC * model = elements->FitModel();
   CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
@@ -220,30 +223,9 @@ int main(int argc, char ** argv)
   const int n_reco_bins_ob  = reco_ob->NBins();
   const int n_reco_bins_sb  = reco_sb->NBins();
 
-  const ModeList *ml = gmodel->GetModeList();
-  const std::vector<conv::ReacMode_t> & read_modes = ml->Modes();
+  const ModeList ml                                = valor::ModeList(util::CompleteConfigPath(arg_modelist_file));
+  const std::vector<conv::ReacMode_t> & reac_modes = ml.Modes();
 
-  // Arrays to store the number of events in each MC template bin
-  // for each systematic parameter tweak
-  VALORArray * mc_templ_sb [n_knots] [read_modes.size()];
-  VALORArray * mc_templ_ob [n_knots] [read_modes.size()];
-
-  for(int iknot = 0; iknot < n_knots; iknot++) {
-    unsigned int imode = 0;
-    for(ReacMode_t m : read_modes) {
-      const VALORBinning * true_sb = binning.TrueSmpBinning(m);
-      const int n_true_bins_sb  = true_sb->NBins();
-      if (include_sb) {
-        mc_templ_sb [iknot][imode] = 
-          new VALORArray(n_reco_bins_sb, n_true_bins_sb);
-        mc_templ_sb [iknot][imode] -> SetAll(0.);
-      }
-      mc_templ_ob [iknot][imode] = 
-        new VALORArray(n_reco_bins_ob, n_true_bins_sb);
-      mc_templ_ob [iknot][imode] -> SetAll(0.);
-      imode++;
-    }
-  }
   /*
    * After dtermining the universes to save for the given parameter, mode, and bin
    * Then can define a function like SetUniversesToRead(std::vector<int>) where the vector of ints is the
@@ -258,6 +240,76 @@ int main(int argc, char ** argv)
   std::string model_readopt("forcedst nosplines");
   gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
 
+  // Arrays to store the number of events in each MC template bin
+  // for each systematic parameter tweak
+  VALORArray * mc_templ_sb [n_knots] [reac_modes.size()];
+  VALORArray * mc_templ_ob [n_knots] [reac_modes.size()];
+
+  unsigned int iknot = 0;
+  for (const size_t &kn: knots) {
+    unsigned int imode = 0;
+    for(const ReacMode_t &m : reac_modes) {
+      const VALORBinning * true_sb = binning.TrueSmpBinning(m);
+      const int n_true_bins_sb  = true_sb->NBins();
+      if (include_sb) {
+        mc_templ_sb [iknot][imode] = 
+          new VALORArray(n_reco_bins_sb, n_true_bins_sb);
+        mc_templ_sb [iknot][imode] -> SetAll(0.);
+      }
+      mc_templ_ob [iknot][imode] = 
+        new VALORArray(n_reco_bins_ob, n_true_bins_sb);
+      mc_templ_ob [iknot][imode] -> SetAll(0.);
+      imode++;
+    }
+  }
+
+  // Open input analysis file and get the DST
+  TFile fin(arg_analysis_file.c_str(),"READ");
+  if (!fin.IsOpen()) {
+    VLOG("valor_dune", pFATAL) 
+      << "Failed to open file "<<arg_analysis_file.c_str();
+    util::Die(-1);
+  }
+  string tree_name = "valor_sbncode_mini_dst";
+  TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
+  if(!analysis_tree) {
+    VLOG("valor_dune", pFATAL) 
+      << "No event tree " << tree_name 
+      << " in " << " input analysis file: "
+      << arg_analysis_file;
+    util::Die(-1);
+  }
+  
+  // Get the branches we're interested in
+  //
+  // Universes
+  const size_t max_n_universes = 10000;
+  std::map<std::string,int> branch_n_universes;
+  std::map<std::string,std::vector<float>> branch_universes;
+  
+  // For now, processing a single systematic at a time so each map will only have 1 entry
+  branch_universes.emplace(syst,std::vector<float>(max_n_universes));
+  std::string branch_name   = Form("variation_%s",syst.c_str());
+  std::string branch_name_n = Form("variation_n_%s",syst.c_str());
+  analysis_tree->SetBranchStatus (branch_name_n.c_str(),1);
+  analysis_tree->SetBranchStatus (branch_name  .c_str(),1);
+  bool bstat_univ_n = analysis_tree->SetBranchAddress(branch_name_n.c_str(),&branch_n_universes[syst]);
+  bool bstat_univ   = analysis_tree->SetBranchAddress(branch_name.c_str(),branch_universes[syst].data());
+  if (bstat_univ_n || bstat_univ) {
+    LOG("valor_dune",pFATAL) << " Failed to load needed universe branch.";
+    util::Die(-1);
+  }
+
+  // Loop over knots, modes and events from the DSTs
+  // Using the pre-defined number of etrue and ereco binning, fill each bin with
+  // event rates weighted for each universe knot for each relevant  mode
+  // This will produce 13 values per bin definition (13xnModes histograms)
+  iknot = 0;
+  for (const size_t &kn: knots) {
+    // Set our variations
+    gmodel->SetSystematicVariationIDToApply(syst, kn);
+  } // Knots
+    
   return 0;
 }
 //___________________________________________________________________
@@ -268,7 +320,7 @@ void GetVariations(std::vector<double> &vs, const std::string &in, const std::st
   uFile.open(in);
   if(!uFile){
     VLOG("valor_dune",pFATAL) << "Unable to open universe file: " << in;
-    exit(1);
+    util::Die(-1);
   }
   if(vs.size()){
     VLOG("valor_dune",pFATAL) << "Vector to hold variations is not empty";
@@ -399,29 +451,7 @@ void GetKnots(const std::vector<double> & vars, const std::vector<double> &knots
 
   /*
   ModeList ml = fit_model->GetModeList();
-  const std::vector<conv::ReacMode_t> & read_modes = ml.Modes();
-
-  // Arrays to store the number of events in each MC template bin
-  // for each systematic parameter tweak
-  VALORArray * mc_templ_sb [n_twks] [read_modes.size()];
-  VALORArray * mc_templ_ob [n_twks] [read_modes.size()];
-
-  for(int itwk = 0; itwk < n_twks; itwk++) {
-    unsigned int imode = 0;
-    for(ReacMode_t m : read_modes) {
-      const VALORBinning * true_sb = binning.TrueSmpBinning(m);
-      const int n_true_bins_sb  = true_sb->NBins();
-      if (include_sb) {
-        mc_templ_sb [itwk][imode] = 
-          new VALORArray(n_reco_bins_sb, n_true_bins_sb);
-        mc_templ_sb [itwk][imode] -> SetAll(0.);
-      }
-      mc_templ_ob [itwk][imode] = 
-        new VALORArray(n_reco_bins_ob, n_true_bins_sb);
-      mc_templ_ob [itwk][imode] -> SetAll(0.);
-      imode++;
-    }
-  }
+  const std::vector<conv::ReacMode_t> & reac_modes = ml.Modes();
 
   // Open input file and get tree
 
@@ -436,7 +466,7 @@ void GetKnots(const std::vector<double> & vars, const std::vector<double> &knots
   int n_splines_written = 0;
 
   unsigned int imode = 0;
-  for(ReacMode_t m : read_modes) {
+  for(ReacMode_t m : reac_modes) {
     const VALORBinning * true_sb = binning.TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
     
