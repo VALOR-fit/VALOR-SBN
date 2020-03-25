@@ -26,6 +26,7 @@ TGT = make_nd_minidst \
       run_fit \
       write_pdf \
       tweak_pdf_N \
+			universe_variation_tweaks \
       tweak_pdf_sigma_var \
       fitnt_conv \
       adaptive_mcmc \
@@ -161,6 +162,12 @@ tweak_pdf_sigma_var: FORCE
 	$(CXX) $(CXXFLAGS) -c tweak_pdf_sigma_var.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) tweak_pdf_sigma_var.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_sigma_var
 
+# Tweaks taken directly from universe variations to validate VALOR systematic parameterisation 
+#
+universe_variation_tweaks: FORCE
+	$(CXX) $(CXXFLAGS) -c universe_variation_tweaks.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) universe_variation_tweaks.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-universe_variation_tweaks
+
 # Run an Adaptive Metropolis Hastings around the results of a fit
 #
 adaptive_mcmc: FORCE
@@ -224,6 +231,7 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_pdf
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_sigma_var
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_tests
@@ -246,6 +254,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/write_pdf
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_N
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_sigma_var
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-adaptive_mcmc
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_tests
