@@ -384,7 +384,6 @@ std::string GetSystematic(const std::string &sy){
   return syst;
 }
 //___________________________________________________________________
-
 void GetKnots(const std::vector<double> & vars, const std::vector<double> &knots, std::map<unsigned int, double> &vs, std::map<unsigned int, double> &kns){
   for(const double &kn : knots){
     double min_diff     = 999.;
@@ -409,6 +408,8 @@ void GetKnots(const std::vector<double> & vars, const std::vector<double> &knots
     util::Die(-1);
   }
 }
+//___________________________________________________________________
+
   /*
   Parameter p = ParameterPool::Instance()->ParamFromString(arg_systematic);
   PhysParamId_t fit_param = p.GetID();
