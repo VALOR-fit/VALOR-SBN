@@ -414,25 +414,25 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       std::cout << " Drawing nuisance parameters " << std::endl;
  
       // Solid lines for detector and interaction separation
-      TLine line_sbnd  (singleFlux,   -0.07, singleFlux,   1.3);
-      TLine line_uboone(singleFlux*2, -0.07, singleFlux*2, 1.3);
-      TLine line_icarus(nFluxRows,    -0.07, nFluxRows,    1.3);
+      TLine line_sbnd  (singleFlux,   0.48, singleFlux,   2.1);
+      TLine line_uboone(singleFlux*2, 0.48, singleFlux*2, 2.1);
+      TLine line_icarus(nFluxRows,    0.48, nFluxRows,    2.1);
 
       // Dashed neutrino flavour separation
-      TLine line_sbnd_numu   (n_numu,         -0.07, n_numu,         1.22);
-      TLine line_sbnd_numubar(n_numubar_bins, -0.07, n_numubar_bins, 1.22);
-      TLine line_sbnd_nue    (n_nue_bins,     -0.07, n_nue_bins,     1.22);
-      TLine line_sbnd_nuebar (n_nuebar_bins,  -0.07, n_nuebar_bins,  1.22);
+      TLine line_sbnd_numu   (n_numu,         0.48, n_numu,         2.02);
+      TLine line_sbnd_numubar(n_numubar_bins, 0.48, n_numubar_bins, 2.02);
+      TLine line_sbnd_nue    (n_nue_bins,     0.48, n_nue_bins,     2.02);
+      TLine line_sbnd_nuebar (n_nuebar_bins,  0.48, n_nuebar_bins,  2.02);
       
-      TLine line_uboone_numu   (singleFlux+n_numu,         -0.07, singleFlux+n_numu,         1.22);
-      TLine line_uboone_numubar(singleFlux+n_numubar_bins, -0.07, singleFlux+n_numubar_bins, 1.22);
-      TLine line_uboone_nue    (singleFlux+n_nue_bins,     -0.07, singleFlux+n_nue_bins,     1.22);
-      TLine line_uboone_nuebar (singleFlux+n_nuebar_bins,  -0.07, singleFlux+n_nuebar_bins,  1.22);
+      TLine line_uboone_numu   (singleFlux+n_numu,         0.48, singleFlux+n_numu,         2.02);
+      TLine line_uboone_numubar(singleFlux+n_numubar_bins, 0.48, singleFlux+n_numubar_bins, 2.02);
+      TLine line_uboone_nue    (singleFlux+n_nue_bins,     0.48, singleFlux+n_nue_bins,     2.02);
+      TLine line_uboone_nuebar (singleFlux+n_nuebar_bins,  0.48, singleFlux+n_nuebar_bins,  2.02);
       
-      TLine line_icarus_numu   ((singleFlux*2)+n_numu,         -0.07, (singleFlux*2)+n_numu,         1.22);
-      TLine line_icarus_numubar((singleFlux*2)+n_numubar_bins, -0.07, (singleFlux*2)+n_numubar_bins, 1.22);
-      TLine line_icarus_nue    ((singleFlux*2)+n_nue_bins,     -0.07, (singleFlux*2)+n_nue_bins,     1.22);
-      TLine line_icarus_nuebar ((singleFlux*2)+n_nuebar_bins,  -0.07, (singleFlux*2)+n_nuebar_bins,  1.22);
+      TLine line_icarus_numu   ((singleFlux*2)+n_numu,         0.48, (singleFlux*2)+n_numu,         2.02);
+      TLine line_icarus_numubar((singleFlux*2)+n_numubar_bins, 0.48, (singleFlux*2)+n_numubar_bins, 2.02);
+      TLine line_icarus_nue    ((singleFlux*2)+n_nue_bins,     0.48, (singleFlux*2)+n_nue_bins,     2.02);
+      TLine line_icarus_nuebar ((singleFlux*2)+n_nuebar_bins,  0.48, (singleFlux*2)+n_nuebar_bins,  2.02);
       
       std::vector<TLine> lines_sbnd = {line_sbnd, line_sbnd_numu, line_sbnd_numubar, line_sbnd_nue, line_sbnd_nuebar};
       std::vector<TLine> lines_uboone = {line_uboone, line_uboone_numu, line_uboone_numubar, line_uboone_nue, line_uboone_nuebar};
@@ -459,7 +459,7 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       }
 
       h_bestfit->Draw("E2");
-      h_bestfit->GetYaxis()->SetRangeUser(-0.05,1.2);
+      h_bestfit->GetYaxis()->SetRangeUser(0.5,2.0);
       h_bf_clone->Draw("same hist");
       for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
         lines_sbnd[i].Draw("same");
@@ -488,10 +488,10 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TLatex latex;
       latex.SetTextAlign(11); // Align at bottom
       latex.SetTextSize(0.03);
-      latex.DrawLatex(5.70,  1.25,"#color[867]{SBND Flux}");
-      latex.DrawLatex(26.80, 1.25,"#color[905]{#muBooNE Flux}");
-      latex.DrawLatex(46.66, 1.25,"#color[797]{ICARUS Flux}");
-      latex.DrawLatex(68.68, 1.25,"#color[835]{Interaction}");
+      latex.DrawLatex(5.70,  2.05,"#color[867]{SBND Flux}");
+      latex.DrawLatex(26.80, 2.05,"#color[905]{#muBooNE Flux}");
+      latex.DrawLatex(46.66, 2.05,"#color[797]{ICARUS Flux}");
+      latex.DrawLatex(68.68, 2.05,"#color[835]{Interaction}");
 
       l->Draw();
       l->SetBorderSize(0);
