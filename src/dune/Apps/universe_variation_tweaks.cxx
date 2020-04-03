@@ -66,7 +66,8 @@
 #include "valor/KineBinning/UtlBinning.h"
 
 std::vector<std::string> systematics =
- { "genie_ccresAxial_Genie",
+ { /*
+   "genie_ccresAxial_Genie",
    "genie_ncresAxial_Genie",
    "genie_qema_Genie",
    "genie_NC_Genie",
@@ -74,6 +75,7 @@ std::vector<std::string> systematics =
    "genie_NonResRvbarp2pi_Genie",
    "genie_NonResRvp1pi_Genie",
    "genie_NonResRvp2pi_Genie",
+   */
    "expskin_FluxUnisim",
    "horncurrent_FluxUnisim",
    "kminus_PrimaryHadronNormalization",
@@ -88,6 +90,40 @@ std::vector<std::string> systematics =
    "piontotxsec_FluxUnisim",
    "piplus_PrimaryHadronSWCentralSplineVariation"
  };
+std::vector<std::string> file_systematics =
+ { /*
+   "genie_ccresAxial",
+   "genie_ncresAxial",
+   "genie_qema",
+   "genie_NC",
+   "genie_NonResRvbarp1pi",
+   "genie_NonResRvbarp2pi",
+   "genie_NonResRvp1pi",
+   "genie_NonResRvp2pi",
+   */
+   "expskin",
+   "horncurrent",
+   //"kminus",
+   //"kplus",
+   //"kzero",
+   "nucleoninexsec",
+   "nucleonqexsec",
+   "nucleontotxsec",
+   //"piminus",
+   "pioninexsec",
+   "pionqexsec",
+   "piontotxsec",
+  // "piplus"
+ };
+
+void GetVariations(std::map< std::string, std::vector<double> > &vs, 
+                   const std::string &in, 
+                   const std::vector<std::string> &sy);
+
+void GetKnots(const std::map< std::string, std::vector<double> > &vars, 
+              const std::vector<double> &knots, 
+              std::map< std::string, std::map<unsigned int, double> >&vs, 
+              std::map< std::string, std::map<unsigned int, double> > &kns);
 
 double enu_reco_max = 10.;
 
@@ -107,15 +143,66 @@ int main(int argc, char ** argv)
   // Read and iterpret the command line
   int ntoys               = arg.GetInt("ntoys");
   string input_rootfile   = arg.GetString("input");
+  string input_var_file   = arg.GetString("variations");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
   string arg_sample       = arg.GetString("sample");
   string arg_detector     = arg.GetString("detector");
   string arg_kine_var     = arg.GetString("kine-var");
+  bool   arg_quantile     = arg.GetBool("syst-from-quantiles");
   
   string mesg_thresholds  = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Sample_t   sample       = util::SampleFromString(arg_sample);
   Detector_t detector     = util::DetectorFromString(arg_detector);
+  
+  // 
+  // Read in the universe-variation txt file and use it to determine the best universes
+  // for -1sigma / +1sigma variations
+  //
+  // 1) Read in the text file
+  // 2) Find the row which starts with the name of the variation we want
+  // 3) Pass the space-delimeted values to a vector
+  //
+  // If we want to use the quantile method, get the variations and knots
+  std::map< string, std::vector<double> > variations;
+  const std::vector<double> &knots = {-1.0,0.0,1.0};
+
+  // Chosen universe specifications
+  std::map< std::string, std::vector<unsigned int> > ids;
+  std::map< std::string, std::map<unsigned int, double> > vars;
+  std::map< std::string, std::map<unsigned int, double> > kns;
+
+  if(arg_quantile){
+    variations.clear();
+    GetVariations(variations, input_var_file, file_systematics);
+    // Check the variations
+    if(!variations.size()){
+      VLOG("universe_variation_tweaks",pFATAL) << "Variations came back empty";
+      util::Die(-1);
+    }
+    VLOG("universe_variation_tweaks",pNOTICE) << "Variations in vector form of size " << variations.size();
+  
+    ids.clear(); vars.clear(); kns.clear();
+    // 
+    // 4) Find the entries which most closely match the knot positions
+    // 5) Pass the universe entry (integer) and value (double) corresponding to these knots to a map
+    //
+    // Number of knots for the specified systematic parameter
+    GetKnots(variations,knots,vars,kns);
+    VLOG("universe_variation_tweaks",pNOTICE) << "Universe ID and variation value for knots and systematics: ";
+    for(const std::string &sy : file_systematics){
+      std::vector<unsigned int> tmp_ids;
+      std::map<unsigned int, double> tmp_vars = vars.at(sy);
+      std::map<unsigned int, double> tmp_kns  = kns.at(sy);
+      std::map<unsigned int, double>::iterator tmp_itr;
+      tmp_ids.clear();
+      for(tmp_itr = tmp_vars.begin(); tmp_itr != tmp_vars.end(); ++tmp_itr) {
+        VLOG("universe_variation_tweaks",pNOTICE) << "ID: " << tmp_itr->first << ", variation: " << tmp_itr->second << " for knot: " << tmp_kns.at(tmp_itr->first) << " and systematic: " << sy;
+        tmp_ids.push_back(tmp_itr->first);
+      }
+      ids.insert({sy,tmp_ids});
+    }
+  }
   
   // Message thresholds
   Messenger::Instance()->Configure(mesg_thresholds);
@@ -190,7 +277,8 @@ int main(int argc, char ** argv)
   const int n_reco_bins                   = reco_sb->NBins();
   // Setup arrays to be used for constructing the histograms
   VALORArray *pdfuni[ntoys];
-  VALORArray *pdfnom = new VALORArray(n_reco_bins);
+  VALORArray *pdfuniq = new VALORArray(n_reco_bins);
+  VALORArray *pdfnom  = new VALORArray(n_reco_bins);
   pdfnom->SetAll(0.);
   for(int i = 0; i < ntoys; ++i){
     pdfuni[i] = new VALORArray(n_reco_bins);
@@ -235,22 +323,50 @@ int main(int argc, char ** argv)
     curr_wght += this_entry;
     pdfnom->SetEntry(curr_wght, ireco);
 
+    // Weights for single universes found for pm 1sigma variations
+    double uni_wght_p1 = -999.;
+    double uni_wght_m1 = -999.;
+    double uni_wght_av = -999.;
     for(int itoy = 0; itoy < ntoys; ++itoy){
       // Setup universe arrays
       pdfuni[itoy]->SetEntry(curr_wght, ireco);
-      double uni_wght = curr_wght;
+      double uni_wght    = curr_wght;
+      uni_wght_p1 = curr_wght;
+      uni_wght_m1 = curr_wght;
+      uni_wght_av = curr_wght;
 
       // Get the product of all the systematic entries for this universe
       for(const string &syst : systematics){
         // Get the total universe weight
         const std::vector<float> & universes = branch_universes.at(syst);
         // Get the nominal, weighted by the current universe
-        uni_wght *= universes.at(itoy);
+        if(arg_quantile){
+          std::vector<unsigned int> curr_ids(ids.at(syst));
+          std::vector<unsigned int>::iterator it = std::find(curr_ids.begin(),curr_ids.end(),itoy);
+          if(it != curr_ids.end() && knots[itoy] == 1)
+            uni_wght_p1 *= universes.at(itoy);
+          else if(it != curr_ids.end() && knots[itoy] == -1)
+            uni_wght_m1 *= universes.at(itoy);
+        }
+        else{
+          uni_wght *= universes.at(itoy);
+        }
+        // If we are looking at 
       }// Systematics
       // Set the universe weights
-      VLOG("universe_variation_tweaks", pDEBUG) << " Total universe weight for entry " << iev << " : " << uni_wght;
-      pdfuni[itoy]->SetEntry(uni_wght,ireco);
+      // Fill the PDF
+      if(!arg_quantile){
+        VLOG("universe_variation_tweaks", pDEBUG) << " Total universe weight for entry " << iev << " : " << uni_wght;
+        pdfuni[itoy]->SetEntry(uni_wght,ireco);
+      }
     }// Universes
+
+    // If we're using quantiles, average the pm 1sigma values (they should be symmetric)
+    if(arg_quantile){
+      uni_wght_av = abs(uni_wght_p1 - uni_wght_m1)/2.;
+      pdfuniq->SetEntry(uni_wght_av,ireco);
+    }
+
   }// Events
   VLOG("universe_variation_tweaks", pINFO) << " Finished analysis loop";
 
@@ -259,9 +375,14 @@ int main(int argc, char ** argv)
   conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
   assert(ks != conv::kspUndefined);
   const char * nom_name = "h_nom_pdf";
+  const char * uni_name = "h_uniq_pdf";
   TH1D * nom_pdf = util::binning::Make1DHistogram(*pdfnom,binning,ks,true);
   nom_pdf->SetName(nom_name);
   VLOG("universe_variation_tweaks", pINFO) << " Filled nominal histogram with " << nom_pdf->GetNbinsX() << " bins";
+  TH1D * uni_pdf = util::binning::Make1DHistogram(*pdfuniq,binning,ks,true);
+  uni_pdf->SetName(uni_name);
+  VLOG("universe_variation_tweaks", pINFO) << " Filled nominal histogram with " << nom_pdf->GetNbinsX() << " bins";
+
   TH1D * huni[ntoys];
   for(int itoy = 0; itoy < ntoys; ++itoy){
     huni[itoy] = new TH1D(*nom_pdf);
@@ -280,17 +401,21 @@ int main(int argc, char ** argv)
   nom_pdf_werr->Reset();
   err_m1->Reset();
   err_p1->Reset();
-  VLOG("universe_variation_tweaks", pINFO) << " About to loop over bins";
   for(int ebin = 1; ebin <= nom_pdf->GetNbinsX(); ebin++) {
     double nom_val = nom_pdf->GetBinContent(ebin);
-    double sumsq   = 0;
-    VLOG("universe_variation_tweaks", pINFO) << " About to loop over universes";
-    for(int itoy = 0; itoy < ntoys; itoy++) {
-      double curr_val = huni[itoy]->GetBinContent(ebin);
-      sumsq += TMath::Power(curr_val-nom_val,2.);
-    }//itoy
-    VLOG("universe_variation_tweaks", pINFO) << " Finished looping over universes";
-    double one_sigma = TMath::Sqrt(sumsq/ntoys);
+    double one_sigma = 1.;
+    if(!arg_quantile){
+      double sumsq   = 0;
+      for(int itoy = 0; itoy < ntoys; itoy++) {
+        double curr_val = huni[itoy]->GetBinContent(ebin);
+        sumsq += TMath::Power(curr_val-nom_val,2.);
+      }//itoy
+      one_sigma = TMath::Sqrt(sumsq/ntoys);
+    }// Quantile?
+    else{
+      double curr_val = uni_pdf->GetBinContent(ebin);
+      one_sigma       = abs(nom_val - curr_val);  
+    }
     err_p1->SetBinContent(ebin, nom_val + one_sigma);
     err_m1->SetBinContent(ebin, nom_val - one_sigma);
     nom_pdf_werr->SetBinError(ebin,one_sigma);
@@ -350,4 +475,90 @@ int main(int argc, char ** argv)
   }
   
   std::cout <<"Done!"<<std::endl;
+}
+//___________________________________________________________________
+void GetVariations(std::map< std::string, std::vector<double> > &vs, 
+                   const std::string &in, 
+                   const std::vector<std::string> &sy){
+
+  VLOG("universe_variation_tweaks",pINFO) << "IN VARIATIONS";
+  std::ifstream uFile;
+  uFile.open(in);
+  if(!uFile){
+    VLOG("universe_variation_tweaks",pFATAL) << "Unable to open universe file: " << in;
+    util::Die(-1);
+  }
+  if(vs.size()){
+    VLOG("universe_variation_tweaks",pFATAL) << "Vector to hold variations is not empty";
+    return;
+  }
+
+  for(const std::string &syst : sy){
+    VLOG("universe_variation_tweaks",pINFO) << "SYST LOOP AT:" << syst;
+    std::vector<double> vars;
+    vars.clear();
+    while(!uFile.eof()){
+    VLOG("universe_variation_tweaks",pINFO) << "IN FILE LOOP";
+      std::string line = "";
+      std::getline(uFile,line);
+      size_t found_v = line.find(syst);
+      if(found_v != std::string::npos){
+      VLOG("universe_variation_tweaks",pINFO) << "FOUND SYST";
+        // Clean up the line to pass the variations to the vector
+        VLOG("universe_variation_tweaks",pINFO) << "Found line containing " << syst << " parameters: \n" << line;
+        VLOG("universe_variation_tweaks",pINFO) << "Removing systematic name from line";
+        line.erase(0, found_v+syst.length());
+        VLOG("universe_variation_tweaks",pINFO) << "Line now contains: \n" << line;
+
+        // Pass the remaining contents of the line to a vector of doubles
+        double value;
+        std::stringstream lineValue(line);
+        while(lineValue >> value){
+          VLOG("universe_variation_tweaks",pINFO) << "Variation: " << value;
+          vars.push_back(value);
+        }
+        break;
+      } // Found the current systematic
+    } // variations text file
+    vs.insert({syst,vars});
+  } // Loop over the systematics 
+} // GetVariations
+//___________________________________________________________________
+void GetKnots(const std::map< std::string, std::vector<double> > &vars, 
+              const std::vector<double> &knots, 
+              std::map< std::string, std::map<unsigned int, double> >&vs, 
+              std::map< std::string, std::map<unsigned int, double> > &kns){
+
+  for(const std::pair<std::string, std::vector<double> > &v : vars){
+    std::string syst = v.first;
+    std::cout << " Current syst in GetKnots : " << syst << std::endl;
+    std::map<unsigned int, double> tmp_vs, tmp_kns;
+    for(const double &kn : knots){
+      double min_diff     = 999.;
+      double best_var     = -999.;
+      unsigned int min_id = 999; 
+      unsigned int it = 0;
+      std::vector<double> tmp_vars = v.second;
+      std::cout << " Number of variations: " << tmp_vars.size() << std::endl;
+      for(const double & var : tmp_vars){ 
+        //Check if the current variation is closest to the current knot
+        //At the end of the loop, push back the closest variation and it's location in the vector
+        if(abs(kn-var) < abs(min_diff)){
+          min_diff  = abs(kn-var);
+          best_var  = var;
+          min_id    = it;
+          ++it;
+        }
+      }
+      tmp_vs.insert({min_id,best_var});
+      tmp_kns.insert({min_id,kn});
+    } // Syst-variation map
+    vs.insert({syst, tmp_vs});
+    kns.insert({syst, tmp_kns});
+  }
+  if(vs.size() != kns.size()){
+    VLOG("universe_variation_tweaks",pFATAL) << "Number of entries in knots and variation lists don't match";
+    VLOG("universe_variation_tweaks",pFATAL) << "NKnots: " << kns.size() << ", NVariations: " << vs.size();
+    util::Die(-1);
+  }
 }
