@@ -55,7 +55,7 @@
       <format> SBNFluxNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/data/sbn_numu_disappearance/prior_errors/2019b_v1/ereco_flux.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/01a1/flux.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 
@@ -65,7 +65,7 @@
       <format> SBNIntNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/data/sbn_numu_disappearance/prior_errors/2019b_v1/interaction.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/01a1/interaction.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 

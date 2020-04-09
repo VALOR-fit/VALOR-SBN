@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<analysis_inputs analysis="SBN-NDFIT" version="2019a_v1" detector="ND">
+<analysis_inputs analysis="SBN-NDFIT" version="2019a1" detector="ND">
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> sbn/data_archive/data/sbn_numu_disappearance/dsts/2019a_v1/mc/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst.root </filename>
+      <filename> sbn_numu_disappearance/dsts/2019a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst.root </filename>
        <objname> valor_sbncode_mini_dst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>

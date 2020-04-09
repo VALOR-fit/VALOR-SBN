@@ -2,15 +2,15 @@
 
 <valor> 
 
-  <element_list name="sbn_numu_disapp_2020a1_02a1_1">
-
+  <element_list name="sbn_numu_disapp_2019b2_01a1_1">
+    
     <element name="sbn_nd_fhc_numuCCIncl">
       <detector>     sbn_nd                                               </detector>
       <beam>         bnb_fhc                                              </beam>
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2020a1_1_sbn_nd.xml           </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b2_1_sbn_nd.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -22,7 +22,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2020a1_1_sbn_ub.xml           </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b2_1_sbn_ub.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -34,7 +34,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2020a1_1_sbn_fd.xml           </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b2_1_sbn_fd.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -44,18 +44,18 @@
     
   <parameter_definitions>
     <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml </filename>
-    <filename desc="sbnd_flux_etrue_parameters">       params/sbn/flux_sbn_nd_etrue.xml            </filename>
-    <filename desc="uboone_flux_etrue_parameters">     params/sbn/flux_sbn_ub_etrue.xml            </filename>
-    <filename desc="icarus_flux_etrue_parameters">     params/sbn/flux_sbn_fd_etrue.xml            </filename>
+    <filename desc="sbnd_flux_ereco_parameters">       params/sbn/flux_sbn_nd_numu_ereco.xml       </filename>
+    <filename desc="uboone_flux_ereco_parameters">     params/sbn/flux_sbn_ub_numu_ereco.xml       </filename>
+    <filename desc="icarus_flux_ereco_parameters">     params/sbn/flux_sbn_fd_numu_ereco.xml       </filename>
     <filename desc="sbn_xsec_ereco_parameters">        params/sbn/int_numu_ereco.xml               </filename>
   </parameter_definitions>
 
   <systematics name="SBN">
     <group name="flux">
-      <format> SBNFlux_Etrue.xml </format>
+      <format> SBNFluxNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/data/sbn_numu_disappearance/prior_errors/2020a_v1/etrue_flux.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/01a1/flux.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 
@@ -65,11 +65,12 @@
       <format> SBNIntNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/data/sbn_numu_disappearance/prior_errors/2020a_v1/interaction.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/01a1/interaction.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 
     </group>
+    
   </systematics>
     
 </valor> 
