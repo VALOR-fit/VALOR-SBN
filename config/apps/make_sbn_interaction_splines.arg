@@ -1,10 +1,12 @@
-# argument                         |   type         |  require?   |   default
-# .....................................................................................................
-input                              |   string       |  mandatory  |   - # For SBN: $VALOR_DUNE/src/macros/contrib/steve/sbn_universe_variations_from_mastbaum.txt
-output                             |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM].root
-config                             |   string       |  mandatory  |   -
-#sample                             |   string       |  mandatory  |   -
-#detector                           |   string       |  mandatory  |   -
-systematic                         |   string       |  mandatory  |   -
-include-simple-binning             |   boolean      |  optional   |  false
-max-events                         |   integer      |  optional   | -1
+# argument             |   type         |  require?   |   default
+# ..........................................................................................
+input-analysis         |   string       |  mandatory  |   - # DST
+output                 |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM].root
+variations             |   string       |  mandatory  |   - # For SBN: $VALOR_DUNE/src/macros/contrib/steve/sbn_universe_variations_from_mastbaum.txt
+config                 |   string       |  mandatory  |   -
+sample                 |   string       |  mandatory  |   -
+detector               |   string       |  mandatory  |   -
+systematic             |   string       |  mandatory  |   -
+modes                  |   string       |  mandatory  |   -
+include-simple-binning |   boolean      |  optional   |  false
+max-events             |   integer      |  optional   | -1

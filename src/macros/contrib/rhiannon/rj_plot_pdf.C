@@ -69,6 +69,10 @@ void rj_plot_pdf(
   const char * binning = (option.Contains("OB")?"ob":"sb");
 
   // 0 == total, 1 = stacked
+  if(!plotting_format.Contains("total") && !plotting_format.Contains("stacked") && !plotting_format.IsNull()){
+    std::cerr << " Error: Plotting format, " << plotting_format << ",  invalid. " << std::endl;
+    vutil::Die(-1);
+  }
   int format = (plotting_format.Contains("total")?0:1);
   
   // Couple of vectors to keep all our objects
@@ -180,8 +184,6 @@ void rj_plot_pdf(
         for(int imode = 0; imode < NReacModes; imode++) {
           conv::ReacMode_t m = modes.at(imode);
           if(m == conv::kmUndefined) continue;
-          cout << "Taking mode: " << vutil::AsString(m) <<" for "<<model_name<< endl;
-          cout << "beam : " << vutil::AsString(b) << ", sample: " << vutil::AsString(s) << ", imode: " << imode << endl;
           TString contrib_name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
             tag, "pdfcs",binning,"rf", model_name.c_str(),kinevar.c_str(), vutil::AsString(m).c_str());
           TObject * tmp_obj = fin->Get(contrib_name.Data());
@@ -195,7 +197,6 @@ void rj_plot_pdf(
               for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
                 if(mc == coarse_modes.at(imodec)) {
                     found = true;
-                    cout << "Mode: " << vutil::AsString(m) << " is mapped to plot type: " << vutil::AsString(mc) << endl;
                     break;
                 }
               }
@@ -269,7 +270,7 @@ void rj_plot_pdf(
           TString data_name = TString::Format("%s_%s_%s_%s_%s_%s",
               data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
           TObject * tmp = fdata->Get(data_name.Data());
-          std::cout<<data_name<<"\t"<<tmp<<std::endl;
+          std::cout<<"Data name: " << data_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
           data_hist = new TH1D(*htmp);
 
@@ -295,7 +296,7 @@ void rj_plot_pdf(
           TString total_name = TString::Format("%s_%s_%s_%s_%s_%s",
               tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
           TObject * tmp = fin->Get(total_name.Data());
-          std::cout<<total_name<<"\t"<<tmp<<std::endl;
+          std::cout<< "Integrated name : " << total_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
           total_hist = new TH1D(*htmp);
 

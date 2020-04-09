@@ -142,6 +142,8 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hname_data = "valor_pdfts_sb_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
       print("No detector given, defaulting to the ND")
 
+    print "Data histogram found: ", hname_data
+
     out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
 
     hists         = []
@@ -230,6 +232,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
     widths    = []
     integrals = []
+    wintegrals = []
 
     if plot_data:
       data_width = data_nom
@@ -243,16 +246,34 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
     for w in widths:
       for i in xrange(w.GetXaxis().GetNbins()):
-       old_bin_content = w.GetBinContent(i+1)
-       bin_width       = w.GetXaxis().GetBinWidth(i+1)
-       new_bin_content = old_bin_content/bin_width
-       w.SetBinContent(i+1,new_bin_content)
-       integrals.append(w.Integral("width"))
+        old_bin_content = w.GetBinContent(i+1)
+        bin_width       = w.GetXaxis().GetBinWidth(i+1)
+        new_bin_content = old_bin_content/bin_width
+        w.SetBinContent(i+1,new_bin_content)
+      wintegrals.append(w.Integral("width"))
+      integrals.append(w.Integral())
 
     if det == '1':
-      max_y = max(integrals)*1.4
+      max_y = max(wintegrals)*1.4
     else:
-      max_y = max(integrals)*1.2
+      max_y = max(wintegrals)*1.2
+
+    for r,rate in enumerate(wintegrals):
+      if r == 0:
+        print "Data integrated rate: ", rate
+      elif r == 1:
+        print "Prefit integrated rate: ", rate
+      elif r == 2:
+        print "Postfit integrated rate: ", rate
+
+    envelope_fn = out_prefix+"_envelope."+img_format
+    f_output = ROOT.TFile(envelope_fn,"UPDATE")
+    if not f_output.IsOpen():
+      print "Unable to open root file named: ", envelope_fn
+    else:
+      print "Opened output file named: ", envelope_fn
+
+    ROOT.gDirectory.cd()
 
     if plot_prefit:
       hplus_prefit.GetYaxis().SetRangeUser(1, max_y)
@@ -284,6 +305,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       legend.AddEntry(legend_prefit, prefit_label, "FL")
 
+      prefit_width.Write("prefit_hist")
+      env_graph_prefit.Write("prefit_env")
+
     if plot_postfit:
       hplus_postfit.GetYaxis().SetRangeUser(1, max_y)
       hplus_postfit.GetYaxis().SetTitleOffset(title_offset)
@@ -302,6 +326,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_width.SetLineStyle(7)
       postfit_width.SetLineColor(postfit_line)
       postfit_width.Draw("same")
+      if plot_prefit:
+        prefit_width.SetLineStyle(5)
+        prefit_width.Draw("same")
 
       legend_postfit = ROOT.TH1D(postfit_width)
       legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
@@ -313,6 +340,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       all_hists.append(legend_postfit)
 
       legend.AddEntry(legend_postfit, postfit_label, "FL")
+
+      postfit_width.Write("postfit_hist")
+      env_graph_postfit.Write("postfit_env")
 
     if plot_data:
       data_width.SetLineColor(data_color)
@@ -329,105 +359,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       legend.AddEntry(legend_data, data_label, "L")
 
+      data_width.Write("data_hist")
+
     canv.RedrawAxis()
 
     legend.SetTextFont(font)
     legend.Draw()
-    envelope_fn = out_prefix+"_envelope."+img_format
-    canv.Print(envelope_fn)
+    legend.Write("legend")
+    canv.Write("c")
     envelope_images.append(envelope_fn)
     cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
     envelope_captions.append(cap.replace("_"," "))
-
-    # Leave ratios for now, while debugging the above
-    """
-    # Now do it with ratios
-    ratio_plus_postfit  = R.TH1D(hplus_postfit)
-    ratio_minus_postfit = R.TH1D(hminus_postfit)
-
-    ratio_plus_postfit .Divide(data_nom)
-    ratio_minus_postfit.Divide(data_nom)
-
-    for i in xrange(data_nom.GetXaxis().GetNbins()):
-      if abs(data_nom.GetBinContent(i+1))<conv.kASmallNum:
-        ratio_plus_postfit .SetBinContent(i+1,1)
-        ratio_minus_postfit.SetBinContent(i+1,1)
-
-    ratio_hists = [(ratio_plus_postfit , ratio_minus_postfit)]
-
-    ratio_graph_postfit = ROOT.TGraphAsymmErrors(ratio_plus_postfit .GetXaxis().GetNbins())
-
-    ratio_graphs = [ratio_graph_postfit]
-
-    if ratio_mult is not None:
-      eff_mult = ratio_mult
-    else:
-      eff_mult = 1.
-
-    fill_ratio_graph_from_hist(ratio_graph_postfit, ratio_minus_postfit, ratio_plus_postfit, eff_mult)
-
-    ratio_graph_postfit.SetFillColor(postfit_color)
-    ratio_graph_postfit.SetLineColor(postfit_color)
-
-    ratio_graph_postfit.SetLineWidth(3)
-    ratio_graph_postfit.SetFillStyle(1001)
-
-    canv2 = ROOT.TCanvas()
-    canv2.SetLeftMargin  (left_margin)
-    canv2.SetBottomMargin(bottom_margin)
-    canv2.SetRightMargin (right_margin )
-    if use_log_plots: canv2.SetLogx()
-    canv2.cd()
-
-    #~ ratio_graph_postfit.SetMaximum(ratio_max)
-    #~ ratio_graph_postfit.SetMinimum(2-ratio_max)
-    ratio_graph_postfit.GetYaxis().SetRangeUser(0.,2.5)
-    ratio_graph_postfit.Draw("a2")
-    canv2.RedrawAxis()
-
-    legend2 = ROOT.TLegend(0.5,0.85,0.93,0.94);
-    legend2.SetFillStyle(0);
-    legend2.SetBorderSize(0);
-    legend2.SetNColumns(2)
-    if ratio_mult is not None:
-      legend2.AddEntry(ratio_graph_postfit ,"%s#times%g"%(postfit_label,eff_mult),"FL")
-    else:
-      legend2.AddEntry(ratio_graph_postfit ,postfit_label,"FL")
-
-
-    legend2.Draw("same")
-    canv2.Update() # Need to update here so line gets right maximum
-
-    line_at_1 = ROOT.TLine(0,1,canv2.GetUxmax(),1)
-    line_at_1.SetLineWidth(2)
-    line_at_1.Draw("same")
-
-    canv2.Update()
-    ratio_fn = out_prefix+"_envelope_ratio."+img_format
-    canv2.Print(ratio_fn)
-    ratio_images.append(ratio_fn)
-    cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
-    ratio_captions.append(cap.replace("_"," "))
-
-    #~ # Print out some event rates
-    #~ nom_events     = data_nom  .Integral()
-    #~ p1_events_pre  = hplus_data  .Integral()
-    #~ m1_events_pre  = hminus_data .Integral()
-    #~ p1_events_post = hplus_postfit .Integral()
-    #~ m1_events_post = hminus_postfit.Integral()
-    #~
-    #~ p1_percent_pre  = 100.*( (p1_events_pre -nom_events)/nom_events )
-    #~ m1_percent_pre  = 100.*( (m1_events_pre -nom_events)/nom_events )
-    #~ p1_percent_post = 100.*( (p1_events_post-nom_events)/nom_events )
-    #~ m1_percent_post = 100.*( (m1_events_post-nom_events)/nom_events )
-    #~
-    #~ items = [name+"_"+par_set,to3dp.format(nom_events)]
-    #~ items.append(to3dp.format(p1_events_pre ) +" ("+to3dp.format(p1_percent_pre )+"%)")
-    #~ items.append(to3dp.format(m1_events_pre ) +" ("+to3dp.format(m1_percent_pre )+"%)")
-    #~ items.append(to3dp.format(p1_events_post) +" ("+to3dp.format(p1_percent_post)+"%)")
-    #~ items.append(to3dp.format(m1_events_post) +" ("+to3dp.format(m1_percent_post)+"%)")
-    #~ print "\t".join(items)
-    """
 
   # End of model loop
 
@@ -504,24 +446,6 @@ def add_figures_to_tex(f,figure_names,captions,plots_per_row=2):
     f.write("\\end{minipage}")
     if i%plots_per_row or i==n_figs-1:
       f.write("\\end{figure*}\n")
-  return
-
-def fill_ratio_graph_from_hist(g,hm,hp,multiplier=1.):
-  for i in xrange(hp.GetXaxis().GetNbins()):
-    low_edge  = hm.GetBinLowEdge(i+1)
-    high_edge = low_edge + hm.GetBinWidth(i+1)
-    g.SetPoint      (i,hm.GetBinCenter(i+1),1)
-    g.SetPointEYlow (i,multiplier*abs(hm.GetBinContent(i+1)-1))
-    g.SetPointEYhigh(i,multiplier*abs(hp.GetBinContent(i+1)-1))
-    g.SetPointEXlow (i,hm.GetBinWidth(i+1)*0.5 - 0.005)
-    g.SetPointEXhigh(i,hm.GetBinWidth(i+1)*0.5 - 0.005)
-
-  g.SetFillStyle(1001)
-  g.SetLineStyle(0)
-  g.SetLineWidth(0)
-  g.GetXaxis().SetRangeUser(0,max_energy)
-  CopyHistAxisFormatting(hp,g)
-  g.GetYaxis().SetTitle("Ratio of # Total Events")
   return
 
 if __name__=="__main__":
