@@ -142,11 +142,14 @@ def main(files,tag,label,exclusion,nue):
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
       # 1-sided scan if exclusion plot
-      if exclusion is True or nue is False:
+      if exclusion is True and nue is False:
         print "One-sided delta chi-squared scan"
         dchisq = util.DeltaChisquareOneSided(cl,1)
       # 2-sided scan if acceptance plot or nue contour
-      elif exclusion is False or nue is True:
+      elif exclusion is True and nue is True:
+        print "Two-sided delta chi-squared scan"
+        dchisq = util.DeltaChisquare(cl,2)
+      elif exclusion is False:
         print "Two-sided delta chi-squared scan"
         dchisq = util.DeltaChisquare(cl,2)
 
