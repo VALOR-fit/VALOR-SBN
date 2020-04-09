@@ -124,6 +124,7 @@ def UnlogGraph(graph):
 def main(files,tag,label,exclusion,nue):
 
   print "Exclusion: ", exclusion
+  print "Nue: ", nue
   logged_hists = [GetLoggedHist(f,exclusion) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
   canv.SetTopMargin(0.03)
@@ -141,11 +142,12 @@ def main(files,tag,label,exclusion,nue):
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
       # 1-sided scan if exclusion plot
-      print "One-sided delta chi-squared scan"
-      dchisq = util.DeltaChisquareOneSided(cl,1)
-      # 2-sided scan if acceptance plot
-      if exclusion is False or nue is True:
-        print "Exclusion is false, getting two-sided delta chi-squared scan"
+      if exclusion is True or nue is False:
+        print "One-sided delta chi-squared scan"
+        dchisq = util.DeltaChisquareOneSided(cl,1)
+      # 2-sided scan if acceptance plot or nue contour
+      elif exclusion is False or nue is True:
+        print "Two-sided delta chi-squared scan"
         dchisq = util.DeltaChisquare(cl,2)
 
       if (dchisq < 0): continue
