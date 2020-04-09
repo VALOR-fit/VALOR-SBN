@@ -121,7 +121,7 @@ def UnlogGraph(graph):
   new_graph = R.TGraph(n,10**x,10**y)
   return new_graph
 
-def main(files,tag,label,exclusion):
+def main(files,tag,label,exclusion,nue):
 
   print "Exclusion: ", exclusion
   logged_hists = [GetLoggedHist(f,exclusion) for f in files]
@@ -144,7 +144,7 @@ def main(files,tag,label,exclusion):
       print "One-sided delta chi-squared scan"
       dchisq = util.DeltaChisquareOneSided(cl,1)
       # 2-sided scan if acceptance plot
-      if exclusion is False:
+      if exclusion is False or nue is True:
         print "Exclusion is false, getting two-sided delta chi-squared scan"
         dchisq = util.DeltaChisquare(cl,2)
 
@@ -165,7 +165,8 @@ if __name__=="__main__":
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
   parser.add_option('-e','--exclusion', dest='exclusion',default="True",help='Boolean for whether we are producing exclusion or inclusion contours')
+  parser.add_option('-n','--nue', dest='nue',default="False",help='Boolean for whether we are producing numu or nue contours')
 
   options,patterns = parser.parse_args()
 
-  main(patterns,options.tag, options.label, options.exclusion)
+  main(patterns,options.tag, options.label, options.exclusion, options.nue)
