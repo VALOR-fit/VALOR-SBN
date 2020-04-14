@@ -92,9 +92,23 @@ std::vector<std::string> flux_systematics =
    "piplus_PrimaryHadronSWCentralSplineVariation"
  };
  
-void        GetVariations(std::vector<double> &vs, const std::string &in, const std::string &sy);
-void        GetKnots(const std::vector<double> &vars, const std::vector<double> &knots, std::map<unsigned int, double> &vs, std::map<unsigned int, double> &kns);
+TString splineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]");
+
 std::string GetSystematic(const std::string &sy);
+void        GetVariations(std::vector<double> &vs, 
+                          const std::string &in, 
+                          const std::string &sy);
+void        GetKnots(const std::vector<double> &vars, 
+                     const std::vector<double> &knots, 
+                     std::map<unsigned int, double> &vs, 
+                     std::map<unsigned int, double> &kns,
+                     std::map<double, unsigned int> &kn_uns);
+TString     BuildSplineName(const Sample_t    &s, 
+                            const BeamConf_t  &b,
+                            const ReacMode_t  &m, 
+                            const std::string &p,
+                            const int         &itrue, 
+                            const int         &ireco);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -105,36 +119,33 @@ int main(int argc, char ** argv)
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_sbn_interaction_splines.arg");
   VLOG("valor_dune", pNOTICE) << arg;
 
-  /*
-  bool include_sb       = arg.GetBool("include-simple-binning");
-  int  max_events       = arg.GetInt("max-events");
-  size_t n_universes    = arg.GetInt("n-universes");
-  */
-
   // Get arguments
+  string hypname           = arg.GetString("physics-hypothesis");
+  string fplopt            = arg.GetString("fit-param-opt");
   string arg_config_file   = arg.GetString("config");
-  string arg_analysis_file = arg.GetString("input-analysis");
+  string arg_analysis_file = arg.GetString("input");
   string arg_output_file   = arg.GetString("output");
   string arg_var_file      = arg.GetString("variations");
   string arg_modelist_file = arg.GetString("modes");
   string arg_sample        = arg.GetString("sample");
+  string arg_beam          = arg.GetString("beam");
   string arg_detector      = arg.GetString("detector");
   string arg_systematic    = arg.GetString("systematic");
-  bool include_sb          = arg.GetBool("include-simple-binning");
   
   // From arguments
-  Sample_t   sample      = util::SampleFromString   (arg_sample    );
-  Detector_t detector    = util::DetectorFromString (arg_detector  );
+  BeamConf_t beam     = util::BeamConfFromString (arg_beam    );
+  Sample_t   sample   = util::SampleFromString   (arg_sample  );
+  Detector_t detector = util::DetectorFromString (arg_detector);
   
   //
   // Get the systematic from the argument list and make sure it exists in the universes
   //
   std::string syst = GetSystematic(arg_systematic);
   if(syst.empty()){
-    VLOG("valor_dune",pFATAL) << syst << "Systematic came back empty";
+    VLOG("valor_dune",pFATAL) << syst << " systematic came back empty";
     util::Die(-1);
   }
-  VLOG("valor_dune",pNOTICE) << syst << "Systematic parameter " << syst << " found";
+  VLOG("valor_dune",pNOTICE) <<  "Systematic parameter " << syst << " found";
   
   // 
   // Read in the universe-variation txt file and use it to determine the best universes to generate the 13 knots
@@ -150,10 +161,10 @@ int main(int argc, char ** argv)
   GetVariations(variations, arg_var_file, arg_systematic);
   // Check the variations
   if(!variations.size()){
-    VLOG("valor_dune",pFATAL) << syst << "Variations came back empty";
+    VLOG("valor_dune",pFATAL) << syst << " variations came back empty";
     util::Die(-1);
   }
-  VLOG("valor_dune",pNOTICE) << syst << "Variations in vector form of size " << variations.size();
+  VLOG("valor_dune",pNOTICE) << "Variations in vector form of size " << variations.size();
   
   // 
   // 4) Find the entries which most closely match the knot positions
@@ -163,34 +174,28 @@ int main(int argc, char ** argv)
   const std::vector<double> &knots = {-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0};
   const int   n_knots              = knots.size();
   const int   inom                 = 7; // Nominal template ID, 0-sigma variation
-  const float knot_dial_min        = -3.0; 
-  const float knot_dial_max        =  3.0;
-  const float knot_dial_step       = (knot_dial_max - knot_dial_min) / (n_knots-1);
-  
 
   // Chosen universe specifications
   std::vector<unsigned int> ids;
-  std::map<unsigned int, double> vars;
-  std::map<unsigned int, double> kns;
+  std::map<double, unsigned int> kn_uns; // Knot to universe ID
+  std::map<unsigned int, double> vars; // Universe ID to universe variation
+  std::map<unsigned int, double> kns; // Universe ID to knot
   std::map<unsigned int, double>::iterator itr;
   ids.clear(); vars.clear(); kns.clear();
 
-  GetKnots(variations,knots,vars,kns);
+  GetKnots(variations,knots,vars,kns,kn_uns);
   VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
   for(itr = vars.begin(); itr != vars.end(); ++itr) {
     VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << kns.at(itr->first);
     ids.push_back(itr->first);
   }
 
-  // 
-  // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
-  // 
   // Get model & configure
   // Make an elements without reading the MC
-  std::string elem_readopt("nomc nosplines");
+  std::string elem_readopt("nomc");
   CompoundFitElements * elements = new CompoundFitElements();
-  std::string config_path = util::CompleteConfigPath(arg_config_file);
-  elements->Read(config_path,elem_readopt.c_str());
+  std::string config_file        = util::CompleteConfigPath(arg_config_file);
+  elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
   
   // Then tell it about the universes and read the MC
   FitModelABC * model = elements->FitModel();
@@ -207,9 +212,21 @@ int main(int argc, char ** argv)
   if (!got_appropriate_model) {
     VLOG("valor_dune", pFATAL) << "Failed to identify appropriate fit model to get binning.";
   }
- 
+  assert(gmodel);
+
+  gmodel->SetUniversesToRead(ids);
+  gmodel->SetUniverseParameterToRead(syst);
+
+  // And finally read the MC properly
+  std::string model_readopt("forcedst");
+  gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());  
+
+  // 
+  // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
+  // 
+  // Get model & configure
+  // Make an elements without reading the MC
   // For spline generation
-  const util::RFL & rfl                   = *(gmodel->GetRFL());
   const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
   
   // Binning choice needs to be made carefully, likely that stats will be very low in
@@ -219,97 +236,128 @@ int main(int argc, char ** argv)
   // not cause leakage 
   //
   const VALORBinning * reco_ob = (binning.RecoOptBinning());
-  const VALORBinning * reco_sb = (binning.RecoSmpBinning());
   const int n_reco_bins_ob  = reco_ob->NBins();
-  const int n_reco_bins_sb  = reco_sb->NBins();
 
   const ModeList ml                                = valor::ModeList(util::CompleteConfigPath(arg_modelist_file));
   const std::vector<conv::ReacMode_t> & reac_modes = ml.Modes();
 
-  /*
-   * After dtermining the universes to save for the given parameter, mode, and bin
-   * Then can define a function like SetUniversesToRead(std::vector<int>) where the vector of ints is the
-   * list of universe entries to read and save 
-   * Then add/change all the analogous functions to those associated with SetUniverseRangeToRead(0,n_universes)
-   * This is how to create the templates for the spline knots.
-   */
-  gmodel->SetUniversesToRead(ids);
-  gmodel->SetUniverseParameterToRead(syst);
-
-  // And finally read the MC properly
-  std::string model_readopt("forcedst nosplines");
-  gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
-
-  // Arrays to store the number of events in each MC template bin
-  // for each systematic parameter tweak
-  VALORArray * mc_templ_sb [n_knots] [reac_modes.size()];
-  VALORArray * mc_templ_ob [n_knots] [reac_modes.size()];
-
-  unsigned int iknot = 0;
-  for (const size_t &kn: knots) {
-    unsigned int imode = 0;
-    for(const ReacMode_t &m : reac_modes) {
-      const VALORBinning * true_sb = binning.TrueSmpBinning(m);
-      const int n_true_bins_sb  = true_sb->NBins();
-      if (include_sb) {
-        mc_templ_sb [iknot][imode] = 
-          new VALORArray(n_reco_bins_sb, n_true_bins_sb);
-        mc_templ_sb [iknot][imode] -> SetAll(0.);
-      }
-      mc_templ_ob [iknot][imode] = 
-        new VALORArray(n_reco_bins_ob, n_true_bins_sb);
-      mc_templ_ob [iknot][imode] -> SetAll(0.);
-      imode++;
-    }
-  }
-
-  // Open input analysis file and get the DST
-  TFile fin(arg_analysis_file.c_str(),"READ");
-  if (!fin.IsOpen()) {
-    VLOG("valor_dune", pFATAL) 
-      << "Failed to open file "<<arg_analysis_file.c_str();
-    util::Die(-1);
-  }
-  string tree_name = "valor_sbncode_mini_dst";
-  TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
-  if(!analysis_tree) {
-    VLOG("valor_dune", pFATAL) 
-      << "No event tree " << tree_name 
-      << " in " << " input analysis file: "
-      << arg_analysis_file;
-    util::Die(-1);
-  }
-  
-  // Get the branches we're interested in
+  // 
+  // Loop over knots, Generate and access the universe templates for the systematic
   //
-  // Universes
-  const size_t max_n_universes = 10000;
-  std::map<std::string,int> branch_n_universes;
-  std::map<std::string,std::vector<float>> branch_universes;
-  
-  // For now, processing a single systematic at a time so each map will only have 1 entry
-  branch_universes.emplace(syst,std::vector<float>(max_n_universes));
-  std::string branch_name   = Form("variation_%s",syst.c_str());
-  std::string branch_name_n = Form("variation_n_%s",syst.c_str());
-  analysis_tree->SetBranchStatus (branch_name_n.c_str(),1);
-  analysis_tree->SetBranchStatus (branch_name  .c_str(),1);
-  bool bstat_univ_n = analysis_tree->SetBranchAddress(branch_name_n.c_str(),&branch_n_universes[syst]);
-  bool bstat_univ   = analysis_tree->SetBranchAddress(branch_name.c_str(),branch_universes[syst].data());
-  if (bstat_univ_n || bstat_univ) {
-    LOG("valor_dune",pFATAL) << " Failed to load needed universe branch.";
-    util::Die(-1);
-  }
-
-  // Loop over knots, modes and events from the DSTs
-  // Using the pre-defined number of etrue and ereco binning, fill each bin with
+  // Using the pre-defined etrue and ereco binning, fill each bin with
   // event rates weighted for each universe knot for each relevant  mode
   // This will produce 13 values per bin definition (13xnModes histograms)
-  iknot = 0;
-  for (const size_t &kn: knots) {
-    // Set our variations
-    gmodel->SetSystematicVariationIDToApply(syst, kn);
-  } // Knots
+
+  // Define VALORArrays
+  VALORArray *mc_templ_ob [knots.size()] [reac_modes.size()];
+  TString var_name = "mctfin";
+  
+  for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
+    std::vector<ReacMode_t> temp_modes;
+    double kn         = knots[iknot];
+    unsigned int univ = kn_uns[kn];
     
+    LOG("valor_dune",pINFO) << "Iterator: " << iknot << ", knot : " << kn << ", universe ID: " << univ;
+    gmodel->SetSystematicVariationIDToApply(syst, univ);
+    
+    PhysHypothesis ph(conv::kHypVoid);
+    Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
+    model->Generate(ph,generate_opt);
+
+    TObjArray *mct_var_ob = new TObjArray();
+    std::string tag = "mct_var_"+std::to_string(iknot);
+    model->Write(mct_var_ob,tag.c_str(),"mct_vf");
+    unsigned int n_mcts = mct_var_ob->GetEntries();
+    LOG("valor_dune",pINFO) << " Number of entries in the TObjArray: " << n_mcts;
+
+    // Loop over the object, define every entry containing 'Fin' and the reaction mode name as the VALORArray
+    // Now access the entries from the templates in each mode and fill histograms for making splines
+    for(unsigned int n = 0; n < n_mcts; ++n){
+      TObject * mct_var = (*mct_var_ob)[n];
+      TString mct_name = mct_var->GetName();
+      //LOG("valor_dune",pDEBUG) << " Looking at template named: " << mct_name;
+      for(unsigned int imode = 0; imode < reac_modes.size(); ++imode) {
+        const ReacMode_t &m = reac_modes.at(imode);
+        TString m_name = util::AsString(m);
+        mc_templ_ob[iknot][imode] = nullptr;
+        
+        // Check if the current mct name contains the current mode
+        // Check if the current mct name contains the string 'mctfin' as this is the template we need
+        if(!(mct_name.Contains(m_name) && mct_name.Contains(var_name))) {
+          LOG("valor_dune",pDEBUG) << " No match: Found template for mode " << m_name << " in template named: " << mct_name;
+          continue;
+        }
+        LOG("valor_dune",pDEBUG) << " Match: Found template for mode " << m_name << " in template named: " << mct_name;
+
+        // Define the current template
+        mc_templ_ob[iknot][imode] = static_cast<VALORArray*>(mct_var);
+        LOG("valor_dune",pDEBUG) << " Cast the written templates onto VALORArrays, number of entries in the VALORArray: " << mc_templ_ob[iknot][imode]->GetSize();
+        
+        const VALORBinning * true_sb = binning.TrueSmpBinning(m);
+        const int n_true_bins_sb = true_sb->NBins();
+
+        for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+          for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+            double nevents  = mc_templ_ob [iknot][imode] -> GetEntry(ireco, itrue);
+            LOG("valor_dune",pDEBUG) << "Mode : " << util::AsString(m) << ", bin (ireco,itrue): " << ireco << ", " << itrue << ", nevents: " << nevents;
+          }
+        }
+      } // Modes
+    } // MCTs
+  } // Knots
+
+  // Output file - first make the substitutions for sample/parameter
+  TString ts_outfile = arg_output_file.c_str();
+  ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
+  VLOG("valor_dune", pNOTICE) << "Saving VALOR response functions to: "<<ts_outfile;
+  TFile fout(ts_outfile.Data(),"recreate");
+  
+  int n_splines_written = 0;
+
+  for(unsigned int imode = 0; imode < reac_modes.size(); ++imode) {
+    const ReacMode_t &m = reac_modes.at(imode);
+    const VALORBinning * true_sb = binning.TrueSmpBinning(m);
+    const int n_true_bins_sb = true_sb->NBins();
+    
+    for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+      for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+        double y[n_knots] = { 0 };
+        double x[n_knots] = { 0 };    
+        for(int iknot = 0; iknot < n_knots; iknot++) {
+          if(!mc_templ_ob [iknot][imode]) continue;
+          double knot = knots[iknot];
+          LOG("valor_dune",pDEBUG) << "Mode : " << util::AsString(m) << ", bin (ireco,itrue): " << ireco << ", " << itrue;
+          double nevents  = mc_templ_ob [iknot][imode] -> GetEntry(ireco, itrue);
+          LOG("valor_dune",pDEBUG) << " Got nevents, about to construct nevents0";
+          double nevents0 = mc_templ_ob [inom][imode] -> GetEntry(ireco, itrue);
+          LOG("valor_dune",pDEBUG) << " nevents0: " << nevents0 << ", nevents: " << nevents;
+          y[iknot] = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          x[iknot] = vars[kn_uns[knot]]; //NSigma from the universe found for the current knot
+          LOG("valor_dune",pDEBUG) << " Current knot : " << knot << ", closest universe variation : " << vars[kn_uns[knot]] << ", with " << y[iknot] << " entries";
+        }//iknot
+        TString name  = BuildSplineName(sample, beam, m, syst, itrue, ireco);
+        LOG("valor_dune",pDEBUG) << " Building spline with name: " << name;
+        
+        TString title = name; // Make this contain real kinematic ranges
+        LOG("valor_dune",pDEBUG) << "                 and title: " << title;
+        
+        TSpline3 spl(title.Data(), x[0],x[n_knots-1], y, n_knots, "0"); // Define only first and last knots - faster interpolation.
+        spl.SetName(name.Data());
+        spl.Write();
+        n_splines_written++;
+        if (n_splines_written%1000==0) {
+          VLOG("valor_dune",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
+        }
+      }//itrue
+    }//ireco
+  }//imode
+
+  fout.Close();
+
+  VLOG("valor_dune", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
+
   return 0;
 }
 //___________________________________________________________________
@@ -384,11 +432,16 @@ std::string GetSystematic(const std::string &sy){
   return syst;
 }
 //___________________________________________________________________
-void GetKnots(const std::vector<double> & vars, const std::vector<double> &knots, std::map<unsigned int, double> &vs, std::map<unsigned int, double> &kns){
+void GetKnots(const std::vector<double> &vars, 
+              const std::vector<double> &knots, 
+              std::map<unsigned int, double> &vs, 
+              std::map<unsigned int, double> &kns,
+              std::map<double, unsigned int> &kn_uns){
+
   for(const double &kn : knots){
-    double min_diff     = 999.;
-    double best_var     = -999.;
-    unsigned int min_id = 999; 
+    double min_diff       = 999.;
+    double best_var       = -999.;
+    unsigned int min_id   = 999;
     for(unsigned int v = 0; v < vars.size(); ++v){
       //Check if the current variation is closest to the current knot
       //At the end of the loop, push back the closest variation and it's location in the vector
@@ -401,6 +454,7 @@ void GetKnots(const std::vector<double> & vars, const std::vector<double> &knots
     }
     vs.insert({min_id,best_var});
     kns.insert({min_id,kn});
+    kn_uns.insert({kn, min_id});
   }
   if(vs.size() != kns.size()){
     VLOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
@@ -409,121 +463,86 @@ void GetKnots(const std::vector<double> & vars, const std::vector<double> &knots
   }
 }
 //___________________________________________________________________
+TString BuildSplineName(const Sample_t    &s, 
+                        const BeamConf_t  &b,
+                        const ReacMode_t  &m, 
+                        const std::string &p,
+                        const int         &itrue, 
+                        const int         &ireco){
 
-  /*
-  Parameter p = ParameterPool::Instance()->ParamFromString(arg_systematic);
-  PhysParamId_t fit_param = p.GetID();
+  TString name = splineNamePattern;
   
-  if (sample == ksUndefined || fit_param == kPhypUndefined) {
-    std::cerr<<"Bad configuration."<<std::endl;
-    std::cerr<<"Sample:     "<<arg_sample     <<"\t => "<< util::AsString(sample)  <<std::endl;
-    std::cerr<<"Detector:   "<<arg_detector   <<"\t => "<< util::AsString(detector)<<std::endl;
-    std::cerr<<"Syst:       "<<arg_systematic << std::endl;
-    std::cerr<<" to VALOR   "<< "\t => "<<util::NameRegistry::Instance()->AsString(fit_param)<<std::endl;
-  }
-  assert(sample    != ksUndefined   );
-  assert(detector  != kdUndefined   );
-  assert(fit_param != kPhypUndefined);
-
-  CompoundFitModel * compound_model = dynamic_cast<CompoundFitModel*>(elements->FitModel());
-  assert(compound_model);
-  GenericSingleSampleFitModel * fit_model = 0;
-  bool got_appropriate_model = false;
-  for (unsigned int ism = 0 ; ism < compound_model->GetNSubModels() ; ism++) {
-    fit_model = dynamic_cast<GenericSingleSampleFitModel*>(compound_model->GetSubModel(ism));
-    if  (fit_model->GetDetector() == detector && 
-         fit_model->GetSample()   == sample ) 
-      { got_appropriate_model = true; break; }
-  }
-  if (!got_appropriate_model) {
-    VLOG("make_sbn_interaction_splines", pFATAL) << "Failed to identify appropriate fit model to get binning.";
-  }
+  name = name.ReplaceAll("[BEAM]"   , util::AsString(b).c_str());
+  name = name.ReplaceAll("[SAMPLE]" , util::AsString(s).c_str());
   
-  const util::RFL & rfl                   = *(fit_model->GetRFL());
-  const SingleSampleKineBinning & binning = *(fit_model->GetBinning());
+  name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
+  name = name.ReplaceAll("[PARAM]"  , p.c_str());
   
-  // Make it an option here to use the Xsec binning instead
-  const VALORBinning * reco_ob = (binning.RecoOptBinning());
-  const VALORBinning * reco_sb = (binning.RecoSmpBinning());
-  const int n_reco_bins_ob  = reco_ob->NBins();
-  const int n_reco_bins_sb  = reco_sb->NBins();
+  name = name.ReplaceAll("[TRUE]" , TString::Format("%d", itrue ));
+  name = name.ReplaceAll("[RECO]" , TString::Format("%d", ireco ));
   
-  */
+  return name;
 
-  /*
-  ModeList ml = fit_model->GetModeList();
-  const std::vector<conv::ReacMode_t> & reac_modes = ml.Modes();
-
-  // Open input file and get tree
-
-  // Output file - first make the substitutions for sample/parameter
-  TString ts_outfile = arg_out_file.c_str();
-  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::                          AsString(sample   ).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , util::NameRegistry::Instance()->AsString(fit_param).c_str());
-  VLOG("make_sbn_interaction_splines", pNOTICE) 
-    << "Saving VALOR response functions to: "<<ts_outfile;
-  TFile fout(ts_outfile.Data(),"recreate");
-  
-  int n_splines_written = 0;
-
-  unsigned int imode = 0;
-  for(ReacMode_t m : reac_modes) {
-    const VALORBinning * true_sb = binning.TrueSmpBinning(m);
-    const int n_true_bins_sb = true_sb->NBins();
-    
-    if (include_sb) {
-      for(int ireco = 0; ireco < n_reco_bins_sb; ireco++) {
-        for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-          double y[n_twks] = { 0 };
-          double x[n_twks] = { 0 };    
-          for(int itwk = 0; itwk < n_twks; itwk++) {
-            double twk_dial = twk_dial_min + itwk * twk_dial_step;  
-            double nevents  = mc_templ_sb [itwk][imode] -> GetEntry(ireco,itrue);
-            double nevents0 = mc_templ_sb [inom][imode] -> GetEntry(ireco,itrue);
-            y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-            x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
-          }//itwk
-          TString name  = rfl.BuildSplineName(m,fit_param,itrue,ireco);
-          TString title = name; // Make this contain real kinematic ranges
-          //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
-          TSpline3 spl(title.Data(), x[0], x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
-          spl.SetName(name.Data());
-          spl.Write();
-          n_splines_written++;
-          if (n_splines_written%1000==0) {
-            VLOG("make_sbn_interaction_splines",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
-          }
-        }//itrue
-      }//ireco
-    }//if include sb
-    for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-      for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-        double y[n_twks] = { 0 };
-        double x[n_twks] = { 0 };    
-        for(int itwk = 0; itwk < n_twks; itwk++) {
-          double twk_dial = twk_dial_min + itwk * twk_dial_step;  
-          double nevents  = mc_templ_ob [itwk][imode] -> GetEntry(ireco, itrue);
-          double nevents0 = mc_templ_ob [inom][imode] -> GetEntry(ireco, itrue);
-          y[itwk] = (nevents0 > 0) ? nevents/nevents0 : 1;
-          x[itwk] = 1+(twk_dial * GSystUncertainty::Instance()->OneSigmaErr(syst));                   
-        }//itwk
-        TString name  = rfl.BuildSplineName(m,fit_param,itrue,ireco);
-        TString title = name; // Make this contain real kinematic ranges
-        //~ TSpline3 spl(title.Data(), x, y, n_twks, "0"); // Define each x knot individually
-        TSpline3 spl(title.Data(), x[0],x[n_twks-1], y, n_twks, "0"); // Define only first and last knots - faster interpolation.
-        spl.SetName(name.Data());
-        spl.Write();
-        n_splines_written++;
-        if (n_splines_written%1000==0) {
-          VLOG("make_sbn_interaction_splines",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
-        }
-      }//itrue
-    }//ireco
-    imode++;
-  }//imode
-
-  fout.Close();
-
-  VLOG("make_sbn_interaction_splines", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
-*/
+}
 //___________________________________________________________________
+  /*
+  // Open input analysis file and get the DST
+  TFile fin(arg_analysis_file.c_str(),"READ");
+  if (!fin.IsOpen()) {
+    VLOG("valor_dune", pFATAL) 
+      << "Failed to open file "<<arg_analysis_file.c_str();
+    util::Die(-1);
+  }
+  string tree_name = "valor_sbncode_mini_dst";
+  TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
+  if(!analysis_tree) {
+    VLOG("valor_dune", pFATAL) 
+      << "No event tree " << tree_name 
+      << " in " << " input analysis file: "
+      << arg_analysis_file;
+    util::Die(-1);
+  }
+  
+  // Get the branches we're interested in
+  //
+  // Universes
+  const size_t max_n_universes = 10000;
+  std::map<std::string,int> branch_n_universes;
+  std::map<std::string,std::vector<float>> branch_universes;
+  
+  // For now, processing a single systematic at a time so each map will only have 1 entry
+  branch_universes.emplace(syst,std::vector<float>(max_n_universes));
+  std::string branch_name   = Form("variation_%s",syst.c_str());
+  std::string branch_name_n = Form("variation_n_%s",syst.c_str());
+  analysis_tree->SetBranchStatus (branch_name_n.c_str(),1);
+  analysis_tree->SetBranchStatus (branch_name  .c_str(),1);
+  bool bstat_univ_n = analysis_tree->SetBranchAddress(branch_name_n.c_str(),&branch_n_universes[syst]);
+  bool bstat_univ   = analysis_tree->SetBranchAddress(branch_name.c_str(),branch_universes[syst].data());
+  if (bstat_univ_n || bstat_univ) {
+    LOG("valor_dune",pFATAL) << " Failed to load needed universe branch.";
+    util::Die(-1);
+  }
+  VLOG("universe_variation_tweaks", pINFO) << " Successfully loaded universe branches";
+
+  // Only apply simple binning for now
+  const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
+  const VALORBinning * reco_sb            = (binning.RecoSmpBinning());
+  const int n_reco_bins                   = reco_sb->NBins();
+  // Setup arrays to be used for constructing the histograms
+  VALORArray *pdfuni[n_knots];
+  VALORArray *pdfnom  = new VALORArray(n_reco_bins);
+  pdfnom->SetAll(0.);
+  for(int i = 0; i < n_knots; ++i){
+    pdfuni[i] = new VALORArray(n_reco_bins);
+    pdfuni[i]->SetAll(0.);
+  }
+  VLOG("universe_variation_tweaks", pINFO) << " Successfully setup PDFs";
+
+  // Ereco
+  double enu_reco   = -999.;
+  double weight     = -999.;
+  double pot_weight = -999.;
+  analysis_tree->SetBranchAddress("enu_reco", &enu_reco);
+  analysis_tree->SetBranchAddress("wght",     &weight);
+  analysis_tree->SetBranchAddress("wght_pot", &pot_weight);
+*/

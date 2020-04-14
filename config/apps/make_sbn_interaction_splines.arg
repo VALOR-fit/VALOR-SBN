@@ -1,12 +1,13 @@
 # argument             |   type         |  require?   |   default
 # ..........................................................................................
-input-analysis         |   string       |  mandatory  |   - # DST
-output                 |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM].root
+physics-hypothesis     |   string       |  optional   |   void
+fit-param-opt          |   string       |  optional   |   NONE
+input                  |   string       |  optional   |   null # DST
+output                 |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM]_[BEAM].root
 variations             |   string       |  mandatory  |   - # For SBN: $VALOR_DUNE/src/macros/contrib/steve/sbn_universe_variations_from_mastbaum.txt
 config                 |   string       |  mandatory  |   -
 sample                 |   string       |  mandatory  |   -
 detector               |   string       |  mandatory  |   -
 systematic             |   string       |  mandatory  |   -
 modes                  |   string       |  mandatory  |   -
-include-simple-binning |   boolean      |  optional   |  false
-max-events             |   integer      |  optional   | -1
+beam                   |   string       |  optional   |   BNB_FHC
