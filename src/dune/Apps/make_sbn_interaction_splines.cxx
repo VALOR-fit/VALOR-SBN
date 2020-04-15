@@ -173,7 +173,7 @@ int main(int argc, char ** argv)
   // Number of knots for the specified systematic parameter
   const std::vector<double> &knots = {-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0};
   const int   n_knots              = knots.size();
-  const int   inom                 = 7; // Nominal template ID, 0-sigma variation
+  const int   inom                 = 6; // Nominal template ID, 0-sigma variation
 
   // Chosen universe specifications
   std::vector<unsigned int> ids;
@@ -192,7 +192,7 @@ int main(int argc, char ** argv)
 
   // Get model & configure
   // Make an elements without reading the MC
-  std::string elem_readopt("nomc");
+  std::string elem_readopt("nomc nosplines");
   CompoundFitElements * elements = new CompoundFitElements();
   std::string config_file        = util::CompleteConfigPath(arg_config_file);
   elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
@@ -206,7 +206,8 @@ int main(int argc, char ** argv)
   for (unsigned int ism = 0 ; ism < cmodel->GetNSubModels() ; ism++) {
     gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(ism));
     if  (gmodel->GetDetector() == detector && 
-         gmodel->GetSample()   == sample) 
+         gmodel->GetSample()   == sample   &&
+         gmodel->GetBeam()     == beam) 
       { got_appropriate_model = true; break; }
   }
   if (!got_appropriate_model) {
@@ -218,7 +219,7 @@ int main(int argc, char ** argv)
   gmodel->SetUniverseParameterToRead(syst);
 
   // And finally read the MC properly
-  std::string model_readopt("forcedst");
+  std::string model_readopt("forcedst nosplines");
   gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());  
 
   // 
@@ -247,64 +248,66 @@ int main(int argc, char ** argv)
   // Using the pre-defined etrue and ereco binning, fill each bin with
   // event rates weighted for each universe knot for each relevant  mode
   // This will produce 13 values per bin definition (13xnModes histograms)
-
-  // Define VALORArrays
-  VALORArray *mc_templ_ob [knots.size()] [reac_modes.size()];
-  TString var_name = "mctfin";
   
+  //// MEMES
+  const TString fin_name = "mctfin";
+  
+  std::vector< std::map< ReacMode_t, VALORArray> > mct_knots_modes;
   for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
-    std::vector<ReacMode_t> temp_modes;
-    double kn         = knots[iknot];
-    unsigned int univ = kn_uns[kn];
+    const double kn         = knots[iknot];
+    const unsigned int univ = kn_uns[kn];
     
     LOG("valor_dune",pINFO) << "Iterator: " << iknot << ", knot : " << kn << ", universe ID: " << univ;
     gmodel->SetSystematicVariationIDToApply(syst, univ);
     
-    PhysHypothesis ph(conv::kHypVoid);
-    Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
+    const PhysHypothesis ph(conv::kHypVoid);
+    const Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
     model->Generate(ph,generate_opt);
 
+    const std::string tag = "mct_var_"+std::to_string(iknot);
     TObjArray *mct_var_ob = new TObjArray();
-    std::string tag = "mct_var_"+std::to_string(iknot);
     model->Write(mct_var_ob,tag.c_str(),"mct_vf");
-    unsigned int n_mcts = mct_var_ob->GetEntries();
-    LOG("valor_dune",pINFO) << " Number of entries in the TObjArray: " << n_mcts;
+    const unsigned int n_mcts = mct_var_ob->GetEntries();
+    LOG("valor_dune",pDEBUG) << " Number of entries in the TObjArray: " << n_mcts;
 
-    // Loop over the object, define every entry containing 'Fin' and the reaction mode name as the VALORArray
-    // Now access the entries from the templates in each mode and fill histograms for making splines
-    for(unsigned int n = 0; n < n_mcts; ++n){
-      TObject * mct_var = (*mct_var_ob)[n];
-      TString mct_name = mct_var->GetName();
-      //LOG("valor_dune",pDEBUG) << " Looking at template named: " << mct_name;
-      for(unsigned int imode = 0; imode < reac_modes.size(); ++imode) {
-        const ReacMode_t &m = reac_modes.at(imode);
-        TString m_name = util::AsString(m);
-        mc_templ_ob[iknot][imode] = nullptr;
-        
-        // Check if the current mct name contains the current mode
-        // Check if the current mct name contains the string 'mctfin' as this is the template we need
-        if(!(mct_name.Contains(m_name) && mct_name.Contains(var_name))) {
-          LOG("valor_dune",pDEBUG) << " No match: Found template for mode " << m_name << " in template named: " << mct_name;
-          continue;
-        }
-        LOG("valor_dune",pDEBUG) << " Match: Found template for mode " << m_name << " in template named: " << mct_name;
-
-        // Define the current template
-        mc_templ_ob[iknot][imode] = static_cast<VALORArray*>(mct_var);
-        LOG("valor_dune",pDEBUG) << " Cast the written templates onto VALORArrays, number of entries in the VALORArray: " << mc_templ_ob[iknot][imode]->GetSize();
-        
-        const VALORBinning * true_sb = binning.TrueSmpBinning(m);
-        const int n_true_bins_sb = true_sb->NBins();
-
-        for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-          for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-            double nevents  = mc_templ_ob [iknot][imode] -> GetEntry(ireco, itrue);
-            LOG("valor_dune",pDEBUG) << "Mode : " << util::AsString(m) << ", bin (ireco,itrue): " << ireco << ", " << itrue << ", nevents: " << nevents;
+    std::map<ReacMode_t, VALORArray> mct_modes;
+    for(unsigned int imct = 0; imct < n_mcts; ++imct){
+      const VALORArray mct = *static_cast<VALORArray*>((*mct_var_ob)[imct]);
+      const std::string mct_name = mct.GetName();
+      const TString t_mct_name = mct_name;
+      const size_t underscore_index = mct_name.find_last_of("_");
+      if(underscore_index == string::npos){
+        LOG("valor_dune",pERROR) << " No '_' found in mct_name: " << mct_name;
+        util::Die(-1);
+      }
+      const std::string mct_mode_name = mct_name.substr(underscore_index+1);
+      LOG("valor_dune",pINFO) << " MCT name " << mct_name << ", mct_mode_name: " << mct_mode_name;
+      if(!(t_mct_name.Contains(fin_name))) continue;
+      for(const ReacMode_t &mode : reac_modes) {
+        const TString mode_name = util::AsString(mode);
+        if(mct_mode_name == mode_name){
+          if(!mct_modes.emplace(mode,mct).second) {
+            LOG("valor_dune",pERROR) << " Couldn't place the template in the map entry due to repeated entry for mode " << util::AsString(mode);
+            util::Die(-1);
           }
+          break;
         }
-      } // Modes
-    } // MCTs
-  } // Knots
+      }
+    }
+    mct_knots_modes.push_back(mct_modes);
+  }
+
+  for (unsigned int iknot = 0; iknot < mct_knots_modes.size(); ++iknot) {
+    const std::map<ReacMode_t, VALORArray> mct_modes = mct_knots_modes.at(iknot);
+    for(const ReacMode_t &mode : reac_modes){
+      std::map<ReacMode_t, VALORArray>::const_iterator it;
+      it = mct_modes.find(mode);
+      if(it == mct_modes.end()) continue;
+      const VALORArray &mct = it->second; 
+      LOG("valor_dune",pDEBUG) << " k=" << iknot << ", m=" << util::AsString(mode) << " : " << mct.GetEntry(8, 8) << std::endl;
+    }
+  } // Knots 
+  //// DREAMS
 
   // Output file - first make the substitutions for sample/parameter
   TString ts_outfile = arg_output_file.c_str();
@@ -314,35 +317,32 @@ int main(int argc, char ** argv)
   VLOG("valor_dune", pNOTICE) << "Saving VALOR response functions to: "<<ts_outfile;
   TFile fout(ts_outfile.Data(),"recreate");
   
+  /*
   int n_splines_written = 0;
 
   for(unsigned int imode = 0; imode < reac_modes.size(); ++imode) {
+    if(!mc_templ_ob[inom][imode]) continue;
     const ReacMode_t &m = reac_modes.at(imode);
     const VALORBinning * true_sb = binning.TrueSmpBinning(m);
     const int n_true_bins_sb = true_sb->NBins();
     
     for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
       for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+        double nevents0 = mc_templ_ob [inom][imode] -> GetEntry(ireco, itrue);
         double y[n_knots] = { 0 };
         double x[n_knots] = { 0 };    
-        for(int iknot = 0; iknot < n_knots; iknot++) {
+        for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
           if(!mc_templ_ob [iknot][imode]) continue;
           double knot = knots[iknot];
-          LOG("valor_dune",pDEBUG) << "Mode : " << util::AsString(m) << ", bin (ireco,itrue): " << ireco << ", " << itrue;
+          LOG("valor_dune",pDEBUG) << "Knot : " << iknot << ", " << knot << ", mode : " << util::AsString(m) << ", bin (ireco,itrue): " << ireco << ", " << itrue;
           double nevents  = mc_templ_ob [iknot][imode] -> GetEntry(ireco, itrue);
-          LOG("valor_dune",pDEBUG) << " Got nevents, about to construct nevents0";
-          double nevents0 = mc_templ_ob [inom][imode] -> GetEntry(ireco, itrue);
           LOG("valor_dune",pDEBUG) << " nevents0: " << nevents0 << ", nevents: " << nevents;
           y[iknot] = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           x[iknot] = vars[kn_uns[knot]]; //NSigma from the universe found for the current knot
           LOG("valor_dune",pDEBUG) << " Current knot : " << knot << ", closest universe variation : " << vars[kn_uns[knot]] << ", with " << y[iknot] << " entries";
         }//iknot
         TString name  = BuildSplineName(sample, beam, m, syst, itrue, ireco);
-        LOG("valor_dune",pDEBUG) << " Building spline with name: " << name;
-        
         TString title = name; // Make this contain real kinematic ranges
-        LOG("valor_dune",pDEBUG) << "                 and title: " << title;
-        
         TSpline3 spl(title.Data(), x[0],x[n_knots-1], y, n_knots, "0"); // Define only first and last knots - faster interpolation.
         spl.SetName(name.Data());
         spl.Write();
@@ -357,7 +357,7 @@ int main(int argc, char ** argv)
   fout.Close();
 
   VLOG("valor_dune", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
-
+ */ 
   return 0;
 }
 //___________________________________________________________________
@@ -378,7 +378,10 @@ void GetVariations(std::vector<double> &vs, const std::string &in, const std::st
   while(!uFile.eof()){
     std::string line = "";
     std::getline(uFile,line);
-    size_t found_v = line.find(sy);
+    TString tline(line);
+    tline.ToLower();
+    std::string lline = static_cast<std::string>(tline);
+    size_t found_v = lline.find(sy);
     if(found_v != std::string::npos){
       // Clean up the line to pass the variations to the vector
       VLOG("valor_dune",pDEBUG) << "Found line containing " << sy << " parameters: \n" << line;
