@@ -102,7 +102,7 @@ void        GetKnots(const std::vector<double> &vars,
                      const std::vector<double> &knots, 
                      std::map<unsigned int, double> &vs, 
                      std::map<unsigned int, double> &kns,
-                     std::map<double, unsigned int> &kn_uns);
+                     std::map<double, unsigned int> &knot_universe);
 TString     BuildSplineName(const Sample_t    &s, 
                             const BeamConf_t  &b,
                             const ReacMode_t  &m, 
@@ -177,13 +177,13 @@ int main(int argc, char ** argv)
 
   // Chosen universe specifications
   std::vector<unsigned int> ids;
-  std::map<double, unsigned int> kn_uns; // Knot to universe ID
+  std::map<double, unsigned int> knot_universe; // Knot to universe ID
   std::map<unsigned int, double> vars; // Universe ID to universe variation
   std::map<unsigned int, double> kns; // Universe ID to knot
   std::map<unsigned int, double>::iterator itr;
   ids.clear(); vars.clear(); kns.clear();
 
-  GetKnots(variations,knots,vars,kns,kn_uns);
+  GetKnots(variations,knots,vars,kns,knot_universe);
   VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
   for(itr = vars.begin(); itr != vars.end(); ++itr) {
     VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << kns.at(itr->first);
@@ -254,8 +254,8 @@ int main(int argc, char ** argv)
   
   std::vector< std::map< ReacMode_t, VALORArray> > mct_knots_modes;
   for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
-    const double kn         = knots[iknot];
-    const unsigned int univ = kn_uns[kn];
+    const double kn         = knots.at(iknot);
+    const unsigned int univ = knot_universe.at(kn);
     
     LOG("valor_dune",pINFO) << "Iterator: " << iknot << ", knot : " << kn << ", universe ID: " << univ;
     gmodel->SetSystematicVariationIDToApply(syst, univ);
@@ -304,7 +304,7 @@ int main(int argc, char ** argv)
       it = mct_modes.find(mode);
       if(it == mct_modes.end()) continue;
       const VALORArray &mct = it->second; 
-      LOG("valor_dune",pDEBUG) << " k=" << iknot << ", m=" << util::AsString(mode) << " : " << mct.GetEntry(8, 8) << std::endl;
+      LOG("valor_dune",pDEBUG) << " At knot = " << iknot << " & mode = " << util::AsString(mode) << ", entry(8,8) = " << mct.GetEntry(8, 8);
     }
   } // Knots 
   //// DREAMS
@@ -317,33 +317,71 @@ int main(int argc, char ** argv)
   VLOG("valor_dune", pNOTICE) << "Saving VALOR response functions to: "<<ts_outfile;
   TFile fout(ts_outfile.Data(),"recreate");
   
-  /*
   int n_splines_written = 0;
 
-  for(unsigned int imode = 0; imode < reac_modes.size(); ++imode) {
-    if(!mc_templ_ob[inom][imode]) continue;
-    const ReacMode_t &m = reac_modes.at(imode);
-    const VALORBinning * true_sb = binning.TrueSmpBinning(m);
+  // Get the name of the reaction modes for the nominal knot
+  const std::map<ReacMode_t, VALORArray> mct_mode_nom = mct_knots_modes.at(inom); 
+  for(const ReacMode_t &mode : reac_modes){
+    // Iterator for the nominal knot map
+    std::map<ReacMode_t, VALORArray>::const_iterator it_mct_mode_nom = mct_mode_nom.find(mode);
+
+    // Make sure the current mode exists for the nominal knot
+    if(it_mct_mode_nom == mct_knots_modes.at(inom).end()) continue;
+
+    // Access the VALOR array for the nominal mct in this mode
+    const VALORArray &mct_nom = it_mct_mode_nom->second; 
+    
+    // Get the true, standard binning for this mode
+    const VALORBinning * true_sb = binning.TrueSmpBinning(mode);
     const int n_true_bins_sb = true_sb->NBins();
     
+    // Loop over the reco and true bins
     for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
       for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-        double nevents0 = mc_templ_ob [inom][imode] -> GetEntry(ireco, itrue);
-        double y[n_knots] = { 0 };
-        double x[n_knots] = { 0 };    
+        // Get the nominal event rate in this bin
+        double nevents0 = mct_nom.GetEntry(ireco, itrue);
+        std::vector<double> x,y;
         for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
-          if(!mc_templ_ob [iknot][imode]) continue;
-          double knot = knots[iknot];
-          LOG("valor_dune",pDEBUG) << "Knot : " << iknot << ", " << knot << ", mode : " << util::AsString(m) << ", bin (ireco,itrue): " << ireco << ", " << itrue;
-          double nevents  = mc_templ_ob [iknot][imode] -> GetEntry(ireco, itrue);
-          LOG("valor_dune",pDEBUG) << " nevents0: " << nevents0 << ", nevents: " << nevents;
-          y[iknot] = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
-          x[iknot] = vars[kn_uns[knot]]; //NSigma from the universe found for the current knot
-          LOG("valor_dune",pDEBUG) << " Current knot : " << knot << ", closest universe variation : " << vars[kn_uns[knot]] << ", with " << y[iknot] << " entries";
+          // Get the mct-mode map for the current knot and its corresponding iterator
+          const std::map<ReacMode_t, VALORArray> mct_mode_knot = mct_knots_modes.at(iknot); 
+          std::map<ReacMode_t, VALORArray>::const_iterator it_mct_mode_knot = mct_mode_knot.find(mode);
+
+          // Make sure the current mode exists for the current knot
+          if(it_mct_mode_knot == mct_knots_modes.at(iknot).end()) {
+            LOG("valor_dune", pERROR) << " Couldn't find an entry for the current knot " << iknot << " in mct_knots_modes";
+            util::Die(-1);
+          }
+          // Access the VALOR array for the nominal mct in this mode
+          const VALORArray &mct_knot = it_mct_mode_knot->second; 
+
+          // Get the value of the current knot for debugging purposes
+          double knot = knots.at(iknot);
+
+          // Get the event rate for this knot and mode in this bin
+          double nevents = mct_knot.GetEntry(ireco, itrue);
+
+          // Set the y axis entry to be the current rate/nominal rate
+          // Set the x axis to be the exact sigma of the current knot from the relevant universe
+          double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          y.push_back(event_ratio);
+
+          double universe_variation = vars.at(knot_universe.at(knot));
+          x.push_back(universe_variation); //NSigma from the universe found for the current knot
+
+          // Print statements for validation
+          LOG("valor_dune",pDEBUG) << " Knot :                   " << iknot << ", " << knot << "\n"
+                                   << " Universe variation:      " << universe_variation << " \n"
+                                   << " Mode :                   " << util::AsString(mode) << "\n"
+                                   << " Nominal event rate:      " << nevents0 << "\n"
+                                   << " Current knot event rate: " << nevents << "\n"
+                                   << " Bin (ireco,itrue):       " << ireco << ", " << itrue << "\n"
+                                   << " x-axis entry (universe variation): " << x.at(iknot) << "\n"
+                                   << " y-axis entry (event rate ratio):   " << y.at(iknot);
         }//iknot
-        TString name  = BuildSplineName(sample, beam, m, syst, itrue, ireco);
+        assert((x.size() == y.size()) && (x.size() == knots.size()));
+        TString name  = BuildSplineName(sample, beam, mode, syst, itrue, ireco);
         TString title = name; // Make this contain real kinematic ranges
-        TSpline3 spl(title.Data(), x[0],x[n_knots-1], y, n_knots, "0"); // Define only first and last knots - faster interpolation.
+        TSpline3 spl(title.Data(), x.at(0),x.at(n_knots-1), y.data(), n_knots, "0"); // Define only first and last knots - faster interpolation.
         spl.SetName(name.Data());
         spl.Write();
         n_splines_written++;
@@ -357,7 +395,7 @@ int main(int argc, char ** argv)
   fout.Close();
 
   VLOG("valor_dune", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
- */ 
+  
   return 0;
 }
 //___________________________________________________________________
@@ -439,7 +477,7 @@ void GetKnots(const std::vector<double> &vars,
               const std::vector<double> &knots, 
               std::map<unsigned int, double> &vs, 
               std::map<unsigned int, double> &kns,
-              std::map<double, unsigned int> &kn_uns){
+              std::map<double, unsigned int> &knot_universe){
 
   for(const double &kn : knots){
     double min_diff       = 999.;
@@ -455,9 +493,9 @@ void GetKnots(const std::vector<double> &vars,
         min_id    = v;
       }
     }
-    vs.insert({min_id,best_var});
-    kns.insert({min_id,kn});
-    kn_uns.insert({kn, min_id});
+    vs.emplace(min_id,best_var);
+    kns.emplace(min_id,kn);
+    knot_universe.emplace(kn, min_id);
   }
   if(vs.size() != kns.size()){
     VLOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
