@@ -6,10 +6,18 @@
   \brief     
 
   \syntax    valor_dune-make_sbn_interaction_splines         
-               --input  input_analysis_file.root
-               --output output_sbn_interaction_splines_file.root
-               --sample sample_name
-               --systematic sbn_systematic_name
+  
+  \options     --output              : Where to save splines to. [def: valor_splines_[SAMPLE]_[PARAM]_[BEAM].root]
+               --config              : Analysis configuration file [required]
+               --variations          : Location of the text file which holds the sigma variations
+               --systematic          : Parameter to generate spline for
+               --sample              : Topology [def: numulikeCChigh]
+               --detector            : Detector [def: sbn_nd]
+               --beam                : Beam [def: BNB_FHC]
+               --spectra-write-opt   : Write options for spectra [def: pdfts_rf]
+               --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
+               --store-spectra 
+               || --discard-spectra  : Store param spectra for knots? [def: --discard-spectra]
 
   \author    Rhiannon Jones <rjones@hep.ph.liv,ac,uk>
              University of Liverpool
@@ -95,14 +103,14 @@ std::vector<std::string> flux_systematics =
 TString splineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]");
 
 std::string GetSystematic(const std::string &sy);
-void        GetVariations(std::vector<double> &vs, 
-                          const std::string &in, 
+void        GetVariations(std::vector<double> &variations, 
+                          const std::string &input, 
                           const std::string &sy);
-void        GetKnots(const std::vector<double> &vars, 
+void        GetKnots(const std::vector<double> &variations, 
                      const std::vector<double> &knots, 
-                     std::map<unsigned int, double> &vs, 
-                     std::map<unsigned int, double> &kns,
-                     std::map<double, unsigned int> &knot_universe);
+                     std::map<unsigned int, double> &universes_variations, 
+                     std::map<unsigned int, double> &universes_knots,
+                     std::map<double, unsigned int> &knots_universes);
 TString     BuildSplineName(const Sample_t    &s, 
                             const BeamConf_t  &b,
                             const ReacMode_t  &m, 
@@ -120,23 +128,29 @@ int main(int argc, char ** argv)
   VLOG("valor_dune", pNOTICE) << arg;
 
   // Get arguments
-  string hypname           = arg.GetString("physics-hypothesis");
-  string fplopt            = arg.GetString("fit-param-opt");
   string arg_config_file   = arg.GetString("config");
-  string arg_analysis_file = arg.GetString("input");
   string arg_output_file   = arg.GetString("output");
   string arg_var_file      = arg.GetString("variations");
-  string arg_modelist_file = arg.GetString("modes");
   string arg_sample        = arg.GetString("sample");
   string arg_beam          = arg.GetString("beam");
   string arg_detector      = arg.GetString("detector");
   string arg_systematic    = arg.GetString("systematic");
+  string arg_write_opt     = arg.GetString("spectra-write-opt");
+  bool   arg_store_spectra = arg.GetBool("store-spectra");
   
   // From arguments
-  BeamConf_t beam     = util::BeamConfFromString (arg_beam    );
-  Sample_t   sample   = util::SampleFromString   (arg_sample  );
-  Detector_t detector = util::DetectorFromString (arg_detector);
+  string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
+  string config_file     = util::CompleteConfigPath(arg_config_file);
+  BeamConf_t beam        = util::BeamConfFromString (arg_beam    );
+  Sample_t   sample      = util::SampleFromString   (arg_sample  );
+  Detector_t detector    = util::DetectorFromString (arg_detector);
   
+  // Message thresholds
+  Messenger::Instance()->Configure(mesg_thresholds);
+
+  // If the write options for the spectra are empty, fill with pdfts_rf
+  if(arg_write_opt == "")
+    arg_write_opt = "pdfts_rf";
   //
   // Get the systematic from the argument list and make sure it exists in the universes
   //
@@ -177,16 +191,16 @@ int main(int argc, char ** argv)
 
   // Chosen universe specifications
   std::vector<unsigned int> ids;
-  std::map<double, unsigned int> knot_universe; // Knot to universe ID
-  std::map<unsigned int, double> vars; // Universe ID to universe variation
-  std::map<unsigned int, double> kns; // Universe ID to knot
+  std::map<double, unsigned int> knots_universes; // Knot to universe ID
+  std::map<unsigned int, double> universes_variations; // Universe ID to universe variation
+  std::map<unsigned int, double> universes_knots; // Universe ID to knot
   std::map<unsigned int, double>::iterator itr;
-  ids.clear(); vars.clear(); kns.clear();
+  ids.clear(); universes_variations.clear(); universes_knots.clear();
 
-  GetKnots(variations,knots,vars,kns,knot_universe);
+  GetKnots(variations,knots,universes_variations,universes_knots,knots_universes);
   VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
-  for(itr = vars.begin(); itr != vars.end(); ++itr) {
-    VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << kns.at(itr->first);
+  for(itr = universes_variations.begin(); itr != universes_variations.end(); ++itr) {
+    VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << universes_knots.at(itr->first);
     ids.push_back(itr->first);
   }
 
@@ -194,7 +208,6 @@ int main(int argc, char ** argv)
   // Make an elements without reading the MC
   std::string elem_readopt("nomc nosplines");
   CompoundFitElements * elements = new CompoundFitElements();
-  std::string config_file        = util::CompleteConfigPath(arg_config_file);
   elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
   
   // Then tell it about the universes and read the MC
@@ -230,6 +243,9 @@ int main(int argc, char ** argv)
   // For spline generation
   const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
   
+  // Get the modelist from the model configuration
+  const std::vector<conv::ReacMode_t> & reac_modes = gmodel->GetReactionModes();
+  
   // Binning choice needs to be made carefully, likely that stats will be very low in
   // some bins in the standard 2D ereco-etrue param space so will need to redefine
   //
@@ -239,23 +255,29 @@ int main(int argc, char ** argv)
   const VALORBinning * reco_ob = (binning.RecoOptBinning());
   const int n_reco_bins_ob  = reco_ob->NBins();
 
-  const ModeList ml                                = valor::ModeList(util::CompleteConfigPath(arg_modelist_file));
-  const std::vector<conv::ReacMode_t> & reac_modes = ml.Modes();
-
   // 
   // Loop over knots, Generate and access the universe templates for the systematic
   //
   // Using the pre-defined etrue and ereco binning, fill each bin with
   // event rates weighted for each universe knot for each relevant  mode
   // This will produce 13 values per bin definition (13xnModes histograms)
-  
+ 
+  // Filename for is we choose to store the spectra
+  TString hist_outfile = arg_output_file.c_str();
+  hist_outfile = hist_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
+  hist_outfile = hist_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample).c_str());
+  hist_outfile = hist_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
+  hist_outfile = hist_outfile.ReplaceAll(".root","_spectra.root");
+  VLOG("valor_dune", pNOTICE) << "Saving spectra to: "<<hist_outfile;
+  TFile histout(hist_outfile.Data(),"recreate");
+
   //// MEMES
   const TString fin_name = "mctfin";
   
   std::vector< std::map< ReacMode_t, VALORArray> > mct_knots_modes;
   for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
     const double kn         = knots.at(iknot);
-    const unsigned int univ = knot_universe.at(kn);
+    const unsigned int univ = knots_universes.at(kn);
     
     LOG("valor_dune",pINFO) << "Iterator: " << iknot << ", knot : " << kn << ", universe ID: " << univ;
     gmodel->SetSystematicVariationIDToApply(syst, univ);
@@ -265,14 +287,37 @@ int main(int argc, char ** argv)
     model->Generate(ph,generate_opt);
 
     const std::string tag = "mct_var_"+std::to_string(iknot);
-    TObjArray *mct_var_ob = new TObjArray();
-    model->Write(mct_var_ob,tag.c_str(),"mct_vf");
-    const unsigned int n_mcts = mct_var_ob->GetEntries();
+    TObjArray *mct_modes_varray = new TObjArray();
+    model->Write(mct_modes_varray,tag.c_str(),"mct_vf");
+    const unsigned int n_mcts = mct_modes_varray->GetEntries();
     LOG("valor_dune",pDEBUG) << " Number of entries in the TObjArray: " << n_mcts;
 
+    // If we are storing the spectra (for validation) do so here
+    // Only do this for integer values of sigma (+/- 3, 2, 1)
+    // This can be done by only accessing the even integers in the iknot iterator
+    if(arg_store_spectra && iknot % 2 == 0){
+      const std::string hist_tag  = "spectra_var_"+std::to_string(iknot);
+      LOG("valor_dune",pINFO) << " Saving spectra for knot: " << kn << " with options: " << arg_write_opt << " to file with name: " << hist_tag;
+      TObjArray hist_modes_varray;
+      hist_modes_varray.SetOwner(true);
+      model->Write(&hist_modes_varray,hist_tag.c_str(),arg_write_opt.c_str());
+
+      for (int ihist = 0 ; ihist < hist_modes_varray.GetEntries() ; ihist++) {
+        const TH1* hist = dynamic_cast<TH1*>(hist_modes_varray[ihist]);
+        assert(hist);
+        const TString hist_name = hist->GetName();
+        histout.cd();
+        hist->Write();
+
+        if (hist_name.Contains("pdfts")) {
+          LOG("valor_dune", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
+        }
+      }
+    }
+        
     std::map<ReacMode_t, VALORArray> mct_modes;
     for(unsigned int imct = 0; imct < n_mcts; ++imct){
-      const VALORArray mct = *static_cast<VALORArray*>((*mct_var_ob)[imct]);
+      const VALORArray mct = *static_cast<VALORArray*>((*mct_modes_varray)[imct]);
       const std::string mct_name = mct.GetName();
       const TString t_mct_name = mct_name;
       const size_t underscore_index = mct_name.find_last_of("_");
@@ -296,6 +341,8 @@ int main(int argc, char ** argv)
     }
     mct_knots_modes.push_back(mct_modes);
   }
+  // Close histogram file
+  histout.Close();
 
   for (unsigned int iknot = 0; iknot < mct_knots_modes.size(); ++iknot) {
     const std::map<ReacMode_t, VALORArray> mct_modes = mct_knots_modes.at(iknot);
@@ -316,6 +363,7 @@ int main(int argc, char ** argv)
   ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
   VLOG("valor_dune", pNOTICE) << "Saving VALOR response functions to: "<<ts_outfile;
   TFile fout(ts_outfile.Data(),"recreate");
+  fout.cd();
   
   int n_splines_written = 0;
 
@@ -365,7 +413,7 @@ int main(int argc, char ** argv)
           double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           y.push_back(event_ratio);
 
-          double universe_variation = vars.at(knot_universe.at(knot));
+          double universe_variation = universes_variations.at(knots_universes.at(knot));
           x.push_back(universe_variation); //NSigma from the universe found for the current knot
 
           // Print statements for validation
@@ -400,15 +448,15 @@ int main(int argc, char ** argv)
 }
 //___________________________________________________________________
 
-void GetVariations(std::vector<double> &vs, const std::string &in, const std::string &sy){
+void GetVariations(std::vector<double> &variations, const std::string &input, const std::string &sy){
 
   std::ifstream uFile;
-  uFile.open(in);
+  uFile.open(input);
   if(!uFile){
-    VLOG("valor_dune",pFATAL) << "Unable to open universe file: " << in;
+    VLOG("valor_dune",pFATAL) << "Unable to open universe file: " << input;
     util::Die(-1);
   }
-  if(vs.size()){
+  if(variations.size()){
     VLOG("valor_dune",pFATAL) << "Vector to hold variations is not empty";
     return;
   }
@@ -432,7 +480,7 @@ void GetVariations(std::vector<double> &vs, const std::string &in, const std::st
       std::stringstream lineValue(line);
       while(lineValue >> value){
         VLOG("valor_dune",pDEBUG) << "Variation: " << value;
-        vs.push_back(value);
+        variations.push_back(value);
       }
       break;
     }  
@@ -473,33 +521,33 @@ std::string GetSystematic(const std::string &sy){
   return syst;
 }
 //___________________________________________________________________
-void GetKnots(const std::vector<double> &vars, 
+void GetKnots(const std::vector<double> &variations, 
               const std::vector<double> &knots, 
-              std::map<unsigned int, double> &vs, 
-              std::map<unsigned int, double> &kns,
-              std::map<double, unsigned int> &knot_universe){
+              std::map<unsigned int, double> &universes_variations, 
+              std::map<unsigned int, double> &universes_knots,
+              std::map<double, unsigned int> &knots_universes){
 
   for(const double &kn : knots){
     double min_diff       = 999.;
     double best_var       = -999.;
     unsigned int min_id   = 999;
-    for(unsigned int v = 0; v < vars.size(); ++v){
+    for(unsigned int v = 0; v < variations.size(); ++v){
       //Check if the current variation is closest to the current knot
       //At the end of the loop, push back the closest variation and it's location in the vector
-      double var = vars[v];
+      double var = variations[v];
       if(abs(kn-var) < abs(min_diff)){
         min_diff  = abs(kn-var);
         best_var  = var;
         min_id    = v;
       }
     }
-    vs.emplace(min_id,best_var);
-    kns.emplace(min_id,kn);
-    knot_universe.emplace(kn, min_id);
+    universes_variations.emplace(min_id,best_var);
+    universes_knots.emplace(min_id,kn);
+    knots_universes.emplace(kn, min_id);
   }
-  if(vs.size() != kns.size()){
+  if(universes_variations.size() != universes_knots.size()){
     VLOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
-    VLOG("valor_dune",pFATAL) << "NKnots: " << kns.size() << ", NVariations: " << vs.size();
+    VLOG("valor_dune",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: " << universes_variations.size();
     util::Die(-1);
   }
 }
@@ -526,64 +574,3 @@ TString BuildSplineName(const Sample_t    &s,
 
 }
 //___________________________________________________________________
-  /*
-  // Open input analysis file and get the DST
-  TFile fin(arg_analysis_file.c_str(),"READ");
-  if (!fin.IsOpen()) {
-    VLOG("valor_dune", pFATAL) 
-      << "Failed to open file "<<arg_analysis_file.c_str();
-    util::Die(-1);
-  }
-  string tree_name = "valor_sbncode_mini_dst";
-  TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
-  if(!analysis_tree) {
-    VLOG("valor_dune", pFATAL) 
-      << "No event tree " << tree_name 
-      << " in " << " input analysis file: "
-      << arg_analysis_file;
-    util::Die(-1);
-  }
-  
-  // Get the branches we're interested in
-  //
-  // Universes
-  const size_t max_n_universes = 10000;
-  std::map<std::string,int> branch_n_universes;
-  std::map<std::string,std::vector<float>> branch_universes;
-  
-  // For now, processing a single systematic at a time so each map will only have 1 entry
-  branch_universes.emplace(syst,std::vector<float>(max_n_universes));
-  std::string branch_name   = Form("variation_%s",syst.c_str());
-  std::string branch_name_n = Form("variation_n_%s",syst.c_str());
-  analysis_tree->SetBranchStatus (branch_name_n.c_str(),1);
-  analysis_tree->SetBranchStatus (branch_name  .c_str(),1);
-  bool bstat_univ_n = analysis_tree->SetBranchAddress(branch_name_n.c_str(),&branch_n_universes[syst]);
-  bool bstat_univ   = analysis_tree->SetBranchAddress(branch_name.c_str(),branch_universes[syst].data());
-  if (bstat_univ_n || bstat_univ) {
-    LOG("valor_dune",pFATAL) << " Failed to load needed universe branch.";
-    util::Die(-1);
-  }
-  VLOG("universe_variation_tweaks", pINFO) << " Successfully loaded universe branches";
-
-  // Only apply simple binning for now
-  const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
-  const VALORBinning * reco_sb            = (binning.RecoSmpBinning());
-  const int n_reco_bins                   = reco_sb->NBins();
-  // Setup arrays to be used for constructing the histograms
-  VALORArray *pdfuni[n_knots];
-  VALORArray *pdfnom  = new VALORArray(n_reco_bins);
-  pdfnom->SetAll(0.);
-  for(int i = 0; i < n_knots; ++i){
-    pdfuni[i] = new VALORArray(n_reco_bins);
-    pdfuni[i]->SetAll(0.);
-  }
-  VLOG("universe_variation_tweaks", pINFO) << " Successfully setup PDFs";
-
-  // Ereco
-  double enu_reco   = -999.;
-  double weight     = -999.;
-  double pot_weight = -999.;
-  analysis_tree->SetBranchAddress("enu_reco", &enu_reco);
-  analysis_tree->SetBranchAddress("wght",     &weight);
-  analysis_tree->SetBranchAddress("wght_pot", &pot_weight);
-*/
