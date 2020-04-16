@@ -10,4 +10,4 @@ params                               |   string       |  optional   |   allsyst
 kine-var                             |   string       |  optional   |   ereco
 sample                               |   string       |  optional   |   numulikeCChigh
 detector                             |   string       |  optional   |   sbn_nd
-syst-from-quantiles, syst-from-rms   |   boolean_list |  optional   |   syst-from-quantiles
+syst-from-quantiles, syst-from-rms   |   boolean_list |  optional   |   syst-from-rms
