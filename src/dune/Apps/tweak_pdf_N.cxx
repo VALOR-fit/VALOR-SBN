@@ -262,6 +262,7 @@ int main(int argc, char ** argv)
   TFile * outfile = NULL;
   if (output_rootfile!="-" && output_rootfile!="none") {
     output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
+    output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma)+"sigma").c_str());
     outfile = new TFile(output_rootfile.c_str(),"RECREATE");
     LOG("valor_dune",pNOTICE)<<"Writing to file: "<<output_rootfile;
   }

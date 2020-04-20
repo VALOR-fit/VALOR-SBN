@@ -2,7 +2,7 @@
 # .......................................................................................................
 ntoys                                |   integer      |  optional   |   200
 nsigma                               |   integer      |  optional   |   1
-output                               |   string       |  optional   |   tweaks_[PARAMS].root
+output                               |   string       |  optional   |   tweaks_[PARAMS]_[NSIG].root
 physics-hypothesis                   |   string       |  optional   |   3f_osc
 fit-param-opt                        |   string       |  optional   |   NONE
 config                               |   string       |  mandatory  |   -

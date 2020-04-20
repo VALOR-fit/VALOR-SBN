@@ -238,9 +238,6 @@ int main(int argc, char ** argv)
   // 
   // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
   // 
-  // Get model & configure
-  // Make an elements without reading the MC
-  // For spline generation
   const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
   
   // Get the modelist from the model configuration
