@@ -23,7 +23,9 @@ For each **set of data products** VALOR uses the following naming scheme:
        [sbn analysis type]_[sbn mc production]_[systematic error parameterization]
  (eg.:    sbn_numu_disapp              2019a1                                02a1)
 </pre>
+
 These labels can be used for downloading all relevant data products using %**valor_data-fetch-set** --data-set=*label* ...
+
 For more information on the VALOR data distribution scripts, see 
 https://github.com/VALOR-fit/VALOR-SDK/tree/master/scripts/data_distribution
 
@@ -43,7 +45,7 @@ These analysis variant labels are used for labelling the analysis configuration 
 | sbn_numu_disapp_2019b2_02a1_1  | SBN 'modern' MC production using sbncode v2.2 on a feature branch produced for the Sept2019 analysis workshop, interaction in Ereco, flux in Etrue |
 
 
-## Further information on SBN MC productions and VALOR/SBN systematic error parameterizations
+## Information on SBN MC productions 
 
 VALOR uses the following naming scheme for **SBN MC productions**: 
 <pre>
@@ -64,3 +66,18 @@ SBNCode v2.2, 'modern' and 'proposal'
 - [2] https://cdcvs.fnal.gov/redmine/projects/sbn-analysis-group/wiki/How_to_access_Workshop_Osc_samples: 
 SBNCode workshop-game samples, modern only from here on
 
+## Information on VALOR/SBN systematic error parameterizations
+
+VALOR uses the following naming scheme for its **SBN systematic error parameterizations**. A number of different *generations* of error parameterizations can exist, each with several versions, each of which can have numerous minor revisons:
+<pre>
+      [generation][version][revision]
+(eg.:          01        a         1)
+</pre>
+
+A summary of all error parameterizations implemented in the VALOR SBN analysis is given below.
+
+| Err param | Detector | Flux                              | Interaction              | Comments
+|-----------|----------|-----------------------------------|--------------------------|---------------|
+| 01a1      | n/a      | Ereco bin norm /flavour /location | Ereco bin norm. / mode   | a1 is the last version/revision of the 01 parameterization still at use while establishing this table on 04/2020 |
+| 02a1      | n/a      | Etrue bin norm /flavour /location | Ereco bin norm. / mode   | a1 is a stopgap implementation towards the full 02 parameterization; used at the 03/2020 SBN analysis workshop |
+| 02b1      | n/a      | Etrue bin norm /flavour /location | Non-linear responses for all xsec systematics in input DSTs | b1 is the first complete implementation of the 02 parameterization |
