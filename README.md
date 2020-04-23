@@ -10,10 +10,10 @@ analysis configurations and data products.
 
 ## List of VALOR branches and data products used for the main public results
 
-| SBN branch  | SDK branch  | Data product sets  | Comments
-|-------------|-------------|--------------------|-------------|
-|             |             |                    |
-|             |             |                    |
+| SBN branch  | SDK branch  | SBN analysis variants  | 
+|-------------|-------------|------------------------|
+|             |             |                        |
+|             |             |                        |
 
 
 ## Labelling of analysis variants and of sets of data products
@@ -23,6 +23,9 @@ For each **set of data products** VALOR uses the following naming scheme:
        [sbn analysis type]_[sbn mc production]_[systematic error parameterization]
  (eg.:    sbn_numu_disapp              2019a1                                02a1)
 </pre>
+These labels can be used for downloading all relevant data products using %**valor_data-fetch-set** --data-set=*label* ...
+For more information on the VALOR data distribution scripts, see 
+https://github.com/VALOR-fit/VALOR-SDK/tree/master/scripts/data_distribution
 
 Several **analysis variants** can be built using the same set of data products.
 These analysis variants are labelled as:
@@ -30,6 +33,15 @@ These analysis variants are labelled as:
        [set of data products]_[revision]
  (eg.:             see above          1)
 </pre>
+These analysis variant labels are used for labelling the analysis configuration XML files made available in the VALOR-SBN repository.
+
+| Analysis variant               | Comments    |
+|--------------------------------|-------------|
+| sbn_numu_disapp_2019a1_01a1_1  | SBN proposal MC production using sbncode v2.2 and all systematics in Ereco binned normalisations |
+| sbn_numu_disapp_2019b1_01a1_1  | SBN 'modern' MC production using sbncode v2.2 and all systematics in Ereco binned normalisations |
+| sbn_numu_disapp_2019b2_01a1_1  | SBN 'modern' MC production using sbncode v2.2 on a feature branch produced for the Sept2019 analysis workshop, all syst in Ereco normalisations |
+| sbn_numu_disapp_2019b2_02a1_1  | SBN 'modern' MC production using sbncode v2.2 on a feature branch produced for the Sept2019 analysis workshop, interaction in Ereco, flux in Etrue |
+
 
 
 ## SBN MC productions
