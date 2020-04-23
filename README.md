@@ -1,8 +1,13 @@
 # VALOR SBN
 
-The VALOR-SBN repository includes SBN-specific codes and configurations for the VALOR SBN oscillation analysis and workflow. It is built on top of the common *Software Development Kit* (VALOR-SDK repository), which includes the bulk of the VALOR analysis which is experiment agnostic.
+The VALOR-SBN repository includes SBN-specific codes and configurations for the **VALOR SBN oscillation analysis and workflow**. It is built on top of the common *Software Development Kit* (VALOR-SDK repository), which includes the bulk of the VALOR analysis code which is experiment agnostic.
 
-This README, includes summary information on the evolution of the VALOR SBN oscillation analysis, including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, are required for reproducing publicly-shown results. This README also lists the naming conventions used for labelling VALOR SBN analyses, analysis configurations and data products.
+This README, includes key summary information on the evolution and variants of the VALOR SBN oscillation analysis, including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, are required for reproducing publicly-shown results. This README also lists the naming conventions used for labelling VALOR SBN analyses, analysis configurations and related data products.
+
+**Contents**
+- [List of VALOR branches and data products used for the main public results]
+- [Labelling of analysis variants and of sets of data products]
+
 
 ## List of VALOR branches and data products used for the main public results
 
