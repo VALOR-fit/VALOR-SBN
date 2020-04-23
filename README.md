@@ -8,12 +8,23 @@ are required for reproducing publicly-shown results.
 This README also lists the naming conventions used for labelling VALOR SBN analyses, 
 analysis configurations and data products.
 
+## List of VALOR branches and data products used for the main public results
+
 | SBN branch  | SDK branch  | Data product sets  | Comments
 |-------------|-------------|--------------------|-------------|
 |             |             |                    |
 |             |             |                    |
 
-Naming scheme applicable to both the 'dsts' and 'universes' minor qualifiers
+
+## Labelling of analysis variants and of sets of data products
+
+For each set of data products VALOR uses the following naming scheme: 
+
+\[**sbn analysis type** (e.g.: sbn_numu_disapp)\]\_\[**sbn mc production** (e.g.: 2019a1)\]\_\[**systematic error parameterization** (e.g.: 02a1)\]
+
+                 (eg.:    sbn_numu_disapp              2019a1                                02a1)
+
+
 
 ## SBN MC productions
 
