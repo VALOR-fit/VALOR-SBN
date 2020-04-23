@@ -1,6 +1,6 @@
 # VALOR SBN
 
-This repository includes SBN-spefic codes and configurations for the VALOR SBN oscillation analysis.
+This repository includes SBN-specific codes and configurations for the VALOR SBN oscillation analysis.
 
 This README, includes information on the evolution of the VALOR SBN oscillation analysis, 
 including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, 
@@ -10,10 +10,10 @@ analysis configurations and data products.
 
 ## List of VALOR branches and data products used for the main public results
 
-| SBN branch  | SDK branch  | SBN analysis variants  | 
-|-------------|-------------|------------------------|
-|             |             |                        |
-|             |             |                        |
+| SBN branch  | SDK branch  | Supported SBN analysis variants  | 
+|-------------|-------------|----------------------------------|
+|             |             |                                  |
+|             |             |                                  |
 
 
 ## Labelling of analysis variants and of sets of data products
@@ -43,11 +43,14 @@ These analysis variant labels are used for labelling the analysis configuration 
 | sbn_numu_disapp_2019b2_02a1_1  | SBN 'modern' MC production using sbncode v2.2 on a feature branch produced for the Sept2019 analysis workshop, interaction in Ereco, flux in Etrue |
 
 
+## Further information on SBN MC productions and VALOR/SBN systematic error parameterizations
 
-## SBN MC productions
-
-VALOR uses the following naming scheme for SBN MC productions: 
-** \[date (eg 2010)\] \[physics model / configuration (eg a)\] \[revision (eg 1)\]**
+VALOR uses the following naming scheme for **SBN MC productions**: 
+<pre>
+           [date][physics model][revision]
+     (eg.:  2020              a         1)
+</pre>
+A summary of all SBN MC productions used is given in the table below.
 
 | MC prod  | Flux    | GENIE vrs | GENIE tune     | SBNCode                  | Comments
 |----------|---------|-----------|----------------|--------------------------|--------------------------------------------------------------------------------------------
