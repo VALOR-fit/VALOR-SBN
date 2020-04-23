@@ -18,12 +18,18 @@ analysis configurations and data products.
 
 ## Labelling of analysis variants and of sets of data products
 
-For each set of data products VALOR uses the following naming scheme: 
+For each **set of data products** VALOR uses the following naming scheme: 
+<pre>
+       [sbn analysis type]_[sbn mc production]_[systematic error parameterization]
+ (eg.:    sbn_numu_disapp              2019a1                                02a1)
+</pre>
 
-\[**sbn analysis type** (e.g.: sbn_numu_disapp)\]\_\[**sbn mc production** (e.g.: 2019a1)\]\_\[**systematic error parameterization** (e.g.: 02a1)\]
-
-                 (eg.:    sbn_numu_disapp              2019a1                                02a1)
-
+Several **analysis variants** can be built using the same set of data products.
+These analysis variants are labelled as:
+<pre>
+       [set of data products]_[revision]
+ (eg.:             see above          1)
+</pre>
 
 
 ## SBN MC productions
