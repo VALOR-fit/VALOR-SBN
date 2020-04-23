@@ -1,14 +1,12 @@
 # VALOR SBN
 
-This repository includes SBN-specific codes and configurations for the VALOR SBN oscillation analysis.
+The VALOR-SBN repository includes SBN-specific codes and configurations for the VALOR SBN oscillation analysis and workflow. It is built on top of the common *Software Development Kit* (VALOR-SDK repository), which includes the bulk of the VALOR analysis which is experiment agnostic.
 
-This README, includes information on the evolution of the VALOR SBN oscillation analysis, 
-including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, 
-are required for reproducing publicly-shown results. 
-This README also lists the naming conventions used for labelling VALOR SBN analyses, 
-analysis configurations and data products.
+This README, includes summary information on the evolution of the VALOR SBN oscillation analysis, including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, are required for reproducing publicly-shown results. This README also lists the naming conventions used for labelling VALOR SBN analyses, analysis configurations and data products.
 
 ## List of VALOR branches and data products used for the main public results
+
+A number of SBN analysis variants can be supported in the code included in each VALOR-SBN branch. Although each VALOR-SBN branch may work with several different VALOR-SDK branches, the actual SDK branch that was used in the context of each analysis is also listed below, to provide a combination of products which are guaranteed to work and to allow the replication of analysis results.
 
 | SBN branch  | SDK branch  | Supported SBN analysis variants  | 
 |-------------|-------------|----------------------------------|
@@ -18,16 +16,18 @@ analysis configurations and data products.
 
 ## Labelling of analysis variants and of sets of data products
 
-For each **set of data products** VALOR uses the following naming scheme: 
+For each **set of data products** required for running an analysis, VALOR uses the following naming scheme: 
 <pre>
        [sbn analysis type]_[sbn mc production]_[systematic error parameterization]
  (eg.:    sbn_numu_disapp              2019a1                                02a1)
 </pre>
+where the conventions used for enumerating MC productions and error parameterizations will be summarised at a later section.
 
 These labels can be used for downloading all relevant data products using %**valor_data-fetch-set** --data-set=*label* ...
 
 For more information on the VALOR data distribution scripts, see 
 https://github.com/VALOR-fit/VALOR-SDK/tree/master/scripts/data_distribution
+
 
 Several **analysis variants** can be built using the same set of data products.
 These analysis variants are labelled as:
