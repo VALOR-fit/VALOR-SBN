@@ -5,7 +5,7 @@ The VALOR-SBN repository includes SBN-specific codes and configurations for the 
 This README, includes key summary information on the evolution and variants of the VALOR SBN oscillation analysis, including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, are required for reproducing publicly-shown results. This README also lists the naming conventions used for labelling VALOR SBN analyses, analysis configurations and related data products.
 
 **Contents**
-- [List of VALOR branches and data products used for the main public results]
+- [List of VALOR branches and data products used for the main public results] (link: #List-of-VALOR-branches-and-data-products-used-for-the-main-public-results)
 - [Labelling of analysis variants and of sets of data products]
 
 
