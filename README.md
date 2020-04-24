@@ -28,9 +28,9 @@ For each **set of data products** required for running an analysis, VALOR uses t
        [sbn analysis type]_[sbn mc production]_[systematic error parameterization]
  (eg.:    sbn_numu_disapp              2019a1                                02a1)
 </pre>
-where the conventions used for enumerating MC productions and error parameterizations will be summarised at a later section.
+where the conventions used for enumerating a) MC productions and b) VALOR/SBN systematic error parameterizations will be summarised at a later section.
 
-These labels can be used for downloading all relevant data products using %**valor_data-fetch-set** --data-set=*label* ...
+These labels can be used for downloading all relevant data products (belonging to that set) using the '%**valor_data-fetch-set** --data-set=*label* ...' command.
 
 For more information on the VALOR data distribution scripts, see 
 https://github.com/VALOR-fit/VALOR-SDK/tree/master/scripts/data_distribution
@@ -109,20 +109,31 @@ Datasets 1-5 using GENIE 3.0.6; Datasets 11-15 using GENIE 2.12.10;
 Datasets i and 10+i have an identical systematic variation, but on a different underlying cross-section model.
 
 *Dataset 1*: 
-  - unchanged flux
-  - unchanged interaction model for given GENIE tune
-  - unchanged detector response
+
+- unchanged flux
+- unchanged interaction model for given GENIE tune
+- unchanged detector response
+- no oscillations
+
 *Dataset 2*:
-  - unchanged flux
-  - Decrease CCQE by 10% for Q^2 < 0.3 GeV^2 and decrease by 3% in remaining Q^2 range.
-  - Increase CCMEC by 50%.
-  - Throw away a random 20% of CC1\pi events where the \pi is subsequently absorbed (emulate missing \Delta + N -> N + N process)
-  - Increase NC bkg by 30%
-  - unchanged detector response
+
+- unchanged flux
+- Decrease CCQE by 10% for Q^2 < 0.3 GeV^2 and decrease by 3% in remaining Q^2 range.
+- Increase CCMEC by 50%.
+- Throw away a random 20% of CC1\pi events where the \pi is subsequently absorbed (emulate \Delta + N -> N + N)
+- Increase NC bkg by 30%
+- unchanged detector response
+- no oscillations
+
 *Dataset 3*: 
-  - not revealed yet
+
+- not revealed yet
+
 *Dataset 4*: 
-  - not revealed yet
+
+- not revealed yet
+
 *Dataset 5*: 
-  - not revealed yet
+
+- not revealed yet
 
