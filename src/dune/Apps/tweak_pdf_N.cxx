@@ -92,12 +92,14 @@ int main(int argc, char ** argv)
   // Read the command line
   int ntoys               = arg.GetInt("ntoys");
   int n_threads           = arg.GetInt("nthreads");
-  int nsigma              = arg.GetInt("nsigma");
+  double nsigma           = arg.GetDouble("nsigma");
   string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
-  
+ 
+  int nsigma_int = static_cast<int>(round(nsigma));
+
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   int prior_fit_number = arg.GetInt("prior-fit-number");
   
@@ -262,7 +264,7 @@ int main(int argc, char ** argv)
   TFile * outfile = NULL;
   if (output_rootfile!="-" && output_rootfile!="none") {
     output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
-    output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma)+"sigma").c_str());
+    output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma_int)+"sigma").c_str());
     outfile = new TFile(output_rootfile.c_str(),"RECREATE");
     LOG("valor_dune",pNOTICE)<<"Writing to file: "<<output_rootfile;
   }
@@ -301,8 +303,8 @@ int main(int argc, char ** argv)
       TString name = TString::Format("env_sb_%s_%s",
          util::AsString(b).c_str(), util::AsString(s).c_str() );
       nom_pdf[imodel]->Write((name+"_nom").Data());
-      err_pn [imodel]->Write((name+"_p"+std::to_string(nsigma)).Data());
-      err_mn [imodel]->Write((name+"_m"+std::to_string(nsigma)).Data());
+      err_pn [imodel]->Write((name+"_p"+std::to_string(nsigma_int)).Data());
+      err_mn [imodel]->Write((name+"_m"+std::to_string(nsigma_int)).Data());
     }
   }//imodel
   //~ c[ibeam]->Update();
