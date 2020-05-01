@@ -170,15 +170,14 @@ int main(int argc, char ** argv)
   // 3) Pass the space-delimeted values to a vector
   //
   // Get the variations
-  std::vector<double> variations;
-  variations.clear();
-  GetVariations(variations, arg_var_file, arg_systematic);
+  std::vector<double> all_variations;
+  GetVariations(all_variations, arg_var_file, arg_systematic);
   // Check the variations
-  if(!variations.size()){
+  if(!all_variations.size()){
     VLOG("valor_dune",pFATAL) << syst << " variations came back empty";
     util::Die(-1);
   }
-  VLOG("valor_dune",pNOTICE) << "Variations in vector form of size " << variations.size();
+  VLOG("valor_dune",pNOTICE) << "Variations in vector form of size " << all_variations.size();
   
   // 
   // 4) Find the entries which most closely match the knot positions
@@ -191,18 +190,21 @@ int main(int argc, char ** argv)
 
   // Chosen universe specifications
   std::vector<unsigned int> ids;
+  std::vector<double> variations; // Variations attributed to chosen knot values
   std::map<double, unsigned int> knots_universes; // Knot to universe ID
   std::map<unsigned int, double> universes_variations; // Universe ID to universe variation
   std::map<unsigned int, double> universes_knots; // Universe ID to knot
   std::map<unsigned int, double>::iterator itr;
-  ids.clear(); universes_variations.clear(); universes_knots.clear();
 
-  GetKnots(variations,knots,universes_variations,universes_knots,knots_universes);
+  GetKnots(all_variations,knots,universes_variations,universes_knots,knots_universes);
   VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
   for(itr = universes_variations.begin(); itr != universes_variations.end(); ++itr) {
     VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << universes_knots.at(itr->first);
     ids.push_back(itr->first);
+    variations.push_back(itr->second);
   }
+  // Variations only to pass to the output file for generating tweaks when validating
+  TVectorD t_variations(variations.size(),variations.data());
 
   // Get model & configure
   // Make an elements without reading the MC
@@ -267,6 +269,7 @@ int main(int argc, char ** argv)
   hist_outfile = hist_outfile.ReplaceAll(".root","_spectra.root");
   VLOG("valor_dune", pNOTICE) << "Saving spectra to: "<<hist_outfile;
   TFile histout(hist_outfile.Data(),"recreate");
+  t_variations.Write("actual_knot_values");
 
   //// MEMES
   const TString fin_name = "mctfin";
