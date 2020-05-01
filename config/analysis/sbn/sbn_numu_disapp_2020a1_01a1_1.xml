@@ -2,7 +2,7 @@
 
 <valor> 
 
-  <element_list name="sbn_numu_disapp_2019a1_01a1_1">
+  <element_list name="sbn_numu_disapp_2020a1_01a1_1">
     
     <element name="sbn_nd_fhc_numuCCIncl">
       <detector>     sbn_nd                                               </detector>
@@ -10,7 +10,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2019a1_1_sbn_nd.xml           </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2020a1_1_sbn_nd.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -22,7 +22,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2019a1_1_sbn_ub.xml           </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2020a1_1_sbn_ub.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -34,7 +34,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2019a1_1_sbn_fd.xml           </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2020a1_1_sbn_fd.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -55,7 +55,7 @@
       <format> SBNFluxNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/01a1/flux.root </filename>
+        <filename>   sbn/data_archive/data/sbn_numu_disappearance/prior_errors/2020a_v1/ereco_flux.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 
@@ -65,7 +65,7 @@
       <format> SBNIntNumu.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/01a1/interaction.root </filename>
+        <filename>   sbn/data_archive/data/sbn_numu_disappearance/prior_errors/2020a_v1/interaction.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD                  </objtype>
       </covariance_matrix> 
