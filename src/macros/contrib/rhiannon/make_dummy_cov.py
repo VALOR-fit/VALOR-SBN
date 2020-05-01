@@ -19,14 +19,17 @@ ROOT.gROOT.SetBatch(1)
 ROOT.gStyle.SetOptStat(0)
 
 #_________________________________________________________________________________
-def make_cov(outputname):
+def make_cov(outputname,param):
     # To start with, adding a single flux parameter to test the construction of the splines
-    params_to_add = ["horncurrent_FluxUnisim"]
+    params_to_add = [param]
     nominal_vals = {
-        "horncurrent_FluxUnisim" : 1.0
+        param : 0.0
+    }
+    untuned_vals = {
+        param : 0.0
     }
     error_vals = {
-        "horncurrent_FluxUnisim" : 1.0
+        param : 1.0
     }
     correlation_vals = {
     }
@@ -34,6 +37,7 @@ def make_cov(outputname):
     N = len(params_to_add)
     new_matrix  = ROOT.TMatrixD(N, N)
     new_nominal = ROOT.TVectorD(N)
+    new_untuned = ROOT.TVectorD(N)
     new_errors  = ROOT.TVectorD(N)
     new_names   = ROOT.TObjArray(N)
 
@@ -44,6 +48,10 @@ def make_cov(outputname):
     # Add the new param nominal values
     for i, name in enumerate(params_to_add):
         new_nominal[i] = nominal_vals[name]
+
+    # Add the new param untuned values
+    for i, name in enumerate(params_to_add):
+        new_untuned[i] = untuned_vals[name]
 
     # Get a single list of 1 sigma errors
     for i, name in enumerate(params_to_add):
@@ -75,6 +83,7 @@ def make_cov(outputname):
     new_file = ROOT.TFile(outputname, "RECREATE")
     new_names  .Write("param_list", 1)
     new_nominal.Write("nominal")
+    new_untuned.Write("untuned")
     new_errors.Write("errors")
     new_matrix .Write("cov")
     new_file.Close()
@@ -84,5 +93,6 @@ def make_cov(outputname):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make a covariance matrix from hardcoded info")
     parser.add_argument("--output", type=str, help="Name of the output file", required=True)
+    parser.add_argument("--param", type=str, help="Parameter to add to the covariance", required=True)
     args = parser.parse_args()
-    make_cov(args.output)
+    make_cov(args.output, args.param)
