@@ -58,18 +58,20 @@ const int GetNSigmaFromIterator(const unsigned int &it,
                                 const bool &verbose = false);
 
 // Get errors in the ratio pad bins
-void SetRatioBinErrors(const TH1D* h_un, 
-                       const TH1D* h_tw, 
-                       TH1D* h_ra, 
+void SetRatioBinErrors(const TH1D *h_un, 
+                       const TH1D *h_tw, 
+                       TH1D *h_ra, 
                        const bool &verbose = false);
 
 // Set the ratio plot formatting
-void SetRatioPlotFormatting(TH1D* h, 
+void SetRatioPlotFormatting(TH1D *h, 
+                            const bool &fill    = false,
                             const bool &verbose = false);
 
 // Set the spectra formatting
-void SetSpectraFormatting(TH1D* h_tweak, 
-                          TH1D* h_universe, 
+void SetSpectraFormatting(TH1D *h_tweak, 
+                          TH1D *h_universe, 
+                          const TString &detector,
                           const bool &verbose = false);
 
 // Get the histogram titles
@@ -79,6 +81,7 @@ TString GetTitle(const char* param,
 void spline_validation(const char* param, 
                        const char* sample="numulikeCChigh", 
                        const char* beam="BNB_FHC", 
+                       const TString &detector="sbn_nd", 
                        const TString &tweaks_location="", 
                        const TString &spline_location="", 
                        const double &per_energy_gev=1.,
@@ -150,7 +153,11 @@ void spline_validation(const char* param,
   }
 
   // Now loop over the size of the vectors and make the canvases and subpads then save each into a root file
-  TFile f_out(output_file,"RECREATE");
+  // Append parameter name to output filename and open
+  std::string s_param(param);
+  std::string s_output_file(output_file);
+  std::string param_filename = s_param+"_"+s_output_file; 
+  TFile f_out(param_filename.c_str(),"RECREATE");
   for(unsigned int h = 0; h < h_univs.size(); ++h){
 
     // Translate iterator to number of sigma
@@ -164,7 +171,7 @@ void spline_validation(const char* param,
 
     // Now make the canvas, legend and sort out the pads
     TCanvas *c = new TCanvas("c","",600,1000);
-    TLegend *l = new TLegend(0.45,0.62,0.86,0.87);
+    TLegend *l = new TLegend(0.49,0.46,0.94,0.72);
     l->SetBorderSize(0);
     l->SetTextFont(132);
     l->AddEntry(h_tweak, "Spectra from tweaks", "l");
@@ -173,22 +180,26 @@ void spline_validation(const char* param,
     // The upper pad (spectra)
     TPad *pad1 = new TPad("pad1","",0.0,0.35,1.0,1.0);
     pad1->SetBottomMargin(0.02);
-    pad1->SetTopMargin(0.1);
-    pad1->SetGridx();
+    pad1->SetTopMargin(0.05);
+    pad1->SetRightMargin(0.02);
     pad1->Draw();
     pad1->cd();
 
     // Format the spectra plots and draw
-    SetSpectraFormatting(h_tweak,h_universe,verbose);
+    SetSpectraFormatting(h_tweak,h_universe,detector,verbose);
     TString title = GetTitle(param, n_sigma);
-    TLatex * l_title = new TLatex(1.44,3.35e6,title.Data());
-    l_title->SetTextSize(0.05);
+    TLatex * l_title = new TLatex();
+    l_title->SetTextSize(0.06);
     l_title->SetTextAlign(22);
-    gStyle->SetLabelFont(132);
     h_tweak->Draw();
     h_universe->Draw("same");
     l->Draw("same");
-    l_title->Draw("same");
+    if(detector.Contains("nd"))
+      l_title->DrawLatex(1.49,3.58e6,title.Data());
+    else if(detector.Contains("ub"))
+      l_title->DrawLatex(1.49,0.09e6,title.Data());
+    else if(detector.Contains("ic"))
+      l_title->DrawLatex(1.49,0.1e6,title.Data());
     
     // Update pad and return to main canvas
     pad1->Modified();
@@ -198,25 +209,32 @@ void spline_validation(const char* param,
     TPad *pad2 = new TPad("pad2","",0.0,0.0,1.0,0.35);
     pad2->SetTopMargin(0.02);
     pad2->SetBottomMargin(0.22);
-    pad2->SetGridx();
+    pad2->SetRightMargin(0.02);
     pad2->SetGridy();
     pad2->Draw();
     pad2->cd();
    
     // Construct the ratio plot
-    TH1D *h_ratio = static_cast<TH1D*>(h_tweak->Clone("h_ratio"));
+    TH1D *h_ratio   = static_cast<TH1D*>(h_tweak->Clone("h_ratio"));
+    TH1D *h_average = static_cast<TH1D*>(h_tweak->Clone("h_average"));
     h_ratio->Add(h_universe,-1);
-    h_ratio->Divide(h_universe);
+    h_average->Add(h_universe);
+    h_average->Scale(1/2.);
+    h_ratio->Divide(h_average);
+    h_ratio->Scale(100);
+    TH1D *h_ratio_band = static_cast<TH1D*>(h_ratio->Clone("h_ratio_band"));
 
     // Set the errors and scale to percentage
-    SetRatioBinErrors(h_universe, h_tweak, h_ratio, verbose);
-    h_ratio->Scale(100);
-
-    // Format the ratio plot and draw
-    SetRatioPlotFormatting(h_ratio,verbose);
-    h_ratio->Draw("e2");
-    h_ratio->Draw("hist same");
+    SetRatioBinErrors(h_universe, h_tweak, h_ratio_band, verbose);
    
+    // Format the ratio plot and error bands and draw
+    SetRatioPlotFormatting(h_ratio_band,true,verbose);
+    h_ratio_band->Draw("e2");
+    
+    // Draw the ratio plot
+    SetRatioPlotFormatting(h_ratio,false,verbose);
+    h_ratio->Draw("hist same");
+
     // Update the pad and canvas
     pad2->Modified();
     c->Update();
@@ -232,6 +250,7 @@ void spline_validation(const char* param,
     // Safely delete canvas and legend, this isn't possible for pads
     delete c;
     delete l;
+    delete l_title;
   }
 
   f_out.Write();
@@ -360,36 +379,37 @@ const int GetNSigmaFromIterator(const unsigned int &it,
 // ----------------------------------------------------------------------------------
 void SetRatioBinErrors(const TH1D* h_un, const TH1D* h_tw, TH1D* h_ra, const bool &verbose = false){
 
-  // The ratio bins are filled as content = ((h_tw-h_un)/h_un)*100
+  // The ratio bins are filled as content R = ((h_tw-h_un)/((h_un+h_tw)/2))*100
   // The errors in the ratio bins are as follows
-  // (sig_c/c)^2 = (sqrt(nt+nu)/(nt-nu))^2 + 1/nu
-  // sig_c = c *sqrt((nt+nu)/pow(nt-nu,2) + 1/nu)
+  // sigR/R = sqrt( pow(sigDN/DN,2) + pow(sigAVN/AVN,2))
+  // sigDN = sigAVN = sigN
   
   // Loop over x bins and make the calculation
   // There should be the same number of bins in all histograms
   for (int ibin = 1 ; ibin <= h_tw->GetXaxis()->GetNbins(); ibin++) {
-    double error_ratio = 0.;
-    double content_tweak    = h_tw->GetBinContent(ibin);
-    double content_universe = h_un->GetBinContent(ibin);
-    double content_ratio    = h_ra->GetBinContent(ibin);
+    double N_tweak    = h_tw->GetBinContent(ibin);
+    double N_universe = h_un->GetBinContent(ibin);
+    double R          = h_ra->GetBinContent(ibin);
+    double sigN       = sqrt(N_tweak + N_universe);
+    double deltaN     = abs(N_tweak-N_universe);
+    double averageN   = (N_tweak+N_universe)/2.;
 
-    error_ratio = abs( content_ratio * sqrt( ( content_tweak+content_universe ) 
-                                             / pow(abs(content_tweak-content_universe),2) 
-                                             + 1./static_cast<double>(content_universe) ) );
-    h_ra->SetBinError(ibin,error_ratio);
+    double sigR = R * sqrt( pow(sigN/deltaN,2) + pow(sigN/averageN,2));
+    h_ra->SetBinError(ibin,sigR);
 
     if(verbose)
-      std::cout << " Setting the error on bin: " << ibin << " to be: " << error_ratio << std::endl;
+      std::cout << " Setting the bin content of bin " << ibin << " to be: " << R << " +/- " << sigR << std::endl;
   }
   return;
 }
 // ----------------------------------------------------------------------------------
 void SetRatioPlotFormatting(TH1D* h, 
+                            const bool &fill    = false,
                             const bool &verbose = false){
   h->SetStats(0);
   h->SetTitle("");
   h->GetYaxis()->SetMaxDigits(3);
-  h->GetYaxis()->SetTitle("#Delta Rate / Rate_{Universe}, %");
+  h->GetYaxis()->SetTitle("#Delta Rate / Rate_{Average}, %");
   h->GetYaxis()->SetTitleFont(132);
   h->GetYaxis()->SetLabelFont(132);
   h->GetYaxis()->SetTitleSize(0.1);
@@ -401,19 +421,26 @@ void SetRatioPlotFormatting(TH1D* h,
   h->GetXaxis()->SetTitleSize(0.1);
   h->GetXaxis()->SetTitleOffset(0.9);
   h->GetXaxis()->SetLabelSize(0.075);
-  h->SetLineColor(kPink+5);
-  h->SetFillColor(kPink+5);
-  h->SetFillStyle(3001);
-  h->SetLineStyle(1);
-  h->SetLineWidth(2);
-  
+  if(fill){
+    if(verbose)
+      std::cout << " Filling the error band plot" << std::endl;
+    h->SetFillColor(kPink+5);
+    h->SetFillStyle(3001);
+    h->SetLineWidth(0);
+  }
+  else{
+    if(verbose)
+      std::cout << " Drawing the ratio plot with no errors" << std::endl;
+    h->SetLineColor(kPink+5);
+    h->SetLineStyle(1);
+    h->SetLineWidth(2);
+  } 
   return;
 }
 // ----------------------------------------------------------------------------------
-
-// Set the spectra formatting
 void SetSpectraFormatting(TH1D* h_tweak, 
                           TH1D* h_universe, 
+                          const TString &detector,
                           const bool &verbose = false){
   // Now set everything
   h_tweak->SetStats(0);
@@ -432,9 +459,16 @@ void SetSpectraFormatting(TH1D* h_tweak,
   h_universe->SetLineColor(kOrange+2);
   h_universe->SetLineStyle(5);
   h_universe->SetLineWidth(2);
+  if(detector.Contains("nd"))
+    h_tweak->GetYaxis()->SetRangeUser(0,4.0e6);
+  else if(detector.Contains("ub"))
+    h_tweak->GetYaxis()->SetRangeUser(0,0.19e6);
+  else if(detector.Contains("ic"))
+    h_tweak->GetYaxis()->SetRangeUser(0,0.35e6);
 
   return;
 }
+// ----------------------------------------------------------------------------------
 TString GetTitle(const char* param, 
                  const int &nsigma){
 
@@ -444,10 +478,16 @@ TString GetTitle(const char* param,
   size_t underscore = title.Last('_');
   size_t length     = title.Length();
   title.Remove(underscore,length);
-  title.Prepend("Spline validation for ");
-  title.Append(" at ");
-  title.Append(std::to_string(nsigma).c_str());
-  title.Append(" #sigma");
+  if(nsigma != 0){
+    title.Prepend("Spline validation for ");
+    title.Append(" at ");
+    title.Append(std::to_string(nsigma).c_str());
+    title.Append(" #sigma");
+  }
+  else{
+    title.Prepend("Nominal spline validation for ");
+  }
 
   return title;
 }
+// ----------------------------------------------------------------------------------
