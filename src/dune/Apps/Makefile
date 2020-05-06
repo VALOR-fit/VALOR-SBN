@@ -22,6 +22,7 @@ TGT = make_sbncode_minidst \
       run_fit \
       write_pdf \
       tweak_pdf_N \
+      tweak_pdf_nsigma_var \
 			universe_variation_tweaks \
       tweak_pdf_sigma_var \
       fitnt_conv \
@@ -115,6 +116,12 @@ tweak_pdf_N: FORCE
 	$(CXX) $(CXXFLAGS) -c tweak_pdf_N.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) tweak_pdf_N.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
 
+# Randomly throw the pdf t o make envelopes
+# 
+tweak_pdf_nsigma_var: FORCE
+	$(CXX) $(CXXFLAGS) -c tweak_pdf_nsigma_var.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) tweak_pdf_nsigma_var.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_nsigma_var
+
 # Make +/- 1 and 3 sigma variations for each param
 #
 tweak_pdf_sigma_var: FORCE
@@ -181,6 +188,7 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_pdf
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_nsigma_var
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_sigma_var
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
@@ -200,6 +208,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/write_pdf
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_N
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_nsigma_var
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_sigma_var
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
