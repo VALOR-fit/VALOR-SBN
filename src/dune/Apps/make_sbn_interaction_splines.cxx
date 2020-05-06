@@ -296,11 +296,16 @@ int main(int argc, char ** argv)
     // Only do this for integer values of sigma (+/- 3, 2, 1)
     // This can be done by only accessing the even integers in the iknot iterator
     if(arg_store_spectra && iknot % 2 == 0){
-      const std::string hist_tag  = "spectra_var_"+std::to_string(iknot);
+      TString hist_tag = "spectra_var_";
+      const int nsigma = static_cast<int>(round(kn));
+      std::string s_nsigma = std::to_string(nsigma);
+      hist_tag.Append(s_nsigma.c_str());
+      hist_tag.ReplaceAll("-","m");
+//      const std::string hist_tag  = "spectra_var_"+std::to_string(static_cast<int>(knots.at(iknot)));
       LOG("valor_dune",pINFO) << " Saving spectra for knot: " << kn << " with options: " << arg_write_opt << " to file with name: " << hist_tag;
       TObjArray hist_modes_varray;
       hist_modes_varray.SetOwner(true);
-      model->Write(&hist_modes_varray,hist_tag.c_str(),arg_write_opt.c_str());
+      model->Write(&hist_modes_varray,hist_tag.Data(),arg_write_opt.c_str());
 
       for (int ihist = 0 ; ihist < hist_modes_varray.GetEntries() ; ihist++) {
         const TH1* hist = dynamic_cast<TH1*>(hist_modes_varray[ihist]);
@@ -411,13 +416,18 @@ int main(int argc, char ** argv)
           // Set the y axis entry to be the current rate/nominal rate
           // Set the x axis to be the exact sigma of the current knot from the relevant universe
           double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          if(iknot == inom)
+            event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
           y.push_back(event_ratio);
 
           double universe_variation = universes_variations.at(knots_universes.at(knot));
+          if(iknot == inom)
+            universe_variation = 0; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
+
           x.push_back(universe_variation); //NSigma from the universe found for the current knot
 
           // Print statements for validation
-          LOG("valor_dune",pDEBUG) << " Knot :                   " << iknot << ", " << knot << "\n"
+          LOG("valor_dune",pINFO)  << " Knot :                   " << iknot << ", " << knot << "\n"
                                    << " Universe variation:      " << universe_variation << " \n"
                                    << " Mode :                   " << util::AsString(mode) << "\n"
                                    << " Nominal event rate:      " << nevents0 << "\n"
@@ -429,7 +439,7 @@ int main(int argc, char ** argv)
         assert((x.size() == y.size()) && (x.size() == knots.size()));
         TString name  = BuildSplineName(sample, beam, mode, syst, itrue, ireco);
         TString title = name; // Make this contain real kinematic ranges
-        TSpline3 spl(title.Data(), x.at(0),x.at(n_knots-1), y.data(), n_knots, "0"); // Define only first and last knots - faster interpolation.
+        TSpline3 spl(title.Data(), x.data(), y.data(), n_knots);
         spl.SetName(name.Data());
         spl.Write();
         n_splines_written++;
@@ -453,11 +463,11 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
   std::ifstream uFile;
   uFile.open(input);
   if(!uFile){
-    VLOG("valor_dune",pFATAL) << "Unable to open universe file: " << input;
+    LOG("valor_dune",pFATAL) << "Unable to open universe file: " << input;
     util::Die(-1);
   }
   if(variations.size()){
-    VLOG("valor_dune",pFATAL) << "Vector to hold variations is not empty";
+    LOG("valor_dune",pERROR) << "Vector to hold variations is not empty";
     return;
   }
 
@@ -465,21 +475,24 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
     std::string line = "";
     std::getline(uFile,line);
     TString tline(line);
+    TString tsyst(sy);
+    tsyst.ToLower();
     tline.ToLower();
     std::string lline = static_cast<std::string>(tline);
-    size_t found_v = lline.find(sy);
+    // Add a space to the end of the parameter name to avoid getting the wrong one 
+    size_t found_v = lline.find(tsyst+" ");
     if(found_v != std::string::npos){
       // Clean up the line to pass the variations to the vector
-      VLOG("valor_dune",pDEBUG) << "Found line containing " << sy << " parameters: \n" << line;
-      VLOG("valor_dune",pDEBUG) << "Removing systematic name from line";
+      LOG("valor_dune",pDEBUG) << "Found line containing " << sy << " parameters: \n" << line;
+      LOG("valor_dune",pDEBUG) << "Removing systematic name from line";
       line.erase(0, found_v+sy.length());
-      VLOG("valor_dune",pDEBUG) << "Line now contains: \n" << line;
+      LOG("valor_dune",pDEBUG) << "Line now contains: \n" << line;
 
       // Pass the remaining contents of the line to a vector of doubles
       double value;
       std::stringstream lineValue(line);
       while(lineValue >> value){
-        VLOG("valor_dune",pDEBUG) << "Variation: " << value;
+        LOG("valor_dune",pDEBUG) << "Variation: " << value;
         variations.push_back(value);
       }
       break;
@@ -493,10 +506,12 @@ std::string GetSystematic(const std::string &sy){
   std::string syst = "";
   bool found_syst = false;
   for(const std::string &s : interaction_systematics){
-    size_t found_s = s.find(sy);
+    LOG("valor_dune",pDEBUG) << "Checking interaction systematic: " << s << " for " << sy;
+    // Add a space to the end of the parameter name to avoid getting the wrong one 
+    size_t found_s = s.find(sy+"_");
     if(found_s != std::string::npos){
       syst = s;
-      VLOG("valor_dune", pNOTICE) << "Found the chosen interaction systematic: " << syst;
+      LOG("valor_dune",pINFO) << "Found the chosen interaction systematic: " << syst;
       found_syst = true;
       break;
     }
@@ -504,10 +519,12 @@ std::string GetSystematic(const std::string &sy){
 
   if(!found_syst){
     for(const std::string &s : flux_systematics){
-      size_t found_s = s.find(sy);
+      LOG("valor_dune",pDEBUG) << "Checking flux systematic: " << s << " for " << sy;
+    // Add a space to the end of the parameter name to avoid getting the wrong one 
+      size_t found_s = s.find(sy+"_");
       if(found_s != std::string::npos){
         syst = s;
-        VLOG("valor_dune", pNOTICE) << "Found the chosen flux systematic: " << syst;
+        LOG("valor_dune",pINFO) << "Found the chosen flux systematic: " << syst;
         found_syst = true;
         break;
       }
@@ -515,7 +532,7 @@ std::string GetSystematic(const std::string &sy){
   }
 
   if(!found_syst){
-    VLOG("valor_dune", pFATAL) << "Couldn't find the chosen systematic parameter: " << sy;
+    LOG("valor_dune",pFATAL) << "Couldn't find the chosen systematic parameter: " << sy;
     util::Die(-1);
   }
   return syst;
@@ -546,8 +563,8 @@ void GetKnots(const std::vector<double> &variations,
     knots_universes.emplace(kn, min_id);
   }
   if(universes_variations.size() != universes_knots.size()){
-    VLOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
-    VLOG("valor_dune",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: " << universes_variations.size();
+    LOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
+    LOG("valor_dune",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: ";
     util::Die(-1);
   }
 }
