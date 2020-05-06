@@ -22,12 +22,14 @@ namespace vutil = valor::util;
 
 // Naming structure of the tweak and universe-based files
 TString splineFilePattern("valor_splines_[SAMPLE]_[PARAM]_[BEAM]");
-TString tweakFilePattern("tweaks_[PARAM]_[NSIG]");
+TString tweakFilePattern("[PARAM]_[NSIG]");
 
 // Name filling functions
 const TString GetTweaksFileName(const char* param, 
-                               const int &nsigma,
-                               const TString &location);
+                                TString &tag,
+                                const int &nsigma,
+                                const TString &location,
+                                const bool &all);
 const TString GetSplineFileName(const char* param, 
                                 const char* sample, 
                                 const char* beam,
@@ -36,14 +38,16 @@ const TString GetStringReplacements(const TString &pattern,
                                     const char* param="", 
                                     const char* sample="", 
                                     const char* beam="", 
-                                    const int &nsigma=1);
+                                    const int &nsigma=-999);
 
 // Check if the files can be opened
 void CheckFiles(TFile *f_univ,
+                TFile *f_nom, 
                 TFile *f_1sig, 
                 TFile *f_2sig, 
                 TFile *f_3sig,
                 const std::string &universe_filename,
+                const std::string &nominal_filename,
                 const std::string &tweaks_1sig_filename,
                 const std::string &tweaks_2sig_filename,
                 const std::string &tweaks_3sig_filename,
@@ -83,42 +87,50 @@ void spline_validation(const char* param,
                        const char* beam="BNB_FHC", 
                        const TString &detector="sbn_nd", 
                        const TString &tweaks_location="", 
-                       const TString &spline_location="", 
+                       const TString &spline_location="",
+                       const bool &all_in_one = false,
                        const double &per_energy_gev=1.,
                        const bool &verbose=false,
+                       TString tag="tweaks",
                        const char* output_file="spline_validation_plots.root"){
 
   // Get spectra from various places
   // Universe spectra written directly from templates
-
-  // Verbose output for file name getting
-  if(verbose){
-    std::cout << " 1 sigma tweak filename: " << GetTweaksFileName(param,1,tweaks_location) << std::endl;
-    std::cout << " 2 sigma tweak filename: " << GetTweaksFileName(param,2,tweaks_location) << std::endl;
-    std::cout << " 3 sigma tweak filename: " << GetTweaksFileName(param,3,tweaks_location) << std::endl;
-    std::cout << " Universe filename:      " << GetSplineFileName(param,sample,beam,spline_location) << std::endl;
-  }
+  size_t len = tag.Length();
+  if(tag.Last('_') != len) tag.Append("_");
 
   // Get filenames
   const std::string universe_filename   (GetSplineFileName(param,sample,beam,spline_location));
-  const std::string tweaks_1sig_filename(GetTweaksFileName(param,1,tweaks_location));
-  const std::string tweaks_2sig_filename(GetTweaksFileName(param,2,tweaks_location));
-  const std::string tweaks_3sig_filename(GetTweaksFileName(param,3,tweaks_location));
+  const std::string tweaks_nom_filename (GetTweaksFileName(param,tag,0,tweaks_location,all_in_one));
+  const std::string tweaks_1sig_filename(GetTweaksFileName(param,tag,1,tweaks_location,all_in_one));
+  const std::string tweaks_2sig_filename(GetTweaksFileName(param,tag,2,tweaks_location,all_in_one));
+  const std::string tweaks_3sig_filename(GetTweaksFileName(param,tag,3,tweaks_location,all_in_one));
+
+  // Verbose output for file name getting
+  if(verbose){
+    std::cout << " Universe filename:      " << universe_filename    << std::endl;
+    std::cout << " 0 sigma tweak filename: " << tweaks_nom_filename  << std::endl;
+    std::cout << " 1 sigma tweak filename: " << tweaks_1sig_filename << std::endl;
+    std::cout << " 2 sigma tweak filename: " << tweaks_2sig_filename << std::endl;
+    std::cout << " 3 sigma tweak filename: " << tweaks_3sig_filename << std::endl;
+  }
 
   // Get TFiles and check they exist
   TFile *f_univ = new TFile(universe_filename.c_str(),"READ");
+  TFile *f_nom  = new TFile(tweaks_nom_filename.c_str(),"READ");
   TFile *f_1sig = new TFile(tweaks_1sig_filename.c_str(),"READ");
   TFile *f_2sig = new TFile(tweaks_2sig_filename.c_str(),"READ");
   TFile *f_3sig = new TFile(tweaks_3sig_filename.c_str(),"READ");
 
-  CheckFiles(f_univ, f_1sig, f_2sig, f_3sig, universe_filename, tweaks_1sig_filename, tweaks_2sig_filename, tweaks_3sig_filename, verbose);
+  CheckFiles(f_univ, f_nom, f_1sig, f_2sig, f_3sig, universe_filename, tweaks_nom_filename, tweaks_1sig_filename, tweaks_2sig_filename, tweaks_3sig_filename, verbose);
   std::cout << " All files opened successfully." << std::endl;
 
+  
   // Tweaked spectra from splines
   TH1D *h_tweak_m3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_m3")); // -3 sigma
   TH1D *h_tweak_m2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_m2")); // -2 sigma
   TH1D *h_tweak_m1 = static_cast<TH1D*>(f_1sig->Get("env_sb_BNB_FHC_numulikeCChigh_m1")); // -1 sigma
-  TH1D *h_tweak_n0 = static_cast<TH1D*>(f_1sig->Get("env_sb_BNB_FHC_numulikeCChigh_nom")); //  NOMINAL
+  TH1D *h_tweak_n0 = static_cast<TH1D*>(f_nom->Get("env_sb_BNB_FHC_numulikeCChigh_p0")); //  NOMINAL
   TH1D *h_tweak_p1 = static_cast<TH1D*>(f_1sig->Get("env_sb_BNB_FHC_numulikeCChigh_p1")); // +1 sigma
   TH1D *h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2")); // +2 sigma
   TH1D *h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_p3")); // +3 sigma
@@ -126,15 +138,17 @@ void spline_validation(const char* param,
   std::vector<TH1D*> h_tweaks({h_tweak_m3, h_tweak_m2, h_tweak_m1, h_tweak_n0, h_tweak_p1, h_tweak_p2, h_tweak_p3});
 
   // Universe spectra for -3 -> +3 sigma
-  TH1D *h_univ_m3 = static_cast<TH1D*>(f_univ->Get("spectra_var_0_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -3sigma
-  TH1D *h_univ_m2 = static_cast<TH1D*>(f_univ->Get("spectra_var_2_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -2sigma
-  TH1D *h_univ_m1 = static_cast<TH1D*>(f_univ->Get("spectra_var_4_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -1sigma
-  TH1D *h_univ_n0 = static_cast<TH1D*>(f_univ->Get("spectra_var_6_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  //  NOMINAL
-  TH1D *h_univ_p1 = static_cast<TH1D*>(f_univ->Get("spectra_var_8_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // +1sigma
-  TH1D *h_univ_p2 = static_cast<TH1D*>(f_univ->Get("spectra_var_10_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco")); // +2sigma
-  TH1D *h_univ_p3 = static_cast<TH1D*>(f_univ->Get("spectra_var_12_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco")); // +3sigma
+  TH1D *h_univ_m3 = static_cast<TH1D*>(f_univ->Get("spectra_var_m3_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -3sigma
+  TH1D *h_univ_m2 = static_cast<TH1D*>(f_univ->Get("spectra_var_m2_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -2sigma
+  TH1D *h_univ_m1 = static_cast<TH1D*>(f_univ->Get("spectra_var_m1_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -1sigma
+  TH1D *h_univ_n0 = static_cast<TH1D*>(f_univ->Get("spectra_var_0_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  //  NOMINAL
+  TH1D *h_univ_p1 = static_cast<TH1D*>(f_univ->Get("spectra_var_1_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // +1sigma
+  TH1D *h_univ_p2 = static_cast<TH1D*>(f_univ->Get("spectra_var_2_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco")); // +2sigma
+  TH1D *h_univ_p3 = static_cast<TH1D*>(f_univ->Get("spectra_var_3_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco")); // +3sigma
 
   std::vector<TH1D*> h_univs({h_univ_m3, h_univ_m2, h_univ_m1, h_univ_n0, h_univ_p1, h_univ_p2, h_univ_p3});
+
+  TVectorD knot_vals(*static_cast<TVectorD*>(f_univ->Get("actual_knot_values")));
 
   // Make sure the vectors are the same size for making ratio plots later
   if(h_univs.size() != h_tweaks.size()){
@@ -158,10 +172,19 @@ void spline_validation(const char* param,
   std::string s_output_file(output_file);
   std::string param_filename = s_param+"_"+s_output_file; 
   TFile f_out(param_filename.c_str(),"RECREATE");
+  
   for(unsigned int h = 0; h < h_univs.size(); ++h){
 
     // Translate iterator to number of sigma
     const int n_sigma = GetNSigmaFromIterator(h,verbose);
+
+    // Find the closest actual universe value to the current integer knot 
+    double min_sigma_diff = 999;
+    for(unsigned int i = 0; i < knot_vals.GetNrows(); ++i){
+      double sigma_diff = abs(knot_vals[i]-n_sigma);
+      if(sigma_diff < min_sigma_diff)
+        min_sigma_diff = sigma_diff;
+    }
 
     // Get the histograms
     TH1D *h_universe = h_univs.at(h);
@@ -189,7 +212,7 @@ void spline_validation(const char* param,
     SetSpectraFormatting(h_tweak,h_universe,detector,verbose);
     TString title = GetTitle(param, n_sigma);
     TLatex * l_title = new TLatex();
-    l_title->SetTextSize(0.06);
+    l_title->SetTextSize(0.05);
     l_title->SetTextAlign(22);
     h_tweak->Draw();
     h_universe->Draw("same");
@@ -200,7 +223,12 @@ void spline_validation(const char* param,
       l_title->DrawLatex(1.49,0.09e6,title.Data());
     else if(detector.Contains("ic"))
       l_title->DrawLatex(1.49,0.1e6,title.Data());
-    
+   
+    double perc_rate_diff = (1-abs(h_tweak->Integral()/static_cast<double>(h_universe->Integral())))*100;
+    std::cout << " For " << n_sigma << " sigma: " << std::endl;
+    std::cout << " Percentage rate difference between universe spectra and VALOR-generated spectra is: " << perc_rate_diff << std::endl;
+    std::cout << " Difference between universe variation and closest N-Sigma is:                       " << min_sigma_diff << std::endl;
+
     // Update pad and return to main canvas
     pad1->Modified();
     c->cd();
@@ -251,6 +279,12 @@ void spline_validation(const char* param,
     delete c;
     delete l;
     delete l_title;
+
+    // Reset histograms
+    h_universe->Reset();
+    h_tweak->Reset();
+    h_ratio->Reset();
+    h_average->Reset();
   }
 
   f_out.Write();
@@ -259,12 +293,25 @@ void spline_validation(const char* param,
 }
 // ----------------------------------------------------------------------------------
 const TString GetTweaksFileName(const char* param, 
+                                TString &tag,
                                 const int &nsigma,
-                                const TString &location){
+                                const TString &location,
+                                const bool &all){
   TString name(tweakFilePattern);
-  name = GetStringReplacements(name,param,"","",nsigma);
-  name.Append("sigma.root");
-  name.Prepend(location);
+  if(!all){
+    std::cout << " Not looking at a file with all tweaks included" << std::endl;
+    name = GetStringReplacements(name,param,"","",nsigma);
+    name.Append("sigma.root");
+    name.Prepend(tag);
+    name.Prepend(location);
+  }
+  else{
+    std::cout << " Looking at a file with all tweaks included" << std::endl;
+    name = GetStringReplacements(name,param);
+    name.Append("sigma.root");
+    name.Prepend(tag);
+    name.Prepend(location);
+  }
   return name;
 }
 // ----------------------------------------------------------------------------------
@@ -283,20 +330,25 @@ const TString GetStringReplacements(const TString &pattern,
                                     const char* param="", 
                                     const char* sample="", 
                                     const char* beam="", 
-                                    const int&  nsigma=1){
+                                    const int&  nsigma=-999){
   TString name(pattern);
   name = name.ReplaceAll("[BEAM]",   beam);
   name = name.ReplaceAll("[SAMPLE]", sample);
   name = name.ReplaceAll("[PARAM]",  param);
-  name = name.ReplaceAll("[NSIG]",   std::to_string(nsigma).c_str());  
+  if(nsigma == -999)
+    name = name.ReplaceAll("[NSIG]", "all_");
+  else
+    name = name.ReplaceAll("[NSIG]", std::to_string(nsigma).c_str());  
   return name;
 }
 // ----------------------------------------------------------------------------------
 void CheckFiles(TFile *f_univ,
+                TFile *f_nom, 
                 TFile *f_1sig, 
                 TFile *f_2sig, 
                 TFile *f_3sig,
                 const std::string &universe_filename,
+                const std::string &nominal_filename,
                 const std::string &tweaks_1sig_filename,
                 const std::string &tweaks_2sig_filename,
                 const std::string &tweaks_3sig_filename,
@@ -306,6 +358,12 @@ void CheckFiles(TFile *f_univ,
     exit(1);
   }
   if(verbose) std::cout << " Successfully opened universe file with name: " << universe_filename << std::endl;
+
+  if(!f_nom->IsOpen()){
+    std::cerr << " Error: Couldn't open nominal file with name: " << nominal_filename << std::endl;
+    exit(1);
+  }
+  if(verbose) std::cout << " Successfully opened nominal file with name: " << nominal_filename << std::endl;
 
   if(!f_1sig->IsOpen()){
     std::cerr << " Error: Couldn't open 1 sigma tweaked file with name: " << tweaks_1sig_filename << std::endl;
