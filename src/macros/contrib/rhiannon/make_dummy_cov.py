@@ -19,17 +19,46 @@ ROOT.gROOT.SetBatch(1)
 ROOT.gStyle.SetOptStat(0)
 
 #_________________________________________________________________________________
-def make_cov(outputname,param):
-    # To start with, adding a single flux parameter to test the construction of the splines
-    params_to_add = [param]
+def make_cov(outputname):
+    params_to_add = [
+        "genie_ccresAxial_Genie",
+        "genie_ncresAxial_Genie",
+        "genie_qema_Genie",
+        "genie_NC_Genie",
+        "genie_NonResRvbarp1pi_Genie",
+        "genie_NonResRvbarp2pi_Genie",
+        "genie_NonResRvp1pi_Genie",
+        "genie_NonResRvp2pi_Genie"
+        ]
     nominal_vals = {
-        param : 0.0
+        "genie_ccresAxial_Genie"     : 0.0,
+        "genie_ncresAxial_Genie"     : 0.0,
+        "genie_qema_Genie"           : 0.0,
+        "genie_NC_Genie"             : 0.0,
+        "genie_NonResRvbarp1pi_Genie": 0.0,
+        "genie_NonResRvbarp2pi_Genie": 0.0,
+        "genie_NonResRvp1pi_Genie"   : 0.0,
+        "genie_NonResRvp2pi_Genie"   : 0.0
     }
     untuned_vals = {
-        param : 0.0
+        "genie_ccresAxial_Genie"     : 0.0,
+        "genie_ncresAxial_Genie"     : 0.0,
+        "genie_qema_Genie"           : 0.0,
+        "genie_NC_Genie"             : 0.0,
+        "genie_NonResRvbarp1pi_Genie": 0.0,
+        "genie_NonResRvbarp2pi_Genie": 0.0,
+        "genie_NonResRvp1pi_Genie"   : 0.0,
+        "genie_NonResRvp2pi_Genie"   : 0.0
     }
     error_vals = {
-        param : 1.0
+        "genie_ccresAxial_Genie"     : 1.0,
+        "genie_ncresAxial_Genie"     : 1.0,
+        "genie_qema_Genie"           : 1.0,
+        "genie_NC_Genie"             : 1.0,
+        "genie_NonResRvbarp1pi_Genie": 1.0,
+        "genie_NonResRvbarp2pi_Genie": 1.0,
+        "genie_NonResRvp1pi_Genie"   : 1.0,
+        "genie_NonResRvp2pi_Genie"   : 1.0
     }
     correlation_vals = {
     }
@@ -93,6 +122,6 @@ def make_cov(outputname,param):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make a covariance matrix from hardcoded info")
     parser.add_argument("--output", type=str, help="Name of the output file", required=True)
-    parser.add_argument("--param", type=str, help="Parameter to add to the covariance", required=True)
+#    parser.add_argument("--param", type=str, help="Parameter to add to the covariance", required=True)
     args = parser.parse_args()
-    make_cov(args.output, args.param)
+    make_cov(args.output)
