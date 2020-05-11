@@ -14,18 +14,15 @@ include $(VALOR_EXPT)/make/Make.include
 
 DUNE_LIBRARIES = 
 
-TGT = make_nd_minidst \
-      make_fd_minidst \
-      make_sbncode_minidst \
-      make_fastmc_minidst \
+TGT = make_sbncode_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
-      make_response_functions \
       make_sbn_interaction_splines \
       make_table_systematic_effects \
       run_fit \
       write_pdf \
       tweak_pdf_N \
+      tweak_pdf_nsigma_var \
 			universe_variation_tweaks \
       tweak_pdf_sigma_var \
       fitnt_conv \
@@ -33,37 +30,10 @@ TGT = make_nd_minidst \
       run_tests \
       run_build_toys \
       run_fit_marg \
-      make_dummy_samples \
       batch_tests \
       write_sbn_spectra_using_universes
 
 all: $(TGT)
-
-# Generate DSTs for ND fit
-#
-make_nd_minidst: FORCE
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_nd_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_nd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_nd_minidst
-else
-	@echo "Skipping make_nd_minidst due to no GENIE"
-endif
-
-# Generate DSTs for FD fit
-#
-make_fd_minidst: FORCE
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_fd_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_fd_minidst.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_fd_minidst
-else
-	@echo "Skipping make_fd_minidst due to no GENIE"
-endif
-
-# Generate DSTs for fast MC FD fit
-#
-make_fastmc_minidst: FORCE
-	$(CXX) $(CXXFLAGS) -c make_fastmc_minidst.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) make_fastmc_minidst.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_fastmc_minidst
 
 # Generate DSTs for SBNCode fit
 #
@@ -91,16 +61,6 @@ else
 endif
 else
 	@echo "Skipping make_recoselection_minidst due to no SBNanalysis"
-endif
-
-# Generate GENIE response functions
-#
-make_response_functions: FORCE
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_response_functions
-else
-	@echo "Skipping make_response_functions due to no GENIE"
 endif
 
 # Generate SBN interaction splines
@@ -156,6 +116,12 @@ tweak_pdf_N: FORCE
 	$(CXX) $(CXXFLAGS) -c tweak_pdf_N.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) tweak_pdf_N.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
 
+# Randomly throw the pdf t o make envelopes
+# 
+tweak_pdf_nsigma_var: FORCE
+	$(CXX) $(CXXFLAGS) -c tweak_pdf_nsigma_var.cxx $(INCLUDES)
+	$(LD) $(LDFLAGS) tweak_pdf_nsigma_var.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_nsigma_var
+
 # Make +/- 1 and 3 sigma variations for each param
 #
 tweak_pdf_sigma_var: FORCE
@@ -188,10 +154,6 @@ run_fit_marg: FORCE
 	$(CXX) $(CXXFLAGS) -c run_fit_marg.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) run_fit_marg.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-run_fit_marg
 
-make_dummy_samples: FORCE
-	$(CXX) $(CXXFLAGS) -c make_dummy_samples.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) make_dummy_samples.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_dummy_samples
-
 write_sbn_spectra_using_universes: FORCE
 	$(CXX) $(CXXFLAGS) -c write_sbn_spectra_using_universes.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) write_sbn_spectra_using_universes.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-write_sbn_spectra_using_universes
@@ -219,17 +181,14 @@ purge: FORCE
 
 clean: FORCE
 	$(RM) *.o *~ core
-	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_nd_minidst
-	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_fd_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_sbncode_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_recoselection_minidst
-	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_fastmc_minidst
-	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_sbn_interaction_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_pdf
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_N
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_nsigma_var
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-tweak_pdf_sigma_var
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-fitnt_conv
@@ -237,22 +196,19 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_tests
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_build_toys
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit_marg
-	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-batch_tests
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-write_sbn_spectra_using_universes
 
 distclean: FORCE
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_nd_minidst
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_fd_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_sbncode_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_recoselection_minidst
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_fastmc_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_sbn_interaction_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/write_pdf
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_N
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_nsigma_var
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/tweak_pdf_sigma_var
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-fitnt_conv
@@ -260,7 +216,6 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_tests
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_build_toys
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-run_fit_marg
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_dummy_samples
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-batch_tests
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-write_sbn_spectra_using_universes
 

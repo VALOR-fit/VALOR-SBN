@@ -1,0 +1,13 @@
+<systematic_list name="IntSBNNue">
+  <parameter> int_nue_00 </parameter>
+  <parameter> int_nue_01 </parameter>
+  <parameter> int_nue_02 </parameter>
+  <parameter> int_nue_03 </parameter>
+  <parameter> int_nue_04 </parameter>
+  <parameter> int_nue_05 </parameter>
+  <parameter> int_nue_06 </parameter>
+  <parameter> int_nue_07 </parameter>
+  <parameter> int_nue_08 </parameter>
+  <parameter> int_nue_09 </parameter>
+  <parameter> int_nue_10 </parameter>
+</systematic_list>

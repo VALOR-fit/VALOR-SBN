@@ -497,8 +497,8 @@ int main(int argc, char ** argv)
         if      (larsoft_mode==kLArQE                ) { reac = conv::kmtCCQE;    }
         else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtCCMEC;   }
         else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtCCcoh;   }
-        else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtCCIMD;   }
-        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
+        else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtELScat;   }
+        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtELScat;}
 
         else { // start counting pions
           if      (nikp || nik0 || nikm           )  { reac = conv::kmtCCoth;}
@@ -514,7 +514,7 @@ int main(int argc, char ** argv)
         if      (larsoft_mode==kLArQE                ) { reac = conv::kmtNCEL;    }
         else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtNCMEC;   }
         else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtNCcoh;   }
-        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtNCELScat;}
+        else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtELScat;}
 
         else { // start counting pions
           if      (nikp || nik0 || nikm           )  { reac = conv::kmtNCoth;}

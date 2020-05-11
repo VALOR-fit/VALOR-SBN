@@ -7,12 +7,13 @@
 
 \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
              --input               : Input DST file [required]
-             --params              : Parameters to tweak [def: allsyst]
+             --params              : Parameters to tweak - to name the output file [def: allsyst]
              --sample              : Topology [def: numulikeCChigh]
              --detector            : Detector [def: sbn_nd]
              --kinevar             : Kinematic paramter to parameterise in [def: ereco]
              --ntoys               : Number of toy-MC experiments [def: 1000]
              --config              : Analysis configuration file [required]
+             --syst-from-quantiles : Whether to calculate systematics from rms or cherry-pick from universes [def: --syst-from-rms]
              --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
              
 
@@ -103,17 +104,17 @@ std::vector<std::string> file_systematics =
    */
    "expskin",
    "horncurrent",
-   //"kminus",
-   //"kplus",
-   //"kzero",
+   "kminus",
+   "kplus",
+   "kzero",
    "nucleoninexsec",
    "nucleonqexsec",
    "nucleontotxsec",
-   //"piminus",
+   "piminus",
    "pioninexsec",
    "pionqexsec",
    "piontotxsec",
-  // "piplus"
+   "piplus"
  };
 
 void GetVariations(std::map< std::string, std::vector<double> > &vs, 
@@ -202,7 +203,7 @@ int main(int argc, char ** argv)
       }
       ids.insert({sy,tmp_ids});
     }
-  }
+  } // arg_quantile
   
   // Message thresholds
   Messenger::Instance()->Configure(mesg_thresholds);

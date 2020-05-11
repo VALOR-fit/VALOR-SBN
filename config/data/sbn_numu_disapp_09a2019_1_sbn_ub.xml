@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="SBN-UB-MDC" version="09a2019" detector="UB">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mock data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+
+  <using_dst_format> 
+     true 
+  </using_dst_format> 
+
+  <dst> 
+    <bnb_fhc>
+      <filename> sbn_numu_disappearance/mock_data/09a2019/valor_sbncode_fhc_numuccinc_disappearance_ub_minidst_1.root </filename> 
+      <objname>  valor_sbncode_mini_dst </objname> 
+      <objtype>  TTree    </objtype> 
+    </bnb_fhc>
+  </dst>
+  
+</data>
+
+</analysis_inputs>
+
+
