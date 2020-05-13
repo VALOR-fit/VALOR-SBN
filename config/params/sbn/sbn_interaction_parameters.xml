@@ -21,13 +21,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
     <limits>  -inf,inf  </limits>
@@ -60,13 +60,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
     <limits>  -inf,inf  </limits>
@@ -99,13 +99,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
     <limits>  -inf,inf  </limits>
@@ -138,13 +138,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
     <limits>  -inf,inf  </limits>
@@ -180,7 +180,7 @@
       <detector>    allsbn   </detector>
       <beam>        fhc      </beam>
       <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
+      <reac_type>   allnc    </reac_type>
       <flav_init>   all      </flav_init>
       <flav_final>  all      </flav_final>
       <target>      all      </target>
@@ -216,13 +216,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allncn0pi </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
     <limits>  -inf,inf  </limits>
@@ -255,13 +255,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allccn0pi </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
     <limits>  -inf,inf  </limits>
