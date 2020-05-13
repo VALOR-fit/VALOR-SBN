@@ -1,0 +1,304 @@
+<?xml version="1.0"?>
+
+<!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  FHC / SBND / numuCC-like sample: Background systematics
+  Version 2020a1
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+
+<param_list name="det_fhc_sbnd_numucc_bkg_2020a1">
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_ncbkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allnc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC bkg systematics / bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_ncbkg_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allnc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC bkg systematics / bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_ncbkg_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allnc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC bkg systematics / bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_ncbkg_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allnc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC bkg systematics / bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_ncbkg_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allnc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC bkg systematics / bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_ncbkg_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allnc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dirt bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_dirtbkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Cosmic bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_cosmicbkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  cosmic         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+
+</param_list>

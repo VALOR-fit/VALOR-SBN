@@ -1,0 +1,301 @@
+<?xml version="1.0"?>
+
+<!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  FHC / SBND / numuCC-like sample: Signal systematics
+  Version 2020a1
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<param_list name="det_fhc_sbnd_numucc_sig_2020a1">
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 1.5  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 06
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_06 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.5, 2.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    bin 07
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_sbnd_numucc_sig_07 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  2.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   sbnd           </detector>
+      <beam>       fhc            </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+
+</param_list>
