@@ -53,6 +53,7 @@ These analysis variant labels are used for labelling the analysis configuration 
 | sbn_numu_disapp_2019b1_01a1_1  | 2019b1 'modern' GENIE-2.12 MC; 01a1 systematics |
 | sbn_numu_disapp_2019b2_01a1_1  | 2019b2 'modern' GENIE-2.12 MC; 01a1 systematics |
 | sbn_numu_disapp_2019b2_02a1_1  | 2019b2 'modern' GENIE-2.12 MC; 02a1 systematics |
+| sbn_numu_disapp_2019b2_02a2_1  | 2019b2 'modern' GENIE-2.12 MC; 02a2 systematics |
 
 
 ## Information on SBN MC productions used in VALOR
