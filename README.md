@@ -90,7 +90,7 @@ A summary of all error parameterizations implemented in the VALOR SBN analysis i
 |-----------|------------|-----------------------------------|--------------------------|---------------|
 | 01a1      | n/a        | Ereco bin norm /flavour /location | Ereco bin norm. / mode   | a1 is the last version/revision of the 01 parameterization still at use while establishing this table on 04/2020; Used for the Jan 2020 Fermilab PAC studies and the associated SBN-OSC WG tech note |
 | 02a1      | n/a        | Etrue bin norm /flavour /location | Ereco bin norm. / mode   | a1 is a stopgap implementation towards the full 02 parameterization; used at the 03/2020 SBN analysis workshop |
-| 02a2      | 2020a (D1) | Etrue bin norm /flavour /location | Ereco bin norm. / mode   | Adding first version of detector systematics on 02a1 |
+| 02a2      | 2020a1 (D1)| Etrue bin norm /flavour /location | Ereco bin norm. / mode   | Adding first version of detector systematics on 02a1 |
 | 02b1      | n/a        | Etrue bin norm /flavour /location | Non-linear responses for all xsec systematics in input DSTs | b1 is the first complete implementation of the 02 parameterization |
 
 (D1) https://www.overleaf.com/read/nmxtrndczyks
