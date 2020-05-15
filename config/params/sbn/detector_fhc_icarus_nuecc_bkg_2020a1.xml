@@ -1,0 +1,1762 @@
+<?xml version="1.0"?>
+
+<!--
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  FHC / ICARUS / nueCC-like sample: Background systematics
+  Version 2020a1
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+
+<param_list name="det_fhc_icarus_nuecc_bkg_2020a1">
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 1.5  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 06
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_06 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.5, 2.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 07
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_07 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  2.0, 3.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    numuCC bkg systematics / bin 08
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_numuccbkg_08 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  3.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  allcc          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> numuany        </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ********************************************************
+  -->
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 1.5  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 06
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_06 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.5, 2.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 07
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_07 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  2.0, 3.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1gamma bkg systematics / bin 08
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1gammabkg_08 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  3.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1gamma       </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ********************************************************
+  -->
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 1.5  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 06
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_06 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.5, 2.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 07
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_07 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  2.0, 3.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NC1pi0 bkg systematics / bin 08
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_nc1pi0bkg_08 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  3.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  nc1pi0         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ********************************************************
+  -->
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 1.5  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 06
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_06 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.5, 2.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 07
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_07 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  2.0, 3.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    NCother bkg systematics / bin 08
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_ncothbkg_08 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  3.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  ncoth          </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ********************************************************
+  -->
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dirt bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_dirtbkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dirt bkg systematics / bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_dirtbkg_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dirt bkg systematics / bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_dirtbkg_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dirt bkg systematics / bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_dirtbkg_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dirt bkg systematics / bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_dirtbkg_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Dirt bkg systematics / bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_dirtbkg_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ********************************************************
+  -->
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Cosmic bkg systematics / bin 00
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_cosmicbkg_00 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.0, 0.2  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Cosmic bkg systematics / bin 01
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_cosmicbkg_01 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.2, 0.4  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Cosmic bkg systematics / bin 02
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_cosmicbkg_02 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.4, 0.6  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Cosmic bkg systematics / bin 03
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_cosmicbkg_03 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.6, 0.8  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Cosmic bkg systematics / bin 04
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_cosmicbkg_04 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  0.8, 1.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+  <!--
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Cosmic bkg systematics / bin 05
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  -->
+
+  <param>
+    <name>
+      <simple> det_fhc_icarus_nuecc_cosmicbkg_05 </simple>
+    </name>
+    <apply_to_range>
+      <Ereco>  1.0, 100.0  </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category>  detector  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   icarus         </detector>
+      <beam>       fhc            </beam>
+      <selection>  elikehighres   </selection>
+      <reac_type>  cosmic         </reac_type>
+      <flav_init>  all            </flav_init>
+      <flav_final> all            </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>  0.0, inf  </limits>
+
+    <range_mode> sigma </range_mode>
+    <range>      -8,8  </range>
+  </param>
+
+
+</param_list>
