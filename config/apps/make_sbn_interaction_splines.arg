@@ -1,6 +1,6 @@
 # argument                       |   type         |  require?   |   default
 # ....................................................................................................
-output                           |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM]_[BEAM].root
+output                           |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root
 variations                       |   string       |  mandatory  |   - # For SBN: $VALOR_DUNE/src/macros/contrib/steve/sbn_universe_variations_from_mastbaum.txt
 config                           |   string       |  mandatory  |   -
 systematic                       |   string       |  mandatory  |   -

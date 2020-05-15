@@ -81,6 +81,8 @@ Splines
   <folder>         sbn/data_archive/sbn_numu_disappearance/responses/01a2 </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM].root             </pattern>
   <type>           TSpline3                                               </type>
+  <stored_as>      TObjArray                                              </stored_as>
+  <array_pattern>  spl_[MODE]_[PARAM]                                     </array_pattern>
   <method>         curr_val                                               </method>
   <allow_negative> true                                                   </allow_negative>
 </splines>
