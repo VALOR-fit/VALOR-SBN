@@ -85,22 +85,23 @@ std::vector<std::string> interaction_systematics =
    "genie_NonResRvp2pi_Genie",
  };
 std::vector<std::string> flux_systematics =
- { "expskin_FluxUnisim",
-   "horncurrent_FluxUnisim",
-   "kminus_PrimaryHadronNormalization",
-   "kplus_PrimaryHadronFeynmanScaling",
-   "kzero_PrimaryHadronSanfordWang",
+ { "horncurrent_FluxUnisim",
+   "expskin_FluxUnisim",
    "nucleoninexsec_FluxUnisim",
    "nucleonqexsec_FluxUnisim",
    "nucleontotxsec_FluxUnisim",
-   "piminus_PrimaryHadronSWCentralSplineVariation",
    "pioninexsec_FluxUnisim",
    "pionqexsec_FluxUnisim",
    "piontotxsec_FluxUnisim",
+   "kminus_PrimaryHadronNormalization",
+   "kplus_PrimaryHadronFeynmanScaling",
+   "kzero_PrimaryHadronSanfordWang",
+   "piminus_PrimaryHadronSWCentralSplineVariation",
    "piplus_PrimaryHadronSWCentralSplineVariation"
  };
  
 TString splineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]");
+TString objNamePattern("spl_[MODE]_[PARAM]");
 
 std::string GetSystematic(const std::string &sy);
 void        GetVariations(std::vector<double> &variations, 
@@ -117,11 +118,21 @@ TString     BuildSplineName(const Sample_t    &s,
                             const std::string &p,
                             const int         &itrue, 
                             const int         &ireco);
+TString BuildObjName(const ReacMode_t  &m, 
+                     const std::string &p);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
   
+  time_t scriptstartrawtime;
+  struct tm * scriptstarttimeinfo;
+  time (&scriptstartrawtime);
+  scriptstarttimeinfo = localtime (&scriptstartrawtime);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Script start local time and date:  " << asctime(scriptstarttimeinfo);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+
   // Read command line arguments
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_sbn_interaction_splines.arg");
@@ -265,6 +276,7 @@ int main(int argc, char ** argv)
   // Filename for is we choose to store the spectra
   TString hist_outfile = arg_output_file.c_str();
   hist_outfile = hist_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
+  hist_outfile = hist_outfile.ReplaceAll("[DET]"    , util::AsString(detector).c_str());
   hist_outfile = hist_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample).c_str());
   hist_outfile = hist_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
   hist_outfile = hist_outfile.ReplaceAll(".root","_spectra.root");
@@ -368,6 +380,7 @@ int main(int argc, char ** argv)
 
   TString ts_outfile = arg_output_file.c_str();
   ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[DET]"    , util::AsString(detector).c_str());
   ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample).c_str());
   ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
   VLOG("valor_dune", pNOTICE) << "Saving VALOR response functions to: "<<ts_outfile;
@@ -392,6 +405,11 @@ int main(int argc, char ** argv)
     const VALORBinning * true_sb = binning.TrueSmpBinning(mode);
     const int n_true_bins_sb = true_sb->NBins();
    
+    // TObjArray for the current parameter and mode
+    TString objname = BuildObjName(mode,syst);
+    TObjArray *spline_array = new TObjArray();
+    spline_array->SetName(objname.Data());
+
     // Boolean to check if the current mode ever results in a spline entry != 1
     bool mode_used = false;
     // Loop over the reco and true bins
@@ -458,9 +476,9 @@ int main(int argc, char ** argv)
         assert((x.size() == y.size()) && (x.size() == knots.size()));
         TString name  = BuildSplineName(sample, beam, mode, syst, itrue, ireco);
         TString title = name; // Make this contain real kinematic ranges
-        TSpline3 spl(title.Data(), x.data(), y.data(), n_knots);
-        spl.SetName(name.Data());
-        spl.Write();
+        TSpline3 *spl = new TSpline3(title.Data(), x.data(), y.data(), n_knots);
+        spl->SetName(name.Data());
+        spline_array->Add(spl);
         n_splines_written++;
         if (n_splines_written%1000==0) {
           VLOG("valor_dune",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
@@ -468,6 +486,7 @@ int main(int argc, char ** argv)
 
       }//itrue
     }//ireco
+    spline_array->Write(objname.Data(),TObject::kSingleKey);
   }//imode
 
   fout.Close();
@@ -493,6 +512,16 @@ int main(int argc, char ** argv)
   
   VLOG("valor_dune", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
   
+  time_t endrawtime;
+  struct tm * endtimeinfo;
+  time (&endrawtime);
+  endtimeinfo = localtime (&endrawtime);
+  time_t total_time = endrawtime-scriptstartrawtime;
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " End local time and date  :  " << asctime(endtimeinfo);
+  std::cout << " Total time taken         :  " << total_time/static_cast<double>(60) << " minutes" << std::endl;
+  std::cout << "-----------------------------------------------------------" << std::endl;
+
   return 0;
 }
 //___________________________________________________________________
@@ -629,6 +658,17 @@ TString BuildSplineName(const Sample_t    &s,
   
   name = name.ReplaceAll("[TRUE]" , TString::Format("%d", itrue ));
   name = name.ReplaceAll("[RECO]" , TString::Format("%d", ireco ));
+  
+  return name;
+
+}//___________________________________________________________________
+TString BuildObjName(const ReacMode_t  &m, 
+                     const std::string &p){
+
+  TString name = objNamePattern;
+  
+  name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
+  name = name.ReplaceAll("[PARAM]"  , p.c_str());
   
   return name;
 
