@@ -96,6 +96,14 @@ const char * fit_result_tree_name = "valor_dune_nd_ntp";
 
 int main(int argc, char ** argv)
 {  
+  time_t scriptstartrawtime;
+  struct tm * scriptstarttimeinfo;
+  time (&scriptstartrawtime);
+  scriptstarttimeinfo = localtime (&scriptstartrawtime);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Script start local time and date:  " << asctime(scriptstarttimeinfo);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+
 
   valor::util::PrintBanner(Env::Instance()->Banner(),500);
 
@@ -172,10 +180,12 @@ int main(int argc, char ** argv)
   std::string config_path = util::CompleteConfigPath(arg.GetString("config"));
   elements->Read(config_path);
   FitModelABC * model = elements->FitModel();
+  CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
+  assert(cm);
   const util::NameRegistry * nr = util::NameRegistry::Instance();
 
   // Hack until we move GetSystematics() into FitModelABC
-  CorrelatedSystematics * syst = model->GetSystematics();
+  CorrelatedSystematics * syst = cm->GetSystematics();
 
   // If necessary, update the systematics prior from a previous fit
   // TODO: This should be handled by the XML prior file, but priors trees are not yet supported
@@ -455,12 +465,12 @@ int main(int argc, char ** argv)
     LOG("valor_dune", pNOTICE) << "Fit starts with the following fit parameter list: " << *fp;
     LOG("valor_dune", pNOTICE) << "Fit starts with statistic: " << fit_inputs->Statistic();
     
-    time_t startrawtime;
-    struct tm * starttimeinfo;
-    time (&startrawtime);
-    starttimeinfo = localtime (&startrawtime);
+    time_t fitstartrawtime;
+    struct tm * fitstarttimeinfo;
+    time (&fitstartrawtime);
+    fitstarttimeinfo = localtime (&fitstartrawtime);
     std::cout << "-----------------------------------------------------------" << std::endl;
-    std::cout << " Start local time and date:  " << asctime(starttimeinfo);
+    std::cout << " Fit start local time and date:  " << asctime(fitstarttimeinfo);
     std::cout << "-----------------------------------------------------------" << std::endl;
 
     fitter->DoTheFit();
@@ -509,8 +519,10 @@ int main(int argc, char ** argv)
   struct tm * endtimeinfo;
   time (&endrawtime);
   endtimeinfo = localtime (&endrawtime);
+  time_t total_time = endrawtime-scriptstartrawtime;
   std::cout << "-----------------------------------------------------------" << std::endl;
   std::cout << " End local time and date  :  " << asctime(endtimeinfo);
+  std::cout << " Total time taken         :  " << total_time/static_cast<double>(60) << " minutes" << std::endl;
   std::cout << "-----------------------------------------------------------" << std::endl;
 
   return 0;
