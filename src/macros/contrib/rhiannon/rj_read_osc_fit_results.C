@@ -7,7 +7,7 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-void rj_read_osc_fit_results(const char * filename, const int exp = -1, const char * predictionname = "", const char * flux = "", const char * interaction = "", const char * sample = "")
+void rj_read_osc_fit_results(const char * filename, const int exp = -1, const char * flux = "", const char * interaction = "", const char * sample = "", const char * predictionname = "")
 {
   using namespace valor;
 
@@ -251,7 +251,7 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TFile f_int(interaction, "read");
       
       TMatrixD *flux_s = (TMatrixD*)f_flux.Get("frac_cov");
-      TMatrixD *int_s  = (TMatrixD*)f_int.Get("frac_cov");
+      TMatrixD *int_s  = (TMatrixD*)f_int.Get("cov");
       TMatrixD &flux_syst = *flux_s;
       TMatrixD &int_syst = *int_s;
 
@@ -370,16 +370,13 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
         // Nice label formatting
         //
         // Interaction bins
-        if(nuisanceBin == (nFluxRows+2)){
-          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"0.2");
-          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"0.2");
-          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"0.2");
-        }
-        else if(nuisanceBin == (nFluxRows+nIntRows)){
-          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"3");
-          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"3");
-          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"3");
-        }
+        //if(nuisanceBin > nFluxRows){
+        //
+        h_initial->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
+        h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
+        h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
+        //}
+        /*
         // Flux bins
         // numu
         if(nuisanceBin == (n_numu/2)+1 || nuisanceBin == singleFlux+(n_numu/2)+1 || nuisanceBin == singleFlux*2+(n_numu/2)+1){
@@ -404,35 +401,43 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
           h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
           h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
           h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
-        }
+        }*/
       }
       TH1D *h_bf_clone = (TH1D*)h_bestfit->Clone("h_bf_clone");
       TH1D *h_in_clone2 = (TH1D*)h_initial->Clone("h_in_clone2");
+      
+      double max_error = -999.;
+      for(int i = 0; i < h_bf_clone->GetNbinsX(); ++i){
+        if(h_bf_clone->GetBinError(i) > max_error)
+          max_error = h_bf_clone->GetBinError(i);
+      }
+      double maxy = (h_bf_clone->GetMaximum() + max_error)*1.1;
+      double miny = (h_bf_clone->GetMinimum() - max_error)*0.9;
 
       l->AddEntry(h_bestfit, "Postfit errors", "lf");
 
       std::cout << " Drawing nuisance parameters " << std::endl;
  
       // Solid lines for detector and interaction separation
-      TLine line_sbnd  (singleFlux,   0.48, singleFlux,   2.1);
-      TLine line_uboone(singleFlux*2, 0.48, singleFlux*2, 2.1);
-      TLine line_icarus(nFluxRows,    0.48, nFluxRows,    2.1);
+      TLine line_sbnd  (singleFlux,   miny-0.02, singleFlux,   maxy+0.1);
+      TLine line_uboone(singleFlux*2, miny-0.02, singleFlux*2, maxy+0.1);
+      TLine line_icarus(nFluxRows,    miny-0.02, nFluxRows,    maxy+0.1);
 
       // Dashed neutrino flavour separation
-      TLine line_sbnd_numu   (n_numu,         0.48, n_numu,         2.02);
-      TLine line_sbnd_numubar(n_numubar_bins, 0.48, n_numubar_bins, 2.02);
-      TLine line_sbnd_nue    (n_nue_bins,     0.48, n_nue_bins,     2.02);
-      TLine line_sbnd_nuebar (n_nuebar_bins,  0.48, n_nuebar_bins,  2.02);
+      TLine line_sbnd_numu   (n_numu,         miny-0.02, n_numu,         maxy+0.02);
+      TLine line_sbnd_numubar(n_numubar_bins, miny-0.02, n_numubar_bins, maxy+0.02);
+      TLine line_sbnd_nue    (n_nue_bins,     miny-0.02, n_nue_bins,     maxy+0.02);
+      TLine line_sbnd_nuebar (n_nuebar_bins,  miny-0.02, n_nuebar_bins,  maxy+0.02);
       
-      TLine line_uboone_numu   (singleFlux+n_numu,         0.48, singleFlux+n_numu,         2.02);
-      TLine line_uboone_numubar(singleFlux+n_numubar_bins, 0.48, singleFlux+n_numubar_bins, 2.02);
-      TLine line_uboone_nue    (singleFlux+n_nue_bins,     0.48, singleFlux+n_nue_bins,     2.02);
-      TLine line_uboone_nuebar (singleFlux+n_nuebar_bins,  0.48, singleFlux+n_nuebar_bins,  2.02);
+      TLine line_uboone_numu   (singleFlux+n_numu,         miny-0.02, singleFlux+n_numu,         maxy+0.02);
+      TLine line_uboone_numubar(singleFlux+n_numubar_bins, miny-0.02, singleFlux+n_numubar_bins, maxy+0.02);
+      TLine line_uboone_nue    (singleFlux+n_nue_bins,     miny-0.02, singleFlux+n_nue_bins,     maxy+0.02);
+      TLine line_uboone_nuebar (singleFlux+n_nuebar_bins,  miny-0.02, singleFlux+n_nuebar_bins,  maxy+0.02);
       
-      TLine line_icarus_numu   ((singleFlux*2)+n_numu,         0.48, (singleFlux*2)+n_numu,         2.02);
-      TLine line_icarus_numubar((singleFlux*2)+n_numubar_bins, 0.48, (singleFlux*2)+n_numubar_bins, 2.02);
-      TLine line_icarus_nue    ((singleFlux*2)+n_nue_bins,     0.48, (singleFlux*2)+n_nue_bins,     2.02);
-      TLine line_icarus_nuebar ((singleFlux*2)+n_nuebar_bins,  0.48, (singleFlux*2)+n_nuebar_bins,  2.02);
+      TLine line_icarus_numu   ((singleFlux*2)+n_numu,         miny-0.02, (singleFlux*2)+n_numu,         maxy+0.02);
+      TLine line_icarus_numubar((singleFlux*2)+n_numubar_bins, miny-0.02, (singleFlux*2)+n_numubar_bins, maxy+0.02);
+      TLine line_icarus_nue    ((singleFlux*2)+n_nue_bins,     miny-0.02, (singleFlux*2)+n_nue_bins,     maxy+0.02);
+      TLine line_icarus_nuebar ((singleFlux*2)+n_nuebar_bins,  miny-0.02, (singleFlux*2)+n_nuebar_bins,  maxy+0.02);
       
       std::vector<TLine> lines_sbnd = {line_sbnd, line_sbnd_numu, line_sbnd_numubar, line_sbnd_nue, line_sbnd_nuebar};
       std::vector<TLine> lines_uboone = {line_uboone, line_uboone_numu, line_uboone_numubar, line_uboone_nue, line_uboone_nuebar};
@@ -459,14 +464,14 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       }
 
       h_bestfit->Draw("E2");
-      h_bestfit->GetYaxis()->SetRangeUser(0.5,2.0);
+      h_bestfit->GetYaxis()->SetRangeUser(miny,maxy);
       h_bf_clone->Draw("same hist");
       for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
         lines_sbnd[i].Draw("same");
         lines_uboone[i].Draw("same");
         lines_icarus[i].Draw("same");
       }
-      h_bestfit->LabelsOption("h");
+      h_bestfit->GetXaxis()->LabelsOption("v");
       h_bestfit->GetXaxis()->SetLabelSize(0.04);
       h_bestfit->GetXaxis()->SetTitleSize(0.035);
       h_bestfit->GetXaxis()->SetTitleOffset(1.2);
@@ -488,10 +493,10 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TLatex latex;
       latex.SetTextAlign(11); // Align at bottom
       latex.SetTextSize(0.03);
-      latex.DrawLatex(5.70,  2.05,"#color[867]{SBND Flux}");
-      latex.DrawLatex(26.80, 2.05,"#color[905]{#muBooNE Flux}");
-      latex.DrawLatex(46.66, 2.05,"#color[797]{ICARUS Flux}");
-      latex.DrawLatex(68.68, 2.05,"#color[835]{Interaction}");
+      latex.DrawLatex(5.70,  maxy+0.05,"#color[867]{SBND Flux}");
+      latex.DrawLatex(26.80, maxy+0.05,"#color[905]{#muBooNE Flux}");
+      latex.DrawLatex(46.66, maxy+0.05,"#color[797]{ICARUS Flux}");
+      latex.DrawLatex(66.12, maxy+0.05,"#color[835]{Int}");
 
       l->Draw();
       l->SetBorderSize(0);
@@ -513,32 +518,40 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       l_in->AddEntry(h_initial, "Postfit errors", "lf");
       l_in->AddEntry(h_in_clone, "Prefit errors", "lf");
       
+      double max_in_error = -999.;
+      for(int i = 0; i < h_in_clone->GetNbinsX(); ++i){
+        if(h_in_clone->GetBinError(i) > max_in_error)
+          max_in_error = h_in_clone->GetBinError(i);
+      }
+      double maxiny = (h_in_clone->GetMaximum() + max_in_error)*1.1;
+      double mininy = (h_in_clone->GetMinimum() - max_in_error)*0.9;
+
       h_in_clone->Draw("E2");
-      h_in_clone->GetYaxis()->SetRangeUser(0.4,1.6);
+      h_in_clone->GetYaxis()->SetRangeUser(mininy,maxiny);
       h_initial->Draw("same E2");
       for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
         if(i == 0){
-          lines_sbnd[i].SetY2(1.7);
-          lines_sbnd[i].SetY1(0.38);
-          lines_uboone[i].SetY2(1.7);
-          lines_uboone[i].SetY1(0.38);
-          lines_icarus[i].SetY2(1.7);
-          lines_icarus[i].SetY1(0.38);
+          lines_sbnd[i].SetY2(maxiny+0.08);
+          lines_sbnd[i].SetY1(mininy-0.02);
+          lines_uboone[i].SetY2(maxiny+0.08);
+          lines_uboone[i].SetY1(mininy-0.02);
+          lines_icarus[i].SetY2(maxiny+0.08);
+          lines_icarus[i].SetY1(mininy-0.02);
         }
         else{
-          lines_sbnd[i].SetY1(0.38);
-          lines_sbnd[i].SetY2(1.62);
-          lines_uboone[i].SetY1(0.38);
-          lines_uboone[i].SetY2(1.62);
-          lines_icarus[i].SetY1(0.38);
-          lines_icarus[i].SetY2(1.62);
+          lines_sbnd[i].SetY1(mininy-0.02);
+          lines_sbnd[i].SetY2(maxiny);
+          lines_uboone[i].SetY1(mininy-0.02);
+          lines_uboone[i].SetY2(maxiny);
+          lines_icarus[i].SetY1(mininy-0.02);
+          lines_icarus[i].SetY2(maxiny);
         }
         lines_sbnd[i].Draw("same");
         lines_uboone[i].Draw("same");
         lines_icarus[i].Draw("same");
       }
       h_in_clone2->Draw("hist same l");
-      h_in_clone->LabelsOption("h");
+      h_in_clone->GetXaxis()->LabelsOption("v");
       h_in_clone->GetXaxis()->SetLabelSize(0.04);
       h_in_clone->GetXaxis()->SetTitleSize(0.035);
       h_in_clone->GetXaxis()->SetTitleOffset(1.2);
@@ -565,10 +578,10 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TLatex latex1;
       latex1.SetTextAlign(11); // Align at bottom
       latex1.SetTextSize(0.03);
-      latex1.DrawLatex(5.70,  1.65,"#color[867]{SBND Flux}");
-      latex1.DrawLatex(26.80, 1.65,"#color[905]{#muBooNE Flux}");
-      latex1.DrawLatex(46.66, 1.65,"#color[797]{ICARUS Flux}");
-      latex1.DrawLatex(68.68, 1.65,"#color[835]{Interaction}");
+      latex1.DrawLatex(5.70,  maxiny+0.05,"#color[867]{SBND Flux}");
+      latex1.DrawLatex(26.80, maxiny+0.05,"#color[905]{#muBooNE Flux}");
+      latex1.DrawLatex(46.66, maxiny+0.05,"#color[797]{ICARUS Flux}");
+      latex1.DrawLatex(66.12, maxiny+0.05,"#color[835]{Int}");
  
       c->Update();
       c->Draw();
@@ -584,13 +597,14 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       
       l_pre->AddEntry(h_in_clone, "Prefit errors", "lf");
       h_in_clone->Draw("E2");
-      h_in_clone->GetYaxis()->SetRangeUser(0.4,1.6);
+      h_in_clone->GetYaxis()->SetRangeUser(mininy,maxiny);
       h_in_clone2->Draw("hist same l");
       for(unsigned int i = 0; i < lines_sbnd.size(); ++i){
         lines_sbnd[i].Draw("same");
         lines_uboone[i].Draw("same");
         lines_icarus[i].Draw("same");
       }
+      h_in_clone->GetXaxis()->LabelsOption("v");
       h_in_clone->GetXaxis()->SetLabelSize(0.04);
       h_in_clone->GetXaxis()->SetTitleSize(0.035);
       h_in_clone->GetXaxis()->SetTitleOffset(1.2);
@@ -612,10 +626,10 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
       TLatex latex2;
       latex2.SetTextAlign(11); // Align at bottom
       latex2.SetTextSize(0.03);
-      latex2.DrawLatex(5.70,  1.65,"#color[867]{SBND Flux}");
-      latex2.DrawLatex(26.80, 1.65,"#color[905]{#muBooNE Flux}");
-      latex2.DrawLatex(46.66, 1.65,"#color[797]{ICARUS Flux}");
-      latex2.DrawLatex(68.68, 1.65,"#color[835]{Interaction}");
+      latex2.DrawLatex(5.70,  maxy+0.05,"#color[867]{SBND Flux}");
+      latex2.DrawLatex(26.80, maxy+0.05,"#color[905]{#muBooNE Flux}");
+      latex2.DrawLatex(46.66, maxy+0.05,"#color[797]{ICARUS Flux}");
+      latex2.DrawLatex(66.12, maxy+0.05,"#color[835]{Int}");
 
 
       c->Update();
