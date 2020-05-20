@@ -55,7 +55,7 @@
       <format> SBNFlux_Etrue.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02a1/flux.root </filename>
+        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02b1/flux.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
