@@ -302,7 +302,7 @@ const TString GetTweaksFileName(const char* param,
   TString name(tweakFilePattern);
   if(!all){
     std::cout << " Not looking at a file with all tweaks included" << std::endl;
-    name = GetStringReplacements(name,param,"","",nsigma);
+    name = GetStringReplacements(name,param,"","","",nsigma);
     name.Append("sigma.root");
     name.Prepend(tag);
     name.Prepend(location);
