@@ -17,6 +17,7 @@ DUNE_LIBRARIES =
 TGT = make_sbncode_minidst \
       make_caf_minidst \
       make_nd_caf_minidst \
+      make_response_functions \
       make_sbn_interaction_splines \
       make_table_systematic_effects \
       run_fit \
@@ -61,6 +62,17 @@ else
 endif
 else
 	@echo "Skipping make_recoselection_minidst due to no SBNanalysis"
+endif
+
+# Generate splines
+# Probably don't require the GENIE dependence but method isn't finalised yet so keeping just in case
+#
+make_response_functions: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_response_functions.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_response_functions.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_dune-make_response_functions
+else
+	@echo "Skipping make_response_functions due to no GENIE"
 endif
 
 # Generate SBN interaction splines
@@ -183,6 +195,7 @@ clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_sbncode_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_recoselection_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_sbn_interaction_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-make_table_systematic_effects
 	$(RM) $(VALOR_EXPT)/bin/valor_dune-run_fit
@@ -202,6 +215,7 @@ clean: FORCE
 distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_sbncode_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_recoselection_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_response_functions
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_sbn_interaction_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_dune-make_table_systematic_effects
