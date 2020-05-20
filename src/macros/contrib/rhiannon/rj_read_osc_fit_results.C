@@ -364,44 +364,9 @@ void rj_read_osc_fit_results(const char * filename, const int exp = -1, const ch
           h_in_clone->SetBinError(nuisanceBin, 0);
           h_bestfit->SetBinError(nuisanceBin, 0);
         }
-        // Bin edges for labelling:
-        // Flux labels are the flavours
-        // Interaction labels are the Ereco limits
-        // Nice label formatting
-        //
-        // Interaction bins
-        //if(nuisanceBin > nFluxRows){
-        //
         h_initial->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
         h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
         h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
-        //}
-        /*
-        // Flux bins
-        // numu
-        if(nuisanceBin == (n_numu/2)+1 || nuisanceBin == singleFlux+(n_numu/2)+1 || nuisanceBin == singleFlux*2+(n_numu/2)+1){
-          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{#mu}");
-          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{#mu}");
-          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{#mu}");
-        }
-        // numubar
-        else if(nuisanceBin == n_numu+(n_numubar/2)+1 || nuisanceBin == singleFlux+n_numu+(n_numubar/2)+1 || nuisanceBin == singleFlux*2+n_numu+(n_numubar/2)+1){
-          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{#mu}");
-          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{#mu}");
-          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{#mu}");
-        }
-        // nue
-        else if(nuisanceBin == n_numubar_bins+(n_nue/2)+1 || nuisanceBin == singleFlux+n_numubar_bins+(n_nue/2)+1 || nuisanceBin == singleFlux*2+n_numubar_bins+(n_nue/2)+1){
-          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{e}");
-          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{e}");
-          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#nu_{e}");
-        }
-        // nuebar
-        else if(nuisanceBin == n_nue_bins+(n_nuebar/2)+1 || nuisanceBin == singleFlux+n_nue_bins+(n_nuebar/2)+1 || nuisanceBin == singleFlux*2+n_nue_bins+(n_nuebar/2)+1){
-          h_initial->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
-          h_in_clone->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
-          h_bestfit->GetXaxis()->SetBinLabel(nuisanceBin,"#bar{#nu}_{e}");
-        }*/
       }
       TH1D *h_bf_clone = (TH1D*)h_bestfit->Clone("h_bf_clone");
       TH1D *h_in_clone2 = (TH1D*)h_initial->Clone("h_in_clone2");
