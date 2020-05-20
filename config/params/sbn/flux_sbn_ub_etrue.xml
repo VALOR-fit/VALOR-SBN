@@ -31,6 +31,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -66,6 +68,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -101,6 +105,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -136,6 +142,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -171,6 +179,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -206,6 +216,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -241,6 +253,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -276,6 +290,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -309,6 +325,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -344,6 +362,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -379,6 +399,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -414,6 +436,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -449,6 +473,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -484,6 +510,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -519,6 +547,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -554,6 +584,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -589,6 +621,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -624,6 +658,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -659,6 +695,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -692,6 +730,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 
@@ -727,6 +767,8 @@
     </apply_to>
     
     <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
 </param_list>

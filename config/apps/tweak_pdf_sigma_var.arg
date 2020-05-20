@@ -1,6 +1,6 @@
 # argument                           |   type         |  require?   |   default
 # .......................................................................................................
-output                               |   string       |  optional   |   sigma_var_[PARAMS].root
+output                               |   string       |  optional   |   sigma_var_[PARAMS]
 physics-hypothesis                   |   string       |  optional   |   3f_osc
 fit-param-opt                        |   string       |  optional   |   NONE
 config                               |   string       |  mandatory  |   -

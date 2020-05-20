@@ -36,6 +36,7 @@
   <priority msgstream="Lateral">                        NOTICE </priority>
 
   <priority msgstream="fitnt_conv">                     NOTICE </priority>
+  <priority msgstream="valor_dune">                     NOTICE </priority>
   
   <priority msgstream="make_minidst">                   NOTICE </priority>
   <priority msgstream="make_fd_minidst">                NOTICE </priority>
@@ -47,7 +48,8 @@
   <priority msgstream="SingleSampleKineBinning">        ERROR  </priority>
   <priority msgstream="SampleBinning">                  ERROR  </priority>
 
-  <priority msgstream="make_sbncode_minidst">           NOTICE  </priority>
+  <priority msgstream="universe_variation_tweaks">      NOTICE </priority>
+  <priority msgstream="make_sbncode_minidst">           NOTICE </priority>
   <priority msgstream="Marginalisation">                NOTICE </priority>
   <priority msgstream="UtlOscillation">                 NOTICE </priority>
   <priority msgstream="Interpolator">                   WARN   </priority>

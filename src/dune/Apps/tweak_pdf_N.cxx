@@ -7,6 +7,7 @@
 
 \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
              --ntoys               : Number of toy-MC experiments [def: 200]
+             --nsigma              : Number of sigma to tweak the spectra by, default 1
              --physics-hypothesis  : physics hypothesis [def: "3f_osc"]
              --fit-param-opt       : Options used when setting up the FitParamList
                                      [def: "NONE"]
@@ -91,11 +92,14 @@ int main(int argc, char ** argv)
   // Read the command line
   int ntoys               = arg.GetInt("ntoys");
   int n_threads           = arg.GetInt("nthreads");
+  double nsigma           = arg.GetDouble("nsigma");
   string hypname          = arg.GetString("physics-hypothesis");
   string fplopt           = arg.GetString("fit-param-opt");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
-  
+ 
+  int nsigma_int = static_cast<int>(round(nsigma));
+
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   int prior_fit_number = arg.GetInt("prior-fit-number");
   
@@ -145,8 +149,8 @@ int main(int argc, char ** argv)
   
   vector<TH1D *> nom_pdf_werr;
   vector<TH1D *> nom_pdf     ;
-  vector<TH1D *> err_p1      ;
-  vector<TH1D *> err_m1      ;
+  vector<TH1D *> err_pn      ;
+  vector<TH1D *> err_mn      ;
   
   vector<double> max(cm->GetNSubModels());
   vector<vector<TH1D *> > twk_pdf(cm->GetNSubModels());
@@ -214,8 +218,6 @@ int main(int argc, char ** argv)
     // Pick results wanted 
     for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
       SingleSampleFitModelABC * this_model = dynamic_cast<SingleSampleFitModelABC*>(cm->GetSubModel(imodel));
-      BeamConf_t b = this_model->GetBeam();
-      Sample_t   s = this_model->GetSample();
       TString name = TString::Format("curr_pdfts_sb_rf_%s_%s",
          this_model->Name().c_str(),util::AsString(kv).c_str());
       TH1D * curr_pdf = (TH1D*) array->FindObject(name.Data());
@@ -235,10 +237,10 @@ int main(int argc, char ** argv)
   }//itoy
 
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    err_m1.push_back(new TH1D(*nom_pdf[imodel]));
-    err_p1.push_back(new TH1D(*nom_pdf[imodel]));
-    err_m1.back()->Reset();
-    err_p1.back()->Reset();
+    err_mn.push_back(new TH1D(*nom_pdf[imodel]));
+    err_pn.push_back(new TH1D(*nom_pdf[imodel]));
+    err_mn.back()->Reset();
+    err_pn.back()->Reset();
     for(int ebin = 1; ebin <= nom_pdf[imodel]->GetNbinsX(); ebin++) {
        double nom_val = nom_pdf[imodel]->GetBinContent(ebin);
        double sumsq   = 0;
@@ -247,11 +249,12 @@ int main(int argc, char ** argv)
           sumsq += TMath::Power(curr_val-nom_val,2.);
        }//itoy
        double one_sigma = TMath::Sqrt(sumsq/ntoys);
-       err_p1[imodel]->SetBinContent(ebin, nom_val + one_sigma);
-       err_m1[imodel]->SetBinContent(ebin, nom_val - one_sigma);
-       nom_pdf_werr [imodel] -> SetBinError(ebin,one_sigma);
+       double n_sigma   = nsigma*one_sigma; // Number of sigma we want to tweak the spectra by
+       err_pn[imodel]->SetBinContent(ebin, nom_val + n_sigma);
+       err_mn[imodel]->SetBinContent(ebin, nom_val - n_sigma);
+       nom_pdf_werr [imodel] -> SetBinError(ebin,n_sigma);
        if( nom_pdf[imodel]->GetBinCenter(ebin) < enu_reco_max ) {
-          max [imodel] = TMath::Max(max[imodel], nom_val + one_sigma);
+          max [imodel] = TMath::Max(max[imodel], nom_val + n_sigma);
        }
     }//ebin
   }//imodel   
@@ -261,6 +264,7 @@ int main(int argc, char ** argv)
   TFile * outfile = NULL;
   if (output_rootfile!="-" && output_rootfile!="none") {
     output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
+    output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma_int)+"sigma").c_str());
     outfile = new TFile(output_rootfile.c_str(),"RECREATE");
     LOG("valor_dune",pNOTICE)<<"Writing to file: "<<output_rootfile;
   }
@@ -299,8 +303,8 @@ int main(int argc, char ** argv)
       TString name = TString::Format("env_sb_%s_%s",
          util::AsString(b).c_str(), util::AsString(s).c_str() );
       nom_pdf[imodel]->Write((name+"_nom").Data());
-      err_p1 [imodel]->Write((name+"_p1" ).Data());
-      err_m1 [imodel]->Write((name+"_m1" ).Data());
+      err_pn [imodel]->Write((name+"_p"+std::to_string(nsigma_int)).Data());
+      err_mn [imodel]->Write((name+"_m"+std::to_string(nsigma_int)).Data());
     }
   }//imodel
   //~ c[ibeam]->Update();

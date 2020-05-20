@@ -29,7 +29,7 @@ env  =  valor.Env.Instance()
 colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.kCyan+2,]
 
 # Add these as command line arguments
-param_x = conv.kPhypMixingMuMu # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
+param_x = conv.kPhypMixingMuMu # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
 param_y = conv.kPhypDm41sq
 
 ex_x_min = 1E-3 #exlusion
@@ -121,9 +121,8 @@ def UnlogGraph(graph):
   new_graph = R.TGraph(n,10**x,10**y)
   return new_graph
 
-def main(files,tag,label,exclusion):
+def main(files,tag,label,exclusion,nue):
 
-  print "Exclusion: ", exclusion
   logged_hists = [GetLoggedHist(f,exclusion) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
   canv.SetTopMargin(0.03)
@@ -140,12 +139,17 @@ def main(files,tag,label,exclusion):
 
     for cl in xrange(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
+      dchisq = -999
       # 1-sided scan if exclusion plot
-      print "One-sided delta chi-squared scan"
-      dchisq = util.DeltaChisquareOneSided(cl,1)
-      # 2-sided scan if acceptance plot
-      if exclusion is False:
-        print "Exclusion is false, getting two-sided delta chi-squared scan"
+      if exclusion and not nue:
+        print "One-sided delta chi-squared scan"
+        dchisq = util.DeltaChisquareOneSided(cl,1)
+      # 2-sided scan if acceptance plot or nue contour
+      elif exclusion and nue:
+        print "Two-sided delta chi-squared scan"
+        dchisq = util.DeltaChisquare(cl,2)
+      elif not exclusion:
+        print "Two-sided delta chi-squared scan"
         dchisq = util.DeltaChisquare(cl,2)
 
       if (dchisq < 0): continue
@@ -165,7 +169,8 @@ if __name__=="__main__":
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
   parser.add_option('-e','--exclusion', dest='exclusion',default="True",help='Boolean for whether we are producing exclusion or inclusion contours')
+  parser.add_option('-n','--nue', dest='nue',default="False",help='Boolean for whether we are producing numu or nue contours')
 
   options,patterns = parser.parse_args()
 
-  main(patterns,options.tag, options.label, options.exclusion)
+  main(patterns,options.tag, options.label, options.exclusion, options.nue)

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<analysis_inputs analysis="SBN-UBFIT" version="2019b1" detector="uBooNE">
+<analysis_inputs analysis="SBN-FDFIT" version="2019b3" detector="FD">
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -11,7 +11,7 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <bnb_fhc>
-      13.2e+20
+      6.6e+20
     </bnb_fhc>
     <bnb_rhc>
       0
@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> sbn_numu_disappearance/dsts/2019b1/valor_sbncode_fhc_numuccinc_disappearance_ub_minidst.root </filename>
+      <filename> /sbnd/data/users/rsjones/VALOR/VALOR-DUNE-LBL/data/sbn/data_archive/data/sbn_numu_disappearance/universes/2019b3/valor_sbncode_fhc_numuccinc_disappearance_fd_minidst_mc.root </filename>
        <objname> valor_sbncode_mini_dst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
@@ -61,7 +61,7 @@ Input MC templates
 Modelists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<modelist> modelists/OscLowE.xml </modelist>
+<modelist> modelists/SBNOscLowE.xml </modelist>
 <coarse_modelist> modelists/coarse/sbn/coarse_mode_list_SBN_BNB_FHC_numulikeCChigh.xml </coarse_modelist>
 
 <!--
@@ -69,8 +69,6 @@ Modelists
 Default binning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<default_binning> binning/sbn_proposal_binning_NuMu.xml  </default_binning>
+<default_binning> binning/sbn_proposal_binning_NuMu_universes.xml  </default_binning>
 
 </analysis_inputs>
-
-

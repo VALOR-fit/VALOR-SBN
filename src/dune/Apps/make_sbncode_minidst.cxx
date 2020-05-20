@@ -497,7 +497,7 @@ int main(int argc, char ** argv)
         if      (larsoft_mode==kLArQE                ) { reac = conv::kmtCCQE;    }
         else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtCCMEC;   }
         else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtCCcoh;   }
-        else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtCCIMD;   }
+        else if (larsoft_mode==kLArIMDAnnihilation   ) { reac = conv::kmtCCELScat;}
         else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
 
         else { // start counting pions
