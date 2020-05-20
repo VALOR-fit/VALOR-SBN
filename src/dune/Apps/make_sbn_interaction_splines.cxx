@@ -207,14 +207,21 @@ int main(int argc, char ** argv)
   std::map<unsigned int, double> universes_variations; // Universe ID to universe variation
   std::map<unsigned int, double> universes_knots; // Universe ID to knot
   std::map<unsigned int, double>::iterator itr;
+  std::map<double, unsigned int>::iterator itr_d;
 
   GetKnots(all_variations,knots,universes_variations,universes_knots,knots_universes);
   VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
+  for(itr_d = knots_universes.begin(); itr_d != knots_universes.end(); ++itr_d){
+    VLOG("valor_dune",pNOTICE) << "ID: " << itr_d->second << ", variation: " << universes_variations.at(itr_d->second) << " for knot: " << itr_d->first;
+    ids.push_back(itr_d->second);
+    variations.push_back(universes_variations.at(itr_d->second));
+  }
+/*
   for(itr = universes_variations.begin(); itr != universes_variations.end(); ++itr) {
     VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << universes_knots.at(itr->first);
     ids.push_back(itr->first);
     variations.push_back(itr->second);
-  }
+  }*/
   // Variations only to pass to the output file for generating tweaks when validating
   TVectorD t_variations(variations.size(),variations.data());
 
@@ -442,12 +449,23 @@ int main(int argc, char ** argv)
           double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           if(iknot == inom)
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
-          y.push_back(event_ratio);
-
           double universe_variation = universes_variations.at(knots_universes.at(knot));
           if(iknot == inom)
             universe_variation = 0; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
 
+          // Check you aren't duplicating any entries
+          bool var_exists = false;
+          for(const double &s : x){
+            if(std::abs(s-universe_variation) < std::numeric_limits<double>::epsilon()){
+              LOG("valor_dune",pNOTICE) << "You already have a spline entry for this universe variation: " << universe_variation << ", skipping";
+              var_exists = true;
+            }
+          }
+          if(var_exists)
+            continue;
+
+          // Otherwise, if we are looking at an independent knot, add it
+          y.push_back(event_ratio);
           x.push_back(universe_variation); //NSigma from the universe found for the current knot
 
           // Print statements for validation
@@ -459,7 +477,7 @@ int main(int argc, char ** argv)
                                    << " Bin (ireco,itrue):       " << ireco << ", " << itrue << "\n"
                                    << " x-axis entry (universe variation): " << x.at(iknot) << "\n"
                                    << " y-axis entry (event rate ratio):   " << y.at(iknot);
-          
+         
           // Now if we are saving the modelist, check if the current mode affects the spline
           if(arg_save_modelist && iknot != inom){
             // Check if a variation for this mode has already been found
@@ -473,10 +491,10 @@ int main(int argc, char ** argv)
             }
           }//save_modelist
         }//iknot
-        assert((x.size() == y.size()) && (x.size() == knots.size()));
+        assert((x.size() == y.size()));// && (x.size() == knots.size())); Not the case when there are repeated points
         TString name  = BuildSplineName(sample, beam, mode, syst, itrue, ireco);
         TString title = name; // Make this contain real kinematic ranges
-        TSpline3 *spl = new TSpline3(title.Data(), x.data(), y.data(), n_knots);
+        TSpline3 *spl = new TSpline3(title.Data(), x.data(), y.data(), x.size());
         spl->SetName(name.Data());
         spline_array->Add(spl);
         n_splines_written++;
@@ -630,13 +648,14 @@ void GetKnots(const std::vector<double> &variations,
         min_id    = v;
       }
     }
+    LOG("valor_dune",pINFO) << " Found variation for knot: " << kn << " at: " << best_var;
     universes_variations.emplace(min_id,best_var);
     universes_knots.emplace(min_id,kn);
     knots_universes.emplace(kn, min_id);
   }
   if(universes_variations.size() != universes_knots.size()){
     LOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
-    LOG("valor_dune",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: ";
+    LOG("valor_dune",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: " << universes_variations.size();
     util::Die(-1);
   }
 }
