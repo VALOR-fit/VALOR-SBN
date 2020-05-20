@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2019b3_02c1_1">
+    <element name="sbn_nd_fhc_numuCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b3_01b1_1_sbn_nd.xml      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_universes.xml      </binning>
+    </element>
+    
+  </element_list>
+
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml </filename>
+    <filename desc="sbn_flux_spline_parameters">       params/sbn/sbn_flux_spline_parameters.xml   </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    <group name="flux">
+      <format> SBNFluxResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
+        <objname>    cov                                                                                                    </objname>    
+        <objtype>    TMatrixD                                                                                               </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
+        <objname>    untuned                                                                                                </objname>    
+        <objtype>    TMatrixD                                                                                               </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
+        <objname>    nominal                                                                                                </objname>    
+      </initial_values> 
+
+    </group>
+  </systematics>
+
+</valor> 
