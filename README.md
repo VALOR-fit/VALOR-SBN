@@ -46,13 +46,13 @@ These analysis variants are labelled as:
 </pre>
 These analysis variant labels are used for labelling the analysis configuration XML files made available in the VALOR-SBN repository.
 
-| Analysis label.               | Type   | Samples | Fit distributions | MC pro | Syst. | Comment |
-|-------------------------------|--------|---------|-------------------|--------|-------|---------|
-| sbn_numu_disapp_2019a1_01a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019a1 | 01a1 | |
-| sbn_numu_disapp_2019b1_01a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b1 | 01a1 | |
-| sbn_numu_disapp_2019b2_01a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b2 | 01a1 | |
-| sbn_numu_disapp_2019b2_02a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b2 | 02a1 | |
-| sbn_numu_disapp_2019b2_02a2_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b2 | 02a1 | |
+| Analysis label.               | Supp. | Type   | Samples | Fit distributions | MC pro | Syst. | Comment |
+|-------------------------------|-------|--------|---------|-------------------|--------|-------|---------|
+| sbn_numu_disapp_2019a1_01a1_1 | [x]   | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019a1 | 01a1 | |
+| sbn_numu_disapp_2019b1_01a1_1 | [x]   | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b1 | 01a1 | |
+| sbn_numu_disapp_2019b2_01a1_1 | [x]   | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
+| sbn_numu_disapp_2019b2_02a1_1 | [x]   | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
+| sbn_numu_disapp_2019b2_02a2_1 | [x]   | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | \check |
 
 
 ## Information on SBN MC productions used in VALOR
