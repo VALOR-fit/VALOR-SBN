@@ -10,7 +10,6 @@ This README, includes key summary information on the evolution and variants of t
 - Information on SBN MC productions used in VALOR
 - Information on VALOR/SBN systematic error parameterizations
 
-
 ## List of VALOR branches and data products used for the main public results
 
 A number of SBN analysis variants can be supported in the code included in each VALOR-SBN branch. Although each VALOR-SBN branch may work with several different VALOR-SDK branches, the actual SDK branch that was used in the context of each analysis is also listed below, to provide a combination of products which are guaranteed to work and to allow the replication of analysis results.
@@ -102,49 +101,4 @@ Methods:
  - **RESP1D{'params'}**: Non-linear 1D response functions acting on on MC templates bins.
 
 (**DET: 2020a1**) https://www.overleaf.com/read/nmxtrndczyks
-
-
-## Information on mock data analysed with VALOR / SBN
-
-(Perhaps this more detailed info could be stored somewhere else?)
-
-The following are revision qualifiers of the mock_data data products.
-
-| Err param | Comments  |
-|-----------|-----------|
-| 09a2019   | Mock data for the muon-neutrino disappearance analysis, produced for the 09/2019 analysis workshop (MD.1) |
-| 03a2020   | Mock data for the muon-neutrino disappearance analysis, produced for the 03/2020 analysis workshop (MD.1) |
-
-(MD.1) 
-Datasets 1-5 using GENIE 3.0.6; Datasets 11-15 using GENIE 2.12.10;
-Datasets i and 10+i have an identical systematic variation, but on a different underlying cross-section model.
-
-*Dataset 1*: 
-
-- unchanged flux
-- unchanged interaction model for given GENIE tune
-- unchanged detector response
-- no oscillations
-
-*Dataset 2*:
-
-- unchanged flux
-- Decrease CCQE by 10% for Q^2 < 0.3 GeV^2 and decrease by 3% in remaining Q^2 range.
-- Increase CCMEC by 50%.
-- Throw away a random 20% of CC1\pi events where the \pi is subsequently absorbed (emulate \Delta + N -> N + N)
-- Increase NC bkg by 30%
-- unchanged detector response
-- no oscillations
-
-*Dataset 3*: 
-
-- not revealed yet
-
-*Dataset 4*: 
-
-- not revealed yet
-
-*Dataset 5*: 
-
-- not revealed yet
 
