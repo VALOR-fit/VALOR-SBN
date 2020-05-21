@@ -21,7 +21,7 @@ using namespace valor;
 namespace vutil = valor::util;
 
 // Naming structure of the tweak and universe-based files
-TString splineFilePattern("valor_splines_[SAMPLE]_[PARAM]_[BEAM]");
+TString splineFilePattern("valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET]");
 TString tweakFilePattern("[PARAM]_[NSIG]");
 
 // Name filling functions
@@ -33,11 +33,13 @@ const TString GetTweaksFileName(const char* param,
 const TString GetSplineFileName(const char* param, 
                                 const char* sample, 
                                 const char* beam,
+                                const char* detector,
                                 const TString &location);
 const TString GetStringReplacements(const TString &pattern, 
                                     const char* param="", 
                                     const char* sample="", 
                                     const char* beam="", 
+                                    const char* detector="", 
                                     const int &nsigma=-999);
 
 // Check if the files can be opened
@@ -100,7 +102,7 @@ void spline_validation(const char* param,
   if(tag.Last('_') != len) tag.Append("_");
 
   // Get filenames
-  const std::string universe_filename   (GetSplineFileName(param,sample,beam,spline_location));
+  const std::string universe_filename   (GetSplineFileName(param,sample,beam,detector,spline_location));
   const std::string tweaks_nom_filename (GetTweaksFileName(param,tag,0,tweaks_location,all_in_one));
   const std::string tweaks_1sig_filename(GetTweaksFileName(param,tag,1,tweaks_location,all_in_one));
   const std::string tweaks_2sig_filename(GetTweaksFileName(param,tag,2,tweaks_location,all_in_one));
@@ -300,7 +302,7 @@ const TString GetTweaksFileName(const char* param,
   TString name(tweakFilePattern);
   if(!all){
     std::cout << " Not looking at a file with all tweaks included" << std::endl;
-    name = GetStringReplacements(name,param,"","",nsigma);
+    name = GetStringReplacements(name,param,"","","",nsigma);
     name.Append("sigma.root");
     name.Prepend(tag);
     name.Prepend(location);
@@ -318,9 +320,10 @@ const TString GetTweaksFileName(const char* param,
 const TString GetSplineFileName(const char* param, 
                                 const char* sample, 
                                 const char* beam,
+                                const char* detector,
                                 const TString &location){
   TString name(splineFilePattern);
-  name = GetStringReplacements(name,param,sample,beam);
+  name = GetStringReplacements(name,param,sample,beam,detector);
   name.Append("_spectra.root");
   name.Prepend(location);
   return name;
@@ -330,9 +333,11 @@ const TString GetStringReplacements(const TString &pattern,
                                     const char* param="", 
                                     const char* sample="", 
                                     const char* beam="", 
+                                    const char* detector="",
                                     const int&  nsigma=-999){
   TString name(pattern);
   name = name.ReplaceAll("[BEAM]",   beam);
+  name = name.ReplaceAll("[DET]",   detector);
   name = name.ReplaceAll("[SAMPLE]", sample);
   name = name.ReplaceAll("[PARAM]",  param);
   if(nsigma == -999)

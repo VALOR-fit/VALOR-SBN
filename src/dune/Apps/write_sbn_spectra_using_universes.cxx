@@ -79,6 +79,13 @@ std::vector<std::string> flux_systematics =
    "piplus_PrimaryHadronSWCentralSplineVariation"
  };
 
+std::vector<std::string> hadronic_flux_systematics =
+ { "kminus_PrimaryHadronNormalization",
+   "kplus_PrimaryHadronFeynmanScaling",
+   "kzero_PrimaryHadronSanfordWang",
+   "piminus_PrimaryHadronSWCentralSplineVariation",
+   "piplus_PrimaryHadronSWCentralSplineVariation"
+ };
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
@@ -106,6 +113,9 @@ int main(int argc, char ** argv)
   }
   else if (syst_list == "flux") {
     param_list =flux_systematics;
+  }
+  else if (syst_list == "hadron") {
+    param_list =hadronic_flux_systematics;
   }
   else {
     LOG("write_sbn_spectra_using_universes",pFATAL) << "Unknown systematics list: "<<syst_list;

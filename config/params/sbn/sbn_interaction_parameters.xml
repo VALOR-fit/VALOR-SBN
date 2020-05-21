@@ -21,22 +21,21 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->
@@ -60,22 +59,21 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->
@@ -99,22 +97,21 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->
@@ -138,22 +135,21 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnonres </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->
@@ -180,19 +176,18 @@
       <detector>    allsbn   </detector>
       <beam>        fhc      </beam>
       <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
+      <reac_type>   allnc    </reac_type>
       <flav_init>   all      </flav_init>
       <flav_final>  all      </flav_final>
       <target>      all      </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->
@@ -216,22 +211,21 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allncn0pi </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->
@@ -255,22 +249,21 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn   </detector>
-      <beam>        fhc      </beam>
-      <selection>   all      </selection>
-      <reac_type>   all      </reac_type>
-      <flav_init>   all      </flav_init>
-      <flav_final>  all      </flav_final>
-      <target>      all      </target>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allccn0pi </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->
@@ -303,13 +296,12 @@
       <target>      all      </target>
     </apply_to>
     
-    <limits>  -inf,inf  </limits>
+    <limits>  -inf, inf  </limits>
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -5,5  </range>                 
-    <step_mode>              frac  </step_mode>             
-    <step>                   0.01  </step>
+    <range>                  -5,5  </range>
+    <init> -5 </init>
 
   </param>
   <!-- ==================================================================================== -->

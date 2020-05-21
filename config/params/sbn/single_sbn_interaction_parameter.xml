@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<param_list name="single_sbn_interaction_parameter">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvp1pi_Genie                  </simple>
+      <long>    Non-resonant background nu, proton, 1pion </long>
+      <rootex>  R_{bkg}^{#nu, p, 1#pi}                    </rootex>
+      <tex>     R_{bkg}^{\nu, p, 1\pi}                    </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn   </detector>
+      <beam>        fhc      </beam>
+      <selection>   all      </selection>
+      <reac_type>   all      </reac_type>
+      <flav_init>   all      </flav_init>
+      <flav_final>  all      </flav_final>
+      <target>      all      </target>
+    </apply_to>
+    
+    <limits>  -inf,inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+
+  </param>
+  <!-- ==================================================================================== -->
+</param_list>

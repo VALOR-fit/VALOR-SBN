@@ -85,22 +85,23 @@ std::vector<std::string> interaction_systematics =
    "genie_NonResRvp2pi_Genie",
  };
 std::vector<std::string> flux_systematics =
- { "expskin_FluxUnisim",
-   "horncurrent_FluxUnisim",
-   "kminus_PrimaryHadronNormalization",
-   "kplus_PrimaryHadronFeynmanScaling",
-   "kzero_PrimaryHadronSanfordWang",
+ { "horncurrent_FluxUnisim",
+   "expskin_FluxUnisim",
    "nucleoninexsec_FluxUnisim",
    "nucleonqexsec_FluxUnisim",
    "nucleontotxsec_FluxUnisim",
-   "piminus_PrimaryHadronSWCentralSplineVariation",
    "pioninexsec_FluxUnisim",
    "pionqexsec_FluxUnisim",
    "piontotxsec_FluxUnisim",
+   "kminus_PrimaryHadronNormalization",
+   "kplus_PrimaryHadronFeynmanScaling",
+   "kzero_PrimaryHadronSanfordWang",
+   "piminus_PrimaryHadronSWCentralSplineVariation",
    "piplus_PrimaryHadronSWCentralSplineVariation"
  };
  
 TString splineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]");
+TString objNamePattern("spl_[MODE]_[PARAM]");
 
 std::string GetSystematic(const std::string &sy);
 void        GetVariations(std::vector<double> &variations, 
@@ -117,11 +118,21 @@ TString     BuildSplineName(const Sample_t    &s,
                             const std::string &p,
                             const int         &itrue, 
                             const int         &ireco);
+TString BuildObjName(const ReacMode_t  &m, 
+                     const std::string &p);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
   
+  time_t scriptstartrawtime;
+  struct tm * scriptstarttimeinfo;
+  time (&scriptstartrawtime);
+  scriptstarttimeinfo = localtime (&scriptstartrawtime);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Script start local time and date:  " << asctime(scriptstarttimeinfo);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+
   // Read command line arguments
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_sbn_interaction_splines.arg");
@@ -137,6 +148,7 @@ int main(int argc, char ** argv)
   string arg_systematic    = arg.GetString("systematic");
   string arg_write_opt     = arg.GetString("spectra-write-opt");
   bool   arg_store_spectra = arg.GetBool("store-spectra");
+  bool   arg_save_modelist = arg.GetBool("save-modelist");
   
   // From arguments
   string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
@@ -195,14 +207,21 @@ int main(int argc, char ** argv)
   std::map<unsigned int, double> universes_variations; // Universe ID to universe variation
   std::map<unsigned int, double> universes_knots; // Universe ID to knot
   std::map<unsigned int, double>::iterator itr;
+  std::map<double, unsigned int>::iterator itr_d;
 
   GetKnots(all_variations,knots,universes_variations,universes_knots,knots_universes);
   VLOG("valor_dune",pNOTICE) << "Universe ID and variation value for knots : ";
+  for(itr_d = knots_universes.begin(); itr_d != knots_universes.end(); ++itr_d){
+    VLOG("valor_dune",pNOTICE) << "ID: " << itr_d->second << ", variation: " << universes_variations.at(itr_d->second) << " for knot: " << itr_d->first;
+    ids.push_back(itr_d->second);
+    variations.push_back(universes_variations.at(itr_d->second));
+  }
+/*
   for(itr = universes_variations.begin(); itr != universes_variations.end(); ++itr) {
     VLOG("valor_dune",pNOTICE) << "ID: " << itr->first << ", variation: " << itr->second << " for knot: " << universes_knots.at(itr->first);
     ids.push_back(itr->first);
     variations.push_back(itr->second);
-  }
+  }*/
   // Variations only to pass to the output file for generating tweaks when validating
   TVectorD t_variations(variations.size(),variations.data());
 
@@ -264,14 +283,15 @@ int main(int argc, char ** argv)
   // Filename for is we choose to store the spectra
   TString hist_outfile = arg_output_file.c_str();
   hist_outfile = hist_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
+  hist_outfile = hist_outfile.ReplaceAll("[DET]"    , util::AsString(detector).c_str());
   hist_outfile = hist_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample).c_str());
   hist_outfile = hist_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
   hist_outfile = hist_outfile.ReplaceAll(".root","_spectra.root");
   VLOG("valor_dune", pNOTICE) << "Saving spectra to: "<<hist_outfile;
-  TFile histout(hist_outfile.Data(),"recreate");
+  TFile histout(hist_outfile.Data(),"RECREATE");
   t_variations.Write("actual_knot_values");
 
-  //// MEMES
+  // Name to search VALORArrays for 
   const TString fin_name = "mctfin";
   
   std::vector< std::map< ReacMode_t, VALORArray> > mct_knots_modes;
@@ -362,18 +382,22 @@ int main(int argc, char ** argv)
   //// DREAMS
 
   // Output file - first make the substitutions for sample/parameter
+  // Modelist to save any modes which result in non-zero splines
+  std::vector<std::string> applied_to_modes;
+
   TString ts_outfile = arg_output_file.c_str();
   ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
+  ts_outfile = ts_outfile.ReplaceAll("[DET]"    , util::AsString(detector).c_str());
   ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::AsString(sample).c_str());
   ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
   VLOG("valor_dune", pNOTICE) << "Saving VALOR response functions to: "<<ts_outfile;
-  TFile fout(ts_outfile.Data(),"recreate");
-  fout.cd();
-  
+  TFile fout(ts_outfile.Data(),"RECREATE");
+
   int n_splines_written = 0;
 
   // Get the name of the reaction modes for the nominal knot
   const std::map<ReacMode_t, VALORArray> mct_mode_nom = mct_knots_modes.at(inom); 
+
   for(const ReacMode_t &mode : reac_modes){
     // Iterator for the nominal knot map
     std::map<ReacMode_t, VALORArray>::const_iterator it_mct_mode_nom = mct_mode_nom.find(mode);
@@ -387,7 +411,14 @@ int main(int argc, char ** argv)
     // Get the true, standard binning for this mode
     const VALORBinning * true_sb = binning.TrueSmpBinning(mode);
     const int n_true_bins_sb = true_sb->NBins();
-    
+   
+    // TObjArray for the current parameter and mode
+    TString objname = BuildObjName(mode,syst);
+    TObjArray *spline_array = new TObjArray();
+    spline_array->SetName(objname.Data());
+
+    // Boolean to check if the current mode ever results in a spline entry != 1
+    bool mode_used = false;
     // Loop over the reco and true bins
     for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
       for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
@@ -418,16 +449,27 @@ int main(int argc, char ** argv)
           double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           if(iknot == inom)
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
-          y.push_back(event_ratio);
-
           double universe_variation = universes_variations.at(knots_universes.at(knot));
           if(iknot == inom)
             universe_variation = 0; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
 
+          // Check you aren't duplicating any entries
+          bool var_exists = false;
+          for(const double &s : x){
+            if(std::abs(s-universe_variation) < std::numeric_limits<double>::epsilon()){
+              LOG("valor_dune",pNOTICE) << "You already have a spline entry for this universe variation: " << universe_variation << ", skipping";
+              var_exists = true;
+            }
+          }
+          if(var_exists)
+            continue;
+
+          // Otherwise, if we are looking at an independent knot, add it
+          y.push_back(event_ratio);
           x.push_back(universe_variation); //NSigma from the universe found for the current knot
 
           // Print statements for validation
-          LOG("valor_dune",pINFO)  << " Knot :                   " << iknot << ", " << knot << "\n"
+          LOG("valor_dune",pDEBUG ) << " Knot :                   " << iknot << ", " << knot << "\n"
                                    << " Universe variation:      " << universe_variation << " \n"
                                    << " Mode :                   " << util::AsString(mode) << "\n"
                                    << " Nominal event rate:      " << nevents0 << "\n"
@@ -435,25 +477,69 @@ int main(int argc, char ** argv)
                                    << " Bin (ireco,itrue):       " << ireco << ", " << itrue << "\n"
                                    << " x-axis entry (universe variation): " << x.at(iknot) << "\n"
                                    << " y-axis entry (event rate ratio):   " << y.at(iknot);
+         
+          // Now if we are saving the modelist, check if the current mode affects the spline
+          if(arg_save_modelist && iknot != inom){
+            // Check if a variation for this mode has already been found
+            if(!mode_used){
+              // Check if the event ratio is extremely close to 1
+              if(event_ratio > 1.0 || event_ratio < 1.0){
+                LOG("valor_dune",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " isn't 1: " << event_ratio  << " therefore saving the mode to the list";
+                applied_to_modes.push_back(util::AsString(mode));
+                mode_used = true;
+              }
+            }
+          }//save_modelist
         }//iknot
-        assert((x.size() == y.size()) && (x.size() == knots.size()));
+        assert((x.size() == y.size()));// && (x.size() == knots.size())); Not the case when there are repeated points
         TString name  = BuildSplineName(sample, beam, mode, syst, itrue, ireco);
         TString title = name; // Make this contain real kinematic ranges
-        TSpline3 spl(title.Data(), x.data(), y.data(), n_knots);
-        spl.SetName(name.Data());
-        spl.Write();
+        TSpline3 *spl = new TSpline3(title.Data(), x.data(), y.data(), x.size());
+        spl->SetName(name.Data());
+        spline_array->Add(spl);
         n_splines_written++;
         if (n_splines_written%1000==0) {
           VLOG("valor_dune",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
         }
+
       }//itrue
     }//ireco
+    spline_array->Write(objname.Data(),TObject::kSingleKey);
   }//imode
 
   fout.Close();
 
+  // Now construct the file to save the modelist to
+  if(arg_save_modelist){
+    // If we want to save but the modelist has no entries, cry.
+    if(!applied_to_modes.size()){
+      LOG("valor_dune",pERROR) << " Error: Modelist is empty, can't save.";
+    }
+    else{ 
+      TString mode_outfile = ts_outfile;
+      mode_outfile = mode_outfile.ReplaceAll(".root","_modelist.root");
+      LOG("valor_dune",pNOTICE) << "Saving modelist to: " << mode_outfile.Data();
+      TFile *fmode = TFile::Open(mode_outfile.Data(),"RECREATE");
+      TTree *tree = new TTree("ModeList","List of modes impacted by each systematic parameter");
+      tree->Branch(syst.c_str(),&applied_to_modes);
+      tree->Fill();
+      fmode->Write();
+      fmode->Close();
+    }
+  }
+  
   VLOG("valor_dune", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
   
+  time_t endrawtime;
+  struct tm * endtimeinfo;
+  time (&endrawtime);
+  endtimeinfo = localtime (&endrawtime);
+  time_t total_time = endrawtime-scriptstartrawtime;
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " End local time and date  :  " << asctime(endtimeinfo);
+  std::cout << " Total time taken         :  " << total_time/static_cast<double>(60) << " minutes" << std::endl;
+  std::cout << "-----------------------------------------------------------" << std::endl;
+
   return 0;
 }
 //___________________________________________________________________
@@ -471,7 +557,9 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
     return;
   }
 
+  int count_lines = 0;
   while(!uFile.eof()){
+
     std::string line = "";
     std::getline(uFile,line);
     TString tline(line);
@@ -483,6 +571,7 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
     size_t found_v = lline.find(tsyst+" ");
     if(found_v != std::string::npos){
       // Clean up the line to pass the variations to the vector
+      LOG("valor_dune",pDEBUG) << "On textfile line: " << count_lines;
       LOG("valor_dune",pDEBUG) << "Found line containing " << sy << " parameters: \n" << line;
       LOG("valor_dune",pDEBUG) << "Removing systematic name from line";
       line.erase(0, found_v+sy.length());
@@ -495,8 +584,9 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
         LOG("valor_dune",pDEBUG) << "Variation: " << value;
         variations.push_back(value);
       }
-      break;
+     //break; // Don't break: there are two lines per parameter in the text file!
     }  
+    count_lines++;
   } // variations text file
 } // GetVariations
 //___________________________________________________________________
@@ -558,13 +648,14 @@ void GetKnots(const std::vector<double> &variations,
         min_id    = v;
       }
     }
+    LOG("valor_dune",pINFO) << " Found variation for knot: " << kn << " at: " << best_var;
     universes_variations.emplace(min_id,best_var);
     universes_knots.emplace(min_id,kn);
     knots_universes.emplace(kn, min_id);
   }
   if(universes_variations.size() != universes_knots.size()){
     LOG("valor_dune",pFATAL) << "Number of entries in knots and variation lists don't match";
-    LOG("valor_dune",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: ";
+    LOG("valor_dune",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: " << universes_variations.size();
     util::Die(-1);
   }
 }
@@ -586,6 +677,17 @@ TString BuildSplineName(const Sample_t    &s,
   
   name = name.ReplaceAll("[TRUE]" , TString::Format("%d", itrue ));
   name = name.ReplaceAll("[RECO]" , TString::Format("%d", ireco ));
+  
+  return name;
+
+}//___________________________________________________________________
+TString BuildObjName(const ReacMode_t  &m, 
+                     const std::string &p){
+
+  TString name = objNamePattern;
+  
+  name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
+  name = name.ReplaceAll("[PARAM]"  , p.c_str());
   
   return name;
 
