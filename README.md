@@ -46,13 +46,13 @@ These analysis variants are labelled as:
 </pre>
 These analysis variant labels are used for labelling the analysis configuration XML files made available in the VALOR-SBN repository.
 
-| Analysis variant               | Comments    |
-|--------------------------------|-------------|
-| sbn_numu_disapp_2019a1_01a1_1  | 2019a1 proposal-era GENIE-2.12 MC; 01a1 systematics |
-| sbn_numu_disapp_2019b1_01a1_1  | 2019b1 'modern' GENIE-2.12 MC; 01a1 systematics |
-| sbn_numu_disapp_2019b2_01a1_1  | 2019b2 'modern' GENIE-2.12 MC; 01a1 systematics |
-| sbn_numu_disapp_2019b2_02a1_1  | 2019b2 'modern' GENIE-2.12 MC; 02a1 systematics |
-| sbn_numu_disapp_2019b2_02a2_1  | 2019b2 'modern' GENIE-2.12 MC; 02a2 systematics |
+| Analysis label.               | Type   | Samples | Fit distributions | MC pro | Syst. | Comment |
+|-------------------------------|--------|---------|-------------------|--------|-------|---------|
+| sbn_numu_disapp_2019a1_01a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019a1 | 01a1 | |
+| sbn_numu_disapp_2019b1_01a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b1 | 01a1 | |
+| sbn_numu_disapp_2019b2_01a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b2 | 01a1 | |
+| sbn_numu_disapp_2019b2_02a1_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b2 | 02a1 | |
+| sbn_numu_disapp_2019b2_02a2_1 | Eff. 3+1 numu disap | numuCC-like sample (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 
 
 ## Information on SBN MC productions used in VALOR
