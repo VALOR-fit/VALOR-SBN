@@ -29,7 +29,8 @@ env  =  valor.Env.Instance()
 colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.kCyan+2,]
 
 # Add these as command line arguments
-param_x = conv.kPhypMixingMuMu # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
+param_x = conv.kPhypMixingEE
+ # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
 param_y = conv.kPhypDm41sq
 
 x_min = 1E-3 #exlusion
