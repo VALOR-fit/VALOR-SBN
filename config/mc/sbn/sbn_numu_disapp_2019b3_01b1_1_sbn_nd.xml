@@ -84,7 +84,7 @@ Splines
   <stored_as>      TObjArray                                              </stored_as>
   <array_pattern>  spl_[MODE]_[PARAM]                                     </array_pattern>
   <method>         curr_val                                               </method>
-  <allow_negative> false                                                  </allow_negative>
+  <allow_negative> true                                                   </allow_negative>
 </splines>
 
 </analysis_inputs>
