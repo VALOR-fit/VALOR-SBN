@@ -44,15 +44,15 @@ These analysis variants are labelled as:
        [set of data products]_[revision]
  (eg.:             see above          1)
 </pre>
-These analysis variant labels are used for labelling the analysis configuration XML files made available in the VALOR-SBN repository.
+These names of analysis variants are used for labelling the main analysis configuration XML files made available in the VALOR-SBN repository. A list and a brief description of our main SBN analysis variants is given below. Analysis variants supported by the version of the code that includes this file as shown in bold.
 
 | Analysis label. | Type   | Samples | Fit distributions | MC pro | Syst. | Comment |
 |-----------------|--------|---------|-------------------|--------|-------|---------|
-| sbn_numu_disapp_2019a1_01a1_1 | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019a1 | 01a1 | |
-| sbn_numu_disapp_2019b1_01a1_1 | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b1 | 01a1 | |
-| sbn_numu_disapp_2019b2_01a1_1 | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
-| sbn_numu_disapp_2019b2_02a1_1 | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
-| sbn_numu_disapp_2019b2_02a2_1 | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
+| **sbn_numu_disapp_2019a1_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019a1 | 01a1 | |
+| **sbn_numu_disapp_2019b1_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b1 | 01a1 | |
+| **sbn_numu_disapp_2019b2_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
+| **sbn_numu_disapp_2019b2_02a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
+| **sbn_numu_disapp_2019b2_02a2_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 
 ## Information on SBN MC productions used in VALOR
 
