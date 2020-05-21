@@ -89,21 +89,20 @@ A summary of all error parameterizations implemented in the VALOR SBN analysis i
 
 | Err param | Detector | Flux  | Interaction  | Comments  |
 |-----------|----------|-------|--------------|-----------|
-| 01a1 | n/a  | COV_1(loc,flav,Ereco) | COV_1(Ereco) | Last version of the 01 parameterization still at use while establishing this table on 04/2020; Used for the 01/2020 Fermilab PAC studies and the associated SBN-OSC WG tech note |
-| 02a1 | n/a  | COV_1(loc,flav,Etrue) | COV_1(Ereco) | **Temporary:** Stopgap implementation towards the full 02 parameterization; used at the 03/2020 SBN analysis workshop |
-| 02a2 | COV_0(det,sample,mode,Ereco) (**DET: 2020a1**) | as in 02a1 | as in 02a1 | **Temporary:** Adding first version of detector systematics on 02a1 |
-
-| 02b1 | n/a  | COV(loc,flav,Etrue) (**FLUX: REF?**) | RESP_1 + ad hoc 50% MEC systematic (**XSEC: REF?**) | |
-| 02b2 | COV(det,sample,mode,Ereco) (**DET: 2020a1**) | as in 02b1 | as in 02b1 | |
-| 02c1 | n/a  | hadroproduction: COV(loc,flav,Etrue); optics: RESP_1 (**FLUX: REF?**) | as in 02b1 | |
-| 02c2 | COV(det,sample,mode,Ereco) (**DET: 2020a1**) | as in 02c1 | as in 02b1 | |
+| 01a1 | n/a  | COV{loc,flav,Ereco} | COV{Ereco} | Last version of the 01 parameterization still at use while establishing this table on 04/2020; Used for the 01/2020 Fermilab PAC studies and the associated SBN-OSC WG tech note |
+| 02a1 | n/a  | COV{loc,flav,Etrue} | COV{Ereco} | **Temporary:** Stopgap implementation towards the full 02 parameterization; used at the 03/2020 SBN analysis workshop |
+| 02a2 | COV{det,sample,mode,Ereco} (**DET: 2020a1**) | as in 02a1 | as in 02a1 | **Temporary:** Adding first version of detector systematics on 02a1 |
+| 02b1 | n/a  | COV{loc,flav,Etrue} (**FLUX: REF?**) | RESP_1{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
+| 02b2 | COV{det,sample,mode,Ereco} (**DET: 2020a1**) | as in 02b1 | as in 02b1 | |
+| 02c1 | n/a  | COV{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | as in 02b1 | |
+| 02c2 | COV{det,sample,mode,Ereco} (**DET: 2020a1**) | as in 02c1 | as in 02b1 | |
 
 Methods:
- - **COV_0 {'space'}**: Normalisation parameters acting on a set of bin in the specified 'space', with an error matrix filled in by hand.
- - **COV_1 {'space'}**: Normalisation parameters acting on a set of bin in the specified 'space', with a corresponding error matrix computed from underlying model parameter throws included in MC production.
- - **RESP_1**: Non-linear 1D response functions computed from underlying model parameter throws included in MC production, operating on MC templates bins.
+ - **COV {'space'}**: Normalisation parameters acting on a set of bin in the specified 'space', with a corresponding error matrix.
+ - **RESP1D{'params'}**: Non-linear 1D response functions acting on on MC templates bins.
 
-(DET: 2020a1) https://www.overleaf.com/read/nmxtrndczyks
+(**DET: 2020a1**) https://www.overleaf.com/read/nmxtrndczyks
+
 
 ## Information on mock data analysed with VALOR / SBN
 
