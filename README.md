@@ -54,16 +54,18 @@ These names of analysis variants are used for labelling the main analysis config
 | **sbn_numu_disapp_2019b2_02a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 | **sbn_numu_disapp_2019b2_02a2_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 
-## Information on SBN MC productions used in VALOR
+MC productions (flux, interaction, detector simulations), the corresponding uncertainty assignments and internal VALOR representations of the uncertainties, and the reconstruction / data reduction event selection codes are important elements used for characterising each fit. Information about the elements used by each VALOR analysis is outlined below.
 
-VALOR uses the following naming scheme for **SBN MC productions**: 
+## Information on SBN productions (simulation, reconstruction and selection) used in VALOR
+
+VALOR uses the following naming scheme for **SBN MC productions** and the reconstructed event samples obtained b
 <pre>
            [date][physics model][revision]
      (eg.:  2020              a         1)
 </pre>
 A summary of all SBN MC productions used is given in the table below.
 
-| MC pro   | Flux    | GENIE (vrs;tune;err) | SBNCode  | Comments
+| SBN pro  | Flux    | GENIE (vrs;tune;err) | SBNCode  | Comments
 |----------|---------|----------------------|----------|-----------|
 | 2019a1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `proposal'; last respin of 2019a still in use while establishing this archive on 04/2020 |
 | 2019b1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `modern'; last respin of 2019b still in use while establishing this archive on 04/2020 |
