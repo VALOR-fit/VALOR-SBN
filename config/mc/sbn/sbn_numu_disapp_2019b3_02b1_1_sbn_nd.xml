@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<analysis_inputs analysis="SBN-FDFIT" version="2019b3_01a2" detector="FD">
+<analysis_inputs analysis="SBN-NDFIT" version="2019b3_02b1" detector="ND">
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> sbn/data_archive/sbn_numu_disappearance/dsts/2019b3/valor_sbncode_fhc_numuccinc_disappearance_fd_minidst_mc.root </filename>
+       <filename> sbn/data_archive/sbn_numu_disappearance/dsts/2019b3/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc.root </filename>
        <objname> valor_sbncode_mini_dst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
@@ -78,7 +78,7 @@ Splines
 -->
 
 <splines>
-  <folder>         sbn/data_archive/sbn_numu_disappearance/responses/01a2 </folder>
+  <folder>         sbn/data_archive/sbn_numu_disappearance/responses/02b1 </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM].root             </pattern>
   <type>           TSpline3                                               </type>
   <stored_as>      TObjArray                                              </stored_as>
