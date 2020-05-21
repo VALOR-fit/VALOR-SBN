@@ -9,7 +9,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>         data/sbn_numu_disapp_09a2019_1_sbn_nd.xml            </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2019b3_01a2_1_sbn_nd.xml      </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b3_02b1_1_sbn_nd.xml      </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_universes.xml      </binning>
