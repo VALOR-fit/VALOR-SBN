@@ -141,14 +141,19 @@ def main(files,tag,label,exclusion,nue):
       clname = util.ConfLevelAsString(cl)
       dchisq = -999
       # 1-sided scan if exclusion plot
-      if exclusion and not nue:
-        print "One-sided delta chi-squared scan"
-        dchisq = util.DeltaChisquareOneSided(cl,1)
-      # 2-sided scan if acceptance plot or nue contour
-      elif exclusion and nue:
-        print "Two-sided delta chi-squared scan"
-        dchisq = util.DeltaChisquare(cl,2)
-      elif not exclusion:
+      if exclusion:
+        print "Exclusion contour"
+        if not nue:
+          print "Looking at NuMu"
+          print "One-sided delta chi-squared scan"
+          dchisq = util.DeltaChisquareOneSided(cl,1)
+        # 2-sided scan if acceptance plot or nue contour
+        else:
+          print "Looking at NuE"
+          print "Two-sided delta chi-squared scan"
+          dchisq = util.DeltaChisquare(cl,2)
+      else:
+        print "Acceptance contour"
         print "Two-sided delta chi-squared scan"
         dchisq = util.DeltaChisquare(cl,2)
 
@@ -168,8 +173,8 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options] patterns",description="Make plots of deltaCP sensitivity")
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
-  parser.add_option('-e','--exclusion', dest='exclusion',default="True",help='Boolean for whether we are producing exclusion or inclusion contours')
-  parser.add_option('-n','--nue', dest='nue',default="False",help='Boolean for whether we are producing numu or nue contours')
+  parser.add_option('-e','--exclusion', dest='exclusion',default=True,help='Boolean for whether we are producing exclusion or inclusion contours')
+  parser.add_option('-n','--nue', dest='nue',default=False,help='Boolean for whether we are producing numu or nue contours')
 
   options,patterns = parser.parse_args()
 
