@@ -16,7 +16,7 @@ Mock data
 
   <dst> 
     <bnb_fhc>
-      <filename> sbn/data_archive/sbn_numu_disappearance/mock_data/09a2019/valor_sbncode_fhc_numuccinc_disappearance_fd_minidst_1.root </filename> 
+      <filename> sbn_numu_disappearance/mock_data/09a2019/valor_sbncode_fhc_numuccinc_disappearance_fd_minidst_1.root </filename> 
       <objname>  valor_sbncode_mini_dst </objname> 
       <objtype>  TTree    </objtype> 
     </bnb_fhc>
