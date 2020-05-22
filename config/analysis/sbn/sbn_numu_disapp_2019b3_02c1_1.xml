@@ -51,19 +51,19 @@
       <format> SBNFluxResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
         <objname>    cov                                                                                                    </objname>    
         <objtype>    TMatrixD                                                                                               </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
         <objname>    untuned                                                                                                </objname>    
         <objtype>    TMatrixD                                                                                               </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root      </filename>
         <objname>    nominal                                                                                                </objname>    
       </initial_values> 
 

@@ -36,7 +36,7 @@
       <format> SBNFlux_Etrue.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02b2/flux.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/flux.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
@@ -46,19 +46,19 @@
       <format> SBNInteractionResponseParams.xml </format>
 
       <covariance_matrix>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
         <objname>    cov                                                                                                               </objname>    
         <objtype>    TMatrixD                                                                                                          </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
         <objname>    untuned                                                                                                           </objname>    
         <objtype>    TMatrixD                                                                                                          </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
         <objname>    nominal                                                                                                           </objname>    
       </initial_values> 
 
@@ -68,7 +68,7 @@
       <format> sbn_detector_fhc_numucc_2020a1.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn/data_archive/sbn_numu_disappearance/prior_errors/02b2/detector_error_matrix_2020a1_np48_cor5.000pct_uncor0.500pct.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/detector_error_matrix_2020a1_np48_cor5.000pct_uncor0.500pct.root </filename>
         <objname>    frac_cov_total      </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 

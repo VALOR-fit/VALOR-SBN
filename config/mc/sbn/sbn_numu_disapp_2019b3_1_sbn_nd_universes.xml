@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> /sbnd/data/users/rsjones/VALOR/VALOR-DUNE-LBL/data/sbn/data_archive/data/sbn_numu_disappearance/universes/2019b3/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc.root </filename>
+      <filename> sbn_numu_disappearance/universes/2019b3/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc.root </filename>
        <objname> valor_sbncode_mini_dst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
