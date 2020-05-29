@@ -78,7 +78,7 @@ Splines
 -->
 
 <splines>
-  <folder>         sbn/data_archive/sbn_numu_disappearance/responses/02c1 </folder>
+  <folder>         sbn_numu_disappearance/responses/02c1                  </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root       </pattern>
   <type>           TSpline3                                               </type>
   <stored_as>      TObjArray                                              </stored_as>

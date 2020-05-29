@@ -63,7 +63,7 @@
       </initial_values> 
 
     </group>
-    <group name="det">
+    <group name="detector">
       <format> sbn_detector_fhc_numucc_2020a1.xml </format>
       
       <covariance_matrix>

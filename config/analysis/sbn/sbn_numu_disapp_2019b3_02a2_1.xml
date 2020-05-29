@@ -10,7 +10,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2019b3_1_sbn_nd_universes.xml </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b3_1_sbn_nd.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -22,7 +22,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2019b3_1_sbn_ub_universes.xml </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b3_1_sbn_ub.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -34,7 +34,7 @@
       <sample>       numulikeCChigh                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn/sbn_numu_disapp_2019b3_1_sbn_fd_universes.xml </mc>
+      <mc>           mc/sbn/sbn_numu_disapp_2019b3_1_sbn_fd.xml           </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
@@ -77,7 +77,7 @@
       </covariance_matrix> 
     </group>
 
-    <group name="det">
+    <group name="detector">
       <format> sbn_detector_fhc_numucc_2020a1.xml </format>
 
       <covariance_matrix>

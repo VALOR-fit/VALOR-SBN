@@ -27,7 +27,7 @@
   </parameter_definitions>
 
   <systematics name="SBN">
-    <group name="fluxcov">
+    <group name="flux">
       <format> SBNFlux_Etrue.xml </format>
       
       <covariance_matrix>
@@ -37,7 +37,7 @@
       </covariance_matrix> 
     </group>
 
-    <group name="fluxsplines">
+    <group name="flux">
       <format> SBNFluxResponseParams.xml </format>
       
       <covariance_matrix>
