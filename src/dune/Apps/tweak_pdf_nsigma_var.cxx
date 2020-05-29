@@ -346,6 +346,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
       else {
         TString save_name = TString::Format("env_sb_%s_%s_nom", util::AsString(b).c_str(), util::AsString(s).c_str());
         curr_pdf_tot->Write(save_name.Data());
+        LOG("valor_dune",pDEBUG) << " Nominal integrated total: " << curr_pdf_tot->Integral();
       }
     }
     /*
@@ -407,6 +408,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       }
       TString save_name = TString::Format("env_sb_%s_%s_%s", util::AsString(b).c_str(), util::AsString(s).c_str(), tag.c_str());
       curr_pdf->Write(save_name.Data());
+      LOG("valor_dune",pDEBUG) << " Tweaked integrated total: " << curr_pdf->Integral();
     }
 
     /*
