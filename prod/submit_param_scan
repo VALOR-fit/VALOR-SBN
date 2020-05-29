@@ -104,8 +104,10 @@ foreach (@ARGV) {
   elsif($_ eq '--memory'                 ) { $memory               = $ARGV[$iarg+1]; }
   elsif($_ eq '--disk'                   ) { $disk                 = $ARGV[$iarg+1]; }
   elsif($_ eq '--numjobs'                ) { $numjobs              = $ARGV[$iarg+1]; }
+  elsif($_ eq '--prior-file'             ) { $priorfilename        = $ARGV[$iarg+1]; }  
 
-  else {
+
+else {
     print "Unrecognised argument ".$_."\n"; exit;
   }
   $iarg++;
@@ -141,7 +143,7 @@ $config_file            = "default_config.xml"                    unless defined
 #$mesg_thresholds        = $ENV{'VALOR_EXPT'}."/config/verbosity.xml"              unless defined $mesg_thresholds;
 $mesg_thresholds        = "verbosity.xml"                         unless defined $mesg_thresholds;
 $param_values    = "prefit-errors"; #not randomized-all now, Asimov dataset! 
-
+$priorfilename = "priors/void_priors.xml";
 chomp($job_dir);
 
 if( !defined $cput ) {
@@ -223,7 +225,8 @@ if($resource ne "fnal") {
       $standard_options = " --run $jobID --ntoymc 1  --physics-hypothesis $fitparamlist".
       " --param-values-option  $param_values --fitter $fitoption".
       " --config $config_file --mesg-thresholds $mesg_thresholds --without-stat-fluct ".
-      " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ";
+      " --$mhchoice --load-prior-from-file $prior_file --pot-override $pot_override ".
+	"--prior-file $priorfilename";
 
       if (!$discovery) {
         $arguments = "--tag $tag-$param1-$param2 ".
@@ -388,15 +391,15 @@ if($resource eq "fnal"){
   print "memory: $memory \n";
   print "tarball: $tarball \n";
 
-  if($prior_file eq  "-"){
-    $prior_file = "none";
+ if($prior_file eq  "-"){
+   $prior_file = "none";
   }
 
   #For one fit per job
   #    exec( "jobsub_submit -G sbnd --role=Analysis --memory=$memory --expected-lifetime=$cput --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N $numjobs --generate-email-summary $file --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2 --physics-hypothesis $fitparamlist --config-file $config_file  --param1 $param1 --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1 --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2 --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2 --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra --fit-option $fitoption --load-prior-from-file $prior_file --pot-override $pot_override --mesg-thresholds $mesg_thresholds --param-values-option $param_values --tarball $tarball --jobdir $job_dir");
 
   #For multiple fits in a job
-  exec( "jobsub_submit -G sbnd --role=Analysis --memory=$memory --expected-lifetime=$cput --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N $numjobs --generate-email-summary $file --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2 --physics-hypothesis $fitparamlist --config-file $config_file  --param1 $param1 --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1 --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2 --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2 --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra --fit-option $fitoption --load-prior-from-file $prior_file --pot-override $pot_override --mesg-thresholds $mesg_thresholds --param-values-option $param_values --tarball $tarball --jobdir $job_dir --njobs $numjobs");
+  exec( "jobsub_submit -G sbnd --role=Analysis --memory=$memory --expected-lifetime=$cput --disk=$disk --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC --OS=SL6 -N $numjobs --generate-email-summary $file --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2 --physics-hypothesis $fitparamlist --config-file $config_file --prior-file $priorfilename --param1 $param1 --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1 --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2 --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2 --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra --fit-option $fitoption  --pot-override $pot_override --mesg-thresholds $mesg_thresholds --param-values-option $param_values --tarball $tarball --jobdir $job_dir --njobs $numjobs");
 
 
   #    exec( "./jobsub_submit_param_scan_multifits.sh --interactive --tag $tag  --param_nullhyp1 $param_nullhyp1 --param_nullhyp2 $param_nullhyp2 --physics-hypothesis $fitparamlist --config-file $config_file  --param1 $param1 --min-value1 $min_value1 --max-value1 $max_value1 --log-param1 $log_param1 --npoints1 $npoints1 --param2 $param2 --min-value2 $min_value2 --max-value2 $max_value2 --log-param2 $log_param2 --npoints2 $npoints2 --discovery $discovery --hierarchy $mhchoice --store-spectra $store_spectra --fit-option $fitoption --load-prior-from-file $prior_file --pot-override $pot_override --mesg-thresholds $mesg_thresholds --param-values-option $param_values --tarball $tarball --jobdir $job_dir --interactive > output.txt");
