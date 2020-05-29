@@ -11,7 +11,9 @@
 void sbn_parameter_pulls(const char * filename, 
                          const int exp = -1, 
                          const char * flux = "", 
+                         const char * flux2 = "", 
                          const char * interaction = "", 
+                         const char * int_cov = "", 
                          const char * detector = "", 
                          const char * sample = "")
 {
@@ -24,6 +26,9 @@ void sbn_parameter_pulls(const char * filename,
 
   bool detector_systematics = true;
   if(detector != NULL && detector[0]  == '\0') detector_systematics = false;
+
+  bool flux_splines = true;
+  if(flux2 != NULL && flux2[0]  == '\0') flux_splines = false;
 
   // Open input file
   // Get full path if needed
@@ -129,8 +134,7 @@ void sbn_parameter_pulls(const char * filename,
       TFile f_int(interaction, "read");
       
       TMatrixD *flux_s = static_cast<TMatrixD*>(f_flux.Get("frac_cov"));
-      TMatrixD *int_s  = static_cast<TMatrixD*>(f_int.Get("cov"));
-      //TMatrixD *int_s  = static_cast<TMatrixD*>(f_int.Get("frac_cov"));
+      TMatrixD *int_s  = static_cast<TMatrixD*>(f_int.Get(int_cov));
       TMatrixD &flux_syst = *flux_s;
       TMatrixD &int_syst  = *int_s;
 
@@ -156,6 +160,23 @@ void sbn_parameter_pulls(const char * filename,
         nDetCols = det_syst.GetNcols();
       }
 
+      // Initialise paramters incase we have flux spline systematics
+      int nFluxSplineRows       = 0.;
+      int nFluxSplineCols       = 0.;
+      TMatrixD fluxspline_syst(0,0);
+      TMatrixD *fluxspline_s    = nullptr;
+
+      // If we have detector parameters, get the information now
+      if(flux_splines){
+        TFile f_fluxspline(flux2, "read");
+        fluxspline_s    = (TMatrixD*)f_fluxspline.Get("cov");
+        fluxspline_syst.ResizeTo(fluxspline_s->GetNrows(),fluxspline_s->GetNcols());
+        fluxspline_syst = *fluxspline_s;
+        nFluxSplineRows = fluxspline_syst.GetNrows();
+        nFluxSplineCols = fluxspline_syst.GetNcols();
+      }
+
+      
       float total_postfit = 0.;
       float total_prefit  = 0.;
 
@@ -177,15 +198,20 @@ void sbn_parameter_pulls(const char * filename,
           prefit_errors.push_back(sqrt(flux_syst(n,n)));
           total_prefit += abs(sqrt(flux_syst(n,n)));
         }
+        // Flux spline parameters
+        else if(flux_splines && n >= nFluxRows && n < (nFluxRows+nFluxSplineRows)){
+          prefit_errors.push_back(sqrt(fluxspline_syst(n-nFluxRows,n-nFluxRows)));
+          total_prefit += abs(sqrt(fluxspline_syst(n-nFluxRows,n-nFluxRows)));
+        }
         // Interaction parameters
-        else if(n >= nFluxRows && n < (nFluxRows+nIntRows)){
-          prefit_errors.push_back(sqrt(int_syst(n-nFluxRows,n-nFluxRows)));
-          total_prefit += abs(sqrt(int_syst(n-nFluxRows,n-nFluxRows)));
+        else if(n >= (nFluxRows+nFluxSplineRows) && n < (nFluxRows+nFluxSplineRows+nIntRows)){
+          prefit_errors.push_back(sqrt(int_syst(n-(nFluxRows+nFluxSplineRows),n-(nFluxRows+nFluxSplineRows))));
+          total_prefit += abs(sqrt(int_syst(n-(nFluxRows+nFluxSplineRows),n-(nFluxRows+nFluxSplineRows))));
         }
         // Detector parameters
-        else if(detector_systematics && n >= (nFluxRows+nIntRows)){
-          prefit_errors.push_back(sqrt(det_syst(n-(nFluxRows+nIntRows),n-(nFluxRows+nIntRows))));
-          total_prefit += abs(sqrt(det_syst(n-(nFluxRows+nIntRows),n-(nFluxRows+nIntRows))));
+        else if(detector_systematics && n >= (nFluxRows+nFluxSplineRows+nIntRows)){
+          prefit_errors.push_back(sqrt(det_syst(n-(nFluxRows+nFluxSplineRows+nIntRows),n-(nFluxRows+nFluxSplineRows+nIntRows))));
+          total_prefit += abs(sqrt(det_syst(n-(nFluxRows+nFluxSplineRows+nIntRows),n-(nFluxRows+nFluxSplineRows+nIntRows))));
         }
         n++;
       }
@@ -216,8 +242,8 @@ void sbn_parameter_pulls(const char * filename,
       c->SetBottomMargin (0.27);
       c->SetTopMargin    (0.045);
 
-      TH1D *h_prefit  = new TH1D(name_prefit,  "", nRows, 0, nRows);
-      TH1D *h_postfit = new TH1D(name_postfit, "", nRows, 0, nRows);
+      TH1D *h_prefit  = new TH1D(name_prefit,  "", nRows-nPhysicsParams, 0, nRows-nPhysicsParams);
+      TH1D *h_postfit = new TH1D(name_postfit, "", nRows-nPhysicsParams, 0, nRows-nPhysicsParams);
 
       unsigned int nuisance_it = 0;
 
@@ -229,23 +255,9 @@ void sbn_parameter_pulls(const char * filename,
 
         double postfit_bin_content = 0.;
         double postfit_bin_error   = 0.;
-        // Interaction parameters are already in units of sigma
-        if(nuisance_it >= nFluxRows){
-          if(detector_systematics && nuisance_it < (nFluxRows + nIntRows)){
-            postfit_bin_content = gbfparm->BestFitValueByIndex(j);
-            postfit_bin_error   = postfit_errors.at(j);
-          }
-          // Detector paramters need to be converted to units of sigma
-          else{
-            postfit_bin_content = (gbfparm->BestFitValueByIndex(j)-gbfparm->InitValueByIndex(j))/static_cast<double>(prefit_errors.at(nuisance_it));
-            postfit_bin_error   = postfit_errors.at(j)/static_cast<double>(prefit_errors.at(nuisance_it));
-          }
-        }
-        // Flux parameters need converting to units of sigma
-        else{
-          postfit_bin_content = (gbfparm->BestFitValueByIndex(j)-gbfparm->InitValueByIndex(j))/static_cast<double>(prefit_errors.at(nuisance_it));
-          postfit_bin_error   = postfit_errors.at(j)/static_cast<double>(prefit_errors.at(nuisance_it));
-        }
+        // Convert to units of nsigma
+        postfit_bin_content = (gbfparm->BestFitValueByIndex(j)-gbfparm->InitValueByIndex(j))/static_cast<double>(prefit_errors.at(nuisance_it));
+        postfit_bin_error   = postfit_errors.at(j)/static_cast<double>(prefit_errors.at(nuisance_it));
 
         // Prefit bin content is always 0 in order to only demonstrate the error in each bin
         h_prefit->SetBinContent(nuisanceBin,  0);
@@ -292,12 +304,16 @@ void sbn_parameter_pulls(const char * filename,
       else
         miny = miny*1.1;
 
+      //Temporaray for zooming
+      //miny = -2.05;
+      //maxy = +2.05;
 
       // Solid lines for detector and interaction separation
       TLine line_sbnd  (singleFlux,   miny-0.02, singleFlux,   maxy+0.1);
       TLine line_uboone(singleFlux*2, miny-0.02, singleFlux*2, maxy+0.1);
       TLine line_icarus(nFluxRows,    miny-0.02, nFluxRows,    maxy+0.1);
-      TLine line_intdet(nFluxRows+nIntRows, miny-0.02, nFluxRows+nIntRows, maxy+0.1);
+      TLine line_fluxspline(nFluxRows+nFluxSplineRows, miny-0.02, nFluxRows+nFluxSplineRows, maxy+0.1);
+      TLine line_intdet(nFluxRows+nFluxSplineRows+nIntRows, miny-0.02, nFluxRows+nFluxSplineRows+nIntRows, maxy+0.1);
 
       // Dashed neutrino flavour separation
       TLine line_sbnd_numu   (n_numu,         miny-0.02, n_numu,         maxy+0.02);
@@ -342,6 +358,10 @@ void sbn_parameter_pulls(const char * filename,
       line_intdet.SetLineWidth(2);
       line_intdet.SetLineStyle(1);
 
+      line_fluxspline.SetLineColor(kYellow-3);
+      line_fluxspline.SetLineWidth(2);
+      line_fluxspline.SetLineStyle(1);
+
       h_postfit->Draw("E2");
       h_postfit->GetYaxis()->SetRangeUser(miny,maxy);
       h_postfit_2->Draw("same hist");
@@ -352,6 +372,8 @@ void sbn_parameter_pulls(const char * filename,
       }
       if(detector_systematics)
         line_intdet.Draw("same");
+      if(flux_splines)
+        line_fluxspline.Draw("same");
 
       h_postfit->GetXaxis()->LabelsOption("v");
       h_postfit->GetXaxis()->SetLabelSize(0.025);
@@ -373,11 +395,21 @@ void sbn_parameter_pulls(const char * filename,
       latex.SetTextAlign(11); // Align at bottom
       latex.SetTextSize(0.03);
       latex.DrawLatex(5.70,  maxy*1.05,"#color[867]{SBND Flux}");
-      latex.DrawLatex(26.80, maxy*1.05,"#color[905]{#muBooNE Flux}");
-      latex.DrawLatex(46.66, maxy*1.05,"#color[797]{ICARUS Flux}");
-      latex.DrawLatex(66.12, maxy*1.05,"#color[835]{Int}");
-      if(detector_systematics)
-        latex.DrawLatex(88.71, maxy*1.05,"#color[397]{Detector}");
+      if(flux_splines){
+        latex.DrawLatex(25.03, maxy*1.05,"#color[905]{#muBooNE Flux}");
+        latex.DrawLatex(45.63, maxy*1.05,"#color[797]{ICARUS Flux}");
+        latex.DrawLatex(64.89, maxy*1.05,"#color[835]{Flux}");
+        latex.DrawLatex(73.73, maxy*1.05,"#color[397]{Int}");
+        if(detector_systematics)
+          latex.DrawLatex(97.60, maxy*1.05,"#color[923]{Detector}");
+      }
+      else{
+        latex.DrawLatex(26.80, maxy*1.05,"#color[905]{#muBooNE Flux}");
+        latex.DrawLatex(46.66, maxy*1.05,"#color[797]{ICARUS Flux}");
+        latex.DrawLatex(66.12, maxy*1.05,"#color[835]{Int}");
+        if(detector_systematics)
+          latex.DrawLatex(88.71, maxy*1.05,"#color[397]{Detector}");
+      }
 
       c->Update();
       c->Draw();
@@ -448,16 +480,29 @@ void sbn_parameter_pulls(const char * filename,
       line_intdet.SetY1(mininy-0.02);
       line_intdet.Draw("same");
 
+      line_fluxspline.SetY2(maxiny+0.05);
+      line_fluxspline.SetY1(mininy-0.02);
+      line_fluxspline.Draw("same");
+      
       TLatex latex2;
       latex2.SetTextAlign(11); // Align at bottom
       latex2.SetTextSize(0.03);
       latex2.DrawLatex(5.70,  maxiny*1.05,"#color[867]{SBND Flux}");
-      latex2.DrawLatex(26.80, maxiny*1.05,"#color[905]{#muBooNE Flux}");
-      latex2.DrawLatex(46.66, maxiny*1.05,"#color[797]{ICARUS Flux}");
-      latex2.DrawLatex(66.12, maxiny*1.05,"#color[835]{Int}");
-      if(detector_systematics)
-        latex2.DrawLatex(88.71, maxiny*1.05,"#color[397]{Detector}");
-
+      if(flux_splines){
+        latex2.DrawLatex(25.03, maxiny*1.05,"#color[905]{#muBooNE Flux}");
+        latex2.DrawLatex(45.63, maxiny*1.05,"#color[797]{ICARUS Flux}");
+        latex2.DrawLatex(64.89, maxiny*1.05,"#color[835]{Flux}");
+        latex2.DrawLatex(73.73, maxiny*1.05,"#color[397]{Int}");
+        if(detector_systematics)
+          latex2.DrawLatex(97.60, maxiny*1.05,"#color[923]{Detector}");
+      }
+      else{
+        latex2.DrawLatex(26.80, maxiny*1.05,"#color[905]{#muBooNE Flux}");
+        latex2.DrawLatex(46.66, maxiny*1.05,"#color[797]{ICARUS Flux}");
+        latex2.DrawLatex(66.12, maxiny*1.05,"#color[835]{Int}");
+        if(detector_systematics)
+          latex2.DrawLatex(88.71, maxiny*1.05,"#color[397]{Detector}");
+      }
       c->Update();
       c->Draw();
       c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+".root").c_str());
