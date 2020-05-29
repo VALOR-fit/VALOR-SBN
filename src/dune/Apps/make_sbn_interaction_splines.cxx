@@ -99,7 +99,7 @@ std::vector<std::string> flux_systematics =
    "piminus_PrimaryHadronSWCentralSplineVariation",
    "piplus_PrimaryHadronSWCentralSplineVariation"
  };
- 
+
 TString splineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]");
 TString objNamePattern("spl_[MODE]_[PARAM]");
 
@@ -403,7 +403,7 @@ int main(int argc, char ** argv)
     std::map<ReacMode_t, VALORArray>::const_iterator it_mct_mode_nom = mct_mode_nom.find(mode);
 
     // Make sure the current mode exists for the nominal knot
-    if(it_mct_mode_nom == mct_knots_modes.at(inom).end()) continue;
+    if(it_mct_mode_nom == mct_mode_nom.end()) continue;
 
     // Access the VALOR array for the nominal mct in this mode
     const VALORArray &mct_nom = it_mct_mode_nom->second; 
@@ -420,12 +420,12 @@ int main(int argc, char ** argv)
     // Boolean to check if the current mode ever results in a spline entry != 1
     bool mode_used = false;
     // Loop over the reco and true bins
-    for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-      for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+    for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
+      for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
         // Get the nominal event rate in this bin
         double nevents0 = mct_nom.GetEntry(ireco, itrue);
         std::vector<double> x,y;
-        for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
+        for (int iknot = 0; iknot < n_knots; ++iknot) {
           // Get the mct-mode map for the current knot and its corresponding iterator
           const std::map<ReacMode_t, VALORArray> mct_mode_knot = mct_knots_modes.at(iknot); 
           std::map<ReacMode_t, VALORArray>::const_iterator it_mct_mode_knot = mct_mode_knot.find(mode);
@@ -440,15 +440,7 @@ int main(int argc, char ** argv)
 
           // Get the value of the current knot for debugging purposes
           double knot = knots.at(iknot);
-
-          // Get the event rate for this knot and mode in this bin
-          double nevents = mct_knot.GetEntry(ireco, itrue);
-
-          // Set the y axis entry to be the current rate/nominal rate
-          // Set the x axis to be the exact sigma of the current knot from the relevant universe
-          double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
-          if(iknot == inom)
-            event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
+          
           double universe_variation = universes_variations.at(knots_universes.at(knot));
           if(iknot == inom)
             universe_variation = 0; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
@@ -464,9 +456,17 @@ int main(int argc, char ** argv)
           if(var_exists)
             continue;
 
-          // Otherwise, if we are looking at an independent knot, add it
-          y.push_back(event_ratio);
+          // Set the x axis to be the exact sigma of the current knot from the relevant universe
           x.push_back(universe_variation); //NSigma from the universe found for the current knot
+
+          // Get the event rate for this knot and mode in this bin
+          double nevents = mct_knot.GetEntry(ireco, itrue);
+          double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          if(iknot == inom)
+            event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
+          
+          // Set the y axis entry to be the current rate/nominal rate
+          y.push_back(event_ratio);
 
           // Print statements for validation
           LOG("valor_dune",pDEBUG ) << " Knot :                   " << iknot << ", " << knot << "\n"
@@ -496,6 +496,7 @@ int main(int argc, char ** argv)
         TString title = name; // Make this contain real kinematic ranges
         TSpline3 *spl = new TSpline3(title.Data(), x.data(), y.data(), x.size());
         spl->SetName(name.Data());
+    //    spl->Write();
         spline_array->Add(spl);
         n_splines_written++;
         if (n_splines_written%1000==0) {
@@ -592,7 +593,6 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
 //___________________________________________________________________
 
 std::string GetSystematic(const std::string &sy){
-
   std::string syst = "";
   bool found_syst = false;
   for(const std::string &s : interaction_systematics){
