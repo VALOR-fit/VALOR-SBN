@@ -11,7 +11,7 @@
       <sample>       nuelikeCChigh                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/2019b_v1/valor_sbncode_fhc_nueccinc_nue_disappearance_nd_minidst.root  </mc>
+      <mc>           mc/sbn/sbn_nue_disap_2019b1_1_sbn_nd.xml             </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
@@ -23,7 +23,7 @@
       <sample>       nuelikeCChigh                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/2019b_v1/valor_sbncode_fhc_nueccinc_nue_disappearance_ub_minidst.root  </mc>
+      <mc>           mc/sbn/sbn_nue_disap_2019b1_1_sbn_ub.xml             </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
@@ -35,7 +35,7 @@
       <sample>       nuelikeCChigh                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/2019b_v1/valor_sbncode_fhc_nueccinc_nue_disappearance_fd_minidst.root            </mc>
+      <mc>           mc/sbn/sbn_nue_disap_2019b1_1_sbn_fd.xml             </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
@@ -56,7 +56,7 @@
       <format> SBNFluxNuE.xml </format>
       
       <covariance_matrix>
-        <filename>   $VALOR_EXPT/data/sbn/sbn_nue_appearance/flux.root </filename>
+        <filename>   sbn/sbn_nue_appearance/flux.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
@@ -66,7 +66,7 @@
       <format> SBNIntNuE.xml </format>
       
       <covariance_matrix>
-        <filename>   $VALOR_EXPT/data/sbn/sbn_nue_appearance/interaction.root </filename> 
+        <filename>   sbn/sbn_nue_appearance/interaction.root </filename> 
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 

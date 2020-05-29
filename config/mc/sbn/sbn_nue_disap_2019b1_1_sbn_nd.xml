@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> $VALOR_EXPT/data/sbn/sbn_nue_disappearance/dsts/2019b_v1/valor_sbncode_fhc_nueccinc_nue_disappearance_nd_minidst.root  </filename> 
+      <filename> sbn/sbn_nue_disappearance/dsts/2019b_v1/valor_sbncode_fhc_nueccinc_nue_disappearance_nd_minidst.root  </filename> 
        <objname> valor_sbncode_mini_dst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
