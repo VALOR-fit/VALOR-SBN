@@ -102,7 +102,7 @@ int main(int argc, char ** argv)
   string tag              = arg.GetString("tag");
   string config_file      = arg.GetString("config");
   
-  size_t n_universes_to_run = arg.GetInt("n-universes");
+  size_t n_universes_to_run = arg.GetInt("n-universes"); // This will now be squared, so maybe choose 100 instead of 1000
   size_t first_universe     = arg.GetInt("first-universe");
   
   std::string syst_list = arg.GetString("syst-list");
@@ -148,96 +148,64 @@ int main(int argc, char ** argv)
     gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
   }
     
-  
+ 
+  size_t universe_n = 0;
   for (size_t iuniverse = 0 ; iuniverse < n_universes_to_run ; iuniverse++) {
     
     // Get which absolute universe we want
     size_t universe = first_universe + iuniverse;
     
-    // Set our variations
-    for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
-      GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
-      assert(gmodel);
-      for (const std::string & param : param_list) {
-        gmodel->SetSystematicVariationIDToApply(param,universe);
-      }
-    }
-    
-    
-    /*
-    //change if something different to default (i.e. normal, sinsqtheta, first octant and dmsq12abs23)                                  
-    Opt::Instance()->gMassHierarchyAssumed = ( (arg.GetBool("inverted"))     ? conv::kNmhInverted      : conv::kNmhNormal);
-    Opt::Instance()->gOscMixingParamChoice = ( (arg.GetBool("sinsq2theta"))  ? conv::kNuMixSinsq2Theta : conv::kNuMixSinsqTheta);
-    Opt::Instance()->gOscOctantChoice      = ( (arg.GetBool("second-octant"))? conv::kNuOctantTwo      : conv::kNuOctantOne);
-    Opt::Instance()->gOscDmsqScheme        = ( (arg.GetBool("foglilisi"))    ? conv::kNuDmsqFogliLisi  : conv::kNuDmsq12andAbs23);
-    
-    // Update values of oscillation parameters 
-    RgKeyList input_args = arg.FindKeys("input-");
-    TPRegexp input_match("input-(\\w*)");
-    for (RgKey argname : input_args) { // RgKey is just a typename for std::string right now
-      TObjArray * matches = input_match.MatchS(argname.c_str());
+    for (size_t iuniverse2 = 0 ; iuniverse2 < n_universes_to_run ; iuniverse2++) {
 
-      if (matches->GetEntries() != 2) {
-        LOG("valor_dune",pFATAL) << "Cannot parse argument "<<argname<<" to get parameter name";
-        util::Die(-1);
-      }
-      TObjString * tos_param_name = dynamic_cast<TObjString*>(matches->At(1));
-      std::string param_name(tos_param_name->String().Data());
-      delete matches;
+      // Get which absolute universe we want
+      size_t universe2 = first_universe + iuniverse2;
 
-      conv::PhysParamId_t param = nr->PhysParamFromString(param_name);
-      if (param == conv::kPhypUndefined) {
-        LOG("valor_dune",pFATAL) << "Cannot find parameter to fix from argument string "<<argname;
-        util::Die(-1);
+      // Make sure we don't duplicate combinations
+      //if(universe == universe2) continue;
+
+      // Set our variations
+      for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
+        GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
+        assert(gmodel);
+        for(unsigned int iparam = 0; iparam < param_list.size(); ++iparam){
+          std::string param = param_list.at(iparam);
+          if(iparam < param_list.size()/static_cast<double>(2))
+            gmodel->SetSystematicVariationIDToApply(param,universe);
+          else
+            gmodel->SetSystematicVariationIDToApply(param,universe2);
+        }
       }
 
-      double param_val = arg.GetDouble(argname);
-      if ( std::fabs(param_val + 999. ) < conv::kASmallNum ) {
-        param_val = Opt::Instance()->GetGlobalBestFit(param);
-      }
-      if(fp->Exists(param)) {
-        fp->Update      (param, param_val);
-        fp->SetInitValue(param, param_val);
-      }
-    }*/
+      // Generate predictions
+      PhysHypothesis ph(conv::kHypVoid);
+      Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
+      model->Generate(ph,generate_opt);
 
-    // Generate predictions
-    PhysHypothesis ph(conv::kHypVoid);
-    Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
-    model->Generate(ph,generate_opt);
-    
-    /*
-    CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
-    for (unsigned int i = 0 ; i < cmodel->GetNSubModels() ; i++) {
-      GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
-      gmodel->UpdateObservableBinningFromSimple();
-    }
-    */
-    
-    // Write stuff out                              
-    std::string write_opt = "pdfts_rf pdfcs_rf";
-    TObjArray myarr;
-    myarr.SetOwner(true);
-    model->Write(&myarr,"valor",write_opt.c_str());
-    
-    TString output_fn = TString::Format("%s_univ_%lu.root",tag.c_str(),universe);
-    TFile output_file(output_fn.Data(),"RECREATE");
-    
-    for (int ihist = 0 ; ihist < myarr.GetEntries() ; ihist++) {
-      TH1* hist = dynamic_cast<TH1*>(myarr[ihist]);
-      assert(hist);
-      TString old_name = hist->GetName();
-      //~ TString new_name = TString::Format("%s_univ_%lu",old_name.Data(),universe);
-      //~ hist->SetName(new_name.Data());
-      output_file.cd();
-      hist->Write();
-      
-      if (old_name.Contains("pdfts")) {
-        LOG("valor_dune", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
-      }
-        
-    }
-  }
+      // Write stuff out                              
+      std::string write_opt = "pdfts_rf pdfcs_rf";
+      TObjArray myarr;
+      myarr.SetOwner(true);
+      model->Write(&myarr,"valor",write_opt.c_str());
+
+      TString output_fn = TString::Format("%s_univ_%lu.root",tag.c_str(),universe_n);
+      TFile output_file(output_fn.Data(),"RECREATE");
+
+      for (int ihist = 0 ; ihist < myarr.GetEntries() ; ihist++) {
+        TH1* hist = dynamic_cast<TH1*>(myarr[ihist]);
+        assert(hist);
+        TString old_name = hist->GetName();
+        //~ TString new_name = TString::Format("%s_univ_%lu",old_name.Data(),universe);
+        //~ hist->SetName(new_name.Data());
+        output_file.cd();
+        hist->Write();
+
+        if (old_name.Contains("pdfts")) {
+          LOG("valor_dune", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
+        }
+      } // histograms
+      universe_n++;
+    } // iuniverse2
+  } // iuniverse
 
   std::cout<<"Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
 
