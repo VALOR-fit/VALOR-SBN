@@ -47,6 +47,7 @@
     <filename desc="icarus_flux_etrue_parameters">     params/sbn/flux_sbn_fd_etrue.xml            </filename>
     <filename desc="flux_response_parameters">         params/sbn/sbn_flux_spline_parameters.xml   </filename>
     <filename desc="sbn_interaction_parameters">       params/sbn/sbn_interaction_parameters.xml   </filename>
+    <filename desc="sbn_mec_normalisation">            params/sbn/sbn_mec_normalisation.xml        </filename>
   </parameter_definitions>
 
   <systematics name="SBN">
@@ -104,6 +105,16 @@
 
     </group>
     
+    <group name="int">
+      <format> SBNMEC.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/02b1/mec_covariance.root </filename>
+        <objname>    frac_cov                                                     </objname>    
+        <objtype>    TMatrixD                                                     </objtype>
+      </covariance_matrix>
+
+    </group>
   </systematics>
 
 </valor> 
