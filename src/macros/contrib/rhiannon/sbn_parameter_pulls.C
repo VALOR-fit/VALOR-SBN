@@ -14,6 +14,7 @@ void sbn_parameter_pulls(const char * filename,
                          const char * flux2 = "", 
                          const char * interaction = "", 
                          const char * int_cov = "", 
+                         const char * mec = "", 
                          const char * detector = "", 
                          const char * sample = "")
 {
@@ -29,6 +30,9 @@ void sbn_parameter_pulls(const char * filename,
 
   bool flux_splines = true;
   if(flux2 != NULL && flux2[0]  == '\0') flux_splines = false;
+
+  bool mec_cov = true;
+  if(mec != NULL && mec[0]  == '\0') mec_cov = false;
 
   // Open input file
   // Get full path if needed
@@ -144,6 +148,22 @@ void sbn_parameter_pulls(const char * filename,
       int nIntCols      = int_syst.GetNcols();
       double singleFlux = nFluxRows/3.;
       
+      // Initialise paramters incase we have a MEC systematics
+      int nMECRows       = 0.;
+      int nMECCols       = 0.;
+      TMatrixD mec_syst(0,0);
+      TMatrixD *mec_s    = nullptr;
+
+      // If we have detector parameters, get the information now
+      if(mec_cov){
+        TFile f_mec(mec, "read");
+        mec_s    = (TMatrixD*)f_mec.Get("frac_cov");
+        mec_syst.ResizeTo(mec_s->GetNrows(),mec_s->GetNcols());
+        mec_syst = *mec_s;
+        nMECRows = mec_syst.GetNrows();
+        nMECCols = mec_syst.GetNcols();
+      }
+
       // Initialise paramters incase we have detector systematics
       int nDetRows       = 0.;
       int nDetCols       = 0.;
@@ -208,10 +228,15 @@ void sbn_parameter_pulls(const char * filename,
           prefit_errors.push_back(sqrt(int_syst(n-(nFluxRows+nFluxSplineRows),n-(nFluxRows+nFluxSplineRows))));
           total_prefit += abs(sqrt(int_syst(n-(nFluxRows+nFluxSplineRows),n-(nFluxRows+nFluxSplineRows))));
         }
+        // Interaction parameters
+        else if(n >= (nFluxRows+nFluxSplineRows+nIntRows) && n < (nFluxRows+nFluxSplineRows+nIntRows+nMECRows)){
+          prefit_errors.push_back(sqrt(mec_syst(n-(nFluxRows+nFluxSplineRows+nIntRows),n-(nFluxRows+nFluxSplineRows+nIntRows))));
+          total_prefit += abs(sqrt(mec_syst(n-(nFluxRows+nFluxSplineRows+nIntRows),n-(nFluxRows+nFluxSplineRows+nIntRows))));
+        }
         // Detector parameters
-        else if(detector_systematics && n >= (nFluxRows+nFluxSplineRows+nIntRows)){
-          prefit_errors.push_back(sqrt(det_syst(n-(nFluxRows+nFluxSplineRows+nIntRows),n-(nFluxRows+nFluxSplineRows+nIntRows))));
-          total_prefit += abs(sqrt(det_syst(n-(nFluxRows+nFluxSplineRows+nIntRows),n-(nFluxRows+nFluxSplineRows+nIntRows))));
+        else if(detector_systematics && n >= (nFluxRows+nFluxSplineRows+nIntRows+nMECRows)){
+          prefit_errors.push_back(sqrt(det_syst(n-(nFluxRows+nFluxSplineRows+nIntRows+nMECRows),n-(nFluxRows+nFluxSplineRows+nIntRows+nMECRows))));
+          total_prefit += abs(sqrt(det_syst(n-(nFluxRows+nFluxSplineRows+nIntRows+nMECRows),n-(nFluxRows+nFluxSplineRows+nIntRows+nMECRows))));
         }
         n++;
       }
@@ -313,7 +338,7 @@ void sbn_parameter_pulls(const char * filename,
       TLine line_uboone(singleFlux*2, miny-0.02, singleFlux*2, maxy+0.1);
       TLine line_icarus(nFluxRows,    miny-0.02, nFluxRows,    maxy+0.1);
       TLine line_fluxspline(nFluxRows+nFluxSplineRows, miny-0.02, nFluxRows+nFluxSplineRows, maxy+0.1);
-      TLine line_intdet(nFluxRows+nFluxSplineRows+nIntRows, miny-0.02, nFluxRows+nFluxSplineRows+nIntRows, maxy+0.1);
+      TLine line_intdet(nFluxRows+nFluxSplineRows+nIntRows+nMECRows, miny-0.02, nFluxRows+nFluxSplineRows+nIntRows+nMECRows, maxy+0.1);
 
       // Dashed neutrino flavour separation
       TLine line_sbnd_numu   (n_numu,         miny-0.02, n_numu,         maxy+0.02);
