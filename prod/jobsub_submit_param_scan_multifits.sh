@@ -50,7 +50,6 @@ echo "the worker node is " `hostname` "OS: " `uname -a`
 echo "You are running as user `whoami`"
 echo "The file you are executing is jobsub_submit_param_scan_multifits.sh"
 voms-proxy-info --all
-export IFDH_CP_MAXRETRIES=2
 
 #Setup the sbnd experiment for ease -- Can change for DUNE GUYS
 source /cvmfs/sbnd.opensciencegrid.org/products/sbnd/setup_sbnd.sh
@@ -409,7 +408,7 @@ echo "JOBSUBDIR = $JOBSUBDIR"
 SUBDIRFILES=$(ifdh ls $JOBSUBDIR)
 if [ $? -ne 0 ]; then
   echo "making sub dir";
-  ifdh mkdir $JOBSUBDIR
+  time ifdh mkdir $JOBSUBDIR
 else
   for filename in $SUBDIRFILES; do
     ifdh rm $filename
@@ -502,7 +501,7 @@ echo "Copying  tar file"
 echo $_CONDOR_SCRATCH_DIR
 echo $TARBALL
 cd $_CONDOR_SCRATCH_DIR
-timeout 200s ifdh cp $TARBALL local.tar
+ifdh cp $TARBALL local.tar
 if [ $? -ne 0 ]; then
   echo "Error $? when copying tar file from dCache"
   exit 73
@@ -627,7 +626,7 @@ timeout 200s ifdh rm  local.tar
 for filename in $_CONDOR_SCRATCH_DIR/*; do
   if [ -f "$filename" ]; then
     echo "Copying $filename"
-    timeout 200s ifdh cp -D $filename $JOBSUBDIR
+    ifdh cp -D $filename $JOBSUBDIR
   fi
 done
 

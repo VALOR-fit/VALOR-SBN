@@ -71,6 +71,9 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   if color:
     tex_output.write("\\newcommand{\ck}{$\\cellcolor{green!50} \\checkmark$}\n")
+    tex_output.write("\\newcommand{\cross}{$\\cellcolor{orange!50} \\times$}\n")
+    tex_output.write("\\newcommand{\\none}{$\\cellcolor{gray!50}$}\n")
+    tex_output.write("\\newcommand{\wrong}{$\\cellcolor{red!50} \\checkmark$}\n")
   else:
     tex_output.write("\\newcommand{\ck}{$\\checkmark$}\n")
 
@@ -171,10 +174,19 @@ def main(beam_mode_arg = None, sample_arg = None,
             if l == util.ModeAsString(m):
               found_mode = True
           if found_mode:
-            entries.append("\\ck".ljust(coln_width))
-            include_row = True
+            if util.IsAppliedTo(param.GetApplyMask(),beam_mode,sample,detector,m,conv.kntArgon):
+              entries.append("\\ck".ljust(coln_width))
+              include_row = True
+            else:
+              entries.append("\\wrong".ljust(coln_width))
+              include_row = True
           else:
-            entries.append("".ljust(coln_width))
+            if util.IsAppliedTo(param.GetApplyMask(),beam_mode,sample,detector,m,conv.kntArgon):
+              entries.append("\\cross".ljust(coln_width))
+              include_row = True
+            else:
+              entries.append("\\none".ljust(coln_width))
+              include_row = True
 
       if not include_row: continue
       tex_output.write("& ".join(entries) + " \\\\ \\hline ")

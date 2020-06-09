@@ -32,7 +32,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -69,7 +69,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -106,7 +106,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -143,7 +143,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -180,7 +180,7 @@
     
     <limits>     0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -217,7 +217,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -254,7 +254,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -291,7 +291,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
   <param>
@@ -326,7 +326,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -363,7 +363,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -400,7 +400,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -437,7 +437,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -474,7 +474,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -511,7 +511,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -548,7 +548,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -585,7 +585,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -622,7 +622,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -659,7 +659,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -696,7 +696,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
   <param>
@@ -731,7 +731,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 
@@ -768,7 +768,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,5      </range>
+    <range>      -8,8      </range>
   </param>
   
 </param_list>

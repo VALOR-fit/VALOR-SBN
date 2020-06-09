@@ -464,7 +464,7 @@ if __name__=="__main__":
   parser.add_option('-r','--ratio-mult', dest='ratiomult',type=float,default=None,help='Multiply the postfit envelope size in the ratio plots by this number.')
   parser.add_option('-d','--datatag', dest='datatag',default='toymc',help='Prefix for input data histogram name')
   parser.add_option('-e','--experiment', dest='det',default='',help='Experiment enum: SBND = 1, uBooNE = 2, ICARUS = 3')
-  parser.add_option('-m','--mdc', dest='mdc',default='False',help='Whether or not we are looking at the Mock Data Challenge')
+  parser.add_option('-m','--mdc', dest='mdc',default=False,help='Whether or not we are looking at the Mock Data Challenge')
 
   options,other = parser.parse_args()
 

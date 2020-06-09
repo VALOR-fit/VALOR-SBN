@@ -127,15 +127,25 @@ void spline_validation(const char* param,
   CheckFiles(f_univ, f_nom, f_1sig, f_2sig, f_3sig, universe_filename, tweaks_nom_filename, tweaks_1sig_filename, tweaks_2sig_filename, tweaks_3sig_filename, verbose);
   std::cout << " All files opened successfully." << std::endl;
 
-  
   // Tweaked spectra from splines
   TH1D *h_tweak_m3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_m3")); // -3 sigma
   TH1D *h_tweak_m2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_m2")); // -2 sigma
   TH1D *h_tweak_m1 = static_cast<TH1D*>(f_1sig->Get("env_sb_BNB_FHC_numulikeCChigh_m1")); // -1 sigma
   TH1D *h_tweak_n0 = static_cast<TH1D*>(f_nom->Get("env_sb_BNB_FHC_numulikeCChigh_p0")); //  NOMINAL
   TH1D *h_tweak_p1 = static_cast<TH1D*>(f_1sig->Get("env_sb_BNB_FHC_numulikeCChigh_p1")); // +1 sigma
-  TH1D *h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2")); // +2 sigma
-  TH1D *h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_p3")); // +3 sigma
+
+  // There is no +3 sigma universe variation for expskin so it is a duplicate of +2 sigma for now
+  TH1D *h_tweak_p2 = nullptr;
+  TH1D *h_tweak_p3 = nullptr;
+  TString t_param(param);
+  if(t_param.Contains("expskin")){
+    h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2;1")); // +2 sigma EXPSKIN ONLY
+    h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2;2")); // +3 sigma EXPSKIN ONLY
+  }
+  else{
+    h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2")); // +2 sigma
+    h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_p3")); // +3 sigma
+  }
 
   std::vector<TH1D*> h_tweaks({h_tweak_m3, h_tweak_m2, h_tweak_m1, h_tweak_n0, h_tweak_p1, h_tweak_p2, h_tweak_p3});
 
