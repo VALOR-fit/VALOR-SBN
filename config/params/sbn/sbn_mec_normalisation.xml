@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<param_list name="sbn_mec_normalisation">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  MEC                    </simple>
+      <long>    Meson Exchange Current </long>
+      <rootex>  Meson Exchange Current </rootex>
+      <tex>     Meson Exchange Current </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allmec    </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+</param_list>
