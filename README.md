@@ -1,16 +1,24 @@
 # VALOR SBN
 
-The VALOR-SBN repository includes SBN-specific codes and configurations for the **VALOR SBN oscillation analysis and workflow**. It is built on top of the common *Software Development Kit* (VALOR-SDK repository), which includes the bulk of the VALOR analysis code which is experiment agnostic.
+The VALOR-SBN repository includes SBN-specific codes and configurations for the **VALOR SBN sterile neutrino oscillation fit and related analysis workflows**. It is built on top of the common and experiment-agnostic [VALOR *Software Development Kit (SDK)*](https://github.com/VALOR-fit/VALOR-SDK/) which includes the bulk of the VALOR analysis code.
 
-This README, includes key summary information on the evolution and variants of the VALOR SBN oscillation analysis, including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, are required for reproducing publicly-shown results. This README also lists the naming conventions used for labelling VALOR SBN analyses, analysis configurations and related data products.
+**Copyright (c) 2010-2020**, The VALOR Fitting Group. All Rights Reserved.
 
-** Contents **
+**Authors (VALOR/SBN):** Costas Andreopoulos (*Liverpool & STFC/RAL*), Dom Barker (*Sheffield*), Steve Dennis (*Cambridge*), Thomas Ham (*Liverpool*), Rhiannon Jones (*Liverpool*), Glória de Sá Pereira (*Liverpool & STFC/RAL*)
+
+For a full list of VALOR SDK authors, see [here](https://valor.pp.rl.ac.uk/).
+
+## Code, analysis and input data product versioning scheme
+
+This README, includes key summary information on the evolution and variants of the VALOR SBN oscillation analysis, including information on which VALOR-SBN and VALOR-SDK branches, as well as which data products, are required for reproducing publicly-shown results. This README also lists the naming conventions used for labelling VALOR SBN analyses, analysis configurations and related data products. More detailed information can be found in the [VALOR SBN wiki](https://github.com/VALOR-fit/VALOR-SBN/wiki).
+
+**Contents**
 - List of VALOR branches and data products used for the main public results
 - Labelling of VALOR analysis variants and of sets of data products
 - Information on SBN MC productions used in VALOR
 - Information on VALOR/SBN systematic error parameterizations
 
-## List of VALOR branches and data products used for the main public results
+### List of VALOR branches and data products used for the main public results
 
 A number of SBN analysis variants can be supported in the code included in each VALOR-SBN branch. Although each VALOR-SBN branch may work with several different VALOR-SDK branches, the actual SDK branch that was used in the context of each analysis is also listed below, to provide a combination of products which are guaranteed to work and to allow the replication of analysis results.
 
@@ -20,7 +28,7 @@ A number of SBN analysis variants can be supported in the code included in each 
 |             |             |                                  |
 
 
-## Labelling of VALOR analysis variants and of sets of data products
+### Labelling of VALOR analysis variants and of sets of data products
 
 For each **set of data products** required for running an analysis, VALOR uses the following naming scheme: 
 <pre>
@@ -56,7 +64,7 @@ These names of analysis variants are used for labelling the main analysis config
 
 MC productions (flux, interaction, detector simulations), the corresponding uncertainty assignments and internal VALOR representations of the uncertainties, and the reconstruction / data reduction event selection codes are important elements used for characterising each fit. Information about the elements used by each VALOR analysis is outlined below.
 
-## Information on SBN productions (simulation, reconstruction and selection) used in VALOR
+### Information on SBN productions (simulation, reconstruction and selection) used in VALOR
 
 VALOR uses the following naming scheme for **SBN MC productions** and the reconstructed event samples obtained b
 <pre>
@@ -77,7 +85,7 @@ SBNCode v2.2, 'modern' and 'proposal'
 - [2] https://cdcvs.fnal.gov/redmine/projects/sbn-analysis-group/wiki/How_to_access_Workshop_Osc_samples: 
 SBNCode workshop-game samples, modern only from here on
 
-## Information on VALOR/SBN systematic error parameterizations
+### Information on VALOR/SBN systematic error parameterizations
 
 VALOR uses the following naming scheme for its **SBN systematic error parameterizations**. A number of different *generations* of error parameterizations can exist, each with several versions, each of which can have numerous minor revisons:
 <pre>
