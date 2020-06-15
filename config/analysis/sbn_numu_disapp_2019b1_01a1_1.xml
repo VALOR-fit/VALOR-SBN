@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2019b1_01a1_1">
+    
+    <element name="sbn_nd_fhc_numuCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2019b1_1_sbn_nd.xml           </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
+    </element>
+    
+    <element name="sbn_ub_fhc_numuCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2019b1_1_sbn_ub.xml           </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
+    </element>
+    
+    <element name="sbn_fd_fhc_numuCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2019b1_1_sbn_fd.xml           </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
+    </element>
+    
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml </filename>
+    <filename desc="sbnd_flux_ereco_parameters">       params/flux_sbn_nd_numu_ereco.xml       </filename>
+    <filename desc="uboone_flux_ereco_parameters">     params/flux_sbn_ub_numu_ereco.xml       </filename>
+    <filename desc="icarus_flux_ereco_parameters">     params/flux_sbn_fd_numu_ereco.xml       </filename>
+    <filename desc="sbn_xsec_ereco_parameters">        params/int_numu_ereco.xml               </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    <group name="flux">
+      <format> SBNFluxNumu.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/01a1/flux.root </filename>
+        <objname>    frac_cov            </objname>    
+        <objtype>    TMatrixD                  </objtype>
+      </covariance_matrix> 
+    </group>
+
+    <group name="int">
+      <format> SBNIntNumu.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/01a1/interaction.root </filename>
+        <objname>    frac_cov            </objname>    
+        <objtype>    TMatrixD                  </objtype>
+      </covariance_matrix> 
+    </group>
+    
+  </systematics>
+    
+    
+</valor> 
