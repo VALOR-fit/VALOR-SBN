@@ -1,7 +1,7 @@
 #
 # Makefile for VALOR/SBN apps
 #
-# Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+# Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
 #
 
 SHELL = /bin/sh

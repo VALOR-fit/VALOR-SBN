@@ -1,7 +1,7 @@
 #
 # Main VALOR/SBN project Makefile.
 # 
-# Author: Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+# Author: Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
 #
 
 SHELL = /bin/sh
