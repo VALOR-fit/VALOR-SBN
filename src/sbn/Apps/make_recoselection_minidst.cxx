@@ -1,15 +1,15 @@
 //____________________________________________________________________________
 /*!
 
-  \app       valor_dune-make_recoselection_minidst
+  \app       valor_sbn-make_recoselection_minidst
 
   \brief     Converts input recoselection analysis DSTs to the VALOR mini-DST format.
 
-  \syntax    valor_dune-make_recoselection_minidst 
-  --input  input_analysis_file.root
-  --output output_file_containing_valor_minidst.root
-  --format format_of_the_input_file <hpgartpc, lartpc, fgt>
-  [--disable-checks]
+  \syntax    valor_sbn-make_recoselection_minidst
+                --input  input_analysis_file.root
+                --output output_file_containing_valor_minidst.root
+                --format format_of_the_input_file <hpgartpc, lartpc, fgt>
+               [--disable-checks]
 
   \author    Rhiannon Jones <rhiannon.jones \at liverpool.ac.uk>
   University of Liverpool
@@ -21,25 +21,24 @@
 */
 //____________________________________________________________________________
 
+// System
 #include <string>
 #include <iostream>
 #include <sstream>
 #include <map>
 #include <utility>
-
-//
+// ROOT
 #include <TFile.h>
 #include <TChain.h>
 #include <TTree.h>
 #include <TBranch.h>
 #include <TLeaf.h>
 #include <TSystem.h>
-
-// genie
-#include "valor/GENIEUtilities/GENIEIncludes.h"
-
-// valor/dune
+// VALOR/SDK
 #include "valor/Conventions/Constants.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/ReacMode.h"
+#include "valor/Conventions/Sample.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -48,15 +47,10 @@
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
-
-#include "valor/Conventions/BeamConf.h"
-#include "valor/Conventions/ReacMode.h"
-#include "valor/Conventions/Sample.h"
-
-
+#include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
-
+//?
 #include "core/Event.hh"
 
 using std::string;
@@ -93,7 +87,7 @@ typedef enum ScatterCode{
 // For now, only important for accessing the correct POT from above
 typedef enum EMCSample{
 
-  kUnknownSample                = -1, 
+  kUnknownSample                = -1,
   kSBNDDisappearanceProposal    =  0,
   kSBNDDisappearanceModern      =  1,
   kUBOONEDisappearanceProposal  =  2,
@@ -115,7 +109,7 @@ typedef enum EMCSample{
 
 typedef enum NuMuCCExclusiveTopology{
 
-  kUnknownTopology              = -1, 
+  kUnknownTopology              = -1,
   kCC0Pi                        =  0,
   kCC1Pi                        =  1,
   kCC2Pi                        =  2,
@@ -132,11 +126,9 @@ int main(int argc, char ** argv)
 
   using namespace valor;
 
-  
-
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_recoselection_minidst.arg");
-  LOG("make_recoselection_minidst", pNOTICE) << arg;
+  LOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(thresholds);
@@ -147,20 +139,20 @@ int main(int argc, char ** argv)
   string opt_input_name        = arg.GetString("input");
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
 
-  
+
   // Get the POT
   // open the ROOT file and get the TTree & its header
   TChain * subrun_tree = new TChain(gPOTTreeName.c_str());
   subrun_tree->Add(opt_input_name.c_str());
   if(!subrun_tree || !subrun_tree->GetEntries()) {
-    VLOG("make_recoselection_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Unable to read " << gPOTTreeName
       <<" from "<< opt_input_name;
     exit(1);
   }
 
   Long64_t nsub = subrun_tree->GetEntries();
-  VLOG("make_recoselection_minidst", pNOTICE) 
+  VLOG("valor_sbn", pNOTICE)
     << "Input subrun tree has " << nsub << ((nsub==1) ? " entry." : " entries.");
 
   double mcsample_pot = -1.;
@@ -168,15 +160,15 @@ int main(int argc, char ** argv)
   subrun_tree->GetEntry(0);
 
   if(mcsample_pot < 1)
-    VLOG("make_recoselection_minidst", pNOTICE) << "POT in file is less than 1 ";
+    VLOG("valor_sbn", pNOTICE) << "POT in file is less than 1 ";
 
   if(mcsample_pot == -1.){
-    VLOG("make_recoselection_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Not able to access MCSample POT from " << opt_input_name;
     exit(1);
   }
 
-  VLOG("make_recoselection_minidst",pINFO) << " POT in file : " << mcsample_pot << "\n";
+  VLOG("valor_sbn",pINFO) << " POT in file : " << mcsample_pot << "\n";
 
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
   assert(sample != conv::ksUndefined);
@@ -185,8 +177,8 @@ int main(int argc, char ** argv)
   assert(beam != conv::kbUndefined);
 
   int    valor_minidst_sample         = sample;
-  int    valor_minidst_beam           = -1;  // see Conventions/BeamConf.h 
-  int    valor_minidst_reac_mode      = -1;  // see Conventions/ReacMode.h 
+  int    valor_minidst_beam           = -1;  // see Conventions/BeamConf.h
+  int    valor_minidst_reac_mode      = -1;  // see Conventions/ReacMode.h
   int    valor_minidst_target         = -1;  // nuclear target -  GENIE PDG convention
   double valor_minidst_enu_true       = -1.; // true neutrino energy, in GeV
   double valor_minidst_Q2_true        = -1.; // true neutrino Q2
@@ -194,17 +186,17 @@ int main(int argc, char ** argv)
   double valor_minidst_mu_momentum    = -1.; // reco muon momentum
   double valor_minidst_mu_cos_z       = -1.; // reco muon cos(angle to z)
   double valor_minidst_y_reco         = -1.; // inelasticity
-  double valor_minidst_wght_pot       = -1.; // POT weight 
-  double valor_minidst_wght           = -1.; // misc weight 
-  double valor_minidst_wght_smear     = -1.; // energy smearing weight 
-  double valor_minidst_reco_exclusive = -1.; // exclusive reconstructed topology 
-  double valor_minidst_true_exclusive = -1.; // exclusive true topology 
+  double valor_minidst_wght_pot       = -1.; // POT weight
+  double valor_minidst_wght           = -1.; // misc weight
+  double valor_minidst_wght_smear     = -1.; // energy smearing weight
+  double valor_minidst_reco_exclusive = -1.; // exclusive reconstructed topology
+  double valor_minidst_true_exclusive = -1.; // exclusive true topology
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
 
-  TTree * valor_minidst = 
-    new TTree("valor_recoselection_mini_dst","Mini-DST input for VALOR/DUNE recoselection Fit");
+  TTree * valor_minidst =
+    new TTree("valor_sbn_minidst","Mini-DST input for VALOR/SBN fit");
 
   valor_minidst->Branch("beam"          , &valor_minidst_beam          ,"beam/I"           );
   valor_minidst->Branch("sample"        , &valor_minidst_sample        ,"sample/I"         );
@@ -228,14 +220,14 @@ int main(int argc, char ** argv)
   TChain * analysis_tree = new TChain(gTreeName.c_str());
   analysis_tree->Add(opt_input_name.c_str());
   if(!analysis_tree || !analysis_tree->GetEntries()) {
-    VLOG("make_recoselection_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Unable to read " << gTreeName
       <<" from "<< opt_input_name;
     exit(1);
   }
 
   Long64_t nev = analysis_tree->GetEntries();
-  VLOG("make_recoselection_minidst", pNOTICE) 
+  VLOG("valor_sbn", pNOTICE)
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
   analysis_tree->GetEntry(0);
 
@@ -285,10 +277,10 @@ int main(int argc, char ** argv)
   for(Long64_t iev = 0; iev < nev; iev++) {
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
-      VLOG("make_recoselection_minidst", pNOTICE) << "** Reading event: " << iev;
+      VLOG("valor_sbn", pNOTICE) << "** Reading event: " << iev;
     }
     else {
-      VLOG("make_recoselection_minidst", pDEBUG) << "** Reading event: " << iev;
+      VLOG("valor_sbn", pDEBUG) << "** Reading event: " << iev;
     }
 
     analysis_tree->GetEntry(iev);
@@ -345,22 +337,22 @@ int main(int argc, char ** argv)
       // ignore events that can not be used in the VALOR analysis
       //
       if(reac_mode == conv::kmUndefined) {
-        VLOG("make_recoselection_minidst", pWARN) << "- Rejecting event [bad mode]\n"; 
+        VLOG("valor_sbn", pWARN) << "- Rejecting event [bad mode]\n";
         continue;
       }
     }
 
-    VLOG("make_recoselection_minidst",pDEBUG) << "Read event: "
+    VLOG("valor_sbn",pDEBUG) << "Read event: "
       << "Etrue         = "<< enu_true  << " GeV; "
       << "LArSoft mode  = "<< larsoft_mode  << "; ";
 
-    valor_minidst_sample         = sample; 
-    valor_minidst_beam           = beam; 
+    valor_minidst_sample         = sample;
+    valor_minidst_beam           = beam;
     valor_minidst_reac_mode      = reac_mode;
-    valor_minidst_enu_true       = enu_true; 
+    valor_minidst_enu_true       = enu_true;
     valor_minidst_wght           = 1.;
     valor_minidst_Q2_true        = qsqr;
-    valor_minidst_wght_pot       = 1./mcsample_pot; 
+    valor_minidst_wght_pot       = 1./mcsample_pot;
     valor_minidst_target         = 1000180400; // Argon40
     valor_minidst_y_reco         = 0.5; // FORCE y=0.5 for now
     valor_minidst_mu_momentum    = mu_momentum;
@@ -368,23 +360,23 @@ int main(int argc, char ** argv)
     valor_minidst_true_exclusive = true_exclusive;
     valor_minidst_reco_exclusive = reco_exclusive;
 
-    VLOG("make_recoselection_minidst", pINFO) 
-      << "\n Information copied to VALOR DUNE/recoselection Mini-DST: "
-      << "\n Beam          = " << valor_minidst_beam   
-      << "\n Sample        = " << valor_minidst_sample    
-      << "\n Reaction mode = " << valor_minidst_reac_mode 
+    VLOG("valor_sbn", pINFO)
+      << "\n Information copied to VALOR SBN recoselection Mini-DST: "
+      << "\n Beam          = " << valor_minidst_beam
+      << "\n Sample        = " << valor_minidst_sample
+      << "\n Reaction mode = " << valor_minidst_reac_mode
       << "\n Target        = " << valor_minidst_target
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n Pmu (reco)    = " << valor_minidst_mu_momentum << "GeV/c^2"
       << "\n P cosZ (reco) = " << valor_minidst_mu_cos_z
-      << "\n y (reco)      = " << valor_minidst_y_reco    
+      << "\n y (reco)      = " << valor_minidst_y_reco
       << "\n POT weight    = " << valor_minidst_wght_pot
       << "\n Smear weight  = " << valor_minidst_wght_smear
       << "\n Reco topology = " << valor_minidst_reco_exclusive
       << "\n True topology = " << valor_minidst_true_exclusive;
 
-    VLOG("make_recoselection_minidst",pDEBUG) << "Read event: "
+    VLOG("valor_sbn",pDEBUG) << "Read event: "
       << "Ereco         = "<< enu_reco  << " GeV; ";
     if(!opt_disable_checks) {
 
@@ -392,16 +384,16 @@ int main(int argc, char ** argv)
       // ignore events that can not be used in the VALOR analysis
       //
       if(enu_reco <= 0) {
-        VLOG("make_recoselection_minidst", pINFO) << "- Rejecting event [Ev (reco) <= 0]: "<< enu_reco;
+        VLOG("valor_sbn", pINFO) << "- Rejecting event [Ev (reco) <= 0]: "<< enu_reco;
         continue;
       }
 
-      VLOG("make_recoselection_minidst", pINFO) << "+ Accepting event";
+      VLOG("valor_sbn", pINFO) << "+ Accepting event";
     }
 
-    valor_minidst_enu_reco  = enu_reco; 
-    VLOG("make_recoselection_minidst", pNOTICE) 
-      << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV"; 
+    valor_minidst_enu_reco  = enu_reco;
+    VLOG("valor_sbn", pNOTICE)
+      << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV";
 
     valor_minidst->Fill();
   } // event loop
@@ -410,24 +402,24 @@ int main(int argc, char ** argv)
   /*
   for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
     valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
-    VLOG("make_recoselection_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
+    VLOG("valor_sbn", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
   }
-  
+
   double f = 100. * (double)nev_accept / (double)nev;
-  VLOG("make_recoselection_minidst", pNOTICE) <<
-    "Used " << f << "% (" << nev_accept << "/" << nev 
+  VLOG("valor_sbn", pNOTICE) <<
+    "Used " << f << "% (" << nev_accept << "/" << nev
     << ") of input events.";
-    
-  //~ VLOG("make_recoselection_minidst", pNOTICE) <<
+
+  //~ VLOG("valor_sbn", pNOTICE) <<
     //~ "Total POT read: "<<total_pot_read;
 */
-  // Saving VALOR mini-FST to output file 
-  VLOG("make_recoselection_minidst", pNOTICE) 
-    << "Saving VALOR/DUNE mini-DST to: " << opt_output_name;
-  valor_minidst->Write();  
+  // Saving VALOR mini-FST to output file
+  VLOG("valor_sbn", pNOTICE)
+    << "Saving VALOR/SBN mini-DST to: " << opt_output_name;
+  valor_minidst->Write();
   fout.Close();
 
-  VLOG("make_recoselection_minidst", pNOTICE)  << "Done!";
+  VLOG("valor_sbn", pNOTICE)  << "Done!";
 
   return 0;
 }

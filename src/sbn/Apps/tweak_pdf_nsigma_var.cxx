@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\app       valor_dune-tweak_pdf_nsigma_var
+\app       valor_sbn-tweak_pdf_nsigma_var
 
 \brief     Vary the MC spectra by setting systematics to +/- N sigma
 
@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/tweak_pdf_nsigma_var.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
-  LOG("valor_dune", pNOTICE) << arg;
+  LOG("valor_sbn", pNOTICE) << arg;
   
   // Read the command line
   int n_threads           = arg.GetInt("nthreads");
@@ -115,7 +115,7 @@ int main(int argc, char ** argv)
     sigma_from_universes = true;
     TFile *f_univ = new TFile(universe_file.data(),"READ");
     if(!f_univ->IsOpen()){
-      LOG("valor_dune",pFATAL) << " Error: Couldn't open universe file at " << universe_file;
+      LOG("valor_sbn",pFATAL) << " Error: Couldn't open universe file at " << universe_file;
       util::Die(-1);
     }
     TVectorD knot_vals(*static_cast<TVectorD*>(f_univ->Get("actual_knot_values")));
@@ -172,7 +172,7 @@ int main(int argc, char ** argv)
 
   conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
   if(dmsq_scheme == kNuDmsqUndefined) {
-    LOG("valor_dune", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    LOG("valor_sbn", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
     util::Die(-1);
   }
   Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
@@ -212,7 +212,7 @@ int main(int argc, char ** argv)
   else
     output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma_int)+"sigma").c_str());
   outfile = new TFile(output_rootfile.c_str(),"RECREATE");
-  LOG("valor_dune",pNOTICE)<<"Writing to file: "<<output_rootfile;
+  LOG("valor_sbn",pNOTICE)<<"Writing to file: "<<output_rootfile;
 
   const CorrelatedSystematics * syst = cm->GetSystematics();
   FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
@@ -244,24 +244,24 @@ int main(int argc, char ** argv)
       // select exactly the variation given by a universe)
       nsigma_int = static_cast<int>(round(nsig));
 
-      LOG("valor_dune", pNOTICE)
+      LOG("valor_sbn", pNOTICE)
         << "Tweak systematic parameter: "  << util::NameRegistry::Instance()->ParamAsString(p)
         << "\n  Nominal value = "          << bestfit
         << "\n  sigma error = "            << sigma_err;
       if(sigma_from_universes){
         if(nsig < 0)
-          LOG("valor_dune", pNOTICE) << "\n  nominal " << nsig << " sigma tweak = " << tweak_p;
+          LOG("valor_sbn", pNOTICE) << "\n  nominal " << nsig << " sigma tweak = " << tweak_p;
         else
-          LOG("valor_dune", pNOTICE) << "\n  nominal +" << nsig << " sigma tweak = " << tweak_p;
+          LOG("valor_sbn", pNOTICE) << "\n  nominal +" << nsig << " sigma tweak = " << tweak_p;
       }
       else{
         if(nsig < 0){
-          LOG("valor_dune", pNOTICE) 
+          LOG("valor_sbn", pNOTICE) 
             << "\n  nominal +" << nsig << " sigma tweak = " << tweak_m
             << "\n  nominal -" << nsig << " sigma tweak = " << tweak_p;
         }
         else{
-          LOG("valor_dune", pNOTICE) 
+          LOG("valor_sbn", pNOTICE) 
             << "\n  nominal +" << nsig << " sigma tweak = " << tweak_p
             << "\n  nominal -" << nsig << " sigma tweak = " << tweak_m;
         }
@@ -291,7 +291,7 @@ int main(int argc, char ** argv)
   outfile->Close();
   delete outfile;
 
-  LOG("valor_dune",pNOTICE)<<"Finished writing to file: "<<output_rootfile;
+  LOG("valor_sbn",pNOTICE)<<"Finished writing to file: "<<output_rootfile;
   std::cout << "Done!" << std::endl;
 }
 //________________________________________________________________________________________
@@ -346,7 +346,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
       else {
         TString save_name = TString::Format("env_sb_%s_%s_nom", util::AsString(b).c_str(), util::AsString(s).c_str());
         curr_pdf_tot->Write(save_name.Data());
-        LOG("valor_dune",pDEBUG) << " Nominal integrated total: " << curr_pdf_tot->Integral();
+        LOG("valor_sbn",pDEBUG) << " Nominal integrated total: " << curr_pdf_tot->Integral();
       }
     }
     /*
@@ -408,7 +408,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       }
       TString save_name = TString::Format("env_sb_%s_%s_%s", util::AsString(b).c_str(), util::AsString(s).c_str(), tag.c_str());
       curr_pdf->Write(save_name.Data());
-      LOG("valor_dune",pDEBUG) << " Tweaked integrated total: " << curr_pdf->Integral();
+      LOG("valor_sbn",pDEBUG) << " Tweaked integrated total: " << curr_pdf->Integral();
     }
 
     /*

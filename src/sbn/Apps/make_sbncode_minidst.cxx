@@ -1,18 +1,18 @@
 //____________________________________________________________________________
 /*!
 
-  \app       valor_dune-make_sbncode_minidst
+  \app       valor_sbn-make_sbncode_minidst
 
   \brief     Converts input SBNCode analysis DSTs to the VALOR mini-DST format.
 
-  \syntax    valor_dune-make_sbncode_minidst 
-  --input  input_analysis_file.root
-  --output output_file_containing_valor_minidst.root
-  [--write-universes] optionally write out the systematic variations
-  [--disable-checks]
+  \syntax    valor_sbn-make_sbncode_minidst
+                --input  input_analysis_file.root
+                --output output_file_containing_valor_minidst.root
+               [--write-universes] optionally write out the systematic variations
+               [--disable-checks]
 
   \author    Rhiannon Jones <rhiannon.jones \at liverpool.ac.uk>
-  University of Liverpool
+             University of Liverpool
 
   \created   March 2019
 
@@ -21,6 +21,7 @@
 */
 //____________________________________________________________________________
 
+// System
 #include <string>
 #include <iostream>
 #include <iomanip>
@@ -28,20 +29,18 @@
 #include <map>
 #include <utility>
 #include <algorithm>
-
-//
+// ROOT
 #include <TFile.h>
 #include <TChain.h>
 #include <TTree.h>
 #include <TBranch.h>
 #include <TLeaf.h>
 #include <TSystem.h>
-
-// genie
-#include "valor/GENIEUtilities/GENIEIncludes.h"
-
-// valor/dune
+// VALOR/SDK
 #include "valor/Conventions/Constants.h"
+#include "valor/Conventions/BeamConf.h"
+#include "valor/Conventions/ReacMode.h"
+#include "valor/Conventions/Sample.h"
 #include "valor/Messenger/Messenger.h"
 #include "valor/Utilities/Env.h"
 #include "valor/CmdLine/CmdLnArgList.h"
@@ -50,15 +49,10 @@
 #include "valor/Utilities/UtlStr.h"
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
-
-#include "valor/Conventions/BeamConf.h"
-#include "valor/Conventions/ReacMode.h"
-#include "valor/Conventions/Sample.h"
-
-
+#include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
-
+// ?
 #include "core/Event.hh"
 
 using std::string;
@@ -105,11 +99,9 @@ int main(int argc, char ** argv)
 
   using namespace valor;
 
-
-
   CmdLnArgList arg;
-  arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_sbncode_minidst.arg");
-  LOG("make_sbncode_minidst", pNOTICE) << arg;
+  arg.Read(argc,argv, "$VALOR_EXPT/config/apps/valor_sbn.arg");
+  LOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   Messenger::Instance()->Configure(thresholds);
@@ -126,26 +118,25 @@ int main(int argc, char ** argv)
   int    max_n_events       = arg.GetInt("max-n-events");
 
   if(no_truth && write_universes)
-    VLOG("make_sbncode_minidst", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
-
+    VLOG("valor_sbn", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
 
   if(apply_weights)
-    VLOG("make_sbncode_minidst", pNOTICE) << " Chosen to apply valor_minidst_wght ";
+    VLOG("valor_sbn", pNOTICE) << " Chosen to apply valor_minidst_wght ";
   else
-    VLOG("make_sbncode_minidst", pNOTICE) << " Chosen not to apply valor_minidst_wght";
+    VLOG("valor_sbn", pNOTICE) << " Chosen not to apply valor_minidst_wght";
 
-  // Check if we are looking at nue_disappearance from the opt_oscillation argument 
+  // Check if we are looking at nue_disappearance from the opt_oscillation argument
   // so that we reject the nue appearance oscillated events later
   string nue_dis = "nue-disappearance";
   size_t found_nue_dis = opt_oscillation.find(nue_dis);
   bool nue_disappearance = false;
   if(found_nue_dis != string::npos){
     nue_disappearance = true;
-    VLOG("make_sbncode_minidst", pINFO) 
+    VLOG("valor_sbn", pINFO)
         << "Looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
   }
   else
-    VLOG("make_sbncode_minidst", pINFO) 
+    VLOG("valor_sbn", pINFO)
         << "NOT looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
 
   // Determine sample-types
@@ -176,21 +167,21 @@ int main(int argc, char ** argv)
     if(found_nueosc != string::npos && found_nueint == string::npos && found_nuenumu == string::npos)
       is_nueosc = true;
     else if(found_nueosc != string::npos){
-      VLOG("make_sbncode_minidst", pFATAL) 
+      VLOG("valor_sbn", pFATAL)
         << "Error: Found selected nuE oscillated file with hint of intrinsic and/or numu in the name - misleading: " << opt_input_name;
       exit(1);
     }
     if(found_nueint != string::npos && found_nueosc == string::npos && found_nuenumu == string::npos)
       is_nueint = true;
     else if(found_nueint != string::npos){
-      VLOG("make_sbncode_minidst", pFATAL) 
+      VLOG("valor_sbn", pFATAL)
         << "Error: Found selected nuE intrinsic file with hint of oscillated and/or numu in the name - misleading: " << opt_input_name;
       exit(1);
     }
     if(found_nuenumu != string::npos && found_nueosc == string::npos && found_nueint == string::npos)
       is_nuenumu = true;
     else if(found_nuenumu != string::npos){
-      VLOG("make_sbncode_minidst", pFATAL) 
+      VLOG("valor_sbn", pFATAL)
         << "Error: Found selected nuE numu file with hint of oscillated and/or intrinsic in the name - misleading: " << opt_input_name;
       exit(1);
     }
@@ -198,7 +189,7 @@ int main(int argc, char ** argv)
 
   bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu};
   if(found_nue && std::count(found_nues, found_nues+sizeof(found_nues), 1) > 1){
-    VLOG("make_sbncode_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Error: Found multiple selected nuE types in filename - misleading: " << opt_input_name;
     exit(1);
   }
@@ -206,7 +197,7 @@ int main(int argc, char ** argv)
   // Make sure we are finding at least 1 of numu or nue in the name
   bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu};
   if(std::count(found, found+sizeof(found), 1) == 0){
-    VLOG("make_sbncode_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << opt_input_name;
     exit(1);
   }
@@ -227,17 +218,17 @@ int main(int argc, char ** argv)
   TChain * subrun_tree = new TChain(gSubRunTreeName.c_str());
   subrun_tree->Add(opt_input_name.c_str());
   if(!subrun_tree || !subrun_tree->GetEntries()) {
-    VLOG("make_sbncode_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Error: Unable to read " << gSubRunTreeName
       <<" from "<< opt_input_name;
     exit(1);
   }
 
   Long64_t nev_subrun = subrun_tree->GetEntries();
-  VLOG("make_sbncode_minidst", pNOTICE) 
+  VLOG("valor_sbn", pNOTICE)
     << "Input subrun tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
 
-  TBranch *b = subrun_tree->GetBranch("totgoodpot"); 
+  TBranch *b = subrun_tree->GetBranch("totgoodpot");
   unsigned int npot = subrun_tree->GetEntries();
   for(unsigned int i = 0; i < npot; ++i){
     b->GetEntry(i);
@@ -245,11 +236,11 @@ int main(int argc, char ** argv)
   }
 
   if(mcsample_pot == -1.){
-    VLOG("make_sbncode_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Error: Not able to access MCSample POT from " << gSubRunTreeName;
     exit(1);
   }
-  VLOG("make_sbncode_minidst", pNOTICE) 
+  VLOG("valor_sbn", pNOTICE)
     << "POT in the input file is " << mcsample_pot;
 
 
@@ -261,9 +252,9 @@ int main(int argc, char ** argv)
   assert(beam != conv::kbUndefined);
 
   int    valor_minidst_sample       = sample;
-  int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h 
-  int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h 
-  int    valor_minidst_reac_type    = -1;  // see Conventions/ReacMode.h 
+  int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h
+  int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h
+  int    valor_minidst_reac_type    = -1;  // see Conventions/ReacMode.h
   int    valor_minidst_target       = -1;  // nuclear target -  GENIE PDG convention
   double valor_minidst_baseline     = -1.; // true baseline of the event
   int    valor_minidst_init_nupdg   = -1;  // Initial PDG
@@ -272,14 +263,14 @@ int main(int argc, char ** argv)
   double valor_minidst_Q2_true      = -1.; // true neutrino energy, in GeV
   double valor_minidst_enu_reco     = -1.; // reco neutrino energy, in GeV
   double valor_minidst_y_reco       = -1.; // inelasticity
-  double valor_minidst_wght_pot     = -1.; // POT weight 
-  double valor_minidst_wght         = -1.; // misc weight 
+  double valor_minidst_wght_pot     = -1.; // POT weight
+  double valor_minidst_wght         = -1.; // misc weight
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
 
-  TTree * valor_minidst = 
-    new TTree("valor_sbncode_mini_dst","Mini-DST input for VALOR/DUNE SBNCode Fit");
+  TTree * valor_minidst =
+    new TTree("valor_sbn_minidst","Mini-DST input for VALOR/SBN fit");
 
   valor_minidst->Branch("beam"      , &valor_minidst_beam        ,"beam/I"       );
   valor_minidst->Branch("sample"    , &valor_minidst_sample      ,"sample/I"     );
@@ -301,18 +292,18 @@ int main(int argc, char ** argv)
   TChain * analysis_tree = new TChain(gTreeName.c_str());
   analysis_tree->Add(opt_input_name.c_str());
   if(!analysis_tree || !analysis_tree->GetEntries()) {
-    VLOG("make_sbncode_minidst", pFATAL) 
+    VLOG("valor_sbn", pFATAL)
       << "Error: Unable to read " << gTreeName
       <<" from "<< opt_input_name;
     exit(1);
   }
 
   Long64_t nev = analysis_tree->GetEntries();
-  VLOG("make_sbncode_minidst", pNOTICE) 
+  VLOG("valor_sbn", pNOTICE)
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
   if (max_n_events >= 0) {
     nev = std::min((Long64_t)max_n_events,nev);
-    VLOG("make_sbncode_minidst", pNOTICE) <<
+    VLOG("valor_sbn", pNOTICE) <<
       "Reading "<< nev << ((nev==1) ? " entry." : " entries.");
   }
 
@@ -379,11 +370,11 @@ int main(int argc, char ** argv)
     analysis_tree->GetEntry(iev);
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
-      VLOG("make_sbncode_minidst", pNOTICE) << "** Reading event: " << iev
+      VLOG("valor_sbn", pNOTICE) << "** Reading event: " << iev
         <<" - so far accepted " << nev_accept;
     }
     else {
-      VLOG("make_sbncode_minidst", pDEBUG) << "** Reading event: " << iev
+      VLOG("valor_sbn", pDEBUG) << "** Reading event: " << iev
         <<" - so far accepted " << nev_accept;
     }
 
@@ -450,9 +441,9 @@ int main(int argc, char ** argv)
          event::RecoInteraction &reco = event.reco;
          */
       if(ptruth==nullptr) {
-        VLOG("make_sbncode_minidst", pNOTICE) 
+        VLOG("valor_sbn", pNOTICE)
           << "The number of truth entries is 0, skipping event "<<iev;
-        continue;      
+        continue;
       }
 
       std::vector<event::FinalStateParticle> &fsps = truth.finalstate;
@@ -486,7 +477,7 @@ int main(int argc, char ** argv)
         else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
         else if(fsps[p].pdg == 14 || fsps[p].pdg == -14 || fsps[p].pdg == 12 || fsps[p].pdg == -12) ninu++;
         else if(fsps[p].pdg > 1e4) ninuc++;
-        else niother++; 
+        else niother++;
         // Currently not using niother as the only others seem to be deltas and etas
         // These will eventually be removed when isStableFinalState variable is available in the analysis trees
       }
@@ -553,8 +544,8 @@ int main(int argc, char ** argv)
         // ignore events that can not be used in the VALOR analysis
         //
         if(reac_mode == conv::kmUndefined) {
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [bad mode] "<<iev;
-          VLOG("make_sbncode_minidst", pNOTICE)
+          VLOG("valor_sbn", pWARN) << "- Rejecting event [bad mode] "<<iev;
+          VLOG("valor_sbn", pNOTICE)
             <<"\n larsoft_mode = "<<larsoft_mode
             <<"\n baseline = "<< baseline << " m"
             <<"\n iscc="<<iscc<<" and isnc="<<isnc
@@ -563,64 +554,64 @@ int main(int argc, char ** argv)
           continue;
         }
         if(isnc && init_flav != final_flav){
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated nc] "<<iev; 
-          VLOG("make_sbncode_minidst", pINFO)
+          VLOG("valor_sbn", pWARN) << "- Rejecting event [oscillated nc] "<<iev;
+          VLOG("valor_sbn", pINFO)
             <<"\n larsoft_mode = "<<larsoft_mode
             <<"\n baseline = "<< baseline << " m"
             <<"\n iscc="<<iscc<<" and isnc="<<isnc
             <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
-            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode);
           continue;
         }
         if(is_nue && (init_pdg == 12 || init_pdg == -12) && (!is_nueint)){
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [nue not from intrinsic] "<<iev;
-          VLOG("make_sbncode_minidst", pINFO)
+          VLOG("valor_sbn", pWARN) << "- Rejecting event [nue not from intrinsic] "<<iev;
+          VLOG("valor_sbn", pINFO)
             <<"\n is_nueint = "<<is_nueint
             <<"\n larsoft_mode = "<<larsoft_mode
             <<"\n baseline = "<< baseline << " m"
             <<"\n iscc="<<iscc<<" and isnc="<<isnc
             <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
-            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode);
           continue;
         }
         if(is_nueosc && init_flav == final_flav){
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [non-oscillated event in oscillated file] "<<iev; 
-          VLOG("make_sbncode_minidst", pINFO)
+          VLOG("valor_sbn", pWARN) << "- Rejecting event [non-oscillated event in oscillated file] "<<iev;
+          VLOG("valor_sbn", pINFO)
             <<"\n larsoft_mode = "<<larsoft_mode
             <<"\n baseline = "<< baseline << " m"
             <<"\n iscc="<<iscc<<" and isnc="<<isnc
             <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
-            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode);
           continue;
         }
         if(is_numu && init_flav != final_flav){
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [oscillated event in non-oscillated file] "<<iev; 
-          VLOG("make_sbncode_minidst", pINFO)
+          VLOG("valor_sbn", pWARN) << "- Rejecting event [oscillated event in non-oscillated file] "<<iev;
+          VLOG("valor_sbn", pINFO)
             <<"\n larsoft_mode = "<<larsoft_mode
             <<"\n baseline = "<< baseline << " m"
             <<"\n iscc="<<iscc<<" and isnc="<<isnc
             <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
-            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode);
           continue;
         }
         if(nue_disappearance && is_nueosc){
-          VLOG("make_sbncode_minidst", pWARN) << "- Rejecting event [appearance oscillated event in nue disappearance template construction] "<<iev; 
-          VLOG("make_sbncode_minidst", pINFO)
+          VLOG("valor_sbn", pWARN) << "- Rejecting event [appearance oscillated event in nue disappearance template construction] "<<iev;
+          VLOG("valor_sbn", pINFO)
             <<"\n larsoft_mode = "<<larsoft_mode
             <<"\n baseline = "<< baseline << " m"
             <<"\n iscc="<<iscc<<" and isnc="<<isnc
             <<"\n initpdg="<<init_pdg<<" and finalpdg="<<nu_pdg
-            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode); 
+            <<"\n valor mode="<<reac_mode<<" which is "<<util::AsString(reac_mode);
           continue;
-        
+
         }
       }
 
-      VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
+      VLOG("valor_sbn",pDEBUG) << "Read event: "
         << "Etrue         = "<< enu_true  << " GeV; "
         << "LArSoft mode  = "<< larsoft_mode  << "; ";
       valor_minidst_reac_mode  = reac_mode;
-      valor_minidst_enu_true   = enu_true; 
+      valor_minidst_enu_true   = enu_true;
       valor_minidst_baseline   = baseline/1000.;
       valor_minidst_Q2_true    = Q2s;
       valor_minidst_reac_type    = reac;
@@ -629,28 +620,28 @@ int main(int argc, char ** argv)
       valor_minidst_target       = 1000180400; // Argon40
     }// !no-truth
 
-    valor_minidst_sample     = sample; 
-    valor_minidst_beam       = beam; 
-    valor_minidst_wght_pot   = 1./mcsample_pot; 
+    valor_minidst_sample     = sample;
+    valor_minidst_beam       = beam;
+    valor_minidst_wght_pot   = 1./mcsample_pot;
     //valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
 
-    VLOG("make_sbncode_minidst", pINFO) 
-      << "\n Information copied to VALOR DUNE/SBNCode Mini-DST: "
-      << "\n Beam          = " << valor_minidst_beam   
-      << "\n Sample        = " << valor_minidst_sample    
-      << "\n Reaction mode = " << valor_minidst_reac_mode 
+    VLOG("valor_sbn", pINFO)
+      << "\n Information copied to VALOR/SBN Mini-DST: "
+      << "\n Beam          = " << valor_minidst_beam
+      << "\n Sample        = " << valor_minidst_sample
+      << "\n Reaction mode = " << valor_minidst_reac_mode
       << "\n Target        = " << valor_minidst_target
       << "\n Baseline      = " << valor_minidst_baseline << " m"
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
-      << "\n y (reco)      = " << valor_minidst_y_reco    
+      << "\n y (reco)      = " << valor_minidst_y_reco
       << "\n POT weight    = " << valor_minidst_wght_pot;
 
 
     enu_reco = reco.reco_energy;
     reco_weight = reco.weight;
 
-    VLOG("make_sbncode_minidst",pDEBUG) << "Read event: "
+    VLOG("valor_sbn",pDEBUG) << "Read event: "
       << "Ereco         = "<< enu_reco  << " GeV; ";
     if(!opt_disable_checks) {
 
@@ -658,12 +649,12 @@ int main(int argc, char ** argv)
       // ignore events that can not be used in the VALOR analysis
       //
       if(enu_reco <= 0) {
-        VLOG("make_sbncode_minidst", pINFO) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
+        VLOG("valor_sbn", pINFO) << "- Rejecting event [Ev (reco) <= 0]: "<<enu_reco;
         continue;
       }
     }
 
-    VLOG("make_sbncode_minidst", pINFO) << "+ Accepting event";
+    VLOG("valor_sbn", pINFO) << "+ Accepting event";
 
     // Copy the systematic universes across
     if (!no_truth && write_universes) {
@@ -677,13 +668,13 @@ int main(int argc, char ** argv)
           variation_output_type & destination = variation_entries[vname][ii];
           variation_output_type val = static_cast<variation_output_type>(in_vec[ii]);
           if (val < 0.0) {
-            LOG("make_sbncode_minidst",pINFO) << "Setting negative event weight to zero: "
+            LOG("valor_sbn",pINFO) << "Setting negative event weight to zero: "
               <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
               <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
             val = 0.0;
           }
           //~ else if (val > 1E5 || (val < 1E-5 && val > 1E-15)) {
-          //~ LOG("make_sbncode_minidst",pWARN)<<"Setting bad event weight to one: "
+          //~ LOG("valor_sbn",pWARN)<<"Setting bad event weight to one: "
           //~ <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
           //~ <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
           //~ val = 1.0;
@@ -709,24 +700,24 @@ int main(int argc, char ** argv)
   if(!no_truth){
     for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
       valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
-      VLOG("make_sbncode_minidst", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
+      VLOG("valor_sbn", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
     }
   }
 
   double f = 100. * (double)nev_accept / (double)nev;
-  VLOG("make_sbncode_minidst", pNOTICE) <<
-    "Used " << f << "% (" << nev_accept << "/" << nev 
+  VLOG("valor_sbn", pNOTICE) <<
+    "Used " << f << "% (" << nev_accept << "/" << nev
     << ") of input events.";
 
-  //~ VLOG("make_sbncode_minidst", pNOTICE) <<"Total POT read: "<<total_pot_read;
+  //~ VLOG("valor_sbn", pNOTICE) <<"Total POT read: "<<total_pot_read;
 
-  // Saving VALOR mini-FST to output file 
-  VLOG("make_sbncode_minidst", pNOTICE) 
-    << "Saving VALOR/DUNE mini-DST to: " << opt_output_name;
-  valor_minidst->Write();  
+  // Saving VALOR mini-FST to output file
+  VLOG("valor_sbn", pNOTICE)
+    << "Saving VALOR/SBN mini-DST to: " << opt_output_name;
+  valor_minidst->Write();
   fout.Close();
 
-  VLOG("make_sbncode_minidst", pNOTICE)  << "Done!";
+  VLOG("valor_sbn", pNOTICE)  << "Done!";
 
   return 0;
 }

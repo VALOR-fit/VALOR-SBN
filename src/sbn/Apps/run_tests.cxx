@@ -1,6 +1,7 @@
+//____________________________________________________________________________
 /*!
 
-\app       valor_dune-run_tests
+\app       valor_sbn-run_tests
 
 \brief     Tests for GENIE true kinematics.
 
@@ -15,25 +16,22 @@
 \copyright (c) 2010-2017, The VALOR Fitting Group, All Rights Reserved
 
 */
+//____________________________________________________________________________
 
-// valor
+// VALOR/SDK
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/Utilities/UtlFile.h"
 #include "valor/Utilities/UtlInit.h"
-
-// dune
-
-#include "dune/Testing/StandardTests.h"
-
-// genie
 #include "valor/GENIEUtilities/GENIEIncludes.h"
+// VALOR/SBN
+#include "sbn/Testing/StandardTests.h"
 
 using namespace valor;
 
 /**
    Performs basic configuration.
 
-   The environment is set to dune and the set of mandatory and optional command
+   The environment is set to sbn and the set of mandatory and optional command
    line arguments is loaded. Message thresholds are set.
 
    \param argc The number of command line arguments.

@@ -1,7 +1,7 @@
 //____________________________________________________________________________
 /*!
 
-\app       valor_dune-universe_variation_tweaks
+\app       valor_sbn-universe_variation_tweaks
 
 \brief     Vary the MC spectra by throwing sets of systematics
 

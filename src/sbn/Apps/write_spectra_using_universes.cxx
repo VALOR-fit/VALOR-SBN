@@ -1,7 +1,7 @@
 //____________________________________________________________________________                                                       
 /*!                                                                                                                                  
                                                                                                                                       
-\app       valor_dune-write_sbn_spectra_using_universes
+\app       valor_sbn-write_sbn_spectra_using_universes
 
 \brief     Write out spectra to make a covariance for SBN
 
@@ -96,7 +96,7 @@ int main(int argc, char ** argv)
 
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/oscparams.arg:");
-  LOG("valor_dune", pNOTICE) << arg;
+  LOG("valor_sbn", pNOTICE) << arg;
   
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string tag              = arg.GetString("tag");
@@ -123,7 +123,7 @@ int main(int argc, char ** argv)
   
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
-  LOG("valor_dune", pNOTICE) << *Rnd::Instance();
+  LOG("valor_sbn", pNOTICE) << *Rnd::Instance();
   
   
   // Get model & configure
@@ -200,7 +200,7 @@ int main(int argc, char ** argv)
         hist->Write();
 
         if (old_name.Contains("pdfts")) {
-          LOG("valor_dune", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
+          LOG("valor_sbn", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
         }
       } // histograms
       universe_n++;
