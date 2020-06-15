@@ -1,5 +1,5 @@
 #
-# Main VALOR/DUNE project Makefile.
+# Main VALOR/SBN project Makefile.
 # 
 # Author: Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
 #
