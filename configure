@@ -7,6 +7,8 @@
 # Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+use File::Path;
+
 # print out info & exit if any of the command-line arguments was --help
 #
 if(($match = grep(/--help/i, @ARGV)) > 0) { 
@@ -205,6 +207,12 @@ else {
   $GENIE_ENABLED = 0;
 }
 
+#
+# Create a Conventions package, if none exists
+#
+$conventions_path="$VALOR_EXPT/src/sbn/Conventions/";
+mkpath ($conventions_path, {verbose => 1, mode=>0777}); 
+die("$conventions_path doesn't exist") unless -d $conventions_path;
 # 
 # Read version info and automatically generate a header file with relevant flags that
 # can be used to make code conditional upon specific version numbers
