@@ -15,11 +15,9 @@ include $(VALOR_EXPT)/make/Make.include
 SBN_LIBRARIES =
 
 TGT = make_sbncode_minidst \
-      make_caf_minidst \
-      make_nd_caf_minidst \
       make_interaction_splines \
       make_flux_splines \
-			universe_variation_tweaks \
+      universe_variation_tweaks \
       run_tests \
       write_spectra_using_universes
 
@@ -73,24 +71,6 @@ ifdef GENIE
 	$(LD) $(LDFLAGS) make_interaction_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_interaction_splines
 else
 	@echo "Skipping make_interaction_splines due to no GENIE"
-endif
-
-# Generate CAFs based DSTs
-#
-make_caf_minidst: FORCE
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_caf_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
-else
-	@echo "Skipping make_caf_minidst due to no GENIE"
-endif
-
-make_nd_caf_minidst: FORCE
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_nd_caf_minidst.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_nd_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_nd_caf_minidst
-else
-	@echo "Skipping make_nd_caf_minidst due to no GENIE"
 endif
 
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation
