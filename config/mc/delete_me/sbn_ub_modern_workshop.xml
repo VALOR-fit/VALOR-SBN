@@ -71,7 +71,7 @@ Input MC templates
 Modelist
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<modelist> modelists/OscLowE.xml </modelist>
+<modelist> modelists/fine/OscLowE.xml </modelist>
 
 
 <!--

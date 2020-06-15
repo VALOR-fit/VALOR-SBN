@@ -61,7 +61,7 @@ Input MC templates
 Modelists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<modelist> modelists/OscLowE.xml </modelist>
+<modelist> modelists/fine/OscLowE.xml </modelist>
 <coarse_modelist> modelists/coarse//coarse_mode_list_SBN_BNB_FHC_nuelikeCChigh.xml </coarse_modelist>
 
 <!--
