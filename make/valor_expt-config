@@ -17,7 +17,7 @@ srcdir=$topdir/src
 rootdir=$topdir/root
 
 # VALOR/DUNE libraries:
-libs="-lValorDuneConv "
+libs=" "
 
 #VALOR/DUNE genie-dependent libraries
 glibs="-lValorDuneTesting"

@@ -14,11 +14,11 @@ include $(VALOR_EXPT)/make/Make.include
 
 # define composite targets
 #
-BUILD_TARGETS =    print-make-info     \
+BUILD_TARGETS =    print-make-info     		   \
 		   make-bin-lib-dir                \
 		   copy-scripts-to-bin             \
 		   build-libs                      \
-		   | copy-rootdict-to-lib          \
+		   copy-rootdict-to-lib            \
 		   build-apps   
 
 # define targets
@@ -40,10 +40,10 @@ copy-scripts-to-bin: | make-bin-lib-dir FORCE
 	cp ${VALOR_EXPT_TOPDIR}/root/valor             ${VALOR_EXPT_TOPDIR}/bin
 	cp ${VALOR_EXPT_TOPDIR}/root/pyvalor           ${VALOR_EXPT_TOPDIR}/bin
 
-build-conventions: | copy-scripts-to-bin FORCE
-	@echo " "
-	@echo "** Building Conventions package..."
-	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/sbn/Conventions;
+#build-conventions: | copy-scripts-to-bin FORCE
+#	@echo " "
+#	@echo "** Building Conventions package..."
+#	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/sbn/Conventions;
 
 build-testing: | copy-scripts-to-bin FORCE
 ifdef GENIE
@@ -55,7 +55,7 @@ else
 	@echo "** GENIE not set up - skipping Testing"
 endif
 
-build-libs: make-bin-lib-dir copy-scripts-to-bin build-conventions build-testing
+build-libs: make-bin-lib-dir copy-scripts-to-bin build-testing
  
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
