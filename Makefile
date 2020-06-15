@@ -1,6 +1,6 @@
 #
 # Main VALOR/SBN project Makefile.
-# 
+#
 # Author: Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
 #
 
@@ -14,17 +14,16 @@ include $(VALOR_EXPT)/make/Make.include
 
 # define composite targets
 #
-BUILD_TARGETS =    print-make-info     		   \
-		   make-bin-lib-dir                \
-		   copy-scripts-to-bin             \
-		   build-libs                      \
-		   copy-rootdict-to-lib            \
-		   build-apps   
+BUILD_TARGETS =  print-make-info          		   \
+		             make-bin-lib-dir                \
+		             copy-scripts-to-bin             \
+		             build-libs                      \
+		             build-apps
 
 # define targets
 
 all:     $(BUILD_TARGETS)
-install: 
+install:
 
 print-make-info: FORCE
 	@echo " "
@@ -40,11 +39,6 @@ copy-scripts-to-bin: | make-bin-lib-dir FORCE
 	cp ${VALOR_EXPT_TOPDIR}/root/valor             ${VALOR_EXPT_TOPDIR}/bin
 	cp ${VALOR_EXPT_TOPDIR}/root/pyvalor           ${VALOR_EXPT_TOPDIR}/bin
 
-#build-conventions: | copy-scripts-to-bin FORCE
-#	@echo " "
-#	@echo "** Building Conventions package..."
-#	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/sbn/Conventions;
-
 build-testing: | copy-scripts-to-bin FORCE
 ifdef GENIE
 	@echo " "
@@ -56,7 +50,7 @@ else
 endif
 
 build-libs: make-bin-lib-dir copy-scripts-to-bin build-testing
- 
+
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
 	@echo "** Building apps..."
@@ -69,17 +63,16 @@ make-bin-lib-dir: FORCE
 	[ -d bin ] || mkdir bin; chmod 755 bin;\
 	[ -d lib ] || mkdir lib; chmod 755 lib;
 
-copy-rootdict-to-lib: make-bin-lib-dir build-libs FORCE
-	@echo " "
-	@echo "** Copying ROOT dictionary PCM files to ${VALOR_EXPT_TOPDIR}/lib"
-	$(shell find "${VALOR_EXPT_TOPDIR}/src/sbn/" -name "_RootDict*_rdict.pcm" | xargs -n 1 -I{} cp {} "${VALOR_EXPT_TOPDIR}/lib/" )
+# copy-rootdict-to-lib: make-bin-lib-dir build-libs FORCE
+# 	@echo " "
+# 	@echo "** Copying ROOT dictionary PCM files to ${VALOR_EXPT_TOPDIR}/lib"
+# 	$(shell find "${VALOR_EXPT_TOPDIR}/src/sbn/" -name "_RootDict*_rdict.pcm" | xargs -n 1 -I{} cp {} "${VALOR_EXPT_TOPDIR}/lib/" )
 
 purge: FORCE
 	@echo " "
 	@echo "** Purging..."
-	$(MAKE) -C src/sbn/Apps             purge && \
-	$(MAKE) -C src/sbn/Conventions      purge && \
-	$(MAKE) -C src/sbn/Testing          purge; 
+	$(MAKE) -C src/sbn/Apps    purge && \
+	$(MAKE) -C src/sbn/Testing purge;
 
 clean: clean-files clean-dir clean-etc
 
@@ -89,24 +82,27 @@ clean-files: FORCE
 	@echo " "
 	@echo "** Cleaning..."
 	rm -f ${VALOR_EXPT_TOPDIR}/bin/valor_expt-config; \
-	$(MAKE) -C src/sbn/Apps            clean && \
-	$(MAKE) -C src/sbn/Conventions     clean && \
-	$(MAKE) -C src/sbn/Testing         clean;
-	cd $(VALOR_EXPT_TOPDIR);\
-    [ ! -d ./bin ] || rm ./bin/*;\
-	cd $(VALOR_EXPT_TOPDIR)
+	rm -f ${VALOR_EXPT_TOPDIR}/bin/pyvalor; \
+	rm -f ${VALOR_EXPT_TOPDIR}/bin/valor; \
+	$(MAKE) -C src/sbn/Apps    clean; \
+	$(MAKE) -C src/sbn/Testing clean; \
+	rm -f ${VALOR_EXPT_TOPDIR}/src/sbn/Conventions/Build.h; \
+	rm -f ${VALOR_EXPT_TOPDIR}/src/sbn/Conventions/Version.h; \
+	cd $(VALOR_EXPT_TOPDIR);
 
 clean-dir: FORCE
 	@echo "Deleting VALOR/SBN lib and bin directories...";\
 	cd $(VALOR_EXPT_TOPDIR);\
 	[ ! -d ./bin ] || rmdir ./bin;\
-	[ ! -d ./lib ] || rmdir ./lib 
+	[ ! -d ./lib ] || rmdir ./lib;\
+	[ ! -d ./src/sbn/Conventions ] || rmdir ./src/sbn/Conventions
 
 force-clean-dir: FORCE
 	@echo "Deleting VALOR/SBN lib and bin directories...";
 	cd $(VALOR_EXPT_TOPDIR);
-	-rm -rf ./bin;
-	-rm -rf ./lib 
+	rm -rf ./bin;
+	rm -rf ./lib;
+	rm -rf ./src/sbn/Conventions
 
 clean-etc: FORCE
 	cd $(VALOR_EXPT_TOPDIR); \
@@ -114,4 +110,3 @@ clean-etc: FORCE
 	cd ${VALOR_EXPT_TOPDIR}
 
 FORCE:
-
