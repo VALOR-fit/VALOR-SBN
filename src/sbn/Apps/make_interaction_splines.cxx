@@ -132,7 +132,7 @@ int main(int argc, char ** argv)
 
   // Read command line arguments
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_sbn_interaction_splines.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_interaction_splines.arg");
   VLOG("valor_sbn", pNOTICE) << arg;
 
   // Get arguments

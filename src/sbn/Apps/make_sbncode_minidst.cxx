@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
   using namespace valor;
 
   CmdLnArgList arg;
-  arg.Read(argc,argv, "$VALOR_EXPT/config/apps/valor_sbn.arg");
+  arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_sbncode_minidst.arg");
   LOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
