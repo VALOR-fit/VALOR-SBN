@@ -107,7 +107,7 @@ if(($match = grep(/--prefix/i, @ARGV)) > 0) {
   }
 }
 
-# Default --enable/--disable config options (for a minimal genie build)
+# Default --enable/--disable config options (for a minimal build)
 #
 my $opt_enable_debug              = "NO";
 my $opt_enable_low_level_messages = "NO";
@@ -193,19 +193,22 @@ if($have_fmwk_requirement) {
   print "No VALOR framework package version requirement\n\n";
 }
 
-# Work out the GENIE version
-if ($ENV{GENIE}) {
-  $GENIE_ENABLED = 1;
-  if (`genie-config --version` >= 3) {
-    $GENIE_VERSION = 3;
-  }
-  else {
-    $GENIE_VERSION = 2;
-  }
-}
-else {
-  $GENIE_ENABLED = 0;
-}
+# This in SDK now:
+#
+## Work out the GENIE version
+#if ($ENV{GENIE}) {
+#  $GENIE_ENABLED = 1;
+#  if (`genie-config --version` >= 3) {
+#    $GENIE_VERSION = 3;
+#  }
+#  else {
+#    $GENIE_VERSION = 2;
+#  }
+#}
+#else {
+#  $GENIE_ENABLED = 0;
+#}
+#
 
 #
 # Create a Conventions package, if none exists
@@ -255,10 +258,13 @@ if ($opt_enable_low_level_messages eq "YES") {
   print BLD_HEADER_FILE "#define VALOR_EXPT_LOW_LEVEL_MESG_ENABLED\n\n";
 }
 
-print BLD_HEADER_FILE "#define GENIE_ENABLED $GENIE_ENABLED\n";
-if ($GENIE_ENABLED) {
-  print BLD_HEADER_FILE "#define GENIE_VERSION $GENIE_VERSION\n\n";
-}
+# This is in SDK now:
+#
+#print BLD_HEADER_FILE "#define GENIE_ENABLED $GENIE_ENABLED\n";
+#if ($GENIE_ENABLED) {
+#  print BLD_HEADER_FILE "#define GENIE_VERSION $GENIE_VERSION\n\n";
+#}
+#
 
 print BLD_HEADER_FILE "#define SBNANALYSIS_ENABLED $SBNANALYSIS_ENABLED\n\n";
 

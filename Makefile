@@ -14,11 +14,11 @@ include $(VALOR_EXPT)/make/Make.include
 
 # define composite targets
 #
-BUILD_TARGETS =  print-make-info          		   \
-		             make-bin-lib-dir                \
-		             copy-scripts-to-bin             \
-		             build-libs                      \
-		             build-apps
+BUILD_TARGETS =  print-make-info      \
+		 make-bin-lib-dir     \
+		 copy-scripts-to-bin  \
+		 build-libs           \
+		 build-apps
 
 # define targets
 
@@ -39,17 +39,17 @@ copy-scripts-to-bin: | make-bin-lib-dir FORCE
 	cp ${VALOR_EXPT_TOPDIR}/root/valor             ${VALOR_EXPT_TOPDIR}/bin
 	cp ${VALOR_EXPT_TOPDIR}/root/pyvalor           ${VALOR_EXPT_TOPDIR}/bin
 
-build-testing: | copy-scripts-to-bin FORCE
-ifdef GENIE
-	@echo " "
-	@echo "** Building Testing package..."
-	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/sbn/Testing;
-else
-	@echo " "
-	@echo "** GENIE not set up - skipping Testing"
-endif
+#build-testing: | copy-scripts-to-bin FORCE
+#ifdef GENIE
+#	@echo " "
+#	@echo "** Building Testing package..."
+#	$(MAKE) -C ${VALOR_EXPT_TOPDIR}/src/sbn/Testing;
+#else
+#	@echo " "
+#	@echo "** GENIE not set up - skipping Testing"
+#endif
 
-build-libs: make-bin-lib-dir copy-scripts-to-bin build-testing
+build-libs: make-bin-lib-dir copy-scripts-to-bin 
 
 build-apps: make-bin-lib-dir build-libs copy-scripts-to-bin FORCE
 	@echo " "
@@ -71,8 +71,7 @@ make-bin-lib-dir: FORCE
 purge: FORCE
 	@echo " "
 	@echo "** Purging..."
-	$(MAKE) -C src/sbn/Apps    purge && \
-	$(MAKE) -C src/sbn/Testing purge;
+	$(MAKE) -C src/sbn/Apps    purge 
 
 clean: clean-files clean-dir clean-etc
 
@@ -85,7 +84,6 @@ clean-files: FORCE
 	rm -f ${VALOR_EXPT_TOPDIR}/bin/pyvalor; \
 	rm -f ${VALOR_EXPT_TOPDIR}/bin/valor; \
 	$(MAKE) -C src/sbn/Apps    clean; \
-	$(MAKE) -C src/sbn/Testing clean; \
 	rm -f ${VALOR_EXPT_TOPDIR}/src/sbn/Conventions/Build.h; \
 	rm -f ${VALOR_EXPT_TOPDIR}/src/sbn/Conventions/Version.h; \
 	cd $(VALOR_EXPT_TOPDIR);
