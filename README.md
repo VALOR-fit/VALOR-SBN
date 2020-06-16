@@ -97,17 +97,16 @@ A summary of all error parameterizations implemented in the VALOR SBN analysis i
 
 | Err param | Detector | Flux  | Interaction  | Comments  |
 |-----------|----------|-------|--------------|-----------|
-| 01a1 | n/a  | COV{loc,flav,Ereco} | COV{Ereco} | Last version of the 01 parameterization still at use while establishing this table on 04/2020; Used for the 01/2020 Fermilab PAC studies and the associated SBN-OSC WG tech note |
-| 02a1 | n/a  | COV{loc,flav,Etrue} | COV{Ereco} | **Temporary:** Stopgap implementation towards the full 02 parameterization; used at the 03/2020 SBN analysis workshop |
-| 02a2 | COV{det,sample,mode,Ereco} (**DET: 2020a1**) | as in 02a1 | as in 02a1 | **Temporary:** Adding first version of detector systematics on 02a1 |
-| 02b1 | n/a  | COV{loc,flav,Etrue} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
-| 02b2 | COV{det,sample,mode,Ereco} (**DET: 2020a1**) | COV{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
-| 02c1 | n/a  | COV{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
-| 02c2 | COV{det,sample,mode,Ereco} (**DET: 2020a1**) | COV{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
+| 01a1 | n/a  | CORLIN{loc,flav,Ereco} parameterization of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | COV{Ereco} | Last version of the 01 parameterization still at use while establishing this table on 04/2020; Used for the 01/2020 Fermilab PAC studies and the associated SBN-OSC WG tech note |
+| 02a1 | n/a  | CORLIN{loc,flav,Etrue} parameterization of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | CORLIN{Ereco} | **Temporary:** Stopgap implementation towards the full 02 parameterization; used at the 03/2020 SBN analysis workshop |
+| 02a2 | CORLIN{det,sample,mode,Ereco} (**DET: 2020a1**) | as in 02a1 | as in 02a1 | **Temporary:** Adding first version of detector systematics on 02a1 |
+| 02b1 | n/a  | CORLIN{loc,flav,Etrue} parameterization of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a)| RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
+| 02b2 | CORLIN{det,sample,mode,Ereco} (**DET: 2020a1**) | CORLIN{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
+| 02c1 | n/a  | CORLIN{loc,flav,Etrue} parameterization for hadroproduction multi-sim systematics and RESP1D parameterization of optics and hadronic interaction uni-sim systematics of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
+| 02c2 | CORLIN{det,sample,mode,Ereco} (**DET: 2020a1**) | CORLIN{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
 
-Methods:
- - **COV {'space'}**: Normalisation parameters acting on a set of bin in the specified 'space', with a corresponding error matrix.
- - **RESP1D{'params'}**: Non-linear 1D response functions acting on on MC templates bins.
+Internal systematic error parameterization methods:
+ - **CORLIN{'space'}**: A set of correlated linear responses, each of which is applied on a single bin of the specified 'space' that can be mapped to subsets of kinematic bins for specific MC templates.
+ - **RESP1D{'params'}**: Non-linear 1D response functions, each of which is acting on all (or a subset of) kinematic bins of selected MC templates.
 
-(**DET: 2020a1**) https://www.overleaf.com/read/nmxtrndczyks
 
