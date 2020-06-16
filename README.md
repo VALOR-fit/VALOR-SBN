@@ -103,7 +103,7 @@ A summary of all error parameterizations implemented in the VALOR SBN analysis i
 | 02b1 | n/a  | CORLIN{loc,flav,Etrue} parameterization of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a)| RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
 | 02b2 | CORLIN{det,sample,mode,Ereco} (**DET: 2020a1**) | CORLIN{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
 | 02c1 | n/a  | CORLIN{loc,flav,Etrue} parameterization for hadroproduction multi-sim systematics and RESP1D parameterization of optics and hadronic interaction uni-sim systematics of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
-| 02c2 | CORLIN{det,sample,mode,Ereco} (**DET: 2020a1**) | CORLIN{loc,flav,Etrue} for hadroproduction; RESP1D{optics} (**FLUX: REF?**) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
+| 02c2 | CORLIN{det,sample,mode,Ereco} (**DET: 2020a1**) | CORLIN{loc,flav,Etrue} parameterization for hadroproduction multi-sim systematics and RESP1D parameterization of optics and hadronic interaction uni-sim systematics of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | RESP1D{all} + ad hoc 50% MEC normalisation systematic (**XSEC: REF?**) | |
 
 Internal systematic error parameterization methods:
  - **CORLIN{'space'}**: A set of correlated linear responses, each of which is applied on a single bin of the specified 'space' that can be mapped to subsets of kinematic bins for specific MC templates.
