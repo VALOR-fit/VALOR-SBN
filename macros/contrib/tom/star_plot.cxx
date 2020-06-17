@@ -146,18 +146,19 @@ for(auto fit = 0; fit < ch.GetEntries(); fit++){
     }       
 }
 
-leg_All->Draw();
-
 // Option to draw stats ellipse
 if(draw_ellipse){
     // Get stats contour 
-    TFile *f_valor_numu_stats   = new TFile("/sbnd/app/users/tham/VALOR_master/star_plot/numu_disappearance_injection_stat-only.root");
+    TFile *f_valor_numu_stats   = new TFile("/sbnd/app/users/tham/VALOR_master/star_plot/output_contours_as_graphs_inclusion_2sided.root");
     TGraph *VALOR_SBN_1SC       = (TGraph*) f_valor_numu_stats->Get("contour_1sigma_lin_0;1");
 
     VALOR_SBN_1SC->SetLineStyle(kDotted);
     VALOR_SBN_1SC->Draw();
+    
+    leg_All->AddEntry(VALOR_SBN_1SC, "1#sigma CL stats", "l");
 } 
 
+leg_All->Draw();
 
 // Attempt to guess sensible values to draw a zoomed in version of the above plot. Probably need to adjust values.
 if(draw_zoomed_plot){
