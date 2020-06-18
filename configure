@@ -309,7 +309,7 @@ if(-e $MKCONF_FILENAME) {
   print "\n";
 }
 if(-e $BLD_HEADER_FILENAME) {
-  print "\nThe following config options were set in SBNBuild.h: \n";
+  print "\nThe following config options were set in $BLD_HEADER_FILENAME: \n";
   open(BUILDHR, "<$BLD_HEADER_FILENAME") or die("Can not read back the $BLD_HEADER_FILENAME");
   @buildh=<BUILDHR>;
   close(BUILDHR);
