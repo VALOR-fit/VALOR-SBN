@@ -87,7 +87,7 @@ SBNCode workshop-game samples, modern only from here on
 
 ### Information on VALOR/SBN systematic error parameterizations
 
-VALOR uses the following naming scheme for its **SBN systematic error parameterizations**. A number of different *generations* of error parameterizations can exist, each with several versions, each of which can have numerous minor revisons:
+VALOR uses the following naming scheme for its internal parameterizations of the **SBN systematic error models** (more information on which can be found in the VALOR SBN wiki [here](https://github.com/VALOR-fit/VALOR-SBN/wiki#sbn-systematics)). A number of different *generations* of error parameterizations can exist, each with several versions, each of which can have numerous minor revisons:
 <pre>
       [generation][version][revision]
 (eg.:          01        a         1)
