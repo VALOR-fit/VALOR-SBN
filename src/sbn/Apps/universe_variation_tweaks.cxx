@@ -29,7 +29,7 @@
 */
 //____________________________________________________________________________
 
-// root
+// ROOT
 #include "TCanvas.h"
 #include "TFile.h"
 #include "TLatex.h"
@@ -38,7 +38,7 @@
 #include "TObjArray.h"
 #include "TString.h"
 #include "TSystem.h"
-// fmwk
+// VALOR/SDK
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/CorrelatedSystematics.h"
@@ -46,7 +46,6 @@
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"

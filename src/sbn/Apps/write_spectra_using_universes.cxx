@@ -19,21 +19,20 @@
 */
 //____________________________________________________________________________ 
 
-// root
+// ROOT
 #include "TFile.h"
 #include "TSystem.h"
 #include "TObjArray.h"
 #include "TString.h"
 #include "TVirtualFitter.h"
 #include "TPRegexp.h"
-// fmwk
+//VALOR/SDK
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
