@@ -18,7 +18,6 @@ TGT = make_sbncode_minidst \
       make_interaction_splines \
       make_flux_splines \
       universe_variation_tweaks \
-      run_tests \
       write_spectra_using_universes
 
 all: $(TGT)
@@ -83,13 +82,6 @@ write_spectra_using_universes: FORCE
 	$(CXX) $(CXXFLAGS) -c write_spectra_using_universes.cxx $(INCLUDES)
 	$(LD) $(LDFLAGS) write_spectra_using_universes.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
 
-run_tests: FORCE
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c run_tests.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) run_tests.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-run_tests
-else
-	@echo "Skipping run_tests due to no GENIE"
-endif
 
 #################### CLEANING
 
@@ -103,7 +95,6 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_interaction_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
-	$(RM) $(VALOR_EXPT)/bin/valor_sbn-run_tests
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
 
 distclean: FORCE
@@ -112,7 +103,6 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_interaction_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-universe_variation_tweaks
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-run_tests
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-write_spectra_using_universes
 
 FORCE:
