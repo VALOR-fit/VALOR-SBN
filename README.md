@@ -106,7 +106,10 @@ A summary of all error parameterizations implemented in the VALOR SBN analysis i
 | 02c2 | CORLIN{det,sample,mode,Ereco}, as specified by the [effective 2020a detector error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Detector-systematics-2020a) | as in 02c1 | as in 02c1 | Adding detector effects in 02c1 |
 
 Internal systematic error parameterization methods:
- - **CORLIN{'space'}**: A set of correlated linear responses, each of which is applied on a single bin of the specified 'space' that can be mapped to subsets of kinematic bins for specific MC templates.
- - **RESP1D{'params'}**: Non-linear 1D response functions, each of which is acting on all (or a subset of) kinematic bins of selected MC templates.
+ - **CORLIN{'space'}**: A set of correlated normalization factors (linear response functions), each of which is applied on a single bin of the specified 'space' that can be mapped to subsets of kinematic bins for specific MC templates.
+ - **UNCORLIN{'space'}**: As above, but normalization factors are uncorrelated.
+ - **CORRESP1D{'params'}**: For each systematic parameter, non-linear 1D response functions are constructed, each of which is acting on all (or a subset of) kinematic bins of selected MC templates. The systematic parameters driving the non-linear response functions are correlated.
+ - **UNCORRESP1D{'params'}**: As above, but systematic parameters driving the non-linear response functions are uncorrelated.
+
 
 
