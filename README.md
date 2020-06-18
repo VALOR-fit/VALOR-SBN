@@ -40,10 +40,10 @@ where the conventions used for enumerating a) MC productions and b) VALOR/SBN sy
 These labels can be used for downloading all relevant data products (belonging to that set) using the '%**valor_data-fetch-set** --data-set=*label* ...' command.
 
 For more information on the VALOR data distribution scripts, see 
-https://github.com/VALOR-fit/VALOR-SDK/tree/master/scripts/data_distribution
+https://github.com/VALOR-fit/VALOR-SDK/tree/master/config/data_distribution
 
 A list of VALOR SBN data products can be found in:
-https://github.com/VALOR-fit/VALOR-SDK/blob/master/scripts/data_distribution/config/data_products/SBN.dat
+https://github.com/VALOR-fit/VALOR-SDK/blob/master/config/data_distribution/products/sbn.dat
 
 
 Several **analysis variants** can be built using the same set of data products.
