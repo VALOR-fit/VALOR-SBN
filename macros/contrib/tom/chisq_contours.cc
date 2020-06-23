@@ -23,7 +23,7 @@
 
 void chisq_contours(
     const char *file, 
-    bool numu = true
+    const char *sample = "mumu"         // choose the inputs sample - "mumu", "mue" or "ee"
 ){
 
 // Read in output file from fit_results_to_graphs.py
@@ -53,22 +53,41 @@ double zmin = chisq_surface->GetMinimum();
 gStyle->SetPalette(56);
 // Set log colour scale 
 gStyle->SetOptLogz();
+
+// Set plot title
+gStyle->SetOptTitle(1); // set hist title
+gStyle->SetTitleX(0.2); //title X location
+gStyle->SetTitleY(1); //title Y location
+gStyle->SetTitleW(0.6); //title width
+gStyle->SetTitleH(0.05); //title height
+gStyle->SetTitleBorderSize(0);
+
 // Get the number of different colours - pick a large number to get smooth transitions
 chisq_surface->SetContour(1000);
 
-if(numu){
-    // Set title and axis (z axis is for the colour)
+std::string sample_s = sample;
+if(sample_s == "mumu"){
+    // Set title and axis
     chisq_surface->SetTitle("#nu_{#mu} disappearance");
 
-    // Range should probably be (-3,0) for numu and (-4,0) for nue
     chisq_surface->GetXaxis()->SetRangeUser(xmin,xmax);
     chisq_surface->GetXaxis()->SetTitle("log_{10}(sin^{2}2#theta_{#mu#mu})");
 }
-else{
-    chisq_surface->SetTitle("#nu_e appearance");
+else if(sample_s == "mue"){
+    chisq_surface->SetTitle("#nu_{e} appearance");
     
     chisq_surface->GetXaxis()->SetRangeUser(xmin,xmax);
     chisq_surface->GetXaxis()->SetTitle("log_{10}(sin^{2}2#theta_{#mue})");
+}
+else if(sample_s == "ee"){
+    chisq_surface->SetTitle("#nu_{e} disappearance");
+    
+    chisq_surface->GetXaxis()->SetRangeUser(xmin,xmax);
+    chisq_surface->GetXaxis()->SetTitle("log_{10}(sin^{2}2#theta_{ee})");
+}
+else{
+    std::cerr << "Did not recognise input sample. Stopping" << std::endl;
+    exit(1);
 }
 
 chisq_surface->GetYaxis()->SetRangeUser(ymin,ymax);
@@ -111,8 +130,5 @@ leg->Draw("same");
 // Add label to colour legend
 TLatex *latex = new TLatex();
 latex->DrawLatexNDC(0.92,0.88,"#Delta#chi^{2}");
-
-
-
 
 }
