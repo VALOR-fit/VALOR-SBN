@@ -20,7 +20,7 @@ rootdir=$topdir/root
 libs=" "
 
 #VALOR/DUNE genie-dependent libraries
-glibs="-lValorDuneTesting"
+glibs=" "
 
 #
 # Usage

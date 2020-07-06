@@ -40,27 +40,28 @@ ifeq ("false",$(is_cln))
 endif
 
 #-------------------------------------------------------------------
-#                  VALOR APPLICATION-SPECIFIC CODE
+#                        VALOR EXPT CODE
 #-------------------------------------------------------------------
 
-# VALOR application release info
+# VALOR expt-specific code release info
 #
-VALOR_APP_VERSION  = $(shell awk '{print $0}' $(VALOR_EXPT_TOPDIR)/VERSION)
+VALOR_EXPT_VERSION  = $(shell awk '{print $0}' $(VALOR_EXPT_TOPDIR)/VERSION)
 
-# VALOR application include path
+# VALOR expt-specific include path
 #
-VALOR_APP_INCLUDES := -I$(VALOR_EXPT_TOPDIR)/src/
+VALOR_EXPT_INCLUDES := -I$(VALOR_EXPT_TOPDIR)/src/
 
-# VALOR application libraries
+# VALOR expt-specific libraries
 #
 ifeq ("false",$(is_cln))
-  VALOR_APP_LIBRARIES = $(shell valor_expt-config --libs)
+  VALOR_EXPT_LIBRARIES = $(shell valor_expt-config --libs)
 endif
 
 
 #-------------------------------------------------------------------
 #                      SBN analysis
 #-------------------------------------------------------------------
+
 ifeq (1,$(SBNANALYSIS_ENABLED))
   # This is wrong but it'll work until we have a proper directory to get these from
   SBNANALYSIS_INC = -I$(SBN_ANALYSIS_DIR)/../ 
@@ -75,30 +76,9 @@ ifeq (1,$(SBNANALYSIS_ENABLED))
 endif
 
 #-------------------------------------------------------------------
-#                            SUMMING-UP
+#                        GENIE
 #-------------------------------------------------------------------
 
-# includes and libraries needed to compile programs. 
-
-VALOR_INCLUDES := $(VALOR_APP_INCLUDES) \
-                  $(VALOR_FMWK_INCLUDES)
-
-INCLUDES  := $(VALOR_APP_INCLUDES) \
-             $(VALOR_FMWK_INCLUDES) \
-             $(LOG_INCLUDES) \
-             $(ROOT_INCLUDES) \
-             $(GSL_INCLUDES) \
-             $(LINUX_SYS_INCLUDES)
-
-LIBRARIES := $(SYSLIBS) \
-             $(VALOR_APP_LIBRARIES) \
-             $(VALOR_FMWK_LIBRARIES) \
-             $(LOG_LIBRARIES) \
-             $(ROOT_LIBRARIES) \
-             $(GSL_LIBRARIES) \
-             $(GPROF_LIBRARIES) \
-             $(OPT_WITH_MISC_LIBS)
-             
 # Add GENIE includes and libaries for apps that depend both on GENIE and VALOR
 # GENIE needs to be enabled to compile those apps
 #
@@ -116,10 +96,36 @@ ifdef GENIE
  GINCLUDES  := $(GINCLUDES) $(INCLUDES)
  GLIBRARIES := $(LIBRARIES) $(GLIBRARIES) $(LIBRARIES)
  ifeq ("false",$(is_cln))
-  VALOR_GLIBRARIES := $(shell valor_expt-config --glibs)
+  VALOR_GLIBRARIES := $(shell valor_fmwk-config --glibs)
  endif
 endif
 
+
+#-------------------------------------------------------------------
+#                      SUMMING-UP
+#-------------------------------------------------------------------
+
+# includes and libraries needed to compile programs. 
+
+VALOR_INCLUDES := $(VALOR_EXPT_INCLUDES) \
+                  $(VALOR_FMWK_INCLUDES)
+
+INCLUDES  := $(VALOR_EXPT_INCLUDES) \
+             $(VALOR_FMWK_INCLUDES) \
+             $(LOG_INCLUDES) \
+             $(ROOT_INCLUDES) \
+             $(GSL_INCLUDES) \
+             $(LINUX_SYS_INCLUDES)
+
+LIBRARIES := $(SYSLIBS) \
+             $(VALOR_EXPT_LIBRARIES) \
+             $(VALOR_FMWK_LIBRARIES) \
+             $(LOG_LIBRARIES) \
+             $(ROOT_LIBRARIES) \
+             $(GSL_LIBRARIES) \
+             $(GPROF_LIBRARIES) \
+             $(OPT_WITH_MISC_LIBS)
+             
 # Default compiler and preprocessor flags
 
 CXXFLAGS := $(ENV_CXXFLAGS) $(CXXFLAGS)
