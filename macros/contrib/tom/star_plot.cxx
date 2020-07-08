@@ -141,7 +141,6 @@ if(varied_params.size() > colors.size()){
 // Make plot for all systematics
 TCanvas *All = new TCanvas("All","All",1100,800);
 All->SetRightMargin(0.25);
-All->GetFrame()->SetY1(5);
 All->Draw();
 // Draw frame etc for canvas
 TH2F * hfAll = (TH2F*) All->DrawFrame(iparam->Value(px)+max_x*(-1.2), iparam->Value(py)+max_y*(-1.2), iparam->Value(px)+max_x*(1.2), iparam->Value(py)+max_y*(1.2));
