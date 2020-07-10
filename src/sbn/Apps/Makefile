@@ -75,12 +75,20 @@ endif
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation
 #
 universe_variation_tweaks: FORCE
-	$(CXX) $(CXXFLAGS) -c universe_variation_tweaks.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) universe_variation_tweaks.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c universe_variation_tweaks.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) universe_variation_tweaks.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
+else
+	@echo "Skipping universe_variation_tweaks due to no GENIE"
+endif
 
 write_spectra_using_universes: FORCE
-	$(CXX) $(CXXFLAGS) -c write_spectra_using_universes.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) write_spectra_using_universes.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c write_spectra_using_universes.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) write_spectra_using_universes.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
+else
+	@echo "Skipping write_spectra_using_universes due to no GENIE"
+endif
 
 
 #################### CLEANING
