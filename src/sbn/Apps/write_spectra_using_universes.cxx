@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
 
   LOG("valor_sbn", pNOTICE) << *Rnd::Instance();
 
-  int max_universes = 499;
+  int max_universes = 1000;
 
   // Get model & configure
   // Make an elements without reading the MC
@@ -165,30 +165,21 @@ int main(int argc, char ** argv)
     gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
     
   }
-  
-  // Generate predictions
-  // Setup some global information
-  FitParamList *fp = 0;                                                                                                                                                                 
-  fp = util::GetFitParameterList("eff_sterile_osc");  
+  // Now generate a random number combination for all parameters we're looping over 
+  // Do this for the requested number of universes and obviously only vary each 
+  // universe id up to the maximum available
+  std::map< std::string, std::vector<int> > syst_toy_universe;
+  for(const std::string s : param_list){
+    std::vector<int> universe_ids;
+    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
+    for(size_t itoy = 0; itoy < ntoys; ++itoy){
+      int iuni = rand() % max_universes;
+      LOG("universe_variation_tweaks",pDEBUG) << " Throw " << itoy << " will access universe " << iuni;
+      universe_ids.push_back(iuni);
+    }
+    syst_toy_universe.emplace(s,universe_ids);
+  }
 
-  const util::NameRegistry * nr = util::NameRegistry::Instance();                                                                                                                       
-  conv::PhysParamId_t param = nr->PhysParamFromString("dm41sq");                                                                                                                        
-  fp->Update(param,100);                                                                                                                                                                
-  fp->SetInitValue(param,100);                                                                                                                                                          
-  conv::PhysParamId_t param2 = nr->PhysParamFromString("sinsq2thMuE");                                                                                                                  
-  fp->Update(param2,1);                                                                                                                                                                 
-  fp->SetInitValue(param2,1);                                                                                                                                                           
-  conv::PhysParamId_t param3 = nr->PhysParamFromString("sinsq2thMuMu");                                                                                                                 
-  fp->Update(param3,0.0);                                                                                                                                                               
-  fp->SetInitValue(param3,0.0);                                                                                                                                                         
-  conv::PhysParamId_t param4 = nr->PhysParamFromString("sinsq2thEE");                                                                                                                   
-  fp->Update(param4,0.0);                                                                                                                                                               
-  fp->SetInitValue(param4,0.0);
-
-  PhysHypothesis ph(conv::kHypVoid);
-  Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
-  std::string write_opt = "pdfts_rf pdfcs_rf";
-  
   for (size_t itoy = 0 ; itoy < ntoys ; itoy++) {
 
     // Set our variations
