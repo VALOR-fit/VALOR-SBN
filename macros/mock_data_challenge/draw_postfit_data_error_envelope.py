@@ -181,6 +181,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_plots.extend([postfit_nom, hplus_postfit, hminus_postfit])
 
     for h in hists:
+      all_hists.append(h)
       h.UseCurrentStyle()
 
       h.GetXaxis().SetTitleSize(title_size)
@@ -269,6 +270,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
     envelope_fn = out_prefix+"_envelope."+img_format
     f_output = ROOT.TFile(envelope_fn,"RECREATE")
+
     if not f_output.IsOpen():
       print "Unable to open root file named: ", envelope_fn
     else:
