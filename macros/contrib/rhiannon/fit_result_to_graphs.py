@@ -82,6 +82,7 @@ def GetLoggedHist(filename,exclusion):
     true = ev.true_params
     x = true.Value(param_x)
     y = true.Value(param_y)
+
     if exclusion is False:
       print "Exclusion is false, setting inclusion parameters"
      # x = fp.CurrValue(param_x)
@@ -100,7 +101,6 @@ def GetLoggedHist(filename,exclusion):
     hist.SetBinContent(ibin,stat)
 
   return hist
-
 
 def MakeContour(h,dchisq):
   tmp_hist = h.Clone()
