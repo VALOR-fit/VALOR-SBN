@@ -2,7 +2,6 @@
 /*!
 
   \app       valor_dune-universe_variation_tweaks
-
   \brief     Vary the MC spectra by throwing sets of systematics
 
   \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
@@ -15,14 +14,12 @@
   --config              : Analysis configuration file [required]
   --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
 
-
   \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
   University of Liverpool & STFC Rutherford Appleton Laboratory
   Steve Dennis <s.r.dennis \at liverpool.ac.uk>
   University of Liverpool
 
   \created   October 2016
-
   \copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */
@@ -281,62 +278,12 @@ int main(int argc, char ** argv)
   if(util::IsReco(kv))
     LOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a reconstructed parameter";
 
-  std::string elem_readopt("nomc nosplines");
-  CompoundFitElements * elements = new CompoundFitElements();
-  elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
-  FitModelABC * model = elements->FitModel();
-  CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
-  assert(cm);
+  Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
+  LOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
   
-  GenericSingleSampleFitModel * gmodel = 0;
-  bool got_appropriate_model = false;
-  for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
-    if  (gmodel->GetDetector() == detector && 
-         gmodel->GetSample()   == sample) 
-      { got_appropriate_model = true; break; }
-  }
-  if (!got_appropriate_model) {
-    LOG("universe_variation_tweaks", pFATAL) << "Failed to identify appropriate fit model to get binning.";
-  }
-  LOG("universe_variation_tweaks", pINFO) << " Successfully accessed the relevant model for binning information";
-  
-  std::vector<std::string> systematics, file_systematics;
-  if (params_to_tweak == "proposal_xsec") {
-    systematics      = proposal_xsec;
-    file_systematics = proposal_xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
-    for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
-    }
-  }
-  else if (params_to_tweak == "OG_proposal_xsec") {
-    systematics      = OG_proposal_xsec;
-    file_systematics = OG_proposal_xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking OG_proposal_xsec systematics ";
-    for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
-    }
-  }
-  else if (params_to_tweak == "modern_xsec") {
-    systematics      = modern_xsec;
-    file_systematics = modern_xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking modern_xsec systematics ";
-    for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
-    }
-  }
-  else if (params_to_tweak == "flux") {
-    systematics      = flux_corr;
-    systematics.insert(systematics.end(), flux_uncorr.begin(), flux_uncorr.end());
-    file_systematics = flux_corr_short;
-    file_systematics.insert(file_systematics.end(), flux_uncorr_short.begin(), flux_uncorr_short.end());
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all flux systematics ";
-    for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
-    }
-  }
-  else if (params_to_tweak == "flux_corr") {
+  Sample_t   sample       = util::SampleFromString(arg_sample);
+  Detector_t detector     = util::DetectorFromString(arg_detector);
+
     systematics      = flux_corr;
     file_systematics = flux_corr_short;
     LOG("universe_variation_tweaks", pNOTICE) << " Tweaking correlated flux systematics ";
@@ -490,7 +437,6 @@ int main(int argc, char ** argv)
   
   LOG("universe_variation_tweaks", pINFO) << " About to enter analysis tree loop with " << nev << " entries";
 
-
   unsigned int accepted_events = 0;
   unsigned int skipped_events  = 0;
   unsigned int one_varied = 0;
@@ -503,7 +449,7 @@ int main(int argc, char ** argv)
   TH1D *h_weight_product_skipnom = new TH1D("h_weight_product_skipnom","",200,-1,3);
   for(int iev = 0; iev < nev; ++iev){
     analysis_tree->GetEntry(iev);
-
+    
     // Exposure for assumed data - Weight MC templates to that exposure
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
     double pot_wght = pot_weight*data_pot;
@@ -533,6 +479,7 @@ int main(int argc, char ** argv)
       int iuni = itoy;
 
       unsigned int n_varied = 0;
+      
       // Get the product of the 1 sigma weights for all sysematics
       for(const string &syst : systematics){
         // Get the total universe weight
@@ -599,7 +546,7 @@ int main(int argc, char ** argv)
     huni.at(itoy)->SetName(name.c_str());
   }
   LOG("universe_variation_tweaks", pINFO) << " Translated PDFs to histograms";
-
+  
   // Histograms to store the spectra for the default, +1 sigma and -1 sigma variations 
   // Setup the per-detector histograms for variations to determine sigma from nominal
   double max = -999.;
@@ -674,7 +621,6 @@ int main(int argc, char ** argv)
   std::cout << "Total number of events with exactly no variations             : " << skipped_events << std::endl;
   std::cout << "Total number of universes containing events with no variations: " << skipped_universe_ids.size() << std::endl;
   std::cout << "Total number of universes                                     : " << ntoys << std::endl;
-  
   
   time_t endrawtime;
   struct tm * endtimeinfo;
