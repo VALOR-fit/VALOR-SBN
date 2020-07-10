@@ -34,8 +34,8 @@ postfit_color = ROOT.kOrange-3
 postfit_line  = ROOT.kOrange+2
 
 data_style    = 1001 # Solid
-prefit_style  = 3244 # Hatched
-postfit_style = 1001 # Solid
+prefit_style  = 3004 # Hatched
+postfit_style = 3005 # Solid
 
 to3dp = "{0:.3f}"
 
@@ -254,7 +254,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       integrals.append(w.Integral())
 
     if det == '1':
-      max_y = max(wintegrals)*1.4
+      max_y = max(wintegrals)*2.0
     else:
       max_y = max(wintegrals)*1.2
 
@@ -278,13 +278,14 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_prefit:
       hplus_prefit.GetYaxis().SetRangeUser(1, max_y)
       hplus_prefit.GetYaxis().SetTitleOffset(title_offset)
+      hplus_prefit.SetLineColor(prefit_color)
+      hplus_prefit.SetLineStyle(1)
       hplus_prefit.Draw("AXIS same")
 
       env_graph_prefit.SetFillStyle(prefit_style)
       env_graph_prefit.SetFillColor(prefit_color)
       env_graph_prefit.SetLineWidth(0)
       env_graph_prefit.SetLineStyle(0)
-      env_graph_prefit.SetLineWidth(0)
       env_graph_prefit.SetMarkerStyle(ROOT.kFullSquare)
       env_graph_prefit.SetMarkerColor(prefit_color)
       env_graph_prefit.Draw("same2")
@@ -317,7 +318,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       env_graph_postfit.SetFillColor(postfit_color)
       env_graph_postfit.SetLineWidth(0)
       env_graph_postfit.SetLineStyle(0)
-      env_graph_postfit.SetLineWidth(0)
       env_graph_postfit.SetMarkerStyle(ROOT.kFullSquare)
       env_graph_postfit.SetMarkerColor(postfit_color)
       env_graph_postfit.Draw("same2")
@@ -326,6 +326,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_width.SetLineStyle(7)
       postfit_width.SetLineColor(postfit_line)
       postfit_width.Draw("same")
+
       if plot_prefit:
         prefit_width.SetLineStyle(5)
         prefit_width.Draw("same")
