@@ -2,7 +2,9 @@
 # .......................................................................................................
 config                               |   string       |  mandatory  |   -
 tag                                  |   string       |  optional   |   valor_spectra_universes
+output-location                      |   string       |  optional   |   . 
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
 syst-list                            |   string       |  optional   |   flux
+n-universes                          |   integer      |  optional   |   20
 first-universe                       |   integer      |  mandatory  |   0
-n-universes                          |   integer      |  mandatory  |   20
+n-toys                               |   integer      |  mandatory  |   100
