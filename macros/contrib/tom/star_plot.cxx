@@ -48,7 +48,7 @@ auto ee   = util::NameRegistry::Instance()->PhysParamFromString("sinsq2thEE");
 
 auto x_label = "";
 
-std::vector<Color_t> colors = {kBlack, kRed, kBlue, kMagenta+1,  kGreen+2, kOrange-1, kYellow+1, kCyan};
+std::vector<Color_t> colors = {kBlack, kRed, kBlue, kMagenta+1,  kGreen+2, kOrange-1, kYellow+1, kCyan, kGray+1};
 
 // vector to hold the params that were varied
 std::vector<int> varied_params;
@@ -140,18 +140,21 @@ if(varied_params.size() > colors.size()){
 
 // Make plot for all systematics
 TCanvas *All = new TCanvas("All","All",1100,800);
-All->SetRightMargin(0.25);
+All->SetRightMargin(0.28);
 All->Draw();
 // Draw frame etc for canvas
 TH2F * hfAll = (TH2F*) All->DrawFrame(iparam->Value(px)+max_x*(-1.2), iparam->Value(py)+max_y*(-1.2), iparam->Value(px)+max_x*(1.2), iparam->Value(py)+max_y*(1.2));
 
 hfAll->GetXaxis()->SetTitle(x_label);
+hfAll->GetXaxis()->SetTitleSize(0.04);
 hfAll->GetXaxis()->SetNdivisions(5, 5, kTRUE);
+hfAll->GetXaxis()->SetTitleOffset(1.3);
 
 hfAll->GetYaxis()->SetTitle("#Delta m^{2}_{41} (eV^{2})");
-hfAll->GetYaxis()->SetTitleOffset(1.1);
+hfAll->GetYaxis()->SetTitleOffset(1.5);
+hfAll->GetYaxis()->SetTitleSize(0.04);
 
-TLegend *leg_All = new TLegend(0.75,0.16,1,0.95);
+TLegend *leg_All = new TLegend(0.72,0.16,0.99,0.95);
 leg_All->SetHeader("Systematic","C"); 
 leg_All->SetFillStyle(0);
 //leg_All->SetBorderSize(0);
@@ -187,9 +190,19 @@ for(auto fit = 0; fit < ch.GetEntries(); fit++){
 
 // Option to draw stats ellipse
 if(draw_ellipse){
-    // Get stats contour 
-    TFile *f_valor_numu_stats   = new TFile("/sbnd/app/users/tham/VALOR_master/star_plot/output_contours_as_graphs_inclusion_2sided.root");
-    TGraph *VALOR_SBN_1SC       = (TGraph*) f_valor_numu_stats->Get("contour_1sigma_lin_0;1");
+    // Get stats contour
+    TFile *f_valor_stats_contour;
+    if(px == mumu){
+        f_valor_stats_contour = new TFile("/sbnd/app/users/tham/VALOR_master/star_plot/numu_disap_injection_stat.root");
+    }
+    else if(px == mue){
+        f_valor_stats_contour = new TFile("/some/path/.root");
+    }
+    else if(px == ee){
+        f_valor_stats_contour = new TFile("/some/path/.root");
+    }
+
+    TGraph *VALOR_SBN_1SC       = (TGraph*) f_valor_stats_contour->Get("contour_1sigma_lin_0;1");
 
     VALOR_SBN_1SC->SetLineStyle(kDotted);
     VALOR_SBN_1SC->Draw();
@@ -199,26 +212,27 @@ if(draw_ellipse){
 
 leg_All->Draw();
 
-
 // Attempt to guess sensible values to draw a zoomed in version of the above plot. Probably need to adjust values.
 if(draw_zoomed_plot){
-
-    // Get the min magnitude of arrow 
-    double min_mag = sqrt(min_x*min_x + min_y*min_y);
 
     // Factor to scale the min values by to try and make plot look sensible - can adjust this
     double N = 8; 
 
     TCanvas *Zoom = new TCanvas("Zoom","Zoom",1100,800);
-    Zoom->SetRightMargin(0.25);
+    Zoom->SetRightMargin(0.28);
     Zoom->Draw();
     // Draw frame etc for canvas
     TH2F * hfZoom = (TH2F*) Zoom->DrawFrame(iparam->Value(px)+min_x*(-N), iparam->Value(py)+min_y*(-N), iparam->Value(px)+min_x*(N), iparam->Value(py)+min_y*(N));
     hfZoom->GetXaxis()->SetTitle(x_label);
+    hfZoom->GetXaxis()->SetNdivisions(5, 5, kTRUE);
+    hfZoom->GetXaxis()->SetTitleSize(0.04);
+    hfZoom->GetXaxis()->SetTitleOffset(1.3);
     hfZoom->GetYaxis()->SetTitle("#Delta m^{2}_{41} (eV^{2})");
-    hfZoom->GetYaxis()->SetTitleOffset(1.1);
+    hfZoom->GetYaxis()->SetTitleOffset(1.5);
+    hfZoom->GetYaxis()->SetNdivisions(5, 5, kTRUE);
+    hfZoom->GetYaxis()->SetTitleSize(0.04);
 
-    TLegend *leg_Zoom = new TLegend(0.75,0.16,1,0.95);
+    TLegend *leg_Zoom = new TLegend(0.72,0.16,0.99,0.95);
     leg_Zoom->SetHeader("Systematic","C"); 
     leg_Zoom->SetFillStyle(0);
     //leg_Zoom->SetBorderSize(0);
@@ -228,12 +242,11 @@ if(draw_zoomed_plot){
     for(auto fit = 0; fit < ch.GetEntries(); fit++){
         ch.GetEntry(fit);
 
-        double mag = sqrt((iparam->Value(px) - gbfparam->BestFitValue(px)) * (iparam->Value(px) - gbfparam->BestFitValue(px)) 
-                        + (iparam->Value(py) - gbfparam->BestFitValue(py)) * (iparam->Value(py) - gbfparam->BestFitValue(py)));
-        
+        double diff_x = abs(iparam->Value(px) - gbfparam->BestFitValue(px));
+        double diff_y = abs(iparam->Value(py) - gbfparam->BestFitValue(py));
         for(auto i = 0; i < varied_params.size(); i++){
             
-            if(gbfparam->IsFixed(gbfparam->WhichParam(varied_params[i])) == true && mag < min_mag*(N-1)){
+            if(gbfparam->IsFixed(gbfparam->WhichParam(varied_params[i])) == true && diff_x < min_x*(N-1) && diff_y < min_y*(N-1)){
 
                 arr[fit] = new TArrow(iparam->Value(px), iparam->Value(py), gbfparam->BestFitValue(px), gbfparam->BestFitValue(py),0.01,"|>");
                 arr[fit]->SetFillColor(colors[i]);
