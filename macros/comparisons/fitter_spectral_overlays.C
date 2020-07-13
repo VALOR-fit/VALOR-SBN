@@ -13,9 +13,10 @@
 #include "TStyle.h"
 void fitter_spectral_overlays() {
 
-  TFile *f_val = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/dmsq_1e2_sinsqmumu_2e-3_hists.root","read");
-  TFile *f_sbn = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/SBNfit_dmsq_1e2_sinsq2mumu_2e-3_hists.root","read");
-  TFile *f_caf = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/CAFAna_dmsq_1e2_ss2thmm_2e-3.root","read");
+  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/dmsq_2_sinsqmumu_3e-3_hists.root","read");
+  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/SBNfit_sinsq_3e-3_dmsq_2.SBNspec.root","read");
+  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/SBNfit_CV.SBNspec.root","read");
+  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/CAFAna_dmsq_2_ss2thmm_3e-3.root","read");
 
   // Get the relevant histograms
   // VALOR
@@ -34,31 +35,63 @@ void fitter_spectral_overlays() {
   TH1D *caf_icarus_osc   = static_cast<TH1D*>(f_caf->Get("fd_total_osc"));
   TH1D *caf_icarus_unosc = static_cast<TH1D*>(f_caf->Get("fd_total_unosc"));
 
-  // SBNFit
-  TH1D *sbn_sbnd_cc   = static_cast<TH1D*>(f_sbn->Get("nu_SBND_numu_cc"));
-  TH1D *sbn_sbnd_nc   = static_cast<TH1D*>(f_sbn->Get("nu_SBND_numu_nc"));
-  TH1D *sbn_uboone_cc = static_cast<TH1D*>(f_sbn->Get("nu_uBooNE_numu_cc"));
-  TH1D *sbn_uboone_nc = static_cast<TH1D*>(f_sbn->Get("nu_uBooNE_numu_nc"));
-  TH1D *sbn_icarus_cc = static_cast<TH1D*>(f_sbn->Get("nu_ICARUS_numu_cc"));
-  TH1D *sbn_icarus_nc = static_cast<TH1D*>(f_sbn->Get("nu_ICARUS_numu_nc"));
+  // SBNFit osc
+  TH1D *sbn_sbnd_cc_osc    = static_cast<TH1D*>(f_sbn_osc->Get("nu_SBND_numu_cc"));
+  TH1D *sbn_sbnd_nc_osc    = static_cast<TH1D*>(f_sbn_osc->Get("nu_SBND_numu_nc"));
+  TH1D *sbn_sbnd_nue_osc   = static_cast<TH1D*>(f_sbn_osc->Get("nu_SBND_numu_nue"));
+  TH1D *sbn_uboone_cc_osc  = static_cast<TH1D*>(f_sbn_osc->Get("nu_uBooNE_numu_cc"));
+  TH1D *sbn_uboone_nc_osc  = static_cast<TH1D*>(f_sbn_osc->Get("nu_uBooNE_numu_nc"));
+  TH1D *sbn_uboone_nue_osc = static_cast<TH1D*>(f_sbn_osc->Get("nu_uBooNE_numu_nue"));
+  TH1D *sbn_icarus_cc_osc  = static_cast<TH1D*>(f_sbn_osc->Get("nu_ICARUS_numu_cc"));
+  TH1D *sbn_icarus_nc_osc  = static_cast<TH1D*>(f_sbn_osc->Get("nu_ICARUS_numu_nc"));
+  TH1D *sbn_icarus_nue_osc = static_cast<TH1D*>(f_sbn_osc->Get("nu_ICARUS_numu_nue"));
+
+  // SBNFit unosc
+  TH1D *sbn_sbnd_cc_unosc    = static_cast<TH1D*>(f_sbn_unosc->Get("nu_SBND_numu_cc"));
+  TH1D *sbn_sbnd_nc_unosc    = static_cast<TH1D*>(f_sbn_unosc->Get("nu_SBND_numu_nc"));
+  TH1D *sbn_sbnd_nue_unosc   = static_cast<TH1D*>(f_sbn_unosc->Get("nu_SBND_numu_nue"));
+  TH1D *sbn_uboone_cc_unosc  = static_cast<TH1D*>(f_sbn_unosc->Get("nu_uBooNE_numu_cc"));
+  TH1D *sbn_uboone_nc_unosc  = static_cast<TH1D*>(f_sbn_unosc->Get("nu_uBooNE_numu_nc"));
+  TH1D *sbn_uboone_nue_unosc = static_cast<TH1D*>(f_sbn_unosc->Get("nu_uBooNE_numu_nue"));
+  TH1D *sbn_icarus_cc_unosc  = static_cast<TH1D*>(f_sbn_unosc->Get("nu_ICARUS_numu_cc"));
+  TH1D *sbn_icarus_nc_unosc  = static_cast<TH1D*>(f_sbn_unosc->Get("nu_ICARUS_numu_nc"));
+  TH1D *sbn_icarus_nue_unosc = static_cast<TH1D*>(f_sbn_unosc->Get("nu_ICARUS_numu_nue"));
 
   // Now get the totals
-  TH1D *sbn_sbnd_osc_noscale    = static_cast<TH1D*>(sbn_sbnd_cc->Clone("nu_SBND_numu_osc"));
-  TH1D *sbn_uboone_osc_noscale  = static_cast<TH1D*>(sbn_uboone_cc->Clone("nu_uBooNE_numu_osc"));
-  TH1D *sbn_icarus_osc_noscale  = static_cast<TH1D*>(sbn_icarus_cc->Clone("nu_ICARUS_numu_osc"));
-  sbn_sbnd_osc_noscale->Add(sbn_sbnd_nc);
-  sbn_uboone_osc_noscale->Add(sbn_uboone_nc);
-  sbn_icarus_osc_noscale->Add(sbn_icarus_nc);
+  TH1D *sbn_sbnd_osc_noscale     = static_cast<TH1D*>(sbn_sbnd_cc_osc->Clone("nu_SBND_numu_osc"));
+  TH1D *sbn_uboone_osc_noscale   = static_cast<TH1D*>(sbn_uboone_cc_osc->Clone("nu_uBooNE_numu_osc"));
+  TH1D *sbn_icarus_osc_noscale   = static_cast<TH1D*>(sbn_icarus_cc_osc->Clone("nu_ICARUS_numu_osc"));
+  TH1D *sbn_sbnd_unosc_noscale   = static_cast<TH1D*>(sbn_sbnd_cc_unosc->Clone("nu_SBND_numu_unosc"));
+  TH1D *sbn_uboone_unosc_noscale = static_cast<TH1D*>(sbn_uboone_cc_unosc->Clone("nu_uBooNE_numu_unosc"));
+  TH1D *sbn_icarus_unosc_noscale = static_cast<TH1D*>(sbn_icarus_cc_unosc->Clone("nu_ICARUS_numu_unosc"));
+
+  sbn_sbnd_osc_noscale->Add(sbn_sbnd_nc_osc);
+  sbn_uboone_osc_noscale->Add(sbn_uboone_nc_osc);
+  sbn_icarus_osc_noscale->Add(sbn_icarus_nc_osc);
+  sbn_sbnd_unosc_noscale->Add(sbn_sbnd_nc_unosc);
+  sbn_uboone_unosc_noscale->Add(sbn_uboone_nc_unosc);
+  sbn_icarus_unosc_noscale->Add(sbn_icarus_nc_unosc);
+
+  sbn_sbnd_osc_noscale->Add(sbn_sbnd_nue_osc);
+  sbn_uboone_osc_noscale->Add(sbn_uboone_nue_osc);
+  sbn_icarus_osc_noscale->Add(sbn_icarus_nue_osc);
+  sbn_sbnd_unosc_noscale->Add(sbn_sbnd_nue_unosc);
+  sbn_uboone_unosc_noscale->Add(sbn_uboone_nue_unosc);
+  sbn_icarus_unosc_noscale->Add(sbn_icarus_nue_unosc);
 
   // Scale the SBNFit hist by width
-  TH1D * sbn_sbnd_osc   = new TH1D(*sbn_sbnd_osc_noscale);
-  TH1D * sbn_uboone_osc = new TH1D(*sbn_uboone_osc_noscale);
-  TH1D * sbn_icarus_osc = new TH1D(*sbn_icarus_osc_noscale);
+  TH1D * sbn_sbnd_osc     = new TH1D(*sbn_sbnd_osc_noscale);
+  TH1D * sbn_uboone_osc   = new TH1D(*sbn_uboone_osc_noscale);
+  TH1D * sbn_icarus_osc   = new TH1D(*sbn_icarus_osc_noscale);
+  TH1D * sbn_sbnd_unosc   = new TH1D(*sbn_sbnd_unosc_noscale);
+  TH1D * sbn_uboone_unosc = new TH1D(*sbn_uboone_unosc_noscale);
+  TH1D * sbn_icarus_unosc = new TH1D(*sbn_icarus_unosc_noscale);
   
   // Get a vector of each fitter's histograms
-  std::vector<TH1D*> sbnfit = {sbn_sbnd_osc, sbn_uboone_osc, sbn_icarus_osc};
-  std::vector<TH1D*> cafana = {caf_sbnd_osc, caf_uboone_osc, caf_icarus_osc};
-  std::vector<TH1D*> valor  = {val_sbnd_osc, val_uboone_osc, val_icarus_osc};
+  std::vector<TH1D*> sbnfit = {sbn_sbnd_osc, sbn_uboone_osc, sbn_icarus_osc, sbn_sbnd_unosc, sbn_uboone_unosc, sbn_icarus_unosc};
+  std::vector<TH1D*> cafana = {caf_sbnd_osc, caf_uboone_osc, caf_icarus_osc, caf_sbnd_unosc, caf_uboone_unosc, caf_icarus_unosc};
+  std::vector<TH1D*> valor  = {val_sbnd_osc, val_uboone_osc, val_icarus_osc, val_sbnd_unosc, val_uboone_unosc, val_icarus_unosc};
+
   for(TH1D* hist : sbnfit){
     for (int ibin = 1 ; ibin <= hist->GetXaxis()->GetNbins(); ibin++) {
       double old_bin_content = hist->GetBinContent(ibin);
@@ -115,6 +148,7 @@ void fitter_spectral_overlays() {
   leg->SetFillStyle(0);
   leg->SetLineWidth(0);
 
+  // Oscillated
   // SBND
   leg->AddEntry(caf_sbnd_osc,"CAFAna SBND", "l");
   leg->AddEntry(sbn_sbnd_osc,"SBNFit SBND", "l");
@@ -127,8 +161,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_sbnd_dmsq-1e2_sinsqmumu-2e-3.root");
-  c1->SaveAs("fitter_overlays_sbnd_dmsq-1e2_sinsqmumu-2e-3.png");
+  c1->SaveAs("fitter_overlays_sbnd_dmsq-2_sinsqmumu-3e-3.root");
+  c1->SaveAs("fitter_overlays_sbnd_dmsq-2_sinsqmumu-3e-3.png");
   c1->Clear();
   leg->Clear();
 
@@ -144,8 +178,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_uboone_dmsq-1e2_sinsqmumu-2e-3.root");
-  c1->SaveAs("fitter_overlays_uboone_dmsq-1e2_sinsqmumu-2e-3.png");
+  c1->SaveAs("fitter_overlays_uboone_dmsq-2_sinsqmumu-3e-3.root");
+  c1->SaveAs("fitter_overlays_uboone_dmsq-2_sinsqmumu-3e-3.png");
   c1->Clear();
   leg->Clear();
 
@@ -161,8 +195,60 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_icarus_dmsq-1e2_sinsqmumu-2e-3.root");
-  c1->SaveAs("fitter_overlays_icarus_dmsq-1e2_sinsqmumu-2e-3.png");
+  c1->SaveAs("fitter_overlays_icarus_dmsq-2_sinsqmumu-3e-3.root");
+  c1->SaveAs("fitter_overlays_icarus_dmsq-2_sinsqmumu-3e-3.png");
+  c1->Clear();
+  leg->Clear();
+  
+  // Unoscillated
+  // SBND
+  leg->AddEntry(caf_sbnd_unosc,"CAFAna SBND", "l");
+  leg->AddEntry(sbn_sbnd_unosc,"SBNFit SBND", "l");
+  leg->AddEntry(val_sbnd_unosc,"VALOR SBND", "l");
+ 
+  // Draw
+  caf_sbnd_unosc->Draw();
+  sbn_sbnd_unosc->Draw("same");
+  val_sbnd_unosc->Draw("same"); 
+  leg->Draw("same");
+  
+  // Add label to colour legend
+  c1->SaveAs("fitter_overlays_sbnd_unoscillated.root");
+  c1->SaveAs("fitter_overlays_sbnd_unoscillated.png");
+  c1->Clear();
+  leg->Clear();
+
+  // MicroBooNE
+  leg->AddEntry(caf_uboone_unosc,"CAFAna #muBooNE", "l");
+  leg->AddEntry(sbn_uboone_unosc,"SBNFit #muBooNE", "l");
+  leg->AddEntry(val_uboone_unosc,"VALOR #muBooNE", "l");
+ 
+  // Draw
+  caf_uboone_unosc->Draw();
+  sbn_uboone_unosc->Draw("same");
+  val_uboone_unosc->Draw("same"); 
+  leg->Draw("same");
+  
+  // Add label to colour legend
+  c1->SaveAs("fitter_overlays_uboone_unoscillated.root");
+  c1->SaveAs("fitter_overlays_uboone_unoscillated.png");
+  c1->Clear();
+  leg->Clear();
+
+  // ICARUS
+  leg->AddEntry(caf_icarus_unosc,"CAFAna ICARUS", "l");
+  leg->AddEntry(sbn_icarus_unosc,"SBNFit ICARUS", "l");
+  leg->AddEntry(val_icarus_unosc,"VALOR ICARUS", "l");
+ 
+  // Draw
+  caf_icarus_unosc->Draw();
+  sbn_icarus_unosc->Draw("same");
+  val_icarus_unosc->Draw("same"); 
+  leg->Draw("same");
+  
+  // Add label to colour legend
+  c1->SaveAs("fitter_overlays_icarus_unoscillated.root");
+  c1->SaveAs("fitter_overlays_icarus_unoscillated.png");
   c1->Clear();
   leg->Clear();
 }
