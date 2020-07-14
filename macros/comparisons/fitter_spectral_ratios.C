@@ -13,10 +13,10 @@
 #include "TStyle.h"
 void fitter_spectral_ratios() {
 
-  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/dmsq_1e2_sinsqmumu_2e-3_hists.root","read");
-  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/SBNfit_sinsq_2e-3_dmsq_100.SBNspec.root","read");
-  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/SBNfit_CV.SBNspec.root","read");
-  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/CAFAna_dmsq_1e2_ss2thmm_2e-3.root","read");
+  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_1e2_sinsq2thmumu_2e-3_hists.root","read");
+  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_2e-3_dmsq_1e2.SBNspec.root","read");
+  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_CV.SBNspec.root","read");
+  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_1e2_ss2thmm_2e-3.root","read");
 
   // Get the relevant histograms
   // VALOR
@@ -114,8 +114,6 @@ void fitter_spectral_ratios() {
   val_caf_uboone_unosc->Divide(caf_uboone_unosc);
   val_caf_icarus_unosc->Divide(caf_icarus_unosc);
 
-  std::cout << " Integrated ratio of VALOR/CAFAna event rate in SBND: " << val_caf_sbnd_unosc->Integral("width") << std::endl;
-
   // Then, SBNFit/CAFAna unoscillated
   TH1D *sbn_caf_sbnd_unosc   = static_cast<TH1D*>(sbn_sbnd_unosc  ->Clone("sbn_caf_sbnd_unosc  "));
   TH1D *sbn_caf_uboone_unosc = static_cast<TH1D*>(sbn_uboone_unosc->Clone("sbn_caf_uboone_unosc"));
@@ -125,8 +123,6 @@ void fitter_spectral_ratios() {
   sbn_caf_uboone_unosc->Divide(caf_uboone_unosc);
   sbn_caf_icarus_unosc->Divide(caf_icarus_unosc);
 
-  std::cout << " Integrated ratio of SBNFit/CAFAna event rate in SBND: " << sbn_caf_sbnd_unosc->Integral("width") << std::endl;
-
   // Then, SBNFit/valor unoscillated
   TH1D *sbn_val_sbnd_unosc   = static_cast<TH1D*>(sbn_sbnd_unosc  ->Clone("sbn_val_sbnd_unosc  "));
   TH1D *sbn_val_uboone_unosc = static_cast<TH1D*>(sbn_uboone_unosc->Clone("sbn_val_uboone_unosc"));
@@ -135,8 +131,6 @@ void fitter_spectral_ratios() {
   sbn_val_sbnd_unosc  ->Divide(val_sbnd_unosc  );
   sbn_val_uboone_unosc->Divide(val_uboone_unosc);
   sbn_val_icarus_unosc->Divide(val_icarus_unosc);
-
-  std::cout << " Integrated ratio of SBNFit/VALOR event rate in SBND: " << sbn_val_sbnd_unosc->Integral("width") << std::endl;
 
   // 
   // OSCILLATED
@@ -228,6 +222,90 @@ void fitter_spectral_ratios() {
   sbn_val_osc_unosc_uboone->Divide(val_osc_unosc_uboone);
   sbn_val_osc_unosc_icarus->Divide(val_osc_unosc_icarus);
 
+  //
+  // OSCILLATED RATE DIFFERENCES
+  //
+  // VALOR difference for the denominator
+  TH1D *val_diff_sbnd   = static_cast<TH1D*>(val_sbnd_unosc  ->Clone("val_diff_sbnd  "));
+  TH1D *val_diff_uboone = static_cast<TH1D*>(val_uboone_unosc->Clone("val_diff_uboone"));
+  TH1D *val_diff_icarus = static_cast<TH1D*>(val_icarus_unosc->Clone("val_diff_icarus"));
+
+  val_diff_sbnd  ->Add(val_sbnd_osc,  -1);
+  val_diff_uboone->Add(val_uboone_osc,-1);
+  val_diff_icarus->Add(val_icarus_osc,-1);
+
+  // SBNFit  difference for the denominator
+  TH1D *sbn_diff_sbnd   = static_cast<TH1D*>(sbn_sbnd_unosc  ->Clone("sbn_diff_sbnd  "));
+  TH1D *sbn_diff_uboone = static_cast<TH1D*>(sbn_uboone_unosc->Clone("sbn_diff_uboone"));
+  TH1D *sbn_diff_icarus = static_cast<TH1D*>(sbn_icarus_unosc->Clone("sbn_diff_icarus"));
+
+  sbn_diff_sbnd  ->Add(sbn_sbnd_osc,  -1);
+  sbn_diff_uboone->Add(sbn_uboone_osc,-1);
+  sbn_diff_icarus->Add(sbn_icarus_osc,-1);
+
+  // CAFAna difference for the denominator
+  TH1D *caf_diff_sbnd   = static_cast<TH1D*>(caf_sbnd_unosc  ->Clone("caf_diff_sbnd  "));
+  TH1D *caf_diff_uboone = static_cast<TH1D*>(caf_uboone_unosc->Clone("caf_diff_uboone"));
+  TH1D *caf_diff_icarus = static_cast<TH1D*>(caf_icarus_unosc->Clone("caf_diff_icarus"));
+
+  caf_diff_sbnd  ->Add(caf_sbnd_osc,  -1);
+  caf_diff_uboone->Add(caf_uboone_osc,-1);
+  caf_diff_icarus->Add(caf_icarus_osc,-1);
+
+  // VALOR-CAFAna difference
+  TH1D *val_caf_diff_sbnd_osc   = static_cast<TH1D*>(val_sbnd_osc  ->Clone("val_caf_diff_sbnd_osc  "));
+  TH1D *val_caf_diff_uboone_osc = static_cast<TH1D*>(val_uboone_osc->Clone("val_caf_diff_uboone_osc"));
+  TH1D *val_caf_diff_icarus_osc = static_cast<TH1D*>(val_icarus_osc->Clone("val_caf_diff_icarus_osc"));
+  
+  val_caf_diff_sbnd_osc  ->Add(caf_sbnd_osc,   -1);
+  val_caf_diff_uboone_osc->Add(caf_uboone_osc, -1);
+  val_caf_diff_icarus_osc->Add(caf_icarus_osc, -1);
+
+  TH1D *val_caf_diff_sbnd   = static_cast<TH1D*>(val_caf_diff_sbnd_osc  ->Clone("val_caf_diff_sbnd  "));
+  TH1D *val_caf_diff_uboone = static_cast<TH1D*>(val_caf_diff_uboone_osc->Clone("val_caf_diff_uboone"));
+  TH1D *val_caf_diff_icarus = static_cast<TH1D*>(val_caf_diff_icarus_osc->Clone("val_caf_diff_icarus"));
+
+  val_caf_diff_sbnd  ->Divide(val_diff_sbnd);
+  val_caf_diff_uboone->Divide(val_diff_uboone);
+  val_caf_diff_icarus->Divide(val_diff_icarus);
+
+  // VALOR-SBNFit difference
+  TH1D *val_sbn_diff_sbnd_osc   = static_cast<TH1D*>(val_sbnd_osc  ->Clone("val_sbn_diff_sbnd_osc  "));
+  TH1D *val_sbn_diff_uboone_osc = static_cast<TH1D*>(val_uboone_osc->Clone("val_sbn_diff_uboone_osc"));
+  TH1D *val_sbn_diff_icarus_osc = static_cast<TH1D*>(val_icarus_osc->Clone("val_sbn_diff_icarus_osc"));
+  
+  val_sbn_diff_sbnd_osc  ->Add(sbn_sbnd_osc,   -1);
+  val_sbn_diff_uboone_osc->Add(sbn_uboone_osc, -1);
+  val_sbn_diff_icarus_osc->Add(sbn_icarus_osc, -1);
+
+  TH1D *val_sbn_diff_sbnd   = static_cast<TH1D*>(val_sbn_diff_sbnd_osc  ->Clone("val_sbn_diff_sbnd  "));
+  TH1D *val_sbn_diff_uboone = static_cast<TH1D*>(val_sbn_diff_uboone_osc->Clone("val_sbn_diff_uboone"));
+  TH1D *val_sbn_diff_icarus = static_cast<TH1D*>(val_sbn_diff_icarus_osc->Clone("val_sbn_diff_icarus"));
+
+  val_sbn_diff_sbnd  ->Divide(val_diff_sbnd);
+  val_sbn_diff_uboone->Divide(val_diff_uboone);
+  val_sbn_diff_icarus->Divide(val_diff_icarus);
+
+  // SBNFit-CAFAna difference
+  TH1D *sbn_caf_diff_sbnd_osc   = static_cast<TH1D*>(sbn_sbnd_osc  ->Clone("sbn_caf_diff_sbnd_osc  "));
+  TH1D *sbn_caf_diff_uboone_osc = static_cast<TH1D*>(sbn_uboone_osc->Clone("sbn_caf_diff_uboone_osc"));
+  TH1D *sbn_caf_diff_icarus_osc = static_cast<TH1D*>(sbn_icarus_osc->Clone("sbn_caf_diff_icarus_osc"));
+  
+  sbn_caf_diff_sbnd_osc  ->Add(caf_sbnd_osc,   -1);
+  sbn_caf_diff_uboone_osc->Add(caf_uboone_osc, -1);
+  sbn_caf_diff_icarus_osc->Add(caf_icarus_osc, -1);
+
+  TH1D *sbn_caf_diff_sbnd   = static_cast<TH1D*>(sbn_caf_diff_sbnd_osc  ->Clone("sbn_caf_diff_sbnd  "));
+  TH1D *sbn_caf_diff_uboone = static_cast<TH1D*>(sbn_caf_diff_uboone_osc->Clone("sbn_caf_diff_uboone"));
+  TH1D *sbn_caf_diff_icarus = static_cast<TH1D*>(sbn_caf_diff_icarus_osc->Clone("sbn_caf_diff_icarus"));
+
+  sbn_caf_diff_sbnd  ->Divide(val_diff_sbnd);
+  sbn_caf_diff_uboone->Divide(val_diff_uboone);
+  sbn_caf_diff_icarus->Divide(val_diff_icarus);
+
+  val_diff_sbnd->Divide(sbn_diff_sbnd);
+  val_diff_sbnd->Draw("hist");
+
   // Put them in relevant vectors for ease of formatting
   std::vector<TH1D*> unosc_ratios1  = {val_caf_sbnd_unosc, val_caf_uboone_unosc, val_caf_icarus_unosc};
   std::vector<TH1D*> unosc_ratios2  = {sbn_caf_sbnd_unosc, sbn_caf_uboone_unosc, sbn_caf_icarus_unosc};
@@ -245,6 +323,10 @@ void fitter_spectral_ratios() {
   std::vector<TH1D*> double_ratios2 = {sbn_caf_osc_unosc_sbnd, sbn_caf_osc_unosc_uboone, sbn_caf_osc_unosc_icarus};
   std::vector<TH1D*> double_ratios3 = {sbn_val_osc_unosc_sbnd, sbn_val_osc_unosc_uboone, sbn_val_osc_unosc_icarus};
 
+  std::vector<TH1D*> osc_diffs1     = {val_caf_diff_sbnd, val_caf_diff_uboone, val_caf_diff_icarus};
+  std::vector<TH1D*> osc_diffs2     = {sbn_caf_diff_sbnd, sbn_caf_diff_uboone, sbn_caf_diff_icarus};
+  std::vector<TH1D*> osc_diffs3     = {val_sbn_diff_sbnd, val_sbn_diff_uboone, val_sbn_diff_icarus};
+
   // Now format the histograms
   for(unsigned int i = 0; i < unosc_ratios1.size(); ++i){
 
@@ -257,6 +339,9 @@ void fitter_spectral_ratios() {
     double_ratios1 [i]->SetLineColor(kAzure+7);
     double_ratios2 [i]->SetLineColor(kPink+5);
     double_ratios3 [i]->SetLineColor(kOrange+1);
+    osc_diffs1     [i]->SetLineColor(kAzure+7);
+    osc_diffs2     [i]->SetLineColor(kPink+5);
+    osc_diffs3     [i]->SetLineColor(kOrange+1);
 
     unosc_ratios1  [i]->SetLineWidth(2);
     unosc_ratios2  [i]->SetLineWidth(2);
@@ -267,6 +352,9 @@ void fitter_spectral_ratios() {
     double_ratios1 [i]->SetLineWidth(2);
     double_ratios2 [i]->SetLineWidth(2);
     double_ratios3 [i]->SetLineWidth(2);
+    osc_diffs1     [i]->SetLineWidth(2);
+    osc_diffs2     [i]->SetLineWidth(2);
+    osc_diffs3     [i]->SetLineWidth(2);
 
     unosc_ratios1  [i]->SetLineStyle(2);
     unosc_ratios2  [i]->SetLineStyle(5);
@@ -277,6 +365,9 @@ void fitter_spectral_ratios() {
     double_ratios1 [i]->SetLineStyle(2);
     double_ratios2 [i]->SetLineStyle(5);
     double_ratios3 [i]->SetLineStyle(9);
+    osc_diffs1     [i]->SetLineStyle(2);
+    osc_diffs2     [i]->SetLineStyle(5);
+    osc_diffs3     [i]->SetLineStyle(9);
   
     unosc_ratios1[i]->SetStats(0);
     unosc_ratios1[i]->SetTitle("");
@@ -328,6 +419,24 @@ void fitter_spectral_ratios() {
     double_ratios1[i]->GetYaxis()->SetTitleOffset(1.8);
     double_ratios1[i]->GetXaxis()->SetMaxDigits(3);
     double_ratios1[i]->GetYaxis()->SetMaxDigits(3);
+    
+    osc_diffs1[i]->SetStats(0);
+    osc_diffs1[i]->SetTitle("");
+    osc_diffs1[i]->GetXaxis()->SetTitle("E_{Reco} [GeV]");
+    osc_diffs1[i]->GetYaxis()->SetTitle("Oscillated event rate difference");
+    osc_diffs1[i]->GetXaxis()->SetTitleFont(132);
+    osc_diffs1[i]->GetYaxis()->SetTitleFont(132);
+    osc_diffs1[i]->GetXaxis()->SetLabelFont(132);
+    osc_diffs1[i]->GetYaxis()->SetLabelFont(132);
+    osc_diffs1[i]->GetXaxis()->SetTitleSize(0.035);
+    osc_diffs1[i]->GetYaxis()->SetTitleSize(0.035);
+    osc_diffs1[i]->GetXaxis()->SetLabelSize(0.03);
+    osc_diffs1[i]->GetYaxis()->SetLabelSize(0.03);
+    osc_diffs1[i]->GetXaxis()->SetTitleOffset(1.2);
+    osc_diffs1[i]->GetYaxis()->SetTitleOffset(1.8);
+    osc_diffs1[i]->GetXaxis()->SetMaxDigits(3);
+    osc_diffs1[i]->GetYaxis()->SetMaxDigits(3);
+    
   }
 
   TCanvas *c = new TCanvas("c","c",20,20,900,900);
@@ -483,7 +592,7 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_val_sbnd_unosc,"SBNFit/VALOR unoscillated SBND", "l");
  
   // Draw
-  val_caf_sbnd_unosc->GetYaxis()->SetRangeUser(0.9999,1.0001);
+  val_caf_sbnd_unosc->GetYaxis()->SetRangeUser(0.9,1.1);
   val_caf_sbnd_unosc->Draw("hist"); 
   sbn_caf_sbnd_unosc->Draw("hist same");
   sbn_val_sbnd_unosc->Draw("hist same");
@@ -506,7 +615,7 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_val_uboone_unosc,"SBNFit/VALOR unoscillated #muBooNE", "l");
  
   // Draw
-  val_caf_uboone_unosc->GetYaxis()->SetRangeUser(0.9999,1.0001);
+  val_caf_uboone_unosc->GetYaxis()->SetRangeUser(0.9,1.1);
   val_caf_uboone_unosc->Draw("hist"); 
   sbn_val_uboone_unosc->Draw("hist same");
   sbn_caf_uboone_unosc->Draw("hist same");
@@ -524,7 +633,7 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_val_icarus_unosc,"SBNFit/VALOR unoscillated ICARUS", "l");
  
   // Draw
-  val_caf_icarus_unosc->GetYaxis()->SetRangeUser(0.9999,1.0001);
+  val_caf_icarus_unosc->GetYaxis()->SetRangeUser(0.9,1.1);
   val_caf_icarus_unosc->Draw("hist"); 
   sbn_val_icarus_unosc->Draw("hist same");
   sbn_caf_icarus_unosc->Draw("hist same");
@@ -533,6 +642,65 @@ void fitter_spectral_ratios() {
   // Add label to colour legend
   c->SaveAs("all_fitters_unosc_single_ratios_icarus.root");
   c->SaveAs("all_fitters_unosc_single_ratios_icarus.png");
+  c->Clear();
+  leg->Clear();
+
+  // SBND Oscillated event rate differences
+  leg->SetX1NDC(0.336303);
+  leg->SetY1NDC(0.688501);
+  leg->SetX2NDC(0.851893);
+  leg->SetY2NDC(0.874818);
+
+  leg->AddEntry(val_caf_diff_sbnd,"(VAL_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) SBND", "l");
+  leg->AddEntry(val_sbn_diff_sbnd,"(VAL_{osc}-SBN_{osc})/(VAL_{nom}-VAL_{osc}) SBND", "l");
+  leg->AddEntry(sbn_caf_diff_sbnd,"(SBN_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) SBND", "l");
+ 
+  // Draw
+  val_caf_diff_sbnd->GetYaxis()->SetRangeUser(-0.1,0.22);
+  val_caf_diff_sbnd->Draw("hist"); 
+  sbn_caf_diff_sbnd->Draw("hist same"); 
+  val_sbn_diff_sbnd->Draw("hist same");
+  leg->Draw("same");
+  
+  // Add label to colour legend
+  c->SaveAs("all_fitters_osc_diffs_sbnd_dmsq-1e2_sinsqmumu-2e-3.root");
+  c->SaveAs("all_fitters_osc_diffs_sbnd_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->Clear();
+  leg->Clear();
+
+  // uboone Oscillated event rate differences
+  leg->AddEntry(val_caf_diff_uboone,"(VAL_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) #muBooNE", "l");
+  leg->AddEntry(val_sbn_diff_uboone,"(VAL_{osc}-SBN_{osc})/(VAL_{nom}-VAL_{osc}) #muBooNE", "l");
+  leg->AddEntry(sbn_caf_diff_uboone,"(SBN_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) #muBooNE", "l");
+ 
+  // Draw
+  val_caf_diff_uboone->GetYaxis()->SetRangeUser(-0.1,0.45);
+  val_caf_diff_uboone->Draw("hist"); 
+  sbn_caf_diff_uboone->Draw("hist same"); 
+  val_sbn_diff_uboone->Draw("hist same");
+  leg->Draw("same");
+  
+  // Add label to colour legend
+  c->SaveAs("all_fitters_osc_diffs_uboone_dmsq-1e2_sinsqmumu-2e-3.root");
+  c->SaveAs("all_fitters_osc_diffs_uboone_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->Clear();
+  leg->Clear();
+
+  // icarus Oscillated event rate differences
+  leg->AddEntry(val_caf_diff_icarus,"(VAL_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) ICARUS", "l");
+  leg->AddEntry(val_sbn_diff_icarus,"(VAL_{osc}-SBN_{osc})/(VAL_{nom}-VAL_{osc}) ICARUS", "l");
+  leg->AddEntry(sbn_caf_diff_icarus,"(SBN_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) ICARUS", "l");
+ 
+  // Draw
+  val_caf_diff_icarus->GetYaxis()->SetRangeUser(-0.1,0.6);
+  val_caf_diff_icarus->Draw("hist"); 
+  sbn_caf_diff_icarus->Draw("hist same"); 
+  val_sbn_diff_icarus->Draw("hist same");
+  leg->Draw("same");
+  
+  // Add label to colour legend
+  c->SaveAs("all_fitters_osc_diffs_icarus_dmsq-1e2_sinsqmumu-2e-3.root");
+  c->SaveAs("all_fitters_osc_diffs_icarus_dmsq-1e2_sinsqmumu-2e-3.png");
   c->Clear();
   leg->Clear();
 

@@ -13,10 +13,10 @@
 #include "TStyle.h"
 void fitter_spectral_overlays() {
 
-  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/dmsq_2_sinsqmumu_3e-3_hists.root","read");
-  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/SBNfit_sinsq_3e-3_dmsq_2.SBNspec.root","read");
-  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/SBNfit_CV.SBNspec.root","read");
-  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-DUNE-LBL/pdfs/sbn/mdc/fitters/raw_files/CAFAna_dmsq_2_ss2thmm_3e-3.root","read");
+  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_1e2_sinsq2thmumu_2e-3_hists.root","read");
+  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_2e-3_dmsq_1e2.SBNspec.root","read");
+  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_CV.SBNspec.root","read");
+  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_1e2_ss2thmm_2e-3.root","read");
 
   // Get the relevant histograms
   // VALOR
@@ -161,8 +161,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_sbnd_dmsq-2_sinsqmumu-3e-3.root");
-  c1->SaveAs("fitter_overlays_sbnd_dmsq-2_sinsqmumu-3e-3.png");
+  c1->SaveAs("fitter_overlays_sbnd_dmsq-1e2_sinsqmumu-2e-3.root");
+  c1->SaveAs("fitter_overlays_sbnd_dmsq-1e2_sinsqmumu-2e-3.png");
   c1->Clear();
   leg->Clear();
 
@@ -178,8 +178,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_uboone_dmsq-2_sinsqmumu-3e-3.root");
-  c1->SaveAs("fitter_overlays_uboone_dmsq-2_sinsqmumu-3e-3.png");
+  c1->SaveAs("fitter_overlays_uboone_dmsq-1e2_sinsqmumu-2e-3.root");
+  c1->SaveAs("fitter_overlays_uboone_dmsq-1e2_sinsqmumu-2e-3.png");
   c1->Clear();
   leg->Clear();
 
@@ -195,8 +195,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_icarus_dmsq-2_sinsqmumu-3e-3.root");
-  c1->SaveAs("fitter_overlays_icarus_dmsq-2_sinsqmumu-3e-3.png");
+  c1->SaveAs("fitter_overlays_icarus_dmsq-1e2_sinsqmumu-2e-3.root");
+  c1->SaveAs("fitter_overlays_icarus_dmsq-1e2_sinsqmumu-2e-3.png");
   c1->Clear();
   leg->Clear();
   
