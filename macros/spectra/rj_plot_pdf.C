@@ -11,10 +11,10 @@ std::string kinevar = "Ereco"; // make this configurable later
 void rj_plot_pdf(
   const char * config_file,
   const char * filename,
-  const char * tag = "valor",
+  const char * tag = "valor", // Used to find the name of the histograms in the PDF files
   double       per_range = -999., // Show events per what ereco (GeV). If negative, show per bin 
   TString plotting_format = "", // If empty or 'stacked': plot stacked interaction breakdown (valor default). If 'total': plot total signal + bg.
-  const char * data_filename = "", // if we want to plot a dataset on top, this is that file
+  const char * data_filename = "", // if we want to plot a dataset on top, this is that file - we also use this to pass the oscillation pdf file
   const char * spectra_filename = "", // Save the stacked plot, total hist and data plot (if included) to a TFile with this name
   const char * data_tag = "valor",
   TString   option = "",
@@ -29,7 +29,7 @@ void rj_plot_pdf(
   using namespace valor;
   namespace vutil = valor::util;
 
-  const ExperimentSetup &es = *ExperimentSetup::Instance();
+  //const ExperimentSetup &es = *ExperimentSetup::Instance();
 
   const int n_pdf_slices = 10; //
   
@@ -69,6 +69,10 @@ void rj_plot_pdf(
   const char * binning = (option.Contains("OB")?"ob":"sb");
 
   // 0 == total, 1 = stacked
+  if(!plotting_format.Contains("total") && !plotting_format.Contains("stacked") && !plotting_format.IsNull()){
+    std::cerr << " Error: Plotting format, " << plotting_format << ",  invalid. " << std::endl;
+    vutil::Die(-1);
+  }
   int format = (plotting_format.Contains("total")?0:1);
   
   // Couple of vectors to keep all our objects
@@ -100,8 +104,8 @@ void rj_plot_pdf(
     GenericSingleSampleFitModel & submodel = *dynamic_cast<GenericSingleSampleFitModel*>(submodelabc);
     conv::Detector_t d = submodel.GetDetector();
     conv::BeamConf_t b = submodel.GetBeam();
-    if (d == conv::kdUndefined) {continue;}
-    if (b == conv::kbUndefined) {continue;}
+    if (d  == conv::kdUndefined) {continue;}
+    if (b  == conv::kbUndefined) {continue;}
     
     // If we don't match the last detector/beam start a new TCanvas
     if ((d!=last_det || b!= last_beam) && isubmodel) {
@@ -143,6 +147,7 @@ void rj_plot_pdf(
     conv::Detector_t d = submodel.GetDetector();
     conv::BeamConf_t b = submodel.GetBeam();
     conv::Sample_t   s = submodel.GetSample();
+    const ModeList* ml = submodel.GetModeList();
     
     // Make a canvas for the mode plots
     TString c_name_contrib  = TString::Format("c_pdf_contrib_%s_%s_%u",
@@ -164,25 +169,21 @@ void rj_plot_pdf(
       
       std::string model_name = submodel.Name();
       
-      int isample = ExperimentSetup::Instance()->SampleIndex(b, s);
-      int ibeam   = ExperimentSetup::Instance()->BeamConfIndex(b);
-      
       { // Divided by mode
         THStack * contrib_stack = new THStack("stack","spectrum contributions");
-        
-        const size_t NReacModesCoarse = es.ReactionModesCoarse()[ibeam][isample].size();
-        const size_t NReacModes       = es.ReactionModes()[ibeam][isample].size();
-        std::cout << " Number of reaction modes : " << NReacModes << std::endl;
+       
+        const std::vector<conv::ReacMode_t>       modes        = ml->Modes();
+        const std::vector<conv::ReacModeCoarse_t> coarse_modes = ml->CoarseModes(); 
+        const size_t NReacModes       = modes.size();
+        const size_t NReacModesCoarse = coarse_modes.size(); 
 
         std::vector<TH1D *> pdf_contrib             (NReacModes      ,nullptr);
         std::vector<TH1D *> pdf_contrib_width       (NReacModes      ,nullptr);
         std::vector<TH1D *> pdf_contrib_coarse      (NReacModesCoarse,nullptr);
         std::vector<TH1D *> pdf_contrib_coarse_width(NReacModesCoarse,nullptr);
         for(int imode = 0; imode < NReacModes; imode++) {
-          conv::ReacMode_t m = es.ReactionModes()[ibeam][isample][imode];
+          conv::ReacMode_t m = modes.at(imode);
           if(m == conv::kmUndefined) continue;
-          cout << "Taking mode: " << vutil::AsString(m) <<" for "<<model_name<< endl;
-          cout << "ibeam : " << ibeam << ", isample: " << isample << ", imode: " << imode << endl;
           TString contrib_name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
             tag, "pdfcs",binning,"rf", model_name.c_str(),kinevar.c_str(), vutil::AsString(m).c_str());
           TObject * tmp_obj = fin->Get(contrib_name.Data());
@@ -191,12 +192,11 @@ void rj_plot_pdf(
             conv::ReacModeCoarse_t mc = conv::kmcUndefined;
             bool found = false;
             for (int imcp = 0 ; imcp < conv::kMaxCoarseReacOptions ; imcp++) {
-              mc = conv::kCoarseReacPriority[m][imcp];;
+              mc = conv::kCoarseReacPriority[m][imcp];
               if(mc == conv::kmcUndefined) continue; 
               for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
-                if(mc == es.ReactionModesCoarse()[ibeam][isample][imodec]) {
+                if(mc == coarse_modes.at(imodec)) {
                     found = true;
-                    cout << "Mode: " << vutil::AsString(m) << " is mapped to plot type: " << vutil::AsString(mc) << endl;
                     break;
                 }
               }
@@ -207,12 +207,12 @@ void rj_plot_pdf(
                    << " beam: " << vutil::AsString(b) << " / sample: " << vutil::AsString(s) << endl;
               cout << "Options were: "<<std::endl;
               for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
-                cout<<"\t"<<vutil::AsString(es.ReactionModesCoarse()[ibeam][isample][imodec])<<std::endl;
+                cout<<"\t"<<vutil::AsString(coarse_modes.at(imodec))<<std::endl;
               }
               exit(1);
             }                  
             for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
-              if(mc != es.ReactionModesCoarse()[ibeam][isample][imodec]) continue;
+              if(mc != coarse_modes.at(imodec)) continue;
               
               // Do we renormalise the bin-width before adding it?
               if (per_range > 0) {
@@ -270,7 +270,7 @@ void rj_plot_pdf(
           TString data_name = TString::Format("%s_%s_%s_%s_%s_%s",
               data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
           TObject * tmp = fdata->Get(data_name.Data());
-          std::cout<<data_name<<"\t"<<tmp<<std::endl;
+          std::cout<<"Data name: " << data_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
           data_hist = new TH1D(*htmp);
 
@@ -296,7 +296,7 @@ void rj_plot_pdf(
           TString total_name = TString::Format("%s_%s_%s_%s_%s_%s",
               tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
           TObject * tmp = fin->Get(total_name.Data());
-          std::cout<<total_name<<"\t"<<tmp<<std::endl;
+          std::cout<< "Integrated name : " << total_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
           total_hist = new TH1D(*htmp);
 
@@ -317,17 +317,15 @@ void rj_plot_pdf(
         }
 
         // Start drawing
-        TLegend * contrib_legend = new TLegend(0.65,0.3,0.85,0.8);  
+        TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
         contrib_legend->SetFillColor(0);
-        contrib_legend->SetFillStyle(0);
         contrib_legend->SetLineColor(0);
-        contrib_legend->SetTextFont(132);
         TH1D * cc_hist    = nullptr;
         TH1D * nc_hist    = nullptr;
       
         float mode_max = 0.;
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
-          conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
+          conv::ReacModeCoarse_t mc = coarse_modes.at(imodec);
           TString mode_str = vutil::AsString(mc);
           //cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
           if(mc == conv::kmcUndefined) continue;
@@ -345,9 +343,9 @@ void rj_plot_pdf(
               nc_hist = (TH1D*)pdf_contrib_coarse[imodec]->Clone("nc_hist");
           }
           relevant_hist->SetLineWidth(1);
-          relevant_hist->SetLineColor(es.PlotStyle()[ibeam][isample][imodec][0]);
-          relevant_hist->SetFillColor(es.PlotStyle()[ibeam][isample][imodec][1]);
-          relevant_hist->SetFillStyle(es.PlotStyle()[ibeam][isample][imodec][2]);
+          relevant_hist->SetLineColor(ml->GetCoarseModeLineCol(mc));
+          relevant_hist->SetFillColor(ml->GetCoarseModeFillCol(mc));
+          relevant_hist->SetFillStyle(ml->GetCoarseModeFillSty(mc));
           contrib_stack->Add(relevant_hist);
           contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
 
@@ -358,42 +356,43 @@ void rj_plot_pdf(
 
           mode_max += relevant_hist->GetMaximum();
         }//imodec
-        
+       
+        if(plot_data){
+          contrib_legend->AddEntry(data_hist, "Oscillated", "P");
+        }
         float max_y = std::max(mode_max, std::max(data_max, total_max)) * 1.1;
 
         if(format == 0) total_hist->GetYaxis()->SetRangeUser(0,max_y);
         
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
-        this_pad->SetLeftMargin(0.15);
-        this_pad->SetBottomMargin(0.15);
-        this_pad->SetRightMargin(0.05);
+        this_pad->SetLeftMargin(0.2);
+
         TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*mode_max);
         contrib_frame->Draw();
+        std::string nice_sample = "";
+        std::string to_cut = "high-resolution";
+        std::string title_sample = vutil::AsStringTeX(s,true);
+        std::size_t found_cut_str = title_sample.find(to_cut);
+        if(found_cut_str != std::string::npos){
+          title_sample.replace(found_cut_str,to_cut.length(),"");
+        }
+
         TString contrib_title_str = TString::Format("%s, %s",
-          vutil::AsStringTeX(d,true).c_str(), vutil::AsStringTeX(s,true).c_str());
-        TLatex * contrib_title = new TLatex(0.3,1.05*mode_max,contrib_title_str.Data());
-        contrib_title->SetTextSize(0.05);
+          vutil::AsStringTeX(d,true).c_str(), title_sample.c_str());
+        TLatex * contrib_title = new TLatex(0.3,1.07*mode_max,contrib_title_str.Data());
         contrib_title->Draw(); 
         if(vutil::IsCC(s)) {  
-          contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
-          contrib_frame->GetXaxis()->SetTitleSize(0.05);
-          contrib_frame->GetXaxis()->SetMaxDigits(3);
+           contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
         } else {
-          contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
-          contrib_frame->GetXaxis()->SetTitleSize(0.05);
-          contrib_frame->GetXaxis()->SetMaxDigits(3);
+           contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
         }
         if (per_range > 0.) {
           TString title = TString::Format("Events / %lg GeV",per_range);
           contrib_frame->GetYaxis()->SetTitle(title.Data());
-          contrib_frame->GetYaxis()->SetTitleSize(0.05);
-          contrib_frame->GetYaxis()->SetMaxDigits(3);
         }
 
         else {
           contrib_frame->GetYaxis()->SetTitle("Events /bin");
-          contrib_frame->GetYaxis()->SetTitleSize(0.05);
-          contrib_frame->GetYaxis()->SetMaxDigits(3);
         }
         if(format == 1){
           contrib_stack->Draw("same");
@@ -404,12 +403,12 @@ void rj_plot_pdf(
           total_hist->Draw("same");
           if (plot_data) {data_hist->Draw("e same");}
         }
-
+       
         double tot_event_rate = 0.;
         std::ostringstream sample_event_rates;
         // Write the event rates to the output stream
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
-          conv::ReacModeCoarse_t mc = es.ReactionModesCoarse()[ibeam][isample][imodec];
+          conv::ReacModeCoarse_t mc = coarse_modes.at(imodec);
           if (mc == conv::kmcUndefined) {continue;}
           TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
           double rate = tmphist->Integral();
@@ -428,18 +427,14 @@ void rj_plot_pdf(
             contrib_stack->SetName((vutil::AsString(d)+"_stacked").c_str());
             contrib_legend->SetName((vutil::AsString(d)+"_legend").c_str());
           }
-          if(format == 0){
-            total_hist->SetName((vutil::AsString(d)+"_integrated").c_str());
-          }
+          if(format == 0) total_hist->SetName((vutil::AsString(d)+"_integrated").c_str());
           cc_hist->SetName((vutil::AsString(d)+"_cc").c_str());
           nc_hist->SetName((vutil::AsString(d)+"_nc").c_str());
           if(format == 1){
             contrib_stack->Write();
             contrib_legend->Write();
           }
-          if(format == 0){
-            total_hist->Write();
-          }
+          if(format == 0) total_hist->Write();
           cc_hist->Write();
           nc_hist->Write();
           if(plot_data){
