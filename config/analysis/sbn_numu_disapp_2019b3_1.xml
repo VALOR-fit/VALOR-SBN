@@ -12,7 +12,7 @@
       <mc>           mc/sbn_numu_disapp_2019b3_1_sbn_nd.xml               </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      binning/sbn_proposal_binning_NuMu_proposal.xml      </binning>
+      <binning>      binning/sbn_proposal_binning_NuMu_proposal.xml       </binning>
     </element>
 
     <element name="sbn_ub_fhc_numuCCIncl">
@@ -24,7 +24,7 @@
       <mc>           mc/sbn_numu_disapp_2019b3_1_sbn_ub.xml               </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      binning/sbn_proposal_binning_NuMu_proposal.xml      </binning>
+      <binning>      binning/sbn_proposal_binning_NuMu_proposal.xml       </binning>
     </element>
  
     <element name="sbn_fd_fhc_numuCCIncl">
@@ -36,7 +36,7 @@
       <mc>           mc/sbn_numu_disapp_2019b3_1_sbn_fd.xml               </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      binning/sbn_proposal_binning_NuMu_proposal.xml      </binning>
+      <binning>      binning/sbn_proposal_binning_NuMu_proposal.xml       </binning>
     </element>
   </element_list>
 
