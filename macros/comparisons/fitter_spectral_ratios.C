@@ -13,10 +13,10 @@
 #include "TStyle.h"
 void fitter_spectral_ratios() {
 
-  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_1e2_sinsq2thmumu_2e-3_hists.root","read");
-  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_2e-3_dmsq_1e2.SBNspec.root","read");
+  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_2_sinsq2thmumu_3e-3_hists.root","read");
+  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_3e-3_dmsq_2.SBNspec.root","read");
   TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_CV.SBNspec.root","read");
-  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_1e2_ss2thmm_2e-3.root","read");
+  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_2_ss2thmm_3e-3.root","read");
 
   // Get the relevant histograms
   // VALOR
@@ -469,8 +469,8 @@ void fitter_spectral_ratios() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_unosc_double_ratios_sbnd_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_unosc_double_ratios_sbnd_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_unosc_double_ratios_sbnd_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_unosc_double_ratios_sbnd_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -490,8 +490,8 @@ void fitter_spectral_ratios() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_unosc_double_ratios_uboone_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_unosc_double_ratios_uboone_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_unosc_double_ratios_uboone_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_unosc_double_ratios_uboone_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -511,8 +511,8 @@ void fitter_spectral_ratios() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_unosc_double_ratios_icarus_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_unosc_double_ratios_icarus_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_unosc_double_ratios_icarus_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_unosc_double_ratios_icarus_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -526,8 +526,8 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_caf_sbnd_osc,"SBNFit/CAFAna oscillated SBND", "l");
   leg->AddEntry(sbn_val_sbnd_osc,"SBNFit/VALOR oscillated SBND", "l");
  
-  double max_osc_single_sbnd = 1.001 * std::max(val_caf_sbnd_osc->GetMaximum(), std::max(sbn_caf_sbnd_osc->GetMaximum(), sbn_val_sbnd_osc->GetMaximum()));
-  double min_osc_single_sbnd = 0.999 * std::min(val_caf_sbnd_osc->GetMinimum(), std::min(sbn_caf_sbnd_osc->GetMinimum(), sbn_val_sbnd_osc->GetMinimum()));
+  double max_osc_single_sbnd = 1.0001 * std::max(val_caf_sbnd_osc->GetMaximum(), std::max(sbn_caf_sbnd_osc->GetMaximum(), sbn_val_sbnd_osc->GetMaximum()));
+  double min_osc_single_sbnd = 0.9999 * std::min(val_caf_sbnd_osc->GetMinimum(), std::min(sbn_caf_sbnd_osc->GetMinimum(), sbn_val_sbnd_osc->GetMinimum()));
   
   // Draw
   val_caf_sbnd_osc->GetYaxis()->SetRangeUser(min_osc_single_sbnd,max_osc_single_sbnd);
@@ -537,8 +537,8 @@ void fitter_spectral_ratios() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_single_ratios_sbnd_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_single_ratios_sbnd_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_single_ratios_sbnd_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_single_ratios_sbnd_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -549,8 +549,8 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_caf_uboone_osc,"SBNFit/CAFAna oscillated #muBooNE", "l");
   leg->AddEntry(sbn_val_uboone_osc,"SBNFit/VALOR oscillated #muBooNE", "l");
   
-  double max_osc_single_uboone = 1.001 * std::max(val_caf_uboone_osc->GetMaximum(), std::max(sbn_caf_uboone_osc->GetMaximum(), sbn_val_uboone_osc->GetMaximum()));
-  double min_osc_single_uboone = 0.999 * std::min(val_caf_uboone_osc->GetMinimum(), std::min(sbn_caf_uboone_osc->GetMinimum(), sbn_val_uboone_osc->GetMinimum()));
+  double max_osc_single_uboone = 1.0001 * std::max(val_caf_uboone_osc->GetMaximum(), std::max(sbn_caf_uboone_osc->GetMaximum(), sbn_val_uboone_osc->GetMaximum()));
+  double min_osc_single_uboone = 0.9999 * std::min(val_caf_uboone_osc->GetMinimum(), std::min(sbn_caf_uboone_osc->GetMinimum(), sbn_val_uboone_osc->GetMinimum()));
   
   // Draw
   val_caf_uboone_osc->GetYaxis()->SetRangeUser(min_osc_single_uboone,max_osc_single_uboone);
@@ -560,8 +560,8 @@ void fitter_spectral_ratios() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_single_ratios_uboone_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_single_ratios_uboone_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_single_ratios_uboone_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_single_ratios_uboone_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -570,8 +570,8 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_caf_icarus_osc,"SBNFit/CAFAna oscillated ICARUS", "l");
   leg->AddEntry(sbn_val_icarus_osc,"SBNFit/VALOR oscillated ICARUS", "l");
   
-  double max_osc_single_icarus = 1.001 * std::max(val_caf_icarus_osc->GetMaximum(), std::max(sbn_caf_icarus_osc->GetMaximum(), sbn_val_icarus_osc->GetMaximum()));
-  double min_osc_single_icarus = 0.999 * std::min(val_caf_icarus_osc->GetMinimum(), std::min(sbn_caf_icarus_osc->GetMinimum(), sbn_val_icarus_osc->GetMinimum()));
+  double max_osc_single_icarus = 1.0001 * std::max(val_caf_icarus_osc->GetMaximum(), std::max(sbn_caf_icarus_osc->GetMaximum(), sbn_val_icarus_osc->GetMaximum()));
+  double min_osc_single_icarus = 0.9999 * std::min(val_caf_icarus_osc->GetMinimum(), std::min(sbn_caf_icarus_osc->GetMinimum(), sbn_val_icarus_osc->GetMinimum()));
   
   // Draw
   val_caf_icarus_osc->GetYaxis()->SetRangeUser(min_osc_single_icarus,max_osc_single_icarus);
@@ -581,8 +581,8 @@ void fitter_spectral_ratios() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_single_ratios_icarus_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_single_ratios_icarus_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_single_ratios_icarus_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_single_ratios_icarus_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -592,7 +592,7 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_val_sbnd_unosc,"SBNFit/VALOR unoscillated SBND", "l");
  
   // Draw
-  val_caf_sbnd_unosc->GetYaxis()->SetRangeUser(0.9,1.1);
+  val_caf_sbnd_unosc->GetYaxis()->SetRangeUser(0.99998,1.00002);
   val_caf_sbnd_unosc->Draw("hist"); 
   sbn_caf_sbnd_unosc->Draw("hist same");
   sbn_val_sbnd_unosc->Draw("hist same");
@@ -615,7 +615,7 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_val_uboone_unosc,"SBNFit/VALOR unoscillated #muBooNE", "l");
  
   // Draw
-  val_caf_uboone_unosc->GetYaxis()->SetRangeUser(0.9,1.1);
+  val_caf_uboone_unosc->GetYaxis()->SetRangeUser(0.99998,1.00002);
   val_caf_uboone_unosc->Draw("hist"); 
   sbn_val_uboone_unosc->Draw("hist same");
   sbn_caf_uboone_unosc->Draw("hist same");
@@ -633,7 +633,7 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_val_icarus_unosc,"SBNFit/VALOR unoscillated ICARUS", "l");
  
   // Draw
-  val_caf_icarus_unosc->GetYaxis()->SetRangeUser(0.9,1.1);
+  val_caf_icarus_unosc->GetYaxis()->SetRangeUser(0.99998,1.00002);
   val_caf_icarus_unosc->Draw("hist"); 
   sbn_val_icarus_unosc->Draw("hist same");
   sbn_caf_icarus_unosc->Draw("hist same");
@@ -656,15 +656,15 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_caf_diff_sbnd,"(SBN_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) SBND", "l");
  
   // Draw
-  val_caf_diff_sbnd->GetYaxis()->SetRangeUser(-0.1,0.22);
+  val_caf_diff_sbnd->GetYaxis()->SetRangeUser(-0.22,0.22);
   val_caf_diff_sbnd->Draw("hist"); 
   sbn_caf_diff_sbnd->Draw("hist same"); 
   val_sbn_diff_sbnd->Draw("hist same");
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_diffs_sbnd_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_diffs_sbnd_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_diffs_sbnd_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_diffs_sbnd_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -674,15 +674,15 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_caf_diff_uboone,"(SBN_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) #muBooNE", "l");
  
   // Draw
-  val_caf_diff_uboone->GetYaxis()->SetRangeUser(-0.1,0.45);
+  val_caf_diff_uboone->GetYaxis()->SetRangeUser(-0.22,0.22);
   val_caf_diff_uboone->Draw("hist"); 
   sbn_caf_diff_uboone->Draw("hist same"); 
   val_sbn_diff_uboone->Draw("hist same");
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_diffs_uboone_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_diffs_uboone_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_diffs_uboone_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_diffs_uboone_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
@@ -692,15 +692,15 @@ void fitter_spectral_ratios() {
   leg->AddEntry(sbn_caf_diff_icarus,"(SBN_{osc}-CAF_{osc})/(VAL_{nom}-VAL_{osc}) ICARUS", "l");
  
   // Draw
-  val_caf_diff_icarus->GetYaxis()->SetRangeUser(-0.1,0.6);
+  val_caf_diff_icarus->GetYaxis()->SetRangeUser(-0.22,0.22);
   val_caf_diff_icarus->Draw("hist"); 
   sbn_caf_diff_icarus->Draw("hist same"); 
   val_sbn_diff_icarus->Draw("hist same");
   leg->Draw("same");
   
   // Add label to colour legend
-  c->SaveAs("all_fitters_osc_diffs_icarus_dmsq-1e2_sinsqmumu-2e-3.root");
-  c->SaveAs("all_fitters_osc_diffs_icarus_dmsq-1e2_sinsqmumu-2e-3.png");
+  c->SaveAs("all_fitters_osc_diffs_icarus_dmsq-2_sinsqmumu-3e-3.root");
+  c->SaveAs("all_fitters_osc_diffs_icarus_dmsq-2_sinsqmumu-3e-3.png");
   c->Clear();
   leg->Clear();
 
