@@ -11,21 +11,23 @@
 #include "TF1.h"
 #include "TGraph.h"
 #include "TStyle.h"
-void fitter_spectral_overlays() {
+void fitter_spectral_overlays(const std::string &dmsq, const std::string &sinsq) {
 
-  TFile *f_val       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_1e2_sinsq2thmumu_2e-3_hists.root","read");
-  TFile *f_sbn_osc   = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_2e-3_dmsq_1e2.SBNspec.root","read");
+  TFile *f_val_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_"+dmsq+"_sinsq2thmumu_"+sinsq+"_osc_breakdown_hists.root").c_str(),"read");
+  TFile *f_val_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_unosc_breakdown_hists.root","read");
+  TFile *f_sbn_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_"+sinsq+"_dmsq_"+dmsq+".SBNspec.root").c_str(),"read");
   TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_CV.SBNspec.root","read");
-  TFile *f_caf       = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_1e2_ss2thmm_2e-3.root","read");
+  TFile *f_caf       = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_"+dmsq+"_ss2thmm_"+sinsq+".root").c_str(),"read");
 
   // Get the relevant histograms
   // VALOR
-  TH1D *val_sbnd_osc     = static_cast<TH1D*>(f_val->Get("sbn_nd_oscillated"));
-  TH1D *val_sbnd_unosc   = static_cast<TH1D*>(f_val->Get("sbn_nd_integrated"));
-  TH1D *val_uboone_osc   = static_cast<TH1D*>(f_val->Get("sbn_uboone_oscillated"));
-  TH1D *val_uboone_unosc = static_cast<TH1D*>(f_val->Get("sbn_uboone_integrated"));
-  TH1D *val_icarus_osc   = static_cast<TH1D*>(f_val->Get("sbn_icarus_oscillated"));
-  TH1D *val_icarus_unosc = static_cast<TH1D*>(f_val->Get("sbn_icarus_integrated"));
+  TH1D *val_sbnd_osc     = static_cast<TH1D*>(f_val_osc->Get("sbn_nd_total"));
+  TH1D *val_sbnd_unosc   = static_cast<TH1D*>(f_val_unosc->Get("sbn_nd_total"));
+  TH1D *val_uboone_osc   = static_cast<TH1D*>(f_val_osc->Get("sbn_uboone_total"));
+  TH1D *val_uboone_unosc = static_cast<TH1D*>(f_val_unosc->Get("sbn_uboone_total"));
+  TH1D *val_icarus_osc   = static_cast<TH1D*>(f_val_osc->Get("sbn_icarus_total"));
+  TH1D *val_icarus_unosc = static_cast<TH1D*>(f_val_unosc->Get("sbn_icarus_total"));
+
 
   // CAFAna
   TH1D *caf_sbnd_osc     = static_cast<TH1D*>(f_caf->Get("nd_total_osc"));
@@ -161,8 +163,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_sbnd_dmsq-1e2_sinsqmumu-2e-3.root");
-  c1->SaveAs("fitter_overlays_sbnd_dmsq-1e2_sinsqmumu-2e-3.png");
+  c1->SaveAs(("fitter_overlays_sbnd_dmsq-"+dmsq+"_sinsqmumu-"+sinsq+".root").c_str());
+  c1->SaveAs(("fitter_overlays_sbnd_dmsq-"+dmsq+"_sinsqmumu-"+sinsq+".png").c_str());
   c1->Clear();
   leg->Clear();
 
@@ -178,8 +180,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_uboone_dmsq-1e2_sinsqmumu-2e-3.root");
-  c1->SaveAs("fitter_overlays_uboone_dmsq-1e2_sinsqmumu-2e-3.png");
+  c1->SaveAs(("fitter_overlays_uboone_dmsq-"+dmsq+"_sinsqmumu-"+sinsq+".root").c_str());
+  c1->SaveAs(("fitter_overlays_uboone_dmsq-"+dmsq+"_sinsqmumu-"+sinsq+".png").c_str());
   c1->Clear();
   leg->Clear();
 
@@ -195,8 +197,8 @@ void fitter_spectral_overlays() {
   leg->Draw("same");
   
   // Add label to colour legend
-  c1->SaveAs("fitter_overlays_icarus_dmsq-1e2_sinsqmumu-2e-3.root");
-  c1->SaveAs("fitter_overlays_icarus_dmsq-1e2_sinsqmumu-2e-3.png");
+  c1->SaveAs(("fitter_overlays_icarus_dmsq-"+dmsq+"_sinsqmumu-"+sinsq+".root").c_str());
+  c1->SaveAs(("fitter_overlays_icarus_dmsq-"+dmsq+"_sinsqmumu-"+sinsq+".png").c_str());
   c1->Clear();
   leg->Clear();
   
