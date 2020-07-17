@@ -320,27 +320,46 @@ void rj_plot_pdf(
         TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
         contrib_legend->SetFillColor(0);
         contrib_legend->SetLineColor(0);
-        TH1D * cc_hist    = nullptr;
-        TH1D * nc_hist    = nullptr;
+        TH1D * cc_hist  = nullptr;
+        TH1D * nc_hist  = nullptr;
+        TH1D * nue_hist = nullptr;
       
         float mode_max = 0.;
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
+          bool mode_filled = false;
           conv::ReacModeCoarse_t mc = coarse_modes.at(imodec);
           TString mode_str = vutil::AsString(mc);
           //cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
           if(mc == conv::kmcUndefined) continue;
           TH1D * relevant_hist = per_range > 0. ? pdf_contrib_coarse_width[imodec] : pdf_contrib_coarse[imodec];
           if(per_range > .0){
-            if(!cc_hist && !(mode_str.Contains("NC")))
-              cc_hist = (TH1D*)pdf_contrib_coarse_width[imodec]->Clone("cc_hist");
-            else if(!nc_hist && (mode_str.Contains("NC")))
-              nc_hist = (TH1D*)pdf_contrib_coarse_width[imodec]->Clone("nc_hist");
+            if(!cc_hist && !mode_str.Contains("NC") && !mode_str.Contains("nue")){
+              cc_hist = static_cast<TH1D*>(pdf_contrib_coarse_width[imodec]->Clone("numu_cc_hist"));
+              mode_filled = true;
+            }
+            else if(!nc_hist && mode_str.Contains("NC")){
+              nc_hist = static_cast<TH1D*>(pdf_contrib_coarse_width[imodec]->Clone("nc_hist"));
+              mode_filled = true;
+            }
+            else if(!nue_hist && mode_str.Contains("nue")){
+              nue_hist = static_cast<TH1D*>(pdf_contrib_coarse_width[imodec]->Clone("nue_cc_hist"));
+              mode_filled = true;
+            }
+
           }
           else {
-            if(!cc_hist && !(mode_str.Contains("NC")))
-              cc_hist = (TH1D*)pdf_contrib_coarse[imodec]->Clone("cc_hist");
-            else if(!nc_hist && (mode_str.Contains("NC")))
-              nc_hist = (TH1D*)pdf_contrib_coarse[imodec]->Clone("nc_hist");
+            if(!cc_hist && !mode_str.Contains("NC") && !mode_str.Contains("nue")){
+              cc_hist = static_cast<TH1D*>(pdf_contrib_coarse[imodec]->Clone("numu_cc_hist"));
+              mode_filled = true;
+            }
+            else if(!nc_hist && mode_str.Contains("NC")){
+              nc_hist = static_cast<TH1D*>(pdf_contrib_coarse[imodec]->Clone("nc_hist"));
+              mode_filled = true;
+            }
+            else if(!nue_hist && mode_str.Contains("nue")){
+              nue_hist = static_cast<TH1D*>(pdf_contrib_coarse[imodec]->Clone("nue_cc_hist"));
+              mode_filled = true;
+            }
           }
           relevant_hist->SetLineWidth(1);
           relevant_hist->SetLineColor(ml->GetCoarseModeLineCol(mc));
@@ -349,10 +368,13 @@ void rj_plot_pdf(
           contrib_stack->Add(relevant_hist);
           contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
 
-          if(cc_hist && !(mode_str.Contains("NC")))
+          if(mode_filled) continue;
+          if(cc_hist && !mode_str.Contains("NC") && !mode_str.Contains("nue"))
             cc_hist->Add(relevant_hist);
-          else if(nc_hist && (mode_str.Contains("NC")))
+          else if(nc_hist && mode_str.Contains("NC"))
             nc_hist->Add(relevant_hist);
+          else if (nue_hist && mode_str.Contains("nue"))
+            nue_hist->Add(relevant_hist);
 
           mode_max += relevant_hist->GetMaximum();
         }//imodec
@@ -427,9 +449,10 @@ void rj_plot_pdf(
             contrib_stack->SetName((vutil::AsString(d)+"_stacked").c_str());
             contrib_legend->SetName((vutil::AsString(d)+"_legend").c_str());
           }
-          if(format == 0) total_hist->SetName((vutil::AsString(d)+"_integrated").c_str());
-          cc_hist->SetName((vutil::AsString(d)+"_cc").c_str());
+          if(format == 0) total_hist->SetName((vutil::AsString(d)+"_total").c_str());
+          cc_hist->SetName((vutil::AsString(d)+"_numu_cc").c_str());
           nc_hist->SetName((vutil::AsString(d)+"_nc").c_str());
+          nue_hist->SetName((vutil::AsString(d)+"_nue_cc").c_str());
           if(format == 1){
             contrib_stack->Write();
             contrib_legend->Write();
@@ -437,6 +460,7 @@ void rj_plot_pdf(
           if(format == 0) total_hist->Write();
           cc_hist->Write();
           nc_hist->Write();
+          nue_hist->Write();
           if(plot_data){
             data_hist->SetName((vutil::AsString(d)+"_oscillated").c_str());
             data_hist->Write();
