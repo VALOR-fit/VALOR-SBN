@@ -18,7 +18,7 @@
     <!-- Applies to all modes unless a mode binning scheme
          is specified explicitly below -->
     <default>
-      binning/e2e/true/valor_sbn_e2e_Etrue_shifted.xml
+      binning/e2e/true/valor_sbn_e2e_Etrue.xml
     </default>
 
   </true_simple>
@@ -31,7 +31,7 @@
     <!-- Applies to all modes unless a mode binning scheme
          is specified explicitly below -->
     <default>
-      binning/e2e/true/valor_sbn_e2e_Etrue_shifted.xml
+      binning/e2e/true/valor_sbn_e2e_Etrue.xml
     </default>
   </xsec_true>
 
