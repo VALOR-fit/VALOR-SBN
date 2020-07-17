@@ -32,7 +32,7 @@
 ### The rest of the parameters belong to the script, sent to the node, and  are mainly          ###
 ### specific to valor. Exceptions, which are not used in run fit are as follows:                ###
 ###                                                                                             ###
-### $tarball: is the valor tarball sent to the node. Please put your $VALOR-DUNE                ###
+### $tarball: is the valor tarball sent to the node. Please put your $VALOR-SBN                 ###
 ###           and $VALOR_FRMK in the same directory and tar the file using:                     ###
 ###           "tar -C /path/to/valor/ -czf valor.tar ."                                         ###
 ### $job_dir: This is where your output files go and it must be on pnfs.                        ###
@@ -516,7 +516,7 @@ source setup/setup_at_cvmfs_root6.sh;
 perl configure; 
 make; 
 cd $_CONDOR_SCRATCH_DIR
-cd VALOR-DUNE-LBL
+cd VALOR-SBN
 source setup/setup_at_cvmfs_root6.sh;
 perl configure;
 make;
@@ -606,7 +606,7 @@ do
   fi
 
   #Might be able to make this generic? Leave for now
-  program="valor_dune-run_fit";
+  program="valor-run_fit";
   valorcommand=$program$SPACE$arguments;
 
   #Run Valor
