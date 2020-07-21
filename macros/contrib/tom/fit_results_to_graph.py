@@ -34,8 +34,26 @@ colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.k
 param_x = conv.kPhypMixingMuE # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
 param_y = conv.kPhypDm41sq
 
+<<<<<<<< HEAD:macros/contrib/tom/fit_results_to_graph.py
 x_npoints = 40
 y_npoints = 40
+========
+ex_x_min = -3.0375 #exlusion
+ex_x_max = 0.0375
+
+in_x_min = 1E-2 #allowed
+in_x_max = 5E-1
+
+x_npoints = 41
+
+ex_y_min = -2.05 #exlusion
+ex_y_max = 2.05
+
+in_y_min = 4E-1 #allowed
+in_y_max = 4.
+
+y_npoints = 41
+>>>>>>>> 4786ed21 (Fixed bin-edge issue which was causing the mis-match in stat-only contours and moved to macros/contours):macros/contours/fit_result_to_graphs.py
 
 # Limits
 x_lim = 0.5*(5/(x_npoints-1))
@@ -66,7 +84,11 @@ eps = 1E-10 # a small number to guarantee our point goes in its bin
 
 def GetLoggedHist(filename,exclusion,data):
   print(filename)
+<<<<<<<< HEAD:macros/contrib/tom/fit_results_to_graph.py
   chain = R.TChain(data)
+========
+  chain = R.TChain("valor_fit_ntp")
+>>>>>>>> 4786ed21 (Fixed bin-edge issue which was causing the mis-match in stat-only contours and moved to macros/contours):macros/contours/fit_result_to_graphs.py
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())
