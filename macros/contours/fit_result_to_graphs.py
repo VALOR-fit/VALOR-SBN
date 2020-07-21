@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import division
-import ROOT 
+import ROOT
 import numpy as np
 import math
 import os
@@ -39,10 +39,9 @@ ndim = 2
 
 eps = 1E-10 # a small number to guarantee our point goes in its bin
 
-
-def GetLoggedHist(filename,exclusion,data):
+def GetLoggedHist(filename,exclusion):
   print(filename)
-  chain = R.TChain(data)
+  chain = R.TChain("valor_fit_ntp")
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())
@@ -74,7 +73,7 @@ def GetLoggedHist(filename,exclusion,data):
     #  y = true.Value(param_y)
 
     stat = max(0.,fp.GetBestFitStatistic())
-    
+
     logx = math.log10(x)
     logy = math.log10(y)
     if logx >= hist.GetXaxis().GetXmax(): logx -= eps
@@ -175,9 +174,8 @@ def main(files,tag,label,exclusion,data,param):
   in_y_min = -(2+in_y_lim) #allowed
   in_y_max = 2+in_y_lim
 
-
-
   logged_hists = [GetLoggedHist(f,exclusion,data) for f in files]
+
   canv = R.TCanvas("canv","canv",1200,800)
   canv.SetTopMargin(0.03)
   canv.SetRightMargin(0.03)
