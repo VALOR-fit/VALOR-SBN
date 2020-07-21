@@ -32,21 +32,21 @@ colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.k
 param_x = conv.kPhypMixingMuMu # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
 param_y = conv.kPhypDm41sq
 
-ex_x_min = 1E-3 #exlusion
-ex_x_max = 1
+ex_x_min = -3.0375 #exlusion
+ex_x_max = 0.0375
 
 in_x_min = 1E-2 #allowed
 in_x_max = 5E-1
 
-x_npoints = 40
+x_npoints = 41
 
-ex_y_min = 1E-2 #exlusion
-ex_y_max = 1E2
+ex_y_min = -2.05 #exlusion
+ex_y_max = 2.05
 
 in_y_min = 4E-1 #allowed
 in_y_max = 4.
 
-y_npoints = 40
+y_npoints = 41
 
 ndim = 2
 
@@ -54,7 +54,7 @@ eps = 1E-10 # a small number to guarantee our point goes in its bin
 
 def GetLoggedHist(filename,exclusion):
   print(filename)
-  chain = R.TChain("valor_dune_nd_ntp")
+  chain = R.TChain("valor_fit_ntp")
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())
@@ -67,14 +67,14 @@ def GetLoggedHist(filename,exclusion):
   y_min = ex_y_min
   if exclusion is False:
     print "Exclusion is false, setting inclusion limits"
-    x_max = in_x_max
-    x_min = in_x_min
-    y_max = in_y_max
-    y_min = in_y_min
+    x_max = math.log10(in_x_max)
+    x_min = math.log10(in_x_min)
+    y_max = math.log10(in_y_max)
+    y_min = math.log10(in_y_min)
 
   hist = R.TH2D("hist","",
-    x_npoints,math.log10(x_min),math.log10(x_max),
-    y_npoints,math.log10(y_min),math.log10(y_max))
+    x_npoints,x_min,x_max,
+    y_npoints,y_min,y_max)
 
   values = dict()
   for ev in chain:
