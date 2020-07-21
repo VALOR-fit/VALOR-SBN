@@ -5,6 +5,7 @@ import numpy as np
 import math
 import os
 import sys
+from ctypes import *
 
 R=ROOT
 
@@ -95,6 +96,18 @@ def GetLoggedHist(filename,exclusion):
     if logx >= hist.GetXaxis().GetXmax(): logx -= eps
     if logy >= hist.GetYaxis().GetXmax(): logy -= eps
     ibin = hist.FindBin(logx,logy)
+    xbin = c_int()
+    ybin = c_int()
+    zbin = c_int()
+
+    hist.GetBinXYZ(ibin,xbin,ybin,zbin)
+
+    xbin_xpoint_diff = abs(hist.GetXaxis().GetBinCenter(xbin.value) - logx)
+    ybin_ypoint_diff = abs(hist.GetYaxis().GetBinCenter(ybin.value) - logy)
+    if xbin_xpoint_diff > eps:
+      print " Error, bin center is not close to the true x point, bin center: ", hist.GetXaxis().GetBinCenter(xbin.value), " x-point: ", logx, " and the difference: ", xbin_xpoint_diff
+    if ybin_ypoint_diff > eps:
+      print " Error, bin center is not close to the true y point, bin center: ", hist.GetYaxis().GetBinCenter(ybin.value), " y-point: ", logy, " and the difference: ", ybin_ypoint_diff
 
     hist.SetBinContent(ibin,stat)
 
