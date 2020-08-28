@@ -91,6 +91,8 @@ typedef enum ELarMode{
   kLArWeakMix            = 13
 } LArMode_t;
 
+bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other);
+
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -115,7 +117,15 @@ int main(int argc, char ** argv)
   bool   write_universes    = arg.GetBool("write-universes");
   bool   apply_weights      = !(arg.GetBool("dont-apply-weights"));
   bool   no_truth           = arg.GetBool("no-truth");
+  bool   other_sample       = arg.GetBool("other-sample");
   int    max_n_events       = arg.GetInt("max-n-events");
+
+  // Get the sample and beam configuration
+  conv::Sample_t sample = util::SampleFromString(opt_sample_name);
+  assert(sample != conv::ksUndefined);
+
+  conv::BeamConf_t beam = util::BeamConfFromString(opt_beam_name);
+  assert(beam != conv::kbUndefined);
 
   if(no_truth && write_universes)
     VLOG("valor_sbn", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
@@ -124,6 +134,11 @@ int main(int argc, char ** argv)
     VLOG("valor_sbn", pNOTICE) << " Chosen to apply valor_minidst_wght ";
   else
     VLOG("valor_sbn", pNOTICE) << " Chosen not to apply valor_minidst_wght";
+
+  // If we want to define 'other' as anything but the sample defined in the arguments, set this to true
+  if(other_sample)
+    VLOG("valor_sbn", pNOTICE) << " Chosen to look for events which do NOT fall under the definition of the sample, "
+                               << util::AsString(sample);
 
   // Check if we are looking at nue_disappearance from the opt_oscillation argument
   // so that we reject the nue appearance oscillated events later
@@ -244,13 +259,6 @@ int main(int argc, char ** argv)
     << "POT in the input file is " << mcsample_pot;
 
 
-  // Get the sample and beam configuration
-  conv::Sample_t sample = util::SampleFromString(opt_sample_name);
-  assert(sample != conv::ksUndefined);
-
-  conv::BeamConf_t beam = util::BeamConfFromString(opt_beam_name);
-  assert(beam != conv::kbUndefined);
-
   int    valor_minidst_sample       = sample;
   int    valor_minidst_beam         = -1;  // see Conventions/BeamConf.h
   int    valor_minidst_reac_mode    = -1;  // see Conventions/ReacMode.h
@@ -262,6 +270,8 @@ int main(int argc, char ** argv)
   double valor_minidst_enu_true     = -1.; // true neutrino energy, in GeV
   double valor_minidst_Q2_true      = -1.; // true neutrino energy, in GeV
   double valor_minidst_enu_reco     = -1.; // reco neutrino energy, in GeV
+  double valor_minidst_q0_reco      = -1.; // reco lepton energy, in GeV
+  double valor_minidst_Theta_reco   = -1.; // reco lepton opening angle
   double valor_minidst_y_reco       = -1.; // inelasticity
   double valor_minidst_wght_pot     = -1.; // POT weight
   double valor_minidst_wght         = -1.; // misc weight
@@ -283,6 +293,8 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("enu_true"  , &valor_minidst_enu_true    ,"enu_true/D"   );
   valor_minidst->Branch("Q2_true"   , &valor_minidst_Q2_true     ,"q2_true/D"    );
   valor_minidst->Branch("enu_reco"  , &valor_minidst_enu_reco    ,"enu_reco/D"   );
+  valor_minidst->Branch("q0_reco"   , &valor_minidst_q0_reco     ,"q0_reco/D"    );
+  valor_minidst->Branch("Theta_reco", &valor_minidst_Theta_reco  ,"Theta_reco/D" );
   valor_minidst->Branch("y_reco"    , &valor_minidst_y_reco      ,"y_reco/D"     );
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
@@ -393,6 +405,8 @@ int main(int argc, char ** argv)
     } // Variations
 
     double enu_reco    =  -999.;
+    double q0_reco     =  -999.;
+    double Theta_reco  =  -999.;
     double reco_weight = 1.;
 
     analysis_tree->GetEntry(iev);
@@ -401,6 +415,17 @@ int main(int argc, char ** argv)
     event::RecoInteraction &reco = event.reco;
     event::Interaction * ptruth = event.GetTruth();
     event::Interaction & truth = *ptruth;
+
+    // Before we do anything, make sure the current event fits the description of the sample
+    if(!CheckSample(reco,is_numu,sample,other_sample)){
+      LOG("valor_sbn",pINFO)   << "Current event has \n" 
+                               << reco.npion << " pions, \n " 
+                               << reco.npi0 << " pi0s and \n " 
+                               << reco.nproton << " protons and does not match the desired sample type: " 
+                               << util::AsString(sample) << "\n Skipping.";
+      continue;
+    }
+
 
     // If there is truth in the file, access the variables
     if(!no_truth){
@@ -638,11 +663,15 @@ int main(int argc, char ** argv)
       << "\n POT weight    = " << valor_minidst_wght_pot;
 
 
-    enu_reco = reco.reco_energy;
+    enu_reco    = reco.reco_energy;
+    q0_reco     = reco.lepton_energy;
+    Theta_reco  = reco.lepton_costh;
     reco_weight = reco.weight;
 
     VLOG("valor_sbn",pDEBUG) << "Read event: "
-      << "Ereco         = "<< enu_reco  << " GeV; ";
+      << "\n Ereco             = "<< enu_reco  << " GeV; "
+      << "\n Reco lepton E     = "<< q0_reco  << " GeV; "
+      << "\n Reco lepton angle = "<< Theta_reco;
     if(!opt_disable_checks) {
 
       //
@@ -684,7 +713,9 @@ int main(int argc, char ** argv)
       }
     }
 
-    valor_minidst_enu_reco  = enu_reco;
+    valor_minidst_enu_reco    = enu_reco;
+    valor_minidst_q0_reco     = q0_reco;
+    valor_minidst_Theta_reco  = Theta_reco;
     if(apply_weights)
       valor_minidst_wght = reco_weight;
     else
@@ -720,4 +751,77 @@ int main(int argc, char ** argv)
   VLOG("valor_sbn", pNOTICE)  << "Done!";
 
   return 0;
+}
+
+bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other){
+  if(numu){
+    if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh) return true;
+    else if(sample == valor::conv::ksNuMuCC0piNtrk){
+      if((reco.npion+reco.npi0) == 0)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuMuCC0pi1trk){
+      if((reco.npion+reco.npi0) == 0 && reco.nproton == 0)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuMuCC0pi2trk){
+      if((reco.npion+reco.npi0) == 0 && reco.nproton == 1)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuMuCC1piC){
+      if(reco.npion == 1 && reco.npi0 == 0)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuMuCC1pi0){
+      if(reco.npion == 0 && reco.npi0 == 1)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuMuCC1piC1pi0){
+      if(reco.npion == 1 && reco.npi0 == 1)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuMuCC2piC){
+      if(reco.npion == 2 && reco.npi0 == 0)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuMuCCoth){
+      if((reco.npion + reco.npi0) >= 2)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else{
+      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      return false;
+    }
+  }
+  if(!numu){
+    if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh) return true;
+    else if(sample == valor::conv::ksNuECC0pi){
+      if((reco.npion+reco.npi0) == 0)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuECC1piC){
+      if(reco.npion == 1 && reco.npi0 == 0)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else if(sample == valor::conv::ksNuECCoth){
+      if((reco.npion+reco.npi0) >= 2)
+        return ((other) ? false : true);
+      else return ((other) ? true : false);
+    }
+    else{
+      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      return false;
+    }
+  }
+  return false; 
 }
