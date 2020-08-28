@@ -582,7 +582,7 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
         LOG("valor_sbn",pDEBUG) << "Variation: " << value;
         variations.push_back(value);
       }
-     //break; // Don't break: there are two lines per parameter in the text file!
+     //break; // Don't break: there may be two lines per parameter in the text file!
     }
     count_lines++;
   } // variations text file
