@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import division
 import ROOT
 import numpy as np
 import math
@@ -33,29 +34,41 @@ colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.k
 param_x = conv.kPhypMixingMuMu # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
 param_y = conv.kPhypDm41sq
 
-ex_x_min = -3.0375 #exlusion
-ex_x_max = 0.0375
+x_npoints = 40
+y_npoints = 40
+
+# Limits
+x_lim = 0.5*(3/(x_npoints-1))
+y_lim = 0.5*(4/(y_npoints-1))
+
+print "X Limit: ", x_lim, ", Y Limit: ", y_lim
+
+#ex_x_min = -3.0375 #exlusion
+#ex_x_max = 0.0375
+
+ex_x_min = -(3+x_lim) #exlusion
+ex_x_max = (0+x_lim)
 
 in_x_min = 1E-2 #allowed
 in_x_max = 5E-1
 
-x_npoints = 41
 
-ex_y_min = -2.05 #exlusion
-ex_y_max = 2.05
+#ex_y_min = -2.05 #exlusion
+#ex_y_max = 2.05
+
+ex_y_min = -(2+y_lim) #exlusion
+ex_y_max = 2+y_lim
 
 in_y_min = 4E-1 #allowed
 in_y_max = 4.
-
-y_npoints = 41
 
 ndim = 2
 
 eps = 1E-10 # a small number to guarantee our point goes in its bin
 
-def GetLoggedHist(filename,exclusion):
+def GetLoggedHist(filename,exclusion,data):
   print(filename)
-  chain = R.TChain("valor_fit_ntp")
+  chain = R.TChain(data)
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())
@@ -134,9 +147,9 @@ def UnlogGraph(graph):
   new_graph = R.TGraph(n,10**x,10**y)
   return new_graph
 
-def main(files,tag,label,exclusion,nue):
+def main(files,tag,label,exclusion,nue,data):
 
-  logged_hists = [GetLoggedHist(f,exclusion) for f in files]
+  logged_hists = [GetLoggedHist(f,exclusion,data) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
   canv.SetTopMargin(0.03)
   canv.SetRightMargin(0.03)
@@ -188,7 +201,8 @@ if __name__=="__main__":
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
   parser.add_option('-e','--exclusion', dest='exclusion',default=True,help='Boolean for whether we are producing exclusion or inclusion contours')
   parser.add_option('-n','--nue', dest='nue',default=False,help='Boolean for whether we are producing numu or nue contours')
+  parser.add_option('-d','--data', dest='data',default="valor_fit_ntp",help='Name of the nTuple')
 
   options,patterns = parser.parse_args()
 
-  main(patterns,options.tag, options.label, options.exclusion, options.nue)
+  main(patterns,options.tag, options.label, options.exclusion, options.nue, options.data)
