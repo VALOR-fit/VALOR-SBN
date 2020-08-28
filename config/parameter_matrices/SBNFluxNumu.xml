@@ -18,6 +18,8 @@
   <parameter> sbn_nd_flux_numu_16 </parameter>
   <parameter> sbn_nd_flux_numu_17 </parameter>
   <parameter> sbn_nd_flux_numu_18 </parameter>
+  <parameter> sbn_nd_flux_numu_19 </parameter>
+  <parameter> sbn_nd_flux_numu_20 </parameter>
   <parameter> sbn_ub_flux_numu_00 </parameter>
   <parameter> sbn_ub_flux_numu_01 </parameter>
   <parameter> sbn_ub_flux_numu_02 </parameter>
@@ -37,6 +39,8 @@
   <parameter> sbn_ub_flux_numu_16 </parameter>
   <parameter> sbn_ub_flux_numu_17 </parameter>
   <parameter> sbn_ub_flux_numu_18 </parameter>
+  <parameter> sbn_ub_flux_numu_19 </parameter>
+  <parameter> sbn_ub_flux_numu_20 </parameter>
   <parameter> sbn_fd_flux_numu_00 </parameter>
   <parameter> sbn_fd_flux_numu_01 </parameter>
   <parameter> sbn_fd_flux_numu_02 </parameter>
@@ -56,4 +60,6 @@
   <parameter> sbn_fd_flux_numu_16 </parameter>
   <parameter> sbn_fd_flux_numu_17 </parameter>
   <parameter> sbn_fd_flux_numu_18 </parameter>
+  <parameter> sbn_fd_flux_numu_19 </parameter>
+  <parameter> sbn_fd_flux_numu_20 </parameter>
 </systematic_list>
