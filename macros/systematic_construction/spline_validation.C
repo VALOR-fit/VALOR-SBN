@@ -99,10 +99,10 @@ void spline_validation(const char* param,
                        const TString &detector="sbn_nd", 
                        const TString &tweaks_location="", 
                        const TString &spline_location="",
-                       const bool &all_in_one = false,
-                       const double &per_energy_gev=1.,
+                       const bool &all_in_one = false, // If all the sigma variations were produced in a single file
+                       const double &per_energy_gev=1., // y-axis scaling
                        const bool &verbose=false,
-                       TString tag="tweaks",
+                       TString tag="tweaks", // This is the tag from your filename
                        const char* output_file="spline_validation_plots.root"){
 
   // Get spectra from various places
