@@ -39,9 +39,9 @@ ndim = 2
 
 eps = 1E-10 # a small number to guarantee our point goes in its bin
 
-def GetLoggedHist(filename,exclusion):
+def GetLoggedHist(filename,exclusion,data):
   print(filename)
-  chain = R.TChain("valor_fit_ntp")
+  chain = R.TChain(data)
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())
