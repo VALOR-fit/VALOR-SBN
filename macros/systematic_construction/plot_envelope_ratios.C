@@ -49,7 +49,6 @@ void plot_envelope_ratios(
   TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
   std::cout << " Got VALOR histograms" << std::endl;
  
-  
   // All ratios
   TH1D *h_p1_ratio_val = static_cast<TH1D*>(h_val_p1->Clone("h_p1_ratio_val"));
   TH1D *h_m1_ratio_val = static_cast<TH1D*>(h_val_m1->Clone("h_m1_ratio_val"));
