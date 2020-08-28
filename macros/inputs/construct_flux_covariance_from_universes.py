@@ -141,10 +141,17 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
               #end if parameter matches histogram
             #end loop params
           #end if true
+          else:
+            # We're summing over all reaction modes here
+            row[ientry] += hist.GetBinContent(ibin+1)
+            ientry+=1
         #end loop ibin
       #end loop mode
     #end loop model
-    assert(ientry+1 == row_size)
+    if(is_true):
+      assert(ientry+1 == row_size)
+    else:
+      assert(ientry == row_size)
     print "Adding row to covariance from file ",ifile, "\r"
     tp.AddRow(row)
   #end loop files
