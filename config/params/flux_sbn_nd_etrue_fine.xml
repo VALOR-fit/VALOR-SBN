@@ -1,0 +1,1090 @@
+<?xml version="1.0"?>
+<param_list name="toy_sbn">
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu00  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.3, 0.4  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu01  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.4, 0.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu02  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.5, 0.6  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu03  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.6, 0.65  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu04  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.65, 0.70  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu05  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.70, 0.75  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu06  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.75, 0.80  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu07  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.80, 0.85  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu08  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.85, 0.90  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu09  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.90, 0.95  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu10  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.95, 1.00  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu11  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.00, 1.05  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu12  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.05, 1.10  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu13  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.10, 1.15  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu14  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.15, 1.20  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu15  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.2, 1.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu16  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.50, 2.00  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu17  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.00, 2.50 </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu18  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.50, 3.00 </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numu19  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  3.00, 10.00 </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numu  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  all  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar00  </simple>
+      <long>  SBND numubar flux; 0.0 - 0.7 GeV  </long>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{0}  </rootex>
+      <tex>  SBND numubar flux, 0.0 - 0.7 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.0, 0.7  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numubar  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar01  </simple>
+      <long>  SBND numubar flux; 0.7 - 1.0 GeV  </long>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{1}  </rootex>
+      <tex>  SBND numubar flux, 0.7 - 1.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.7, 1.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numubar  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar02  </simple>
+      <long>  SBND numubar flux; 1.0 - 1.5 GeV  </long>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{2}  </rootex>
+      <tex>  SBND numubar flux, 1.0 - 1.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.0, 1.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numubar  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar03  </simple>
+      <long>  SBND numubar flux; 1.5 - 2.5 GeV  </long>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{3}  </rootex>
+      <tex>  SBND numubar flux, 1.5 - 2.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.5, 2.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numubar  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_numubar04  </simple>
+      <long>  SBND numubar flux; 2.5 - 10.0 GeV  </long>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{4}  </rootex>
+      <tex>  SBND numubar flux, 2.5 - 10.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.5, 10.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  numubar  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  numubar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue00  </simple>
+      <long>  SBND nue flux; 0.0 - 0.5 GeV  </long>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{0}  </rootex>
+      <tex>  SBND nue flux, 0.0 - 0.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.0, 0.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nue  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue01  </simple>
+      <long>  SBND nue flux; 0.5 - 0.7 GeV  </long>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{1}  </rootex>
+      <tex>  SBND nue flux, 0.5 - 0.7 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.5, 0.7  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nue  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue02  </simple>
+      <long>  SBND nue flux; 0.7 - 0.8 GeV  </long>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{2}  </rootex>
+      <tex>  SBND nue flux, 0.7 - 0.8 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.7, 0.8  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nue  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue03  </simple>
+      <long>  SBND nue flux; 0.8 - 1.5 GeV  </long>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{3}  </rootex>
+      <tex>  SBND nue flux, 0.8 - 1.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.8, 1.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nue  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue04  </simple>
+      <long>  SBND nue flux; 1.5 - 2.5 GeV  </long>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{4}  </rootex>
+      <tex>  SBND nue flux, 1.5 - 2.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  1.5, 2.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nue  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_nue05  </simple>
+      <long>  SBND nue flux; 2.5 - 10.0 GeV  </long>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{5}  </rootex>
+      <tex>  SBND nue flux, 2.5 - 10.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.5, 10.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nue  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nue  </flav_init>
+      <flav_final>  nu any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  flux_sbnd_nuebar00  </simple>
+      <long>  SBND nuebar flux; 0.0 - 2.5 GeV  </long>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{e}^{0}  </rootex>
+      <tex>  SBND nuebar flux, 0.0 - 2.5 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  0.0, 2.5  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nuebar  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+
+
+  <param>
+    <name>
+      <simple>  flux_sbnd_nuebar01  </simple>
+      <long>  SBND nuebar flux; 2.5 - 10.0 GeV  </long>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{e}^{1}  </rootex>
+      <tex>  SBND nuebar flux, 2.5 - 10.0 GeV  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue>  2.5, 10.0  </Etrue>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+      <category>  sbnd  </category>
+      <category>  nuebar  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  sbnd  </detector>
+      <beam>  FHC  </beam>
+      <selection>  all  </selection>
+      <reac_type>  all  </reac_type>
+      <flav_init>  nuebar  </flav_init>
+      <flav_final>  nubar any  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -8,8      </range>
+  </param>
+  
+  
+</param_list>
