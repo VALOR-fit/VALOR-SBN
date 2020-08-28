@@ -7,7 +7,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.2, 0.3  </Ereco>
+      <Ereco>  0.0, 0.2  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -17,7 +17,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -36,7 +36,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.3, 0.4  </Ereco>
+      <Ereco>  0.2, 0.3  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -46,7 +46,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -65,7 +65,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.4, 0.45  </Ereco>
+      <Ereco>  0.3, 0.4  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -75,7 +75,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -94,7 +94,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.45, 0.5  </Ereco>
+      <Ereco>  0.4, 0.45  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -104,7 +104,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -123,7 +123,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.5, 0.55  </Ereco>
+      <Ereco>  0.45, 0.5  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -133,7 +133,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -152,7 +152,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.55, 0.60  </Ereco>
+      <Ereco>  0.5, 0.55  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -162,7 +162,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -181,7 +181,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.60, 0.65  </Ereco>
+      <Ereco>  0.55, 0.60  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -191,7 +191,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -210,7 +210,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.65, 0.70  </Ereco>
+      <Ereco>  0.60, 0.65  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -220,7 +220,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -239,7 +239,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.70, 0.75  </Ereco>
+      <Ereco>  0.65, 0.70  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -249,7 +249,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -268,7 +268,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.75, 0.80  </Ereco>
+      <Ereco>  0.70, 0.75  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -278,7 +278,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -297,7 +297,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.80, 0.85  </Ereco>
+      <Ereco>  0.75, 0.80  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -307,7 +307,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -326,7 +326,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.85, 0.90  </Ereco>
+      <Ereco>  0.80, 0.85  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -336,7 +336,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -355,7 +355,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.90, 0.95  </Ereco>
+      <Ereco>  0.85, 0.90  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -365,7 +365,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -384,7 +384,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.95, 1.00  </Ereco>
+      <Ereco>  0.90, 0.95  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -394,7 +394,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -413,7 +413,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  1.00, 1.25  </Ereco>
+      <Ereco>  0.95, 1.00  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -423,7 +423,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -442,7 +442,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  1.25, 1.50  </Ereco>
+      <Ereco>  1.00, 1.25  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -452,7 +452,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -471,7 +471,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  1.50, 2.00  </Ereco>
+      <Ereco>  1.25, 1.50  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -481,7 +481,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -500,7 +500,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  2.00, 2.50 </Ereco>
+      <Ereco>  1.50, 2.00  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -510,7 +510,7 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
@@ -529,7 +529,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  2.50, 3.00 </Ereco>
+      <Ereco>  2.00, 2.50 </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -539,7 +539,65 @@
     </categories>
     
     <apply_to>
-      <detector>  microboone </detector>
+      <detector>  microboone  </detector>
+      <beam>  all  </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  all  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_ub_flux_numu_19  </simple>
+    </name>
+    
+    <apply_to_range>
+      <ereco>  2.50, 3.00 </ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  microboone  </detector>
+      <beam>  all  </beam>
+      <selection>  mulikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  all  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_ub_flux_numu_20  </simple>
+    </name>
+    
+    <apply_to_range>
+      <ereco>  3.00, 10.00 </ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  microboone  </detector>
       <beam>  all  </beam>
       <selection>  mulikehighres  </selection>
       <reac_type>  all  </reac_type>
