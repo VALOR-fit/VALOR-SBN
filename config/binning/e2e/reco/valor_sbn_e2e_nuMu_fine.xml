@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<binning>
+
+  <space>
+    Ereco
+  </space>
+
+  <type>
+    edge-to-edge
+  </type>
+
+  <Ereco_binning>
+    <bin_size> fixed </bin_size>
+    <nbins>    100   </nbins>
+    <range> 0.0, 5.0 </range>
+  </Ereco_binning>
+
+
+  
+</binning>
