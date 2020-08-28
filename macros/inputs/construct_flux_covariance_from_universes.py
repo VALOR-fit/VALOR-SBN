@@ -87,9 +87,9 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
 
   # Make the TPrincipal we'll use to actually get covariances
   tp = R.TPrincipal(row_size)
-  
+
   zeroes = [] # hold all the diagonal entries which are empty
-  
+
   # Loop over each file (containing a universe each)
   flav = [""]*row_size # array for the neutrino flavour of each row entry to fill any empty cases with alternative flavour entries later
   for ifile,f in enumerate(files):
@@ -206,7 +206,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
     for i in zeroes:
       if n == i:
         mean[n] = float('nan');
-        print params[n].GetName(), "\r"    
+        print params[n].GetName(), "\r"
 
 #    if not float(mean[n]):
 #      print params[n].GetName(), "\r"
@@ -220,7 +220,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
         if math.isnan(frac_cov[n][m]):
           #frac_cov[n][m] = 1 # 100% for used table
           frac_cov[n][m] = 0.0001 # Set diagonal value to 0
-        
+
       else:
         if math.isnan(frac_cov[n][m]):
           frac_cov[n][m] = 0.0 # setting the off-diagonal elements of the empty bins to be 0
