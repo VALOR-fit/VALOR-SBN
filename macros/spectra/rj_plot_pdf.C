@@ -6,7 +6,7 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-std::string kinevar = "Ereco"; // make this configurable later
+std::string kinevar = "Etrue"; // make this configurable later
 
 void rj_plot_pdf(
   const char * config_file,
@@ -181,6 +181,7 @@ void rj_plot_pdf(
         std::vector<TH1D *> pdf_contrib_width       (NReacModes      ,nullptr);
         std::vector<TH1D *> pdf_contrib_coarse      (NReacModesCoarse,nullptr);
         std::vector<TH1D *> pdf_contrib_coarse_width(NReacModesCoarse,nullptr);
+        TH1D * total_hist = 0;
         for(int imode = 0; imode < NReacModes; imode++) {
           conv::ReacMode_t m = modes.at(imode);
           if(m == conv::kmUndefined) continue;
@@ -230,12 +231,31 @@ void rj_plot_pdf(
                    pdf_contrib_coarse_width[imodec]->Add(width_norm);
                 }
                 pdf_contrib_width[imode] = width_norm;
+
+                // If we're plotting ETrue, get total from the sum of all mode histograms
+                if (format == 0 && kinevar == "Etrue" && per_range > 0) {
+                  if(total_hist == 0){
+                    total_hist = new TH1D(*width_norm);
+                  }
+                  else{
+                    total_hist->Add(width_norm);
+                  }
+                }
               }// per width
               if(pdf_contrib_coarse[imodec] == 0) {
                  pdf_contrib_coarse[imodec] = new TH1D(*pdf_contrib[imode]);
               }
               else {
                  pdf_contrib_coarse[imodec]->Add(pdf_contrib[imode]);
+              }
+              // If not per width
+              if (format == 0 && kinevar == "Etrue" && per_range <= 0) {
+                if(total_hist == 0){
+                  total_hist = new TH1D(*pdf_contrib[imode]);
+                }
+                else{
+                  total_hist->Add(pdf_contrib[imode]);
+                }
               }
             }//imodec
           }//!null
@@ -290,9 +310,9 @@ void rj_plot_pdf(
           data_max = data_hist->GetMaximum();
         }
         // If totals rather than by mode, get that 
-        TH1D * total_hist = 0;
         float total_max = -99999.;
-        if (format == 0) {
+        if (format == 0 && kinevar == "Ereco") {
+          // If we're plotting EReco, can just get pdfts
           TString total_name = TString::Format("%s_%s_%s_%s_%s_%s",
               tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
           TObject * tmp = fin->Get(total_name.Data());
@@ -309,12 +329,11 @@ void rj_plot_pdf(
               total_hist->SetBinContent(ibin,new_bin_content);
             }
           }
-
-          total_hist->SetLineStyle(2);
-          total_hist->SetLineWidth(2);
-          total_hist->SetLineColor(8);
-          total_hist->GetMaximum();
         }
+        total_hist->SetLineStyle(1);
+        total_hist->SetLineWidth(2);
+        total_hist->SetLineColor(kAzure+7);
+        total_max = total_hist->GetMaximum();
 
         // Start drawing
         TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
@@ -382,15 +401,25 @@ void rj_plot_pdf(
         if(plot_data){
           contrib_legend->AddEntry(data_hist, "Oscillated", "P");
         }
-        float max_y = std::max(mode_max, std::max(data_max, total_max)) * 1.1;
+        float max_y = std::max(mode_max, std::max(data_max, total_max)) * 1.2;
 
-        if(format == 0) total_hist->GetYaxis()->SetRangeUser(0,max_y);
-        
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
-        this_pad->SetLeftMargin(0.2);
+        this_pad->SetLeftMargin  (0.11552  );
+        this_pad->SetRightMargin (0.0204959);
+        this_pad->SetBottomMargin(0.12151  );
+        this_pad->SetTopMargin   (0.0488403);
 
-        TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,1.2*mode_max);
+        TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,max_y);
         contrib_frame->Draw();
+        contrib_frame->GetXaxis()->SetTitleSize(0.05);
+        contrib_frame->GetXaxis()->SetLabelSize(0.04);
+        contrib_frame->GetYaxis()->SetTitleSize(0.05);
+        contrib_frame->GetYaxis()->SetLabelSize(0.04);
+        contrib_frame->GetYaxis()->SetMaxDigits(3);
+        contrib_frame->GetXaxis()->SetTitleOffset(1.2);
+        contrib_frame->GetYaxis()->SetTitleOffset(1.2);
+        
+        // Sort out the title
         std::string nice_sample = "";
         std::string to_cut = "high-resolution";
         std::string title_sample = vutil::AsStringTeX(s,true);
@@ -401,9 +430,13 @@ void rj_plot_pdf(
 
         TString contrib_title_str = TString::Format("%s, %s",
           vutil::AsStringTeX(d,true).c_str(), title_sample.c_str());
-        TLatex * contrib_title = new TLatex(0.3,1.07*mode_max,contrib_title_str.Data());
+        TLatex * contrib_title = new TLatex(0.4,0.9*max_y,contrib_title_str.Data());
+        contrib_title->SetTextSize(0.05);
         contrib_title->Draw(); 
-        if(vutil::IsCC(s)) {  
+        if(vutil::IsCC(s)) { 
+          if(kinevar == "Etrue")
+           contrib_frame->GetXaxis()->SetTitle("True E_{#nu} (GeV)");
+          else if(kinevar == "Ereco")
            contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
         } else {
            contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
