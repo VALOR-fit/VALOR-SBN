@@ -34,8 +34,8 @@ postfit_color = ROOT.kOrange-3
 postfit_line  = ROOT.kOrange+2
 
 data_style    = 1001 # Solid
-prefit_style  = 3004 # Hatched
-postfit_style = 3005 # Solid
+prefit_style  = 3017 # Hatched
+postfit_style = 3018 # Solid
 
 to3dp = "{0:.3f}"
 
