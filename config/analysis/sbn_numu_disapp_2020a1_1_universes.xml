@@ -40,7 +40,12 @@
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml        </binning>
     </element>
     
-    
   </element_list>
     
+  <parameter_definitions>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue_fine.xml       </filename>
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue.xml            </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue.xml            </filename>
+  </parameter_definitions>
+
 </valor> 
