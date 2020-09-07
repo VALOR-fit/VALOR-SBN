@@ -6,8 +6,6 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-std::string kinevar = "Etrue"; // make this configurable later
-
 void rj_plot_pdf(
   const char * config_file,
   const char * filename,
@@ -16,6 +14,7 @@ void rj_plot_pdf(
   TString plotting_format = "", // If empty or 'stacked': plot stacked interaction breakdown (valor default). If 'total': plot total signal + bg.
   const char * data_filename = "", // if we want to plot a dataset on top, this is that file - we also use this to pass the oscillation pdf file
   const char * spectra_filename = "", // Save the stacked plot, total hist and data plot (if included) to a TFile with this name
+  TString kinevar = "Ereco", // KineVar
   const char * data_tag = "valor",
   TString   option = "",
   const char * out_tag = "valor",
@@ -186,7 +185,7 @@ void rj_plot_pdf(
           conv::ReacMode_t m = modes.at(imode);
           if(m == conv::kmUndefined) continue;
           TString contrib_name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
-            tag, "pdfcs",binning,"rf", model_name.c_str(),kinevar.c_str(), vutil::AsString(m).c_str());
+            tag, "pdfcs",binning,"rf", model_name.c_str(),kinevar.Data(), vutil::AsString(m).c_str());
           TObject * tmp_obj = fin->Get(contrib_name.Data());
           pdf_contrib[imode] = (TH1D*) tmp_obj;
           if(pdf_contrib[imode]) {
@@ -288,7 +287,7 @@ void rj_plot_pdf(
         // If we need data, get that histogram now
         if (plot_data) {
           TString data_name = TString::Format("%s_%s_%s_%s_%s_%s",
-              data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
+              data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.Data());
           TObject * tmp = fdata->Get(data_name.Data());
           std::cout<<"Data name: " << data_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
@@ -314,7 +313,7 @@ void rj_plot_pdf(
         if (format == 0 && kinevar == "Ereco") {
           // If we're plotting EReco, can just get pdfts
           TString total_name = TString::Format("%s_%s_%s_%s_%s_%s",
-              tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.c_str());
+              tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.Data());
           TObject * tmp = fin->Get(total_name.Data());
           std::cout<< "Integrated name : " << total_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
