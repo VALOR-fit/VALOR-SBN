@@ -10,3 +10,4 @@ params                               |   string       |  optional   |   all
 kine-var                             |   string       |  optional   |   ereco
 sample                               |   string       |  optional   |   numulikeCChigh
 detector                             |   string       |  optional   |   sbn_nd
+tree-name                            |   string       |  optional   |   valor_sbn_minidst
