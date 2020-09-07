@@ -29,7 +29,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(files,config,output,input_tag,nominal,kinematic,grouping):
+def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
 
   elements = valor.CompoundFitElements()
   elements.Read(util.CompleteConfigPath(config),"nomc nosplines")
@@ -47,6 +47,17 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
   print "    ", n_flux, "of which are flux parameters"
   print "    ", n_int, "of which are interaction parameters"
 
+  scaleVector = R.TVectorD(0)
+  scaleVectorEmpty = False
+  if scale != "":
+    scaleFile = R.TFile(scale)
+    scaleVector = scaleFile.Get("scales")
+    if scaleVector.GetNrows() == 0:
+      scaleVectorEmpty = True
+    else:
+      print "Scale vector found and is populated, will apply to the covariance construction"
+
+
   kv = util.KineVarFromString(kinematic)
   is_true = util.KineVarIsTrue(kv)
   is_reco = util.KineVarIsReco(kv)
@@ -62,7 +73,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
         if "sbnd" in p.GetName() and "sbn_nd" in model.Name() or "uboone" in p.GetName() and "uboone" in model.Name() or "icarus" in p.GetName() and "icarus" in model.Name():
           n_bins += p.GetKineRanges().size()
 
-    if (is_reco):
+    elif (is_reco):
       full_binning = model.GetBinning()
       binning = None
       binning = full_binning.RecoOptBinning()
@@ -111,26 +122,29 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
                 for kinerange in p.GetKineRanges():
                   minbin = min(kinerange.first,kinerange.second)
                   maxbin = max(kinerange.first,kinerange.second)
-                  if hist.GetBinCenter(ibin+1) >= minbin and hist.GetBinCenter(ibin+1) <= maxbin:
+                  if hist.GetBinCenter(ibin) >= minbin and hist.GetBinCenter(ibin) <= maxbin:
                     ientry = ip
 
                     if util.IsNuMu(mode) and not util.IsCosmic(mode) and "numu" in p.GetName() and "numubar" not in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin+1)
+                      row[ientry] += hist.GetBinContent(ibin)
+                      if not scaleVectorEmpty and ientry < scaleVector.GetNrows():
+                        row[ientry] = row[ientry] * scaleVector[ientry] * scaleVector[ientry]
+
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "numu"
-                    if util.IsNuMuBar(mode) and not util.IsCosmic(mode) and "numubar" in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin+1)
+                    elif util.IsNuMuBar(mode) and not util.IsCosmic(mode) and "numubar" in p.GetName() and not "cosmic" in p.GetName():
+                      row[ientry] += hist.GetBinContent(ibin)
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "numubar"
-                    if util.IsNuE(mode) and not util.IsCosmic(mode) and "nue" in p.GetName() and "nuebar" not in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin+1)
+                    elif util.IsNuE(mode) and not util.IsCosmic(mode) and "nue" in p.GetName() and "nuebar" not in p.GetName() and not "cosmic" in p.GetName():
+                      row[ientry] += hist.GetBinContent(ibin)
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "nue"
-                    if util.IsNuEBar(mode) and not util.IsCosmic(mode) and "nuebar" in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin+1)
+                    elif util.IsNuEBar(mode) and not util.IsCosmic(mode) and "nuebar" in p.GetName() and not "cosmic" in p.GetName():
+                      row[ientry] += hist.GetBinContent(ibin)
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "nuebar"
@@ -143,7 +157,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
           #end if true
           else:
             # We're summing over all reaction modes here
-            row[ientry] += hist.GetBinContent(ibin+1)
+            row[ientry] += hist.GetBinContent(ibin)
             ientry+=1
         #end loop ibin
       #end loop mode
@@ -169,8 +183,10 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
       print params[n].GetName(), "\r"
 
   frac_cov = util.CovarianceMatrixToFractionalCovarianceMatrix(cov,mean)
+
   nRows = frac_cov.GetNrows()
   nCols = frac_cov.GetNcols()
+  # If a scale root file has been passed, apply it now
   for n in range(nRows):
     for m in range(nCols):
       # Check the diagonal case
@@ -180,12 +196,6 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping):
       else:
         if math.isnan(frac_cov[n][m]):
           frac_cov[n][m] = 0 # setting the off-diagonal elements of the empty bins to be 0
-
-  total_entries = 0
-  for n in range(nRows):
-    for m in range(cov.GetNcols()):
-      if math.isnan(frac_cov[n][m]):
-        total_entries += 1
 
   corr = util.CovarianceMatrixToCorrelationMatrix(frac_cov)
   err  = util.CovarianceMatrixToErrorVector(frac_cov)
@@ -206,9 +216,10 @@ if __name__=="__main__":
   parser.add_option('-k','--kinematic',dest='kinematic',default="etrue",help="The kinematic variable to parameterise in")
   parser.add_option('-n','--nominal',dest='nominal',default=None,help="If a nominal spectrum is given, we can write the central values too [NOT YET IMPLEMENTED")
   parser.add_option('-g','--grouping',dest='grouping',default="all",help="How to group modes. Options all,flav")
+  parser.add_option('-s','--scales',dest='scale',default="",help="Root file containing a vector of values to scale the rates by")
   parser.add_option('--input-tag',dest='input_tag',default="valor",help="The first part of the histogram name")
   parser.add_option('--write-xml',dest='write_xml',action="store_true",default=False,help="Write parameter XML definitions [NOT YET IMPLEMENTED]")
 
   options,files = parser.parse_args()
 
-  main(files,options.config,options.output,options.input_tag,options.nominal,options.kinematic,options.grouping)
+  main(files,options.config,options.output,options.input_tag,options.nominal,options.kinematic,options.grouping, options.scale)
