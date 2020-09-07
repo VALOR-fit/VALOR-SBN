@@ -92,6 +92,7 @@ typedef enum ELarMode{
 } LArMode_t;
 
 bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other);
+valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -645,7 +646,11 @@ int main(int argc, char ** argv)
       valor_minidst_target       = 1000180400; // Argon40
     }// !no-truth
 
-    valor_minidst_sample     = sample;
+    // If we are finding everything 'other' than the sample defined, label the DST sample 'other'
+    if(other_sample)
+      valor_minidst_sample = GetOtherSample(sample,is_numu);
+    else
+      valor_minidst_sample     = sample;
     valor_minidst_beam       = beam;
     valor_minidst_wght_pot   = 1./mcsample_pot;
     //valor_minidst_y_reco    = 0.5; // FORCE y=0.5 for now
@@ -824,4 +829,38 @@ bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const val
     }
   }
   return false; 
+}
+valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu){
+
+  // Numu CC
+  if(valor::util::IsCC(s) && numu){
+    valor::conv::Sample_t new_s = valor::util::SampleFromString("numuCCoth");
+    assert(new_s != valor::conv::ksUndefined);
+    return new_s;
+  }
+
+  // Numu NC
+  else if(!valor::util::IsCC(s) && numu){
+    valor::conv::Sample_t new_s = valor::util::SampleFromString("numuNCoth");
+    assert(new_s != valor::conv::ksUndefined);
+    return new_s;
+  }
+
+  // Nue CC
+  else if(valor::util::IsCC(s) && !numu){
+    valor::conv::Sample_t new_s = valor::util::SampleFromString("nueCCoth");
+    assert(new_s != valor::conv::ksUndefined);
+    return new_s;
+  }
+  
+  // Nue NC
+  else if(!valor::util::IsCC(s) && !numu){
+    valor::conv::Sample_t new_s = valor::util::SampleFromString("nueNCoth");
+    assert(new_s != valor::conv::ksUndefined);
+    return new_s;
+  }
+  else{
+    LOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
+    return s;
+  }
 }
