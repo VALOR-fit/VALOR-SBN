@@ -13,7 +13,7 @@
       <mc>           mc/sbn_numu_disapp_2020a1_1_sbn_ub_universes.xml     </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
-      <binning>      binning/sbn_proposal_binning_NuMu_universes.xml      </binning>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
     </element>
     
   </element_list>
