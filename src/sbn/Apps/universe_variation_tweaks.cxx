@@ -278,8 +278,12 @@ int main(int argc, char ** argv)
   if(util::IsReco(kv))
     LOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a reconstructed parameter";
 
-  Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
-  LOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
+  std::string elem_readopt("nomc nosplines");
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
+  FitModelABC * model = elements->FitModel();
+  CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
+  assert(cm);
   
   Sample_t   sample       = util::SampleFromString(arg_sample);
   Detector_t detector     = util::DetectorFromString(arg_detector);
@@ -449,7 +453,7 @@ int main(int argc, char ** argv)
   TH1D *h_weight_product_skipnom = new TH1D("h_weight_product_skipnom","",200,-1,3);
   for(int iev = 0; iev < nev; ++iev){
     analysis_tree->GetEntry(iev);
-    
+
     // Exposure for assumed data - Weight MC templates to that exposure
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
     double pot_wght = pot_weight*data_pot;
@@ -546,7 +550,7 @@ int main(int argc, char ** argv)
     huni.at(itoy)->SetName(name.c_str());
   }
   LOG("universe_variation_tweaks", pINFO) << " Translated PDFs to histograms";
-  
+
   // Histograms to store the spectra for the default, +1 sigma and -1 sigma variations 
   // Setup the per-detector histograms for variations to determine sigma from nominal
   double max = -999.;
