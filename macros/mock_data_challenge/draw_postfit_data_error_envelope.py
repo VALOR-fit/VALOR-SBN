@@ -254,9 +254,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       integrals.append(w.Integral())
 
     if det == '1':
-      max_y = max(wintegrals)*2.0
+      max_y = max(wintegrals)*1.4
     else:
-      max_y = max(wintegrals)*1.2
+      max_y = max(wintegrals)*1.4
 
     for r,rate in enumerate(wintegrals):
       if r == 0:
@@ -267,7 +267,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
         print "Postfit integrated rate: ", rate
 
     envelope_fn = out_prefix+"_envelope."+img_format
-    f_output = ROOT.TFile(envelope_fn,"UPDATE")
+    f_output = ROOT.TFile(envelope_fn,"RECREATE")
     if not f_output.IsOpen():
       print "Unable to open root file named: ", envelope_fn
     else:
