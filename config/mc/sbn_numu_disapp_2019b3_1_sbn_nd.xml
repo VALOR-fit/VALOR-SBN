@@ -69,6 +69,6 @@ Modelists
 Default binning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<default_binning> binning/sbn_proposal_binning_NuMu_universes.xml  </default_binning>
+<default_binning> binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </default_binning>
 
 </analysis_inputs>
