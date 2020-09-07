@@ -165,12 +165,22 @@ int main(int argc, char ** argv)
   string arg_sample       = arg.GetString("sample");
   string arg_detector     = arg.GetString("detector");
   string arg_kine_var     = arg.GetString("kine-var");
+  string tree_name        = arg.GetString("tree-name");
   
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
   LOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
   
   Sample_t   sample       = util::SampleFromString(arg_sample);
   Detector_t detector     = util::DetectorFromString(arg_detector);
+
+  //Define kine space
+  conv::KineVar_t   kv(util::KineVarFromString(arg_kine_var));
+  conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
+  assert(ks != conv::kspUndefined);
+  if(util::IsTrue(kv))
+    LOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a true parameter";
+  if(util::IsReco(kv))
+    LOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a reconstructed parameter";
 
   std::string elem_readopt("nomc nosplines");
   CompoundFitElements * elements = new CompoundFitElements();
@@ -259,7 +269,6 @@ int main(int argc, char ** argv)
       << "Failed to open file "<<input_rootfile.c_str();
     util::Die(-1);
   }
-  string tree_name = "valor_sbncode_mini_dst";
   TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
   if(!analysis_tree) {
     LOG("universe_variation_tweaks", pFATAL) 
@@ -293,25 +302,37 @@ int main(int argc, char ** argv)
 
   // Only apply simple binning for now
   const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
-  const VALORBinning * reco_sb            = (binning.RecoSmpBinning());
-  const int n_reco_bins                   = reco_sb->NBins();
+  const VALORBinning * bins_sb            = util::IsTrue(kv) ? (binning.TrueSmpBinningSingle()) : (binning.RecoSmpBinning());
+  if(bins_sb == nullptr && util::IsTrue(kv)){
+    LOG("valor_sbn",pFATAL) << "Unable to determine the true binning, prehaps you have defined them per mode instead of using 'default'";
+    util::Die(-1);
+  }
+  const int n_bins = bins_sb->NBins();
+  LOG("valor_sbn",pINFO) << " Number of bins: " << n_bins;
+
   // Setup arrays to be used for constructing the histograms
-  VALORArray *pdfuni[ntoys];
-  VALORArray *pdfnom  = new VALORArray(n_reco_bins);
+  VALORArray *pdfnom = new VALORArray(n_bins);
   pdfnom->SetAll(0.);
-  for(int i = 0; i < ntoys; ++i){
-    pdfuni[i] = new VALORArray(n_reco_bins);
-    pdfuni[i]->SetAll(0.);
+  std::vector<VALORArray*> pdfuni;
+  for(int itoy = 0; itoy < ntoys; ++itoy){
+    pdfuni.push_back(new VALORArray(n_bins));
+    pdfuni.at(itoy)->SetAll(0.);
   }
   LOG("universe_variation_tweaks", pINFO) << " Successfully setup PDFs";
 
   // Now get the map of universe id for each throw and parameter
   std::map< std::string, std::vector<int> > syst_toy_universe;
+  analysis_tree->GetEntry(0);
   for(const std::string s : systematics){
     std::vector<int> universe_ids;
     LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
+    if(ntoys > branch_n_universes.at(s)){
+      LOG("valor_sbn",pFATAL) << " Too many toys: " << ntoys << ", there are only " << branch_n_universes.at(s) << " entries for this parameter" << s;
+      util::Die(-1);
+    }
     for(int itoy = 0; itoy < ntoys; ++itoy){
-      int iuni = rand() % 1000;
+      LOG("universe_variation_tweaks",pDEBUG) << " Current systematic has " << branch_n_universes.at(s) << " so will generate a random number from that range";
+      int iuni = rand() % branch_n_universes.at(s);
       LOG("universe_variation_tweaks",pDEBUG) << " Throw " << itoy << " will access universe " << iuni;
       universe_ids.push_back(iuni);
     }
@@ -320,9 +341,11 @@ int main(int argc, char ** argv)
 
   // Ereco
   double enu_reco   = -999.;
+  double enu_true   = -999.;
   double weight     = -999.;
   double pot_weight = -999.;
   analysis_tree->SetBranchAddress("enu_reco", &enu_reco);
+  analysis_tree->SetBranchAddress("enu_true", &enu_true);
   analysis_tree->SetBranchAddress("wght",     &weight);
   analysis_tree->SetBranchAddress("wght_pot", &pot_weight);
 
@@ -330,35 +353,59 @@ int main(int argc, char ** argv)
   int nev = analysis_tree->GetEntries();
   
   LOG("universe_variation_tweaks", pINFO) << " About to enter analysis tree loop with " << nev << " entries";
-  
+
+
+  unsigned int accepted_events = 0;
+  unsigned int skipped_events  = 0;
+  unsigned int one_varied = 0;
+
+  // Vector to hold the IDs of any universe which contains events with no impact
+  std::vector<int> skipped_universe_ids;
+
+  // Histograms to assess the weights
+  TH1D *h_weight_product         = new TH1D("h_weight_product","",200,-1,3);
+  TH1D *h_weight_product_skipnom = new TH1D("h_weight_product_skipnom","",200,-1,3);
   for(int iev = 0; iev < nev; ++iev){
     analysis_tree->GetEntry(iev);
-    
+
     // Exposure for assumed data - Weight MC templates to that exposure
     // Calculate POT weight (assumed data exposure) / (generated MC exposure)
     double pot_wght = pot_weight*data_pot;
-    
+
     double this_entry = weight;
     this_entry *= pot_wght;
 
     // Get the current entry's bin
-    std::vector<double> recovec;
-    recovec.push_back(enu_reco);
-    const int ireco = reco_sb->FindBin(recovec);
+    std::vector<double> binsvec;
+    if(util::IsReco(kv)){
+      binsvec.push_back(enu_reco);
+      LOG("valor_sbn",pDEBUG) << "Pushing a reconstructed energy of " << enu_reco << " onto pdf";
+    }
+    else{
+      binsvec.push_back(enu_true);
+      LOG("valor_sbn",pDEBUG) << "Pushing a true energy of " << enu_true << " onto pdf";
+    }
+    const int ibin = bins_sb->FindBin(binsvec);
 
     // Ensure the bin is refilled until everything has been accounted for
-    pdfnom->AddToEntry(this_entry, ireco);
+    pdfnom->AddToEntry(this_entry, ibin);
 
     for(int itoy = 0; itoy < ntoys; ++itoy){
       // Setup universe arrays
       double uni_wght = this_entry;
+      double product_wght = 1;
+      int iuni = itoy;
 
+      unsigned int n_varied = 0;
       // Get the product of the 1 sigma weights for all sysematics
       for(const string &syst : systematics){
         // Get the total universe weight
         const std::vector<float> & universes = branch_universes.at(syst);
         const int &n = branch_n_universes.at(syst);
-        const int iuni = syst_toy_universe.at(syst).at(itoy);
+        // If we are NOT looking at a correlated flux parameter, extract the random universe variation
+        if(std::find(flux_corr.begin(), flux_corr.end(), syst) == flux_corr.end())
+          iuni = syst_toy_universe.at(syst).at(itoy);
+
         if(iuni > n){
           LOG("universe_variation_tweaks",pFATAL) << " The universe that is being accessed: " << iuni << " exceeds the number available for this parameter: " << n << ", " << syst;
           util::Die(-1);
@@ -366,18 +413,39 @@ int main(int argc, char ** argv)
 
         // Get the weight for this parameter at that universe
         uni_wght *= universes.at(iuni);
+        product_wght *= universes.at(iuni);
         LOG("universe_variation_tweaks", pDEBUG) << " The weight for systematic " << syst << ", universe " << iuni << " and throw " << itoy << " is " << universes.at(iuni);
+
+        if(std::abs(universes.at(iuni)-1) > std::numeric_limits<double>::epsilon()){
+          n_varied++;
+        }
       }// Systematic
+      
+      h_weight_product->Fill(product_wght);
+      // If we are only looking at correlated flux parameters, make sure at least one has been varied in this event and universe
+      if(std::abs(uni_wght-this_entry) < std::numeric_limits<double>::epsilon() && (params_to_tweak == "flux_corr" || params_to_tweak == "pion")){
+        // Check if the current universe ID is in the skipped vector, if not, add it
+        if(std::find(skipped_universe_ids.begin(), skipped_universe_ids.end(), itoy) == skipped_universe_ids.end())
+          skipped_universe_ids.push_back(itoy);
+        skipped_events++;
+        LOG("universe_variation_tweaks", pDEBUG) << " In event " << iev
+                                                 << "\n The product of the universe weights is: " << uni_wght
+                                                 << "\n The nominal event rate is: " << this_entry
+                                                 << "\n These are too similar for any weight to have been applied, skipping";
+  //      continue;
+      }
       LOG("universe_variation_tweaks", pDEBUG) << " Total universe weight for entry " << iev << " : " << uni_wght;
-      pdfuni[itoy]->AddToEntry(uni_wght,ireco);
+      h_weight_product_skipnom->Fill(product_wght);
+      pdfuni[itoy]->AddToEntry(uni_wght,ibin);
+      accepted_events++;
+      if(n_varied == 1){
+        one_varied++;
+      }
     }// Throw 
   }// Events
   LOG("universe_variation_tweaks", pINFO) << " Finished analysis loop";
 
   // Now set the PDFs as histograms
-  conv::KineVar_t   kv(util::KineVarFromString(arg_kine_var));
-  conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
-  assert(ks != conv::kspUndefined);
   const char * nom_name = "h_nom_pdf";
   TH1D * nom_pdf = util::binning::Make1DHistogram(*pdfnom,binning,ks,true);
   nom_pdf->SetName(nom_name);
@@ -391,7 +459,7 @@ int main(int argc, char ** argv)
     huni.at(itoy)->SetName(name.c_str());
   }
   LOG("universe_variation_tweaks", pINFO) << " Translated PDFs to histograms";
-  
+
   // Histograms to store the spectra for the default, +1 sigma and -1 sigma variations 
   // Setup the per-detector histograms for variations to determine sigma from nominal
   double max = -999.;
@@ -402,13 +470,20 @@ int main(int argc, char ** argv)
   err_m1->Reset();
   err_p1->Reset();
   for(int ebin = 1; ebin <= nom_pdf->GetNbinsX(); ebin++) {
-    double nom_val = nom_pdf->GetBinContent(ebin);
+    double nom_val   = nom_pdf->GetBinContent(ebin);
     double one_sigma = 1.;
     double sumsq     = 0;
+    double mean      = 0.;
+
+    for(int itoy = 0; itoy < ntoys; itoy++) {
+      mean += huni[itoy]->GetBinContent(ebin);
+    }
+    mean = mean/static_cast<double>(ntoys);
 
     for(int itoy = 0; itoy < ntoys; itoy++) {
       double curr_val = huni[itoy]->GetBinContent(ebin);
-      sumsq += TMath::Power(curr_val-nom_val,2.);
+//      sumsq += TMath::Power(curr_val-nom_val,2.);
+      sumsq += TMath::Power(curr_val-mean,2.);
     }//itoy
 
     one_sigma = TMath::Sqrt(sumsq/static_cast<double>(ntoys));
@@ -436,6 +511,15 @@ int main(int argc, char ** argv)
     nom_pdf_werr->Write((name+"_nom_err").Data());
     err_p1 ->Write((name+"_p1" ).Data());
     err_m1 ->Write((name+"_m1" ).Data());
+    h_weight_product->Write("all_weights");
+    h_weight_product_skipnom->Write("all_weights_skip_nominal");
+
+    delete nom_pdf;
+    delete nom_pdf_werr;
+    delete err_p1;
+    delete err_m1;
+    delete h_weight_product;
+    delete h_weight_product_skipnom;
   }
   
   if (outfile) {
@@ -443,7 +527,13 @@ int main(int argc, char ** argv)
     delete outfile;
   }
   
-  std::cout <<"Done!"<<std::endl;
+  std::cout << "Done!"<<std::endl;
+  std::cout << "Total number of events across all universes                   : " << accepted_events+skipped_events << std::endl;
+  std::cout << "Total number of events with exactly one variation             : " << one_varied << std::endl;
+  std::cout << "Total number of events with exactly no variations             : " << skipped_events << std::endl;
+  std::cout << "Total number of universes containing events with no variations: " << skipped_universe_ids.size() << std::endl;
+  std::cout << "Total number of universes                                     : " << ntoys << std::endl;
+  
   
   time_t endrawtime;
   struct tm * endtimeinfo;
