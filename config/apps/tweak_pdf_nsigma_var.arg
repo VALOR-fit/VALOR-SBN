@@ -1,6 +1,7 @@
 # argument                           |   type         |  require?   |   default
 # .......................................................................................................
-output                               |   string       |  optional   |   nsigma_var_[PARAMS]_[NSIG].root
+output                               |   string       |  optional   |   nsigma_var_[PARAMS]_[SAMPLE]_[NSIG].root
+sample                               |   string       |  optional   |   numuCCincl
 universe-spectra                     |   string       |  optional   |   NONE
 nsigma                               |   double       |  optional   |   1
 physics-hypothesis                   |   string       |  optional   |   3f_osc
