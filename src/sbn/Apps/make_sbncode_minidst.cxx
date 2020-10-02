@@ -483,7 +483,7 @@ int main(int argc, char ** argv)
 
       // Particle counting
       for(unsigned int p = 0; p < fsps.size(); ++p){
-        if (fsps[p].status_code != 1) {continue;}
+        if (fsps[p].status_code != 14 && fsps[p].status_code != 12) {continue;}
         if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
         else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
         else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
