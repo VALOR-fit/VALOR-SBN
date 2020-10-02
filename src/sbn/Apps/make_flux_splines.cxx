@@ -71,16 +71,6 @@ using std::string;
 using namespace valor;
 using namespace valor::conv;
 
-std::vector<std::string> interaction_systematics =
- { "genie_ccresAxial_Genie",
-   "genie_ncresAxial_Genie",
-   "genie_qema_Genie",
-   "genie_NC_Genie",
-   "genie_NonResRvbarp1pi_Genie",
-   "genie_NonResRvbarp2pi_Genie",
-   "genie_NonResRvp1pi_Genie",
-   "genie_NonResRvp2pi_Genie",
- };
 std::vector<std::string> flux_systematics =
  { "horncurrent_FluxUnisim",
    "expskin_FluxUnisim",
@@ -132,7 +122,7 @@ int main(int argc, char ** argv)
 
   // Read command line arguments
   CmdLnArgList arg;
-  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_flux_splines.arg");
+  arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_splines.arg");
   VLOG("valor_sbn", pNOTICE) << arg;
 
   // Get arguments
@@ -237,7 +227,6 @@ int main(int argc, char ** argv)
   for (unsigned int ism = 0 ; ism < cmodel->GetNSubModels() ; ism++) {
     gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(ism));
     if  (gmodel->GetDetector() == detector &&
-         gmodel->GetSample()   == sample   &&
          gmodel->GetBeam()     == beam)
       { got_appropriate_model = true; break; }
   }
@@ -293,7 +282,6 @@ int main(int argc, char ** argv)
   hist_outfile = hist_outfile.ReplaceAll(".root","_spectra.root");
   VLOG("valor_sbn", pNOTICE) << "Saving spectra to: "<<hist_outfile;
   TFile histout(hist_outfile.Data(),"RECREATE");
-  t_variations.Write("actual_knot_values");
 
   // Name to search VALORArrays for
   const TString fin_name = "mctfin";
@@ -370,7 +358,8 @@ int main(int argc, char ** argv)
     }
     mct_knots_modes.push_back(mct_modes);
   }
-  // Close histogram file
+  // Write variations list and close histogram file
+  t_variations.Write("actual_knot_values");
   histout.Close();
 
   for (unsigned int iknot = 0; iknot < mct_knots_modes.size(); ++iknot) {
@@ -437,19 +426,32 @@ int main(int argc, char ** argv)
           // Access the VALOR array for the nominal mct in this mode and get nevents
           const VALORArray &mct_nom = it_mct_mode_nom->second;
           double nevents0           = mct_nom.GetEntry(ireco, itrue);
-          total_nominal            += nevents0;
+          if(isnan(nevents0)){
+            LOG("valor_sbn",pINFO) << " Current nominal event rate is a NAN, not adding to the total ";
+          }
+          else{
+            total_nominal            += nevents0;
+          }
 
           // Access the VALOR array for the nominal mct in this mode
           // Get the event rate for this knot and mode in this bin
           const VALORArray &mct_knot = it_mct_mode_knot->second;
           double nevents = mct_knot.GetEntry(ireco, itrue);
-          total_events  += nevents;
+          if(isnan(nevents)){
+            LOG("valor_sbn",pINFO) << " Current event rate is a NAN, not adding to the total ";
+          }
+          else{
+            total_events  += nevents;
+          }
 
         } // modes
         double event_ratio = (total_nominal > 0) ? total_events/double(total_nominal) : 1; // Ratio of the variation rate to the nominal rate
         if(iknot == inom)
           event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
         knot_ratio.emplace(iknot,event_ratio);
+        LOG("valor_sbn", pINFO) << "\n In reco bin: " << ireco << " and true bin: " << itrue
+                                << "\n Total nominal event rate for knot: " << knots.at(iknot) << " is: " << total_nominal
+                                << "\n Total varied rate: " << total_events;
       } // knots
       bin_knot_ratio.push_back(knot_ratio);
     } // reco bins
@@ -473,6 +475,7 @@ int main(int argc, char ** argv)
     for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
       for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
         std::vector<double> x,y;
+        unsigned int isaved = 0; // For when we skip parameters
         for (int iknot = 0; iknot < n_knots; ++iknot) {
           // Get the value of the current knot for debugging purposes
           double knot = knots.at(iknot);
@@ -480,17 +483,18 @@ int main(int argc, char ** argv)
           double universe_variation = universes_variations.at(knots_universes.at(knot));
           if(iknot == inom)
             universe_variation = 0; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
-
+          
           // Check you aren't duplicating any entries
           bool var_exists = false;
           for(const double &s : x){
             if(std::abs(s-universe_variation) < std::numeric_limits<double>::epsilon()){
-              LOG("valor_sbn",pNOTICE) << "You already have a spline entry for this universe variation: " << universe_variation << ", skipping";
+              LOG("valor_sbn",pINFO) << "You already have a spline entry for this universe variation: " << universe_variation << ", skipping";
               var_exists = true;
             }
           }
-          if(var_exists)
+          if(var_exists){
             continue;
+          }
 
           // Set the x axis to be the exact sigma of the current knot from the relevant universe
           x.push_back(universe_variation); //NSigma from the universe found for the current knot
@@ -501,13 +505,13 @@ int main(int argc, char ** argv)
           y.push_back(event_ratio);
 
           // Print statements for validation
-          LOG("valor_sbn",pDEBUG ) << " Knot :                   " << iknot << ", " << knot << "\n"
-                                    << " Universe variation:       " << universe_variation << " \n"
-                                    << " Mode :                    " << util::AsString(mode) << "\n"
-                                    << " Current knot event ratio: " << event_ratio << "\n"
-                                    << " Bin (ireco,itrue):        " << ireco << ", " << itrue << "\n"
-                                    << " x-axis entry (universe variation): " << x.at(iknot) << "\n"
-                                    << " y-axis entry (event rate ratio):   " << y.at(iknot);
+          LOG("valor_sbn",pDEBUG )  << " Knot :                   " << iknot << ", " << knot << "\n";
+          LOG("valor_sbn",pDEBUG )  << " Universe variation:       " << universe_variation << " \n";
+          LOG("valor_sbn",pDEBUG )  << " Mode :                    " << util::AsString(mode) << "\n";
+          LOG("valor_sbn",pDEBUG )  << " Current knot event ratio: " << event_ratio << "\n";
+          LOG("valor_sbn",pDEBUG )  << " Bin (ireco,itrue):        " << ireco << ", " << itrue << "\n";
+          LOG("valor_sbn",pDEBUG )  << " x-axis entry (universe variation): " << x.at(isaved) << "\n";
+          LOG("valor_sbn",pDEBUG )  << " y-axis entry (event rate ratio):   " << y.at(isaved);
 
           // Now if we are saving the modelist, check if the current mode affects the spline
           if(arg_save_modelist && iknot != inom){
@@ -521,6 +525,7 @@ int main(int argc, char ** argv)
               }
             }
           }//save_modelist
+          isaved++;
         }//iknot
         assert((x.size() == y.size()));// && (x.size() == knots.size())); Not the case when there are repeated points
         TString name  = BuildSplineName(sample, beam, mode, syst, itrue, ireco);
@@ -604,7 +609,7 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
     if(found_v != std::string::npos){
       // Clean up the line to pass the variations to the vector
       LOG("valor_sbn",pDEBUG) << "On textfile line: " << count_lines;
-      LOG("valor_sbn",pDEBUG) << "Found line containing " << sy << " parameters: \n" << line;
+      LOG("valor_sbn",pDEBUG) << "Found line containing " << sy << " parameter: \n" << line;
       LOG("valor_sbn",pDEBUG) << "Removing systematic name from line";
       line.erase(0, found_v+sy.length());
       LOG("valor_sbn",pDEBUG) << "Line now contains: \n" << line;
@@ -616,7 +621,7 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
         LOG("valor_sbn",pDEBUG) << "Variation: " << value;
         variations.push_back(value);
       }
-     //break; // Don't break: there may be two lines per parameter in the text file!
+     break;
     }
     count_lines++;
   } // variations text file
@@ -626,22 +631,11 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
 std::string GetSystematic(const std::string &sy){
   std::string syst = "";
   bool found_syst = false;
-  for(const std::string &s : interaction_systematics){
-    LOG("valor_sbn",pDEBUG) << "Checking interaction systematic: " << s << " for " << sy;
-    // Add a space to the end of the parameter name to avoid getting the wrong one
-    size_t found_s = s.find(sy+"_");
-    if(found_s != std::string::npos){
-      syst = s;
-      LOG("valor_sbn",pINFO) << "Found the chosen interaction systematic: " << syst;
-      found_syst = true;
-      break;
-    }
-  }
-
   if(!found_syst){
     for(const std::string &s : flux_systematics){
       LOG("valor_sbn",pDEBUG) << "Checking flux systematic: " << s << " for " << sy;
-    // Add a space to the end of the parameter name to avoid getting the wrong one
+   
+      // Add a space to the end of the parameter name to avoid getting the wrong one
       size_t found_s = s.find(sy+"_");
       if(found_s != std::string::npos){
         syst = s;
