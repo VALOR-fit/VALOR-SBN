@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<param_list name="sbn_flux_spline_parameters">
+<param_list name="flux_response_parameters">
   <!-- ==================================================================================== -->
   <param>
     <name>
