@@ -3,7 +3,7 @@
   <!-- ==================================================================================== -->
   <param>
     <name>
-      <simple>  genie_NonResRvp2pi_Genie                   </simple>
+      <simple>  genie_NonResRvp2pi_Genie                      </simple>
       <long>    Non-resonant background nu, proton, 2pions </long>
       <rootex>  R_{bkg}^{#nu, p,2#pi}                      </rootex>
       <tex>     R_{bkg}^{\nu, p,2\pi}                      </tex>
@@ -21,13 +21,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   allnonres </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   all2pi      </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
     </apply_to>
     
     <limits>  -inf, inf  </limits>
@@ -58,13 +58,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   allnonres </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   all1pi      </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
     </apply_to>
     
     <limits>  -inf, inf  </limits>
@@ -95,13 +95,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   allnonres </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   all2pi      </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
     </apply_to>
     
     <limits>  -inf, inf  </limits>
@@ -114,7 +114,7 @@
   <!-- ==================================================================================== -->
   <param>
     <name>
-      <simple>  genie_NonResRvbarp1pi_Genie                  </simple>
+      <simple>  genie_NonResRvbarp1pi_Genie                     </simple>
       <long>    Non-resonant background nubar, proton, 1pion </long>
       <rootex>  R_{bkg}^{#bar{#nu}p,1#pi}                    </rootex>
       <tex>     R_{bkg}^{\bar{\nu}p,1\pi}                    </tex>
@@ -132,13 +132,13 @@
     </categories>
     
     <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   allnonres </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   all1pi      </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
     </apply_to>
     
     <limits>  -inf, inf  </limits>
@@ -149,6 +149,7 @@
 
   </param>
   <!-- ==================================================================================== -->
+  <!--
   <param>
     <name>
       <simple>  genie_NC_Genie </simple>
@@ -185,6 +186,7 @@
     <range>                  -8,8  </range>                 
 
   </param>
+  -->
   <!-- ==================================================================================== -->
   <param>
     <name>

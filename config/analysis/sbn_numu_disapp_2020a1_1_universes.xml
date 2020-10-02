@@ -44,8 +44,8 @@
     
   <parameter_definitions>
     <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue_fine.xml       </filename>
-    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue.xml            </filename>
-    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue.xml            </filename>
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue_fine.xml       </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue_fine.xml       </filename>
   </parameter_definitions>
 
 </valor> 

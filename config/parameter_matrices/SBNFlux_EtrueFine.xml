@@ -40,6 +40,18 @@
   <parameter>  flux_uboone_numu05       </parameter>
   <parameter>  flux_uboone_numu06       </parameter>
   <parameter>  flux_uboone_numu07       </parameter>
+  <parameter>  flux_uboone_numu08       </parameter>
+  <parameter>  flux_uboone_numu09       </parameter>
+  <parameter>  flux_uboone_numu10       </parameter>
+  <parameter>  flux_uboone_numu11       </parameter>
+  <parameter>  flux_uboone_numu12       </parameter>
+  <parameter>  flux_uboone_numu13       </parameter>
+  <parameter>  flux_uboone_numu14       </parameter>
+  <parameter>  flux_uboone_numu15       </parameter>
+  <parameter>  flux_uboone_numu16       </parameter>
+  <parameter>  flux_uboone_numu17       </parameter>
+  <parameter>  flux_uboone_numu18       </parameter>
+  <parameter>  flux_uboone_numu19       </parameter>
   <parameter>  flux_uboone_numubar00    </parameter>
   <parameter>  flux_uboone_numubar01    </parameter>
   <parameter>  flux_uboone_numubar02    </parameter>
@@ -61,6 +73,18 @@
   <parameter>  flux_icarus_numu05       </parameter>
   <parameter>  flux_icarus_numu06       </parameter>
   <parameter>  flux_icarus_numu07       </parameter>
+  <parameter>  flux_icarus_numu08       </parameter>
+  <parameter>  flux_icarus_numu09       </parameter>
+  <parameter>  flux_icarus_numu10       </parameter>
+  <parameter>  flux_icarus_numu11       </parameter>
+  <parameter>  flux_icarus_numu12       </parameter>
+  <parameter>  flux_icarus_numu13       </parameter>
+  <parameter>  flux_icarus_numu14       </parameter>
+  <parameter>  flux_icarus_numu15       </parameter>
+  <parameter>  flux_icarus_numu16       </parameter>
+  <parameter>  flux_icarus_numu17       </parameter>
+  <parameter>  flux_icarus_numu18       </parameter>
+  <parameter>  flux_icarus_numu19       </parameter>
   <parameter>  flux_icarus_numubar00    </parameter>
   <parameter>  flux_icarus_numubar01    </parameter>
   <parameter>  flux_icarus_numubar02    </parameter>
