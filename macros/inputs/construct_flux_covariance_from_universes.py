@@ -212,6 +212,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
 #      print params[n].GetName(), "\r"
 
   frac_cov = util.CovarianceMatrixToFractionalCovarianceMatrix(cov,mean)
+
   # If a scale root file has been passed, apply it now
   for n in range(nRows):
     for m in range(nCols):
