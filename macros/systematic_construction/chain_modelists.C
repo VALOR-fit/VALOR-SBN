@@ -1,4 +1,4 @@
-std::vector<std::string> systematics =
+std::vector<std::string> proposal_systematics =
 { "genie_ccresAxial_Genie",
   "genie_ncresAxial_Genie",
   "genie_qema_Genie",
@@ -6,16 +6,32 @@ std::vector<std::string> systematics =
   "genie_NonResRvbarp1pi_Genie",
   "genie_NonResRvbarp2pi_Genie",
   "genie_NonResRvp1pi_Genie",
-  "genie_NonResRvp2pi_Genie",
+  "genie_NonResRvp2pi_Genie"
 };
-std::vector<std::string> detectors =
-{ "sbn_nd",
-//  "sbn_uboone",
-//  "sbn_icarus"
+std::vector<std::string> modern_systematics = 
+{ "genie_DISAth_Genie",
+  "genie_DISBth_Genie",
+  "genie_DISCv1u_Genie",
+  "genie_DISCv2u_Genie",
+  "genie_IntraNukeNabs_Genie",
+  "genie_IntraNukeNcex_Genie",
+  "genie_IntraNukeNinel_Genie",
+  "genie_IntraNukeNmfp_Genie",
+  "genie_IntraNukeNpi_Genie",
+  "genie_IntraNukePIabs_Genie",
+  "genie_IntraNukePIcex_Genie",
+  "genie_IntraNukePIinel_Genie",
+  "genie_IntraNukePImfp_Genie",
+  "genie_IntraNukePIpi_Genie",
+  "genie_ResDecayGamma_Genie",
+  "genie_ccresVector_Genie",
+  "genie_cohMA_Genie",
+  "genie_cohR0_Genie",
+  "genie_ncelAxial_Genie",
+  "genie_ncelEta_Genie",
+  "genie_ncresVector_Genie"
 };
-
-/*
-std::vector<std::string> systematics =
+std::vector<std::string> flux_systematics =
 { "horncurrent_FluxUnisim",
   "expskin_FluxUnisim",
   "nucleoninexsec_FluxUnisim",
@@ -24,21 +40,49 @@ std::vector<std::string> systematics =
   "pioninexsec_FluxUnisim",
   "pionqexsec_FluxUnisim",
   "piontotxsec_FluxUnisim"
-};*/
+};
 
-TString filename = "valor_splines_numulikeCChigh_[PARAM]_BNB_FHC_[DET]_modelist.root";
-TString GetFilename(const std::string &p, const std::string &d);
+std::vector<std::string> detectors =
+{ "sbn_nd",
+  "sbn_uboone",
+  "sbn_icarus"
+};
 
-void chain_modelists()
+std::vector<std::string> detector_location =
+{ "sbnd",
+  "uboone",
+  "icarus"
+};
+
+TString filename = "valor_splines_[SAMPLE]_[PARAM]_BNB_FHC_[DET]_modelist.root";
+TString GetFilename(const std::string &p, const std::string &d, const std::string &s, const std::string &l, const unsigned int &i);
+TString GetOutputFilename(const std::string &s);
+
+void chain_modelists(const std::string &syst, const std::string &location="", const std::string &sample="numuCCincl")
 {
   using namespace valor;
 
+  // Get the appropriate list of systematics
+  std::vector<std::string> systematics;
+  if(syst == "mod"){
+    systematics = modern_systematics; 
+    std::cout << " Chaining the modelists from the modern systematics" << std::endl;
+  }
+  else if(syst == "prop"){
+    systematics = proposal_systematics; 
+    std::cout << " Chaining the modelists from the proposal systematics" << std::endl;
+  }
+  else if(syst == "flux"){
+    systematics = flux_systematics; 
+    std::cout << " Chaining the modelists from the flux systematics" << std::endl;
+  }
   std::map< std::string, std::vector<std::string> > param_modelist;
   std::map< std::string, std::vector<std::string> >::const_iterator itr;
   for(const std::string &param : systematics){
     std::vector<std::string> modes;
+    unsigned int n = 0;
     for(const std::string &det : detectors){
-      TString file = GetFilename(param,det);
+      TString file = GetFilename(param,det,sample,location,n);
       TFile flist(file.Data());
       if(!flist.IsZombie()){
         std::cout << " Opened file: " << file << std::endl;
@@ -52,10 +96,12 @@ void chain_modelists()
             modes.push_back(pm);
         }
       }
+      ++n;
     }
     param_modelist.emplace(param,modes);
   }
-  TFile f("all_modelists.root","RECREATE");
+  TString output_file = GetOutputFilename(sample);
+  TFile f(output_file.Data(),"RECREATE");
   TTree *t = new TTree("ModeLists","Mode lists from all parameters");
   t->SetCircular(1); // Only save the very last fill: with all entries
   for(itr = param_modelist.begin(); itr != param_modelist.end(); ++itr) {
@@ -67,9 +113,22 @@ void chain_modelists()
   f.Close();
 }
 
-TString GetFilename(const std::string &p, const std::string &d){
+TString GetFilename(const std::string &p, const std::string &d, const std::string &s, const std::string &l, const unsigned int &i){
   TString name = filename;
-  name = name.ReplaceAll("[PARAM]",p.data());
-  name = name.ReplaceAll("[DET]",  d.data());
+  name.ReplaceAll("[PARAM]",  p.data());
+  name.ReplaceAll("[DET]",    d.data());
+  name.ReplaceAll("[SAMPLE]", s.data());
+  if(l != ""){
+    name.Prepend("/");
+    name.Prepend(detector_location.at(i));
+    name.Prepend("/");
+    name.Prepend(l.data());
+  }
+  std::cout << " Reading file: " << name << std::endl;
+  return name;
+}
+TString GetOutputFilename(const std::string &s){
+  TString name = "_modelist.root";
+  name.Prepend(s.data());
   return name;
 }
