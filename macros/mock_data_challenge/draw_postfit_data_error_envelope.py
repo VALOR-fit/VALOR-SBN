@@ -6,6 +6,7 @@
 
 #Steve Dennis, October 2013
 
+from __future__ import division
 import ROOT
 import math
 import os
@@ -65,14 +66,12 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc):
+def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio):
 
-  pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc)
+  pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio)
 
 
-def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_label, prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc):
-
-  all_hists = []
+def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_label, prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc, ratio):
 
   envelope_images = []
   ratio_images = []
@@ -106,6 +105,12 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
   #  raise DUNEAnaError("Must pass at least 2 files to plot")
 
   for imodel in xrange(cm.GetNSubModels()):
+    all_hists    = []
+    ratio_labels = []
+    ratio_legend = []
+    ratio_hists  = []
+    ratio_graphs = []
+
     m = cm.GetSubModel(imodel)
     s = m.GetSample()
     b = m.GetBeam()
@@ -122,24 +127,24 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     #hname_data = "toymc_data_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
     if det == '1':
       if mdc is False:
-        hname_data = "valor_pdfts_sb_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
       else:
-        hname_data = "toymc_data_sb_rf_slice_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "toymc_data_sb_rf_sbn_nd__%s__%s" % (util.BeamConfAsString(b), util.SampleAsString(s))
 
     elif det == '2':
       if mdc is False:
-        hname_data = "valor_pdfts_sb_rf_sbn_uboone__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "valor_pdfts_sb_rf_sbn_uboone__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
       else:
-        hname_data = "toymc_data_sb_rf_slice_sbn_uboone__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "toymc_data_sb_rf_sbn_uboone__%s__%s" % (util.BeamConfAsString(b), util.SampleAsString(s))
 
     elif det == '3':
       if mdc is False:
-        hname_data = "valor_pdfts_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "valor_pdfts_sb_rf_sbn_icarus__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
       else:
-        hname_data = "toymc_data_sb_rf_slice_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
+        hname_data = "toymc_data_sb_rf_sbn_icarus__%s__%s" % (util.BeamConfAsString(b), util.SampleAsString(s))
 
     else:
-      hname_data = "valor_pdfts_sb_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"
+      hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
       print("No detector given, defaulting to the ND")
 
     print "Data histogram found: ", hname_data
@@ -187,7 +192,8 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     legend.SetFillStyle(0);
     legend.SetBorderSize(0);
 
-    canv = ROOT.TCanvas("c","",700,700)
+    canv_name = "c_%s" % util.SampleAsString(s)
+    canv = ROOT.TCanvas(canv_name,"",800,800)
     canv.SetLeftMargin  (left_margin)
     canv.SetBottomMargin(bottom_margin)
     canv.SetRightMargin (right_margin )
@@ -296,13 +302,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       prefit_width.Draw("same")
 
       legend_prefit = ROOT.TH1D(prefit_width)
+      legend_prefit.SetLineStyle(5)
       legend_prefit.SetFillStyle(env_graph_prefit.GetFillStyle())
       legend_prefit.SetFillColor(env_graph_prefit.GetFillColor())
       legend_prefit.SetMarkerStyle(env_graph_prefit.GetMarkerStyle())
       legend_prefit.SetMarkerColor(env_graph_prefit.GetMarkerColor())
       legend_prefit.SetMarkerSize (env_graph_prefit.GetMarkerSize())
 
-      all_hists.append(legend_prefit)
+      ratio_hists.append(prefit_width)
+      ratio_graphs.append(env_graph_prefit)
+      ratio_labels.append(prefit_label)
+      ratio_legend.append(legend_prefit)
 
       legend.AddEntry(legend_prefit, prefit_label, "FL")
 
@@ -338,7 +348,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_postfit.SetMarkerColor(env_graph_postfit.GetMarkerColor())
       legend_postfit.SetMarkerSize (env_graph_postfit.GetMarkerSize())
 
-      all_hists.append(legend_postfit)
+      ratio_hists.append(postfit_width)
+      ratio_graphs.append(env_graph_postfit)
+      ratio_labels.append(postfit_label)
+      ratio_legend.append(legend_postfit)
 
       legend.AddEntry(legend_postfit, postfit_label, "FL")
 
@@ -356,7 +369,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_data.SetLineColor(data_width.GetLineColor())
       legend_data.SetLineWidth(data_width.GetLineWidth())
 
-      all_hists.append(legend_data)
+      ratio_hists.append(legend_data)
+      ratio_graphs.append(legend_data)
+      ratio_labels.append(data_label)
+      ratio_legend.append(legend_data)
 
       legend.AddEntry(legend_data, data_label, "L")
 
@@ -372,6 +388,88 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
     envelope_captions.append(cap.replace("_"," "))
 
+    if plot_data and plot_postfit and ratio:
+      # Now if we want to plot the overlay and the ratio, repeat and split the pads
+      r_legend = ROOT.TLegend(0.49,0.67,0.96,0.86);
+      r_legend.SetFillStyle(0);
+      r_legend.SetBorderSize(0);
+
+      r_canv_name = "cr_%s" % util.SampleAsString(s)
+      r_canv = ROOT.TCanvas(r_canv_name,"",600,800)
+      if use_log_plots: r_canv.SetLogx()
+
+      # Top pad: all histograms with envelopes
+      # Setup the pad
+      pad1 = ROOT.TPad("pad1","",0.0,0.35,1.0,1.0);
+      pad1.SetBottomMargin(0.02);
+      pad1.SetTopMargin(0.05);
+      pad1.SetRightMargin(0.02);
+      pad1.Draw();
+      pad1.cd();
+
+      # Loop over all the histograms
+      for i, h in enumerate(ratio_hists):
+        label = ratio_labels[i]
+        graph = ratio_graphs[i]
+        legend = ratio_legend[i]
+        if i == 0:
+          h.Draw()
+          graph.Draw("same2")
+          h.GetYaxis().SetRangeUser(0., max_y)
+          h.GetYaxis().SetTitleSize(0.045)
+          h.GetYaxis().SetTitleOffset(1.4)
+          h.GetYaxis().SetLabelSize(0.035)
+          h.GetXaxis().SetLabelColor(0)
+        else:
+          h.Draw("same")
+          graph.Draw("same2")
+        r_legend.AddEntry(legend,label,"FL")
+      r_legend.SetTextFont(font)
+      r_legend.Draw()
+
+      pad1.Modified();
+      r_canv.cd();
+
+      # Bottom pad: data postfit ratio
+      pad2 = ROOT.TPad("pad2","",0.0,0.0,1.0,0.35);
+      pad2.SetTopMargin(0.02);
+      pad2.SetBottomMargin(0.22);
+      pad2.SetRightMargin(0.02);
+      pad2.SetGridy();
+      pad2.Draw();
+      pad2.cd();
+
+      # Get the percentage rate difference between the postfit and the data
+      data_postfit_ratio = ROOT.TH1D(data_width)
+      data_postfit_ratio.Add(postfit_width,-1)
+
+      # Get the magnitude of the uncertainty on each bin and scale the bin content by it
+      for b in range(data_postfit_ratio.GetNbinsX()):
+        yhigh = env_graph_postfit.GetErrorYhigh(b)
+        ylow  = env_graph_postfit.GetErrorYlow(b)
+        yavg  = (yhigh+ylow)/2.
+        data_postfit_ratio.SetBinContent(b,data_postfit_ratio.GetBinContent(b)/yavg)
+
+      data_postfit_ratio.SetLineColor(ROOT.kTeal-5)
+      data_postfit_ratio.SetLineStyle(1)
+      data_postfit_ratio.SetLineWidth(linewidth)
+      data_postfit_ratio.GetYaxis().SetTitle("#frac{(Postfit-Mock data)}{#sigma_{Postfit}}");
+      data_postfit_ratio.GetYaxis().SetTitleFont(132);
+      data_postfit_ratio.GetYaxis().SetLabelFont(132);
+      data_postfit_ratio.GetYaxis().SetTitleSize(0.075);
+      data_postfit_ratio.GetYaxis().SetTitleOffset(0.75);
+      data_postfit_ratio.GetYaxis().SetLabelSize(0.065);
+      data_postfit_ratio.GetXaxis().SetTitleFont(132);
+      data_postfit_ratio.GetXaxis().SetLabelFont(132);
+      data_postfit_ratio.GetXaxis().SetTitleSize(0.075);
+      data_postfit_ratio.GetXaxis().SetTitleOffset(1.1);
+      data_postfit_ratio.GetXaxis().SetLabelSize(0.065);
+      data_postfit_ratio.Draw("hist")
+
+      r_canv.RedrawAxis()
+      r_canv.Write("cr")
+
+    f_output.Close()
   # End of model loop
 
   if (write_tex):
@@ -466,6 +564,7 @@ if __name__=="__main__":
   parser.add_option('-d','--datatag', dest='datatag',default='toymc',help='Prefix for input data histogram name')
   parser.add_option('-e','--experiment', dest='det',default='',help='Experiment enum: SBND = 1, uBooNE = 2, ICARUS = 3')
   parser.add_option('-m','--mdc', dest='mdc',default=False,help='Whether or not we are looking at the Mock Data Challenge')
+  parser.add_option('--ratio', dest='ratio',default=False,help='Whether to get a ratio of the mock data to the postfit spectra')
 
   options,other = parser.parse_args()
 
@@ -476,4 +575,4 @@ if __name__=="__main__":
   main(options.config, options.data, options.prefit, options.postfit,
        options.data_label, options.prefit_label, options.postfit_label,
        options.tag, options.tex, options.imgformat, options.ratiomult,
-       options.datatag, options.det, options.mdc)
+       options.datatag, options.det, options.mdc, options.ratio)
