@@ -3,7 +3,7 @@
 input                                |   string       |  mandatory  |   - #DST file
 config                               |   string       |  mandatory  |   -
 variations                           |   string       |  optional   |   empty #universes text file
-output                               |   string       |  optional   |   tweaks_[PARAMS].root
+output                               |   string       |  optional   |   tweaks_[PARAMS]_[SAMPLE].root
 ntoys                                |   integer      |  optional   |   1000
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
 params                               |   string       |  optional   |   all
