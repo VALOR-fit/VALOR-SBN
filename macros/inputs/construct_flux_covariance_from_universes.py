@@ -111,6 +111,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
         #
         # New plan:
         #   Check if the histogram bin edge is within the range defined by the parameter_matrix and fill that way
+        #   Count from ibin+1 to skip over the weird -0.2 something something bin, think it's a ROOT thing
         #
 
         for ibin in xrange(hist.GetXaxis().GetNbins()):
@@ -122,29 +123,26 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
                 for kinerange in p.GetKineRanges():
                   minbin = min(kinerange.first,kinerange.second)
                   maxbin = max(kinerange.first,kinerange.second)
-                  if hist.GetBinCenter(ibin) >= minbin and hist.GetBinCenter(ibin) <= maxbin:
+                  if hist.GetBinCenter(ibin+1) >= minbin and hist.GetBinCenter(ibin+1) < maxbin:
                     ientry = ip
 
                     if util.IsNuMu(mode) and not util.IsCosmic(mode) and "numu" in p.GetName() and "numubar" not in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin)
-                      if not scaleVectorEmpty and ientry < scaleVector.GetNrows():
-                        row[ientry] = row[ientry] * scaleVector[ientry] * scaleVector[ientry]
-
+                      row[ientry] += hist.GetBinContent(ibin+1)
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "numu"
                     elif util.IsNuMuBar(mode) and not util.IsCosmic(mode) and "numubar" in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin)
+                      row[ientry] += hist.GetBinContent(ibin+1)
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "numubar"
                     elif util.IsNuE(mode) and not util.IsCosmic(mode) and "nue" in p.GetName() and "nuebar" not in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin)
+                      row[ientry] += hist.GetBinContent(ibin+1)
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "nue"
                     elif util.IsNuEBar(mode) and not util.IsCosmic(mode) and "nuebar" in p.GetName() and not "cosmic" in p.GetName():
-                      row[ientry] += hist.GetBinContent(ibin)
+                      row[ientry] += hist.GetBinContent(ibin+1)
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "nuebar"
@@ -173,6 +171,16 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
   cov = R.TMatrixD(util.LowerTriangularMatrixToSymMatrix(tp.GetCovarianceMatrix()))
   mean = tp.GetMeanValues()
 
+  nRows = cov.GetNrows()
+  nCols = cov.GetNcols()
+  # If a scale root file has been passed, apply it now
+  for n in range(nRows):
+    for m in range(nCols):
+      # scale if needed
+      if not scaleVectorEmpty and n < scaleVector.GetNrows() and m < scaleVector.GetNrows():
+        cov[n][m] *= scaleVector[n] * scaleVector[m]
+        print " Covariance entry has been scaled"
+
   ''' HACK: If a diagonal element of the matrix is empty (we see this in low energy
   nue and nubar bins due to statistics at the moment) then fill that diagonal element with
   a huge uncertainty value.
@@ -184,8 +192,6 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
 
   frac_cov = util.CovarianceMatrixToFractionalCovarianceMatrix(cov,mean)
 
-  nRows = frac_cov.GetNrows()
-  nCols = frac_cov.GetNcols()
   # If a scale root file has been passed, apply it now
   for n in range(nRows):
     for m in range(nCols):
