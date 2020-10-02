@@ -13,11 +13,11 @@
 #include "TStyle.h"
 void fitter_spectral_ratios(const std::string &dmsq, const std::string &sinsq, const std::string &type="total") {
 
-  TFile *f_val_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_"+dmsq+"_sinsq2thmumu_"+sinsq+"_osc_breakdown_hists.root").c_str(),"read");
-  TFile *f_val_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_unosc_breakdown_hists.root","read");
-  TFile *f_sbn_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_"+sinsq+"_dmsq_"+dmsq+".SBNspec.root").c_str(),"read");
-  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_CV.SBNspec.root","read");
-  TFile *f_caf       = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_"+dmsq+"_ss2thmm_"+sinsq+".root").c_str(),"read");
+  TFile *f_val_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/VALOR_dmsq_"+dmsq+"_sinsq2thmumu_"+sinsq+"_hists.root").c_str(),"read");
+  TFile *f_val_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/VALOR_unosc_hists.root","read");
+  TFile *f_sbn_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/sbnfit_sinsq_"+sinsq+"_dmsq_"+dmsq+".SBNspec.root").c_str(),"read");
+  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/SBNfit_CV.SBNspec.root","read");
+  TFile *f_caf       = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/CAFAna_dmsq_"+dmsq+"_ss2thmm_"+sinsq+".root").c_str(),"read");
 
   // Get the oscillated histogram name for each fitter based on the type
   std::string val_name_sbnd   = "sbn_nd_";
@@ -742,10 +742,7 @@ void fitter_spectral_ratios(const std::string &dmsq, const std::string &sinsq, c
   leg->AddEntry(sbn_caf_diff_sbnd,"(CAF_{osc}-SBN_{osc})/(VAL_{nom}-VAL_{osc}) SBND", "l");
  
   // Draw
-  if(dmsq == "2")
-    val_caf_diff_sbnd->GetYaxis()->SetRangeUser(-0.12,0.3);
-  else if(dmsq == "1e2")
-    val_caf_diff_sbnd->GetYaxis()->SetRangeUser(-0.22,0.22);
+  val_caf_diff_sbnd->GetYaxis()->SetRangeUser(-0.5,0.5);
   val_caf_diff_sbnd->Draw("hist"); 
   sbn_caf_diff_sbnd->Draw("hist same"); 
   val_sbn_diff_sbnd->Draw("hist same");
@@ -763,10 +760,7 @@ void fitter_spectral_ratios(const std::string &dmsq, const std::string &sinsq, c
   leg->AddEntry(sbn_caf_diff_uboone,"(CAF_{osc}-SBN_{osc})/(VAL_{nom}-VAL_{osc}) #muBooNE", "l");
  
   // Draw
-  if(dmsq == "2")
-    val_caf_diff_uboone->GetYaxis()->SetRangeUser(-0.6,0.1);
-  else if(dmsq == "1e2")
-    val_caf_diff_uboone->GetYaxis()->SetRangeUser(-0.22,0.22);
+  val_caf_diff_uboone->GetYaxis()->SetRangeUser(-0.5,0.5);
   val_caf_diff_uboone->Draw("hist"); 
   sbn_caf_diff_uboone->Draw("hist same"); 
   val_sbn_diff_uboone->Draw("hist same");
@@ -784,10 +778,7 @@ void fitter_spectral_ratios(const std::string &dmsq, const std::string &sinsq, c
   leg->AddEntry(sbn_caf_diff_icarus,"(CAF_{osc}-SBN_{osc})/(VAL_{nom}-VAL_{osc}) ICARUS", "l");
  
   // Draw
-  if(dmsq == "2")
-    val_caf_diff_icarus->GetYaxis()->SetRangeUser(-0.4,0.55);
-  else if(dmsq == "1e2")
-    val_caf_diff_icarus->GetYaxis()->SetRangeUser(-0.22,0.22);
+  val_caf_diff_icarus->GetYaxis()->SetRangeUser(-0.5,0.5);
   val_caf_diff_icarus->Draw("hist"); 
   sbn_caf_diff_icarus->Draw("hist same"); 
   val_sbn_diff_icarus->Draw("hist same");
