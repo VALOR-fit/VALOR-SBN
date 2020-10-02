@@ -38,7 +38,7 @@ def make_cov(outputname):
         "MEC" : 0.00,
     }
     error_vals = {
-        "MEC" : 0.5,
+        "MEC" : 1.0,
     }
     correlation_vals = {
     }
