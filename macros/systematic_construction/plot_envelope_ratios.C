@@ -11,10 +11,10 @@
 
 {
 
-  TFile * f_uni = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/flux_corr/piplus/tweaks_universes_piplus.root","read");
-  TFile * f_val = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/flux_corr/piplus/tweaks_pion.root","read");
+  TFile * f_val = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/splines/all/valor_tweak_pdf_inc_nd.root","read");
+  TFile * f_uni = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/splines/03c1/all/validation/sbnd/all/tweaks_all_numuCCincl.root","read");
   
-  std::string location = "/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/flux_corr/piplus/";
+  std::string location = "/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/splines/all/";
   
   // 
   // Global style settings
@@ -31,10 +31,12 @@
   TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_nom"));
   TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_p1"));
   TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_m1"));
+  std::cout << " Got universe histograms" << std::endl;
  
   TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_nom"));
   TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_p1"));
   TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_m1"));
+  std::cout << " Got VALOR histograms" << std::endl;
  
   // All ratios
   TH1D *h_p1_ratio_val = static_cast<TH1D*>(h_val_p1->Clone("h_p1_ratio_val"));
@@ -121,7 +123,7 @@
   h_nom_ratio->GetYaxis()->SetMaxDigits(3);
   h_nom_ratio-> Draw();
 
-  c->SaveAs((location+"flux_corr_universe_valor_nominal_ratios.root").c_str());
+  c->SaveAs((location+"universe_valor_nominal_ratios.root").c_str());
   c->Clear();
 
   h_p1_ratio_val->SetStats(0);
@@ -152,7 +154,7 @@
   l->AddEntry(h_m1_ratio_uni, "Universes -1#sigma/nominal", "L");
   l->Draw();
 
-  c->SaveAs((location+"flux_corr_universe_valor_single_ratios.root").c_str());
+  c->SaveAs((location+"universe_valor_single_ratios.root").c_str());
   c->Clear();
   l->Clear();
 
@@ -176,7 +178,17 @@
   l->AddEntry(h_m1_ratio, "(VALOR/Universes)_{-1#sigma/nominal}", "L");
   l->Draw();
 
-  c->SaveAs((location+"flux_corr_universe_valor_double_ratios.root").c_str());
+  c->SaveAs((location+"universe_valor_double_ratios.root").c_str());
   c->Clear();
   l->Clear();
+
+  // Get bin content in +1sigma variation
+  TFile f("new_scale.root","RECREATE");
+  TVectorD scales(h_p1_ratio->GetNbinsX()-3);
+  for(int ibin = 0; ibin < h_p1_ratio->GetNbinsX()-3; ++ibin){
+    scales[ibin] = 1/static_cast<double>(h_p1_ratio->GetBinContent(ibin+2));
+  }
+  scales.Write("scales");
+  f.Close();
+
 }
