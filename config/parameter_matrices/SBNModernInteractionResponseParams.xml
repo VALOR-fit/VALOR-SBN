@@ -1,0 +1,45 @@
+<systematic_list name="SBNInteractionResponseParams">
+  <parameter> genie_DISAth_Genie          </parameter>
+  <parameter> genie_DISBth_Genie          </parameter>
+  <parameter> genie_DISCv1u_Genie         </parameter>
+  <parameter> genie_DISCv2u_Genie         </parameter>
+  <parameter> genie_IntraNukeNabs_Genie   </parameter>
+  <parameter> genie_IntraNukeNcex_Genie   </parameter>
+  <parameter> genie_IntraNukeNinel_Genie  </parameter>
+  <parameter> genie_IntraNukeNmfp_Genie   </parameter>
+  <parameter> genie_IntraNukeNpi_Genie    </parameter>
+  <parameter> genie_IntraNukePIabs_Genie  </parameter>
+  <parameter> genie_IntraNukePIcex_Genie  </parameter>
+  <parameter> genie_IntraNukePIinel_Genie </parameter>
+  <parameter> genie_IntraNukePImfp_Genie  </parameter>
+  <parameter> genie_IntraNukePIpi_Genie   </parameter>
+  <parameter> genie_ResDecayGamma_Genie   </parameter>
+  <parameter> genie_ccresVector_Genie     </parameter>
+  <parameter> genie_cohMA_Genie           </parameter>
+  <parameter> genie_cohR0_Genie           </parameter>
+  <parameter> genie_ncelAxial_Genie       </parameter>
+  <parameter> genie_ncelEta_Genie         </parameter>
+  <parameter> genie_ncresVector_Genie     </parameter>
+</systematic_list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
