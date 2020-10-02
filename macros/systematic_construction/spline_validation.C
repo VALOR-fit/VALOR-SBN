@@ -31,10 +31,11 @@ namespace vutil = valor::util;
 
 // Naming structure of the tweak and universe-based files
 TString splineFilePattern("valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET]");
-TString tweakFilePattern("[PARAM]_[NSIG]");
+TString tweakFilePattern("[PARAM]_[SAMPLE]_[NSIG]");
 
 // Name filling functions
 const TString GetTweaksFileName(const char* param, 
+                                const char* sample, 
                                 TString &tag,
                                 const int &nsigma,
                                 const TString &location,
@@ -81,20 +82,23 @@ void SetRatioBinErrors(const TH1D *h_un,
 // Set the ratio plot formatting
 void SetRatioPlotFormatting(TH1D *h, 
                             const bool &fill    = false,
-                            const bool &verbose = false);
+                            const bool &verbose = false,
+                            std::string format  = "pdf");
 
 // Set the spectra formatting
 void SetSpectraFormatting(TH1D *h_tweak, 
                           TH1D *h_universe, 
                           const TString &detector,
-                          const bool &verbose = false);
+                          const double &max,
+                          const bool &verbose = false,
+                          std::string format  = "pdf");
 
 // Get the histogram titles
 TString GetTitle(const char* param, 
                  const int &nsigma);
 // Main
 void spline_validation(const char* param, 
-                       const char* sample="numulikeCChigh", 
+                       const char* sample="numuCCincl", 
                        const char* beam="BNB_FHC", 
                        const TString &detector="sbn_nd", 
                        const TString &tweaks_location="", 
@@ -103,6 +107,7 @@ void spline_validation(const char* param,
                        const double &per_energy_gev=1., // y-axis scaling
                        const bool &verbose=false,
                        TString tag="tweaks", // This is the tag from your filename
+                       const char* png_location="./",
                        const char* output_file="spline_validation_plots.root"){
 
   // Get spectra from various places
@@ -112,10 +117,10 @@ void spline_validation(const char* param,
 
   // Get filenames
   const std::string universe_filename   (GetSplineFileName(param,sample,beam,detector,spline_location));
-  const std::string tweaks_nom_filename (GetTweaksFileName(param,tag,0,tweaks_location,all_in_one));
-  const std::string tweaks_1sig_filename(GetTweaksFileName(param,tag,1,tweaks_location,all_in_one));
-  const std::string tweaks_2sig_filename(GetTweaksFileName(param,tag,2,tweaks_location,all_in_one));
-  const std::string tweaks_3sig_filename(GetTweaksFileName(param,tag,3,tweaks_location,all_in_one));
+  const std::string tweaks_nom_filename (GetTweaksFileName(param,sample,tag,0,tweaks_location,all_in_one));
+  const std::string tweaks_1sig_filename(GetTweaksFileName(param,sample,tag,1,tweaks_location,all_in_one));
+  const std::string tweaks_2sig_filename(GetTweaksFileName(param,sample,tag,2,tweaks_location,all_in_one));
+  const std::string tweaks_3sig_filename(GetTweaksFileName(param,sample,tag,3,tweaks_location,all_in_one));
 
   // Verbose output for file name getting
   if(verbose){
@@ -136,38 +141,52 @@ void spline_validation(const char* param,
   CheckFiles(f_univ, f_nom, f_1sig, f_2sig, f_3sig, universe_filename, tweaks_nom_filename, tweaks_1sig_filename, tweaks_2sig_filename, tweaks_3sig_filename, verbose);
   std::cout << " All files opened successfully." << std::endl;
 
+  // Cast the parameter and sample names to strings
+  std::string s_param(param);
+  std::string s_sample(sample);
+  std::string s_detector(detector);
+  std::string s_location(png_location);
+  
   // Tweaked spectra from splines
-  TH1D *h_tweak_m3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_m3")); // -3 sigma
-  TH1D *h_tweak_m2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_m2")); // -2 sigma
-  TH1D *h_tweak_m1 = static_cast<TH1D*>(f_1sig->Get("env_sb_BNB_FHC_numulikeCChigh_m1")); // -1 sigma
-  TH1D *h_tweak_n0 = static_cast<TH1D*>(f_nom->Get("env_sb_BNB_FHC_numulikeCChigh_p0")); //  NOMINAL
-  TH1D *h_tweak_p1 = static_cast<TH1D*>(f_1sig->Get("env_sb_BNB_FHC_numulikeCChigh_p1")); // +1 sigma
+  TH1D *h_tweak_m3 = static_cast<TH1D*>(f_3sig->Get(("env_sb_BNB_FHC_"+s_sample+"_m3;1").c_str())); // -3 sigma
+  TH1D *h_tweak_m2 = static_cast<TH1D*>(f_2sig->Get(("env_sb_BNB_FHC_"+s_sample+"_m2;1").c_str())); // -2 sigma
+  TH1D *h_tweak_m1 = static_cast<TH1D*>(f_1sig->Get(("env_sb_BNB_FHC_"+s_sample+"_m1;1").c_str())); // -1 sigma
+  TH1D *h_tweak_n0 = static_cast<TH1D*>(f_nom->Get(("env_sb_BNB_FHC_"+s_sample+"_p0;1").c_str())); //  NOMINAL
+  TH1D *h_tweak_p1 = static_cast<TH1D*>(f_1sig->Get(("env_sb_BNB_FHC_"+s_sample+"_p1;1").c_str())); // +1 sigma
+  TH1D *h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get(("env_sb_BNB_FHC_"+s_sample+"_p2;1").c_str())); // +2 sigma
+  TH1D *h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get(("env_sb_BNB_FHC_"+s_sample+"_p3;1").c_str())); // +3 sigma
 
   // There is no +3 sigma universe variation for expskin so it is a duplicate of +2 sigma for now
-  TH1D *h_tweak_p2 = nullptr;
-  TH1D *h_tweak_p3 = nullptr;
-  TString t_param(param);
-  if(t_param.Contains("expskin")){
-    h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2;1")); // +2 sigma EXPSKIN ONLY
-    h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2;2")); // +3 sigma EXPSKIN ONLY
-  }
-  else{
-    h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get("env_sb_BNB_FHC_numulikeCChigh_p2")); // +2 sigma
-    h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get("env_sb_BNB_FHC_numulikeCChigh_p3")); // +3 sigma
-  }
 
   std::vector<TH1D*> h_tweaks({h_tweak_m3, h_tweak_m2, h_tweak_m1, h_tweak_n0, h_tweak_p1, h_tweak_p2, h_tweak_p3});
+  std::vector<bool> h_valid;
+  unsigned int n_hist = 0;
+  for(TH1D* h : h_tweaks){
+    if(h != nullptr){
+      h_valid.push_back(true);
+      if(verbose)
+        std::cout << " Current histogram: " << h->GetName() << " exists, so will plot" << std::endl;
+    }
+    else{
+      h_valid.push_back(false);
+      std::cout << " Current histogram: " << n_hist << " does not exist, so cannot plot" << std::endl;
+    }
+    n_hist++;
+  }
 
   // Universe spectra for -3 -> +3 sigma
-  TH1D *h_univ_m3 = static_cast<TH1D*>(f_univ->Get("spectra_var_m3_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -3sigma
-  TH1D *h_univ_m2 = static_cast<TH1D*>(f_univ->Get("spectra_var_m2_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -2sigma
-  TH1D *h_univ_m1 = static_cast<TH1D*>(f_univ->Get("spectra_var_m1_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // -1sigma
-  TH1D *h_univ_n0 = static_cast<TH1D*>(f_univ->Get("spectra_var_0_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  //  NOMINAL
-  TH1D *h_univ_p1 = static_cast<TH1D*>(f_univ->Get("spectra_var_1_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco"));  // +1sigma
-  TH1D *h_univ_p2 = static_cast<TH1D*>(f_univ->Get("spectra_var_2_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco")); // +2sigma
-  TH1D *h_univ_p3 = static_cast<TH1D*>(f_univ->Get("spectra_var_3_pdfts_ob_rf_sbn_nd__BNB_FHC__numulikeCChigh_Ereco")); // +3sigma
+  TH1D *h_univ_m3 = static_cast<TH1D*>(f_univ->Get(("spectra_var_m3_pdfts_ob_rf_"+s_detector+"__BNB_FHC__"+s_sample+"_Ereco").c_str()));  // -3sigma
+  TH1D *h_univ_m2 = static_cast<TH1D*>(f_univ->Get(("spectra_var_m2_pdfts_ob_rf_"+s_detector+"__BNB_FHC__"+s_sample+"_Ereco").c_str()));  // -2sigma
+  TH1D *h_univ_m1 = static_cast<TH1D*>(f_univ->Get(("spectra_var_m1_pdfts_ob_rf_"+s_detector+"__BNB_FHC__"+s_sample+"_Ereco").c_str()));  // -1sigma
+  TH1D *h_univ_n0 = static_cast<TH1D*>(f_univ->Get(("spectra_var_0_pdfts_ob_rf_"+s_detector+"__BNB_FHC__"+s_sample+"_Ereco").c_str()));  //  NOMINAL
+  TH1D *h_univ_p1 = static_cast<TH1D*>(f_univ->Get(("spectra_var_1_pdfts_ob_rf_"+s_detector+"__BNB_FHC__"+s_sample+"_Ereco").c_str()));  // +1sigma
+  TH1D *h_univ_p2 = static_cast<TH1D*>(f_univ->Get(("spectra_var_2_pdfts_ob_rf_"+s_detector+"__BNB_FHC__"+s_sample+"_Ereco").c_str())); // +2sigma
+  TH1D *h_univ_p3 = static_cast<TH1D*>(f_univ->Get(("spectra_var_3_pdfts_ob_rf_"+s_detector+"__BNB_FHC__"+s_sample+"_Ereco").c_str())); // +3sigma
 
   std::vector<TH1D*> h_univs({h_univ_m3, h_univ_m2, h_univ_m1, h_univ_n0, h_univ_p1, h_univ_p2, h_univ_p3});
+
+  double nom_univ_rate  = h_univ_n0->Integral();
+  double nom_valor_rate = h_tweak_n0->Integral();
 
   TVectorD knot_vals(*static_cast<TVectorD*>(f_univ->Get("actual_knot_values")));
 
@@ -177,27 +196,60 @@ void spline_validation(const char* param,
     exit(1);
   }
   // If necessary normalise to some energy range
+  // Make sure the histogram is valid
   if (per_energy_gev > 0) {
     // Fix the binning if necessary
+    unsigned int n = 0;
     for(TH1D *h : h_tweaks){
+      if(!h_valid.at(n)) continue;
       FixBinning(h,per_energy_gev);
-    } 
+      n++;
+    }
+    n = 0;
     for(TH1D *h : h_univs){
+      if(!h_valid.at(n)) continue;
       FixBinning(h,per_energy_gev);
-    } 
+      n++;
+    }
   }
+  // Get the maxium value of the +3sigma spectra to set the maximum value on the y-axis of all the plots
+  const double max_y = std::max(h_univs.at(h_univs.size()-1)->GetMaximum(),h_tweaks.at(h_tweaks.size()-1)->GetMaximum()) * 1.5;
 
   // Now loop over the size of the vectors and make the canvases and subpads then save each into a root file
   // Append parameter name to output filename and open
-  std::string s_param(param);
   std::string s_output_file(output_file);
-  std::string param_filename = s_param+"_"+s_output_file; 
+  std::string param_filename = s_param+"_"+s_sample+"_"+s_output_file; 
   TFile f_out(param_filename.c_str(),"RECREATE");
-  
+ 
+  // For the PDF
+  TString pdf_filename(output_file);
+  pdf_filename.ReplaceAll(".root",".pdf");
+  pdf_filename.Prepend("_");
+  pdf_filename.Prepend(s_sample);
+  pdf_filename.Prepend("_");
+  pdf_filename.Prepend(s_param);
+
   for(unsigned int h = 0; h < h_univs.size(); ++h){
 
+    // Make sure the current histogram exists
+    if(!h_valid.at(h)) continue;
+
     // Translate iterator to number of sigma
-    const int n_sigma = GetNSigmaFromIterator(h,verbose);
+    const int n_sigma     = GetNSigmaFromIterator(h,verbose);
+    double var_univ_rate  = h_univs.at(h)->Integral("width");
+    double var_valor_rate = h_tweaks.at(h)->Integral("width");
+
+    // For the PNG
+    TString png_filename(output_file);
+    png_filename.ReplaceAll(".root",".png");
+    png_filename.Prepend("sigma_");
+    png_filename.Prepend(std::to_string(n_sigma));
+    png_filename.ReplaceAll("-","m");
+    png_filename.Prepend("_");
+    png_filename.Prepend(s_sample);
+    png_filename.Prepend("_");
+    png_filename.Prepend(s_param);
+    png_filename.Prepend(s_location);
 
     // Find the closest actual universe value to the current integer knot 
     double min_sigma_diff = 999;
@@ -214,7 +266,7 @@ void spline_validation(const char* param,
     h_tweak->GetXaxis()->SetRangeUser(0.,3.);
 
     // Now make the canvas, legend and sort out the pads
-    TCanvas *c = new TCanvas("c","",600,1000);
+    TCanvas *c = new TCanvas("c","",800,1000);
     TLegend *l = new TLegend(0.49,0.46,0.94,0.72);
     l->SetBorderSize(0);
     l->SetTextFont(132);
@@ -230,7 +282,7 @@ void spline_validation(const char* param,
     pad1->cd();
 
     // Format the spectra plots and draw
-    SetSpectraFormatting(h_tweak,h_universe,detector,verbose);
+    SetSpectraFormatting(h_tweak,h_universe,detector,max_y,verbose,"png");
     TString title = GetTitle(param, n_sigma);
     TLatex * l_title = new TLatex();
     l_title->SetTextSize(0.05);
@@ -238,12 +290,32 @@ void spline_validation(const char* param,
     h_tweak->Draw();
     h_universe->Draw("same");
     l->Draw("same");
-    if(detector.Contains("nd"))
-      l_title->DrawLatex(1.49,3.58e6,title.Data());
-    else if(detector.Contains("ub"))
-      l_title->DrawLatex(1.49,0.09e6,title.Data());
-    else if(detector.Contains("ic"))
-      l_title->DrawLatex(1.49,0.1e6,title.Data());
+    l_title->DrawLatex(1.49,max_y*0.9,title.Data());
+
+    // Now write integrated universe rate difference from nominal
+    TString var("Total universe variation from nominal: ");
+    int var_univ_nom = static_cast<int>(std::abs(var_univ_rate-nom_univ_rate));
+    var.Append(std::to_string(var_univ_nom));
+    TLatex * l_var = new TLatex();
+    l_var->SetTextSize(0.035);
+    l_var->SetTextAlign(22);
+    l_var->DrawLatex(1.49,max_y*0.86,var.Data());
+   
+    TString var_val("Total VALOR variation from nominal: ");
+    int var_val_nom = static_cast<int>(std::abs(var_valor_rate-nom_valor_rate));
+    var_val.Append(std::to_string(var_val_nom));
+    TLatex * l_var_val = new TLatex();
+    l_var_val->SetTextSize(0.035);
+    l_var_val->SetTextAlign(22);
+    l_var_val->DrawLatex(1.49,max_y*0.82,var_val.Data());
+   
+    TString diff("Total universe variation from VALOR: ");
+    int diff_val_univ = static_cast<int>(std::abs(var_univ_rate-var_valor_rate));
+    diff.Append(std::to_string(diff_val_univ));
+    TLatex * l_diff = new TLatex();
+    l_diff->SetTextSize(0.035);
+    l_diff->SetTextAlign(22);
+    l_diff->DrawLatex(1.49,max_y*0.78,diff.Data());
    
     double perc_rate_diff = (1-abs(h_tweak->Integral()/static_cast<double>(h_universe->Integral())))*100;
     std::cout << " For " << n_sigma << " sigma: " << std::endl;
@@ -277,11 +349,11 @@ void spline_validation(const char* param,
     SetRatioBinErrors(h_universe, h_tweak, h_ratio_band, verbose);
    
     // Format the ratio plot and error bands and draw
-    SetRatioPlotFormatting(h_ratio_band,true,verbose);
+    SetRatioPlotFormatting(h_ratio_band,true,verbose,"pdf");
     h_ratio_band->Draw("e2");
     
     // Draw the ratio plot
-    SetRatioPlotFormatting(h_ratio,false,verbose);
+    SetRatioPlotFormatting(h_ratio,false,verbose,"pdf");
     h_ratio->Draw("hist same");
 
     // Update the pad and canvas
@@ -295,7 +367,42 @@ void spline_validation(const char* param,
     canvas_name = canvas_name.ReplaceAll("-","m");
     std::string canvas_str(canvas_name);
     c->Write(canvas_str.c_str());
+
+    // Now write to a PDF
+    if(h == 0){
+      TString tempPDF(pdf_filename);
+      tempPDF.Append("(");
+      c->Print(tempPDF.Data(),"pdf");
+    }
+
+    else if(h == h_univs.size()-1){
+      TString tempPDF(pdf_filename);
+      tempPDF.Append(")");
+      c->Print(tempPDF.Data(),"pdf");
+    }
+
+    else
+      c->Print(pdf_filename.Data(),"pdf");
+
+    // Update the formatting for the pngs and redraw before saving
+    // Format the spectra plots and draw
+    pad1->cd();
+    SetSpectraFormatting(h_tweak,h_universe,detector,max_y,verbose,"png");
+    pad1->Modified();
+    c->cd();
+
+    // Format the ratio plot and error bands and draw
+    pad2->cd();
+    SetRatioPlotFormatting(h_ratio_band,true,verbose,"png");
     
+    // Draw the ratio plot
+    SetRatioPlotFormatting(h_ratio,false,verbose,"png");
+    pad2->Modified();
+
+    // Update the canvas
+    c->Update();
+
+    c->SaveAs(png_filename.Data());
     // Safely delete canvas and legend, this isn't possible for pads
     delete c;
     delete l;
@@ -314,6 +421,7 @@ void spline_validation(const char* param,
 }
 // ----------------------------------------------------------------------------------
 const TString GetTweaksFileName(const char* param, 
+                                const char* sample, 
                                 TString &tag,
                                 const int &nsigma,
                                 const TString &location,
@@ -321,14 +429,14 @@ const TString GetTweaksFileName(const char* param,
   TString name(tweakFilePattern);
   if(!all){
     std::cout << " Not looking at a file with all tweaks included" << std::endl;
-    name = GetStringReplacements(name,param,"","","",nsigma);
+    name = GetStringReplacements(name,param,sample,"","",nsigma);
     name.Append("sigma.root");
     name.Prepend(tag);
     name.Prepend(location);
   }
   else{
     std::cout << " Looking at a file with all tweaks included" << std::endl;
-    name = GetStringReplacements(name,param);
+    name = GetStringReplacements(name,param,sample);
     name.Append("sigma.root");
     name.Prepend(tag);
     name.Prepend(location);
@@ -487,17 +595,26 @@ void SetRatioBinErrors(const TH1D* h_un, const TH1D* h_tw, TH1D* h_ra, const boo
 // ----------------------------------------------------------------------------------
 void SetRatioPlotFormatting(TH1D* h, 
                             const bool &fill    = false,
-                            const bool &verbose = false){
+                            const bool &verbose = false,
+                            std::string format  = "pdf"){
   h->SetStats(0);
   h->SetTitle("");
   h->GetYaxis()->SetMaxDigits(3);
-  h->GetYaxis()->SetTitle("#Delta Rate / Rate_{Average}, %");
+
+  if(format == "pdf"){
+    h->GetYaxis()->SetTitle("\\Delta Rate / Rate_{Average}, %");
+    h->GetXaxis()->SetTitle("Reconstructed E_{\\nu} [GeV]");
+  }
+  else if(format  == "png"){
+    h->GetYaxis()->SetTitle("#Delta Rate / Rate_{Average}, %");
+    h->GetXaxis()->SetTitle("Reconstructed E_{#nu} [GeV]");
+  }
+
   h->GetYaxis()->SetTitleFont(132);
   h->GetYaxis()->SetLabelFont(132);
   h->GetYaxis()->SetTitleSize(0.1);
   h->GetYaxis()->SetTitleOffset(0.55);
   h->GetYaxis()->SetLabelSize(0.075);
-  h->GetXaxis()->SetTitle("Reconstructed E_{#nu} [GeV]");
   h->GetXaxis()->SetTitleFont(132);
   h->GetXaxis()->SetLabelFont(132);
   h->GetXaxis()->SetTitleSize(0.1);
@@ -523,7 +640,9 @@ void SetRatioPlotFormatting(TH1D* h,
 void SetSpectraFormatting(TH1D* h_tweak, 
                           TH1D* h_universe, 
                           const TString &detector,
-                          const bool &verbose = false){
+                          const double &max,
+                          const bool &verbose = false,
+                          std::string format  = "pdf"){
   // Now set everything
   h_tweak->SetStats(0);
   h_tweak->SetTitle("");
@@ -541,12 +660,7 @@ void SetSpectraFormatting(TH1D* h_tweak,
   h_universe->SetLineColor(kOrange+2);
   h_universe->SetLineStyle(5);
   h_universe->SetLineWidth(2);
-  if(detector.Contains("nd"))
-    h_tweak->GetYaxis()->SetRangeUser(0,4.0e6);
-  else if(detector.Contains("ub"))
-    h_tweak->GetYaxis()->SetRangeUser(0,0.19e6);
-  else if(detector.Contains("ic"))
-    h_tweak->GetYaxis()->SetRangeUser(0,0.35e6);
+  h_tweak->GetYaxis()->SetRangeUser(0,max);
 
   return;
 }
