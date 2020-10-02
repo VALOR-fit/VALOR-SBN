@@ -41,8 +41,6 @@ y_npoints = 40
 x_lim = 0.5*(3/(x_npoints-1))
 y_lim = 0.5*(4/(y_npoints-1))
 
-print "X Limit: ", x_lim, ", Y Limit: ", y_lim
-
 #ex_x_min = -3.0375 #exlusion
 #ex_x_max = 0.0375
 
