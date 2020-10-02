@@ -14,13 +14,13 @@
 #include "TGraph.h"
 #include "TStyle.h"
 
-void fitter_statistics(const std::string &dmsq="1e2", const std::string &sinsq="2e-3") {
+void fitter_statistics(const std::string &dmsq, const std::string &sinsq) {
 
-  TFile *f_val_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_"+dmsq+"_sinsq2thmumu_"+sinsq+"_osc_breakdown_hists.root").c_str(),"read");
-  TFile *f_val_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_unosc_breakdown_hists.root","read");
-  TFile *f_sbn_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_"+sinsq+"_dmsq_"+dmsq+".SBNspec.root").c_str(),"read");
-  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_CV.SBNspec.root","read");
-  TFile *f_caf       = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_"+dmsq+"_ss2thmm_"+sinsq+".root").c_str(),"read");
+  TFile *f_val_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/VALOR_dmsq_"+dmsq+"_sinsq2thmumu_"+sinsq+"_hists.root").c_str(),"read");
+  TFile *f_val_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/VALOR_unosc_hists.root","read");
+  TFile *f_sbn_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/sbnfit_sinsq_"+sinsq+"_dmsq_"+dmsq+".SBNspec.root").c_str(),"read");
+  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/SBNfit_CV.SBNspec.root","read");
+  TFile *f_caf       = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/CAFAna_dmsq_"+dmsq+"_ss2thmm_"+sinsq+".root").c_str(),"read");
 
   // -------------------------------------------
   
@@ -111,10 +111,10 @@ void fitter_statistics(const std::string &dmsq="1e2", const std::string &sinsq="
   // Populate the histogram name map
   histNameSuffixMap[VALOR][false][NUMUCC] = "numu_cc";
   histNameSuffixMap[VALOR][true][NUMUCC]  = "numu_cc";
-  histNameSuffixMap[VALOR][false][NUMUNC] = "numu_nc";
-  histNameSuffixMap[VALOR][true][NUMUNC]  = "numu_nc";
-  histNameSuffixMap[VALOR][false][NUE]    = "nue";
-  histNameSuffixMap[VALOR][true][NUE]     = "nue";
+  histNameSuffixMap[VALOR][false][NUMUNC] = "nc";
+  histNameSuffixMap[VALOR][true][NUMUNC]  = "nc";
+  histNameSuffixMap[VALOR][false][NUE]    = "nue_cc";
+  histNameSuffixMap[VALOR][true][NUE]     = "nue_cc";
 
   histNameSuffixMap[CAFANA][false][NUMUCC] = "numucc_unosc";
   histNameSuffixMap[CAFANA][true][NUMUCC]  = "numucc_osc";
