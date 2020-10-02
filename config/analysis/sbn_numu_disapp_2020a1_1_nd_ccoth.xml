@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2020a1_1">
+   
+    <element name="sbn_nd_fhc_numuccoth">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCoth                                            </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_1_sbn_nd_ccoth.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+  </element_list>
+    
+</valor> 
