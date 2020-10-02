@@ -328,16 +328,16 @@ void rj_plot_pdf(
               total_hist->SetBinContent(ibin,new_bin_content);
             }
           }
+          total_hist->SetLineStyle(1);
+          total_hist->SetLineWidth(2);
+          total_hist->SetLineColor(kAzure+7);
+          total_max = total_hist->GetMaximum();
         }
-        total_hist->SetLineStyle(1);
-        total_hist->SetLineWidth(2);
-        total_hist->SetLineColor(kAzure+7);
-        total_max = total_hist->GetMaximum();
-
         // Start drawing
         TLegend * contrib_legend = new TLegend(0.7,0.3,0.9,0.8);  
         contrib_legend->SetFillColor(0);
         contrib_legend->SetLineColor(0);
+        contrib_legend->SetTextFont(132);
         TH1D * cc_hist  = nullptr;
         TH1D * nc_hist  = nullptr;
         TH1D * nue_hist = nullptr;
@@ -400,7 +400,12 @@ void rj_plot_pdf(
         if(plot_data){
           contrib_legend->AddEntry(data_hist, "Oscillated", "P");
         }
-        float max_y = std::max(mode_max, std::max(data_max, total_max)) * 1.2;
+        float max_y = std::max(mode_max, std::max(data_max, total_max));
+        if(abs(max_y-mode_max) < std::numeric_limits<float>::epsilon())
+          max_y *= 2.6;
+        else
+          max_y *= 1.2;
+
 
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
         this_pad->SetLeftMargin  (0.11552  );
