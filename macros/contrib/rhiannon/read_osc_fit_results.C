@@ -7,7 +7,7 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-void read_osc_fit_results(const char * filename)
+void read_osc_fit_results(const char * filename, const char * treename = "valor_fit_ntp")
 {
   using namespace valor;
 
@@ -22,7 +22,7 @@ void read_osc_fit_results(const char * filename)
   TObjArray * bfparam_array = 0; // an array of optimum FitParamList for all fits performed to each toy MC
   TObjArray * spectra_array = 0; // an array of all toy-MC data and best-fit predictions for all fits performed to each toy MC
 
-  TTree * fitnt = (TTree*)f.Get("valor_dune_nd_ntp");
+  TTree * fitnt = (TTree*)f.Get(treename);
   fitnt->SetBranchAddress("best_fit_params", &gbfparm);
   fitnt->SetBranchAddress("true_params",     &iparm);
   fitnt->SetBranchAddress("best_fit_model",  &bfparam_array);
@@ -36,18 +36,20 @@ void read_osc_fit_results(const char * filename)
     cout << "Experiment: # " << i << endl;
     cout << "*******************************************************" << endl;
     cout << endl;
-    cout << "Input parameter list: " << endl;
-    cout << *iparm;
-    cout << endl;
-    cout << endl;
+//    cout << "Input parameter list: " << endl;
+  //  cout << *iparm;
+ //   cout << endl;
+  //  cout << endl;
     cout << "Global best fit parameter list: " << endl;
     cout << *gbfparm;
     cout << endl;
+    /*
     cout << "Objects stored in `spectra' object array: " << endl;    
     spectra_array->Print();
     cout << endl;
     cout << "Objects stored in `best_fit_params' object array: " << endl;    
     bfparam_array->Print();
+    */
 
   }
 }
