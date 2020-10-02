@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> sbn_numu_exclusive_1/dsts/2020a1/valor_sbncode_fhc_numuccoth_disappearance_fd_minidst_mc.root </filename>
+      <filename> sbn_numu_disappearance/dsts/2020a1/valor_sbncode_fhc_numuccoth_disappearance_fd_minidst_mc.root </filename>
        <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
@@ -62,7 +62,7 @@ Modelists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 <modelist> modelists/fine/SBNOscLowE.xml </modelist>
-<coarse_modelist> modelists/coarse/coarse_mode_list_SBN_BNB_FHC_numuCCincl.xml </coarse_modelist>
+<coarse_modelist> modelists/coarse/coarse_mode_list_SBN_BNB_FHC_numulikeCChigh.xml </coarse_modelist>
 
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,7 +78,7 @@ Splines
 -->
 
 <splines>
-  <folder>         sbn_numu_exclusive_1/responses/03c1/icarus/          </folder>
+  <folder>         sbn_numu_disappearance/responses/03c1/icarus/          </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root       </pattern>
   <type>           TSpline3                                               </type>
   <stored_as>      TObjArray                                              </stored_as>
