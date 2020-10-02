@@ -1,29 +1,29 @@
 //____________________________________________________________________________
 /*!
 
-\app       valor_dune-universe_variation_tweaks
+  \app       valor_dune-universe_variation_tweaks
 
-\brief     Vary the MC spectra by throwing sets of systematics
+  \brief     Vary the MC spectra by throwing sets of systematics
 
-\options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
-             --input               : Input DST file [required]
-             --params              : Parameters to tweak - to name the output file [def: allsyst]
-             --sample              : Topology [def: numulikeCChigh]
-             --detector            : Detector [def: sbn_nd]
-             --kinevar             : Kinematic paramter to parameterise in [def: ereco]
-             --ntoys               : Number of toy-MC experiments [def: 1000]
-             --config              : Analysis configuration file [required]
-             --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
-             
+  \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
+  --input               : Input DST file [required]
+  --params              : Parameters to tweak - to name the output file [def: allsyst]
+  --sample              : Topology [def: numulikeCChigh]
+  --detector            : Detector [def: sbn_nd]
+  --kinevar             : Kinematic paramter to parameterise in [def: ereco]
+  --ntoys               : Number of toy-MC experiments [def: 1000]
+  --config              : Analysis configuration file [required]
+  --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
 
-\author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
-           University of Liverpool & STFC Rutherford Appleton Laboratory
-           Steve Dennis <s.r.dennis \at liverpool.ac.uk>
-           University of Liverpool
 
-\created   October 2016
+  \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
+  University of Liverpool & STFC Rutherford Appleton Laboratory
+  Steve Dennis <s.r.dennis \at liverpool.ac.uk>
+  University of Liverpool
 
-\copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
+  \created   October 2016
+
+  \copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________
@@ -67,68 +67,114 @@
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/KineBinning/UtlBinning.h"
 
-std::vector<std::string> xsec = 
-{  "genie_ccresAxial_Genie",
-   "genie_ncresAxial_Genie",
-   "genie_qema_Genie",
-   "genie_NC_Genie",
-   "genie_NonResRvbarp1pi_Genie",
-   "genie_NonResRvbarp2pi_Genie",
-   "genie_NonResRvp1pi_Genie",
-   "genie_NonResRvp2pi_Genie"
+std::vector<std::string> modern_xsec = 
+{ "genie_DISAth_Genie",
+  "genie_DISBth_Genie",
+  "genie_DISCv1u_Genie",
+  "genie_DISCv2u_Genie",
+  "genie_IntraNukeNabs_Genie",
+  "genie_IntraNukeNcex_Genie",
+  "genie_IntraNukeNinel_Genie",
+  "genie_IntraNukeNmfp_Genie",
+  "genie_IntraNukeNpi_Genie",
+  "genie_IntraNukePIabs_Genie",
+  "genie_IntraNukePIcex_Genie",
+  "genie_IntraNukePIinel_Genie",
+  "genie_IntraNukePImfp_Genie",
+  "genie_IntraNukePIpi_Genie",
+  "genie_ResDecayGamma_Genie",
+  "genie_ccresVector_Genie",
+  "genie_cohMA_Genie",
+  "genie_cohR0_Genie",
+  "genie_ncelAxial_Genie",
+  "genie_ncelEta_Genie",
+  "genie_ncresVector_Genie"
+};
+std::vector<std::string> proposal_xsec = 
+{ "genie_ccresAxial_Genie",
+  "genie_ncresAxial_Genie",
+  "genie_qema_Genie",
+//  "genie_NC_Genie",
+  "genie_NonResRvbarp1pi_Genie",
+  "genie_NonResRvbarp2pi_Genie",
+  "genie_NonResRvp1pi_Genie",
+  "genie_NonResRvp2pi_Genie",
 };
 std::vector<std::string> flux_uncorr = 
-{  "expskin_FluxUnisim",
-   "horncurrent_FluxUnisim",
-   "nucleoninexsec_FluxUnisim",
-   "nucleonqexsec_FluxUnisim",
-   "nucleontotxsec_FluxUnisim",
-   "pioninexsec_FluxUnisim",
-   "pionqexsec_FluxUnisim",
-   "piontotxsec_FluxUnisim"
+{ "expskin_FluxUnisim",
+  "horncurrent_FluxUnisim",
+  "nucleoninexsec_FluxUnisim",
+  "nucleonqexsec_FluxUnisim",
+  "nucleontotxsec_FluxUnisim",
+  "pioninexsec_FluxUnisim",
+  "pionqexsec_FluxUnisim",
+  "piontotxsec_FluxUnisim"
 };
 std::vector<std::string> flux_corr = 
-{  "kminus_PrimaryHadronNormalization",
-   "piminus_PrimaryHadronSWCentralSplineVariation",
-   "kplus_PrimaryHadronFeynmanScaling",
-   "piplus_PrimaryHadronSWCentralSplineVariation",
-   "kzero_PrimaryHadronSanfordWang"
+{ "kminus_PrimaryHadronNormalization",
+  "piminus_PrimaryHadronSWCentralSplineVariation",
+  "kplus_PrimaryHadronFeynmanScaling",
+  "piplus_PrimaryHadronSWCentralSplineVariation",
+  "kzero_PrimaryHadronSanfordWang"
 };
 std::vector<std::string> piplus = 
 {  
-   "piplus_PrimaryHadronSWCentralSplineVariation"
+  "piplus_PrimaryHadronSWCentralSplineVariation"
 };
 
-std::vector<std::string> xsec_short = 
-{  "ccresAxial",
-   "ncresAxial",
-   "qema",
-   "NC",
-   "NonResRvbarp1pi",
-   "NonResRvbarp2pi",
-   "NonResRvp1pi",
-   "NonResRvp2pi"
+std::vector<std::string> modern_xsec_short = 
+{ "DISAth",
+  "DISBth",
+  "DISCv1u",
+  "DISCv2u",
+  "IntraNukeNabs",
+  "IntraNukeNcex",
+  "IntraNukeNinel",
+  "IntraNukeNmfp",
+  "IntraNukeNpi",
+  "IntraNukePIabs",
+  "IntraNukePIcex",
+  "IntraNukePIinel",
+  "IntraNukePImfp",
+  "IntraNukePIpi",
+  "ResDecayGamma",
+  "ccresVector",
+  "cohMA",
+  "cohR0",
+  "ncelAxial",
+  "ncelEta",
+  "ncresVector"
+};
+std::vector<std::string> proposal_xsec_short = 
+{ "ccresAxial",
+  "ncresAxial",
+  "qema",
+//  "NC",
+  "NonResRvbarp1pi",
+  "NonResRvbarp2pi",
+  "NonResRvp1pi",
+  "NonResRvp2pi"
 };
 std::vector<std::string> flux_uncorr_short = 
-{  "expskin",
-   "horncurrent",
-   "nucleoninexsec",
-   "nucleonqexsec",
-   "nucleontotxsec",
-   "pioninexsec",
-   "pionqexsec",
-   "piontotxsec"
+{ "expskin",
+  "horncurrent",
+  "nucleoninexsec",
+  "nucleonqexsec",
+  "nucleontotxsec",
+  "pioninexsec",
+  "pionqexsec",
+  "piontotxsec"
 };
 std::vector<std::string> flux_corr_short = 
-{  "kminus",
-   "piminus",
-   "kplus",
-   "piplus",
-   "kzero"
+{ "kminus",
+  "piminus",
+  "kplus",
+  "piplus",
+  "kzero"
 };
 std::vector<std::string> piplus_short = 
 {  
-   "piplus"
+  "piplus"
 };
 
 double enu_reco_max = 10.;
@@ -158,7 +204,6 @@ int main(int argc, char ** argv)
   int ntoys               = arg.GetInt("ntoys");
   string config_file      = arg.GetString("config");
   string input_rootfile   = arg.GetString("input");
-  string input_var_file   = arg.GetString("variations");
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
@@ -203,10 +248,18 @@ int main(int argc, char ** argv)
   LOG("universe_variation_tweaks", pINFO) << " Successfully accessed the relevant model for binning information";
   
   std::vector<std::string> systematics, file_systematics;
-  if (params_to_tweak == "int") {
-    systematics      = xsec;
-    file_systematics = xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking xsec systematics ";
+  if (params_to_tweak == "proposal_xsec") {
+    systematics      = proposal_xsec;
+    file_systematics = proposal_xsec_short;
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
+    for(const std::string &s : file_systematics){
+      LOG("universe_variation_tweaks", pINFO) << s;
+    }
+  }
+  else if (params_to_tweak == "modern_xsec") {
+    systematics      = modern_xsec;
+    file_systematics = modern_xsec_short;
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking modern_xsec systematics ";
     for(const std::string &s : file_systematics){
       LOG("universe_variation_tweaks", pINFO) << s;
     }
@@ -249,9 +302,11 @@ int main(int argc, char ** argv)
     systematics      = flux_corr;
     file_systematics = flux_corr_short;
     systematics.insert(systematics.end(), flux_uncorr.begin(), flux_uncorr.end());
-    systematics.insert(systematics.end(), xsec.begin(), xsec.end());
+    systematics.insert(systematics.end(), proposal_xsec.begin(), proposal_xsec.end());
+    systematics.insert(systematics.end(), modern_xsec.begin(), modern_xsec.end());
     file_systematics.insert(file_systematics.end(), flux_uncorr_short.begin(), flux_uncorr_short.end());
-    file_systematics.insert(file_systematics.end(), xsec_short.begin(), xsec_short.end());
+    file_systematics.insert(file_systematics.end(), proposal_xsec_short.begin(), proposal_xsec_short.end());
+    file_systematics.insert(file_systematics.end(), modern_xsec_short.begin(), modern_xsec_short.end());
     LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all systematics ";
     for(const std::string &s : file_systematics){
       LOG("universe_variation_tweaks", pINFO) << s;
@@ -412,6 +467,11 @@ int main(int argc, char ** argv)
         }
 
         // Get the weight for this parameter at that universe
+        // Check the universe weight is a valid number and not 0
+        if(isnan(universes.at(iuni)) || universes.at(iuni) < std::numeric_limits<float>::epsilon()){
+          LOG("universe_variation_tweaks", pDEBUG) << " The weight for systematic " << syst << ", universe " << iuni << " and throw " << itoy << " is " << universes.at(iuni) << ", skipping";
+          continue;
+        }
         uni_wght *= universes.at(iuni);
         product_wght *= universes.at(iuni);
         LOG("universe_variation_tweaks", pDEBUG) << " The weight for systematic " << syst << ", universe " << iuni << " and throw " << itoy << " is " << universes.at(iuni);
@@ -432,7 +492,6 @@ int main(int argc, char ** argv)
                                                  << "\n The product of the universe weights is: " << uni_wght
                                                  << "\n The nominal event rate is: " << this_entry
                                                  << "\n These are too similar for any weight to have been applied, skipping";
-  //      continue;
       }
       LOG("universe_variation_tweaks", pDEBUG) << " Total universe weight for entry " << iev << " : " << uni_wght;
       h_weight_product_skipnom->Fill(product_wght);
@@ -482,8 +541,8 @@ int main(int argc, char ** argv)
 
     for(int itoy = 0; itoy < ntoys; itoy++) {
       double curr_val = huni[itoy]->GetBinContent(ebin);
-//      sumsq += TMath::Power(curr_val-nom_val,2.);
-      sumsq += TMath::Power(curr_val-mean,2.);
+      sumsq += TMath::Power(curr_val-nom_val,2.);
+  //    sumsq += TMath::Power(curr_val-mean,2.);
     }//itoy
 
     one_sigma = TMath::Sqrt(sumsq/static_cast<double>(ntoys));
@@ -500,6 +559,7 @@ int main(int argc, char ** argv)
   TFile * outfile = NULL;
   if (output_rootfile!="-" && output_rootfile!="none") {
     output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
+    output_rootfile = util::ReplaceAll(output_rootfile,"[SAMPLE]",util::AsString(sample));
     outfile = new TFile(output_rootfile.c_str(),"RECREATE");
     LOG("universe_variation_tweaks",pNOTICE)<<"Writing to file: "<<output_rootfile;
   }
