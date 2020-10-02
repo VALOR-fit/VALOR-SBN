@@ -129,9 +129,12 @@ def main(beam_mode_arg = None, sample_arg = None,
     pool = valor.ParameterPool.Instance()
     for iparam in xrange(syst.Size()):
       param = pool.GetParam(syst.WhichParam(iparam))
-      if skipflux and param.SearchCategories("flux")        : continue
-      if skipint  and param.SearchCategories("interaction") : continue
-      if skipdet  and param.SearchCategories("det")         : continue
+      if not iparam:
+        last_param = param
+
+      if skipflux and param.SearchCategories("flux") : continue
+      if skipint  and param.SearchCategories("int")  : continue
+      if skipdet  and param.SearchCategories("det")  : continue
 
       # Add second line if we're at the beginning of a new group
       # Also check for varying detector
