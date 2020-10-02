@@ -13,11 +13,11 @@
 #include "TStyle.h"
 void fitter_spectral_overlays(const std::string &dmsq, const std::string &sinsq) {
 
-  TFile *f_val_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_dmsq_"+dmsq+"_sinsq2thmumu_"+sinsq+"_osc_breakdown_hists.root").c_str(),"read");
-  TFile *f_val_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/VALOR_unosc_breakdown_hists.root","read");
-  TFile *f_sbn_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_sinsq_"+sinsq+"_dmsq_"+dmsq+".SBNspec.root").c_str(),"read");
-  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/SBNfit_CV.SBNspec.root","read");
-  TFile *f_caf       = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/CAFAna_dmsq_"+dmsq+"_ss2thmm_"+sinsq+".root").c_str(),"read");
+  TFile *f_val_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/VALOR_dmsq_"+dmsq+"_sinsq2thmumu_"+sinsq+"_hists.root").c_str(),"read");
+  TFile *f_val_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/VALOR_unosc_hists.root","read");
+  TFile *f_sbn_osc   = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/sbnfit_sinsq_"+sinsq+"_dmsq_"+dmsq+".SBNspec.root").c_str(),"read");
+  TFile *f_sbn_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/SBNfit_CV.SBNspec.root","read");
+  TFile *f_caf       = new TFile(("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2019b3_90pct_5sigma_points/CAFAna_dmsq_"+dmsq+"_ss2thmm_"+sinsq+".root").c_str(),"read");
 
   // Get the relevant histograms
   // VALOR
