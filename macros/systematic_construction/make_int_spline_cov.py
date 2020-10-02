@@ -28,37 +28,37 @@ def make_cov(outputname):
         "genie_NonResRvbarp1pi_Genie",
         "genie_NonResRvbarp2pi_Genie",
         "genie_NonResRvp1pi_Genie",
-        "genie_NonResRvp2pi_Genie"
+        "genie_NonResRvp2pi_Genie",
         ]
     nominal_vals = {
-        "genie_ccresAxial_Genie"     : 0.0,
-        "genie_ncresAxial_Genie"     : 0.0,
-        "genie_qema_Genie"           : 0.0,
-        "genie_NC_Genie"             : 0.0,
-        "genie_NonResRvbarp1pi_Genie": 0.0,
-        "genie_NonResRvbarp2pi_Genie": 0.0,
-        "genie_NonResRvp1pi_Genie"   : 0.0,
-        "genie_NonResRvp2pi_Genie"   : 0.0
+        "genie_ccresAxial_Genie"        : 0.0,
+        "genie_ncresAxial_Genie"        : 0.0,
+        "genie_qema_Genie"              : 0.0,
+        "genie_NC_Genie"                : 0.0,
+        "genie_NonResRvbarp1pi_Genie"   : 0.0,
+        "genie_NonResRvbarp2pi_Genie"   : 0.0,
+        "genie_NonResRvp1pi_Genie"      : 0.0,
+        "genie_NonResRvp2pi_Genie"      : 0.0,
     }
     untuned_vals = {
-        "genie_ccresAxial_Genie"     : 0.0,
-        "genie_ncresAxial_Genie"     : 0.0,
-        "genie_qema_Genie"           : 0.0,
-        "genie_NC_Genie"             : 0.0,
-        "genie_NonResRvbarp1pi_Genie": 0.0,
-        "genie_NonResRvbarp2pi_Genie": 0.0,
-        "genie_NonResRvp1pi_Genie"   : 0.0,
-        "genie_NonResRvp2pi_Genie"   : 0.0
+        "genie_ccresAxial_Genie"        : 0.0,
+        "genie_ncresAxial_Genie"        : 0.0,
+        "genie_qema_Genie"              : 0.0,
+        "genie_NC_Genie"                : 0.0,
+        "genie_NonResRvbarp1pi_Genie"   : 0.0,
+        "genie_NonResRvbarp2pi_Genie"   : 0.0,
+        "genie_NonResRvp1pi_Genie"      : 0.0,
+        "genie_NonResRvp2pi_Genie"      : 0.0,
     }
     error_vals = {
-        "genie_ccresAxial_Genie"     : 1.0,
-        "genie_ncresAxial_Genie"     : 1.0,
-        "genie_qema_Genie"           : 1.0,
-        "genie_NC_Genie"             : 1.0,
-        "genie_NonResRvbarp1pi_Genie": 1.0,
-        "genie_NonResRvbarp2pi_Genie": 1.0,
-        "genie_NonResRvp1pi_Genie"   : 1.0,
-        "genie_NonResRvp2pi_Genie"   : 1.0
+        "genie_ccresAxial_Genie"        : 1.0,
+        "genie_ncresAxial_Genie"        : 1.0,
+        "genie_qema_Genie"              : 1.0,
+        "genie_NC_Genie"                : 1.0,
+        "genie_NonResRvbarp1pi_Genie"   : 1.0,
+        "genie_NonResRvbarp2pi_Genie"   : 1.0,
+        "genie_NonResRvp1pi_Genie"      : 1.0,
+        "genie_NonResRvp2pi_Genie"      : 1.0,
     }
     correlation_vals = {
     }
