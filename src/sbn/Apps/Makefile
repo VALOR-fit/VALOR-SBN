@@ -74,10 +74,10 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_flux_splines.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_flux_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
 else
-	@echo "Skipping make_flux_splines due to no GENIE"
+	@echo "Skipping make_splines due to no GENIE"
 endif
 
-# Generate SBN interaction splines
+# Generate SBN xsec splines
 # Probably don't require the GENIE dependence but method isn't finalised yet so keeping just in case
 #
 make_xsec_splines: FORCE
@@ -126,8 +126,8 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_sbncode_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
-	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-tweak_pdf_nsigma_var
@@ -141,6 +141,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-tweak_pdf_nsigma_var
+
 FORCE:
 
 # DO NOT DELETE
