@@ -76,16 +76,22 @@ std::vector<std::string> proposal_interaction_systematics =
    "genie_ncresAxial_Genie",
    "genie_qema_Genie",
    "genie_NC_Genie",
-   "genie_NonResRvbarp1pi_Genie",
-   "genie_NonResRvbarp2pi_Genie",
-   "genie_NonResRvp1pi_Genie",
-   "genie_NonResRvp2pi_Genie",
-   /*
-   "genie_NonResRvbarp1piAlt_Genie",
-   "genie_NonResRvbarp2piAlt_Genie",
-   "genie_NonResRvp1piAlt_Genie",
-   "genie_NonResRvp2piAlt_Genie",
-   */
+   "genie_NonResRvpCC1pi_Genie",
+   "genie_NonResRvnCC1pi_Genie",
+   "genie_NonResRvbarnCC1pi_Genie",
+   "genie_NonResRvbarpCC1pi_Genie",
+   "genie_NonResRvpCC2pi_Genie",
+   "genie_NonResRvnCC2pi_Genie",
+   "genie_NonResRvbarnCC2pi_Genie",
+   "genie_NonResRvbarpCC2pi_Genie",
+   "genie_NonResRvpNC1pi_Genie",
+   "genie_NonResRvnNC1pi_Genie",
+   "genie_NonResRvbarnNC1pi_Genie",
+   "genie_NonResRvbarpNC1pi_Genie",
+   "genie_NonResRvpNC2pi_Genie",
+   "genie_NonResRvnNC2pi_Genie",
+   "genie_NonResRvbarnNC2pi_Genie",
+   "genie_NonResRvbarpNC2pi_Genie"
  };
 std::vector<std::string> modern_interaction_systematics = 
  { "genie_DISAth_Genie",
@@ -131,6 +137,8 @@ TString     BuildSplineName(const Sample_t    &s,
                             const int         &ireco);
 TString BuildObjName(const ReacMode_t  &m,
                      const std::string &p);
+void GetFromPair(const std::string &vname, 
+                 std::string &file_name);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -561,13 +569,22 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
   std::ifstream uFile;
   uFile.open(input);
   if(!uFile){
-    LOG("valor_sbn",pFATAL) << "Unable to open universe file: " << input;
+    LOG("valor_sbn",pFATAL) << "Unable to open universe variation text file: " << input;
     util::Die(-1);
   }
   if(variations.size()){
     LOG("valor_sbn",pERROR) << "Vector to hold variations is not empty";
     return;
   }
+  std::string alt_syst = sy;
+  TString tsy(sy);
+  if(tsy.Contains("NonRes")){
+    GetFromPair(sy,alt_syst);
+    LOG("valor_sbn",pNOTICE) << " Switched input parameter name: " << sy << " to alternative parameter name for reading the text file: " << alt_syst;
+  }
+  else
+    LOG("valor_sbn",pNOTICE) << " Input parameter remains the same: " << alt_syst;
+
 
   int count_lines = 0;
   while(!uFile.eof()){
@@ -575,18 +592,18 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
     std::string line = "";
     std::getline(uFile,line);
     TString tline(line);
-    TString tsyst(sy);
-    tsyst.ToLower();
+    TString talt_syst(alt_syst);
+    talt_syst.ToLower();
     tline.ToLower();
     std::string lline = static_cast<std::string>(tline);
     // Add a space to the end of the parameter name to avoid getting the wrong one
-    size_t found_v = lline.find(tsyst+" ");
+    size_t found_v = lline.find(talt_syst+" ");
     if(found_v != std::string::npos){
       // Clean up the line to pass the variations to the vector
       LOG("valor_sbn",pDEBUG) << "On textfile line: " << count_lines;
-      LOG("valor_sbn",pDEBUG) << "Found line containing " << sy << " parameter: \n" << line;
+      LOG("valor_sbn",pDEBUG) << "Found line containing " << alt_syst << " parameter: \n" << line;
       LOG("valor_sbn",pDEBUG) << "Removing systematic name from line";
-      line.erase(0, found_v+sy.length());
+      line.erase(0, found_v+alt_syst.length());
       LOG("valor_sbn",pDEBUG) << "Line now contains: \n" << line;
 
       // Pass the remaining contents of the line to a vector of doubles
@@ -702,5 +719,29 @@ TString BuildObjName(const ReacMode_t  &m,
 
   return name;
 
+}
+//___________________________________________________________________
+void GetFromPair(const std::string &vname, std::string &file_name){
+
+  if(vname == "NonResRvpCC1pi" || vname == "NonResRvbarnCC1pi")
+    file_name = "NonResRvp1pi";
+  else if(vname == "NonResRvbarpCC1pi" || vname == "NonResRvnCC1pi")
+    file_name = "NonResRvbarp1pi";
+  else if(vname == "NonResRvpCC2pi" || vname == "NonResRvbarnCC2pi")
+    file_name = "NonResRvp2pi";
+  else if(vname == "NonResRvbarpCC2pi" || vname == "NonResRvnCC2pi")
+    file_name = "NonResRvbarp2pi";
+  else if(vname == "NonResRvpNC1pi" || vname == "NonResRvbarnNC1pi")
+    file_name = "NonResRvp1piAlt";
+  else if(vname == "NonResRvbarpNC1pi" || vname == "NonResRvnNC1pi")
+    file_name = "NonResRvbarp1piAlt";
+  else if(vname == "NonResRvpNC2pi" || vname == "NonResRvbarnNC2pi")
+    file_name = "NonResRvp2piAlt";
+  else if(vname == "NonResRvbarpNC2pi" || vname == "NonResRvnNC2pi")
+    file_name = "NonResRvbarp2piAlt";
+  else{
+    LOG("valor_sbn",pERROR) << "Couldn't suss out the input variation name from " << vname;
+    valor::util::Die(-1);
+  }
 }
 //___________________________________________________________________
