@@ -87,27 +87,6 @@
     </group>
     
     <group name="int">
-      <format> SBNInteractionResponseParams.xml </format>
-      
-      <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
-        <objname>    cov                                                                                  </objname>    
-        <objtype>    TMatrixD                                                                             </objtype>
-      </covariance_matrix>
-
-      <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
-        <objname>    untuned                                                                              </objname>    
-        <objtype>    TMatrixD                                                                             </objtype>
-      </untuned_values> 
-
-      <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
-        <objname>    nominal                                                                              </objname>    
-      </initial_values> 
-    </group>
-    
-    <group name="int">
       <format> SBNModernInteractionResponseParams.xml </format>
       
       <covariance_matrix>
