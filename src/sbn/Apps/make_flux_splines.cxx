@@ -445,7 +445,9 @@ int main(int argc, char ** argv)
           }
 
         } // modes
-        double event_ratio = (total_nominal > 0) ? total_events/double(total_nominal) : 1; // Ratio of the variation rate to the nominal rate
+        // Cutoff under 36 for a maximum 17% stat uncertainty in every bin
+        // Splines will be flat otherwise
+        double event_ratio = (total_nominal > 36) ? total_events/double(total_nominal) : 1; // Ratio of the variation rate to the nominal rate
         if(iknot == inom)
           event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
         knot_ratio.emplace(iknot,event_ratio);
@@ -518,7 +520,8 @@ int main(int argc, char ** argv)
             // Check if a variation for this mode has already been found
             if(!mode_used){
               // Check if the event ratio is extremely close to 1
-              if(event_ratio > 1.0 || event_ratio < 1.0){
+              // Check if the event ratio is extremely close to 1 or 0
+              if((event_ratio > 1.0 || event_ratio < 1.0) && abs(event_ratio)>std::numeric_limits<double>::epsilon()){
                 LOG("valor_sbn",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " isn't 1: " << event_ratio  << " therefore saving the mode to the list";
                 applied_to_modes.push_back(util::AsString(mode));
                 mode_used = true;
