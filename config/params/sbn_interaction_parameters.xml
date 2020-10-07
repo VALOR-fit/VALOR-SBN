@@ -3,10 +3,10 @@
   <!-- ==================================================================================== -->
   <param>
     <name>
-      <simple>  genie_NonResRvp2pi_Genie                      </simple>
-      <long>    Non-resonant background nu, proton, 2pions </long>
-      <rootex>  R_{bkg}^{#nu, p,2#pi}                      </rootex>
-      <tex>     R_{bkg}^{\nu, p,2\pi}                      </tex>
+      <simple>  genie_NonResRvpCC2pi_Genie                    </simple>
+      <long>    Non-resonant background nu, proton, CC 2pions </long>
+      <rootex>  R_{bkg}^{#nu, p, CC 2#pi}                     </rootex>
+      <tex>     R_{bkg}^{\nu, p, CC 2\pi}                     </tex>
     </name>
     
     <apply_to_range>
@@ -24,7 +24,7 @@
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   all2pi      </reac_type>
+      <reac_type>   allcc2pi       </reac_type>
       <flav_init>   all         </flav_init>
       <flav_final>  all         </flav_final>
       <target>      all         </target>
@@ -40,10 +40,10 @@
   <!-- ==================================================================================== -->
   <param>
     <name>
-      <simple>  genie_NonResRvp1pi_Genie                  </simple>
-      <long>    Non-resonant background nu, proton, 1pion </long>
-      <rootex>  R_{bkg}^{#nu, p, 1#pi}                    </rootex>
-      <tex>     R_{bkg}^{\nu, p, 1\pi}                    </tex>
+      <simple>  genie_NonResRvbarnCC2pi_Genie                     </simple>
+      <long>    Non-resonant background nubar, neutron, CC 2pions </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, n, CC 2#pi}                     </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, n, CC 2\pi}                     </tex>
     </name>
     
     <apply_to_range>
@@ -61,7 +61,7 @@
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   all1pi      </reac_type>
+      <reac_type>   allcc2pi       </reac_type>
       <flav_init>   all         </flav_init>
       <flav_final>  all         </flav_final>
       <target>      all         </target>
@@ -77,10 +77,10 @@
   <!-- ==================================================================================== -->
   <param>
     <name>
-      <simple>  genie_NonResRvbarp2pi_Genie                   </simple>
-      <long>    Non-resonant background nubar, proton, 2pions </long>
-      <rootex>  R_{bkg}^{#bar{#nu}p,2#pi}                     </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}p,2\pi}                     </tex>
+      <simple>  genie_NonResRvpCC1pi_Genie                   </simple>
+      <long>    Non-resonant background nu, proton, CC 1pion </long>
+      <rootex>  R_{bkg}^{#nu, p, CC 1#pi}                    </rootex>
+      <tex>     R_{bkg}^{\nu, p, CC 1\pi}                    </tex>
     </name>
     
     <apply_to_range>
@@ -98,7 +98,7 @@
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   all2pi      </reac_type>
+      <reac_type>   allcc1pi       </reac_type>
       <flav_init>   all         </flav_init>
       <flav_final>  all         </flav_final>
       <target>      all         </target>
@@ -114,10 +114,10 @@
   <!-- ==================================================================================== -->
   <param>
     <name>
-      <simple>  genie_NonResRvbarp1pi_Genie                     </simple>
-      <long>    Non-resonant background nubar, proton, 1pion </long>
-      <rootex>  R_{bkg}^{#bar{#nu}p,1#pi}                    </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}p,1\pi}                    </tex>
+      <simple>  genie_NonResRvbarnCC1pi_Genie                      </simple>
+      <long>    Non-resonant background nubar, neutron, CC 1pion   </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, n, CC 1#pi}                    </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, n, CC 1\pi}                    </tex>
     </name>
     
     <apply_to_range>
@@ -135,7 +135,7 @@
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   all1pi      </reac_type>
+      <reac_type>   allcc1pi       </reac_type>
       <flav_init>   all         </flav_init>
       <flav_final>  all         </flav_final>
       <target>      all         </target>
@@ -149,7 +149,450 @@
 
   </param>
   <!-- ==================================================================================== -->
-  <!--
+  <param>
+    <name>
+      <simple>  genie_NonResRvbarpCC2pi_Genie                    </simple>
+      <long>    Non-resonant background nubar, proton, CC 2pions </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, p, CC 2#pi}                  </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, p, CC 2\pi}                  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allcc2pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvnCC2pi_Genie                     </simple>
+      <long>    Non-resonant background nu, neutron, CC 2pions </long>
+      <rootex>  R_{bkg}^{#nu, n, CC 2#pi}                      </rootex>
+      <tex>     R_{bkg}^{\nu, n, CC 2\pi}                      </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allcc2pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvbarpCC1pi_Genie                     </simple>
+      <long>    Non-resonant background nubar, proton, CC 1pion   </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, p, CC 1#pi}                   </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, p, CC 1\pi}                   </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allcc1pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvnCC1pi_Genie                      </simple>
+      <long>    Non-resonant background nu, neutron, CC 1pion   </long>
+      <rootex>  R_{bkg}^{#nu, n, CC 1#pi}                       </rootex>
+      <tex>     R_{bkg}^{\nu, n, CC 1\pi}                       </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allcc1pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvpNC2pi_Genie                    </simple>
+      <long>    Non-resonant background nu, proton, NC 2pions </long>
+      <rootex>  R_{bkg}^{#nu, p, NC 2#pi}                     </rootex>
+      <tex>     R_{bkg}^{\nu, p, NC 2\pi}                     </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc2pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvbarnNC2pi_Genie                     </simple>
+      <long>    Non-resonant background nubar, neutron, NC 2pions </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, n, NC 2#pi}                     </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, n, NC 2\pi}                     </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc2pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvpNC1pi_Genie                   </simple>
+      <long>    Non-resonant background nu, proton, NC 1pion </long>
+      <rootex>  R_{bkg}^{#nu, p, NC 1#pi}                    </rootex>
+      <tex>     R_{bkg}^{\nu, p, NC 1\pi}                    </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc1pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvbarnNC1pi_Genie                      </simple>
+      <long>    Non-resonant background nubar, neutron, NC 1pion   </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, n, NC 1#pi}                    </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, n, NC 1\pi}                    </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc1pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvbarpNC2pi_Genie                    </simple>
+      <long>    Non-resonant background nubar, proton, NC 2pions </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, p, NC 2#pi}                  </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, p, NC 2\pi}                  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc2pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvnNC2pi_Genie                     </simple>
+      <long>    Non-resonant background nu, neutron, NC 2pions </long>
+      <rootex>  R_{bkg}^{#nu, n, NC 2#pi}                      </rootex>
+      <tex>     R_{bkg}^{\nu, n, NC 2\pi}                      </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc2pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvbarpNC1pi_Genie                     </simple>
+      <long>    Non-resonant background nubar, proton, NC 1pion   </long>
+      <rootex>  R_{bkg}^{#bar{#nu}, p, NC 1#pi}                   </rootex>
+      <tex>     R_{bkg}^{\bar{\nu}, p, NC 1\pi}                   </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc1pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvnNC1pi_Genie                      </simple>
+      <long>    Non-resonant background nu, neutron, NC 1pion   </long>
+      <rootex>  R_{bkg}^{#nu, n, NC 1#pi}                       </rootex>
+      <tex>     R_{bkg}^{\nu, n, NC 1\pi}                       </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc1pi       </reac_type>
+      <flav_init>   all         </flav_init>
+      <flav_final>  all         </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
   <param>
     <name>
       <simple>  genie_NC_Genie </simple>
@@ -186,7 +629,6 @@
     <range>                  -8,8  </range>                 
 
   </param>
-  -->
   <!-- ==================================================================================== -->
   <param>
     <name>
