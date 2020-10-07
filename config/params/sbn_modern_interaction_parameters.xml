@@ -172,7 +172,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -209,7 +209,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -246,7 +246,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -283,7 +283,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -320,7 +320,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -357,7 +357,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -394,7 +394,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -431,7 +431,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -468,7 +468,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -505,7 +505,7 @@
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allbutcoh </reac_type>
+      <reac_type>   allwithfsi</reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
