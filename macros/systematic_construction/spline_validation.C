@@ -218,7 +218,7 @@ void spline_validation(const char* param,
   // Now loop over the size of the vectors and make the canvases and subpads then save each into a root file
   // Append parameter name to output filename and open
   std::string s_output_file(output_file);
-  std::string param_filename = s_param+"_"+s_sample+"_"+s_output_file; 
+  std::string param_filename = "root/"+s_param+"_"+s_sample+"_"+s_output_file; 
   TFile f_out(param_filename.c_str(),"RECREATE");
  
   // For the PDF
@@ -228,6 +228,7 @@ void spline_validation(const char* param,
   pdf_filename.Prepend(s_sample);
   pdf_filename.Prepend("_");
   pdf_filename.Prepend(s_param);
+  pdf_filename.Prepend("pdfs/");
 
   for(unsigned int h = 0; h < h_univs.size(); ++h){
 
