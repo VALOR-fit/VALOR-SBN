@@ -35,6 +35,10 @@
 #include <fstream>
 // ROOT
 #include <TFile.h>
+#include <TCanvas.h>
+#include <TLegend.h>
+#include <TH1.h>
+#include <TH2.h>
 #include <TTree.h>
 #include <TLeaf.h>
 #include <TSpline.h>
@@ -415,6 +419,12 @@ int main(int argc, char ** argv)
   // Get the name of the reaction modes for the nominal knot
   const std::map<ReacMode_t, VALORArray> mct_mode_nom = mct_knots_modes.at(inom);
 
+  unsigned int nbins_tot  = 0;
+  unsigned int nbins_l10  = 0;
+  unsigned int nbins_l100 = 0;
+  TH1D *hNEvents      = new TH1D("hNEvents","",500,0.,1000.);
+  TH1D *hNEvents0     = new TH1D("hNEvents0","",500,0.,1000.);
+  TH2D *hNEventsRatio = new TH2D("hNEventsRatio","",500,0.,1000.,10,0,2);
   for(const ReacMode_t &mode : reac_modes){
     // Iterator for the nominal knot map
     std::map<ReacMode_t, VALORArray>::const_iterator it_mct_mode_nom = mct_mode_nom.find(mode);
@@ -439,6 +449,7 @@ int main(int argc, char ** argv)
     // Loop over the reco and true bins
     for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
       for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
+        nbins_tot++;
         // Get the nominal event rate in this bin
         double nevents0 = mct_nom.GetEntry(ireco, itrue);
         unsigned int isaved = 0; // For when we skip parameters
@@ -478,10 +489,46 @@ int main(int argc, char ** argv)
           x.push_back(universe_variation); //NSigma from the universe found for the current knot
 
           // Get the event rate for this knot and mode in this bin
+          if(isnan(nevents0)){
+            LOG("valor_sbn",pINFO) << " Current nominal event rate is a NAN, setting to 0";
+            nevents0 = 0;
+          }
+
+          // Access the VALOR array for the nominal mct in this mode
+          // Get the event rate for this knot and mode in this bin
+          const VALORArray &mct_knot = it_mct_mode_knot->second;
           double nevents = mct_knot.GetEntry(ireco, itrue);
-          double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          if(isnan(nevents)){
+            LOG("valor_sbn",pINFO) << " Current event rate is a NAN, setting to 0";
+            nevents = 0;
+          }
+
+          // Cutoff under 36 for a maximum 17% stat uncertainty in every bin
+          // Splines will be flat otherwise
+          double event_ratio = (nevents0 > 36) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           if(iknot == inom)
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
+
+          /*
+           *
+           * Temporary: Determine best cutoff for minimum number of events to construct a spline
+           *
+           */
+          if(nevents < 10 && nevents > 0 && nevents0 > 0)
+            nbins_l10++;
+          if(nevents < 100 && nevents > 0 && nevents0 > 0)
+            nbins_l100++;
+          if(nevents0 > 0 && nevents > 0){
+            hNEvents->Fill(nevents);
+            hNEvents0->Fill(nevents0);
+            hNEventsRatio->Fill(nevents,event_ratio);
+          }
+
+          /*
+           * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           * Temporary: Determine best cutoff for minimum number of events to construct a spline
+           *
+           */
 
           // Set the y axis entry to be the current rate/nominal rate
           y.push_back(event_ratio);
@@ -500,8 +547,8 @@ int main(int argc, char ** argv)
           if(arg_save_modelist && iknot != inom){
             // Check if a variation for this mode has already been found
             if(!mode_used){
-              // Check if the event ratio is extremely close to 1
-              if(event_ratio > 1.0 || event_ratio < 1.0){
+              // Check if the event ratio is extremely close to 1 or 0
+              if((event_ratio > 1.0 || event_ratio < 1.0) && abs(event_ratio)>std::numeric_limits<double>::epsilon()){
                 LOG("valor_sbn",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " isn't 1: " << event_ratio  << " therefore saving the mode to the list";
                 applied_to_modes.push_back(util::AsString(mode));
                 mode_used = true;
@@ -515,7 +562,6 @@ int main(int argc, char ** argv)
         TString title = name; // Make this contain real kinematic ranges
         TSpline3 *spl = new TSpline3(title.Data(), x.data(), y.data(), x.size());
         spl->SetName(name.Data());
-    //    spl->Write();
         spline_array->Add(spl);
         n_splines_written++;
         if (n_splines_written%1000==0) {
@@ -526,6 +572,38 @@ int main(int argc, char ** argv)
     }//ireco
     spline_array->Write(objname.Data(),TObject::kSingleKey);
   }//imode
+
+  TCanvas *c = new TCanvas("c","",800,800);
+  TLegend *l = new TLegend(0.68,0.68,0.88,0.88);
+  l->SetBorderSize(0);
+  l->SetFillStyle(0);
+  l->SetTextFont(132);
+  l->AddEntry(hNEvents,  "Universe varied events", "L");
+  l->AddEntry(hNEvents0, "Nominal events", "L");
+  hNEvents->GetYaxis()->SetTitle("Number of bins");
+  hNEvents->GetXaxis()->SetTitle("Number of events");
+  hNEvents->GetYaxis()->SetTitleFont(132);
+  hNEvents->GetXaxis()->SetTitleFont(132);
+  hNEvents->GetYaxis()->SetLabelFont(132);
+  hNEvents->GetXaxis()->SetLabelFont(132);
+  hNEvents->SetLineColor(kAzure+7);
+  hNEvents0->SetLineColor(kPink+5);
+  hNEvents->Draw();
+  hNEvents0->Draw("same");
+  l->Draw();
+  c->SaveAs((syst+"_"+util::AsString(sample)+"_"+util::AsString(detector)+"_minimumSplineRate.root").c_str());
+  c->Clear();
+  l->Clear();
+
+  hNEventsRatio->GetXaxis()->SetTitle("Number of events");
+  hNEventsRatio->GetYaxis()->SetTitle("Number of universe events/number of nominal events");
+  hNEventsRatio->GetYaxis()->SetTitleFont(132);
+  hNEventsRatio->GetXaxis()->SetTitleFont(132);
+  hNEventsRatio->GetYaxis()->SetLabelFont(132);
+  hNEventsRatio->GetXaxis()->SetLabelFont(132);
+  hNEventsRatio->SetContour(250);
+  hNEventsRatio->Draw("colz");
+  c->SaveAs((syst+"_"+util::AsString(sample)+"_"+util::AsString(detector)+"_minimumSplineRate2D.root").c_str());
 
   fout.Close();
 
@@ -548,6 +626,9 @@ int main(int argc, char ** argv)
     }
   }
 
+  VLOG("valor_sbn", pNOTICE)  << "Number of bins in which there are less than 10 events (non-zero): " << nbins_l10;
+  VLOG("valor_sbn", pNOTICE)  << "Number of bins in which there are less than 100 events (non-zero): " << nbins_l100;
+  VLOG("valor_sbn", pNOTICE)  << "Out of a possible total: " << nbins_tot;
   VLOG("valor_sbn", pNOTICE)  << "Done! Wrote "<<n_splines_written<<" splines.";
 
   time_t endrawtime;
