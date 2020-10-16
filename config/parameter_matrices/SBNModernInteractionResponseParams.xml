@@ -15,11 +15,11 @@
   <parameter> genie_IntraNukePIpi_Genie   </parameter>
   <parameter> genie_ResDecayGamma_Genie   </parameter>
   <parameter> genie_ccresVector_Genie     </parameter>
+  <parameter> genie_ncresVector_Genie     </parameter>
   <parameter> genie_cohMA_Genie           </parameter>
   <parameter> genie_cohR0_Genie           </parameter>
   <parameter> genie_ncelAxial_Genie       </parameter>
   <parameter> genie_ncelEta_Genie         </parameter>
-  <parameter> genie_ncresVector_Genie     </parameter>
 </systematic_list>
 
 
