@@ -18,15 +18,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc2pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -55,15 +56,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc2pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -92,15 +94,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc1pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -129,15 +132,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc1pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -166,15 +170,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc2pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -203,15 +208,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc2pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -240,15 +246,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc1pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -277,15 +284,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allcc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allcc1pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -314,15 +322,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc2pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -351,15 +360,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc2pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -388,15 +398,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc1pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -425,15 +436,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc1pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -462,15 +474,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc2pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -499,15 +512,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc2pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc2pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -536,15 +550,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc1pi    </reac_type>
+      <flav_init>   nubarany    </flav_init>
+      <flav_final>  nubarany    </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -573,15 +588,16 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn      </detector>
       <beam>        fhc         </beam>
       <selection>   all         </selection>
-      <reac_type>   allnc1pi       </reac_type>
-      <flav_init>   all         </flav_init>
-      <flav_final>  all         </flav_final>
+      <reac_type>   allnc1pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
       <target>      all         </target>
     </apply_to>
     
@@ -610,6 +626,7 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
@@ -634,8 +651,8 @@
     <name>
       <simple>  genie_ncresAxial_Genie </simple>
       <long>    NC Resonant Axial      </long>
-      <rootex>  NC_{Res} Axial         </rootex>
-      <tex>     NC_{Res} Axial         </tex>
+      <rootex>  NC_{Res} #: M_{A}         </rootex>
+      <tex>     NC_{Res} \: M_{A}         </tex>
     </name>
     
     <apply_to_range>
@@ -647,6 +664,7 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
@@ -671,8 +689,8 @@
     <name>
       <simple>  genie_ccresAxial_Genie </simple>
       <long>    CC Resonant Axial      </long>
-      <rootex>  CC_{Res} Axial         </rootex>
-      <tex>     CC_{Res} Axial         </tex>
+      <rootex>  CC_{Res} #: M_{A}         </rootex>
+      <tex>     CC_{Res} \: M_{A}         </tex>
     </name>
     
     <apply_to_range>
@@ -684,6 +702,7 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
@@ -721,6 +740,7 @@
     
     <categories>
       <category> int </category>
+      <category> proposal </category>
     </categories>
     
     <apply_to>
