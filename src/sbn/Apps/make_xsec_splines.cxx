@@ -579,10 +579,10 @@ int main(int argc, char ** argv)
 
           // Cutoff under 36 for a maximum 50% stat uncertainty in every bin
           // Splines will be flat otherwise
-          double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
-          if(iknot == inom){
+          double event_ratio = (nevents0 > 4) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          if(iknot == inom)
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
-          }
+
           // Set the y axis entry to be the current rate/nominal rate
           y.push_back(event_ratio);
 
