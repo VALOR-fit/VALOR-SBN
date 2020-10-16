@@ -92,27 +92,36 @@ void rj_plot_pdf(
   
   conv::Detector_t last_det  = conv::kdUndefined;
   conv::BeamConf_t last_beam = conv::kbUndefined;
+  conv::Sample_t last_sample = conv::ksUndefined;
   
   // A buffer to write our event rates too
   std::ostringstream event_rates;
   
   // First loop over our selections to work out how many canvases we're drawing
   // We'll do a new canvas every time the detector changes, the beam current changes or we go above max_plots_per_canv
+  // We won't plot or count cosmics in numu selected samples for now
+  bool is_numu = false;
   for (unsigned int isubmodel = 0 ; isubmodel < model.GetNSubModels() ; isubmodel++) {
     FitModelABC * submodelabc = model.GetSubModel(isubmodel);
     GenericSingleSampleFitModel & submodel = *dynamic_cast<GenericSingleSampleFitModel*>(submodelabc);
     conv::Detector_t d = submodel.GetDetector();
     conv::BeamConf_t b = submodel.GetBeam();
+    conv::Sample_t s   = submodel.GetSample();
     if (d  == conv::kdUndefined) {continue;}
     if (b  == conv::kbUndefined) {continue;}
+    if(vutil::IsMuLike(s)){
+      cout << " Notice: Not plotting cosmics in the numu case for now as they don't currently exist in the sample " << std::endl;
+      is_numu = true;
+    }
     
-    // If we don't match the last detector/beam start a new TCanvas
-    if ((d!=last_det || b!= last_beam) && isubmodel) {
+    // If we don't match the last detector/beam/sample start a new TCanvas
+    if ((d!=last_det || b!= last_beam || s != last_sample) && isubmodel) {
       canvas_content.push_back(vector<int>());
     }
     
-    last_det  = d;
-    last_beam = b;
+    last_det    = d;
+    last_beam   = b;
+    last_sample = s;
     
     // If our canvas is full, start a new one
     if (canvas_content.back().size() == max_plots_per_canv) {
@@ -213,6 +222,7 @@ void rj_plot_pdf(
             }                  
             for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
               if(mc != coarse_modes.at(imodec)) continue;
+              if(vutil::AsString(coarse_modes.at(imodec)) == "cosmic" && is_numu) continue;
               
               // Do we renormalise the bin-width before adding it?
               if (per_range > 0) {
@@ -286,8 +296,8 @@ void rj_plot_pdf(
         float data_max = -99999.;
         // If we need data, get that histogram now
         if (plot_data) {
-          TString data_name = TString::Format("%s_%s_%s_%s_%s_%s",
-              data_tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.Data());
+          TString data_name = TString::Format("%s_%s_%s_%s",
+              data_tag,binning,"rf", model_name.c_str());
           TObject * tmp = fdata->Get(data_name.Data());
           std::cout<<"Data name: " << data_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
@@ -342,8 +352,8 @@ void rj_plot_pdf(
         TH1D * nc_hist  = nullptr;
         TH1D * nue_hist = nullptr;
       
-        float mode_max = 0.;
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
+          if(vutil::AsString(coarse_modes.at(imodec)) == "cosmic" && is_numu) continue;
           bool mode_filled = false;
           conv::ReacModeCoarse_t mc = coarse_modes.at(imodec);
           TString mode_str = vutil::AsString(mc);
@@ -394,18 +404,13 @@ void rj_plot_pdf(
           else if (nue_hist && mode_str.Contains("nue"))
             nue_hist->Add(relevant_hist);
 
-          mode_max += relevant_hist->GetMaximum();
         }//imodec
+        float mode_max = contrib_stack->GetMaximum();
        
         if(plot_data){
           contrib_legend->AddEntry(data_hist, "Oscillated", "P");
         }
-        float max_y = std::max(mode_max, std::max(data_max, total_max));
-        if(abs(max_y-mode_max) < std::numeric_limits<float>::epsilon())
-          max_y *= 2.6;
-        else
-          max_y *= 1.2;
-
+        float max_y = 1.2* std::max(mode_max, std::max(data_max, total_max));
 
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
         this_pad->SetLeftMargin  (0.11552  );
@@ -467,6 +472,7 @@ void rj_plot_pdf(
         std::ostringstream sample_event_rates;
         // Write the event rates to the output stream
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
+          if(vutil::AsString(coarse_modes.at(imodec)) == "cosmic" && is_numu) continue;
           conv::ReacModeCoarse_t mc = coarse_modes.at(imodec);
           if (mc == conv::kmcUndefined) {continue;}
           TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
