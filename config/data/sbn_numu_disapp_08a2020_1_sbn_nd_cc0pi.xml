@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="SBN-ND-MDC" version="08a2020" detector="ND">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mock data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+
+  <using_dst_format> 
+     true 
+  </using_dst_format> 
+
+  <dst> 
+    <bnb_fhc>
+      <filename> sbn_numu_disappearance/mock_data/08a2020/valor_sbncode_fhc_numucc0pi_disappearance_nd_minidst_1.root </filename> 
+       <objname> valor_sbn_minidst </objname> 
+      <objtype>  TTree    </objtype> 
+    </bnb_fhc>
+  </dst>
+  
+</data>
+
+</analysis_inputs>
+
+
