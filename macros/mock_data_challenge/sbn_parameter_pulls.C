@@ -346,9 +346,9 @@ void sbn_parameter_pulls(const char * filename,
     else
       miny = miny*1.1;
 
-    //Temporaray for zooming
-    miny = -1.5;
-    maxy = +2.5;
+    //Temporaray for saving
+    //miny = -4;
+    //maxy = +7;
 
     // Solid lines for detector and proposal_xsec separation
     TLine line_sbnd  (singleFlux,   miny-0.02, singleFlux,   maxy+0.1);
