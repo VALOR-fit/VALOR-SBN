@@ -4,18 +4,30 @@
 
   <element_list name="sbn_numu_disapp_2020a1_1">
     
-    <element name="sbn_ub_fhc_numuCCIncl">
+    <element name="sbn_ub_fhc_numuCC0pi">
       <detector>     sbn_uboone                                           </detector>
       <beam>         bnb_fhc                                              </beam>
-      <sample>       numuCCincl                                           </sample>
+      <sample>       numuCC0piNtrk                                        </sample>
       <observable>   Ereco                                                </observable>
-      <data>         data/sbn_numu_disapp_08a2020_2_sbn_ub.xml            </data>
-      <mc>           mc/sbn_numu_disapp_2020a1_03c1_1_sbn_ub.xml          </mc>
+      <data>         data/sbn_numu_disapp_08a2020_2_sbn_ub_cc0pi.xml       </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c1_1_sbn_ub_cc0pi.xml    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
     </element>
-    
+  
+    <element name="sbn_ub_fhc_numuCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCoth                                            </sample>
+      <observable>   Ereco                                                </observable>
+      <data>         data/sbn_numu_disapp_08a2020_2_sbn_ub_ccoth.xml      </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c1_1_sbn_ub_ccoth.xml    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+  
   </element_list>
     
   <parameter_definitions>
