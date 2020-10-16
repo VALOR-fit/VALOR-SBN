@@ -9,24 +9,17 @@
 // R.J.
 //
 
-void plot_envelope_ratios(
-  const char *valor_tweak_files,
-  const char *universe_tweak_files,
-  const char *file_name = "output_file_name"
-){
+void plot_envelope_ratios(const char *valor, const char *univ, const char *output, const std::string &name_tag, const std::string &sample){
 
- // TFile * f_val = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/envelope_test/nd_tweak_flux_horncurrent.root","read");
- // TFile * f_uni = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/envelope_test/tweaks_universes_horncurrent.root","read");
+  TFile * f_val = new TFile(valor,"read");
+  TFile * f_uni = new TFile(univ,"read");
   
- // std::string file_name = "horncurrent";
+  std::string location(output);
 
-  TFile *f_val = new TFile(valor_tweak_files,"read");
-  TFile *f_uni = new TFile(universe_tweak_files,"read");
-
-  //std::string file_name = file_name;
-  //std::string location = "/sbnd/app/users/tham/VALOR_master/error_envelopes_new_selection_14June/";
-  std::string location = "./";
-
+  std::string tag = "";
+  if(name_tag != "")
+    tag = name_tag+"_";
+  
   // 
   // Global style settings
   //
@@ -39,14 +32,14 @@ void plot_envelope_ratios(
   // All graphs
   //
 
-  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
-  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
-  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
-  std::cout << " Got universe histograms" << std::endl;
+  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get(("env_sb_BNB_FHC_"+sample+"_nom").c_str()));
+  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get(("env_sb_BNB_FHC_"+sample+"_p1").c_str()));
+  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get(("env_sb_BNB_FHC_"+sample+"_m1").c_str()));
+  std::cout << " Got universe histograms " << std::endl;
  
-  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
-  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
-  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
+  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get(("env_sb_BNB_FHC_"+sample+"_nom").c_str()));
+  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get(("env_sb_BNB_FHC_"+sample+"_p1").c_str()));
+  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get(("env_sb_BNB_FHC_"+sample+"_m1").c_str()));
   std::cout << " Got VALOR histograms" << std::endl;
  
   // All ratios
@@ -119,9 +112,6 @@ void plot_envelope_ratios(
   c->SetRightMargin(0.044);
   c->Draw();
 
-  TLatex *latex = new TLatex();
-  latex->SetTextSize(0.04);
-
   // Nominal ratio
   h_nom_ratio->SetStats(0);
   h_nom_ratio->GetYaxis()->SetTitleOffset(1.3);
@@ -137,9 +127,7 @@ void plot_envelope_ratios(
   h_nom_ratio->GetYaxis()->SetMaxDigits(3);
   h_nom_ratio-> Draw();
 
-  latex->DrawLatex(0.3, 1.8, file_name);
-  
-  c->SaveAs((location+"universe_valor_nominal_ratios_"+file_name+".root").c_str());
+  c->SaveAs((location+tag+"universe_valor_nominal_ratios.root").c_str());
   c->Clear();
 
   h_p1_ratio_val->SetStats(0);
@@ -170,9 +158,7 @@ void plot_envelope_ratios(
   l->AddEntry(h_m1_ratio_uni, "Universes -1#sigma/nominal", "L");
   l->Draw();
 
-  latex->DrawLatex(0.3, 1.4, file_name);
-
-  c->SaveAs((location+"universe_valor_single_ratios_"+file_name+".root").c_str());
+  c->SaveAs((location+tag+"universe_valor_single_ratios.root").c_str());
   c->Clear();
   l->Clear();
 
@@ -196,14 +182,12 @@ void plot_envelope_ratios(
   l->AddEntry(h_m1_ratio, "(VALOR/Universes)_{-1#sigma/nominal}", "L");
   l->Draw();
 
-  latex->DrawLatex(0.3, 1.13, file_name);
-
-  c->SaveAs((location+"universe_valor_double_ratios_"+file_name+".root").c_str());
+  c->SaveAs((location+tag+"universe_valor_double_ratios.root").c_str());
   c->Clear();
   l->Clear();
 
   // Get bin content in +1sigma variation
-  TFile f("new_scale.root","RECREATE");
+  TFile f((location+tag+"scale.root").c_str(),"RECREATE");
   TVectorD scales(h_p1_ratio->GetNbinsX()-3);
   for(int ibin = 0; ibin < h_p1_ratio->GetNbinsX()-3; ++ibin){
     scales[ibin] = 1/static_cast<double>(h_p1_ratio->GetBinContent(ibin+2));
