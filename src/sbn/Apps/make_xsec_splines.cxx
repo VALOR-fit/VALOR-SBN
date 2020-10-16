@@ -333,7 +333,7 @@ int main(int argc, char ** argv)
     LOG("valor_sbn",pDEBUG) << " Number of entries in the TObjArray: " << n_mcts;
 
     // If we are storing the spectra (for validation) do so here
-    // Only do this for integer values of sigma (+/- 3, 2, 1)
+    // Only do this for integer values of sigma (+/- 3, 2, 1 & 0=nominal)
     // This can be done by only accessing the even integers in the iknot iterator
     if(arg_store_spectra && iknot % 2 == 0){
       TString hist_tag = "spectra_var_";
@@ -496,39 +496,17 @@ int main(int argc, char ** argv)
 
           // Access the VALOR array for the nominal mct in this mode
           // Get the event rate for this knot and mode in this bin
-          const VALORArray &mct_knot = it_mct_mode_knot->second;
           double nevents = mct_knot.GetEntry(ireco, itrue);
           if(isnan(nevents)){
             LOG("valor_sbn",pINFO) << " Current event rate is a NAN, setting to 0";
             nevents = 0;
           }
 
-          // Cutoff under 36 for a maximum 17% stat uncertainty in every bin
+          // Cutoff under 36 for a maximum 50% stat uncertainty in every bin
           // Splines will be flat otherwise
-          double event_ratio = (nevents0 > 36) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          double event_ratio = (nevents0 > 4) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           if(iknot == inom)
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
-
-          /*
-           *
-           * Temporary: Determine best cutoff for minimum number of events to construct a spline
-           *
-           */
-          if(nevents < 10 && nevents > 0 && nevents0 > 0)
-            nbins_l10++;
-          if(nevents < 100 && nevents > 0 && nevents0 > 0)
-            nbins_l100++;
-          if(nevents0 > 0 && nevents > 0){
-            hNEvents->Fill(nevents);
-            hNEvents0->Fill(nevents0);
-            hNEventsRatio->Fill(nevents,event_ratio);
-          }
-
-          /*
-           * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-           * Temporary: Determine best cutoff for minimum number of events to construct a spline
-           *
-           */
 
           // Set the y axis entry to be the current rate/nominal rate
           y.push_back(event_ratio);
@@ -572,38 +550,6 @@ int main(int argc, char ** argv)
     }//ireco
     spline_array->Write(objname.Data(),TObject::kSingleKey);
   }//imode
-
-  TCanvas *c = new TCanvas("c","",800,800);
-  TLegend *l = new TLegend(0.68,0.68,0.88,0.88);
-  l->SetBorderSize(0);
-  l->SetFillStyle(0);
-  l->SetTextFont(132);
-  l->AddEntry(hNEvents,  "Universe varied events", "L");
-  l->AddEntry(hNEvents0, "Nominal events", "L");
-  hNEvents->GetYaxis()->SetTitle("Number of bins");
-  hNEvents->GetXaxis()->SetTitle("Number of events");
-  hNEvents->GetYaxis()->SetTitleFont(132);
-  hNEvents->GetXaxis()->SetTitleFont(132);
-  hNEvents->GetYaxis()->SetLabelFont(132);
-  hNEvents->GetXaxis()->SetLabelFont(132);
-  hNEvents->SetLineColor(kAzure+7);
-  hNEvents0->SetLineColor(kPink+5);
-  hNEvents->Draw();
-  hNEvents0->Draw("same");
-  l->Draw();
-  c->SaveAs((syst+"_"+util::AsString(sample)+"_"+util::AsString(detector)+"_minimumSplineRate.root").c_str());
-  c->Clear();
-  l->Clear();
-
-  hNEventsRatio->GetXaxis()->SetTitle("Number of events");
-  hNEventsRatio->GetYaxis()->SetTitle("Number of universe events/number of nominal events");
-  hNEventsRatio->GetYaxis()->SetTitleFont(132);
-  hNEventsRatio->GetXaxis()->SetTitleFont(132);
-  hNEventsRatio->GetYaxis()->SetLabelFont(132);
-  hNEventsRatio->GetXaxis()->SetLabelFont(132);
-  hNEventsRatio->SetContour(250);
-  hNEventsRatio->Draw("colz");
-  c->SaveAs((syst+"_"+util::AsString(sample)+"_"+util::AsString(detector)+"_minimumSplineRate2D.root").c_str());
 
   fout.Close();
 
