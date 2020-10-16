@@ -87,16 +87,19 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
   plot_prefit  = False
   plot_postfit = False
 
-  f_data = ROOT.TFile(data_file)
+  f_data = ROOT.TFile()
   if data_file:
+    f_data = ROOT.TFile(data_file)
     plot_data = True
 
-  f_prefit = ROOT.TFile(prefit_file)
+  f_prefit = ROOT.TFile()
   if prefit_file:
+    f_prefit = ROOT.TFile(prefit_file)
     plot_prefit = True
 
-  f_postfit = ROOT.TFile(postfit_file)
+  f_postfit = ROOT.TFile()
   if postfit_file:
+    f_postfit = ROOT.TFile(postfit_file)
     plot_postfit = True
 
   n_files = int(plot_data) + int(plot_prefit) + int(plot_postfit)
@@ -105,7 +108,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
   #  raise DUNEAnaError("Must pass at least 2 files to plot")
 
   for imodel in xrange(cm.GetNSubModels()):
+    all_labels   = []
+    all_legend   = []
     all_hists    = []
+    all_graphs   = []
     ratio_labels = []
     ratio_legend = []
     ratio_hists  = []
@@ -174,7 +180,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_plots.extend([postfit_nom, hplus_postfit, hminus_postfit])
 
     for h in hists:
-      all_hists.append(h)
       h.UseCurrentStyle()
 
       h.GetXaxis().SetTitleSize(title_size)
@@ -212,8 +217,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       env_graph_postfit = ROOT.TGraphAsymmErrors(hplus_postfit  .GetXaxis().GetNbins())
       env_graphs.append(env_graph_postfit)
 
-    envelope_high = []
-
     for (hn,hp,hm),g in zip(env_hists,env_graphs):
       for i in xrange(hp.GetXaxis().GetNbins()):
         low_edge  = hp.GetBinLowEdge(i+1)
@@ -227,7 +230,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
         g.SetPointEYhigh(i, y_high)
         g.SetPointEXlow (i,hp.GetBinWidth(i+1)*0.5)
         g.SetPointEXhigh(i,hp.GetBinWidth(i+1)*0.5)
-        envelope_high.append(g.GetErrorYhigh(i))
 
 #        print("Energy range {} - {}, fractional error {}".format(low_edge,high_edge,y_low/y_centre))
 
@@ -263,14 +265,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       max_y = max(wintegrals)*1.4
     else:
       max_y = max(wintegrals)*1.4
-
-    for r,rate in enumerate(wintegrals):
-      if r == 0:
-        print "Data integrated rate: ", rate
-      elif r == 1:
-        print "Prefit integrated rate: ", rate
-      elif r == 2:
-        print "Postfit integrated rate: ", rate
 
     envelope_fn = out_prefix+"_envelope."+img_format
     f_output = ROOT.TFile(envelope_fn,"RECREATE")
@@ -309,10 +303,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_prefit.SetMarkerColor(env_graph_prefit.GetMarkerColor())
       legend_prefit.SetMarkerSize (env_graph_prefit.GetMarkerSize())
 
-      ratio_hists.append(prefit_width)
-      ratio_graphs.append(env_graph_prefit)
-      ratio_labels.append(prefit_label)
-      ratio_legend.append(legend_prefit)
+      if ratio == '1' or ratio == '2':
+        print "Filling ratio list with prefit"
+        ratio_hists.append(prefit_width)
+        ratio_graphs.append(env_graph_prefit)
+        ratio_labels.append(prefit_label)
+        ratio_legend.append(legend_prefit)
+
+      all_hists.append(prefit_width)
+      all_graphs.append(env_graph_prefit)
+      all_labels.append(prefit_label)
+      all_legend.append(legend_prefit)
 
       legend.AddEntry(legend_prefit, prefit_label, "FL")
 
@@ -348,10 +349,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_postfit.SetMarkerColor(env_graph_postfit.GetMarkerColor())
       legend_postfit.SetMarkerSize (env_graph_postfit.GetMarkerSize())
 
-      ratio_hists.append(postfit_width)
-      ratio_graphs.append(env_graph_postfit)
-      ratio_labels.append(postfit_label)
-      ratio_legend.append(legend_postfit)
+      if ratio == '0' or ratio == '1':
+        print "Filling ratio list with postfit"
+        ratio_hists.append(postfit_width)
+        ratio_graphs.append(env_graph_postfit)
+        ratio_labels.append(postfit_label)
+        ratio_legend.append(legend_postfit)
+
+      all_hists.append(postfit_width)
+      all_graphs.append(env_graph_postfit)
+      all_labels.append(postfit_label)
+      all_legend.append(legend_postfit)
 
       legend.AddEntry(legend_postfit, postfit_label, "FL")
 
@@ -369,10 +377,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_data.SetLineColor(data_width.GetLineColor())
       legend_data.SetLineWidth(data_width.GetLineWidth())
 
-      ratio_hists.append(legend_data)
-      ratio_graphs.append(legend_data)
-      ratio_labels.append(data_label)
-      ratio_legend.append(legend_data)
+      if ratio == '0' or ratio == '2':
+        print "Filling ratio list with data"
+        ratio_hists.append(legend_data)
+        ratio_graphs.append(legend_data)
+        ratio_labels.append(data_label)
+        ratio_legend.append(legend_data)
+
+      all_hists.append(legend_data)
+      all_graphs.append(legend_data)
+      all_labels.append(data_label)
+      all_legend.append(legend_data)
 
       legend.AddEntry(legend_data, data_label, "L")
 
@@ -388,7 +403,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
     envelope_captions.append(cap.replace("_"," "))
 
-    if plot_data and plot_postfit and ratio:
+    # Make sure at least two plots are being overlaid for the ratio
+    plot_n   = plot_data+plot_postfit+plot_prefit
+    if plot_n > 1 and ratio >= 0 and ratio_hists:
+
       # Now if we want to plot the overlay and the ratio, repeat and split the pads
       r_legend = ROOT.TLegend(0.49,0.67,0.96,0.86);
       r_legend.SetFillStyle(0);
@@ -408,10 +426,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       pad1.cd();
 
       # Loop over all the histograms
-      for i, h in enumerate(ratio_hists):
-        label = ratio_labels[i]
-        graph = ratio_graphs[i]
-        legend = ratio_legend[i]
+      for i, h in enumerate(all_hists):
+        label = all_labels[i]
+        graph = all_graphs[i]
+        legend = all_legend[i]
         if i == 0:
           h.Draw()
           graph.Draw("same2")
@@ -439,32 +457,51 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       pad2.Draw();
       pad2.cd();
 
-      # Get the percentage rate difference between the postfit and the data
-      data_postfit_ratio = ROOT.TH1D(data_width)
-      data_postfit_ratio.Add(postfit_width,-1)
+      # Get the percentage rate difference between the plots
+      ratio_diff = ROOT.TH1D(ratio_hists[0])
+      ratio_diff.Add(ratio_hists[1],-1)
 
       # Get the magnitude of the uncertainty on each bin and scale the bin content by it
-      for b in range(data_postfit_ratio.GetNbinsX()):
-        yhigh = env_graph_postfit.GetErrorYhigh(b)
-        ylow  = env_graph_postfit.GetErrorYlow(b)
-        yavg  = (yhigh+ylow)/2.
-        data_postfit_ratio.SetBinContent(b,data_postfit_ratio.GetBinContent(b)/yavg)
+      yhigh = -1.
+      ylow  = -1.
+      if ratio == '2':
+        yhigh = env_graph_prefit.GetEYhigh()
+        ylow  = env_graph_prefit.GetEYlow()
+      else:
+        yhigh = env_graph_postfit.GetEYhigh()
+        ylow  = env_graph_postfit.GetEYlow()
 
-      data_postfit_ratio.SetLineColor(ROOT.kTeal-5)
-      data_postfit_ratio.SetLineStyle(1)
-      data_postfit_ratio.SetLineWidth(linewidth)
-      data_postfit_ratio.GetYaxis().SetTitle("#frac{(Postfit-Mock data)}{#sigma_{Postfit}}");
-      data_postfit_ratio.GetYaxis().SetTitleFont(132);
-      data_postfit_ratio.GetYaxis().SetLabelFont(132);
-      data_postfit_ratio.GetYaxis().SetTitleSize(0.075);
-      data_postfit_ratio.GetYaxis().SetTitleOffset(0.75);
-      data_postfit_ratio.GetYaxis().SetLabelSize(0.065);
-      data_postfit_ratio.GetXaxis().SetTitleFont(132);
-      data_postfit_ratio.GetXaxis().SetLabelFont(132);
-      data_postfit_ratio.GetXaxis().SetTitleSize(0.075);
-      data_postfit_ratio.GetXaxis().SetTitleOffset(1.1);
-      data_postfit_ratio.GetXaxis().SetLabelSize(0.065);
-      data_postfit_ratio.Draw("hist")
+
+      for b in range(ratio_diff.GetNbinsX()):
+        if yhigh[b] < 0 or ylow[b] < 0:
+          print "Error: Negative uncertainty defined: ", yhigh, ", ", ylow
+          util.Die(-1)
+        yavg  = (yhigh[b]+ylow[b])/2.
+        ratio_diff.SetBinContent(b,ratio_diff.GetBinContent(b)/yavg)
+
+
+      ratio_diff.Draw("hist")
+      ratio_diff.SetLineColor(ROOT.kTeal-5)
+      ratio_diff.SetLineStyle(1)
+      ratio_diff.SetLineWidth(linewidth)
+      if ratio == '0':
+        ratio_diff.GetYaxis().SetTitle("#frac{(Postfit-Mock data)}{#sigma_{Postfit}}");
+      elif ratio == '1':
+        ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Postfit)}{#sigma_{Postfit}}");
+      elif ratio == '2':
+        ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Mock data)}{#sigma_{Prefit}}");
+
+      ratio_diff.GetYaxis().SetTitleFont(132);
+      ratio_diff.GetYaxis().SetLabelFont(132);
+      ratio_diff.GetYaxis().SetTitleSize(0.075);
+      ratio_diff.GetYaxis().SetTitleOffset(0.75);
+      ratio_diff.GetYaxis().SetLabelSize(0.065);
+      ratio_diff.GetXaxis().SetTitleFont(132);
+      ratio_diff.GetXaxis().SetLabelFont(132);
+      ratio_diff.GetXaxis().SetTitleSize(0.075);
+      ratio_diff.GetXaxis().SetTitleOffset(1.1);
+      ratio_diff.GetXaxis().SetLabelSize(0.065);
+      ratio_diff.GetXaxis().SetLabelColor(1);
 
       r_canv.RedrawAxis()
       r_canv.Write("cr")
@@ -564,7 +601,7 @@ if __name__=="__main__":
   parser.add_option('-d','--datatag', dest='datatag',default='toymc',help='Prefix for input data histogram name')
   parser.add_option('-e','--experiment', dest='det',default='',help='Experiment enum: SBND = 1, uBooNE = 2, ICARUS = 3')
   parser.add_option('-m','--mdc', dest='mdc',default=False,help='Whether or not we are looking at the Mock Data Challenge')
-  parser.add_option('--ratio', dest='ratio',default=False,help='Whether to get a ratio of the mock data to the postfit spectra')
+  parser.add_option('--ratio', dest='ratio',default='-1',help='Whether to take the ratio and of which two hists: -1 = no ratio, 0 = Data/Postfit, 1 = PostFit/Prefit, 2 = Data/Prefit')
 
   options,other = parser.parse_args()
 
