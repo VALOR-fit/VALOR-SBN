@@ -9,12 +9,16 @@
 // R.J.
 //
 
-{
+void plot_envelope_ratios(const char *valor, const char *univ, const char *output, const std::string &name_tag, const std::string &sample){
 
-  TFile * f_val = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/splines/all/valor_tweak_pdf_inc_nd.root","read");
-  TFile * f_uni = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/splines/03c1/all/validation/sbnd/all/tweaks_all_numuCCincl.root","read");
+  TFile * f_val = new TFile(valor,"read");
+  TFile * f_uni = new TFile(univ,"read");
   
-  std::string location = "/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/splines/all/";
+  std::string location(output);
+
+  std::string tag = "";
+  if(name_tag != "")
+    tag = name_tag+"_";
   
   // 
   // Global style settings
@@ -28,14 +32,14 @@
   // All graphs
   //
 
-  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_nom"));
-  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_p1"));
-  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_m1"));
-  std::cout << " Got universe histograms" << std::endl;
+  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get(("env_sb_BNB_FHC_"+sample+"_nom").c_str()));
+  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get(("env_sb_BNB_FHC_"+sample+"_p1").c_str()));
+  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get(("env_sb_BNB_FHC_"+sample+"_m1").c_str()));
+  std::cout << " Got universe histograms " << std::endl;
  
-  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_nom"));
-  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_p1"));
-  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_m1"));
+  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get(("env_sb_BNB_FHC_"+sample+"_nom").c_str()));
+  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get(("env_sb_BNB_FHC_"+sample+"_p1").c_str()));
+  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get(("env_sb_BNB_FHC_"+sample+"_m1").c_str()));
   std::cout << " Got VALOR histograms" << std::endl;
  
   // All ratios
@@ -123,7 +127,7 @@
   h_nom_ratio->GetYaxis()->SetMaxDigits(3);
   h_nom_ratio-> Draw();
 
-  c->SaveAs((location+"universe_valor_nominal_ratios.root").c_str());
+  c->SaveAs((location+tag+"universe_valor_nominal_ratios.root").c_str());
   c->Clear();
 
   h_p1_ratio_val->SetStats(0);
@@ -154,7 +158,7 @@
   l->AddEntry(h_m1_ratio_uni, "Universes -1#sigma/nominal", "L");
   l->Draw();
 
-  c->SaveAs((location+"universe_valor_single_ratios.root").c_str());
+  c->SaveAs((location+tag+"universe_valor_single_ratios.root").c_str());
   c->Clear();
   l->Clear();
 
@@ -178,12 +182,12 @@
   l->AddEntry(h_m1_ratio, "(VALOR/Universes)_{-1#sigma/nominal}", "L");
   l->Draw();
 
-  c->SaveAs((location+"universe_valor_double_ratios.root").c_str());
+  c->SaveAs((location+tag+"universe_valor_double_ratios.root").c_str());
   c->Clear();
   l->Clear();
 
   // Get bin content in +1sigma variation
-  TFile f("new_scale.root","RECREATE");
+  TFile f((location+tag+"scale.root").c_str(),"RECREATE");
   TVectorD scales(h_p1_ratio->GetNbinsX()-3);
   for(int ibin = 0; ibin < h_p1_ratio->GetNbinsX()-3; ++ibin){
     scales[ibin] = 1/static_cast<double>(h_p1_ratio->GetBinContent(ibin+2));
