@@ -471,7 +471,7 @@ fi
 
 if [ "$CONFIGCUT" == "/pnfs" ]; then 
   echo "Copying config file"
-  timeout 20s ifdh cp -D $CONFIGFILE $_CONDOR_SCRATCH_DIR
+  ifdh cp -D $CONFIGFILE $_CONDOR_SCRATCH_DIR
   if [ $? -ne 0 ]; then
     echo "Error $? when copying the config file"
     exit 73
@@ -484,7 +484,7 @@ fi
 
 if [ "$PRIORCUT" == "/pnfs" ]; then 
   echo "Copying prior file"
-  timeout 20s ifdh cp -D $PRIORFILE $_CONDOR_SCRATCH_DIR
+  ifdh cp -D $PRIORFILE $_CONDOR_SCRATCH_DIR
   if [ $? -ne 0 ]; then
     echo "Error $? when copying the prior file"
     exit 73
@@ -619,7 +619,7 @@ do
 done 
 
 #Clean the directory before moving things. I think the scratch will be moved anyways.
-timeout 200s ifdh rm  local.tar
+ifdh rm  local.tar
 
 
 #Copy over scratch directory 
