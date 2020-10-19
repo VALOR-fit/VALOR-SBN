@@ -18,15 +18,14 @@ R = ROOT
 
 max_energy = 3.
 linewidth = 1
-title_offset = 1.1
+title_offset = 1.2
 left_margin   = 0.13
-bottom_margin = 0.13
-right_margin  = 0.02
-top_margin    = 0.06
-
+bottom_margin = 0.15
+right_margin  = 0.05
+top_margin    = 0.08
 use_log_plots = False
-title_size = 0.06
-label_size = 0.05
+title_size = 0.05
+label_size = 0.04
 font = 132 # Times Medium, scalable rotatable
 
 data_color    = ROOT.kPink+5
@@ -67,12 +66,12 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided,prepost, pm):
+def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio):
 
-  pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm)
+  pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio)
 
 
-def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_label, prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm):
+def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_label, prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc, ratio):
 
   envelope_images = []
   ratio_images = []
@@ -90,17 +89,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
   f_data = ROOT.TFile()
   if data_file:
-    f_data = ROOT.TFile(data_file,"READ")
+    f_data = ROOT.TFile(data_file)
     plot_data = True
 
   f_prefit = ROOT.TFile()
   if prefit_file:
-    f_prefit = ROOT.TFile(prefit_file,"READ")
+    f_prefit = ROOT.TFile(prefit_file)
     plot_prefit = True
 
   f_postfit = ROOT.TFile()
   if postfit_file:
-    f_postfit = ROOT.TFile(postfit_file,"READ")
+    f_postfit = ROOT.TFile(postfit_file)
     plot_postfit = True
 
   n_files = int(plot_data) + int(plot_prefit) + int(plot_postfit)
@@ -128,9 +127,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     #hname_p1  = hname_prefix + "_p1;" + det
     #hname_m1  = hname_prefix + "_m1;" + det
     # When running the tweaks for each detector individually:
-    hname_nom = hname_prefix + "_nom"
-    hname_p1  = hname_prefix + "_p1"
-    hname_m1  = hname_prefix + "_m1"
+    hname_nom = hname_prefix + "_nom;1"
+    hname_p1  = hname_prefix + "_p1;1"
+    hname_m1  = hname_prefix + "_m1;1"
     #hname_data = "toymc_data_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
     if det == '1':
       if mdc is False:
@@ -154,6 +153,8 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
       print("No detector given, defaulting to the ND")
 
+    print "Data histogram found: ", hname_data
+
     out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
 
     hists         = []
@@ -165,41 +166,20 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hists.append(data_nom)
 
     if plot_prefit:
-      f_prefit.cd()
       prefit_nom    = get_hist(f_prefit,hname_nom)
       hplus_prefit  = get_hist(f_prefit,hname_p1)
       hminus_prefit = get_hist(f_prefit,hname_m1)
-      if onesided and prepost == 'pre' or prepost == 'both':
-        print "One sided"
-        if pm == '1':
-          print "Plus 1"
-          hminus_prefit = get_hist(f_prefit,hname_nom)
-        if pm == '-1':
-          print "Minus 1"
-          hplus_prefit =  get_hist(f_prefit,hname_nom)
-
       hists.extend([prefit_nom, hplus_prefit, hminus_prefit])
       prefit_plots.extend([prefit_nom, hplus_prefit, hminus_prefit])
 
     if plot_postfit:
-      f_postfit.cd()
       postfit_nom    = get_hist(f_postfit,hname_nom)
       hplus_postfit  = get_hist(f_postfit,hname_p1)
       hminus_postfit = get_hist(f_postfit,hname_m1)
-      if onesided and prepost == 'post' or prepost == 'both':
-        print "One sided"
-        if pm == '1':
-          print "Plus 1"
-          hminus_postfit = get_hist(f_postfit,hname_nom)
-        if pm == '-1':
-          print "Minus 1"
-          hplus_postfit =  get_hist(f_postfit,hname_nom)
-
       hists.extend([postfit_nom, hplus_postfit, hminus_postfit])
       postfit_plots.extend([postfit_nom, hplus_postfit, hminus_postfit])
 
     for h in hists:
-      all_hists.append(h)
       h.UseCurrentStyle()
 
       h.GetXaxis().SetTitleSize(title_size)
@@ -213,12 +193,12 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       h.GetYaxis().SetTitleOffset(title_offset)
       h.GetYaxis().SetMaxDigits(3)
 
-    legend = ROOT.TLegend(0.52,0.68,0.97,0.88);
+    legend = ROOT.TLegend(0.46,0.66,0.91,0.86);
     legend.SetFillStyle(0);
     legend.SetBorderSize(0);
 
     canv_name = "c_%s" % util.SampleAsString(s)
-    canv = ROOT.TCanvas(canv_name,"",900,900)
+    canv = ROOT.TCanvas(canv_name,"",700,900)
     canv.SetLeftMargin  (left_margin)
     canv.SetBottomMargin(bottom_margin)
     canv.SetRightMargin (right_margin )
@@ -288,7 +268,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
     envelope_fn = out_prefix+"_envelope."+img_format
     f_output = ROOT.TFile(envelope_fn,"RECREATE")
-
     if not f_output.IsOpen():
       print "Unable to open root file named: ", envelope_fn
     else:
@@ -299,10 +278,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_prefit:
       hplus_prefit.GetYaxis().SetRangeUser(1, max_y)
       hplus_prefit.GetYaxis().SetTitleOffset(title_offset)
-      hplus_prefit.GetXaxis().SetTitleSize(0.06)
-      hplus_prefit.GetXaxis().SetLabelSize(0.05)
-      hplus_prefit.GetYaxis().SetTitleSize(0.06)
-      hplus_prefit.GetYaxis().SetLabelSize(0.05)
       hplus_prefit.SetLineColor(prefit_color)
       hplus_prefit.SetLineStyle(1)
       hplus_prefit.Draw("AXIS same")
@@ -311,7 +286,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       env_graph_prefit.SetFillColor(prefit_color)
       env_graph_prefit.SetLineWidth(0)
       env_graph_prefit.SetLineStyle(0)
-      env_graph_prefit.SetMarkerStyle(0)
+      env_graph_prefit.SetMarkerStyle(ROOT.kFullSquare)
       env_graph_prefit.SetMarkerColor(prefit_color)
       env_graph_prefit.Draw("same2")
 
@@ -319,7 +294,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       prefit_width.SetLineStyle(1)
       prefit_width.SetLineColor(prefit_line)
       prefit_width.Draw("same")
-      prefit_width.SetMarkerStyle(0)
 
       legend_prefit = ROOT.TH1D(prefit_width)
       legend_prefit.SetLineStyle(5)
@@ -329,7 +303,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_prefit.SetMarkerColor(env_graph_prefit.GetMarkerColor())
       legend_prefit.SetMarkerSize (env_graph_prefit.GetMarkerSize())
 
-      if ratio == '1' or ratio == '2' or ratio == '3':
+      if ratio == '1' or ratio == '2':
         print "Filling ratio list with prefit"
         ratio_hists.append(prefit_width)
         ratio_graphs.append(env_graph_prefit)
@@ -349,17 +323,13 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_postfit:
       hplus_postfit.GetYaxis().SetRangeUser(1, max_y)
       hplus_postfit.GetYaxis().SetTitleOffset(title_offset)
-      hplus_postfit.GetXaxis().SetTitleSize(0.06)
-      hplus_postfit.GetXaxis().SetLabelSize(0.05)
-      hplus_postfit.GetYaxis().SetTitleSize(0.06)
-      hplus_postfit.GetYaxis().SetLabelSize(0.05)
       hplus_postfit.Draw("AXIS same")
 
       env_graph_postfit.SetFillStyle(postfit_style)
       env_graph_postfit.SetFillColor(postfit_color)
       env_graph_postfit.SetLineWidth(0)
       env_graph_postfit.SetLineStyle(0)
-      env_graph_postfit.SetMarkerStyle(0)
+      env_graph_postfit.SetMarkerStyle(ROOT.kFullSquare)
       env_graph_postfit.SetMarkerColor(postfit_color)
       env_graph_postfit.Draw("same2")
 
@@ -367,7 +337,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_width.SetLineStyle(7)
       postfit_width.SetLineColor(postfit_line)
       postfit_width.Draw("same")
-      postfit_width.SetMarkerStyle(0)
 
       if plot_prefit:
         prefit_width.SetLineStyle(5)
@@ -408,7 +377,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_data.SetLineColor(data_width.GetLineColor())
       legend_data.SetLineWidth(data_width.GetLineWidth())
 
-      if ratio == '0' or ratio == '2' or ratio == '3':
+      if ratio == '0' or ratio == '2':
         print "Filling ratio list with data"
         ratio_hists.append(legend_data)
         ratio_graphs.append(legend_data)
@@ -439,20 +408,19 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_n > 1 and ratio >= 0 and ratio_hists:
 
       # Now if we want to plot the overlay and the ratio, repeat and split the pads
-      r_legend = ROOT.TLegend(0.49,0.62,0.96,0.86);
+      r_legend = ROOT.TLegend(0.49,0.67,0.96,0.86);
       r_legend.SetFillStyle(0);
       r_legend.SetBorderSize(0);
 
       r_canv_name = "cr_%s" % util.SampleAsString(s)
-      r_canv = ROOT.TCanvas(r_canv_name,"",600,900)
+      r_canv = ROOT.TCanvas(r_canv_name,"",700,900)
       if use_log_plots: r_canv.SetLogx()
 
       # Top pad: all histograms with envelopes
       # Setup the pad
       pad1 = ROOT.TPad("pad1","",0.0,0.35,1.0,1.0);
-      pad1.SetBottomMargin(0.035);
-      pad1.SetTopMargin(0.084);
-      pad1.SetLeftMargin(0.135);
+      pad1.SetBottomMargin(0.02);
+      pad1.SetTopMargin(0.05);
       pad1.SetRightMargin(0.02);
       pad1.Draw();
       pad1.cd();
@@ -465,19 +433,15 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
         if i == 0:
           h.Draw()
           graph.Draw("same2")
-          h.GetYaxis().SetRangeUser(0.,max_y)
-          h.GetYaxis().SetTitleSize(0.08)
-          h.GetYaxis().SetTitleOffset(0.8)
-          h.GetYaxis().SetLabelSize(0.06)
+          h.GetYaxis().SetRangeUser(0., max_y)
+          h.GetYaxis().SetTitleSize(0.045)
+          h.GetYaxis().SetTitleOffset(1.4)
+          h.GetYaxis().SetLabelSize(0.035)
           h.GetXaxis().SetLabelColor(0)
         else:
           h.Draw("same")
           graph.Draw("same2")
         r_legend.AddEntry(legend,label,"FL")
-
-      nEntries = r_legend.GetNRows()
-      currHeight = (r_legend.GetY2NDC() - r_legend.GetY1NDC())/2.
-      r_legend.SetY1NDC(r_legend.GetY2NDC()-(nEntries*currHeight))
       r_legend.SetTextFont(font)
       r_legend.Draw()
 
@@ -486,18 +450,16 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       # Bottom pad: data postfit ratio
       pad2 = ROOT.TPad("pad2","",0.0,0.0,1.0,0.35);
-      pad2.SetTopMargin(0.047);
-      pad2.SetBottomMargin(0.30);
+      pad2.SetTopMargin(0.02);
+      pad2.SetBottomMargin(0.22);
       pad2.SetRightMargin(0.02);
-      pad2.SetLeftMargin(0.135);
       pad2.SetGridy();
       pad2.Draw();
       pad2.cd();
 
       # Get the percentage rate difference between the plots
       ratio_diff = ROOT.TH1D(ratio_hists[0])
-      if ratio != '3':
-        ratio_diff.Add(ratio_hists[1],-1)
+      ratio_diff.Add(ratio_hists[1],-1)
 
       # Get the magnitude of the uncertainty on each bin and scale the bin content by it
       yhigh = -1.
@@ -505,20 +467,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       if ratio == '2':
         yhigh = env_graph_prefit.GetEYhigh()
         ylow  = env_graph_prefit.GetEYlow()
-      elif ratio == '0' or ratio == '1':
+      else:
         yhigh = env_graph_postfit.GetEYhigh()
         ylow  = env_graph_postfit.GetEYlow()
 
 
-      if ratio != '3':
-        for b in range(ratio_diff.GetNbinsX()):
-          if yhigh[b] < 0 or ylow[b] < 0:
-            print "Error: Negative uncertainty defined: ", yhigh, ", ", ylow
-            util.Die(-1)
-          yavg  = (yhigh[b]+ylow[b])/2.
-          ratio_diff.SetBinContent(b,ratio_diff.GetBinContent(b)/yavg)
-      else:
-        ratio_diff.Divide(ROOT.TH1D(ratio_hists[1]))
+      for b in range(ratio_diff.GetNbinsX()):
+        if yhigh[b] < 0 or ylow[b] < 0:
+          print "Error: Negative uncertainty defined: ", yhigh, ", ", ylow
+          util.Die(-1)
+        yavg  = (yhigh[b]+ylow[b])/2.
+        ratio_diff.SetBinContent(b,ratio_diff.GetBinContent(b)/yavg)
 
 
       ratio_diff.Draw("hist")
@@ -526,26 +485,23 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       ratio_diff.SetLineStyle(1)
       ratio_diff.SetLineWidth(linewidth)
       if ratio == '0':
-        ratio_diff.GetYaxis().SetTitle("#Delta N_{Po-MD}/#sigma_{Po}");
+        ratio_diff.GetYaxis().SetTitle("#frac{(Postfit-Mock data)}{#sigma_{Postfit}}");
       elif ratio == '1':
-        ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-Po}/#sigma_{Po}");
+        ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Postfit)}{#sigma_{Postfit}}");
       elif ratio == '2':
-        ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-MD}/#sigma_{Pr}");
-      elif ratio == '3':
-        ratio_diff.GetYaxis().SetTitle("Prefit/Mock data");
+        ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Mock data)}{#sigma_{Prefit}}");
 
       ratio_diff.GetYaxis().SetTitleFont(132);
       ratio_diff.GetYaxis().SetLabelFont(132);
-      ratio_diff.GetYaxis().SetTitleSize(0.15);
-      ratio_diff.GetYaxis().SetTitleOffset(0.4);
-      ratio_diff.GetYaxis().SetLabelSize(0.11);
+      ratio_diff.GetYaxis().SetTitleSize(0.075);
+      ratio_diff.GetYaxis().SetTitleOffset(0.75);
+      ratio_diff.GetYaxis().SetLabelSize(0.065);
       ratio_diff.GetXaxis().SetTitleFont(132);
       ratio_diff.GetXaxis().SetLabelFont(132);
-      ratio_diff.GetXaxis().SetTitleSize(0.15);
-      ratio_diff.GetXaxis().SetTitleOffset(0.9);
-      ratio_diff.GetXaxis().SetLabelSize(0.11);
+      ratio_diff.GetXaxis().SetTitleSize(0.075);
+      ratio_diff.GetXaxis().SetTitleOffset(1.1);
+      ratio_diff.GetXaxis().SetLabelSize(0.065);
       ratio_diff.GetXaxis().SetLabelColor(1);
-      #ratio_diff.GetYaxis().SetRangeUser(-2,4)
 
       r_canv.RedrawAxis()
       r_canv.Write("cr")
@@ -645,10 +601,7 @@ if __name__=="__main__":
   parser.add_option('-d','--datatag', dest='datatag',default='toymc',help='Prefix for input data histogram name')
   parser.add_option('-e','--experiment', dest='det',default='',help='Experiment enum: SBND = 1, uBooNE = 2, ICARUS = 3')
   parser.add_option('-m','--mdc', dest='mdc',default=False,help='Whether or not we are looking at the Mock Data Challenge')
-  parser.add_option('--ratio', dest='ratio',default='-1',help='Which ratio: -1 = no ratio, 0 = Data/Postfit, 1 = PostFit/Prefit, 2 = Data/Prefit')
-  parser.add_option('--onesided', dest='onesided',default=False,help='Whether to plot only 1-sided errors')
-  parser.add_option('--prepost', dest='prepost',default='pre',help='Which should be 1-sided, pre=prefit (-p), post=postfit (-b), both=both')
-  parser.add_option('--pm', dest='pm',default='1',help='Which side to plot')
+  parser.add_option('--ratio', dest='ratio',default='-1',help='Whether to take the ratio and of which two hists: -1 = no ratio, 0 = Data/Postfit, 1 = PostFit/Prefit, 2 = Data/Prefit')
 
   options,other = parser.parse_args()
 
@@ -659,5 +612,4 @@ if __name__=="__main__":
   main(options.config, options.data, options.prefit, options.postfit,
        options.data_label, options.prefit_label, options.postfit_label,
        options.tag, options.tex, options.imgformat, options.ratiomult,
-       options.datatag, options.det, options.mdc, options.ratio,
-       options.onesided, options.prepost, options.pm)
+       options.datatag, options.det, options.mdc, options.ratio)
