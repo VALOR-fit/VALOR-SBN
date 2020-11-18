@@ -56,8 +56,10 @@ icarus_mini_dst->SetBranchAddress("baseline", &baseline);
 icarus_mini_dst->SetBranchAddress("enu_true", &enu_true);
 
 // define Osc parameters
-double dmsq = 50;
-double sinsqthetamumu = 1E-2;
+double dmsq = 1E2;
+double sinsqthetamumu = 2E-3;
+//double dmsq = 50;
+//double sinsqthetamumu = 1E-2;
 double sinsqthetamue  = 1E-3;
 //double dmsq = 1; // good params numu
 //double dmsq = 0.5; // good params numu
@@ -78,25 +80,23 @@ double min_energy 			   = 0.3; // GeV
 
 int nbins = 500;
 
-// File to write to
-//TFile *MyFile = new TFile("baseline_test.root","NEW");
 
 // define histograms
-TH1F *h_nEvents_true_sbnd       		   = new TH1F("h_nEvents_true_sbnd","h_nEvents_true_sbnd",nbins, min_energy, max_energy);
+TH1F *h_nEvents_true_sbnd       		   = new TH1F("h_true_baseline_sbnd","h_true_baseline_sbnd",nbins, min_energy, max_energy);
 TH1F *h_nEvents_spline_sbnd       		 = new TH1F("h_nEvents_spline_sbnd","h_nEvents_spline_sbnd",nbins, min_energy, max_energy);
-TH1F *h_nEvents_average_sbnd     			 = new TH1F("h_nEvents_average_sbnd","h_nEvents_average_sbnd",nbins, min_energy, max_energy);
+TH1F *h_nEvents_average_sbnd     			 = new TH1F("h_average_baseline_sbnd","h_average_baseline_sbnd",nbins, min_energy, max_energy);
 TH1F *h_nEvents_average_test_sbnd      = new TH1F("h_nEvents_average_test_sbnd","h_nEvents_average_test_sbnd",nbins, min_energy, max_energy);
 TH1F *h_nEvents_spline_sbnd_proper     = new TH1F("h_nEvents_spline_sbnd_proper","h_nEvents_spline_sbnd_proper",nbins, min_energy, max_energy);
-TH1F *h_nEvents_dom_sbnd     			     = new TH1F("h_nEvents_dom_sbnd","h_nEvents_dom_sbnd",nbins, min_energy, max_energy);
+TH1F *h_nEvents_dom_sbnd     			     = new TH1F("h_VALOR_baseline_sbnd","h_VALOR_baseline_sbnd",nbins, min_energy, max_energy);
 
-TH1F *h_nEvents_true_ub           		 = new TH1F("h_true_osc_prob_ub","h_true_osc_prob_ub",nbins, min_energy,max_energy);
+TH1F *h_nEvents_true_ub           		 = new TH1F("h_true_baseline_ub","h_true_baseline_ub",nbins, min_energy,max_energy);
 TH1F *h_nEvents_spline_ub         		 = new TH1F("h_unosc_events_rate_ub","h_unosc_event_rate_ub",nbins, min_energy, max_energy);
-TH1F *h_nEvents_average_ub        		 = new TH1F("h_nEvents_average_ub","h_nEvents_average_ub",nbins, min_energy, max_energy);
+TH1F *h_nEvents_average_ub        		 = new TH1F("h_average_baseline_ub","h_average_baseline_ub",nbins, min_energy, max_energy);
 TH1F *h_nEvents_spline_ub_proper       = new TH1F("h_nEvents_spline_ub_proper","h_nEvents_spline_ub_proper",nbins, min_energy, max_energy);
 
-TH1F *h_nEvents_true_icarus       		 = new TH1F("h_true_osc_prob_icarus","h_true_osc_prob_sbnd_icarus",nbins, min_energy,max_energy);
+TH1F *h_nEvents_true_icarus       		 = new TH1F("h_true_baseline_icarus","h_true_baseline_icarus",nbins, min_energy,max_energy);
 TH1F *h_nEvents_spline_icarus     		 = new TH1F("h_unosc_events_rate_icarus","h_unosc_event_rate_icarus",nbins, min_energy,max_energy);
- TH1F *h_nEvents_average_icarus     		 = new TH1F("h_nEvents_average_icarus","h_nEvents_average_icarus",nbins, min_energy, max_energy);
+ TH1F *h_nEvents_average_icarus     		 = new TH1F("h_average_baseline_icarus","h_average_baseline_icarus",nbins, min_energy, max_energy);
 TH1F *h_nEvents_spline_icarus_proper   = new TH1F("h_nEvents_spline_icarus_proper","h_nEvents_spline_icarus_proper",nbins, min_energy, max_energy);
 
 
@@ -285,10 +285,10 @@ for(int i = 0; i < nEvents_sbnd; ++i){
 	// Find only numu
 	if(init_pdg == 14){
 		// Get true osc. prob
-		double lOverE = baseline/enu_reco;
+		double lOverE = baseline/enu_true;
 		// std::cout << lOverE << std::endl;
 		double osc_prob_true = util::Calculate2FSterileOscMuE(i_pdg, f_pdg, lOverE, sinsqthetamue, sinsqthetamumu, dmsq);
-		pair_true_sbnd.push_back(std::make_pair(enu_reco, osc_prob_true));
+		pair_true_sbnd.push_back(std::make_pair(enu_true, osc_prob_true));
 
 
 
@@ -300,20 +300,20 @@ for(int i = 0; i < nEvents_sbnd; ++i){
   		double event_rate_at_baseline = spl_sbnd->Eval(baseline_spline);
 			//std::cout << baseline_spline << "			" << event_rate_at_baseline << std::endl;
 			event_rate_sum+=event_rate_at_baseline;
-			double lOverE_spline = baseline_spline / enu_reco;
+			double lOverE_spline = baseline_spline / enu_true;
 			//std::cout << lOverE_spline << std::endl;
 			p_numu_numu += event_rate_at_baseline * util::Calculate2FSterileOscMuE(i_pdg, f_pdg, lOverE_spline, sinsqthetamue, sinsqthetamumu, dmsq);
 			
 		}
 		//std::cout << "hack spline = " << event_rate_sum << std::endl;;
 		double osc_prob_spline = p_numu_numu/event_rate_sum;
-		pair_spline_sbnd.push_back(std::make_pair(enu_reco, osc_prob_spline));
+		pair_spline_sbnd.push_back(std::make_pair(enu_true, osc_prob_spline));
 		//std::cout << osc_prob_spline << std::endl;		
 
 		// using average baseline
 		double baseline_average = 0.08821; 
-		double osc_prob_average = util::Calculate2FSterileOscMuE(i_pdg, f_pdg, baseline_average/enu_reco, sinsqthetamue, sinsqthetamumu, dmsq);
-		pair_average_sbnd.push_back(std::make_pair(enu_reco, osc_prob_average));
+		double osc_prob_average = util::Calculate2FSterileOscMuE(i_pdg, f_pdg, baseline_average/enu_true, sinsqthetamue, sinsqthetamumu, dmsq);
+		pair_average_sbnd.push_back(std::make_pair(enu_true, osc_prob_average));
 		//std::cout << osc_prob_average << std::endl;
 
 		// using proper splines
@@ -322,21 +322,20 @@ for(int i = 0; i < nEvents_sbnd; ++i){
 			baseline_spline_proper = sbnd_min_baseline_proper + (ibl*baseline_interval_sbnd_proper);
  		
 			//std::cout << event_rate_at_baseline_proper << std::endl;
-			double lOverE_spline_proper = baseline_spline_proper/enu_reco;
+			double lOverE_spline_proper = baseline_spline_proper/enu_true;
 		  //	std::cout << lOverE_spline_proper << std::endl;
 			p_numu_numu_proper += event_rate_at_baseline_proper_vec_sbnd.at(ibl) * util::Calculate2FSterileOscMuE(i_pdg, f_pdg, lOverE_spline_proper, sinsqthetamue, sinsqthetamumu, dmsq);
 		}
 		//std::cout << "test = " << event_rate_sum_proper_sbnd << std::endl;
 		double osc_prob_spline_proper = p_numu_numu_proper/event_rate_sum_proper_sbnd;
-		pair_spline_sbnd_proper.push_back(std::make_pair(enu_reco, osc_prob_spline_proper));
+		pair_spline_sbnd_proper.push_back(std::make_pair(enu_true, osc_prob_spline_proper));
 		//std::cout << osc_prob_spline_proper << std::endl;	
 
-		
 		// Dom's method
-		double lOverE_dom = baseline/enu_reco;
+		double lOverE_dom = baseline/enu_true;
 	  double sinsqdm = util::Calculate2FSterileSinSqDM(lOverE_dom,dmsq);
 		//double p_numu_numu_dom = util::Calculate2FSterileOscMuE(i_pdg, f_pdg, sinsqthetamue, sinsqthetamumu, sinsqdm);
-		pair_sbnd_dom.push_back(std::make_pair(enu_reco, sinsqdm));
+		pair_sbnd_dom.push_back(std::make_pair(enu_true, sinsqdm));
 		//pair_sbnd_dom.push_back(std::make_pair(enu_true, p_numu_numu_dom));
 		//std::cout << "p_numu_numu_dom = " << p_numu_numu_dom << std::endl;
 		//variable_file << p_numu_numu_dom << "\n";
@@ -505,19 +504,19 @@ for(double i = min_energy; i < max_energy; (i+=bin_inc)){
 	
 	// loop over vector
 	for (auto iter = pair_sbnd_dom.begin(); iter != pair_sbnd_dom.end(); ++iter){
-	//std::cout << iter->first << "     " << iter->second <<  std::endl;
+        //	std::cout << iter->first << "     " << iter->second <<  std::endl;
 		
-		double p_numu_numu_dom = util::Calculate2FSterileOscMuE(i_pdg, f_pdg, sinsqthetamue, sinsqthetamumu, iter->second);
+                double p_numu_numu_dom = util::Calculate2FSterileOscMuE(i_pdg, f_pdg, sinsqthetamue, sinsqthetamumu, iter->second);
 		if(iter->first < (i+bin_inc) && iter->first >= i){
-			//std::cout << "i = " << i << "			"  << iter->first << "				" << iter->second << std::endl;
-			sum_sbnd_dom += p_numu_numu_dom; //iter->second;
+                        //std::cout << "i = " << i << "			"  << iter->first << "				" << iter->second << std::endl;
+		        sum_sbnd_dom += p_numu_numu_dom; //iter->second;
 			++N_sbnd_dom;
 		}
 	}
 	//std::cout << "average = " << sum/N1 << std::endl;
 	p_average_sbnd_dom.push_back(sum_sbnd_dom/N_sbnd_dom);
 	N_sbnd_dom = 0;
-	sum_sbnd_dom = 0;
+        sum_sbnd_dom = 0;
 
 }
 
@@ -937,12 +936,12 @@ h_nEvents_average_sbnd->Draw();
 h_nEvents_average_sbnd->SetTitle("SBND");
 
 h_nEvents_average_sbnd->SetLineColor(kRed);
-h_nEvents_average_sbnd->GetXaxis()->SetTitle("E_reco [GeV]");
+h_nEvents_average_sbnd->GetXaxis()->SetTitle("E [GeV]");
 h_nEvents_average_sbnd->GetYaxis()->SetTitle("Osc. prob");
 h_nEvents_average_sbnd->GetYaxis()->SetTitleOffset(1.15);
-h_nEvents_average_sbnd->GetYaxis()->SetRangeUser(0.99,1.0);
+h_nEvents_average_sbnd->GetYaxis()->SetRangeUser(0.998,1.0);
 
-h_nEvents_spline_sbnd->Draw("same"); 
+//h_nEvents_spline_sbnd->Draw("same"); 
 h_nEvents_spline_sbnd->SetLineColor(kBlue); 
 
 //h_nEvents_average_test_sbnd->Draw("same"); 
@@ -950,7 +949,7 @@ h_nEvents_spline_sbnd->SetLineColor(kBlue);
 
 h_nEvents_true_sbnd->Draw("same");
 
-h_nEvents_spline_sbnd_proper->Draw("same");
+//h_nEvents_spline_sbnd_proper->Draw("same");
 h_nEvents_spline_sbnd_proper->SetLineColor(kGreen);
 
 h_nEvents_dom_sbnd->Draw("same");
@@ -965,10 +964,12 @@ leg_sbnd->SetHeader("SBND", "C");
 leg_sbnd->SetTextSize(0.1);
 leg_sbnd->SetFillStyle(0);
 leg_sbnd->SetLineWidth(0);
+leg_sbnd->AddEntry((TObject*)0, "(2E-3,1E2)", "");
+leg_sbnd->AddEntry((TObject*)0, "", "");
 leg_sbnd->AddEntry(h_nEvents_true_sbnd,"true","l");
-leg_sbnd->AddEntry(h_nEvents_spline_sbnd,"spline_toy","l");
+//leg_sbnd->AddEntry(h_nEvents_spline_sbnd,"spline_toy","l");
 leg_sbnd->AddEntry(h_nEvents_average_sbnd,"average","l");
-leg_sbnd->AddEntry(h_nEvents_spline_sbnd_proper,"spline_proper","l");
+//leg_sbnd->AddEntry(h_nEvents_spline_sbnd_proper,"spline_proper","l");
 leg_sbnd->AddEntry(h_nEvents_dom_sbnd,"used in VALOR","l");
 leg_sbnd->Draw("same");
 
@@ -989,14 +990,14 @@ h_nEvents_average_ub->SetLineColor(kRed);
 h_nEvents_average_ub->GetXaxis()->SetTitle("E [GeV]");
 h_nEvents_average_ub->GetYaxis()->SetTitle("Osc. prob");
 h_nEvents_average_ub->GetYaxis()->SetTitleOffset(1.15);
-h_nEvents_average_ub->GetYaxis()->SetRangeUser(0.99,1.0);
+h_nEvents_average_ub->GetYaxis()->SetRangeUser(0.998,1.0);
 
 h_nEvents_true_ub->Draw("same");
 
-h_nEvents_spline_ub->Draw("same");
+//h_nEvents_spline_ub->Draw("same");
 h_nEvents_spline_ub->SetLineColor(kBlue);
 
-h_nEvents_spline_ub_proper->Draw("same");
+//h_nEvents_spline_ub_proper->Draw("same");
 h_nEvents_spline_ub_proper->SetLineColor(kGreen);
 
 pad4->cd();
@@ -1006,10 +1007,12 @@ leg_ub->SetHeader("uboone", "C");
 leg_ub->SetTextSize(0.1);
 leg_ub->SetFillStyle(0);
 leg_ub->SetLineWidth(0);
+leg_ub->AddEntry((TObject*)0, "(2E-3,1E2)", "");
+leg_ub->AddEntry((TObject*)0, "", "");
 leg_ub->AddEntry(h_nEvents_true_ub,"true","l");
-leg_ub->AddEntry(h_nEvents_spline_ub,"spline_toy","l");
+//leg_ub->AddEntry(h_nEvents_spline_ub,"spline_toy","l");
 leg_ub->AddEntry(h_nEvents_average_ub,"average","l");
-leg_ub->AddEntry(h_nEvents_spline_ub_proper,"spline_proper","l");
+//leg_ub->AddEntry(h_nEvents_spline_ub_proper,"spline_proper","l");
 leg_ub->Draw("same");
 
 
@@ -1029,14 +1032,14 @@ h_nEvents_average_icarus->SetLineColor(kRed);
 h_nEvents_average_icarus->GetXaxis()->SetTitle("E [GeV]");
 h_nEvents_average_icarus->GetYaxis()->SetTitle("Osc. prob");
 h_nEvents_average_icarus->GetYaxis()->SetTitleOffset(1.15);
-h_nEvents_average_icarus->GetYaxis()->SetRangeUser(0.99,1.0);
+h_nEvents_average_icarus->GetYaxis()->SetRangeUser(0.998,1.0);
 
 h_nEvents_true_icarus->Draw("same");
 
-h_nEvents_spline_icarus->Draw("same");
+//h_nEvents_spline_icarus->Draw("same");
 h_nEvents_spline_icarus->SetLineColor(kBlue);
 
-h_nEvents_spline_icarus_proper->Draw("same");
+//h_nEvents_spline_icarus_proper->Draw("same");
 h_nEvents_spline_icarus_proper->SetLineColor(kGreen);
 
 pad6->cd();
@@ -1046,23 +1049,33 @@ leg_icarus->SetHeader("ICARUS", "C");
 leg_icarus->SetTextSize(0.1);
 leg_icarus->SetFillStyle(0);
 leg_icarus->SetLineWidth(0);
+leg_icarus->AddEntry((TObject*)0, "(2E-3,1E2)", "");
+leg_icarus->AddEntry((TObject*)0, "", "");
 leg_icarus->AddEntry(h_nEvents_true_icarus,"true","l");
-leg_icarus->AddEntry(h_nEvents_spline_icarus,"spline_toy","l");
+//leg_icarus->AddEntry(h_nEvents_spline_icarus,"spline_toy","l");
 leg_icarus->AddEntry(h_nEvents_average_icarus,"average","l");
-leg_icarus->AddEntry(h_nEvents_spline_icarus_proper,"spline_proper","l");
+//leg_icarus->AddEntry(h_nEvents_spline_icarus_proper,"spline_proper","l");
 leg_icarus->Draw("same");
 
 
 
 
-/*
+
+
+// File to write to
+TFile *MyFile = new TFile("osc_prob_2e-3_1E2_VALOR_baseline.root","RECREATE");
+
 // write histograms to file
 h_nEvents_true_sbnd->Write();
+h_nEvents_average_sbnd->Write();
+h_nEvents_dom_sbnd->Write();
 h_nEvents_true_ub->Write();
+h_nEvents_average_ub->Write();
 h_nEvents_true_icarus->Write();
+h_nEvents_average_icarus->Write();
 
 MyFile->Close();
-*/
+
 
 
 

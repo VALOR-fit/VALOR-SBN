@@ -17,23 +17,37 @@
 #include "TAxis.h"
 #include "TColor.h"
  
-void plot(){
+void draw_log(){
 //TFile *f_valor = new TFile("output_contours_as_graphs_A.root","read");
 //TFile *f_valor_B = new TFile("output_contours_as_graphs_B.root","read");
 //TFile *f_valor_C = new TFile("output_contours_as_graphs_C.root","read");
 //TFile *f_valor_D = new TFile("output_contours_as_graphs_D.root","read");
 //TFile *f_valor_old = new TFile("rhiannon_stat-only_contours_as_graphs.root","read");
 //TFile *f_valor_60x60 = new TFile("output_contours_as_graphs_60x60.root","read");
-TFile *f_valor_nodet            = new TFile("detector_stuff/output_contours_as_graphs_nodet_simplex.root", "read");
-TFile *f_valor_det              = new TFile("detector_stuff/output_contours_as_graphs_det_simplex.root", "read");
-TFile *f_valor_det_2_1          = new TFile("detector_stuff/output_contours_as_graphs_det_21_simplex.root", "read");
-TFile *f_valor_det_2_05         = new TFile("detector_stuff/output_contours_as_graphs_det_205_simplex.root", "read");
+TFile *f_valor_nodet            = new TFile("/sbnd/app/users/tham/VALOR_master/detector_stuff/output_contours_as_graphs_nodet_simplex.root", "read");
+TFile *f_valor_det              = new TFile("/sbnd/app/users/tham/VALOR_master/detector_stuff/output_contours_as_graphs_det_simplex.root", "read");
+TFile *f_valor_det_2_1          = new TFile("/sbnd/app/users/tham/VALOR_master/detector_stuff/output_contours_as_graphs_det_21_simplex.root", "read");
+TFile *f_valor_det_2_05         = new TFile("/sbnd/app/users/tham/VALOR_master/detector_stuff/output_contours_as_graphs_det_205_simplex.root", "read");
 
 TFile *f_sbnfit                 = new TFile("/sbnd/data/users/tham/fitter_data/SBNfit_numu_modern_25var.root","read");
 TFile *f_cafana                 = new TFile("/sbnd/data/users/tham/fitter_data/CAFAna_numu_modern.root","read");
 
 TFile *f_sbn_proposal           = new TFile("$VALOR_FMWk/data/contours/sterile_nu/sterile_3p1_limits.root");
 
+// nue files
+TFile *f_sbnfit_nue             = new TFile("/sbnd/data/users/tham/fitter_data/nue_modern/SBNfit.root","read");
+TFile *f_cafana_nue             = new TFile("/sbnd/data/users/tham/fitter_data/nue_modern/CAFAna_nue_modern.root","read");
+//TFile *f_cafana_nue2             = new TFile("/sbnd/data/users/tham/fitter_data/nue_modern/CAFAna_nue_exclusion.root","read");
+
+//TFile*f_valor_nue               = new TFile("/sbnd/app/users/tham/VALOR_master/nueTEST/sensitivities/nue_modern_1E-5_fix_vb2.root","read");
+TFile*f_valor_nue               = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/nue_files/test_11sept/output_contours_as_graphs_fix.root","read");
+TFile*f_valor_nue2               = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/nue_files/test_9sept/output_contour_oldbug.root","read");
+
+TFile*f_valor_nue2020            = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/output_contours_as_graphs_2020.root","read");
+TFile*f_valor_nue2020_geniev2    = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/geniev2/output_contours_as_graphs.root","read");
+                                              
+
+// get numu contours
 TGraph *VALOR_SBN_90pctC_det                 = (TGraph*) f_valor_det->Get("contour_90pct_lin_0;1");
 TGraph *VALOR_SBN_3SC_det                    = (TGraph*) f_valor_det->Get("contour_3sigma_lin_0;1");
 TGraph *VALOR_SBN_5SC_det                    = (TGraph*) f_valor_det->Get("contour_5sigma_lin_0;1");
@@ -66,10 +80,20 @@ TGraph *SBNfit_SBN_90pctC                    = (TGraph*) f_sbnfit->Get("STATONLY
 TGraph *CAFAna_SBN_90pctC                    = (TGraph*) f_cafana->Get("numu_exclusion_all_stat_90pct");
 TGraph *CAFAna_SBN_90pctC_syst               = (TGraph*) f_cafana->Get("numu_exclusion_all_syst_90pct");
 
+// get nue contours
+TGraph *SBNfit_nue_90pctC                    = (TGraph*) f_sbnfit_nue->Get("Nue_stats_90CL");
+TGraph *CAFAna_nue_90pctC                    = (TGraph*) f_cafana_nue->Get("nue_exclusion_all_stat_5sig");
+//TGraph *CAFAna_nue_90pctC2                    = (TGraph*) f_cafana_nue2->Get("all_stat_90pct");
+
+TGraph *VALOR_nue_90pctC                     = (TGraph*) f_valor_nue->Get("contour_5sigma_lin_0");
+TGraph *VALOR_nue_90pctC2                     = (TGraph*) f_valor_nue2->Get("contour_5sigma_lin_0");
+
+TGraph *VALOR_nue_5s_2020                     = (TGraph*) f_valor_nue2020->Get("contour_5sigma_lin_0");
+TGraph *VALOR_nue_5s_2020_geniev2                     = (TGraph*) f_valor_nue2020_geniev2->Get("contour_5sigma_lin_0");
 
 // Choose contour aesthetics 
 
-lim_numudis_3p1_sbnproposal_90pctCL     -> SetLineWidth(2);
+//lim_numudis_3p1_sbnproposal_90pctCL     -> SetLineWidth(2);
 
 VALOR_SBN_90pctC_nodet                  -> SetLineColor(kPink+5);
 VALOR_SBN_90pctC_nodet                  -> SetLineStyle(1);
@@ -112,8 +136,6 @@ VALOR_SBN_5SC_det_2_05                  -> SetLineStyle(10);
 VALOR_SBN_5SC_det_2_05                  -> SetLineWidth(2);
 
 
-
-
 TCanvas *c1 = new TCanvas("c1","",20,20,700,900);
 TPad *pad = new TPad("pad","",0,0,1,1);
 
@@ -139,7 +161,7 @@ hr->GetYaxis()->SetLabelSize(0.03);
 pad->GetFrame()->SetBorderSize(12);
 
 
-lim_numudis_3p1_sbnproposal_90pctCL->Draw();
+//lim_numudis_3p1_sbnproposal_90pctCL->Draw();
 
 
 //SBNfit_SBN_90pctC->Draw();
@@ -246,8 +268,8 @@ cnumudetcompare->SetLogx();
 cnumudetcompare->SetLogy();
 
 
-lim_numudis_3p1_sbnproposal_90pctCL->GetYaxis()->SetRangeUser(1E-2,1E2);
-lim_numudis_3p1_sbnproposal_90pctCL->Draw("l");
+//lim_numudis_3p1_sbnproposal_90pctCL->GetYaxis()->SetRangeUser(1E-2,1E2);
+//lim_numudis_3p1_sbnproposal_90pctCL->Draw("l");
 VALOR_SBN_90pctC_nodet->Draw("l");
 VALOR_SBN_90pctC_det->Draw("l");
 VALOR_SBN_90pctC_det_2_1->Draw("l");
@@ -264,5 +286,69 @@ lgnumudetcompare->AddEntry(VALOR_SBN_90pctC_det_2_1, "VALOR 90\% CL - Detector (
 lgnumudetcompare->AddEntry(VALOR_SBN_90pctC_det_2_05, "VALOR 90\% CL - Detector (2\%cor,0.5\%uncor)", "L");
 lgnumudetcompare->Draw();
 
+
+
+
+
+
+// nue stat only
+TCanvas * nue_stat = new TCanvas("nue_stat","",20,20,700,900);
+nue_stat->Draw();
+
+TH2F * hnue_stat = (TH2F*) nue_stat->DrawFrame(8E-5,1E-2,1,1E+2);
+hnue_stat->Draw();
+nue_stat->SetLogx();
+nue_stat->SetLogy();
+hnue_stat->GetXaxis()->SetTitle("sin^{2}2#theta_{#mue}");
+hnue_stat->GetXaxis()->SetTitleSize(0.03);
+hnue_stat->GetXaxis()->SetLabelSize(0.03);
+hnue_stat->GetYaxis()->SetTitle("#Delta m^{2}_{41} (eV^{2})");
+hnue_stat->GetYaxis()->SetTitleSize(0.03);
+hnue_stat->GetYaxis()->SetLabelSize(0.03);
+
+
+
+CAFAna_nue_90pctC->SetLineColor(kOrange);
+CAFAna_nue_90pctC->SetLineStyle(9);
+//CAFAna_nue_90pctC->Draw("l");
+
+//CAFAna_nue_90pctC2->SetLineColor(kRed);
+//CAFAna_nue_90pctC2->SetLineStyle(9);
+//CAFAna_nue_90pctC2->Draw("l");
+
+
+
+//SBNfit_nue_90pctC->SetLineColor(kCyan);
+//SBNfit_nue_90pctC->SetLineStyle(9);
+//SBNfit_nue_90pctC->Draw("l");
+
+VALOR_nue_90pctC->SetLineStyle(9);
+//VALOR_nue_90pctC->Draw("l");
+
+VALOR_nue_5s_2020->SetLineColor(kGreen);
+VALOR_nue_5s_2020->SetLineStyle(9);
+VALOR_nue_5s_2020->Draw("l");
+
+VALOR_nue_5s_2020_geniev2->SetLineColor(kBlue);
+VALOR_nue_5s_2020_geniev2->SetLineStyle(9);
+VALOR_nue_5s_2020_geniev2->Draw("l");
+
+
+
+//VALOR_nue_90pctC2->SetLineColor(kCyan);
+//VALOR_nue_90pctC2->SetLineStyle(9);
+//VALOR_nue_90pctC2->Draw("l");
+
+TLegend * lnue_stat = new TLegend(0.15,0.2,0.67,0.3);
+lnue_stat->SetFillStyle(0);
+lnue_stat->SetBorderSize(0);
+lnue_stat->SetTextFont(132);
+lnue_stat->AddEntry(VALOR_nue_5s_2020, "VALOR Modern 5#sigma CL stat-only Geniev3","L");
+lnue_stat->AddEntry(VALOR_nue_5s_2020_geniev2, "VALOR Modern 5#sigma CL stat-only Geniev2","L");
+//lnue_stat->AddEntry(CAFAna_nue_90pctC, "CAFAna Modern 5sigma CL","L");
+lnue_stat->Draw();
+
+// save plot 
+nue_stat->SaveAs("/sbnd/app/users/tham/VALOR_master/nue_2020/images/nue_sensitivity_stat_only.eps");
 
 }

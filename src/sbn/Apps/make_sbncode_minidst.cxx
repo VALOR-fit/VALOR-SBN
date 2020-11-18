@@ -140,15 +140,20 @@ int main(int argc, char ** argv)
         << "NOT looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
 
   // Determine sample-types
-  bool is_nueint  = false;
-  bool is_nueosc  = false;
-  bool is_nuenumu = false;
-  bool is_numu    = false;
-  bool is_nue     = false;
-  string str_numu = "Numu";
-  string str_nue  = "Nue";
-  string str_int  = "_Int";
-  string str_osc  = "_Osc";
+  bool is_nueint        = false;
+  bool is_nueosc        = false;
+  bool is_nuenumu       = false;
+  bool is_numu          = false;
+  bool is_nue           = false;
+  bool is_dirt          = false;
+  bool is_cosmic        = false;
+  string str_numu       = "Numu";
+  string str_nue        = "Nue";
+  string str_int        = "_Int";
+  string str_osc        = "_Osc";
+  string str_dirt       = "_Dirt";
+  string str_cosmic     = "_Nu_Cosmic_Dirt";
+//  string str_cosmic     = "_CosDirt";
 
   //Find substrings and check the selected nuE sample-type if necessary
   size_t found_nue  = opt_input_name.find(str_nue);
@@ -157,13 +162,19 @@ int main(int argc, char ** argv)
   // Get selected nuMu from sample name
   if(found_nue == string::npos && found_numu != string::npos)
     is_numu = true;
-
   if(found_nue != string::npos){
     is_nue = true;
     // We are looking at a nue sample, check if osc, intrinsic or numu
     size_t found_nueosc  = opt_input_name.find(str_osc);
     size_t found_nueint  = opt_input_name.find(str_int);
     size_t found_nuenumu = opt_input_name.find(str_numu);
+    size_t found_nuedirt = opt_input_name.find(str_dirt);                                                                                                          
+    size_t found_cosmic  = opt_input_name.find(str_cosmic); 
+
+    if(found_cosmic != string::npos){                                                                                                                                    
+      is_cosmic = true;  
+    } 
+
     if(found_nueosc != string::npos && found_nueint == string::npos && found_nuenumu == string::npos)
       is_nueosc = true;
     else if(found_nueosc != string::npos){
@@ -185,9 +196,16 @@ int main(int argc, char ** argv)
         << "Error: Found selected nuE numu file with hint of oscillated and/or intrinsic in the name - misleading: " << opt_input_name;
       exit(1);
     }
-  }
+    if(found_nuedirt != string::npos && found_nueosc == string::npos && found_nueint == string::npos && found_nuenumu == string::npos)                                
+      is_dirt = true;                                                                                                                                                 
+    else if(found_nuedirt != string::npos){                                                                                                                           
+      VLOG("make_sbncode_minidst", pFATAL)                                                                                                                               
+        << "Error: Found appearance dirt file with hint of oscillated and/or intrinsic and/or numu in the name - misleading: " << opt_input_name;                     
+      exit(1);                                                                                                                                                           
+    }
+   }
 
-  bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu};
+  bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu, is_dirt};
   if(found_nue && std::count(found_nues, found_nues+sizeof(found_nues), 1) > 1){
     VLOG("valor_sbn", pFATAL)
       << "Error: Found multiple selected nuE types in filename - misleading: " << opt_input_name;
@@ -195,7 +213,7 @@ int main(int argc, char ** argv)
   }
 
   // Make sure we are finding at least 1 of numu or nue in the name
-  bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu};
+  bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu, is_dirt, is_cosmic};
   if(std::count(found, found+sizeof(found), 1) == 0){
     VLOG("valor_sbn", pFATAL)
       << "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << opt_input_name;
@@ -212,6 +230,10 @@ int main(int argc, char ** argv)
     std::cout << " Selected NuE, NuMu " << std::endl;
   if(is_numu)
     std::cout << " Selected NuMu, NuMu " << std::endl;
+  if(is_dirt && !is_cosmic)
+    std::cout << " Appearance Dirt " << std::endl;
+  if(is_dirt && is_cosmic)
+    std::cout << " Appearance Cosmics with Dirt" << std::endl;
 
   // Get the POT of the sample from the subrun tree
   double mcsample_pot = -1.;
@@ -270,7 +292,7 @@ int main(int argc, char ** argv)
   fout.cd();
 
   TTree * valor_minidst =
-    new TTree("valor_sbn_minidst","Mini-DST input for VALOR/SBN fit");
+    new TTree("valor_sbncode_mini_dst","Mini-DST input for VALOR/SBN fit");
 
   valor_minidst->Branch("beam"      , &valor_minidst_beam        ,"beam/I"       );
   valor_minidst->Branch("sample"    , &valor_minidst_sample      ,"sample/I"     );
@@ -484,7 +506,15 @@ int main(int argc, char ** argv)
 
       // Construct the reaction mode
       conv::ReacType_t reac = conv::kmtUndefined;
-      if (iscc) {
+      if (is_dirt){
+        reac = conv::kmtDirt; 
+        
+        if(is_cosmic){                                                                                                                                                   
+          reac = conv::kmtCosmic;                                                                                                                                        
+        }                                                                                                                                                                
+      }   
+
+      else if (iscc) {
         if      (larsoft_mode==kLArQE                ) { reac = conv::kmtCCQE;    }
         else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtCCMEC;   }
         else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtCCcoh;   }
@@ -521,6 +551,8 @@ int main(int argc, char ** argv)
         reac = conv::kmtELScat;
       }
 
+      else if(is_cosmic){ reac = conv::kmtCosmic; 
+      }
       else reac = conv::kmtOther;
 
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
@@ -539,6 +571,13 @@ int main(int argc, char ** argv)
         reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
       }
 
+       if(is_dirt){       
+         reac_mode = conv::kmDirt; 
+         //std::cout << "selecting DIRT" << std::endl;       
+         if(is_cosmic){                                                                                                                                              
+            reac_mode = conv::kmCosmic;                                                                                                                
+         }                                               
+       }
       if(!opt_disable_checks) {
         //
         // ignore events that can not be used in the VALOR analysis

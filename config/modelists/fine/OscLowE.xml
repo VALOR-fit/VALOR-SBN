@@ -86,4 +86,27 @@
   <mode> numubartonuebarCCoth          </mode>
   <mode> cosmic                        </mode>
   <mode> dirt                          </mode>
+
+  <mode> nueCCMpi                      </mode>
+  <mode> nueCCmisc                     </mode>
+  <mode> nueCCDIS                      </mode>
+  <mode> nuebarCCMpi                   </mode>
+  <mode> nuebarCCmisc                  </mode>
+  <mode> nuebarCCDIS                   </mode>
+  <mode> nuetonumuCC2pi0               </mode>
+  <mode> nuetonumuCC1pi0               </mode>
+  <mode> nuetonumuCCoth                </mode>
+  <mode> nuetonumuCC2piC               </mode>
+  <mode> nuetonumuCCIMD                </mode>
+  <mode> nuetonumuCCcoh                </mode>
+  <mode> nuetonumuCCDIS                </mode>
+  <mode> nuetonumuCCpiCpi0             </mode>
+  <mode> nuetonumuCCELscat             </mode>
+  <mode> numuCCmisc                    </mode>
+  <mode> numubartonutaubarCC2piC       </mode>
+  <mode> numuCCDIS                     </mode>
+  <mode> numuCCMpi                     </mode>
+  <mode> numubartonutaubarCC1pi0       </mode>
+  <mode> numubarCCDIS                  </mode>
+
 </mode_list>

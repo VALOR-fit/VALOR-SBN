@@ -1,38 +1,39 @@
 //____________________________________________________________________________                                                       
 /*!                                                                                                                                  
-                                                                                                                                      
-\app       valor_sbn-write_sbn_spectra_using_universes
 
-\brief     Write out spectra to make a covariance for SBN
+  \app       valor_sbn-write_spectra_using_universes
 
-\options
-           --config              : Analysis configuration file [required]
-           --output-name         : Output file name [def:test]
-           --mesg-thresholds     : Message thresholds [def: "verbosity.xml"] 
-           --input               : Input values of the oscillation parameters
+  \brief     Write out spectra to make a covariance for SBN
 
-\author    Steve
-\created   June 2019
+  \options
+  --config              : Analysis configuration file [required]
+  --output-name         : Output file name [def:test]
+  --mesg-thresholds     : Message thresholds [def: "verbosity.xml"] 
+  --input               : Input values of the oscillation parameters
 
-\copyright Copyright (c) 2010-2020, The VALOR group. All rights reserved.
+  \author    Steve
+  \created   June 2019
+
+  \copyright (c) 2010-2019, The VALOR Fitting Group, All Rights Reserved
 
 */
 //____________________________________________________________________________ 
 
-// ROOT
+// root
 #include "TFile.h"
 #include "TSystem.h"
 #include "TObjArray.h"
 #include "TString.h"
 #include "TVirtualFitter.h"
 #include "TPRegexp.h"
-//VALOR/SDK
+// fmwk
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
 #include "valor/FitCore/PhysParamList.h"
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
+#include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -52,39 +53,65 @@
 // https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample
 
 std::vector<std::string> interaction_systematics =
- { "genie_ccresAxial_Genie",
-   "genie_ncresAxial_Genie",
-   "genie_qema_Genie",
-   "genie_NC_Genie",
-   "genie_NonResRvbarp1pi_Genie",
-   "genie_NonResRvbarp2pi_Genie",
-   "genie_NonResRvp1pi_Genie",
-   "genie_NonResRvp2pi_Genie",
- };
- 
+{ "genie_ccresAxial_Genie",
+  "genie_ncresAxial_Genie",
+  "genie_qema_Genie",
+  "genie_NC_Genie",
+  "genie_NonResRvbarp1pi_Genie",
+  "genie_NonResRvbarp2pi_Genie",
+  "genie_NonResRvp1pi_Genie",
+  "genie_NonResRvp2pi_Genie",
+  // The extra params for using GENIE v3 (modern sample)
+  "genie_ncelAxial_Genie",
+  "genie_ncelEta_Genie",
+  "genie_ccresVector_Genie",
+  "genie_ncresVector_Genie",
+  "genie_cohMA_Genie",
+  "genie_cohR0_Genie",
+  "genie_ResDecayGamma_Genie",
+  "genie_DISAth_Genie",
+  "genie_DISBth_Genie",
+  "genie_DISCv1u_Genie",
+  "genie_DISCv2u_Genie",
+  "genie_IntraNukeNmfp_Genie",
+  "genie_IntraNukeNcex_Genie",
+  "genie_IntraNukeNinel_Genie",
+  "genie_IntraNukeNabs_Genie",
+  "genie_IntraNukeNpi_Genie",
+  "genie_IntraNukePImfp_Genie", 
+  "genie_IntraNukePIcex_Genie",
+  "genie_IntraNukePIinel_Genie",
+  "genie_IntraNukePIabs_Genie",
+  "genie_IntraNukePIpi_Genie"
+};
+
 std::vector<std::string> flux_systematics =
- { "expskin_FluxUnisim",
-   "horncurrent_FluxUnisim",
-   "kminus_PrimaryHadronNormalization",
-   "kplus_PrimaryHadronFeynmanScaling",
-   "kzero_PrimaryHadronSanfordWang",
-   "nucleoninexsec_FluxUnisim",
-   "nucleonqexsec_FluxUnisim",
-   "nucleontotxsec_FluxUnisim",
-   "piminus_PrimaryHadronSWCentralSplineVariation",
-   "pioninexsec_FluxUnisim",
-   "pionqexsec_FluxUnisim",
-   "piontotxsec_FluxUnisim",
-   "piplus_PrimaryHadronSWCentralSplineVariation"
- };
+{ "expskin_FluxUnisim",
+  "horncurrent_FluxUnisim",
+  "kminus_PrimaryHadronNormalization",
+  "kplus_PrimaryHadronFeynmanScaling",
+  "kzero_PrimaryHadronSanfordWang",
+  "nucleoninexsec_FluxUnisim",
+  "nucleonqexsec_FluxUnisim",
+  "nucleontotxsec_FluxUnisim",
+  "piminus_PrimaryHadronSWCentralSplineVariation",
+  "pioninexsec_FluxUnisim",
+  "pionqexsec_FluxUnisim",
+  "piontotxsec_FluxUnisim",
+  "piplus_PrimaryHadronSWCentralSplineVariation"
+};
 
 std::vector<std::string> hadronic_flux_systematics =
- { "kminus_PrimaryHadronNormalization",
-   "kplus_PrimaryHadronFeynmanScaling",
-   "kzero_PrimaryHadronSanfordWang",
-   "piminus_PrimaryHadronSWCentralSplineVariation",
-   "piplus_PrimaryHadronSWCentralSplineVariation"
- };
+{ "kminus_PrimaryHadronNormalization",
+  "kplus_PrimaryHadronFeynmanScaling",
+  "kzero_PrimaryHadronSanfordWang",
+  "piminus_PrimaryHadronSWCentralSplineVariation",
+  "piplus_PrimaryHadronSWCentralSplineVariation"
+};
+std::vector<std::string> piplus_flux_systematics =
+{
+  "piplus_PrimaryHadronSWCentralSplineVariation"
+};
 using namespace std;
 using namespace valor;
 using namespace valor::conv;
@@ -92,45 +119,49 @@ using namespace valor::conv;
 int main(int argc, char ** argv)
 {
 
-
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/oscparams.arg:");
   LOG("valor_sbn", pNOTICE) << arg;
-  
+
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string tag              = arg.GetString("tag");
+  string location         = arg.GetString("output-location");
   string config_file      = arg.GetString("config");
-  
-  size_t n_universes_to_run = arg.GetInt("n-universes"); // This will now be squared, so maybe choose 100 instead of 1000
-  size_t first_universe     = arg.GetInt("first-universe");
-  
+
+  size_t ntoys          = arg.GetInt("n-toys");
+  size_t first_universe = arg.GetInt("first-universe");
+
   std::string syst_list = arg.GetString("syst-list");
-  
+
   std::vector<std::string> param_list;
   if (syst_list == "interaction") {
     param_list = interaction_systematics;
   }
   else if (syst_list == "flux") {
-    param_list =flux_systematics;
+    param_list = flux_systematics;
   }
   else if (syst_list == "hadron") {
-    param_list =hadronic_flux_systematics;
+    param_list = hadronic_flux_systematics;
+  }
+  else if (syst_list == "pion") {
+    param_list = piplus_flux_systematics;
   }
   else {
     LOG("write_sbn_spectra_using_universes",pFATAL) << "Unknown systematics list: "<<syst_list;
   }
-  
+
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
   LOG("valor_sbn", pNOTICE) << *Rnd::Instance();
-  
-  
+
+  int max_universes = 1000;
+
   // Get model & configure
   // Make an elements without reading the MC
   std::string elem_readopt("nomc nosplines");
   CompoundFitElements * elements = new CompoundFitElements();
   elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
-  
+
   // Then tell it about the universes and read the MC
   FitModelABC * model = elements->FitModel();
   CompoundFitModel * cmodel = dynamic_cast<CompoundFitModel*>(model);
@@ -138,7 +169,7 @@ int main(int argc, char ** argv)
   for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
     GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
     assert(gmodel);
-    gmodel->SetUniverseRangeToRead(first_universe,first_universe+n_universes_to_run);
+    gmodel->SetUniverseRangeToRead(first_universe,first_universe+max_universes);
     for (const std::string & param : param_list) {
       gmodel->SetUniverseParameterToRead(param);
     }
@@ -146,65 +177,62 @@ int main(int argc, char ** argv)
     std::string model_readopt("forcedst nosplines");
     gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
   }
-    
- 
-  size_t universe_n = 0;
-  for (size_t iuniverse = 0 ; iuniverse < n_universes_to_run ; iuniverse++) {
-    
-    // Get which absolute universe we want
-    size_t universe = first_universe + iuniverse;
-    
-    for (size_t iuniverse2 = 0 ; iuniverse2 < n_universes_to_run ; iuniverse2++) {
+  // Now generate a random number combination for all parameters we're looping over 
+  // Do this for the requested number of universes and obviously only vary each 
+  // universe id up to the maximum available
+  std::map< std::string, std::vector<int> > syst_toy_universe;
+  for(const std::string s : param_list){
+    std::vector<int> universe_ids;
+    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
+    for(size_t itoy = 0; itoy < ntoys; ++itoy){
+      int iuni = rand() % max_universes;
+      LOG("universe_variation_tweaks",pDEBUG) << " Throw " << itoy << " will access universe " << iuni;
+      universe_ids.push_back(iuni);
+    }
+    syst_toy_universe.emplace(s,universe_ids);
+  }
 
-      // Get which absolute universe we want
-      size_t universe2 = first_universe + iuniverse2;
+  for (size_t itoy = 0 ; itoy < ntoys ; itoy++) {
 
-      // Make sure we don't duplicate combinations
-      //if(universe == universe2) continue;
-
-      // Set our variations
-      for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
-        GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
-        assert(gmodel);
-        for(unsigned int iparam = 0; iparam < param_list.size(); ++iparam){
-          std::string param = param_list.at(iparam);
-          if(iparam < param_list.size()/static_cast<double>(2))
-            gmodel->SetSystematicVariationIDToApply(param,universe);
-          else
-            gmodel->SetSystematicVariationIDToApply(param,universe2);
-        }
+    // Set our variations
+    for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
+      GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
+      assert(gmodel);
+      for(const std::string &param: param_list){
+        // Get the universe ID for this toy and this parameter
+        const int iuni = syst_toy_universe.at(param).at(itoy);
+        gmodel->SetSystematicVariationIDToApply(param,iuni);
       }
+    }
 
-      // Generate predictions
-      PhysHypothesis ph(conv::kHypVoid);
-      Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
-      model->Generate(ph,generate_opt);
+    // Generate predictions
+    PhysHypothesis ph(conv::kHypVoid);
+    Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
+    model->Generate(ph,generate_opt);
 
-      // Write stuff out                              
-      std::string write_opt = "pdfts_rf pdfcs_rf";
-      TObjArray myarr;
-      myarr.SetOwner(true);
-      model->Write(&myarr,"valor",write_opt.c_str());
+    // Write stuff out                              
+    std::string write_opt = "pdfts_rf pdfcs_rf";
+    TObjArray myarr;
+    myarr.SetOwner(true);
+    model->Write(&myarr,"valor",write_opt.c_str());
 
-      TString output_fn = TString::Format("%s_univ_%lu.root",tag.c_str(),universe_n);
-      TFile output_file(output_fn.Data(),"RECREATE");
+    TString output_fn = TString::Format("%s/%s_univ_%lu.root",location.c_str(),tag.c_str(),itoy);
+    TFile output_file(output_fn.Data(),"RECREATE");
 
-      for (int ihist = 0 ; ihist < myarr.GetEntries() ; ihist++) {
-        TH1* hist = dynamic_cast<TH1*>(myarr[ihist]);
-        assert(hist);
-        TString old_name = hist->GetName();
-        //~ TString new_name = TString::Format("%s_univ_%lu",old_name.Data(),universe);
-        //~ hist->SetName(new_name.Data());
-        output_file.cd();
-        hist->Write();
+    for (int ihist = 0 ; ihist < myarr.GetEntries() ; ihist++) {
+      TH1* hist = dynamic_cast<TH1*>(myarr[ihist]);
+      assert(hist);
+      TString old_name = hist->GetName();
+      //~ TString new_name = TString::Format("%s_univ_%lu",old_name.Data(),universe);
+      //~ hist->SetName(new_name.Data());
+      output_file.cd();
+      hist->Write();
 
-        if (old_name.Contains("pdfts")) {
-          LOG("valor_sbn", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
-        }
-      } // histograms
-      universe_n++;
-    } // iuniverse2
-  } // iuniverse
+      if (old_name.Contains("pdfts")) {
+        LOG("valor_sbn", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
+      }
+    } // histograms
+  } // itoy
 
   std::cout<<"Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
 
