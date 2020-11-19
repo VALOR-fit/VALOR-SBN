@@ -19,6 +19,7 @@
 */
 //____________________________________________________________________________ 
 
+#include <iostream>
 // root
 #include "TFile.h"
 #include "TSystem.h"
@@ -61,28 +62,6 @@ std::vector<std::string> interaction_systematics =
   "genie_NonResRvbarp2pi_Genie",
   "genie_NonResRvp1pi_Genie",
   "genie_NonResRvp2pi_Genie",
-  // The extra params for using GENIE v3 (modern sample)
-  "genie_ncelAxial_Genie",
-  "genie_ncelEta_Genie",
-  "genie_ccresVector_Genie",
-  "genie_ncresVector_Genie",
-  "genie_cohMA_Genie",
-  "genie_cohR0_Genie",
-  "genie_ResDecayGamma_Genie",
-  "genie_DISAth_Genie",
-  "genie_DISBth_Genie",
-  "genie_DISCv1u_Genie",
-  "genie_DISCv2u_Genie",
-  "genie_IntraNukeNmfp_Genie",
-  "genie_IntraNukeNcex_Genie",
-  "genie_IntraNukeNinel_Genie",
-  "genie_IntraNukeNabs_Genie",
-  "genie_IntraNukeNpi_Genie",
-  "genie_IntraNukePImfp_Genie", 
-  "genie_IntraNukePIcex_Genie",
-  "genie_IntraNukePIinel_Genie",
-  "genie_IntraNukePIabs_Genie",
-  "genie_IntraNukePIpi_Genie"
 };
 
 std::vector<std::string> flux_systematics =
@@ -118,6 +97,14 @@ using namespace valor::conv;
 
 int main(int argc, char ** argv)
 {
+
+  time_t scriptstartrawtime;
+  struct tm * scriptstarttimeinfo;
+  time (&scriptstartrawtime);
+  scriptstarttimeinfo = localtime (&scriptstartrawtime);
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " Script start local time and date:  " << asctime(scriptstarttimeinfo);
+  std::cout << "-----------------------------------------------------------" << std::endl;
 
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/oscparams.arg:");
@@ -176,42 +163,28 @@ int main(int argc, char ** argv)
     // And finally read the MC properly
     std::string model_readopt("forcedst nosplines");
     gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
+    
   }
-  // Now generate a random number combination for all parameters we're looping over 
-  // Do this for the requested number of universes and obviously only vary each 
-  // universe id up to the maximum available
-  std::map< std::string, std::vector<int> > syst_toy_universe;
-  for(const std::string s : param_list){
-    std::vector<int> universe_ids;
-    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
-    for(size_t itoy = 0; itoy < ntoys; ++itoy){
-      int iuni = rand() % max_universes;
-      LOG("universe_variation_tweaks",pDEBUG) << " Throw " << itoy << " will access universe " << iuni;
-      universe_ids.push_back(iuni);
-    }
-    syst_toy_universe.emplace(s,universe_ids);
-  }
-
+  
+  // Generate predictions
+  // Setup some global information
+  PhysHypothesis ph(conv::kHypVoid);
+  Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
+  std::string write_opt = "pdfts_rf pdfcs_rf";
+  
   for (size_t itoy = 0 ; itoy < ntoys ; itoy++) {
 
     // Set our variations
     for (size_t i = 0 ; i < cmodel->GetNSubModels() ; i++) {
       GenericSingleSampleFitModel * gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(i));
       assert(gmodel);
-      for(const std::string &param: param_list){
-        // Get the universe ID for this toy and this parameter
-        const int iuni = syst_toy_universe.at(param).at(itoy);
-        gmodel->SetSystematicVariationIDToApply(param,iuni);
-      }
+      gmodel->SetSystematicVariationIDToApply("product",itoy);
     }
 
-    // Generate predictions
-    PhysHypothesis ph(conv::kHypVoid);
-    Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
+    // Regenerate predictions with systematic variations
     model->Generate(ph,generate_opt);
 
     // Write stuff out                              
-    std::string write_opt = "pdfts_rf pdfcs_rf";
     TObjArray myarr;
     myarr.SetOwner(true);
     model->Write(&myarr,"valor",write_opt.c_str());
@@ -219,12 +192,13 @@ int main(int argc, char ** argv)
     TString output_fn = TString::Format("%s/%s_univ_%lu.root",location.c_str(),tag.c_str(),itoy);
     TFile output_file(output_fn.Data(),"RECREATE");
 
+    TH1* testhist = dynamic_cast<TH1*>(myarr[0]);
+    assert(testhist);
+
     for (int ihist = 0 ; ihist < myarr.GetEntries() ; ihist++) {
       TH1* hist = dynamic_cast<TH1*>(myarr[ihist]);
       assert(hist);
       TString old_name = hist->GetName();
-      //~ TString new_name = TString::Format("%s_univ_%lu",old_name.Data(),universe);
-      //~ hist->SetName(new_name.Data());
       output_file.cd();
       hist->Write();
 
@@ -234,6 +208,16 @@ int main(int argc, char ** argv)
     } // histograms
   } // itoy
 
-  std::cout<<"Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
+  std::cout << "Done. Have a good day!"<<std::endl << "GO VALOR!!!" << std::endl;
+
+  time_t endrawtime;
+  struct tm * endtimeinfo;
+  time (&endrawtime);
+  endtimeinfo = localtime (&endrawtime);
+  time_t total_time = endrawtime-scriptstartrawtime;
+  std::cout << "-----------------------------------------------------------" << std::endl;
+  std::cout << " End local time and date  :  " << asctime(endtimeinfo);
+  std::cout << " Total time taken         :  " << total_time/static_cast<double>(60) << " minutes" << std::endl;
+  std::cout << "-----------------------------------------------------------" << std::endl;
 
 }
