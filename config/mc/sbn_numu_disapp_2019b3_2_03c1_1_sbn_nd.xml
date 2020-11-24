@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> sbn_numu_inclusive/dsts/2019b3_2/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc.root </filename>
+      <filename> sbn_numu_disappearance/dsts/2019b3_2/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc.root </filename>
        <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
@@ -79,7 +79,7 @@ Splines
 -->
 
 <splines>
-  <folder>         sbn_numu_inclusive/responses/03c1/sbnd/            </folder>
+  <folder>         sbn_numu_disappearance/responses/03c1/sbnd/            </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root       </pattern>
   <type>           TSpline3                                               </type>
   <stored_as>      TObjArray                                              </stored_as>
