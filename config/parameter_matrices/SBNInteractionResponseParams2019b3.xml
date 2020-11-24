@@ -1,0 +1,10 @@
+<systematic_list name="SBNInteractionResponseParams2019b3">
+  <parameter> genie_ccresAxial_Genie      </parameter>
+  <parameter> genie_ncresAxial_Genie      </parameter>
+  <parameter> genie_qema_Genie            </parameter>
+  <parameter> genie_NC_Genie              </parameter>
+  <parameter> genie_NonResRvbarp1pi_Genie </parameter>
+  <parameter> genie_NonResRvbarp2pi_Genie </parameter>
+  <parameter> genie_NonResRvp1pi_Genie    </parameter>
+  <parameter> genie_NonResRvp2pi_Genie    </parameter>
+</systematic_list>
