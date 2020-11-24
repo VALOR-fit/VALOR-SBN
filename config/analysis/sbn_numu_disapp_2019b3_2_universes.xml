@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2019b3_2">
+   
+    <element name="sbn_nd_fhc_numuCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2019b3_2_sbn_nd_universes.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+    <element name="sbn_ub_fhc_numuCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2019b3_2_sbn_ub_universes.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+    <element name="sbn_fd_fhc_numuCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2019b3_2_sbn_fd_universes.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+    
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sbnd_flux_etrue_parameters">   params/flux_sbn_nd_etrue_fine.xml </filename>
+    <filename desc="uboone_flux_etrue_parameters"> params/flux_sbn_ub_etrue_fine.xml </filename>
+    <filename desc="icarus_flux_etrue_parameters"> params/flux_sbn_fd_etrue_fine.xml </filename>
+  </parameter_definitions>
+
+</valor> 
