@@ -394,7 +394,9 @@ void rj_plot_pdf(
           relevant_hist->SetFillColor(ml->GetCoarseModeFillCol(mc));
           relevant_hist->SetFillStyle(ml->GetCoarseModeFillSty(mc));
           contrib_stack->Add(relevant_hist);
-          contrib_legend->AddEntry(relevant_hist,Form("%s",vutil::AsStringTex(mc,true).c_str()), "LF");
+          TString legend_entry_label(Form("%s",vutil::AsStringTex(mc,true).c_str()));
+          legend_entry_label.ReplaceAll("#:","");
+          contrib_legend->AddEntry(relevant_hist,legend_entry_label.Data(), "LF");
 
           if(mode_filled) continue;
           if(cc_hist && !mode_str.Contains("NC") && !mode_str.Contains("nue"))
