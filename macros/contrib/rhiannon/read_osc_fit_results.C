@@ -30,16 +30,16 @@ void read_osc_fit_results(const char * filename, const char * treename = "valor_
 
   TCanvas * c = new TCanvas("c","",20,20,500,500);
 
-  for(int i=0; i<2; i++) {
+  for(int i=0; i<1; i++) {
     fitnt->GetEntry(i);
     cout << "*******************************************************" << endl;
     cout << "Experiment: # " << i << endl;
     cout << "*******************************************************" << endl;
     cout << endl;
-//    cout << "Input parameter list: " << endl;
-  //  cout << *iparm;
- //   cout << endl;
-  //  cout << endl;
+    cout << "Input parameter list: " << endl;
+    cout << *iparm;
+    cout << endl;
+    cout << endl;
     cout << "Global best fit parameter list: " << endl;
     cout << *gbfparm;
     cout << endl;
