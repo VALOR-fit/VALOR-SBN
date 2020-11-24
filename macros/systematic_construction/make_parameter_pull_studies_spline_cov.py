@@ -21,6 +21,7 @@ ROOT.gStyle.SetOptStat(0)
 #_________________________________________________________________________________
 def make_cov(outputname):
     params_to_add = [
+        "genie_qema_Genie",
         "genie_ccresAxial_Genie",
         "genie_NonResRvnCC1pi_Genie",
         "genie_NonResRvpNC2pi_Genie",
@@ -32,6 +33,7 @@ def make_cov(outputname):
         "nucleonqexsec_FluxUnisim",
         ]
     nominal_vals = {
+        "genie_qema_Genie"              : 0.0,
         "genie_ccresAxial_Genie"        : 0.0,
         "genie_NonResRvnCC1pi_Genie"    : 0.0,
         "genie_NonResRvpNC2pi_Genie"    : 0.0,
@@ -43,6 +45,7 @@ def make_cov(outputname):
         "nucleonqexsec_FluxUnisim"      : 0.0,
     }
     untuned_vals = {
+        "genie_qema_Genie"              : 0.0,
         "genie_ccresAxial_Genie"        : 0.0,
         "genie_NonResRvnCC1pi_Genie"    : 0.0,
         "genie_NonResRvpNC2pi_Genie"    : 0.0,
@@ -54,6 +57,7 @@ def make_cov(outputname):
         "nucleonqexsec_FluxUnisim"      : 0.0,
     }
     error_vals = {
+        "genie_qema_Genie"              : 1.0,
         "genie_ccresAxial_Genie"        : 1.0,
         "genie_NonResRvnCC1pi_Genie"    : 1.0,
         "genie_NonResRvpNC2pi_Genie"    : 1.0,
