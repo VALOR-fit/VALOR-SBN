@@ -1,11 +1,12 @@
 <systematic_list name="SBNParameterPullStudiesSet">
-  <parameter> genie_ccresAxial_Genie         </parameter>
-  <parameter> genie_NonResRvnCC1pi_Genie     </parameter>
-  <parameter> genie_NonResRvpNC2pi_Genie     </parameter>
+  <parameter> genie_qema_Genie            </parameter>
+  <parameter> genie_ccresAxial_Genie      </parameter>
+  <parameter> genie_NonResRvnCC1pi_Genie  </parameter>
+  <parameter> genie_NonResRvpNC2pi_Genie  </parameter>
   <parameter> genie_DISBth_Genie          </parameter>
   <parameter> genie_IntraNukePIabs_Genie  </parameter>
   <parameter> genie_IntraNukeNinel_Genie  </parameter>
   <parameter> genie_ncresVector_Genie     </parameter>
-  <parameter> expskin_FluxUnisim        </parameter>
-  <parameter> nucleonqexsec_FluxUnisim  </parameter>
+  <parameter> expskin_FluxUnisim          </parameter>
+  <parameter> nucleonqexsec_FluxUnisim    </parameter>
 </systematic_list>
