@@ -75,6 +75,12 @@ using std::string;
 using namespace valor;
 using namespace valor::conv;
 
+std::vector<std::string> old_nonres_interaction_systematics =
+ { "genie_NonResRvp1pi_Genie",
+   "genie_NonResRvbarp1pi_Genie",
+   "genie_NonResRvp2pi_Genie",
+   "genie_NonResRvbarp2pi_Genie",
+ };
 std::vector<std::string> proposal_interaction_systematics =
  { "genie_ccresAxial_Genie",
    "genie_ncresAxial_Genie",
@@ -605,7 +611,7 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
   }
   std::string alt_syst = sy;
   TString tsy(sy);
-  if(tsy.Contains("NonRes")){
+  if(tsy.Contains("NonRes") && (tsy.Contains("CC") || tsy.Contains("NC"))){
     GetFromPair(sy,alt_syst);
     LOG("valor_sbn",pNOTICE) << " Switched input parameter name: " << sy << " to alternative parameter name for reading the text file: " << alt_syst;
   }
@@ -650,6 +656,18 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
 std::string GetSystematic(const std::string &sy){
   std::string syst = "";
   bool found_syst = false;
+  for(const std::string &s : old_nonres_interaction_systematics){
+    LOG("valor_sbn",pDEBUG) << "Checking old proposal interaction systematic: " << s << " for " << sy;
+    // Add a space to the end of the parameter name to avoid getting the wrong one
+    size_t found_s = s.find(sy+"_");
+    if(found_s != std::string::npos){
+      syst = s;
+      LOG("valor_sbn",pINFO) << "Found the chosen old proposal interaction systematic: " << syst;
+      found_syst = true;
+      break;
+    }
+  }
+
   for(const std::string &s : proposal_interaction_systematics){
     LOG("valor_sbn",pDEBUG) << "Checking proposal interaction systematic: " << s << " for " << sy;
     // Add a space to the end of the parameter name to avoid getting the wrong one

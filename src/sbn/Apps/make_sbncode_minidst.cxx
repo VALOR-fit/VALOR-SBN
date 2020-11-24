@@ -155,6 +155,8 @@ int main(int argc, char ** argv)
   bool   apply_weights      = !(arg.GetBool("dont-apply-weights"));
   bool   no_truth           = arg.GetBool("no-truth");
   bool   other_sample       = arg.GetBool("other-sample");
+  bool   fix_nonres         = arg.GetBool("fix-nonres");
+  bool   status_code_set    = arg.GetBool("status-code-set");
   int    max_n_events       = arg.GetInt("max-n-events");
 
   // Get the sample and beam configuration
@@ -280,11 +282,13 @@ int main(int argc, char ** argv)
   VLOG("valor_sbn", pNOTICE)
     << "Input subrun tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
 
-  TBranch *b = subrun_tree->GetBranch("totgoodpot");
+//  TBranch *b = subrun_tree->GetBranch("totgoodpot");
+  TBranch *b = subrun_tree->GetBranch("totpot"); // TEMP FOR BROKEN FILE
   unsigned int npot = subrun_tree->GetEntries();
   for(unsigned int i = 0; i < npot; ++i){
     b->GetEntry(i);
-    mcsample_pot += b->GetLeaf("totgoodpot")->GetValue();
+    mcsample_pot += b->GetLeaf("totpot")->GetValue(); // TEMP FOR BROKEN FILE
+    //mcsample_pot += b->GetLeaf("totgoodpot")->GetValue();
   }
 
   if(mcsample_pot == -1.){
@@ -380,7 +384,7 @@ int main(int argc, char ** argv)
       const size_t n_universes = variation.second.size();
      
       // If the variation is a non-resonant background parameter, add 4 branches to the tree
-      if(vname.Contains("NonRes")){
+      if(vname.Contains("NonRes") && fix_nonres){
         if(!replacedNonRes){
           for(const TString &new_vname : nonResVariations){
             // Now translate to the new list of parameters, conversion table is here: https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a
@@ -513,20 +517,23 @@ int main(int argc, char ** argv)
       // Particle counting
       bool nucleonPDGSet = false;
       for(unsigned int p = 0; p < fsps.size(); ++p){
-        if(fsps[p].status_code == 11){
-          if(nucleonPDGSet){
-            LOG("valor_sbn",pNOTICE) << "\nIn event " << iev
-                                     << "\nThe struck nucleon pdg has already been set as: " << nuc_pdg << ", will take the first answer."
-                                     << "\nThis nucleon has pdg: " << fsps[p].pdg;
-          }
-          else{
-            LOG("valor_sbn",pINFO) << "\nIn event " << iev
-                                   << "\nThe struck nucleon has pdg: " << fsps[p].pdg;
-            nuc_pdg = fsps[p].pdg;
-            nucleonPDGSet = true;
+        if(status_code_set){
+          if(fsps[p].status_code == 11){
+            if(nucleonPDGSet){
+              LOG("valor_sbn",pNOTICE) << "\nIn event " << iev
+                << "\nThe struck nucleon pdg has already been set as: " << nuc_pdg << ", will take the first answer."
+                << "\nThis nucleon has pdg: " << fsps[p].pdg;
+            }
+            else{
+              LOG("valor_sbn",pINFO) << "\nIn event " << iev
+                << "\nThe struck nucleon has pdg: " << fsps[p].pdg;
+              nuc_pdg = fsps[p].pdg;
+              nucleonPDGSet = true;
+            }
           }
         }
-        if (fsps[p].status_code != 14 && fsps[p].status_code != 12) {continue;}
+        // Make sure we are counting initial states for the interaction definition 
+        if (status_code_set && fsps[p].status_code != 14 && fsps[p].status_code != 12) {continue;}
         if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
         else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
         else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
@@ -547,8 +554,6 @@ int main(int argc, char ** argv)
         else if(fsps[p].pdg == 14 || fsps[p].pdg == -14 || fsps[p].pdg == 12 || fsps[p].pdg == -12) ninu++;
         else if(fsps[p].pdg > 1e4) ninuc++;
         else niother++;
-        // Currently not using niother as the only others seem to be deltas and etas
-        // These will eventually be removed when isStableFinalState variable is available in the analysis trees
       }
 
       if(nuc_pdg > 5000 && (nipip+nipim+nipi0 == 1 || nipip+nipim+nipi0 == 2)){
@@ -699,7 +704,7 @@ int main(int argc, char ** argv)
         for (const auto & entry : truth.weights) {
           TString vname = entry.first;
           TString input_vname(vname);
-          if(!vname.Contains("NonRes")) continue;
+          if(!vname.Contains("NonRes") || !fix_nonres) continue;
           LOG("valor_sbn",pINFO) << " Current input parameter: " << vname;
 
           const auto & in_vec = entry.second;
@@ -764,7 +769,7 @@ int main(int argc, char ** argv)
         // For the rest of the parameters, copy the input values to the ouput TTree
         for (const auto & entry : truth.weights) {
           TString vname = entry.first;
-          if(vname.Contains("NonRes")) continue;
+          if(vname.Contains("NonRes") && fix_nonres) continue;
 
           const auto & in_vec = entry.second;
           const int nentries = in_vec.size();
