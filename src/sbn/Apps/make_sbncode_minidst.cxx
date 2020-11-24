@@ -304,11 +304,13 @@ int main(int argc, char ** argv)
   VLOG("valor_sbn", pNOTICE)
     << "Input subrun tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
 
-  TBranch *b = subrun_tree->GetBranch("totgoodpot");
+//  TBranch *b = subrun_tree->GetBranch("totgoodpot");
+  TBranch *b = subrun_tree->GetBranch("totpot"); // TEMP FOR BROKEN FILE
   unsigned int npot = subrun_tree->GetEntries();
   for(unsigned int i = 0; i < npot; ++i){
     b->GetEntry(i);
-    mcsample_pot += b->GetLeaf("totgoodpot")->GetValue();
+    mcsample_pot += b->GetLeaf("totpot")->GetValue(); // TEMP FOR BROKEN FILE
+    //mcsample_pot += b->GetLeaf("totgoodpot")->GetValue();
   }
 
   if(mcsample_pot == -1.){
