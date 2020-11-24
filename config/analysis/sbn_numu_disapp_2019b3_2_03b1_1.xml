@@ -9,7 +9,11 @@
       <sample>       numuCCincl                                           </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
+<<<<<<<< HEAD:config/analysis/sbn_numu_disapp_2019b3_2_03b1_1.xml
       <mc>           mc/sbn_numu_disapp_2019b3_2_03b1_1_sbn_nd.xml          </mc>
+========
+      <mc>           mc/sbn_numu_disapp_2019b3_02b1_1_sbn_nd.xml          </mc>
+>>>>>>>> 39d23ac6 (Updated configurations to read new modelist with all reaction modes in 2019b3_2 samples and systematic configurations):config/analysis/sbn_numu_disapp_2019b3_02b1_1.xml
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_universes.xml      </binning>
@@ -20,7 +24,11 @@
       <sample>       numuCCincl                                           </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
+<<<<<<<< HEAD:config/analysis/sbn_numu_disapp_2019b3_2_03b1_1.xml
       <mc>           mc/sbn_numu_disapp_2019b3_2_03b1_1_sbn_ub.xml          </mc>
+========
+      <mc>           mc/sbn_numu_disapp_2019b3_02b1_1_sbn_ub.xml          </mc>
+>>>>>>>> 39d23ac6 (Updated configurations to read new modelist with all reaction modes in 2019b3_2 samples and systematic configurations):config/analysis/sbn_numu_disapp_2019b3_02b1_1.xml
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_universes.xml      </binning>
@@ -32,7 +40,11 @@
       <sample>       numuCCincl                                           </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
+<<<<<<<< HEAD:config/analysis/sbn_numu_disapp_2019b3_2_03b1_1.xml
       <mc>           mc/sbn_numu_disapp_2019b3_2_03b1_1_sbn_fd.xml          </mc>
+========
+      <mc>           mc/sbn_numu_disapp_2019b3_02b1_1_sbn_fd.xml          </mc>
+>>>>>>>> 39d23ac6 (Updated configurations to read new modelist with all reaction modes in 2019b3_2 samples and systematic configurations):config/analysis/sbn_numu_disapp_2019b3_02b1_1.xml
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_universes.xml      </binning>
@@ -44,8 +56,8 @@
     <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue.xml            </filename>
     <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue.xml            </filename>
     <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue.xml            </filename>
-    <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters.xml   </filename>
-    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml        </filename>
+    <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters_2019b3.xml   </filename>
+    <!--filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml        </filename-->
   </parameter_definitions>
 
   <systematics name="SBN">
@@ -61,7 +73,7 @@
     </group>
     
     <group name="int">
-      <format> SBNInteractionResponseParams.xml </format>
+      <format> SBNInteractionResponseParams2019b3.xml </format>
       
       <covariance_matrix>
         <filename>   sbn_numu_disappearance/prior_errors/03b1/proposal_interaction_spline_covariance.root </filename>
@@ -81,7 +93,8 @@
       </initial_values> 
 
     </group>
-    
+
+    <!--
     <group name="int">
       <format> SBNMEC.xml </format>
       
@@ -92,6 +105,7 @@
       </covariance_matrix>
 
     </group>
+    -->
   </systematics>
 
 </valor> 
