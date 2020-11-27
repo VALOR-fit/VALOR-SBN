@@ -32,7 +32,7 @@ TFile *f_valor_det_2_05         = new TFile("/sbnd/app/users/tham/VALOR_master/d
 TFile *f_sbnfit                 = new TFile("/sbnd/data/users/tham/fitter_data/SBNfit_numu_modern_25var.root","read");
 TFile *f_cafana                 = new TFile("/sbnd/data/users/tham/fitter_data/CAFAna_numu_modern.root","read");
 
-TFile *f_sbn_proposal           = new TFile("$VALOR_FMWk/data/contours/sterile_nu/sterile_3p1_limits.root");
+TFile *f_sbn_proposal           = new TFile("/sbnd/app/users/tham/VALOR_master/sterile_3p1_limits.root");
 
 // nue files
 TFile *f_sbnfit_nue             = new TFile("/sbnd/data/users/tham/fitter_data/nue_modern/SBNfit.root","read");
@@ -44,8 +44,15 @@ TFile*f_valor_nue               = new TFile("/sbnd/app/users/tham/VALOR_master/V
 TFile*f_valor_nue2               = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/nue_files/test_9sept/output_contour_oldbug.root","read");
 
 TFile*f_valor_nue2020            = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/output_contours_as_graphs_2020.root","read");
+//TFile*f_valor_nue2020_injected            = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/output_contours_as_graphs_injected_[-3_-2]_[-1_1].root","read");
+TFile*f_valor_nue2020_injected            = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/output_contours_as_graphs_injected_[-5_1]_[-2_2].root","read");
+TFile*f_valor_nue2020_injected2            = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/output_contours_as_graphs_currvalue.root","read");
 TFile*f_valor_nue2020_geniev2    = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/geniev2/output_contours_as_graphs.root","read");
                                               
+TFile*f_cafana_nue2020            = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/CAFAna_nue_app_exclusion.root","read");
+TFile*f_cafana_nue2020_injected            = new TFile("/sbnd/app/users/tham/VALOR_master/nue_2020/CAFAna_nue_app_allowed.root","read");
+
+
 
 // get numu contours
 TGraph *VALOR_SBN_90pctC_det                 = (TGraph*) f_valor_det->Get("contour_90pct_lin_0;1");
@@ -89,8 +96,17 @@ TGraph *VALOR_nue_90pctC                     = (TGraph*) f_valor_nue->Get("conto
 TGraph *VALOR_nue_90pctC2                     = (TGraph*) f_valor_nue2->Get("contour_5sigma_lin_0");
 
 TGraph *VALOR_nue_5s_2020                     = (TGraph*) f_valor_nue2020->Get("contour_5sigma_lin_0");
+TGraph *VALOR_nue_5s_2020_injected                     = (TGraph*) f_valor_nue2020_injected->Get("contour_5sigma_lin_0");
+TGraph *VALOR_nue_5s_2020_injected2                     = (TGraph*) f_valor_nue2020_injected2->Get("contour_99pct_lin_0");
 TGraph *VALOR_nue_5s_2020_geniev2                     = (TGraph*) f_valor_nue2020_geniev2->Get("contour_5sigma_lin_0");
 
+TGraph *CAFAna_nue_5s_2020                   = (TGraph*) f_cafana_nue2020->Get("all_stat_5sig");
+TGraph *CAFAna_nue_5s_2020_syst                   = (TGraph*) f_cafana_nue2020->Get("all_syst_5sig");
+
+TGraph *CAFAna_nue_5s_2020_injected                   = (TGraph*) f_cafana_nue2020_injected->Get("all_stat_5sig_10");
+TGraph *CAFAna_nue_5s_2020_injected_syst                   = (TGraph*) f_cafana_nue2020_injected->Get("all_syst_5sig_1");
+
+TGraph *lim_nueapp_3p1_sbnproposal_5sigCL   = (TGraph*) f_sbn_proposal->Get("lim_nueapp_3p1_sbnproposal_5sigCL");
 // Choose contour aesthetics 
 
 //lim_numudis_3p1_sbnproposal_90pctCL     -> SetLineWidth(2);
@@ -291,7 +307,7 @@ lgnumudetcompare->Draw();
 
 
 
-// nue stat only
+// nue only Geniev3
 TCanvas * nue_stat = new TCanvas("nue_stat","",20,20,700,900);
 nue_stat->Draw();
 
@@ -308,8 +324,8 @@ hnue_stat->GetYaxis()->SetLabelSize(0.03);
 
 
 
-CAFAna_nue_90pctC->SetLineColor(kOrange);
-CAFAna_nue_90pctC->SetLineStyle(9);
+//CAFAna_nue_90pctC->SetLineColor(kOrange);
+//CAFAna_nue_90pctC->SetLineStyle(9);
 //CAFAna_nue_90pctC->Draw("l");
 
 //CAFAna_nue_90pctC2->SetLineColor(kRed);
@@ -325,7 +341,7 @@ CAFAna_nue_90pctC->SetLineStyle(9);
 VALOR_nue_90pctC->SetLineStyle(9);
 //VALOR_nue_90pctC->Draw("l");
 
-VALOR_nue_5s_2020->SetLineColor(kGreen);
+VALOR_nue_5s_2020->SetLineColor(kGreen+2);
 VALOR_nue_5s_2020->SetLineStyle(9);
 VALOR_nue_5s_2020->Draw("l");
 
@@ -333,7 +349,14 @@ VALOR_nue_5s_2020_geniev2->SetLineColor(kBlue);
 VALOR_nue_5s_2020_geniev2->SetLineStyle(9);
 VALOR_nue_5s_2020_geniev2->Draw("l");
 
+CAFAna_nue_5s_2020->SetLineColor(kOrange);
+CAFAna_nue_5s_2020->SetLineStyle(9);
+CAFAna_nue_5s_2020->Draw("l");
 
+CAFAna_nue_5s_2020_syst->SetLineColor(kOrange);
+CAFAna_nue_5s_2020_syst->Draw("l");
+
+lim_nueapp_3p1_sbnproposal_5sigCL->Draw("l");
 
 //VALOR_nue_90pctC2->SetLineColor(kCyan);
 //VALOR_nue_90pctC2->SetLineStyle(9);
@@ -345,10 +368,66 @@ lnue_stat->SetBorderSize(0);
 lnue_stat->SetTextFont(132);
 lnue_stat->AddEntry(VALOR_nue_5s_2020, "VALOR Modern 5#sigma CL stat-only Geniev3","L");
 lnue_stat->AddEntry(VALOR_nue_5s_2020_geniev2, "VALOR Modern 5#sigma CL stat-only Geniev2","L");
+lnue_stat->AddEntry(CAFAna_nue_5s_2020, "CAFAna Modern 5#sigma CL stat-only Geniev3","L");
+lnue_stat->AddEntry(CAFAna_nue_5s_2020_syst, "CAFAna Modern 5#sigma CL syst Geniev3","L");
+lnue_stat->AddEntry(lim_nueapp_3p1_sbnproposal_5sigCL, "SBN Proposal 5#sigma CL","L");
 //lnue_stat->AddEntry(CAFAna_nue_90pctC, "CAFAna Modern 5sigma CL","L");
 lnue_stat->Draw();
 
 // save plot 
 nue_stat->SaveAs("/sbnd/app/users/tham/VALOR_master/nue_2020/images/nue_sensitivity_stat_only.eps");
+
+
+// nue Geniev3 injected
+TCanvas * nue_injected = new TCanvas("nue_injected","",20,20,700,900);
+nue_injected->Draw();
+
+TH2F * hnue_injected = (TH2F*) nue_injected->DrawFrame(1E-4,1E-1,1E-1,1E+1);
+hnue_injected->Draw();
+nue_injected->SetLogx();
+nue_injected->SetLogy();
+hnue_injected->GetXaxis()->SetTitle("sin^{2}2#theta_{#mue}");
+hnue_injected->GetXaxis()->SetTitleSize(0.03);
+hnue_injected->GetXaxis()->SetLabelSize(0.03);
+hnue_injected->GetYaxis()->SetTitle("#Delta m^{2}_{41} (eV^{2})");
+hnue_injected->GetYaxis()->SetTitleSize(0.03);
+hnue_injected->GetYaxis()->SetLabelSize(0.03);
+
+//injected point
+TMarker *m = new TMarker(0.003, 1.2, 29);
+m->SetMarkerSize(2);
+m->Draw();
+
+VALOR_nue_5s_2020_injected->SetLineColor(kGreen+2);
+VALOR_nue_5s_2020_injected->SetLineStyle(9);
+VALOR_nue_5s_2020_injected->Draw("l");
+
+VALOR_nue_5s_2020_injected2->SetLineColor(kRed);
+VALOR_nue_5s_2020_injected2->SetLineStyle(9);
+//VALOR_nue_5s_2020_injected2->Draw("l");
+
+
+CAFAna_nue_5s_2020_injected->SetLineColor(kOrange);
+CAFAna_nue_5s_2020_injected->SetLineStyle(9);
+CAFAna_nue_5s_2020_injected->Draw("l");
+
+CAFAna_nue_5s_2020_injected_syst->SetLineColor(kOrange);
+CAFAna_nue_5s_2020_injected_syst->Draw("l");
+
+TLegend * lnue_injected = new TLegend(0.15,0.2,0.67,0.3);
+lnue_injected->SetFillStyle(0);
+lnue_injected->SetBorderSize(0);
+lnue_injected->SetTextFont(132);
+lnue_injected->AddEntry(m, "Injected Signal: sin^{2}2#theta_{#mue} = 0.003, #Delta m^{2} = 1.2 eV^{2}", "p");
+lnue_injected->AddEntry(VALOR_nue_5s_2020_injected, "VALOR Modern 99pct CL stat-only Geniev3","L");
+lnue_injected->AddEntry(CAFAna_nue_5s_2020_injected, "CAFAna Modern 99pct CL stat-only Geniev3","L");
+lnue_injected->AddEntry(CAFAna_nue_5s_2020_injected_syst, "CAFAna Modern 99pct CL syst Geniev3","L");
+//lnue_injected->AddEntry(CAFAna_nue_90pctC, "CAFAna Modern 5sigma CL","L");
+lnue_injected->Draw();
+
+
+
+
+
 
 }

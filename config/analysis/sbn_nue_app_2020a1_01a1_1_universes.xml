@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_nue_app_2020a1_01a1_1">
+
+<!-- FHC -->
+    <element name="sbn_nd_modern_nueCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_app_2020a1_1_sbn_nd_universes.xml         </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_ub_modern_nueCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_app_2020a1_1_sbn_ub_universes.xml         </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element> 
+
+    <element name="sbn_fd_modern_nueCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_app_2020a1_1_sbn_fd_universes.xml         </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+    
+  </element_list>
+
+  <parameter_definitions>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_nue_etrue.xml            </filename>
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_nue_etrue.xml            </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_nue_etrue.xml            </filename>
+    <filename desc="sbn_xsec_ereco_parameters">        params/int_nue_ereco.xml                </filename>
+ </parameter_definitions>
+
+ <!--
+  <systematics name="SBN">
+     <group name="flux">
+        <format> SBNFluxNuE.xml </format>
+     </group>
+
+     <group name="interaction">
+        <format> SBNIntNuE.xml </format>
+    </group>
+  </systematics>
+   -->
+</valor> 

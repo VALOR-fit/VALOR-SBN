@@ -16,6 +16,7 @@ SBN_LIBRARIES =
 
 TGT = make_sbncode_minidst \
       make_interaction_splines \
+      make_xsec_splines \
       make_flux_splines \
       universe_variation_tweaks \
       write_spectra_using_universes
@@ -70,6 +71,14 @@ ifdef GENIE
 	$(LD) $(LDFLAGS) make_interaction_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_interaction_splines
 else
 	@echo "Skipping make_interaction_splines due to no GENIE"
+endif
+
+make_xsec_splines: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_xsec_splines.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_xsec_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
+else
+	@echo "Skipping make_xsec_splines due to no GENIE"
 endif
 
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation

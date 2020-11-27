@@ -128,6 +128,7 @@ int main(int argc, char ** argv)
   // Check if we are looking at nue_disappearance from the opt_oscillation argument
   // so that we reject the nue appearance oscillated events later
   string nue_dis = "nue-disappearance";
+std:cout << opt_oscillation << std::endl;
   size_t found_nue_dis = opt_oscillation.find(nue_dis);
   bool nue_disappearance = false;
   if(found_nue_dis != string::npos){
