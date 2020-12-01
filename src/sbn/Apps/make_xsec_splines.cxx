@@ -75,12 +75,18 @@ using std::string;
 using namespace valor;
 using namespace valor::conv;
 
+std::vector<std::string> old_nonres_interaction_systematics =
+ { "genie_NonResRvp1pi_Genie",
+   "genie_NonResRvbarp1pi_Genie",
+   "genie_NonResRvp2pi_Genie",
+   "genie_NonResRvbarp2pi_Genie",
+ };
 std::vector<std::string> proposal_interaction_systematics =
  { "genie_ccresAxial_Genie",
    "genie_ncresAxial_Genie",
    "genie_qema_Genie",
    "genie_NC_Genie",
-  /* "genie_NonResRvpCC1pi_Genie",
+   "genie_NonResRvpCC1pi_Genie",
    "genie_NonResRvnCC1pi_Genie",
    "genie_NonResRvbarnCC1pi_Genie",
    "genie_NonResRvbarpCC1pi_Genie",
@@ -96,11 +102,6 @@ std::vector<std::string> proposal_interaction_systematics =
    "genie_NonResRvnNC2pi_Genie",
    "genie_NonResRvbarnNC2pi_Genie",
    "genie_NonResRvbarpNC2pi_Genie"
-*/
-    "genie_NonResRvbarp1pi_Genie",
-    "genie_NonResRvbarp2pi_Genie",
-    "genie_NonResRvp1pi_Genie",
-    "genie_NonResRvp2pi_Genie"
  };
 std::vector<std::string> modern_interaction_systematics = 
  { "genie_DISAth_Genie",
@@ -338,7 +339,7 @@ int main(int argc, char ** argv)
     LOG("valor_sbn",pDEBUG) << " Number of entries in the TObjArray: " << n_mcts;
 
     // If we are storing the spectra (for validation) do so here
-    // Only do this for integer values of sigma (+/- 3, 2, 1)
+    // Only do this for integer values of sigma (+/- 3, 2, 1 & 0=nominal)
     // This can be done by only accessing the even integers in the iknot iterator
     if(arg_store_spectra && iknot % 2 == 0){
       TString hist_tag = "spectra_var_";
@@ -501,39 +502,17 @@ int main(int argc, char ** argv)
 
           // Access the VALOR array for the nominal mct in this mode
           // Get the event rate for this knot and mode in this bin
-          // const VALORArray &mct_knot = it_mct_mode_knot->second;    // my-fix --CHECK
           double nevents = mct_knot.GetEntry(ireco, itrue);
           if(isnan(nevents)){
             LOG("valor_sbn",pINFO) << " Current event rate is a NAN, setting to 0";
             nevents = 0;
           }
 
-          // Cutoff under 36 for a maximum 17% stat uncertainty in every bin
+          // Cutoff under 36 for a maximum 50% stat uncertainty in every bin
           // Splines will be flat otherwise
-          double event_ratio = (nevents0 > 36) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          double event_ratio = (nevents0 > 4) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           if(iknot == inom)
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
-
-          /*
-           *
-           * Temporary: Determine best cutoff for minimum number of events to construct a spline
-           *
-           */
-          if(nevents < 10 && nevents > 0 && nevents0 > 0)
-            nbins_l10++;
-          if(nevents < 100 && nevents > 0 && nevents0 > 0)
-            nbins_l100++;
-          if(nevents0 > 0 && nevents > 0){
-            hNEvents->Fill(nevents);
-            hNEvents0->Fill(nevents0);
-            hNEventsRatio->Fill(nevents,event_ratio);
-          }
-
-          /*
-           * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-           * Temporary: Determine best cutoff for minimum number of events to construct a spline
-           *
-           */
 
           // Set the y axis entry to be the current rate/nominal rate
           y.push_back(event_ratio);
@@ -577,38 +556,6 @@ int main(int argc, char ** argv)
     }//ireco
     spline_array->Write(objname.Data(),TObject::kSingleKey);
   }//imode
-
-  TCanvas *c = new TCanvas("c","",800,800);
-  TLegend *l = new TLegend(0.68,0.68,0.88,0.88);
-  l->SetBorderSize(0);
-  l->SetFillStyle(0);
-  l->SetTextFont(132);
-  l->AddEntry(hNEvents,  "Universe varied events", "L");
-  l->AddEntry(hNEvents0, "Nominal events", "L");
-  hNEvents->GetYaxis()->SetTitle("Number of bins");
-  hNEvents->GetXaxis()->SetTitle("Number of events");
-  hNEvents->GetYaxis()->SetTitleFont(132);
-  hNEvents->GetXaxis()->SetTitleFont(132);
-  hNEvents->GetYaxis()->SetLabelFont(132);
-  hNEvents->GetXaxis()->SetLabelFont(132);
-  hNEvents->SetLineColor(kAzure+7);
-  hNEvents0->SetLineColor(kPink+5);
-  hNEvents->Draw();
-  hNEvents0->Draw("same");
-  l->Draw();
-  c->SaveAs((syst+"_"+util::AsString(sample)+"_"+util::AsString(detector)+"_minimumSplineRate.root").c_str());
-  c->Clear();
-  l->Clear();
-
-  hNEventsRatio->GetXaxis()->SetTitle("Number of events");
-  hNEventsRatio->GetYaxis()->SetTitle("Number of universe events/number of nominal events");
-  hNEventsRatio->GetYaxis()->SetTitleFont(132);
-  hNEventsRatio->GetXaxis()->SetTitleFont(132);
-  hNEventsRatio->GetYaxis()->SetLabelFont(132);
-  hNEventsRatio->GetXaxis()->SetLabelFont(132);
-  hNEventsRatio->SetContour(250);
-  hNEventsRatio->Draw("colz");
-  c->SaveAs((syst+"_"+util::AsString(sample)+"_"+util::AsString(detector)+"_minimumSplineRate2D.root").c_str());
 
   fout.Close();
 
@@ -664,7 +611,7 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
   }
   std::string alt_syst = sy;
   TString tsy(sy);
-  if(tsy.Contains("NonRes")){
+  if(tsy.Contains("NonRes") && (tsy.Contains("CC") || tsy.Contains("NC"))){
     GetFromPair(sy,alt_syst);
     LOG("valor_sbn",pNOTICE) << " Switched input parameter name: " << sy << " to alternative parameter name for reading the text file: " << alt_syst;
   }
@@ -709,6 +656,18 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
 std::string GetSystematic(const std::string &sy){
   std::string syst = "";
   bool found_syst = false;
+  for(const std::string &s : old_nonres_interaction_systematics){
+    LOG("valor_sbn",pDEBUG) << "Checking old proposal interaction systematic: " << s << " for " << sy;
+    // Add a space to the end of the parameter name to avoid getting the wrong one
+    size_t found_s = s.find(sy+"_");
+    if(found_s != std::string::npos){
+      syst = s;
+      LOG("valor_sbn",pINFO) << "Found the chosen old proposal interaction systematic: " << syst;
+      found_syst = true;
+      break;
+    }
+  }
+
   for(const std::string &s : proposal_interaction_systematics){
     LOG("valor_sbn",pDEBUG) << "Checking proposal interaction systematic: " << s << " for " << sy;
     // Add a space to the end of the parameter name to avoid getting the wrong one
@@ -809,21 +768,21 @@ TString BuildObjName(const ReacMode_t  &m,
 //___________________________________________________________________
 void GetFromPair(const std::string &vname, std::string &file_name){
 
-  if(vname == "NonResRvpCC1pi" || vname == "NonResRvbarnCC1pi" || vname == "NonResRvp1pi")
+  if(vname == "NonResRvpCC1pi" || vname == "NonResRvbarnCC1pi")
     file_name = "NonResRvp1pi";
-  else if(vname == "NonResRvbarpCC1pi" || vname == "NonResRvnCC1pi" || vname == "NonResRvbarp1pi")
+  else if(vname == "NonResRvbarpCC1pi" || vname == "NonResRvnCC1pi")
     file_name = "NonResRvbarp1pi";
-  else if(vname == "NonResRvpCC2pi" || vname == "NonResRvbarnCC2pi" || vname == "NonResRvp2pi")
+  else if(vname == "NonResRvpCC2pi" || vname == "NonResRvbarnCC2pi")
     file_name = "NonResRvp2pi";
-  else if(vname == "NonResRvbarpCC2pi" || vname == "NonResRvnCC2pi" || vname == "NonResRvbarp2pi")
+  else if(vname == "NonResRvbarpCC2pi" || vname == "NonResRvnCC2pi")
     file_name = "NonResRvbarp2pi";
-  else if(vname == "NonResRvpNC1pi" || vname == "NonResRvbarnNC1pi" || vname == "NonResRvp1piAlt")
+  else if(vname == "NonResRvpNC1pi" || vname == "NonResRvbarnNC1pi")
     file_name = "NonResRvp1piAlt";
-  else if(vname == "NonResRvbarpNC1pi" || vname == "NonResRvnNC1pi" || vname == "NonResRvbarp1piAlt")
+  else if(vname == "NonResRvbarpNC1pi" || vname == "NonResRvnNC1pi")
     file_name = "NonResRvbarp1piAlt";
-  else if(vname == "NonResRvpNC2pi" || vname == "NonResRvbarnNC2pi" || vname == "NonResRvp2piAlt")
+  else if(vname == "NonResRvpNC2pi" || vname == "NonResRvbarnNC2pi")
     file_name = "NonResRvp2piAlt";
-  else if(vname == "NonResRvbarpNC2pi" || vname == "NonResRvnNC2pi" || vname == "NonResRvbarp2piAlt")
+  else if(vname == "NonResRvbarpNC2pi" || vname == "NonResRvnNC2pi")
     file_name = "NonResRvbarp2piAlt";
   else{
     LOG("valor_sbn",pERROR) << "Couldn't suss out the input variation name from " << vname;
