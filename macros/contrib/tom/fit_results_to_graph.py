@@ -201,7 +201,7 @@ if __name__=="__main__":
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
   parser.add_option('-e','--exclusion', dest='exclusion',default=True,help='Boolean for whether we are producing exclusion or inclusion contours')
-  parser.add_option('-n','--nue', dest='nue',default=False,help='Boolean for whether we are producing numu or nue contours')
+  parser.add_option('-n','--nue', dest='nue',default=True,help='Boolean for whether we are producing numu or nue contours')
   parser.add_option('-d','--data', dest='data',default="valor_fit_ntp",help='Name of the nTuple')
 
   options,patterns = parser.parse_args()

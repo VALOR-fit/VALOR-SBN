@@ -62,28 +62,6 @@ std::vector<std::string> interaction_systematics =
   "genie_NonResRvbarp2pi_Genie",
   "genie_NonResRvp1pi_Genie",
   "genie_NonResRvp2pi_Genie",
-  // The extra params for using GENIE v3 (modern sample)
-  "genie_ncelAxial_Genie",
-  "genie_ncelEta_Genie",
-  "genie_ccresVector_Genie",
-  "genie_ncresVector_Genie",
-  "genie_cohMA_Genie",
-  "genie_cohR0_Genie",
-  "genie_ResDecayGamma_Genie",
-  "genie_DISAth_Genie",
-  "genie_DISBth_Genie",
-  "genie_DISCv1u_Genie",
-  "genie_DISCv2u_Genie",
-  "genie_IntraNukeNmfp_Genie",
-  "genie_IntraNukeNcex_Genie",
-  "genie_IntraNukeNinel_Genie",
-  "genie_IntraNukeNabs_Genie",
-  "genie_IntraNukeNpi_Genie",
-  "genie_IntraNukePImfp_Genie", 
-  "genie_IntraNukePIcex_Genie",
-  "genie_IntraNukePIinel_Genie",
-  "genie_IntraNukePIabs_Genie",
-  "genie_IntraNukePIpi_Genie"
 };
 
 std::vector<std::string> flux_systematics =
@@ -163,7 +141,7 @@ int main(int argc, char ** argv)
 
   LOG("valor_sbn", pNOTICE) << *Rnd::Instance();
 
-  int max_universes = 499;
+  int max_universes = 999;
 
   // Get model & configure
   // Make an elements without reading the MC

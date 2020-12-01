@@ -120,7 +120,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
 
           if(is_true):
             for ip, p in enumerate(params):
-              if "sbnd" in p.GetName() and "sbn_nd" in histname or "uboone" in p.GetName() and "uboone" in histname or "icarus" in p.GetName() and "icarus" in histname:
+             # if "sbnd" in p.GetName() and "sbn_nd" in histname or "uboone" in p.GetName() and "uboone" in histname or "icarus" in p.GetName() and "icarus" in histname:
                 for kinerange in p.GetKineRanges():
                   minbin = min(kinerange.first,kinerange.second)
                   maxbin = max(kinerange.first,kinerange.second)

@@ -153,8 +153,8 @@ std:cout << opt_oscillation << std::endl;
   string str_int        = "_Int";
   string str_osc        = "_Osc";
   string str_dirt       = "_Dirt";
-  string str_cosmic     = "_Nu_Cosmic_Dirt";
-//  string str_cosmic     = "_CosDirt";
+//  string str_cosmic     = "_Nu_Cosmic_Dirt";
+  string str_cosmic     = "_CosDirt";
 
   //Find substrings and check the selected nuE sample-type if necessary
   size_t found_nue  = opt_input_name.find(str_nue);

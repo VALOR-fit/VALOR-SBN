@@ -70,8 +70,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
     if (is_true):
       for p in params:
         if "flux" not in p.GetCategories(): continue
-#        print p.GetName(), "    ", model.Name()
-        if "sbn_nd" in p.GetName() and "sbn_nd" in model.Name() or "sbn_ub" in p.GetName() and "uboone" in model.Name() or "sbn_fd" in p.GetName() and "icarus" in model.Name():
+        if "sbnd" in p.GetName() and "sbn_nd" in model.Name() or "uboone" in p.GetName() and "uboone" in model.Name() or "icarus" in p.GetName() and "icarus" in model.Name():
           n_bins += p.GetKineRanges().size()
 
     elif (is_reco):
@@ -120,7 +119,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
 
           if(is_true):
             for ip, p in enumerate(params):
-              if "sbn_nd" in p.GetName() and "sbn_nd" in histname or "sbn_ub" in p.GetName() and "uboone" in histname or "sbn_fd" in p.GetName() and "icarus" in histname:
+              if "sbnd" in p.GetName() and "sbn_nd" in histname or "uboone" in p.GetName() and "uboone" in histname or "icarus" in p.GetName() and "icarus" in histname:
                 for kinerange in p.GetKineRanges():
                   minbin = min(kinerange.first,kinerange.second)
                   maxbin = max(kinerange.first,kinerange.second)

@@ -45,98 +45,47 @@
 
   <parameter_definitions>
     <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml </filename>
-    <!-- <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_nue_ereco.xml            </filename>
-    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_nue_ereco.xml            </filename>
-    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_nue_ereco.xml            </filename>-->
-    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_nue_etrue.xml            </filename> 
-    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_nue_etrue.xml            </filename>
-    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_nue_etrue.xml            </filename>
-
-    <filename desc="flux_response_parameters">         params/sbn_flux_spline_parameters.xml       </filename>
-    <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters.xml         </filename>
-    <filename desc="sbn_modern_int_parameters">        params/sbn_modern_interaction_parameters.xml  </filename>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue.xml            </filename> 
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue.xml            </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue.xml            </filename>
+    <filename desc="sbn_xsec_ereco_parameters">        params/int_nue_ereco.xml                </filename>
+    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml        </filename>
   </parameter_definitions>
 
   <systematics name="SBN">
     <group name="flux">
-      <format> SBNFluxNuE.xml </format>
+      <format> SBNFlux_Etrue.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_nue_appearance/prior_errors/2020/hadron2/hadron2_flux_matrix.root </filename>
+        <filename>   sbn_nue_appearance/prior_errors/2020_new/flux/flux_matrix.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
     </group>
 
-    <group name="flux">
-      <format> SBNFluxResponseParams.xml </format>
+
+    <group name="int">
+      <format> SBNIntNuE.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_flux_matrix.root         </filename>
-        <objname>    cov                                                                  </objname>    
-        <objtype>    TMatrixD                                                             </objtype>
-      </covariance_matrix>
-
-      <untuned_values>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_flux_matrix.root         </filename>
-        <objname>    untuned                                                              </objname>    
-        <objtype>    TMatrixD                                                             </objtype>
-      </untuned_values> 
-
-      <initial_values>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_flux_matrix.root         </filename>
-        <objname>    nominal                                                              </objname>    
-      </initial_values> 
-
+          <!--  <filename>   sbn_nue_appearance/prior_errors/2020_new/interaction/interaction_matrix.root </filename>-->
+        <filename>   sbn_nue_appearance/prior_errors/01a1/interaction.root </filename> 
+        <objname>    frac_cov            </objname>    
+        <objtype>    TMatrixD                  </objtype>
+      </covariance_matrix> 
     </group>
 
 
     <group name="int">
-      <format> SBNInteractionResponseParams.xml </format>
+      <format> SBNMEC.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_interaction_proposal_matrix.root         </filename>
-        <objname>    cov                                                                                  </objname>    
-        <objtype>    TMatrixD                                                                             </objtype>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/mec_100pct_covariance.root </filename>
+        <objname>    frac_cov                                                     </objname>    
+        <objtype>    TMatrixD                                                     </objtype>
       </covariance_matrix>
-
-      <untuned_values>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_interaction_proposal_matrix.root         </filename>
-        <objname>    untuned                                                                              </objname>    
-        <objtype>    TMatrixD                                                                             </objtype>
-      </untuned_values> 
-
-      <initial_values>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_interaction_proposal_matrix.root         </filename>
-        <objname>    nominal                                                                              </objname>    
-      </initial_values> 
-
     </group>
 
-    <group name="int">
-      <format> SBNModernInteractionResponseParams.xml </format>
-      
-      <covariance_matrix>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_interaction_modern_matrix.root         </filename>
-        <objname>    cov                                                                                </objname>    
-        <objtype>    TMatrixD                                                                           </objtype>
-      </covariance_matrix>
-
-      <untuned_values>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_interaction_modern_matrix.root         </filename>
-        <objname>    untuned                                                                            </objname>    
-        <objtype>    TMatrixD                                                                           </objtype>
-      </untuned_values> 
-
-      <initial_values>
-        <filename>   sbn_nue_appearance/prior_errors/2020/spline_interaction_modern_matrix.root         </filename>
-        <objname>    nominal                                                                            </objname>    
-      </initial_values> 
-
-    </group>
-
-
- 
   </systematics>
    
 </valor> 
