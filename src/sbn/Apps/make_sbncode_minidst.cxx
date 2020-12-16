@@ -516,6 +516,7 @@ int main(int argc, char ** argv)
 
       // Particle counting
       bool nucleonPDGSet = false;
+      bool cohPion       = false;
       for(unsigned int p = 0; p < fsps.size(); ++p){
         if(status_code_set){
           if(fsps[p].status_code == 11){
@@ -557,8 +558,8 @@ int main(int argc, char ** argv)
       }
 
       if(nuc_pdg > 5000 && (nipip+nipim+nipi0 == 1 || nipip+nipim+nipi0 == 2)){
-        LOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
-        util::Die(-1);
+        LOG("valor_sbn",pINFO) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
+        cohPion = true;
       }
 
       // Construct the reaction mode
@@ -713,7 +714,8 @@ int main(int argc, char ** argv)
 
           // If we are looking at a CC event and an Alt paramater, set all the NC NonRes param entries to be 1
           // Vice-versa for NC !Alt
-          if((iscc && input_vname.Contains("Alt")) || (!iscc && !input_vname.Contains("Alt"))){
+          // Or if the pion produced was from a coherent interaction in which the nucleon PDG was set to be a nucleus
+          if((iscc && input_vname.Contains("Alt")) || (!iscc && !input_vname.Contains("Alt")) || cohPion){
             for(const TString &new_vname : nonResVariations){
               if((iscc && new_vname.Contains("CC")) || (!iscc && new_vname.Contains("NC"))) continue;
               LOG("valor_sbn",pINFO) << " Setting all NC parameter entries to be 1.0 in a CC event and vice versa";
