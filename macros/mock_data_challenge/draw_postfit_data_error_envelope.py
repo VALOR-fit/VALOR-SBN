@@ -127,9 +127,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     #hname_p1  = hname_prefix + "_p1;" + det
     #hname_m1  = hname_prefix + "_m1;" + det
     # When running the tweaks for each detector individually:
-    hname_nom = hname_prefix + "_nom;1"
-    hname_p1  = hname_prefix + "_p1;1"
-    hname_m1  = hname_prefix + "_m1;1"
+    hname_nom = hname_prefix + "_nom"#;1"
+    hname_p1  = hname_prefix + "_p1"#;1"
+    hname_m1  = hname_prefix + "_m1"#;1"
     #hname_data = "toymc_data_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
     if det == '1':
       if mdc is False:
@@ -154,6 +154,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       print("No detector given, defaulting to the ND")
 
     print "Data histogram found: ", hname_data
+    print "MC histogram found: ", hname_nom
 
     out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
 
@@ -303,7 +304,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_prefit.SetMarkerColor(env_graph_prefit.GetMarkerColor())
       legend_prefit.SetMarkerSize (env_graph_prefit.GetMarkerSize())
 
-      if ratio == '1' or ratio == '2':
+      if ratio == '1' or ratio == '2' or ratio == '3':
         print "Filling ratio list with prefit"
         ratio_hists.append(prefit_width)
         ratio_graphs.append(env_graph_prefit)
@@ -377,7 +378,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_data.SetLineColor(data_width.GetLineColor())
       legend_data.SetLineWidth(data_width.GetLineWidth())
 
-      if ratio == '0' or ratio == '2':
+      if ratio == '0' or ratio == '2' or ratio == '3':
         print "Filling ratio list with data"
         ratio_hists.append(legend_data)
         ratio_graphs.append(legend_data)
@@ -413,7 +414,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       r_legend.SetBorderSize(0);
 
       r_canv_name = "cr_%s" % util.SampleAsString(s)
-      r_canv = ROOT.TCanvas(r_canv_name,"",700,900)
+      r_canv = ROOT.TCanvas(r_canv_name,"",750,900)
       if use_log_plots: r_canv.SetLogx()
 
       # Top pad: all histograms with envelopes
@@ -433,7 +434,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
         if i == 0:
           h.Draw()
           graph.Draw("same2")
-          h.GetYaxis().SetRangeUser(0., max_y)
+          h.GetYaxis().SetRangeUser(0.,max_y)
           h.GetYaxis().SetTitleSize(0.045)
           h.GetYaxis().SetTitleOffset(1.4)
           h.GetYaxis().SetLabelSize(0.035)
@@ -459,7 +460,8 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       # Get the percentage rate difference between the plots
       ratio_diff = ROOT.TH1D(ratio_hists[0])
-      ratio_diff.Add(ratio_hists[1],-1)
+      if ratio != '3':
+        ratio_diff.Add(ratio_hists[1],-1)
 
       # Get the magnitude of the uncertainty on each bin and scale the bin content by it
       yhigh = -1.
@@ -467,17 +469,20 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       if ratio == '2':
         yhigh = env_graph_prefit.GetEYhigh()
         ylow  = env_graph_prefit.GetEYlow()
-      else:
+      elif ratio == '0' or ratio == '1':
         yhigh = env_graph_postfit.GetEYhigh()
         ylow  = env_graph_postfit.GetEYlow()
 
 
-      for b in range(ratio_diff.GetNbinsX()):
-        if yhigh[b] < 0 or ylow[b] < 0:
-          print "Error: Negative uncertainty defined: ", yhigh, ", ", ylow
-          util.Die(-1)
-        yavg  = (yhigh[b]+ylow[b])/2.
-        ratio_diff.SetBinContent(b,ratio_diff.GetBinContent(b)/yavg)
+      if ratio != '3':
+        for b in range(ratio_diff.GetNbinsX()):
+          if yhigh[b] < 0 or ylow[b] < 0:
+            print "Error: Negative uncertainty defined: ", yhigh, ", ", ylow
+            util.Die(-1)
+          yavg  = (yhigh[b]+ylow[b])/2.
+          ratio_diff.SetBinContent(b,ratio_diff.GetBinContent(b)/yavg)
+      else:
+        ratio_diff.Divide(ROOT.TH1D(ratio_hists[1]))
 
 
       ratio_diff.Draw("hist")
@@ -490,6 +495,8 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
         ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Postfit)}{#sigma_{Postfit}}");
       elif ratio == '2':
         ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Mock data)}{#sigma_{Prefit}}");
+      elif ratio == '3':
+        ratio_diff.GetYaxis().SetTitle("#frac{Prefit}{Mock data}");
 
       ratio_diff.GetYaxis().SetTitleFont(132);
       ratio_diff.GetYaxis().SetLabelFont(132);
@@ -502,9 +509,11 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       ratio_diff.GetXaxis().SetTitleOffset(1.1);
       ratio_diff.GetXaxis().SetLabelSize(0.065);
       ratio_diff.GetXaxis().SetLabelColor(1);
+      ratio_diff.GetYaxis().SetRangeUser(0,2)
 
       r_canv.RedrawAxis()
       r_canv.Write("cr")
+      r_canv.SaveAs("testSave.png")
 
     f_output.Close()
   # End of model loop
