@@ -9,6 +9,7 @@
 //
 
 void FormatLatex(const double &b, const double &e, const double &w, const double &y, const char *s);
+std::string FixLabel(const std::string l);
 
 void sbn_parameter_pulls(const char * filename, 
     std::string  location = "",
@@ -19,7 +20,7 @@ void sbn_parameter_pulls(const char * filename,
     const char * int_cov = "", 
     std::string  mec = "", 
     std::string  detector = "", 
-    const char * sample = "",
+    std::string  sample = "",
     std::string  input_tag = "")
 {
   using namespace valor;
@@ -83,7 +84,7 @@ void sbn_parameter_pulls(const char * filename,
   fitnt->SetBranchAddress("best_fit_model",         &bfmodel_array);
   fitnt->SetBranchAddress("data",                   &data_array);
 
-  TCanvas *c = new TCanvas("c","",0,20,1256,720);
+  TCanvas *c = new TCanvas("c","",0,20,2200,600);
   TLegend *l_bestfit = new TLegend(0.63,0.68,0.88,0.88);
   l_bestfit->SetBorderSize(0);
   fitnt->GetEntry(0);
@@ -240,8 +241,8 @@ void sbn_parameter_pulls(const char * filename,
   if(postfit_errors.size() != totalNumParams) 
     std::cout << " Error: The number of parameters and errors don't match. Params : " << totalNumParams << " vs. errors: " << postfit_errors.size() << std::endl;
 
-  const char *name_prefit  = ("h_prefit_"+name).c_str();
-  const char *name_postfit = ("h_postfit_"+name).c_str();
+  const char *name_prefit  = "h_prefit";
+  const char *name_postfit = "h_postfit";
 
   // Neutrino flavour number of bins
   int n_numu         = 20;
@@ -255,7 +256,7 @@ void sbn_parameter_pulls(const char * filename,
   // New canvas features 
   c->SetLeftMargin   (0.069); 
   c->SetRightMargin  (0.02);
-  c->SetBottomMargin (0.22);
+  c->SetBottomMargin (0.18);
   c->SetTopMargin    (0.06);
 
   TH1D *h_prefit  = new TH1D(name_prefit,  "", nRows-nPhysicsParams, 0, nRows-nPhysicsParams);
@@ -297,8 +298,10 @@ void sbn_parameter_pulls(const char * filename,
       h_prefit->SetBinError(nuisanceBin, 0);
       h_postfit->SetBinError(nuisanceBin, 0);
     }
-    h_prefit->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
-    h_postfit->GetXaxis()->SetBinLabel(nuisanceBin,gbfparm->NameByIndex(j).c_str());
+    std::string paramLabel = FixLabel(gbfparm->NameByIndex(j));
+
+    h_prefit->GetXaxis()->SetBinLabel( nuisanceBin,paramLabel.c_str());
+    h_postfit->GetXaxis()->SetBinLabel(nuisanceBin,paramLabel.c_str());
   }
   TH1D *h_postfit_2 = (TH1D*)h_postfit->Clone("h_postfit_2");
   TH1D *h_prefit_2  = (TH1D*)h_prefit->Clone("h_prefit_2");
@@ -397,7 +400,7 @@ void sbn_parameter_pulls(const char * filename,
     line_moddet.Draw("same");
 
   h_postfit->GetXaxis()->LabelsOption("v");
-  h_postfit->GetXaxis()->SetLabelSize(0.025);
+  h_postfit->GetXaxis()->SetLabelSize(0.03);
   h_postfit->GetXaxis()->SetTitleSize(0.035);
   h_postfit->GetXaxis()->SetTitleOffset(1.2);
   h_postfit->GetYaxis()->SetLabelSize(0.035);
@@ -426,7 +429,7 @@ void sbn_parameter_pulls(const char * filename,
   c->SetGridy();
   c->Update();
   c->Draw();
-  c->SaveAs(("postfit-only_nuisance_params_mdc_"+name+"_"+sample+tag+".root").c_str());
+  c->SaveAs(("postfit-only_nuisance_params_mdc_"+sample+tag+".root").c_str());
   c->Clear();
 
   double max_in_error = -999.;
@@ -512,7 +515,7 @@ void sbn_parameter_pulls(const char * filename,
   c->SetGridy();
   c->Update();
   c->Draw();
-  c->SaveAs(("prefit-only_nuisance_params_mdc_"+name+"_"+sample+tag+".root").c_str());
+  c->SaveAs(("prefit-only_nuisance_params_mdc_"+sample+tag+".root").c_str());
   c->Clear();
 
 }
@@ -535,4 +538,34 @@ void FormatLatex(const double &b, const double &e, const double &w, const double
   
   // Asthetics
   l.DrawLatex(x,y,s);
+}
+std::string FixLabel(const std::string l){
+  std::string fixed(l);
+  TString tFixed(l);
+
+  // If flux unisim, remove flux unisim
+  if(tFixed.Contains("FluxUnisim")){
+    tFixed.ReplaceAll("_FluxUnisim","");
+  }
+  // If GENIE, remove two genie tags
+  else if(tFixed.Contains("genie_")){
+    tFixed.ReplaceAll("genie_","");
+    tFixed.ReplaceAll("_Genie","");
+  }
+  // If flux covariance, make more human-readable
+  else if(tFixed.Contains("flux_")){
+    tFixed.ReplaceAll("flux_","");
+    tFixed.ReplaceAll("_"," ");
+    tFixed.ReplaceAll("numubar","#bar{#nu}_{#mu} bin ");
+    tFixed.ReplaceAll("nuebar","#bar{#nu}_{e} bin ");
+    tFixed.ReplaceAll("numu","#nu_{#mu} bin ");
+    tFixed.ReplaceAll("nue","#nu_{e} bin ");
+    tFixed.ReplaceAll("sbnd","");
+    tFixed.ReplaceAll("uboone","");
+    tFixed.ReplaceAll("icarus","");
+  }
+  fixed = tFixed.Data();
+
+  return fixed;
+
 }
