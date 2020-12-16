@@ -27,8 +27,7 @@
     <filename desc="flux_response_parameters">         params/sbn_flux_spline_parameters.xml         </filename>
     <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters.xml         </filename>
     <filename desc="sbn_modern_int_parameters">        params/sbn_modern_interaction_parameters.xml  </filename>
-    
-    <!--filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml              </filename-->
+    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml              </filename>
   </parameter_definitions>
 
   <systematics name="SBN">
@@ -63,7 +62,7 @@
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
     </group>
-    
+
     <group name="int">
       <format> SBNInteractionResponseParams.xml </format>
       
@@ -108,7 +107,6 @@
 
     </group>
 
-    <!--
     <group name="int">
 
       <format> SBNMEC.xml </format>
@@ -120,7 +118,6 @@
       </covariance_matrix>
 
     </group>
-    -->
   </systematics>
 
 </valor> 
