@@ -32,7 +32,8 @@ def main(beam_mode_arg = None, sample_arg = None,
     output_file="syst_applied_table.tex",
     modeslist="",
     config_file = "dune_ndfit.xml",
-    skipflux=False, skipfluxcov=False, skipint=False, skipprop=False, skipmod=False, skipdet =False, include_empty = False, color = True, unosc = False):
+    skipflux=False, skipfluxcov=False, skipfluxuncorr=False, skipint=False, skipprop=False, skipmod=False, skipdet =False,
+    include_empty = False, color = True, unosc = False):
 
   elements = valor.CompoundFitElements();
   elements.Read(base_dir+"/config/"+config_file,"nosplines nomc")
@@ -133,12 +134,13 @@ def main(beam_mode_arg = None, sample_arg = None,
       if not iparam:
         last_param = param
 
-      if skipflux    and param.SearchCategories("flux")            : continue
-      if skipfluxcov and param.SearchCategories("flux") and not param.SearchCategories("flux_uncorr") : continue
-      if skipint     and param.SearchCategories("int")             : continue
-      if skipprop    and param.SearchCategories("proposal")        : continue
-      if skipmod     and param.SearchCategories("modern")          : continue
-      if skipdet     and param.SearchCategories("det")             : continue
+      if skipflux       and param.SearchCategories("flux")            : continue
+      if skipfluxuncorr and param.SearchCategories("flux") and param.SearchCategories("flux_uncorr") : continue
+      if skipfluxcov    and param.SearchCategories("flux") and not param.SearchCategories("flux_uncorr") : continue
+      if skipint        and param.SearchCategories("int")             : continue
+      if skipprop       and param.SearchCategories("proposal")        : continue
+      if skipmod        and param.SearchCategories("modern")          : continue
+      if skipdet        and param.SearchCategories("det")             : continue
 
       # Add second line if we're at the beginning of a new group
       # Also check for varying detector
@@ -222,17 +224,18 @@ if __name__=="__main__":
   parser.add_option('-m', '--modes',   dest='modeslist',   default="", help="ROOT file containing the list of modes affected by each parameter")
   parser.add_option('-c', '--config',  dest='config',      default="fit/dune_ndfit.xml", help="Configuration file")
 
-  parser.add_option('-b', '--beam'     , dest='beam'        , default=None     , help="Beam current (FHC/RHC)")
-  parser.add_option('-s', '--sample'   , dest='sample'      , default=None     , help="Sample (numuCC1trkQE etc)")
-  parser.add_option('--skip-flux'      , dest='skipflux'    , action="store_true", default=False, help="Skip the flux parameters")
-  parser.add_option('--skip-flux-cov'  , dest='skipfluxcov' , action="store_true", default=False, help="Skip the flux cov parameters")
-  parser.add_option('--skip-int'       , dest='skipint'     , action="store_true", default=False, help="Skip the interaction parameters")
-  parser.add_option('--skip-prop'      , dest='skipprop'    , action="store_true", default=False, help="Skip the proposal interaction parameters")
-  parser.add_option('--skip-mod'       , dest='skipmod'     , action="store_true", default=False, help="Skip the modern interaction parameters")
-  parser.add_option('--skip-det'       , dest='skipdet'     , action="store_true", default=False, help="Skip the detector parameters")
-  parser.add_option('--include-empty'  , dest='incempty'    , action="store_true", default=False, help="Write completely empty rows in the table")
-  parser.add_option('-n',"--no-color"  , dest='nocolor'     , action="store_true", default=False, help="Color backgrounds of ticked cells")
-  parser.add_option('-u',"--unosc-only", dest='unosc'       , action="store_true", default=False, help="Don't write oscillated modes.")
+  parser.add_option('-b', '--beam'       , dest='beam'            , default=None     , help="Beam current (FHC/RHC)")
+  parser.add_option('-s', '--sample'     , dest='sample'          , default=None     , help="Sample (numuCC1trkQE etc)")
+  parser.add_option('--skip-flux'        , dest='skipflux'        , action="store_true", default=False, help="Skip the flux parameters")
+  parser.add_option('--skip-flux-cov'    , dest='skipfluxcov'     , action="store_true", default=False, help="Skip the flux cov parameters")
+  parser.add_option('--skip-flux-uncorr' , dest='skipfluxuncorr'  , action="store_true", default=False, help="Skip the correlated flux parameters")
+  parser.add_option('--skip-int'         , dest='skipint'         , action="store_true", default=False, help="Skip the interaction parameters")
+  parser.add_option('--skip-prop'        , dest='skipprop'        , action="store_true", default=False, help="Skip the proposal interaction parameters")
+  parser.add_option('--skip-mod'         , dest='skipmod'         , action="store_true", default=False, help="Skip the modern interaction parameters")
+  parser.add_option('--skip-det'         , dest='skipdet'         , action="store_true", default=False, help="Skip the detector parameters")
+  parser.add_option('--include-empty'    , dest='incempty'        , action="store_true", default=False, help="Write completely empty rows in the table")
+  parser.add_option('-n',"--no-color"    , dest='nocolor'         , action="store_true", default=False, help="Color backgrounds of ticked cells")
+  parser.add_option('-u',"--unosc-only"  , dest='unosc'           , action="store_true", default=False, help="Don't write oscillated modes.")
 
   o,other = parser.parse_args()
 
@@ -245,7 +248,7 @@ if __name__=="__main__":
   else:
     sample = None
 
-  main(beam, sample, o.output_file, o.modeslist, o.config, o.skipflux, o.skipfluxcov, o.skipint, o.skipprop, o.skipmod, o.skipdet, o.incempty, not o.nocolor, o.unosc)
+  main(beam, sample, o.output_file, o.modeslist, o.config, o.skipflux, o.skipfluxcov, o.skipfluxuncorr, o.skipint, o.skipprop, o.skipmod, o.skipdet, o.incempty, not o.nocolor, o.unosc)
 
   if other:
     print "Warning - ignored arguments: ",other
