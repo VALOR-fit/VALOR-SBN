@@ -43,13 +43,20 @@ void read_osc_fit_results(const char * filename, const char * treename = "valor_
     cout << "Global best fit parameter list: " << endl;
     cout << *gbfparm;
     cout << endl;
+    std::map<std::string,double>::const_iterator it;
+    cout << "Global best fit contributions: " << endl;
+    for(it = gbfparm->GetBestFitStatisticContributions().begin(); it != gbfparm->GetBestFitStatisticContributions().end(); ++it){
+        cout << it->first;
+        cout << " = ";
+        cout << it->second;
+        cout << endl;
+    }
     /*
     cout << "Objects stored in `spectra' object array: " << endl;    
     spectra_array->Print();
     cout << endl;
     cout << "Objects stored in `best_fit_params' object array: " << endl;    
     bfparam_array->Print();
-    */
-
+*/
   }
 }
