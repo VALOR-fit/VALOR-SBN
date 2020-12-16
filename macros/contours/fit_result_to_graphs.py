@@ -38,27 +38,23 @@ x_npoints = 40
 y_npoints = 40
 
 # Limits
-x_lim = 0.5*(3/(x_npoints-1))
-y_lim = 0.5*(4/(y_npoints-1))
+ex_x_lim = 0.5*(3/(x_npoints-1))
+ex_y_lim = 0.5*(4/(y_npoints-1))
 
-#ex_x_min = -3.0375 #exlusion
-#ex_x_max = 0.0375
+in_x_lim = 0.5*((math.log10(5e-1)+2)/(x_npoints-1))
+in_y_lim = 0.5*((math.log10(4)-math.log10(4e-1))/(y_npoints-1))
 
-ex_x_min = -(3+x_lim) #exlusion
-ex_x_max = (0+x_lim)
+ex_x_min = -(3+ex_x_lim) #exlusion
+ex_x_max = (0+ex_x_lim)
 
-in_x_min = 1E-2 #allowed
-in_x_max = 5E-1
+in_x_min = -(2+in_x_lim) #allowed
+in_x_max = math.log10(5e-1)+in_x_lim
 
+ex_y_min = -(2+ex_y_lim) #exlusion
+ex_y_max = 2+ex_y_lim
 
-#ex_y_min = -2.05 #exlusion
-#ex_y_max = 2.05
-
-ex_y_min = -(2+y_lim) #exlusion
-ex_y_max = 2+y_lim
-
-in_y_min = 4E-1 #allowed
-in_y_max = 4.
+in_y_min = -(abs(math.log10(4e-1))+in_y_lim) #allowed
+in_y_max = math.log10(4)+in_y_lim
 
 ndim = 2
 
@@ -79,10 +75,10 @@ def GetLoggedHist(filename,exclusion,data):
   y_min = ex_y_min
   if exclusion is False:
     print "Exclusion is false, setting inclusion limits"
-    x_max = math.log10(in_x_max)
-    x_min = math.log10(in_x_min)
-    y_max = math.log10(in_y_max)
-    y_min = math.log10(in_y_min)
+    x_max = in_x_max
+    x_min = in_x_min
+    y_max = in_y_max
+    y_min = in_y_min
 
   hist = R.TH2D("hist","",
     x_npoints,x_min,x_max,
@@ -92,13 +88,10 @@ def GetLoggedHist(filename,exclusion,data):
   for ev in chain:
     fp = ev.best_fit_params
     true = ev.true_params
-    x = true.Value(param_x)
-    y = true.Value(param_y)
-
-    if exclusion is False:
-      print "Exclusion is false, setting inclusion parameters"
-      x = fp.CurrValue(param_x)
-      y = fp.CurrValue(param_y)
+    x = fp.CurrValue(param_x)
+    y = fp.CurrValue(param_y)
+  #  x = true.Value(param_x)
+  #  y = true.Value(param_y)
 
     stat = max(0.,fp.GetBestFitStatistic())
 
@@ -113,12 +106,13 @@ def GetLoggedHist(filename,exclusion,data):
 
     hist.GetBinXYZ(ibin,xbin,ybin,zbin)
 
-    xbin_xpoint_diff = abs(hist.GetXaxis().GetBinCenter(xbin.value) - logx)
-    ybin_ypoint_diff = abs(hist.GetYaxis().GetBinCenter(ybin.value) - logy)
-    if xbin_xpoint_diff > eps:
-      print " Error, bin center is not close to the true x point, bin center: ", hist.GetXaxis().GetBinCenter(xbin.value), " x-point: ", logx, " and the difference: ", xbin_xpoint_diff
-    if ybin_ypoint_diff > eps:
-      print " Error, bin center is not close to the true y point, bin center: ", hist.GetYaxis().GetBinCenter(ybin.value), " y-point: ", logy, " and the difference: ", ybin_ypoint_diff
+    if exclusion is True:
+      xbin_xpoint_diff = abs(hist.GetXaxis().GetBinCenter(xbin.value) - logx)
+      ybin_ypoint_diff = abs(hist.GetYaxis().GetBinCenter(ybin.value) - logy)
+      if xbin_xpoint_diff > eps:
+        print " Error, bin center is not close to the true x point, bin center: ", hist.GetXaxis().GetBinCenter(xbin.value), " x-point: ", logx, " and the difference: ", xbin_xpoint_diff
+      if ybin_ypoint_diff > eps:
+        print " Error, bin center is not close to the true y point, bin center: ", hist.GetYaxis().GetBinCenter(ybin.value), " y-point: ", logy, " and the difference: ", ybin_ypoint_diff
 
     hist.SetBinContent(ibin,stat)
 
@@ -146,6 +140,8 @@ def UnlogGraph(graph):
   return new_graph
 
 def main(files,tag,label,exclusion,nue,data):
+  print "Exc: ", exclusion
+  print "Nue: ", nue
 
   logged_hists = [GetLoggedHist(f,exclusion,data) for f in files]
   canv = R.TCanvas("canv","canv",1200,800)
@@ -197,8 +193,8 @@ if __name__=="__main__":
   parser = optparse.OptionParser(usage="%prog [options] patterns",description="Make plots of deltaCP sensitivity")
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
-  parser.add_option('-e','--exclusion', dest='exclusion',default=True,help='Boolean for whether we are producing exclusion or inclusion contours')
-  parser.add_option('-n','--nue', dest='nue',default=False,help='Boolean for whether we are producing numu or nue contours')
+  parser.add_option('-e','--exclusion', dest='exclusion',default=False,action='store_true',help='Boolean for whether we are producing exclusion or inclusion contours')
+  parser.add_option('-n','--nue', dest='nue',default=False,action='store_true',help='Boolean for whether we are producing numu or nue contours')
   parser.add_option('-d','--data', dest='data',default="valor_fit_ntp",help='Name of the nTuple')
 
   options,patterns = parser.parse_args()
