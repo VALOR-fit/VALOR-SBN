@@ -34,7 +34,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -71,7 +71,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -108,7 +108,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -145,7 +145,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -182,7 +182,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -219,7 +219,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -256,7 +256,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -293,7 +293,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -330,7 +330,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -367,7 +367,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -404,7 +404,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -441,7 +441,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -478,7 +478,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -515,7 +515,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -552,7 +552,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -589,7 +589,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -626,7 +626,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -663,7 +663,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -700,7 +700,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -737,7 +737,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -773,7 +773,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -811,7 +811,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -848,7 +848,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
 
@@ -884,7 +884,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -921,7 +921,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -958,7 +958,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -996,7 +996,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -1033,7 +1033,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
 
@@ -1070,7 +1070,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
 
@@ -1106,7 +1106,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -1142,7 +1142,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
@@ -1178,7 +1178,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
 
@@ -1215,7 +1215,7 @@
     
     <limits>  0.0, inf  </limits>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   
