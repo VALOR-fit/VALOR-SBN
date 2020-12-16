@@ -416,7 +416,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       r_legend.SetBorderSize(0);
 
       r_canv_name = "cr_%s" % util.SampleAsString(s)
-      r_canv = ROOT.TCanvas(r_canv_name,"",700,900)
+      r_canv = ROOT.TCanvas(r_canv_name,"",750,900)
       if use_log_plots: r_canv.SetLogx()
 
       # Top pad: all histograms with envelopes
