@@ -16,7 +16,7 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
     </element>
-
+  
   </element_list>
 
 </valor> 

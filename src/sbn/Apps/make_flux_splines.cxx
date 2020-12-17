@@ -447,7 +447,7 @@ int main(int argc, char ** argv)
         } // modes
         // Cutoff under 36 for a maximum 17% stat uncertainty in every bin
         // Splines will be flat otherwise
-        double event_ratio = (total_nominal > 4) ? total_events/double(total_nominal) : 1; // Ratio of the variation rate to the nominal rate
+        double event_ratio = (total_nominal > 0) ? total_events/double(total_nominal) : 1; // Ratio of the variation rate to the nominal rate
         if(iknot == inom)
           event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
         knot_ratio.emplace(iknot,event_ratio);
