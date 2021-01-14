@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import division
-import ROOT
+import ROOT 
 import numpy as np
 import math
 import os
@@ -9,7 +9,6 @@ import sys
 from ctypes import *
 
 R=ROOT
-
 env_var = "VALOR_EXPT";
 
 try:
@@ -31,20 +30,19 @@ env  =  valor.Env.Instance()
 colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.kCyan+2,]
 
 # Add these as command line arguments
-param_x = conv.kPhypMixingMuMu # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
+param_x = conv.kPhypMixingMuE # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
 param_y = conv.kPhypDm41sq
 
 x_npoints = 40
 y_npoints = 40
 
 # Limits
-ex_x_lim = 0.5*(3/(x_npoints-1))
+ex_x_lim = 0.5*(5/(x_npoints-1))
 ex_y_lim = 0.5*(4/(y_npoints-1))
-
 in_x_lim = 0.5*((math.log10(5e-1)+2)/(x_npoints-1))
 in_y_lim = 0.5*((math.log10(4)-math.log10(4e-1))/(y_npoints-1))
 
-ex_x_min = -(3+ex_x_lim) #exlusion
+ex_x_min = -(5+ex_x_lim) #exlusion
 ex_x_max = (0+ex_x_lim)
 
 in_x_min = -(2+in_x_lim) #allowed
@@ -59,6 +57,7 @@ in_y_max = math.log10(4)+in_y_lim
 ndim = 2
 
 eps = 1E-10 # a small number to guarantee our point goes in its bin
+
 
 def GetLoggedHist(filename,exclusion,data):
   print(filename)
@@ -170,8 +169,8 @@ def main(files,tag,label,exclusion,nue,data):
         # 2-sided scan if acceptance plot or nue contour
         else:
           print "Looking at NuE"
-          print "Two-sided delta chi-squared scan"
-          dchisq = util.DeltaChisquare(cl,2)
+          print "One-sided delta chi-squared scan"
+          dchisq = util.DeltaChisquareOneSided(cl,1)
       else:
         print "Acceptance contour"
         print "Two-sided delta chi-squared scan"
@@ -198,5 +197,4 @@ if __name__=="__main__":
   parser.add_option('-d','--data', dest='data',default="valor_fit_ntp",help='Name of the nTuple')
 
   options,patterns = parser.parse_args()
-
   main(patterns,options.tag, options.label, options.exclusion, options.nue, options.data)
