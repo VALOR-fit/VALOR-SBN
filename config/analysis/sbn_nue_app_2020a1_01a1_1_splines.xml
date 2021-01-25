@@ -45,9 +45,9 @@
 
   <parameter_definitions>
     <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml </filename>
-    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue.xml            </filename> 
-    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue.xml            </filename>
-    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue.xml            </filename>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue_fine.xml            </filename> 
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue_fine.xml            </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue_fine.xml            </filename>
     <filename desc="flux_response_parameters">         params/sbn_flux_spline_parameters.xml         </filename>
     <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters.xml         </filename>
     <filename desc="sbn_modern_int_parameters">        params/sbn_modern_interaction_parameters.xml  </filename>

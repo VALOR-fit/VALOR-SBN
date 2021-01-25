@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2019b3_02b2_09a2019_1">
+    <element name="sbn_fd_fhc_numuCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numulikeCChigh                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>         data/sbn_numu_disapp_09a2019_1_sbn_fd.xml            </data>
+      <mc>           mc/sbn_numu_disapp_2019b3_02b1_1_sbn_fd.xml      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_universes.xml      </binning>
+    </element>
+    
+  </element_list>
+
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml </filename>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue.xml            </filename>
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue.xml            </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue.xml            </filename>
+    <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters.xml   </filename>
+    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml        </filename>
+    <filename desc="sbnd_det_signal_parameters">       params/detector_fhc_sbnd_numucc_sig_2020a1.xml    </filename>
+    <filename desc="sbnd_det_background_parameters">   params/detector_fhc_sbnd_numucc_bkg_2020a1.xml    </filename>
+    <filename desc="uboone_det_signal_parameters">     params/detector_fhc_uboone_numucc_sig_2020a1.xml  </filename>
+    <filename desc="uboone_det_background_parameters"> params/detector_fhc_uboone_numucc_bkg_2020a1.xml  </filename>
+    <filename desc="icarus_det_signal_parameters">     params/detector_fhc_icarus_numucc_sig_2020a1.xml  </filename>
+    <filename desc="icarus_det_background_parameters"> params/detector_fhc_icarus_numucc_bkg_2020a1.xml  </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    
+    <group name="flux">
+      <format> SBNFlux_Etrue.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/flux.root </filename>
+        <objname>    frac_cov            </objname>    
+        <objtype>    TMatrixD            </objtype>
+      </covariance_matrix> 
+    </group>
+
+    <group name="int">
+      <format> SBNInteractionResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
+        <objname>    cov                                                                                                               </objname>    
+        <objtype>    TMatrixD                                                                                                          </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
+        <objname>    untuned                                                                                                           </objname>    
+        <objtype>    TMatrixD                                                                                                          </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/all_interaction_systematics_covariance_for_splines.root </filename>
+        <objname>    nominal                                                                                                           </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+      <format> SBNMEC.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/02b1/mec_covariance.root </filename>
+        <objname>    frac_cov                                                     </objname>    
+        <objtype>    TMatrixD                                                     </objtype>
+      </covariance_matrix>
+
+    </group>
+    <group name="detector">
+      <format> sbn_detector_fhc_numucc_2020a1.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2/detector_error_matrix_2020a1_np48_cor5.000pct_uncor0.500pct.root </filename>
+        <objname>    frac_cov_total      </objname>    
+        <objtype>    TMatrixD            </objtype>
+      </covariance_matrix> 
+    </group>
+
+  </systematics>
+
+</valor> 
