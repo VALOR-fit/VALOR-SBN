@@ -759,7 +759,6 @@ int main(int argc, char ** argv)
             GetPair(vname,new_vnames);
             std::cout << vname << std::endl;
             std::cout << nuc_pdg << std::endl;
-            // std::cin.get();
             GetCorrectVariationName(nuc_pdg, iscc, vname);
             if(vname != ""){
               if(vname != new_vnames.first && vname != new_vnames.second){
