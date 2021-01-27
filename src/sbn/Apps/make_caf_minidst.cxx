@@ -26,6 +26,18 @@
 */
 //____________________________________________________________________________
 
+// --------------------------------------
+//
+// Systematic uncertaities aren't yet included in the CAF files - hence all the stuff
+// about universes is commented out (hopefully i got all the relevent bits).
+// The "status_code" variable (used e.g. for particle counting) is now called "gstatus" (genie_status).
+// At the moment the sbncode develop branch isn't filling it correctly so the variable is filled
+// with gibberish (the particle counting part is commented out too).
+// Think I've at least sort of fixed it (is being filled with realistic numbers now) - not 100% is 
+// completely correct yet...
+//
+// --------------------------------------
+
 // System
 #include <string>
 #include <iostream>
