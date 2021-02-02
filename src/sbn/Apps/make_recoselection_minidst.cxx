@@ -11,6 +11,42 @@
                 --format format_of_the_input_file <hpgartpc, lartpc, fgt>
                [--disable-checks]
 
+
+  The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
+    kLArUnknownInteraction = -1,
+    kLArQE                 =  0,
+    kLArRes                =  1,
+    kLArDIS                =  2,
+    kLArCoh                =  3,
+    kLArCohElastic         =  4,
+    kLArElectronScattering =  5,
+    kLArIMDAnnihilation    =  6,
+    kLArInverseBetaDecay   =  7,
+    kLArGlashowResonance   =  8,
+    kLArAMNuGamma          =  9,
+    kLArMEC                = 10,
+    kLArDiffractive        = 11,
+    kLArEM                 = 12,
+    kLArWeakMix            = 13
+   
+  The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
+    kScatUnknownInteraction = -1,
+    kNULL                   =  0,
+    kScatQE                 =  1,
+    kScatSingleKaon         =  2,
+    kScatDIS                =  3,
+    kScatRes                =  4,
+    kScatCoh                =  5,
+    kScatDiffractive        =  6,
+    kScatElectronScattering =  7,
+    kScatInverseMuonDecay   =  8,
+    kScatAMNuGamma          =  9,
+    kScatMEC                = 10,
+    kScatCohElastic         = 11,
+    kScatInverseBetaDecay   = 12,
+    kScatGlashowResonance   = 13,
+    kScatIMDAnnihilation    = 14,
+ 
   \author    Rhiannon Jones <rhiannon.jones \at liverpool.ac.uk>
   University of Liverpool
 
@@ -51,7 +87,7 @@
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
 //?
-#include "core/Event.hh"
+//#include "core/Event.hh"
 
 using std::string;
 using std::ostringstream;
@@ -61,9 +97,37 @@ static const string gTreeName = "valor_tree";
 static const string gPOTTreeName = "subrun_tree";
 static const int gPrintEveryNEvents   = 50000;
 
-// The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
-typedef enum ScatterCode{
+typedef enum ExclusiveTopology{
 
+  kUnknownTopology              = -1,
+  kCC0Pi                        =  0,
+  kCC1Pi                        =  1,
+  kCC2Pi                        =  2,
+  kCCPi0                        =  3,
+  kCCOther                      =  4
+
+} ExclusiveTopology_t;
+
+// The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
+typedef enum ELarMode{
+  kLArUnknownInteraction = -1,
+  kLArQE                 =  0,
+  kLArRes                =  1,
+  kLArDIS                =  2,
+  kLArCoh                =  3,
+  kLArCohElastic         =  4,
+  kLArElectronScattering =  5,
+  kLArIMDAnnihilation    =  6,
+  kLArInverseBetaDecay   =  7,
+  kLArGlashowResonance   =  8,
+  kLArAMNuGamma          =  9,
+  kLArMEC                = 10,
+  kLArDiffractive        = 11,
+  kLArEM                 = 12,
+  kLArWeakMix            = 13
+} LArMode_t;
+
+typedef enum EScatCode{
   kScatUnknownInteraction = -1,
   kNULL                   =  0,
   kScatQE                 =  1,
@@ -79,44 +143,12 @@ typedef enum ScatterCode{
   kScatCohElastic         = 11,
   kScatInverseBetaDecay   = 12,
   kScatGlashowResonance   = 13,
-  kScatIMDAnnihilation    = 14,
-
-} ScatterCode_t;
-
-// enum definition for the sbn mc sample we are looking at
-// For now, only important for accessing the correct POT from above
-typedef enum EMCSample{
-
-  kUnknownSample                = -1,
-  kSBNDDisappearanceProposal    =  0,
-  kSBNDDisappearanceModern      =  1,
-  kUBOONEDisappearanceProposal  =  2,
-  kUBOONEDisappearanceModern    =  3,
-  kICARUSDisappearanceProposal  =  4,
-  kICARUSDisappearanceModern    =  5,
-
-  kSBNDAppearanceNumuProposal   =  6,
-  kSBNDAppearanceIntProposal    =  7,
-  kSBNDAppearanceOscProposal    =  8,
-  kUBOONEAppearanceNumuProposal =  9,
-  kUBOONEAppearanceIntProposal  = 10,
-  kUBOONEAppearanceOscProposal  = 11,
-  kICARUSAppearanceNumuProposal = 12,
-  kICARUSAppearanceIntProposal  = 13,
-  kICARUSAppearanceOscProposal  = 14
-
-} MCSample_t;
-
-typedef enum NuMuCCExclusiveTopology{
-
-  kUnknownTopology              = -1,
-  kCC0Pi                        =  0,
-  kCC1Pi                        =  1,
-  kCC2Pi                        =  2,
-  kCCPi0                        =  3,
-  kCCOther                      =  4
-
-} ExclusiveTopology_t;
+  kScatIMDAnnihilation    = 14
+} ScatCode_t;
+ 
+bool CheckSample(const int &reco, 
+                 const valor::conv::Sample_t &sample, 
+                 const bool &other);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -138,7 +170,7 @@ int main(int argc, char ** argv)
   string opt_output_name       = arg.GetString("output");
   string opt_input_name        = arg.GetString("input");
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
-
+  bool   other_sample          = arg.GetBool("other-sample");
 
   // Get the POT
   // open the ROOT file and get the TTree & its header
@@ -172,6 +204,11 @@ int main(int argc, char ** argv)
 
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
   assert(sample != conv::ksUndefined);
+
+  // If we want to define 'other' as anything but the sample defined in the arguments, set this to true
+  if(other_sample)
+    VLOG("valor_sbn", pNOTICE) << " Chosen to look for events which do NOT fall under the definition of the sample, "
+                               << util::AsString(sample);
 
   conv::BeamConf_t beam = util::BeamConfFromString(opt_beam_name);
   assert(beam != conv::kbUndefined);
@@ -274,16 +311,31 @@ int main(int argc, char ** argv)
     nev_accept_by_mode.push_back(0);
   }
 
+  Long64_t nev_accept = 0;
+  Long64_t nev_reject = 0;
+
   for(Long64_t iev = 0; iev < nev; iev++) {
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
-      VLOG("valor_sbn", pNOTICE) << "** Reading event: " << iev;
+      VLOG("valor_sbn", pNOTICE) << "** Reading event: " << iev
+        <<" - so far accepted " << nev_accept;
     }
     else {
-      VLOG("valor_sbn", pDEBUG) << "** Reading event: " << iev;
+      VLOG("valor_sbn", pDEBUG) << "** Reading event: " << iev
+        <<" - so far accepted " << nev_accept;
     }
 
     analysis_tree->GetEntry(iev);
+
+    // Before we do anything, make sure the current event fits the description of the sample
+    if(!CheckSample(reco_exclusive,sample,other_sample)){
+      LOG("valor_sbn",pINFO)   << "Current event has \n" 
+                               << npip << " charged pions, \n " 
+                               << npi0 << " pi0s and does not match the desired sample type: " 
+                               << util::AsString(sample) << "\n Skipping.";
+      nev_reject++;
+      continue;
+    }
 
     // Construct the reaction mode
     conv::ReacType_t reac = conv::kmtUndefined;
@@ -346,7 +398,12 @@ int main(int argc, char ** argv)
       << "Etrue         = "<< enu_true  << " GeV; "
       << "LArSoft mode  = "<< larsoft_mode  << "; ";
 
-    valor_minidst_sample         = sample;
+    // Only ever dealing with numuCC here, change if this app becomes more universal
+    if(other_sample)
+      valor_minidst_sample = valor::util::SampleFromString("numuCCoth");
+    else
+      valor_minidst_sample     = sample;
+
     valor_minidst_beam           = beam;
     valor_minidst_reac_mode      = reac_mode;
     valor_minidst_enu_true       = enu_true;
@@ -392,27 +449,24 @@ int main(int argc, char ** argv)
     }
 
     valor_minidst_enu_reco  = enu_reco;
-    VLOG("valor_sbn", pNOTICE)
+    VLOG("valor_sbn", pINFO)
       << "\n Ev (reco)     = " << valor_minidst_enu_reco << " GeV";
 
     valor_minidst->Fill();
+    nev_accept += 1;
   } // event loop
 
-  std::cout << " Number in valor tree : " << valor_minidst->GetEntries() << std::endl;
-  /*
-  for (unsigned int im = 0 ; im < nev_accept_by_mode.size(); im++) {
-    valor::conv::ReacMode_t m = (valor::conv::ReacMode_t)im;
-    VLOG("valor_sbn", pNOTICE) << "Selected "<<nev_accept_by_mode[im]<<" events of mode "<<valor::util::AsString(m);
-  }
-
   double f = 100. * (double)nev_accept / (double)nev;
+  double r = 100. * (double)nev_reject / (double)nev;
   VLOG("valor_sbn", pNOTICE) <<
     "Used " << f << "% (" << nev_accept << "/" << nev
     << ") of input events.";
+  VLOG("valor_sbn", pNOTICE) <<
+    "Rejected " << r << "% (" << nev_reject << "/" << nev
+    << ") of input events.";
 
-  //~ VLOG("valor_sbn", pNOTICE) <<
-    //~ "Total POT read: "<<total_pot_read;
-*/
+  std::cout << " Number in valor tree : " << valor_minidst->GetEntries() << std::endl;
+  
   // Saving VALOR mini-FST to output file
   VLOG("valor_sbn", pNOTICE)
     << "Saving VALOR/SBN mini-DST to: " << opt_output_name;
@@ -422,4 +476,39 @@ int main(int argc, char ** argv)
   VLOG("valor_sbn", pNOTICE)  << "Done!";
 
   return 0;
+}
+bool CheckSample(const int &reco, 
+                 const valor::conv::Sample_t &sample, 
+                 const bool &other){
+  
+  if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh) return true;
+  else if(sample == valor::conv::ksNuMuCC0piNtrk){
+    if(reco == kCC0Pi)
+      return ((other) ? false : true);
+    else return ((other) ? true : false);
+  }
+  else if(sample == valor::conv::ksNuMuCC1piC){
+    if(reco == kCC1Pi)
+      return ((other) ? false : true);
+    else return ((other) ? true : false);
+  }
+  else if(sample == valor::conv::ksNuMuCC1pi0){
+    if(reco == kCCPi0)
+      return ((other) ? false : true);
+    else return ((other) ? true : false);
+  }
+  else if(sample == valor::conv::ksNuMuCC2piC){
+    if(reco == kCC2Pi)
+      return ((other) ? false : true);
+    else return ((other) ? true : false);
+  }
+  else if(sample == valor::conv::ksNuMuCCoth){
+    if(reco == kCCOther)
+      return ((other) ? false : true);
+    else return ((other) ? true : false);
+  }
+  else{
+    LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+    return false;
+  }
 }
