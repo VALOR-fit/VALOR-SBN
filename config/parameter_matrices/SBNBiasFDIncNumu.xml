@@ -1,0 +1,12 @@
+<systematic_list name="SBNBiasFDIncNumu">
+  <parameter> bias_fd_inc_00 </parameter>
+  <parameter> bias_fd_inc_01 </parameter>
+  <parameter> bias_fd_inc_02 </parameter>
+  <parameter> bias_fd_inc_03 </parameter>
+  <parameter> bias_fd_inc_04 </parameter>
+  <parameter> bias_fd_inc_05 </parameter>
+  <parameter> bias_fd_inc_06 </parameter>
+  <parameter> bias_fd_inc_07 </parameter>
+  <parameter> bias_fd_inc_08 </parameter>
+  <parameter> bias_fd_inc_09 </parameter>
+</systematic_list>

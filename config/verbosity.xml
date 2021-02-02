@@ -9,7 +9,7 @@
    -->
 
   <priority msgstream="Messenger">    NOTICE   </priority>
-  <priority msgstream="Rnd">          NOTICE   </priority>
+  <priority msgstream="Rnd">          DEBUG    </priority>
   <priority msgstream="Reg">          NOTICE   </priority>
   <priority msgstream="XML">          NOTICE   </priority>
   <priority msgstream="SDData">       NOTICE   </priority>
@@ -22,8 +22,8 @@
   <priority msgstream="InputMC">      NOTICE   </priority>
   <priority msgstream="HACK">         FATAL    </priority>
   
-  <priority msgstream="Minuit">                         NOTICE </priority>
-  <priority msgstream="Minuit2">                          INFO </priority>
+  <priority msgstream="Minuit">                         INFO   </priority>
+  <priority msgstream="Minuit2">                        INFO   </priority>
   <priority msgstream="CompoundFitElements">            NOTICE </priority>
   <priority msgstream="CompoundFitModel">               NOTICE </priority>
   <priority msgstream="CompoundFitData">                NOTICE </priority>
@@ -37,6 +37,7 @@
 
   <priority msgstream="fitnt_conv">                     NOTICE </priority>
   <priority msgstream="valor_sbn">                      NOTICE </priority>
+  <priority msgstream="valor">                          NOTICE </priority>
   
   <priority msgstream="make_minidst">                   NOTICE </priority>
   <priority msgstream="make_fd_minidst">                NOTICE </priority>

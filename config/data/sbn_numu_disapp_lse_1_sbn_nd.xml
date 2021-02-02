@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="SBN-ND-MDC" version="lse_nieves" detector="ND">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mock data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+
+  <using_dst_format> 
+     true 
+  </using_dst_format> 
+
+  <dst> 
+    <bnb_fhc>
+      <filename> sbn_numu_disappearance/mock_data/lse_nieves/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_1.root </filename> 
+       <objname> valor_sbn_minidst </objname> 
+      <objtype>  TTree    </objtype> 
+    </bnb_fhc>
+  </dst>
+  
+</data>
+
+</analysis_inputs>
+
+
