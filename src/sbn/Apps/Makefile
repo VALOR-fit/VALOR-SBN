@@ -16,8 +16,10 @@ SBN_LIBRARIES =
 
 TGT = make_sbncode_minidst \
       make_caf_minidst \
+			make_recoselection_minidst \
       make_xsec_splines \
       make_flux_splines \
+      make_excl_splines \
       universe_variation_tweaks \
       write_spectra_using_universes \
       tweak_pdf_nsigma_var 
@@ -88,6 +90,21 @@ else
 	@echo "Skipping make_xsec_splines due to no GENIE"
 endif
 
+# Generate SBN excl splines
+# Probably don't require the GENIE dependence but method isn't finalised yet so keeping just in case
+#
+make_excl_splines: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_excl_splines.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) make_excl_splines.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB)  -o $(VALOR_EXPT)/bin/valor_sbn-make_excl_splines
+else
+	@echo "Skipping make_splines due to no GENIE"
+endif
+else
+	@echo "Skipping make_excl_splines due to no SBNanalysis"
+endif
+
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation
 #
 universe_variation_tweaks: FORCE
@@ -128,6 +145,7 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_excl_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-tweak_pdf_nsigma_var
@@ -138,6 +156,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_flux_splines
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_excl_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-tweak_pdf_nsigma_var
