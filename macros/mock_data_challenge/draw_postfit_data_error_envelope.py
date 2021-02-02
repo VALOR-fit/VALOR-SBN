@@ -18,14 +18,15 @@ R = ROOT
 
 max_energy = 3.
 linewidth = 1
-title_offset = 1.2
+title_offset = 1.1
 left_margin   = 0.13
-bottom_margin = 0.15
-right_margin  = 0.05
-top_margin    = 0.08
+bottom_margin = 0.13
+right_margin  = 0.02
+top_margin    = 0.06
+
 use_log_plots = False
-title_size = 0.05
-label_size = 0.04
+title_size = 0.06
+label_size = 0.05
 font = 132 # Times Medium, scalable rotatable
 
 data_color    = ROOT.kPink+5
@@ -89,17 +90,17 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
   f_data = ROOT.TFile()
   if data_file:
-    f_data = ROOT.TFile(data_file)
+    f_data = ROOT.TFile(data_file,"READ")
     plot_data = True
 
   f_prefit = ROOT.TFile()
   if prefit_file:
-    f_prefit = ROOT.TFile(prefit_file)
+    f_prefit = ROOT.TFile(prefit_file,"READ")
     plot_prefit = True
 
   f_postfit = ROOT.TFile()
   if postfit_file:
-    f_postfit = ROOT.TFile(postfit_file)
+    f_postfit = ROOT.TFile(postfit_file,"READ")
     plot_postfit = True
 
   n_files = int(plot_data) + int(plot_prefit) + int(plot_postfit)
@@ -127,9 +128,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     #hname_p1  = hname_prefix + "_p1;" + det
     #hname_m1  = hname_prefix + "_m1;" + det
     # When running the tweaks for each detector individually:
-    hname_nom = hname_prefix + "_nom"#;1"
-    hname_p1  = hname_prefix + "_p1"#;1"
-    hname_m1  = hname_prefix + "_m1"#;1"
+    hname_nom = hname_prefix + "_nom"
+    hname_p1  = hname_prefix + "_p1"
+    hname_m1  = hname_prefix + "_m1"
     #hname_data = "toymc_data_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
     if det == '1':
       if mdc is False:
@@ -153,9 +154,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
       print("No detector given, defaulting to the ND")
 
-    print "Data histogram found: ", hname_data
-    print "MC histogram found: ", hname_nom
-
     out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
 
     hists         = []
@@ -167,6 +165,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hists.append(data_nom)
 
     if plot_prefit:
+      f_prefit.cd()
       prefit_nom    = get_hist(f_prefit,hname_nom)
       hplus_prefit  = get_hist(f_prefit,hname_p1)
       hminus_prefit = get_hist(f_prefit,hname_m1)
@@ -174,6 +173,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       prefit_plots.extend([prefit_nom, hplus_prefit, hminus_prefit])
 
     if plot_postfit:
+      f_postfit.cd()
       postfit_nom    = get_hist(f_postfit,hname_nom)
       hplus_postfit  = get_hist(f_postfit,hname_p1)
       hminus_postfit = get_hist(f_postfit,hname_m1)
@@ -194,7 +194,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       h.GetYaxis().SetTitleOffset(title_offset)
       h.GetYaxis().SetMaxDigits(3)
 
-    legend = ROOT.TLegend(0.46,0.66,0.91,0.86);
+    legend = ROOT.TLegend(0.52,0.68,0.97,0.88);
     legend.SetFillStyle(0);
     legend.SetBorderSize(0);
 
@@ -279,6 +279,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_prefit:
       hplus_prefit.GetYaxis().SetRangeUser(1, max_y)
       hplus_prefit.GetYaxis().SetTitleOffset(title_offset)
+      hplus_prefit.GetXaxis().SetTitleSize(0.06)
+      hplus_prefit.GetXaxis().SetLabelSize(0.05)
+      hplus_prefit.GetYaxis().SetTitleSize(0.06)
+      hplus_prefit.GetYaxis().SetLabelSize(0.05)
       hplus_prefit.SetLineColor(prefit_color)
       hplus_prefit.SetLineStyle(1)
       hplus_prefit.Draw("AXIS same")
@@ -324,6 +328,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_postfit:
       hplus_postfit.GetYaxis().SetRangeUser(1, max_y)
       hplus_postfit.GetYaxis().SetTitleOffset(title_offset)
+      hplus_postfit.GetXaxis().SetTitleSize(0.06)
+      hplus_postfit.GetXaxis().SetLabelSize(0.05)
+      hplus_postfit.GetYaxis().SetTitleSize(0.06)
+      hplus_postfit.GetYaxis().SetLabelSize(0.05)
       hplus_postfit.Draw("AXIS same")
 
       env_graph_postfit.SetFillStyle(postfit_style)
@@ -409,19 +417,20 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_n > 1 and ratio >= 0 and ratio_hists:
 
       # Now if we want to plot the overlay and the ratio, repeat and split the pads
-      r_legend = ROOT.TLegend(0.49,0.67,0.96,0.86);
+      r_legend = ROOT.TLegend(0.49,0.62,0.96,0.86);
       r_legend.SetFillStyle(0);
       r_legend.SetBorderSize(0);
 
       r_canv_name = "cr_%s" % util.SampleAsString(s)
-      r_canv = ROOT.TCanvas(r_canv_name,"",750,900)
+      r_canv = ROOT.TCanvas(r_canv_name,"",600,900)
       if use_log_plots: r_canv.SetLogx()
 
       # Top pad: all histograms with envelopes
       # Setup the pad
       pad1 = ROOT.TPad("pad1","",0.0,0.35,1.0,1.0);
-      pad1.SetBottomMargin(0.02);
-      pad1.SetTopMargin(0.05);
+      pad1.SetBottomMargin(0.035);
+      pad1.SetTopMargin(0.084);
+      pad1.SetLeftMargin(0.135);
       pad1.SetRightMargin(0.02);
       pad1.Draw();
       pad1.cd();
@@ -435,14 +444,18 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
           h.Draw()
           graph.Draw("same2")
           h.GetYaxis().SetRangeUser(0.,max_y)
-          h.GetYaxis().SetTitleSize(0.045)
-          h.GetYaxis().SetTitleOffset(1.4)
-          h.GetYaxis().SetLabelSize(0.035)
+          h.GetYaxis().SetTitleSize(0.08)
+          h.GetYaxis().SetTitleOffset(0.8)
+          h.GetYaxis().SetLabelSize(0.06)
           h.GetXaxis().SetLabelColor(0)
         else:
           h.Draw("same")
           graph.Draw("same2")
         r_legend.AddEntry(legend,label,"FL")
+
+      nEntries = r_legend.GetNRows()
+      currHeight = (r_legend.GetY2NDC() - r_legend.GetY1NDC())/2.
+      r_legend.SetY1NDC(r_legend.GetY2NDC()-(nEntries*currHeight))
       r_legend.SetTextFont(font)
       r_legend.Draw()
 
@@ -451,9 +464,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       # Bottom pad: data postfit ratio
       pad2 = ROOT.TPad("pad2","",0.0,0.0,1.0,0.35);
-      pad2.SetTopMargin(0.02);
-      pad2.SetBottomMargin(0.22);
+      pad2.SetTopMargin(0.047);
+      pad2.SetBottomMargin(0.30);
       pad2.SetRightMargin(0.02);
+      pad2.SetLeftMargin(0.135);
       pad2.SetGridy();
       pad2.Draw();
       pad2.cd();
@@ -490,30 +504,29 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       ratio_diff.SetLineStyle(1)
       ratio_diff.SetLineWidth(linewidth)
       if ratio == '0':
-        ratio_diff.GetYaxis().SetTitle("#frac{(Postfit-Mock data)}{#sigma_{Postfit}}");
+        ratio_diff.GetYaxis().SetTitle("#Delta N_{Po-MD}/#sigma_{Po}");
       elif ratio == '1':
-        ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Postfit)}{#sigma_{Postfit}}");
+        ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-Po}/#sigma_{Po}");
       elif ratio == '2':
-        ratio_diff.GetYaxis().SetTitle("#frac{(Prefit-Mock data)}{#sigma_{Prefit}}");
+        ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-MD}/#sigma_{Pr}");
       elif ratio == '3':
-        ratio_diff.GetYaxis().SetTitle("#frac{Prefit}{Mock data}");
+        ratio_diff.GetYaxis().SetTitle("Prefit/Mock data");
 
       ratio_diff.GetYaxis().SetTitleFont(132);
       ratio_diff.GetYaxis().SetLabelFont(132);
-      ratio_diff.GetYaxis().SetTitleSize(0.075);
-      ratio_diff.GetYaxis().SetTitleOffset(0.75);
-      ratio_diff.GetYaxis().SetLabelSize(0.065);
+      ratio_diff.GetYaxis().SetTitleSize(0.15);
+      ratio_diff.GetYaxis().SetTitleOffset(0.4);
+      ratio_diff.GetYaxis().SetLabelSize(0.11);
       ratio_diff.GetXaxis().SetTitleFont(132);
       ratio_diff.GetXaxis().SetLabelFont(132);
-      ratio_diff.GetXaxis().SetTitleSize(0.075);
-      ratio_diff.GetXaxis().SetTitleOffset(1.1);
-      ratio_diff.GetXaxis().SetLabelSize(0.065);
+      ratio_diff.GetXaxis().SetTitleSize(0.15);
+      ratio_diff.GetXaxis().SetTitleOffset(0.9);
+      ratio_diff.GetXaxis().SetLabelSize(0.11);
       ratio_diff.GetXaxis().SetLabelColor(1);
-      ratio_diff.GetYaxis().SetRangeUser(0,2)
+      #ratio_diff.GetYaxis().SetRangeUser(-2,4)
 
       r_canv.RedrawAxis()
       r_canv.Write("cr")
-      r_canv.SaveAs("testSave.png")
 
     f_output.Close()
   # End of model loop
