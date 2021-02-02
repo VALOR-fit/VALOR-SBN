@@ -52,7 +52,7 @@
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/Likelihood.h"
+#include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -83,9 +83,6 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
                         PhysParamId_t p, double tweak_dial, TFile * outfile, std::string tag);
 
-void PrintMCT(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
-              PhysParamId_t p, double tweak_dial, int reco_bin, int true_bin);
-
 int main(int argc, char ** argv)
 {
 
@@ -103,15 +100,14 @@ int main(int argc, char ** argv)
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
   string kinevar_str      = arg.GetString("kinevar");
+  string sample           = arg.GetString("sample");
   string universe_file    = arg.GetString("universe-spectra");
-  bool def_spline_debug   = arg.GetBool("def-spline-debug");
-  int reco_bin            = arg.GetInt("reco-bin");
-  int true_bin            = arg.GetInt("true-bin");
 
   TString universe_spectra(universe_file.data());
   bool sigma_from_universes = false;
   std::vector<double> nsigmas;
-  const std::vector<int> &integer_sigmas = {-3,-2,-1,0,1,2,3};
+//  const std::vector<int> &integer_sigmas = {-3,-2,-1,0,1,2,3};
+  const std::vector<int> &integer_sigmas = {1};
   int nsigma_int = -999;
 
   // If a file containing the universe spectra has been specified, 
@@ -130,39 +126,35 @@ int main(int argc, char ** argv)
     }
   }
   else{
-    nsigma_int = static_cast<int>(round(nsigma));
-    nsigmas.push_back(nsigma);
+    if(nsigma > 0){
+      nsigma_int = static_cast<int>(round(nsigma));
+      nsigmas.push_back(nsigma);
+    }
+    else{
+      for(const int &i: integer_sigmas){
+        nsigmas.push_back(static_cast<double>(i));
+      }
+      if(nsigmas.size() == 1)
+        nsigma_int = integer_sigmas.at(0);
+      assert(nsigmas.size() == integer_sigmas.size());
+    }
   }
 
   // Re-fill the nsigmas vector to map correctly to the order in integer_sigmas
   if(sigma_from_universes){
     std::vector<double> temp_nsigmas;
-    for(const int &i : integer_sigmas){
-      double sigma_diff = 999.;
-      double closest_sigma = 999.;
-      for(const double &u : nsigmas){
-        if(abs(u-i) < sigma_diff){
-          sigma_diff = abs(u-i);
-          closest_sigma = u;
-        }
-      }
-      if(sigma_diff > 0.5){
-        std::cout << "Big difference (> 0.5) between the selecteded integer sigma and the closest universe sigma!" << std::endl;
-        std::cout << "Integer sigma: " << i << "       Closest universe sigma: " << closest_sigma << std::endl;
-        std::cout << "Manually setting closest universe sigma equal to the integer sigma (should probably ignore the plot from this sigma)" << std::endl;
-        closest_sigma = i;
-      }
-      temp_nsigmas.push_back(closest_sigma);
+    for(unsigned int i = 0; i < nsigmas.size(); ++i){
+      // Check that we are looking at an even integer of the vector (will correpond to integer knot values
+      const double u = nsigmas.at(i);
+      if(i % 2 != 0) continue;
+      std::cout << " Entry : " << i << " with value: " << u << " is being added to the nsigma vector" << std::endl;
+      temp_nsigmas.push_back(u);
     }
     nsigmas.clear();
     nsigmas = temp_nsigmas;
     assert(nsigmas.size() == integer_sigmas.size());
   }
 
-  std::cout << "nsigmas vec: " << std::endl;
-  for(auto i = nsigmas.begin(); i != nsigmas.end(); i++){
-      std::cout << *i << std::endl;
-  }
   KineVar_t kv = util::KineVarFromString(util::RemoveAllWhitespace(kinevar_str));
   if(kv == kvUndefined) {
     cerr << "ERROR: input kine var string [" << util::RemoveAllWhitespace(kinevar_str)
@@ -223,7 +215,8 @@ int main(int argc, char ** argv)
   // replace [NSIG] with 'all-sigma'
   TFile * outfile = NULL;
   output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
-  if(sigma_from_universes)
+  output_rootfile = util::ReplaceAll(output_rootfile,"[SAMPLE]",sample);
+  if(nsigmas.size() > 1)
     output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", "all_sigma");
   else
     output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma_int)+"sigma").c_str());
@@ -233,21 +226,12 @@ int main(int argc, char ** argv)
   const CorrelatedSystematics * syst = cm->GetSystematics();
   FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
-  if(hypname == "eff_sterile_osc"){                                                                                                                                                   
-    fp->Update(conv::kPhypDm41sq,   100);                                                                                                                                           
-    fp->Update(conv::kPhypMixingMuMu, 0);                                                                                                                                           
-    fp->Update(conv::kPhypMixingMuE,  1);                                                                                                                                           
-    fp->Update(conv::kPhypMixingEE,   0);                                                                                                                                           
-  }
-
-  else{   
-    if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
-    if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
-    if (fp->Exists(conv::kPhypMixing23)) { fp->Update(conv::kPhypMixing23,mixing23); }
-    if (fp->Exists(conv::kPhypDm12sq  )) { fp->Update(conv::kPhypDm12sq  ,dm12sq  ); }
-    if (fp->Exists(conv::kPhypDm23sq  )) { fp->Update(conv::kPhypDm23sq  ,dm23sq  ); }
-    if (fp->Exists(conv::kPhypCPV     )) { fp->Update(conv::kPhypCPV     ,deltacp ); }
-  }
+  if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
+  if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
+  if (fp->Exists(conv::kPhypMixing23)) { fp->Update(conv::kPhypMixing23,mixing23); }
+  if (fp->Exists(conv::kPhypDm12sq  )) { fp->Update(conv::kPhypDm12sq  ,dm12sq  ); }
+  if (fp->Exists(conv::kPhypDm23sq  )) { fp->Update(conv::kPhypDm23sq  ,dm23sq  ); }
+  if (fp->Exists(conv::kPhypCPV     )) { fp->Update(conv::kPhypCPV     ,deltacp ); }
 
   // Generate pdfs
   GeneratePDFNominal(model, cm, fp, kv, outfile);
@@ -256,6 +240,9 @@ int main(int argc, char ** argv)
     if(!util::IsSystematic(p)) { continue; }
     double bestfit = fp->InitValue(p);
     double sigma_err = syst->OneSigmaError(p);
+    std::cout << " 1 sigma error: " << sigma_err << std::endl;
+    // Counter to link the sigma values with the integer version
+    unsigned int n = 0;
     for(const double &nsig : nsigmas){
       double tweak_p = bestfit + (nsig * sigma_err);
       double tweak_m = bestfit - (nsig * sigma_err);
@@ -267,13 +254,15 @@ int main(int argc, char ** argv)
       // Get the number of sigma as a rounded integer for naming 
       // (assuming we only ever vary by integer values of sigma but may want to 
       // select exactly the variation given by a universe)
-      nsigma_int = static_cast<int>(round(nsig));
+//      nsigma_int = static_cast<int>(round(nsig));
+      nsigma_int = integer_sigmas.at(n);
 
       LOG("valor_sbn", pNOTICE)
         << "Tweak systematic parameter: "  << util::NameRegistry::Instance()->ParamAsString(p)
         << "\n  Nominal value = "          << bestfit
         << "\n  sigma error = "            << sigma_err;
-      if(sigma_from_universes){
+      
+      if(nsigmas.size() > 1){
         if(nsig < 0)
           LOG("valor_sbn", pNOTICE) << "\n  nominal " << nsig << " sigma tweak = " << tweak_p;
         else
@@ -294,15 +283,11 @@ int main(int argc, char ** argv)
       
       // If we are getting the values of sigma from the universes then only generate a single pdf
       // and determine whether it is positive or negative
-      if(sigma_from_universes){
-        if(nsig < 0 && nsigma_int != 0){
+      if(nsigmas.size() > 1){
+        if(nsig < 0 && nsigma_int != 0)
           GeneratePDFTweaked(model, cm, fp, kv, p, tweak_p, outfile, ("m"+std::to_string(abs(nsigma_int))).data());
-          if(def_spline_debug){PrintMCT(model, cm, fp, kv, p, tweak_p, reco_bin, true_bin);}
-        }
-        else{
+        else
           GeneratePDFTweaked(model, cm, fp, kv, p, tweak_p, outfile, ("p"+std::to_string(abs(nsigma_int))).data());
-          if(def_spline_debug){PrintMCT(model, cm, fp, kv, p, tweak_p, reco_bin, true_bin);}
-        }
       }
       else{
         if(nsig < 0){
@@ -314,8 +299,8 @@ int main(int argc, char ** argv)
           GeneratePDFTweaked(model, cm, fp, kv, p, tweak_m, outfile, ("m"+std::to_string(abs(nsigma_int))).data());
         }
       }
+      n++;
     } // loop over nsigmas
-    if(def_spline_debug){PrintMCT(model, cm, fp, kv, p, 0, reco_bin, true_bin);}
   } // loop over params
 
   outfile->Close();
@@ -340,7 +325,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 {
   cout << "\nGenerating nominal PDF:" << std::endl;
   outfile->cd();
-  model->ResetSystematics(*fp,"all");
+  model->ResetSystematics("all");
   fp->FromPhysParamList(model->Tweaks(),"current-silent");
 
   // Generate predictions
@@ -369,6 +354,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
     if (util::IsReco(kv)) {
       TString name_tot     = TString::Format("nom_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
       TH1D * curr_pdf_tot = (TH1D*) array->FindObject(name_tot.Data());
+      std::cout << " Current integral: " << curr_pdf_tot->Integral() << std::endl;
       if (!curr_pdf_tot) {
         cerr<<"Could not find histogram "<<name_tot<<endl;
         exit(-1);
@@ -403,7 +389,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   outfile->cd();
   std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
   cout << "\nGenerating " << tag << " PDF with tweak dial = " << tweak_dial << " for param " << param_name << std::endl;
-  model->ResetSystematics(*fp,"all");
+  model->ResetSystematics("all");
 
   model->TweakSystematic(p, tweak_dial, "");
   fp->FromPhysParamList(model->Tweaks(),"current-silent");
@@ -419,6 +405,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   Option_t * write_opt = "pdfts_rf+SB";
   if (util::IsTrue(kv)) { write_opt = "pdfcs_rf+SB"; }    // The true PDFs don't have totals in GSSFM, only the mode breakdown
   model->Write(array,"curr",write_opt);
+  array->Print();
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
@@ -459,108 +446,3 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   delete array;
 }
 //________________________________________________________________________________________
-void PrintMCT(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
-            PhysParamId_t p, double tweak_dial, int reco_bin, int true_bin)
-{
-  std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
-  model->ResetSystematics(*fp,"all");
-  model->TweakSystematic(p, tweak_dial, "");
-  fp->FromPhysParamList(model->Tweaks(),"current-silent");
-
-  // Generate predictions
-  model->Generate(*fp,"+SB");
-
-  // Array to store results
-  TObjArray * array = new TObjArray();
-  //array->SetOwner(true);
-
-  // Write stuff out
-  Option_t * write_opt = "pdfts_rf+SB";
-  if (util::IsTrue(kv)) { write_opt = "pdfcs_rf+SB"; }    // The true PDFs don't have totals in GSSFM, only the mode breakdown // TODO: util::binning::Make1DHistogram currently doesn't work with truth...
-  model->Write(array,"nom","mct_vf");
-
-  // Pick results wanted
-  for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
-    GenericSingleSampleFitModel * this_model = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
-    Detector_t d = this_model->GetDetector();
-    BeamConf_t b = this_model->GetBeam();
-    Sample_t   s = this_model->GetSample();
-
-    const unsigned int n_mcts = array->GetEntries();
-    std::map<ReacMode_t, VALORArray> mct_modes;
-    for(unsigned int imct = 0; imct < n_mcts; ++imct){
-      const VALORArray mct = *static_cast<VALORArray*>((*array)[imct]);
-      const std::string mct_name = mct.GetName();
-      const TString t_mct_name = mct_name;
-      const size_t underscore_index = mct_name.find_last_of("_");
-      if(underscore_index == string::npos){
-        LOG("valor_sbn",pERROR) << " No '_' found in mct_name: " << mct_name;
-        util::Die(-1);
-      }
-      const std::string mct_mode_name = mct_name.substr(underscore_index+1);
-      LOG("valor_sbn",pINFO) << " MCT name " << mct_name << ", mct_mode_name: " << mct_mode_name;
-      if(!(t_mct_name.Contains("mctfin"))) continue;
-      for(const ReacMode_t &mode : this_model->GetReactionModes()) {
-        const TString mode_name = util::AsString(mode);
-        if(mct_mode_name == mode_name){
-          if(!mct_modes.emplace(mode,mct).second) {
-            LOG("valor_sbn",pERROR) << " Couldn't place the template in the map entry due to repeated entry for mode " << util::AsString(mode);
-            util::Die(-1);
-          }
-          break;
-        }
-      }
-    }
-    
-    std::cout << "Looking at " << param_name << " with sigma variation = " << tweak_dial << std::endl;                                                                                              
-    std::cout << "Printing MCT event rate breakdown for reco bin = " << reco_bin << " and true bin = " << true_bin << ": " << std::endl;   
-    
-    std::vector<double> tot_event_mode(mct_modes.size(), 0);   
-    int n_true_bins_sb = 0;
-    const SingleSampleKineBinning & binning = *(this_model->GetBinning());
-
-    for(auto elem : mct_modes){
-      std::cout << util::AsString(elem.first) << " " << elem.second.GetEntry(reco_bin,true_bin) <<  "\n";
-      // Get the number of true bins
-      const VALORBinning * true_sb = binning.TrueSmpBinning(elem.first);
-      n_true_bins_sb = true_sb->NBins();
-
-    }
-    // sum up the event rates from all the true bins and store in vector 
-    std::cout << "\nPrinting MCT event rate breakdown for the sum of reco bin " << reco_bin << ": " << std::endl;
-    for(int i = 0; i < n_true_bins_sb; i++){
-      int j = 0;
-
-      for(auto elem : mct_modes){
-        tot_event_mode[j] += elem.second.GetEntry(reco_bin,i);
-        j++;
-      }
-    }
-
-    int i = 0;
-    double tot_bin_event_rate = 0;
-    for(auto elem : mct_modes){
-      std::cout << util::AsString(elem.first) << " " << tot_event_mode[i] <<  "\n";
-      tot_bin_event_rate += tot_event_mode[i];
-      i++;
-    }
-    std::cout << "\nTotal event rate for reco bin " << reco_bin << ": " << std::setprecision(10) << tot_bin_event_rate << "\n\n";
-
-    /*
-    // Get the PDF broken down by mode contributions
-    for(conv::ReacMode_t m : this_model->GetReactionModes()) {
-      TString name_contrib = TString::Format("nom_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
-      TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
-      if (!curr_pdf_contrib) {
-        cerr<<"Could not find histogram "<<name_contrib<<endl;
-        exit(-1);
-      }
-      TString save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(), "nom");
-      curr_pdf_contrib->Write(save_name.Data());
-    } //imode
-  */
-  } //imodel
-  array->Clear("C");
-  delete array;
-}
-
