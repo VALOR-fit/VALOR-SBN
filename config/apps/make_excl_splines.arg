@@ -1,0 +1,11 @@
+# argument                       |   type         |  require?   |   default
+# ....................................................................................................
+input                            |   string       |  mandatory  |   -
+output                           |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root
+config                           |   string       |  mandatory  |   -
+systematic                       |   string       |  mandatory  |   -
+sample                           |   string       |  optional   |   numuCCincl
+detector                         |   string       |  optional   |   sbn_nd
+beam                             |   string       |  optional   |   BNB_FHC
+spectra-write-opt                |   string       |  optional   |   pdfts_rf
+other-sample                     |   boolean      |  optional   |  false

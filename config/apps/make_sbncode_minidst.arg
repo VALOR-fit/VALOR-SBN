@@ -10,6 +10,7 @@ beam                               |   string       |  optional   |  BNB_FHC
 write-universes,no-write-universes |   boolean_list |  optional   |  no-write-universes
 apply-weights, dont-apply-weights  |   boolean_list |  optional   |  apply-weights
 no-truth                           |   boolean      |  optional   |  false
+cc-selection                       |   boolean      |  optional   |  false 
 other-sample                       |   boolean      |  optional   |  false
 fix-nonres,keep-nonres             |   boolean_list |  optional   |  fix-nonres
 status-code-set,no-status-code     |   boolean_list |  optional   |  status-code-set
