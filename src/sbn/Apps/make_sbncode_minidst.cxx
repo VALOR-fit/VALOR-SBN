@@ -6,13 +6,13 @@
   \brief     Converts input SBNCode analysis DSTs to the VALOR mini-DST format.
 
   \syntax    valor_sbn-make_sbncode_minidst
-                --input  input_analysis_file.root
-                --output output_file_containing_valor_minidst.root
-               [--write-universes] optionally write out the systematic variations
-               [--disable-checks]
+             --input  input_analysis_file.root
+             --output output_file_containing_valor_minidst.root
+             [--write-universes] optionally write out the systematic variations
+             [--disable-checks]
 
   \author    Rhiannon Jones <rhiannon.jones \at liverpool.ac.uk>
-             University of Liverpool
+  University of Liverpool
 
   \created   March 2019
 
@@ -93,35 +93,53 @@ typedef enum ELarMode{
 
 std::vector<TString> nonResVariations = 
 {
-"genie_NonResRvpCC1pi_Genie",
-"genie_NonResRvnCC1pi_Genie",
-"genie_NonResRvbarnCC1pi_Genie",
-"genie_NonResRvbarpCC1pi_Genie",
-"genie_NonResRvpCC2pi_Genie",
-"genie_NonResRvnCC2pi_Genie",
-"genie_NonResRvbarnCC2pi_Genie",
-"genie_NonResRvbarpCC2pi_Genie",
-"genie_NonResRvpNC1pi_Genie",
-"genie_NonResRvnNC1pi_Genie",
-"genie_NonResRvbarnNC1pi_Genie",
-"genie_NonResRvbarpNC1pi_Genie",
-"genie_NonResRvpNC2pi_Genie",
-"genie_NonResRvnNC2pi_Genie",
-"genie_NonResRvbarnNC2pi_Genie",
-"genie_NonResRvbarpNC2pi_Genie",
+  "genie_NonResRvpCC1pi_Genie",
+  "genie_NonResRvnCC1pi_Genie",
+  "genie_NonResRvbarnCC1pi_Genie",
+  "genie_NonResRvbarpCC1pi_Genie",
+  "genie_NonResRvpCC2pi_Genie",
+  "genie_NonResRvnCC2pi_Genie",
+  "genie_NonResRvbarnCC2pi_Genie",
+  "genie_NonResRvbarpCC2pi_Genie",
+  "genie_NonResRvpNC1pi_Genie",
+  "genie_NonResRvnNC1pi_Genie",
+  "genie_NonResRvbarnNC1pi_Genie",
+  "genie_NonResRvbarpNC1pi_Genie",
+  "genie_NonResRvpNC2pi_Genie",
+  "genie_NonResRvnNC2pi_Genie",
+  "genie_NonResRvbarnNC2pi_Genie",
+  "genie_NonResRvbarpNC2pi_Genie",
 };
 
-bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other);
-valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu);
-void FillVariationBranches(const TString &vname,
-                           const size_t &n_universes,
-                           TObjArray &variation_names,
-                           std::map<TString,int> &variation_nentries,
-                           std::map<TString,variation_output_type *> &variation_entries,
-                           TTree *valor_minidst);
-void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname);
-void GetPair(const TString &vname, std::pair<TString,TString> &new_vnames);
+bool CheckSample(const event::RecoInteraction &reco, 
+    const bool &numu, 
+    const valor::conv::Sample_t &sample, 
+    const bool &other);
 
+valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, 
+    const bool &numu, 
+    const bool &iscc);
+
+void FillVariationBranches(const TString &vname,
+    const size_t &n_universes,
+    TObjArray &variation_names,
+    std::map<TString,int> &variation_nentries,
+    std::map<TString,variation_output_type *> &variation_entries,
+    TTree *valor_minidst);
+
+void GetCorrectVariationName(const int nuc_pdg, 
+    const bool iscc, 
+    TString &vname);
+
+void GetPair(const TString &vname, 
+    std::pair<TString,TString> &new_vnames);
+
+void CheckNuFlav(const std::string &input,
+    bool &is_nueint, 
+    bool &is_nueosc,
+    bool &is_nuenumu,
+    bool &is_numu,
+    bool &is_nue);
 //___________________________________________________________________
 int main(int argc, char ** argv)
 {
@@ -154,6 +172,7 @@ int main(int argc, char ** argv)
   bool   write_universes    = arg.GetBool("write-universes");
   bool   apply_weights      = !(arg.GetBool("dont-apply-weights"));
   bool   no_truth           = arg.GetBool("no-truth");
+  bool   is_cc              = !(arg.GetBool("cc-selection"));
   bool   other_sample       = arg.GetBool("other-sample");
   bool   fix_nonres         = arg.GetBool("fix-nonres");
   bool   status_code_set    = arg.GetBool("status-code-set");
@@ -177,7 +196,7 @@ int main(int argc, char ** argv)
   // If we want to define 'other' as anything but the sample defined in the arguments, set this to true
   if(other_sample)
     VLOG("valor_sbn", pNOTICE) << " Chosen to look for events which do NOT fall under the definition of the sample, "
-                               << util::AsString(sample);
+      << util::AsString(sample);
 
   // Check if we are looking at nue_disappearance from the opt_oscillation argument
   // so that we reject the nue appearance oscillated events later
@@ -187,11 +206,11 @@ int main(int argc, char ** argv)
   if(found_nue_dis != string::npos){
     nue_disappearance = true;
     VLOG("valor_sbn", pINFO)
-        << "Looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
+      << "Looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
   }
   else
     VLOG("valor_sbn", pINFO)
-        << "NOT looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
+      << "NOT looking at a nue disappearance event from the oscillation option: " << opt_oscillation;
 
   // Determine sample-types
   bool is_nueint  = false;
@@ -199,73 +218,8 @@ int main(int argc, char ** argv)
   bool is_nuenumu = false;
   bool is_numu    = false;
   bool is_nue     = false;
-  string str_numu = "Numu";
-  string str_nue  = "Nue";
-  string str_int  = "_Int";
-  string str_osc  = "_Osc";
 
-  //Find substrings and check the selected nuE sample-type if necessary
-  size_t found_nue  = opt_input_name.find(str_nue);
-  size_t found_numu = opt_input_name.find(str_numu);
-
-  // Get selected nuMu from sample name
-  if(found_nue == string::npos && found_numu != string::npos)
-    is_numu = true;
-
-  if(found_nue != string::npos){
-    is_nue = true;
-    // We are looking at a nue sample, check if osc, intrinsic or numu
-    size_t found_nueosc  = opt_input_name.find(str_osc);
-    size_t found_nueint  = opt_input_name.find(str_int);
-    size_t found_nuenumu = opt_input_name.find(str_numu);
-    if(found_nueosc != string::npos && found_nueint == string::npos && found_nuenumu == string::npos)
-      is_nueosc = true;
-    else if(found_nueosc != string::npos){
-      VLOG("valor_sbn", pFATAL)
-        << "Error: Found selected nuE oscillated file with hint of intrinsic and/or numu in the name - misleading: " << opt_input_name;
-      exit(1);
-    }
-    if(found_nueint != string::npos && found_nueosc == string::npos && found_nuenumu == string::npos)
-      is_nueint = true;
-    else if(found_nueint != string::npos){
-      VLOG("valor_sbn", pFATAL)
-        << "Error: Found selected nuE intrinsic file with hint of oscillated and/or numu in the name - misleading: " << opt_input_name;
-      exit(1);
-    }
-    if(found_nuenumu != string::npos && found_nueosc == string::npos && found_nueint == string::npos)
-      is_nuenumu = true;
-    else if(found_nuenumu != string::npos){
-      VLOG("valor_sbn", pFATAL)
-        << "Error: Found selected nuE numu file with hint of oscillated and/or intrinsic in the name - misleading: " << opt_input_name;
-      exit(1);
-    }
-  }
-
-  bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu};
-  if(found_nue && std::count(found_nues, found_nues+sizeof(found_nues), 1) > 1){
-    VLOG("valor_sbn", pFATAL)
-      << "Error: Found multiple selected nuE types in filename - misleading: " << opt_input_name;
-    exit(1);
-  }
-
-  // Make sure we are finding at least 1 of numu or nue in the name
-  bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu};
-  if(std::count(found, found+sizeof(found), 1) == 0){
-    VLOG("valor_sbn", pFATAL)
-      << "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << opt_input_name;
-    exit(1);
-  }
-
-  // CHECKING OUTPUT OF NEW CODE
-  std::cout << " Input filename : " << opt_input_name << " - ";
-  if(is_nueosc)
-    std::cout << " Selected NuE, Oscillated " << std::endl;
-  if(is_nueint)
-    std::cout << " Selected NuE, Intrinsic " << std::endl;
-  if(is_nuenumu)
-    std::cout << " Selected NuE, NuMu " << std::endl;
-  if(is_numu)
-    std::cout << " Selected NuMu, NuMu " << std::endl;
+  CheckNuFlav(opt_input_name, is_nueint, is_nueosc, is_nuenumu, is_numu, is_nue);
 
   // Get the POT of the sample from the subrun tree
   double mcsample_pot = -1.;
@@ -282,7 +236,7 @@ int main(int argc, char ** argv)
   VLOG("valor_sbn", pNOTICE)
     << "Input subrun tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
 
-//  TBranch *b = subrun_tree->GetBranch("totgoodpot");
+  //  TBranch *b = subrun_tree->GetBranch("totgoodpot");
   TBranch *b = subrun_tree->GetBranch("totpot"); // TEMP FOR BROKEN FILE
   unsigned int npot = subrun_tree->GetEntries();
   for(unsigned int i = 0; i < npot; ++i){
@@ -379,10 +333,10 @@ int main(int argc, char ** argv)
     for (const auto & variation : weights) {
       // make a list of the variation names
       const TString & vname(variation.first);
-      
+
       // Get the number of universes
       const size_t n_universes = variation.second.size();
-     
+
       // If the variation is a non-resonant background parameter, add 4 branches to the tree
       if(vname.Contains("NonRes") && fix_nonres){
         if(!replacedNonRes){
@@ -408,6 +362,7 @@ int main(int argc, char ** argv)
   //
 
   Long64_t nev_accept = 0;
+  Long64_t nev_reject = 0;
 
   std::vector<int> nev_accept_by_mode;
   for (int im = 0 ; im < valor::conv::kNReacModes; im++) {
@@ -459,10 +414,11 @@ int main(int argc, char ** argv)
     // Before we do anything, make sure the current event fits the description of the sample
     if(!CheckSample(reco,is_numu,sample,other_sample)){
       LOG("valor_sbn",pINFO)   << "Current event has \n" 
-                               << reco.npion << " pions, \n " 
-                               << reco.npi0 << " pi0s and \n " 
-                               << reco.nproton << " protons and does not match the desired sample type: " 
-                               << util::AsString(sample) << "\n Skipping.";
+        << reco.npion << " pions, \n " 
+        << reco.npi0 << " pi0s and \n " 
+        << reco.nproton << " protons and does not match the desired sample type: " 
+        << util::AsString(sample) << "\n Skipping.";
+      nev_reject++;
       continue;
     }
 
@@ -796,7 +752,7 @@ int main(int argc, char ** argv)
 
     // If we are finding everything 'other' than the sample defined, label the DST sample 'other'
     if(other_sample)
-      valor_minidst_sample = GetOtherSample(sample,is_numu);
+      valor_minidst_sample = GetOtherSample(sample,!is_nue,is_cc);
     else
       valor_minidst_sample     = sample;
     valor_minidst_beam       = beam;
@@ -861,8 +817,12 @@ int main(int argc, char ** argv)
   }
 
   double f = 100. * (double)nev_accept / (double)nev;
+  double r = 100. * (double)nev_reject / (double)nev;
   VLOG("valor_sbn", pNOTICE) <<
     "Used " << f << "% (" << nev_accept << "/" << nev
+    << ") of input events.";
+  VLOG("valor_sbn", pNOTICE) <<
+    "Rejected " << r << "% (" << nev_reject << "/" << nev
     << ") of input events.";
 
   //~ VLOG("valor_sbn", pNOTICE) <<"Total POT read: "<<total_pot_read;
@@ -960,32 +920,32 @@ bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const val
   }
   return false; 
 }
-valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu){
+valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu, const bool &iscc){
 
   // Numu CC
-  if(valor::util::IsCC(s) && numu){
+  if(iscc && numu){
     valor::conv::Sample_t new_s = valor::util::SampleFromString("numuCCoth");
     assert(new_s != valor::conv::ksUndefined);
     return new_s;
   }
 
   // Numu NC
-  else if(!valor::util::IsCC(s) && numu){
-    valor::conv::Sample_t new_s = valor::util::SampleFromString("numuNCoth");
+  else if(!iscc && numu){
+    valor::conv::Sample_t new_s = valor::util::SampleFromString("NCoth");
     assert(new_s != valor::conv::ksUndefined);
     return new_s;
   }
 
   // Nue CC
-  else if(valor::util::IsCC(s) && !numu){
+  else if(iscc && !numu){
     valor::conv::Sample_t new_s = valor::util::SampleFromString("nueCCoth");
     assert(new_s != valor::conv::ksUndefined);
     return new_s;
   }
-  
+
   // Nue NC
-  else if(!valor::util::IsCC(s) && !numu){
-    valor::conv::Sample_t new_s = valor::util::SampleFromString("nueNCoth");
+  else if(!iscc && !numu){
+    valor::conv::Sample_t new_s = valor::util::SampleFromString("NCoth");
     assert(new_s != valor::conv::ksUndefined);
     return new_s;
   }
@@ -995,11 +955,11 @@ valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool 
   }
 }
 void FillVariationBranches(const TString &vname,
-                           const size_t &n_universes,
-                           TObjArray &variation_names,
-                           std::map<TString,int> &variation_nentries,
-                           std::map<TString,variation_output_type *> &variation_entries,
-                           TTree *valor_minidst){
+    const size_t &n_universes,
+    TObjArray &variation_names,
+    std::map<TString,int> &variation_nentries,
+    std::map<TString,variation_output_type *> &variation_entries,
+    TTree *valor_minidst){
 
   // Fill the variation names object for writing
   variation_names.AddLast(new TObjString(vname.Data()));
@@ -1137,4 +1097,76 @@ void GetPair(const TString &vname, std::pair<TString,TString> &new_vnames){
     valor::util::Die(-1);
   }
   new_vnames = names;
+}
+void CheckNuFlav(const std::string &input,
+    bool &is_nueint, 
+    bool &is_nueosc,
+    bool &is_nuenumu,
+    bool &is_numu,
+    bool &is_nue){
+
+  string str_numu = "Numu";
+  string str_nue  = "Nue";
+  string str_int  = "_Int";
+  string str_osc  = "_Osc";
+
+  //Find substrings and check the selected nuE sample-type if necessary
+  size_t found_nue  = input.find(str_nue);
+  size_t found_numu = input.find(str_numu);
+
+  // Get selected nuMu from sample name
+  if(found_nue == string::npos && found_numu != string::npos)
+    is_numu = true;
+
+  if(found_nue != string::npos){
+    is_nue = true;
+    // We are looking at a nue sample, check if osc, intrinsic or numu
+    size_t found_nueosc  = input.find(str_osc);
+    size_t found_nueint  = input.find(str_int);
+    size_t found_nuenumu = input.find(str_numu);
+    if(found_nueosc != string::npos && found_nueint == string::npos && found_nuenumu == string::npos)
+      is_nueosc = true;
+    else if(found_nueosc != string::npos){
+      VLOG("valor_sbn", pFATAL)
+        << "Error: Found selected nuE oscillated file with hint of intrinsic and/or numu in the name - misleading: " << input;
+      exit(1);
+    }
+    if(found_nueint != string::npos && found_nueosc == string::npos && found_nuenumu == string::npos)
+      is_nueint = true;
+    else if(found_nueint != string::npos){
+      VLOG("valor_sbn", pFATAL)
+        << "Error: Found selected nuE intrinsic file with hint of oscillated and/or numu in the name - misleading: " << input;
+      exit(1);
+    }
+    if(found_nuenumu != string::npos && found_nueosc == string::npos && found_nueint == string::npos)
+      is_nuenumu = true;
+    else if(found_nuenumu != string::npos){
+      VLOG("valor_sbn", pFATAL)
+        << "Error: Found selected nuE numu file with hint of oscillated and/or intrinsic in the name - misleading: " << input;
+      exit(1);
+    }
+  }
+  bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu};
+  if(found_nue && std::count(found_nues, found_nues+sizeof(found_nues), 1) > 1){
+    VLOG("valor_sbn", pFATAL)
+      << "Error: Found multiple selected nuE types in filename - misleading: " << input;
+    exit(1);
+  }
+  // Make sure we are finding at least 1 of numu or nue in the name
+  bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu};
+  if(std::count(found, found+sizeof(found), 1) == 0){
+    VLOG("valor_sbn", pFATAL)
+      << "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << input;
+    exit(1);
+  }
+
+  std::cout << " Input filename : " << input << " - ";
+  if(is_nueosc)
+    std::cout << " Selected NuE, Oscillated " << std::endl;
+  if(is_nueint)
+    std::cout << " Selected NuE, Intrinsic " << std::endl;
+  if(is_nuenumu)
+    std::cout << " Selected NuE, NuMu " << std::endl;
+  if(is_numu)
+    std::cout << " Selected NuMu, NuMu " << std::endl;
 }
