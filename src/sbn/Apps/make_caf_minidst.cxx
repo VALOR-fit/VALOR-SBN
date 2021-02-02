@@ -1,14 +1,13 @@
 //____________________________________________________________________________
 /*!
 
-  \app       valor_sbn-make_sbncode_minidst
+  \app       valor_sbn-make_caf_minidst
 
   \brief     Converts input SBNCode analysis DSTs to the VALOR mini-DST format.
 
   \note      There are two formats for CAF files (.flat.root and .caf.root)
              Will write this code assuming input is in .flat.root format (looks easier)
-             Supposedly is easy enough to swap between both formats - or if needed
-             will look at making it deal with .caf.root format at some point. 
+             If needed will look at making it deal with .caf.root format at some point. 
 
   \syntax    valor_sbn-make_sbncode_minidst
                 --input  input_analysis_file.root
@@ -31,10 +30,17 @@
 // Systematic uncertaities aren't yet included in the CAF files - hence all the stuff
 // about universes is commented out (hopefully i got all the relevent bits).
 // The "status_code" variable (used e.g. for particle counting) is now called "gstatus" (genie_status).
-// At the moment the sbncode develop branch isn't filling it correctly so the variable is filled
-// with gibberish (the particle counting part is commented out too).
-// Think I've at least sort of fixed it (is being filled with realistic numbers now) - not 100% is 
-// completely correct yet...
+// At the moment the sbncode develop branch isn't filling it (true_particles.gstatus) 
+// correctly so the variable is filled with gibberish.
+// Think I've fixed it now and added the fsp bit as seen in the old files (ask for my branch)
+//
+// The CAFMaker produces a .caf.root file.
+// Use the executable 'flatten_caf' to convert to .flat.root format
+// (command: flatten_caf input_file.caf.root output_file.flat.root)
+//
+// Looks like the structure of the .flat.root files has changed at some point (sigh..)
+// i.e. example files Gray gave me are a little different to the ones I get using the develop branch.
+// TODO; Update this script to refelect the newest format and add the bits using gstatus now that is fixed.
 //
 // --------------------------------------
 
@@ -77,9 +83,10 @@ using std::ostringstream;
 
 void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
 // The trees we need to access (in the gobal "recTree" folder)
-static const string grec_tree           = "recTree/rec";
-static const string grec_mcnu_tree      = "recTree/rec.mc.nu";
-static const string grec_fake_reco_tree = "recTree/rec.fake_reco";
+//static const string grec_tree           = "recTree/rec";
+//static const string grec_mcnu_tree      = "recTree/rec.mc.nu";
+//static const string grec_fake_reco_tree = "recTree/rec.fake_reco";
+static const string global_tree = "recTree";
 
 static const int gPrintEveryNEvents   = 50000;
 
@@ -310,28 +317,28 @@ int main(int argc, char ** argv)
 
   // Get the POT of the sample from the subrun tree
   double mcsample_pot = -1.;
-  TChain * rec = new TChain(grec_tree.c_str());
-  rec->Add(opt_input_name.c_str());
-  if(!rec || !rec->GetEntries()) {
+  TChain * recTree = new TChain(global_tree.c_str());
+  recTree->Add(opt_input_name.c_str());
+  if(!recTree || !recTree->GetEntries()) {
     VLOG("valor_sbn", pFATAL)
-      << "Error: Unable to read " << grec_tree
+      << "Error: Unable to read " << global_tree
       <<" from "<< opt_input_name;
     exit(1);
   }
 
-  Long64_t nev_subrun = rec->GetEntries();
+  Long64_t nev_subrun = recTree->GetEntries();
   VLOG("valor_sbn", pNOTICE)
-    << "Input subrun tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
+    << "Input tree has " << nev_subrun << ((nev_subrun==1) ? " entry." : " entries.");
 
   unsigned int npot = nev_subrun;
   for(unsigned int i = 0; i < npot; ++i){
-    rec->GetEntry(i);
-    mcsample_pot += rec->GetLeaf("rec.hdr.pot")->GetValue();
+    recTree->GetEntry(i);
+    mcsample_pot += recTree->GetLeaf("rec.hdr.pot")->GetValue();
   }
 
   if(mcsample_pot == -1.){
     VLOG("valor_sbn", pFATAL)
-      << "Error: Not able to access MCSample POT from " << grec_tree;
+      << "Error: Not able to access MCSample POT from " << global_tree;
     exit(1);
   }
   VLOG("valor_sbn", pNOTICE)
@@ -377,6 +384,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
 
+  /*
   // open the ROOT file and get the TTree & its header
   TChain * mcnu_tree = new TChain(grec_mcnu_tree.c_str());
   mcnu_tree->Add(opt_input_name.c_str());
@@ -404,7 +412,8 @@ int main(int argc, char ** argv)
       <<" from "<< opt_input_name;
     exit(1);
   }
-
+*/
+  Long64_t nev = recTree->GetEntries();
 
    //event::RecoEvent *pevent = nullptr;
    //analysis_tree->SetBranchAddress("reco_events", &pevent);
@@ -465,8 +474,8 @@ int main(int argc, char ** argv)
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
-    mcnu_tree->GetEntry(iev);
-    fake_reco_tree->GetEntry(iev);
+    recTree->GetEntry(iev);
+  //  fake_reco_tree->GetEntry(iev);
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
       VLOG("valor_sbn", pNOTICE) << "** Reading event: " << iev
@@ -558,59 +567,61 @@ int main(int argc, char ** argv)
         continue;
       }
 */
-        iscc         = mcnu_tree->GetLeaf("rec.mc.nu.iscc")->GetValue();
-        isnc         = mcnu_tree->GetLeaf("rec.mc.nu.isnc")->GetValue();
-        baseline     = mcnu_tree->GetLeaf("rec.mc.nu.baseline")->GetValue();
-        nu_pdg       = mcnu_tree->GetLeaf("rec.mc.nu.pdg")->GetValue();
-        enu_true     = mcnu_tree->GetLeaf("rec.mc.nu.E")->GetValue();
-        Q2s          = mcnu_tree->GetLeaf("rec.mc.nu.Q2")->GetValue();
-        larsoft_mode = mcnu_tree->GetLeaf("rec.mc.nu.genie_intcode")->GetValue();
-        //std::cout << "iscc: " << iscc << "      baseline: " << baseline << std::endl;
+      int fsps_size     = recTree->GetLeaf("rec.true_particles.fsps..length")->GetValue();
+      TLeaf *fsps_gstatus = recTree->GetLeaf("rec.true_particles.fsps.gstatus");
+      TLeaf *fsps_pdg     = recTree->GetLeaf("rec.true_particles.fsps.pdg");
 
-/*
+      iscc              = recTree->GetLeaf("rec.mc.nu.iscc")->GetValue();
+      isnc              = recTree->GetLeaf("rec.mc.nu.isnc")->GetValue();
+      baseline          = recTree->GetLeaf("rec.mc.nu.baseline")->GetValue();
+      nu_pdg            = recTree->GetLeaf("rec.mc.nu.pdg")->GetValue();
+      enu_true          = recTree->GetLeaf("rec.mc.nu.E")->GetValue();
+      Q2s               = recTree->GetLeaf("rec.mc.nu.Q2")->GetValue();
+      larsoft_mode      = recTree->GetLeaf("rec.mc.nu.genie_intcode")->GetValue();
+      //std::cout << "iscc: " << iscc << "      baseline: " << baseline << std::endl;
 
       // --- Think this is currently the true_particle branch, but will be moved to mc.nu.fsp ---
-      // --- Don't have status_code in CAF files??? ---
+      // --- status_code <--> gstatus ---
       
       // Particle counting
       bool nucleonPDGSet = false;
-      for(unsigned int p = 0; p < fsps.size(); ++p){
+      for(unsigned int p = 0; p < fsps_size; ++p){
         if(status_code_set){
-          if(fsps[p].status_code == 11){
+          if(fsps_gstatus->GetValue(p) == 11){
             if(nucleonPDGSet){
               LOG("valor_sbn",pNOTICE) << "\nIn event " << iev
                 << "\nThe struck nucleon pdg has already been set as: " << nuc_pdg << ", will take the first answer."
-                << "\nThis nucleon has pdg: " << fsps[p].pdg;
+                << "\nThis nucleon has pdg: " << fsps_pdg->GetValue(p);
             }
             else{
               LOG("valor_sbn",pINFO) << "\nIn event " << iev
-                << "\nThe struck nucleon has pdg: " << fsps[p].pdg;
-              nuc_pdg = fsps[p].pdg;
+                << "\nThe struck nucleon has pdg: " << fsps_pdg->GetValue(p);
+              nuc_pdg = fsps_pdg->GetValue(p);
               nucleonPDGSet = true;
             }
           }
         }
         // Make sure we are counting initial states for the interaction definition 
-        if (status_code_set && fsps[p].status_code != 14 && fsps[p].status_code != 12) {continue;}
-        if     (fsps[p].pdg == genie::kPdgProton      ) nip++;
-        else if(fsps[p].pdg == genie::kPdgAntiProton  ) niap++;
-        else if(fsps[p].pdg == genie::kPdgNeutron     ) nin++;
-        else if(fsps[p].pdg == genie::kPdgAntiNeutron ) nian++;
-        else if(fsps[p].pdg == genie::kPdgPiP         ) nipip++;
-        else if(fsps[p].pdg == genie::kPdgPiM         ) nipim++;
-        else if(fsps[p].pdg == genie::kPdgPi0         ) nipi0++;
-        else if(fsps[p].pdg == genie::kPdgKP          ) nikp++;
-        else if(fsps[p].pdg == genie::kPdgKM          ) nikm++;
-        else if(fsps[p].pdg == genie::kPdgK0          ) nik0++;
-        else if(fsps[p].pdg == genie::kPdgAntiK0      ) niak0++;
-        else if(fsps[p].pdg == genie::kPdgGamma       ) nig++;
-        else if(fsps[p].pdg == genie::kPdgElectron    ) niem++;
-        else if(fsps[p].pdg == genie::kPdgPositron    ) niep++;
-        else if(fsps[p].pdg == genie::kPdgMuon        ) nimu++;
-        else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
-        else if(fsps[p].pdg == genie::kPdgAntiMuon    ) nimup++;
-        else if(fsps[p].pdg == 14 || fsps[p].pdg == -14 || fsps[p].pdg == 12 || fsps[p].pdg == -12) ninu++;
-        else if(fsps[p].pdg > 1e4) ninuc++;
+        if (status_code_set && fsps_gstatus->GetValue(p) != 14 && fsps_gstatus->GetValue(p) != 12) {continue;}
+        if     (fsps_pdg->GetValue(p) == genie::kPdgProton      ) nip++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgAntiProton  ) niap++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgNeutron     ) nin++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgAntiNeutron ) nian++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgPiP         ) nipip++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgPiM         ) nipim++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgPi0         ) nipi0++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgKP          ) nikp++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgKM          ) nikm++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgK0          ) nik0++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgAntiK0      ) niak0++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgGamma       ) nig++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgElectron    ) niem++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgPositron    ) niep++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgMuon        ) nimu++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgAntiMuon    ) nimup++;
+        else if(fsps_pdg->GetValue(p) == genie::kPdgAntiMuon    ) nimup++;
+        else if(fsps_pdg->GetValue(p) == 14 || fsps_pdg->GetValue(p) == -14 || fsps_pdg->GetValue(p) == 12 || fsps_pdg->GetValue(p) == -12) ninu++;
+        else if(fsps_pdg->GetValue(p) > 1e4) ninuc++;
         else niother++;
       }
 
@@ -619,7 +630,6 @@ int main(int argc, char ** argv)
         util::Die(-1);
       }
 
-*/
 
       // Construct the reaction mode
       conv::ReacType_t reac = conv::kmtUndefined;
@@ -675,7 +685,7 @@ int main(int argc, char ** argv)
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
       conv::NuFlavour_t init_flav;
       // If we are looking at the selected nuE samples, get the initial neutrino pdg from the file
-      init_pdg  = mcnu_tree->GetLeaf("rec.mc.nu.initpdg")->GetValue();
+      init_pdg  = recTree->GetLeaf("rec.mc.nu.initpdg")->GetValue();
       init_flav = valor::util::FlavourFromPDG(init_pdg);
 
       // Get the real valor mode - this will only be defined for modes turned on right now
@@ -890,10 +900,10 @@ int main(int argc, char ** argv)
     // Let's leave as is atm - reco histograms have a huge spike where all the extra (#truth - #reco)
     // events are being filled into the same #reco value.
         
-    enu_reco    = fake_reco_tree->GetLeaf("rec.fake_reco.nuE")->GetValue();
-    q0_reco     = fake_reco_tree->GetLeaf("rec.fake_reco.lepton.ke")->GetValue();
-    Theta_reco  = fake_reco_tree->GetLeaf("rec.fake_reco.lepton.costh")->GetValue();
-    reco_weight = fake_reco_tree->GetLeaf("rec.fake_reco.wgt")->GetValue();
+    enu_reco    = recTree->GetLeaf("rec.fake_reco.nuE")->GetValue();
+    q0_reco     = recTree->GetLeaf("rec.fake_reco.lepton.ke")->GetValue();
+    Theta_reco  = recTree->GetLeaf("rec.fake_reco.lepton.costh")->GetValue();
+    reco_weight = recTree->GetLeaf("rec.fake_reco.wgt")->GetValue();
 
     VLOG("valor_sbn",pDEBUG) << "Read event: "
       << "\n Ereco             = "<< enu_reco  << " GeV; "
