@@ -508,7 +508,7 @@ int main(int argc, char ** argv)
             nevents = 0;
           }
 
-          // Cutoff under 36 for a maximum 50% stat uncertainty in every bin
+          // Cutoff under 4 for a maximum 50% stat uncertainty in every bin
           // Splines will be flat otherwise
           double event_ratio = (nevents0 > 4) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           if(iknot == inom)

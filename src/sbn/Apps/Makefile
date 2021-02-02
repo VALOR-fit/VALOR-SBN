@@ -15,8 +15,10 @@ include $(VALOR_EXPT)/make/Make.include
 SBN_LIBRARIES =
 
 TGT = make_sbncode_minidst \
+			make_recoselection_minidst \
       make_flux_splines \
       make_xsec_splines \
+      make_excl_splines \
       universe_variation_tweaks \
       write_spectra_using_universes \
 			tweak_pdf_nsigma_var
@@ -71,6 +73,21 @@ ifdef GENIE
 	$(LD) $(LDFLAGS) make_xsec_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
 else
 	@echo "Skipping make_splines due to no GENIE"
+endif
+
+# Generate SBN excl splines
+# Probably don't require the GENIE dependence but method isn't finalised yet so keeping just in case
+#
+make_excl_splines: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_excl_splines.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) make_excl_splines.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB)  -o $(VALOR_EXPT)/bin/valor_sbn-make_excl_splines
+else
+	@echo "Skipping make_splines due to no GENIE"
+endif
+else
+	@echo "Skipping make_excl_splines due to no SBNanalysis"
 endif
 
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation
