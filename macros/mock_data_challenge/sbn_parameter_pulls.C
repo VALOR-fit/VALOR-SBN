@@ -9,19 +9,19 @@
 //
 
 void FormatLatex(const double &b, const double &e, const double &w, const double &y, const char *s);
-std::string FixLabel(const std::string l);
+std::string FixLabel(const std::string &l);
 
 void sbn_parameter_pulls(const char * filename, 
-    std::string  location = "",
-    std::string  flux = "", 
-    std::string  flux2 = "", 
-    std::string  proposal_xsec = "", 
-    std::string  modern_xsec = "", 
-    const char * int_cov = "", 
-    std::string  mec = "", 
-    std::string  detector = "", 
-    std::string  sample = "",
-    std::string  input_tag = "")
+                         std::string  location = "",
+                         std::string  flux = "", 
+                         std::string  flux2 = "", 
+                         std::string  proposal_xsec = "", 
+                         std::string  modern_xsec = "", 
+                         const char * int_cov = "", 
+                         std::string  mec = "", 
+                         std::string  detector = "", 
+                         std::string  sample = "",
+                         std::string  input_tag = "")
 {
   using namespace valor;
 
@@ -35,9 +35,9 @@ void sbn_parameter_pulls(const char * filename,
   }
 
   // Add an underscore to the tag
-  const char *tag = "";
+  std::string tag = "";
   if(input_tag != "")
-    tag = ("_"+input_tag).c_str();
+    tag = "_"+input_tag;
 
   bool detector_systematics = true;
   if(detector == "") detector_systematics = false;
@@ -84,7 +84,7 @@ void sbn_parameter_pulls(const char * filename,
   fitnt->SetBranchAddress("best_fit_model",         &bfmodel_array);
   fitnt->SetBranchAddress("data",                   &data_array);
 
-  TCanvas *c = new TCanvas("c","",0,20,2200,600);
+  TCanvas *c = new TCanvas("c","",0,20,1850,600);
   TLegend *l_bestfit = new TLegend(0.63,0.68,0.88,0.88);
   l_bestfit->SetBorderSize(0);
   fitnt->GetEntry(0);
@@ -254,9 +254,9 @@ void sbn_parameter_pulls(const char * filename,
   int n_nuebar_bins  = n_nuebar+n_nue_bins;
 
   // New canvas features 
-  c->SetLeftMargin   (0.069); 
-  c->SetRightMargin  (0.02);
-  c->SetBottomMargin (0.18);
+  c->SetLeftMargin   (0.0347);
+  c->SetRightMargin  (0.001);
+  c->SetBottomMargin (0.19);
   c->SetTopMargin    (0.06);
 
   TH1D *h_prefit  = new TH1D(name_prefit,  "", nRows-nPhysicsParams, 0, nRows-nPhysicsParams);
@@ -322,6 +322,9 @@ void sbn_parameter_pulls(const char * filename,
     miny = miny*0.9;
   else
     miny = miny*1.1;
+
+  miny = -5;
+  maxy = 5;
 
   //Temporaray for saving
   //miny = -4;
@@ -402,12 +405,13 @@ void sbn_parameter_pulls(const char * filename,
   h_postfit->GetXaxis()->LabelsOption("v");
   h_postfit->GetXaxis()->SetLabelSize(0.03);
   h_postfit->GetXaxis()->SetTitleSize(0.035);
-  h_postfit->GetXaxis()->SetTitleOffset(1.2);
+  h_postfit->GetXaxis()->SetTitleOffset(2.5);
+  h_postfit->GetXaxis()->CenterTitle();
   h_postfit->GetYaxis()->SetLabelSize(0.035);
   h_postfit->GetYaxis()->SetTitleSize(0.035);
-  h_postfit->GetYaxis()->SetTitleOffset(1);
-  h_postfit->GetXaxis()->SetTitle("");
-  h_postfit->GetYaxis()->SetTitle("Parameter pull, n#sigma");
+  h_postfit->GetYaxis()->SetTitleOffset(0.5);
+  h_postfit->GetXaxis()->SetTitle("Parameter");
+  h_postfit->GetYaxis()->SetTitle("n#sigma Pull");
   h_postfit->SetMarkerSize(0);
   h_postfit->SetLineColor(postfit_line);
   h_postfit->SetFillColor(postfit_color);
@@ -430,6 +434,8 @@ void sbn_parameter_pulls(const char * filename,
   c->Update();
   c->Draw();
   c->SaveAs(("postfit-only_nuisance_params_mdc_"+sample+tag+".root").c_str());
+  c->SaveAs(("postfit-only_nuisance_params_mdc_"+sample+tag+".png").c_str());
+  c->SaveAs(("postfit-only_nuisance_params_mdc_"+sample+tag+".pdf").c_str());
   c->Clear();
 
   double max_in_error = -999.;
@@ -455,12 +461,13 @@ void sbn_parameter_pulls(const char * filename,
   h_prefit->GetXaxis()->LabelsOption("v");
   h_prefit->GetXaxis()->SetLabelSize(0.025);
   h_prefit->GetXaxis()->SetTitleSize(0.035);
-  h_prefit->GetXaxis()->SetTitleOffset(1.2);
+  h_prefit->GetXaxis()->SetTitleOffset(2.5);
+  h_prefit->GetXaxis()->CenterTitle();
   h_prefit->GetYaxis()->SetLabelSize(0.035);
   h_prefit->GetYaxis()->SetTitleSize(0.035);
-  h_prefit->GetYaxis()->SetTitleOffset(1);
-  h_prefit->GetXaxis()->SetTitle("");
-  h_prefit->GetYaxis()->SetTitle("Parameter pull, n#sigma");
+  h_prefit->GetYaxis()->SetTitleOffset(0.5);
+  h_prefit->GetXaxis()->SetTitle("Parameter");
+  h_prefit->GetYaxis()->SetTitle("n#sigma Pull");
   h_prefit_2->SetLineStyle(1);
   h_prefit_2->SetLineWidth(1);
   h_prefit_2->SetLineColor(prefit_line);
@@ -516,6 +523,8 @@ void sbn_parameter_pulls(const char * filename,
   c->Update();
   c->Draw();
   c->SaveAs(("prefit-only_nuisance_params_mdc_"+sample+tag+".root").c_str());
+  c->SaveAs(("prefit-only_nuisance_params_mdc_"+sample+tag+".png").c_str());
+  c->SaveAs(("prefit-only_nuisance_params_mdc_"+sample+tag+".pdf").c_str());
   c->Clear();
 
 }
@@ -539,7 +548,7 @@ void FormatLatex(const double &b, const double &e, const double &w, const double
   // Asthetics
   l.DrawLatex(x,y,s);
 }
-std::string FixLabel(const std::string l){
+std::string FixLabel(const std::string &l){
   std::string fixed(l);
   TString tFixed(l);
 
