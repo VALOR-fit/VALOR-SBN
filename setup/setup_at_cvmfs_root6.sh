@@ -23,7 +23,7 @@ export VALOR_EXPT="$(readlink -m "$1")"
 
 if [ -z "${VALOR_EXPT}" ]; then
   sdir="$( readlink -m "${BASH_SOURCE[0]}" )"
-  export VALOR_EXPT="$( dirname "$( dirname "${sdir}" )" )/" # Directory above the one containing this file
+  export VALOR_EXPT="$( dirname "$( dirname "${sdir}" )" )" # Directory above the one containing this file
 fi
 
 export LD_LIBRARY_PATH="${VALOR_EXPT}/lib:${LD_LIBRARY_PATH}"
