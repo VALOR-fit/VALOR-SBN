@@ -265,6 +265,9 @@ int main(int argc, char ** argv)
   double valor_minidst_y_reco       = -1.; // inelasticity
   double valor_minidst_wght_pot     = -1.; // POT weight
   double valor_minidst_wght         = -1.; // misc weight
+  double valor_minidst_posx_true    = -999.; // true vertex x positon
+  double valor_minidst_posy_true    = -999.; // true vertex y positon
+  double valor_minidst_posz_true    = -999.; // true vertex z positon
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -286,6 +289,10 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("y_reco"    , &valor_minidst_y_reco      ,"y_reco/D"     );
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
+  valor_minidst->Branch("posx_true" , &valor_minidst_posx_true   ,"posx_true/D"  );
+  valor_minidst->Branch("posy_true" , &valor_minidst_posy_true   ,"posy_true/D"  );
+  valor_minidst->Branch("posz_true" , &valor_minidst_posz_true   ,"posz_true/D"  );
+
 
   // open the ROOT file and get the TTree & its header
 
@@ -434,6 +441,10 @@ int main(int argc, char ** argv)
 
       int larsoft_mode = -1;
 
+      double posx_true = -999.0;
+      double posy_true = -999.0;
+      double posz_true = -999.0;
+
       /*
          analysis_tree->GetEntry(iev);
 
@@ -454,6 +465,9 @@ int main(int argc, char ** argv)
       enu_true     = truth.neutrino.energy;
       Q2s          = truth.neutrino.Q2;
       larsoft_mode = truth.neutrino.genie_intcode;
+      posx_true    = truth.neutrino.position.x();
+      posy_true    = truth.neutrino.position.y();
+      posz_true    = truth.neutrino.position.z();
 
       // Particle counting
       for(unsigned int p = 0; p < fsps.size(); ++p){
@@ -618,6 +632,9 @@ int main(int argc, char ** argv)
       valor_minidst_init_nupdg   = init_pdg;
       valor_minidst_final_nupdg  = nu_pdg;
       valor_minidst_target       = 1000180400; // Argon40
+      valor_minidst_posx_true  = posx_true;
+      valor_minidst_posy_true  = posy_true;
+      valor_minidst_posz_true  = posz_true;
     }// !no-truth
 
     valor_minidst_sample     = sample;
@@ -635,7 +652,10 @@ int main(int argc, char ** argv)
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n y (reco)      = " << valor_minidst_y_reco
-      << "\n POT weight    = " << valor_minidst_wght_pot;
+      << "\n POT weight    = " << valor_minidst_wght_pot
+      << "\n Vtx x (true)  = " << valor_minidst_posx_true << " cm"
+      << "\n Vtx y (true)  = " << valor_minidst_posy_true << " cm"
+      << "\n Vtx z (true)  = " << valor_minidst_posz_true << " cm";
 
 
     enu_reco = reco.reco_energy;
