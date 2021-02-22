@@ -186,7 +186,11 @@ void exclusive_spline_validation(const char* param,
     }
   }
   // Get the maxium value of the +3sigma spectra to set the maximum value on the y-axis of all the plots
-  const double max_y = std::max(h_univs.at(h_univs.size()-1)->GetMaximum(),h_tweaks.at(h_tweaks.size()-1)->GetMaximum()) * 1.5;
+  double max_y = -999.;
+  for(unsigned int i = 0; i < h_univs.size(); ++i){
+    max_y = std::max(max_y,std::max(h_univs.at(i)->GetMaximum(),h_tweaks.at(i)->GetMaximum()));
+  }
+  max_y *= 1.5;
 
   // Now loop over the size of the vectors and make the canvases and subpads then save each into a root file
   // Append parameter name to output filename and open
@@ -260,7 +264,7 @@ void exclusive_spline_validation(const char* param,
 
     // Now write integrated universe rate difference from nominal
     TString var("Total universe variation from nominal: ");
-    int var_univ_nom = static_cast<int>(std::abs(var_univ_rate-nom_univ_rate));
+    int var_univ_nom = static_cast<int>(var_univ_rate-nom_univ_rate);
     var.Append(std::to_string(var_univ_nom));
     TLatex * l_var = new TLatex();
     l_var->SetTextSize(0.035);
@@ -268,7 +272,7 @@ void exclusive_spline_validation(const char* param,
     l_var->DrawLatex(1.49,max_y*0.86,var.Data());
    
     TString var_val("Total VALOR variation from nominal: ");
-    int var_val_nom = static_cast<int>(std::abs(var_valor_rate-nom_valor_rate));
+    int var_val_nom = static_cast<int>(var_valor_rate-nom_valor_rate);
     var_val.Append(std::to_string(var_val_nom));
     TLatex * l_var_val = new TLatex();
     l_var_val->SetTextSize(0.035);
@@ -276,7 +280,7 @@ void exclusive_spline_validation(const char* param,
     l_var_val->DrawLatex(1.49,max_y*0.82,var_val.Data());
    
     TString diff("Total universe variation from VALOR: ");
-    int diff_val_univ = static_cast<int>(std::abs(var_univ_rate-var_valor_rate));
+    int diff_val_univ = static_cast<int>(var_univ_rate-var_valor_rate);
     diff.Append(std::to_string(diff_val_univ));
     TLatex * l_diff = new TLatex();
     l_diff->SetTextSize(0.035);
@@ -315,6 +319,7 @@ void exclusive_spline_validation(const char* param,
    
     // Format the ratio plot and error bands and draw
     SetRatioPlotFormatting(h_ratio_band,true,verbose,"pdf");
+    h_ratio_band->GetYaxis()->SetRangeUser(-1.,1.);
     h_ratio_band->Draw("e2");
     
     // Draw the ratio plot
