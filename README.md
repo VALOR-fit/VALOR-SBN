@@ -61,7 +61,7 @@ These names of analysis variants are used for labelling the main analysis config
 | **sbn_numu_disapp_2019b2_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
 | **sbn_numu_disapp_2019b2_02a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 | **sbn_numu_disapp_2019b2_02a2_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
-| **sbn_numu_disapp_prism_1_2019b3_02c2_1** | Eff. 3+1 numu disap | Event samples: 8 SBND numu CC-like samples at different angular bins (0 to 1.6 deg with 0.2 deg increments) + 1 uB numu CC-like sample + 1 ICARUS numu CC-like sample | Enu_reco | 2019b3 | 02c2 | |
+| **sbn_numu_disapp_prism_1_2019b3_02c2_1** | Eff. 3+1 numu disap | Event samples: 8 SBND numu CC-like samples at different angular bins (0 to 1.6 deg with 0.2 deg increments) + 1 uB numu CC-like sample + 1 ICARUS numu CC-like sample | Enu_reco | 2019b3 | 02c2 | First iteration of SBN Prism analysis in devel |
 | **sbn_nue_app_2019b1_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b1 | 01a1 | |
 | **sbn_nue_app_2019b2_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
 
