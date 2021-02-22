@@ -296,8 +296,11 @@ void rj_plot_pdf(
         float data_max = -99999.;
         // If we need data, get that histogram now
         if (plot_data) {
-          TString data_name = TString::Format("%s_%s_%s_%s",
-              data_tag,binning,"rf", model_name.c_str());
+          TString data_name = "";
+          if(static_cast<std::string>(data_tag) == "valor_pdfts" )
+            data_name = TString::Format("%s_%s_%s_%s_%s", data_tag,binning,"rf", model_name.c_str(), kinevar.Data());
+          else
+            data_name = TString::Format("%s_%s_%s_%s", data_tag,binning,"rf", model_name.c_str());
           TObject * tmp = fdata->Get(data_name.Data());
           std::cout<<"Data name: " << data_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
@@ -314,7 +317,7 @@ void rj_plot_pdf(
           }
 
           data_hist->SetLineStyle(0);
-          data_hist->SetMarkerColor(kRed);
+          data_hist->SetMarkerColor(kPink+2);
           data_hist->SetMarkerStyle(kFullTriangleDown);
           data_max = data_hist->GetMaximum();
         }
@@ -413,6 +416,24 @@ void rj_plot_pdf(
           contrib_legend->AddEntry(data_hist, "Oscillated", "P");
         }
         float max_y = 1.2* std::max(mode_max, std::max(data_max, total_max));
+        // TEMP FOR DATA COMPARISONS
+        /*
+        if(vutil::AsString(d) == "sbn_nd"){
+          if(vutil::AsString(s) == "numuCCincl")
+            max_y = 2.62e6;
+          else if(vutil::AsString(s) == "numuCC0piNtrk")
+            max_y = 2.32e6;
+          else if(vutil::AsString(s) == "numuCCoth")
+            max_y = 0.52e6;
+        }
+        else if(vutil::AsString(d) == "sbn_icarus"){
+          if(vutil::AsString(s) == "numuCCincl")
+            max_y = 3.25e5;
+          else if(vutil::AsString(s) == "numuCC0piNtrk")
+            max_y = 2.51e5;
+          else if(vutil::AsString(s) == "numuCCoth")
+            max_y = 0.75e5;
+        }*/
 
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
         this_pad->SetLeftMargin  (0.11552  );

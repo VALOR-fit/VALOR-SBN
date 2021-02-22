@@ -22,7 +22,8 @@ void sbn_mdc_parameter_pulls(const char * filename,
                              std::string  modern_xsec = "", 
                              const char * int_cov = "", 
                              std::string  mec = "", 
-                             std::string  detector = "", 
+                             std::string  detector = "",
+                             std::string  exclusive = "",
                              std::string  sample = "",
                              std::string  input_tag = "")
 {
@@ -49,6 +50,10 @@ void sbn_mdc_parameter_pulls(const char * filename,
   bool mec_cov = true;
   if(mec == "") mec_cov = false;
   else std::cout << " Including the MEC systematic" << std::endl;
+
+  bool exc_cov = true;
+  if(exclusive == "") exc_cov = false;
+  else std::cout << " Including the sample migration systematic" << std::endl;
 
   // Open input file
   // Get full path if needed
@@ -172,12 +177,27 @@ void sbn_mdc_parameter_pulls(const char * filename,
     nDetRows = det_syst.GetNrows();
   }
 
+  // Initialise paramters incase we have a Exc systematics
+  int nExcRows       = 0.;
+  TMatrixD exc_syst(0,0);
+  TMatrixD *exc_s    = nullptr;
+
+  // If we have detector parameters, get the information now
+  if(exc_cov){
+    TFile f_exc((location+"/"+exclusive).c_str(), "read");
+    exc_s    = (TMatrixD*)f_exc.Get("cov");
+    exc_syst.ResizeTo(exc_s->GetNrows(),exc_s->GetNcols());
+    exc_syst = *exc_s;
+    nExcRows = exc_syst.GetNrows();
+  }
+
   // Cumulative rows
   int nCumFluxRows = nFluxRows+nFluxSplineRows;
   int nCumPropRows = nCumFluxRows+nPropRows;
   int nCumModRows  = nCumPropRows+nModRows;
   int nCumMECRows  = nCumModRows+nMECRows;
-  int nCumDetRows  = nCumMECRows+nDetRows;
+  int nCumExcRows  = nCumMECRows+nExcRows;
+  int nCumDetRows  = nCumExcRows+nDetRows;
 
   float total_postfit = 0.;
   float total_prefit  = 0.;
@@ -187,7 +207,6 @@ void sbn_mdc_parameter_pulls(const char * filename,
   for(int j = 0; j < nRows; ++j){
     // Skip the MicroBooNE and ICARUS entries 
     if(j >= nFluxRows && j < nFluxRows*3) {
-      std::cout << " Skipping MicroBooNE & ICARUS flux covariance entries in SBND-only fit: " << gbfparm->NameByIndex(j) << std::endl;
       continue;
     }
 
@@ -222,14 +241,19 @@ void sbn_mdc_parameter_pulls(const char * filename,
       total_prefit += abs(sqrt(mod_syst(n-(nCumPropRows),n-(nCumPropRows))));
     }
     // MEC parameter 
-    else if(n >= (nCumModRows) && n < (nCumMECRows)){
+    else if(mec_cov && n >= (nCumModRows) && n < (nCumMECRows)){
       prefit_errors.push_back(sqrt(mec_syst(n-(nCumModRows),n-(nCumModRows))));
       total_prefit += abs(sqrt(mec_syst(n-(nCumModRows),n-(nCumModRows))));
     }
+    // Migration parameters
+    else if(exc_cov && n >= (nCumMECRows) && n < (nCumExcRows)){
+      prefit_errors.push_back(sqrt(exc_syst(n-(nCumMECRows),n-(nCumMECRows))));
+      total_prefit += abs(sqrt(exc_syst(n-(nCumMECRows),n-(nCumMECRows))));
+    }
     // Detector parameters
-    else if(detector_systematics && n >= (nCumMECRows)){
-      prefit_errors.push_back(sqrt(det_syst(n-(nCumMECRows),n-(nCumMECRows))));
-      total_prefit += abs(sqrt(det_syst(n-(nCumMECRows),n-(nCumMECRows))));
+    else if(detector_systematics && n >= (nCumExcRows)){
+      prefit_errors.push_back(sqrt(det_syst(n-(nCumExcRows),n-(nCumExcRows))));
+      total_prefit += abs(sqrt(det_syst(n-(nCumExcRows),n-(nCumExcRows))));
     }
     n++;
   }
@@ -328,8 +352,8 @@ void sbn_mdc_parameter_pulls(const char * filename,
   else
     miny = miny*1.1;
 
-  miny = -5;
-  maxy = 5;
+  miny = -6;
+  maxy = 6;
 
   //Temporaray for saving
   //miny = -4;
@@ -341,7 +365,7 @@ void sbn_mdc_parameter_pulls(const char * filename,
   TLine line_sbnd      (nFluxRows,   miny-0.02, nFluxRows,   maxy+0.1);
   TLine line_fluxspline(nCumFluxRows, miny-0.02, nCumFluxRows, maxy+0.1);
   TLine line_propmod   (nCumPropRows, miny-0.02, nCumPropRows, maxy+0.1);
-  TLine line_moddet    (nCumMECRows, miny-0.02, nCumMECRows, maxy+0.1);
+  TLine line_moddet    (nCumExcRows, miny-0.02, nCumExcRows, maxy+0.1);
 
   // Dashed neutrino flavour separation
   TLine line_sbnd_numu   (n_numu,         miny-0.02, n_numu,         maxy+0.02);

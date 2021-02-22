@@ -18,14 +18,14 @@ void draw_splines(const std::string &spline_file, const std::string &param, cons
   TSpline3 *sNuMuNC2pi  = static_cast<TSpline3*>(oNuMuNC2pi->FindObject(("spl_BNB_FHC_numuCCincl_numuNC2piC_"+param+"_17_16").c_str()));
 
   // Setup the canvas
-  TCanvas *c = new TCanvas("c","",700,1200);
-  c->SetLeftMargin  (0.128);
-  c->SetRightMargin (0.018);
-  c->SetBottomMargin(0.111);
-  c->SetTopMargin   (0.148);
+  TCanvas *c = new TCanvas("c","",949,830);
+  c->SetLeftMargin  (0.156);
+  c->SetRightMargin (0.020);
+  c->SetBottomMargin(0.125);
+  c->SetTopMargin   (0.206);
   c->SetGridx();
   c->SetGridy();
-
+  
   // Setup a frame
   TH2F * hf = (TH2F*) c->DrawFrame(-3,0.4,3,1.6);
   hf->Draw();
@@ -36,10 +36,10 @@ void draw_splines(const std::string &spline_file, const std::string &param, cons
   hf->GetYaxis()->SetTitleFont(132);
   hf->GetXaxis()->SetLabelFont(132);
   hf->GetYaxis()->SetLabelFont(132);
-  hf->GetXaxis()->SetTitleSize(0.045);
-  hf->GetYaxis()->SetTitleSize(0.045);
-  hf->GetXaxis()->SetLabelSize(0.035);
-  hf->GetYaxis()->SetLabelSize(0.035);
+  hf->GetXaxis()->SetTitleSize(0.06);
+  hf->GetYaxis()->SetTitleSize(0.06);
+  hf->GetXaxis()->SetLabelSize(0.05);
+  hf->GetYaxis()->SetLabelSize(0.05);
   
   sNuMuCCQE->SetLineStyle(1);
   sNuMuCCQE->SetLineWidth(2);
@@ -55,15 +55,16 @@ void draw_splines(const std::string &spline_file, const std::string &param, cons
   sNuMuCC1pi->Draw("same");
   sNuMuNC2pi->Draw("same");
 
-  TLegend *l = new TLegend(0.126,0.865,0.98,0.98);
+  TLegend *l = new TLegend(0.002,0.820,0.90,0.99);
   l->SetTextFont(132);
-  l->SetTextSize(0.025);
+  l->SetTextSize(0.04);
   l->SetBorderSize(0);
   l->SetFillStyle(0);
-
-  l->AddEntry(sNuMuCCQE,  "Mode: #nu_{#mu} CC QE, Bin: 0.55 < E_{Reco} < 0.6 GeV, 0.65 < E_{True} < 0.7 GeV", "l");
-  l->AddEntry(sNuMuCC1pi, "Mode: #nu_{#mu} CC 1#pi^{#pm}, Bin: 0.75 < E_{Reco} < 0.8 GeV, 1 < E_{True} < 1.05 GeV", "l");
-  l->AddEntry(sNuMuNC2pi, "Mode: #nu_{#mu} NC 2#pi^{#pm}, Bin: 1 < E_{Reco} < 1.25 GeV, 1.2 < E_{True} < 1.5 GeV", "l");
+  l->SetMargin(0.2);
+  
+  l->AddEntry(sNuMuCCQE,  "#nu_{#mu} CC QE  | 0.55 < E_{Reco} < 0.60 GeV, 0.65 < E_{True} < 0.70 GeV", "l");
+  l->AddEntry(sNuMuCC1pi, "#nu_{#mu} CC 1#pi^{#pm}  | 0.75 < E_{Reco} < 0.80 GeV, 1.00 < E_{True} < 1.05 GeV", "l");
+  l->AddEntry(sNuMuNC2pi, "#nu_{#mu} NC 2#pi^{#pm}  | 1.00 < E_{Reco} < 1.25 GeV, 1.20 < E_{True} < 1.50 GeV", "l");
   l->Draw();
 
   std::string name = "";
