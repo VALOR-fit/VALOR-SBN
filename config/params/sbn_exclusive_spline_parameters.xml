@@ -3,10 +3,10 @@
   <!-- ==================================================================================== -->
   <param>
     <name>
-      <simple>  sample_migration </simple>
-      <long>    Sample migration </long>
-      <rootex>  Sample migration </rootex>
-      <tex>     Sample migration </tex>
+      <simple>  ccother_migration        </simple>
+      <long>    CCOther sample migration </long>
+      <rootex>  CCOther sample migration </rootex>
+      <tex>     CCOther sample migration </tex>
     </name>
     
     <apply_to_range>

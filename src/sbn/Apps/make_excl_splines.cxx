@@ -91,31 +91,31 @@ static const string gSubRunTreeName = "sbnsubrun";
 TString splineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]");
 TString objNamePattern("spl_[MODE]_[PARAM]");
 
-TString BuildSplineName(const Sample_t &s,
-    const BeamConf_t  &b,
-    const ReacMode_t  &m,
-    const std::string &p,
-    const int         &itrue,
-    const int         &ireco);
+TString BuildSplineName(const std::string &s,
+                        const BeamConf_t  &b,
+                        const ReacMode_t  &m,
+                        const std::string &p,
+                        const int         &itrue,
+                        const int         &ireco);
 TString BuildObjName(const ReacMode_t &m,
-    const std::string &p);
-bool CheckSample(const event::RecoInteraction &reco, 
-    const bool &numu, 
-    const valor::conv::Sample_t &sample, 
-    const bool &other);
-valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, 
-    const bool &numu, 
-    const bool &iscc);
-bool CheckTrueFinalState(const std::vector<event::FinalStateParticle> &fsps, 
-    const bool numu,
-    const valor::conv::Sample_t &sample, 
-    const bool &other);
-void CheckNuFlav(const std::string &input,
-    bool &is_nueint, 
-    bool &is_nueosc,
-    bool &is_nuenumu,
-    bool &is_numu,
-    bool &is_nue);
+                     const std::string &p);
+std::vector<double> GetBinEdges(const VALORBinning *vb);
+bool IsCC0Pi(const event::Interaction &truth);
+std::shared_ptr<TH2D> GetHistRatio(const std::shared_ptr<TH2D> &num, 
+                                   const std::shared_ptr<TH2D> &den);
+std::shared_ptr<TH1D> Get1DHistFrom2D(const std::shared_ptr<TH2D> &h2D, 
+                                      const std::string &name, 
+                                      const std::vector<double> &reco_be);
+void HistFileName(TString           &name,
+                  const std::string &s,
+                  const BeamConf_t  &b,
+                  const Detector_t  &d,
+                  const std::string &p);
+void SplineFileName(TString           &name,
+                    const std::string &s,
+                    const BeamConf_t  &b,
+                    const Detector_t  &d,
+                    const std::string &p);
 
 //___________________________________________________________________
 int main(int argc, char ** argv)
@@ -138,35 +138,17 @@ int main(int argc, char ** argv)
   string arg_config_file   = arg.GetString("config");
   string arg_input_name    = arg.GetString("input");
   string arg_output_file   = arg.GetString("output");
-  string arg_sample        = arg.GetString("sample");
   string arg_beam          = arg.GetString("beam");
   string arg_detector      = arg.GetString("detector");
-  string arg_systematic    = arg.GetString("systematic");
-  string arg_write_opt     = arg.GetString("spectra-write-opt");
-  bool   other_sample      = arg.GetBool("other-sample");
 
   // From arguments
   string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
   string config_file     = util::CompleteConfigPath(arg_config_file);
   BeamConf_t beam        = util::BeamConfFromString (arg_beam    );
-  Sample_t   sample      = util::SampleFromString   (arg_sample  );
   Detector_t detector    = util::DetectorFromString (arg_detector);
 
   // Message thresholds
   Messenger::Instance()->Configure(mesg_thresholds);
-
-  // If the write options for the spectra are empty, fill with pdfts_rf
-  if(arg_write_opt == "")
-    arg_write_opt = "pdfts_rf";
-
-  // Determine sample-types
-  bool is_nueint  = false;
-  bool is_nueosc  = false;
-  bool is_nuenumu = false;
-  bool is_numu    = false;
-  bool is_nue     = false;
-
-  CheckNuFlav(arg_input_name, is_nueint, is_nueosc, is_nuenumu, is_numu, is_nue);
 
   // Get the POT of the sample from the subrun tree
   double mcsample_pot = -1.;
@@ -198,10 +180,6 @@ int main(int argc, char ** argv)
   }
   VLOG("valor_sbn", pNOTICE)
     << "POT in the input file is " << mcsample_pot;
-  // Setup the spline definition
-  const std::string syst           = arg_systematic;
-  const std::vector<double> &knots = {-3.0,-2.0,-1.0,0.0,1.0,2.0,3.0};
-  const int   n_knots              = knots.size();
 
   // Get model & configure
   // Make an elements without reading the MC
@@ -217,7 +195,7 @@ int main(int argc, char ** argv)
   bool got_appropriate_model = false;
   for (unsigned int ism = 0 ; ism < cmodel->GetNSubModels() ; ism++) {
     gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cmodel->GetSubModel(ism));
-    if  (gmodel->GetDetector() == detector &&
+    if (gmodel->GetDetector() == detector &&
         gmodel->GetBeam()     == beam)
     { got_appropriate_model = true; break; }
   }
@@ -225,38 +203,51 @@ int main(int argc, char ** argv)
     VLOG("valor_sbn", pFATAL) << "Failed to identify appropriate fit model to get binning.";
   }
   assert(gmodel);
-
-  // Get the nominal POT
-  double nomPOT = gmodel->GetPOT();
-
+  
   // And finally read the MC properly
   std::string model_readopt("forcedst nosplines");
   gmodel->Read(gmodel->GetLastConfigFileRead().c_str(),model_readopt.c_str());
 
-  //
-  // 6) Build the splines with the universe ID list passed to the tweaked GSSFM universe-based functions
-  //
-  const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
+  // Get the nominal POT
+  double nomPOT = gmodel->GetPOT();
 
   // Get the modelist from the model configuration
   const std::vector<conv::ReacMode_t> & reac_modes = gmodel->GetReactionModes();
-
-  // Binning choice needs to be made carefully, likely that stats will be very low in
-  // some bins in the standard 2D ereco-etrue param space so will need to redefine
-  //
-  // Redefinition needs to be along the edges of existing bins in the analysis so as to
-  // not cause leakage
-  //
-  const VALORBinning * reco_ob = binning.RecoOptBinning();
-  const int n_reco_bins_ob     = reco_ob->NBins();
-
-  // Get the true, standard binning for mode 0
+  
+  // 1) Get binning from configuration
+  // 2) Get the true, standard binning for mode 0
   // Given that we are summing them all together, have to assume true binning
   // is the same across all modes
-  //
-  const VALORBinning * true_sb = binning.TrueSmpBinning(0);
-  const int n_true_bins_sb = true_sb->NBins();
+  // 3) Get the reco bins 
+  // 4) Get the bin edges
+  const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
+  const VALORBinning * true_sb            = binning.TrueSmpBinning(0);
+  const VALORBinning * reco_ob            = binning.RecoOptBinning();
+  const std::vector<double> true_bin_edges = GetBinEdges(true_sb);
+  const std::vector<double> reco_bin_edges = GetBinEdges(reco_ob);
+  const int n_true_bins = true_bin_edges.size()-1;
+  const int n_reco_bins = reco_bin_edges.size()-1;
 
+  // Various event histograms
+  std::map<std::string, std::shared_ptr<TH2D> > eventHistogramMap;
+  for(const auto &name : std::vector<std::string>({"trueCC0Pi_recoCCOth", 
+                                                   "trueCCOth_recoCC0Pi",
+                                                   "trueCC0Pi", 
+                                                   "trueCCOth", 
+                                                   "recoCC0Pi", 
+                                                   "recoCCOth"}))
+  {
+    eventHistogramMap.emplace(name, std::make_shared<TH2D>(name.c_str(), "", true_bin_edges.size()-1, true_bin_edges.data(), reco_bin_edges.size()-1, reco_bin_edges.data()));
+  }
+
+  // Now actually assign the histograms
+  auto & trueCC0Pi_recoCCOth = eventHistogramMap.at("trueCC0Pi_recoCCOth");
+  auto & trueCCOth_recoCC0Pi = eventHistogramMap.at("trueCCOth_recoCC0Pi");
+  auto & trueCC0Pi           = eventHistogramMap.at("trueCC0Pi");
+  auto & trueCCOth           = eventHistogramMap.at("trueCCOth");
+  auto & recoCC0Pi           = eventHistogramMap.at("recoCC0Pi");
+  auto & recoCCOth           = eventHistogramMap.at("recoCCOth");
+  
   // Read the SBNCode input file
   TChain * analysis_tree = new TChain(gTreeName.c_str());
   analysis_tree->Add(arg_input_name.c_str());
@@ -271,56 +262,9 @@ int main(int argc, char ** argv)
   VLOG("valor_sbn", pNOTICE)
     << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
 
-
   event::RecoEvent *pevent = nullptr;
   analysis_tree->SetBranchAddress("reco_events", &pevent);
 
-  // Output file - first make the substitutions for sample/parameter
-  // Modelist to save any modes which result in non-zero splines
-  std::vector<std::string> applied_to_modes;
-
-  conv::Sample_t print_sample = sample;
-  
-  if(other_sample)
-    print_sample = GetOtherSample(sample,!is_nue,true);
-  else
-    print_sample = sample;
-
-  // Get the true event rate for the final state and the reco event rate for the final state
-  // in every true:reco bin
-  // This will be used in the spline construction later
-  // Summing over all modes
-  std::vector< std::vector< int > > bins_true_count, bins_reco_count;
-
-  // Initialise histogram for validation
-  std::vector<double> bin_edges(n_reco_bins_ob+1,0.);
-
-  // Initialise counters
-  for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-    std::vector< int > bin_true_count, bin_reco_count;
-    for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-      bin_edges.at(ireco) = reco_ob->BinMinimum(ireco,0);
-      bin_true_count.push_back(0);
-      bin_reco_count.push_back(0);
-    }
-    bins_true_count.push_back(bin_true_count);
-    bins_reco_count.push_back(bin_reco_count);
-  }
-  bin_edges.at(n_reco_bins_ob) = reco_ob->BinMaximum(n_reco_bins_ob-1,0);
-  
-  TH1D *h_reco_nom = new TH1D("h_reco_nom", "", n_reco_bins_ob, bin_edges.data());
-  TH1D *h_reco_m1  = new TH1D("h_reco_m1", "", n_reco_bins_ob, bin_edges.data());
-  
-  // Filename for is we choose to store the spectra
-  TString hist_outfile = arg_output_file.c_str();
-  hist_outfile = hist_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
-  hist_outfile = hist_outfile.ReplaceAll("[DET]"    , util::AsString(detector).c_str());
-  hist_outfile = hist_outfile.ReplaceAll("[SAMPLE]" , util::AsString(print_sample).c_str());
-  hist_outfile = hist_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
-  hist_outfile = hist_outfile.ReplaceAll(".root","_spectra.root");
-  VLOG("valor_sbn", pNOTICE) << "Saving spectra to: "<< hist_outfile;
-  TFile histout(hist_outfile.Data(),"RECREATE");
- 
   // Loop over events
   // For testing
   for(Long64_t iev = 0; iev < nev; iev++) {
@@ -332,118 +276,249 @@ int main(int argc, char ** argv)
     event::Interaction * ptruth = event.GetTruth();
     event::Interaction & truth = *ptruth;
 
-    // Before we do anything, make sure the current event fits the description of the sample
-    if(!CheckSample(reco,is_numu,sample,other_sample)){
-      LOG("valor_sbn",pINFO)   << "Current event has \n"
-        << "Numu: " << is_numu << "\n"
-        << reco.npion << " pions, \n " 
-        << reco.npi0 << " pi0s and \n " 
-        << reco.nproton << " protons and does not match the desired sample type: " 
-        << util::AsString(print_sample) << "\n Skipping.";
-      continue;
-    }
     if(ptruth==nullptr) {
       VLOG("valor_sbn", pNOTICE)
         << "The number of truth entries is 0, skipping event "<<iev;
       continue;
     }
 
-    std::vector<event::FinalStateParticle> &fsps = truth.finalstate;
-    bool true_numu                               = ((abs(truth.neutrino.pdg) == 14) ? 1 : 0);
-    double enu_true                              = truth.neutrino.energy;
-    double enu_reco                              = reco.reco_energy;
+    // Get reco sample
+    const int nPiReco = reco.npion + reco.npi0;
+    const bool isRecoCC0Pi = (nPiReco == 0);
+    const bool isRecoCCOth = !isRecoCC0Pi;
+  
+    // Get true sample
+    const bool isTrueCC0Pi = IsCC0Pi(truth);
+    const bool isTrueCCOth = (truth.neutrino.iscc && !isTrueCC0Pi);
+    const bool isTrueNC    = (!truth.neutrino.iscc);
+  
+    if(!isTrueCC0Pi && !isTrueCCOth && !isTrueNC)
+      VLOG("valor_sbn", pFATAL) << " Error: Somehow not categorised the event as CC or NC, failing.";
 
-    // Loop over the reco and true bins
-    // Check current event and count if necessary
-    for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-      for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-        if(enu_true > true_sb->BinMinimum(itrue,0)  &&
-            enu_true <= true_sb->BinMaximum(itrue,0) &&
-            enu_reco > reco_ob->BinMinimum(ireco,0)  &&
-            enu_reco <= reco_ob->BinMaximum(ireco,0)){
-          bins_reco_count.at(itrue).at(ireco)++;
-          h_reco_nom->Fill(enu_reco,reco.weight);
-          if(CheckTrueFinalState(fsps, true_numu, sample, other_sample)){
-            bins_true_count.at(itrue).at(ireco)++;
-            h_reco_m1->Fill(enu_reco,reco.weight);
-          }
-        } // Current bin
-      } // Reco bin
-    } // True bin
+    // Get the energies
+    const double enu_true = truth.neutrino.energy;
+    const double enu_reco = reco.reco_energy;
+    if(enu_reco <= 0) continue;
+
+    // Fill the histograms
+    if(isTrueCC0Pi && isRecoCCOth){
+      trueCC0Pi_recoCCOth->Fill(enu_true, enu_reco, reco.weight);
+    }
+    
+    if(isTrueCCOth && isRecoCC0Pi){
+      trueCCOth_recoCC0Pi->Fill(enu_true, enu_reco, reco.weight);
+    }
+    
+    if(isTrueCC0Pi){
+      trueCC0Pi->Fill(enu_true, enu_reco, reco.weight);
+    }
+    
+    if(isTrueCCOth){
+      trueCCOth->Fill(enu_true, enu_reco, reco.weight);
+    }
+
+    if(isRecoCCOth){
+      recoCCOth->Fill(enu_true, enu_reco, reco.weight);
+    }
+    
+    if(isRecoCC0Pi){
+      recoCC0Pi->Fill(enu_true, enu_reco, reco.weight);
+    }
   }// Events
-  histout.cd();
 
-  // Construct p1 from m1 as they are defined to be symmetric
+  // Filename for is we choose to store the spectra
+  TString hist_outfile_recoCC0Pi_CCOthScaled = arg_output_file.c_str();
+  TString hist_outfile_recoCC0Pi_CC0PiScaled = arg_output_file.c_str();
+  TString hist_outfile_recoCCOth_CCOthScaled = arg_output_file.c_str();
+  TString hist_outfile_recoCCOth_CC0PiScaled = arg_output_file.c_str();
+
+  HistFileName(hist_outfile_recoCC0Pi_CCOthScaled, "numuCC0piNtrk", beam, detector, "ccother_migration");
+  HistFileName(hist_outfile_recoCC0Pi_CC0PiScaled, "numuCC0piNtrk", beam, detector, "cc0pi_migration");
+  HistFileName(hist_outfile_recoCCOth_CCOthScaled, "numuCCoth",     beam, detector, "ccother_migration");
+  HistFileName(hist_outfile_recoCCOth_CC0PiScaled, "numuCCoth",     beam, detector, "cc0pi_migration");
+
+  TFile histout_recoCC0Pi_CCOthScaled(hist_outfile_recoCC0Pi_CCOthScaled, "RECREATE");
+  TFile histout_recoCC0Pi_CC0PiScaled(hist_outfile_recoCC0Pi_CC0PiScaled, "RECREATE");
+  TFile histout_recoCCOth_CCOthScaled(hist_outfile_recoCCOth_CCOthScaled, "RECREATE");
+  TFile histout_recoCCOth_CC0PiScaled(hist_outfile_recoCCOth_CC0PiScaled, "RECREATE");
+
   // Scale to POT
   double scalePOT = nomPOT/static_cast<double>(mcsample_pot);
   VLOG("valor_sbn",pNOTICE) << "Scaling histograms by: " << scalePOT
                             << "\nfrom nominal:        " << nomPOT
                             << "\n and sample:         " << mcsample_pot;
+  // Loop over the knots
+  const std::vector<double> knots({-3.0,-2.0,-1.0,0.0,1.0,2.0,3.0});
+  std::map< unsigned int, std::shared_ptr<TH2D> > knotHistMap_responseCC0Pi_CC0PiScaled;
+  std::map< unsigned int, std::shared_ptr<TH2D> > knotHistMap_responseCC0Pi_CCOthScaled;
+  std::map< unsigned int, std::shared_ptr<TH2D> > knotHistMap_responseCCOth_CCOthScaled;
+  std::map< unsigned int, std::shared_ptr<TH2D> > knotHistMap_responseCCOth_CC0PiScaled;
+  unsigned int knIt = 0;
+  for(const double &kn : knots){
+    // The number of CC0Pi events in the CCOther sample is trueCC0Pi_recoCCOth, 
+    // This defines the 'nominal' amount of CC0Pi->CCOther migration
+    // To define a nsigma variation, scale this migration by (1+kn) (100% uncertainty)
+    //
+    // The number of extra events to add to the CCOther sample is: trueCC0Pi_recoCCOth*(kn)
+    // So we need to subtract these events away from the reco CC0Pi sample to balance it
+    //
+    // Define the magnitude by which to scale the migration to account for the prior 
+    // uncertainty, default: 100% = 1*(knot value)
+    double factor = 0.2458*kn;
 
-  h_reco_m1->Scale(scalePOT);
-  h_reco_nom->Scale(scalePOT);
-  TH1D *h_reco_diff = static_cast<TH1D*>(h_reco_nom->Clone("h_reco_diff"));
-  TH1D *h_reco_p1   = static_cast<TH1D*>(h_reco_nom->Clone("h_reco_p1"));
-  h_reco_diff->Add(h_reco_m1,-1);
-  h_reco_p1->Add(h_reco_diff);
+    std::shared_ptr<TH2D> diffCC0Pi(static_cast<TH2D*>(trueCC0Pi_recoCCOth->Clone()));
+    diffCC0Pi->Scale(factor);
+   
+    std::shared_ptr<TH2D> recoCCOth_CC0PiScaled(static_cast<TH2D*>(recoCCOth->Clone()));
+    recoCCOth_CC0PiScaled->Add(diffCC0Pi.get());
+    
+    std::shared_ptr<TH2D> recoCC0Pi_CC0PiScaled(static_cast<TH2D*>(recoCC0Pi->Clone()));
+    recoCC0Pi_CC0PiScaled->Add(diffCC0Pi.get(),-1.);
+  
+    // Repeat this for the CCOth->CC0Pi migration
+    std::shared_ptr<TH2D> diffCCOth(static_cast<TH2D*>(trueCCOth_recoCC0Pi->Clone()));
+    diffCCOth->Scale(factor);
+    
+    std::shared_ptr<TH2D> recoCC0Pi_CCOthScaled(static_cast<TH2D*>(recoCC0Pi->Clone()));
+    recoCC0Pi_CCOthScaled->Add(diffCCOth.get());
+    
+    std::shared_ptr<TH2D> recoCCOth_CCOthScaled(static_cast<TH2D*>(recoCCOth->Clone()));
+    recoCCOth_CCOthScaled->Add(diffCCOth.get(),-1.);
+  
+    // Now get the ratio of the scaled event rate to the total number of reconstructed events of the relevant type
+    const std::shared_ptr<TH2D> responseCC0Pi_CC0PiScaled = GetHistRatio(recoCC0Pi_CC0PiScaled, recoCC0Pi);
+    const std::shared_ptr<TH2D> responseCC0Pi_CCOthScaled = GetHistRatio(recoCC0Pi_CCOthScaled, recoCC0Pi);
+    const std::shared_ptr<TH2D> responseCCOth_CCOthScaled = GetHistRatio(recoCCOth_CCOthScaled, recoCCOth);
+    const std::shared_ptr<TH2D> responseCCOth_CC0PiScaled = GetHistRatio(recoCCOth_CC0PiScaled, recoCCOth);
 
-  VLOG("valor_sbn",pNOTICE) << "From input: "
-                            << "\nNominal rate: " << h_reco_nom->Integral()
-                            << "\n+1sigma rate: " << h_reco_p1->Integral()
-                            << "\n-1sigma rate: " << h_reco_m1->Integral();
-  h_reco_nom->Write();
-  h_reco_p1->Write();
-  h_reco_m1->Write();
-  histout.Close();
+    // Now push to the relevant map
+    knotHistMap_responseCC0Pi_CC0PiScaled.emplace(knIt,responseCC0Pi_CC0PiScaled);
+    knotHistMap_responseCC0Pi_CCOthScaled.emplace(knIt,responseCC0Pi_CCOthScaled);
+    knotHistMap_responseCCOth_CCOthScaled.emplace(knIt,responseCCOth_CCOthScaled);
+    knotHistMap_responseCCOth_CC0PiScaled.emplace(knIt,responseCCOth_CC0PiScaled);
+    knIt++;
 
-  // Now define the spline file
-  TString ts_outfile = arg_output_file.c_str();
-  ts_outfile = ts_outfile.ReplaceAll("[BEAM]"   , util::AsString(beam).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[DET]"    , util::AsString(detector).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[SAMPLE]" , util::AsString(print_sample).c_str());
-  ts_outfile = ts_outfile.ReplaceAll("[PARAM]"  , syst.c_str());
-  VLOG("valor_sbn", pNOTICE) << "Saving VALOR response functions to: "<<ts_outfile;
-  TFile fout(ts_outfile.Data(),"RECREATE");
+    // Now flatten the 4 scaled histograms (by integrating out the true bins) 
+    // Print to a file for validation with the relevant sample and parameter name
+    const int knotInt = std::round(kn);
+    const std::string name_1D = "h_reco_" + (knotInt == 0 ? "nom" : (( knotInt > 0 ? "p" : "m" ) + std::to_string(std::abs(knotInt))));
 
+    histout_recoCC0Pi_CCOthScaled.cd();
+    const std::shared_ptr<TH1D> recoCC0Pi_CCOthScaled_1D = Get1DHistFrom2D(recoCC0Pi_CCOthScaled, name_1D, reco_bin_edges);
+    recoCC0Pi_CCOthScaled_1D->Scale(scalePOT);
+    recoCC0Pi_CCOthScaled_1D->Write();
+
+    histout_recoCC0Pi_CC0PiScaled.cd();
+    const std::shared_ptr<TH1D> recoCC0Pi_CC0PiScaled_1D = Get1DHistFrom2D(recoCC0Pi_CC0PiScaled, name_1D, reco_bin_edges);
+    recoCC0Pi_CC0PiScaled_1D->Scale(scalePOT);
+    recoCC0Pi_CC0PiScaled_1D->Write();
+
+    histout_recoCCOth_CCOthScaled.cd();
+    const std::shared_ptr<TH1D> recoCCOth_CCOthScaled_1D = Get1DHistFrom2D(recoCCOth_CCOthScaled, name_1D, reco_bin_edges);
+    recoCCOth_CCOthScaled_1D->Scale(scalePOT);
+    recoCCOth_CCOthScaled_1D->Write();
+
+    histout_recoCCOth_CC0PiScaled.cd();
+    const std::shared_ptr<TH1D> recoCCOth_CC0PiScaled_1D = Get1DHistFrom2D(recoCCOth_CC0PiScaled, name_1D, reco_bin_edges);
+    recoCCOth_CC0PiScaled_1D->Scale(scalePOT);
+    recoCCOth_CC0PiScaled_1D->Write();
+  }
+  VLOG("valor_sbn", pNOTICE) << "Filled and written histogram files";
+
+  // Now define the spline files
+  TString spl_outfile_recoCC0Pi_CCOthScaled = arg_output_file.c_str();
+  TString spl_outfile_recoCC0Pi_CC0PiScaled = arg_output_file.c_str();
+  TString spl_outfile_recoCCOth_CCOthScaled = arg_output_file.c_str();
+  TString spl_outfile_recoCCOth_CC0PiScaled = arg_output_file.c_str();
+
+  SplineFileName(spl_outfile_recoCC0Pi_CCOthScaled, "numuCC0piNtrk", beam, detector, "ccother_migration");
+  SplineFileName(spl_outfile_recoCC0Pi_CC0PiScaled, "numuCC0piNtrk", beam, detector, "cc0pi_migration");
+  SplineFileName(spl_outfile_recoCCOth_CCOthScaled, "numuCCoth", beam, detector, "ccother_migration");
+  SplineFileName(spl_outfile_recoCCOth_CC0PiScaled, "numuCCoth", beam, detector, "cc0pi_migration");
+
+  TFile splout_recoCC0Pi_CCOthScaled(spl_outfile_recoCC0Pi_CCOthScaled, "RECREATE");
+  TFile splout_recoCC0Pi_CC0PiScaled(spl_outfile_recoCC0Pi_CC0PiScaled, "RECREATE");
+  TFile splout_recoCCOth_CCOthScaled(spl_outfile_recoCCOth_CCOthScaled, "RECREATE");
+  TFile splout_recoCCOth_CC0PiScaled(spl_outfile_recoCCOth_CC0PiScaled, "RECREATE");
+  
   int n_splines_written = 0;
   for(const ReacMode_t &mode : reac_modes){
 
     // TObjArray for the current parameter and mode
-    TString objname = BuildObjName(mode,syst);
-    TObjArray *spline_array = new TObjArray();
-    spline_array->SetName(objname.Data());
+    TString objname_recoCC0Pi_CCOth = BuildObjName(mode,"ccother_migration");
+    TString objname_recoCC0Pi_CC0Pi = BuildObjName(mode,"cc0pi_migration");
+    TString objname_recoCCOth_CCOth = BuildObjName(mode,"ccother_migration");
+    TString objname_recoCCOth_CC0Pi = BuildObjName(mode,"cc0pi_migration");
 
-    for(int itrue = 0; itrue < n_true_bins_sb; itrue++) {
-      for(int ireco = 0; ireco < n_reco_bins_ob; ireco++) {
-        std::vector<double> x,y;
-        for(int iknot = 0; iknot < n_knots; ++iknot){
-          double knot = knots.at(iknot);
-          int n_reco  = bins_reco_count.at(itrue).at(ireco);
-          int n_true  = bins_true_count.at(itrue).at(ireco);
-          double migration = (n_reco > 4) ? (n_reco+knot*abs(n_reco-n_true))/static_cast<double>(n_reco) : 1;
-          if(std::isnan(migration)){
-            VLOG("valor_sbn",pDEBUG)<<"Migration value is not a number, setting to 1";
-            migration = 1;
-          }
-          x.push_back(knot);
-          y.push_back(migration);
+    TObjArray *spline_array_recoCC0Pi_CCOth = new TObjArray();
+    TObjArray *spline_array_recoCC0Pi_CC0Pi = new TObjArray();
+    TObjArray *spline_array_recoCCOth_CCOth = new TObjArray();
+    TObjArray *spline_array_recoCCOth_CC0Pi = new TObjArray();
+
+    spline_array_recoCC0Pi_CCOth->SetName(objname_recoCC0Pi_CCOth.Data());
+    spline_array_recoCC0Pi_CC0Pi->SetName(objname_recoCC0Pi_CC0Pi.Data());
+    spline_array_recoCCOth_CCOth->SetName(objname_recoCCOth_CCOth.Data());
+    spline_array_recoCCOth_CC0Pi->SetName(objname_recoCCOth_CC0Pi.Data());
+
+    for(int itrue = 0; itrue < n_true_bins; itrue++) {
+      for(int ireco = 0; ireco < n_reco_bins; ireco++) {
+        std::vector<double> x;
+        std::vector<double> y_recoCC0Pi_CCOth;
+        std::vector<double> y_recoCC0Pi_CC0Pi;
+        std::vector<double> y_recoCCOth_CCOth;
+        std::vector<double> y_recoCCOth_CC0Pi;
+
+        for(unsigned int k = 0; k < knots.size(); ++k){
+          x.push_back(knots.at(k));
+          y_recoCC0Pi_CCOth.push_back(knotHistMap_responseCC0Pi_CCOthScaled.at(k)->GetBinContent(itrue+1,ireco+1));
+          y_recoCC0Pi_CC0Pi.push_back(knotHistMap_responseCC0Pi_CC0PiScaled.at(k)->GetBinContent(itrue+1,ireco+1));
+          y_recoCCOth_CCOth.push_back(knotHistMap_responseCCOth_CCOthScaled.at(k)->GetBinContent(itrue+1,ireco+1));
+          y_recoCCOth_CC0Pi.push_back(knotHistMap_responseCCOth_CC0PiScaled.at(k)->GetBinContent(itrue+1,ireco+1));
         }
-        assert((x.size() == y.size()));// && (x.size() == knots.size())); Not the case when there are repeated points
-        TString name  = BuildSplineName(print_sample, beam, mode, syst, itrue, ireco);
-        TString title = name; // Make this contain real kinematic ranges
-        TSpline3 *spl = new TSpline3(title.Data(), x.data(), y.data(), x.size());
-        spl->SetName(name.Data());
-        spline_array->Add(spl);
+        assert((x.size() == y_recoCC0Pi_CCOth.size()));
+        assert((x.size() == y_recoCC0Pi_CC0Pi.size()));
+        assert((x.size() == y_recoCCOth_CCOth.size()));
+        assert((x.size() == y_recoCCOth_CC0Pi.size()));
+        
+        TString name_recoCC0Pi_CCOth = BuildSplineName("numuCC0piNtrk", beam, mode, "ccother_migration", itrue, ireco);
+        TString name_recoCC0Pi_CC0Pi = BuildSplineName("numuCC0piNtrk", beam, mode, "cc0pi_migration", itrue, ireco);
+        TString name_recoCCOth_CCOth = BuildSplineName("numuCCoth",     beam, mode, "ccother_migration", itrue, ireco);
+        TString name_recoCCOth_CC0Pi = BuildSplineName("numuCCoth",     beam, mode, "cc0pi_migration", itrue, ireco);
+        
+        TSpline3 *spl_recoCC0Pi_CCOth = new TSpline3(name_recoCC0Pi_CCOth.Data(), x.data(), y_recoCC0Pi_CCOth.data(), x.size());
+        TSpline3 *spl_recoCC0Pi_CC0Pi = new TSpline3(name_recoCC0Pi_CC0Pi.Data(), x.data(), y_recoCC0Pi_CC0Pi.data(), x.size());
+        TSpline3 *spl_recoCCOth_CCOth = new TSpline3(name_recoCCOth_CCOth.Data(), x.data(), y_recoCCOth_CCOth.data(), x.size());
+        TSpline3 *spl_recoCCOth_CC0Pi = new TSpline3(name_recoCCOth_CC0Pi.Data(), x.data(), y_recoCCOth_CC0Pi.data(), x.size());
+        
+        spl_recoCC0Pi_CCOth->SetName(name_recoCC0Pi_CCOth.Data());
+        spl_recoCC0Pi_CC0Pi->SetName(name_recoCC0Pi_CC0Pi.Data());
+        spl_recoCCOth_CCOth->SetName(name_recoCCOth_CCOth.Data());
+        spl_recoCCOth_CC0Pi->SetName(name_recoCCOth_CC0Pi.Data());
+        
+        spline_array_recoCC0Pi_CCOth->Add(spl_recoCC0Pi_CCOth);
+        spline_array_recoCC0Pi_CC0Pi->Add(spl_recoCC0Pi_CC0Pi);
+        spline_array_recoCCOth_CCOth->Add(spl_recoCCOth_CCOth);
+        spline_array_recoCCOth_CC0Pi->Add(spl_recoCCOth_CC0Pi);
+        
         n_splines_written++;
         if (n_splines_written%1000==0) {
           VLOG("valor_sbn",pNOTICE)<<"Written "<<n_splines_written<<" splines so far.";
         }
-
       } // True bin
     } // Reco bin
-    spline_array->Write(objname.Data(),TObject::kSingleKey);
+    splout_recoCC0Pi_CCOthScaled.cd();
+    spline_array_recoCC0Pi_CCOth->Write(objname_recoCC0Pi_CCOth.Data(),TObject::kSingleKey);
+    
+    splout_recoCC0Pi_CC0PiScaled.cd();
+    spline_array_recoCC0Pi_CC0Pi->Write(objname_recoCC0Pi_CC0Pi.Data(),TObject::kSingleKey);
+    
+    splout_recoCCOth_CCOthScaled.cd();
+    spline_array_recoCCOth_CCOth->Write(objname_recoCCOth_CCOth.Data(),TObject::kSingleKey);
+    
+    splout_recoCCOth_CC0PiScaled.cd();
+    spline_array_recoCCOth_CC0Pi->Write(objname_recoCCOth_CC0Pi.Data(),TObject::kSingleKey);
   } // Mode
-
+  
   time_t endrawtime;
   struct tm * endtimeinfo;
   time (&endrawtime);
@@ -457,17 +532,117 @@ int main(int argc, char ** argv)
   return 0;
 }
 //___________________________________________________________________
-TString BuildSplineName(const Sample_t    &s,
-    const BeamConf_t  &b,
-    const ReacMode_t  &m,
-    const std::string &p,
-    const int         &itrue,
-    const int         &ireco){
+std::vector<double> GetBinEdges(const VALORBinning *vb){
+  const int n = vb->NBins();
+  std::vector<double> edges(n+1,0.);
+  for(int i = 0; i < n; ++i){
+    edges.at(i) = vb->BinMinimum(i,0);
+  }
+  edges.at(n) = vb->BinMaximum(n-1,0);
+  return edges;
+}
+//___________________________________________________________________
+bool IsCC0Pi(const event::Interaction &truth){
+  // If it's not truely CC don't even bother
+  if(!truth.neutrino.iscc){
+    VLOG("valor_sbn", pDEBUG) << "NC, not 0Pi. Not selecting. ";
+    return false;
+  }
+
+  // Return false if any pions are found
+  for(const event::FinalStateParticle &fsp : truth.finalstate){
+    // Final state particles need counting
+    if (fsp.status_code != 1) {continue;}
+    if(fsp.pdg == genie::kPdgPiP || fsp.pdg == genie::kPdgPiM || fsp.pdg == genie::kPdgPi0) return false;
+  }
+  VLOG("valor_sbn", pDEBUG) << "CC 0Pi. Selecting. ";
+  return true;
+}
+//___________________________________________________________________
+std::shared_ptr<TH2D> GetHistRatio(const std::shared_ptr<TH2D> &num, const std::shared_ptr<TH2D> &den){
+  // Clone the numerator
+  std::shared_ptr<TH2D> div(static_cast<TH2D*>(num->Clone()));
+
+  // Get the binning
+  const unsigned int nBinsX = num->GetNbinsX();
+  const unsigned int nBinsY = num->GetNbinsY();
+
+  // Fill the content of the division
+  for(unsigned int bX = 1; bX <= nBinsX; ++bX){
+    for(unsigned int bY = 1; bY <= nBinsY; ++bY){
+      const double numContent = num->GetBinContent(bX,bY);
+      const double denContent = den->GetBinContent(bX,bY);
+
+      // If the number of reconstructed events in the bin is < 4, 
+      // set the weight to be 1 as this is too few to construct a valid weight
+      if(denContent < 4) div->SetBinContent(bX,bY,1);
+      else {
+        if((numContent/denContent) < 0)
+          div->SetBinContent(bX,bY,0);
+        else
+          div->SetBinContent(bX,bY,(numContent/denContent));
+
+      }
+    }
+  }
+  return div;
+}
+//___________________________________________________________________
+std::shared_ptr<TH1D> Get1DHistFrom2D(const std::shared_ptr<TH2D> &h2D, 
+                                      const std::string &name, 
+                                      const std::vector<double> &reco_be){ 
+  // Get the binning
+  const unsigned int nBinsT = h2D->GetNbinsX();
+  const unsigned int nBinsR = h2D->GetNbinsY();
+
+  // Sanity
+  assert(nBinsR == reco_be.size()-1);
+
+  // Define the flattened 1D histogram
+  std::shared_ptr<TH1D> h1D = std::make_shared<TH1D>(name.c_str(), "", nBinsR, reco_be.data());
+
+  // Fill the content of the division
+  for(unsigned int bR = 1; bR <= nBinsR; ++bR){
+    double recoContent = 0.;
+    for(unsigned int bT = 1; bT <= nBinsT; ++bT){
+      recoContent += h2D->GetBinContent(bT,bR);
+    }
+    h1D->SetBinContent(bR, recoContent);
+  }
+  return h1D;
+}
+//___________________________________________________________________
+void HistFileName(TString           &name,
+                  const std::string &s,
+                  const BeamConf_t  &b,
+                  const Detector_t  &d,
+                  const std::string &p){
+  SplineFileName(name,s,b,d,p);
+  name = name.ReplaceAll(".root","_spectra.root");
+}
+//___________________________________________________________________
+void SplineFileName(TString           &name,
+                    const std::string &s,
+                    const BeamConf_t  &b,
+                    const Detector_t  &d,
+                    const std::string &p){
+  name = name.ReplaceAll("[BEAM]"  , util::AsString(b).c_str());
+  name = name.ReplaceAll("[DET]"   , util::AsString(d).c_str());
+  name = name.ReplaceAll("[SAMPLE]", s.c_str());
+  name = name.ReplaceAll("[PARAM]" , p.c_str());
+}
+//___________________________________________________________________
+TString BuildSplineName(const std::string &s,
+                        const BeamConf_t  &b,
+                        const ReacMode_t  &m,
+                        const std::string &p,
+                        const int         &itrue,
+                        const int         &ireco){
 
   TString name = splineNamePattern;
 
   name = name.ReplaceAll("[BEAM]"   , util::AsString(b).c_str());
-  name = name.ReplaceAll("[SAMPLE]" , util::AsString(s).c_str());
+  name = name.ReplaceAll("[SAMPLE]" , s.c_str());
 
   name = name.ReplaceAll("[MODE]"   , util::AsString(m).c_str());
   name = name.ReplaceAll("[PARAM]"  , p.c_str());
@@ -477,7 +652,8 @@ TString BuildSplineName(const Sample_t    &s,
 
   return name;
 
-}//___________________________________________________________________
+}
+//___________________________________________________________________
 TString BuildObjName(const ReacMode_t  &m,
     const std::string &p){
 
@@ -488,306 +664,4 @@ TString BuildObjName(const ReacMode_t  &m,
 
   return name;
 
-}
-//___________________________________________________________________
-bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other){
-  if(numu){
-    if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh) return true;
-    else if(sample == valor::conv::ksNuMuCC0piNtrk){
-      if((reco.npion+reco.npi0) == 0)
-        return ((other) ? false : true);
-      else {
-        return ((other) ? true : false);
-      }
-    }
-    else if(sample == valor::conv::ksNuMuCC0pi1trk){
-      if((reco.npion+reco.npi0) == 0 && reco.nproton == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuMuCC0pi2trk){
-      if((reco.npion+reco.npi0) == 0 && reco.nproton == 1)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuMuCC1piC){
-      if(reco.npion == 1 && reco.npi0 == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuMuCC1pi0){
-      if(reco.npion == 0 && reco.npi0 == 1)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuMuCC1piC1pi0){
-      if(reco.npion == 1 && reco.npi0 == 1)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuMuCC2piC){
-      if(reco.npion == 2 && reco.npi0 == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuMuCCoth){
-      if((reco.npion + reco.npi0) >= 2)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
-      return false;
-    }
-  }
-  if(!numu){
-    if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh) return true;
-    else if(sample == valor::conv::ksNuECC0pi){
-      if((reco.npion+reco.npi0) == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuECC1piC){
-      if(reco.npion == 1 && reco.npi0 == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else if(sample == valor::conv::ksNuECCoth){
-      if((reco.npion+reco.npi0) >= 2)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
-      return false;
-    }
-  }
-  return false; 
-}
-void CheckNuFlav(const std::string &input,
-    bool &is_nueint, 
-    bool &is_nueosc,
-    bool &is_nuenumu,
-    bool &is_numu,
-    bool &is_nue){
-
-  string str_numu = "Numu";
-  string str_nue  = "Nue";
-  string str_int  = "_Int";
-  string str_osc  = "_Osc";
-
-  //Find substrings and check the selected nuE sample-type if necessary
-  size_t found_nue  = input.find(str_nue);
-  size_t found_numu = input.find(str_numu);
-
-  // Get selected nuMu from sample name
-  if(found_nue == string::npos && found_numu != string::npos)
-    is_numu = true;
-
-  if(found_nue != string::npos){
-    is_nue = true;
-    // We are looking at a nue sample, check if osc, intrinsic or numu
-    size_t found_nueosc  = input.find(str_osc);
-    size_t found_nueint  = input.find(str_int);
-    size_t found_nuenumu = input.find(str_numu);
-    if(found_nueosc != string::npos && found_nueint == string::npos && found_nuenumu == string::npos)
-      is_nueosc = true;
-    else if(found_nueosc != string::npos){
-      VLOG("valor_sbn", pFATAL)
-        << "Error: Found selected nuE oscillated file with hint of intrinsic and/or numu in the name - misleading: " << input;
-      exit(1);
-    }
-    if(found_nueint != string::npos && found_nueosc == string::npos && found_nuenumu == string::npos)
-      is_nueint = true;
-    else if(found_nueint != string::npos){
-      VLOG("valor_sbn", pFATAL)
-        << "Error: Found selected nuE intrinsic file with hint of oscillated and/or numu in the name - misleading: " << input;
-      exit(1);
-    }
-    if(found_nuenumu != string::npos && found_nueosc == string::npos && found_nueint == string::npos)
-      is_nuenumu = true;
-    else if(found_nuenumu != string::npos){
-      VLOG("valor_sbn", pFATAL)
-        << "Error: Found selected nuE numu file with hint of oscillated and/or intrinsic in the name - misleading: " << input;
-      exit(1);
-    }
-  }
-  bool found_nues[] = {is_nueosc, is_nueint, is_nuenumu};
-  if(found_nue && std::count(found_nues, found_nues+sizeof(found_nues), 1) > 1){
-    VLOG("valor_sbn", pFATAL)
-      << "Error: Found multiple selected nuE types in filename - misleading: " << input;
-    exit(1);
-  }
-  // Make sure we are finding at least 1 of numu or nue in the name
-  bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu};
-  if(std::count(found, found+sizeof(found), 1) == 0){
-    VLOG("valor_sbn", pFATAL)
-      << "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << input;
-    exit(1);
-  }
-
-  std::cout << " Input filename : " << input << " - ";
-  if(is_nueosc)
-    std::cout << " Selected NuE, Oscillated " << std::endl;
-  if(is_nueint)
-    std::cout << " Selected NuE, Intrinsic " << std::endl;
-  if(is_nuenumu)
-    std::cout << " Selected NuE, NuMu " << std::endl;
-  if(is_numu)
-    std::cout << " Selected NuMu, NuMu " << std::endl;
-}
-valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu, const bool &iscc){
-
-  // Numu CC
-  if(iscc && numu){
-    valor::conv::Sample_t new_s = valor::util::SampleFromString("numuCCoth");
-    assert(new_s != valor::conv::ksUndefined);
-    return new_s;
-  }
-
-  // Numu NC
-  else if(!iscc && numu){
-    valor::conv::Sample_t new_s = valor::util::SampleFromString("NCoth");
-    assert(new_s != valor::conv::ksUndefined);
-    return new_s;
-  }
-
-  // Nue CC
-  else if(iscc && !numu){
-    valor::conv::Sample_t new_s = valor::util::SampleFromString("nueCCoth");
-    assert(new_s != valor::conv::ksUndefined);
-    return new_s;
-  }
-
-  // Nue NC
-  else if(!iscc && !numu){
-    valor::conv::Sample_t new_s = valor::util::SampleFromString("NCoth");
-    assert(new_s != valor::conv::ksUndefined);
-    return new_s;
-  }
-  else{
-    LOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
-    return s;
-  }
-}
-bool CheckTrueFinalState(const std::vector<event::FinalStateParticle> &fsps,
-    const bool numu,
-    const valor::conv::Sample_t &sample, 
-    const bool &other){
-
-  // Just count pions for now
-  unsigned int npip = 0;
-  unsigned int npim = 0;
-  unsigned int npi0 = 0;
-  unsigned int np   = 0;
-
-  for(unsigned int p = 0; p < fsps.size(); ++p){
-    // Final state particles need counting
-    if (fsps[p].status_code != 1) {continue;}
-    else if(fsps[p].pdg == genie::kPdgPiP)    npip++;
-    else if(fsps[p].pdg == genie::kPdgPiM)    npim++;
-    else if(fsps[p].pdg == genie::kPdgPi0)    npi0++;
-    else if(fsps[p].pdg == genie::kPdgProton) np++;
-  }
-  unsigned int npiC = npip+npim;
-  
-  if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh) return true;
-  else if(sample == valor::conv::ksNuMuCC0piNtrk){
-    if(numu){
-      if((npiC+npi0) == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuMuCC0pi1trk){
-    if(numu){
-      if((npiC+npi0) == 0 && np == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuMuCC0pi2trk){
-    if(numu){
-      if((npiC+npi0) == 0 && np == 1)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuMuCC1piC){
-    if(numu){
-      if(npiC == 1 && npi0 == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuMuCC1pi0){
-    if(numu){
-      if(npiC == 0 && npi0 == 1)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuMuCC1piC1pi0){
-    if(numu){
-      if(npiC == 1 && npi0 == 1)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuMuCC2piC){
-    if(numu){
-      if(npiC == 2 && npi0 == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuMuCCoth){
-    if(numu){
-      if((npiC + npi0) >= 2)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else{
-    LOG("valor_sbn",pNOTICE) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
-    return false;
-  }
-  if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh) return true;
-  else if(sample == valor::conv::ksNuECC0pi){
-    if(!numu){
-      if((npiC+npi0) == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuECC1piC){
-    if(!numu){
-      if(npiC == 1 && npi0 == 0)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else if(sample == valor::conv::ksNuECCoth){
-    if(!numu){
-      if((npiC+npi0) >= 2)
-        return ((other) ? false : true);
-      else return ((other) ? true : false);
-    }
-    else return false;
-  }
-  else{
-    LOG("valor_sbn",pINFO) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events";
-    return false;
-  }
-  return false;                  
 }

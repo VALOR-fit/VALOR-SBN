@@ -21,16 +21,16 @@ ROOT.gStyle.SetOptStat(0)
 #_________________________________________________________________________________
 def make_cov(outputname):
     params_to_add = [
-        "sample_migration",
+        "ccother_migration",
         ]
     nominal_vals = {
-        "sample_migration"   : 0.0,
+        "ccother_migration"   : 0.0,
     }
     untuned_vals = {
-        "sample_migration"   : 0.0,
+        "ccother_migration"   : 0.0,
     }
     error_vals = {
-        "sample_migration"   : 1.0,
+        "ccother_migration"   : 1.0,
     }
     correlation_vals = {
     }
