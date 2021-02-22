@@ -127,9 +127,9 @@
       <format> SBNBiasFDIncNumuFine.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/testMutipleBiasCovariance.root    </filename>
-        <objname>    frac_bias                                                           </objname>    
-        <objtype>    TMatrixD                                                            </objtype>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/fineBiasCovariance.root </filename>
+        <objname>    frac_bias                                                        </objname>    
+        <objtype>    TMatrixD                                                         </objtype>
       </covariance_matrix>
 
     </group>
