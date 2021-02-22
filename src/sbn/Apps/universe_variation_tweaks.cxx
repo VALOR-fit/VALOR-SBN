@@ -2,6 +2,7 @@
 /*!
 
   \app       valor_dune-universe_variation_tweaks
+
   \brief     Vary the MC spectra by throwing sets of systematics
 
   \options     --output              : Where to save tweaked histograms to. [def: tweaks_[PARAMS].root]
@@ -14,12 +15,14 @@
   --config              : Analysis configuration file [required]
   --mesg-thresholds     : Message thresholds [def: "verbosity.xml"]
 
+
   \author    Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
   University of Liverpool & STFC Rutherford Appleton Laboratory
   Steve Dennis <s.r.dennis \at liverpool.ac.uk>
   University of Liverpool
 
   \created   October 2016
+
   \copyright (c) 2010-2016, The VALOR Fitting Group, All Rights Reserved
 
 */
@@ -44,7 +47,7 @@
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/Likelihood.h"
+#include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -108,20 +111,6 @@ std::vector<std::string> proposal_xsec =
   "genie_NonResRvnNC2pi_Genie",
   "genie_NonResRvbarnNC2pi_Genie",
   "genie_NonResRvbarpNC2pi_Genie"
-};
-std::vector<std::string> OG_proposal_xsec = 
-{ "genie_ccresAxial_Genie",
-  "genie_ncresAxial_Genie",
-  "genie_qema_Genie",
-  "genie_NC_Genie",
-  "genie_NonResRvbarp1piAlt_Genie",
-  "genie_NonResRvbarp1pi_Genie",
-  "genie_NonResRvbarp2piAlt_Genie",
-  "genie_NonResRvbarp2pi_Genie",
-  "genie_NonResRvp1piAlt_Genie",
-  "genie_NonResRvp1pi_Genie",
-  "genie_NonResRvp2piAlt_Genie",
-  "genie_NonResRvp2pi_Genie",
 };
 std::vector<std::string> flux_uncorr = 
 { "expskin_FluxUnisim",
@@ -190,21 +179,6 @@ std::vector<std::string> proposal_xsec_short =
   "NonResRvbarnNC2pi",
   "NonResRvbarpNC2pi"
 };
-std::vector<std::string> OG_proposal_xsec_short = 
-{ "ccresAxial",
-  "ncresAxial",
-  "qema",
-  "NC",
-  "NonResRvbarp1piAlt",
-  "NonResRvbarp1pi",
-  "NonResRvbarp2piAlt",
-  "NonResRvbarp2pi",
-  "NonResRvp1piAlt",
-  "NonResRvp1pi",
-  "NonResRvp2piAlt",
-  "NonResRvp2pi",
-};
-
 std::vector<std::string> flux_uncorr_short = 
 { "expskin",
   "horncurrent",
@@ -261,8 +235,7 @@ int main(int argc, char ** argv)
   string arg_detector     = arg.GetString("detector");
   string arg_kine_var     = arg.GetString("kine-var");
   string tree_name        = arg.GetString("tree-name");
-  string param_name       = arg.GetString("param-name");
-
+  
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
   LOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
   
@@ -285,9 +258,57 @@ int main(int argc, char ** argv)
   CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
   assert(cm);
   
-  Sample_t   sample       = util::SampleFromString(arg_sample);
-  Detector_t detector     = util::DetectorFromString(arg_detector);
-
+  GenericSingleSampleFitModel * gmodel = 0;
+  bool got_appropriate_model = false;
+  for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
+    gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
+    if  (gmodel->GetDetector() == detector && 
+         gmodel->GetSample()   == sample) 
+      { got_appropriate_model = true; break; }
+  }
+  if (!got_appropriate_model) {
+    LOG("universe_variation_tweaks", pFATAL) << "Failed to identify appropriate fit model to get binning.";
+  }
+  LOG("universe_variation_tweaks", pINFO) << " Successfully accessed the relevant model for binning information";
+  
+  std::vector<std::string> systematics, file_systematics;
+  if (params_to_tweak == "xsec") {
+    systematics      = modern_xsec;
+    systematics.insert(systematics.end(), proposal_xsec.begin(), proposal_xsec.end());
+    file_systematics = modern_xsec_short;
+    file_systematics.insert(file_systematics.end(), proposal_xsec_short.begin(), proposal_xsec_short.end());
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all xsec systematics ";
+    for(const std::string &s : file_systematics){
+      LOG("universe_variation_tweaks", pINFO) << s;
+    }
+  }
+  else if (params_to_tweak == "proposal_xsec") {
+    systematics      = proposal_xsec;
+    file_systematics = proposal_xsec_short;
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
+    for(const std::string &s : file_systematics){
+      LOG("universe_variation_tweaks", pINFO) << s;
+    }
+  }
+  else if (params_to_tweak == "modern_xsec") {
+    systematics      = modern_xsec;
+    file_systematics = modern_xsec_short;
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking modern_xsec systematics ";
+    for(const std::string &s : file_systematics){
+      LOG("universe_variation_tweaks", pINFO) << s;
+    }
+  }
+  else if (params_to_tweak == "flux") {
+    systematics      = flux_corr;
+    systematics.insert(systematics.end(), flux_uncorr.begin(), flux_uncorr.end());
+    file_systematics = flux_corr_short;
+    file_systematics.insert(file_systematics.end(), flux_uncorr_short.begin(), flux_uncorr_short.end());
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all flux systematics ";
+    for(const std::string &s : file_systematics){
+      LOG("universe_variation_tweaks", pINFO) << s;
+    }
+  }
+  else if (params_to_tweak == "flux_corr") {
     systematics      = flux_corr;
     file_systematics = flux_corr_short;
     LOG("universe_variation_tweaks", pNOTICE) << " Tweaking correlated flux systematics ";
@@ -324,25 +345,6 @@ int main(int argc, char ** argv)
     for(const std::string &s : file_systematics){
       LOG("universe_variation_tweaks", pINFO) << s;
     }
-  }
-  else if (params_to_tweak == "choose") {
-    file_systematics.push_back(param_name);
-    if (std::find(modern_xsec_short.begin(), modern_xsec_short.end(), param_name) != modern_xsec_short.end() ||
-        std::find(proposal_xsec_short.begin(), proposal_xsec_short.end(), param_name) != proposal_xsec_short.end() ||
-        std::find(OG_proposal_xsec_short.begin(), OG_proposal_xsec_short.end(), param_name) != OG_proposal_xsec_short.end()){
-        systematics.push_back("genie_" + param_name + "_Genie");
-    }
-    else if (std::find(flux_uncorr_short.begin(), flux_uncorr_short.end(), param_name) != flux_uncorr_short.end()){
-        systematics.push_back(param_name + "_FluxUnisim");
-    }
-    else if (std::find(flux_corr.begin(), flux_corr.end(), param_name) != flux_corr.end()){
-        systematics.push_back(param_name);
-    }
-    else {
-        LOG("universe_variation_tweaks",pFATAL) << "Unknown input systematic: "<< param_name; 
-        util::Die(-1);
-    }
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking single systematic " << param_name;
   }
   else {
     LOG("universe_variation_tweaks",pFATAL) << "Unknown systematics list: "<< params_to_tweak;
@@ -412,11 +414,12 @@ int main(int argc, char ** argv)
   analysis_tree->GetEntry(0);
   for(const std::string s : systematics){
     std::vector<int> universe_ids;
-    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
+    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and " << branch_n_universes.at(s) << " possible universes";
+    /*
     if(ntoys > branch_n_universes.at(s)){
       LOG("valor_sbn",pFATAL) << " Too many toys: " << ntoys << ", there are only " << branch_n_universes.at(s) << " entries for this parameter" << s;
       util::Die(-1);
-    }
+    }*/
     for(int itoy = 0; itoy < ntoys; ++itoy){
       LOG("universe_variation_tweaks",pDEBUG) << " Current systematic has " << branch_n_universes.at(s) << " so will generate a random number from that range";
       int iuni = rand() % branch_n_universes.at(s);
@@ -440,6 +443,7 @@ int main(int argc, char ** argv)
   int nev = analysis_tree->GetEntries();
   
   LOG("universe_variation_tweaks", pINFO) << " About to enter analysis tree loop with " << nev << " entries";
+
 
   unsigned int accepted_events = 0;
   unsigned int skipped_events  = 0;
@@ -483,7 +487,6 @@ int main(int argc, char ** argv)
       int iuni = itoy;
 
       unsigned int n_varied = 0;
-      
       // Get the product of the 1 sigma weights for all sysematics
       for(const string &syst : systematics){
         // Get the total universe weight
@@ -625,6 +628,7 @@ int main(int argc, char ** argv)
   std::cout << "Total number of events with exactly no variations             : " << skipped_events << std::endl;
   std::cout << "Total number of universes containing events with no variations: " << skipped_universe_ids.size() << std::endl;
   std::cout << "Total number of universes                                     : " << ntoys << std::endl;
+  
   
   time_t endrawtime;
   struct tm * endtimeinfo;
