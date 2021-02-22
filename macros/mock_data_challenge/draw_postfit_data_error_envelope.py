@@ -67,12 +67,12 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio):
+def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided,prepost, pm):
 
-  pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio)
+  pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm)
 
 
-def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_label, prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc, ratio):
+def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_label, prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm):
 
   envelope_images = []
   ratio_images = []
@@ -169,6 +169,15 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       prefit_nom    = get_hist(f_prefit,hname_nom)
       hplus_prefit  = get_hist(f_prefit,hname_p1)
       hminus_prefit = get_hist(f_prefit,hname_m1)
+      if onesided and prepost == 'pre' or prepost == 'both':
+        print "One sided"
+        if pm == '1':
+          print "Plus 1"
+          hminus_prefit = get_hist(f_prefit,hname_nom)
+        if pm == '-1':
+          print "Minus 1"
+          hplus_prefit =  get_hist(f_prefit,hname_nom)
+
       hists.extend([prefit_nom, hplus_prefit, hminus_prefit])
       prefit_plots.extend([prefit_nom, hplus_prefit, hminus_prefit])
 
@@ -177,6 +186,15 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_nom    = get_hist(f_postfit,hname_nom)
       hplus_postfit  = get_hist(f_postfit,hname_p1)
       hminus_postfit = get_hist(f_postfit,hname_m1)
+      if onesided and prepost == 'post' or prepost == 'both':
+        print "One sided"
+        if pm == '1':
+          print "Plus 1"
+          hminus_postfit = get_hist(f_postfit,hname_nom)
+        if pm == '-1':
+          print "Minus 1"
+          hplus_postfit =  get_hist(f_postfit,hname_nom)
+
       hists.extend([postfit_nom, hplus_postfit, hminus_postfit])
       postfit_plots.extend([postfit_nom, hplus_postfit, hminus_postfit])
 
@@ -200,7 +218,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     legend.SetBorderSize(0);
 
     canv_name = "c_%s" % util.SampleAsString(s)
-    canv = ROOT.TCanvas(canv_name,"",700,900)
+    canv = ROOT.TCanvas(canv_name,"",900,900)
     canv.SetLeftMargin  (left_margin)
     canv.SetBottomMargin(bottom_margin)
     canv.SetRightMargin (right_margin )
@@ -625,7 +643,10 @@ if __name__=="__main__":
   parser.add_option('-d','--datatag', dest='datatag',default='toymc',help='Prefix for input data histogram name')
   parser.add_option('-e','--experiment', dest='det',default='',help='Experiment enum: SBND = 1, uBooNE = 2, ICARUS = 3')
   parser.add_option('-m','--mdc', dest='mdc',default=False,help='Whether or not we are looking at the Mock Data Challenge')
-  parser.add_option('--ratio', dest='ratio',default='-1',help='Whether to take the ratio and of which two hists: -1 = no ratio, 0 = Data/Postfit, 1 = PostFit/Prefit, 2 = Data/Prefit')
+  parser.add_option('--ratio', dest='ratio',default='-1',help='Which ratio: -1 = no ratio, 0 = Data/Postfit, 1 = PostFit/Prefit, 2 = Data/Prefit')
+  parser.add_option('--onesided', dest='onesided',default=False,help='Whether to plot only 1-sided errors')
+  parser.add_option('--prepost', dest='prepost',default='pre',help='Which should be 1-sided, pre=prefit (-p), post=postfit (-b), both=both')
+  parser.add_option('--pm', dest='pm',default='1',help='Which side to plot')
 
   options,other = parser.parse_args()
 
@@ -636,4 +657,5 @@ if __name__=="__main__":
   main(options.config, options.data, options.prefit, options.postfit,
        options.data_label, options.prefit_label, options.postfit_label,
        options.tag, options.tex, options.imgformat, options.ratiomult,
-       options.datatag, options.det, options.mdc, options.ratio)
+       options.datatag, options.det, options.mdc, options.ratio,
+       options.onesided, options.prepost, options.pm)
