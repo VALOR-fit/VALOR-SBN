@@ -272,7 +272,17 @@ int main(int argc, char ** argv)
   LOG("universe_variation_tweaks", pINFO) << " Successfully accessed the relevant model for binning information";
   
   std::vector<std::string> systematics, file_systematics;
-  if (params_to_tweak == "proposal_xsec") {
+  if (params_to_tweak == "xsec") {
+    systematics      = modern_xsec;
+    systematics.insert(systematics.end(), proposal_xsec.begin(), proposal_xsec.end());
+    file_systematics = modern_xsec_short;
+    file_systematics.insert(file_systematics.end(), proposal_xsec_short.begin(), proposal_xsec_short.end());
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all xsec systematics ";
+    for(const std::string &s : file_systematics){
+      LOG("universe_variation_tweaks", pINFO) << s;
+    }
+  }
+  else if (params_to_tweak == "proposal_xsec") {
     systematics      = proposal_xsec;
     file_systematics = proposal_xsec_short;
     LOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
@@ -404,11 +414,12 @@ int main(int argc, char ** argv)
   analysis_tree->GetEntry(0);
   for(const std::string s : systematics){
     std::vector<int> universe_ids;
-    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
+    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and " << branch_n_universes.at(s) << " possible universes";
+    /*
     if(ntoys > branch_n_universes.at(s)){
       LOG("valor_sbn",pFATAL) << " Too many toys: " << ntoys << ", there are only " << branch_n_universes.at(s) << " entries for this parameter" << s;
       util::Die(-1);
-    }
+    }*/
     for(int itoy = 0; itoy < ntoys; ++itoy){
       LOG("universe_variation_tweaks",pDEBUG) << " Current systematic has " << branch_n_universes.at(s) << " so will generate a random number from that range";
       int iuni = rand() % branch_n_universes.at(s);
