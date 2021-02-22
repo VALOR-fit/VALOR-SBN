@@ -9,6 +9,8 @@
 // R.J.
 //
 
+void SetStyle(TH1D *h);
+
 void plot_envelope_ratios(const char *valor, const char *univ, const char *output, const std::string &name_tag, const std::string &sample){
 
   TFile * f_val = new TFile(valor,"read");
@@ -20,14 +22,6 @@ void plot_envelope_ratios(const char *valor, const char *univ, const char *outpu
   if(name_tag != "")
     tag = name_tag+"_";
   
-  // 
-  // Global style settings
-  //
-  gStyle->SetTitleSize(0.04,"X");
-  gStyle->SetTitleSize(0.04,"Y");
-  gStyle->SetLabelSize(0.03,"X");
-  gStyle->SetLabelSize(0.03,"Y");
-
   // 
   // All graphs
   //
@@ -105,56 +99,48 @@ void plot_envelope_ratios(const char *valor, const char *univ, const char *outpu
   // 
   // No stat all external all fitters 
   //
-  TCanvas * c = new TCanvas("c","",20,20,700,900);
-  c->SetTopMargin(0.044);
-  c->SetBottomMargin(0.1);
-  c->SetLeftMargin(0.1);
-  c->SetRightMargin(0.044);
-  c->Draw();
-
+  TCanvas * c = new TCanvas("c","",20,20,900,900);
+  c->SetLeftMargin  (0.126);
+  c->SetRightMargin (0.015);
+  c->SetBottomMargin(0.123);
+  c->SetTopMargin   (0.018);
+  
   // Nominal ratio
   h_nom_ratio->SetStats(0);
-  h_nom_ratio->GetYaxis()->SetTitleOffset(1.3);
+  h_nom_ratio->GetYaxis()->SetTitleOffset(1.1);
   h_nom_ratio->GetXaxis()->SetRangeUser(0.2,3);
   h_nom_ratio->GetYaxis()->SetRangeUser(0.,2.);
   h_nom_ratio->SetTitle("");
-  h_nom_ratio->GetXaxis()->SetTitle("E_{#nu, Reco}");
+  h_nom_ratio->GetXaxis()->SetTitle("Reconstructed neutrino energy [GeV]");
   h_nom_ratio->GetYaxis()->SetTitle("Nominal event rate ratio, VALOR/Universes");
-  h_nom_ratio->GetXaxis()->SetTitleFont(132);
-  h_nom_ratio->GetYaxis()->SetTitleFont(132);
-  h_nom_ratio->GetXaxis()->SetLabelFont(132);
-  h_nom_ratio->GetYaxis()->SetLabelFont(132);
-  h_nom_ratio->GetYaxis()->SetMaxDigits(3);
+  SetStyle(h_nom_ratio);
+
   h_nom_ratio-> Draw();
 
   c->SaveAs((location+tag+"universe_valor_nominal_ratios.root").c_str());
   c->Clear();
 
   h_p1_ratio_val->SetStats(0);
-  h_p1_ratio_val->GetYaxis()->SetTitleOffset(1.3);
+  h_p1_ratio_val->GetYaxis()->SetTitleOffset(1.1);
   h_p1_ratio_val->GetXaxis()->SetRangeUser(0.2,3);
   h_p1_ratio_val->GetYaxis()->SetRangeUser(0.5,1.5);
   h_p1_ratio_val->SetTitle("");
-  h_p1_ratio_val->GetXaxis()->SetTitle("E_{#nu, Reco}");
+  h_p1_ratio_val->GetXaxis()->SetTitle("Reconstructed neutrino energy [GeV]");
   h_p1_ratio_val->GetYaxis()->SetTitle("Event rate ratio");
-  h_p1_ratio_val->GetXaxis()->SetTitleFont(132);
-  h_p1_ratio_val->GetYaxis()->SetTitleFont(132);
-  h_p1_ratio_val->GetXaxis()->SetLabelFont(132);
-  h_p1_ratio_val->GetYaxis()->SetLabelFont(132);
-  h_p1_ratio_val->GetYaxis()->SetMaxDigits(3);
+  SetStyle(h_p1_ratio_val);
 
   h_p1_ratio_val -> Draw();
   h_m1_ratio_val -> Draw("same");
   h_p1_ratio_uni -> Draw("same");
   h_m1_ratio_uni -> Draw("same");
   
-  TLegend * l = new TLegend(0.122,0.137,0.878,0.313);
+  TLegend * l = new TLegend(0.178,0.166,0.934,0.343);
   l->SetFillStyle(0);
   l->SetBorderSize(0);
   l->SetTextFont(132);
-  l->AddEntry(h_p1_ratio_val, "VALOR +1#sigma/nominal", "L");
+  l->AddEntry(h_p1_ratio_val, "Splines +1#sigma/nominal", "L");
   l->AddEntry(h_p1_ratio_uni, "Universes +1#sigma/nominal", "L");
-  l->AddEntry(h_m1_ratio_val, "VALOR -1#sigma/nominal", "L");
+  l->AddEntry(h_m1_ratio_val, "Splines -1#sigma/nominal", "L");
   l->AddEntry(h_m1_ratio_uni, "Universes -1#sigma/nominal", "L");
   l->Draw();
 
@@ -163,23 +149,18 @@ void plot_envelope_ratios(const char *valor, const char *univ, const char *outpu
   l->Clear();
 
   h_p1_ratio->SetStats(0);
-  h_p1_ratio->GetYaxis()->SetTitleOffset(1.3);
+  h_p1_ratio->GetYaxis()->SetTitleOffset(1.1);
   h_p1_ratio->GetXaxis()->SetRangeUser(0.2,3);
   h_p1_ratio->GetYaxis()->SetRangeUser(0.85,1.15);
   h_p1_ratio->SetTitle("");
-  h_p1_ratio->GetXaxis()->SetTitle("E_{#nu, Reco}");
+  h_p1_ratio->GetXaxis()->SetTitle("Reconstructed neutrino energy [GeV]");
   h_p1_ratio->GetYaxis()->SetTitle("Event rate ratio");
-  h_p1_ratio->GetXaxis()->SetTitleFont(132);
-  h_p1_ratio->GetYaxis()->SetTitleFont(132);
-  h_p1_ratio->GetXaxis()->SetLabelFont(132);
-  h_p1_ratio->GetYaxis()->SetLabelFont(132);
-  h_p1_ratio->GetYaxis()->SetMaxDigits(3);
-
+  SetStyle(h_p1_ratio);
   h_p1_ratio -> Draw();
   h_m1_ratio -> Draw("same");
  
-  l->AddEntry(h_p1_ratio, "(VALOR/Universes)_{+1#sigma/nominal}", "L");
-  l->AddEntry(h_m1_ratio, "(VALOR/Universes)_{-1#sigma/nominal}", "L");
+  l->AddEntry(h_p1_ratio, "(Splines/Universes)_{+1#sigma/nominal}", "L");
+  l->AddEntry(h_m1_ratio, "(Splines/Universes)_{-1#sigma/nominal}", "L");
   l->Draw();
 
   c->SaveAs((location+tag+"universe_valor_double_ratios.root").c_str());
@@ -195,4 +176,15 @@ void plot_envelope_ratios(const char *valor, const char *univ, const char *outpu
   scales.Write("scales");
   f.Close();
 
+}
+void SetStyle(TH1D *h){
+  h->GetXaxis()->SetTitleFont(132);
+  h->GetYaxis()->SetTitleFont(132);
+  h->GetXaxis()->SetLabelFont(132);
+  h->GetYaxis()->SetLabelFont(132);
+  h->GetYaxis()->SetMaxDigits(3);
+  h->GetXaxis()->SetTitleSize(0.06);
+  h->GetYaxis()->SetTitleSize(0.06);
+  h->GetXaxis()->SetLabelSize(0.05);
+  h->GetYaxis()->SetLabelSize(0.05);
 }
