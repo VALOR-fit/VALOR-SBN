@@ -126,19 +126,19 @@
       <format> SBNExclusiveResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/exclusive_migration_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c2/exclusive_migration_covariance.root </filename>
         <objname>    cov                                                                          </objname>    
         <objtype>    TMatrixD                                                                     </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/exclusive_migration_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c2/exclusive_migration_covariance.root </filename>
         <objname>    untuned                                                                      </objname>    
         <objtype>    TMatrixD                                                                     </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/exclusive_migration_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c2/exclusive_migration_covariance.root </filename>
         <objname>    nominal                                                                      </objname>    
       </initial_values> 
 

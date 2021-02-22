@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<param_list name="sbn_detector_energy_scale_parameter">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  e_scale          </simple>
+      <long>    SBN energy scale </long>
+      <rootex>  f_{E; r}^{SBN}   </rootex>
+      <tex>     SBN energy scale </tex>
+    </name>
+
+    <apply_to_range>
+      <Ereco>  0, inf  </Ereco>
+    </apply_to_range>
+
+    <type>  lateral_post_osc  </type>
+
+    <categories>
+      <category>  detector  </category>
+      <category>  energy  </category>
+    </categories>
+
+    <apply_to>
+      <detector>   all            </detector>
+      <beam>       all            </beam>
+      <selection>  all            </selection>
+      <reac_type>  allpluscosmic  </reac_type>
+      <flav_init>  allcosmic      </flav_init>
+      <flav_final> allcosmic      </flav_final>
+      <target>     all            </target>
+    </apply_to>
+
+    <limits>                 -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5, 5 </range>                 
+    <step_mode>              frac  </step_mode>             
+    <step>                   0.01  </step>
+  </param>
+<!-- ==================================================================================== -->
+</param_list>
