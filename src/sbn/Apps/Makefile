@@ -15,14 +15,14 @@ include $(VALOR_EXPT)/make/Make.include
 SBN_LIBRARIES =
 
 TGT = make_sbncode_minidst \
-      make_caf_minidst \
 			make_recoselection_minidst \
-      make_xsec_splines \
       make_flux_splines \
+      make_xsec_splines \
       make_excl_splines \
+      energy_scale_check \
       universe_variation_tweaks \
       write_spectra_using_universes \
-      tweak_pdf_nsigma_var 
+			tweak_pdf_nsigma_var
 
 all: $(TGT)
 
@@ -39,20 +39,6 @@ endif
 else
 	@echo "Skipping make_sbncode_minidst due to no SBNanalysis"
 endif
-
-# Generate DSTs from CAF files
-#
-make_caf_minidst: FORCE
-#ifeq ($(SBNANALYSIS_ENABLED),1)
-ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_caf_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES) 
-	$(LD) $(LDFLAGS) make_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
-else
-	@echo "Skipping make_caf_minidst due to no GENIE"
-endif
-#else
-#	@echo "Skipping make_caf_minidst due to no SBNanalysis"
-#endif
 
 # Generate DSTs for RecoSelection fit
 #
@@ -87,7 +73,7 @@ ifdef GENIE
 	$(CXX) $(CXXFLAGS) -c make_xsec_splines.cxx $(GINCLUDES)
 	$(LD) $(LDFLAGS) make_xsec_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
 else
-	@echo "Skipping make_xsec_splines due to no GENIE"
+	@echo "Skipping make_splines due to no GENIE"
 endif
 
 # Generate SBN excl splines
@@ -103,6 +89,21 @@ else
 endif
 else
 	@echo "Skipping make_excl_splines due to no SBNanalysis"
+endif
+
+# Generate SBN excl splines
+# Probably don't require the GENIE dependence but method isn't finalised yet so keeping just in case
+#
+energy_scale_check: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c energy_scale_check.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) energy_scale_check.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB)  -o $(VALOR_EXPT)/bin/valor_sbn-energy_scale_check
+else
+	@echo "Skipping energy scale due to no GENIE"
+endif
+else
+	@echo "Skipping energy_scale_check due to no SBNanalysis"
 endif
 
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation
@@ -123,7 +124,7 @@ else
 	@echo "Skipping write_spectra_using_universes due to no GENIE"
 endif
 
-# Randomly throw the pdf to make envelopes
+# Randomly throw the pdf t o make envelopes
 # 
 tweak_pdf_nsigma_var: FORCE
 ifdef GENIE
@@ -141,22 +142,22 @@ purge: FORCE
 clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_sbncode_minidst
-	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_excl_splines
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-energy_scale_check
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-tweak_pdf_nsigma_var
 
 distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_sbncode_minidst
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_excl_splines
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-energy_scale_check
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-tweak_pdf_nsigma_var
