@@ -165,7 +165,7 @@ int main(int argc, char ** argv)
   // Read command line arguments
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/make_splines.arg");
-  VLOG("valor_sbn", pNOTICE) << arg;
+  VLOG("valor_sbn", pDEBUG) << arg;
 
   // Get arguments
   string arg_config_file   = arg.GetString("config");
@@ -458,7 +458,7 @@ int main(int argc, char ** argv)
         nbins_tot++;
         // Get the nominal event rate in this bin
         double nevents0 = mct_nom.GetEntry(ireco, itrue);
-        std::cout << "nevents0 1 = " << nevents0 << std::endl;
+       // std::cout << "nevents0 1 = " << nevents0 << std::endl;
         unsigned int isaved = 0; // For when we skip parameters
         std::vector<double> x,y;
         for (int iknot = 0; iknot < n_knots; ++iknot) {
@@ -509,20 +509,21 @@ int main(int argc, char ** argv)
             nevents = 0;
           }
 
-          std::cout << "nevents: " << nevents << std::endl;
-          std::cout << "nevents0: " << nevents0 << std::endl;
-          std::cout << "iknot: " << iknot << std::endl;
-          std::cout << "inom: " << inom << std::endl;
+//          std::cout << "nevents: " << nevents << std::endl;
+//          std::cout << "nevents0: " << nevents0 << std::endl;
+//          std::cout << "iknot: " << iknot << std::endl;
+//          std::cout << "inom: " << inom << std::endl;
           // Cutoff under 36 for a maximum 50% stat uncertainty in every bin
           // Splines will be flat otherwise
-          double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
-          std::cout << event_ratio << std::endl;      
+          double event_ratio = (nevents0 > 4) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
+          //std::cout << event_ratio << std::endl;      
           if(iknot == inom){
               //std::cin.get();
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
           }
           // Set the y axis entry to be the current rate/nominal rate
           y.push_back(event_ratio);
+
           // Print statements for validation
           LOG("valor_sbn",pDEBUG ) << " Knot :                   " << iknot << ", " << knot << "\n"
                                    << " Universe variation:      " << universe_variation << " \n"
@@ -532,7 +533,7 @@ int main(int argc, char ** argv)
                                    << " Bin (ireco,itrue):       " << ireco << ", " << itrue << "\n"
                                    << " x-axis entry (universe variation): " << x.at(isaved) << "\n"
                                    << " y-axis entry (event rate ratio):   " << y.at(isaved);
-
+          
           // Now if we are saving the modelist, check if the current mode affects the spline
           if(arg_save_modelist && iknot != inom){
             // Check if a variation for this mode has already been found
