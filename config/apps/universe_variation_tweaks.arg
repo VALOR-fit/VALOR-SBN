@@ -1,13 +1,13 @@
 # argument                           |   type         |  require?   |   default
 # .......................................................................................................
 input                                |   string       |  mandatory  |   - #DST file
-variations                           |   string       |  mandatory  |   - #universes text file
 config                               |   string       |  mandatory  |   -
-output                               |   string       |  optional   |   tweaks_[PARAMS].root
+variations                           |   string       |  optional   |   empty #universes text file
+output                               |   string       |  optional   |   tweaks_[PARAMS]_[SAMPLE].root
 ntoys                                |   integer      |  optional   |   1000
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
-params                               |   string       |  optional   |   allsyst
+params                               |   string       |  optional   |   all
 kine-var                             |   string       |  optional   |   ereco
 sample                               |   string       |  optional   |   numulikeCChigh
 detector                             |   string       |  optional   |   sbn_nd
-syst-from-quantiles, syst-from-rms   |   boolean_list |  optional   |   syst-from-rms
+tree-name                            |   string       |  optional   |   valor_sbn_minidst

@@ -198,10 +198,11 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
       # Check the diagonal case
       if n == m:
         if math.isnan(frac_cov[n][m]):
-          frac_cov[n][m] = 1 # 100% for used table
+          #frac_cov[n][m] = 1 # 100% for used table
+          frac_cov[n][m] = 0.0001 # Set diagonal value to 0 
       else:
         if math.isnan(frac_cov[n][m]):
-          frac_cov[n][m] = 0 # setting the off-diagonal elements of the empty bins to be 0
+          frac_cov[n][m] = 0.0 # setting the off-diagonal elements of the empty bins to be 0
 
   corr = util.CovarianceMatrixToCorrelationMatrix(frac_cov)
   err  = util.CovarianceMatrixToErrorVector(frac_cov)

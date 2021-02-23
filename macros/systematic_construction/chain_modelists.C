@@ -3,10 +3,22 @@ std::vector<std::string> proposal_systematics =
   "genie_ncresAxial_Genie",
   "genie_qema_Genie",
   "genie_NC_Genie",
-  "genie_NonResRvbarp1pi_Genie",
-  "genie_NonResRvbarp2pi_Genie",
-  "genie_NonResRvp1pi_Genie",
-  "genie_NonResRvp2pi_Genie"
+  "genie_NonResRvpCC1pi_Genie",
+  "genie_NonResRvnCC1pi_Genie",
+  "genie_NonResRvbarnCC1pi_Genie",
+  "genie_NonResRvbarpCC1pi_Genie",
+  "genie_NonResRvpCC2pi_Genie",
+  "genie_NonResRvnCC2pi_Genie",
+  "genie_NonResRvbarnCC2pi_Genie",
+  "genie_NonResRvbarpCC2pi_Genie",
+  "genie_NonResRvpNC1pi_Genie",
+  "genie_NonResRvnNC1pi_Genie",
+  "genie_NonResRvbarnNC1pi_Genie",
+  "genie_NonResRvbarpNC1pi_Genie",
+  "genie_NonResRvpNC2pi_Genie",
+  "genie_NonResRvnNC2pi_Genie",
+  "genie_NonResRvbarnNC2pi_Genie",
+  "genie_NonResRvbarpNC2pi_Genie"
 };
 std::vector<std::string> modern_systematics = 
 { "genie_DISAth_Genie",
@@ -56,9 +68,9 @@ std::vector<std::string> detector_location =
 
 TString filename = "valor_splines_[SAMPLE]_[PARAM]_BNB_FHC_[DET]_modelist.root";
 TString GetFilename(const std::string &p, const std::string &d, const std::string &s, const std::string &l, const unsigned int &i);
-TString GetOutputFilename(const std::string &s);
+TString GetOutputFilename(const std::string &s, const std::string &t);
 
-void chain_modelists(const std::string &syst, const std::string &location="", const std::string &sample="numuCCincl")
+void chain_modelists(const std::string &syst, const std::string &location="", const std::string &sample="numuCCincl", const std::string &tag="")
 {
   using namespace valor;
 
@@ -100,7 +112,7 @@ void chain_modelists(const std::string &syst, const std::string &location="", co
     }
     param_modelist.emplace(param,modes);
   }
-  TString output_file = GetOutputFilename(sample);
+  TString output_file = GetOutputFilename(sample,tag);
   TFile f(output_file.Data(),"RECREATE");
   TTree *t = new TTree("ModeLists","Mode lists from all parameters");
   t->SetCircular(1); // Only save the very last fill: with all entries
@@ -127,8 +139,12 @@ TString GetFilename(const std::string &p, const std::string &d, const std::strin
   std::cout << " Reading file: " << name << std::endl;
   return name;
 }
-TString GetOutputFilename(const std::string &s){
+TString GetOutputFilename(const std::string &s, const std::string &t){
   TString name = "_modelist.root";
   name.Prepend(s.data());
+  if(t != ""){
+    name.Prepend("_");
+    name.Prepend(t.data());
+  }
   return name;
 }

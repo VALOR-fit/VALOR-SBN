@@ -11,11 +11,12 @@
 
 {
 
-  TFile * f_val = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/splines/all/valor_tweak_pdf_inc_nd.root","read");
-  TFile * f_uni = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/splines/03c1/all/validation/sbnd/all/tweaks_all_numuCCincl.root","read");
+  TFile * f_val = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/nd_tweak_all.root","read");
+  TFile * f_uni = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/tweaks_all_nueCCincl.root","read");
   
-  std::string location = "/sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/validation/splines/all/";
-  
+  std::string file_name = "all";
+  std::string location = "/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/";
+
   // 
   // Global style settings
   //
@@ -28,16 +29,17 @@
   // All graphs
   //
 
-  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_nom"));
-  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_p1"));
-  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_m1"));
+  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCincl_nom"));
+  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCincl_p1"));
+  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCincl_m1"));
   std::cout << " Got universe histograms" << std::endl;
  
-  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_nom"));
-  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_p1"));
-  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_m1"));
+  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
+  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
+  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
   std::cout << " Got VALOR histograms" << std::endl;
  
+  
   // All ratios
   TH1D *h_p1_ratio_val = static_cast<TH1D*>(h_val_p1->Clone("h_p1_ratio_val"));
   TH1D *h_m1_ratio_val = static_cast<TH1D*>(h_val_m1->Clone("h_m1_ratio_val"));
@@ -123,7 +125,7 @@
   h_nom_ratio->GetYaxis()->SetMaxDigits(3);
   h_nom_ratio-> Draw();
 
-  c->SaveAs((location+"universe_valor_nominal_ratios.root").c_str());
+  c->SaveAs((location+"universe_valor_nominal_ratios_"+file_name+".root").c_str());
   c->Clear();
 
   h_p1_ratio_val->SetStats(0);
@@ -154,7 +156,7 @@
   l->AddEntry(h_m1_ratio_uni, "Universes -1#sigma/nominal", "L");
   l->Draw();
 
-  c->SaveAs((location+"universe_valor_single_ratios.root").c_str());
+  c->SaveAs((location+"universe_valor_single_ratios_"+file_name+".root").c_str());
   c->Clear();
   l->Clear();
 
@@ -178,7 +180,7 @@
   l->AddEntry(h_m1_ratio, "(VALOR/Universes)_{-1#sigma/nominal}", "L");
   l->Draw();
 
-  c->SaveAs((location+"universe_valor_double_ratios.root").c_str());
+  c->SaveAs((location+"universe_valor_double_ratios_"+file_name+".root").c_str());
   c->Clear();
   l->Clear();
 
