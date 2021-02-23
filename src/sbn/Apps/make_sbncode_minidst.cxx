@@ -10,6 +10,9 @@
                 --output output_file_containing_valor_minidst.root
                [--write-universes] optionally write out the systematic variations
                [--disable-checks]
+               [--off-axis-min off_axis_lower_edge] optionally give offaxis angle
+                                                    range in deg; default 0.0
+               [--off-axis-max off_axis_upper_edge] default 90.0
 
   \author    Rhiannon Jones <rhiannon.jones \at liverpool.ac.uk>
              University of Liverpool
@@ -116,6 +119,8 @@ int main(int argc, char ** argv)
   bool   apply_weights      = !(arg.GetBool("dont-apply-weights"));
   bool   no_truth           = arg.GetBool("no-truth");
   int    max_n_events       = arg.GetInt("max-n-events");
+  double off_axis_bin_min   = arg.GetDouble("off-axis-min");
+  double off_axis_bin_max   = arg.GetDouble("off-axis-max");
 
   if(no_truth && write_universes)
     VLOG("valor_sbn", pFATAL) << " Error: Cannot write universes if there is no truth information supplied ";
@@ -268,6 +273,7 @@ int main(int argc, char ** argv)
   double valor_minidst_posx_true    = -999.; // true vertex x positon
   double valor_minidst_posy_true    = -999.; // true vertex y positon
   double valor_minidst_posz_true    = -999.; // true vertex z positon
+  double valor_minidst_offaxis_true = -1.0; // true offaxis angle to beam centre
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -275,23 +281,24 @@ int main(int argc, char ** argv)
   TTree * valor_minidst =
     new TTree("valor_sbn_minidst","Mini-DST input for VALOR/SBN fit");
 
-  valor_minidst->Branch("beam"      , &valor_minidst_beam        ,"beam/I"       );
-  valor_minidst->Branch("sample"    , &valor_minidst_sample      ,"sample/I"     );
-  valor_minidst->Branch("reac_mode" , &valor_minidst_reac_mode   ,"reac_mode/I"  );
-  valor_minidst->Branch("reac_type" , &valor_minidst_reac_type   ,"reac_type/I"  );
-  valor_minidst->Branch("init_pdg"  , &valor_minidst_init_nupdg  ,"init_pdg/I"   );
-  valor_minidst->Branch("final_pdg" , &valor_minidst_final_nupdg ,"final_pdg/I"  );
-  valor_minidst->Branch("baseline"  , &valor_minidst_baseline    ,"baseline/D"   );
-  valor_minidst->Branch("target"    , &valor_minidst_target      ,"target/I"     );
-  valor_minidst->Branch("enu_true"  , &valor_minidst_enu_true    ,"enu_true/D"   );
-  valor_minidst->Branch("Q2_true"   , &valor_minidst_Q2_true     ,"q2_true/D"    );
-  valor_minidst->Branch("enu_reco"  , &valor_minidst_enu_reco    ,"enu_reco/D"   );
-  valor_minidst->Branch("y_reco"    , &valor_minidst_y_reco      ,"y_reco/D"     );
-  valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
-  valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
-  valor_minidst->Branch("posx_true" , &valor_minidst_posx_true   ,"posx_true/D"  );
-  valor_minidst->Branch("posy_true" , &valor_minidst_posy_true   ,"posy_true/D"  );
-  valor_minidst->Branch("posz_true" , &valor_minidst_posz_true   ,"posz_true/D"  );
+  valor_minidst->Branch("beam"        , &valor_minidst_beam        ,"beam/I"        );
+  valor_minidst->Branch("sample"      , &valor_minidst_sample      ,"sample/I"      );
+  valor_minidst->Branch("reac_mode"   , &valor_minidst_reac_mode   ,"reac_mode/I"   );
+  valor_minidst->Branch("reac_type"   , &valor_minidst_reac_type   ,"reac_type/I"   );
+  valor_minidst->Branch("init_pdg"    , &valor_minidst_init_nupdg  ,"init_pdg/I"    );
+  valor_minidst->Branch("final_pdg"   , &valor_minidst_final_nupdg ,"final_pdg/I"   );
+  valor_minidst->Branch("baseline"    , &valor_minidst_baseline    ,"baseline/D"    );
+  valor_minidst->Branch("target"      , &valor_minidst_target      ,"target/I"      );
+  valor_minidst->Branch("enu_true"    , &valor_minidst_enu_true    ,"enu_true/D"    );
+  valor_minidst->Branch("Q2_true"     , &valor_minidst_Q2_true     ,"q2_true/D"     );
+  valor_minidst->Branch("enu_reco"    , &valor_minidst_enu_reco    ,"enu_reco/D"    );
+  valor_minidst->Branch("y_reco"      , &valor_minidst_y_reco      ,"y_reco/D"      );
+  valor_minidst->Branch("wght_pot"    , &valor_minidst_wght_pot    ,"wght_pot/D"    );
+  valor_minidst->Branch("wght"        , &valor_minidst_wght        ,"wght/D"        );
+  valor_minidst->Branch("posx_true"   , &valor_minidst_posx_true   ,"posx_true/D"   );
+  valor_minidst->Branch("posy_true"   , &valor_minidst_posy_true   ,"posy_true/D"   );
+  valor_minidst->Branch("posz_true"   , &valor_minidst_posz_true   ,"posz_true/D"   );
+  valor_minidst->Branch("offaxis_true", &valor_minidst_offaxis_true,"offaxis_true/D");
 
 
   // open the ROOT file and get the TTree & its header
@@ -445,6 +452,8 @@ int main(int argc, char ** argv)
       double posy_true = -999.0;
       double posz_true = -999.0;
 
+      double offaxis_true = -1.0;
+
       /*
          analysis_tree->GetEntry(iev);
 
@@ -468,6 +477,14 @@ int main(int argc, char ** argv)
       posx_true    = truth.neutrino.position.x();
       posy_true    = truth.neutrino.position.y();
       posz_true    = truth.neutrino.position.z();
+
+      //Calculate the off angle position
+      double beamx = 45.7; //read this from somewhere sensible!
+      double beamy = 0.0;
+      double baseline = 11000.0;
+      double offaxis_true_cm = sqrt( (posx_true-beamx)*(posx_true-beamx) + (posy_true-beamy)*(posy_true-beamy));
+      offaxis_true = atan(offaxis_true_cm/baseline) * (180/M_PI);
+
 
       // Particle counting
       for(unsigned int p = 0; p < fsps.size(); ++p){
@@ -635,6 +652,7 @@ int main(int argc, char ** argv)
       valor_minidst_posx_true  = posx_true;
       valor_minidst_posy_true  = posy_true;
       valor_minidst_posz_true  = posz_true;
+      valor_minidst_offaxis_true = offaxis_true;
     }// !no-truth
 
     valor_minidst_sample     = sample;
@@ -655,14 +673,16 @@ int main(int argc, char ** argv)
       << "\n POT weight    = " << valor_minidst_wght_pot
       << "\n Vtx x (true)  = " << valor_minidst_posx_true << " cm"
       << "\n Vtx y (true)  = " << valor_minidst_posy_true << " cm"
-      << "\n Vtx z (true)  = " << valor_minidst_posz_true << " cm";
+      << "\n Vtx z (true)  = " << valor_minidst_posz_true << " cm"
+      << "\n Off-axis distance (true)  = " << valor_minidst_offaxis_true << " deg";
 
 
     enu_reco = reco.reco_energy;
     reco_weight = reco.weight;
 
     VLOG("valor_sbn",pDEBUG) << "Read event: "
-      << "Ereco         = "<< enu_reco  << " GeV; ";
+      << "Ereco         = "<< enu_reco  << " GeV; "
+			     << "Off-axis         = "<< valor_minidst_offaxis_true << " deg; ";
     if(!opt_disable_checks) {
 
       //
@@ -673,6 +693,13 @@ int main(int argc, char ** argv)
         continue;
       }
     }
+
+
+    //Check if the event falls into the correct off axis angle range
+    if (valor_minidst_offaxis_true<off_axis_bin_min || valor_minidst_offaxis_true>off_axis_bin_max){
+      VLOG("valor_sbn", pINFO) << "- Rejecting event [Off-axis angle (true) out of bounds]: "<<valor_minidst_offaxis_true << " deg";
+        continue;
+      }
 
     VLOG("valor_sbn", pINFO) << "+ Accepting event";
 

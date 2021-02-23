@@ -11,3 +11,5 @@ write-universes,no-write-universes |   boolean_list |  optional   |  no-write-un
 apply-weights, dont-apply-weights  |   boolean_list |  optional   |  apply-weights
 no-truth                           |   boolean      |  optional   |  false
 max-n-events                       |   integer      |  optional   |  -1
+off-axis-min                       |   double       |  optional   |  0.0
+off-axis-max                       |   double       |  optional   |  90.0
