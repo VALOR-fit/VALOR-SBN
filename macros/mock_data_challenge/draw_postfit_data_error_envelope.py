@@ -309,7 +309,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       env_graph_prefit.SetFillColor(prefit_color)
       env_graph_prefit.SetLineWidth(0)
       env_graph_prefit.SetLineStyle(0)
-      env_graph_prefit.SetMarkerStyle(ROOT.kFullSquare)
+      env_graph_prefit.SetMarkerStyle(0)
       env_graph_prefit.SetMarkerColor(prefit_color)
       env_graph_prefit.Draw("same2")
 
@@ -317,6 +317,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       prefit_width.SetLineStyle(1)
       prefit_width.SetLineColor(prefit_line)
       prefit_width.Draw("same")
+      prefit_width.SetMarkerStyle(0)
 
       legend_prefit = ROOT.TH1D(prefit_width)
       legend_prefit.SetLineStyle(5)
@@ -356,7 +357,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       env_graph_postfit.SetFillColor(postfit_color)
       env_graph_postfit.SetLineWidth(0)
       env_graph_postfit.SetLineStyle(0)
-      env_graph_postfit.SetMarkerStyle(ROOT.kFullSquare)
+      env_graph_postfit.SetMarkerStyle(0)
       env_graph_postfit.SetMarkerColor(postfit_color)
       env_graph_postfit.Draw("same2")
 
@@ -364,6 +365,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_width.SetLineStyle(7)
       postfit_width.SetLineColor(postfit_line)
       postfit_width.Draw("same")
+      postfit_width.SetMarkerStyle(0)
 
       if plot_prefit:
         prefit_width.SetLineStyle(5)
