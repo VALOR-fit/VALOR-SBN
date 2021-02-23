@@ -283,7 +283,7 @@ while [ $# -gt 0 ]; do
       fi
       ;;
 
-    --prior-file )
+    --osc-prior-file )
       if [ $# -gt 1 ]; then
         PRIORFILE=$2
         shift
@@ -579,7 +579,7 @@ do
     --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
     --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct \
     $SHOULDSTORE --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE \
-    --pot-override $POTOVERIDE --prior-file $PRIORFILE ";
+    --pot-override $POTOVERIDE --osc-prior-file $PRIORFILE ";
 
   if [ $DISCOVERY == 0 ]; then 
     arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant  --fix-at-$PARAM1 $VAL1 --fix-$PARAM1 ";
