@@ -35,7 +35,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -73,7 +73,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -111,7 +111,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -149,7 +149,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -187,7 +187,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -225,7 +225,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -263,7 +263,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -301,7 +301,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -339,7 +339,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -377,7 +377,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -415,7 +415,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -453,7 +453,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -491,7 +491,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -529,7 +529,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -567,7 +567,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -605,7 +605,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -643,7 +643,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -681,7 +681,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -719,7 +719,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>                 
+    <range>                  -5,5  </range>                 
 
   </param>
   <!-- ==================================================================================== -->
@@ -757,7 +757,7 @@
     
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
-    <range>                  -8,8  </range>
+    <range>                  -5,5  </range>
 
   </param>
   <!-- ==================================================================================== -->

@@ -30,8 +30,8 @@
     <limits>  0.0, inf  </limits>
     
     <range_mode>  value  </range_mode>
-    <!--range>  0.0, 1.0  </range-->
-    <range>  0.0, 1000  </range>
+    <range>  0.0, 1.0  </range>
+    <!--range>  0.0, 1000  </range-->
     
     <step_mode>  value  </step_mode>
     <step>  0.01  </step>
@@ -49,8 +49,8 @@
     <limits>  0.0, inf  </limits>
     
     <range_mode>  value  </range_mode>
-    <!--range>  0.0, 1.0  </range-->
-    <range>  0.0, 1000  </range>
+    <range>  0.0, 1.0  </range>
+    <!--range>  0.0, 1000  </range-->
     
     <step_mode>  value  </step_mode>
     <step>  0.01  </step>
@@ -68,8 +68,8 @@
     <limits>  0.0, inf  </limits>
     
     <range_mode>  value  </range_mode>
-    <range>  0.0, 1000  </range>
-    <!--range>  0.0, 1.0  </range-->
+    <!--range>  0.0, 1000  </range-->
+    <range>  0.0, 1.0  </range>
     
     <step_mode>  value  </step_mode>
     <step>  0.01  </step>
@@ -87,8 +87,8 @@
     <limits>  0, inf  </limits>
     
     <range_mode>  value  </range_mode>
-    <range>  0.0, 100  </range>
-    <!--range>  0.001, 100.0  </range-->
+    <!--range>  0.0, 100  </range-->
+    <range>  0.001, 100.0  </range>
     
     <step_mode>  value  </step_mode>
     <step>  0.01  </step>
