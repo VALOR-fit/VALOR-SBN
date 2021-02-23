@@ -1,0 +1,10 @@
+# argument                       |   type         |  require?   |   default
+# ....................................................................................................
+input                            |   string       |  mandatory  |   -
+output                           |   string       |  optional   |   energy_scale_validation_check.root
+mesg-thresholds                  |   string       |  optional   |   verbosity.xml
+config                           |   string       |  mandatory  |   -
+sample                           |   string       |  optional   |   numuCCincl
+detector                         |   string       |  optional   |   sbn_nd
+scale                            |   double       |  optional   |   0.01
+other-sample                     |   boolean      |  optional   |   false
