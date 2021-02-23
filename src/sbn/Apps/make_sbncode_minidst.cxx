@@ -481,9 +481,9 @@ int main(int argc, char ** argv)
       //Calculate the off angle position
       double beamx = 45.7; //read this from somewhere sensible!
       double beamy = 0.0;
-      double baseline = 11000.0;
+      double exp_baseline = 11000.0;
       double offaxis_true_cm = sqrt( (posx_true-beamx)*(posx_true-beamx) + (posy_true-beamy)*(posy_true-beamy));
-      offaxis_true = atan(offaxis_true_cm/baseline) * (180/M_PI);
+      offaxis_true = atan(offaxis_true_cm/exp_baseline) * (180/M_PI);
 
 
       // Particle counting
