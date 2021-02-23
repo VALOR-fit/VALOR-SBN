@@ -62,8 +62,8 @@ These names of analysis variants are used for labelling the main analysis config
 | **sbn_numu_disapp_2019b2_02a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 | **sbn_numu_disapp_2019b2_02a2_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 | **sbn_numu_disapp_prism_1_2019b3_02c2_1** | Eff. 3+1 numu disap | Event samples: 8 SBND numu CC-like samples at different angular bins (0 to 1.6 deg with 0.2 deg increments) + 1 uB numu CC-like sample + 1 ICARUS numu CC-like sample | Enu_reco | 2019b3 | 02c2 | First iteration of SBN Prism analysis in devel |
-| **sbn_nue_app_2019b1_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b1 | 01a1 | |
-| **sbn_nue_app_2019b2_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
+| **sbn_nue_app_2019b2_01a1_1** | Eff. 3+1 nue | nueCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
+| **sbn_nue_app_2020a1_03c1_1** | Eff. 3+1 nue | nueCC-like (x3 det) | Enu_reco | 2020a1 | 03c1 | |
 
 MC productions (flux, interaction, detector simulations), the corresponding uncertainty assignments and internal VALOR representations of the uncertainties, and the reconstruction / data reduction event selection codes are important elements used for characterising each fit. Information about the elements used by each VALOR analysis is outlined below.
 
@@ -80,8 +80,8 @@ A summary of all SBN MC productions used is given in the table below.
 |----------|---------|----------------------|----------|-----------|
 | 2019a1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `proposal'; last respin of 2019a still in use while establishing this archive on 04/2020 |
 | 2019b1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `modern'; last respin of 2019b still in use while establishing this archive on 04/2020 |
-| 2019b2   | configF | v2.12.10; Default+MEC; proposal | v2.2 / gputnam-workshop | `modern'; batch of files made available after the 09/2019 SBN analysis workshop |
-| 2020a1   | configF | v3.0.6; G18_10a_02_11a; proposal+MEC | gputnam-workshop0320-gen | `modern'; batch of files made available after the 03/2020 SBN analysis workshop |
+| 2019b2   | configF | v2.12.10; Default+MEC; proposal | v2.2 / gputnam-workshop (numu); feature/DomBarkerNueSelection (nue)  | `modern'; batch of files made available after the 09/2019 SBN analysis workshop |
+| 2020a1   | configF | v3.0.6; G18_10a_02_11a; proposal+MEC | gputnam-workshop0320-gen (numu); feature/TomHamNue (nue) | `modern'; batch of files made available after the 03/2020 SBN analysis workshop |
 
 - [1] https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample: 
 SBNCode v2.2, 'modern' and 'proposal'
