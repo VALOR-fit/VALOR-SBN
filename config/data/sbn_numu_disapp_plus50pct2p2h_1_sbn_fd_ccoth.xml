@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="SBN-FD-MDC" version="plus50pct2p2h_nieves" detector="FD">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mock data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+
+  <using_dst_format> 
+     true 
+  </using_dst_format> 
+
+  <dst> 
+    <bnb_fhc>
+      <filename> sbn_numu_disappearance/mock_data/plus50pct2p2h_nieves/valor_sbncode_fhc_numuccoth_disappearance_fd_minidst_1.root </filename> 
+       <objname> valor_sbn_minidst </objname> 
+      <objtype>  TTree    </objtype> 
+    </bnb_fhc>
+  </dst>
+  
+</data>
+
+</analysis_inputs>
+
+
