@@ -283,7 +283,7 @@ while [ $# -gt 0 ]; do
       fi
       ;;
 
-    --osc-prior-file )
+    --prior-file )
       if [ $# -gt 1 ]; then
         PRIORFILE=$2
         shift
