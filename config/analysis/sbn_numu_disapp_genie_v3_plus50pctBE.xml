@@ -15,7 +15,6 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
     </element>
-    
     <element name="sbn_fd_fhc_numuCCIncl">
       <detector>     sbn_icarus                                           </detector>
       <beam>         bnb_fhc                                              </beam>
@@ -27,7 +26,6 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
     </element>
-    
     <element name="sbn_nd_fhc_numuCC0piNtrk">
       <detector>     sbn_nd                                               </detector>
       <beam>         bnb_fhc                                              </beam>
@@ -39,7 +37,6 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
     </element>
-    
     <element name="sbn_fd_fhc_numuCC0piNtrk">
       <detector>     sbn_icarus                                           </detector>
       <beam>         bnb_fhc                                              </beam>
@@ -51,7 +48,6 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
     </element>
-    
     <element name="sbn_nd_fhc_numuCCOther">
       <detector>     sbn_nd                                               </detector>
       <beam>         bnb_fhc                                              </beam>
@@ -63,7 +59,6 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
     </element>
-    
     <element name="sbn_fd_fhc_numuCCOther">
       <detector>     sbn_icarus                                           </detector>
       <beam>         bnb_fhc                                              </beam>
@@ -75,7 +70,6 @@
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu.xml                </binning>
     </element>
-    
   </element_list>
     
   <parameter_definitions>
