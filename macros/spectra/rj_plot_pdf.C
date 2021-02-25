@@ -19,8 +19,8 @@ void rj_plot_pdf(
   TString   option = "",
   const char * out_tag = "valor",
   const char * image_save_format = "",
-  int canv_size_x = 700,
-  int canv_size_y = 700,
+  int canv_size_x = 900,
+  int canv_size_y = 900,
   double enu_reco_max = 3.
 )
 {
