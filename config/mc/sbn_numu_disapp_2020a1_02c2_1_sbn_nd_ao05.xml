@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <?xml version="1.0"?>
 
 <analysis_inputs analysis="SBN-NDFIT" version="2020a1_02c2" detector="ND">
@@ -44,7 +45,7 @@ Input MC templates
   <dst> 
     <bnb_fhc>
        <filename> sbn_numu_disappearance/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_1p0-1p2deg.root </filename>
-       <objname> valor_sbncode_mini_dst </objname> 
+       <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
   </dst>
