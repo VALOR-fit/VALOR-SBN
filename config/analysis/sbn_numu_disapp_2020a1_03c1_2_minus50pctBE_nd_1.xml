@@ -125,7 +125,7 @@
       <format> SBNEnergyScale.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/e_scale_1pct.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/e_scale_1pct.root </filename>
         <objname>    cov                                                        </objname>    
         <objtype>    TMatrixD                                                   </objtype>
       </covariance_matrix> 
