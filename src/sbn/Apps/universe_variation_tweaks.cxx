@@ -264,7 +264,8 @@ int main(int argc, char ** argv)
   string arg_detector     = arg.GetString("detector");
   string arg_kine_var     = arg.GetString("kine-var");
   string tree_name        = arg.GetString("tree-name");
-  
+  string param_name       = arg.GetString("param-name");
+
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
   LOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
   
@@ -372,6 +373,22 @@ int main(int argc, char ** argv)
     for(const std::string &s : file_systematics){
       LOG("universe_variation_tweaks", pINFO) << s;
     }
+  }
+  else if (params_to_tweak == "choose") {
+    file_systematics.push_back(param_name);
+    if (std::find(modern_xsec_short.begin(), modern_xsec_short.end(), param_name) != modern_xsec_short.end() ||
+        std::find(proposal_xsec_short.begin(), proposal_xsec_short.end(), param_name) != proposal_xsec_short.end() ||
+        std::find(OG_proposal_xsec_short.begin(), OG_proposal_xsec_short.end(), param_name) != OG_proposal_xsec_short.end()){
+        systematics.push_back("genie_" + param_name + "_Genie");
+    }
+    else if (std::find(flux_uncorr_short.begin(), flux_uncorr_short.end(), param_name) != flux_uncorr_short.end()){
+        systematics.push_back(param_name + "_FluxUnisim");
+    }
+    else {
+        LOG("universe_variation_tweaks",pFATAL) << "Unknown input systematic: "<< param_name; 
+        util::Die(-1);
+    }
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking single systematic " << param_name;
   }
   else {
     LOG("universe_variation_tweaks",pFATAL) << "Unknown systematics list: "<< params_to_tweak;
