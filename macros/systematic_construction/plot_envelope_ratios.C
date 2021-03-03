@@ -9,13 +9,22 @@
 // R.J.
 //
 
-{
+void plot_envelope_ratios(
+  const char *valor_tweak_files,
+  const char *universe_tweak_files,
+  const char *file_name = "output_file_name"
+){
 
-  TFile * f_val = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/nd_tweak_all.root","read");
-  TFile * f_uni = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/tweaks_all_nueCCincl.root","read");
+ // TFile * f_val = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/envelope_test/nd_tweak_flux_horncurrent.root","read");
+ // TFile * f_uni = new TFile("/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/envelope_test/tweaks_universes_horncurrent.root","read");
   
-  std::string file_name = "all";
-  std::string location = "/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/";
+ // std::string file_name = "horncurrent";
+
+  TFile *f_val = new TFile(valor_tweak_files,"read");
+  TFile *f_uni = new TFile(universe_tweak_files,"read");
+
+  //std::string file_name = file_name;
+  std::string location = "/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/envelope_test/";
 
   // 
   // Global style settings
@@ -110,6 +119,9 @@
   c->SetRightMargin(0.044);
   c->Draw();
 
+  TLatex *latex = new TLatex();
+  latex->SetTextSize(0.04);
+
   // Nominal ratio
   h_nom_ratio->SetStats(0);
   h_nom_ratio->GetYaxis()->SetTitleOffset(1.3);
@@ -125,6 +137,8 @@
   h_nom_ratio->GetYaxis()->SetMaxDigits(3);
   h_nom_ratio-> Draw();
 
+  latex->DrawLatex(0.3, 1.8, file_name);
+  
   c->SaveAs((location+"universe_valor_nominal_ratios_"+file_name+".root").c_str());
   c->Clear();
 
@@ -156,6 +170,8 @@
   l->AddEntry(h_m1_ratio_uni, "Universes -1#sigma/nominal", "L");
   l->Draw();
 
+  latex->DrawLatex(0.3, 1.4, file_name);
+
   c->SaveAs((location+"universe_valor_single_ratios_"+file_name+".root").c_str());
   c->Clear();
   l->Clear();
@@ -179,6 +195,8 @@
   l->AddEntry(h_p1_ratio, "(VALOR/Universes)_{+1#sigma/nominal}", "L");
   l->AddEntry(h_m1_ratio, "(VALOR/Universes)_{-1#sigma/nominal}", "L");
   l->Draw();
+
+  latex->DrawLatex(0.3, 1.13, file_name);
 
   c->SaveAs((location+"universe_valor_double_ratios_"+file_name+".root").c_str());
   c->Clear();
