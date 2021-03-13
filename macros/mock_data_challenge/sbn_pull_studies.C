@@ -17,16 +17,16 @@
 
 std::vector<std::string> params_tex =
 {
-  "QE M_{A}",
-  "CC Res_{A}",
-  "NonRes R^{#nu n CC 1 #pi}",
-  "NonRes R^{#nu p NC 2 #pi}",
-  "DIS Bth",
-  "IntraNuke PI Abs",
-  "IntraNuke N Inel",
-  "NC Res_{V}",
-  "Skin Effect",
-  "Nucleon QE #sigma",
+  "f_{M_{A}^{CCQE}}",
+  "f_{M_{A}^{CCRes}}",
+  "f_{nR_{#nu n}^{CC1#pi}}",
+  "f_{nR_{#nu p}^{NC2#pi}}",
+  "f_{B_{HT}}",
+  "f_{R^{Abs}_{#pi}}",
+  "f_{R^{Inel}_{N}}",
+  "f_{M_{V}^{NCRes}}",
+  "f_{SkinEffect}",
+  "f_{#sigma_{QE}^{N}}",
 };
 std::vector<std::string> params =
 {
@@ -77,13 +77,15 @@ std::string FixName(const std::string &name);
 void FormatComparisonHists(TH1D* h_inc, TH1D *h_exc, const std::string &xlabel = "");
 void SetupStats(TPaveStats *st_inc, TPaveStats *st_exc);
 
+using namespace valor;
+using namespace valor::conv;
+
 void sbn_pull_studies(const char * inc_filename, 
                       const char * exc_filename, 
                       std::string  inputs = "", // Input covariance from the fits
                       const int ntoys = 1, // Number of toys to plot from the output, default only 1, if [-1] run number in file
                       std::string  output_tag = "") 
 {
-  using namespace valor;
 
   // If we have not passed all initial systematic files, don't plot any
   if(inputs == ""){
@@ -167,7 +169,7 @@ void sbn_pull_studies(const char * inc_filename,
 
   // Setup things which don't need to be defined in every toymc
   // Pull plot legends
-  TLegend *l_bestfit = new TLegend(0.18,0.92,0.85,0.9999);
+  TLegend *l_bestfit = new TLegend(0.063,0.92,0.98,0.999);
   l_bestfit->SetNColumns(3);
   l_bestfit->SetBorderSize(0);
   l_bestfit->SetFillStyle(0);
@@ -186,24 +188,24 @@ void sbn_pull_studies(const char * inc_filename,
   f_outputs->cd();
 
   // Histograms to hold the comparisons between true and postfit values
-  TH1D *h_true_inc = new TH1D("h_true_inc","",150,-3,3);
-  TH1D *h_true_exc = new TH1D("h_true_exc","",150,-3,3);
+  TH1D *h_true_inc = new TH1D("h_true_inc","",100,-3,3);
+  TH1D *h_true_exc = new TH1D("h_true_exc","",100,-3,3);
 
   // Histograms to overlay the fit statistics
-  TH1D *h_stat_inc    = new TH1D("h_stat_inc","",80,0,30);
-  TH1D *h_stat_exc    = new TH1D("h_stat_exc","",80,0,30);
-  TH1D *h_perndof_inc = new TH1D("h_perndof_inc","",80,0,3);
-  TH1D *h_perndof_exc = new TH1D("h_perndof_exc","",80,0,3);
+  TH1D *h_stat_inc    = new TH1D("h_stat_inc","",60,0,30);
+  TH1D *h_stat_exc    = new TH1D("h_stat_exc","",60,0,30);
+  TH1D *h_perndof_inc = new TH1D("h_perndof_inc","",60,0,3);
+  TH1D *h_perndof_exc = new TH1D("h_perndof_exc","",60,0,3);
 
   std::vector<TH1D*> h_comparisons_inc;
   std::vector<TH1D*> h_comparisons_exc;
   std::vector<TH1D*> h_chisq_inc;
   std::vector<TH1D*> h_chisq_exc;
   for(unsigned int h = 0; h < params_tex.size(); ++h){
-    h_comparisons_inc.push_back(new TH1D(("h_true_inc_"+params.at(h)).c_str(),"",80,-3,3));
-    h_comparisons_exc.push_back(new TH1D(("h_true_exc_"+params.at(h)).c_str(),"",80,-3,3));
-    h_chisq_inc.push_back(new TH1D(("h_chisq_inc_"+params.at(h)).c_str(),"",80,-3,3));
-    h_chisq_exc.push_back(new TH1D(("h_chisq_exc_"+params.at(h)).c_str(),"",80,-3,3));
+    h_comparisons_inc.push_back(new TH1D(("h_true_inc_"+params.at(h)).c_str(),"",60,-3,3));
+    h_comparisons_exc.push_back(new TH1D(("h_true_exc_"+params.at(h)).c_str(),"",60,-3,3));
+    h_chisq_inc.push_back(new TH1D(("h_chisq_inc_"+params.at(h)).c_str(),"",60,-3,3));
+    h_chisq_exc.push_back(new TH1D(("h_chisq_exc_"+params.at(h)).c_str(),"",60,-3,3));
   }
 
 
@@ -377,36 +379,36 @@ void sbn_pull_studies(const char * inc_filename,
     TCanvas *c = new TCanvas(pull_canv_name.c_str(),"",0,20,1350,1080);
 
     // New canvas features 
-    c->SetLeftMargin   (0.069); 
-    c->SetRightMargin  (0.02);
-    c->SetBottomMargin (0.18);
+    c->SetLeftMargin   (0.07); 
+    c->SetRightMargin  (0.008);
+    c->SetBottomMargin (0.187);
     c->SetTopMargin    (0.08);
     gStyle->SetEndErrorSize(4);
 
-    h_inclusive->GetYaxis()->SetRangeUser(miny,maxy);
+    h_inclusive->GetYaxis()->SetRangeUser(-5,5);
     h_inclusive->Draw("E1 X0");
     h_exclusive->Draw("same E1 X0");
     h_input->Draw("same p");
 
     h_inclusive->GetXaxis()->LabelsOption("v");
-    h_inclusive->GetXaxis()->SetLabelSize(0.035);
+    h_inclusive->GetXaxis()->SetLabelSize(0.08);
     h_inclusive->GetXaxis()->SetLabelFont(132);
-    h_inclusive->GetYaxis()->SetLabelSize(0.035);
+    h_inclusive->GetYaxis()->SetLabelSize(0.045);
     h_inclusive->GetYaxis()->SetLabelFont(132);
-    h_inclusive->GetYaxis()->SetTitleSize(0.035);
+    h_inclusive->GetYaxis()->SetTitleSize(0.055);
     h_inclusive->GetYaxis()->SetTitleFont(132);
-    h_inclusive->GetYaxis()->SetTitleOffset(1);
+    h_inclusive->GetYaxis()->SetTitleOffset(0.6);
     h_inclusive->GetYaxis()->SetMaxDigits(3);
     h_inclusive->GetXaxis()->SetTitle("");
     h_inclusive->GetYaxis()->SetTitle("Parameter pull [#sigma]");
     h_inclusive->SetLineColor(inc_color);
-    h_inclusive->SetLineWidth(1);
+    h_inclusive->SetLineWidth(2);
     h_inclusive->SetMarkerStyle(inc_marker);
     h_inclusive->SetMarkerColor(inc_color);
     h_inclusive->SetMarkerSize(1.5);
 
     h_exclusive->SetLineColor(exc_color);
-    h_exclusive->SetLineWidth(1);
+    h_exclusive->SetLineWidth(2);
     h_exclusive->SetMarkerStyle(exc_marker);
     h_exclusive->SetMarkerColor(exc_color);
     h_exclusive->SetMarkerSize(1.5);
@@ -450,18 +452,19 @@ void sbn_pull_studies(const char * inc_filename,
   // Pull comparison canvas and legend
   TCanvas *c_comp = new TCanvas("c_comp","",20,20,880,900);
   c_comp->SetTopMargin(0.06);
-  c_comp->SetBottomMargin(0.1);
-  c_comp->SetLeftMargin(0.1);
-  c_comp->SetRightMargin(0.02);
+  c_comp->SetBottomMargin(0.12);
+  c_comp->SetLeftMargin(0.14);
+  c_comp->SetRightMargin(0.025);
     
   FormatComparisonHists(h_true_inc,h_true_exc);
   gStyle->SetOptStat();
 
-  TLegend *l_comp = new TLegend(0.26,0.95,0.87,0.999);
+  TLegend *l_comp = new TLegend(0.27,0.94,0.99,0.98);
   l_comp->SetNColumns(2);
   l_comp->SetBorderSize(0);
   l_comp->SetFillStyle(0);
   l_comp->SetTextFont(132);
+  l_comp->SetTextSize(0.05);
 
   double max_comp_y = std::max(h_true_inc->GetMaximum(),h_true_exc->GetMaximum());
   h_true_inc->GetYaxis()->SetRangeUser(0.,max_comp_y*1.1);
@@ -486,7 +489,7 @@ void sbn_pull_studies(const char * inc_filename,
 
   TLatex latex;
   latex.SetTextAlign(11);
-  latex.SetTextSize(0.04);
+  latex.SetTextSize(0.06);
   latex.SetTextColor(611);
   latex.DrawLatex(-2.56,max_comp_y,"All parameters");
 
@@ -521,7 +524,7 @@ void sbn_pull_studies(const char * inc_filename,
 
     TLatex latex1;
     latex1.SetTextAlign(11);
-    latex1.SetTextSize(0.04);
+    latex1.SetTextSize(0.06);
     latex1.SetTextColor(pal.at(p));
     latex1.DrawLatex(-2.56,max_comp_y,params_tex.at(p).c_str());
 
@@ -655,16 +658,16 @@ std::string FixName(const std::string &name){
 }
 
 void FormatComparisonHists(TH1D* h_inc, TH1D *h_exc, const std::string &xlabel = ""){
-  h_inc->GetXaxis()->SetLabelSize(0.035);
+  h_inc->GetXaxis()->SetLabelSize(0.055);
   h_inc->GetXaxis()->SetLabelFont(132);
-  h_inc->GetXaxis()->SetTitleSize(0.035);
+  h_inc->GetXaxis()->SetTitleSize(0.055);
   h_inc->GetXaxis()->SetTitleFont(132);
-  h_inc->GetXaxis()->SetTitleOffset(1.2);
-  h_inc->GetYaxis()->SetLabelSize(0.035);
+  h_inc->GetXaxis()->SetTitleOffset(1);
+  h_inc->GetYaxis()->SetLabelSize(0.055);
   h_inc->GetYaxis()->SetLabelFont(132);
-  h_inc->GetYaxis()->SetTitleSize(0.035);
+  h_inc->GetYaxis()->SetTitleSize(0.055);
   h_inc->GetYaxis()->SetTitleFont(132);
-  h_inc->GetYaxis()->SetTitleOffset(1.4);
+  h_inc->GetYaxis()->SetTitleOffset(1.3);
   h_inc->GetYaxis()->SetMaxDigits(3);
   if(xlabel == "")
     h_inc->GetXaxis()->SetTitle("Pull_{Bestfit} - Pull_{True}, [#sigma]");
@@ -675,22 +678,22 @@ void FormatComparisonHists(TH1D* h_inc, TH1D *h_exc, const std::string &xlabel =
   h_exc->SetLineColor(exc_color);
   h_inc->SetLineStyle(inc_line_style);
   h_exc->SetLineStyle(exc_line_style);
-  h_inc->SetLineWidth(1);
-  h_exc->SetLineWidth(1);
+  h_inc->SetLineWidth(2);
+  h_exc->SetLineWidth(2);
 }
 void SetupStats(TPaveStats *st_inc, TPaveStats *st_exc){
-  st_inc->SetX1NDC(0.72);
-  st_inc->SetX2NDC(0.92);
-  st_inc->SetY1NDC(0.74);
-  st_inc->SetY2NDC(0.92);
-  st_exc->SetX1NDC(0.72);
-  st_exc->SetX2NDC(0.92);
-  st_exc->SetY1NDC(0.54);
-  st_exc->SetY2NDC(0.72);
+  st_inc->SetX1NDC(0.68);
+  st_inc->SetX2NDC(0.95);
+  st_inc->SetY1NDC(0.72);
+  st_inc->SetY2NDC(0.90);
+  st_exc->SetX1NDC(0.68);
+  st_exc->SetX2NDC(0.95);
+  st_exc->SetY1NDC(0.50);
+  st_exc->SetY2NDC(0.68);
   st_inc->SetTextFont(132);
   st_exc->SetTextFont(132);
-  st_inc->SetTextSize(0.026);
-  st_exc->SetTextSize(0.026);
+  st_inc->SetTextSize(0.036);
+  st_exc->SetTextSize(0.036);
   st_inc->SetTextColor(inc_color);
   st_exc->SetTextColor(exc_color);
   st_inc->SetLineColor(0);
