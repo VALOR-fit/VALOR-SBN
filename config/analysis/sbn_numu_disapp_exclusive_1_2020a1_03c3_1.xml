@@ -94,6 +94,7 @@
     <filename desc="icarus_det_signal_parameters">     params/detector_fhc_icarus_numucc_sig_2020a1.xml  </filename>
     <filename desc="icarus_det_background_parameters"> params/detector_fhc_icarus_numucc_bkg_2020a1.xml  </filename>
     <filename desc="sbn_energy_scale_parameter">       params/sbn_detector_energy_scale.xml        </filename>
+    <filename desc="exclusive_response_parameters">    params/sbn_exclusive_spline_parameters.xml    </filename>
     <filename desc="icarus_bias_ereco_parameters">     params/bias_fd_inc_ereco_fine.xml           </filename>
   </parameter_definitions>
 
@@ -207,17 +208,41 @@
     
     </group>
     
+    <group name="migration">
+
+      <format> SBNExclusiveResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/exclusive_migration_covariance.root </filename>
+        <objname>    cov                                                                          </objname>    
+        <objtype>    TMatrixD                                                                     </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/exclusive_migration_covariance.root </filename>
+        <objname>    untuned                                                                      </objname>    
+        <objtype>    TMatrixD                                                                     </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/exclusive_migration_covariance.root </filename>
+        <objname>    nominal                                                                      </objname>    
+      </initial_values> 
+
+    </group>
+    
     <group name="energy">
 
       <format> SBNBiasFDIncNumuFine.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c3/fineBiasCovariance.root    </filename>
-        <objname>    frac_bias                                                               </objname>    
-        <objtype>    TMatrixD                                                                </objtype>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/excQEMockDataBiasCovariance.root </filename>
+        <objname>    frac_bias                                                                 </objname>    
+        <objtype>    TMatrixD                                                                  </objtype>
       </covariance_matrix>
 
     </group>
+    
   </systematics>
 
 </valor> 
