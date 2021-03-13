@@ -212,9 +212,11 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       h.GetYaxis().SetTitleOffset(title_offset)
       h.GetYaxis().SetMaxDigits(3)
 
-    legend = ROOT.TLegend(0.52,0.68,0.97,0.88);
-    legend.SetFillStyle(0);
-    legend.SetBorderSize(0);
+    legend = ROOT.TLegend(0.425,0.697,0.948,0.870)
+    legend.SetFillStyle(0)
+    legend.SetBorderSize(0)
+    legend.SetMargin(0.2)
+    legend.SetTextSize(0.036)
 
     canv_name = "c_%s" % util.SampleAsString(s)
     canv = ROOT.TCanvas(canv_name,"",900,900)
@@ -285,7 +287,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     else:
       max_y = max(wintegrals)*1.4
 
-    envelope_fn = out_prefix+"_envelope."+img_format
+    envelope_fn       = out_prefix+"_envelope."+img_format
+    png_output        = out_prefix+"_envelope.png"
+    ratio_png_output  = out_prefix+"_envelope_ratio.png"
     f_output = ROOT.TFile(envelope_fn,"RECREATE")
     if not f_output.IsOpen():
       print "Unable to open root file named: ", envelope_fn
@@ -353,6 +357,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hplus_postfit.GetYaxis().SetLabelSize(0.05)
       hplus_postfit.Draw("AXIS same")
 
+      if plot_prefit:
+        prefit_width.SetLineStyle(5)
+        prefit_width.Draw("same")
+
       env_graph_postfit.SetFillStyle(postfit_style)
       env_graph_postfit.SetFillColor(postfit_color)
       env_graph_postfit.SetLineWidth(0)
@@ -366,10 +374,6 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_width.SetLineColor(postfit_line)
       postfit_width.Draw("same")
       postfit_width.SetMarkerStyle(0)
-
-      if plot_prefit:
-        prefit_width.SetLineStyle(5)
-        prefit_width.Draw("same")
 
       legend_postfit = ROOT.TH1D(postfit_width)
       legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
@@ -431,6 +435,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     envelope_images.append(envelope_fn)
     cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
     envelope_captions.append(cap.replace("_"," "))
+    canv.SaveAs(png_output)
 
     # Make sure at least two plots are being overlaid for the ratio
     plot_n   = plot_data+plot_postfit+plot_prefit
@@ -547,6 +552,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       r_canv.RedrawAxis()
       r_canv.Write("cr")
+      r_canv.SaveAs(ratio_png_output)
 
     f_output.Close()
   # End of model loop
