@@ -82,6 +82,8 @@ void bias_covariance(const std::string &dataFiles,
     // Get the current data and MC histograms
     TFile *fData = new TFile(dLines.at(l).c_str(), "READ");
     TFile *fPred = new TFile(pLines.at(l).c_str(), "READ");
+    std::cout << " Read: " << pLines.at(l) << " prediction" << std::endl;
+    std::cout << " Read: " << dLines.at(l) << " data" << std::endl;
 
     TH1D *hData   = static_cast<TH1D*>(fData->Get(("toymc_data_ob_rf_sbn_icarus__BNB_FHC__"+sample).c_str()));
     TH1D *hPred   = static_cast<TH1D*>(fPred->Get(("env_sb_BNB_FHC_"+sample+"_nom").c_str()));
