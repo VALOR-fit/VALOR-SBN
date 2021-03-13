@@ -19,7 +19,7 @@ ROOT.gROOT.SetBatch(1)
 ROOT.gStyle.SetOptStat(0)
 
 #_________________________________________________________________________________
-def make_cov(outputname):
+def make_cov(outputname,val):
     params_to_add = [
         "e_scale",
         ]
@@ -30,7 +30,7 @@ def make_cov(outputname):
         "e_scale"   : 0.0,
     }
     error_vals = {
-        "e_scale"   : 0.01,
+        "e_scale"   : val,
     }
     correlation_vals = {
     }
@@ -94,6 +94,6 @@ def make_cov(outputname):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make a covariance matrix from hardcoded info")
     parser.add_argument("--output", type=str, help="Name of the output file", required=True)
-#    parser.add_argument("--param", type=str, help="Parameter to add to the covariance", required=True)
+    parser.add_argument("--val", type=float, help="Value (frac) to use", required=True)
     args = parser.parse_args()
-    make_cov(args.output)
+    make_cov(args.output, args.val)
