@@ -426,16 +426,22 @@ int main(int argc, char ** argv)
   VLOG("valor_sbn", pNOTICE) << "Filled and written histogram files";
 
   // Now define the spline files
+  TString spl_outfile_recoCCInc_CCOthScaled = arg_output_file.c_str();
+  TString spl_outfile_recoCCInc_CC0PiScaled = arg_output_file.c_str();
   TString spl_outfile_recoCC0Pi_CCOthScaled = arg_output_file.c_str();
   TString spl_outfile_recoCC0Pi_CC0PiScaled = arg_output_file.c_str();
   TString spl_outfile_recoCCOth_CCOthScaled = arg_output_file.c_str();
   TString spl_outfile_recoCCOth_CC0PiScaled = arg_output_file.c_str();
 
+  SplineFileName(spl_outfile_recoCCInc_CCOthScaled, "numuCCincl", beam, detector, "ccother_migration");
+  SplineFileName(spl_outfile_recoCCInc_CC0PiScaled, "numuCCincl", beam, detector, "cc0pi_migration");
   SplineFileName(spl_outfile_recoCC0Pi_CCOthScaled, "numuCC0piNtrk", beam, detector, "ccother_migration");
   SplineFileName(spl_outfile_recoCC0Pi_CC0PiScaled, "numuCC0piNtrk", beam, detector, "cc0pi_migration");
   SplineFileName(spl_outfile_recoCCOth_CCOthScaled, "numuCCoth", beam, detector, "ccother_migration");
   SplineFileName(spl_outfile_recoCCOth_CC0PiScaled, "numuCCoth", beam, detector, "cc0pi_migration");
 
+  TFile splout_recoCCInc_CCOthScaled(spl_outfile_recoCCInc_CCOthScaled, "RECREATE");
+  TFile splout_recoCCInc_CC0PiScaled(spl_outfile_recoCCInc_CC0PiScaled, "RECREATE");
   TFile splout_recoCC0Pi_CCOthScaled(spl_outfile_recoCC0Pi_CCOthScaled, "RECREATE");
   TFile splout_recoCC0Pi_CC0PiScaled(spl_outfile_recoCC0Pi_CC0PiScaled, "RECREATE");
   TFile splout_recoCCOth_CCOthScaled(spl_outfile_recoCCOth_CCOthScaled, "RECREATE");
@@ -445,16 +451,22 @@ int main(int argc, char ** argv)
   for(const ReacMode_t &mode : reac_modes){
 
     // TObjArray for the current parameter and mode
+    TString objname_recoCCInc_CCOth = BuildObjName(mode,"ccother_migration");
+    TString objname_recoCCInc_CC0Pi = BuildObjName(mode,"cc0pi_migration");
     TString objname_recoCC0Pi_CCOth = BuildObjName(mode,"ccother_migration");
     TString objname_recoCC0Pi_CC0Pi = BuildObjName(mode,"cc0pi_migration");
     TString objname_recoCCOth_CCOth = BuildObjName(mode,"ccother_migration");
     TString objname_recoCCOth_CC0Pi = BuildObjName(mode,"cc0pi_migration");
 
+    TObjArray *spline_array_recoCCInc_CCOth = new TObjArray();
+    TObjArray *spline_array_recoCCInc_CC0Pi = new TObjArray();
     TObjArray *spline_array_recoCC0Pi_CCOth = new TObjArray();
     TObjArray *spline_array_recoCC0Pi_CC0Pi = new TObjArray();
     TObjArray *spline_array_recoCCOth_CCOth = new TObjArray();
     TObjArray *spline_array_recoCCOth_CC0Pi = new TObjArray();
 
+    spline_array_recoCCInc_CCOth->SetName(objname_recoCCInc_CCOth.Data());
+    spline_array_recoCCInc_CC0Pi->SetName(objname_recoCCInc_CC0Pi.Data());
     spline_array_recoCC0Pi_CCOth->SetName(objname_recoCC0Pi_CCOth.Data());
     spline_array_recoCC0Pi_CC0Pi->SetName(objname_recoCC0Pi_CC0Pi.Data());
     spline_array_recoCCOth_CCOth->SetName(objname_recoCCOth_CCOth.Data());
@@ -467,34 +479,49 @@ int main(int argc, char ** argv)
         std::vector<double> y_recoCC0Pi_CC0Pi;
         std::vector<double> y_recoCCOth_CCOth;
         std::vector<double> y_recoCCOth_CC0Pi;
+        // Inclusive for downstream analyses: These splines are flat
+        std::vector<double> y_recoCCInc_CCOth;
+        std::vector<double> y_recoCCInc_CC0Pi;
 
         for(unsigned int k = 0; k < knots.size(); ++k){
           x.push_back(knots.at(k));
+          y_recoCCInc_CCOth.push_back(1);
+          y_recoCCInc_CC0Pi.push_back(1);
           y_recoCC0Pi_CCOth.push_back(knotHistMap_responseCC0Pi_CCOthScaled.at(k)->GetBinContent(itrue+1,ireco+1));
           y_recoCC0Pi_CC0Pi.push_back(knotHistMap_responseCC0Pi_CC0PiScaled.at(k)->GetBinContent(itrue+1,ireco+1));
           y_recoCCOth_CCOth.push_back(knotHistMap_responseCCOth_CCOthScaled.at(k)->GetBinContent(itrue+1,ireco+1));
           y_recoCCOth_CC0Pi.push_back(knotHistMap_responseCCOth_CC0PiScaled.at(k)->GetBinContent(itrue+1,ireco+1));
         }
+        assert((x.size() == y_recoCCInc_CCOth.size()));
+        assert((x.size() == y_recoCCInc_CC0Pi.size()));
         assert((x.size() == y_recoCC0Pi_CCOth.size()));
         assert((x.size() == y_recoCC0Pi_CC0Pi.size()));
         assert((x.size() == y_recoCCOth_CCOth.size()));
         assert((x.size() == y_recoCCOth_CC0Pi.size()));
         
+        TString name_recoCCInc_CCOth = BuildSplineName("numuCCincl",    beam, mode, "ccother_migration", itrue, ireco);
+        TString name_recoCCInc_CC0Pi = BuildSplineName("numuCCincl",    beam, mode, "cc0pi_migration", itrue, ireco);
         TString name_recoCC0Pi_CCOth = BuildSplineName("numuCC0piNtrk", beam, mode, "ccother_migration", itrue, ireco);
         TString name_recoCC0Pi_CC0Pi = BuildSplineName("numuCC0piNtrk", beam, mode, "cc0pi_migration", itrue, ireco);
         TString name_recoCCOth_CCOth = BuildSplineName("numuCCoth",     beam, mode, "ccother_migration", itrue, ireco);
         TString name_recoCCOth_CC0Pi = BuildSplineName("numuCCoth",     beam, mode, "cc0pi_migration", itrue, ireco);
         
+        TSpline3 *spl_recoCCInc_CCOth = new TSpline3(name_recoCCInc_CCOth.Data(), x.data(), y_recoCCInc_CCOth.data(), x.size());
+        TSpline3 *spl_recoCCInc_CC0Pi = new TSpline3(name_recoCCInc_CC0Pi.Data(), x.data(), y_recoCCInc_CC0Pi.data(), x.size());
         TSpline3 *spl_recoCC0Pi_CCOth = new TSpline3(name_recoCC0Pi_CCOth.Data(), x.data(), y_recoCC0Pi_CCOth.data(), x.size());
         TSpline3 *spl_recoCC0Pi_CC0Pi = new TSpline3(name_recoCC0Pi_CC0Pi.Data(), x.data(), y_recoCC0Pi_CC0Pi.data(), x.size());
         TSpline3 *spl_recoCCOth_CCOth = new TSpline3(name_recoCCOth_CCOth.Data(), x.data(), y_recoCCOth_CCOth.data(), x.size());
         TSpline3 *spl_recoCCOth_CC0Pi = new TSpline3(name_recoCCOth_CC0Pi.Data(), x.data(), y_recoCCOth_CC0Pi.data(), x.size());
         
+        spl_recoCCInc_CCOth->SetName(name_recoCCInc_CCOth.Data());
+        spl_recoCCInc_CC0Pi->SetName(name_recoCCInc_CC0Pi.Data());
         spl_recoCC0Pi_CCOth->SetName(name_recoCC0Pi_CCOth.Data());
         spl_recoCC0Pi_CC0Pi->SetName(name_recoCC0Pi_CC0Pi.Data());
         spl_recoCCOth_CCOth->SetName(name_recoCCOth_CCOth.Data());
         spl_recoCCOth_CC0Pi->SetName(name_recoCCOth_CC0Pi.Data());
         
+        spline_array_recoCCInc_CCOth->Add(spl_recoCCInc_CCOth);
+        spline_array_recoCCInc_CC0Pi->Add(spl_recoCCInc_CC0Pi);
         spline_array_recoCC0Pi_CCOth->Add(spl_recoCC0Pi_CCOth);
         spline_array_recoCC0Pi_CC0Pi->Add(spl_recoCC0Pi_CC0Pi);
         spline_array_recoCCOth_CCOth->Add(spl_recoCCOth_CCOth);
@@ -506,6 +533,12 @@ int main(int argc, char ** argv)
         }
       } // True bin
     } // Reco bin
+    splout_recoCCInc_CCOthScaled.cd();
+    spline_array_recoCCInc_CCOth->Write(objname_recoCCInc_CCOth.Data(),TObject::kSingleKey);
+    
+    splout_recoCCInc_CC0PiScaled.cd();
+    spline_array_recoCCInc_CC0Pi->Write(objname_recoCCInc_CC0Pi.Data(),TObject::kSingleKey);
+    
     splout_recoCC0Pi_CCOthScaled.cd();
     spline_array_recoCC0Pi_CCOth->Write(objname_recoCC0Pi_CCOth.Data(),TObject::kSingleKey);
     
