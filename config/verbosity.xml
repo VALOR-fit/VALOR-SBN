@@ -9,6 +9,7 @@
    -->
 
   <priority msgstream="Messenger">    NOTICE   </priority>
+  <priority msgstream="CmdLnArgList"> NOTICE   </priority>
   <priority msgstream="Rnd">          DEBUG    </priority>
   <priority msgstream="Reg">          NOTICE   </priority>
   <priority msgstream="XML">          NOTICE   </priority>
@@ -32,6 +33,7 @@
   <priority msgstream="GenericSingleSampleFitModel">    NOTICE </priority>
   <priority msgstream="GenericSingleSampleFitData">     NOTICE </priority>
   <priority msgstream="Likelihood">                     NOTICE </priority>
+  <priority msgstream="FitInputs">                      NOTICE </priority>
   <priority msgstream="UtlNumStat">                     NOTICE </priority>
   <priority msgstream="Lateral">                        NOTICE </priority>
 

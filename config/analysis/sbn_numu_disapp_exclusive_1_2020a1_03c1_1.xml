@@ -87,6 +87,7 @@
     <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters.xml         </filename>
     <filename desc="sbn_modern_int_parameters">        params/sbn_modern_interaction_parameters.xml  </filename>
     <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml              </filename>
+    <filename desc="exclusive_response_parameters">    params/sbn_exclusive_spline_parameters.xml    </filename>
   </parameter_definitions>
 
   <systematics name="SBN">
@@ -175,6 +176,28 @@
         <objname>    frac_cov                                                            </objname>    
         <objtype>    TMatrixD                                                            </objtype>
       </covariance_matrix>
+
+    </group>
+    <group name="migration">
+
+      <format> SBNExclusiveResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/exclusive_migration_covariance.root </filename>
+        <objname>    cov                                                                          </objname>    
+        <objtype>    TMatrixD                                                                     </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/exclusive_migration_covariance.root </filename>
+        <objname>    untuned                                                                      </objname>    
+        <objtype>    TMatrixD                                                                     </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/exclusive_migration_covariance.root </filename>
+        <objname>    nominal                                                                      </objname>    
+      </initial_values> 
 
     </group>
     

@@ -5,7 +5,7 @@
     <name>
       <simple>  e_scale          </simple>
       <long>    SBN energy scale </long>
-      <rootex>  f_{E; r}^{SBN}   </rootex>
+      <rootex>  f_{E;r}   </rootex>
       <tex>     SBN energy scale </tex>
     </name>
 
@@ -16,7 +16,6 @@
     <type>  lateral_post_osc  </type>
 
     <categories>
-      <category>  detector  </category>
       <category>  energy  </category>
     </categories>
 

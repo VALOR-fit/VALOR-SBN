@@ -29,7 +29,7 @@
       <format> SBNBiasFDIncNumuFine.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/testMutipleBiasCovariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/allMockDataBiasCovariance.root </filename>
         <objname>    frac_bias                                                               </objname>    
         <objtype>    TMatrixD                                                                </objtype>
       </covariance_matrix>

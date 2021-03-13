@@ -5,8 +5,8 @@
     <name>
       <simple>  ccother_migration        </simple>
       <long>    CCOther sample migration </long>
-      <rootex>  CCOther sample migration </rootex>
-      <tex>     CCOther sample migration </tex>
+      <rootex>  f_{CCOther} </rootex>
+      <tex>     f_{CCOther} </tex>
     </name>
     
     <apply_to_range>
@@ -17,7 +17,7 @@
     <type>  response  </type>
     
     <categories>
-      <category>  detector  </category>
+      <category>  migration  </category>
     </categories>
     
     <apply_to>

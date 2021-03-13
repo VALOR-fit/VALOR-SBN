@@ -61,7 +61,7 @@
       <format> SBNFlux_EtrueFine.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/fine_hadronic_flux_parameter_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c2/fine_hadronic_flux_parameter_covariance.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
@@ -115,7 +115,7 @@
       <format> SBNMEC.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/02b1/mec_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c2/mec_covariance.root </filename>
         <objname>    frac_cov                                                     </objname>    
         <objtype>    TMatrixD                                                     </objtype>
       </covariance_matrix>
@@ -125,7 +125,7 @@
       <format> sbn_detector_fhc_numucc_2020a1.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/02b2/detector_error_matrix_2020a1_np48_cor5.000pct_uncor0.500pct.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c2/detector_error_matrix_2020a1_np48_cor5.000pct_uncor0.500pct.root </filename>
         <objname>    frac_cov_total      </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 

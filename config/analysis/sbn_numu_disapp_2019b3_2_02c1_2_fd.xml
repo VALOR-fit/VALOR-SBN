@@ -30,7 +30,7 @@
       <format> SBNFlux_EtrueFine.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/2019b3_new_hadronic_flux_parameter_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1_2/2019b3_new_hadronic_flux_parameter_covariance.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
@@ -40,19 +40,19 @@
       <format> SBNFluxResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1_2/flux_covariance_for_splines.root </filename>
         <objname>    cov                                                                       </objname>    
         <objtype>    TMatrixD                                                                  </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1_2/flux_covariance_for_splines.root </filename>
         <objname>    untuned                                                                   </objname>    
         <objtype>    TMatrixD                                                                  </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/flux_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1_2/flux_covariance_for_splines.root </filename>
         <objname>    nominal                                                                   </objname>    
       </initial_values> 
 
@@ -62,19 +62,19 @@
       <format> SBNInteractionResponseParams2019b3.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/all_interaction_systematics_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1_2/all_interaction_systematics_covariance_for_splines.root </filename>
         <objname>    cov                                                                                              </objname>    
         <objtype>    TMatrixD                                                                                         </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/all_interaction_systematics_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1_2/all_interaction_systematics_covariance_for_splines.root </filename>
         <objname>    untuned                                                                                          </objname>    
         <objtype>    TMatrixD                                                                                         </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/02c1/all_interaction_systematics_covariance_for_splines.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02c1_2/all_interaction_systematics_covariance_for_splines.root </filename>
         <objname>    nominal                                                                                          </objname>    
       </initial_values> 
 
