@@ -177,30 +177,34 @@ int main(int argc, char ** argv)
   TChain * subrun_tree = new TChain(gPOTTreeName.c_str());
   subrun_tree->Add(opt_input_name.c_str());
   if(!subrun_tree || !subrun_tree->GetEntries()) {
-    VLOG("valor_sbn", pFATAL)
+    LOG("make_recoselection_minidst", pFATAL) 
       << "Unable to read " << gPOTTreeName
       <<" from "<< opt_input_name;
     exit(1);
   }
 
   Long64_t nsub = subrun_tree->GetEntries();
-  VLOG("valor_sbn", pNOTICE)
+  LOG("make_recoselection_minidst", pNOTICE) 
     << "Input subrun tree has " << nsub << ((nsub==1) ? " entry." : " entries.");
 
-  double mcsample_pot = -1.;
-  subrun_tree->SetBranchAddress("pot", &mcsample_pot);
-  subrun_tree->GetEntry(0);
+  double mcsample_pot       = -1.;
+  double pot_entry = -1.;
+  subrun_tree->SetBranchAddress("pot", &pot_entry);
+  for(Long64_t n = 0; n < nsub; ++n){
+    subrun_tree->GetEntry(n);
+    mcsample_pot += pot_entry;
+  }
 
   if(mcsample_pot < 1)
-    VLOG("valor_sbn", pNOTICE) << "POT in file is less than 1 ";
+    LOG("make_recoselection_minidst", pNOTICE) << "POT in file is less than 1 ";
 
   if(mcsample_pot == -1.){
-    VLOG("valor_sbn", pFATAL)
+    LOG("make_recoselection_minidst", pFATAL) 
       << "Not able to access MCSample POT from " << opt_input_name;
     exit(1);
   }
 
-  VLOG("valor_sbn",pINFO) << " POT in file : " << mcsample_pot << "\n";
+  LOG("make_recoselection_minidst",pINFO) << " POT in file : " << mcsample_pot << "\n";
 
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
   assert(sample != conv::ksUndefined);
@@ -217,6 +221,7 @@ int main(int argc, char ** argv)
   int    valor_minidst_beam           = -1;  // see Conventions/BeamConf.h
   int    valor_minidst_reac_mode      = -1;  // see Conventions/ReacMode.h
   int    valor_minidst_target         = -1;  // nuclear target -  GENIE PDG convention
+  double valor_minidst_baseline       = -1.;
   double valor_minidst_enu_true       = -1.; // true neutrino energy, in GeV
   double valor_minidst_Q2_true        = -1.; // true neutrino Q2
   double valor_minidst_enu_reco       = -1.; // reco neutrino energy, in GeV
@@ -239,6 +244,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("sample"        , &valor_minidst_sample        ,"sample/I"         );
   valor_minidst->Branch("reac_mode"     , &valor_minidst_reac_mode     ,"reac_mode/I"      );
   valor_minidst->Branch("target"        , &valor_minidst_target        ,"target/I"         );
+  valor_minidst->Branch("baseline"      , &valor_minidst_baseline      ,"baseline/D"       );
   valor_minidst->Branch("enu_true"      , &valor_minidst_enu_true      ,"enu_true/D"       );
   valor_minidst->Branch("Q2_true"       , &valor_minidst_Q2_true       ,"q2_true/D"        );
   valor_minidst->Branch("enu_reco"      , &valor_minidst_enu_reco      ,"enu_reco/D"       );
@@ -272,6 +278,7 @@ int main(int argc, char ** argv)
   // Variables to get from analysis tree
   bool iscc           = false;
   bool isnc           = false;
+  double baseline     = -999.;
   double enu_true     = -999.;
   double enu_reco     = -999.;
   double qsqr         = -999.;
@@ -288,6 +295,7 @@ int main(int argc, char ** argv)
 
   analysis_tree->SetBranchAddress("iscc",           &iscc            );
   analysis_tree->SetBranchAddress("isnc",           &isnc            );
+  analysis_tree->SetBranchAddress("baseline",       &baseline        );
   analysis_tree->SetBranchAddress("nu_pdg",         &nu_pdg          );
   analysis_tree->SetBranchAddress("enu_true",       &enu_true        );
   analysis_tree->SetBranchAddress("enu_reco",       &enu_reco        );
@@ -405,6 +413,7 @@ int main(int argc, char ** argv)
       valor_minidst_sample     = sample;
 
     valor_minidst_beam           = beam;
+    valor_minidst_baseline       = baseline/1000.; 
     valor_minidst_reac_mode      = reac_mode;
     valor_minidst_enu_true       = enu_true;
     valor_minidst_wght           = 1.;
@@ -420,6 +429,7 @@ int main(int argc, char ** argv)
     VLOG("valor_sbn", pINFO)
       << "\n Information copied to VALOR SBN recoselection Mini-DST: "
       << "\n Beam          = " << valor_minidst_beam
+      << "\n Baseline      = " << valor_minidst_baseline   
       << "\n Sample        = " << valor_minidst_sample
       << "\n Reaction mode = " << valor_minidst_reac_mode
       << "\n Target        = " << valor_minidst_target
