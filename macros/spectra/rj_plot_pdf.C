@@ -165,7 +165,14 @@ void rj_plot_pdf(
     TCanvas * c_pdf_contrib = new TCanvas(c_name_contrib.Data(),c_title_contrib.Data(),20,20,canv_size_x,canv_size_y);
     c_pdf_contrib->Divide(nrows,ncols);
     all_canvases.push_back(c_pdf_contrib);
-    
+   
+    // Output text file for rates
+    TString textfile(spectra_filename);
+    textfile.ReplaceAll(".root",".txt");
+
+    ofstream of;
+    of.open(textfile.Data(), ios::app);
+
     // Actually read the PDFs
     for (unsigned int iplot = 0 ; iplot < canvas_content[icanvas].size() ; iplot++) {
       isubmodel = canvas_content[icanvas][iplot];
@@ -436,19 +443,20 @@ void rj_plot_pdf(
         }*/
 
         TVirtualPad * this_pad = c_pdf_contrib->cd(iplot+1); // Pad for this plot
-        this_pad->SetLeftMargin  (0.11552  );
-        this_pad->SetRightMargin (0.0204959);
-        this_pad->SetBottomMargin(0.12151  );
-        this_pad->SetTopMargin   (0.0488403);
+
+        this_pad->SetLeftMargin  (0.135);
+        this_pad->SetRightMargin (0.02);
+        this_pad->SetBottomMargin(0.13);
+        this_pad->SetTopMargin   (0.06);
 
         TH1F * contrib_frame = (TH1F*)this_pad->DrawFrame(0,0,enu_reco_max,max_y);
         contrib_frame->Draw();
-        contrib_frame->GetXaxis()->SetTitleSize(0.05);
-        contrib_frame->GetXaxis()->SetLabelSize(0.04);
-        contrib_frame->GetYaxis()->SetTitleSize(0.05);
-        contrib_frame->GetYaxis()->SetLabelSize(0.04);
+        contrib_frame->GetXaxis()->SetTitleSize(0.06);
+        contrib_frame->GetXaxis()->SetLabelSize(0.05);
+        contrib_frame->GetYaxis()->SetTitleSize(0.06);
+        contrib_frame->GetYaxis()->SetLabelSize(0.05);
         contrib_frame->GetYaxis()->SetMaxDigits(3);
-        contrib_frame->GetXaxis()->SetTitleOffset(1.2);
+        contrib_frame->GetXaxis()->SetTitleOffset(1);
         contrib_frame->GetYaxis()->SetTitleOffset(1.2);
         
         // Sort out the title
@@ -469,7 +477,7 @@ void rj_plot_pdf(
           if(kinevar == "Etrue")
            contrib_frame->GetXaxis()->SetTitle("True E_{#nu} (GeV)");
           else if(kinevar == "Ereco")
-           contrib_frame->GetXaxis()->SetTitle("Reco. E_{#nu} (GeV)");
+           contrib_frame->GetXaxis()->SetTitle("Reconstructed Neutrino Energy [GeV]");
         } else {
            contrib_frame->GetXaxis()->SetTitle("Visible Energy (GeV)");
         }
@@ -493,6 +501,7 @@ void rj_plot_pdf(
        
         double tot_event_rate = 0.;
         std::ostringstream sample_event_rates;
+
         // Write the event rates to the output stream
         for(int imodec = 0; imodec < NReacModesCoarse; imodec++) {
           if(vutil::AsString(coarse_modes.at(imodec)) == "cosmic" && is_numu) continue;
@@ -506,6 +515,8 @@ void rj_plot_pdf(
         }
         event_rates<<vutil::AsString(b)<<" "<<vutil::AsString(d)<<" "<<vutil::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
         event_rates<<sample_event_rates.str()<<std::endl; 
+        of<<vutil::AsString(b)<<" "<<vutil::AsString(d)<<" "<<vutil::AsString(s)<<" (total) : "<<tot_event_rate<<std::endl;
+        of<<sample_event_rates.str()<<std::endl; 
         
         // If we have chosen to save the spectra, save both the stacked distribution and the total
         // If we have also included the data/oscillated spectra, save that too
@@ -536,27 +547,19 @@ void rj_plot_pdf(
         } // save spectra
       } // imodec
     } //iplot
+    of.close();
     
     // Update the canvases
     //~ c_pdf_tot    ->Update();
     //~ c_pdf_slice  ->Update();
     c_pdf_contrib->Update();
+    if(save_spectra){
+      TString png_file(spectra_filename);
+      std::string png_tag = "_"+vutil::AsString(d)+"_"+vutil::AsString(s)+".png"; 
+      png_file.ReplaceAll(".root",png_tag.c_str());
+      c_pdf_contrib->SaveAs(png_file.Data());
+    }
     
-    // And write to files if needed
-    if (write_image) {
-      //~ TString pdf_tot_filename = TString::Format("%s_spectrum_%s_%s_%u_2D.%s",
-          //~ out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),icanvas,image_save_format);
-      //~ c_pdf_tot->SaveAs(pdf_tot_filename.Data());
-      
-      //~ TString slice_filename = TString::Format("%s_spectrum_%s_%s_%u_y.%s",
-          //~ out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),icanvas,image_save_format);
-      //~ c_pdf_slice->Print(slice_filename.Data());
-      
-      TString contrib_filename = TString::Format("%s_spectrum_%s_%s_%u_modes.%s",
-        out_tag, vutil::AsString(d).c_str(), vutil::AsString(b).c_str(),icanvas, image_save_format);
-      c_pdf_contrib->Print(contrib_filename.Data());
-    } //write_image
-      
   } // icanvas
   
   std::cout<<event_rates.str();
