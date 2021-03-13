@@ -24,9 +24,15 @@ A number of SBN analysis variants can be supported in the code included in each 
 
 | SBN branch                  | SDK branch                  | Supported SBN analysis variants                          | 
 |-----------------------------|-----------------------------|----------------------------------------------------------|
-| rj_sbn_numu_disapp_analysis | rj_sbn_numu_disapp_analysis | sbn_numu_disapp_2020a1_03c1, sbn_numu_disapp_2020a1_03c1 |
-|                             |                             |                                                          |
-
+| rj_sbn_numu_disapp_analysis | rj_sbn_numu_disapp_analysis | sbn_numu_disapp_2020a1_03c1, sbn_numu_disapp_2020a1_03c2 |
+|                             |                             | sbn_numu_disapp_2020a1_03c3,                             |
+|                             |                             | sbn_numu_disapp_exclusive_1_2020a1_03c1,                 |
+|                             |                             | sbn_numu_disapp_exclusive_1_2020a1_03c2,                 |
+|                             |                             | sbn_numu_disapp_exclusive_1_2020a1_03c3,                 |
+|                             |                             | sbn_numu_disapp_2019b3_2_02b1_2,                         |
+|                             |                             | sbn_numu_disapp_2019b3_2_02b2_2,                         |
+|                             |                             | sbn_numu_disapp_2019b3_2_02c1_2,                         |
+|                             |                             | sbn_numu_disapp_2019b3_2_02c2_2                          |
 
 ### Labelling of VALOR analysis variants and of sets of data products
 
@@ -54,23 +60,30 @@ These analysis variants are labelled as:
 </pre>
 These names of analysis variants are used for labelling the main analysis configuration XML files made available in the VALOR-SBN repository. A list and a brief description of our main SBN analysis variants is given below. Analysis variants supported by the version of the code that includes this file as shown in bold.
 
-| Analysis label.                               | Type                | Samples              | Fit distributions | MC pro | Syst.  | Comment |
-|-----------------------------------------------|---------------------|----------------------|-------------------|--------|--------|---------|
-| **sbn_numu_disapp_2019a1_01a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019a1 | 01a1   | |
-| **sbn_numu_disapp_2019b1_01a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b1 | 01a1   | |
-| **sbn_numu_disapp_2019b2_01a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b2 | 01a1   | |
-| **sbn_numu_disapp_2019b2_02a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b2 | 02a1   | |
-| **sbn_numu_disapp_2019b2_02a2_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b2 | 02a1   | |
+| Analysis label.                               | Type                | Samples              | Fit distributions | MC pro   | Syst.  | Comment |
+|-----------------------------------------------|---------------------|----------------------|-------------------|----------|--------|---------|
+| **sbn_numu_disapp_2019a1_01a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019a1   | 01a1   | |
+| **sbn_numu_disapp_2019b1_01a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b1   | 01a1   | |
+| **sbn_numu_disapp_2019b2_01a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b2   | 01a1   | |
+| **sbn_numu_disapp_2019b2_02a1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b2   | 02a1   | |
+| **sbn_numu_disapp_2019b2_02a2_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b2   | 02a1   | |
 | **sbn_numu_disapp_prism_1_2019b3_02c2_1**     | Eff. 3+1 numu disap | Event samples: 8 SBND numu CC-like samples at different angular bins (0 to 1.6 deg with 0.2 deg increments) + 1 uB numu CC-like sample + 1 ICARUS numu CC-like sample | Enu_reco | 2019b3 | 02c2 | First iteration of SBN Prism analysis in devel |
-| **sbn_numu_disapp_2020a1_03c1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1 | 03c1   | |
-| **sbn_numu_disapp_2020a1_03c2_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1 | 03c2   | |
-| **sbn_numu_disapp_2020a1_03c3_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1 | 03c3   | |
-| **sbn_numu_disapp_exclusive_1_2020a1_03c1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1 | 03c1   | Joint CC0Pi & CCOther exclusive fits |
-| **sbn_numu_disapp_exclusive_1_2020a1_03c2_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1 | 03c2   | Joint CC0Pi & CCOther exclusive fits |
-| **sbn_numu_disapp_exclusive_1_2020a1_03c3_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1 | 03c3   | Joint CC0Pi & CCOther exclusive fits |
-| **sbn_numu_disapp_exclusive_1_2020a1_03c3_2** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1 | 03c3_2 | Joint CC0Pi & CCOther exclusive fits with sample migration systematic|
-| **sbn_nue_app_2019b2_01a1_1**                 | Eff. 3+1 nue        | nueCC-like (x3 det)  | Enu_reco          | 2019b2 | 01a1   | |
-| **sbn_nue_app_2020a1_03a1_1**                 | Eff. 3+1 nue        | nueCC-like (x3 det)  | Enu_reco          | 2020a1 | 03a1   | |
+| **sbn_numu_disapp_2019b3_02b1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3   | 02b1   | |
+| **sbn_numu_disapp_2019b3_02b2_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3   | 02b2   | |
+| **sbn_numu_disapp_2019b3_02c1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3   | 02c1   | |
+| **sbn_numu_disapp_2019b3_02c2_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3   | 02c2   | |
+| **sbn_numu_disapp_2019b3_2_02b1_2**           | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3_2 | 02b1_2 | |
+| **sbn_numu_disapp_2019b3_2_02b2_2**           | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3_2 | 02b2_2 | |
+| **sbn_numu_disapp_2019b3_2_02c1_2**           | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3_2 | 02c1_2 | |
+| **sbn_numu_disapp_2019b3_2_02c2_2**           | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2019b3_2 | 02c2_2 | |
+| **sbn_numu_disapp_2020a1_03c1_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1   | 03c1   | |
+| **sbn_numu_disapp_2020a1_03c2_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1   | 03c2   | |
+| **sbn_numu_disapp_2020a1_03c3_1**             | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1   | 03c3   | |
+| **sbn_numu_disapp_exclusive_1_2020a1_03c1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1   | 03c1   | Joint CC0Pi & CCOther exclusive fits |
+| **sbn_numu_disapp_exclusive_1_2020a1_03c2_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1   | 03c2   | Joint CC0Pi & CCOther exclusive fits |
+| **sbn_numu_disapp_exclusive_1_2020a1_03c3_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco          | 2020a1   | 03c3   | Joint CC0Pi & CCOther exclusive fits |
+| **sbn_nue_app_2019b2_01a1_1**                 | Eff. 3+1 nue        | nueCC-like (x3 det)  | Enu_reco          | 2019b2   | 01a1   | |
+| **sbn_nue_app_2020a1_03a1_1**                 | Eff. 3+1 nue        | nueCC-like (x3 det)  | Enu_reco          | 2020a1   | 03a1   | |
 
 MC productions (flux, interaction, detector simulations), the corresponding uncertainty assignments and internal VALOR representations of the uncertainties, and the reconstruction / data reduction event selection codes are important elements used for characterising each fit. Information about the elements used by each VALOR analysis is outlined below.
 
@@ -88,6 +101,8 @@ A summary of all SBN MC productions used is given in the table below.
 | 2019a1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `proposal'; last respin of 2019a still in use while establishing this archive on 04/2020 |
 | 2019b1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `modern'; last respin of 2019b still in use while establishing this archive on 04/2020 |
 | 2019b2   | configF | v2.12.10; Default+MEC; proposal | v2.2 / gputnam-workshop (numu); feature/DomBarkerNueSelection (nue)  | `modern'; batch of files made available after the 09/2019 SBN analysis workshop |
+| 2019b3   | configF | v2.12.10; Default+MEC; proposal | v2.2 updated for dst modifications such as modelist |
+| 2019b3_2 | configF | v2.12.10; Default+MEC; proposal | v2.2 updated for further dst modifications and new sample definition, numuCCincl to mimic 2020a1 format |
 | 2020a1   | configF | v3.0.6; G18_10a_02_11a; proposal+MEC | gputnam-workshop0320-gen (numu); feature/TomHamNue (nue) | `modern'; batch of files made available after the 03/2020 SBN analysis workshop |
 
 - [1] https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample: 
@@ -122,8 +137,7 @@ Each error parameterization can be applied on selected MC productions only, indi
 | 03a1 | n/a | as in 02c1 | UNCORRESP1D parameterisation for all systematics included in the [2020aP x-section error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a) | | Including modern intercation systematics |
 | 03c1 | n/a  | CORLIN{loc,flav,Etrue} parameterization for hadroproduction multi-sim systematics and UNCORRESP1D parameterization of optics and hadronic interaction uni-sim systematics of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | UNCORRESP1D parameterisation for all systematics included in the [2020a x-section error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a) | | |
 | 03c2 | CORLIN{det,sample,mode,Ereco}, as specified by the [effective 2020a detector error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Detector-systematics-2020a) | as in 03c1 | as in 03c1 | | Adding detector effects in 03c1 |
-| 03c3 | as in 03c2 | as in 03c2 | as in 03c2 | | Adding bias and energy scale systematics to 03c2 |
-| 03c3_2 | as in 03c3 | as in 03c3 | as in 03c3 | | Adding sample migration systematic to exclusive fits and 03c3 |
+| 03c3 | as in 03c2 | as in 03c2 | as in 03c2 | | Adding bias and energy scale systematics to 03c2 and sample migration in exclusive analysis |
 
 Internal systematic error parameterization methods:
  - **CORLIN{'space'}**: A set of correlated normalization factors (linear response functions), each of which is applied on a single bin of the specified 'space' that can be mapped to subsets of kinematic bins for specific MC templates.
