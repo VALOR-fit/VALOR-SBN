@@ -18,7 +18,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -56,7 +56,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -94,7 +94,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -132,7 +132,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -170,7 +170,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -208,7 +208,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -246,7 +246,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -284,7 +284,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -322,7 +322,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -360,7 +360,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -398,7 +398,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -436,7 +436,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -474,7 +474,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -512,7 +512,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -550,7 +550,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -588,7 +588,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -626,7 +626,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -664,7 +664,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -702,7 +702,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -740,7 +740,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numu  </category>
     </categories>
     
@@ -765,7 +765,7 @@
     <name>
       <simple>  flux_sbnd_numubar00  </simple>
       <long>  SBND numubar flux; 0.0 - 0.7 GeV  </long>
-      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{0}  </rootex>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{0}}  </rootex>
       <tex>  SBND numubar flux, 0.0 - 0.7 GeV  </tex>
     </name>
     
@@ -778,7 +778,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numubar  </category>
     </categories>
     
@@ -804,7 +804,7 @@
     <name>
       <simple>  flux_sbnd_numubar01  </simple>
       <long>  SBND numubar flux; 0.7 - 1.0 GeV  </long>
-      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{1}  </rootex>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{1}}  </rootex>
       <tex>  SBND numubar flux, 0.7 - 1.0 GeV  </tex>
     </name>
     
@@ -817,7 +817,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numubar  </category>
     </categories>
     
@@ -842,7 +842,7 @@
     <name>
       <simple>  flux_sbnd_numubar02  </simple>
       <long>  SBND numubar flux; 1.0 - 1.5 GeV  </long>
-      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{2}  </rootex>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{2}}  </rootex>
       <tex>  SBND numubar flux, 1.0 - 1.5 GeV  </tex>
     </name>
     
@@ -855,7 +855,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numubar  </category>
     </categories>
     
@@ -879,7 +879,7 @@
     <name>
       <simple>  flux_sbnd_numubar03  </simple>
       <long>  SBND numubar flux; 1.5 - 2.5 GeV  </long>
-      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{3}  </rootex>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{3}}  </rootex>
       <tex>  SBND numubar flux, 1.5 - 2.5 GeV  </tex>
     </name>
     
@@ -892,7 +892,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numubar  </category>
     </categories>
     
@@ -917,7 +917,7 @@
     <name>
       <simple>  flux_sbnd_numubar04  </simple>
       <long>  SBND numubar flux; 2.5 - 10.0 GeV  </long>
-      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{4}  </rootex>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{#mu}^{4}}  </rootex>
       <tex>  SBND numubar flux, 2.5 - 10.0 GeV  </tex>
     </name>
     
@@ -930,7 +930,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  numubar  </category>
     </categories>
     
@@ -955,7 +955,7 @@
     <name>
       <simple>  flux_sbnd_nue00  </simple>
       <long>  SBND nue flux; 0.0 - 0.5 GeV  </long>
-      <rootex>  f_{flux,sbnd,#nu_{e}^{0}  </rootex>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{0}}  </rootex>
       <tex>  SBND nue flux, 0.0 - 0.5 GeV  </tex>
     </name>
     
@@ -968,7 +968,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nue  </category>
     </categories>
     
@@ -994,7 +994,7 @@
     <name>
       <simple>  flux_sbnd_nue01  </simple>
       <long>  SBND nue flux; 0.5 - 0.7 GeV  </long>
-      <rootex>  f_{flux,sbnd,#nu_{e}^{1}  </rootex>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{1}}  </rootex>
       <tex>  SBND nue flux, 0.5 - 0.7 GeV  </tex>
     </name>
     
@@ -1007,7 +1007,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nue  </category>
     </categories>
     
@@ -1032,7 +1032,7 @@
     <name>
       <simple>  flux_sbnd_nue02  </simple>
       <long>  SBND nue flux; 0.7 - 0.8 GeV  </long>
-      <rootex>  f_{flux,sbnd,#nu_{e}^{2}  </rootex>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{2}}  </rootex>
       <tex>  SBND nue flux, 0.7 - 0.8 GeV  </tex>
     </name>
     
@@ -1045,7 +1045,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nue  </category>
     </categories>
     
@@ -1070,7 +1070,7 @@
     <name>
       <simple>  flux_sbnd_nue03  </simple>
       <long>  SBND nue flux; 0.8 - 1.5 GeV  </long>
-      <rootex>  f_{flux,sbnd,#nu_{e}^{3}  </rootex>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{3}}  </rootex>
       <tex>  SBND nue flux, 0.8 - 1.5 GeV  </tex>
     </name>
     
@@ -1083,7 +1083,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nue  </category>
     </categories>
     
@@ -1107,7 +1107,7 @@
     <name>
       <simple>  flux_sbnd_nue04  </simple>
       <long>  SBND nue flux; 1.5 - 2.5 GeV  </long>
-      <rootex>  f_{flux,sbnd,#nu_{e}^{4}  </rootex>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{4}}  </rootex>
       <tex>  SBND nue flux, 1.5 - 2.5 GeV  </tex>
     </name>
     
@@ -1120,7 +1120,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nue  </category>
     </categories>
     
@@ -1144,7 +1144,7 @@
     <name>
       <simple>  flux_sbnd_nue05  </simple>
       <long>  SBND nue flux; 2.5 - 10.0 GeV  </long>
-      <rootex>  f_{flux,sbnd,#nu_{e}^{5}  </rootex>
+      <rootex>  f_{flux,sbnd,#nu_{e}^{5}}  </rootex>
       <tex>  SBND nue flux, 2.5 - 10.0 GeV  </tex>
     </name>
     
@@ -1157,7 +1157,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nue  </category>
     </categories>
     
@@ -1181,7 +1181,7 @@
     <name>
       <simple>  flux_sbnd_nuebar00  </simple>
       <long>  SBND nuebar flux; 0.0 - 2.5 GeV  </long>
-      <rootex>  f_{flux,sbnd,#bar{#nu}_{e}^{0}  </rootex>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{e}^{0}}  </rootex>
       <tex>  SBND nuebar flux, 0.0 - 2.5 GeV  </tex>
     </name>
     
@@ -1194,7 +1194,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nuebar  </category>
     </categories>
     
@@ -1219,7 +1219,7 @@
     <name>
       <simple>  flux_sbnd_nuebar01  </simple>
       <long>  SBND nuebar flux; 2.5 - 10.0 GeV  </long>
-      <rootex>  f_{flux,sbnd,#bar{#nu}_{e}^{1}  </rootex>
+      <rootex>  f_{flux,sbnd,#bar{#nu}_{e}^{1}}  </rootex>
       <tex>  SBND nuebar flux, 2.5 - 10.0 GeV  </tex>
     </name>
     
@@ -1232,7 +1232,7 @@
     <categories>
       <category>  flux  </category>
       <category>  univ  </category>
-      <category>  sbnd  </category>
+      <category>  nd    </category>
       <category>  nuebar  </category>
     </categories>
     

@@ -5,8 +5,8 @@
     <name>
       <simple>  genie_NonResRvpCC2pi_Genie                    </simple>
       <long>    Non-resonant background nu, proton, CC 2pions </long>
-      <rootex>  R_{bkg}^{#nu, p, CC 2#pi}                     </rootex>
-      <tex>     R_{bkg}^{\nu, p, CC 2\pi}                     </tex>
+      <rootex>  f_{nR_{#nu p}^{CC2#pi}}                     </rootex>
+      <tex>     f_{nR_{\nu p}^{CC2\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -45,8 +45,8 @@
     <name>
       <simple>  genie_NonResRvbarnCC2pi_Genie                     </simple>
       <long>    Non-resonant background nubar, neutron, CC 2pions </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, n, CC 2#pi}                     </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, n, CC 2\pi}                     </tex>
+      <rootex>  f_{nR_{#bar{#nu} n}^{CC2#pi}}                     </rootex>
+      <tex>     f_{nR_{\bar{\nu} n}^{CC2\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -85,8 +85,8 @@
     <name>
       <simple>  genie_NonResRvpCC1pi_Genie                   </simple>
       <long>    Non-resonant background nu, proton, CC 1pion </long>
-      <rootex>  R_{bkg}^{#nu, p, CC 1#pi}                    </rootex>
-      <tex>     R_{bkg}^{\nu, p, CC 1\pi}                    </tex>
+      <rootex>  f_{nR_{#nu p}^{CC1#pi}}                     </rootex>
+      <tex>     f_{nR_{\nu p}^{CC1\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -125,8 +125,8 @@
     <name>
       <simple>  genie_NonResRvbarnCC1pi_Genie                      </simple>
       <long>    Non-resonant background nubar, neutron, CC 1pion   </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, n, CC 1#pi}                    </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, n, CC 1\pi}                    </tex>
+      <rootex>  f_{nR_{#bar{#nu} n}^{CC1#pi}}                     </rootex>
+      <tex>     f_{nR_{\bar{\nu} n}^{CC1\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -165,8 +165,8 @@
     <name>
       <simple>  genie_NonResRvbarpCC2pi_Genie                    </simple>
       <long>    Non-resonant background nubar, proton, CC 2pions </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, p, CC 2#pi}                  </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, p, CC 2\pi}                  </tex>
+      <rootex>  f_{nR_{#bar{#nu} p}^{CC2#pi}}                     </rootex>
+      <tex>     f_{nR_{\bar{\nu} p}^{CC2\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -205,8 +205,8 @@
     <name>
       <simple>  genie_NonResRvnCC2pi_Genie                     </simple>
       <long>    Non-resonant background nu, neutron, CC 2pions </long>
-      <rootex>  R_{bkg}^{#nu, n, CC 2#pi}                      </rootex>
-      <tex>     R_{bkg}^{\nu, n, CC 2\pi}                      </tex>
+      <rootex>  f_{nR_{#nu n}^{CC2#pi}}                     </rootex>
+      <tex>     f_{nR_{\nu n}^{CC2\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -245,8 +245,8 @@
     <name>
       <simple>  genie_NonResRvbarpCC1pi_Genie                     </simple>
       <long>    Non-resonant background nubar, proton, CC 1pion   </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, p, CC 1#pi}                   </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, p, CC 1\pi}                   </tex>
+      <rootex>  f_{nR_{#bar{#nu} p}^{CC1#pi}}                     </rootex>
+      <tex>     f_{nR_{\bar{\nu} p}^{CC1\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -285,8 +285,8 @@
     <name>
       <simple>  genie_NonResRvnCC1pi_Genie                      </simple>
       <long>    Non-resonant background nu, neutron, CC 1pion   </long>
-      <rootex>  R_{bkg}^{#nu, n, CC 1#pi}                       </rootex>
-      <tex>     R_{bkg}^{\nu, n, CC 1\pi}                       </tex>
+      <rootex>  f_{nR_{#nu n}^{CC1#pi}}                     </rootex>
+      <tex>     f_{nR_{\nu n}^{CC1\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -325,8 +325,8 @@
     <name>
       <simple>  genie_NonResRvpNC2pi_Genie                    </simple>
       <long>    Non-resonant background nu, proton, NC 2pions </long>
-      <rootex>  R_{bkg}^{#nu, p, NC 2#pi}                     </rootex>
-      <tex>     R_{bkg}^{\nu, p, NC 2\pi}                     </tex>
+      <rootex>  f_{nR_{#nu p}^{NC2#pi}}                     </rootex>
+      <tex>     f_{nR_{\nu p}^{NC2\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -365,8 +365,8 @@
     <name>
       <simple>  genie_NonResRvbarnNC2pi_Genie                     </simple>
       <long>    Non-resonant background nubar, neutron, NC 2pions </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, n, NC 2#pi}                     </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, n, NC 2\pi}                     </tex>
+      <rootex>  f_{nR_{#bar{#nu} n}^{NC2#pi}}                     </rootex>
+      <tex>     f_{nR_{\bar{\nu} n}^{NC2\pi}}                     </tex>
     </name>
     
     <apply_to_range>
@@ -405,8 +405,8 @@
     <name>
       <simple>  genie_NonResRvpNC1pi_Genie                   </simple>
       <long>    Non-resonant background nu, proton, NC 1pion </long>
-      <rootex>  R_{bkg}^{#nu, p, NC 1#pi}                    </rootex>
-      <tex>     R_{bkg}^{\nu, p, NC 1\pi}                    </tex>
+      <rootex>  f_{nR_{#nu p}^{NC2#pi}}                </rootex>
+      <tex>     f_{nR_{\nu p}^{NC2\pi}}                </tex>
     </name>
     
     <apply_to_range>
@@ -445,8 +445,8 @@
     <name>
       <simple>  genie_NonResRvbarnNC1pi_Genie                      </simple>
       <long>    Non-resonant background nubar, neutron, NC 1pion   </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, n, NC 1#pi}                    </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, n, NC 1\pi}                    </tex>
+      <rootex>  f_{nR_{#bar{#nu} n}^{NC1#pi}}                </rootex>
+      <tex>     f_{nR_{\bar{\nu} n}^{NC1\pi}}                </tex>
     </name>
     
     <apply_to_range>
@@ -485,8 +485,8 @@
     <name>
       <simple>  genie_NonResRvbarpNC2pi_Genie                    </simple>
       <long>    Non-resonant background nubar, proton, NC 2pions </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, p, NC 2#pi}                  </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, p, NC 2\pi}                  </tex>
+      <rootex>  f_{nR_{#bar{#nu} p}^{NC2#pi}}                </rootex>
+      <tex>     f_{nR_{\bar{\nu} p}^{NC2\pi}}                </tex>
     </name>
     
     <apply_to_range>
@@ -525,8 +525,8 @@
     <name>
       <simple>  genie_NonResRvnNC2pi_Genie                     </simple>
       <long>    Non-resonant background nu, neutron, NC 2pions </long>
-      <rootex>  R_{bkg}^{#nu, n, NC 2#pi}                      </rootex>
-      <tex>     R_{bkg}^{\nu, n, NC 2\pi}                      </tex>
+      <rootex>  f_{nR_{#nu n}^{NC2#pi}}                </rootex>
+      <tex>     f_{nR_{\nu n}^{NC2\pi}}                </tex>
     </name>
     
     <apply_to_range>
@@ -565,8 +565,8 @@
     <name>
       <simple>  genie_NonResRvbarpNC1pi_Genie                     </simple>
       <long>    Non-resonant background nubar, proton, NC 1pion   </long>
-      <rootex>  R_{bkg}^{#bar{#nu}, p, NC 1#pi}                   </rootex>
-      <tex>     R_{bkg}^{\bar{\nu}, p, NC 1\pi}                   </tex>
+      <rootex>  f_{nR_{#bar{#nu} p}^{NC1#pi}}                </rootex>
+      <tex>     f_{nR_{\bar{\nu} p}^{NC1\pi}}                </tex>
     </name>
     
     <apply_to_range>
@@ -605,8 +605,8 @@
     <name>
       <simple>  genie_NonResRvnNC1pi_Genie                      </simple>
       <long>    Non-resonant background nu, neutron, NC 1pion   </long>
-      <rootex>  R_{bkg}^{#nu, n, NC 1#pi}                       </rootex>
-      <tex>     R_{bkg}^{\nu, n, NC 1\pi}                       </tex>
+      <rootex>  f_{nR_{#nu n}^{NC1#pi}}                </rootex>
+      <tex>     f_{nR_{\nu n}^{NC1\pi}}                </tex>
     </name>
     
     <apply_to_range>
@@ -645,8 +645,8 @@
     <name>
       <simple>  genie_NC_Genie </simple>
       <long>    NC             </long>
-      <rootex>  NC             </rootex>
-      <tex>     NC             </tex>
+      <rootex>  f_{NC}             </rootex>
+      <tex>     f_{NC}             </tex>
     </name>
     
     <apply_to_range>
@@ -685,8 +685,8 @@
     <name>
       <simple>  genie_ncresAxial_Genie </simple>
       <long>    NC Resonant Axial      </long>
-      <rootex>  NC_{Res} #: M_{A}         </rootex>
-      <tex>     NC_{Res} \: M_{A}         </tex>
+      <rootex>  f_{M_{A}^{NCRes}}    </rootex>
+      <tex>     f_{M_{A}^{NCRes}}    </tex>
     </name>
     
     <apply_to_range>
@@ -725,8 +725,8 @@
     <name>
       <simple>  genie_ccresAxial_Genie </simple>
       <long>    CC Resonant Axial      </long>
-      <rootex>  CC_{Res} #: M_{A}         </rootex>
-      <tex>     CC_{Res} \: M_{A}         </tex>
+      <rootex>  f_{M_{A}^{CCRes}}    </rootex>
+      <tex>     f_{M_{A}^{CCRes}}    </tex>
     </name>
     
     <apply_to_range>
@@ -765,8 +765,8 @@
     <name>
       <simple>  genie_qema_Genie </simple>
       <long>    Ma QE            </long>
-      <rootex>  f_{M_A^{QE}}     </rootex>
-      <tex>     M_A^{QE}         </tex>
+      <rootex>  f_{M_{A}^{QE}}     </rootex>
+      <tex>     f_{M_{A}^{QE}}     </tex>
     </name>
     
     <apply_to_range>

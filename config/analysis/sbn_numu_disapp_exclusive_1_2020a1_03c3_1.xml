@@ -10,7 +10,7 @@
       <sample>       numuCC0piNtrk                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_nd_cc0pi.xml    </mc>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c3_1_sbn_nd_cc0pi.xml    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
@@ -22,7 +22,7 @@
       <sample>       numuCCoth                                            </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_nd_ccoth.xml    </mc>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c3_1_sbn_nd_ccoth.xml    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
@@ -34,7 +34,7 @@
       <sample>       numuCC0piNtrk                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_ub_cc0pi.xml    </mc>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c3_1_sbn_ub_cc0pi.xml    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
@@ -46,7 +46,7 @@
       <sample>       numuCCoth                                            </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_ub_ccoth.xml    </mc>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c3_1_sbn_ub_ccoth.xml    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
@@ -58,7 +58,7 @@
       <sample>       numuCC0piNtrk                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_fd_cc0pi.xml    </mc>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c3_1_sbn_fd_cc0pi.xml    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
@@ -70,7 +70,7 @@
       <sample>       numuCCoth                                            </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_fd_ccoth.xml    </mc>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c3_1_sbn_fd_ccoth.xml    </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
@@ -102,7 +102,7 @@
       <format> SBNFlux_EtrueFine.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/hadronic_flux_parameter_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/hadronic_flux_parameter_covariance.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
@@ -112,19 +112,19 @@
       <format> SBNFluxResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/flux_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/flux_spline_covariance.root </filename>
         <objname>    cov                                                                  </objname>    
         <objtype>    TMatrixD                                                             </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/flux_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/flux_spline_covariance.root </filename>
         <objname>    untuned                                                              </objname>    
         <objtype>    TMatrixD                                                             </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/flux_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/flux_spline_covariance.root </filename>
         <objname>    nominal                                                              </objname>    
       </initial_values> 
 
@@ -134,19 +134,19 @@
       <format> SBNInteractionResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/proposal_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/proposal_interaction_spline_covariance.root </filename>
         <objname>    cov                                                                                  </objname>    
         <objtype>    TMatrixD                                                                             </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/proposal_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/proposal_interaction_spline_covariance.root </filename>
         <objname>    untuned                                                                              </objname>    
         <objtype>    TMatrixD                                                                             </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/proposal_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/proposal_interaction_spline_covariance.root </filename>
         <objname>    nominal                                                                              </objname>    
       </initial_values> 
 
@@ -156,19 +156,19 @@
       <format> SBNModernInteractionResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/modern_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/modern_interaction_spline_covariance.root </filename>
         <objname>    cov                                                                                </objname>    
         <objtype>    TMatrixD                                                                           </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/modern_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/modern_interaction_spline_covariance.root </filename>
         <objname>    untuned                                                                            </objname>    
         <objtype>    TMatrixD                                                                           </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/modern_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/modern_interaction_spline_covariance.root </filename>
         <objname>    nominal                                                                            </objname>    
       </initial_values> 
 
@@ -179,7 +179,7 @@
       <format> SBNMEC.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/mec_100pct_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/mec_100pct_covariance.root </filename>
         <objname>    frac_cov                                                            </objname>    
         <objtype>    TMatrixD                                                            </objtype>
       </covariance_matrix>
@@ -190,7 +190,7 @@
       <format> sbn_detector_fhc_numucc_2020a1.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c2/detector_error_matrix_2020a1_np48_cor5.000pct_uncor0.500pct.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/03c3/detector_error_matrix_2020a1_np48_cor5.000pct_uncor0.500pct.root </filename>
         <objname>    frac_cov_total      </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
