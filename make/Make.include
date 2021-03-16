@@ -75,6 +75,9 @@ ifeq (1,$(SBNANALYSIS_ENABLED))
   LARSOFT_LIBRARIES += -L$(CETLIB_LIB)
 endif
 
+# SBN CAF stuff
+SBNCAF_INC = -I$(SBNCODE_DIR)/
+
 #-------------------------------------------------------------------
 #                        GENIE
 #-------------------------------------------------------------------
