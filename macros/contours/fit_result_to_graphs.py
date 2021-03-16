@@ -70,8 +70,8 @@ def GetLoggedHist(filename,exclusion,data):
     true = ev.true_params
     x = fp.CurrValue(param_x)
     y = fp.CurrValue(param_y)
-  #  x = true.Value(param_x)
-  #  y = true.Value(param_y)
+    #  x = true.Value(param_x)
+    #  y = true.Value(param_y)
 
     stat = max(0.,fp.GetBestFitStatistic())
     
@@ -142,8 +142,11 @@ def main(files,tag,label,exclusion,data,param):
   elif param == "MuMu":
     nue = False
     param_x = conv.kPhypMixingMuMu # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
-    # x-axis range
+    # x-axis range excl
     r = 3;
+    # x-axis range incl
+    r_incl_max = 0
+    r_incl_min = 0.01
 
   else:
     print "Don't know what analysis we're looking at. Set the analysis with '-p {MuE, EE, MuMu}'."
@@ -153,20 +156,24 @@ def main(files,tag,label,exclusion,data,param):
   # Limits
   ex_x_lim = 0.5*(r/(x_npoints-1))
   ex_y_lim = 0.5*(4/(y_npoints-1))
-  in_x_lim = 0.5*((math.log10(5e-1)+2)/(x_npoints-1))
-  in_y_lim = 0.5*((math.log10(4)-math.log10(4e-1))/(y_npoints-1))
+
+  #in_x_lim = 0.5*((math.log10(5e-1)+2)/(x_npoints-1))
+  #in_y_lim = 0.5*((math.log10(4)-math.log10(4e-1))/(y_npoints-1))
+  in_x_lim = 0.5*((1)/(x_npoints-1))
+  in_y_lim = 0.5*((2)/(y_npoints-1))
+
 
   ex_x_min = -(r+ex_x_lim) #exlusion
   ex_x_max = (0+ex_x_lim)
 
-  in_x_min = -(2+in_x_lim) #allowed
-  in_x_max = math.log10(5e-1)+in_x_lim
+  in_x_min = -(1.2+in_x_lim) #allowed
+  in_x_max = -(1.10+in_x_lim)
 
   ex_y_min = -(2+ex_y_lim) #exlusion
   ex_y_max = 2+ex_y_lim
 
-  in_y_min = -(abs(math.log10(4e-1))+in_y_lim) #allowed
-  in_y_max = math.log10(4)+in_y_lim
+  in_y_min = (0.05+in_y_lim) #allowed
+  in_y_max = 0.2+in_y_lim
 
 
 
@@ -201,8 +208,8 @@ def main(files,tag,label,exclusion,data,param):
           dchisq = util.DeltaChisquareOneSided(cl,1)
       else:
         print "Acceptance contour"
-        print "Two-sided delta chi-squared scan"
-        dchisq = util.DeltaChisquare(cl,2)
+        print "One-sided delta chi-squared scan"
+        dchisq = util.DeltaChisquareOneSided(cl,1)
 
       if (dchisq < 0): continue
       logged_graphs = MakeContour(h,dchisq)

@@ -56,8 +56,8 @@ icarus_mini_dst->SetBranchAddress("baseline", &baseline);
 icarus_mini_dst->SetBranchAddress("enu_true", &enu_true);
 
 // define Osc parameters
-double dmsq = 1E2;
-double sinsqthetamumu = 2E-3;
+double dmsq = 50;
+double sinsqthetamumu = 0.01;
 //double dmsq = 50;
 //double sinsqthetamumu = 1E-2;
 double sinsqthetamue  = 1E-3;
@@ -939,7 +939,7 @@ h_nEvents_average_sbnd->SetLineColor(kRed);
 h_nEvents_average_sbnd->GetXaxis()->SetTitle("E [GeV]");
 h_nEvents_average_sbnd->GetYaxis()->SetTitle("Osc. prob");
 h_nEvents_average_sbnd->GetYaxis()->SetTitleOffset(1.15);
-h_nEvents_average_sbnd->GetYaxis()->SetRangeUser(0.998,1.0);
+h_nEvents_average_sbnd->GetYaxis()->SetRangeUser(0.,1.0);
 
 //h_nEvents_spline_sbnd->Draw("same"); 
 h_nEvents_spline_sbnd->SetLineColor(kBlue); 
@@ -990,7 +990,7 @@ h_nEvents_average_ub->SetLineColor(kRed);
 h_nEvents_average_ub->GetXaxis()->SetTitle("E [GeV]");
 h_nEvents_average_ub->GetYaxis()->SetTitle("Osc. prob");
 h_nEvents_average_ub->GetYaxis()->SetTitleOffset(1.15);
-h_nEvents_average_ub->GetYaxis()->SetRangeUser(0.998,1.0);
+h_nEvents_average_ub->GetYaxis()->SetRangeUser(0.,1.0);
 
 h_nEvents_true_ub->Draw("same");
 
@@ -1032,7 +1032,7 @@ h_nEvents_average_icarus->SetLineColor(kRed);
 h_nEvents_average_icarus->GetXaxis()->SetTitle("E [GeV]");
 h_nEvents_average_icarus->GetYaxis()->SetTitle("Osc. prob");
 h_nEvents_average_icarus->GetYaxis()->SetTitleOffset(1.15);
-h_nEvents_average_icarus->GetYaxis()->SetRangeUser(0.998,1.0);
+h_nEvents_average_icarus->GetYaxis()->SetRangeUser(0.,1.0);
 
 h_nEvents_true_icarus->Draw("same");
 
@@ -1063,16 +1063,22 @@ leg_icarus->Draw("same");
 
 
 // File to write to
-TFile *MyFile = new TFile("osc_prob_2e-3_1E2_VALOR_baseline.root","RECREATE");
+TFile *MyFile = new TFile("plot_for_rhiannon.root","RECREATE");
 
 // write histograms to file
 h_nEvents_true_sbnd->Write();
 h_nEvents_average_sbnd->Write();
 h_nEvents_dom_sbnd->Write();
+h_nEvents_spline_sbnd->Write();
+h_nEvents_spline_sbnd_proper->Write();
 h_nEvents_true_ub->Write();
 h_nEvents_average_ub->Write();
+h_nEvents_spline_ub->Write();
+h_nEvents_spline_ub_proper->Write();
 h_nEvents_true_icarus->Write();
 h_nEvents_average_icarus->Write();
+h_nEvents_spline_icarus->Write();
+h_nEvents_spline_icarus_proper->Write();
 
 MyFile->Close();
 

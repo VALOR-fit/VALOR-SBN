@@ -87,7 +87,9 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
 
   # Make the TPrincipal we'll use to actually get covariances
   tp = R.TPrincipal(row_size)
-
+  
+  zeroes = [] # hold all the diagonal entries which are empty
+  
   # Loop over each file (containing a universe each)
   flav = [""]*row_size # array for the neutrino flavour of each row entry to fill any empty cases with alternative flavour entries later
   for ifile,f in enumerate(files):
@@ -165,9 +167,13 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
     else:
       assert(ientry == row_size)
     print "Adding row to covariance from file ",ifile, "\r"
+    # Get all diagonal bins which are empty in 1+ universes
+    for i in range(0, row_size):
+      if row[i] == 0:
+        if i not in zeroes:
+          zeroes.append(i)
     tp.AddRow(row)
   #end loop files
-
   cov = R.TMatrixD(util.LowerTriangularMatrixToSymMatrix(tp.GetCovarianceMatrix()))
   mean = tp.GetMeanValues()
 
@@ -187,22 +193,28 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
   Set the off-diagonal elements of the empty bins to be 0.'''
   print "List of parameters with no entries: \r"
   for n in range(mean.GetNrows()):
-    if not float(mean[n]):
-      print params[n].GetName(), "\r"
+    for i in zeroes:
+      if n == i:
+        mean[n] = float('nan');
+        print params[n].GetName(), "\r"    
+
+#    if not float(mean[n]):
+#      print params[n].GetName(), "\r"
 
   frac_cov = util.CovarianceMatrixToFractionalCovarianceMatrix(cov,mean)
-
   # If a scale root file has been passed, apply it now
   for n in range(nRows):
     for m in range(nCols):
       # Check the diagonal case
       if n == m:
         if math.isnan(frac_cov[n][m]):
-          #frac_cov[n][m] = 1 # 100% for used table
-          frac_cov[n][m] = 0.0001 # Set diagonal value to 0 
+          frac_cov[n][m] = 1 # 100% for used table
+          #frac_cov[n][m] = 0.0001 # Set diagonal value to 0
+        
       else:
         if math.isnan(frac_cov[n][m]):
           frac_cov[n][m] = 0.0 # setting the off-diagonal elements of the empty bins to be 0
+
 
   corr = util.CovarianceMatrixToCorrelationMatrix(frac_cov)
   err  = util.CovarianceMatrixToErrorVector(frac_cov)
