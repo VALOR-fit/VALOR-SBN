@@ -93,7 +93,7 @@
       <format> SBNMEC.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/02b1/mec_covariance.root </filename>
+        <filename>   sbn_numu_disappearance/prior_errors/02b2_2/mec_covariance.root </filename>
         <objname>    frac_cov                                                     </objname>    
         <objtype>    TMatrixD                                                     </objtype>
       </covariance_matrix>
