@@ -34,7 +34,7 @@
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/Likelihood.h"
+#include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
 
   LOG("valor_sbn", pNOTICE) << *Rnd::Instance();
 
-  int max_universes = 1000;
+  int max_universes = 499;
 
   // Get model & configure
   // Make an elements without reading the MC

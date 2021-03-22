@@ -47,7 +47,7 @@
 #include "valor/FitCore/FitParamList.h"
 #include "valor/FitCore/FitModelABC.h"
 #include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/Likelihood.h"
+#include "valor/FitCore/FitInputs.h"
 #include "valor/FitCore/FitterABC.h"
 #include "valor/FitCore/UtlFit.h"
 #include "valor/FitCore/CompoundFitElements.h"
@@ -111,6 +111,20 @@ std::vector<std::string> proposal_xsec =
   "genie_NonResRvnNC2pi_Genie",
   "genie_NonResRvbarnNC2pi_Genie",
   "genie_NonResRvbarpNC2pi_Genie"
+};
+std::vector<std::string> OG_proposal_xsec = 
+{ "genie_ccresAxial_Genie",
+  "genie_ncresAxial_Genie",
+  "genie_qema_Genie",
+  "genie_NC_Genie",
+  "genie_NonResRvbarp1piAlt_Genie",
+  "genie_NonResRvbarp1pi_Genie",
+  "genie_NonResRvbarp2piAlt_Genie",
+  "genie_NonResRvbarp2pi_Genie",
+  "genie_NonResRvp1piAlt_Genie",
+  "genie_NonResRvp1pi_Genie",
+  "genie_NonResRvp2piAlt_Genie",
+  "genie_NonResRvp2pi_Genie",
 };
 std::vector<std::string> flux_uncorr = 
 { "expskin_FluxUnisim",
@@ -179,6 +193,21 @@ std::vector<std::string> proposal_xsec_short =
   "NonResRvbarnNC2pi",
   "NonResRvbarpNC2pi"
 };
+std::vector<std::string> OG_proposal_xsec_short = 
+{ "ccresAxial",
+  "ncresAxial",
+  "qema",
+  "NC",
+  "NonResRvbarp1piAlt",
+  "NonResRvbarp1pi",
+  "NonResRvbarp2piAlt",
+  "NonResRvbarp2pi",
+  "NonResRvp1piAlt",
+  "NonResRvp1pi",
+  "NonResRvp2piAlt",
+  "NonResRvp2pi",
+};
+
 std::vector<std::string> flux_uncorr_short = 
 { "expskin",
   "horncurrent",
@@ -235,7 +264,8 @@ int main(int argc, char ** argv)
   string arg_detector     = arg.GetString("detector");
   string arg_kine_var     = arg.GetString("kine-var");
   string tree_name        = arg.GetString("tree-name");
-  
+  string param_name       = arg.GetString("param-name");
+
   Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
   LOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
   
@@ -272,20 +302,18 @@ int main(int argc, char ** argv)
   LOG("universe_variation_tweaks", pINFO) << " Successfully accessed the relevant model for binning information";
   
   std::vector<std::string> systematics, file_systematics;
-  if (params_to_tweak == "xsec") {
-    systematics      = modern_xsec;
-    systematics.insert(systematics.end(), proposal_xsec.begin(), proposal_xsec.end());
-    file_systematics = modern_xsec_short;
-    file_systematics.insert(file_systematics.end(), proposal_xsec_short.begin(), proposal_xsec_short.end());
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all xsec systematics ";
+  if (params_to_tweak == "proposal_xsec") {
+    systematics      = proposal_xsec;
+    file_systematics = proposal_xsec_short;
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
     for(const std::string &s : file_systematics){
       LOG("universe_variation_tweaks", pINFO) << s;
     }
   }
-  else if (params_to_tweak == "proposal_xsec") {
-    systematics      = proposal_xsec;
-    file_systematics = proposal_xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
+  else if (params_to_tweak == "OG_proposal_xsec") {
+    systematics      = OG_proposal_xsec;
+    file_systematics = OG_proposal_xsec_short;
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking OG_proposal_xsec systematics ";
     for(const std::string &s : file_systematics){
       LOG("universe_variation_tweaks", pINFO) << s;
     }
@@ -345,6 +373,22 @@ int main(int argc, char ** argv)
     for(const std::string &s : file_systematics){
       LOG("universe_variation_tweaks", pINFO) << s;
     }
+  }
+  else if (params_to_tweak == "choose") {
+    file_systematics.push_back(param_name);
+    if (std::find(modern_xsec_short.begin(), modern_xsec_short.end(), param_name) != modern_xsec_short.end() ||
+        std::find(proposal_xsec_short.begin(), proposal_xsec_short.end(), param_name) != proposal_xsec_short.end() ||
+        std::find(OG_proposal_xsec_short.begin(), OG_proposal_xsec_short.end(), param_name) != OG_proposal_xsec_short.end()){
+        systematics.push_back("genie_" + param_name + "_Genie");
+    }
+    else if (std::find(flux_uncorr_short.begin(), flux_uncorr_short.end(), param_name) != flux_uncorr_short.end()){
+        systematics.push_back(param_name + "_FluxUnisim");
+    }
+    else {
+        LOG("universe_variation_tweaks",pFATAL) << "Unknown input systematic: "<< param_name; 
+        util::Die(-1);
+    }
+    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking single systematic " << param_name;
   }
   else {
     LOG("universe_variation_tweaks",pFATAL) << "Unknown systematics list: "<< params_to_tweak;
@@ -414,12 +458,11 @@ int main(int argc, char ** argv)
   analysis_tree->GetEntry(0);
   for(const std::string s : systematics){
     std::vector<int> universe_ids;
-    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and " << branch_n_universes.at(s) << " possible universes";
-    /*
+    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
     if(ntoys > branch_n_universes.at(s)){
       LOG("valor_sbn",pFATAL) << " Too many toys: " << ntoys << ", there are only " << branch_n_universes.at(s) << " entries for this parameter" << s;
       util::Die(-1);
-    }*/
+    }
     for(int itoy = 0; itoy < ntoys; ++itoy){
       LOG("universe_variation_tweaks",pDEBUG) << " Current systematic has " << branch_n_universes.at(s) << " so will generate a random number from that range";
       int iuni = rand() % branch_n_universes.at(s);
