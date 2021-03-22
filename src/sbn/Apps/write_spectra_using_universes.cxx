@@ -141,7 +141,7 @@ int main(int argc, char ** argv)
 
   LOG("valor_sbn", pNOTICE) << *Rnd::Instance();
 
-  int max_universes = 499;
+  int max_universes = 1000;
 
   // Get model & configure
   // Make an elements without reading the MC

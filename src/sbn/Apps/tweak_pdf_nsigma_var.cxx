@@ -100,12 +100,14 @@ int main(int argc, char ** argv)
   string output_rootfile  = arg.GetString("output");
   string params_to_tweak  = arg.GetString("params");
   string kinevar_str      = arg.GetString("kinevar");
+  string sample           = arg.GetString("sample");
   string universe_file    = arg.GetString("universe-spectra");
 
   TString universe_spectra(universe_file.data());
   bool sigma_from_universes = false;
   std::vector<double> nsigmas;
-  const std::vector<int> &integer_sigmas = {-3,-2,-1,0,1,2,3};
+//  const std::vector<int> &integer_sigmas = {-3,-2,-1,0,1,2,3};
+  const std::vector<int> &integer_sigmas = {1};
   int nsigma_int = -999;
 
   // If a file containing the universe spectra has been specified, 
@@ -124,23 +126,29 @@ int main(int argc, char ** argv)
     }
   }
   else{
-    nsigma_int = static_cast<int>(round(nsigma));
-    nsigmas.push_back(nsigma);
+    if(nsigma > 0){
+      nsigma_int = static_cast<int>(round(nsigma));
+      nsigmas.push_back(nsigma);
+    }
+    else{
+      for(const int &i: integer_sigmas){
+        nsigmas.push_back(static_cast<double>(i));
+      }
+      if(nsigmas.size() == 1)
+        nsigma_int = integer_sigmas.at(0);
+      assert(nsigmas.size() == integer_sigmas.size());
+    }
   }
 
   // Re-fill the nsigmas vector to map correctly to the order in integer_sigmas
   if(sigma_from_universes){
     std::vector<double> temp_nsigmas;
-    for(const int &i : integer_sigmas){
-      double sigma_diff = 999.;
-      double closest_sigma = 999.;
-      for(const double &u : nsigmas){
-        if(abs(u-i) < sigma_diff){
-          sigma_diff = abs(u-i);
-          closest_sigma = u;
-        }
-      }
-      temp_nsigmas.push_back(closest_sigma);
+    for(unsigned int i = 0; i < nsigmas.size(); ++i){
+      // Check that we are looking at an even integer of the vector (will correpond to integer knot values
+      const double u = nsigmas.at(i);
+      if(i % 2 != 0) continue;
+      std::cout << " Entry : " << i << " with value: " << u << " is being added to the nsigma vector" << std::endl;
+      temp_nsigmas.push_back(u);
     }
     nsigmas.clear();
     nsigmas = temp_nsigmas;
@@ -207,7 +215,8 @@ int main(int argc, char ** argv)
   // replace [NSIG] with 'all-sigma'
   TFile * outfile = NULL;
   output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
-  if(sigma_from_universes)
+  output_rootfile = util::ReplaceAll(output_rootfile,"[SAMPLE]",sample);
+  if(nsigmas.size() > 1)
     output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", "all_sigma");
   else
     output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma_int)+"sigma").c_str());
@@ -231,6 +240,9 @@ int main(int argc, char ** argv)
     if(!util::IsSystematic(p)) { continue; }
     double bestfit = fp->InitValue(p);
     double sigma_err = syst->OneSigmaError(p);
+    std::cout << " 1 sigma error: " << sigma_err << std::endl;
+    // Counter to link the sigma values with the integer version
+    unsigned int n = 0;
     for(const double &nsig : nsigmas){
       double tweak_p = bestfit + (nsig * sigma_err);
       double tweak_m = bestfit - (nsig * sigma_err);
@@ -242,13 +254,15 @@ int main(int argc, char ** argv)
       // Get the number of sigma as a rounded integer for naming 
       // (assuming we only ever vary by integer values of sigma but may want to 
       // select exactly the variation given by a universe)
-      nsigma_int = static_cast<int>(round(nsig));
+//      nsigma_int = static_cast<int>(round(nsig));
+      nsigma_int = integer_sigmas.at(n);
 
       LOG("valor_sbn", pNOTICE)
         << "Tweak systematic parameter: "  << util::NameRegistry::Instance()->ParamAsString(p)
         << "\n  Nominal value = "          << bestfit
         << "\n  sigma error = "            << sigma_err;
-      if(sigma_from_universes){
+      
+      if(nsigmas.size() > 1){
         if(nsig < 0)
           LOG("valor_sbn", pNOTICE) << "\n  nominal " << nsig << " sigma tweak = " << tweak_p;
         else
@@ -269,7 +283,7 @@ int main(int argc, char ** argv)
       
       // If we are getting the values of sigma from the universes then only generate a single pdf
       // and determine whether it is positive or negative
-      if(sigma_from_universes){
+      if(nsigmas.size() > 1){
         if(nsig < 0 && nsigma_int != 0)
           GeneratePDFTweaked(model, cm, fp, kv, p, tweak_p, outfile, ("m"+std::to_string(abs(nsigma_int))).data());
         else
@@ -285,6 +299,7 @@ int main(int argc, char ** argv)
           GeneratePDFTweaked(model, cm, fp, kv, p, tweak_m, outfile, ("m"+std::to_string(abs(nsigma_int))).data());
         }
       }
+      n++;
     } // loop over nsigmas
   } // loop over params
 
@@ -339,6 +354,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
     if (util::IsReco(kv)) {
       TString name_tot     = TString::Format("nom_pdfts_sb_rf_%s_%s", model_name.c_str(), util::AsString(kv).c_str());
       TH1D * curr_pdf_tot = (TH1D*) array->FindObject(name_tot.Data());
+      std::cout << " Current integral: " << curr_pdf_tot->Integral() << std::endl;
       if (!curr_pdf_tot) {
         cerr<<"Could not find histogram "<<name_tot<<endl;
         exit(-1);
@@ -389,6 +405,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   Option_t * write_opt = "pdfts_rf+SB";
   if (util::IsTrue(kv)) { write_opt = "pdfcs_rf+SB"; }    // The true PDFs don't have totals in GSSFM, only the mode breakdown
   model->Write(array,"curr",write_opt);
+  array->Print();
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
