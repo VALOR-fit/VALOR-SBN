@@ -103,47 +103,4 @@
   <mode> numubartonuebarELScat         </mode>
   <mode> cosmic                        </mode>
   <mode> dirt                          </mode>
-
-  <mode> nueCCMpi                      </mode>
-  <mode> nueCCmisc                     </mode>
-  <mode> nueCCDIS                      </mode>
-  <mode> nuebarCCMpi                   </mode>
-  <mode> nuebarCCmisc                  </mode>
-  <mode> nuebarCCDIS                   </mode>
-  <mode> nuebarCCIMD                   </mode>
-  <mode> nuetonumuCC2pi0               </mode>
-  <mode> nuetonumuCC1pi0               </mode>
-  <mode> nuetonumuCCoth                </mode>
-  <mode> nuetonumuCC2piC               </mode>
-  <mode> nuetonumuCCIMD                </mode>
-  <mode> nuetonumuCCcoh                </mode>
-  <mode> nuetonumuCCDIS                </mode>
-  <mode> nuetonumuCCpiCpi0             </mode>
-  <mode> nuetonumuCCELscat             </mode>
-  <mode> numuCCmisc                    </mode>
-  <mode> numubartonutaubarCC2piC       </mode>
-  <mode> numuCCDIS                     </mode>
-  <mode> numuCCMpi                     </mode>
-  <mode> numubartonutaubarCC1pi0       </mode>
-  <mode> numubarCCDIS                  </mode>
-  <mode> nuetonutauCCQE                </mode>
-  <mode> nuetonumuCCMpi                </mode>
-  <mode> nuetonutauCCpiCpi0            </mode>
-  <mode> nuetonutauCCMEC               </mode>
-  <mode> nuetonutauCC1piC              </mode>
-  <mode> nuetonutauCC1pi0              </mode>
-  <mode> nuetonutauCC2piC              </mode>
-  <mode> nuetonutauCC2pi0              </mode>
-  <mode> nuetonutauCCcoh               </mode>
-  <mode> nuetonutauCCELScat            </mode>
-  <mode> nuetonutauCCDIS               </mode>
-  <mode> nuetonutauCCMPI               </mode>
-  <mode> nuetonutauCCoth               </mode>
-  <mode> numubarCCMpi                  </mode>
-  <mode> numubarCCmisc                 </mode>
-  <mode> nuetonumuCCmisc               </mode>
-  <mode> nuebartonumubarCCcoh          </mode>
-  <mode> nuebartonumubarCCpiCpi0       </mode>
-
-
 </mode_list>

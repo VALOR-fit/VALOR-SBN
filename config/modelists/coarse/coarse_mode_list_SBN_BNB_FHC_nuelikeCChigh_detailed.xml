@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<coarse_mode_list name="BNB_FHC_nuelikeCChigh">
+<coarse_mode_list name="BNB_FHC_nuelikeCChigh_detailed">
   <coarse_mode>
     <name>       nueCCQE  </name>
     <line_col>   1        </line_col>
@@ -41,8 +41,7 @@
     <line_col>   1         </line_col>
     <fill_col>   797       </fill_col>
     <fill_sty>   3144      </fill_sty>
-  </coarse_mode>
-  
+  </coarse_mode> 
 
 
   <coarse_mode>
@@ -51,7 +50,6 @@
     <fill_col>   923       </fill_col>
     <fill_sty>   3017      </fill_sty>
   </coarse_mode>
-  
 
 
   <coarse_mode>
@@ -61,27 +59,21 @@
     <fill_sty>   3018    </fill_sty>
   </coarse_mode>
   
+
   <coarse_mode>
     <name>       numubarCC  </name>
-    <line_col>   1       </line_col>
-    <fill_col>   825     </fill_col>
-    <fill_sty>   3018    </fill_sty>
-  </coarse_mode>
+    <line_col>   1          </line_col>
+    <fill_col>   825        </fill_col>
+    <fill_sty>   3018       </fill_sty>
+  </coarse_mode> 
+
 
   <coarse_mode>
     <name>       oscnueCC  </name>
-    <line_col>   1       </line_col>
-    <fill_col>   830     </fill_col>
-    <fill_sty>   3018    </fill_sty>
+    <line_col>   1         </line_col>
+    <fill_col>   830       </fill_col>
+    <fill_sty>   3018      </fill_sty>
   </coarse_mode>
-
-  <coarse_mode>
-    <name>       nutaunutaubarCC  </name>
-    <line_col>   1       </line_col>
-    <fill_col>   840     </fill_col>
-    <fill_sty>   3018    </fill_sty>
-  </coarse_mode>
-
 
   <coarse_mode>
     <name>       NC0pi   </name>
@@ -95,13 +87,14 @@
     <line_col>   1       </line_col>
     <fill_col>   633     </fill_col>
     <fill_sty>   3018    </fill_sty>
-  </coarse_mode>
-   
+  </coarse_mode> 
+
+
   <coarse_mode>
     <name>       cosmic  </name>
     <line_col>   1       </line_col>
-    <fill_col>   0     </fill_col>
-    <fill_sty>   1001    </fill_sty>
+    <fill_col>   0       </fill_col>
+    <fill_sty>   3001    </fill_sty>
   </coarse_mode>
- 
+
 </coarse_mode_list>
