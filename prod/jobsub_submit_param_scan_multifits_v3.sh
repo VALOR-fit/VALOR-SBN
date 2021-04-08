@@ -97,6 +97,7 @@ FIXEDATVALUE4="none"
 FIXEDVALUE4=0
 EXCLUSIONSCRIPT=""
 CHISQSURFACE=""
+FITPARAMOPT=""
 
 valorfailed=false
 
@@ -265,6 +266,13 @@ while [ $# -gt 0 ]; do
       fi
       ;;
 
+      --fit-param-opt )
+      if [ $# -gt 1 ]; then
+	  FITPARAMOPT=$2
+	  shift
+      fi
+      ;;
+
 
     --pot-override )
       if [ $# -gt 1 ]; then
@@ -416,6 +424,7 @@ echo "NJOBS = $NJOBS"
 echo "PRIORFILE = $PRIORFILE"
 echo "EXCLUSIONSCRIPT = $EXCLUSIONSCRIPT"
 echo "CHISQSURFACE = $CHISQSURFACE"
+echo "FITPARAMOPT = $FITPARAMOPT"
 
 if [ $INTERACTIVE -eq 1 ]; then
   rm -rf $PWD/scratch
@@ -730,7 +739,7 @@ do
     --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
     --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct \
     $SHOULDSTORE --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE \
-    --pot-override $POTOVERIDE --osc-prior-file $PRIORFILE ";
+    --pot-override $POTOVERIDE --osc-prior-file $PRIORFILE --fit-param-opt $FITPARAMOPT" ;
 
   if [ $DISCOVERY == 0 ]; then 
     arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant  --fix-at-$PARAM1 $VAL1 --fix-$PARAM1 ";
