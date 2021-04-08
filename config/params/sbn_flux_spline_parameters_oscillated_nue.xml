@@ -1,0 +1,300 @@
+<?xml version="1.0"?>
+<param_list name="sbn_flux_spline_parameters">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  horncurrent_FluxUnisim </simple>
+      <long>    Horn current </long>
+      <rootex>  Horn current </rootex>
+      <tex>     Horn current </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  expskin_FluxUnisim </simple>
+      <long>    Skin Effect </long>
+      <rootex>  Skin Effect </rootex>
+      <tex>     Skin Effect </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  nucleoninexsec_FluxUnisim </simple>
+      <long>    Nucleon Inelastic Cross-Section </long>
+      <rootex>  Nucleon Inelastic #sigma </rootex>
+      <tex>     Nucleon Inelastic \sigma </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  nucleonqexsec_FluxUnisim </simple>
+      <long>    Nucleon Quasielastic Cross-Section </long>
+      <rootex>  Nucleon Quasielastic #sigma </rootex>
+      <tex>     Nucleon Quasielastic \sigma </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  nucleontotxsec_FluxUnisim </simple>
+      <long>    Nucleon Total Cross-Section </long>
+      <rootex>  Nucleon Total #sigma </rootex>
+      <tex>     Nucleon Total \sigma </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  pioninexsec_FluxUnisim </simple>
+      <long>    Pion Inelastic Cross-Section </long>
+      <rootex>  Pion Inelastic #sigma </rootex>
+      <tex>     Pion Inelastic \sigma </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  pionqexsec_FluxUnisim </simple>
+      <long>    Pion Quasielastic Cross-Section </long>
+      <rootex>  Pion Quasielastic #sigma </rootex>
+      <tex>     Pion Quasielastic \sigma </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  piontotxsec_FluxUnisim </simple>
+      <long>    Pion Total Cross-Section </long>
+      <rootex>  Pion Total #sigma </rootex>
+      <tex>     Pion Total \sigma </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  nue       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+</param_list>

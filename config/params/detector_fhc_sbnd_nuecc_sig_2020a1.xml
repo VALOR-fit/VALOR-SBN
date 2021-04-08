@@ -32,7 +32,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -68,7 +68,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -104,7 +104,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -140,7 +140,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -176,7 +176,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -212,7 +212,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -248,7 +248,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -284,7 +284,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
@@ -320,7 +320,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> nueany         </flav_final>
