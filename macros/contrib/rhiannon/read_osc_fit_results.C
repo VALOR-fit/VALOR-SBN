@@ -22,7 +22,8 @@ void read_osc_fit_results(const char * filename)
   TObjArray * bfparam_array = 0; // an array of optimum FitParamList for all fits performed to each toy MC
   TObjArray * spectra_array = 0; // an array of all toy-MC data and best-fit predictions for all fits performed to each toy MC
 
-  TTree * fitnt = (TTree*)f.Get("valor_dune_nd_ntp");
+  //TTree * fitnt = (TTree*)f.Get("valor_dune_nd_ntp");
+  TTree * fitnt = (TTree*)f.Get("valor_fit_ntp");
   fitnt->SetBranchAddress("best_fit_params", &gbfparm);
   fitnt->SetBranchAddress("true_params",     &iparm);
   fitnt->SetBranchAddress("best_fit_model",  &bfparam_array);
@@ -30,7 +31,7 @@ void read_osc_fit_results(const char * filename)
 
   TCanvas * c = new TCanvas("c","",20,20,500,500);
 
-  for(int i=0; i<2; i++) {
+  for(int i=0; i<1; i++) {
     fitnt->GetEntry(i);
     cout << "*******************************************************" << endl;
     cout << "Experiment: # " << i << endl;

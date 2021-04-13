@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2020a1_1">
+   
+    <element name="sbn_nd_fhc_numuCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_nd.xml          </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+    <element name="sbn_ub_fhc_numuCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_ub.xml          </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+    <element name="sbn_fd_fhc_numuCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c2_1_sbn_fd.xml          </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+  
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml   </filename>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue_fine.xml             </filename>
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue_fine.xml             </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue_fine.xml             </filename>
+    <filename desc="flux_response_parameters">         params/sbn_flux_spline_parameters.xml         </filename>
+    <filename desc="sbn_interaction_parameters">       params/sbn_interaction_parameters.xml         </filename>
+    <filename desc="sbn_modern_int_parameters">        params/sbn_modern_interaction_parameters.xml  </filename>
+    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml              </filename>
+    <filename desc="sbnd_det_signal_parameters">       params/detector_fhc_sbnd_numucc_sig_2020a1.xml    </filename>
+    <filename desc="sbnd_det_background_parameters">   params/detector_fhc_sbnd_numucc_bkg_2020a1.xml    </filename>
+    <!--filename desc="uboone_det_signal_parameters">     params/detector_fhc_uboone_numucc_sig_2020a1.xml  </filename>
+    <filename desc="uboone_det_background_parameters"> params/detector_fhc_uboone_numucc_bkg_2020a1.xml  </filename-->
+    <filename desc="icarus_det_signal_parameters">     params/detector_fhc_icarus_numucc_sig_2020a1.xml  </filename>
+    <filename desc="icarus_det_background_parameters"> params/detector_fhc_icarus_numucc_bkg_2020a1.xml  </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    <group name="flux">
+      <format> SBNFlux_EtrueFine.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/hadronic_flux_parameter_covariance.root </filename>
+        <objname>    frac_cov            </objname>    
+        <objtype>    TMatrixD            </objtype>
+      </covariance_matrix> 
+    </group>
+
+    <group name="flux">
+      <format> SBNFluxResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/flux_spline_covariance.root </filename>
+        <objname>    cov                                                                  </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/flux_spline_covariance.root </filename>
+        <objname>    untuned                                                              </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/flux_spline_covariance.root </filename>
+        <objname>    nominal                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+      <format> SBNInteractionResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/proposal_interaction_spline_covariance.root </filename>
+        <objname>    cov                                                                                  </objname>    
+        <objtype>    TMatrixD                                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/proposal_interaction_spline_covariance.root </filename>
+        <objname>    untuned                                                                              </objname>    
+        <objtype>    TMatrixD                                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/proposal_interaction_spline_covariance.root </filename>
+        <objname>    nominal                                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+      <format> SBNModernInteractionResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/modern_interaction_spline_covariance.root </filename>
+        <objname>    cov                                                                                </objname>    
+        <objtype>    TMatrixD                                                                           </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/modern_interaction_spline_covariance.root </filename>
+        <objname>    untuned                                                                            </objname>    
+        <objtype>    TMatrixD                                                                           </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/modern_interaction_spline_covariance.root </filename>
+        <objname>    nominal                                                                            </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+
+      <format> SBNMEC.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/mec_100pct_covariance.root </filename>
+        <objname>    frac_cov                                                            </objname>    
+        <objtype>    TMatrixD                                                            </objtype>
+      </covariance_matrix>
+
+    </group>
+    
+    <group name="detector">
+      <format> sbn_detector_fhc_numucc_2020a1_no_ub.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03c2/efficiency_error_matrix_32x32_type3_cor2.00pct_bulkuncor0.50pct_allNCbkguncor2.00pct.root </filename>
+        <objname>    frac_cov_total      </objname>    
+        <objtype>    TMatrixD            </objtype>
+      </covariance_matrix> 
+    </group>
+
+  </systematics>
+
+</valor> 

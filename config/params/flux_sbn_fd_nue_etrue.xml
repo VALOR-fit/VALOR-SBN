@@ -1,0 +1,643 @@
+<?xml version="1.0"?>
+<param_list name="toy_sbn">
+
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_00  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.2, 0.35  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_01  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.35, 0.5  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_02  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.5, 0.65  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_03  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.65, 0.8  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_04  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.8, 0.95  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_05  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.95, 1.1  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_06  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 1.1, 1.3  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_07  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  1.3, 1.5  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_08  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  1.5, 1.75  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_09  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  1.75, 2.0  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_nue_10  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  2.0 ,3.0  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  nue  </flav_init>
+      <flav_final> nue  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_00  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.2, 0.35  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_01  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.35, 0.5  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_02  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.5, 0.65  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_03  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.65, 0.8  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_04  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.8, 0.95  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_05  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.95, 1.1  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_06  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 1.1, 1.3  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_07  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  1.3, 1.5  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_08  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  1.5, 1.75  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_09  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  1.75, 2.0  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  sbn_fd_flux_numu_10  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  2.0 ,3.0  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  flux  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  elikehighres  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  numu  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  0.0, inf  </limits>
+  </param>
+
+  
+</param_list>

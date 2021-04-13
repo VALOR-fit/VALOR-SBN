@@ -33,7 +33,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -69,7 +69,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -105,7 +105,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -141,7 +141,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -177,7 +177,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -213,7 +213,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -249,7 +249,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -285,7 +285,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -321,7 +321,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  allcc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> numuany        </flav_final>
@@ -361,7 +361,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -397,7 +397,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -433,7 +433,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -469,7 +469,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -505,7 +505,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -541,7 +541,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -577,7 +577,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -613,7 +613,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -649,7 +649,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1gamma       </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -689,7 +689,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -725,7 +725,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -761,7 +761,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -797,7 +797,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -833,7 +833,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -869,7 +869,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -905,7 +905,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -941,7 +941,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -977,7 +977,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  nc1pi0         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1017,7 +1017,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1053,7 +1053,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1089,7 +1089,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1125,7 +1125,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1161,7 +1161,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1197,7 +1197,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1233,7 +1233,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1269,7 +1269,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1305,7 +1305,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  ncoth          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1345,7 +1345,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1381,7 +1381,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1417,7 +1417,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1453,7 +1453,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1489,7 +1489,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1525,7 +1525,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1565,7 +1565,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1601,7 +1601,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1637,7 +1637,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1673,7 +1673,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1709,7 +1709,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -1745,7 +1745,7 @@
     <apply_to>
       <detector>   microboone     </detector>
       <beam>       fhc            </beam>
-      <selection>  elikehighres   </selection>
+      <selection>  all   </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>

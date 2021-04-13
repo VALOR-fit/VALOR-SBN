@@ -15,7 +15,8 @@ include $(VALOR_EXPT)/make/Make.include
 SBN_LIBRARIES =
 
 TGT = make_sbncode_minidst \
-      make_interaction_splines \
+      make_caf_minidst \
+      make_xsec_splines \
       make_flux_splines \
       universe_variation_tweaks \
       write_spectra_using_universes
@@ -35,6 +36,20 @@ endif
 else
 	@echo "Skipping make_sbncode_minidst due to no SBNanalysis"
 endif
+
+# Generate DSTs from CAF files
+#
+make_caf_minidst: FORCE
+#ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_caf_minidst.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES) 
+	$(LD) $(LDFLAGS) make_caf_minidst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
+else
+	@echo "Skipping make_caf_minidst due to no GENIE"
+endif
+#else
+#	@echo "Skipping make_caf_minidst due to no SBNanalysis"
+#endif
 
 # Generate DSTs for RecoSelection fit
 #
@@ -64,23 +79,31 @@ endif
 # Generate SBN interaction splines
 # Probably don't require the GENIE dependence but method isn't finalised yet so keeping just in case
 #
-make_interaction_splines: FORCE
+make_xsec_splines: FORCE
 ifdef GENIE
-	$(CXX) $(CXXFLAGS) -c make_interaction_splines.cxx $(GINCLUDES)
-	$(LD) $(LDFLAGS) make_interaction_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_interaction_splines
+	$(CXX) $(CXXFLAGS) -c make_xsec_splines.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_xsec_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
 else
-	@echo "Skipping make_interaction_splines due to no GENIE"
+	@echo "Skipping make_xsec_splines due to no GENIE"
 endif
 
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation
 #
 universe_variation_tweaks: FORCE
-	$(CXX) $(CXXFLAGS) -c universe_variation_tweaks.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) universe_variation_tweaks.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c universe_variation_tweaks.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) universe_variation_tweaks.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
+else
+	@echo "Skipping universe_variation_tweaks due to no GENIE"
+endif
 
 write_spectra_using_universes: FORCE
-	$(CXX) $(CXXFLAGS) -c write_spectra_using_universes.cxx $(INCLUDES)
-	$(LD) $(LDFLAGS) write_spectra_using_universes.o $(LIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c write_spectra_using_universes.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) write_spectra_using_universes.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
+else
+	@echo "Skipping write_spectra_using_universes due to no GENIE"
+endif
 
 
 #################### CLEANING
@@ -91,16 +114,18 @@ purge: FORCE
 clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_sbncode_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
-	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_interaction_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
 
 distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_sbncode_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst
-	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_interaction_splines
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-write_spectra_using_universes
