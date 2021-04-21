@@ -6,7 +6,7 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-void rj_plot_pdf(
+void plot_pdf_tom(
   const char * config_file,
   const char * filename,
   const char * tag = "valor", // Used to find the name of the histograms in the PDF files
