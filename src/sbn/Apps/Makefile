@@ -18,8 +18,9 @@ TGT = make_sbncode_minidst \
       make_caf_minidst \
       make_xsec_splines \
       make_flux_splines \
-      universe_variation_tweaks \
       write_spectra_using_universes
+
+#universe_variation_tweaks \
 
 all: $(TGT)
 

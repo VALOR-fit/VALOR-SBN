@@ -9,13 +9,13 @@
   <mode> numuCCcoh                     </mode>
   <mode> numuCCELScat                  </mode>
   <mode> numuCCoth                     </mode>
-  <mode> numuNCEL                      </mode>
-  <mode> numuNCMEC                     </mode>
+  <!--mode> numuNCEL                      </mode>
+  <mode> numuNCMEC                     </mode-->
   <mode> numuNC1piC                    </mode>
   <mode> numuNC1pi0                    </mode>
-  <mode> numuNC2piC                    </mode>
+  <!--mode> numuNC2piC                    </mode>
   <mode> numuNC2pi0                    </mode>
-  <mode> numuNCpiCpi0                  </mode>
+  <mode> numuNCpiCpi0                  </mode-->
   <mode> numuNCcoh                     </mode>
   <mode> numuNC1Gamma                  </mode>
   <mode> numuNCELScat                  </mode>
@@ -30,13 +30,13 @@
   <mode> numubarCCcoh                  </mode>
   <mode> numubarCCELScat               </mode>
   <mode> numubarCCoth                  </mode>
-  <mode> numubarNCEL                   </mode>
-  <mode> numubarNCMEC                  </mode>
+  <!--mode> numubarNCEL                   </mode>
+  <mode> numubarNCMEC                  </mode-->
   <mode> numubarNC1piC                 </mode>
   <mode> numubarNC1pi0                 </mode>
-  <mode> numubarNC2piC                 </mode>
+  <!--mode> numubarNC2piC                 </mode>
   <mode> numubarNC2pi0                 </mode>
-  <mode> numubarNCpiCpi0               </mode>
+  <mode> numubarNCpiCpi0               </mode-->
   <mode> numubarNCcoh                  </mode>
   <mode> numubarNC1Gamma               </mode>
   <mode> numubarNCELScat               </mode>
@@ -50,13 +50,13 @@
   <mode> nueCCpiCpi0                   </mode>
   <mode> nueCCcoh                      </mode>
   <mode> nueCCoth                      </mode>
-  <mode> nueNCEL                       </mode>
-  <mode> nueNCMEC                      </mode>
+  <!--mode> nueNCEL                       </mode>
+  <mode> nueNCMEC                      </mode-->
   <mode> nueNC1piC                     </mode>
   <mode> nueNC1pi0                     </mode>
-  <mode> nueNC2piC                     </mode>
+  <!--mode> nueNC2piC                     </mode>
   <mode> nueNC2pi0                     </mode>
-  <mode> nueNCpiCpi0                   </mode>
+  <mode> nueNCpiCpi0                   </mode-->
   <mode> nueNCcoh                      </mode>
   <mode> nueNC1Gamma                   </mode>
   <mode> nueNCoth                      </mode>
@@ -70,13 +70,13 @@
   <mode> nuebarCCpiCpi0                </mode>
   <mode> nuebarCCcoh                   </mode>
   <mode> nuebarCCoth                   </mode>
-  <mode> nuebarNCEL                    </mode>
-  <mode> nuebarNCMEC                   </mode>
+  <!--mode> nuebarNCEL                    </mode>
+  <mode> nuebarNCMEC                   </mode-->
   <mode> nuebarNC1piC                  </mode>
   <mode> nuebarNC1pi0                  </mode>
-  <mode> nuebarNC2piC                  </mode>
+  <!--mode> nuebarNC2piC                  </mode>
   <mode> nuebarNC2pi0                  </mode>
-  <mode> nuebarNCpiCpi0                </mode>
+  <mode> nuebarNCpiCpi0                </mode-->
   <mode> nuebarNCcoh                   </mode>
   <mode> nuebarNC1Gamma                </mode>
   <mode> nuebarNCoth                   </mode>
@@ -103,4 +103,35 @@
   <mode> numubartonuebarELScat         </mode>
   <mode> cosmic                        </mode>
   <mode> dirt                          </mode>
+
+  <mode> numubarCCmisc                 </mode>
+  <mode> numubarCCMpi                  </mode>
+  <mode> nuebarCCMpi                   </mode>
+  <mode> numubarCCDIS                  </mode>
+  <mode> numutonutauCCQE               </mode>
+  <mode> nuebarCCIMD                   </mode>
+  <mode> numutonutauCCpiCpi0           </mode>
+  <mode> nueCCMpi                      </mode>
+  <mode> nueCCmisc                     </mode>
 </mode_list>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
