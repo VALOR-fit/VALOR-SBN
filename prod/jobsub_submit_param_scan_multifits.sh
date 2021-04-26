@@ -592,14 +592,14 @@ do
   else 
     arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant "
     arguments=$arguments$standard_options
-    argparam1=" --input-$PARAM1 $VAL1 \
-      --fix-at-$PARAM1 $PARAM1NULLHYP \
+    argparam1=" --input-$PARAM1 $PARAM1NULLHYP \
+      --fix-at-$PARAM1 $VAL1 \
       --fix-$PARAM1 ";
     arguments=$arguments$argparam1
     if  [ "$ONLY1DSCAN" = false  ]; then
       arguments=$arguments
-      argparam2=" --input-$PARAM2 $VAL2 \
-        --fix-at-$PARAM2 $PARAM2NULLHYP \
+      argparam2=" --input-$PARAM2 $PARAM2NULLHYP \
+        --fix-at-$PARAM2 $VAL2 \
         --fix-$PARAM2 ";
       arguments=$arguments$argparam2
     fi

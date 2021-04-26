@@ -1,0 +1,22 @@
+<mode_list name="OscLowE">
+  <mode> numutonueCCQE                 </mode>
+  <mode> numutonueCCMEC                </mode>
+  <mode> numutonueCC1piC               </mode>
+  <mode> numutonueCC1pi0               </mode>
+  <mode> numutonueCC2piC               </mode>
+  <mode> numutonueCC2pi0               </mode>
+  <mode> numutonueCCpiCpi0             </mode>
+  <mode> numutonueCCcoh                </mode>
+  <mode> numutonueCCoth                </mode>
+  <mode> numutonueELScat               </mode>
+  <mode> numubartonuebarCCQE           </mode>
+  <mode> numubartonuebarCCMEC          </mode>
+  <mode> numubartonuebarCC1piC         </mode>
+  <mode> numubartonuebarCC1pi0         </mode>
+  <mode> numubartonuebarCC2piC         </mode>
+  <mode> numubartonuebarCC2pi0         </mode>
+  <mode> numubartonuebarCCpiCpi0       </mode>
+  <mode> numubartonuebarCCcoh          </mode>
+  <mode> numubartonuebarCCoth          </mode>
+  <mode> numubartonuebarELScat         </mode>
+</mode_list>

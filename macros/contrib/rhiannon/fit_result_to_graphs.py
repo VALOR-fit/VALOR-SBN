@@ -29,22 +29,22 @@ env  =  valor.Env.Instance()
 colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.kCyan+2,]
 
 # Add these as command line arguments
-param_x = conv.kPhypMixingMuMu # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
+param_x = conv.kPhypMixingMuE # (numu disappearance), conv.kPhypMixingMuE for mu-e appearance, conv.kPhypMixingEEE for e-e disappearance
 param_y = conv.kPhypDm41sq
 
-ex_x_min = 1E-3 #exlusion
+ex_x_min = 1E-5 #exlusion
 ex_x_max = 1
 
-in_x_min = 1E-2 #allowed
-in_x_max = 5E-1
+in_x_min = 4E-2 #allowed
+in_x_max = 1E-1
 
 x_npoints = 40
 
 ex_y_min = 1E-2 #exlusion
 ex_y_max = 1E2
 
-in_y_min = 4E-1 #allowed
-in_y_max = 4.
+in_y_min = 9E-1 #allowed
+in_y_max = 2.
 
 y_npoints = 40
 
@@ -54,7 +54,7 @@ eps = 1E-10 # a small number to guarantee our point goes in its bin
 
 def GetLoggedHist(filename,exclusion):
   print(filename)
-  chain = R.TChain("valor_dune_nd_ntp")
+  chain = R.TChain("valor_fit_ntp")
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())
@@ -84,8 +84,10 @@ def GetLoggedHist(filename,exclusion):
     y = true.Value(param_y)
     if exclusion is False:
       print "Exclusion is false, setting inclusion parameters"
-      x = fp.CurrValue(param_x)
-      y = fp.CurrValue(param_y)
+     # x = fp.CurrValue(param_x)
+      x = true.Value(param_x)
+      #y = fp.CurrValue(param_y)
+      y = true.Value(param_y)
 
     stat = max(0.,fp.GetBestFitStatistic())
 
@@ -151,7 +153,7 @@ def main(files,tag,label,exclusion,nue):
         else:
           print "Looking at NuE"
           print "Two-sided delta chi-squared scan"
-          dchisq = util.DeltaChisquare(cl,2)
+          dchisq = util.DeltaChisquareOneSided(cl,1)
       else:
         print "Acceptance contour"
         print "Two-sided delta chi-squared scan"
@@ -174,7 +176,7 @@ if __name__=="__main__":
   parser.add_option('-t','--tag', dest='tag',default="contour",help='The names to give the graphs')
   parser.add_option('-l','--label', dest='label',default="output",help='Label to add to the output filename')
   parser.add_option('-e','--exclusion', dest='exclusion',default=True,help='Boolean for whether we are producing exclusion or inclusion contours')
-  parser.add_option('-n','--nue', dest='nue',default=False,help='Boolean for whether we are producing numu or nue contours')
+  parser.add_option('-n','--nue', dest='nue',default=True,help='Boolean for whether we are producing numu or nue contours')
 
   options,patterns = parser.parse_args()
 

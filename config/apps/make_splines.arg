@@ -1,0 +1,12 @@
+# argument                       |   type         |  require?   |   default
+# ....................................................................................................
+output                           |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root
+variations                       |   string       |  mandatory  |   - # For SBN: $VALOR_DUNE/src/macros/contrib/steve/sbn_universe_variations_from_mastbaum.txt
+config                           |   string       |  mandatory  |   -
+systematic                       |   string       |  mandatory  |   -
+sample                           |   string       |  optional   |   numuCCincl
+detector                         |   string       |  optional   |   sbn_nd
+beam                             |   string       |  optional   |   BNB_FHC
+spectra-write-opt                |   string       |  optional   |   pdfts_rf
+store-spectra,discard-spectra    |   boolean_list |  optional   |   discard-spectra
+save-modelist,dont-save-modelist |   boolean_list |  optional   |   dont-save-modelist

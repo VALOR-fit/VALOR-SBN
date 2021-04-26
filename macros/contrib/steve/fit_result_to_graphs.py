@@ -29,16 +29,16 @@ env  =  valor.Env.Instance()
 colors = [R.kBlack, R.kRed, R.kBlue, R.kMagenta+1,  R.kGreen+2, R.kOrange+7, R.kCyan+2,]
 
 # Add these as command line arguments
-param_x = conv.kPhypMixingMuMu # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
+param_x = conv.kPhypMixingMuE # (disappearance), conv.kPhypMixingMuE for mu-e (appearance)
 param_y = conv.kPhypDm41sq
 
-x_min = 1E-2
-x_max = 1E2
-x_npoints = 40
-
-y_min = 1E-3
-y_max = 1.
+y_min = 1E-2
+y_max = 1E2
 y_npoints = 40
+
+x_min = 1E-5
+x_max = 1.
+x_npoints = 40
 
 ndim = 2
 
@@ -46,7 +46,7 @@ eps = 1E-10 # a small number to guarantee our point goes in its bin
 
 def GetLoggedHist(filename):
   print(filename)
-  chain = R.TChain("valor_dune_nd_ntp")
+  chain = R.TChain("valor_fit_ntp")
   chain.Add(filename)
   print "Reading ",chain.GetEntries()," fits"
   assert(chain.GetEntries())

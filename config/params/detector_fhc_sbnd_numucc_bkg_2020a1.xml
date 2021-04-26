@@ -33,7 +33,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  allnc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -69,7 +69,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  allnc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -105,7 +105,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  allnc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -141,7 +141,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  allnc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -177,7 +177,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  allnc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -213,7 +213,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  allnc          </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -250,7 +250,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
@@ -287,7 +287,7 @@
     <apply_to>
       <detector>   sbnd           </detector>
       <beam>       fhc            </beam>
-      <selection>  mulikehighres  </selection>
+      <selection>  all  </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
