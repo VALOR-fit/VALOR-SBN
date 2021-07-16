@@ -971,7 +971,11 @@ int main(int argc, char ** argv)
 
 bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other){
   if(numu){
-    if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh) return true;
+    if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh|| 
+       sample == valor::conv::ksNuMuCCoa00 || sample == valor::conv::ksNuMuCCoa01 || 
+       sample == valor::conv::ksNuMuCCoa02 || sample == valor::conv::ksNuMuCCoa03 || 
+       sample == valor::conv::ksNuMuCCoa04 || sample == valor::conv::ksNuMuCCoa05 || 
+       sample == valor::conv::ksNuMuCCoa06 || sample == valor::conv::ksNuMuCCoa07) return true;
     else if(sample == valor::conv::ksNuMuCC0piNtrk){
       if((reco.npion+reco.npi0) == 0)
         return ((other) ? false : true);
