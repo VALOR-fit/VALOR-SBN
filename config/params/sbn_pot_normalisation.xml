@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<param_list name="flux_sbn_pot_accounting_parameters">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  pot_norm               </simple>
+      <long>    BNB POT normalisation  </long>
+      <rootex>  f_{POT}                </rootex>
+      <tex>     f_{POT}                </tex>
+    </name>
+
+    <apply_to_range>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+
+    <type>  normalisation  </type>
+
+    <categories>
+      <category> flux </category>
+    </categories>
+
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        all       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+
+    <limits>  0, inf  </limits>
+
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+
+  </param>
+  <!-- ==================================================================================== -->
+</param_list>
