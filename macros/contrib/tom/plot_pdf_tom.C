@@ -6,7 +6,7 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-void rj_plot_pdf(
+void plot_pdf_tom(
   const char * config_file,
   const char * filename,
   const char * tag = "valor", // Used to find the name of the histograms in the PDF files
@@ -195,6 +195,7 @@ void rj_plot_pdf(
           if(m == conv::kmUndefined) continue;
           TString contrib_name = TString::Format("%s_%s_%s_%s_%s_%s_%s",
             tag, "pdfcs",binning,"rf", model_name.c_str(),kinevar.Data(), vutil::AsString(m).c_str());
+          //TString contrib_name = TString::Format("%s", tag);
           TObject * tmp_obj = fin->Get(contrib_name.Data());
           pdf_contrib[imode] = (TH1D*) tmp_obj;
           if(pdf_contrib[imode]) {
@@ -327,6 +328,7 @@ void rj_plot_pdf(
           // If we're plotting EReco, can just get pdfts
           TString total_name = TString::Format("%s_%s_%s_%s_%s_%s",
               tag, "pdfts",binning,"rf", model_name.c_str(),kinevar.Data());
+         // TString total_name = TString::Format("%s", tag);
           TObject * tmp = fin->Get(total_name.Data());
           std::cout<< "Integrated name : " << total_name<<"\t"<<tmp<<std::endl;
           TH1D * htmp = (TH1D*)tmp;
@@ -347,7 +349,7 @@ void rj_plot_pdf(
           total_max = total_hist->GetMaximum();
         }
         // Start drawing
-        TLegend * contrib_legend = new TLegend(0.75,0.4,0.95,0.9);  
+        TLegend * contrib_legend = new TLegend(0.75,0.35,0.95,0.85);  
         contrib_legend->SetFillColor(0);
         contrib_legend->SetLineColor(0);
         contrib_legend->SetTextFont(132);
