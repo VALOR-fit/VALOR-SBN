@@ -2,9 +2,9 @@
 
 The VALOR-SBN repository includes SBN-specific codes and configurations for the **VALOR SBN sterile neutrino oscillation fit and related analysis workflows**. It is built on top of the common and experiment-agnostic [VALOR *Software Development Kit (SDK)*](https://github.com/VALOR-fit/VALOR-SDK/) which includes the bulk of the VALOR analysis code.
 
-**Copyright (c) 2010-2020**, The VALOR Fitting Group. All Rights Reserved.
+**Copyright (c) 2010-2021**, The VALOR Fitting Group. All Rights Reserved.
 
-**Authors (VALOR/SBN):** Costas Andreopoulos (*Liverpool & STFC/RAL*), Dom Barker (*Sheffield*), Steve Dennis (*Cambridge*), Thomas Ham (*Liverpool*), Rhiannon Jones (*Liverpool*), Glória de Sá Pereira (*Liverpool & STFC/RAL*)
+**Authors (VALOR/SBN):** Costas Andreopoulos (*Liverpool & STFC/RAL*), Dom Barker (*Sheffield*), Steve Dennis (*Cambridge*), Thomas Ham (*Liverpool*), Rhiannon Jones (*Liverpool*), Tereza Kroupova (*UPenn*)
 
 For a full list of VALOR SDK authors, see [here](https://valor.pp.rl.ac.uk/).
 
@@ -61,8 +61,9 @@ These names of analysis variants are used for labelling the main analysis config
 | **sbn_numu_disapp_2019b2_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
 | **sbn_numu_disapp_2019b2_02a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
 | **sbn_numu_disapp_2019b2_02a2_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 02a1 | |
-| **sbn_nue_app_2019b1_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b1 | 01a1 | |
-| **sbn_nue_app_2019b2_01a1_1** | Eff. 3+1 numu disap | numuCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
+| **sbn_numu_disapp_prism_1_2019b3_02c2_1** | Eff. 3+1 numu disap | Event samples: 8 SBND numu CC-like samples at different angular bins (0 to 1.6 deg with 0.2 deg increments) + 1 uB numu CC-like sample + 1 ICARUS numu CC-like sample | Enu_reco | 2019b3 | 02c2 | First iteration of SBN Prism analysis in devel |
+| **sbn_nue_app_2019b2_01a1_1** | Eff. 3+1 nue | nueCC-like (x3 det) | Enu_reco | 2019b2 | 01a1 | |
+| **sbn_nue_2020a1_03c1_1** | Eff. 3+1 nue | nueCC-like (x3 det) | Enu_reco | 2020a1 | 03c1 | |
 
 MC productions (flux, interaction, detector simulations), the corresponding uncertainty assignments and internal VALOR representations of the uncertainties, and the reconstruction / data reduction event selection codes are important elements used for characterising each fit. Information about the elements used by each VALOR analysis is outlined below.
 
@@ -79,8 +80,8 @@ A summary of all SBN MC productions used is given in the table below.
 |----------|---------|----------------------|----------|-----------|
 | 2019a1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `proposal'; last respin of 2019a still in use while establishing this archive on 04/2020 |
 | 2019b1   | configF | v2.12.10; Default+MEC; proposal | v2.2 | `modern'; last respin of 2019b still in use while establishing this archive on 04/2020 |
-| 2019b2   | configF | v2.12.10; Default+MEC; proposal | v2.2 / gputnam-workshop | `modern'; batch of files made available after the 09/2019 SBN analysis workshop |
-| 2020a1   | configF | v3.0.6; G18_10a_02_11a; proposal+MEC | gputnam-workshop0320-gen | `modern'; batch of files made available after the 03/2020 SBN analysis workshop |
+| 2019b2   | configF | v2.12.10; Default+MEC; proposal | v2.2 / gputnam-workshop (numu); feature/DomBarkerNueSelection (nue)  | `modern'; batch of files made available after the 09/2019 SBN analysis workshop |
+| 2020a1   | configF | v3.0.6; G18_10a_02_11a; proposal+MEC | gputnam-workshop0320-gen (numu); feature/TomHamNue (nue) | `modern'; batch of files made available after the 03/2020 SBN analysis workshop |
 
 - [1] https://cdcvs.fnal.gov/redmine/projects/sbncode/wiki/Fitter_Validation_NuMu_sample: 
 SBNCode v2.2, 'modern' and 'proposal'
@@ -111,6 +112,11 @@ Each error parameterization can be applied on selected MC productions only, indi
 | 02b2 | CORLIN{det,sample,mode,Ereco}, as specified by the [effective 2020a detector error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Detector-systematics-2020a) | as in 02b1 | as in 02b1 | | Adding detector effects in 02b1 |
 | 02c1 | n/a  | CORLIN{loc,flav,Etrue} parameterization for hadroproduction multi-sim systematics and UNCORRESP1D parameterization of optics and hadronic interaction uni-sim systematics of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | UNCORRESP1D parameterisation for all systematics included in the [2015aP x-section error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2015a) | | Wrt to 03a, take all unisim flux systematics out of the flux covariance matrix and implement non-linear response functions.|
 | 02c2 | CORLIN{det,sample,mode,Ereco}, as specified by the [effective 2020a detector error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Detector-systematics-2020a) | as in 02c1 | as in 02c1 | | Adding detector effects in 02c1 |
+| 03a1 | n/a  | As in 02a1 but with updated modes and sample definitions | As in 02a1 but with updated modes and sample definitions+MEC | | |
+| 03b1 | n/a  | As in 02b1 but with updated modes and sample definitions | As in 02a1 but with updated modes and sample definitions+MEC | | |
+| 03c1 | n/a  | CORLIN{loc,flav,Etrue} parameterization for hadroproduction multi-sim systematics and UNCORRESP1D parameterization of optics and hadronic interaction uni-sim systematics of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | UNCORRESP1D parameterisation for all systematics included in the [2020a x-section error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a) | | |
+| 03c2 | CORLIN{det,sample,mode,Ereco}, as specified by the [effective 2020a detector error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Detector-systematics-2020a) | as in 03c1 | as in 03c1 | | Adding detector effects in 03c1 |
+| 03c3 | as in 03c2 | as in 03c2 | as in 03c2 | | Adding bias and energy scale systematics to 03c2 and sample migration in exclusive analysis |
 
 Internal systematic error parameterization methods:
  - **CORLIN{'space'}**: A set of correlated normalization factors (linear response functions), each of which is applied on a single bin of the specified 'space' that can be mapped to subsets of kinematic bins for specific MC templates.
