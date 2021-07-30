@@ -384,6 +384,9 @@ int main(int argc, char ** argv)
     else if (std::find(flux_uncorr_short.begin(), flux_uncorr_short.end(), param_name) != flux_uncorr_short.end()){
         systematics.push_back(param_name + "_FluxUnisim");
     }
+    else if (std::find(flux_corr.begin(), flux_corr.end(), param_name) != flux_corr.end()){
+        systematics.push_back(param_name);
+    }
     else {
         LOG("universe_variation_tweaks",pFATAL) << "Unknown input systematic: "<< param_name; 
         util::Die(-1);

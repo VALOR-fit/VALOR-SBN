@@ -83,6 +83,9 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
 void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
                         PhysParamId_t p, double tweak_dial, TFile * outfile, std::string tag);
 
+void PrintMCT(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
+              PhysParamId_t p, double tweak_dial, int reco_bin, int true_bin);
+
 int main(int argc, char ** argv)
 {
 
@@ -101,6 +104,9 @@ int main(int argc, char ** argv)
   string params_to_tweak  = arg.GetString("params");
   string kinevar_str      = arg.GetString("kinevar");
   string universe_file    = arg.GetString("universe-spectra");
+  bool def_spline_debug   = arg.GetBool("def-spline-debug");
+  int reco_bin            = arg.GetInt("reco-bin");
+  int true_bin            = arg.GetInt("true-bin");
 
   TString universe_spectra(universe_file.data());
   bool sigma_from_universes = false;
@@ -140,6 +146,12 @@ int main(int argc, char ** argv)
           closest_sigma = u;
         }
       }
+      if(sigma_diff > 0.5){
+        std::cout << "Big difference (> 0.5) between the selecteded integer sigma and the closest universe sigma!" << std::endl;
+        std::cout << "Integer sigma: " << i << "       Closest universe sigma: " << closest_sigma << std::endl;
+        std::cout << "Manually setting closest universe sigma equal to the integer sigma (should probably ignore the plot from this sigma)" << std::endl;
+        closest_sigma = i;
+      }
       temp_nsigmas.push_back(closest_sigma);
     }
     nsigmas.clear();
@@ -147,6 +159,10 @@ int main(int argc, char ** argv)
     assert(nsigmas.size() == integer_sigmas.size());
   }
 
+  std::cout << "nsigmas vec: " << std::endl;
+  for(auto i = nsigmas.begin(); i != nsigmas.end(); i++){
+      std::cout << *i << std::endl;
+  }
   KineVar_t kv = util::KineVarFromString(util::RemoveAllWhitespace(kinevar_str));
   if(kv == kvUndefined) {
     cerr << "ERROR: input kine var string [" << util::RemoveAllWhitespace(kinevar_str)
@@ -217,12 +233,21 @@ int main(int argc, char ** argv)
   const CorrelatedSystematics * syst = cm->GetSystematics();
   FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
 
-  if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
-  if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
-  if (fp->Exists(conv::kPhypMixing23)) { fp->Update(conv::kPhypMixing23,mixing23); }
-  if (fp->Exists(conv::kPhypDm12sq  )) { fp->Update(conv::kPhypDm12sq  ,dm12sq  ); }
-  if (fp->Exists(conv::kPhypDm23sq  )) { fp->Update(conv::kPhypDm23sq  ,dm23sq  ); }
-  if (fp->Exists(conv::kPhypCPV     )) { fp->Update(conv::kPhypCPV     ,deltacp ); }
+  if(hypname == "eff_sterile_osc"){                                                                                                                                                   
+    fp->Update(conv::kPhypDm41sq,   100);                                                                                                                                           
+    fp->Update(conv::kPhypMixingMuMu, 0);                                                                                                                                           
+    fp->Update(conv::kPhypMixingMuE,  1);                                                                                                                                           
+    fp->Update(conv::kPhypMixingEE,   0);                                                                                                                                           
+  }
+
+  else{   
+    if (fp->Exists(conv::kPhypMixing12)) { fp->Update(conv::kPhypMixing12,mixing12); }
+    if (fp->Exists(conv::kPhypMixing13)) { fp->Update(conv::kPhypMixing13,mixing13); }
+    if (fp->Exists(conv::kPhypMixing23)) { fp->Update(conv::kPhypMixing23,mixing23); }
+    if (fp->Exists(conv::kPhypDm12sq  )) { fp->Update(conv::kPhypDm12sq  ,dm12sq  ); }
+    if (fp->Exists(conv::kPhypDm23sq  )) { fp->Update(conv::kPhypDm23sq  ,dm23sq  ); }
+    if (fp->Exists(conv::kPhypCPV     )) { fp->Update(conv::kPhypCPV     ,deltacp ); }
+  }
 
   // Generate pdfs
   GeneratePDFNominal(model, cm, fp, kv, outfile);
@@ -270,10 +295,14 @@ int main(int argc, char ** argv)
       // If we are getting the values of sigma from the universes then only generate a single pdf
       // and determine whether it is positive or negative
       if(sigma_from_universes){
-        if(nsig < 0 && nsigma_int != 0)
+        if(nsig < 0 && nsigma_int != 0){
           GeneratePDFTweaked(model, cm, fp, kv, p, tweak_p, outfile, ("m"+std::to_string(abs(nsigma_int))).data());
-        else
+          if(def_spline_debug){PrintMCT(model, cm, fp, kv, p, tweak_p, reco_bin, true_bin);}
+        }
+        else{
           GeneratePDFTweaked(model, cm, fp, kv, p, tweak_p, outfile, ("p"+std::to_string(abs(nsigma_int))).data());
+          if(def_spline_debug){PrintMCT(model, cm, fp, kv, p, tweak_p, reco_bin, true_bin);}
+        }
       }
       else{
         if(nsig < 0){
@@ -286,6 +315,7 @@ int main(int argc, char ** argv)
         }
       }
     } // loop over nsigmas
+    if(def_spline_debug){PrintMCT(model, cm, fp, kv, p, 0, reco_bin, true_bin);}
   } // loop over params
 
   outfile->Close();
@@ -429,3 +459,108 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
   delete array;
 }
 //________________________________________________________________________________________
+void PrintMCT(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, KineVar_t kv,
+            PhysParamId_t p, double tweak_dial, int reco_bin, int true_bin)
+{
+  std::string param_name = util::NameRegistry::Instance()->ParamAsString(p);
+  model->ResetSystematics(*fp,"all");
+  model->TweakSystematic(p, tweak_dial, "");
+  fp->FromPhysParamList(model->Tweaks(),"current-silent");
+
+  // Generate predictions
+  model->Generate(*fp,"+SB");
+
+  // Array to store results
+  TObjArray * array = new TObjArray();
+  //array->SetOwner(true);
+
+  // Write stuff out
+  Option_t * write_opt = "pdfts_rf+SB";
+  if (util::IsTrue(kv)) { write_opt = "pdfcs_rf+SB"; }    // The true PDFs don't have totals in GSSFM, only the mode breakdown // TODO: util::binning::Make1DHistogram currently doesn't work with truth...
+  model->Write(array,"nom","mct_vf");
+
+  // Pick results wanted
+  for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
+    GenericSingleSampleFitModel * this_model = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
+    Detector_t d = this_model->GetDetector();
+    BeamConf_t b = this_model->GetBeam();
+    Sample_t   s = this_model->GetSample();
+
+    const unsigned int n_mcts = array->GetEntries();
+    std::map<ReacMode_t, VALORArray> mct_modes;
+    for(unsigned int imct = 0; imct < n_mcts; ++imct){
+      const VALORArray mct = *static_cast<VALORArray*>((*array)[imct]);
+      const std::string mct_name = mct.GetName();
+      const TString t_mct_name = mct_name;
+      const size_t underscore_index = mct_name.find_last_of("_");
+      if(underscore_index == string::npos){
+        LOG("valor_sbn",pERROR) << " No '_' found in mct_name: " << mct_name;
+        util::Die(-1);
+      }
+      const std::string mct_mode_name = mct_name.substr(underscore_index+1);
+      LOG("valor_sbn",pINFO) << " MCT name " << mct_name << ", mct_mode_name: " << mct_mode_name;
+      if(!(t_mct_name.Contains("mctfin"))) continue;
+      for(const ReacMode_t &mode : this_model->GetReactionModes()) {
+        const TString mode_name = util::AsString(mode);
+        if(mct_mode_name == mode_name){
+          if(!mct_modes.emplace(mode,mct).second) {
+            LOG("valor_sbn",pERROR) << " Couldn't place the template in the map entry due to repeated entry for mode " << util::AsString(mode);
+            util::Die(-1);
+          }
+          break;
+        }
+      }
+    }
+    
+    std::cout << "Looking at " << param_name << " with sigma variation = " << tweak_dial << std::endl;                                                                                              
+    std::cout << "Printing MCT event rate breakdown for reco bin = " << reco_bin << " and true bin = " << true_bin << ": " << std::endl;   
+    
+    std::vector<double> tot_event_mode(mct_modes.size(), 0);   
+    int n_true_bins_sb = 0;
+    const SingleSampleKineBinning & binning = *(this_model->GetBinning());
+
+    for(auto elem : mct_modes){
+      std::cout << util::AsString(elem.first) << " " << elem.second.GetEntry(reco_bin,true_bin) <<  "\n";
+      // Get the number of true bins
+      const VALORBinning * true_sb = binning.TrueSmpBinning(elem.first);
+      n_true_bins_sb = true_sb->NBins();
+
+    }
+    // sum up the event rates from all the true bins and store in vector 
+    std::cout << "\nPrinting MCT event rate breakdown for the sum of reco bin " << reco_bin << ": " << std::endl;
+    for(int i = 0; i < n_true_bins_sb; i++){
+      int j = 0;
+
+      for(auto elem : mct_modes){
+        tot_event_mode[j] += elem.second.GetEntry(reco_bin,i);
+        j++;
+      }
+    }
+
+    int i = 0;
+    double tot_bin_event_rate = 0;
+    for(auto elem : mct_modes){
+      std::cout << util::AsString(elem.first) << " " << tot_event_mode[i] <<  "\n";
+      tot_bin_event_rate += tot_event_mode[i];
+      i++;
+    }
+    std::cout << "\nTotal event rate for reco bin " << reco_bin << ": " << std::setprecision(10) << tot_bin_event_rate << "\n\n";
+
+    /*
+    // Get the PDF broken down by mode contributions
+    for(conv::ReacMode_t m : this_model->GetReactionModes()) {
+      TString name_contrib = TString::Format("nom_pdfcs_sb_rf_%s_%s_%s", model_name.c_str(), util::AsString(kv).c_str(), util::AsString(m).c_str());
+      TH1D * curr_pdf_contrib = (TH1D*) array->FindObject(name_contrib.Data());
+      if (!curr_pdf_contrib) {
+        cerr<<"Could not find histogram "<<name_contrib<<endl;
+        exit(-1);
+      }
+      TString save_name = TString::Format("env_sb_%s_%s_%s", model_name.c_str(), util::AsString(m).c_str(), "nom");
+      curr_pdf_contrib->Write(save_name.Data());
+    } //imode
+  */
+  } //imodel
+  array->Clear("C");
+  delete array;
+}
+
