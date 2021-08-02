@@ -62,7 +62,6 @@ Modelists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 <modelist> modelists/fine/SBNOscLowE.xml </modelist>
-<!--<modelist> modelists/fine/OscLowE.xml </modelist>-->
 <coarse_modelist> modelists/coarse/coarse_mode_list_SBN_BNB_FHC_nuelikeCChigh_detailed.xml </coarse_modelist>
 
 <!--
@@ -71,6 +70,12 @@ Default binning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
 <default_binning> binning/sbn_proposal_binning_NuE.xml  </default_binning>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Splines
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
 
 <splines>
   <folder>         sbn_nue_inclusive/responses/03d1                 </folder>
@@ -81,9 +86,6 @@ Default binning
   <method>         curr_val                                         </method>
   <allow_negative> true                                             </allow_negative>
 </splines>
-
-
-
 
 </analysis_inputs>
 

@@ -11,7 +11,7 @@
       <sample>       nuelikeCChigh                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_nue_2020a1_03c1_1_sbn_nd.xml                  </mc>
+      <mc>           mc/sbn_nue_2020a1_sbn_nd.xml                         </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
@@ -23,7 +23,7 @@
       <sample>       nuelikeCChigh                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_nue_2020a1_03c1_1_sbn_ub.xml                  </mc>
+      <mc>           mc/sbn_nue_2020a1_sbn_ub.xm       l                  </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
@@ -35,7 +35,7 @@
       <sample>       nuelikeCChigh                                        </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_nue_2020a1_03c1_1_sbn_fd.xml                  </mc>
+      <mc>           mc/sbn_nue_2020a1_sbn_fd.xml                         </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
