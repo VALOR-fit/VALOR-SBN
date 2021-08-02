@@ -294,10 +294,15 @@ int main(int argc, char ** argv)
 
   // Make sure we are finding at least 1 of numu or nue in the name
   bool found[] = {is_numu, is_nueosc, is_nueint, is_nuenumu, is_dirt, is_cosmic};
+  // Manually select the type of file we're looking at since CAF files have unhelpful names atm
+  // Make this a smarter at somepoint (command line arg?)
   if(std::count(found, found+sizeof(found), 1) == 0){
-    VLOG("valor_sbn", pFATAL)
-      << "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ", " << str_dirt << "," << str_cosmic << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << opt_input_name;
-    exit(1);
+    //VLOG("valor_sbn", pFATAL)
+      //<< "Error: Found hint of neither selected nuE (" << str_nue << ", " << str_int << ", " << str_osc << ", " << str_dirt << "," << str_cosmic << ") nor selected nuMu ( " << str_numu << ") in filename - misleading: " << opt_input_name;
+    //exit(1);
+    VLOG("valor_sbn", pNOTICE)
+      << "Didn't recognise the events types from the file name, gonna assume it's numu and continue.";
+    is_numu = true;
   }
 
   // CHECKING OUTPUT OF NEW CODE
@@ -567,22 +572,22 @@ int main(int argc, char ** argv)
         continue;
       }
 */
-      int fsps_size     = recTree->GetLeaf("rec.true_particles.fsps..length")->GetValue();
-      TLeaf *fsps_gstatus = recTree->GetLeaf("rec.true_particles.fsps.gstatus");
-      TLeaf *fsps_pdg     = recTree->GetLeaf("rec.true_particles.fsps.pdg");
+      //int fsps_size     = recTree->GetLeaf("rec.true_particles.fsps..length")->GetValue();
+      //TLeaf *fsps_gstatus = recTree->GetLeaf("rec.true_particles.fsps.gstatus");
+      //TLeaf *fsps_pdg     = recTree->GetLeaf("rec.true_particles.fsps.pdg");
 
-      iscc              = recTree->GetLeaf("rec.mc.nu.iscc")->GetValue();
-      isnc              = recTree->GetLeaf("rec.mc.nu.isnc")->GetValue();
-      baseline          = recTree->GetLeaf("rec.mc.nu.baseline")->GetValue();
-      nu_pdg            = recTree->GetLeaf("rec.mc.nu.pdg")->GetValue();
-      enu_true          = recTree->GetLeaf("rec.mc.nu.E")->GetValue();
-      Q2s               = recTree->GetLeaf("rec.mc.nu.Q2")->GetValue();
-      larsoft_mode      = recTree->GetLeaf("rec.mc.nu.genie_intcode")->GetValue();
+      iscc              = recTree->GetLeaf("rec.slc.truth.iscc")->GetValue();
+      isnc              = recTree->GetLeaf("rec.slc.truth.isnc")->GetValue();
+      baseline          = recTree->GetLeaf("rec.slc.truth.baseline")->GetValue();
+      nu_pdg            = recTree->GetLeaf("rec.slc.truth.pdg")->GetValue();
+      enu_true          = recTree->GetLeaf("rec.slc.truth.E")->GetValue();
+      Q2s               = recTree->GetLeaf("rec.slc.truth.Q2")->GetValue();
+      larsoft_mode      = recTree->GetLeaf("rec.slc.truth.genie_intcode")->GetValue();
       //std::cout << "iscc: " << iscc << "      baseline: " << baseline << std::endl;
 
       // --- Think this is currently the true_particle branch, but will be moved to mc.nu.fsp ---
       // --- status_code <--> gstatus ---
-      
+      /*
       // Particle counting
       bool nucleonPDGSet = false;
       for(unsigned int p = 0; p < fsps_size; ++p){
@@ -629,7 +634,7 @@ int main(int argc, char ** argv)
         LOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
         util::Die(-1);
       }
-
+      */
 
       // Construct the reaction mode
       conv::ReacType_t reac = conv::kmtUndefined;
@@ -685,7 +690,7 @@ int main(int argc, char ** argv)
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
       conv::NuFlavour_t init_flav;
       // If we are looking at the selected nuE samples, get the initial neutrino pdg from the file
-      init_pdg  = recTree->GetLeaf("rec.mc.nu.initpdg")->GetValue();
+      init_pdg  = recTree->GetLeaf("rec.slc.truth.initpdg")->GetValue();
       init_flav = valor::util::FlavourFromPDG(init_pdg);
 
       // Get the real valor mode - this will only be defined for modes turned on right now
