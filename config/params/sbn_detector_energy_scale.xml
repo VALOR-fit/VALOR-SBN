@@ -23,9 +23,9 @@
       <detector>   all            </detector>
       <beam>       all            </beam>
       <selection>  all            </selection>
-      <reac_type>  allpluscosmic  </reac_type>
-      <flav_init>  allcosmic      </flav_init>
-      <flav_final> allcosmic      </flav_final>
+      <reac_type>  allplusdirt    </reac_type>
+      <flav_init>  alldirt    </flav_init>
+      <flav_final> alldirt   </flav_final>
       <target>     all            </target>
     </apply_to>
 
