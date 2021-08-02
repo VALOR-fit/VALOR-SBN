@@ -779,10 +779,7 @@ do
   valorcommand=$program$SPACE$arguments;
 
   # only bother to run VALOR if we're close to the contour - speeds things up
-  echo "which root"
-  which root
-  echo ""
-  root -q -b -n ${EXCLUSIONSCRIPT}'("'${CHISQSURFACE}'","contour_log_hist",23.66,'${VAL1A}','${VAL2A}',8)'
+  root -q -b -n ${EXCLUSIONSCRIPT}'("'${CHISQSURFACE}'","contour_log_hist",23.66,'${VAL1A}','${VAL2A}',3)'
 
   if [ $? -ne 0 ]; then 
     #Run Valor
