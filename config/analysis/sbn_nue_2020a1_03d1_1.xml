@@ -60,7 +60,7 @@
       <format> SBNFlux_Etrue.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_nue_inclusive/prior_errors/new_selection/hadron_flux_cov2.root </filename>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/hadron_flux_cov.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
