@@ -151,7 +151,8 @@ void spline_validation(const char* param,
   TH1D *h_tweak_m3 = static_cast<TH1D*>(f_3sig->Get(("env_sb_BNB_FHC_"+s_sample+"_m3;1").c_str())); // -3 sigma
   TH1D *h_tweak_m2 = static_cast<TH1D*>(f_2sig->Get(("env_sb_BNB_FHC_"+s_sample+"_m2;1").c_str())); // -2 sigma
   TH1D *h_tweak_m1 = static_cast<TH1D*>(f_1sig->Get(("env_sb_BNB_FHC_"+s_sample+"_m1;1").c_str())); // -1 sigma
-  TH1D *h_tweak_n0 = static_cast<TH1D*>(f_nom->Get(("env_sb_BNB_FHC_"+s_sample+"_p0;1").c_str())); //  NOMINAL
+  //TH1D *h_tweak_n0 = static_cast<TH1D*>(f_nom->Get(("env_sb_BNB_FHC_"+s_sample+"_p0;1").c_str())); //  NOMINAL
+  TH1D *h_tweak_n0 = static_cast<TH1D*>(f_nom->Get(("env_sb_BNB_FHC_"+s_sample+"_nom;1").c_str())); //  NOMINAL
   TH1D *h_tweak_p1 = static_cast<TH1D*>(f_1sig->Get(("env_sb_BNB_FHC_"+s_sample+"_p1;1").c_str())); // +1 sigma
   TH1D *h_tweak_p2 = static_cast<TH1D*>(f_2sig->Get(("env_sb_BNB_FHC_"+s_sample+"_p2;1").c_str())); // +2 sigma
   TH1D *h_tweak_p3 = static_cast<TH1D*>(f_3sig->Get(("env_sb_BNB_FHC_"+s_sample+"_p3;1").c_str())); // +3 sigma
@@ -582,7 +583,7 @@ void SetRatioBinErrors(const TH1D* h_un, const TH1D* h_tw, TH1D* h_ra, const boo
     double N_universe = h_un->GetBinContent(ibin);
     double R          = h_ra->GetBinContent(ibin);
     double sigN       = sqrt(N_tweak + N_universe);
-    double deltaN     = abs(N_tweak-N_universe);
+    double deltaN     = abs(N_tweak-N_universe)+0.00001; // Add a small number so we don't end up dividing by zero when our agreement is just too good..
     double averageN   = (N_tweak+N_universe)/2.;
 
     double sigR = R * sqrt( pow(sigN/deltaN,2) + pow(sigN/averageN,2));

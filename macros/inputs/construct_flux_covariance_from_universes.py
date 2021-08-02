@@ -148,6 +148,16 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
                       # check if the flavour entry has already been filled and fill if not
                       if not flav[ientry]:
                         flav[ientry] = "nuebar"
+                    elif util.IsNuMuToNuE(mode) and not util.IsCosmic(mode) and "numu" in p.GetName() and not "cosmic" in p.GetName():
+                      row[ientry] += hist.GetBinContent(ibin+1)
+                      # check if the flavour entry has already been filled and fill if not
+                      if not flav[ientry]:
+                        flav[ientry] = "numu"
+                    elif util.IsNuMuBarToNuEBar(mode) and not util.IsCosmic(mode) and "numubar" in p.GetName() and not "cosmic" in p.GetName():
+                      row[ientry] += hist.GetBinContent(ibin+1)
+                      # check if the flavour entry has already been filled and fill if not
+                      if not flav[ientry]:
+                        flav[ientry] = "numubar"
 
                     #end if mode
                   #end if within kinematic range
@@ -208,8 +218,8 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
       # Check the diagonal case
       if n == m:
         if math.isnan(frac_cov[n][m]):
-          frac_cov[n][m] = 1 # 100% for used table
-          #frac_cov[n][m] = 0.0001 # Set diagonal value to 0
+          #frac_cov[n][m] = 1 # 100% for used table
+          frac_cov[n][m] = 0.0001 # Set diagonal value to 0
         
       else:
         if math.isnan(frac_cov[n][m]):
