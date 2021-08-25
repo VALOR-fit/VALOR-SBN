@@ -87,12 +87,12 @@
     <fill_sty>   1001    </fill_sty>
   </coarse_mode>
   
-  <coarse_mode>
+  <!--coarse_mode>
     <name>       numuCC  </name>
     <line_col>   1       </line_col>
     <fill_col>   0       </fill_col>
     <fill_sty>   1002    </fill_sty>
-  </coarse_mode>
+  </coarse_mode-->
   
 
 </coarse_mode_list>
