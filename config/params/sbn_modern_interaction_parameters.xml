@@ -5,8 +5,8 @@
     <name>
       <simple>  genie_DISAth_Genie </simple>
       <long>    (CC and NC) xsection / Aht (higher twist) param </long>
-      <rootex>  DIS Ath </rootex>
-      <tex>     DIS Ath </tex>
+      <rootex>  DIS #: Ath </rootex>
+      <tex>     DIS \: Ath </tex>
     </name>
     
     <apply_to_range>
@@ -18,6 +18,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -35,6 +36,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -42,8 +44,8 @@
     <name>
       <simple>  genie_DISBth_Genie </simple>
       <long>    (CC and NC) xsection / Bht (higher twist) param </long>
-      <rootex>  DIS Bth </rootex>
-      <tex>     DIS Bth </tex>
+      <rootex>  DIS #: Bth </rootex>
+      <tex>     DIS \: Bth </tex>
     </name>
     
     <apply_to_range>
@@ -55,6 +57,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -72,6 +75,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -79,8 +83,8 @@
     <name>
       <simple>  genie_DISCv1u_Genie                                </simple>
       <long>    (CC and NC) xsection / Cv1u valence pdf correction </long>
-      <rootex>  DIS Cv 1u                                          </rootex>
-      <tex>     DIS Cv 1u                                          </tex>
+      <rootex>  DIS #: Cv #: 1u                                          </rootex>
+      <tex>     DIS \: Cv \: 1u                                          </tex>
     </name>
     
     <apply_to_range>
@@ -92,6 +96,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -109,6 +114,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -116,8 +122,8 @@
     <name>
       <simple>  genie_DISCv2u_Genie                                </simple>
       <long>    (CC and NC) xsection / Cv2u valence pdf correction </long>
-      <rootex>  DIS Cv 2u                                          </rootex>
-      <tex>     DIS Cv 2u                                          </tex>
+      <rootex>  DIS #: Cv #: 2u                                          </rootex>
+      <tex>     DIS \: Cv \: 2u                                          </tex>
     </name>
     
     <apply_to_range>
@@ -129,6 +135,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -146,6 +153,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -153,8 +161,8 @@
     <name>
       <simple>  genie_IntraNukeNabs_Genie       </simple>
       <long>    FSI / nucleon ABS fate fraction </long>
-      <rootex>  IntraNuke N abs                 </rootex>
-      <tex>     IntraNuke N abs                 </tex>
+      <rootex>  IntraNuke #: N #: Abs                 </rootex>
+      <tex>     IntraNuke \: N \: Abs                 </tex>
     </name>
     
     <apply_to_range>
@@ -166,6 +174,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -183,6 +192,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -190,8 +200,8 @@
     <name>
       <simple>  genie_IntraNukeNcex_Genie                   </simple>
       <long>    FSI / nucleon Charge Exchange fate fraction </long>
-      <rootex>  IntraNuke N CEx                             </rootex>
-      <tex>     IntraNuke N CEx                             </tex>
+      <rootex>  IntraNuke #: N #: CEx                             </rootex>
+      <tex>     IntraNuke \: N \: CEx                             </tex>
     </name>
     
     <apply_to_range>
@@ -203,6 +213,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -220,6 +231,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -227,8 +239,8 @@
     <name>
       <simple>  genie_IntraNukeNinel_Genie       </simple>
       <long>    FSI / nucleon INEL fate fraction </long>
-      <rootex>  IntraNuke N Inel                 </rootex>
-      <tex>     IntraNuke N Inel                 </tex>
+      <rootex>  IntraNuke #: N #: Inel                 </rootex>
+      <tex>     IntraNuke \: N \: Inel                 </tex>
     </name>
     
     <apply_to_range>
@@ -240,6 +252,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -257,6 +270,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -264,8 +278,8 @@
     <name>
       <simple>  genie_IntraNukeNmfp_Genie    </simple>
       <long>    FSI / nucleon mean-free path </long>
-      <rootex>  IntraNuke N MFP              </rootex>
-      <tex>     IntraNuke N MFP              </tex>
+      <rootex>  IntraNuke #: N #: MFP              </rootex>
+      <tex>     IntraNuke \: N \: MFP              </tex>
     </name>
     
     <apply_to_range>
@@ -277,6 +291,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -294,6 +309,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -301,8 +317,8 @@
     <name>
       <simple>  genie_IntraNukeNpi_Genie            </simple>
       <long>    FSI / nucleon PI-PROD fate fraction </long>
-      <rootex>  IntraNuke N #pi Production          </rootex>
-      <tex>     IntraNuke N #pi Production          </tex>
+      <rootex>  IntraNuke #: N #: #pi #: Production          </rootex>
+      <tex>     IntraNuke \: N \: \pi \: Production          </tex>
     </name>
     
     <apply_to_range>
@@ -314,6 +330,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -331,6 +348,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -338,8 +356,8 @@
     <name>
       <simple>  genie_IntraNukePIabs_Genie       </simple>
       <long>    FSI / pion ABS fate fraction     </long>
-      <rootex>  IntraNuke PI abs                 </rootex>
-      <tex>     IntraNuke PI abs                 </tex>
+      <rootex>  IntraNuke #: PI #: Abs                 </rootex>
+      <tex>     IntraNuke \: PI \: Abs                 </tex>
     </name>
     
     <apply_to_range>
@@ -351,13 +369,14 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allwithfsi</reac_type>
+      <reac_type>   allwithpifsi </reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -368,6 +387,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -375,8 +395,8 @@
     <name>
       <simple>  genie_IntraNukePIcex_Genie                   </simple>
       <long>    FSI / pion Charge Exchange fate fraction     </long>
-      <rootex>  IntraNuke PI CEx                             </rootex>
-      <tex>     IntraNuke PI CEx                             </tex>
+      <rootex>  IntraNuke #: PI #: CEx                             </rootex>
+      <tex>     IntraNuke \: PI \: CEx                             </tex>
     </name>
     
     <apply_to_range>
@@ -388,13 +408,14 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allwithfsi</reac_type>
+      <reac_type>   allwithpifsi </reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -405,6 +426,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -412,8 +434,8 @@
     <name>
       <simple>  genie_IntraNukePIinel_Genie       </simple>
       <long>    FSI / pion INEL fate fraction     </long>
-      <rootex>  IntraNuke PI Inel                 </rootex>
-      <tex>     IntraNuke PI Inel                 </tex>
+      <rootex>  IntraNuke #: PI #: Inel                 </rootex>
+      <tex>     IntraNuke \: PI \: Inel                 </tex>
     </name>
     
     <apply_to_range>
@@ -425,13 +447,14 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allwithfsi</reac_type>
+      <reac_type>   allwithpifsi </reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -442,6 +465,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -449,8 +473,8 @@
     <name>
       <simple>  genie_IntraNukePImfp_Genie    </simple>
       <long>    FSI / pion mean-free path     </long>
-      <rootex>  IntraNuke PI MFP              </rootex>
-      <tex>     IntraNuke PI MFP              </tex>
+      <rootex>  IntraNuke #: PI #: MFP              </rootex>
+      <tex>     IntraNuke \: PI \: MFP              </tex>
     </name>
     
     <apply_to_range>
@@ -462,13 +486,14 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allwithfsi</reac_type>
+      <reac_type>   allwithpifsi </reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -479,6 +504,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -486,8 +512,8 @@
     <name>
       <simple>  genie_IntraNukePIpi_Genie            </simple>
       <long>    FSI / pion PI-PROD fate fraction     </long>
-      <rootex>  IntraNuke PI #pi Production          </rootex>
-      <tex>     IntraNuke PI #pi Production          </tex>
+      <rootex>  IntraNuke #: PI #: #pi #: Production          </rootex>
+      <tex>     IntraNuke \: PI \: \pi \: Production          </tex>
     </name>
     
     <apply_to_range>
@@ -499,13 +525,14 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   allwithfsi</reac_type>
+      <reac_type>   allwithpifsi </reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -516,6 +543,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -523,8 +551,8 @@
     <name>
       <simple>  genie_ResDecayGamma_Genie                      </simple>
       <long>    Resonance decays / Branching ratio for 1#gamma </long>
-      <rootex>  Resonance decays 1#gamma                       </rootex>
-      <tex>     Resonance decays 1#gamma                       </tex>
+      <rootex>  Resonance #: Decays #: 1#gamma                       </rootex>
+      <tex>     Resonance \: Decays \: 1\gamma                       </tex>
     </name>
     
     <apply_to_range>
@@ -536,13 +564,14 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
       <detector>    allsbn    </detector>
       <beam>        fhc       </beam>
       <selection>   all       </selection>
-      <reac_type>   piandoth  </reac_type>
+      <reac_type>   alln0pi   </reac_type>
       <flav_init>   all       </flav_init>
       <flav_final>  all       </flav_final>
       <target>      all       </target>
@@ -553,6 +582,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -560,8 +590,8 @@
     <name>
       <simple>  genie_ccresVector_Genie       </simple>
       <long>    CCRES x-section / Vector mass </long>
-      <rootex>  CCRES Vector Mass             </rootex>
-      <tex>     CCRES Vector Mass             </tex>
+      <rootex>  CC_{Res} #: M_{V}                </rootex>
+      <tex>     CC_{Res} \: M_{V}                </tex>
     </name>
     
     <apply_to_range>
@@ -573,6 +603,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -590,154 +621,7 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
-
-  </param>
-  <!-- ==================================================================================== -->
-  <param>
-    <name>
-      <simple>  genie_cohMA_Genie                     </simple>
-      <long>    COH (CC and NC) xsection / Axial mass </long>
-      <rootex>  Coherent axial mass                   </rootex>
-      <tex>     Coherent axial mass                   </tex>
-    </name>
-    
-    <apply_to_range>
-      <Etrue> 0, 10. </Etrue>
-      <Ereco> 0, 10. </Ereco>
-    </apply_to_range>
-    
-    <type>  response  </type>
-    
-    <categories>
-      <category> int </category>
-    </categories>
-    
-    <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   allcoh    </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
-    </apply_to>
-    
-    <limits>  -inf, inf  </limits>
-    
-    <update_from_cov_matrix> true  </update_from_cov_matrix>
-    <range_mode>             sigma </range_mode>            
-    <range>                  -5,5  </range>                 
-
-  </param>
-  <!-- ==================================================================================== -->
-  <param>
-    <name>
-      <simple>  genie_cohR0_Genie                               </simple>
-      <long>    COH (CC and NC) xsection / Nuclear radius param </long>
-      <rootex>  Coherent R_{0}                                  </rootex>
-      <tex>     Coherent R_{0}                                  </tex>
-    </name>
-    
-    <apply_to_range>
-      <Etrue> 0, 10. </Etrue>
-      <Ereco> 0, 10. </Ereco>
-    </apply_to_range>
-    
-    <type>  response  </type>
-    
-    <categories>
-      <category> int </category>
-    </categories>
-    
-    <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   allcoh    </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
-    </apply_to>
-    
-    <limits>  -inf, inf  </limits>
-    
-    <update_from_cov_matrix> true  </update_from_cov_matrix>
-    <range_mode>             sigma </range_mode>            
-    <range>                  -5,5  </range>                 
-
-  </param>
-  <!-- ==================================================================================== -->
-  <param>
-    <name>
-      <simple>  genie_ncelAxial_Genie      </simple>
-      <long>    NCEL xsection / Axial mass </long>
-      <rootex>  NC Elastic Axial Mass      </rootex>
-      <tex>     NC Elastic Axial Mass      </tex>
-    </name>
-    
-    <apply_to_range>
-      <Etrue> 0, 10. </Etrue>
-      <Ereco> 0, 10. </Ereco>
-    </apply_to_range>
-    
-    <type>  response  </type>
-    
-    <categories>
-      <category> int </category>
-    </categories>
-    
-    <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   ncel      </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
-    </apply_to>
-    
-    <limits>  -inf, inf  </limits>
-    
-    <update_from_cov_matrix> true  </update_from_cov_matrix>
-    <range_mode>             sigma </range_mode>            
-    <range>                  -5,5  </range>                 
-
-  </param>
-  <!-- ==================================================================================== -->
-  <param>
-    <name>
-      <simple>  genie_ncelEta_Genie                       </simple>
-      <long>    NCEL xsection / Strange axial form factor </long>
-      <rootex>  NC Elastic #eta                           </rootex>
-      <tex>     NC Elastic #eta                           </tex>
-    </name>
-    
-    <apply_to_range>
-      <Etrue> 0, 10. </Etrue>
-      <Ereco> 0, 10. </Ereco>
-    </apply_to_range>
-    
-    <type>  response  </type>
-    
-    <categories>
-      <category> int </category>
-    </categories>
-    
-    <apply_to>
-      <detector>    allsbn    </detector>
-      <beam>        fhc       </beam>
-      <selection>   all       </selection>
-      <reac_type>   ncel      </reac_type>
-      <flav_init>   all       </flav_init>
-      <flav_final>  all       </flav_final>
-      <target>      all       </target>
-    </apply_to>
-    
-    <limits>  -inf, inf  </limits>
-    
-    <update_from_cov_matrix> true  </update_from_cov_matrix>
-    <range_mode>             sigma </range_mode>            
-    <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
@@ -745,8 +629,8 @@
     <name>
       <simple>  genie_ncresVector_Genie </simple>
       <long>    NC Resonant Vector      </long>
-      <rootex>  NC_{Res} Vector         </rootex>
-      <tex>     NC_{Res} Vector         </tex>
+      <rootex>  NC_{Res} #: M_{V}         </rootex>
+      <tex>     NC_{Res} \: M_{V}         </tex>
     </name>
     
     <apply_to_range>
@@ -758,6 +642,7 @@
     
     <categories>
       <category> int </category>
+      <category> modern </category>
     </categories>
     
     <apply_to>
@@ -775,6 +660,163 @@
     <update_from_cov_matrix> true  </update_from_cov_matrix>
     <range_mode>             sigma </range_mode>            
     <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_cohMA_Genie                     </simple>
+      <long>    COH (CC and NC) xsection / Axial mass </long>
+      <rootex>  Coherent #: M_{A}                   </rootex>
+      <tex>     Coherent \: M_{A}                   </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allcoh    </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_cohR0_Genie                               </simple>
+      <long>    COH (CC and NC) xsection / Nuclear radius param </long>
+      <rootex>  Coherent #: R_{0}                                  </rootex>
+      <tex>     Coherent \: R_{0}                                  </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allcoh    </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_ncelAxial_Genie      </simple>
+      <long>    NCEL xsection / Axial mass </long>
+      <rootex>  NC #: Elastic #: M_{A}      </rootex>
+      <tex>     NC \: Elastic \: M_{A}      </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ncel      </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_ncelEta_Genie                       </simple>
+      <long>    NCEL xsection / Strange axial form factor </long>
+      <rootex>  NC #: Elastic #: #eta                        </rootex>
+      <tex>     NC \: Elastic \: \eta                        </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ncel      </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+    <fixed>                  true </fixed>
 
   </param>
   <!-- ==================================================================================== -->
