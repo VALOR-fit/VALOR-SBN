@@ -362,21 +362,26 @@ void plot_pdf_tom(
           bool mode_filled = false;
           conv::ReacModeCoarse_t mc = coarse_modes.at(imodec);
           TString mode_str = vutil::AsString(mc);
-          //cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
+          cout<<"Drawing: "<<vutil::AsString(b)<<" "<<vutil::AsString(s)<<"\t"<<imodec<<"\t"<<vutil::AsString(mc)<<"\t"<<pdf_contrib_coarse[imodec]<<std::endl;
           if(mc == conv::kmcUndefined) continue;
+          std::cout << "perrange: " << per_range << std::endl;
+          std::cout << "mode_str: " << mode_str << std::endl;
           TH1D * relevant_hist = per_range > 0. ? pdf_contrib_coarse_width[imodec] : pdf_contrib_coarse[imodec];
           if(per_range > .0){
             if(!cc_hist && !mode_str.Contains("NC") && !mode_str.Contains("nue")){
               cc_hist = static_cast<TH1D*>(pdf_contrib_coarse_width[imodec]->Clone("numu_cc_hist"));
               mode_filled = true;
+              std::cout << "1" << std::endl;
             }
             else if(!nc_hist && mode_str.Contains("NC")){
               nc_hist = static_cast<TH1D*>(pdf_contrib_coarse_width[imodec]->Clone("nc_hist"));
               mode_filled = true;
+              std::cout << "2" << std::endl;
             }
             else if(!nue_hist && mode_str.Contains("nue")){
               nue_hist = static_cast<TH1D*>(pdf_contrib_coarse_width[imodec]->Clone("nue_cc_hist"));
               mode_filled = true;
+              std::cout << "3" << std::endl;
             }
 
           }
@@ -451,7 +456,7 @@ void plot_pdf_tom(
         contrib_frame->GetYaxis()->SetLabelSize(0.04);
         contrib_frame->GetYaxis()->SetMaxDigits(3);
         contrib_frame->GetXaxis()->SetTitleOffset(1.2);
-        contrib_frame->GetYaxis()->SetTitleOffset(1);
+        contrib_frame->GetYaxis()->SetTitleOffset(1.1);
         
         // Sort out the title
         std::string nice_sample = "";
