@@ -9,7 +9,7 @@ kGlobFitSinsq2ThetaMuE=0.0009809; # Global best fit: https://arxiv.org/pdf/1906.
 kGlobFitDm41sq=1.32;      # Global best fit: https://arxiv.org/pdf/1906.00045.pdf 
 
 sinsq2thMuMu=0.0
-sinsq2thMuE=0.001
+sinsq2thMuE=0.0
 sinsq2thEE=0.0
 dm41sq=1.32
 
