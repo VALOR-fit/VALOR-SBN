@@ -579,7 +579,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #untar the ball 
-tar -xf local.tar
+tar -ixf local.tar
 
 #Setup valor 
 cd VALOR-SDK

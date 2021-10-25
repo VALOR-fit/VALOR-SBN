@@ -168,6 +168,23 @@ int main(int argc, char ** argv)
   
   // Generate predictions
   // Setup some global information
+  FitParamList *fp = 0;                                                                                                                                                                 
+  fp = util::GetFitParameterList("eff_sterile_osc");  
+
+  const util::NameRegistry * nr = util::NameRegistry::Instance();                                                                                                                       
+  conv::PhysParamId_t param = nr->PhysParamFromString("dm41sq");                                                                                                                        
+  fp->Update(param,100);                                                                                                                                                                
+  fp->SetInitValue(param,100);                                                                                                                                                          
+  conv::PhysParamId_t param2 = nr->PhysParamFromString("sinsq2thMuE");                                                                                                                  
+  fp->Update(param2,1);                                                                                                                                                                 
+  fp->SetInitValue(param2,1);                                                                                                                                                           
+  conv::PhysParamId_t param3 = nr->PhysParamFromString("sinsq2thMuMu");                                                                                                                 
+  fp->Update(param3,0.0);                                                                                                                                                               
+  fp->SetInitValue(param3,0.0);                                                                                                                                                         
+  conv::PhysParamId_t param4 = nr->PhysParamFromString("sinsq2thEE");                                                                                                                   
+  fp->Update(param4,0.0);                                                                                                                                                               
+  fp->SetInitValue(param4,0.0);
+
   PhysHypothesis ph(conv::kHypVoid);
   Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
   std::string write_opt = "pdfts_rf pdfcs_rf";
@@ -182,7 +199,8 @@ int main(int argc, char ** argv)
     }
 
     // Regenerate predictions with systematic variations
-    model->Generate(ph,generate_opt);
+    //model->Generate(ph,generate_opt);
+    model->Generate(*fp,generate_opt);
 
     // Write stuff out                              
     TObjArray myarr;

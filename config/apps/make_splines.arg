@@ -10,3 +10,6 @@ beam                             |   string       |  optional   |   BNB_FHC
 spectra-write-opt                |   string       |  optional   |   pdfts_rf
 store-spectra,discard-spectra    |   boolean_list |  optional   |   discard-spectra
 save-modelist,dont-save-modelist |   boolean_list |  optional   |   dont-save-modelist
+def-spline-debug                 |   boolean      |  optional   |   false
+reco-bin                         |   integer      |  optional   |   0 # Print out the MCT event rate breakdown for this bin - used for debugging
+true-bin                         |   integer      |  optional   |   0 # Print out the MCT event rate breakdown for this bin - used for debugging 

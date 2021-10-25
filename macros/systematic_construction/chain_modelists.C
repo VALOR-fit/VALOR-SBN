@@ -101,11 +101,15 @@ void chain_modelists(const std::string &syst, const std::string &location="", co
         std::vector<std::string> *pmodes = 0;
         TTree *tree = static_cast<TTree*>(flist.Get("ModeList"));
         tree->SetBranchAddress(param.c_str(),&pmodes);
-        tree->GetEntry(0);
-        for(const std::string &pm : *pmodes){ 
-          std::vector<std::string>::iterator it = std::find(modes.begin(),modes.end(),pm);
-          if(it == modes.end())
-            modes.push_back(pm);
+        // For nue, we have three distinct samples when generating the response functions 
+        // Once they've been generated, I've hadd'ed everything together so this tree ends up with 3 entries(one for each sample)
+        for(auto i = 0; i < tree->GetEntries(); i++){
+          tree->GetEntry(i);
+          for(const std::string &pm : *pmodes){ 
+            std::vector<std::string>::iterator it = std::find(modes.begin(),modes.end(),pm);
+            if(it == modes.end())
+              modes.push_back(pm);
+          }
         }
       }
       ++n;
@@ -130,12 +134,19 @@ TString GetFilename(const std::string &p, const std::string &d, const std::strin
   name.ReplaceAll("[PARAM]",  p.data());
   name.ReplaceAll("[DET]",    d.data());
   name.ReplaceAll("[SAMPLE]", s.data());
-  if(l != ""){
+  if(l != "" && s=="numuCCincl"){
     name.Prepend("/");
     name.Prepend(detector_location.at(i));
     name.Prepend("/");
     name.Prepend(l.data());
   }
+  else{
+    name.Prepend("/");
+    //name.Prepend(detector_location.at(i));
+    name.Prepend("/");
+    name.Prepend(l.data());
+  }
+
   std::cout << " Reading file: " << name << std::endl;
   return name;
 }

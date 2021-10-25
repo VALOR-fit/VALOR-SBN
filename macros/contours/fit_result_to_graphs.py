@@ -159,21 +159,21 @@ def main(files,tag,label,exclusion,data,param):
 
   #in_x_lim = 0.5*((math.log10(5e-1)+2)/(x_npoints-1))
   #in_y_lim = 0.5*((math.log10(4)-math.log10(4e-1))/(y_npoints-1))
-  in_x_lim = 0.5*((1)/(x_npoints-1))
+  in_x_lim = 0.5*((r)/(x_npoints-1))
   in_y_lim = 0.5*((2)/(y_npoints-1))
 
 
   ex_x_min = -(r+ex_x_lim) #exlusion
   ex_x_max = (0+ex_x_lim)
 
-  in_x_min = -(1.2+in_x_lim) #allowed
-  in_x_max = -(1.10+in_x_lim)
+  in_x_min = -(r+in_x_lim) #allowed
+  in_x_max = (0+in_x_lim)
 
   ex_y_min = -(2+ex_y_lim) #exlusion
   ex_y_max = 2+ex_y_lim
 
-  in_y_min = (0.05+in_y_lim) #allowed
-  in_y_max = 0.2+in_y_lim
+  in_y_min = -(2+in_y_lim) #allowed
+  in_y_max = 2+in_y_lim
 
 
 

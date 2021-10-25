@@ -24,7 +24,8 @@ void plot_envelope_ratios(
   TFile *f_uni = new TFile(universe_tweak_files,"read");
 
   //std::string file_name = file_name;
-  std::string location = "/sbnd/app/users/tham/VALOR_master/VALOR-SBN/geniev3_syst/envelope_test/";
+  //std::string location = "/sbnd/app/users/tham/VALOR_master/error_envelopes_new_selection_14June/";
+  std::string location = "./";
 
   // 
   // Global style settings
@@ -38,9 +39,9 @@ void plot_envelope_ratios(
   // All graphs
   //
 
-  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCincl_nom"));
-  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCincl_p1"));
-  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCincl_m1"));
+  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
+  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
+  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
   std::cout << " Got universe histograms" << std::endl;
  
   TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));

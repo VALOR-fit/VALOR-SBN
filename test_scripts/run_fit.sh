@@ -1,0 +1,25 @@
+valor-run_fit \
+   --config $VALOR_EXPT/config/analysis/sbn_numu_disapp_2020a1_flux_nd_1.xml \
+   --physics-hypothesis eff_sterile_osc \
+   --param-values-option prefit-errors \
+   --fitter minuit+with_simplex_fallback \
+   --osc-prior-file priors/void_priors.xml \
+   --load-prior-from-file - \
+   --mesg-thresholds verbosity.xml \
+   --without-stat-fluct \
+   --tag my_sbnd_toy \
+   --run 1 \
+   --ntoymc 1 \
+   --input-dm41sq         1.32 \
+   --input-sinsq2thMuMu   0.0  \
+   --input-sinsq2thMuE    0.0  \
+   --input-sinsq2thEE     0.0  \
+   --fix-at-dm41sq        1.32 \
+   --fix-at-sinsq2thMuMu  0.0  \
+   --fix-at-sinsq2thMuE   0.0  \
+   --fix-at-sinsq2thEE    0.0  \
+   --fix-dm41sq                \
+   --fix-sinsq2thMuMu          \
+   --fix-sinsq2thMuE           \
+   --fix-sinsq2thEE            \
+   

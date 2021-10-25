@@ -19,7 +19,8 @@ TGT = make_sbncode_minidst \
       make_xsec_splines \
       make_flux_splines \
       universe_variation_tweaks \
-      write_spectra_using_universes
+      write_spectra_using_universes \
+      tweak_pdf_nsigma_var 
 
 all: $(TGT)
 
@@ -105,6 +106,15 @@ else
 	@echo "Skipping write_spectra_using_universes due to no GENIE"
 endif
 
+# Randomly throw the pdf to make envelopes
+# 
+tweak_pdf_nsigma_var: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c tweak_pdf_nsigma_var.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) tweak_pdf_nsigma_var.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-tweak_pdf_nsigma_var
+else
+	@echo "Skipping tweak_pdf_nsigma_var due to no GENIE"
+endif
 
 #################### CLEANING
 
@@ -120,6 +130,7 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-tweak_pdf_nsigma_var
 
 distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_sbncode_minidst
@@ -129,7 +140,7 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-write_spectra_using_universes
-
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-tweak_pdf_nsigma_var
 FORCE:
 
 # DO NOT DELETE

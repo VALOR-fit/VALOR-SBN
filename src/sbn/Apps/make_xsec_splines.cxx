@@ -70,6 +70,9 @@
 #include "valor/FitCore/CompoundFitElements.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/FitCore/UtlFitParamList.h"
+#include "valor/FitCore/FitParamList.h"
+#include "valor/FitCore/PhysParamList.h"
+#include "valor/Utilities/OscParamValues.h"
 
 using std::string;
 using namespace valor;
@@ -178,6 +181,9 @@ int main(int argc, char ** argv)
   string arg_write_opt     = arg.GetString("spectra-write-opt");
   bool   arg_store_spectra = arg.GetBool("store-spectra");
   bool   arg_save_modelist = arg.GetBool("save-modelist");
+  bool   arg_def_spline_debug = arg.GetBool("def-spline-debug");
+  int    arg_reco_bin      = arg.GetInt("reco-bin");
+  int    arg_true_bin      = arg.GetInt("true-bin");
 
   // From arguments
   string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
@@ -239,7 +245,8 @@ int main(int argc, char ** argv)
   std::map<double, unsigned int>::iterator itr_d;
 
   GetKnots(all_variations,knots,universes_variations,universes_knots,knots_universes);
-  VLOG("valor_sbn",pNOTICE) << "Universe ID and variation value for knots : ";
+  VLOG("valor_sbn",pNOTICE) << "Universe ID and variation value for knots.\n"
+                            << "For knot 0 we will infact use the true nominal and not the univer variation (see gmodel->SetSystematic.. in the app): ";
   for(itr_d = knots_universes.begin(); itr_d != knots_universes.end(); ++itr_d){
     VLOG("valor_sbn",pNOTICE) << "ID: " << itr_d->second << ", variation: " << universes_variations.at(itr_d->second) << " for knot: " << itr_d->first;
     ids.push_back(itr_d->second);
@@ -320,17 +327,41 @@ int main(int argc, char ** argv)
   // Name to search VALORArrays for
   const TString fin_name = "mctfin";
 
+  // Lets manually set some osc params so we can read events from the osc sample used for the nue analysis
+  FitParamList *fp = 0;
+  fp = util::GetFitParameterList("eff_sterile_osc");
+  const util::NameRegistry * nr = util::NameRegistry::Instance();
+  conv::PhysParamId_t param = nr->PhysParamFromString("dm41sq");
+  fp->Update(param,100);
+  fp->SetInitValue(param,100);
+  conv::PhysParamId_t param2 = nr->PhysParamFromString("sinsq2thMuE");
+  fp->Update(param2,1);
+  fp->SetInitValue(param2,1);
+  conv::PhysParamId_t param3 = nr->PhysParamFromString("sinsq2thMuMu");
+  fp->Update(param3,0.0);
+  fp->SetInitValue(param3,0.0);
+  conv::PhysParamId_t param4 = nr->PhysParamFromString("sinsq2thEE");
+  fp->Update(param4,0.0);
+  fp->SetInitValue(param4,0.0);
+
   std::vector< std::map< ReacMode_t, VALORArray> > mct_knots_modes;
   for (unsigned int iknot = 0; iknot < knots.size(); ++iknot) {
     const double kn         = knots.at(iknot);
     const unsigned int univ = knots_universes.at(kn);
 
     LOG("valor_sbn",pINFO) << "Iterator: " << iknot << ", knot : " << kn << ", universe ID: " << univ;
-    gmodel->SetSystematicVariationIDToApply(syst, univ);
+    if(kn == 0){
+      LOG("valor_sbn",pNOTICE) << " For knot " << kn << " lets actually use the true nominal instead of the variation from the universe (i.e. set the variation to zero).";
+      gmodel->ResetSystematicVariationIDs();
+    }
+    else{
+      gmodel->SetSystematicVariationIDToApply(syst, univ);
+    }
 
     const PhysHypothesis ph(conv::kHypVoid);
     const Option_t * generate_opt = ""; // also generate non-default (for fitting) predictions in extra binning schemes
-    model->Generate(ph,generate_opt);
+    //model->Generate(ph,generate_opt);
+    model->Generate(*fp,generate_opt);
 
     const std::string tag = "mct_var_"+std::to_string(iknot);
     TObjArray *mct_modes_varray = new TObjArray();
@@ -389,6 +420,43 @@ int main(int argc, char ** argv)
           break;
         }
       }
+    }
+
+    // Add `--def-spline-debug` to the command line arg to print out a breakdown of the MCT event rates - useful for debugging
+    if(arg_def_spline_debug){
+        
+      int reco_bin = arg_reco_bin; // reco bin we're interested in 
+      int true_bin = arg_true_bin; // true bin we're interested in
+      int n_true_bins_sb = 0; // total true bins
+       
+      std::cout << "Looking at " << syst << " with sigma variation = " << kn << std::endl;
+      std::cout << "Printing MCT event rate breakdown for reco bin = " << reco_bin << " and true bin = " << true_bin << ": " << std::endl;
+
+      for(auto elem : mct_modes){
+        std::cout << util::AsString(elem.first) << " " << elem.second.GetEntry(reco_bin,true_bin) <<  "\n";
+        //Get the true, standard binning for this mode
+        const VALORBinning * true_sb = binning.TrueSmpBinning(elem.first);
+        n_true_bins_sb = true_sb->NBins();
+      }
+        
+      std::cout << "\nPrinting MCT event rate breakdown for the sum of reco bin " << reco_bin << ": " << std::endl;
+
+      std::vector<double> tot_event_mode(mct_modes.size(), 0);
+      for(int i = 0; i < n_true_bins_sb; i++){
+        int j = 0;
+        for(auto elem : mct_modes){
+          tot_event_mode[j] += elem.second.GetEntry(reco_bin,i);
+          ++j;
+        }
+      }
+      int i = 0;
+      double tot_bin_event_rate = 0;
+      for(auto elem : mct_modes){
+        std::cout << util::AsString(elem.first) << " " << tot_event_mode[i] <<  "\n";
+        tot_bin_event_rate += tot_event_mode[i];
+        i++;
+      }
+      std::cout << "\nTotal event rate for reco bin " << reco_bin << ": " << std::setprecision(10) << tot_bin_event_rate << "\n\n";
     }
     mct_knots_modes.push_back(mct_modes);
   }
@@ -509,16 +577,10 @@ int main(int argc, char ** argv)
             nevents = 0;
           }
 
-//          std::cout << "nevents: " << nevents << std::endl;
-//          std::cout << "nevents0: " << nevents0 << std::endl;
-//          std::cout << "iknot: " << iknot << std::endl;
-//          std::cout << "inom: " << inom << std::endl;
           // Cutoff under 36 for a maximum 50% stat uncertainty in every bin
           // Splines will be flat otherwise
-          double event_ratio = (nevents0 > 4) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
-          //std::cout << event_ratio << std::endl;      
+          double event_ratio = (nevents0 > 0) ? nevents/double(nevents0) : 1; // Ratio of the variation rate to the nominal rate
           if(iknot == inom){
-              //std::cin.get();
             event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
           }
           // Set the y axis entry to be the current rate/nominal rate

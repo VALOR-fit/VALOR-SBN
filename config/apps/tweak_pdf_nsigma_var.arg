@@ -8,6 +8,9 @@ fit-param-opt                        |   string       |  optional   |   NONE
 config                               |   string       |  mandatory  |   -
 mesg-thresholds                      |   string       |  optional   |   verbosity.xml
 nthreads                             |   integer      |  optional   |   -1
+def-spline-debug                     |   boolean      |  optional   |   0
+reco-bin                             |   integer      |  optional   |   0
+true-bin                             |   integer      |  optional   |   0
 #
 params                               |   string       |  optional   |   allsyst
 kinevar                              |   string       |  optional   |   Ereco
