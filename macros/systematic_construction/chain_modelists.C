@@ -134,12 +134,19 @@ TString GetFilename(const std::string &p, const std::string &d, const std::strin
   name.ReplaceAll("[PARAM]",  p.data());
   name.ReplaceAll("[DET]",    d.data());
   name.ReplaceAll("[SAMPLE]", s.data());
-  if(l != ""){
+  if(l != "" && s=="numuCCincl"){
+    name.Prepend("/");
+    name.Prepend(detector_location.at(i));
+    name.Prepend("/");
+    name.Prepend(l.data());
+  }
+  else{
     name.Prepend("/");
     //name.Prepend(detector_location.at(i));
     name.Prepend("/");
     name.Prepend(l.data());
   }
+
   std::cout << " Reading file: " << name << std::endl;
   return name;
 }
