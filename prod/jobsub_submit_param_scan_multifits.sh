@@ -86,6 +86,7 @@ INTERACTIVE=0
 JOBDIR=""
 NJOBS=0
 PRIORFILE=""
+FITPARAMOPT=""
 
 valorfailed=false
 
@@ -283,9 +284,16 @@ while [ $# -gt 0 ]; do
       fi
       ;;
 
-    --prior-file )
+    --osc-prior-file )
       if [ $# -gt 1 ]; then
         PRIORFILE=$2
+        shift
+      fi
+      ;;
+
+     --fit-param-opt )
+      if [ $# -gt 1 ]; then
+        FITPARAMOPT=$2
         shift
       fi
       ;;
@@ -327,6 +335,7 @@ echo "TARBALL = $TARBALL"
 echo "INTERACTIVE = $INTERACTIVE"
 echo "NJOBS = $NJOBS" 
 echo "PRIORFILE = $PRIORFILE"
+echo "FITPARAMOPT = $FITPARAMOPT"
 
 if [ $INTERACTIVE -eq 1 ]; then
   rm -rf $PWD/scratch
@@ -579,7 +588,7 @@ do
     --param-values-option $PARAMVALUESOPTIONS --fitter $FITOPTION \
     --config $CONFIGFILE --mesg-thresholds $MESGTHRESHOLD --without-stat-fluct \
     $SHOULDSTORE --$HIERARCHY --load-prior-from-file $LOADPRORFROMFILE \
-    --pot-override $POTOVERIDE --prior-file $PRIORFILE ";
+    --pot-override $POTOVERIDE --osc-prior-file $PRIORFILE --fit-param-opt $FITPARAMOPT";
 
   if [ $DISCOVERY == 0 ]; then 
     arguments="--tag $TAG-$PARAM1-$VAL1-$PARAM2-$VAL2 --first-octant  --fix-at-$PARAM1 $VAL1 --fix-$PARAM1 ";

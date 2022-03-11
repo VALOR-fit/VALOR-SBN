@@ -14,3 +14,5 @@ other-sample                       |   boolean      |  optional   |  false
 fix-nonres,keep-nonres             |   boolean_list |  optional   |  fix-nonres
 status-code-set,no-status-code     |   boolean_list |  optional   |  status-code-set
 max-n-events                       |   integer      |  optional   |  -1
+off-axis-min                       |   double       |  optional   |  0.0
+off-axis-max                       |   double       |  optional   |  90.0
