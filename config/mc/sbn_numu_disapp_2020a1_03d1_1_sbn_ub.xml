@@ -61,7 +61,7 @@ Input MC templates
 Modelists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<modelist> modelists/fine/SBNOscLowE_nodirt.xml </modelist>
+<modelist> modelists/fine/SBNOscLowE.xml </modelist>
 <coarse_modelist> modelists/coarse/coarse_mode_list_SBN_BNB_FHC_numuCCincl.xml </coarse_modelist>
 
 <!--
