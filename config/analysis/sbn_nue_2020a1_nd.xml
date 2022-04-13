@@ -18,5 +18,9 @@
     </element>
    
   </element_list>
-    
+
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml     </filename>
+  </parameter_definitions>
+
 </valor> 
