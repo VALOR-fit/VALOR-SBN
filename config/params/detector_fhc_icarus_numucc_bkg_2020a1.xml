@@ -251,8 +251,8 @@
     <apply_to>
       <detector>   icarus         </detector>
       <beam>       fhc            </beam>
-      <selection>  all  </selection>
-      <reac_type>  cosmic         </reac_type>  <!-- change to dirt once it is a supported mode -->
+      <selection>  all            </selection>
+      <reac_type>  dirt           </reac_type>  <!-- change to dirt once it is a supported mode -->
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
       <target>     all            </target>
@@ -288,7 +288,7 @@
     <apply_to>
       <detector>   icarus         </detector>
       <beam>       fhc            </beam>
-      <selection>  all  </selection>
+      <selection>  all            </selection>
       <reac_type>  cosmic         </reac_type>
       <flav_init>  all            </flav_init>
       <flav_final> all            </flav_final>
