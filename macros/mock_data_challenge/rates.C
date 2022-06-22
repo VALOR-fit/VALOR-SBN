@@ -37,7 +37,7 @@ void rates(const std::string &md,
   double post_rate = h_post->Integral(); 
   double post_syst = (h_p1->Integral()-h_m1->Integral())*0.5;
   double post_stat = sqrt(post_rate);
-  double post_err  = post_stat+post_syst;
+  double post_err  = sqrt(pow(post_stat,2)+pow(post_syst,2));
 
   unsigned int ndof = gbf->GetNumberFreeParameters();
   double stat       = gbf->GetBestFitStatistic();
