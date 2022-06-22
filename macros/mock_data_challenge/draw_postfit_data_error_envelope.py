@@ -17,7 +17,7 @@ ROOT.PyConfig.IgnoreCommandLineOptions = True
 R = ROOT
 
 max_energy = 3.
-linewidth = 1
+linewidth = 2
 title_offset = 1.1
 left_margin   = 0.13
 bottom_margin = 0.13
@@ -30,14 +30,24 @@ label_size = 0.05
 font = 132 # Times Medium, scalable rotatable
 
 data_color    = ROOT.kPink+5
-prefit_color  = ROOT.kAzure+7
-prefit_line   = ROOT.kAzure-1
-postfit_color = ROOT.kOrange-3
-postfit_line  = ROOT.kOrange+2
+postfit_color  = ROOT.kAzure+7
+postfit_line   = ROOT.kAzure-1
+#prefit_color = ROOT.kOrange-3
+#prefit_line  = ROOT.kOrange+2
+#prefit_color  = ROOT.kPink+5
+#prefit_line   = ROOT.kPink+4
+prefit_color  = ROOT.kTeal+5
+prefit_line   = ROOT.kTeal+4
+#prefit_color  = ROOT.kAzure+7
+#prefit_line   = ROOT.kAzure-1
+#postfit_color = ROOT.kAzure+7
+#postfit_line  = ROOT.kAzure-1
 
 data_style    = 1001 # Solid
 prefit_style  = 3017 # Hatched
 postfit_style = 3018 # Solid
+#prefit_style  = 3001
+#postfit_style = 3001
 
 to3dp = "{0:.3f}"
 
@@ -212,10 +222,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       h.GetYaxis().SetTitleOffset(title_offset)
       h.GetYaxis().SetMaxDigits(3)
 
-    legend = ROOT.TLegend(0.425,0.697,0.948,0.870)
+    legend = ROOT.TLegend(0.525,0.697,0.948,0.870)
     legend.SetFillStyle(0)
     legend.SetBorderSize(0)
-    legend.SetMargin(0.2)
+    legend.SetMargin(0.25)
     legend.SetTextSize(0.036)
 
     canv_name = "c_%s" % util.SampleAsString(s)
@@ -273,17 +283,21 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       postfit_width = postfit_nom
       widths.append(postfit_width)
 
+    max_y = 0.
     for w in widths:
       for i in xrange(w.GetXaxis().GetNbins()):
         old_bin_content = w.GetBinContent(i+1)
         bin_width       = w.GetXaxis().GetBinWidth(i+1)
         new_bin_content = old_bin_content/bin_width
         w.SetBinContent(i+1,new_bin_content)
+        if max_y < new_bin_content:
+          max_y = new_bin_content
       wintegrals.append(w.Integral("width"))
       integrals.append(w.Integral())
 
+#    max_y = max_y*1.4
     if det == '1':
-      max_y = max(wintegrals)*1.4
+      max_y = max(wintegrals)*1.6
     else:
       max_y = max(wintegrals)*1.4
 
@@ -324,7 +338,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       prefit_width.SetMarkerStyle(0)
 
       legend_prefit = ROOT.TH1D(prefit_width)
-      legend_prefit.SetLineStyle(5)
+      legend_prefit.SetLineStyle(2)
       legend_prefit.SetFillStyle(env_graph_prefit.GetFillStyle())
       legend_prefit.SetFillColor(env_graph_prefit.GetFillColor())
       legend_prefit.SetMarkerStyle(env_graph_prefit.GetMarkerStyle())
@@ -358,26 +372,36 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hplus_postfit.Draw("AXIS same")
 
       if plot_prefit:
-        prefit_width.SetLineStyle(5)
+        prefit_width.SetLineStyle(2)
         prefit_width.Draw("same")
+
+      R.gStyle.SetEndErrorSize(4)
+
+      # Set the x errors to be 0
+      for i in xrange(postfit_width.GetXaxis().GetNbins()):
+        env_graph_postfit.SetPointEXlow (i,0)
+        env_graph_postfit.SetPointEXhigh(i,0)
 
       env_graph_postfit.SetFillStyle(postfit_style)
       env_graph_postfit.SetFillColor(postfit_color)
-      env_graph_postfit.SetLineWidth(0)
-      env_graph_postfit.SetLineStyle(0)
+      env_graph_postfit.SetLineColor(postfit_color)
+      env_graph_postfit.SetLineStyle(1)
+      env_graph_postfit.SetLineWidth(2)
       env_graph_postfit.SetMarkerStyle(0)
-      env_graph_postfit.SetMarkerColor(postfit_color)
-      env_graph_postfit.Draw("same2")
+      env_graph_postfit.SetMarkerSize(0)
+      env_graph_postfit.Draw("p1")
 
-      postfit_width.SetLineWidth(linewidth)
-      postfit_width.SetLineStyle(7)
-      postfit_width.SetLineColor(postfit_line)
-      postfit_width.Draw("same")
-      postfit_width.SetMarkerStyle(0)
+      #postfit_width.SetLineWidth(linewidth)
+      #postfit_width.SetLineStyle(7)
+      #postfit_width.SetLineColor(postfit_line)
+      #postfit_width.Draw("same")
+      #postfit_width.SetMarkerStyle(0)
 
       legend_postfit = ROOT.TH1D(postfit_width)
-      legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
-      legend_postfit.SetFillColor(env_graph_postfit.GetFillColor())
+      #legend_postfit.SetFillStyle(env_graph_postfit.GetFillStyle())
+      #legend_postfit.SetFillColor(env_graph_postfit.GetFillColor())
+      legend_postfit.SetLineStyle(env_graph_postfit.GetLineStyle())
+      legend_postfit.SetLineColor(env_graph_postfit.GetLineColor())
       legend_postfit.SetMarkerStyle(env_graph_postfit.GetMarkerStyle())
       legend_postfit.SetMarkerColor(env_graph_postfit.GetMarkerColor())
       legend_postfit.SetMarkerSize (env_graph_postfit.GetMarkerSize())
@@ -394,7 +418,8 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       all_labels.append(postfit_label)
       all_legend.append(legend_postfit)
 
-      legend.AddEntry(legend_postfit, postfit_label, "FL")
+      #legend.AddEntry(legend_postfit, postfit_label, "LE")
+      legend.AddEntry(env_graph_postfit, postfit_label, "PE")
 
       postfit_width.Write("postfit_hist")
       env_graph_postfit.Write("postfit_env")
