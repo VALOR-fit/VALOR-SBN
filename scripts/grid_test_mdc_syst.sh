@@ -1,0 +1,26 @@
+jobsub_submit \
+  --group sbnd \
+  --expected-lifetime=4d \
+  --memory=1500MB \
+  --disk=50GB \
+  --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC \
+  --OS=SL7 \
+  -N 4 \
+  --generate-email-summary file:///${VALOR_DUNE}/prod/jobsub_submit_param_scan_multifits.sh \
+  --tag sbn_mdc_disap_flux_etrue \
+  --param_nullhyp1 0 --param_nullhyp2 0 \
+  --physics-hypothesis eff_sterile_osc \
+  --config-file /pnfs/sbnd/persistent/users/rsjones/valor/sbn_mdc_three_detector_mc.xml \
+  --param1 sinsq2thMuMu --min-value1 1E-3 --max-value1 1 --log-param1 1 --npoints1 4 \
+  --param2 dm41sq --min-value2 1E-2 --max-value2 1E2 --log-param2 1 --npoints2 4 \
+  --discovery 1 \
+  --hierarchy normal \
+  --store-spectra 1 \
+  --fit-option minuit \
+  --pot-override -999 \
+  --mesg-thresholds verbosity.xml \
+  --param-values-option prefit-errors \
+  --tarball /pnfs/sbnd/resilient/users/rsjones/valor/tb_valor.tar \
+  --jobdir /pnfs/sbnd/persistent/users/rsjones/valor_syst_numu_disap_13_02_20_test \
+  --prior-file /pnfs/sbnd/persistent/users/rsjones/valor/void.xml \
+  --njobs 4

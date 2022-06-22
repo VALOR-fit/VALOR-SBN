@@ -1,0 +1,70 @@
+#!/bin/bash
+
+params=("ResDecayGamma")
+
+samples=("numuCCincl") 
+#"numuCC0piNtrk" "numuCCoth")
+
+detectors=("sbn_nd")
+
+directories=("sbnd")
+
+configs=("nd")
+
+#parameters
+for i in ${!params[@]}; do
+  p=${params[$i]}
+
+  # samples
+  for j in ${!samples[@]}; do
+    s=${samples[$j]}
+
+    # detectors
+    for k in ${!detectors[@]}; do
+      d=${detectors[$k]}
+      dir=${directories[$k]}
+      config=${configs[$k]}
+
+      config_filename_inc="analysis/sbn_numu_disapp_2020a1_1_universes_${config}.xml"
+      config_filename_0pi="analysis/sbn_numu_disapp_2020a1_1_universes_${config}_cc0pi.xml"
+      config_filename_oth="analysis/sbn_numu_disapp_2020a1_1_universes_${config}_ccoth.xml"
+
+      cd /sbnd/app/users/rsjones/VALOR/VALOR-SBN/systematics/splines/03c1/test/
+
+      if [ $s == 'numuCCincl' ]
+      then
+        printf "Making CC Inclusive sample splines"
+        valor_sbn-make_xsec_splines \
+          --config $config_filename_inc \
+          --systematic $p \
+          --sample $s \
+          --variations /sbnd/app/users/rsjones/VALOR/VALOR-SBN/data/sbn_numu_disappearance/universes/2020a1/all_uboone_combined_params_2020a.txt \
+          --store-spectra --save-modelist \
+          --detector $d
+
+      elif [ $s == 'numuCC0piNtrk' ]
+      then
+        printf "Making CC 0Pi sample splines"
+        valor_sbn-make_xsec_splines \
+          --config $config_filename_0pi \
+          --systematic $p \
+          --sample $s \
+          --variations /sbnd/app/users/rsjones/VALOR/VALOR-SBN/data/sbn_numu_disappearance/universes/2020a1/all_uboone_combined_params_2020a.txt \
+          --store-spectra --save-modelist \
+          --detector $d
+
+      elif [ $s == 'numuCCoth' ]
+      then
+        printf "Making CC Other sample splines"
+        valor_sbn-make_xsec_splines \
+          --config $config_filename_oth \
+          --systematic $p \
+          --sample $s \
+          --variations /sbnd/app/users/rsjones/VALOR/VALOR-SBN/data/sbn_numu_disappearance/universes/2020a1/all_uboone_combined_params_2020a.txt \
+          --store-spectra --save-modelist \
+          --detector $d
+      fi
+
+    done
+  done
+done
