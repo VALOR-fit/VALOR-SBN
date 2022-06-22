@@ -198,7 +198,7 @@ def main(files,config,output,input_tag,nominal,kinematic,grouping,scale):
       # Check the diagonal case
       if n == m:
         if math.isnan(frac_cov[n][m]):
-          frac_cov[n][m] = 1 # 100% for used table
+          frac_cov[n][m] = 0.01 # 1% to not allow the fit to go mad
       else:
         if math.isnan(frac_cov[n][m]):
           frac_cov[n][m] = 0 # setting the off-diagonal elements of the empty bins to be 0
