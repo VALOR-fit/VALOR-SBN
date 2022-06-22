@@ -86,6 +86,15 @@ INTERACTIVE=0
 JOBDIR=""
 NJOBS=0
 PRIORFILE=""
+# The other osc params we're not considering in a single fit
+PARAM3=0
+PARAM3NULLHYP=0
+FIXEDATVALUE3="none"
+FIXEDVALUE3=0
+PARAM4=0
+PARAM4NULLHYP=0
+FIXEDATVALUE4="none"
+FIXEDVALUE4=0
 
 valorfailed=false
 
@@ -290,6 +299,62 @@ while [ $# -gt 0 ]; do
       fi
       ;;
 
+    --param3 )
+      if [ $# -gt 1 ]; then
+        PARAM3=$2
+        shift
+      fi
+      ;;
+
+    --param4 )
+      if [ $# -gt 1 ]; then
+        PARAM4=$2
+        shift
+      fi
+      ;;
+
+    --param_nullhyp3 )
+      if [ $# -gt 1 ]; then
+        PARAM3NULLHYP=$2
+        shift
+      fi
+      ;;
+
+    --param_nullhyp4 )
+      if [ $# -gt 1 ]; then
+        PARAM4NULLHYP=$2
+        shift
+      fi
+      ;;
+
+    --fixed_at_val3 )
+      if [ $# -gt 1 ]; then
+        FIXEDATVALUE3=$2
+        shift
+      fi
+      ;;
+
+    --fixed_at_val4 )
+      if [ $# -gt 1 ]; then
+        FIXEDATVALUE4=$2
+        shift
+      fi
+      ;;
+
+    --fix_val3 )
+      if [ $# -gt 1 ]; then
+        FIXEDVALUE3=$2
+        shift
+      fi
+      ;;
+
+    --fix_val4 )
+      if [ $# -gt 1 ]; then
+        FIXEDVALUE4=$2
+        shift
+      fi
+      ;;
+
       # Other.
       * )
       echo "Invalid Setting $1 with value $2"
@@ -314,6 +379,12 @@ echo "PARAM2 = $PARAM2"
 echo "MINVALUE2 = $MINVALUE2"
 echo "MAXVALUE2 = $MAXVALUE2"
 echo "LOGPARAM2 = $LOGPARAM2"
+echo "PARAM3 = $PARAM3"
+echo "FIXEDATVALUE3 = $FIXEDATVALUE3"
+echo "FIXEDVALUE3 = $FIXEDVALUE3"
+echo "PARAM4 = $PARAM4"
+echo "FIXEDATVALUE4 = $FIXEDATVALUE4"
+echo "FIXEDVALUE4 = $FIXEDVALUE4"
 echo "DISCOVERY = $DISCOVERY"
 echo "PHYSHYPOTHESIS = $FITPARAMLIST"
 echo "HIERARCHY = $HIERARCHY" 
@@ -508,7 +579,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #untar the ball 
-tar -xf local.tar
+tar -ixf local.tar
 
 #Setup valor 
 cd VALOR-SDK
@@ -565,6 +636,13 @@ do
       VAL2=$(perl -E "say (10**($STEP2*($i%$NPOINTS2) + log($MINVALUE2)/log(10)))")
     fi
 
+    # Looks like there a rounding issue which can cause dmsq > 100. Not sure how this hasn't come up years ago..
+    # Quick workaround 
+    if [ $(perl -E "say $VAL2 > 100") ] && [ $(perl -E "say $VAL2 < 100.0001") ]; then 
+        VAL2=100
+    fi
+
+
     echo "VAL1: $VAL1"
     echo "VAl2: $VAL2"
     echo " " 
@@ -601,7 +679,25 @@ do
       argparam2=" --input-$PARAM2 $PARAM2NULLHYP \
         --fix-at-$PARAM2 $VAL2 \
         --fix-$PARAM2 ";
-      arguments=$arguments$argparam2
+
+      if [ $FIXEDVALUE3 = 1 ] || [ $FIXEDVALUE3 = true ]; then
+        argparam3=" --input-$PARAM3 $PARAM3NULLHYP \
+          --fix-at-$PARAM3 $FIXEDATVALUE3 \
+          --fix-$PARAM3 ";
+      else
+        argparam3=" --input-$PARAM3 $PARAM3NULLHYP \
+          --fix-at-$PARAM3 $FIXEDATVALUE3 ";
+      fi
+
+      if [ $FIXEDVALUE4 = 1 ] || [ $FIXEDVALUE4 = true ]; then
+        argparam4=" --input-$PARAM4 $PARAM4NULLHYP \
+          --fix-at-$PARAM4 $FIXEDATVALUE4 \
+          --fix-$PARAM4 ";
+      else
+        argparam4=" --input-$PARAM4 $PARAM4NULLHYP \
+          --fix-at-$PARAM4 $FIXEDATVALUE4 ";
+      fi
+      arguments=$arguments$argparam2$argparam3$argparam4
     fi
   fi
 
