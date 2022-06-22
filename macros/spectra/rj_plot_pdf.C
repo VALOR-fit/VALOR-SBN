@@ -423,6 +423,15 @@ void rj_plot_pdf(
           contrib_legend->AddEntry(data_hist, "Oscillated", "P");
         }
         float max_y = 1.2* std::max(mode_max, std::max(data_max, total_max));
+        /*
+        if(util::AsString(d) == "sbn_nd")
+          max_y = 2.6e6;
+        else if(util::AsString(d) == "sbn_uboone")
+          max_y = 17e4;
+        else if(util::AsString(d) == "sbn_icarus")
+          max_y = 3e5;
+          */
+
         // TEMP FOR DATA COMPARISONS
         /*
         if(vutil::AsString(d) == "sbn_nd"){
