@@ -38,8 +38,6 @@ def make_cov(outputname):
         "genie_ResDecayGamma_Genie",
         "genie_ccresVector_Genie",
         "genie_ncresVector_Genie",
-        "genie_cohMA_Genie",
-        "genie_cohR0_Genie",
         "genie_ncelAxial_Genie",
         "genie_ncelEta_Genie",
         ]
@@ -61,8 +59,6 @@ def make_cov(outputname):
         "genie_ResDecayGamma_Genie"   : 0.0,
         "genie_ccresVector_Genie"     : 0.0,
         "genie_ncresVector_Genie"     : 0.0,
-        "genie_cohMA_Genie"           : 0.0,
-        "genie_cohR0_Genie"           : 0.0,
         "genie_ncelAxial_Genie"       : 0.0,
         "genie_ncelEta_Genie"         : 0.0,
     }
@@ -84,8 +80,6 @@ def make_cov(outputname):
         "genie_ResDecayGamma_Genie"   : 0.0,
         "genie_ccresVector_Genie"     : 0.0,
         "genie_ncresVector_Genie"     : 0.0,
-        "genie_cohMA_Genie"           : 0.0,
-        "genie_cohR0_Genie"           : 0.0,
         "genie_ncelAxial_Genie"       : 0.0,
         "genie_ncelEta_Genie"         : 0.0,
     }
@@ -107,8 +101,6 @@ def make_cov(outputname):
         "genie_ResDecayGamma_Genie"   : 1.0,
         "genie_ccresVector_Genie"     : 1.0,
         "genie_ncresVector_Genie"     : 1.0,
-        "genie_cohMA_Genie"           : 1.0,
-        "genie_cohR0_Genie"           : 1.0,
         "genie_ncelAxial_Genie"       : 1.0,
         "genie_ncelEta_Genie"         : 1.0,
     }
