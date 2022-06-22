@@ -1,0 +1,23 @@
+jobsub_submit \
+  --group sbnd \
+  --expected-lifetime=2d --memory=1500MB --disk=1500MB \
+  --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC \
+  --OS=SL6 \
+  -N 20 \
+  --generate-email-summary file:///${VALOR_DUNE}/prod/jobsub_submit_param_scan_multifits.sh \
+  --tag sbn_numu_disappearance_inj \
+  --param_nullhyp1 0.07 --param_nullhyp2 1.32 \
+  --fit-param-list eff_sterile_osc \
+  --config-file /pnfs/sbnd/persistent/users/rsjones/valor/your_usual_three_detector_sbn_numu_config.xml \
+  --param1 sinsq2thMuMu --min-value1 1E-2 --max-value1 5E-1 --log-param1 1 --npoints1 40 \
+  --param2 dm41sq --min-value2 4E-1 --max-value2 4 --log-param2 1 --npoints2 40 \
+  --discovery 1 \
+  --hierarchy normal \
+  --store-spectra 1 \
+  --fit-option minuit \
+  --pot-override -999 \
+  --mesg-thresholds verbosity.xml \
+  --param-values-option prefit-errors \
+  --tarball /pnfs/sbnd/resilient/users/rsjones/valor/valor.tar \
+  --jobdir /pnfs/sbnd/persistent/users/rsjones/wherever_you_want \
+  --njobs 20
