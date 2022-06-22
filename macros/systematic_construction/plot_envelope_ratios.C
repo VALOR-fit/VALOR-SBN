@@ -36,6 +36,44 @@ void plot_envelope_ratios(const char *valor, const char *univ, const char *outpu
   TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get(("env_sb_BNB_FHC_"+sample+"_m1").c_str()));
   std::cout << " Got VALOR histograms" << std::endl;
  
+  // Get the event rates and write them
+  double valor_nom = h_val_nom->Integral();
+  double valor_p1  = h_val_p1->Integral();
+  double valor_m1  = h_val_m1->Integral();
+  double valor_pm1 = (valor_p1-valor_m1)/2.;
+  double valor_frac_pm1 = valor_pm1/valor_nom;
+
+  double univ_nom = h_uni_nom->Integral();
+  double univ_p1  = h_uni_p1->Integral();
+  double univ_m1  = h_uni_m1->Integral();
+  double univ_pm1 = (univ_p1-univ_m1)/2.;
+  double univ_frac_pm1 = univ_pm1/univ_nom;
+
+  // Open stats file for writing
+  ofstream of;
+  std::string out = location+tag+"rates.txt";
+  of.open(out.c_str(), ios::app);
+  of << "==========================================" << std::endl;
+  of << " VALOR Rates     " << std::endl;
+  of << " Nominal       : " << std::setprecision(6) << valor_nom << std::endl;
+  of << " +1sig         : " << std::setprecision(6) << valor_p1 << std::endl;
+  of << " -1sig         : " << std::setprecision(6) << valor_m1 << std::endl;
+  of << " +/-1sig error : " << std::setprecision(6) << valor_pm1 << std::endl;
+  of << " +/-1sig error : " << std::setprecision(6) << valor_frac_pm1*100 << " %" << std::endl;
+  of << "------------------------------------------" << std::endl;
+  of << " Universe Rates  " << std::endl;
+  of << " Nominal       : " << std::setprecision(6) << univ_nom << std::endl;
+  of << " +1sig         : " << std::setprecision(6) << univ_p1 << std::endl;
+  of << " -1sig         : " << std::setprecision(6) << univ_m1 << std::endl;
+  of << " +/-1sig error : " << std::setprecision(6) << univ_pm1 << std::endl;
+  of << " +/-1sig error : " << std::setprecision(6) << univ_frac_pm1*100 << " %" << std::endl;
+  of << "------------------------------------------" << std::endl;
+  of << " Comparison    " << std::endl;
+  of << " Nominal       : " << std::setprecision(6) << abs(valor_nom-univ_nom)/(0.5*(valor_nom+univ_nom))*100 << " % " << std::endl;
+  of << " +/-1sig error : " << std::setprecision(6) << abs(valor_pm1-univ_pm1)/(0.5*(valor_nom+univ_nom))*100 << " % " << std::endl;
+  of << "==========================================" << std::endl;
+  of.close();
+
   // All ratios
   TH1D *h_p1_ratio_val = static_cast<TH1D*>(h_val_p1->Clone("h_p1_ratio_val"));
   TH1D *h_m1_ratio_val = static_cast<TH1D*>(h_val_m1->Clone("h_m1_ratio_val"));
