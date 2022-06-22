@@ -171,6 +171,7 @@ int main(int argc, char ** argv)
   string opt_input_name        = arg.GetString("input");
   bool   opt_disable_checks    = arg.GetBool("disable-checks");
   bool   other_sample          = arg.GetBool("other-sample");
+  bool   weight_external       = arg.GetBool("weight-external");
 
   // Get the POT
   // open the ROOT file and get the TTree & its header
@@ -425,6 +426,9 @@ int main(int argc, char ** argv)
     valor_minidst_mu_cos_z       = mu_cos_z;
     valor_minidst_true_exclusive = true_exclusive;
     valor_minidst_reco_exclusive = reco_exclusive;
+    
+    if(weight_external)
+      valor_minidst_wght = 0.8;
 
     VLOG("valor_sbn", pINFO)
       << "\n Information copied to VALOR SBN recoselection Mini-DST: "
@@ -440,6 +444,7 @@ int main(int argc, char ** argv)
       << "\n y (reco)      = " << valor_minidst_y_reco
       << "\n POT weight    = " << valor_minidst_wght_pot
       << "\n Smear weight  = " << valor_minidst_wght_smear
+      << "\n Ext. weight   = " << valor_minidst_wght
       << "\n Reco topology = " << valor_minidst_reco_exclusive
       << "\n True topology = " << valor_minidst_true_exclusive;
 
