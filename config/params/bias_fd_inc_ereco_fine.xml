@@ -31,7 +31,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
 
   </param>
   
@@ -65,7 +65,7 @@
 
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -98,7 +98,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -131,7 +131,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -164,7 +164,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -197,7 +197,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -230,7 +230,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -263,7 +263,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -296,7 +296,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -329,7 +329,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -362,7 +362,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -395,7 +395,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -428,7 +428,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -461,7 +461,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -494,7 +494,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -527,7 +527,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -560,7 +560,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
@@ -593,7 +593,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
 </param_list>

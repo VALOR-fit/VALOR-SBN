@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2020a1_1">
+   
+    <element name="sbn_nd_fhc_numuCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c1_1_sbn_nd.xml          </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+    <element name="sbn_ub_fhc_numuCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2020a1_03c1_1_sbn_ub.xml          </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+    
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml   </filename>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_numu_sbn_nd_etrue_fine.xml       </filename>
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_numu_sbn_ub_etrue_fine.xml       </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_numu_sbn_fd_etrue_fine.xml       </filename>
+    <filename desc="flux_response_parameters">         params/sbn_flux_spline_parameters.xml         </filename>
+    <filename desc="sbn_interaction_parameters">       params/sbn_numu_interaction_parameters.xml         </filename>
+    <filename desc="sbn_modern_int_parameters">        params/sbn_modern_interaction_parameters_no_flat.xml  </filename>
+    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml              </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    <group name="flux">
+      <format> SBNFlux_NumuEtrueFine.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/numu_hadronic_flux_parameter_covariance.root </filename>
+        <objname>    frac_cov            </objname>    
+        <objtype>    TMatrixD            </objtype>
+      </covariance_matrix> 
+    </group>
+
+    <group name="flux">
+      <format> SBNFluxResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/flux_spline_covariance.root </filename>
+        <objname>    cov                                                                  </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/flux_spline_covariance.root </filename>
+        <objname>    untuned                                                              </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/flux_spline_covariance.root </filename>
+        <objname>    nominal                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+      <format> SBNNumuInteractionResponseParams.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_int_numu_covariance.root </filename>
+        <objname>    cov                                                                                  </objname>    
+        <objtype>    TMatrixD                                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_int_numu_covariance.root </filename>
+        <objname>    untuned                                                                              </objname>    
+        <objtype>    TMatrixD                                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_int_numu_covariance.root </filename>
+        <objname>    nominal                                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+      <format> SBNModernInteractionResponseParamsNoFlat.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/modern_int_good_covariance.root </filename>
+        <objname>    cov                                                                                </objname>    
+        <objtype>    TMatrixD                                                                           </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/modern_int_good_covariance.root </filename>
+        <objname>    untuned                                                                            </objname>    
+        <objtype>    TMatrixD                                                                           </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/modern_int_good_covariance.root </filename>
+        <objname>    nominal                                                                            </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+
+      <format> SBNMEC.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_disappearance/prior_errors/03c1/mec_100pct_covariance.root </filename>
+        <objname>    frac_cov                                                            </objname>    
+        <objtype>    TMatrixD                                                            </objtype>
+      </covariance_matrix>
+
+    </group>
+    
+  </systematics>
+
+</valor> 

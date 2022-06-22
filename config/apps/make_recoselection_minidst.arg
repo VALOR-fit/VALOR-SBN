@@ -7,3 +7,4 @@ disable-checks                     |   boolean      |  optional   |  false
 mesg-thresholds                    |   string       |  optional   |  verbosity.xml
 beam                               |   string       |  optional   |  BNB_FHC
 other-sample                       |   boolean      |  optional   |  false
+weight-external                    |   boolean      |  optional   |  false
