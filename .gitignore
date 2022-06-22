@@ -8,6 +8,16 @@ src/sbn/Conventions/Version.h
 bin/
 lib/
 data/
+baselines/
+contours/
+debug/
+energy/
+fits/
+mock_data_challenge/
+pdfs/
+pull_studies/
+systematics/
+thesisSubmissionScripts/
 *.root
 *.bin
 
