@@ -21,7 +21,7 @@
 #include "TGraph.h"
 #include "TStyle.h"
 
-void colour_contours(const std::string &file, const std::string &tag, const std::string &l) {
+void colour_contours(const std::string &file, const std::string &tag, const std::string &l="") {
 
   // Read in output file from fit_results_to_graphs.py
   TFile *f = new TFile(file.c_str(),"read");
@@ -107,5 +107,7 @@ void colour_contours(const std::string &file, const std::string &tag, const std:
 
   TString fOut(file);
   fOut.ReplaceAll(".root","_2Dcontour.png");
+  c1->SaveAs(fOut);
+  fOut.ReplaceAll("_2Dcontour.png","_2Dcontour.root");
   c1->SaveAs(fOut);
 }
