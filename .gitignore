@@ -9,11 +9,11 @@ bin/
 lib/
 data/
 baselines/
-./contours/
+contours/
 debug/
 energy/
 fits/
-./mock_data_challenge/
+mock_data_challenge/
 pdfs/
 pull_studies/
 systematics/
