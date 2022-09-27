@@ -134,37 +134,35 @@ void sbn_mdc_postfit_parameter_pulls(const std::string &config,
 
   float total_postfit = 0.;
 
-  // Get the prefit errors to scale by
-  for(int j = 0; j < syst->Size(); ++j){
-    // Skip the MicroBooNE and ICARUS entries and non-numu
-    if(j >= nFluxCovNumuRows && j < nFluxCovRows*3) continue;
-    PhysParamId_t param = nr->PhysParamFromString(gbfparm->NameByIndex(j));
-    prefit_errors.push_back(syst->OneSigmaError(param));
-  }
-
-  // And the postfit from the fit results
   for(int j = 0; j < nRows; ++j){
-    // Skip the MicroBooNE and ICARUS entries 
-    if(j >= nFluxCovNumuRows && j < nFluxCovRows*3) continue;
-
-    postfit_errors.push_back(sqrt(cov(j,j)));
-
     if(!gbfparm->IsNuisanceByIndex(j)){
       nPhysicsParams++;
       std::cout << " Physics parameter not nuisance parameter: " << gbfparm->NameByIndex(j) << std::endl;
       continue;
     }
-    nuisanceParams++;
+    // Skip the MicroBooNE and ICARUS entries 
+    if((j-nPhysicsParams) >= nFluxCovNumuRows && (j-nPhysicsParams) < nFluxCovRows*3) continue;
+    postfit_errors.push_back(sqrt(cov(j,j)));
     total_postfit += cov(j,j);
+    nuisanceParams++;
   }
   total_postfit = sqrt(total_postfit);
+
+  // Get the prefit errors to scale by
+  for(int j = 0; j < syst->Size(); ++j){
+    // Skip the MicroBooNE and ICARUS entries and non-numu
+    if(j >= nFluxCovNumuRows && j < nFluxCovRows*3) continue;
+    PhysParamId_t param = nr->PhysParamFromString(gbfparm->NameByIndex(nPhysicsParams+j));
+    prefit_errors.push_back(syst->OneSigmaError(param));
+  }
 
   std::cout << " ====================================================== " << std::endl;
   std::cout << " Error on the number of predicted events: +/- "           << total_postfit << std::endl;
   std::cout << " ====================================================== " << std::endl;
 
-  if(postfit_errors.size() != totalNumParams-(nFluxCovRows*3-nFluxCovNumuRows)) 
-    std::cout << " Error: The number of parameters and errors don't match. Params : " << totalNumParams-(2*nFluxCovRows) << " vs. errors: " << postfit_errors.size() << std::endl;
+  unsigned int nuisanceParamsOfInterest = totalNumParams-nPhysicsParams-(nFluxCovRows*3-nFluxCovNumuRows);
+  if(postfit_errors.size() != nuisanceParamsOfInterest) 
+    std::cout << " Error: The number of parameters and errors don't match. Params : " << nuisanceParamsOfInterest << " vs. errors: " << postfit_errors.size() << std::endl;
 
   const char *name_postfit = "h_postfit";
 
@@ -182,17 +180,17 @@ void sbn_mdc_postfit_parameter_pulls(const std::string &config,
     c->SetTopMargin    (0.06);
   }
 
-  TH1D *h_postfit = new TH1D(name_postfit, "", nRows-nPhysicsParams-(nFluxCovRows*3-nFluxCovNumuRows), 0, nRows-nPhysicsParams-(nFluxCovRows*3-nFluxCovNumuRows));
+  TH1D *h_postfit = new TH1D(name_postfit, "", nuisanceParamsOfInterest, 0, nuisanceParamsOfInterest);
 
   unsigned int nuisance_it = 0;
   unsigned int printing_it = 1;
 
   for(unsigned int j = 0; j < totalNumParams; ++j){
-    if(j >= nFluxCovNumuRows && j < nFluxCovRows*3) continue;
     if(!gbfparm->IsNuisanceByIndex(j)){
       std::cout << " Physics parameter not nuisance parameter: " << gbfparm->NameByIndex(j) << std::endl;
       continue;
     }
+    if((j-nPhysicsParams) >= nFluxCovNumuRows && (j-nPhysicsParams) < nFluxCovRows*3) continue;
 
     int nuisanceBin = nuisance_it+1;
 
@@ -211,11 +209,12 @@ void sbn_mdc_postfit_parameter_pulls(const std::string &config,
     // Corresponding to 
     //  bin expt.  flav.
     //  25  SBND   nue00
+    /*
     std::vector<int> empties = {25};
     std::vector<int>::iterator it = std::find(empties.begin(),empties.end(),nuisanceBin); 
     if(it != empties.end()){
       h_postfit->SetBinError(nuisanceBin, 0);
-    }
+    }*/
     const PhysParamId_t param = nr->PhysParamFromString(gbfparm->NameByIndex(j));
     const Parameter & parameter = ParameterPool::Instance()->GetParam(param);
 

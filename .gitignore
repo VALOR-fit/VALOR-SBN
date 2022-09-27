@@ -13,7 +13,7 @@ baselines/
 debug/
 energy/
 fits/
-mock_data_challenge/
+./mock_data_challenge/
 pdfs/
 pull_studies/
 systematics/
