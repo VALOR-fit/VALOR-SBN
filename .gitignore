@@ -9,7 +9,7 @@ bin/
 lib/
 data/
 baselines/
-contours/
+./contours/
 debug/
 energy/
 fits/
