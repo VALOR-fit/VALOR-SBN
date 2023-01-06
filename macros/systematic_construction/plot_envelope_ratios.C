@@ -39,14 +39,14 @@ void plot_envelope_ratios(
   // All graphs
   //
 
-  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
-  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
-  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
+  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCinclOA00_nom"));
+  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCinclOA00_p1"));
+  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nueCCinclOA00_m1"));
   std::cout << " Got universe histograms" << std::endl;
  
-  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
-  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
-  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
+  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nueCCinclOA00_nom"));
+  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nueCCinclOA00_p1"));
+  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nueCCinclOA00_m1"));
   std::cout << " Got VALOR histograms" << std::endl;
  
   

@@ -39,6 +39,7 @@ void plot_pdf_tom(
      kRed+1,   kOrange+7,   kYellow, kGreen+2,  kAzure+1, kViolet-1
   };
   
+  std::ofstream file ("event_rates_for_Oliver.txt");
   bool write_image(image_save_format[0]);
 
   TFile * fin = new TFile(filename);
@@ -460,7 +461,8 @@ void plot_pdf_tom(
         
         // Sort out the title
         std::string nice_sample = "";
-        std::string to_cut = "high-resolution";
+        //std::string to_cut = "high-resolution";
+        std::string to_cut = "inclusive";
         std::string title_sample = vutil::AsStringTeX(s,true);
         std::size_t found_cut_str = title_sample.find(to_cut);
         if(found_cut_str != std::string::npos){
@@ -497,7 +499,7 @@ void plot_pdf_tom(
           total_hist->Draw("same");
           if (plot_data) {data_hist->Draw("e same");}
         }
-       
+        
         double tot_event_rate = 0.;
         std::ostringstream sample_event_rates;
         // Write the event rates to the output stream
@@ -507,6 +509,15 @@ void plot_pdf_tom(
           if (mc == conv::kmcUndefined) {continue;}
           TH1D * tmphist = (TH1D*)pdf_contrib_coarse[imodec]->Clone();
           double rate = tmphist->Integral();
+          std::cout << vutil::AsString(d) << std::endl;
+          if(file.is_open() && vutil::AsString(d) == "sbn_nd"){
+            file << vutil::AsString(d) << "  " << vutil::AsString(mc) << std::endl;
+            for(int bin = 1; bin <= tmphist->GetNbinsX(); bin++) {
+              file << "bin " << bin << ": " << tmphist->Integral(bin,bin) << std::endl;
+            }
+          file << "total integral "<<  rate << std::endl;
+          }
+         file << "\n"; 
           sample_event_rates<<"    "<<vutil::AsString(mc)<<": "<<rate<<std::endl;
           tot_event_rate += rate;
           delete tmphist;

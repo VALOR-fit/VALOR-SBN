@@ -1,0 +1,23 @@
+<systematic_list name="FluxUbooNE">
+  <parameter>  flux_uboone_numu00       </parameter>
+  <parameter>  flux_uboone_numu01       </parameter>
+  <parameter>  flux_uboone_numu02       </parameter>
+  <parameter>  flux_uboone_numu03       </parameter>
+  <parameter>  flux_uboone_numu04       </parameter>
+  <parameter>  flux_uboone_numu05       </parameter>
+  <parameter>  flux_uboone_numu06       </parameter>
+  <parameter>  flux_uboone_numu07       </parameter>
+  <parameter>  flux_uboone_numubar00    </parameter>
+  <parameter>  flux_uboone_numubar01    </parameter>
+  <parameter>  flux_uboone_numubar02    </parameter>
+  <parameter>  flux_uboone_numubar03    </parameter>
+  <parameter>  flux_uboone_numubar04    </parameter>
+  <parameter>  flux_uboone_nue00        </parameter>
+  <parameter>  flux_uboone_nue01        </parameter>
+  <parameter>  flux_uboone_nue02        </parameter>
+  <parameter>  flux_uboone_nue03        </parameter>
+  <parameter>  flux_uboone_nue04        </parameter>
+  <parameter>  flux_uboone_nue05        </parameter>
+  <parameter>  flux_uboone_nuebar00     </parameter>
+  <parameter>  flux_uboone_nuebar01     </parameter>
+</systematic_list>

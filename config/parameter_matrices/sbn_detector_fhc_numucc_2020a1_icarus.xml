@@ -1,0 +1,20 @@
+<systematic_list name="sbn_detector_fhc_numucc_2020a1">
+
+  <parameter> det_fhc_icarus_numucc_sig_00           </parameter>
+  <parameter> det_fhc_icarus_numucc_sig_01           </parameter>
+  <parameter> det_fhc_icarus_numucc_sig_02           </parameter>
+  <parameter> det_fhc_icarus_numucc_sig_03           </parameter>
+  <parameter> det_fhc_icarus_numucc_sig_04           </parameter>
+  <parameter> det_fhc_icarus_numucc_sig_05           </parameter>
+  <parameter> det_fhc_icarus_numucc_sig_06           </parameter>
+  <parameter> det_fhc_icarus_numucc_sig_07           </parameter>
+  <parameter> det_fhc_icarus_numucc_ncbkg_00         </parameter>
+  <parameter> det_fhc_icarus_numucc_ncbkg_01         </parameter>
+  <parameter> det_fhc_icarus_numucc_ncbkg_02         </parameter>
+  <parameter> det_fhc_icarus_numucc_ncbkg_03         </parameter>
+  <parameter> det_fhc_icarus_numucc_ncbkg_04         </parameter>
+  <parameter> det_fhc_icarus_numucc_ncbkg_05         </parameter>
+  <parameter> det_fhc_icarus_numucc_dirtbkg_00       </parameter>
+  <parameter> det_fhc_icarus_numucc_cosmicbkg_00     </parameter>
+
+</systematic_list>

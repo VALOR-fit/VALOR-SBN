@@ -5,8 +5,8 @@
     <name>
       <simple>  horncurrent_FluxUnisim </simple>
       <long>    Horn current </long>
-      <rootex>  Horn current </rootex>
-      <tex>     Horn current </tex>
+      <rootex>  f_{Horncurrent} </rootex>
+      <tex>     f_{Horncurrent} </tex>
     </name>
     
     <apply_to_range>
@@ -43,8 +43,8 @@
     <name>
       <simple>  expskin_FluxUnisim </simple>
       <long>    Skin Effect </long>
-      <rootex>  Skin #: Effect </rootex>
-      <tex>     Skin \: Effect </tex>
+      <rootex>  f_{Skin Effect} </rootex>
+      <tex>     f_{Skin Effect} </tex>
     </name>
     
     <apply_to_range>
@@ -81,8 +81,8 @@
     <name>
       <simple>  nucleoninexsec_FluxUnisim </simple>
       <long>    Nucleon Inelastic Cross-Section </long>
-      <rootex>  Nucleon #: Inelastic #: #sigma </rootex>
-      <tex>     Nucleon \: Inelastic \: \sigma </tex>
+      <rootex>  f_{#sigma_{INEL}^{N}} </rootex>
+      <tex>     f_{\sigma_{INEL}^{N}} </tex>
     </name>
     
     <apply_to_range>
@@ -119,8 +119,8 @@
     <name>
       <simple>  nucleonqexsec_FluxUnisim </simple>
       <long>    Nucleon Quasielastic Cross-Section </long>
-      <rootex>  Nucleon #: QE #: #sigma </rootex>
-      <tex>     Nucleon \: QE \: \sigma </tex>
+      <rootex>  f_{#sigma_{QE}^{N}} </rootex>
+      <tex>     f_{\sigma_{QE}^{N}} </tex>
     </name>
     
     <apply_to_range>
@@ -157,8 +157,8 @@
     <name>
       <simple>  nucleontotxsec_FluxUnisim </simple>
       <long>    Nucleon Total Cross-Section </long>
-      <rootex>  Nucleon #: Total #: #sigma </rootex>
-      <tex>     Nucleon \: Total \: \sigma </tex>
+      <rootex>  f_{#sigma_{TOT}^{N}} </rootex>
+      <tex>     f_{\sigma_{TOT}^{N}} </tex>
     </name>
     
     <apply_to_range>
@@ -195,8 +195,8 @@
     <name>
       <simple>  pioninexsec_FluxUnisim </simple>
       <long>    Pion Inelastic Cross-Section </long>
-      <rootex>  Pion #: Inelastic #: #sigma </rootex>
-      <tex>     Pion \: Inelastic \: \sigma </tex>
+      <rootex>  f_{#sigma_{INEL}^{#pi}} </rootex>
+      <tex>     f_{\sigma_{INEL}^{\pi}} </tex>
     </name>
     
     <apply_to_range>
@@ -233,8 +233,8 @@
     <name>
       <simple>  pionqexsec_FluxUnisim </simple>
       <long>    Pion Quasielastic Cross-Section </long>
-      <rootex>  Pion #: QE #: #sigma </rootex>
-      <tex>     Pion \: QE \: \sigma </tex>
+      <rootex>  f_{#sigma_{QE}^{#pi}} </rootex>
+      <tex>     f_{\sigma_{QE}^{\pi}} </tex>
     </name>
     
     <apply_to_range>
@@ -271,8 +271,8 @@
     <name>
       <simple>  piontotxsec_FluxUnisim </simple>
       <long>    Pion Total Cross-Section </long>
-      <rootex>  Pion #: Total #: #sigma </rootex>
-      <tex>     Pion \: Total \: \sigma </tex>
+      <rootex>  f_{#sigma_{TOT}^{#pi}} </rootex>
+      <tex>     f_{\sigma_{TOT}^{\pi}} </tex>
     </name>
     
     <apply_to_range>

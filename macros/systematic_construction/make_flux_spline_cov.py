@@ -21,44 +21,44 @@ ROOT.gStyle.SetOptStat(0)
 #_________________________________________________________________________________
 def make_cov(outputname):
     params_to_add = [
-        "horncurrent_FluxUnisim",
-        "expskin_FluxUnisim",
-        "nucleoninexsec_FluxUnisim",
-        "nucleonqexsec_FluxUnisim",
-        "nucleontotxsec_FluxUnisim",
+        #"horncurrent_FluxUnisim",
+        #"expskin_FluxUnisim",
+        #"nucleoninexsec_FluxUnisim",
+        #"nucleonqexsec_FluxUnisim",
+        #"nucleontotxsec_FluxUnisim",
         "pioninexsec_FluxUnisim",
-        "pionqexsec_FluxUnisim",
-        "piontotxsec_FluxUnisim",
+        #"pionqexsec_FluxUnisim",
+        #"piontotxsec_FluxUnisim",
         ]
     nominal_vals = {
-        "horncurrent_FluxUnisim"   : 0.0,
-        "expskin_FluxUnisim"       : 0.0,
-        "nucleoninexsec_FluxUnisim": 0.0,
-        "nucleonqexsec_FluxUnisim" : 0.0,
-        "nucleontotxsec_FluxUnisim": 0.0,
+        #"horncurrent_FluxUnisim"   : 0.0,
+        #"expskin_FluxUnisim"       : 0.0,
+        #"nucleoninexsec_FluxUnisim": 0.0,
+        #"nucleonqexsec_FluxUnisim" : 0.0,
+        #"nucleontotxsec_FluxUnisim": 0.0,
         "pioninexsec_FluxUnisim"   : 0.0,
-        "pionqexsec_FluxUnisim"    : 0.0,
-        "piontotxsec_FluxUnisim"   : 0.0
+        #"pionqexsec_FluxUnisim"    : 0.0,
+        #"piontotxsec_FluxUnisim"   : 0.0
     }
     untuned_vals = {
-        "horncurrent_FluxUnisim"   : 0.0,
-        "expskin_FluxUnisim"       : 0.0,
-        "nucleoninexsec_FluxUnisim": 0.0,
-        "nucleonqexsec_FluxUnisim" : 0.0,
-        "nucleontotxsec_FluxUnisim": 0.0,
+        #"horncurrent_FluxUnisim"   : 0.0,
+        #"expskin_FluxUnisim"       : 0.0,
+        #"nucleoninexsec_FluxUnisim": 0.0,
+        #"nucleonqexsec_FluxUnisim" : 0.0,
+        #"nucleontotxsec_FluxUnisim": 0.0,
         "pioninexsec_FluxUnisim"   : 0.0,
-        "pionqexsec_FluxUnisim"    : 0.0,
-        "piontotxsec_FluxUnisim"   : 0.0
+        #"pionqexsec_FluxUnisim"    : 0.0,
+        #"piontotxsec_FluxUnisim"   : 0.0
     }
     error_vals = {
-        "horncurrent_FluxUnisim"   : 1.0,
-        "expskin_FluxUnisim"       : 1.0,
-        "nucleoninexsec_FluxUnisim": 1.0,
-        "nucleonqexsec_FluxUnisim" : 1.0,
-        "nucleontotxsec_FluxUnisim": 1.0,
+        #"horncurrent_FluxUnisim"   : 1.0,
+        #"expskin_FluxUnisim"       : 1.0,
+        #"nucleoninexsec_FluxUnisim": 1.0,
+        #"nucleonqexsec_FluxUnisim" : 1.0,
+        #"nucleontotxsec_FluxUnisim": 1.0,
         "pioninexsec_FluxUnisim"   : 1.0,
-        "pionqexsec_FluxUnisim"    : 1.0,
-        "piontotxsec_FluxUnisim"   : 1.0
+        #"pionqexsec_FluxUnisim"    : 1.0,
+        #"piontotxsec_FluxUnisim"   : 1.0
     }
     correlation_vals = {
     }

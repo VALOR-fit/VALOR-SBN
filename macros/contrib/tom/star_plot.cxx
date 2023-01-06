@@ -13,6 +13,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////                                                                              
 
 #include <iostream>
+#include "TString.h"
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TFile.h"
@@ -58,6 +59,7 @@ PhysParamList   * iparam        = 0;   // input params
 
 // Read the files
 TChain ch("valor_fit_ntp");
+//TChain ch("valor_dune_nd_ntp");
 ch.SetBranchAddress("best_fit_params", &gbfparam);
 ch.SetBranchAddress("true_params", &iparam);
 ch.Add(files);
@@ -140,10 +142,11 @@ if(varied_params.size() > colors.size()){
 
 // Make plot for all systematics
 TCanvas *All = new TCanvas("All","All",1100,800);
-All->SetRightMargin(0.28);
+All->SetRightMargin(0.2);
 All->Draw();
 // Draw frame etc for canvas
-TH2F * hfAll = (TH2F*) All->DrawFrame(iparam->Value(px)+max_x*(-1.2), iparam->Value(py)+max_y*(-1.2), iparam->Value(px)+max_x*(1.2), iparam->Value(py)+max_y*(1.2));
+//TH2F * hfAll = (TH2F*) All->DrawFrame(iparam->Value(px)+max_x*(-1.2), iparam->Value(py)+max_y*(-1.2), iparam->Value(px)+max_x*(1.2), iparam->Value(py)+max_y*(1.2));
+TH2F * hfAll = (TH2F*) All->DrawFrame(0.05, 1.24, 0.09, 1.4);
 
 hfAll->GetXaxis()->SetTitle(x_label);
 hfAll->GetXaxis()->SetTitleSize(0.04);
@@ -154,8 +157,10 @@ hfAll->GetYaxis()->SetTitle("#Delta m^{2}_{41} (eV^{2})");
 hfAll->GetYaxis()->SetTitleOffset(1.5);
 hfAll->GetYaxis()->SetTitleSize(0.04);
 
-TLegend *leg_All = new TLegend(0.72,0.16,0.99,0.95);
-leg_All->SetHeader("Systematic","C"); 
+TLegend *leg_All = new TLegend(0.8,0.16,0.99,0.95);
+//leg_All->AddEntry((TObject*)0,"Injected Point:","");
+leg_All->SetHeader(TString::Format("#splitline{Injected Point:}{%10s = %1.3f, #Delta m^{2}_{41} = %2.2f}",x_label,iparam->Value(px),iparam->Value(py)), "C");
+leg_All->AddEntry((TObject*)0,"Systematics","C"); 
 leg_All->SetFillStyle(0);
 //leg_All->SetBorderSize(0);
 leg_All->SetTextSize(0.02);
@@ -173,16 +178,30 @@ for(auto fit = 0; fit < ch.GetEntries(); fit++){
             arr[fit]->SetLineColor(colors[i]);
             arr[fit]->SetLineWidth(2);
             arr[fit]->Draw();
-           
+          
+            // Remove the "Genie" and "FluxUnisim" tags from the systematic names
+            // Assuming naming conventions is XXX_FluxUnisim or genie_YYY_Genie
+            auto flux_param = (gbfparam->Name(gbfparam->WhichParam(varied_params[i]))).find("_FluxUnisim");
+            auto xsec_param = (gbfparam->Name(gbfparam->WhichParam(varied_params[i]))).find("_Genie");
+            std::string syst_name;
+            if(flux_param != std::string::npos){
+                syst_name = (gbfparam->Name(gbfparam->WhichParam(varied_params[i]))).erase(flux_param);
+            }
+            if(xsec_param != std::string::npos){
+                std::string genie_str = "genie_";
+                syst_name = (gbfparam->Name(gbfparam->WhichParam(varied_params[i]))).erase(xsec_param);
+                syst_name = syst_name.substr(genie_str.size());
+            }
+
             // draw the legend for the vaired params and make sure we're not double counting - might not be the most elegent method but works so going with it
             int param;
             if(iparam->Value(gbfparam->WhichParam(varied_params[i])) - gbfparam->InitValue(gbfparam->WhichParam(varied_params[i])) > 0){ 
-                leg_All->AddEntry(arr[fit], gbfparam->Name(gbfparam->WhichParam(varied_params[i])).c_str(), "l");
+                leg_All->AddEntry(arr[fit], syst_name.c_str(), "l");
                 param = gbfparam->WhichParam(varied_params[i]);
             }
             else if(iparam->Value(gbfparam->WhichParam(varied_params[i])) - gbfparam->InitValue(gbfparam->WhichParam(varied_params[i])) < 0 
                     && param != gbfparam->WhichParam(varied_params[i])){
-                leg_All->AddEntry(arr[fit], gbfparam->Name(gbfparam->WhichParam(varied_params[i])).c_str(), "l");
+                leg_All->AddEntry(arr[fit], syst_name.c_str(), "l");
             }
         }
     }       
@@ -193,7 +212,7 @@ if(draw_ellipse){
     // Get stats contour
     TFile *f_valor_stats_contour;
     if(px == mumu){
-        f_valor_stats_contour = new TFile("/sbnd/app/users/tham/VALOR_master/star_plot/numu_disap_injection_stat.root");
+        f_valor_stats_contour = new TFile("/sbnd/app/users/tham/VALOR_master/blessed_plots/allowed_regions/output_contours_as_graphs_numu_stat_dmsq_1.32_sinsq2th_0.07.root");
     }
     else if(px == mue){
         f_valor_stats_contour = new TFile("/some/path/.root");
@@ -202,7 +221,7 @@ if(draw_ellipse){
         f_valor_stats_contour = new TFile("/some/path/.root");
     }
 
-    TGraph *VALOR_SBN_1SC       = (TGraph*) f_valor_stats_contour->Get("contour_1sigma_lin_0;1");
+    TGraph *VALOR_SBN_1SC       = (TGraph*) f_valor_stats_contour->Get("contour_5sigma_lin_0;1");
 
     VALOR_SBN_1SC->SetLineStyle(kDotted);
     VALOR_SBN_1SC->Draw();

@@ -336,6 +336,11 @@ int main(int argc, char ** argv)
   double valor_minidst_y_reco       = -1.; // inelasticity
   double valor_minidst_wght_pot     = -1.; // POT weight
   double valor_minidst_wght         = -1.; // misc weight
+  double valor_minidst_momx_true    = -999.; // true momentum x positon
+  double valor_minidst_momy_true    = -999.; // true momentum y positon
+  double valor_minidst_momz_true    = -999.; // true momentum z positon
+  double valor_minidst_theta_xz_true   = -1.0;  // true angle xz
+  double valor_minidst_theta_yz_true   = -1.0;  // true angle yz 
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -359,6 +364,11 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("y_reco"    , &valor_minidst_y_reco      ,"y_reco/D"     );
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
+  valor_minidst->Branch("momx_true"   , &valor_minidst_momx_true   ,"momx_true/D"   );
+  valor_minidst->Branch("momy_true"   , &valor_minidst_momy_true   ,"momy_true/D"   );
+  valor_minidst->Branch("momz_true"   , &valor_minidst_momz_true   ,"momz_true/D"   );
+  valor_minidst->Branch("theta_xz_true"  , &valor_minidst_theta_xz_true  ,"theta_xz_true/D");
+  valor_minidst->Branch("theta_yz_true"  , &valor_minidst_theta_yz_true  ,"theta_yz_true/D");
 
   // open the ROOT file and get the TTree & its header
 
@@ -519,6 +529,13 @@ int main(int argc, char ** argv)
 
       int larsoft_mode = -1;
 
+      double momx_true = -999.0;
+      double momy_true = -999.0;
+      double momz_true = -999.0;
+
+      double theta_xz  = -999.0;
+      double theta_yz  = -999.0;
+
       if(ptruth==nullptr) {
         VLOG("valor_sbn", pNOTICE)
           << "The number of truth entries is 0, skipping event "<<iev;
@@ -533,6 +550,51 @@ int main(int argc, char ** argv)
       enu_true     = truth.neutrino.energy;
       Q2s          = truth.neutrino.Q2;
       larsoft_mode = truth.neutrino.genie_intcode;
+      momx_true    = truth.neutrino.momentum.x();
+      momy_true    = truth.neutrino.momentum.y();
+      momz_true    = truth.neutrino.momentum.z();
+
+      // Calculate the two angles \theta_xz and \theta_yz using SBND geometry 
+      // I think the most recent SBN files were produced with flux files where the beamline is in the wrong position (https://github.com/SBNSoftware/sbndcode/pull/95)
+      double true_momentum  = sqrt((momx_true*momx_true)+(momy_true*momy_true)+(momz_true*momz_true));
+      TVector3 trueDir(momx_true, momy_true, momz_true);
+
+      // XZ plane                                                                                                                                                                 
+      double argXZ = trueDir[0]/true_momentum;                                                                                                                                    
+      if(argXZ > 1 && argXZ < 1.000001){ // stupid floating point precision causing issues                                                                                        
+        argXZ = 1;                                                                                                                                                                
+      }                 
+      if(trueDir[0] >= 0 && trueDir[2] >= 0){                                                                                                                                     
+        theta_xz = 90 - (acos(argXZ)*(180/M_PI));                                                                                                                                 
+      }                                                                                                                                                                           
+      else if(trueDir[0] >= 0 && trueDir[2] < 0){                                                                                                                                 
+       theta_xz = 90 + (acos(argXZ)*(180/M_PI));                                                                                                                                 
+      }                                                                                                                                                                           
+      else if(trueDir[0] < 0 && trueDir[2] > 0){                                                                                                                                  
+        theta_xz = -(90 - (acos(abs(argXZ))*(180/M_PI)));                                                                                                                         
+      }                                                                                                                                                                           
+      else if(trueDir[0] < 0 && trueDir[2] < 0){                                                                                                                                  
+        theta_xz = -(90 + (acos(abs(argXZ))*(180/M_PI)));                                                                                                                         
+      }                                          
+
+      // YZ plane                                                                                                                                                                 
+      double argYZ = trueDir[1]/true_momentum;                                                                                                                                    
+      if(argYZ > 1 && argYZ < 1.000001){ // stupid floating point precision causing issues                                                                                        
+        argYZ = 1;                                                                                                                                                                
+      }                 
+
+      if(trueDir[1] >= 0 && trueDir[2] >= 0){                                                                                                                                     
+        theta_yz = 90 - (acos(argYZ)*(180/M_PI));                                                                                                              
+      }                                                                                                                                                                           
+      else if(trueDir[1] >= 0 && trueDir[2] < 0){                                                                                                                                 
+        theta_yz = 90 + (acos(argYZ)*(180/M_PI));                                                                                                              
+      }                                                                                                                                                                           
+      else if(trueDir[1] < 0 && trueDir[2] > 0){                                                                                                                                  
+        theta_yz = -(90 - (acos(abs(argYZ))*(180/M_PI)));                                                                                                      
+        }                                                                                                                                                                           
+      else if(trueDir[1] < 0 && trueDir[2] < 0){                                                                                                                                  
+       theta_yz = -(90 + (acos(abs(argYZ))*(180/M_PI)));                                                                                                      
+      }    
 
       // Particle counting
       bool nucleonPDGSet = false;
@@ -545,7 +607,7 @@ int main(int argc, char ** argv)
                 << "\nThis nucleon has pdg: " << fsps[p].pdg;
             }
             else{
-              LOG("valor_sbn",pINFO) << "\nIn event " << iev
+                LOG("valor_sbn",pINFO) << "\nIn event " << iev
                 << "\nThe struck nucleon has pdg: " << fsps[p].pdg;
               nuc_pdg = fsps[p].pdg;
               nucleonPDGSet = true;
@@ -639,12 +701,26 @@ int main(int argc, char ** argv)
       init_flav = valor::util::FlavourFromPDG(init_pdg);
 
       // Get the real valor mode - this will only be defined for modes turned on right now
-      conv::ReacMode_t  reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
-      // If we have any events that are in disabled modes, put them into other
-      if (reac_mode==conv::kmUndefined) {
-        if (isnc) {reac = conv::kmtNCoth;}
-        if (iscc) {reac = conv::kmtCCoth;}
+      conv::ReacMode_t reac_mode;
+
+      // dirt (and cosmic) were being mapped to some other modes, so let's just force them 
+      // maybe somebody should check why it wasn't working correctly with method used for the rest of the evnts
+      // i'd guess something was subtly going wrong cos despite being say a dirt event, it still had a numu pdg or whatever 
+      if(is_dirt){
+        reac_mode = conv::kmDirt;
+
+        if(is_cosmic){
+          reac_mode = conv::kmCosmic;
+        }
+      }
+      else{
         reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+        // If we have any events that are in disabled modes, put them into other
+        if (reac_mode==conv::kmUndefined) {
+            if (isnc) {reac = conv::kmtNCoth;}
+            if (iscc) {reac = conv::kmtCCoth;}
+            reac_mode  = valor::util::ReacTypeToMode(reac,init_flav,final_flav);
+        } 
       }
 
       if(!opt_disable_checks) {
@@ -718,14 +794,19 @@ int main(int argc, char ** argv)
       VLOG("valor_sbn",pDEBUG) << "Read event: "
         << "Etrue         = "<< enu_true  << " GeV; "
         << "LArSoft mode  = "<< larsoft_mode  << "; ";
-      valor_minidst_reac_mode  = reac_mode;
-      valor_minidst_enu_true   = enu_true;
-      valor_minidst_baseline   = baseline/1000.;
-      valor_minidst_Q2_true    = Q2s;
-      valor_minidst_reac_type    = reac;
-      valor_minidst_init_nupdg   = init_pdg;
-      valor_minidst_final_nupdg  = nu_pdg;
-      valor_minidst_target       = 1000180400; // Argon40
+      valor_minidst_reac_mode      = reac_mode;
+      valor_minidst_enu_true       = enu_true;
+      valor_minidst_baseline       = baseline/1000.;
+      valor_minidst_Q2_true        = Q2s;
+      valor_minidst_reac_type      = reac;
+      valor_minidst_init_nupdg     = init_pdg;
+      valor_minidst_final_nupdg    = nu_pdg;
+      valor_minidst_target         = 1000180400; // Argon40
+      valor_minidst_momx_true      = momx_true;
+      valor_minidst_momy_true      = momy_true;
+      valor_minidst_momz_true      = momz_true;
+      valor_minidst_theta_xz_true  = theta_xz;
+      valor_minidst_theta_yz_true  = theta_yz;
 
       // Copy the systematic universes across
       if (write_universes) {
@@ -842,7 +923,12 @@ int main(int argc, char ** argv)
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n y (reco)      = " << valor_minidst_y_reco
-      << "\n POT weight    = " << valor_minidst_wght_pot;
+      << "\n POT weight    = " << valor_minidst_wght_pot
+      << "\n x Momentum    = " << valor_minidst_momx_true
+      << "\n y Momentum    = " << valor_minidst_momy_true
+      << "\n z Momentum    = " << valor_minidst_momz_true
+      << "\n xz Angle      = " << valor_minidst_theta_xz_true
+      << "\n yz Angle      = " << valor_minidst_theta_yz_true;
 
 
     enu_reco    = reco.reco_energy;

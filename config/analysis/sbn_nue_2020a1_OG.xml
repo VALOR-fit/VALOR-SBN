@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_nue_app_2020a1">
+
+<!-- FHC -->
+    <element name="sbn_nd_modern_nueCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_2020a1_sbn_nd_OG.xml                      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_ub_modern_nueCCIncl">
+      <detector>     sbn_uboone                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_2020a1_sbn_ub_OG.xml                      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_fd_modern_nueCCIncl">
+      <detector>     sbn_icarus                                           </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_2020a1_sbn_fd_OG.xml                      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+    
+  </element_list>
+  
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml     </filename>
+  </parameter_definitions>
+   
+</valor> 

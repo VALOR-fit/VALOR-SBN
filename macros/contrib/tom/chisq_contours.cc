@@ -45,7 +45,8 @@ double xmin = chisq_surface->GetXaxis()->GetXmin();
 // feel like there should be an easier way to get max/min y, but hey ho..
 double ymax = chisq_surface->GetYaxis()->GetBinUpEdge(chisq_surface->GetYaxis()->GetNbins());
 double ymin = chisq_surface->GetYaxis()->GetBinLowEdge(1);
-
+std::cout << xmin << std::endl;
+std::cout << xmax << std::endl;
 double zmax = chisq_surface->GetMaximum();
 double zmin = chisq_surface->GetMinimum();
 
@@ -74,7 +75,7 @@ if(sample_s == "mumu"){
     chisq_surface->GetXaxis()->SetTitle("log_{10}(sin^{2}2#theta_{#mu#mu})");
 }
 else if(sample_s == "mue"){
-    chisq_surface->SetTitle("#nu_{e} appearance");
+    //chisq_surface->SetTitle("#nu_{e} appearance");
     
     chisq_surface->GetXaxis()->SetRangeUser(xmin,xmax);
     chisq_surface->GetXaxis()->SetTitle("log_{10}(sin^{2}2#theta_{#mue})");
@@ -90,6 +91,7 @@ else{
     exit(1);
 }
 
+chisq_surface->GetXaxis()->SetRangeUser(xmin,0);
 chisq_surface->GetYaxis()->SetRangeUser(ymin,ymax);
 chisq_surface->GetYaxis()->SetTitle("log_{10}(#Deltam^{2}_{41})");
 chisq_surface->GetYaxis()->SetTitleOffset(0.8);

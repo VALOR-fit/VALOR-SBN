@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<param_list name="sbn_modern_int_parameters">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_IntraNukeNcex_Genie                   </simple>
+      <long>    FSI / nucleon Charge Exchange fate fraction </long>
+      <rootex>  IntraNuke #: N #: CEx                             </rootex>
+      <tex>     IntraNuke \: N \: CEx                             </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allwithfsi</reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+    <fixed>                  false </fixed>
+
+  </param>
+  <!-- ==================================================================================== -->
+</param_list>

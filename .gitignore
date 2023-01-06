@@ -10,4 +10,6 @@ lib/
 data/
 *.root
 *.bin
-
+test_scripts/*.pdf
+test_scripts/*.root
+*.swp
