@@ -2,7 +2,7 @@ detectors=("all") # "nd" "ub" "fd" "nd_fd"
 sinsq=("unosc" "0.07" "0.0065" "0.0185")
 dmsq=("unosc" "1.32" "100" "1")
 
-cd $VALOR_SBN/pdfs/sbn/raw_files/2022Tutorial
+cd $VALOR_SBN/rebase_test/pdfs
 rm -f *.root*
 rm -f *.list*
 
