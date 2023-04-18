@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> sbn_numu_prism/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p4-0p6deg.root </filename>
+       <filename> sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p4-0p6deg.root </filename>
        <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
@@ -78,7 +78,7 @@ Splines
 -->
 
 <splines>
-  <folder>         sbn_numu_prism/responses/03c1_renamed/sbnd_oa02/     </folder>
+  <folder>         sbn_numu_inclusive/responses/03c1_prism/sbnd_oa02/     </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root       </pattern>
   <type>           TSpline3                                               </type>
   <stored_as>      TObjArray                                              </stored_as>

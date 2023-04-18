@@ -1022,6 +1022,11 @@ bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const val
     }
   }
   if(!numu){
+    if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh|| 
+       sample == valor::conv::ksNuECCoa00 || sample == valor::conv::ksNuECCoa01 || 
+       sample == valor::conv::ksNuECCoa02 || sample == valor::conv::ksNuECCoa03 || 
+       sample == valor::conv::ksNuECCoa04 || sample == valor::conv::ksNuECCoa05 || 
+       sample == valor::conv::ksNuECCoa06 || sample == valor::conv::ksNuECCoa07) return true;
     if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh) return true;
     else if(sample == valor::conv::ksNuECC0pi){
       if((reco.npion+reco.npi0) == 0)
