@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="SBN-ND-MDC" version="09a2019" detector="ND">
+
+<!--
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Default binning
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+<default_binning> binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </default_binning>
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mock data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+
+  <using_dst_format> 
+     true
+  </using_dst_format> 
+
+  <using_varray_format> 
+     false 
+  </using_varray_format> 
+
+  <using_hist_format> 
+     false 
+  </using_hist_format> 
+
+  <dst> 
+    <bnb_fhc>
+      <filename> sbn_numu_inclusive/dsts/2019b3_2/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc.root </filename> 
+      <objname> valor_sbn_minidst    </objname> 
+      <objtype>  TTree    </objtype> 
+    </bnb_fhc>
+  </dst>
+  
+</data>
+
+</analysis_inputs>
+
+
