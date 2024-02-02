@@ -1,0 +1,23 @@
+valor-run_fit \
+   --config /sbnd/app/users/bslater/valor/VALOR-SBN/config/analysis/sbn_nue_prism_1_2020a1_1_universes_sbndonly_stat.xml \
+   --physics-hypothesis eff_sterile_osc \
+   --param-values-option prefit-errors \
+   --osc-prior-file priors/void_priors.xml \
+   --load-prior-from-file - \
+   --fitter minuit+with_simplex_fallback \
+   --mesg-thresholds verbosity.xml \
+   --without-stat-fluct \
+   --tag sbn_toy \
+   --run 1 \
+   --ntoymc 1 \
+   --input-dm41sq         0.      \
+   --fix-at-dm41sq        0.01    \
+   --fix-dm41sq                   \
+   --input-sinsq2thMuMu   0.      \
+   --fix-at-sinsq2thMuMu  0.      \
+   --fix-sinsq2thMuMu             \
+   --input-sinsq2thMuE    0.      \
+   --fix-at-sinsq2thMuE   0.00001 \
+   --fix-sinsq2thMuE              \
+   --input-sinsq2thEE     0.      \
+   --fix-at-sinsq2thEE    0.      \

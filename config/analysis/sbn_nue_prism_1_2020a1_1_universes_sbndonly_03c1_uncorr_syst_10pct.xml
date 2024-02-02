@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_nue_app_2020a1">
+
+<!-- FHC -->
+    <element name="sbn_nd_modern_nueCCIncl_oa00">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA00                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa00.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_nd_modern_nueCCIncl_oa01">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA01                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa01.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_nd_modern_nueCCIncl_oa02">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA02                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa02.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_nd_modern_nueCCIncl_oa03">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA03                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa03.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_nd_modern_nueCCIncl_oa04">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA04                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa04.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_nd_modern_nueCCIncl_oa05">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA05                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa05.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_nd_modern_nueCCIncl_oa06">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA06                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa06.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+    <element name="sbn_nd_modern_nueCCIncl_oa07">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA07                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa07.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+  </element_list>
+  
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml  </filename>
+    <filename desc="sbnd_flux_etrue_parameters">       params/flux_sbn_nd_etrue.xml            </filename>
+    <filename desc="uboone_flux_etrue_parameters">     params/flux_sbn_ub_etrue.xml            </filename>
+    <filename desc="icarus_flux_etrue_parameters">     params/flux_sbn_fd_etrue.xml            </filename>
+    <filename desc="flux_response_parameters">         params/sbn_flux_spline_parameters.xml        </filename>
+    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation_uncorr.xml             </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    <group name="flux">
+      <format> SBNFlux_Etrue.xml </format>
+
+      <covariance_matrix>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/hadron_flux_cov.root </filename>
+        <objname>    frac_cov            </objname>
+        <objtype>    TMatrixD            </objtype>
+      </covariance_matrix>
+    </group>
+
+    <group name="flux">
+      <format> SBNFluxResponseParams.xml </format>
+
+      <covariance_matrix>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/flux_spline_covariance.root  </filename>
+        <objname>    cov                                                              </objname>
+        <objtype>    TMatrixD                                                         </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/flux_spline_covariance.root  </filename>
+        <objname>    untuned                                                          </objname>
+        <objtype>    TMatrixD                                                         </objtype>
+      </untuned_values>
+
+      <initial_values>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/flux_spline_covariance.root  </filename>
+        <objname>    nominal                                                          </objname>
+      </initial_values>
+
+    </group>
+
+    <group name="int">
+      <format> SBNMECUncorr.xml </format>
+
+      <covariance_matrix>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/efficiency_error_matrix_11x11_type2_cor0.00pct_sbnduncor100.00pct.root </filename>
+        <objname>    frac_cov_uncorr                                                       </objname>
+        <objtype>    TMatrixD                                                       </objtype>
+      </covariance_matrix>
+    </group>
+
+  </systematics> 
+
+</valor> 

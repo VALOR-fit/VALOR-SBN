@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_nue_app_2020a1">
+
+<!-- FHC -->
+    <element name="sbn_nd_modern_nueCCIncl_oa02">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA02                                    </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_2020a1_03c1_1_universes_ndoa02.xml                    </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+
+  </element_list>
+  
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml  </filename>
+    <filename desc="flux_response_parameters">         params/sbn_flux_spline_parameters.xml        </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+
+    <group name="flux">
+      <format> SBNFluxResponseParams.xml </format>
+
+      <covariance_matrix>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/flux_spline_covariance.root  </filename>
+        <objname>    cov                                                              </objname>
+        <objtype>    TMatrixD                                                         </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/flux_spline_covariance.root  </filename>
+        <objname>    untuned                                                          </objname>
+        <objtype>    TMatrixD                                                         </objtype>
+      </untuned_values>
+
+      <initial_values>
+        <filename>   sbn_nue_inclusive/prior_errors/03d1/flux_spline_covariance.root  </filename>
+        <objname>    nominal                                                          </objname>
+      </initial_values>
+
+    </group>
+
+  </systematics> 
+
+</valor> 

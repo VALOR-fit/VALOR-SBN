@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<coarse_mode_list name="BNB_FHC_nue_bkg">
+  <coarse_mode>
+    <name>       allbutnueCC  </name>
+    <line_col>   1      </line_col>
+    <fill_col>   600    </fill_col>
+    <fill_sty>   1001   </fill_sty>
+  </coarse_mode>
+
+</coarse_mode_list>

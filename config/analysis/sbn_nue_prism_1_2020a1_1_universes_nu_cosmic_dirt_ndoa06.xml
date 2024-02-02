@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<valor>
+
+  <element_list name="sbn_nue_prism_1_2020a1_1">
+
+    <element name="sbn_nd_fhc_nueCCIncl_oa06">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nueCCinclOA06                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_prism_1_2020a1_1_universes_nu_cosmic_dirt_ndoa06.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml  </binning>
+    </element>
+
+  </element_list>
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml     </filename>
+  </parameter_definitions>
+
+</valor>
+

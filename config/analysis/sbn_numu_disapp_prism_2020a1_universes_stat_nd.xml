@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+<valor>
+
+  <element_list name="sbn_numu_disapp_prism_1_2020a1_stat_oa00">
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa00">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA00                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa00.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa01">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA01                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa01.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa02">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA02                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa02.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa03">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA03                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa03.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa04">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA04                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa04.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa05">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA05                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa05.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa06">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA06                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa06.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+   
+    <element name="sbn_nd_fhc_numuCCIncl_oa07">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA07                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism_2020a1_universes_stat_ndoa07.xml     </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+  </element_list>
+
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml   </filename>
+  </parameter_definitions>
+
+</valor>

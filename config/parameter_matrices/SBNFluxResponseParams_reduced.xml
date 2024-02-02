@@ -1,0 +1,7 @@
+<systematic_list name="SBNFluxResponseParams">
+  <parameter> expskin_FluxUnisim        </parameter>
+  <parameter> nucleonqexsec_FluxUnisim  </parameter>
+  <parameter> nucleontotxsec_FluxUnisim </parameter>
+  <parameter> pioninexsec_FluxUnisim    </parameter>
+  <parameter> piontotxsec_FluxUnisim    </parameter>
+</systematic_list>

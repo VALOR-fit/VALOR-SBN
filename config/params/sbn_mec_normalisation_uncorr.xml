@@ -1,0 +1,395 @@
+<?xml version="1.0"?>
+<param_list name="sbn_mec_normalisation">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  MEC_00                    </simple>
+      <long>    Meson Exchange Current 00 </long>
+      <rootex>  Meson Exchange Current 00 </rootex>
+      <tex>     Meson Exchange Current 00 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 0.2, 0.35 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  
+  <param>
+    <name>
+      <simple>  MEC_01                 </simple>
+      <long>    Meson Exchange Current 01 </long>
+      <rootex>  Meson Exchange Current 01 </rootex>
+      <tex>     Meson Exchange Current 01 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 0.35, 0.5 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <param>
+    <name>
+      <simple>  MEC_02                    </simple>
+      <long>    Meson Exchange Current 02 </long>
+      <rootex>  Meson Exchange Current 02 </rootex>
+      <tex>     Meson Exchange Current 02 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 0.5, 0.65 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  
+  <param>
+    <name>
+      <simple>  MEC_03                 </simple>
+      <long>    Meson Exchange Current 03 </long>
+      <rootex>  Meson Exchange Current 03 </rootex>
+      <tex>     Meson Exchange Current 03 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 0.65, 0.8 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <param>
+    <name>
+      <simple>  MEC_04                   </simple>
+      <long>    Meson Exchange Current 04 </long>
+      <rootex>  Meson Exchange Current 04 </rootex>
+      <tex>     Meson Exchange Current 04 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 0.8, 0.95 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  
+  <param>
+    <name>
+      <simple>  MEC_05                 </simple>
+      <long>    Meson Exchange Current 05 </long>
+      <rootex>  Meson Exchange Current 05 </rootex>
+      <tex>     Meson Exchange Current 05 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 0.95, 1.1 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <param>
+    <name>
+      <simple>  MEC_06                 </simple>
+      <long>    Meson Exchange Current 06 </long>
+      <rootex>  Meson Exchange Current 06 </rootex>
+      <tex>     Meson Exchange Current 06 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 1.1, 1.3 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  
+  <param>
+    <name>
+      <simple>  MEC_07                 </simple>
+      <long>    Meson Exchange Current 07 </long>
+      <rootex>  Meson Exchange Current 07 </rootex>
+      <tex>     Meson Exchange Current 07 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 1.3, 1.5 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+
+  <param>
+    <name>
+      <simple>  MEC_08                 </simple>
+      <long>    Meson Exchange Current 08 </long>
+      <rootex>  Meson Exchange Current 08 </rootex>
+      <tex>     Meson Exchange Current 08 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 1.5, 1.75 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <param>
+    <name>
+      <simple>  MEC_09                 </simple>
+      <long>    Meson Exchange Current 09 </long>
+      <rootex>  Meson Exchange Current 09 </rootex>
+      <tex>     Meson Exchange Current 09 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 1.75, 2.0 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  
+  <param>
+    <name>
+      <simple>  MEC_10                 </simple>
+      <long>    Meson Exchange Current 10 </long>
+      <rootex>  Meson Exchange Current 10 </rootex>
+      <tex>     Meson Exchange Current 10 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Ereco> 2.0, 3.0 </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category> int </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  0, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+</param_list>

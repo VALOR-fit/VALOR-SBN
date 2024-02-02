@@ -1,0 +1,13 @@
+<systematic_list name="SBNMECUncorr">
+  <parameter> MEC_00 </parameter>
+  <parameter> MEC_01 </parameter>
+  <parameter> MEC_02 </parameter>
+  <parameter> MEC_03 </parameter>
+  <parameter> MEC_04 </parameter>
+  <parameter> MEC_05 </parameter>
+  <parameter> MEC_06 </parameter>
+  <parameter> MEC_07 </parameter>
+  <parameter> MEC_08 </parameter>
+  <parameter> MEC_09 </parameter>
+  <parameter> MEC_10 </parameter>
+</systematic_list>
