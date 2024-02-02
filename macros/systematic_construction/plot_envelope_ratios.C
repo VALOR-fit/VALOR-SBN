@@ -39,14 +39,14 @@ void plot_envelope_ratios(
   // All graphs
   //
 
-  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
-  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
-  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
+  TH1D * h_uni_nom = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_nom"));
+  TH1D * h_uni_p1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_p1"));
+  TH1D * h_uni_m1  = static_cast<TH1D*>(f_uni->Get("env_sb_BNB_FHC_numuCCincl_m1"));
   std::cout << " Got universe histograms" << std::endl;
  
-  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_nom"));
-  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_p1"));
-  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_nuelikeCChigh_m1"));
+  TH1D * h_val_nom = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_nom"));
+  TH1D * h_val_p1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_p1"));
+  TH1D * h_val_m1  = static_cast<TH1D*>(f_val->Get("env_sb_BNB_FHC_numuCCincl_m1"));
   std::cout << " Got VALOR histograms" << std::endl;
  
   
@@ -200,6 +200,7 @@ void plot_envelope_ratios(
   latex->DrawLatex(0.3, 1.13, file_name);
 
   c->SaveAs((location+"universe_valor_double_ratios_"+file_name+".root").c_str());
+  c->SaveAs((location+"universe_valor_double_ratios_"+file_name+".png").c_str());
   c->Clear();
   l->Clear();
 

@@ -141,7 +141,7 @@
       <format> SBNFlux_EtrueFine.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/hadronic_flux_parameter_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/hadronic_flux_parameter_covariance.root </filename>
         <objname>    frac_cov            </objname>    
         <objtype>    TMatrixD            </objtype>
       </covariance_matrix> 
@@ -151,19 +151,19 @@
       <format> SBNFluxResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/flux_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/flux_spline_covariance.root </filename>
         <objname>    cov                                                                  </objname>    
         <objtype>    TMatrixD                                                             </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/flux_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/flux_spline_covariance.root </filename>
         <objname>    untuned                                                              </objname>    
         <objtype>    TMatrixD                                                             </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/flux_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/flux_spline_covariance.root </filename>
         <objname>    nominal                                                              </objname>    
       </initial_values> 
 
@@ -173,19 +173,19 @@
       <format> SBNInteractionResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
         <objname>    cov                                                                                  </objname>    
         <objtype>    TMatrixD                                                                             </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
         <objname>    untuned                                                                              </objname>    
         <objtype>    TMatrixD                                                                             </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/proposal_interaction_spline_covariance.root </filename>
         <objname>    nominal                                                                              </objname>    
       </initial_values> 
 
@@ -195,19 +195,19 @@
       <format> SBNModernInteractionResponseParams.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/modern_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/modern_interaction_spline_covariance.root </filename>
         <objname>    cov                                                                                </objname>    
         <objtype>    TMatrixD                                                                           </objtype>
       </covariance_matrix>
 
       <untuned_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/modern_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/modern_interaction_spline_covariance.root </filename>
         <objname>    untuned                                                                            </objname>    
         <objtype>    TMatrixD                                                                           </objtype>
       </untuned_values> 
 
       <initial_values>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/modern_interaction_spline_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/modern_interaction_spline_covariance.root </filename>
         <objname>    nominal                                                                            </objname>    
       </initial_values> 
 
@@ -218,7 +218,7 @@
       <format> SBNMEC.xml </format>
       
       <covariance_matrix>
-        <filename>   sbn_numu_disappearance/prior_errors/03c1/mec_100pct_covariance.root </filename>
+        <filename>   sbn_numu_inclusive/prior_errors/03c1/mec_100pct_covariance.root </filename>
         <objname>    frac_cov                                                            </objname>    
         <objtype>    TMatrixD                                                            </objtype>
       </covariance_matrix>

@@ -31,12 +31,16 @@ TFile *f = new TFile(file,"read");
 
 // Get contours from file
 // Check names in .root file
-TGraph *contour_90              = (TGraph*) f->Get("contour_90pct_log_0");
-TGraph *contour_3_sigma         = (TGraph*) f->Get("contour_3sigma_log_0");
-TGraph *contour_5_sigma         = (TGraph*) f->Get("contour_5sigma_log_0");
+//TGraph *contour_90              = (TGraph*) f->Get("contour_90pct_log_0");
+TGraph *contour_90              = (TGraph*) f->Get("stat_syst_90pct_log_0");
+//TGraph *contour_3_sigma         = (TGraph*) f->Get("contour_3sigma_log_0");
+TGraph *contour_3_sigma         = (TGraph*) f->Get("stat_syst_3sigma_log_0");
+//TGraph *contour_5_sigma         = (TGraph*) f->Get("contour_5sigma_log_0");
+TGraph *contour_5_sigma         = (TGraph*) f->Get("stat_syst_5sigma_log_0");
 
 // Get chisq surface 
-TH2D *chisq_surface = (TH2D*) f->Get("contour_log_hist");
+//TH2D *chisq_surface = (TH2D*) f->Get("contour_log_hist");
+TH2D *chisq_surface = (TH2D*) f->Get("stat_syst_log_hist");
 
 // Get dimensions of TH2D
 double xmax = chisq_surface->GetXaxis()->GetXmax();
@@ -131,4 +135,5 @@ leg->Draw("same");
 TLatex *latex = new TLatex();
 latex->DrawLatexNDC(0.92,0.88,"#Delta#chi^{2}");
 
+c1->SaveAs("c1.png");
 }

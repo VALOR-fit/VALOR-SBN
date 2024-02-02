@@ -11,7 +11,7 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <bnb_fhc>
-      6.6e+20
+      1 
     </bnb_fhc>
     <bnb_rhc>
       0

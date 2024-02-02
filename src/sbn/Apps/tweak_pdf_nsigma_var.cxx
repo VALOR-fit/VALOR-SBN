@@ -519,13 +519,15 @@ void PrintMCT(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, Kin
     int n_true_bins_sb = 0;
     const SingleSampleKineBinning & binning = *(this_model->GetBinning());
 
+    double tot_reco_event_rate = 0;
     for(auto elem : mct_modes){
       std::cout << util::AsString(elem.first) << " " << elem.second.GetEntry(reco_bin,true_bin) <<  "\n";
       // Get the number of true bins
       const VALORBinning * true_sb = binning.TrueSmpBinning(elem.first);
       n_true_bins_sb = true_sb->NBins();
-
+      tot_reco_event_rate += elem.second.GetEntry(reco_bin,true_bin);
     }
+    std::cout << "\nTotal event rate for reco,true bin (" << reco_bin << ", " << true_bin << "): " << std::setprecision(10) << tot_reco_event_rate << "\n\n";
     // sum up the event rates from all the true bins and store in vector 
     std::cout << "\nPrinting MCT event rate breakdown for the sum of reco bin " << reco_bin << ": " << std::endl;
     for(int i = 0; i < n_true_bins_sb; i++){

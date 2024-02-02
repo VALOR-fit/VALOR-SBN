@@ -7,7 +7,7 @@
 // ------------------------------------------------------------------------------------------------
 //
 
-void read_osc_fit_results(const char * filename, const char * treename = "valor_fit_ntp")
+void read_osc_fit_results_rhiannon(const char * filename, const char * treename = "valor_fit_ntp")
 {
   using namespace valor;
 

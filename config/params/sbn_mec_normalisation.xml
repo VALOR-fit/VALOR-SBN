@@ -5,8 +5,8 @@
     <name>
       <simple>  MEC                    </simple>
       <long>    Meson Exchange Current </long>
-      <rootex>  Meson Exchange Current </rootex>
-      <tex>     Meson Exchange Current </tex>
+      <rootex>  f_{MEC} </rootex>
+      <tex>     f_{MEC} </tex>
     </name>
     
     <apply_to_range>

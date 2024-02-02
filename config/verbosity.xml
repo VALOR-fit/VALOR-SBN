@@ -36,7 +36,7 @@
   <priority msgstream="Lateral">                        NOTICE </priority>
 
   <priority msgstream="fitnt_conv">                     NOTICE </priority>
-  <priority msgstream="valor_sbn">                      NOTICE </priority>
+  <priority msgstream="valor_sbn">                      NOTICE  </priority>
   
   <priority msgstream="make_minidst">                   NOTICE </priority>
   <priority msgstream="make_fd_minidst">                NOTICE </priority>
@@ -55,6 +55,6 @@
   <priority msgstream="Interpolator">                   WARN   </priority>
   <priority msgstream="ToyStream">                      NOTICE </priority>
   <priority msgstream="ToyBuilder">                     NOTICE </priority>
-
+  <priority msgstream="UtlFitParamList">                DEBUG  </priority>
 
 </messenger_config>

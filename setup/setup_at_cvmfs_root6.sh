@@ -15,7 +15,7 @@ if [ -z "${VALOR_FMWK}" ] ; then
     return
   fi
   export VALOR_FMWK="$(readlink -m $2)" # Requires GNU readlink - should work on SL builds (but not Macs - try greadlink)
-  
+  echo "VALOR_FMWK = ${VALOR_FMWK}"  
   . "${VALOR_FMWK}/setup/setup_at_cvmfs_root6.sh" "${VALOR_FMWK}"
 fi
 
@@ -24,6 +24,7 @@ export VALOR_EXPT="$(readlink -m "$1")"
 if [ -z "${VALOR_EXPT}" ]; then
   sdir="$( readlink -m "${BASH_SOURCE[0]}" )"
   export VALOR_EXPT="$( dirname "$( dirname "${sdir}" )" )" # Directory above the one containing this file
+  echo "VALOR_EXPT = ${VALOR_EXPT}"  
 fi
 
 export LD_LIBRARY_PATH="${VALOR_EXPT}/lib:${LD_LIBRARY_PATH}"

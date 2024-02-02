@@ -510,7 +510,12 @@ int main(int argc, char ** argv)
         } // modes
         // Cutoff under 36 for a maximum 17% stat uncertainty in every bin
         // Splines will be flat otherwise
-        double event_ratio = (total_nominal > 0) ? total_events/double(total_nominal) : 1; // Ratio of the variation rate to the nominal rate
+        double event_ratio = (total_nominal > 4) ? total_events/double(total_nominal) : 1; // Ratio of the variation rate to the nominal rate
+        if(total_nominal > 4){
+            LOG("valor_sbn",pDEBUG) << " total_nominal > 4 ";
+          }else{
+            LOG("valor_sbn",pDEBUG) << " total_nominal < 4 , setting ratio to 1";
+        }
         if(iknot == inom)
           event_ratio = 1; // For the nominal variation set nsigma = 0 and ratio = 1 explicitly
         knot_ratio.emplace(iknot,event_ratio);
@@ -584,10 +589,14 @@ int main(int argc, char ** argv)
             if(!mode_used){
               // Check if the event ratio is extremely close to 1
               // Check if the event ratio is extremely close to 1 or 0
-              if((event_ratio > 1.0 || event_ratio < 1.0) && abs(event_ratio)>std::numeric_limits<double>::epsilon()){
+              //if((event_ratio > 1.0 || event_ratio < 1.0) && abs(event_ratio)>std::numeric_limits<double>::epsilon()){
+              //if((event_ratio-1 > std::numeric_limits<double>::epsilon() || event_ratio-1 < std::numeric_limits<double>::epsilon()) && abs(event_ratio)>std::numeric_limits<double>::epsilon()){
+              if(abs(event_ratio-1) > kALittleNum){
                 LOG("valor_sbn",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " isn't 1: " << event_ratio  << " therefore saving the mode to the list";
                 applied_to_modes.push_back(util::AsString(mode));
                 mode_used = true;
+              } else {
+                LOG("valor_sbn",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " equals 1: " << event_ratio  << " therefore NOT saving the mode to the list";
               }
             }
           }//save_modelist
