@@ -1,0 +1,32 @@
+jobsub_submit \
+  --group sbnd \
+  --expected-lifetime=2d \
+  --memory=7GB \
+  --disk=10GB \
+  --lines '+FERMIHTC_AutoRelease=True' \
+  --lines '+FERMIHTC_GraceMemory=6000' \
+  --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC \
+  -c '(TARGET.HAS_CVMFS_sbnd_osgstorage_org==true)&&(TARGET.HAS_CVMFS_sbnd_opensciencegrid_org==true)&&(TARGET.HAS_SINGULARITY=?=true)' \
+  --lines '+SingularityImage=\"/cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest\"' \
+  --OS=SL7 \
+  -N 800 \
+  --generate-email-summary file:///${VALOR_SBN}/prod/jobsub_submit_param_scan_multifits.sh \
+  --tag sbn_2020a1_03d1 \
+  --param_nullhyp1 0 --param_nullhyp2 0 \
+  --physics-hypothesis eff_sterile_osc \
+  --config-file /pnfs/sbnd/persistent/users/rsjones/valor/sbn_numu_disapp_2020a1_03d1_1_newpot.xml \
+  --param1 sinsq2thMuMu --min-value1 1E-3 --max-value1 1 --log-param1 1 --npoints1 40 \
+  --param2 dm41sq --min-value2 1E-2 --max-value2 1E2 --log-param2 1 --npoints2 40 \
+  --param3 sinsq2thMuE --param_nullhyp3 0 --fixed_at_val3 0 --fix_val3 1 \
+  --param4 sinsq2thEE --param_nullhyp4 0 --fixed_at_val4 0 --fix_val4 1 \
+  --discovery 1 \
+  --hierarchy normal \
+  --store-spectra 1 \
+  --fit-option minuit+with_simplex_fallback \
+  --pot-override -999 \
+  --mesg-thresholds verbosity.xml \
+  --param-values-option prefit-errors \
+  --tarball /pnfs/sbnd/resilient/users/rsjones/valor/valor_2020a1_03d1.tar \
+  --jobdir /pnfs/sbnd/scratch/users/rsjones/valor_sbn_sensitivity_2020a1_03d1_numu_disapp_newpot \
+  --prior-file /pnfs/sbnd/persistent/users/rsjones/valor/void.xml \
+  --njobs 800

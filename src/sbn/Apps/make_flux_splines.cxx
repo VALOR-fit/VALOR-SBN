@@ -268,7 +268,7 @@ int main(int argc, char ** argv)
   // is the same across all modes
   //
   const VALORBinning * true_sb = binning.TrueSmpBinning(0);
-  const int n_true_bins_sb = true_sb->NBins();
+  int n_true_bins_sb = true_sb->NBins();
 
   //
   // Loop over knots, Generate and access the universe templates for the systematic
@@ -388,14 +388,14 @@ int main(int argc, char ** argv)
      
       int reco_bin = arg_reco_bin; // reco bin we're interested in 
       int true_bin = arg_true_bin; // true bin we're interested in
-      int n_true_bins_sb = 0; // total true bins
+      n_true_bins_sb = 0; // total true bins
    
       std::cout << "Looking at " << syst << " with sigma variation = " << kn << std::endl;
       std::cout << "Printing MCT event rate breakdown for reco bin = " << reco_bin << " and true bin = " << true_bin << ": " << std::endl;
       for(auto elem : mct_modes){
         std::cout << util::AsString(elem.first) << " " << elem.second.GetEntry(reco_bin,true_bin) <<  "\n";
         //Get the true, standard binning for this mode
-        const VALORBinning * true_sb = binning.TrueSmpBinning(elem.first);
+        true_sb = binning.TrueSmpBinning(elem.first);
         n_true_bins_sb = true_sb->NBins();
       }
     

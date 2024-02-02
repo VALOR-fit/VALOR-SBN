@@ -30,7 +30,8 @@ void read_osc_fit_results(const char * filename, const char * treename = "valor_
 
   TCanvas * c = new TCanvas("c","",20,20,500,500);
 
-  for(int i=0; i<1; i++) {
+  int n = fitnt->GetEntries();
+  for(int i=0; i<n; i++) {
     fitnt->GetEntry(i);
     cout << "*******************************************************" << endl;
     cout << "Experiment: # " << i << endl;

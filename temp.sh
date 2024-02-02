@@ -1,0 +1,13 @@
+$VALOR_SBN/macros/mock_data_challenge/draw_postfit_data_error_envelope.py \
+-c config/analysis/sbn_nue_app_genie_v3_cohgamma_nd_1.xml \
+-a /sbnd/app/users/cjcook/valor/VALOR-SBN/macros/mock_data_challenge/nd_mc_data_pdf.root \
+-b /sbnd/app/users/cjcook/valor/VALOR-SBN/macros/mock_data_challenge/nd_tweak_pdf_output_postfit.root \
+-p /sbnd/app/users/cjcook/valor/VALOR-SBN/macros/mock_data_challenge/nd_tweak_pdf_output_prefit.root \
+-f root \
+-t nd-data-postfit-prefit \
+-e 1 \
+-m True \
+--alabel 'SBND mock data' \
+--blabel 'SBND postfit #pm 1 #sigma' \
+--plabel 'SBND prefit #pm 1 #sigma' \
+--ratio 0

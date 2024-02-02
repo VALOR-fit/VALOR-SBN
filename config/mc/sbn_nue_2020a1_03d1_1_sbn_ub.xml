@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> sbn_nue_inclusive/dsts/2020a1/Selection_3.0/valor_sbncode_fhc_nueccinc_UBOONE_minidst_mc.root  </filename> 
+      <filename> sbn_nue_inclusive/dsts/2020a1/Selection_3.0/valor_sbncode_fhc_nueccinc_UBOONE_minidst_mc.root </filename>
        <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
@@ -71,6 +71,7 @@ Default binning
 -->
 <default_binning> binning/sbn_proposal_binning_NuE.xml  </default_binning>
 
+
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Splines
@@ -88,5 +89,3 @@ Splines
 </splines>
 
 </analysis_inputs>
-
-

@@ -1,0 +1,26 @@
+jobsub_submit \
+  --group sbnd \
+  --expected-lifetime=12h \
+  --memory=8GB \
+  --disk=42GB \
+  --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC \
+  --OS=SL7 \
+  -N 20 \
+  --generate-email-summary file:///${VALOR_SBN}/prod/jobsub_submit_param_scan_multifits.sh \
+  --tag sbn_2020a1 \
+  --param_nullhyp1 0 --param_nullhyp2 0 \
+  --physics-hypothesis eff_sterile_osc \
+  --config-file /pnfs/sbnd/persistent/users/rsjones/valor/sbn_numu_disapp_exclusive_1_2020a1_nd_1.xml \
+  --param1 sinsq2thMuMu --min-value1 1E-3 --max-value1 1 --log-param1 1 --npoints1 40 \
+  --param2 dm41sq --min-value2 1E-2 --max-value2 1E2 --log-param2 1 --npoints2 40 \
+  --discovery 1 \
+  --hierarchy normal \
+  --store-spectra 1 \
+  --fit-option minuit+with_simplex_fallback+maxcalls=2000000 \
+  --pot-override -999 \
+  --mesg-thresholds verbosity.xml \
+  --param-values-option prefit-errors \
+  --tarball /pnfs/sbnd/resilient/users/rsjones/valor/valor.tar \
+  --jobdir /pnfs/sbnd/persistent/users/rsjones/valor_sbn_sensitivity_2020a1_exclusive_nd \
+  --prior-file /pnfs/sbnd/persistent/users/rsjones/valor/void.xml \
+  --njobs 20

@@ -570,8 +570,18 @@ void rj_plot_pdf(
     }
     
   } // icanvas
-  
-  std::cout<<event_rates.str();
+ 
+  // Setup text file and save rates
+  ofstream statsfile;
+  TString stat_file(spectra_filename);
+  stat_file.ReplaceAll(".root",".txt");
+  statsfile.open(stat_file.Data());
+
+  statsfile << event_rates.str();
+  std::cout << event_rates.str();
+
+  statsfile.close();
+
     
   return;
 }

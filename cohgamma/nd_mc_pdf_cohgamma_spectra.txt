@@ -1,0 +1,11 @@
+BNB_FHC sbn_nd nuelikeCChigh (total) : 15133.2
+    nueCC: 12710.5
+    nuebarCC: 522.243
+    numuCC: 505.039
+    numubarCC: 0.921604
+    NC: 1394.54
+    oscnueCC: 0
+    oscnuebarCC: 0
+    cosmic: 0
+    dirt: 0
+

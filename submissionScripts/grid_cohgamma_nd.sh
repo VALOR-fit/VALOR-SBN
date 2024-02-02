@@ -1,0 +1,27 @@
+jobsub_submit \
+  --group sbnd \
+  --expected-lifetime=12h \
+  --disk=20GB \
+  --resource-provides=usage_model=DEDICATED,OPPORTUNISTIC \
+  --OS=SL7 \
+  -N 2 \
+  --generate-email-summary file:///${VALOR_SBN}/prod/jobsub_submit_param_scan_multifits.sh \
+  --tag sbn_cohgamma_nd \
+  --param_nullhyp1 0 --param_nullhyp2 0 \
+  --physics-hypothesis eff_sterile_osc \
+  --config-file /pnfs/sbnd/persistent/users/rsjones/valor/sbn_nue_app_genie_v3_cohgamma_nd_mc.xml \
+  --param1 sinsq2thMuE --min-value1 1E-5 --max-value1 1 --log-param1 1 --npoints1 2 \
+  --param2 dm41sq --min-value2 1E-2 --max-value2 1E2 --log-param2 1 --npoints2 2 \
+  --param3 sinsq2thMuMu --param_nullhyp3 0 --fixed_at_val3 0 --fix_val3 1 \
+  --param4 sinsq2thEE --param_nullhyp4 0 --fixed_at_val4 0 --fix_val4 1 \
+  --discovery 1 \
+  --hierarchy normal \
+  --store-spectra 1 \
+  --fit-option minuit+with_simplex_fallback \
+  --pot-override -999 \
+  --mesg-thresholds verbosity.xml \
+  --param-values-option prefit-errors \
+  --tarball /pnfs/sbnd/resilient/users/rsjones/valor/valor_genie.tar \
+  --jobdir /pnfs/sbnd/scratch/users/rsjones/valor_sbn_sensitivity_cohgamma_nd \
+  --prior-file /pnfs/sbnd/persistent/users/rsjones/valor/void.xml \
+  --njobs 20

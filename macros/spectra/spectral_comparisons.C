@@ -34,7 +34,7 @@ void GetFilesVals(const std::string &f);
 void FormatLatex(const double &x, const double &y, const char *s);
 
 // Main
-void spectral_comparisons(const std::string &fileList, const std::string &tag="ratio", const std::string &type="total", const bool &ratio=true) {
+void spectral_comparisons(const std::string &fileList, const std::string &unoscFile, const std::string &tag="ratio", const std::string &type="total", const bool &ratio=true) {
     
   // -------------------------------------------------------------------------
   //        Loop over fileList and get the oscillated spectra at each point
@@ -52,7 +52,7 @@ void spectral_comparisons(const std::string &fileList, const std::string &tag="r
     TFile *f_osc = new TFile(f.c_str(),"read");
     osc_files.push_back(f_osc);
   }
-  TFile *f_unosc = new TFile("/sbnd/app/users/rsjones/VALOR/VALOR-SBN/pdfs/sbn/raw_files/2021TN/VALOR_unosc_spectra.root","read");
+  TFile *f_unosc = new TFile(unoscFile.c_str(),"read");
 
   // Get a vector of each detector's histograms, unosc last
   std::vector<TH1D*> sbnd, uboone, icarus;

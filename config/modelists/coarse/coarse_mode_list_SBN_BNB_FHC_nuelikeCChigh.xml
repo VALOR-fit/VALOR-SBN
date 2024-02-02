@@ -70,6 +70,13 @@
     <fill_sty>   3001    </fill_sty>
   </coarse_mode>
   
+  <coarse_mode>
+    <name>       dirt    </name>
+    <line_col>   1       </line_col>
+    <fill_col>   901     </fill_col>
+    <fill_sty>   3001    </fill_sty>
+  </coarse_mode>
+  
   <!--coarse_mode>
     <name>       nutaubarCC   </name>
     <line_col>   1       </line_col>

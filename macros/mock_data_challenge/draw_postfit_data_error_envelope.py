@@ -222,7 +222,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       h.GetYaxis().SetTitleOffset(title_offset)
       h.GetYaxis().SetMaxDigits(3)
 
-    legend = ROOT.TLegend(0.525,0.697,0.948,0.870)
+    legend = ROOT.TLegend(0.425,0.697,0.948,0.870)
     legend.SetFillStyle(0)
     legend.SetBorderSize(0)
     legend.SetMargin(0.25)
@@ -467,7 +467,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_n > 1 and ratio >= 0 and ratio_hists:
 
       # Now if we want to plot the overlay and the ratio, repeat and split the pads
-      r_legend = ROOT.TLegend(0.49,0.62,0.96,0.86);
+      r_legend = ROOT.TLegend(0.45,0.62,0.96,0.86);
       r_legend.SetFillStyle(0);
       r_legend.SetBorderSize(0);
 

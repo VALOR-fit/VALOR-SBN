@@ -1,8 +1,8 @@
-detectors=("all") # "nd" "ub" "fd" "nd_fd"
-sinsq=("unosc" "0.07" "0.0065" "0.0185")
-dmsq=("unosc" "1.32" "100" "1")
+detectors=("all") # "all" "nd" "ub" "fd" "nd_fd"
+sinsq=("unosc" "0.07")
+dmsq=("unosc" "1.32")
 
-cd $VALOR_SBN/rebase_test/pdfs
+cd $VALOR_SBN/pdfs/oscRatios
 rm -f *.root*
 rm -f *.list*
 
@@ -47,6 +47,7 @@ for i in ${!detectors[@]}; do
     
       # Now write the spectra
       valor -l -b -q $VALOR_SBN/macros/spectra/rj_plot_pdf.C'("'${config}'","VALOR_'${d}'_sinsq_'${s}'_dmsq_'${dm}'_pdf.root","valor",1,"total","","VALOR_'${d}'_sinsq_'${s}'_dmsq_'${dm}'_spectra.root")'
+      valor -l -b -q $VALOR_SBN/macros/spectra/rj_plot_pdf.C'("'${config}'","VALOR_unosc_pdf.root","valor",1,"total","","VALOR_unosc_spectra.root")'
     
       ## Now append the file to the list
       echo "VALOR_${d}_sinsq_${s}_dmsq_${dm}_spectra.root ${s} ${dm}" >> ${spectraFile}
@@ -57,10 +58,10 @@ for i in ${!detectors[@]}; do
   done
 
   ## Now overlay the ratios 
-  root -l -b -q ${VALOR_SBN}/macros/spectra/spectral_comparisons.C'("'${spectraFile}'", "ratio", "total", 1)'
+  root -l -b -q ${VALOR_SBN}/macros/spectra/spectral_comparisons.C'("'${spectraFile}'", "VALOR_unosc_spectra.root", "ratio", "total", 1)'
 
 
   ## Now overlay the spectra
-  root -l -b -q ${VALOR_SBN}/macros/spectra/spectral_comparisons.C'("'${spectraFile}'", "spectra", "total", 0)'
+  root -l -b -q ${VALOR_SBN}/macros/spectra/spectral_comparisons.C'("'${spectraFile}'", "VALOR_unosc_spectra.root", "spectra", "total", 0)'
 
 done

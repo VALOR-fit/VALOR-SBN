@@ -475,16 +475,13 @@ void PrintMCT(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, Kin
   //array->SetOwner(true);
 
   // Write stuff out
-  Option_t * write_opt = "pdfts_rf+SB";
+  Option_t * write_opt = "pdfts_vf";
   if (util::IsTrue(kv)) { write_opt = "pdfcs_rf+SB"; }    // The true PDFs don't have totals in GSSFM, only the mode breakdown // TODO: util::binning::Make1DHistogram currently doesn't work with truth...
-  model->Write(array,"nom","mct_vf");
+  model->Write(array,"nom",write_opt);
 
   // Pick results wanted
   for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
     GenericSingleSampleFitModel * this_model = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
-    Detector_t d = this_model->GetDetector();
-    BeamConf_t b = this_model->GetBeam();
-    Sample_t   s = this_model->GetSample();
 
     const unsigned int n_mcts = array->GetEntries();
     std::map<ReacMode_t, VALORArray> mct_modes;

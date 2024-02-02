@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_nue_app_genie_v3_1">
+   
+    <element name="sbn_nd_fhc_nuelikeCChigh">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       nuelikeCChigh                                        </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_nue_app_genie_v3_cohgamma_all_sbn_nd.xml      </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuE.xml                 </binning>
+    </element>
+    
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml   </filename>
+  </parameter_definitions>
+
+</valor> 

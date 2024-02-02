@@ -43,9 +43,9 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-      <filename> sbn_nue_inclusive/dsts/2020a1/Selection_3.0/valor_sbncode_fhc_nueccinc_ICARUS_minidst_mc.root  </filename> 
-      <objname> valor_sbn_minidst </objname> 
-      <objtype> TTree    </objtype> 
+      <filename> sbn_nue_inclusive/dsts/2020a1/Selection_3.0/valor_sbncode_fhc_nueccinc_ICARUS_minidst_mc.root </filename>
+       <objname> valor_sbn_minidst </objname> 
+       <objtype> TTree    </objtype> 
     </bnb_fhc>
   </dst>
   
@@ -71,6 +71,7 @@ Default binning
 -->
 <default_binning> binning/sbn_proposal_binning_NuE.xml  </default_binning>
 
+
 <!--
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Splines
@@ -88,5 +89,3 @@ Splines
 </splines>
 
 </analysis_inputs>
-
-

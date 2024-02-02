@@ -496,9 +496,6 @@ int main(int argc, char ** argv)
   unsigned int nbins_tot  = 0;
   unsigned int nbins_l10  = 0;
   unsigned int nbins_l100 = 0;
-  TH1D *hNEvents      = new TH1D("hNEvents","",500,0.,1000.);
-  TH1D *hNEvents0     = new TH1D("hNEvents0","",500,0.,1000.);
-  TH2D *hNEventsRatio = new TH2D("hNEventsRatio","",500,0.,1000.,10,0,2);
   for(const ReacMode_t &mode : reac_modes){
     // Iterator for the nominal knot map
     std::map<ReacMode_t, VALORArray>::const_iterator it_mct_mode_nom = mct_mode_nom.find(mode);
@@ -601,7 +598,7 @@ int main(int argc, char ** argv)
             // Check if a variation for this mode has already been found
             if(!mode_used){
               // Check if the event ratio is extremely close to 1 or 0
-              if((event_ratio > 1.0 || event_ratio < 1.0) && abs(event_ratio)>std::numeric_limits<double>::epsilon()){
+              if((abs(event_ratio-1) > std::numeric_limits<double>::epsilon()) && abs(event_ratio) > std::numeric_limits<double>::epsilon()){
                 LOG("valor_sbn",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " isn't 1: " << event_ratio  << " therefore saving the mode to the list";
                 applied_to_modes.push_back(util::AsString(mode));
                 mode_used = true;
