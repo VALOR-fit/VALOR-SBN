@@ -143,7 +143,7 @@ int main(int argc, char ** argv)
   LOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
-  Messenger::Instance()->Configure(thresholds);
+  valor::Messenger::Instance()->Configure(thresholds);
 
   string opt_beam_name      = arg.GetString("beam");
   string opt_sample_name    = arg.GetString("sample");
