@@ -117,7 +117,8 @@ Each error parameterization can be applied on selected MC productions only, indi
 | 03c1 | n/a  | CORLIN{loc,flav,Etrue} parameterization for hadroproduction multi-sim systematics and UNCORRESP1D parameterization of optics and hadronic interaction uni-sim systematics of the [2015a flux error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Flux-systematics-2015a) | UNCORRESP1D parameterisation for all systematics included in the [2020a x-section error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a) | | |
 | 03c2 | CORLIN{det,sample,mode,Ereco}, as specified by the [effective 2020a detector error model](https://github.com/VALOR-fit/VALOR-SBN/wiki/Detector-systematics-2020a) | as in 03c1 | as in 03c1 | | Adding detector effects in 03c1 |
 | 03c3 | as in 03c2 | as in 03c2 | as in 03c2 | | Adding bias and energy scale systematics to 03c2 and sample migration in exclusive analysis |
-| 03d1 | as in 03c1 | as in 03c1 | as in 03c1 | | Adding POT uncertaintiy which should become part of the 'standard' analysis |
+| 03d1 | as in 03c1 | as in 03c1 | as in 03c1 | | Adding POT uncertainty which should become part of the 'standard' analysis |
+| 03e1 | as in 03d1 | as in 03d1 | as in 03d1 | | Adding 2pct Energy Scale uncertainty (initially implimented in 03c3) which should become part of the 'standard' analysis |
 
 Internal systematic error parameterization methods:
  - **CORLIN{'space'}**: A set of correlated normalization factors (linear response functions), each of which is applied on a single bin of the specified 'space' that can be mapped to subsets of kinematic bins for specific MC templates.
