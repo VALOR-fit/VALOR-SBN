@@ -163,6 +163,10 @@ int main(int argc, char ** argv)
   int    max_n_events       = arg.GetInt("max-n-events");
   double off_axis_bin_min   = arg.GetDouble("off-axis-min");
   double off_axis_bin_max   = arg.GetDouble("off-axis-max");
+  double e_shift_md         = arg.GetDouble("e-shift-md");
+  double weight_mec         = arg.GetDouble("weight-mec");
+  double weight_nue         = arg.GetDouble("weight-nue");
+  VLOG("valor_sbn", pNOTICE) << " Got all arguments ";
 
   // Get the sample and beam configuration
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
@@ -176,9 +180,13 @@ int main(int argc, char ** argv)
 
   if(apply_weights)
     VLOG("valor_sbn", pNOTICE) << " Chosen to apply valor_minidst_wght ";
-  else
+  else{
     VLOG("valor_sbn", pNOTICE) << " Chosen not to apply valor_minidst_wght";
-
+    if(weight_mec != 1.0 || weight_nue != 1.0)
+      VLOG("valor_sbn", pNOTICE) << " Given extra weights for subset of events but not chosen to apply weights, this is illogical and all weights will be set to 1.0";
+    if(weight_mec != 1.0 && weight_nue != 1.0)
+      VLOG("valor_sbn", pNOTICE) << " Given extra weights for multiple subsets of events but not chosen to apply weights, please edit this app to do what you want, currently the latest added subset will be modified (nue)";
+  }
   // If we want to define 'other' as anything but the sample defined in the arguments, set this to true
   if(other_sample)
     VLOG("valor_sbn", pNOTICE) << " Chosen to look for events which do NOT fall under the definition of the sample, "
@@ -563,7 +571,7 @@ int main(int argc, char ** argv)
       posz_true    = truth.neutrino.position.z();
 
       //Calculate the off angle position
-      double beamx = 45.7; //read this from somewhere sensible!
+      double beamx = 45.7; //read this from somewhere sensible! //change to 74 when use new sample, this is from config f
       double beamy = 0.0;
       double exp_baseline = 11000.0;
       double offaxis_true_cm = sqrt( (posx_true-beamx)*(posx_true-beamx) + (posy_true-beamy)*(posy_true-beamy));
@@ -889,7 +897,7 @@ int main(int argc, char ** argv)
       << "\n Off-axis distance (true)  = " << valor_minidst_offaxis_true << " deg";
 
 
-    enu_reco    = reco.reco_energy;
+    enu_reco    = reco.reco_energy - e_shift_md;
     q0_reco     = reco.lepton_energy;
     Theta_reco  = reco.lepton_costh;
     reco_weight = reco.weight;
@@ -922,11 +930,21 @@ int main(int argc, char ** argv)
     valor_minidst_enu_reco    = enu_reco;
     valor_minidst_q0_reco     = q0_reco;
     valor_minidst_Theta_reco  = Theta_reco;
-    if(apply_weights)
-      valor_minidst_wght = reco_weight;
-    else
-      valor_minidst_wght = 1.;
+   // conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(valor_minidst_final_nupdg);
+  //  conv::NuFlavour_t init_flav = valor::util::FlavourFromPDG(valor_minidst_init_nupdg);
+    conv::ReacMode_t  reac_mode  = valor::util::ReacModeFromInt(valor_minidst_reac_mode);
+    if(apply_weights){
 
+      if(valor::util::AsString(reac_mode).find("MEC") != std::string::npos){
+        valor_minidst_wght = reco_weight * weight_mec;
+      } else valor_minidst_wght = reco_weight;
+
+      if(valor::util::AsString(reac_mode).find("nue") != std::string::npos && valor::util::AsString(reac_mode).find("to") == std::string::npos){
+        valor_minidst_wght = reco_weight * weight_nue;
+      } else valor_minidst_wght = reco_weight;
+
+    } else valor_minidst_wght = 1.;
+    
     valor_minidst->Fill();
 
     nev_accept += 1;
