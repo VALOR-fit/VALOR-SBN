@@ -403,10 +403,15 @@ void rj_plot_pdf(
           relevant_hist->SetLineColor(ml->GetCoarseModeLineCol(mc));
           relevant_hist->SetFillColor(ml->GetCoarseModeFillCol(mc));
           relevant_hist->SetFillStyle(ml->GetCoarseModeFillSty(mc));
-          contrib_stack->Add(relevant_hist);
           TString legend_entry_label(Form("%s",vutil::AsStringTex(mc,true).c_str()));
           legend_entry_label.ReplaceAll("#:","");
-          contrib_legend->AddEntry(relevant_hist,legend_entry_label.Data(), "LF");
+          if(relevant_hist->Integral() > 0){
+            contrib_stack->Add(relevant_hist);
+            contrib_legend->AddEntry(relevant_hist,legend_entry_label.Data(), "LF");
+          }
+          else{
+            std::cout << " Skipping " << legend_entry_label << " in stacked histogram due to 0 entries " << std::endl;
+          }
 
           if(mode_filled) continue;
           if(cc_hist && !mode_str.Contains("NC") && !mode_str.Contains("nue"))
@@ -563,10 +568,12 @@ void rj_plot_pdf(
     //~ c_pdf_slice  ->Update();
     c_pdf_contrib->Update();
     if(save_spectra){
-      TString png_file(spectra_filename);
+      TString file_name(spectra_filename);
       std::string png_tag = "_"+vutil::AsString(d)+"_"+vutil::AsString(s)+".png"; 
-      png_file.ReplaceAll(".root",png_tag.c_str());
-      c_pdf_contrib->SaveAs(png_file.Data());
+      file_name.ReplaceAll(".root",png_tag.c_str());
+      c_pdf_contrib->SaveAs(file_name.Data());
+      file_name.ReplaceAll(".png",".pdf");
+      c_pdf_contrib->SaveAs(file_name.Data());
     }
     
   } // icanvas

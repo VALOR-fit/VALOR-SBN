@@ -25,14 +25,17 @@ for i in ${!detectors[@]}; do
     printf "\nDetector: ${d}, sinsq2theta: ${s}, dmsq: ${dm} \n\n"
 
     if [ ${s} == "unosc" ]; then
-      #Write the PDFs
+      #write the pdfs
       valor-write_pdf \
         --config ${config} \
         --write-opt pdfts_rf+pdfcs_rf+SB \
         --output-name VALOR_unosc_pdf \
         --physics-hypothesis void
       
-      # Now write the spectra
+      # now write the stacked spectra
+      valor -l -b -q $VALOR_SBN/macros/spectra/rj_plot_pdf.C'("'${config}'","VALOR_unosc_pdf.root","valor",1,"stacked","","VALOR_stacked_spectra.root")'
+
+      # now write the spectra
       valor -l -b -q $VALOR_SBN/macros/spectra/rj_plot_pdf.C'("'${config}'","VALOR_unosc_pdf.root","valor",1,"total","","VALOR_unosc_spectra.root")'
     
     else
