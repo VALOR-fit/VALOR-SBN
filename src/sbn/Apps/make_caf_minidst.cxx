@@ -363,6 +363,9 @@ int main(int argc, char ** argv)
   double valor_minidst_q0_reco      = -1.; // reco lepton energy, in GeV
   double valor_minidst_Theta_reco   = -1.; // reco lepton opening angle
   double valor_minidst_y_reco       = -1.; // inelasticity
+  int    valor_minidst_npion        = -1;  // N pions in reco
+  int    valor_minidst_npi0         = -1;  // N pi0 in reco
+  int    valor_minidst_nproton      = -1;  // N protons in reco
   double valor_minidst_wght_pot     = -1.; // POT weight
   double valor_minidst_wght         = -1.; // misc weight
 
@@ -386,6 +389,9 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("q0_reco"   , &valor_minidst_q0_reco     ,"q0_reco/D"    );
   valor_minidst->Branch("Theta_reco", &valor_minidst_Theta_reco  ,"Theta_reco/D" );
   valor_minidst->Branch("y_reco"    , &valor_minidst_y_reco      ,"y_reco/D"     );
+  valor_minidst->Branch("npion"     , &valor_minidst_npion       ,"npion/I"      );
+  valor_minidst->Branch("npi0"      , &valor_minidst_npi0        ,"npi0/I"       );
+  valor_minidst->Branch("nproton"   , &valor_minidst_nproton     ,"nproton/I"    );
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
 
@@ -477,6 +483,9 @@ int main(int argc, char ** argv)
   // Commented out now we only have one tree per sample. But remember if that changes!
   //~ int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
+  std::vector<int> * reco_hadron_pids;
+  recTree->SetBranchAddress( "rec.fake_reco.hadrons.pid", &reco_hadron_pids );
+
   for(Long64_t iev = 0; iev < nev; iev++) {
 
     recTree->GetEntry(iev);
@@ -509,6 +518,11 @@ int main(int argc, char ** argv)
     double q0_reco     =  -999.;
     double Theta_reco  =  -999.;
     double reco_weight = 1.;
+
+    int    npion_reco   = 0;
+    int    npi0_reco    = 0;
+    int    nproton_reco = 0;
+
 
     //event::RecoEvent & event = *pevent;
     //event::RecoInteraction &reco = event.reco;
@@ -910,10 +924,26 @@ int main(int argc, char ** argv)
     Theta_reco  = recTree->GetLeaf("rec.fake_reco.lepton.costh")->GetValue();
     reco_weight = recTree->GetLeaf("rec.fake_reco.wgt")->GetValue();
 
+    
+    //reco_hadron_pids = recTree->GetLeaf("rec.fake_reco.hadrons.pid")->GetValue();
+    for( std::vector<int>::iterator it_rhp = reco_hadron_pids->begin();
+	 it_rhp != reco_hadron_pids->end(); ++it_rhp ) {
+      VLOG( "valor_sbn", pINFO ) << "Reading fake reco hadron with PID: " << *it_rhp;
+      switch( *it_rhp ) {
+      case 2212: nproton_reco++; break;
+      case  211:
+      case -211: npion_reco++;   break;
+      case  111: npi0_reco++;    break;
+      }
+    }
+
     VLOG("valor_sbn",pDEBUG) << "Read event: "
-      << "\n Ereco             = "<< enu_reco  << " GeV; "
-      << "\n Reco lepton E     = "<< q0_reco  << " GeV; "
-      << "\n Reco lepton angle = "<< Theta_reco;
+			     << "\n Ereco             = "<< enu_reco  << " GeV; "
+			     << "\n Reco lepton E     = "<< q0_reco  << " GeV; "
+			     << "\n Reco cos(lepton angle) = "<< Theta_reco << " ;"
+			     << "\n N reco pions = " << npion_reco << "; "
+			     << "N reco pi0 = " << npi0_reco << "; "
+			     << "N reco protons = " << nproton_reco;
     if(!opt_disable_checks) {
 
       //
@@ -930,6 +960,9 @@ int main(int argc, char ** argv)
     valor_minidst_enu_reco    = enu_reco;
     valor_minidst_q0_reco     = q0_reco;
     valor_minidst_Theta_reco  = Theta_reco;
+    valor_minidst_npion       = npion_reco;
+    valor_minidst_npi0        = npi0_reco;
+    valor_minidst_nproton     = nproton_reco;
     if(apply_weights)
       valor_minidst_wght = reco_weight;
     else
