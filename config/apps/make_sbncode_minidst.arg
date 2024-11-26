@@ -16,3 +16,7 @@ status-code-set,no-status-code     |   boolean_list |  optional   |  status-code
 max-n-events                       |   integer      |  optional   |  -1
 off-axis-min                       |   double       |  optional   |  0.0
 off-axis-max                       |   double       |  optional   |  90.0
+e-shift-md                         |   double       |  optional   |  0.0
+weight-mec                         |   double       |  optional   |  1.0
+weight-nue                         |   double       |  optional   |  1.0
+n-gen-files                        |   integer      |  optional   |  -1

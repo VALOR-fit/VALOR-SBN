@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2020a1_nd">
+   
+    <element name="sbn_nd_fhc_numuCCIncl_oa00">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA00                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_oa00.xml   </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa01">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA01                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_oa01.xml   </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa02">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA02                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_oa02.xml   </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values">    params/sterile_physics_parameter_values.xml   </filename>
+    <filename desc="sbn_parameter_pull_studies_set.xml">  params/sbn_parameter_pull_studies_set.xml     </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    <group name="pulls">
+      <format> SBNParameterPullStudiesSet.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03d1/parameter_pull_studies_covariance.root </filename>
+        <objname>    cov                                                                             </objname>    
+        <objtype>    TMatrixD                                                                        </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03d1/parameter_pull_studies_covariance.root </filename>
+        <objname>    untuned                                                                         </objname>    
+        <objtype>    TMatrixD                                                                        </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/03d1/parameter_pull_studies_covariance.root </filename>
+        <objname>    nominal                                                                         </objname>    
+      </initial_values> 
+
+    </group>
+    
+  </systematics>
+
+</valor> 

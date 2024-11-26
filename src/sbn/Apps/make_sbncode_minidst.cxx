@@ -143,10 +143,10 @@ int main(int argc, char ** argv)
 
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_sbncode_minidst.arg");
-  LOG("valor_sbn", pNOTICE) << arg;
+  VLOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
-  Messenger::Instance()->Configure(thresholds);
+  valor::Messenger::Instance()->Configure(thresholds);
 
   string opt_beam_name      = arg.GetString("beam");
   string opt_sample_name    = arg.GetString("sample");
@@ -431,7 +431,7 @@ int main(int argc, char ** argv)
             // Now translate to the new list of parameters, conversion table is here: https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a
             FillVariationBranches(new_vname,n_universes,variation_names,variation_nentries,variation_entries,valor_minidst);
             replacedNonRes = true;
-            LOG("valor_sbn",pINFO) << "Adding new parameter: " << new_vname << " branches in replacement of the current non-resonant branch definitions";
+            VLOG("valor_sbn",pINFO) << "Adding new parameter: " << new_vname << " branches in replacement of the current non-resonant branch definitions";
           }
         }
         else continue;
@@ -499,7 +499,7 @@ int main(int argc, char ** argv)
 
     // Before we do anything, make sure the current event fits the description of the sample
     if(!CheckSample(reco,is_numu,sample,other_sample)){
-      LOG("valor_sbn",pINFO)   << "Current event has \n" 
+      VLOG("valor_sbn",pINFO)   << "Current event has \n" 
                                << reco.npion << " pions, \n " 
                                << reco.npi0 << " pi0s and \n " 
                                << reco.nproton << " protons and does not match the desired sample type: " 
@@ -584,12 +584,12 @@ int main(int argc, char ** argv)
         if(status_code_set){
           if(fsps[p].status_code == 11){
             if(nucleonPDGSet){
-              LOG("valor_sbn",pNOTICE) << "\nIn event " << iev
+              VLOG("valor_sbn",pNOTICE) << "\nIn event " << iev
                 << "\nThe struck nucleon pdg has already been set as: " << nuc_pdg << ", will take the first answer."
                 << "\nThis nucleon has pdg: " << fsps[p].pdg;
             }
             else{
-              LOG("valor_sbn",pINFO) << "\nIn event " << iev
+              VLOG("valor_sbn",pINFO) << "\nIn event " << iev
                 << "\nThe struck nucleon has pdg: " << fsps[p].pdg;
               nuc_pdg = fsps[p].pdg;
               nucleonPDGSet = true;
@@ -621,7 +621,7 @@ int main(int argc, char ** argv)
       }
 
       if(nuc_pdg > 5000 && (nipip+nipim+nipi0 == 1 || nipip+nipim+nipi0 == 2)){
-        LOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
+        VLOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
         util::Die(-1);
       }
 
@@ -782,7 +782,7 @@ int main(int argc, char ** argv)
           TString vname = entry.first;
           TString input_vname(vname);
           if(!vname.Contains("NonRes") || !fix_nonres) continue;
-          LOG("valor_sbn",pINFO) << " Current input parameter: " << vname;
+          VLOG("valor_sbn",pINFO) << " Current input parameter: " << vname;
 
           const auto & in_vec = entry.second;
           const int nentries = in_vec.size();
@@ -793,7 +793,7 @@ int main(int argc, char ** argv)
           if((iscc && input_vname.Contains("Alt")) || (!iscc && !input_vname.Contains("Alt"))){
             for(const TString &new_vname : nonResVariations){
               if((iscc && new_vname.Contains("CC")) || (!iscc && new_vname.Contains("NC"))) continue;
-              LOG("valor_sbn",pINFO) << " Setting all NC parameter entries to be 1.0 in a CC event and vice versa";
+              VLOG("valor_sbn",pINFO) << " Setting all NC parameter entries to be 1.0 in a CC event and vice versa";
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
                 variation_entries[new_vname][ii] = 1.f;
               }
@@ -810,7 +810,7 @@ int main(int argc, char ** argv)
             GetCorrectVariationName(nuc_pdg, iscc, vname);
             if(vname != ""){
               if(vname != new_vnames.first && vname != new_vnames.second){
-                LOG("valor_sbn",pERROR) << "Associated parameter name does not match one of the expected names:" 
+                VLOG("valor_sbn",pERROR) << "Associated parameter name does not match one of the expected names:" 
                   << "\n Parameter : " << vname 
                   << "\n Expected names: " << new_vnames.first << ", " << new_vnames.second;
                 util::Die(-1);
@@ -818,7 +818,7 @@ int main(int argc, char ** argv)
               // Now get the other name from the pair
               TString other_name = (vname == new_vnames.first) ? new_vnames.second : new_vnames.first;
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
-                LOG("valor_sbn",pINFO) << " New parameter: " << vname << ", other parameter option: " << other_name << " (setting entries to 1.f)";
+                VLOG("valor_sbn",pINFO) << " New parameter: " << vname << ", other parameter option: " << other_name << " (setting entries to 1.f)";
                 // Set the second element of the pair to be 1.f
                 variation_entries[other_name][ii] = 1.f;
 
@@ -833,7 +833,7 @@ int main(int argc, char ** argv)
             else{
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
                 if(abs(in_vec.at(ii)-1)>std::numeric_limits<float>::epsilon()){
-                  LOG("valor_sbn",pERROR) << " Setting alternate parameters for " << input_vname << " to be 1 when this parameter isn't always 1, this value: " << in_vec.at(ii);
+                  VLOG("valor_sbn",pERROR) << " Setting alternate parameters for " << input_vname << " to be 1 when this parameter isn't always 1, this value: " << in_vec.at(ii);
                   util::Die(-1);
                 }
                 variation_entries[new_vnames.first][ii]  = 1.f;
@@ -859,7 +859,7 @@ int main(int argc, char ** argv)
             variation_output_type val = static_cast<variation_output_type>(in_vec[ii]);
             variation_output_type & destination = variation_entries[vname][ii];
             if (val < 0.0) {
-              LOG("valor_sbn",pINFO) << "Setting negative event weight to zero: "
+              VLOG("valor_sbn",pINFO) << "Setting negative event weight to zero: "
                 <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
                 <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
               val = 0.0;
@@ -1035,7 +1035,7 @@ bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const val
       else return ((other) ? true : false);
     }
     else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      VLOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
       return false;
     }
   }
@@ -1062,7 +1062,7 @@ bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const val
       else return ((other) ? true : false);
     }
     else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      VLOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
       return false;
     }
   }
@@ -1098,7 +1098,7 @@ valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool 
     return new_s;
   }
   else{
-    LOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
+    VLOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
     return s;
   }
 }
@@ -1117,7 +1117,7 @@ void FillVariationBranches(const TString &vname,
   std::string branch_name_nI(Form("variation_n_%s/I",vname.Data()));
   variation_nentries[vname] = -999;
   valor_minidst->Branch(branch_name_n.c_str(),&variation_nentries[vname],branch_name_nI.c_str());
-  LOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name_n;
+  VLOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name_n;
 
   assert(n_universes <= max_n_universes);
 
@@ -1128,7 +1128,7 @@ void FillVariationBranches(const TString &vname,
   }
   std::string branch_name (Form("variation_%s"  ,vname.Data()));
   std::string branch_nameF(Form("variation_%s[%s]/%c",vname.Data(),branch_name_n.c_str(),variation_output_type_root));
-  LOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name;
+  VLOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name;
   valor_minidst->Branch(branch_name.c_str(),variation_entries[vname],branch_nameF.c_str());
 }
 void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname){
@@ -1199,7 +1199,7 @@ void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname)
     }
   }
   if(name == ""){
-    LOG("valor_sbn",pINFO) << " No alternative variation name was found for this event in which:" 
+    VLOG("valor_sbn",pINFO) << " No alternative variation name was found for this event in which:" 
       << " \n  CC:            " << iscc
       << " \n  Nucleon PDG:   " << nuc_pdg
       << " \n  Original name: " << vname
@@ -1207,7 +1207,7 @@ void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname)
     vname = name;
   }
   else{
-    LOG("valor_sbn",pINFO) << " Alternative variation name for: " << vname << " is: " << name << " where: "
+    VLOG("valor_sbn",pINFO) << " Alternative variation name for: " << vname << " is: " << name << " where: "
       << " \n  CC:            " << iscc
       << " \n  Nucleon PDG:   " << nuc_pdg;
 
@@ -1241,7 +1241,7 @@ void GetPair(const TString &vname, std::pair<TString,TString> &new_vnames){
     names = std::make_pair("genie_NonResRvbarpNC2pi_Genie","genie_NonResRvnNC2pi_Genie");
   }
   else{
-    LOG("valor_sbn",pERROR) << "No alternative parameter set found for input variation: " << vname;
+    VLOG("valor_sbn",pERROR) << "No alternative parameter set found for input variation: " << vname;
     valor::util::Die(-1);
   }
   new_vnames = names;

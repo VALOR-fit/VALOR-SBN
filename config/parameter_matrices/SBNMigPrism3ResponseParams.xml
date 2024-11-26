@@ -1,0 +1,5 @@
+<systematic_list name="SBNExclusiveResponseParams">
+  <parameter> OA00_migration </parameter>
+  <parameter> OA01_migration </parameter>
+  <parameter> OA02_migration </parameter>
+</systematic_list>

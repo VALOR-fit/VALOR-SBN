@@ -1,0 +1,27 @@
+valor-run_fit \
+   --tag run-fit-sterile-sbnd-03e1 \
+   --first-octant \
+   --run 1 \
+   --ntoymc 1 \
+   --param-values-option  prefit-errors \
+   --fitter minuit+with_simplex_fallback+maxcalls=1000000 \
+   --config /pnfs/sbnd/persistent/users/bslater/valor/config/sbn_numu_disapp_2020a1_03e1_nd.xml\
+   --mesg-thresholds verbosity.xml \
+   --without-stat-fluct \
+   --normal \
+   --load-prior-from-file - \
+   --pot-override -999 \
+   --store-spectra \
+   --physics-hypothesis eff_sterile_osc \
+   --osc-prior-file priors/sterile_priors.xml \
+   --input-dm41sq         0.      \
+   --fix-at-dm41sq        24.     \
+   --fix-dm41sq                   \
+   --input-sinsq2thMuMu   0.      \
+   --fix-at-sinsq2thMuMu  0.17    \
+   --fix-sinsq2thMuMu             \
+   --input-sinsq2thMuE    0.      \
+   --fix-at-sinsq2thMuE   0.      \
+   --fix-sinsq2thMuE              \
+   --input-sinsq2thEE     0.      \
+   --fix-at-sinsq2thEE    0.      \

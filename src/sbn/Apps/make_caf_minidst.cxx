@@ -73,7 +73,7 @@
 #include "valor/Utilities/UtlSystem.h"
 #include "valor/Utilities/Rnd.h"
 #include "valor/GENIEUtilities/GENIEIncludes.h"
-#include "valor/GENIEUtilities/GENIEIncludes.h"
+//#include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
 // SBNcode - See for example Gray or Rhiannon's branch (not the default)
 //#include "core/Event.hh"
@@ -82,10 +82,6 @@ using std::string;
 using std::ostringstream;
 
 void GetCommandLineArgs (int /*argc*/, char ** /*argv*/);
-// The trees we need to access (in the gobal "recTree" folder)
-//static const string grec_tree           = "recTree/rec";
-//static const string grec_mcnu_tree      = "recTree/rec.mc.nu";
-//static const string grec_fake_reco_tree = "recTree/rec.fake_reco";
 static const string global_tree = "recTree";
 
 static const int gPrintEveryNEvents   = 50000;
@@ -137,7 +133,7 @@ std::vector<TString> nonResVariations =
 "genie_NonResRvbarpNC2pi_Genie",
 };
 
-//bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other);
+bool CheckSample(TChain *reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other);
 valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu);
 void FillVariationBranches(const TString &vname,
                            const size_t &n_universes,
@@ -166,10 +162,10 @@ int main(int argc, char ** argv)
 
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_sbncode_minidst.arg");
-  LOG("valor_sbn", pNOTICE) << arg;
+  VLOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
-  Messenger::Instance()->Configure(thresholds);
+  valor::Messenger::Instance()->Configure(thresholds);
 
   string opt_beam_name      = arg.GetString("beam");
   string opt_sample_name    = arg.GetString("sample");
@@ -184,6 +180,7 @@ int main(int argc, char ** argv)
   bool   fix_nonres         = arg.GetBool("fix-nonres");
   bool   status_code_set    = arg.GetBool("status-code-set");
   int    max_n_events       = arg.GetInt("max-n-events");
+  int    n_gen_files        = arg.GetInt("n-gen-files");
 
   // Get the sample and beam configuration
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
@@ -346,6 +343,10 @@ int main(int argc, char ** argv)
       << "Error: Not able to access MCSample POT from " << global_tree;
     exit(1);
   }
+  // If the number of generator files was >1, then we need to divide the POT accordingly
+  // as this is passed as a single value from the generator stage through to g4
+  // at which point the value is kept the same but is duplicated in every file
+  if(n_gen_files > 0) mcsample_pot = mcsample_pot/static_cast<double>(n_gen_files);
   VLOG("valor_sbn", pNOTICE)
     << "POT in the input file is " << mcsample_pot;
 
@@ -389,40 +390,11 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
   valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
 
-  /*
-  // open the ROOT file and get the TTree & its header
-  TChain * mcnu_tree = new TChain(grec_mcnu_tree.c_str());
-  mcnu_tree->Add(opt_input_name.c_str());
-  if(!mcnu_tree || !mcnu_tree->GetEntries()) {
-    VLOG("valor_sbn", pFATAL)
-      << "Error: Unable to read " << grec_mcnu_tree
-      <<" from "<< opt_input_name;
-    exit(1);
-  }
-
-  Long64_t nev = mcnu_tree->GetEntries();
-  VLOG("valor_sbn", pNOTICE)
-    << "Input analysis tree has " << nev << ((nev==1) ? " entry." : " entries.");
-  if (max_n_events >= 0) {
-    nev = std::min((Long64_t)max_n_events,nev);
-    VLOG("valor_sbn", pNOTICE) <<
-      "Reading "<< nev << ((nev==1) ? " entry." : " entries.");
-  }
-
-  TChain * fake_reco_tree = new TChain(grec_fake_reco_tree.c_str());
-  fake_reco_tree->Add(opt_input_name.c_str());
-  if(!fake_reco_tree || !fake_reco_tree->GetEntries()) {
-    VLOG("valor_sbn", pFATAL)
-      << "Error: Unable to read " << grec_fake_reco_tree
-      <<" from "<< opt_input_name;
-    exit(1);
-  }
-*/
   Long64_t nev = recTree->GetEntries();
 
-   //event::RecoEvent *pevent = nullptr;
-   //analysis_tree->SetBranchAddress("reco_events", &pevent);
-/*
+/********************************************************************
+ * SYSTEMATICS
+ ********************************************************************
   std::map<TString,variation_output_type *> variation_entries;
   std::map<TString,int>     variation_nentries;
   //~ std::map<std::string,TBranch *> variation_branches;
@@ -450,7 +422,7 @@ int main(int argc, char ** argv)
             // Now translate to the new list of parameters, conversion table is here: https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a
             FillVariationBranches(new_vname,n_universes,variation_names,variation_nentries,variation_entries,valor_minidst);
             replacedNonRes = true;
-            LOG("valor_sbn",pINFO) << "Adding new parameter: " << new_vname << " branches in replacement of the current non-resonant branch definitions";
+            VLOG("valor_sbn",pINFO) << "Adding new parameter: " << new_vname << " branches in replacement of the current non-resonant branch definitions";
           }
         }
         else continue;
@@ -477,10 +449,14 @@ int main(int argc, char ** argv)
   // Commented out now we only have one tree per sample. But remember if that changes!
   //~ int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
+  // Check the fake reco tree has been filled
+  int len;
+  recTree->SetBranchAddress("rec.fake_reco..length", &len);
   for(Long64_t iev = 0; iev < nev; iev++) {
 
     recTree->GetEntry(iev);
   //  fake_reco_tree->GetEntry(iev);
+    if(len != 1) continue;
 
     if (gPrintEveryNEvents && !(iev%gPrintEveryNEvents)) {
       VLOG("valor_sbn", pNOTICE) << "** Reading event: " << iev
@@ -490,7 +466,9 @@ int main(int argc, char ** argv)
       VLOG("valor_sbn", pDEBUG) << "** Reading event: " << iev
         <<" - so far accepted " << nev_accept;
     }
-    /*
+    /*********************************************************************
+     * SYSTEMATICS
+     *********************************************************************
     // reset the systematic universes
     if (!no_truth && write_universes) {
       for (const auto & entry : variation_entries) {
@@ -505,33 +483,21 @@ int main(int argc, char ** argv)
       }
     } // Variations
     */
+
     double enu_reco    =  -999.;
     double q0_reco     =  -999.;
     double Theta_reco  =  -999.;
     double reco_weight = 1.;
 
-    //event::RecoEvent & event = *pevent;
-    //event::RecoInteraction &reco = event.reco;
-    //event::Interaction * ptruth = event.GetTruth();
-    //event::Interaction & truth = *ptruth;
-
-    //caf::SRTruthBranch & event = *pevent;
-    //std::vector<caf::SRTrueInteraction> &ptruth = event.nu;
-    //std::vector<caf::SRTrueInteraction> &mc = ptruth;
-
-
-
-/*
     // Before we do anything, make sure the current event fits the description of the sample
-    if(!CheckSample(reco,is_numu,sample,other_sample)){
-      LOG("valor_sbn",pINFO)   << "Current event has \n" 
-                               << reco.npion << " pions, \n " 
-                               << reco.npi0 << " pi0s and \n " 
-                               << reco.nproton << " protons and does not match the desired sample type: " 
+    if(!CheckSample(recTree,is_numu,sample,other_sample)){
+      VLOG("valor_sbn",pINFO)   << "Current event has \n" 
+                               << recTree->GetLeaf("rec.fake_reco.npion")->GetValue() << " pions, \n " 
+                               << recTree->GetLeaf("rec.fake_reco.npi0")->GetValue() << " pi0s, \n " 
+                               << recTree->GetLeaf("rec.fake_reco.nproton")->GetValue() << " protons, \n " 
                                << util::AsString(sample) << "\n Skipping.";
       continue;
     }
-*/
 
     // If there is truth in the file, access the variables
     if(!no_truth){
@@ -565,41 +531,34 @@ int main(int argc, char ** argv)
       int ninuc    = 0;
 
       int larsoft_mode = -1;
-/*
-      if(ptruth==nullptr) {
-        VLOG("valor_sbn", pNOTICE)
-          << "The number of truth entries is 0, skipping event "<<iev;
-        continue;
-      }
-*/
-      //int fsps_size     = recTree->GetLeaf("rec.true_particles.fsps..length")->GetValue();
-      //TLeaf *fsps_gstatus = recTree->GetLeaf("rec.true_particles.fsps.gstatus");
-      //TLeaf *fsps_pdg     = recTree->GetLeaf("rec.true_particles.fsps.pdg");
+      
+      int fsps_size       = recTree->GetLeaf("rec.ntrue_particles")->GetValue();
+      TLeaf *fsps_gstatus = recTree->GetLeaf("rec.true_particles.gstatus");
+      TLeaf *fsps_pdg     = recTree->GetLeaf("rec.true_particles.pdg");
 
-      iscc              = recTree->GetLeaf("rec.slc.truth.iscc")->GetValue();
-      isnc              = recTree->GetLeaf("rec.slc.truth.isnc")->GetValue();
-      baseline          = recTree->GetLeaf("rec.slc.truth.baseline")->GetValue();
-      nu_pdg            = recTree->GetLeaf("rec.slc.truth.pdg")->GetValue();
-      enu_true          = recTree->GetLeaf("rec.slc.truth.E")->GetValue();
-      Q2s               = recTree->GetLeaf("rec.slc.truth.Q2")->GetValue();
-      larsoft_mode      = recTree->GetLeaf("rec.slc.truth.genie_intcode")->GetValue();
+      iscc              = recTree->GetLeaf("rec.mc.nu.iscc")->GetValue();
+      isnc              = recTree->GetLeaf("rec.mc.nu.isnc")->GetValue();
+      baseline          = recTree->GetLeaf("rec.mc.nu.baseline")->GetValue();
+      nu_pdg            = recTree->GetLeaf("rec.mc.nu.pdg")->GetValue();
+      enu_true          = recTree->GetLeaf("rec.mc.nu.E")->GetValue();
+      Q2s               = recTree->GetLeaf("rec.mc.nu.Q2")->GetValue();
+      larsoft_mode      = recTree->GetLeaf("rec.mc.nu.genie_mode")->GetValue();
       //std::cout << "iscc: " << iscc << "      baseline: " << baseline << std::endl;
 
       // --- Think this is currently the true_particle branch, but will be moved to mc.nu.fsp ---
       // --- status_code <--> gstatus ---
-      /*
       // Particle counting
       bool nucleonPDGSet = false;
-      for(unsigned int p = 0; p < fsps_size; ++p){
+      for(int p = 0; p < fsps_size; ++p){
         if(status_code_set){
           if(fsps_gstatus->GetValue(p) == 11){
             if(nucleonPDGSet){
-              LOG("valor_sbn",pNOTICE) << "\nIn event " << iev
+              VLOG("valor_sbn",pNOTICE) << "\nIn event " << iev
                 << "\nThe struck nucleon pdg has already been set as: " << nuc_pdg << ", will take the first answer."
                 << "\nThis nucleon has pdg: " << fsps_pdg->GetValue(p);
             }
             else{
-              LOG("valor_sbn",pINFO) << "\nIn event " << iev
+              VLOG("valor_sbn",pINFO) << "\nIn event " << iev
                 << "\nThe struck nucleon has pdg: " << fsps_pdg->GetValue(p);
               nuc_pdg = fsps_pdg->GetValue(p);
               nucleonPDGSet = true;
@@ -631,10 +590,9 @@ int main(int argc, char ** argv)
       }
 
       if(nuc_pdg > 5000 && (nipip+nipim+nipi0 == 1 || nipip+nipim+nipi0 == 2)){
-        LOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
+        VLOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
         util::Die(-1);
       }
-      */
 
       // Construct the reaction mode
       conv::ReacType_t reac = conv::kmtUndefined;
@@ -690,7 +648,7 @@ int main(int argc, char ** argv)
       conv::NuFlavour_t final_flav = valor::util::FlavourFromPDG(nu_pdg);
       conv::NuFlavour_t init_flav;
       // If we are looking at the selected nuE samples, get the initial neutrino pdg from the file
-      init_pdg  = recTree->GetLeaf("rec.slc.truth.initpdg")->GetValue();
+      init_pdg  = recTree->GetLeaf("rec.mc.nu.initpdg")->GetValue();
       init_flav = valor::util::FlavourFromPDG(init_pdg);
 
       // Get the real valor mode - this will only be defined for modes turned on right now
@@ -781,7 +739,10 @@ int main(int argc, char ** argv)
       valor_minidst_init_nupdg   = init_pdg;
       valor_minidst_final_nupdg  = nu_pdg;
       valor_minidst_target       = 1000180400; // Argon40
-      /*
+      
+      /********************************************************************************************
+       * SYSTEMATICS 
+       ********************************************************************************************
       // Copy the systematic universes across
       if (write_universes) {
         // Sort out the NonRes parameters
@@ -789,7 +750,7 @@ int main(int argc, char ** argv)
           TString vname = entry.first;
           TString input_vname(vname);
           if(!vname.Contains("NonRes") || !fix_nonres) continue;
-          LOG("valor_sbn",pINFO) << " Current input parameter: " << vname;
+          VLOG("valor_sbn",pINFO) << " Current input parameter: " << vname;
 
           const auto & in_vec = entry.second;
           const int nentries = in_vec.size();
@@ -800,7 +761,7 @@ int main(int argc, char ** argv)
           if((iscc && input_vname.Contains("Alt")) || (!iscc && !input_vname.Contains("Alt"))){
             for(const TString &new_vname : nonResVariations){
               if((iscc && new_vname.Contains("CC")) || (!iscc && new_vname.Contains("NC"))) continue;
-              LOG("valor_sbn",pINFO) << " Setting all NC parameter entries to be 1.0 in a CC event and vice versa";
+              VLOG("valor_sbn",pINFO) << " Setting all NC parameter entries to be 1.0 in a CC event and vice versa";
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
                 variation_entries[new_vname][ii] = 1.f;
               }
@@ -818,7 +779,7 @@ int main(int argc, char ** argv)
             GetCorrectVariationName(nuc_pdg, iscc, vname);
             if(vname != ""){
               if(vname != new_vnames.first && vname != new_vnames.second){
-                LOG("valor_sbn",pERROR) << "Associated parameter name does not match one of the expected names:" 
+                VLOG("valor_sbn",pERROR) << "Associated parameter name does not match one of the expected names:" 
                   << "\n Parameter : " << vname 
                   << "\n Expected names: " << new_vnames.first << ", " << new_vnames.second;
                 util::Die(-1);
@@ -826,7 +787,7 @@ int main(int argc, char ** argv)
               // Now get the other name from the pair
               TString other_name = (vname == new_vnames.first) ? new_vnames.second : new_vnames.first;
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
-                LOG("valor_sbn",pINFO) << " New parameter: " << vname << ", other parameter option: " << other_name << " (setting entries to 1.f)";
+                VLOG("valor_sbn",pINFO) << " New parameter: " << vname << ", other parameter option: " << other_name << " (setting entries to 1.f)";
                 // Set the second element of the pair to be 1.f
                 variation_entries[other_name][ii] = 1.f;
 
@@ -841,7 +802,7 @@ int main(int argc, char ** argv)
             else{
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
                 if(abs(in_vec.at(ii)-1)>std::numeric_limits<float>::epsilon()){
-                  LOG("valor_sbn",pERROR) << " Setting alternate parameters for " << input_vname << " to be 1 when this parameter isn't always 1, this value: " << in_vec.at(ii);
+                  VLOG("valor_sbn",pERROR) << " Setting alternate parameters for " << input_vname << " to be 1 when this parameter isn't always 1, this value: " << in_vec.at(ii);
                   util::Die(-1);
                 }
                 variation_entries[new_vnames.first][ii]  = 1.f;
@@ -867,7 +828,7 @@ int main(int argc, char ** argv)
             variation_output_type val = static_cast<variation_output_type>(in_vec[ii]);
             variation_output_type & destination = variation_entries[vname][ii];
             if (val < 0.0) {
-              LOG("valor_sbn",pINFO) << "Setting negative event weight to zero: "
+              VLOG("valor_sbn",pINFO) << "Setting negative event weight to zero: "
                 <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
                 <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
               val = 0.0;
@@ -978,80 +939,82 @@ int main(int argc, char ** argv)
 
   return 0;
 }
-
-/*bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other){
+bool CheckSample(TChain *reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other){
+  unsigned int npion   = reco->GetLeaf("rec.fake_reco.npion")->GetValue();
+  unsigned int npi0    = reco->GetLeaf("rec.fake_reco.npi0")->GetValue();
+  unsigned int nproton = reco->GetLeaf("rec.fake_reco.nproton")->GetValue();
   if(numu){
     if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh) return true;
     else if(sample == valor::conv::ksNuMuCC0piNtrk){
-      if((reco.npion+reco.npi0) == 0)
+      if((npion+npi0) == 0)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuMuCC0pi1trk){
-      if((reco.npion+reco.npi0) == 0 && reco.nproton == 0)
+      if((npion+npi0) == 0 && nproton == 0)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuMuCC0pi2trk){
-      if((reco.npion+reco.npi0) == 0 && reco.nproton == 1)
+      if((npion+npi0) == 0 && nproton == 1)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuMuCC1piC){
-      if(reco.npion == 1 && reco.npi0 == 0)
+      if(npion == 1 && npi0 == 0)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuMuCC1pi0){
-      if(reco.npion == 0 && reco.npi0 == 1)
+      if(npion == 0 && npi0 == 1)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuMuCC1piC1pi0){
-      if(reco.npion == 1 && reco.npi0 == 1)
+      if(npion == 1 && npi0 == 1)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuMuCC2piC){
-      if(reco.npion == 2 && reco.npi0 == 0)
+      if(npion == 2 && npi0 == 0)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuMuCCoth){
-      if((reco.npion + reco.npi0) >= 2)
+      if((npion + npi0) >= 2)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      VLOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
       return false;
     }
   }
   if(!numu){
     if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh) return true;
     else if(sample == valor::conv::ksNuECC0pi){
-      if((reco.npion+reco.npi0) == 0)
+      if((npion+npi0) == 0)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuECC1piC){
-      if(reco.npion == 1 && reco.npi0 == 0)
+      if(npion == 1 && npi0 == 0)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else if(sample == valor::conv::ksNuECCoth){
-      if((reco.npion+reco.npi0) >= 2)
+      if((npion+npi0) >= 2)
         return ((other) ? false : true);
       else return ((other) ? true : false);
     }
     else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      VLOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
       return false;
     }
   }
   return false; 
 }
-*/
+
 valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool &numu){
 
   // Numu CC
@@ -1082,7 +1045,7 @@ valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool 
     return new_s;
   }
   else{
-    LOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
+    VLOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
     return s;
   }
 }
@@ -1101,7 +1064,7 @@ void FillVariationBranches(const TString &vname,
   std::string branch_name_nI(Form("variation_n_%s/I",vname.Data()));
   variation_nentries[vname] = -999;
   valor_minidst->Branch(branch_name_n.c_str(),&variation_nentries[vname],branch_name_nI.c_str());
-  LOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name_n;
+  VLOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name_n;
 
   assert(n_universes <= max_n_universes);
 
@@ -1112,7 +1075,7 @@ void FillVariationBranches(const TString &vname,
   }
   std::string branch_name (Form("variation_%s"  ,vname.Data()));
   std::string branch_nameF(Form("variation_%s[%s]/%c",vname.Data(),branch_name_n.c_str(),variation_output_type_root));
-  LOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name;
+  VLOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name;
   valor_minidst->Branch(branch_name.c_str(),variation_entries[vname],branch_nameF.c_str());
 }
 void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname){
@@ -1183,7 +1146,7 @@ void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname)
     }
   }
   if(name == ""){
-    LOG("valor_sbn",pINFO) << " No alternative variation name was found for this event in which:" 
+    VLOG("valor_sbn",pINFO) << " No alternative variation name was found for this event in which:" 
       << " \n  CC:            " << iscc
       << " \n  Nucleon PDG:   " << nuc_pdg
       << " \n  Original name: " << vname
@@ -1191,7 +1154,7 @@ void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname)
     vname = name;
   }
   else{
-    LOG("valor_sbn",pINFO) << " Alternative variation name for: " << vname << " is: " << name << " where: "
+    VLOG("valor_sbn",pINFO) << " Alternative variation name for: " << vname << " is: " << name << " where: "
       << " \n  CC:            " << iscc
       << " \n  Nucleon PDG:   " << nuc_pdg;
 
@@ -1225,7 +1188,7 @@ void GetPair(const TString &vname, std::pair<TString,TString> &new_vnames){
     names = std::make_pair("genie_NonResRvbarpNC2pi_Genie","genie_NonResRvnNC2pi_Genie");
   }
   else{
-    LOG("valor_sbn",pERROR) << "No alternative parameter set found for input variation: " << vname;
+    VLOG("valor_sbn",pERROR) << "No alternative parameter set found for input variation: " << vname;
     valor::util::Die(-1);
   }
   new_vnames = names;

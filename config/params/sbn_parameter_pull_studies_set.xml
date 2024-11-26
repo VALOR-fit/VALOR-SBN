@@ -1,0 +1,393 @@
+<?xml version="1.0"?>
+<param_list name="sbn_parameter_pull_studies">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_qema_Genie </simple>
+      <long>    MA QE            </long>
+      <rootex>  f_{M_A^{QE}}     </rootex>
+      <tex>     M_A^{QE}         </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> proposal </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn   </detector>
+      <beam>        fhc      </beam>
+      <selection>   all      </selection>
+      <reac_type>   CCQE     </reac_type>
+      <flav_init>   all      </flav_init>
+      <flav_final>  all      </flav_final>
+      <target>      all      </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_ccresAxial_Genie </simple>
+      <long>    CC Resonant Axial      </long>
+      <rootex>  CC_{Res} #: M_{A}         </rootex>
+      <tex>     CC_{Res} \: M_{A}         </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> proposal </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allccn0pi </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvnCC1pi_Genie                      </simple>
+      <long>    Non-resonant background nu, neutron, CC 1pion   </long>
+      <rootex>  R_{bkg}^{#nu, n, CC 1#pi}                       </rootex>
+      <tex>     R_{bkg}^{\nu, n, CC 1\pi}                       </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> proposal </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allcc1pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_NonResRvpNC2pi_Genie                    </simple>
+      <long>    Non-resonant background nu, proton, NC 2pions </long>
+      <rootex>  R_{bkg}^{#nu, p, NC 2#pi}                     </rootex>
+      <tex>     R_{bkg}^{\nu, p, NC 2\pi}                     </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> proposal </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn      </detector>
+      <beam>        fhc         </beam>
+      <selection>   all         </selection>
+      <reac_type>   allnc2pi    </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
+      <target>      all         </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_DISBth_Genie </simple>
+      <long>    (CC and NC) xsection / Bht (higher twist) param </long>
+      <rootex>  DIS #: Bth </rootex>
+      <tex>     DIS \: Bth </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   alln0pi   </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_IntraNukePIabs_Genie       </simple>
+      <long>    FSI / pion ABS fate fraction     </long>
+      <rootex>  IntraNuke #: PI #: Abs                 </rootex>
+      <tex>     IntraNuke \: PI \: Abs                 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allwithpifsi </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_IntraNukeNinel_Genie       </simple>
+      <long>    FSI / nucleon INEL fate fraction </long>
+      <rootex>  IntraNuke #: N #: Inel                 </rootex>
+      <tex>     IntraNuke \: N \: Inel                 </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allwithfsi</reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  genie_ncresVector_Genie </simple>
+      <long>    NC Resonant Vector      </long>
+      <rootex>  NC_{Res} #: M_{V}         </rootex>
+      <tex>     NC_{Res} \: M_{V}         </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> int </category>
+      <category> modern </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allncn0pi </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  expskin_FluxUnisim </simple>
+      <long>    Skin Effect </long>
+      <rootex>  Skin #: Effect </rootex>
+      <tex>     Skin \: Effect </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+      <category> flux_uncorr </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  nucleonqexsec_FluxUnisim </simple>
+      <long>    Nucleon Quasielastic Cross-Section </long>
+      <rootex>  Nucleon #: QE #: #sigma </rootex>
+      <tex>     Nucleon \: QE \: \sigma </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category> flux </category>
+      <category> flux_uncorr </category>
+      <category> pulls </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   all       </reac_type>
+      <flav_init>   all       </flav_init>
+      <flav_final>  all       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -8,8  </range>                 
+
+  </param>
+</param_list>

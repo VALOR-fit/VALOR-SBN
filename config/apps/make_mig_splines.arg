@@ -1,0 +1,10 @@
+# argument                       |   type         |  require?   |   default
+# ....................................................................................................
+output                           |   string       |  optional   |   valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root
+config                           |   string       |  mandatory  |   -
+sample                           |   string       |  optional   |   numuCCinclOA00
+detector                         |   string       |  optional   |   sbn_nd
+beam                             |   string       |  optional   |   BNB_FHC
+bin00                            |   double       |  optional   |   0.5626849 
+bin01                            |   double       |  optional   |   0.8403252 
+bin02                            |   double       |  optional   |   1.6 

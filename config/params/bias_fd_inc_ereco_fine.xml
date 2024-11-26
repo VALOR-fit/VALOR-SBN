@@ -7,7 +7,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.0, 0.3  </Ereco>
+      <Ereco>  0.0, 0.2  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -31,7 +31,7 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
 
   </param>
   
@@ -41,7 +41,7 @@
     </name>
     
     <apply_to_range>
-      <Ereco>  0.3, 0.4 </Ereco>
+      <Ereco>  0.2, 0.3 </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -65,12 +65,45 @@
 
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
       <simple>  bias_fd_inc_02  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  0.3, 0.4  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  detector  </category>
+      <category>  bias      </category>
+      <category>  icarus    </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  allnumucc  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  all  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
+  </param>
+  
+  <param>
+    <name>
+      <simple>  bias_fd_inc_03  </simple>
     </name>
     
     <apply_to_range>
@@ -98,12 +131,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_03  </simple>
+      <simple>  bias_fd_inc_04  </simple>
     </name>
     
     <apply_to_range>
@@ -131,12 +164,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_04  </simple>
+      <simple>  bias_fd_inc_05  </simple>
     </name>
     
     <apply_to_range>
@@ -164,16 +197,16 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_05  </simple>
+      <simple>  bias_fd_inc_06  </simple>
     </name>
     
     <apply_to_range>
-      <Ereco>  0.55, 0.6  </Ereco>
+      <Ereco>  0.55,0.6  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -197,12 +230,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_06  </simple>
+      <simple>  bias_fd_inc_07  </simple>
     </name>
     
     <apply_to_range>
@@ -230,16 +263,16 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_07  </simple>
+      <simple>  bias_fd_inc_08  </simple>
     </name>
     
     <apply_to_range>
-      <Ereco>  0.65,0.7  </Ereco>
+      <Ereco>  0.65, 0.7  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -263,12 +296,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_08  </simple>
+      <simple>  bias_fd_inc_09  </simple>
     </name>
     
     <apply_to_range>
@@ -296,12 +329,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_09  </simple>
+      <simple>  bias_fd_inc_10  </simple>
     </name>
     
     <apply_to_range>
@@ -329,12 +362,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_10  </simple>
+      <simple>  bias_fd_inc_11  </simple>
     </name>
     
     <apply_to_range>
@@ -362,12 +395,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_11  </simple>
+      <simple>  bias_fd_inc_12  </simple>
     </name>
     
     <apply_to_range>
@@ -395,12 +428,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_12  </simple>
+      <simple>  bias_fd_inc_13  </simple>
     </name>
     
     <apply_to_range>
@@ -428,16 +461,16 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_13  </simple>
+      <simple>  bias_fd_inc_14  </simple>
     </name>
     
     <apply_to_range>
-      <Ereco>  0.95, 1.0  </Ereco>
+      <Ereco>  0.95, 1.  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -461,12 +494,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_14  </simple>
+      <simple>  bias_fd_inc_15  </simple>
     </name>
     
     <apply_to_range>
@@ -494,12 +527,12 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_15  </simple>
+      <simple>  bias_fd_inc_16  </simple>
     </name>
     
     <apply_to_range>
@@ -527,16 +560,16 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_16  </simple>
+      <simple>  bias_fd_inc_17  </simple>
     </name>
     
     <apply_to_range>
-      <Ereco>  1.5, 3.0  </Ereco>
+      <Ereco>  1.5, 2.0  </Ereco>
     </apply_to_range>
     
     <type>  normalisation  </type>
@@ -560,12 +593,78 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
+  </param>
+
+  <param>
+    <name>
+      <simple>  bias_fd_inc_18  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  2.0, 2.5  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  detector  </category>
+      <category>  bias      </category>
+      <category>  icarus    </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  allnumucc  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  all  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
   </param>
   
   <param>
     <name>
-      <simple>  bias_fd_inc_17  </simple>
+      <simple>  bias_fd_inc_19  </simple>
+    </name>
+    
+    <apply_to_range>
+      <Ereco>  2.5, 3.0  </Ereco>
+    </apply_to_range>
+    
+    <type>  normalisation  </type>
+    
+    <categories>
+      <category>  detector  </category>
+      <category>  bias      </category>
+      <category>  icarus    </category>
+    </categories>
+    
+    <apply_to>
+      <detector>  icarus  </detector>
+      <beam>  all  </beam>
+      <selection>  allnumucc  </selection>
+      <reac_type>  all  </reac_type>
+      <flav>       all  </flav>
+      <flav_init>  all  </flav_init>
+      <flav_final> all  </flav_final>
+      <target>  all  </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    <range_mode> sigma     </range_mode>
+    <range>      -5,5      </range>
+  </param>
+
+  <param>
+    <name>
+      <simple>  bias_fd_inc_20  </simple>
     </name>
     
     <apply_to_range>
@@ -593,7 +692,6 @@
     
     <limits>  -inf, inf  </limits>
     <range_mode> sigma     </range_mode>
-    <range>      -5,0      </range>
+    <range>      -5,5      </range>
   </param>
-  
 </param_list>

@@ -18,6 +18,8 @@ TGT = make_sbncode_minidst \
       make_caf_minidst \
       make_xsec_splines \
       make_flux_splines \
+      make_mig_splines \
+      make_escale_splines \
       universe_variation_tweaks \
       write_spectra_using_universes \
       tweak_pdf_nsigma_var 
@@ -88,6 +90,25 @@ else
 	@echo "Skipping make_xsec_splines due to no GENIE"
 endif
 
+# Generate SBN prism migration splines
+# Probably don't require the GENIE dependence but method isn't finalised yet so keeping just in case
+#
+make_mig_splines: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_mig_splines.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_mig_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_mig_splines
+else
+	@echo "Skipping make_mig_splines due to no GENIE"
+endif
+
+make_escale_splines: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_escale_splines.cxx $(GINCLUDES)
+	$(LD) $(LDFLAGS) make_escale_splines.o $(GLIBRARIES) $(VALOR_GLIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_escale_splines
+else
+	@echo "Skipping make_escale_splines due to no GENIE"
+endif
+
 # Tweaks taken directly from universe variations to validate VALOR systematic parameterisation
 #
 universe_variation_tweaks: FORCE
@@ -128,6 +149,8 @@ clean: FORCE
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_xsec_splines
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_mig_splines
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_escale_splines
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-tweak_pdf_nsigma_var
@@ -138,6 +161,8 @@ distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_flux_splines
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_mig_splines
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_escale_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-universe_variation_tweaks
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-write_spectra_using_universes
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-tweak_pdf_nsigma_var

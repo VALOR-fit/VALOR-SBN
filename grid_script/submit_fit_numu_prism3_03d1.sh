@@ -5,11 +5,11 @@ jobsub_submit \
   --singularity-image /cvmfs/singularity.opensciencegrid.org/fermilab/fnal-wn-sl7:latest \
   -N 400 \
   --generate-email-summary \
-  -f /pnfs/sbnd/resilient/users/bslater/valor_numu_prism3_03d1_reducedmodes.tar \
+  -f /pnfs/sbnd/resilient/users/bslater/valor_numu_prism5_03e1.tar \
   file:////exp/sbnd/app/users/bslater/valor/VALOR-SBN/prod/jobsub_submit_param_scan_multifits_v2_tarball.sh \
-  --tag numu_prism8_03d1_reducedmodes --param_nullhyp1 0 --param_nullhyp2 0 \
+  --tag numu_prism5_03e1 --param_nullhyp1 0 --param_nullhyp2 0 \
   --physics-hypothesis eff_sterile_osc \
-  --config-file /pnfs/sbnd/persistent/users/bslater/valor/config/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes.xml \
+  --config-file /pnfs/sbnd/persistent/users/bslater/valor/config/sbn_numu_disapp_prism5_2020a1_03e1.xml \
   --param1 sinsq2thMuMu --min-value1 1E-3 --max-value1 1 --log-param1 1 --npoints1 40 \
   --param2 dm41sq --min-value2 1E-2 --max-value2 1E2 --log-param2 1 --npoints2 40 \
   --param3 sinsq2thMuE --param_nullhyp3 0 --fixed_at_val3 0 --fix_val3 1 \
@@ -18,7 +18,7 @@ jobsub_submit \
   --fit-option minuit+with_simplex_fallback \
   --load-prior-from-file none --pot-override -999 \
   --mesg-thresholds verbosity.xml --param-values-option prefit-errors \
-  --jobdir /pnfs/sbnd/scratch/users/bslater2/valor/eff_test/prism3/03d1_reducedmodes \
-  --tarball valor_numu_prism3_03d1_reducedmodes.tar \
+  --jobdir /pnfs/sbnd/scratch/users/bslater2/valor/prism5/03e1 \
+  --tarball valor_numu_prism5_03e1.tar \
   --njobs 400 \
   --osc-prior-file /pnfs/sbnd/persistent/users/bslater/valor/priors/void.xml \

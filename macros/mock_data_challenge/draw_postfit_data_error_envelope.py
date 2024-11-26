@@ -77,7 +77,7 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided,prepost, pm):
+def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm):
 
   pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm)
 
@@ -118,7 +118,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
   #if n_files < 2:
   #  raise DUNEAnaError("Must pass at least 2 files to plot")
 
-  for imodel in xrange(cm.GetNSubModels()):
+  for imodel in range(cm.GetNSubModels()):
     all_labels   = []
     all_legend   = []
     all_hists    = []
@@ -131,8 +131,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     m = cm.GetSubModel(imodel)
     s = m.GetSample()
     b = m.GetBeam()
-
-    hname_prefix = "env_sb_%s_%s" % (util.BeamConfAsString(b) , util.SampleAsString(s))
+    sample_str = util.SampleAsString(s)
+    if 'OA' in util.SampleAsString(s):
+      sample_str = "numuCCinclOASUM" 
+    hname_prefix = "env_sb_%s_%s" % (util.BeamConfAsString(b) , sample_str)
     # When running all tweaks at the same time, specify using the detector identifier:
     #hname_nom = hname_prefix + "_nom;" + det
     #hname_p1  = hname_prefix + "_p1;" + det
@@ -144,27 +146,27 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     #hname_data = "toymc_data_sb_rf_sbn_icarus__BNB_FHC__numulikeCChigh_Ereco"
     if det == '1':
       if mdc is False:
-        hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
+        hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       else:
-        hname_data = "toymc_data_sb_rf_sbn_nd__%s__%s" % (util.BeamConfAsString(b), util.SampleAsString(s))
+        hname_data = "toymc_data_sb_rf_sbn_nd__%s__%s" % (util.BeamConfAsString(b), sample_str)
 
     elif det == '2':
       if mdc is False:
-        hname_data = "valor_pdfts_sb_rf_sbn_uboone__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
+        hname_data = "valor_pdfts_sb_rf_sbn_uboone__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       else:
-        hname_data = "toymc_data_sb_rf_sbn_uboone__%s__%s" % (util.BeamConfAsString(b), util.SampleAsString(s))
+        hname_data = "toymc_data_sb_rf_sbn_uboone__%s__%s" % (util.BeamConfAsString(b), sample_str)
 
     elif det == '3':
       if mdc is False:
-        hname_data = "valor_pdfts_sb_rf_sbn_icarus__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
+        hname_data = "valor_pdfts_sb_rf_sbn_icarus__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       else:
-        hname_data = "toymc_data_sb_rf_sbn_icarus__%s__%s" % (util.BeamConfAsString(b), util.SampleAsString(s))
+        hname_data = "toymc_data_sb_rf_sbn_icarus__%s__%s" % (util.BeamConfAsString(b), sample_str)
 
     else:
-      hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), util.SampleAsString(s))
+      hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       print("No detector given, defaulting to the ND")
 
-    out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , util.SampleAsString(s))
+    out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , sample_str)
 
     hists         = []
     prefit_plots  = []
@@ -180,12 +182,12 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hplus_prefit  = get_hist(f_prefit,hname_p1)
       hminus_prefit = get_hist(f_prefit,hname_m1)
       if onesided and prepost == 'pre' or prepost == 'both':
-        print "One sided"
+        print ("One sided")
         if pm == '1':
-          print "Plus 1"
+          print ("Plus 1")
           hminus_prefit = get_hist(f_prefit,hname_nom)
         if pm == '-1':
-          print "Minus 1"
+          print ("Minus 1")
           hplus_prefit =  get_hist(f_prefit,hname_nom)
 
       hists.extend([prefit_nom, hplus_prefit, hminus_prefit])
@@ -197,12 +199,12 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       hplus_postfit  = get_hist(f_postfit,hname_p1)
       hminus_postfit = get_hist(f_postfit,hname_m1)
       if onesided and prepost == 'post' or prepost == 'both':
-        print "One sided"
+        print ("One sided")
         if pm == '1':
-          print "Plus 1"
+          print ("Plus 1")
           hminus_postfit = get_hist(f_postfit,hname_nom)
         if pm == '-1':
-          print "Minus 1"
+          print ("Minus 1")
           hplus_postfit =  get_hist(f_postfit,hname_nom)
 
       hists.extend([postfit_nom, hplus_postfit, hminus_postfit])
@@ -228,7 +230,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     legend.SetMargin(0.25)
     legend.SetTextSize(0.036)
 
-    canv_name = "c_%s" % util.SampleAsString(s)
+    canv_name = "c_%s" % sample_str
     canv = ROOT.TCanvas(canv_name,"",900,900)
     canv.SetLeftMargin  (left_margin)
     canv.SetBottomMargin(bottom_margin)
@@ -249,7 +251,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       env_graphs.append(env_graph_postfit)
 
     for (hn,hp,hm),g in zip(env_hists,env_graphs):
-      for i in xrange(hp.GetXaxis().GetNbins()):
+      for i in range(hp.GetXaxis().GetNbins()):
         low_edge  = hp.GetBinLowEdge(i+1)
         high_edge = low_edge + hp.GetBinWidth(i+1)
         centre    = hn.GetBinContent(i+1)
@@ -285,7 +287,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
     max_y = 0.
     for w in widths:
-      for i in xrange(w.GetXaxis().GetNbins()):
+      for i in range(w.GetXaxis().GetNbins()):
         old_bin_content = w.GetBinContent(i+1)
         bin_width       = w.GetXaxis().GetBinWidth(i+1)
         new_bin_content = old_bin_content/bin_width
@@ -303,12 +305,16 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
     envelope_fn       = out_prefix+"_envelope."+img_format
     png_output        = out_prefix+"_envelope.png"
+    pdf_output        = out_prefix+"_envelope.pdf"
+    eps_output        = out_prefix+"_envelope.eps"
     ratio_png_output  = out_prefix+"_envelope_ratio.png"
+    ratio_pdf_output  = out_prefix+"_envelope_ratio.pdf"
+    ratio_eps_output  = out_prefix+"_envelope_ratio.eps"
     f_output = ROOT.TFile(envelope_fn,"RECREATE")
     if not f_output.IsOpen():
-      print "Unable to open root file named: ", envelope_fn
+      print ("Unable to open root file named: ", envelope_fn)
     else:
-      print "Opened output file named: ", envelope_fn
+      print ("Opened output file named: ", envelope_fn)
 
     ROOT.gDirectory.cd()
 
@@ -346,7 +352,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_prefit.SetMarkerSize (env_graph_prefit.GetMarkerSize())
 
       if ratio == '1' or ratio == '2' or ratio == '3':
-        print "Filling ratio list with prefit"
+        print ("Filling ratio list with prefit")
         ratio_hists.append(prefit_width)
         ratio_graphs.append(env_graph_prefit)
         ratio_labels.append(prefit_label)
@@ -378,7 +384,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       R.gStyle.SetEndErrorSize(4)
 
       # Set the x errors to be 0
-      for i in xrange(postfit_width.GetXaxis().GetNbins()):
+      for i in range(postfit_width.GetXaxis().GetNbins()):
         env_graph_postfit.SetPointEXlow (i,0)
         env_graph_postfit.SetPointEXhigh(i,0)
 
@@ -407,7 +413,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_postfit.SetMarkerSize (env_graph_postfit.GetMarkerSize())
 
       if ratio == '0' or ratio == '1':
-        print "Filling ratio list with postfit"
+        print ("Filling ratio list with postfit")
         ratio_hists.append(postfit_width)
         ratio_graphs.append(env_graph_postfit)
         ratio_labels.append(postfit_label)
@@ -436,7 +442,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       legend_data.SetLineWidth(data_width.GetLineWidth())
 
       if ratio == '0' or ratio == '2' or ratio == '3':
-        print "Filling ratio list with data"
+        print ("Filling ratio list with data")
         ratio_hists.append(legend_data)
         ratio_graphs.append(legend_data)
         ratio_labels.append(data_label)
@@ -458,21 +464,23 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     legend.Write("legend")
     canv.Write("c")
     envelope_images.append(envelope_fn)
-    cap = "%s %s %s"%(tag,util.BeamConfAsString(b),util.SampleAsString(s))
+    cap = "%s %s %s"%(tag,util.BeamConfAsString(b),sample_str)
     envelope_captions.append(cap.replace("_"," "))
     canv.SaveAs(png_output)
+    canv.SaveAs(pdf_output)
+    canv.SaveAs(eps_output)
 
     # Make sure at least two plots are being overlaid for the ratio
     plot_n   = plot_data+plot_postfit+plot_prefit
-    if plot_n > 1 and ratio >= 0 and ratio_hists:
+    if plot_n > 1 and int(ratio) >= 0 and ratio_hists:
 
       # Now if we want to plot the overlay and the ratio, repeat and split the pads
       r_legend = ROOT.TLegend(0.45,0.62,0.96,0.86);
       r_legend.SetFillStyle(0);
       r_legend.SetBorderSize(0);
 
-      r_canv_name = "cr_%s" % util.SampleAsString(s)
-      r_canv = ROOT.TCanvas(r_canv_name,"",600,900)
+      r_canv_name = "cr_%s" % sample_str
+      r_canv = ROOT.TCanvas(r_canv_name,"",900,1200)
       if use_log_plots: r_canv.SetLogx()
 
       # Top pad: all histograms with envelopes
@@ -486,22 +494,57 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       pad1.cd();
 
       # Loop over all the histograms
+      #print prefit_nom.GetName()
+      #print hplus_prefit.GetName()
+      #print hname_p1
       for i, h in enumerate(all_hists):
         label = all_labels[i]
         graph = all_graphs[i]
         legend = all_legend[i]
-        if i == 0:
-          h.Draw()
-          graph.Draw("same2")
-          h.GetYaxis().SetRangeUser(0.,max_y)
-          h.GetYaxis().SetTitleSize(0.08)
-          h.GetYaxis().SetTitleOffset(0.8)
-          h.GetYaxis().SetLabelSize(0.06)
-          h.GetXaxis().SetLabelColor(0)
-        else:
-          h.Draw("same")
-          graph.Draw("same2")
-        r_legend.AddEntry(legend,label,"FL")
+        if plot_prefit:
+          if i == 0:
+            h.Draw()
+            graph.Draw("same2")
+            h.GetYaxis().SetRangeUser(0.,max_y)
+            h.GetYaxis().SetTitleSize(0.07)
+            h.GetYaxis().SetTitleOffset(0.9)
+            h.GetYaxis().SetLabelSize(0.05)
+            h.GetXaxis().SetLabelColor(0)
+            r_legend.AddEntry(legend,label,"FL")
+          elif plot_postfit and i == 1:
+            #h.Draw("same")
+            graph.Draw("same P")
+            #r_legend.AddEntry(legend,label,"PE")
+            r_legend.AddEntry(env_graph_postfit, postfit_label, "PE")
+          elif plot_data and i == 2:
+            h.Draw("same")
+            graph.Draw("same2")
+            r_legend.AddEntry(legend,label,"FL")
+        elif plot_postfit:
+          if i == 0:
+            h.Draw()
+            graph.Draw("same2")
+            h.GetYaxis().SetRangeUser(0.,max_y)
+            h.GetYaxis().SetTitleSize(0.07)
+            h.GetYaxis().SetTitleOffset(0.9)
+            h.GetYaxis().SetLabelSize(0.05)
+            h.GetXaxis().SetLabelColor(0)
+            r_legend.AddEntry(legend,label,"PE")
+          elif plot_data and i == 1:
+            h.Draw("same")
+            graph.Draw("same2")
+            r_legend.AddEntry(legend,label,"FL")
+        elif plot_data:
+          if i == 0:
+            h.Draw()
+            graph.Draw("same2")
+            h.GetYaxis().SetRangeUser(0.,max_y)
+            h.GetYaxis().SetTitleSize(0.07)
+            h.GetYaxis().SetTitleOffset(0.9)
+            h.GetYaxis().SetLabelSize(0.05)
+            h.GetXaxis().SetLabelColor(0)
+            r_legend.AddEntry(legend,label,"FL")
+
 
       nEntries = r_legend.GetNRows()
       currHeight = (r_legend.GetY2NDC() - r_legend.GetY1NDC())/2.
@@ -541,7 +584,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       if ratio != '3':
         for b in range(ratio_diff.GetNbinsX()):
           if yhigh[b] < 0 or ylow[b] < 0:
-            print "Error: Negative uncertainty defined: ", yhigh, ", ", ylow
+            print ("Error: Negative uncertainty defined: ", yhigh, ", ", ylow)
             util.Die(-1)
           yavg  = (yhigh[b]+ylow[b])/2.
           ratio_diff.SetBinContent(b,ratio_diff.GetBinContent(b)/yavg)
@@ -554,9 +597,15 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       ratio_diff.SetLineStyle(1)
       ratio_diff.SetLineWidth(linewidth)
       if ratio == '0':
-        ratio_diff.GetYaxis().SetTitle("#Delta N_{Po-MD}/#sigma_{Po}");
+        if "pred" in postfit_label.lower(): 
+          ratio_diff.GetYaxis().SetTitle("#Delta N_{Pred-MD}/#sigma_{Pred}");
+        else:
+          ratio_diff.GetYaxis().SetTitle("#Delta N_{Po-MD}/#sigma_{Po}");
       elif ratio == '1':
-        ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-Po}/#sigma_{Po}");
+        if "pred" in postfit_label.lower(): 
+          ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-Pred}/#sigma_{Pred}");
+        else:
+          ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-Po}/#sigma_{Po}");
       elif ratio == '2':
         ratio_diff.GetYaxis().SetTitle("#Delta N_{Pr-MD}/#sigma_{Pr}");
       elif ratio == '3':
@@ -564,20 +613,21 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       ratio_diff.GetYaxis().SetTitleFont(132);
       ratio_diff.GetYaxis().SetLabelFont(132);
-      ratio_diff.GetYaxis().SetTitleSize(0.15);
-      ratio_diff.GetYaxis().SetTitleOffset(0.4);
-      ratio_diff.GetYaxis().SetLabelSize(0.11);
+      ratio_diff.GetYaxis().SetTitleSize(0.13);
+      ratio_diff.GetYaxis().SetTitleOffset(0.5);
       ratio_diff.GetXaxis().SetTitleFont(132);
       ratio_diff.GetXaxis().SetLabelFont(132);
-      ratio_diff.GetXaxis().SetTitleSize(0.15);
+      ratio_diff.GetXaxis().SetTitleSize(0.13);
       ratio_diff.GetXaxis().SetTitleOffset(0.9);
-      ratio_diff.GetXaxis().SetLabelSize(0.11);
+      ratio_diff.GetXaxis().SetLabelSize(0.09);
       ratio_diff.GetXaxis().SetLabelColor(1);
       #ratio_diff.GetYaxis().SetRangeUser(-2,4)
 
       r_canv.RedrawAxis()
       r_canv.Write("cr")
       r_canv.SaveAs(ratio_png_output)
+      r_canv.SaveAs(ratio_pdf_output)
+      r_canv.SaveAs(ratio_eps_output)
 
     f_output.Close()
   # End of model loop
@@ -608,7 +658,7 @@ def CopyHistAxisFormatting(hfrom,hto):
 def get_hist(rootfile,hname):
   h = rootfile.Get(hname)
   if not h:
-    print "Failed to get histogram: ",hname ; exit()
+    print ("Failed to get histogram: ",hname ); exit()
   return ROOT.TH1D( h )
 
 def start_latex_file(name):
@@ -642,7 +692,7 @@ def add_figures_to_tex(f,figure_names,captions,plots_per_row=2):
   figure_width  = str(0.99/float(plots_per_row))+"\\textwidth"
 
   n_figs = len(figure_names)
-  for i in xrange(n_figs):
+  for i in range(n_figs):
     if (i%plots_per_row == 0):
       f.write(" \\begin{figure*}\n")
     image = figure_names[i]
@@ -682,7 +732,7 @@ if __name__=="__main__":
   options,other = parser.parse_args()
 
   if other:
-    print "Bad arguments: ",other
+    print ("Bad arguments: ",other)
     exit(-1)
 
   main(options.config, options.data, options.prefit, options.postfit,

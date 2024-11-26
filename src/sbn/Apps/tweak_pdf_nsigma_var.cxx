@@ -93,7 +93,7 @@ int main(int argc, char ** argv)
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/tweak_pdf_nsigma_var.arg:$VALOR_EXPT/config/apps/seeds.arg:$VALOR_EXPT/config/apps/oscparams.arg");
-  LOG("valor_sbn", pNOTICE) << arg;
+  VLOG("valor_sbn", pNOTICE) << arg;
   
   // Read the command line
   int n_threads           = arg.GetInt("nthreads");
@@ -118,18 +118,24 @@ int main(int argc, char ** argv)
   // open it and fill the vector with the integer values of sigma
   // to construct the variations with
   if(!universe_spectra.Contains("NONE")){
+    VLOG("valor_sbn", pNOTICE) << "1";
     sigma_from_universes = true;
     TFile *f_univ = new TFile(universe_file.data(),"READ");
+    VLOG("valor_sbn", pNOTICE) << "2";
     if(!f_univ->IsOpen()){
-      LOG("valor_sbn",pFATAL) << " Error: Couldn't open universe file at " << universe_file;
+      VLOG("valor_sbn",pFATAL) << " Error: Couldn't open universe file at " << universe_file;
       util::Die(-1);
     }
+    VLOG("valor_sbn", pNOTICE) << "2.1";
     TVectorD knot_vals(*static_cast<TVectorD*>(f_univ->Get("actual_knot_values")));
+    VLOG("valor_sbn", pNOTICE) << "2.2";
     for(int i = 0; i < knot_vals.GetNrows(); ++i){
       nsigmas.push_back(knot_vals[i]);
     }
+    VLOG("valor_sbn", pNOTICE) << "3";
   }
   else{
+    VLOG("valor_sbn", pNOTICE) << "4";
     nsigma_int = static_cast<int>(round(nsigma));
     nsigmas.push_back(nsigma);
   }
@@ -173,7 +179,7 @@ int main(int argc, char ** argv)
   string read_prior_from_file = arg.GetString("load-prior-from-file");
   
   std::string mesg_thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
-  Messenger::Instance()->Configure(mesg_thresholds);
+  valor::Messenger::Instance()->Configure(mesg_thresholds);
   
   // Set up the thread pool
   if(n_threads>0) {//without n-cores specified, use as many as the host has
@@ -188,7 +194,7 @@ int main(int argc, char ** argv)
 
   conv::NuOscDmsqScheme_t dmsq_scheme = util::DmsqSchemeFromString(arg.GetString("dmsq-scheme"));
   if(dmsq_scheme == kNuDmsqUndefined) {
-    LOG("valor_sbn", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
+    VLOG("valor_sbn", pFATAL) << "Could not parse the input Dmsq scheme: [" << arg.GetString("dmsq-scheme") << "]";
     util::Die(-1);
   }
   Opt::Instance()->gOscDmsqScheme = dmsq_scheme;
@@ -228,7 +234,7 @@ int main(int argc, char ** argv)
   else
     output_rootfile = util::ReplaceAll(output_rootfile,"[NSIG]", (std::to_string(nsigma_int)+"sigma").c_str());
   outfile = new TFile(output_rootfile.c_str(),"RECREATE");
-  LOG("valor_sbn",pNOTICE)<<"Writing to file: "<<output_rootfile;
+  VLOG("valor_sbn",pNOTICE)<<"Writing to file: "<<output_rootfile;
 
   const CorrelatedSystematics * syst = cm->GetSystematics();
   FitParamList * fp = util::GetFitParameterList(hypname.c_str(), fplopt.c_str());
@@ -269,24 +275,24 @@ int main(int argc, char ** argv)
       // select exactly the variation given by a universe)
       nsigma_int = static_cast<int>(round(nsig));
 
-      LOG("valor_sbn", pNOTICE)
+      VLOG("valor_sbn", pNOTICE)
         << "Tweak systematic parameter: "  << util::NameRegistry::Instance()->ParamAsString(p)
         << "\n  Nominal value = "          << bestfit
         << "\n  sigma error = "            << sigma_err;
       if(sigma_from_universes){
         if(nsig < 0)
-          LOG("valor_sbn", pNOTICE) << "\n  nominal " << nsig << " sigma tweak = " << tweak_p;
+          VLOG("valor_sbn", pNOTICE) << "\n  nominal " << nsig << " sigma tweak = " << tweak_p;
         else
-          LOG("valor_sbn", pNOTICE) << "\n  nominal +" << nsig << " sigma tweak = " << tweak_p;
+          VLOG("valor_sbn", pNOTICE) << "\n  nominal +" << nsig << " sigma tweak = " << tweak_p;
       }
       else{
         if(nsig < 0){
-          LOG("valor_sbn", pNOTICE) 
+          VLOG("valor_sbn", pNOTICE) 
             << "\n  nominal +" << nsig << " sigma tweak = " << tweak_m
             << "\n  nominal -" << nsig << " sigma tweak = " << tweak_p;
         }
         else{
-          LOG("valor_sbn", pNOTICE) 
+          VLOG("valor_sbn", pNOTICE) 
             << "\n  nominal +" << nsig << " sigma tweak = " << tweak_p
             << "\n  nominal -" << nsig << " sigma tweak = " << tweak_m;
         }
@@ -321,7 +327,7 @@ int main(int argc, char ** argv)
   outfile->Close();
   delete outfile;
 
-  LOG("valor_sbn",pNOTICE)<<"Finished writing to file: "<<output_rootfile;
+  VLOG("valor_sbn",pNOTICE)<<"Finished writing to file: "<<output_rootfile;
   std::cout << "Done!" << std::endl;
 }
 //________________________________________________________________________________________
@@ -376,7 +382,7 @@ void GeneratePDFNominal(FitModelABC * model, CompoundFitModel * cm, FitParamList
       else {
         TString save_name = TString::Format("env_sb_%s_%s_nom", util::AsString(b).c_str(), util::AsString(s).c_str());
         curr_pdf_tot->Write(save_name.Data());
-        LOG("valor_sbn",pDEBUG) << " Nominal integrated total: " << curr_pdf_tot->Integral();
+        VLOG("valor_sbn",pDEBUG) << " Nominal integrated total: " << curr_pdf_tot->Integral();
       }
     }
     /*
@@ -438,7 +444,7 @@ void GeneratePDFTweaked(FitModelABC * model, CompoundFitModel * cm, FitParamList
       }
       TString save_name = TString::Format("env_sb_%s_%s_%s", util::AsString(b).c_str(), util::AsString(s).c_str(), tag.c_str());
       curr_pdf->Write(save_name.Data());
-      LOG("valor_sbn",pDEBUG) << " Tweaked integrated total: " << curr_pdf->Integral();
+      VLOG("valor_sbn",pDEBUG) << " Tweaked integrated total: " << curr_pdf->Integral();
     }
 
     /*
@@ -494,17 +500,17 @@ void PrintMCT(FitModelABC * model, CompoundFitModel * cm, FitParamList * fp, Kin
       const TString t_mct_name = mct_name;
       const size_t underscore_index = mct_name.find_last_of("_");
       if(underscore_index == string::npos){
-        LOG("valor_sbn",pERROR) << " No '_' found in mct_name: " << mct_name;
+        VLOG("valor_sbn",pERROR) << " No '_' found in mct_name: " << mct_name;
         util::Die(-1);
       }
       const std::string mct_mode_name = mct_name.substr(underscore_index+1);
-      LOG("valor_sbn",pINFO) << " MCT name " << mct_name << ", mct_mode_name: " << mct_mode_name;
+      VLOG("valor_sbn",pINFO) << " MCT name " << mct_name << ", mct_mode_name: " << mct_mode_name;
       if(!(t_mct_name.Contains("mctfin"))) continue;
       for(const ReacMode_t &mode : this_model->GetReactionModes()) {
         const TString mode_name = util::AsString(mode);
         if(mct_mode_name == mode_name){
           if(!mct_modes.emplace(mode,mct).second) {
-            LOG("valor_sbn",pERROR) << " Couldn't place the template in the map entry due to repeated entry for mode " << util::AsString(mode);
+            VLOG("valor_sbn",pERROR) << " Couldn't place the template in the map entry due to repeated entry for mode " << util::AsString(mode);
             util::Die(-1);
           }
           break;

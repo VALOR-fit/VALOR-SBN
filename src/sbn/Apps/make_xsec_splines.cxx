@@ -193,7 +193,7 @@ int main(int argc, char ** argv)
   Detector_t detector    = util::DetectorFromString (arg_detector);
 
   // Message thresholds
-  Messenger::Instance()->Configure(mesg_thresholds);
+  valor::Messenger::Instance()->Configure(mesg_thresholds);
 
   // If the write options for the spectra are empty, fill with pdfts_rf
   if(arg_write_opt == "")
@@ -349,9 +349,9 @@ int main(int argc, char ** argv)
     const double kn         = knots.at(iknot);
     const unsigned int univ = knots_universes.at(kn);
 
-    LOG("valor_sbn",pINFO) << "Iterator: " << iknot << ", knot : " << kn << ", universe ID: " << univ;
+    VLOG("valor_sbn",pINFO) << "Iterator: " << iknot << ", knot : " << kn << ", universe ID: " << univ;
     if(kn == 0){
-      LOG("valor_sbn",pNOTICE) << " For knot " << kn << " lets actually use the true nominal instead of the variation from the universe (i.e. set the variation to zero).";
+      VLOG("valor_sbn",pNOTICE) << " For knot " << kn << " lets actually use the true nominal instead of the variation from the universe (i.e. set the variation to zero).";
       gmodel->ResetSystematicVariationIDs();
     }
     else{
@@ -367,7 +367,7 @@ int main(int argc, char ** argv)
     TObjArray *mct_modes_varray = new TObjArray();
     model->Write(mct_modes_varray,tag.c_str(),"mct_vf");
     const unsigned int n_mcts = mct_modes_varray->GetEntries();
-    LOG("valor_sbn",pDEBUG) << " Number of entries in the TObjArray: " << n_mcts;
+    VLOG("valor_sbn",pDEBUG) << " Number of entries in the TObjArray: " << n_mcts;
 
     // If we are storing the spectra (for validation) do so here
     // Only do this for integer values of sigma (+/- 3, 2, 1 & 0=nominal)
@@ -379,7 +379,7 @@ int main(int argc, char ** argv)
       hist_tag.Append(s_nsigma.c_str());
       hist_tag.ReplaceAll("-","m");
 //      const std::string hist_tag  = "spectra_var_"+std::to_string(static_cast<int>(knots.at(iknot)));
-      LOG("valor_sbn",pINFO) << " Saving spectra for knot: " << kn << " with options: " << arg_write_opt << " to file with name: " << hist_tag;
+      VLOG("valor_sbn",pINFO) << " Saving spectra for knot: " << kn << " with options: " << arg_write_opt << " to file with name: " << hist_tag;
       TObjArray hist_modes_varray;
       hist_modes_varray.SetOwner(true);
       model->Write(&hist_modes_varray,hist_tag.Data(),arg_write_opt.c_str());
@@ -392,7 +392,7 @@ int main(int argc, char ** argv)
         hist->Write();
 
         if (hist_name.Contains("pdfts")) {
-          LOG("valor_sbn", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
+          VLOG("valor_sbn", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
         }
       }
     }
@@ -404,17 +404,17 @@ int main(int argc, char ** argv)
       const TString t_mct_name = mct_name;
       const size_t underscore_index = mct_name.find_last_of("_");
       if(underscore_index == string::npos){
-        LOG("valor_sbn",pERROR) << " No '_' found in mct_name: " << mct_name;
+        VLOG("valor_sbn",pERROR) << " No '_' found in mct_name: " << mct_name;
         util::Die(-1);
       }
       const std::string mct_mode_name = mct_name.substr(underscore_index+1);
-      LOG("valor_sbn",pINFO) << " MCT name " << mct_name << ", mct_mode_name: " << mct_mode_name;
+      VLOG("valor_sbn",pINFO) << " MCT name " << mct_name << ", mct_mode_name: " << mct_mode_name;
       if(!(t_mct_name.Contains(fin_name))) continue;
       for(const ReacMode_t &mode : reac_modes) {
         const TString mode_name = util::AsString(mode);
         if(mct_mode_name == mode_name){
           if(!mct_modes.emplace(mode,mct).second) {
-            LOG("valor_sbn",pERROR) << " Couldn't place the template in the map entry due to repeated entry for mode " << util::AsString(mode);
+            VLOG("valor_sbn",pERROR) << " Couldn't place the template in the map entry due to repeated entry for mode " << util::AsString(mode);
             util::Die(-1);
           }
           break;
@@ -471,7 +471,7 @@ int main(int argc, char ** argv)
       it = mct_modes.find(mode);
       if(it == mct_modes.end()) continue;
       const VALORArray &mct = it->second;
-      LOG("valor_sbn",pDEBUG) << " At knot = " << iknot << " & mode = " << util::AsString(mode) << ", entry(8,8) = " << mct.GetEntry(8, 8);
+      VLOG("valor_sbn",pDEBUG) << " At knot = " << iknot << " & mode = " << util::AsString(mode) << ", entry(8,8) = " << mct.GetEntry(8, 8);
     }
   } // Knots
   //// DREAMS
@@ -536,7 +536,7 @@ int main(int argc, char ** argv)
 
           // Make sure the current mode exists for the current knot
           if(it_mct_mode_knot == mct_knots_modes.at(iknot).end()) {
-            LOG("valor_sbn", pERROR) << " Couldn't find an entry for the current knot " << iknot << " in mct_knots_modes";
+            VLOG("valor_sbn", pERROR) << " Couldn't find an entry for the current knot " << iknot << " in mct_knots_modes";
             util::Die(-1);
           }
           // Access the VALOR array for the nominal mct in this mode
@@ -553,7 +553,7 @@ int main(int argc, char ** argv)
           bool var_exists = false;
           for(const double &s : x){
             if(std::abs(s-universe_variation) < std::numeric_limits<double>::epsilon()){
-              LOG("valor_sbn",pINFO) << "You already have a spline entry for this universe variation: " << universe_variation << ", skipping";
+              VLOG("valor_sbn",pINFO) << "You already have a spline entry for this universe variation: " << universe_variation << ", skipping";
               var_exists = true;
             }
           }
@@ -565,7 +565,7 @@ int main(int argc, char ** argv)
 
           // Get the event rate for this knot and mode in this bin
           if(isnan(nevents0)){
-            LOG("valor_sbn",pINFO) << " Current nominal event rate is a NAN, setting to 0";
+            VLOG("valor_sbn",pINFO) << " Current nominal event rate is a NAN, setting to 0";
             nevents0 = 0;
           }
 
@@ -573,7 +573,7 @@ int main(int argc, char ** argv)
           // Get the event rate for this knot and mode in this bin
           double nevents = mct_knot.GetEntry(ireco, itrue);
           if(isnan(nevents)){
-            LOG("valor_sbn",pINFO) << " Current event rate is a NAN, setting to 0";
+            VLOG("valor_sbn",pINFO) << " Current event rate is a NAN, setting to 0";
             nevents = 0;
           }
 
@@ -587,7 +587,7 @@ int main(int argc, char ** argv)
           y.push_back(event_ratio);
 
           // Print statements for validation
-          LOG("valor_sbn",pDEBUG ) << " Knot :                   " << iknot << ", " << knot << "\n"
+          VLOG("valor_sbn",pDEBUG ) << " Knot :                   " << iknot << ", " << knot << "\n"
                                    << " Parameter:               " << syst.c_str() << " \n"
                                    << " Universe variation:      " << universe_variation << " \n"
                                    << " Mode :                   " << util::AsString(mode) << "\n"
@@ -606,8 +606,8 @@ int main(int argc, char ** argv)
               //if((y.at(isaved) > (1+std::numeric_limits<double>::epsilon()) || y.at(isaved) < (1-std::numeric_limits<double>::epsilon())) && abs(y.at(isaved))>std::numeric_limits<double>::epsilon()){
               //if((y.at(isaved) != 1.0) && abs(y.at(isaved))>0){
               if(abs(event_ratio-1) > kALittleNum){
-                LOG("valor_sbn",pDEBUG) << "abs(event_ratio-1) = " << abs(event_ratio-1) << ", kALittleNum = " << kALittleNum;
-                LOG("valor_sbn",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " isn't 1: " << event_ratio  << " therefore saving the mode to the list";
+                VLOG("valor_sbn",pDEBUG) << "abs(event_ratio-1) = " << abs(event_ratio-1) << ", kALittleNum = " << kALittleNum;
+                VLOG("valor_sbn",pDEBUG) << "Event ratio for mode " << util::AsString(mode) << " isn't 1: " << event_ratio  << " therefore saving the mode to the list";
                 applied_to_modes.push_back(util::AsString(mode));
                 mode_used = true;
               }
@@ -637,12 +637,12 @@ int main(int argc, char ** argv)
   if(arg_save_modelist){
     // If we want to save but the modelist has no entries, cry.
     if(!applied_to_modes.size()){
-      LOG("valor_sbn",pERROR) << " Error: Modelist is empty, can't save.";
+      VLOG("valor_sbn",pERROR) << " Error: Modelist is empty, can't save.";
     }
     else{
       TString mode_outfile = ts_outfile;
       mode_outfile = mode_outfile.ReplaceAll(".root","_modelist.root");
-      LOG("valor_sbn",pNOTICE) << "Saving modelist to: " << mode_outfile.Data();
+      VLOG("valor_sbn",pNOTICE) << "Saving modelist to: " << mode_outfile.Data();
       TFile *fmode = TFile::Open(mode_outfile.Data(),"RECREATE");
       TTree *tree = new TTree("ModeList","List of modes impacted by each systematic parameter");
       tree->Branch(syst.c_str(),&applied_to_modes);
@@ -676,21 +676,21 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
   std::ifstream uFile;
   uFile.open(input);
   if(!uFile){
-    LOG("valor_sbn",pFATAL) << "Unable to open universe variation text file: " << input;
+    VLOG("valor_sbn",pFATAL) << "Unable to open universe variation text file: " << input;
     util::Die(-1);
   }
   if(variations.size()){
-    LOG("valor_sbn",pERROR) << "Vector to hold variations is not empty";
+    VLOG("valor_sbn",pERROR) << "Vector to hold variations is not empty";
     return;
   }
   std::string alt_syst = sy;
   TString tsy(sy);
   if(tsy.Contains("NonRes") && (tsy.Contains("CC") || tsy.Contains("NC"))){
     GetFromPair(sy,alt_syst);
-    LOG("valor_sbn",pNOTICE) << " Switched input parameter name: " << sy << " to alternative parameter name for reading the text file: " << alt_syst;
+    VLOG("valor_sbn",pNOTICE) << " Switched input parameter name: " << sy << " to alternative parameter name for reading the text file: " << alt_syst;
   }
   else
-    LOG("valor_sbn",pNOTICE) << " Input parameter remains the same: " << alt_syst;
+    VLOG("valor_sbn",pNOTICE) << " Input parameter remains the same: " << alt_syst;
 
 
   int count_lines = 0;
@@ -707,17 +707,17 @@ void GetVariations(std::vector<double> &variations, const std::string &input, co
     size_t found_v = lline.find(talt_syst+" ");
     if(found_v != std::string::npos){
       // Clean up the line to pass the variations to the vector
-      LOG("valor_sbn",pDEBUG) << "On textfile line: " << count_lines;
-      LOG("valor_sbn",pDEBUG) << "Found line containing " << alt_syst << " parameter: \n" << line;
-      LOG("valor_sbn",pDEBUG) << "Removing systematic name from line";
+      VLOG("valor_sbn",pDEBUG) << "On textfile line: " << count_lines;
+      VLOG("valor_sbn",pDEBUG) << "Found line containing " << alt_syst << " parameter: \n" << line;
+      VLOG("valor_sbn",pDEBUG) << "Removing systematic name from line";
       line.erase(0, found_v+alt_syst.length());
-      LOG("valor_sbn",pDEBUG) << "Line now contains: \n" << line;
+      VLOG("valor_sbn",pDEBUG) << "Line now contains: \n" << line;
 
       // Pass the remaining contents of the line to a vector of doubles
       double value;
       std::stringstream lineValue(line);
       while(lineValue >> value){
-        LOG("valor_sbn",pDEBUG) << "Variation: " << value;
+        VLOG("valor_sbn",pDEBUG) << "Variation: " << value;
         variations.push_back(value);
       } 
       break;
@@ -731,24 +731,24 @@ std::string GetSystematic(const std::string &sy){
   std::string syst = "";
   bool found_syst = false;
   for(const std::string &s : old_nonres_interaction_systematics){
-    LOG("valor_sbn",pDEBUG) << "Checking old proposal interaction systematic: " << s << " for " << sy;
+    VLOG("valor_sbn",pDEBUG) << "Checking old proposal interaction systematic: " << s << " for " << sy;
     // Add a space to the end of the parameter name to avoid getting the wrong one
     size_t found_s = s.find(sy+"_");
     if(found_s != std::string::npos){
       syst = s;
-      LOG("valor_sbn",pINFO) << "Found the chosen old proposal interaction systematic: " << syst;
+      VLOG("valor_sbn",pINFO) << "Found the chosen old proposal interaction systematic: " << syst;
       found_syst = true;
       break;
     }
   }
 
   for(const std::string &s : proposal_interaction_systematics){
-    LOG("valor_sbn",pDEBUG) << "Checking proposal interaction systematic: " << s << " for " << sy;
+    VLOG("valor_sbn",pDEBUG) << "Checking proposal interaction systematic: " << s << " for " << sy;
     // Add a space to the end of the parameter name to avoid getting the wrong one
     size_t found_s = s.find(sy+"_");
     if(found_s != std::string::npos){
       syst = s;
-      LOG("valor_sbn",pINFO) << "Found the chosen proposal interaction systematic: " << syst;
+      VLOG("valor_sbn",pINFO) << "Found the chosen proposal interaction systematic: " << syst;
       found_syst = true;
       break;
     }
@@ -756,12 +756,12 @@ std::string GetSystematic(const std::string &sy){
 
   if(!found_syst){
     for(const std::string &s : modern_interaction_systematics){
-      LOG("valor_sbn",pDEBUG) << "Checking modern interaction systematic: " << s << " for " << sy;
+      VLOG("valor_sbn",pDEBUG) << "Checking modern interaction systematic: " << s << " for " << sy;
       // Add a space to the end of the parameter name to avoid getting the wrong one
       size_t found_s = s.find(sy+"_");
       if(found_s != std::string::npos){
         syst = s;
-        LOG("valor_sbn",pINFO) << "Found the chosen modern interaction systematic: " << syst;
+        VLOG("valor_sbn",pINFO) << "Found the chosen modern interaction systematic: " << syst;
         found_syst = true;
         break;
       }
@@ -769,7 +769,7 @@ std::string GetSystematic(const std::string &sy){
   }
 
   if(!found_syst){
-    LOG("valor_sbn",pFATAL) << "Couldn't find the chosen systematic parameter: " << sy;
+    VLOG("valor_sbn",pFATAL) << "Couldn't find the chosen systematic parameter: " << sy;
     util::Die(-1);
   }
   return syst;
@@ -795,14 +795,14 @@ void GetKnots(const std::vector<double> &variations,
         min_id    = v;
       }
     }
-    LOG("valor_sbn",pINFO) << " Found variation for knot: " << kn << " at: " << best_var;
+    VLOG("valor_sbn",pINFO) << " Found variation for knot: " << kn << " at: " << best_var;
     universes_variations.emplace(min_id,best_var);
     universes_knots.emplace(min_id,kn);
     knots_universes.emplace(kn, min_id);
   }
   if(universes_variations.size() != universes_knots.size()){
-    LOG("valor_sbn",pFATAL) << "Number of entries in knots and variation lists don't match";
-    LOG("valor_sbn",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: " << universes_variations.size();
+    VLOG("valor_sbn",pFATAL) << "Number of entries in knots and variation lists don't match";
+    VLOG("valor_sbn",pFATAL) << "NKnots: " << universes_knots.size() << ", NVariations: " << universes_variations.size();
     util::Die(-1);
   }
 }
@@ -859,7 +859,7 @@ void GetFromPair(const std::string &vname, std::string &file_name){
   else if(vname == "NonResRvbarpNC2pi" || vname == "NonResRvnNC2pi")
     file_name = "NonResRvbarp2piAlt";
   else{
-    LOG("valor_sbn",pERROR) << "Couldn't suss out the input variation name from " << vname;
+    VLOG("valor_sbn",pERROR) << "Couldn't suss out the input variation name from " << vname;
     valor::util::Die(-1);
   }
 }

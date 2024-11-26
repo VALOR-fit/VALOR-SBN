@@ -52,6 +52,14 @@ void read_osc_fit_results_rhiannon(const char * filename, const char * treename 
         cout << it->second;
         cout << endl;
     }
+    unsigned int totalNumParams = gbfparm->GetNumberParameters();
+    unsigned int freeParams     = gbfparm->GetNumberFreeParameters();
+    unsigned int interestParams = gbfparm->GetNumberParametersOfInterest();
+    unsigned int fixedParams    = totalNumParams - freeParams;
+    std::cout<< "totalNumParams = "<<totalNumParams<<std::endl;
+    std::cout<< "freeParams = "<<freeParams<<std::endl;
+    std::cout<< "interestParams = "<<interestParams<<std::endl;
+    std::cout<< "totalNumParams = "<<totalNumParams<<std::endl;
     /*
     cout << "Objects stored in `spectra' object array: " << endl;    
     spectra_array->Print();

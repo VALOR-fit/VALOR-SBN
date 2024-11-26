@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<param_list name="mig_prism3_response_parameters">
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  OA00_migration        </simple>
+      <long>    OA00 sample migration </long>
+      <rootex>  f_{OA00} </rootex>
+      <tex>     f_{OA00} </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category>  migration  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    sbnd         </detector>
+      <beam>        fhc            </beam>
+      <selection>   innernumuprism3</selection>
+      <reac_type>   all            </reac_type>
+      <flav_init>   all            </flav_init>
+      <flav_final>  all            </flav_final>
+      <target>      all            </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  OA01_migration        </simple>
+      <long>    OA01 sample migration </long>
+      <rootex>  f_{OA01} </rootex>
+      <tex>     f_{OA01} </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category>  migration  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    sbnd         </detector>
+      <beam>        fhc            </beam>
+      <selection>   allnumuprism3  </selection>
+      <reac_type>   all            </reac_type>
+      <flav_init>   all            </flav_init>
+      <flav_final>  all            </flav_final>
+      <target>      all            </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+  <param>
+    <name>
+      <simple>  OA02_migration        </simple>
+      <long>    OA02 sample migration </long>
+      <rootex>  f_{OA02} </rootex>
+      <tex>     f_{OA02} </tex>
+    </name>
+    
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    
+    <type>  response  </type>
+    
+    <categories>
+      <category>  migration  </category>
+    </categories>
+    
+    <apply_to>
+      <detector>    sbnd         </detector>
+      <beam>        fhc            </beam>
+      <selection>   outernumuprism3</selection>
+      <reac_type>   all            </reac_type>
+      <flav_init>   all            </flav_init>
+      <flav_final>  all            </flav_final>
+      <target>      all            </target>
+    </apply_to>
+    
+    <limits>  -inf, inf  </limits>
+    
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>            
+    <range>                  -5,5  </range>                 
+
+  </param>
+  <!-- ==================================================================================== -->
+</param_list>

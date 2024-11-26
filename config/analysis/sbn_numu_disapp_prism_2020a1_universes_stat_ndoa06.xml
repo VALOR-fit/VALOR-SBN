@@ -4,7 +4,7 @@
 
   <element_list name="sbn_numu_disapp_prism_2020a1_universes_stat_ndoa06">
 
-    <element name="sbn_nd_fhc_numuCCIncl_oa06">
+    <element name="sbn_nd_fhc_numuCCIncl_stat_ndoa06">
       <detector>     sbn_nd                                               </detector>
       <beam>         bnb_fhc                                              </beam>
       <sample>       numuCCinclOA06                                       </sample>

@@ -24,8 +24,8 @@
       <beam>       all            </beam>
       <selection>  all            </selection>
       <reac_type>  allplusdirt    </reac_type>
-      <flav_init>  alldirt    </flav_init>
-      <flav_final> alldirt   </flav_final>
+      <flav_init>  alldirt        </flav_init>
+      <flav_final> alldirt        </flav_final>
       <target>     all            </target>
     </apply_to>
 
