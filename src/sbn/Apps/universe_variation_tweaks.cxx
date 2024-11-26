@@ -42,17 +42,17 @@
 // fmwk
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
-#include "valor/FitCore/CorrelatedSystematics.h"
-#include "valor/FitCore/PhysParamList.h"
-#include "valor/FitCore/FitParamList.h"
-#include "valor/FitCore/FitModelABC.h"
-#include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/Likelihood.h"
-#include "valor/FitCore/FitterABC.h"
-#include "valor/FitCore/UtlFit.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitCore/SingleSampleFitModelABC.h"
-#include "valor/FitCore/UtlFitParamList.h"
+#include "valor/Core/CorrelatedSystematics.h"
+#include "valor/Core/PhysParamList.h"
+#include "valor/Core/FitParamList.h"
+#include "valor/Core/FitModelABC.h"
+#include "valor/Core/FitDataABC.h"
+#include "valor/Core/Likelihood.h"
+#include "valor/Core/FitterABC.h"
+#include "valor/Fitters/UtlFit.h"
+#include "valor/Core/CompoundFitElements.h"
+#include "valor/Core/SingleSampleFitModelABC.h"
+//#include "valor/Core/UtlFitParamList.h"
 #include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
 #include "valor/Utilities/UtlStr.h"
@@ -251,7 +251,7 @@ int main(int argc, char ** argv)
  
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universe_variation_tweaks.arg");
-  LOG("universe_variation_tweaks", pNOTICE) << arg;
+  VLOG("universe_variation_tweaks", pNOTICE) << arg;
   
   // Read and iterpret the command line
   int ntoys               = arg.GetInt("ntoys");
@@ -266,8 +266,8 @@ int main(int argc, char ** argv)
   string tree_name        = arg.GetString("tree-name");
   string param_name       = arg.GetString("param-name");
 
-  Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
-  LOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
+  valor::Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
+  VLOG("universe_variation_tweaks", pNOTICE) << *Rnd::Instance();
   
   Sample_t   sample       = util::SampleFromString(arg_sample);
   Detector_t detector     = util::DetectorFromString(arg_detector);
@@ -277,9 +277,9 @@ int main(int argc, char ** argv)
   conv::KineSpace_t ks(util::KineSpaceFromKineVar(kv));
   assert(ks != conv::kspUndefined);
   if(util::IsTrue(kv))
-    LOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a true parameter";
+    VLOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a true parameter";
   if(util::IsReco(kv))
-    LOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a reconstructed parameter";
+    VLOG("valor_sbn",pNOTICE) << " Kinematic variable " << util::AsString(kv) << " is a reconstructed parameter";
 
   std::string elem_readopt("nomc nosplines");
   CompoundFitElements * elements = new CompoundFitElements();
@@ -297,33 +297,33 @@ int main(int argc, char ** argv)
       { got_appropriate_model = true; break; }
   }
   if (!got_appropriate_model) {
-    LOG("universe_variation_tweaks", pFATAL) << "Failed to identify appropriate fit model to get binning.";
+    VLOG("universe_variation_tweaks", pFATAL) << "Failed to identify appropriate fit model to get binning.";
   }
-  LOG("universe_variation_tweaks", pINFO) << " Successfully accessed the relevant model for binning information";
+  VLOG("universe_variation_tweaks", pINFO) << " Successfully accessed the relevant model for binning information";
   
   std::vector<std::string> systematics, file_systematics;
   if (params_to_tweak == "proposal_xsec") {
     systematics      = proposal_xsec;
     file_systematics = proposal_xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking proposal_xsec systematics ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "OG_proposal_xsec") {
     systematics      = OG_proposal_xsec;
     file_systematics = OG_proposal_xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking OG_proposal_xsec systematics ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking OG_proposal_xsec systematics ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "modern_xsec") {
     systematics      = modern_xsec;
     file_systematics = modern_xsec_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking modern_xsec systematics ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking modern_xsec systematics ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "flux") {
@@ -331,33 +331,33 @@ int main(int argc, char ** argv)
     systematics.insert(systematics.end(), flux_uncorr.begin(), flux_uncorr.end());
     file_systematics = flux_corr_short;
     file_systematics.insert(file_systematics.end(), flux_uncorr_short.begin(), flux_uncorr_short.end());
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all flux systematics ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking all flux systematics ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "flux_corr") {
     systematics      = flux_corr;
     file_systematics = flux_corr_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking correlated flux systematics ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking correlated flux systematics ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "flux_uncorr") {
     systematics      = flux_uncorr;
     file_systematics = flux_uncorr_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking uncorrelated flux systematics ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking uncorrelated flux systematics ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "pion") {
     systematics      = piplus;
     file_systematics = piplus_short;
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking piplus flux systematic ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking piplus flux systematic ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "all") {
@@ -369,9 +369,9 @@ int main(int argc, char ** argv)
     file_systematics.insert(file_systematics.end(), flux_uncorr_short.begin(), flux_uncorr_short.end());
     file_systematics.insert(file_systematics.end(), proposal_xsec_short.begin(), proposal_xsec_short.end());
     file_systematics.insert(file_systematics.end(), modern_xsec_short.begin(), modern_xsec_short.end());
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking all systematics ";
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking all systematics ";
     for(const std::string &s : file_systematics){
-      LOG("universe_variation_tweaks", pINFO) << s;
+      VLOG("universe_variation_tweaks", pINFO) << s;
     }
   }
   else if (params_to_tweak == "choose") {
@@ -388,32 +388,32 @@ int main(int argc, char ** argv)
         systematics.push_back(param_name);
     }
     else {
-        LOG("universe_variation_tweaks",pFATAL) << "Unknown input systematic: "<< param_name; 
+        VLOG("universe_variation_tweaks",pFATAL) << "Unknown input systematic: "<< param_name; 
         util::Die(-1);
     }
-    LOG("universe_variation_tweaks", pNOTICE) << " Tweaking single systematic " << param_name;
+    VLOG("universe_variation_tweaks", pNOTICE) << " Tweaking single systematic " << param_name;
   }
   else {
-    LOG("universe_variation_tweaks",pFATAL) << "Unknown systematics list: "<< params_to_tweak;
+    VLOG("universe_variation_tweaks",pFATAL) << "Unknown systematics list: "<< params_to_tweak;
     util::Die(-1);
   }
   
   // Open input analysis file and get the DST
   TFile fin(input_rootfile.c_str(),"READ");
   if (!fin.IsOpen()) {
-    LOG("universe_variation_tweaks", pFATAL) 
+    VLOG("universe_variation_tweaks", pFATAL) 
       << "Failed to open file "<<input_rootfile.c_str();
     util::Die(-1);
   }
   TTree * analysis_tree = dynamic_cast <TTree *> (fin.Get(tree_name.c_str()));
   if(!analysis_tree) {
-    LOG("universe_variation_tweaks", pFATAL) 
+    VLOG("universe_variation_tweaks", pFATAL) 
       << "No event tree " << tree_name 
       << " in " << " input analysis file: "
       << input_rootfile;
     util::Die(-1);
   }
-  LOG("universe_variation_tweaks", pINFO) << " Successfully accessed analysis TTree with the name " << tree_name;
+  VLOG("universe_variation_tweaks", pINFO) << " Successfully accessed analysis TTree with the name " << tree_name;
 
   // Get the branches we're interested in
   //
@@ -430,21 +430,21 @@ int main(int argc, char ** argv)
     bool bstat_univ_n = analysis_tree->SetBranchAddress(branch_name_n.c_str(),&branch_n_universes[variation_name]);
     bool bstat_univ   = analysis_tree->SetBranchAddress(branch_name.c_str(),branch_universes[variation_name].data());
     if (bstat_univ_n || bstat_univ) {
-      LOG("universe_variation_tweaks",pFATAL) << " Failed to load needed universe branch.";
+      VLOG("universe_variation_tweaks",pFATAL) << " Failed to load needed universe branch.";
       util::Die(-1);
     }
   }
-  LOG("universe_variation_tweaks", pINFO) << " Successfully loaded universe branches";
+  VLOG("universe_variation_tweaks", pINFO) << " Successfully loaded universe branches";
 
   // Only apply simple binning for now
   const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
   const VALORBinning * bins_sb            = util::IsTrue(kv) ? (binning.TrueSmpBinningSingle()) : (binning.RecoSmpBinning());
   if(bins_sb == nullptr && util::IsTrue(kv)){
-    LOG("valor_sbn",pFATAL) << "Unable to determine the true binning, prehaps you have defined them per mode instead of using 'default'";
+    VLOG("valor_sbn",pFATAL) << "Unable to determine the true binning, prehaps you have defined them per mode instead of using 'default'";
     util::Die(-1);
   }
   const int n_bins = bins_sb->NBins();
-  LOG("valor_sbn",pINFO) << " Number of bins: " << n_bins;
+  VLOG("valor_sbn",pINFO) << " Number of bins: " << n_bins;
 
   // Setup arrays to be used for constructing the histograms
   VALORArray *pdfnom = new VALORArray(n_bins);
@@ -454,22 +454,22 @@ int main(int argc, char ** argv)
     pdfuni.push_back(new VALORArray(n_bins));
     pdfuni.at(itoy)->SetAll(0.);
   }
-  LOG("universe_variation_tweaks", pINFO) << " Successfully setup PDFs";
+  VLOG("universe_variation_tweaks", pINFO) << " Successfully setup PDFs";
 
   // Now get the map of universe id for each throw and parameter
   std::map< std::string, std::vector<int> > syst_toy_universe;
   analysis_tree->GetEntry(0);
   for(const std::string s : systematics){
     std::vector<int> universe_ids;
-    LOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
+    VLOG("universe_variation_tweaks",pDEBUG) << " For " << s << " with " << ntoys << " throws and 1000 possible universes";
     if(ntoys > branch_n_universes.at(s)){
-      LOG("valor_sbn",pFATAL) << " Too many toys: " << ntoys << ", there are only " << branch_n_universes.at(s) << " entries for this parameter" << s;
+      VLOG("valor_sbn",pFATAL) << " Too many toys: " << ntoys << ", there are only " << branch_n_universes.at(s) << " entries for this parameter" << s;
       util::Die(-1);
     }
     for(int itoy = 0; itoy < ntoys; ++itoy){
-      LOG("universe_variation_tweaks",pDEBUG) << " Current systematic has " << branch_n_universes.at(s) << " so will generate a random number from that range";
+      VLOG("universe_variation_tweaks",pDEBUG) << " Current systematic has " << branch_n_universes.at(s) << " so will generate a random number from that range";
       int iuni = rand() % branch_n_universes.at(s);
-      LOG("universe_variation_tweaks",pDEBUG) << " Throw " << itoy << " will access universe " << iuni;
+      VLOG("universe_variation_tweaks",pDEBUG) << " Throw " << itoy << " will access universe " << iuni;
       universe_ids.push_back(iuni);
     }
     syst_toy_universe.emplace(s,universe_ids);
@@ -488,7 +488,7 @@ int main(int argc, char ** argv)
   double data_pot = gmodel->GetPOT();
   int nev = analysis_tree->GetEntries();
   
-  LOG("universe_variation_tweaks", pINFO) << " About to enter analysis tree loop with " << nev << " entries";
+  VLOG("universe_variation_tweaks", pINFO) << " About to enter analysis tree loop with " << nev << " entries";
 
 
   unsigned int accepted_events = 0;
@@ -515,11 +515,11 @@ int main(int argc, char ** argv)
     std::vector<double> binsvec;
     if(util::IsReco(kv)){
       binsvec.push_back(enu_reco);
-      LOG("valor_sbn",pDEBUG) << "Pushing a reconstructed energy of " << enu_reco << " onto pdf";
+      VLOG("valor_sbn",pDEBUG) << "Pushing a reconstructed energy of " << enu_reco << " onto pdf";
     }
     else{
       binsvec.push_back(enu_true);
-      LOG("valor_sbn",pDEBUG) << "Pushing a true energy of " << enu_true << " onto pdf";
+      VLOG("valor_sbn",pDEBUG) << "Pushing a true energy of " << enu_true << " onto pdf";
     }
     const int ibin = bins_sb->FindBin(binsvec);
 
@@ -543,19 +543,19 @@ int main(int argc, char ** argv)
           iuni = syst_toy_universe.at(syst).at(itoy);
 
         if(iuni > n){
-          LOG("universe_variation_tweaks",pFATAL) << " The universe that is being accessed: " << iuni << " exceeds the number available for this parameter: " << n << ", " << syst;
+          VLOG("universe_variation_tweaks",pFATAL) << " The universe that is being accessed: " << iuni << " exceeds the number available for this parameter: " << n << ", " << syst;
           util::Die(-1);
         }
 
         // Get the weight for this parameter at that universe
         // Check the universe weight is a valid number and not 0
         if(isnan(universes.at(iuni)) || universes.at(iuni) < std::numeric_limits<float>::epsilon()){
-          LOG("universe_variation_tweaks", pDEBUG) << " The weight for systematic " << syst << ", universe " << iuni << " and throw " << itoy << " is " << universes.at(iuni) << ", skipping";
+          VLOG("universe_variation_tweaks", pDEBUG) << " The weight for systematic " << syst << ", universe " << iuni << " and throw " << itoy << " is " << universes.at(iuni) << ", skipping";
           continue;
         }
         uni_wght *= universes.at(iuni);
         product_wght *= universes.at(iuni);
-        LOG("universe_variation_tweaks", pDEBUG) << " The weight for systematic " << syst << ", universe " << iuni << " and throw " << itoy << " is " << universes.at(iuni);
+        VLOG("universe_variation_tweaks", pDEBUG) << " The weight for systematic " << syst << ", universe " << iuni << " and throw " << itoy << " is " << universes.at(iuni);
 
         if(std::abs(universes.at(iuni)-1) > std::numeric_limits<double>::epsilon()){
           n_varied++;
@@ -569,12 +569,12 @@ int main(int argc, char ** argv)
         if(std::find(skipped_universe_ids.begin(), skipped_universe_ids.end(), itoy) == skipped_universe_ids.end())
           skipped_universe_ids.push_back(itoy);
         skipped_events++;
-        LOG("universe_variation_tweaks", pDEBUG) << " In event " << iev
+        VLOG("universe_variation_tweaks", pDEBUG) << " In event " << iev
                                                  << "\n The product of the universe weights is: " << uni_wght
                                                  << "\n The nominal event rate is: " << this_entry
                                                  << "\n These are too similar for any weight to have been applied, skipping";
       }
-      LOG("universe_variation_tweaks", pDEBUG) << " Total universe weight for entry " << iev << " : " << uni_wght;
+      VLOG("universe_variation_tweaks", pDEBUG) << " Total universe weight for entry " << iev << " : " << uni_wght;
       h_weight_product_skipnom->Fill(product_wght);
       pdfuni[itoy]->AddToEntry(uni_wght,ibin);
       accepted_events++;
@@ -583,14 +583,14 @@ int main(int argc, char ** argv)
       }
     }// Throw 
   }// Events
-  LOG("universe_variation_tweaks", pINFO) << " Finished analysis loop";
+  VLOG("universe_variation_tweaks", pINFO) << " Finished analysis loop";
 
   // Now set the PDFs as histograms
   const char * nom_name = "h_nom_pdf";
   TH1D * nom_pdf = util::binning::Make1DHistogram(*pdfnom,binning,ks,true);
   nom_pdf->SetName(nom_name);
 
-  LOG("universe_variation_tweaks", pINFO) << " Filled nominal histogram with " << nom_pdf->GetNbinsX() << " bins";
+  VLOG("universe_variation_tweaks", pINFO) << " Filled nominal histogram with " << nom_pdf->GetNbinsX() << " bins";
 
   std::vector<TH1D*> huni;
   for(int itoy = 0; itoy < ntoys; ++itoy){
@@ -598,7 +598,7 @@ int main(int argc, char ** argv)
     huni.push_back(util::binning::Make1DHistogram(*pdfuni[itoy],binning,ks,true));
     huni.at(itoy)->SetName(name.c_str());
   }
-  LOG("universe_variation_tweaks", pINFO) << " Translated PDFs to histograms";
+  VLOG("universe_variation_tweaks", pINFO) << " Translated PDFs to histograms";
 
   // Histograms to store the spectra for the default, +1 sigma and -1 sigma variations 
   // Setup the per-detector histograms for variations to determine sigma from nominal
@@ -634,7 +634,7 @@ int main(int argc, char ** argv)
       max = TMath::Max(max, nom_val + one_sigma);
     }
   }//ebin
-  LOG("universe_variation_tweaks", pINFO) << " Filled histograms";
+  VLOG("universe_variation_tweaks", pINFO) << " Filled histograms";
   
   // Draw and (if necessary), write to file
   TFile * outfile = NULL;
@@ -642,7 +642,7 @@ int main(int argc, char ** argv)
     output_rootfile = util::ReplaceAll(output_rootfile,"[PARAMS]",params_to_tweak);
     output_rootfile = util::ReplaceAll(output_rootfile,"[SAMPLE]",util::AsString(sample));
     outfile = new TFile(output_rootfile.c_str(),"RECREATE");
-    LOG("universe_variation_tweaks",pNOTICE)<<"Writing to file: "<<output_rootfile;
+    VLOG("universe_variation_tweaks",pNOTICE)<<"Writing to file: "<<output_rootfile;
   }
   
   BeamConf_t beam = gmodel->GetBeam();

@@ -128,10 +128,10 @@ int main(int argc, char ** argv)
 
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_recoselection_minidst.arg");
-  LOG("valor_sbn", pNOTICE) << arg;
+  VLOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
-  Messenger::Instance()->Configure(thresholds);
+  valor::Messenger::Instance()->Configure(thresholds);
 
   string opt_beam_name         = arg.GetString("beam");
   string opt_sample_name       = arg.GetString("sample");

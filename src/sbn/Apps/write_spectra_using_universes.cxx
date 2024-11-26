@@ -30,15 +30,15 @@
 // fmwk
 #include "valor/Conventions/Opt.h"
 #include "valor/CmdLine/CmdLnArgList.h"
-#include "valor/FitCore/PhysParamList.h"
-#include "valor/FitCore/FitParamList.h"
-#include "valor/FitCore/FitModelABC.h"
-#include "valor/FitCore/FitDataABC.h"
-#include "valor/FitCore/Likelihood.h"
-#include "valor/FitCore/FitterABC.h"
-#include "valor/FitCore/UtlFit.h"
-#include "valor/FitCore/CompoundFitElements.h"
-#include "valor/FitCore/UtlFitParamList.h"
+#include "valor/Core/PhysParamList.h"
+#include "valor/Core/FitParamList.h"
+#include "valor/Core/FitModelABC.h"
+#include "valor/Core/FitDataABC.h"
+#include "valor/Core/Likelihood.h"
+#include "valor/Core/FitterABC.h"
+#include "valor/Fitters/UtlFit.h"
+#include "valor/Core/CompoundFitElements.h"
+//#include "valor/Core/UtlFitParamList.h"
 #include "valor/FitElements/GenericSingleSampleFitModel.h"
 #include "valor/Utilities/OscParamValues.h"
 #include "valor/Utilities/UtlStyle.h"
@@ -108,7 +108,7 @@ int main(int argc, char ** argv)
 
   CmdLnArgList arg;
   arg.Read(argc,argv,"$VALOR_EXPT/config/apps/universes.arg:$VALOR_EXPT/config/apps/oscparams.arg:");
-  LOG("valor_sbn", pNOTICE) << arg;
+  VLOG("valor_sbn", pNOTICE) << arg;
 
   string mesg_thresholds  = arg.GetString("mesg-thresholds");
   string tag              = arg.GetString("tag");
@@ -134,12 +134,12 @@ int main(int argc, char ** argv)
     param_list = piplus_flux_systematics;
   }
   else {
-    LOG("write_sbn_spectra_using_universes",pFATAL) << "Unknown systematics list: "<<syst_list;
+    VLOG("write_sbn_spectra_using_universes",pFATAL) << "Unknown systematics list: "<<syst_list;
   }
 
-  Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
+  valor::Messenger::Instance()->Configure(util::CompleteConfigPath(mesg_thresholds));
 
-  LOG("valor_sbn", pNOTICE) << *Rnd::Instance();
+  VLOG("valor_sbn", pNOTICE) << *Rnd::Instance();
 
   int max_universes = 499;
 
@@ -168,8 +168,10 @@ int main(int argc, char ** argv)
   
   // Generate predictions
   // Setup some global information
-  FitParamList *fp = 0;                                                                                                                                                                 
-  fp = util::GetFitParameterList("eff_sterile_osc");  
+  //FitParamList *fp = 0;                                                                                                                                                                 
+  //fp = util::GetFitParameterList("eff_sterile_osc");
+
+  FitParamList * fp = new FitParamList( std::string("eff_sterile_osc") );
 
   const util::NameRegistry * nr = util::NameRegistry::Instance();                                                                                                                       
   conv::PhysParamId_t param = nr->PhysParamFromString("dm41sq");                                                                                                                        
@@ -221,7 +223,7 @@ int main(int argc, char ** argv)
       hist->Write();
 
       if (old_name.Contains("pdfts")) {
-        LOG("valor_sbn", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
+        VLOG("valor_sbn", pNOTICE) << "Wrote histogram "<<hist->GetName()<<" with "<<hist->Integral()<<" events.";
       }
     } // histograms
   } // itoy

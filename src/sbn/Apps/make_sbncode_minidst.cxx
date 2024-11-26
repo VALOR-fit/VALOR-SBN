@@ -10,6 +10,9 @@
                 --output output_file_containing_valor_minidst.root
                [--write-universes] optionally write out the systematic variations
                [--disable-checks]
+               [--off-axis-min off_axis_lower_edge] optionally give offaxis angle
+                                                    range in deg; default 0.0
+               [--off-axis-max off_axis_upper_edge] default 90.0
 
   \author    Rhiannon Jones <rhiannon.jones \at liverpool.ac.uk>
              University of Liverpool
@@ -140,10 +143,10 @@ int main(int argc, char ** argv)
 
   CmdLnArgList arg;
   arg.Read(argc,argv, "$VALOR_EXPT/config/apps/make_sbncode_minidst.arg");
-  LOG("valor_sbn", pNOTICE) << arg;
+  VLOG("valor_sbn", pNOTICE) << arg;
 
   std::string thresholds = util::CompleteConfigPath(arg.GetString("mesg-thresholds"));
-  Messenger::Instance()->Configure(thresholds);
+  valor::Messenger::Instance()->Configure(thresholds);
 
   string opt_beam_name      = arg.GetString("beam");
   string opt_sample_name    = arg.GetString("sample");
@@ -158,6 +161,8 @@ int main(int argc, char ** argv)
   bool   fix_nonres         = arg.GetBool("fix-nonres");
   bool   status_code_set    = arg.GetBool("status-code-set");
   int    max_n_events       = arg.GetInt("max-n-events");
+  double off_axis_bin_min   = arg.GetDouble("off-axis-min");
+  double off_axis_bin_max   = arg.GetDouble("off-axis-max");
 
   // Get the sample and beam configuration
   conv::Sample_t sample = util::SampleFromString(opt_sample_name);
@@ -336,6 +341,10 @@ int main(int argc, char ** argv)
   double valor_minidst_y_reco       = -1.; // inelasticity
   double valor_minidst_wght_pot     = -1.; // POT weight
   double valor_minidst_wght         = -1.; // misc weight
+  double valor_minidst_posx_true    = -999.; // true vertex x positon
+  double valor_minidst_posy_true    = -999.; // true vertex y positon
+  double valor_minidst_posz_true    = -999.; // true vertex z positon
+  double valor_minidst_offaxis_true = -1.0; // true offaxis angle to beam centre
 
   TFile fout(opt_output_name.c_str(),"recreate");
   fout.cd();
@@ -343,22 +352,26 @@ int main(int argc, char ** argv)
   TTree * valor_minidst =
     new TTree("valor_sbn_minidst","Mini-DST input for VALOR/SBN fit");
 
-  valor_minidst->Branch("beam"      , &valor_minidst_beam        ,"beam/I"       );
-  valor_minidst->Branch("sample"    , &valor_minidst_sample      ,"sample/I"     );
-  valor_minidst->Branch("reac_mode" , &valor_minidst_reac_mode   ,"reac_mode/I"  );
-  valor_minidst->Branch("reac_type" , &valor_minidst_reac_type   ,"reac_type/I"  );
-  valor_minidst->Branch("init_pdg"  , &valor_minidst_init_nupdg  ,"init_pdg/I"   );
-  valor_minidst->Branch("final_pdg" , &valor_minidst_final_nupdg ,"final_pdg/I"  );
-  valor_minidst->Branch("baseline"  , &valor_minidst_baseline    ,"baseline/D"   );
-  valor_minidst->Branch("target"    , &valor_minidst_target      ,"target/I"     );
-  valor_minidst->Branch("enu_true"  , &valor_minidst_enu_true    ,"enu_true/D"   );
-  valor_minidst->Branch("Q2_true"   , &valor_minidst_Q2_true     ,"q2_true/D"    );
-  valor_minidst->Branch("enu_reco"  , &valor_minidst_enu_reco    ,"enu_reco/D"   );
-  valor_minidst->Branch("q0_reco"   , &valor_minidst_q0_reco     ,"q0_reco/D"    );
-  valor_minidst->Branch("Theta_reco", &valor_minidst_Theta_reco  ,"Theta_reco/D" );
-  valor_minidst->Branch("y_reco"    , &valor_minidst_y_reco      ,"y_reco/D"     );
-  valor_minidst->Branch("wght_pot"  , &valor_minidst_wght_pot    ,"wght_pot/D"   );
-  valor_minidst->Branch("wght"      , &valor_minidst_wght        ,"wght/D"       );
+  valor_minidst->Branch("beam"        , &valor_minidst_beam        ,"beam/I"        );
+  valor_minidst->Branch("sample"      , &valor_minidst_sample      ,"sample/I"      );
+  valor_minidst->Branch("reac_mode"   , &valor_minidst_reac_mode   ,"reac_mode/I"   );
+  valor_minidst->Branch("reac_type"   , &valor_minidst_reac_type   ,"reac_type/I"   );
+  valor_minidst->Branch("init_pdg"    , &valor_minidst_init_nupdg  ,"init_pdg/I"    );
+  valor_minidst->Branch("final_pdg"   , &valor_minidst_final_nupdg ,"final_pdg/I"   );
+  valor_minidst->Branch("baseline"    , &valor_minidst_baseline    ,"baseline/D"    );
+  valor_minidst->Branch("target"      , &valor_minidst_target      ,"target/I"      );
+  valor_minidst->Branch("enu_true"    , &valor_minidst_enu_true    ,"enu_true/D"    );
+  valor_minidst->Branch("Q2_true"     , &valor_minidst_Q2_true     ,"q2_true/D"     );
+  valor_minidst->Branch("enu_reco"    , &valor_minidst_enu_reco    ,"enu_reco/D"    );
+  valor_minidst->Branch("q0_reco"     , &valor_minidst_q0_reco     ,"q0_reco/D"     );
+  valor_minidst->Branch("Theta_reco"  , &valor_minidst_Theta_reco  ,"Theta_reco/D"  );
+  valor_minidst->Branch("y_reco"      , &valor_minidst_y_reco      ,"y_reco/D"      );
+  valor_minidst->Branch("wght_pot"    , &valor_minidst_wght_pot    ,"wght_pot/D"    );
+  valor_minidst->Branch("wght"        , &valor_minidst_wght        ,"wght/D"        );
+  valor_minidst->Branch("posx_true"   , &valor_minidst_posx_true   ,"posx_true/D"   );
+  valor_minidst->Branch("posy_true"   , &valor_minidst_posy_true   ,"posy_true/D"   );
+  valor_minidst->Branch("posz_true"   , &valor_minidst_posz_true   ,"posz_true/D"   );
+  valor_minidst->Branch("offaxis_true", &valor_minidst_offaxis_true,"offaxis_true/D");
 
   // open the ROOT file and get the TTree & its header
 
@@ -410,7 +423,7 @@ int main(int argc, char ** argv)
             // Now translate to the new list of parameters, conversion table is here: https://github.com/VALOR-fit/VALOR-SBN/wiki/XSec-systematics-2020a
             FillVariationBranches(new_vname,n_universes,variation_names,variation_nentries,variation_entries,valor_minidst);
             replacedNonRes = true;
-            LOG("valor_sbn",pINFO) << "Adding new parameter: " << new_vname << " branches in replacement of the current non-resonant branch definitions";
+            VLOG("valor_sbn",pINFO) << "Adding new parameter: " << new_vname << " branches in replacement of the current non-resonant branch definitions";
           }
         }
         else continue;
@@ -478,7 +491,7 @@ int main(int argc, char ** argv)
 
     // Before we do anything, make sure the current event fits the description of the sample
     if(!CheckSample(reco,is_numu,sample,other_sample)){
-      LOG("valor_sbn",pINFO)   << "Current event has \n" 
+      VLOG("valor_sbn",pINFO)   << "Current event has \n" 
                                << reco.npion << " pions, \n " 
                                << reco.npi0 << " pi0s and \n " 
                                << reco.nproton << " protons and does not match the desired sample type: " 
@@ -519,6 +532,18 @@ int main(int argc, char ** argv)
 
       int larsoft_mode = -1;
 
+      double posx_true = -999.0;
+      double posy_true = -999.0;
+      double posz_true = -999.0;
+
+      double offaxis_true = -1.0;
+
+      /*
+         analysis_tree->GetEntry(iev);
+
+         event::RecoEvent & event = *pevent;
+         event::RecoInteraction &reco = event.reco;
+         */
       if(ptruth==nullptr) {
         VLOG("valor_sbn", pNOTICE)
           << "The number of truth entries is 0, skipping event "<<iev;
@@ -533,6 +558,17 @@ int main(int argc, char ** argv)
       enu_true     = truth.neutrino.energy;
       Q2s          = truth.neutrino.Q2;
       larsoft_mode = truth.neutrino.genie_intcode;
+      posx_true    = truth.neutrino.position.x();
+      posy_true    = truth.neutrino.position.y();
+      posz_true    = truth.neutrino.position.z();
+
+      //Calculate the off angle position
+      double beamx = 45.7; //read this from somewhere sensible!
+      double beamy = 0.0;
+      double exp_baseline = 11000.0;
+      double offaxis_true_cm = sqrt( (posx_true-beamx)*(posx_true-beamx) + (posy_true-beamy)*(posy_true-beamy));
+      offaxis_true = atan(offaxis_true_cm/exp_baseline) * (180/M_PI);
+
 
       // Particle counting
       bool nucleonPDGSet = false;
@@ -540,12 +576,12 @@ int main(int argc, char ** argv)
         if(status_code_set){
           if(fsps[p].status_code == 11){
             if(nucleonPDGSet){
-              LOG("valor_sbn",pNOTICE) << "\nIn event " << iev
+              VLOG("valor_sbn",pNOTICE) << "\nIn event " << iev
                 << "\nThe struck nucleon pdg has already been set as: " << nuc_pdg << ", will take the first answer."
                 << "\nThis nucleon has pdg: " << fsps[p].pdg;
             }
             else{
-              LOG("valor_sbn",pINFO) << "\nIn event " << iev
+              VLOG("valor_sbn",pINFO) << "\nIn event " << iev
                 << "\nThe struck nucleon has pdg: " << fsps[p].pdg;
               nuc_pdg = fsps[p].pdg;
               nucleonPDGSet = true;
@@ -577,7 +613,7 @@ int main(int argc, char ** argv)
       }
 
       if(nuc_pdg > 5000 && (nipip+nipim+nipi0 == 1 || nipip+nipim+nipi0 == 2)){
-        LOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
+        VLOG("valor_sbn",pERROR) << "The number of pions in this event is: " << nipip+nipim+nipi0 << " and the struck nucleon is neither a proton nor a neutron: " << nuc_pdg;
         util::Die(-1);
       }
 
@@ -726,6 +762,10 @@ int main(int argc, char ** argv)
       valor_minidst_init_nupdg   = init_pdg;
       valor_minidst_final_nupdg  = nu_pdg;
       valor_minidst_target       = 1000180400; // Argon40
+      valor_minidst_posx_true  = posx_true;
+      valor_minidst_posy_true  = posy_true;
+      valor_minidst_posz_true  = posz_true;
+      valor_minidst_offaxis_true = offaxis_true;
 
       // Copy the systematic universes across
       if (write_universes) {
@@ -734,7 +774,7 @@ int main(int argc, char ** argv)
           TString vname = entry.first;
           TString input_vname(vname);
           if(!vname.Contains("NonRes") || !fix_nonres) continue;
-          LOG("valor_sbn",pINFO) << " Current input parameter: " << vname;
+          VLOG("valor_sbn",pINFO) << " Current input parameter: " << vname;
 
           const auto & in_vec = entry.second;
           const int nentries = in_vec.size();
@@ -745,7 +785,7 @@ int main(int argc, char ** argv)
           if((iscc && input_vname.Contains("Alt")) || (!iscc && !input_vname.Contains("Alt"))){
             for(const TString &new_vname : nonResVariations){
               if((iscc && new_vname.Contains("CC")) || (!iscc && new_vname.Contains("NC"))) continue;
-              LOG("valor_sbn",pINFO) << " Setting all NC parameter entries to be 1.0 in a CC event and vice versa";
+              VLOG("valor_sbn",pINFO) << " Setting all NC parameter entries to be 1.0 in a CC event and vice versa";
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
                 variation_entries[new_vname][ii] = 1.f;
               }
@@ -762,7 +802,7 @@ int main(int argc, char ** argv)
             GetCorrectVariationName(nuc_pdg, iscc, vname);
             if(vname != ""){
               if(vname != new_vnames.first && vname != new_vnames.second){
-                LOG("valor_sbn",pERROR) << "Associated parameter name does not match one of the expected names:" 
+                VLOG("valor_sbn",pERROR) << "Associated parameter name does not match one of the expected names:" 
                   << "\n Parameter : " << vname 
                   << "\n Expected names: " << new_vnames.first << ", " << new_vnames.second;
                 util::Die(-1);
@@ -770,7 +810,7 @@ int main(int argc, char ** argv)
               // Now get the other name from the pair
               TString other_name = (vname == new_vnames.first) ? new_vnames.second : new_vnames.first;
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
-                LOG("valor_sbn",pINFO) << " New parameter: " << vname << ", other parameter option: " << other_name << " (setting entries to 1.f)";
+                VLOG("valor_sbn",pINFO) << " New parameter: " << vname << ", other parameter option: " << other_name << " (setting entries to 1.f)";
                 // Set the second element of the pair to be 1.f
                 variation_entries[other_name][ii] = 1.f;
 
@@ -785,7 +825,7 @@ int main(int argc, char ** argv)
             else{
               for (size_t ii = 0 ; ii < in_vec.size() ; ii++) {
                 if(abs(in_vec.at(ii)-1)>std::numeric_limits<float>::epsilon()){
-                  LOG("valor_sbn",pERROR) << " Setting alternate parameters for " << input_vname << " to be 1 when this parameter isn't always 1, this value: " << in_vec.at(ii);
+                  VLOG("valor_sbn",pERROR) << " Setting alternate parameters for " << input_vname << " to be 1 when this parameter isn't always 1, this value: " << in_vec.at(ii);
                   util::Die(-1);
                 }
                 variation_entries[new_vnames.first][ii]  = 1.f;
@@ -811,7 +851,7 @@ int main(int argc, char ** argv)
             variation_output_type val = static_cast<variation_output_type>(in_vec[ii]);
             variation_output_type & destination = variation_entries[vname][ii];
             if (val < 0.0) {
-              LOG("valor_sbn",pINFO) << "Setting negative event weight to zero: "
+              VLOG("valor_sbn",pINFO) << "Setting negative event weight to zero: "
                 <<vname<<"\tEvent="<<iev<<" ; Universe="<<ii
                 <<" ; wght = "<<std::scientific << std::setprecision(6)<<val;
               val = 0.0;
@@ -842,7 +882,11 @@ int main(int argc, char ** argv)
       << "\n Q2 (true)     = " << valor_minidst_Q2_true << " GeV^2"
       << "\n Ev (true)     = " << valor_minidst_enu_true << " GeV"
       << "\n y (reco)      = " << valor_minidst_y_reco
-      << "\n POT weight    = " << valor_minidst_wght_pot;
+      << "\n POT weight    = " << valor_minidst_wght_pot
+      << "\n Vtx x (true)  = " << valor_minidst_posx_true << " cm"
+      << "\n Vtx y (true)  = " << valor_minidst_posy_true << " cm"
+      << "\n Vtx z (true)  = " << valor_minidst_posz_true << " cm"
+      << "\n Off-axis distance (true)  = " << valor_minidst_offaxis_true << " deg";
 
 
     enu_reco    = reco.reco_energy;
@@ -851,7 +895,8 @@ int main(int argc, char ** argv)
     reco_weight = reco.weight;
 
     VLOG("valor_sbn",pDEBUG) << "Read event: "
-      << "\n Ereco             = "<< enu_reco  << " GeV; "
+      << "Ereco         = "<< enu_reco  << " GeV; "
+      << "Off-axis         = "<< valor_minidst_offaxis_true << " deg; "
       << "\n Reco lepton E     = "<< q0_reco  << " GeV; "
       << "\n Reco lepton angle = "<< Theta_reco;
     if(!opt_disable_checks) {
@@ -864,6 +909,13 @@ int main(int argc, char ** argv)
         continue;
       }
     }
+
+
+    //Check if the event falls into the correct off axis angle range
+    if (valor_minidst_offaxis_true<off_axis_bin_min || valor_minidst_offaxis_true>off_axis_bin_max){
+      VLOG("valor_sbn", pINFO) << "- Rejecting event [Off-axis angle (true) out of bounds]: "<<valor_minidst_offaxis_true << " deg";
+        continue;
+      }
 
     VLOG("valor_sbn", pINFO) << "+ Accepting event";
 
@@ -919,7 +971,11 @@ int main(int argc, char ** argv)
 
 bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const valor::conv::Sample_t &sample, const bool &other){
   if(numu){
-    if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh) return true;
+    if(sample == valor::conv::ksNuMuCC || sample == valor::conv::ksNuMuLikeCChigh|| 
+       sample == valor::conv::ksNuMuCCoa00 || sample == valor::conv::ksNuMuCCoa01 || 
+       sample == valor::conv::ksNuMuCCoa02 || sample == valor::conv::ksNuMuCCoa03 || 
+       sample == valor::conv::ksNuMuCCoa04 || sample == valor::conv::ksNuMuCCoa05 || 
+       sample == valor::conv::ksNuMuCCoa06 || sample == valor::conv::ksNuMuCCoa07) return true;
     else if(sample == valor::conv::ksNuMuCC0piNtrk){
       if((reco.npion+reco.npi0) == 0)
         return ((other) ? false : true);
@@ -961,11 +1017,16 @@ bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const val
       else return ((other) ? true : false);
     }
     else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      VLOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
       return false;
     }
   }
   if(!numu){
+    if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh|| 
+       sample == valor::conv::ksNuECCoa00 || sample == valor::conv::ksNuECCoa01 || 
+       sample == valor::conv::ksNuECCoa02 || sample == valor::conv::ksNuECCoa03 || 
+       sample == valor::conv::ksNuECCoa04 || sample == valor::conv::ksNuECCoa05 || 
+       sample == valor::conv::ksNuECCoa06 || sample == valor::conv::ksNuECCoa07) return true;
     if(sample == valor::conv::ksNuECC || sample == valor::conv::ksNuELikeCChigh) return true;
     else if(sample == valor::conv::ksNuECC0pi){
       if((reco.npion+reco.npi0) == 0)
@@ -983,7 +1044,7 @@ bool CheckSample(const event::RecoInteraction &reco, const bool &numu, const val
       else return ((other) ? true : false);
     }
     else{
-      LOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
+      VLOG("valor_sbn",pFATAL) << "Error: Desired sample " << valor::util::AsString(sample) << " is not distinguishable from the information in this set of events ";
       return false;
     }
   }
@@ -1019,7 +1080,7 @@ valor::conv::Sample_t GetOtherSample(const valor::conv::Sample_t &s, const bool 
     return new_s;
   }
   else{
-    LOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
+    VLOG("valor_sbn",pNOTICE) << "The 'other' version of this sample cannot be determined, returning the input, " << valor::util::AsString(s);
     return s;
   }
 }
@@ -1038,7 +1099,7 @@ void FillVariationBranches(const TString &vname,
   std::string branch_name_nI(Form("variation_n_%s/I",vname.Data()));
   variation_nentries[vname] = -999;
   valor_minidst->Branch(branch_name_n.c_str(),&variation_nentries[vname],branch_name_nI.c_str());
-  LOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name_n;
+  VLOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name_n;
 
   assert(n_universes <= max_n_universes);
 
@@ -1049,7 +1110,7 @@ void FillVariationBranches(const TString &vname,
   }
   std::string branch_name (Form("variation_%s"  ,vname.Data()));
   std::string branch_nameF(Form("variation_%s[%s]/%c",vname.Data(),branch_name_n.c_str(),variation_output_type_root));
-  LOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name;
+  VLOG("valor_sbn",pNOTICE) << "Branch constructed with name: " << branch_name;
   valor_minidst->Branch(branch_name.c_str(),variation_entries[vname],branch_nameF.c_str());
 }
 void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname){
@@ -1120,7 +1181,7 @@ void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname)
     }
   }
   if(name == ""){
-    LOG("valor_sbn",pINFO) << " No alternative variation name was found for this event in which:" 
+    VLOG("valor_sbn",pINFO) << " No alternative variation name was found for this event in which:" 
       << " \n  CC:            " << iscc
       << " \n  Nucleon PDG:   " << nuc_pdg
       << " \n  Original name: " << vname
@@ -1128,7 +1189,7 @@ void GetCorrectVariationName(const int nuc_pdg, const bool iscc, TString &vname)
     vname = name;
   }
   else{
-    LOG("valor_sbn",pINFO) << " Alternative variation name for: " << vname << " is: " << name << " where: "
+    VLOG("valor_sbn",pINFO) << " Alternative variation name for: " << vname << " is: " << name << " where: "
       << " \n  CC:            " << iscc
       << " \n  Nucleon PDG:   " << nuc_pdg;
 
@@ -1162,7 +1223,7 @@ void GetPair(const TString &vname, std::pair<TString,TString> &new_vnames){
     names = std::make_pair("genie_NonResRvbarpNC2pi_Genie","genie_NonResRvnNC2pi_Genie");
   }
   else{
-    LOG("valor_sbn",pERROR) << "No alternative parameter set found for input variation: " << vname;
+    VLOG("valor_sbn",pERROR) << "No alternative parameter set found for input variation: " << vname;
     valor::util::Die(-1);
   }
   new_vnames = names;
