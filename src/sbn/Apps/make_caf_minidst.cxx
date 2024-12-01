@@ -92,6 +92,9 @@ static const int gPrintEveryNEvents   = 50000;
 
 static const int max_n_universes = 10000;
 
+// control constants for array sizes.. CAFs store arrays not vectors. Ugh.
+static const unsigned int kMaxNFRHadrons = 50;
+
 // Should move this to a header file (eg DSTTypes or something).
 //~ typedef Double_t variation_output_type;
 //~ const char variation_output_type_root = 'D';
@@ -483,8 +486,10 @@ int main(int argc, char ** argv)
   // Commented out now we only have one tree per sample. But remember if that changes!
   //~ int last_tree_number = -1; // store which number file we're in, so we can count each tree's weight once
 
-  std::vector<int> * reco_hadron_pids;
-  recTree->SetBranchAddress( "rec.fake_reco.hadrons.pid", &reco_hadron_pids );
+  Int_t nFRHadrons = 0;
+  Int_t fake_reco_hadron_pids[kMaxNFRHadrons] = {};
+  recTree->SetBranchAddress( "rec.fake_reco.hadrons..totarraysize", &nFRHadrons );
+  recTree->SetBranchAddress( "rec.fake_reco.hadrons.pid", fake_reco_hadron_pids );
 
   for(Long64_t iev = 0; iev < nev; iev++) {
 
@@ -596,8 +601,8 @@ int main(int argc, char ** argv)
       nu_pdg            = recTree->GetLeaf("rec.slc.truth.pdg")->GetValue();
       enu_true          = recTree->GetLeaf("rec.slc.truth.E")->GetValue();
       Q2s               = recTree->GetLeaf("rec.slc.truth.Q2")->GetValue();
-      larsoft_mode      = recTree->GetLeaf("rec.slc.truth.genie_intcode")->GetValue();
-      //std::cout << "iscc: " << iscc << "      baseline: " << baseline << std::endl;
+      larsoft_mode      = recTree->GetLeaf("rec.slc.truth.genie_mode")->GetValue();
+      VLOG("valor_sbn", pDEBUG) << "iscc: " << iscc << "      baseline: " << baseline;
 
       // --- Think this is currently the true_particle branch, but will be moved to mc.nu.fsp ---
       // --- status_code <--> gstatus ---
@@ -926,10 +931,10 @@ int main(int argc, char ** argv)
 
     
     //reco_hadron_pids = recTree->GetLeaf("rec.fake_reco.hadrons.pid")->GetValue();
-    for( std::vector<int>::iterator it_rhp = reco_hadron_pids->begin();
-	 it_rhp != reco_hadron_pids->end(); ++it_rhp ) {
-      VLOG( "valor_sbn", pINFO ) << "Reading fake reco hadron with PID: " << *it_rhp;
-      switch( *it_rhp ) {
+    for( int i = 0 ; i < nFRHadrons; i++ ) {
+      Int_t FRHadPDG = fake_reco_hadron_pids[i];
+      VLOG( "valor_sbn", pINFO ) << "Reading fake reco hadron with PID: " << FRHadPDG;
+      switch( FRHadPDG ) {
       case 2212: nproton_reco++; break;
       case  211:
       case -211: npion_reco++;   break;
