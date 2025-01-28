@@ -109,6 +109,7 @@ typedef Float_t variation_output_type;
 const char variation_output_type_root = 'F';
 
 // The enum simb::int_type_ from LarSoft (copied from MCNeutrino.h, in v06_05_00)
+// Still in v09_23_02_01, SREnums.h:enum genie_interaction_mode_
 
 typedef enum ELarMode{
   kLArUnknownInteraction = -1,
@@ -127,6 +128,61 @@ typedef enum ELarMode{
   kLArEM                 = 12,
   kLArWeakMix            = 13
 } LArMode_t;
+
+// And the genie_interaction_type_ enum from v09_23_02_01 from SREnums.h
+typedef enum ELArInt
+{
+  kIntUnknownInteractionType    = -1,
+  kIntNuanceOffset              = 1000,                ///< offset to account for adding in Nuance codes to this enum
+  kIntCCQE                      = kIntNuanceOffset +  1,  ///< charged current quasi-elastic
+  kIntNCQE                      = kIntNuanceOffset +  2,  ///< neutral current quasi-elastic
+  kIntResCCNuProtonPiPlus       = kIntNuanceOffset +  3,  ///< resonant charged current, nu p -> l- p pi+
+  kIntResCCNuNeutronPi0         = kIntNuanceOffset +  4,  ///< resonant charged current, nu n -> l- p pi0
+  kIntResCCNuNeutronPiPlus      = kIntNuanceOffset +  5,  ///< resonant charged current, nu n -> l- n pi+
+  kIntResNCNuProtonPi0          = kIntNuanceOffset +  6,  ///< resonant neutral current, nu p -> nu p pi0
+  kIntResNCNuProtonPiPlus       = kIntNuanceOffset +  7,  ///< resonant neutral current, nu p -> nu p pi+
+  kIntResNCNuNeutronPi0         = kIntNuanceOffset +  8,  ///< resonant neutral current, nu n -> nu n pi0
+  kIntResNCNuNeutronPiMinus     = kIntNuanceOffset +  9,  ///< resonant neutral current, nu n -> nu p pi-
+  kIntResCCNuBarNeutronPiMinus  = kIntNuanceOffset + 10,  ///< resonant charged current, nubar n -> l+ n pi-
+  kIntResCCNuBarProtonPi0       = kIntNuanceOffset + 11,  ///< resonant charged current, nubar p -> l+ n pi0
+  kIntResCCNuBarProtonPiMinus   = kIntNuanceOffset + 12,  ///< resonant charged current, nubar p -> l+ p pi-
+  kIntResNCNuBarProtonPi0       = kIntNuanceOffset + 13,  ///< resonant charged current, nubar p -> nubar p pi0
+  kIntResNCNuBarProtonPiPlus    = kIntNuanceOffset + 14,  ///< resonant charged current, nubar p -> nubar n pi+
+  kIntResNCNuBarNeutronPi0      = kIntNuanceOffset + 15,  ///< resonant charged current, nubar n -> nubar n pi0
+  kIntResNCNuBarNeutronPiMinus  = kIntNuanceOffset + 16,  ///< resonant charged current, nubar n -> nubar p pi-
+  kIntResCCNuDeltaPlusPiPlus    = kIntNuanceOffset + 17,
+  kIntResCCNuDelta2PlusPiMinus  = kIntNuanceOffset + 21,
+  kIntResCCNuBarDelta0PiMinus   = kIntNuanceOffset + 28,
+  kIntResCCNuBarDeltaMinusPiPlus= kIntNuanceOffset + 32,
+  kIntResCCNuProtonRhoPlus      = kIntNuanceOffset + 39,
+  kIntResCCNuNeutronRhoPlus     = kIntNuanceOffset + 41,
+  kIntResCCNuBarNeutronRhoMinus = kIntNuanceOffset + 46,
+  kIntResCCNuBarNeutronRho0     = kIntNuanceOffset + 48,
+  kIntResCCNuSigmaPlusKaonPlus  = kIntNuanceOffset + 53,
+  kIntResCCNuSigmaPlusKaon0     = kIntNuanceOffset + 55,
+  kIntResCCNuBarSigmaMinusKaon0 = kIntNuanceOffset + 60,
+  kIntResCCNuBarSigma0Kaon0     = kIntNuanceOffset + 62,
+  kIntResCCNuProtonEta          = kIntNuanceOffset + 67,
+  kIntResCCNuBarNeutronEta      = kIntNuanceOffset + 70,
+  kIntResCCNuKaonPlusLambda0    = kIntNuanceOffset + 73,
+  kIntResCCNuBarKaon0Lambda0    = kIntNuanceOffset + 76,
+  kIntResCCNuProtonPiPlusPiMinus= kIntNuanceOffset + 79,
+  kIntResCCNuProtonPi0Pi0       = kIntNuanceOffset + 80,
+  kIntResCCNuBarNeutronPiPlusPiMinus = kIntNuanceOffset + 85,
+  kIntResCCNuBarNeutronPi0Pi0   = kIntNuanceOffset + 86,
+  kIntResCCNuBarProtonPi0Pi0    = kIntNuanceOffset + 90, ///< This makes no sense as CC. 
+  kIntCCDIS                     = kIntNuanceOffset + 91,  ///< charged current deep inelastic scatter
+  kIntNCDIS                     = kIntNuanceOffset + 92,  ///< charged current deep inelastic scatter
+  kIntUnUsed1                   = kIntNuanceOffset + 93,
+  kIntUnUsed2                   = kIntNuanceOffset + 94,
+  kIntCCQEHyperon               = kIntNuanceOffset + 95,
+  kIntNCCOH                     = kIntNuanceOffset + 96,
+  kIntCCCOH                     = kIntNuanceOffset + 97,  ///< charged current coherent pion
+  kIntNuElectronElastic         = kIntNuanceOffset + 98,  ///< neutrino electron elastic scatter
+  kIntInverseMuDecay            = kIntNuanceOffset + 99,  ///< inverse muon decay
+  kIntMEC2p2h                   = kIntNuanceOffset + 100  ///< extension of nuance encoding for MEC / 2p2h
+
+} LArInt_t;
 
 std::vector<TString> nonResVariations = 
 {
@@ -547,16 +603,18 @@ int main(int argc, char ** argv)
   Float_t true_branch_enu_true [kMaxNTrueInteractions] = {};
   Float_t true_branch_Q2s      [kMaxNTrueInteractions] = {};
   Short_t  true_branch_larmode [kMaxNTrueInteractions] = {};
+  Short_t  true_branch_larint  [kMaxNTrueInteractions] = {};
 
-  recTree->SetBranchAddress( "rec.mc.nu..length", &nTrueInteractions );
-  recTree->SetBranchAddress( "rec.mc.nu.iscc",       true_branch_iscc );
-  recTree->SetBranchAddress( "rec.mc.nu.isnc",       true_branch_isnc );
-  recTree->SetBranchAddress( "rec.mc.nu.baseline",   true_branch_baseline );
-  recTree->SetBranchAddress( "rec.mc.nu.pdg",        true_branch_nu_pdg );
-  recTree->SetBranchAddress( "rec.mc.nu.initpdg",    true_branch_nu_initpdg );
-  recTree->SetBranchAddress( "rec.mc.nu.E",          true_branch_enu_true );
-  recTree->SetBranchAddress( "rec.mc.nu.Q2",         true_branch_Q2s );
-  recTree->SetBranchAddress( "rec.mc.nu.genie_mode", true_branch_larmode );
+  recTree->SetBranchAddress( "rec.mc.nu..length",      &nTrueInteractions );
+  recTree->SetBranchAddress( "rec.mc.nu.iscc",          true_branch_iscc );
+  recTree->SetBranchAddress( "rec.mc.nu.isnc",          true_branch_isnc );
+  recTree->SetBranchAddress( "rec.mc.nu.baseline",      true_branch_baseline );
+  recTree->SetBranchAddress( "rec.mc.nu.pdg",           true_branch_nu_pdg );
+  recTree->SetBranchAddress( "rec.mc.nu.initpdg",       true_branch_nu_initpdg );
+  recTree->SetBranchAddress( "rec.mc.nu.E",             true_branch_enu_true );
+  recTree->SetBranchAddress( "rec.mc.nu.Q2",            true_branch_Q2s );
+  recTree->SetBranchAddress( "rec.mc.nu.genie_mode",    true_branch_larmode );
+  recTree->SetBranchAddress( "rec.mc.nu.genie_inttype", true_branch_larint );
 
   // These branches contain counters from GTruth - they are *intrinsic* particle counts
   // I.e. BEFORE FSI
@@ -689,6 +747,7 @@ int main(int argc, char ** argv)
       int ninuc    = 0; // no info in cafana
 
       int larsoft_mode = -1;
+      int larsoft_inttype = -1;
 /*
       if(ptruth==nullptr) {
         VLOG("valor_sbn", pNOTICE)
@@ -749,15 +808,10 @@ int main(int argc, char ** argv)
 	enu_true = true_branch_enu_true[i];
 	Q2s      = true_branch_Q2s[i];
 	larsoft_mode = true_branch_larmode[i];
+	larsoft_inttype = true_branch_larint[i];
 	
 	VLOG("valor_sbn", pDEBUG)  << "true baseline at " << i
-				   << " = " << baseline << ", energy = " << enu_true
-				   << "\nparticle multiplicities (pip,0,m, p, n) "
-				   << true_branch_npip[i] << ", "
-				   << true_branch_npi0[i] << ", "
-				   << true_branch_npim[i] << ", "
-				   << true_branch_nproton[i] << ", "
-				   << true_branch_nneutron[i] ;
+				   << " = " << baseline << ", energy = " << enu_true;
 	
 
 	for( int isl = 0; isl < matched_baselines.size(); isl++ ) {
@@ -872,6 +926,7 @@ int main(int argc, char ** argv)
 	enu_true     = true_branch_enu_true[mcv_index];
 	Q2s          = true_branch_Q2s[mcv_index];
 	larsoft_mode = true_branch_larmode[mcv_index];
+	larsoft_inttype = true_branch_larint[mcv_index];
 	
 	std::ostringstream lsts;
 	lsts << "The larsoft mode int is " << larsoft_mode << ", which is ";
@@ -893,6 +948,62 @@ int main(int argc, char ** argv)
 	case kLArWeakMix: lsts << "kLArWeakMix"; break;
 	default: lsts << "NONE"; break;
 	}
+
+	// Can I just say. Just a word. AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA. Thank you.
+	lsts << "\nThe larsoft_inttype is " << larsoft_inttype << ", which is ";
+	switch( larsoft_inttype ) {
+	case kIntUnknownInteractionType: lsts << "Unknown"; break;
+	case kIntNuanceOffset: lsts << "Nuance offset - why are you seeing this?"; break;
+	case kIntCCQE: lsts << "CCQE: v n -> l- p+"; break;
+	case kIntNCQE: lsts << "NCQE: v N -> v N"; break;
+	case kIntResCCNuProtonPiPlus: lsts << "CC RES: v p -> l- p pi+"; break;
+	case kIntResCCNuNeutronPi0: lsts << "CC RES: v n -> l- p pi0"; break;
+	case kIntResCCNuNeutronPiPlus: lsts << "CC RES: v n -> l- n pi+"; break;
+	case kIntResNCNuProtonPi0: lsts << "NC RES: v p -> v p pi0"; break;
+	case kIntResNCNuProtonPiPlus: lsts << "NC RES: v p -> v n pi+"; break;
+	case kIntResNCNuNeutronPi0: lsts << "NC RES: v n -> v n pi0"; break;
+	case kIntResNCNuNeutronPiMinus: lsts << "NC RES: v n -> v p pi-"; break;
+	case kIntResCCNuBarNeutronPiMinus: lsts << "CC RES: vb n -> l+ n pi-"; break;
+	case kIntResCCNuBarProtonPi0: lsts << "CC RES: vb p -> l+ n pi0"; break;
+	case kIntResCCNuBarProtonPiMinus: lsts << "CC RES: vb p -> l+ p pi-"; break;
+	case kIntResNCNuBarProtonPi0: lsts << "NC RES: vb p -> vb p pi0"; break;
+	case kIntResNCNuBarProtonPiPlus: lsts << "NC RES: vb p -> vb n pi+"; break;
+	case kIntResNCNuBarNeutronPi0: lsts << "NC RES: vb n -> vb n pi0"; break;
+	case kIntResNCNuBarNeutronPiMinus: lsts << "NC RES: vb n -> vb p pi-"; break;
+	case kIntResCCNuDeltaPlusPiPlus: lsts << "CC RES: v n -> l- Delta+ -> l- n pi+"; break;
+	case kIntResCCNuDelta2PlusPiMinus: lsts << "CC RES: v p -> l- Delta++ -> l- p pi+"; break;
+	case kIntResCCNuBarDelta0PiMinus: lsts << "CC RES: vb p -> l+ Delta0 -> l+ p pi-"; break;
+	case kIntResCCNuBarDeltaMinusPiPlus: lsts << "CC RES: vb n -> l+ Delta- -> l+ n pi-"; break;
+	case kIntResCCNuProtonRhoPlus: lsts << "CC RES: v p -> l- p rho+"; break;
+	case kIntResCCNuNeutronRhoPlus: lsts << "CC RES: v n -> l- n rho+"; break;
+	case kIntResCCNuBarNeutronRhoMinus: lsts << "CC RES: vb n -> l+ n rho-"; break;
+	case kIntResCCNuBarNeutronRho0: lsts << "CC RES: vb n -> l+ n rho0"; break;
+	case kIntResCCNuSigmaPlusKaonPlus: lsts << "CC RES: v p -> l- n Sigma+ K+"; break;
+	case kIntResCCNuSigmaPlusKaon0: lsts << "CC RES: v p -> l- n Sigma+ K0"; break;
+	case kIntResCCNuBarSigmaMinusKaon0 : lsts << "CC RES: vb n -> l+ Sigma- K0"; break;
+	case kIntResCCNuBarSigma0Kaon0: lsts << "CC RES: vb p -> l+ Sigma0 K0"; break;
+	case kIntResCCNuProtonEta: lsts << "CC RES: v n -> l- p eta"; break;
+	case kIntResCCNuBarNeutronEta: lsts << "CC RES: vb p -> l+ n eta"; break;
+	case kIntResCCNuKaonPlusLambda0: lsts << "CC RES: v n -> l- K+ Lambda0"; break;
+	case kIntResCCNuBarKaon0Lambda0: lsts << "CC RES: vb p -> l+ K0 Lambda0"; break;
+	case kIntResCCNuProtonPiPlusPiMinus: lsts << "CC RES: v n -> l- p pi+ pi-"; break;
+	case kIntResCCNuProtonPi0Pi0: lsts << "CC RES: v n -> l- p pi0 pi0"; break;
+	case kIntResCCNuBarNeutronPiPlusPiMinus: lsts << "CC RES: vb p -> l+ n pi+ pi-"; break;
+	case kIntResCCNuBarNeutronPi0Pi0: lsts << "CC RES: vb p -> l+ n pi0 pi0"; break;
+	case kIntResCCNuBarProtonPi0Pi0: lsts << "CC RES: PLEASE CHECK THIS MODE - IT SEEMS BROKEN"; break;
+	case kIntCCDIS: lsts << "CC DIS"; break;
+	case kIntNCDIS: lsts << "NC DIS"; break;
+	case kIntUnUsed1: lsts << "Unused 1"; break;
+	case kIntUnUsed2: lsts << "Unused 2"; break;
+	case kIntCCQEHyperon: lsts << "CCQE with hyperon production"; break;
+	case kIntNCCOH: lsts << "NC coherent: v/vb  A -> v/vb  A"; break;
+	case kIntCCCOH: lsts << "CC coherent: v/vb  A -> l-+  A"; break;
+	case kIntNuElectronElastic: lsts << "Neutrino-electron elastic: v/vb e -> v/vb e"; break;
+	case kIntInverseMuDecay: lsts << "Inverse Muon Decay: v e -> mu- v"; break;
+	case kIntMEC2p2h: lsts << "2p2h (MEC) extension of nuance encoding"; break;
+	default: lsts << "NONE"; break;
+	}
+
 	VLOG("valor_sbn", pDEBUG) << lsts.str();
 
 	// Set the reco variables
@@ -967,8 +1078,48 @@ int main(int argc, char ** argv)
 	if (is_dirt){
 	  reac = conv::kmtDirt; 
 	  if(is_cosmic) reac = conv::kmtCosmic;
-	}   
-	else if (iscc) {
+	} else if (iscc) {
+
+	  switch( larsoft_mode ) {
+	  case kLArQE:  reac = conv::kmtCCQE; break;
+	  case kLArDIS: reac = conv::kmtCCDIS; break;
+	  case kLArMEC: reac = conv::kmtCCMEC; break;
+	  case kLArCoh: case kLArCohElastic: case kLArDiffractive: reac = conv::kmtCCcoh; break;
+	  case kLArIMDAnnihilation: reac = conv::kmtCCIMD; break;
+	    //case kLArElectronScattering: reac = conv::kmtCCELScat; break; // Turn it off, this should be weak mix
+	  case kLArUnknownInteraction: reac = conv::kmtUndefined; break;
+
+	  default: switch( larsoft_inttype ) {
+	      // These are resonant or weak mix. Ask the interaction type
+
+	    case kIntResCCNuProtonPiPlus: 
+	    case kIntResCCNuNeutronPiPlus:
+	    case kIntResCCNuDeltaPlusPiPlus:
+	    case kIntResCCNuDelta2PlusPiMinus:
+	    case kIntResCCNuBarNeutronPiMinus:
+	    case kIntResCCNuBarProtonPiMinus:
+	    case kIntResCCNuBarDelta0PiMinus:
+	    case kIntResCCNuBarDeltaMinusPiPlus:
+	      reac = conv::kmtCC1piC; break;
+
+	    case kIntResCCNuNeutronPi0:
+	    case kIntResCCNuBarProtonPi0:
+	      reac = conv::kmtCC1pi0; break;
+
+	    case kIntResCCNuProtonPiPlusPiMinus: 
+	    case kIntResCCNuBarNeutronPiPlusPiMinus:
+	      reac = conv::kmtCC2piC; break;
+
+	    case kIntResCCNuProtonPi0Pi0:
+	    case kIntResCCNuBarNeutronPi0Pi0:
+	      reac = conv::kmtCC2pi0; break;
+
+	    default: reac = conv::kmtCCoth;
+
+	    } // switch( larsoft_inttype )
+	  } // switch(larsoft_mode)
+
+	  /*
 	  if      (larsoft_mode==kLArQE                ) { reac = conv::kmtCCQE;    }
 	  else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtCCMEC;   }
 	  else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtCCcoh;   }
@@ -976,6 +1127,7 @@ int main(int argc, char ** argv)
 	  else if (larsoft_mode==kLArElectronScattering) { reac = conv::kmtCCELScat;}
 
 	  else { // start counting pions
+
 	    if      (nikp || nik0 || nikm           )  { reac = conv::kmtCCoth;}
 	    else if (nipip+nipim == 1 && nipi0 == 0 )  { reac = conv::kmtCC1piC;}
 	    else if (nipip+nipim == 0 && nipi0 == 1 )  { reac = conv::kmtCC1pi0;}
@@ -984,8 +1136,40 @@ int main(int argc, char ** argv)
 	    else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtCCpiCpi0;}
 	    else                                       { reac = conv::kmtCCoth;}
 	  }
+	  */
 	}
 	else if (isnc) {
+
+	  switch( larsoft_mode ) {
+	  case kLArQE:  reac = conv::kmtNCEL; break;
+	  case kLArDIS: reac = conv::kmtNCoth; break; // Why are we missing NC DIS?
+	  case kLArMEC: reac = conv::kmtNCMEC; break;
+	  case kLArCoh: case kLArCohElastic: case kLArDiffractive: reac = conv::kmtNCcoh; break;
+	    //case kLArElectronScattering: reac = conv::kmtCCELScat; break;
+	  case kLArUnknownInteraction: reac = conv::kmtUndefined; break;
+
+	  default: switch( larsoft_inttype ) {
+	      // These are resonant or weak mix. Ask the interaction type
+
+	    case kIntResNCNuProtonPiPlus:
+	    case kIntResNCNuBarProtonPiPlus:
+	    case kIntResNCNuNeutronPiMinus:
+	    case kIntResNCNuBarNeutronPiMinus:
+	      reac = conv::kmtNC1piC; break;
+
+	    case kIntResNCNuProtonPi0:
+	    case kIntResNCNuNeutronPi0:
+	    case kIntResNCNuBarProtonPi0:
+	    case kIntResNCNuBarNeutronPi0:
+	      reac = conv::kmtNC1pi0; break;
+
+	    default: reac = conv::kmtNCoth;
+
+	    } // switch(larsoft_inttype)
+
+	  } // switch(larsoft_mode)
+
+	  /*
 	  if      (larsoft_mode==kLArQE                ) { reac = conv::kmtNCEL;    }
 	  else if (larsoft_mode==kLArMEC               ) { reac = conv::kmtNCMEC;   }
 	  else if (larsoft_mode==kLArCoh               ) { reac = conv::kmtNCcoh;   }
@@ -1000,6 +1184,7 @@ int main(int argc, char ** argv)
 	    else if (nipip+nipim == 1 && nipi0 == 1 )  { reac = conv::kmtNCpiCpi0;}
 	    else                                       { reac = conv::kmtNCoth;}
 	  }
+	  */
 	}
 	else if (larsoft_mode == kLArElectronScattering) {
 	  reac = conv::kmtELScat;
