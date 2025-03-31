@@ -39,12 +39,12 @@ void star_plot(
 ){
 
 // Get the x-y params for the plot
-auto px = util::NameRegistry::Instance()->PhysParamFromString("");
-auto py = util::NameRegistry::Instance()->PhysParamFromString("dm41sq");
+auto px = valor::util::NameRegistry::Instance()->PhysParamFromString("");
+auto py = valor::util::NameRegistry::Instance()->PhysParamFromString("dm41sq");
 
-auto mumu = util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuMu");
-auto mue  = util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuE");
-auto ee   = util::NameRegistry::Instance()->PhysParamFromString("sinsq2thEE");
+auto mumu = valor::util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuMu");
+auto mue  = valor::util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuE");
+auto ee   = valor::util::NameRegistry::Instance()->PhysParamFromString("sinsq2thEE");
 
 auto x_label = "";
 
@@ -73,17 +73,17 @@ else{
 ch.GetEntry(0);
 if(gbfparam->IsFixed(mumu) == true && gbfparam->IsFixed(mue) == true){
     std::cout << "Looking at a nue disappearance sample." << std::endl;
-    px = util::NameRegistry::Instance()->PhysParamFromString("sinsq2thEE");
+    px = valor::util::NameRegistry::Instance()->PhysParamFromString("sinsq2thEE");
     x_label = "sin^{2}2#theta_{ee}";
 }
 else if(gbfparam->IsFixed(mumu) == true && gbfparam->IsFixed(ee) == true){
     std::cout << "Looking at a nue appearance sample." << std::endl;
-    px = util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuE");
+    px = valor::util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuE");
     x_label = "sin^{2}2#theta_{#mue}";
 }
 else if(gbfparam->IsFixed(ee) == true && gbfparam->IsFixed(mue) == true){
     std::cout << "Looking at a numu disappearance sample." << std::endl;
-    px = util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuMu");
+    px = valor::util::NameRegistry::Instance()->PhysParamFromString("sinsq2thMuMu");
     x_label = "sin^{2}2#theta_{#mu#mu}";
 }
 else{

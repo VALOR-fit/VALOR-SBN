@@ -44,7 +44,7 @@ def GetLoggedHist(filename,exclusion,data):
   print(filename)
   chain = R.TChain(data)
   chain.Add(filename)
-  print "Reading ",chain.GetEntries()," fits"
+  print("Reading ",chain.GetEntries()," fits")
   assert(chain.GetEntries())
   chain.GetEntry(0)
 
@@ -54,7 +54,7 @@ def GetLoggedHist(filename,exclusion,data):
   y_max = ex_y_max
   y_min = ex_y_min
   if exclusion is False:
-    print "Exclusion is false, setting inclusion limits"
+    print("Exclusion is false, setting inclusion limits")
     x_max = in_x_max
     x_min = in_x_min
     y_max = in_y_max
@@ -90,9 +90,9 @@ def GetLoggedHist(filename,exclusion,data):
       xbin_xpoint_diff = abs(hist.GetXaxis().GetBinCenter(xbin.value) - logx)
       ybin_ypoint_diff = abs(hist.GetYaxis().GetBinCenter(ybin.value) - logy)
       if xbin_xpoint_diff > eps:
-        print " Error, bin center is not close to the true x point, bin center: ", hist.GetXaxis().GetBinCenter(xbin.value), " x-point: ", logx, " and the difference: ", xbin_xpoint_diff
+        print(" Error, bin center is not close to the true x point, bin center: ", hist.GetXaxis().GetBinCenter(xbin.value), " x-point: ", logx, " and the difference: ", xbin_xpoint_diff)
       if ybin_ypoint_diff > eps:
-        print " Error, bin center is not close to the true y point, bin center: ", hist.GetYaxis().GetBinCenter(ybin.value), " y-point: ", logy, " and the difference: ", ybin_ypoint_diff
+        print(" Error, bin center is not close to the true y point, bin center: ", hist.GetYaxis().GetBinCenter(ybin.value), " y-point: ", logy, " and the difference: ", ybin_ypoint_diff)
 
     hist.SetBinContent(ibin,stat)
 
@@ -113,15 +113,15 @@ def MakeContour(h,dchisq):
 
 def UnlogGraph(graph):
   n = graph.GetN()
-  x = np.array([graph.GetX()[i] for i in xrange(n)])
-  y = np.array([graph.GetY()[i] for i in xrange(n)])
+  x = np.array([graph.GetX()[i] for i in range(n)])
+  y = np.array([graph.GetY()[i] for i in range(n)])
 
   new_graph = R.TGraph(n,10**x,10**y)
   return new_graph
 
 def main(files,tag,label,exclusion,data,param):
-  print "Exc: ", exclusion
-  print "Analysis: ", param
+  print("Exc: ", exclusion)
+  print("Analysis: ", param)
 
   global param_x, param_y
   global ex_x_min, ex_x_max, ex_y_min, ex_y_max
@@ -149,8 +149,8 @@ def main(files,tag,label,exclusion,data,param):
     r_incl_min = 0.01
 
   else:
-    print "Don't know what analysis we're looking at. Set the analysis with '-p {MuE, EE, MuMu}'."
-    print "Stopping."
+    print("Don't know what analysis we're looking at. Set the analysis with '-p {MuE, EE, MuMu}'.")
+    print("Stopping.")
     sys.exit()
 
   # Limits
@@ -191,32 +191,33 @@ def main(files,tag,label,exclusion,data,param):
     h.SetName("%s_log_hist"%(tag))
     h.Write()
 
-    for cl in xrange(conv.kNConfLevels):
+    for cl in range(conv.kNConfLevels):
       clname = util.ConfLevelAsString(cl)
       dchisq = -999
       # 1-sided scan if exclusion plot
       if exclusion:
-        print "Exclusion contour"
+        print("Exclusion contour")
         if not nue:
-          print "Looking at NuMu"
-          print "One-sided delta chi-squared scan"
+          print("Looking at NuMu")
+          print("One-sided delta chi-squared scan")
           dchisq = util.DeltaChisquareOneSided(cl,1)
         # 2-sided scan if acceptance plot or nue contour
         else:
-          print "Looking at NuE"
-          print "One-sided delta chi-squared scan"
+          print("Looking at NuE")
+          print("One-sided delta chi-squared scan")
           dchisq = util.DeltaChisquareOneSided(cl,1)
       else:
-        print "Acceptance contour"
-        print "One-sided delta chi-squared scan"
+        print("Acceptance contour")
+        print("One-sided delta chi-squared scan")
         dchisq = util.DeltaChisquareOneSided(cl,1)
 
       if (dchisq < 0): continue
       logged_graphs = MakeContour(h,dchisq)
       unlogged_graphs = map(UnlogGraph,logged_graphs)
 
-      for ig in xrange(len(logged_graphs)):
+      for ig in range(len(logged_graphs)):
         logged_graphs  [ig].SetName("%s_%s_log_%u"%(tag,clname,ig))
+       	unlogged_graphs = list(unlogged_graphs)
         unlogged_graphs[ig].SetName("%s_%s_lin_%u"%(tag,clname,ig))
 
         logged_graphs  [ig].Write()

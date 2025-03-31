@@ -15,6 +15,9 @@ include $(VALOR_EXPT)/make/Make.include
 SBN_LIBRARIES =
 
 TGT = make_sbncode_minidst \
+      make_sbncode_minidst_shweta \
+	make_recoselection_minidst \
+	make_recoselection_minidst_shweta \
       make_caf_minidst \
       make_xsec_splines \
       make_flux_splines \
@@ -36,6 +39,18 @@ else
 endif
 else
 	@echo "Skipping make_sbncode_minidst due to no SBNanalysis"
+endif
+
+make_sbncode_minidst_shweta: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_sbncode_minidst_shweta.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) make_sbncode_minidst_shweta.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB) -o $(VALOR_EXPT)/bin/valor_sbn-make_sbncode_minidst_shweta
+else
+	@echo "Skipping make_sbncode_minidst_shweta due to no GENIE"
+endif
+else
+	@echo "Skipping make_sbncode_minidst_shweta due to no SBNanalysis"
 endif
 
 # Generate DSTs from CAF files
@@ -64,6 +79,18 @@ else
 endif
 else
 	@echo "Skipping make_recoselection_minidst due to no SBNanalysis"
+endif
+
+make_recoselection_minidst_shweta: FORCE
+ifeq ($(SBNANALYSIS_ENABLED),1)
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_recoselection_minidst_shweta.cxx $(GINCLUDES) $(SBNANALYSIS_INC) $(LARSOFT_INCLUDES)
+	$(LD) $(LDFLAGS) make_recoselection_minidst_shweta.o $(GLIBRARIES)  $(VALOR_GLIBRARIES) $(SBNANALYSIS_LIB)  -o $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst_shweta
+else
+	@echo "Skipping make_recoselection_minidst_shweta due to no GENIE"
+endif
+else
+	@echo "Skipping make_recoselection_minidst_shweta due to no SBNanalysis"
 endif
 
 # Generate SBN flux splines
@@ -124,6 +151,9 @@ purge: FORCE
 clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_sbncode_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_sbncode_minidst_shweta
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst_shweta
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
@@ -134,6 +164,9 @@ clean: FORCE
 
 distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_sbncode_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_sbncode_minidst_shweta
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst_shweta
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_xsec_splines

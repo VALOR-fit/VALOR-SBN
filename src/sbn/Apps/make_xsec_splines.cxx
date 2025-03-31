@@ -106,6 +106,7 @@ std::vector<std::string> proposal_interaction_systematics =
    "genie_NonResRvbarnNC2pi_Genie",
    "genie_NonResRvbarpNC2pi_Genie"
  };
+
 std::vector<std::string> modern_interaction_systematics = 
  { "genie_DISAth_Genie",
    "genie_DISBth_Genie",
@@ -129,6 +130,38 @@ std::vector<std::string> modern_interaction_systematics =
    "genie_ncelEta_Genie",
    "genie_ncresVector_Genie"
 };
+
+std::vector<std::string> current_interaction_systematics_from_cafs =
+ { "genie_ZExpAVariationResponse_Genie", 
+   "genie_NCELVariationResponse_Genie",
+   "genie_NCRESVariationResponse_Genie",
+   "genie_DISBYVariationResponse_Genie",
+   "genie_FSI_pi_VariationResponse_Genie",
+   "genie_COHVariationResponse_Genie",
+   "genie_FSI_N_VariationResponse_Genie",
+   "genie_RPA_CCQE_Genie",
+   "genie_CoulombCCQE_Genie",
+   "genie_NormCCMEC_Genie",
+   "genie_NormNCMEC_Genie",
+   "genie_NonRESBGvpCC1pi_Genie",
+   "genie_NonRESBGvpCC2pi_Genie",
+   "genie_NonRESBGvpNC1pi_Genie",
+   "genie_NonRESBGvpNC2pi_Genie",
+   "genie_NonRESBGvnCC1pi_Genie",
+   "genie_NonRESBGvnCC2pi_Genie",
+   "genie_NonRESBGvnNC1pi_Genie",
+   "genie_NonRESBGvnNC2pi_Genie",
+   "genie_NonRESBGvbarpCC1pi_Genie",
+   "genie_NonRESBGvbarpCC2pi_Genie",
+   "genie_NonRESBGvbarpNC1pi_Genie",
+   "genie_NonRESBGvbarpNC2pi_Genie",
+   "genie_NonRESBGvbarnCC1pi_Genie",
+   "genie_NonRESBGvbarnCC2pi_Genie",
+   "genie_NonRESBGvbarnNC1pi_Genie",
+   "genie_NonRESBGvbarnNC2pi_Genie"   
+ };
+
+
 
 TString splineNamePattern("spl_[BEAM]_[SAMPLE]_[MODE]_[PARAM]_[TRUE]_[RECO]");
 TString objNamePattern("spl_[MODE]_[PARAM]");
@@ -760,6 +793,18 @@ std::string GetSystematic(const std::string &sy){
         found_syst = true;
         break;
       }
+    }
+  }
+
+  for(const std::string &s : current_interaction_systematics_from_cafs){
+    LOG("valor_sbn",pDEBUG) << "Checking current interaction systematic from CAFs: " << s << " for " << sy;
+    // Add a space to the end of the parameter name to avoid getting the wrong one
+    size_t found_s = s.find(sy+"_");
+    if(found_s != std::string::npos){
+      syst = s;
+      LOG("valor_sbn",pINFO) << "Found the chosen proposal interaction systematic: " << syst;
+      found_syst = true;
+      break;
     }
   }
 
