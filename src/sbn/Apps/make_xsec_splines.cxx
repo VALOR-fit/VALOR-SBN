@@ -134,6 +134,7 @@ std::vector<std::string> modern_interaction_systematics =
 std::vector<std::string> current_interaction_systematics_from_cafs =
  { "genie_ZExpAVariationResponse_Genie", 
    "genie_NCELVariationResponse_Genie",
+   "genie_CCRESVariationResponse_Genie",
    "genie_NCRESVariationResponse_Genie",
    "genie_DISBYVariationResponse_Genie",
    "genie_FSI_pi_VariationResponse_Genie",

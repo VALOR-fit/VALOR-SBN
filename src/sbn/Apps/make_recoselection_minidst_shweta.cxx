@@ -193,16 +193,15 @@ inline std::vector<std::string> GetGENIEDependentKnobNames(){
 }
 
 
-
 void SetupVariationBranches( TTree* xsecsyst_tree,
 			     TTree* valor_minidst,
 			     std::map<std::string, std::vector<double>*>& input_variation_vectors,
-			     std::map<std::string, Double_t*>& variation_arrays,
+			     std::map<std::string, Float_t*>& variation_arrays,
 			     std::map<std::string, Int_t>& variation_counts,
 			     int max_n_universes );
 
 void FillVariationBranches( const std::map<std::string, std::vector<double>*>& input_variation_vectors,
-			    std::map<std::string, Double_t*>& variation_arrays,
+			    std::map<std::string, Float_t*>& variation_arrays,
 			    std::map<std::string, Int_t>& variation_counts,
 			    int max_n_universes );
 
@@ -558,12 +557,12 @@ int main(int argc, char ** argv)
   // systematic variations
 
   std::map<std::string, std::vector<double>*> input_variation_vectors;
-  std::map<std::string, Double_t*> variation_arrays;
+  std::map<std::string, Float_t*> variation_arrays;
   std::map<std::string, Int_t> variation_counts;
 
   if(!no_truth && write_universes){
     xsecsyst_tree->GetEntry(0);
-    SetupVariationBranches(xsecsyst_tree, valor_minidst, input_variation_vectors, variation_arrays, variation_counts, 100);
+    SetupVariationBranches(xsecsyst_tree, valor_minidst, input_variation_vectors, variation_arrays, variation_counts, 1000);
     
   }
  
@@ -762,7 +761,7 @@ int main(int argc, char ** argv)
     if(write_universes){
       
       xsecsyst_tree->GetEntry(iev);
-      FillVariationBranches(input_variation_vectors, variation_arrays, variation_counts, 100);
+      FillVariationBranches(input_variation_vectors, variation_arrays, variation_counts, 1000);
       
     }
 
@@ -798,14 +797,13 @@ int main(int argc, char ** argv)
 }
 
 
-
 void SetupVariationBranches(
     TTree* xsecsyst_tree,
     TTree* valor_minidst,
     std::map<std::string, std::vector<double>*>& input_variation_vectors,
-    std::map<std::string, Double_t*>& variation_arrays,
+    std::map<std::string, Float_t*>& variation_arrays,
     std::map<std::string, Int_t>& variation_counts,
-    int max_n_universes = 100
+    int max_n_universes = 1000
 ) {
   TObjArray* branches = xsecsyst_tree->GetListOfBranches();
 
@@ -828,12 +826,12 @@ void SetupVariationBranches(
     xsecsyst_tree->SetBranchAddress(base_name.c_str(), &input_variation_vectors[base_name]);
 
     // for valor dst output
-    variation_arrays[base_name] = new Double_t[max_n_universes];
+    variation_arrays[base_name] = new Float_t[max_n_universes];
     variation_counts[base_name] = 0;
 
     std::string nbranch = "variation_n_genie_" + base_name + "_Genie";
     std::string arbranch = "variation_genie_" + base_name + "_Genie";
-    std::string leaflist = arbranch + "[" + nbranch + "]/D";
+    std::string leaflist = arbranch + "[" + nbranch + "]/F";
 
     valor_minidst->Branch(nbranch.c_str(), &variation_counts[base_name], (nbranch + "/I").c_str());
     valor_minidst->Branch(arbranch.c_str(), variation_arrays[base_name], leaflist.c_str());
@@ -842,11 +840,12 @@ void SetupVariationBranches(
   }
 }
 
+
 void FillVariationBranches(
     const std::map<std::string, std::vector<double>*>& input_variation_vectors,
-    std::map<std::string, Double_t*>& variation_arrays,
+    std::map<std::string, Float_t*>& variation_arrays,
     std::map<std::string, Int_t>& variation_counts,
-    int max_n_universes = 100
+    int max_n_universes = 1000
 ) {
   
   for (const auto& [name, vec_ptr] : input_variation_vectors) {
@@ -857,6 +856,12 @@ void FillVariationBranches(
     }
 
     int nuniv = vec_ptr->size();
+    /*
+    if (nuniv > max_n_universes) {
+      std::cout << "too many universes for " << name << ": " << nuniv << " (max = " << max_n_universes << ")" << std::endl;
+      nuniv = max_n_universes;
+    }
+    */
     if (nuniv > max_n_universes) {
       std::cerr << "too many universes for " << name << ": " << nuniv << std::endl;
       variation_counts[name] = 0;
@@ -865,7 +870,7 @@ void FillVariationBranches(
 
     variation_counts[name] = nuniv;
     for (int i = 0; i < nuniv; ++i) {
-      variation_arrays[name][i] = static_cast<Double_t>(vec_ptr->at(i));
+      variation_arrays[name][i] = static_cast<Float_t>(vec_ptr->at(i));
     }
   }
 }
