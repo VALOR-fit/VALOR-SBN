@@ -43,6 +43,36 @@ std::vector<std::string> modern_systematics =
   "genie_ncelEta_Genie",
   "genie_ncresVector_Genie"
 };
+std::vector<std::string> current_interaction_systematics_from_cafs =
+ { "genie_ZExpAVariationResponse_Genie", 
+   "genie_NCELVariationResponse_Genie",
+   "genie_CCRESVariationResponse_Genie",
+   "genie_NCRESVariationResponse_Genie",
+   "genie_DISBYVariationResponse_Genie",
+   "genie_FSI_pi_VariationResponse_Genie",
+   "genie_COHVariationResponse_Genie",
+   "genie_FSI_N_VariationResponse_Genie",
+   "genie_RPA_CCQE_Genie",
+   "genie_CoulombCCQE_Genie",
+   "genie_NormCCMEC_Genie",
+   "genie_NormNCMEC_Genie",
+   "genie_NonRESBGvpCC1pi_Genie",
+   "genie_NonRESBGvpCC2pi_Genie",
+   "genie_NonRESBGvpNC1pi_Genie",
+   "genie_NonRESBGvpNC2pi_Genie",
+   "genie_NonRESBGvnCC1pi_Genie",
+   "genie_NonRESBGvnCC2pi_Genie",
+   "genie_NonRESBGvnNC1pi_Genie",
+   "genie_NonRESBGvnNC2pi_Genie",
+   "genie_NonRESBGvbarpCC1pi_Genie",
+   "genie_NonRESBGvbarpCC2pi_Genie",
+   "genie_NonRESBGvbarpNC1pi_Genie",
+   "genie_NonRESBGvbarpNC2pi_Genie",
+   "genie_NonRESBGvbarnCC1pi_Genie",
+   "genie_NonRESBGvbarnCC2pi_Genie",
+   "genie_NonRESBGvbarnNC1pi_Genie",
+   "genie_NonRESBGvbarnNC2pi_Genie"   
+ };
 std::vector<std::string> flux_systematics =
 { "horncurrent_FluxUnisim",
   "expskin_FluxUnisim",
@@ -53,12 +83,18 @@ std::vector<std::string> flux_systematics =
   "pionqexsec_FluxUnisim",
   "piontotxsec_FluxUnisim"
 };
-
+/*
 std::vector<std::string> detectors =
 { "sbn_nd",
   "sbn_uboone",
   "sbn_icarus"
 };
+*/
+
+std::vector<std::string> detectors =
+{ "sbn_nd"
+};
+
 
 std::vector<std::string> detector_location =
 { "sbnd",
@@ -79,6 +115,10 @@ void chain_modelists(const std::string &syst, const std::string &location="", co
   if(syst == "mod"){
     systematics = modern_systematics; 
     std::cout << " Chaining the modelists from the modern systematics" << std::endl;
+  }
+  else if(syst == "current_cafs"){
+    systematics = current_interaction_systematics_from_cafs; 
+    std::cout << " Chaining the modelists from the current interaction systematics from CAFs" << std::endl;
   }
   else if(syst == "prop"){
     systematics = proposal_systematics; 

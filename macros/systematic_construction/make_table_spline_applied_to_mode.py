@@ -41,13 +41,13 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   syst = model.GetSystematics()
   if not syst.Size():
-    print "You haven't got any systematics defined. This is never going to work."
+    print("You haven't got any systematics defined. This is never going to work.")
     exit(-1)
 
 
   tick_from_config = False
   if not modeslist:
-    print "File containing the list of parameters and their associated modes not provided, will tick based on parameter configurations"
+    print("File containing the list of parameters and their associated modes not provided, will tick based on parameter configurations")
     tick_from_config = True
 
   ROOT.gROOT.ProcessLine("using namespace valor;")
@@ -83,7 +83,7 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   first_page = True
 
-  for isubmodel in xrange(model.GetNSubModels()):
+  for isubmodel in range(model.GetNSubModels()):
     submodel  = model.GetSubModel(isubmodel)
     sample    = submodel.GetSample()
     beam_mode = submodel.GetBeam()
@@ -129,7 +129,7 @@ def main(beam_mode_arg = None, sample_arg = None,
 
     # Write all the other rows (per param)
     pool = valor.ParameterPool.Instance()
-    for iparam in xrange(syst.Size()):
+    for iparam in range(syst.Size()):
       param = pool.GetParam(syst.WhichParam(iparam))
       if not iparam:
         last_param = param
@@ -175,11 +175,26 @@ def main(beam_mode_arg = None, sample_arg = None,
         else: # If we want to define the ticks based on the modelist for the current parameter
           f = ROOT.TFile(modeslist)
           mytree   = f.ModeLists
-          modelist = ROOT.vector('string')()
-          mytree.SetBranchAddress(param_long,modelist)
-          mytree.GetEntry(0)
+          #modelist = ROOT.vector('string')()
+          #mytree.SetBranchAddress(param_long,modelist)
+          #mytree.GetEntry(0)
           found_mode = False
-          for l in modelist:
+          #modelist_py = [modelist[i] for i in range(modelist.size())]
+
+          mytree.GetEntry(0)
+          modelistvec = getattr(mytree, param_long)
+          
+          if not isinstance(modelistvec, ROOT.vector('string')):
+            print(f"Warning: branch {param_long} is not a vector<string>")
+            continue
+          
+          #print("size of modelist : ", modelistvec.size())
+          modelist_py = [modelistvec[i] for i in range(modelistvec.size())]
+
+          
+          for l in modelist_py:
+          #for i in range(modelist.size()):
+            #l = modelist[i]
             if l == util.ModeAsString(m):
               found_mode = True
           if found_mode:
@@ -212,8 +227,8 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   tex_output.write("\\end{document}\n")
 
-  print "\n\nTable output written to",output_file
-  print "It's huge. I suggest using pdfcrop after building it."
+  print("\n\nTable output written to",output_file)
+  print("It's huge. I suggest using pdfcrop after building it.")
 
 if __name__=="__main__":
 
@@ -251,4 +266,4 @@ if __name__=="__main__":
   main(beam, sample, o.output_file, o.modeslist, o.config, o.skipflux, o.skipfluxcov, o.skipfluxuncorr, o.skipint, o.skipprop, o.skipmod, o.skipdet, o.incempty, not o.nocolor, o.unosc)
 
   if other:
-    print "Warning - ignored arguments: ",other
+    print("Warning - ignored arguments: ",other)
