@@ -13,7 +13,7 @@
 #include "TStyle.h"
 
 
-std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std::vector<std::string>& tags) {
+std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std::vector<std::string>& tags, bool override_03e2_2, bool override_03e2_3) {
 
   std::vector<TGraph*> plottedGraphs;
 
@@ -39,7 +39,7 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
   legend->SetFillStyle(0);
   legend->SetLineWidth(0);
   TLatex *latex = new TLatex();
-  latex->SetTextSize(0.04);
+  latex->SetTextSize(0.02);
   
   for (size_t i = 0; i < files.size(); ++i) {
     TFile *file = TFile::Open(files[i].c_str());
@@ -63,7 +63,8 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
     }
     graph->SetLineWidth(2);
     std::string syst_label;
-    if (std::string(files[i]).find("stat") != std::string::npos){
+    std::string version_label;
+    if (std::string(files[i]).find("_stat") != std::string::npos){
       graph->SetLineStyle(7);
       syst_label = "stat-only";
     }
@@ -71,49 +72,81 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
       graph->SetLineStyle(1);
       syst_label = "03d1";
     }
-    else if (std::string(files[i]).find("03e2") != std::string::npos) {
+    else if (std::string(files[i]).find("03e2_2") != std::string::npos) {
+      graph->SetLineStyle(2);
+      syst_label = "03e2_2";
+    }
+    else if (std::string(files[i]).find("03e2_3") != std::string::npos) {
+      graph->SetLineStyle(5);
+      syst_label = "03e2_3";
+    }
+    /*else if (std::string(files[i]).find("03e2") != std::string::npos) {
       graph->SetLineStyle(4);
       syst_label = "03e2";
-    }
+    }*/
     else if (std::string(files[i]).find("03d2") != std::string::npos) {
       graph->SetLineStyle(6);
       syst_label = "03d2";
     }
-    if (std::string(tags[i]).find("reducedmodes") != std::string::npos){
+    /*if (std::string(tags[i]).find("Reducedmodes") != std::string::npos){
       syst_label += " reduced modes";
+    }*/
+    if (std::string(tags[i]).find("equalstat") != std::string::npos){
+      syst_label += " equal stat";
+    }
+    if (std::string(tags[i]).find("equalwidth") != std::string::npos){
+      syst_label += " equal width";
+    }
+    //std::cout << "syst label " << i << " = " << syst_label << std::endl;
+
+    if (std::string(files[i]).find("2020a1_v6") != std::string::npos) version_label = " 2020a1 v6";
+    else if (std::string(files[i]).find("2024b_v9") != std::string::npos){ 
+      version_label = " 2024b v9";
+      graph->SetLineStyle(1);
     }
   
     if(std::string(files[i]).find("sbnd") != std::string::npos){
       graph->SetLineColor(kAzure-4);
-      legend->AddEntry(graph,("5#sigma SBND "+syst_label).c_str(),"L");
-      if (std::string(files[i]).find("reducedmodes") != std::string::npos){
+      legend->AddEntry(graph,("5#sigma SBND "+syst_label+version_label).c_str(),"L");
+      /*if (std::string(files[i]).find("reducedmodes") != std::string::npos){
         graph->SetLineColor(kAzure-6);
-      }
+      }*/
     } else if(std::string(files[i]).find("sbn") != std::string::npos){
       graph->SetLineColor(kTeal-6);
-      legend->AddEntry(graph,("5#sigma SBN "+syst_label).c_str(),"L");
+      legend->AddEntry(graph,("5#sigma SBN "+syst_label+version_label).c_str(),"L");
     } else if(std::string(files[i]).find("prism3") != std::string::npos){
       graph->SetLineColor(kViolet-4);
-      legend->AddEntry(graph,("5#sigma PRISM3 "+syst_label).c_str(),"L");
-      if (std::string(files[i]).find("reducedmodes") != std::string::npos){
+      if (std::string(files[i]).find("equalwidth") != std::string::npos){
+        graph->SetLineColor(kViolet+4);
+      }
+      if (std::string(files[i]).find("03e2_2") != std::string::npos && override_03e2_2){
         graph->SetLineColor(kViolet-6);
       }
+      if (std::string(files[i]).find("03e2_3") != std::string::npos && override_03e2_3){
+        graph->SetLineColor(kViolet-2);
+      }
+      legend->AddEntry(graph,("5#sigma PRISM3 "+syst_label+version_label).c_str(),"L");
+      //std::cout << "legend entry = " << ("5#sigma PRISM3 "+syst_label).c_str() << std::endl;
+      /*if (std::string(files[i]).find("reducedmodes") != std::string::npos){
+        graph->SetLineColor(kViolet-6);
+      }*/
     } else if(std::string(files[i]).find("prism5") != std::string::npos){
       graph->SetLineColor(kPink-4);
-      legend->AddEntry(graph,("5#sigma PRISM5 "+syst_label).c_str(),"L");
+      legend->AddEntry(graph,("5#sigma PRISM5 "+syst_label+version_label).c_str(),"L");
     } else if(std::string(files[i]).find("prism8_2") != std::string::npos){
       graph->SetLineColor(kSpring-6);
-      legend->AddEntry(graph,("5#sigma PRISM8_2 "+syst_label).c_str(),"L");
-      if (std::string(files[i]).find("reducedmodes") != std::string::npos){
+      legend->AddEntry(graph,("5#sigma PRISM8_2 "+syst_label+version_label).c_str(),"L");
+      /*if (std::string(files[i]).find("reducedmodes") != std::string::npos){
         graph->SetLineColor(kOrange+4);
-      }
+      }*/
     } else if(std::string(files[i]).find("prism8") != std::string::npos){
       graph->SetLineColor(kOrange-3);
-      legend->AddEntry(graph,("5#sigma PRISM8 "+syst_label).c_str(),"L");
+      legend->AddEntry(graph,("5#sigma PRISM8 "+syst_label+version_label).c_str(),"L");
     } else graph->SetLineColor(kBlack);
 
     if (i == 0) {
       graph->Draw("AL");
+      graph->SetTitle("");
       graph->GetXaxis()->SetTitle("sin^{2}#theta_{#mu#mu}");
       graph->GetYaxis()->SetTitle("#Delta m^{2}_{41}");
       graph->GetXaxis()->SetTitleFont(132);
@@ -133,7 +166,7 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
     file->Close();
   }
   legend->Draw();
-  //latex->DrawLatex(1.7, 0.45, "#frac{nom#pm1#sigma}{nom}");
+  latex->DrawLatex(0.35, 110, "SBND (6.6e+20 POT)");
   canvas->Update();
   std::string fileName = "5sigma_contours_";
   for (size_t i = 0; i < tags.size(); ++i) {
@@ -220,7 +253,9 @@ TGraph* divideXValues(const TGraph* graph1, const TGraph* graph2) {
     return graphRatio;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-void plot_contour_ratio(
+void plot_contour_ratio(bool plt_ratio,
+		        bool override_03e2_2,
+		        bool override_03e2_3
 ) {
   int n_contours;
   std::vector<std::string> files;
@@ -238,9 +273,9 @@ void plot_contour_ratio(
     tags.push_back(curr_tag);
   }
 
-  std::vector<TGraph*> graphs = plotGraphs(files, tags);
+  std::vector<TGraph*> graphs = plotGraphs(files, tags, override_03e2_2, override_03e2_3);
 
-  if (n_contours > 1){
+  if (plt_ratio){
     TCanvas *canvas = new TCanvas("canvas", "Graphs", 800, 600);
     canvas->SetRightMargin(0.08);
     canvas->SetLeftMargin(0.12);
@@ -248,21 +283,34 @@ void plot_contour_ratio(
     canvas->SetBottomMargin(0.12);
     canvas->SetLogy();
     TLegend *legend = new TLegend(0.15, 0.15, 0.55, 0.45);
+    legend->SetTextSize(0.03);
+    legend->SetTextFont(132);
+    legend->SetTextColor(1);
+    legend->SetFillStyle(0);
+    legend->SetLineWidth(0);
     for (int i = 0; i < n_contours; i++){
       TGraph *ratio = divideXValues(graphs[0],graphs[i]);
       ratio->SetLineWidth(2);
-      if(std::string(files[i]).find("03e") != std::string::npos) ratio->SetLineStyle(7);
-      else if(std::string(files[i]).find("03d2") != std::string::npos) ratio->SetLineStyle(4);
+
+      if(std::string(files[i]).find("03e2_2") != std::string::npos) ratio->SetLineStyle(2);
+      else if(std::string(files[i]).find("03e2_3") != std::string::npos) ratio->SetLineStyle(5);
+      else if(std::string(files[i]).find("03d1") != std::string::npos) ratio->SetLineStyle(9);
+      else if(std::string(files[i]).find("03d2") != std::string::npos) ratio->SetLineStyle(6);
+      else if(std::string(files[i]).find("stat") != std::string::npos) ratio->SetLineStyle(7);
+
       if(std::string(files[i]).find("sbnd") != std::string::npos) ratio->SetLineColor(kAzure-4);
+      else if(std::string(files[i]).find("sbn") != std::string::npos) ratio->SetLineColor(kTeal-6);
+      else if(std::string(files[i]).find("prism3") != std::string::npos && std::string(files[i]).find("equalstat") != std::string::npos) ratio->SetLineColor(kViolet-4);
+      else if(std::string(files[i]).find("prism3") != std::string::npos && std::string(files[i]).find("equalwidth") != std::string::npos) ratio->SetLineColor(kViolet+4);
       else if(std::string(files[i]).find("prism3") != std::string::npos) ratio->SetLineColor(kViolet-4);
       else if(std::string(files[i]).find("prism5") != std::string::npos) ratio->SetLineColor(kPink-4);
       else if(std::string(files[i]).find("prism8_2") != std::string::npos) ratio->SetLineColor(kSpring-6);
       else if(std::string(files[i]).find("prism8") != std::string::npos) ratio->SetLineColor(kOrange-3);
-      else if(std::string(files[i]).find("sbn") != std::string::npos) ratio->SetLineColor(kTeal-6);
       else ratio->SetLineColor(kBlack);
       if (i == 0) {
 	ratio->Draw("AL");
         ratio->SetLineColor(kBlack);
+        ratio->SetLineStyle(1);
 	ratio->GetXaxis()->SetTitle("Relative sin^{2}#theta_{#mu#mu}");
 	ratio->GetYaxis()->SetTitle("#Delta m^{2}_{41}");
 	ratio->GetXaxis()->SetTitleFont(132);
@@ -297,11 +345,23 @@ void plot_contour_ratio(
 	    curr_tag.replace(pos, 13, " reduced modes");
 	    pos = curr_tag.find("_reducedmodes", pos + 13); // Move to next occurrence
 	}
+	// Replace "_equalwidth"
+	pos = curr_tag.find("_equalwidth");
+	while (pos != std::string::npos) {
+	    curr_tag.replace(pos, 11, " equal-width");
+	    pos = curr_tag.find("_equalwidth", pos + 11); // Move to next occurrence
+	}
+	// Replace "_equalstat"
+	pos = curr_tag.find("_equalstat");
+	while (pos != std::string::npos) {
+	    curr_tag.replace(pos, 10, " equal-stat");
+	    pos = curr_tag.find("_equalstat", pos + 10); // Move to next occurrence
+	}
 	// Replace "_" with a space
 	pos = curr_tag.find("_0");
 	while (pos != std::string::npos) {
 	    curr_tag.replace(pos, 2, " 0");
-	    pos = curr_tag.find("_", pos + 2); // Move to next occurrence
+	    pos = curr_tag.find("_0", pos + 2); // Move to next occurrence
 	}
 	// Replace "_" with a space
 	pos = curr_tag.find("_s");
@@ -320,6 +380,9 @@ void plot_contour_ratio(
       legend->AddEntry(ratio,("Ratio "+new_tags[i]+" to "+new_tags[0]).c_str(),"L");
     }
     legend->Draw();
+    TLatex *latex = new TLatex();
+    latex->SetTextSize(0.02);
+    latex->DrawLatex(0.93, 105, "SBND (6.6e+20 POT)");
     canvas->Update();
     std::string fileName = "5sigma_ratios_";
     for (size_t i = 0; i < n_contours; ++i) {

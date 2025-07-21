@@ -2,7 +2,7 @@
 
 <valor>
 
-  <element_list name="sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes">
+  <element_list name="sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_equalwidth">
 
     <element name="sbn_nd_fhc_numuCCIncl_oa00">
       <detector>     sbn_nd                                               </detector>

@@ -202,13 +202,13 @@ void plot_envelope_ratios(
     pos = curr_tag.find("_0");
     while (pos != std::string::npos) {
 	curr_tag.replace(pos, 2, " 0");
-	pos = curr_tag.find("_", pos + 2); // Move to next occurrence
+	pos = curr_tag.find("_0", pos + 2); // Move to next occurrence
     }
     // Replace "_" with a space
     pos = curr_tag.find("_s");
     while (pos != std::string::npos) {
 	curr_tag.replace(pos, 2, " s");
-	pos = curr_tag.find("_", pos + 2); // Move to next occurrence
+	pos = curr_tag.find("_s", pos + 2); // Move to next occurrence
     }
     // Replace "prism" with "PRISM"
     pos = curr_tag.find("prism");
@@ -272,8 +272,8 @@ void plot_envelope_ratios(
     //h_frac_p1_post>SetStats(0);
     h_frac_p1_post->GetYaxis()->SetTitleOffset(1.3);
     h_frac_p1_post->GetXaxis()->SetRangeUser(0.2,3);
-    //h_frac_p1_post->GetYaxis()->SetRangeUser(-0.6,0.4);
     h_frac_p1_post->GetYaxis()->SetRangeUser(0.4,1.4);
+    //h_frac_p1_post->GetYaxis()->SetRangeUser(0.65,1.25);
     h_frac_p1_post->SetTitle("");
     h_frac_p1_post->GetXaxis()->SetTitle("E_{#nu, Reco}");
     //h_frac_p1_post->GetYaxis()->SetTitle("Ratio #pm1#sigma/nominal");
@@ -298,9 +298,11 @@ void plot_envelope_ratios(
    // l->AddEntry(h_frac_m1_pre, "prefit -1#sigma/nominal", "L");
     l->Draw();
 
-    latex->DrawLatex(0.75, 0.68, curr_tag.c_str());
+    //latex->DrawLatex(1.05, 0.818, curr_tag.c_str());
+    latex->DrawLatex(1.05, 0.68, curr_tag.c_str()); //start x at 0.75 for short syst label
     latex->SetTextSize(0.06);
-    latex->DrawLatex(2.25, 0.6, "#frac{nom#pm1#sigma}{nom}");
+    //latex->DrawLatex(2.25, 0.78, "#frac{nom#pm1#sigma}{nom}");
+    latex->DrawLatex(2.25, 0.6167, "#frac{nom#pm1#sigma}{nom}");
 
     const char* filename1 = "postfit_frac_error_hists.root";
     // Check if the file exists
@@ -328,6 +330,8 @@ void plot_envelope_ratios(
 
     c->SaveAs(("frac_1sigma_pre_postfit_"+tag+"_"+sample+".pdf").c_str());
     c->SaveAs(("frac_1sigma_pre_postfit_"+tag+"_"+sample+".png").c_str());
+    //c->SaveAs(("frac_1sigma_pre_postfit_"+tag+"_"+sample+"_zoom.pdf").c_str());
+    //c->SaveAs(("frac_1sigma_pre_postfit_"+tag+"_"+sample+"_zoom.png").c_str());
     c->Clear();
     l->Clear();
     latex->Clear();

@@ -1,0 +1,22 @@
+<systematic_list name="SBNInteractionResponseParametersNoVA">
+ <parameter> NOvANonResvnCC2pi </parameter>
+ <parameter> NOvANonResvnCC3pi </parameter>
+ <parameter> NOvANonResvpCC2pi </parameter>
+ <parameter> NOvANonResvpCC3pi </parameter>
+ <parameter> NOvANonResvnpCC1pi </parameter>
+ <parameter> NOvANonResvnNC1pi </parameter>
+ <parameter> NOvANonResvnNC2pi </parameter>
+ <parameter> NOvANonResvnNC3pi </parameter>
+ <parameter> NOvANonResvpNC1pi </parameter>
+ <parameter> NOvANonResvpNC2pi </parameter>
+ <parameter> NOvANonResvpNC3pi </parameter>
+ <parameter> NOvANonResvbarnCC1pi </parameter>
+ <parameter> NOvANonResvbarnCC2pi </parameter>
+ <parameter> NOvANonResvbarnCC3pi </parameter>
+ <parameter> NOvANonResvbarpCC1pi </parameter>
+ <parameter> NOvANonResvbarpCC2pi </parameter>
+ <parameter> NOvANonResvbarnNC1pi </parameter>
+ <parameter> NOvANonResvbarnNC2pi </parameter>
+ <parameter> NOvANonResvbarpNC1pi </parameter>
+ <parameter> NOvANonResvbarpNC2pi </parameter>
+</systematic_list>

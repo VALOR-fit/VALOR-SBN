@@ -8,3 +8,6 @@ beam                             |   string       |  optional   |   BNB_FHC
 bin00                            |   double       |  optional   |   0.5626849 
 bin01                            |   double       |  optional   |   0.8403252 
 bin02                            |   double       |  optional   |   1.6 
+factor00                         |   double       |  optional   |   0.5 
+factor01                         |   double       |  optional   |   0.5 
+factor02                         |   double       |  optional   |   0.5 

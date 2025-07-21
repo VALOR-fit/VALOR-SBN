@@ -78,7 +78,7 @@ void rates_bbb(const std::string &md,
   std::string det_print = GetDetector(det);
   
   ofstream of;
-  of.open((out+.txt).c_str(), ios::app);
+  of.open((out).c_str(), ios::app);
   of << "==========================================" << std::endl;
   of << " Detector       : " << det_print << std::endl;
   of << " Sample         : " << sample << std::endl;

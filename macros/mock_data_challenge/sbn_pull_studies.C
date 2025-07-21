@@ -88,8 +88,10 @@ void SetupStats(TPaveStats *st_inc, TPaveStats *st_exc);
 using namespace valor;
 using namespace valor::conv;
 
-void sbn_pull_studies(const char * inc_filename, 
-                      const char * exc_filename, 
+void sbn_pull_studies(const char * inc_filename,
+                      const char * exc_filename,
+		      std::string tag1 = "SBND", 
+		      std::string tag2 = "PRISM3", 
                       std::string  inputs = "", // Input covariance from the fits
                       const int ntoys = 1, // Number of toys to plot from the output, default only 1, if [-1] run number in file
                       std::string  output_tag = "") 
@@ -192,7 +194,7 @@ void sbn_pull_studies(const char * inc_filename,
   int nInputRows = input_syst.GetNrows();
   int nInputCols = input_syst.GetNcols();
 
-  TFile *f_outputs = new TFile(("sbnd_prism3_pull_studies"+tag+".root").c_str(),"RECREATE");
+  TFile *f_outputs = new TFile(("pull_studies"+tag+".root").c_str(),"RECREATE");
   f_outputs->cd();
 
   // Histograms to hold the comparisons between true and postfit values
@@ -222,7 +224,7 @@ void sbn_pull_studies(const char * inc_filename,
   std::vector<unsigned int> correct_inc(params.size(),0);
   std::vector<unsigned int> correct_exc(params.size(),0);
 
-  TString pdf_filename(("sbnd_prism3_pull_studies"+tag+".pdf").c_str());
+  TString pdf_filename(("pull_studies"+tag+".pdf").c_str());
 
   unsigned int ndof_inc = 0;
   unsigned int ndof_exc = 0;
@@ -427,8 +429,8 @@ void sbn_pull_studies(const char * inc_filename,
     h_input->SetMarkerStyle(true_marker);
 
     l_bestfit->AddEntry(h_input,("#color["+std::to_string(true_color)+"]{True value}").c_str(), "p");
-    l_bestfit->AddEntry(h_inclusive,("#color["+std::to_string(inc_color)+"]{SBND postfit value}").c_str(), "ep");
-    l_bestfit->AddEntry(h_exclusive,("#color["+std::to_string(exc_color)+"]{PRISM3 postfit value}").c_str(), "ep");
+    l_bestfit->AddEntry(h_inclusive,("#color["+std::to_string(inc_color)+"]{"+tag1+" postfit value}").c_str(), "ep");
+    l_bestfit->AddEntry(h_exclusive,("#color["+std::to_string(exc_color)+"]{"+tag2+" postfit value}").c_str(), "ep");
     l_bestfit->Draw("same");
     c->SetGridx();
     c->SetGridy();
@@ -452,8 +454,8 @@ void sbn_pull_studies(const char * inc_filename,
     else
       c->Print(pdf_filename.Data(),"pdf");
 
-    c->SaveAs(("pngs/sbnd_prism3_pull_studies_universe_"+std::to_string(i)+tag+".png").c_str());
-    c->SaveAs(("pdfs/sbnd_prism3_pull_studies_universe_"+std::to_string(i)+tag+".pdf").c_str());
+    c->SaveAs(("pngs/pull_studies_universe_"+std::to_string(i)+tag+".png").c_str());
+    c->SaveAs(("pdfs/pull_studies_universe_"+std::to_string(i)+tag+".pdf").c_str());
     c->Clear();
     l_bestfit->Clear();
   }
@@ -479,8 +481,8 @@ void sbn_pull_studies(const char * inc_filename,
 
   double max_comp_y = std::max(h_true_inc->GetMaximum(),h_true_exc->GetMaximum());
   h_true_exc->GetYaxis()->SetRangeUser(0.,max_comp_y*1.1);
-  h_true_inc->SetName(("#color["+std::to_string(inc_color)+"]{SBND}").c_str());
-  h_true_exc->SetName(("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str());
+  h_true_inc->SetName(("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str());
+  h_true_exc->SetName(("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str());
   //h_true_inc->SetLineStyle(7);
   h_true_exc->Draw("hist");
   h_true_inc->Draw("sames hist");
@@ -495,8 +497,8 @@ void sbn_pull_studies(const char * inc_filename,
   
   c_comp->Modified();
 
-  l_comp->AddEntry(h_true_inc, ("#color["+std::to_string(inc_color)+"]{SBND}").c_str(), "l");
-  l_comp->AddEntry(h_true_exc, ("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str(), "l");
+  l_comp->AddEntry(h_true_inc, ("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str(), "l");
+  l_comp->AddEntry(h_true_exc, ("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str(), "l");
   l_comp->Draw();
 
   TLatex latex;
@@ -505,9 +507,9 @@ void sbn_pull_studies(const char * inc_filename,
   latex.SetTextColor(611);
   latex.DrawLatex(-2.56,max_comp_y,"All parameters");
 
-  c_comp->SaveAs(("pngs/sbnd_prism3_comparison_all_parameters"+tag+".png").c_str());
-  c_comp->SaveAs(("pdfs/sbnd_prism3_comparison_all_parameters"+tag+".pdf").c_str());
-  c_comp->SaveAs(("pdfs/sbnd_prism3_comparison_all_parameters"+tag+".eps").c_str());
+  c_comp->SaveAs(("pngs/comparison_all_parameters"+tag+".png").c_str());
+  c_comp->SaveAs(("pdfs/comparison_all_parameters"+tag+".pdf").c_str());
+  c_comp->SaveAs(("pdfs/comparison_all_parameters"+tag+".eps").c_str());
   c_comp->Write();
   c_comp->Clear();
   l_comp->Clear();
@@ -521,8 +523,8 @@ void sbn_pull_studies(const char * inc_filename,
     
     max_comp_y = std::max(h_inc->GetMaximum(),h_exc->GetMaximum());
     h_exc->GetYaxis()->SetRangeUser(0.,max_comp_y*1.1);
-    h_inc->SetName(("#color["+std::to_string(inc_color)+"]{SBND}").c_str());
-    h_exc->SetName(("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str());
+    h_inc->SetName(("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str());
+    h_exc->SetName(("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str());
     h_exc->Draw("hist");
     h_inc->Draw("sames hist");
     h_inc->SetStats(1);
@@ -542,12 +544,12 @@ void sbn_pull_studies(const char * inc_filename,
     latex1.SetTextColor(pal.at(p));
     latex1.DrawLatex(-2.56,max_comp_y,params_tex.at(p).c_str());
 
-    l_comp->AddEntry(h_inc, ("#color["+std::to_string(inc_color)+"]{SBND}").c_str(), "l");
-    l_comp->AddEntry(h_exc, ("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str(), "l");
+    l_comp->AddEntry(h_inc, ("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str(), "l");
+    l_comp->AddEntry(h_exc, ("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str(), "l");
     l_comp->Draw();
 
-    c_comp->SaveAs(("pngs/sbnd_prism3_comparison_parameter_"+params.at(p)+tag+".png").c_str());
-    c_comp->SaveAs(("pdfs/sbnd_prism3_comparison_parameter_"+params.at(p)+tag+".pdf").c_str());
+    c_comp->SaveAs(("pngs/comparison_parameter_"+params.at(p)+tag+".png").c_str());
+    c_comp->SaveAs(("pdfs/comparison_parameter_"+params.at(p)+tag+".pdf").c_str());
     c_comp->Write(("c_comp_"+params.at(p)).c_str());
     c_comp->Clear();
     l_comp->Clear();
@@ -560,8 +562,8 @@ void sbn_pull_studies(const char * inc_filename,
     
     max_comp_y = std::max(h_chi_inc->GetMaximum(),h_chi_exc->GetMaximum());
     h_chi_exc->GetYaxis()->SetRangeUser(0.,max_comp_y*1.1);
-    h_chi_inc->SetName(("#color["+std::to_string(inc_color)+"]{SBND}").c_str());
-    h_chi_exc->SetName(("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str());
+    h_chi_inc->SetName(("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str());
+    h_chi_exc->SetName(("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str());
     h_chi_exc->Draw("hist");
     h_chi_inc->Draw("sames hist");
     h_chi_inc->SetStats(1);
@@ -577,12 +579,12 @@ void sbn_pull_studies(const char * inc_filename,
 
     latex1.DrawLatex(-2.56,max_comp_y,params_tex.at(p).c_str());
 
-    l_comp->AddEntry(h_chi_inc, ("#color["+std::to_string(inc_color)+"]{SBND}").c_str(), "l");
-    l_comp->AddEntry(h_chi_exc, ("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str(), "l");
+    l_comp->AddEntry(h_chi_inc, ("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str(), "l");
+    l_comp->AddEntry(h_chi_exc, ("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str(), "l");
     l_comp->Draw();
 
-    c_comp->SaveAs(("pngs/sbnd_prism3_chisq_parameter_"+params.at(p)+tag+".png").c_str());
-    c_comp->SaveAs(("pdfs/sbnd_prism3_chisq_parameter_"+params.at(p)+tag+".pdf").c_str());
+    c_comp->SaveAs(("pngs/chisq_parameter_"+params.at(p)+tag+".png").c_str());
+    c_comp->SaveAs(("pdfs/chisq_parameter_"+params.at(p)+tag+".pdf").c_str());
     c_comp->Write(("c_comp_chisq_"+params.at(p)).c_str());
     c_comp->Clear();
     l_comp->Clear();
@@ -591,8 +593,8 @@ void sbn_pull_studies(const char * inc_filename,
   FormatComparisonHists(h_stat_inc,h_stat_exc, "Fit statistic");
   max_comp_y = std::max(h_stat_inc->GetMaximum(),h_stat_exc->GetMaximum());
   h_stat_exc->GetYaxis()->SetRangeUser(0.,max_comp_y*1.1);
-  h_stat_inc->SetName(("#color["+std::to_string(inc_color)+"]{SBND}").c_str());
-  h_stat_exc->SetName(("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str());
+  h_stat_inc->SetName(("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str());
+  h_stat_exc->SetName(("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str());
   h_stat_exc->Draw("hist");
   h_stat_inc->Draw("sames hist");
   h_stat_inc->SetStats(1);
@@ -606,20 +608,20 @@ void sbn_pull_studies(const char * inc_filename,
 
   c_comp->Modified();
 
-  l_comp->AddEntry(h_stat_inc, ("#color["+std::to_string(inc_color)+"]{SBND}").c_str(), "l");
-  l_comp->AddEntry(h_stat_exc, ("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str(), "l");
+  l_comp->AddEntry(h_stat_inc, ("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str(), "l");
+  l_comp->AddEntry(h_stat_exc, ("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str(), "l");
   l_comp->Draw();
 
-  c_comp->SaveAs(("pngs/sbnd_prism3_comparison_fit_statistic"+tag+".png").c_str());
-  c_comp->SaveAs(("pdfs/sbnd_prism3_comparison_fit_statistic"+tag+".pdf").c_str());
+  c_comp->SaveAs(("pngs/comparison_fit_statistic"+tag+".png").c_str());
+  c_comp->SaveAs(("pdfs/comparison_fit_statistic"+tag+".pdf").c_str());
   c_comp->Write("c_comp_stat");
   c_comp->Clear();
   l_comp->Clear();
 
   FormatComparisonHists(h_perndof_inc,h_perndof_exc, "Fit statistic / NDOF");
   h_perndof_exc->GetYaxis()->SetRangeUser(0.,max_comp_y*1.1);
-  h_perndof_inc->SetName(("#color["+std::to_string(inc_color)+"]{SBND}").c_str());
-  h_perndof_exc->SetName(("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str());
+  h_perndof_inc->SetName(("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str());
+  h_perndof_exc->SetName(("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str());
   h_perndof_exc->Draw("hist");
   h_perndof_inc->Draw("sames hist");
   h_perndof_inc->SetStats(1);
@@ -633,12 +635,12 @@ void sbn_pull_studies(const char * inc_filename,
 
   c_comp->Modified();
 
-  l_comp->AddEntry(h_perndof_inc, ("#color["+std::to_string(inc_color)+"]{SBND}").c_str(), "l");
-  l_comp->AddEntry(h_perndof_exc, ("#color["+std::to_string(exc_color)+"]{PRISM3}").c_str(), "l");
+  l_comp->AddEntry(h_perndof_inc, ("#color["+std::to_string(inc_color)+"]{"+tag1+"}").c_str(), "l");
+  l_comp->AddEntry(h_perndof_exc, ("#color["+std::to_string(exc_color)+"]{"+tag2+"}").c_str(), "l");
   l_comp->Draw();
 
-  c_comp->SaveAs(("pngs/sbnd_prism3_comparison_fit_statistic_per_ndof"+tag+".png").c_str());
-  c_comp->SaveAs(("pdfs/sbnd_prism3_comparison_fit_statistic_per_ndof"+tag+".pdf").c_str());
+  c_comp->SaveAs(("pngs/comparison_fit_statistic_per_ndof"+tag+".png").c_str());
+  c_comp->SaveAs(("pdfs/comparison_fit_statistic_per_ndof"+tag+".pdf").c_str());
   c_comp->Write("c_comp_stat_perndof");
   c_comp->Clear();
   l_comp->Clear();
@@ -651,7 +653,7 @@ void sbn_pull_studies(const char * inc_filename,
   file << std::endl;
   file << " Rate of fits which find the true systematic value to within the postfit uncertainty: " << std::endl;
   file << std::endl;
-  file << std::setw(16) << "Parameter" << std::setw(16) << "SBND " << std::setw(16) << "PRISM3 " << std::endl;
+  file << std::setw(16) << "Parameter" << std::setw(16) << tag1 << std::setw(16) << tag2 << std::endl;
   unsigned int total_correct_inc = 0;
   unsigned int total_correct_exc = 0;
   for(unsigned int i = 0; i < params.size(); ++i){

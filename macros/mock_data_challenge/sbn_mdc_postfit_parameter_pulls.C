@@ -325,16 +325,19 @@ void sbn_mdc_postfit_parameter_pulls(const std::string &config,
 
   // Sort latex
   if(thesis){
-    FormatLatex(0,                nFluxCovNumuRows, h_postfit->GetNbinsX(),maxy*1.05,"#color[855]{#splitline{Hadronic}{Flux}}",thesis);
+    //FormatLatex(0,                nFluxCovNumuRows, h_postfit->GetNbinsX(),maxy*1.05,"#color[855]{#splitline{Hadronic}{Flux}}",thesis);
+    FormatLatex(0,                nFluxCovNumuRows, h_postfit->GetNbinsX(),maxy*1.05,"#color[855]{#splitline{Hadronic}{Production}}",thesis);
     FormatLatex(nCumFluxRows,     nCumPropRows,     h_postfit->GetNbinsX(),maxy*1.05,"#color[834]{#splitline{Proposal}{#sigma}}",thesis);
     FormatLatex(nCumPropRows,     nCumMECRows,      h_postfit->GetNbinsX(),maxy*1.05,"#color[802]{#splitline{Modern}{#sigma}}",thesis);
   }
   else{
-    FormatLatex(0,                nFluxCovNumuRows, h_postfit->GetNbinsX(),maxy*1.05,"#color[855]{Hadronic Flux}",thesis);
+    //FormatLatex(0,                nFluxCovNumuRows, h_postfit->GetNbinsX(),maxy*1.05,"#color[855]{Hadronic Flux}",thesis);
+    FormatLatex(0,                nFluxCovNumuRows, h_postfit->GetNbinsX(),maxy*1.05,"#color[855]{Hadronic Production}",thesis);
     FormatLatex(nCumFluxRows,     nCumPropRows,     h_postfit->GetNbinsX(),maxy*1.05,"#color[834]{Proposal #sigma}",thesis);
     FormatLatex(nCumPropRows,     nCumMECRows,      h_postfit->GetNbinsX(),maxy*1.05,"#color[802]{Modern #sigma}",thesis);
   }
-  FormatLatex(nFluxCovNumuRows, nCumFluxRows,     h_postfit->GetNbinsX(),maxy*1.05,"#color[629]{Flux}",thesis);
+  //FormatLatex(nFluxCovNumuRows, nCumFluxRows,     h_postfit->GetNbinsX(),maxy*1.05,"#color[629]{Flux}",thesis);
+  FormatLatex(nFluxCovNumuRows, nCumFluxRows,     h_postfit->GetNbinsX(),maxy*1.05,"#color[629]{Other Flux}",thesis);
   if(nSBNRows)
     FormatLatex(nCumMECRows,nCumMECRows+nSBNRows,h_postfit->GetNbinsX(),maxy*1.05,"#color[873]{SBN}",thesis);
   if(nDetRows)
