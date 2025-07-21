@@ -1,0 +1,604 @@
+<?xml version='1.0' encoding='utf-8'?>
+<param_list name="v9_response_parameters">
+  <!--===========================================================================================-->
+  <param>
+    <name>
+      <simple>  NOvANonResvbarnCC1pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, neutron, CC 1pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} n}^{CC1#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} n}^{CC1\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   cc1pic    </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarnCC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, neutron, CC 2pions </long>
+      <rootex>  f_{NnR_{#bar{#nu} n}^{CC2#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} n}^{CC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allcc2pibut2pi0</reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarnCC3pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, neutron, CC 3pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} n}^{CC3#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} n}^{CC3\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccoth     </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarnNC1pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, neutron, NC 1pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} n}^{NC1#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} n}^{NC1\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   nc1pic    </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarnNC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, neutron, NC 2pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} n}^{NC2#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} n}^{NC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ncpicpi0  </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarpCC1pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, proton, CC 1pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} p}^{CC1#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} p}^{CC1\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allcc1pi  </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarpCC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, proton, CC 2pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} p}^{CC2#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} p}^{CC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccpiccpi0plusccoth </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarpNC1pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, proton, NC 1pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} p}^{NC1#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} p}^{NC1\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   nc1pic    </reac_type>
+      <flav_init>   nubarany       </flav_init>
+      <flav_final>  nubarany       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvbarpNC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nubar, proton, NC 2pion </long>
+      <rootex>  f_{NnR_{#bar{#nu} p}^{NC2#pi}} </rootex>
+      <tex>     f_{NnR_{\bar{\nu} p}^{NC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnc2pibut2pi0 </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvnCC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, neutron, CC 2pion </long>
+      <rootex>  f_{NnR_{#nu n}^{CC2#pi}} </rootex>
+      <tex>     f_{NnR_{\nu n}^{CC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allcc2piplusccoth</reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvnCC3pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, neutron, CC 3pion </long>
+      <rootex>  f_{NnR_{#nu n}^{CC3#pi}} </rootex>
+      <tex>     f_{NnR_{\nu n}^{CC3\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccoth     </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvnNC1pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, neutron, NC 1pion </long>
+      <rootex>  f_{NnR_{#nu n}^{NC1#pi}} </rootex>
+      <tex>     f_{NnR_{\nu n}^{NC1\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnc1piplusncoth </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvnNC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, neutron, NC 2pion </long>
+      <rootex>  f_{NnR_{#nu n}^{NC2#pi}} </rootex>
+      <tex>     f_{NnR_{\nu n}^{NC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnc2piplusncoth </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvnNC3pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, neutron, NC 3pion </long>
+      <rootex>  f_{NnR_{#nu n}^{NC3#pi}} </rootex>
+      <tex>     f_{NnR_{\nu n}^{NC3\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ncoth     </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvnpCC1pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, np, CC 1pion </long>
+      <rootex>  f_{NnR_{#nu np}^{CC1#pi}} </rootex>
+      <tex>     f_{NnR_{\nu np}^{CC1\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allcc1piplusccoth </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvpCC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, proton, CC 2pion </long>
+      <rootex>  f_{NnR_{#nu p}^{CC2#pi}} </rootex>
+      <tex>     f_{NnR_{\nu p}^{CC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allcc2pibut2pi0plusccoth </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvpCC3pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, proton, CC 3pion </long>
+      <rootex>  f_{NnR_{#nu p}^{CC3#pi}} </rootex>
+      <tex>     f_{NnR_{\nu p}^{CC3\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccoth     </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvpNC1pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, proton, NC 1pion </long>
+      <rootex>  f_{NnR_{#nu p}^{NC1#pi}} </rootex>
+      <tex>     f_{NnR_{\nu p}^{NC1\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnc1pi  </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvpNC2pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, proton, NC 2pion </long>
+      <rootex>  f_{NnR_{#nu p}^{NC2#pi}} </rootex>
+      <tex>     f_{NnR_{\nu p}^{NC2\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   allnc2piplusncoth </reac_type>
+      <flav_init>   nuany       </flav_init>
+      <flav_final>  nuany       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  NOvANonResvpNC3pi </simple>
+      <long>    NoVA style non-resonant pion norm nu, proton, NC 3pion </long>
+      <rootex>  f_{NnR_{#nu p}^{NC3#pi}} </rootex>
+      <tex>     f_{NnR_{\nu p}^{NC3\pi}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ncoth     </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+</param_list>

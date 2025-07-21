@@ -41,13 +41,13 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   syst = model.GetSystematics()
   if not syst.Size():
-    print "You haven't got any systematics defined. This is never going to work."
+    print("You haven't got any systematics defined. This is never going to work.")
     exit(-1)
 
 
   tick_from_config = False
   if not modeslist:
-    print "File containing the list of parameters and their associated modes not provided, will tick based on parameter configurations"
+    print("File containing the list of parameters and their associated modes not provided, will tick based on parameter configurations")
     tick_from_config = True
 
   ROOT.gROOT.ProcessLine("using namespace valor;")
@@ -83,7 +83,7 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   first_page = True
 
-  for isubmodel in xrange(model.GetNSubModels()):
+  for isubmodel in range(model.GetNSubModels()):
     submodel  = model.GetSubModel(isubmodel)
     sample    = submodel.GetSample()
     beam_mode = submodel.GetBeam()
@@ -129,10 +129,16 @@ def main(beam_mode_arg = None, sample_arg = None,
 
     # Write all the other rows (per param)
     pool = valor.ParameterPool.Instance()
-    for iparam in xrange(syst.Size()):
+    for iparam in range(syst.Size()):
       param = pool.GetParam(syst.WhichParam(iparam))
       if not iparam:
         last_param = param
+      print(f"Param = '{param.GetName()}'")
+      if "04a1" in modeslist and not os.path.isfile("/exp/sbnd/app/users/bslater/valor/DATA/data/sbn_numu_inclusive/responses/04a1///valor_splines_numuCCincl_"+param.GetName()+"_BNB_FHC_sbn_nd_modelist.root"):
+          print(f"skipping '{param.GetName()}'")
+          continue
+      if "NOvA" in param.GetName():
+          continue
 
       if skipflux       and param.SearchCategories("flux")            : continue
       if skipfluxuncorr and param.SearchCategories("flux") and param.SearchCategories("flux_uncorr") : continue
@@ -212,8 +218,8 @@ def main(beam_mode_arg = None, sample_arg = None,
 
   tex_output.write("\\end{document}\n")
 
-  print "\n\nTable output written to",output_file
-  print "It's huge. I suggest using pdfcrop after building it."
+  print(f"\n\nTable output written to '{output_file}'")
+  print("It's huge. I suggest using pdfcrop after building it.")
 
 if __name__=="__main__":
 
@@ -251,4 +257,4 @@ if __name__=="__main__":
   main(beam, sample, o.output_file, o.modeslist, o.config, o.skipflux, o.skipfluxcov, o.skipfluxuncorr, o.skipint, o.skipprop, o.skipmod, o.skipdet, o.incempty, not o.nocolor, o.unosc)
 
   if other:
-    print "Warning - ignored arguments: ",other
+    print(f"Warning - ignored arguments: '{other}'")

@@ -43,8 +43,8 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> /exp/sbnd/app/users/bslater/valor/prism/dsts/shift/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_universes_prism3_shift0p5_manual.root </filename>
-       <objname> valor_sbn_minidst_oa02 </objname> 
+       <filename> sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_universes_0p84-1p6deg.root </filename>
+       <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
   </dst>
@@ -78,7 +78,7 @@ Splines
 -->
 
 <splines>
-  <folder>         sbn_numu_inclusive/responses/03e2/sbnd_oa02/     </folder>
+  <folder>         sbn_numu_inclusive/responses/03e2_2/sbnd_oa02/     </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root       </pattern>
   <type>           TSpline3                                               </type>
   <stored_as>      TObjArray                                              </stored_as>

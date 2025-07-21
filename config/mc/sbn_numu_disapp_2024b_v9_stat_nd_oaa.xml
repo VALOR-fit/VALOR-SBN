@@ -43,8 +43,8 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> /exp/sbnd/app/users/bslater/valor/prism/dsts/shift/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_universes_prism3_shift0p5_manual.root </filename>
-       <objname> valor_sbn_minidst_oa01 </objname> 
+       <filename> sbn_numu_inclusive/dsts/2024b/valor_caf_fhc_numuccinc_disappearance_nd_minidst_mc_oaa.root </filename>
+       <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
   </dst>
@@ -61,7 +61,7 @@ Input MC templates
 Modelists
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -->
-<modelist> modelists/fine/SBNOscLowE_reduced_numu.xml </modelist>
+<modelist> modelists/fine/SBNOscLowE_long.xml </modelist>
 <coarse_modelist> modelists/coarse/coarse_mode_list_SBN_BNB_FHC_numuCCincl.xml </coarse_modelist>
 
 <!--
@@ -71,22 +71,4 @@ Default binning
 -->
 <default_binning> binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </default_binning>
 
-<!--
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Splines
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--->
-
-<splines>
-  <folder>         sbn_numu_inclusive/responses/03e2/sbnd_oa01/     </folder>
-  <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root       </pattern>
-  <type>           TSpline3                                               </type>
-  <stored_as>      TObjArray                                              </stored_as>
-  <array_pattern>  spl_[MODE]_[PARAM]                                     </array_pattern>
-  <method>         curr_val                                               </method>
-  <allow_negative> true                                                   </allow_negative>
-</splines>
-
 </analysis_inputs>
-
-

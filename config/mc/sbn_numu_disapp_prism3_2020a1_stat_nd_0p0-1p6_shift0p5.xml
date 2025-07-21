@@ -43,7 +43,7 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> /exp/sbnd/app/users/bslater/valor/prism/dsts/shift/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-1p6deg_shift0p5_2.root </filename>
+       <filename> /exp/sbnd/app/users/bslater/valor/prism/dsts/shift/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-1p6deg_shift0p5.root </filename>
        <objname> valor_sbn_minidst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>

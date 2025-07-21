@@ -20,3 +20,6 @@ e-shift-md                         |   double       |  optional   |  0.0
 weight-mec                         |   double       |  optional   |  1.0
 weight-nue                         |   double       |  optional   |  1.0
 n-gen-files                        |   integer      |  optional   |  -1
+dummy-mode                         |   boolean      |  optional   |  false
+pot                                |   double       |  optional   |  -999
+prism                              |   boolean      |  optional   |  false

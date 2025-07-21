@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+
+<analysis_inputs analysis="SBN-ND-MDC" version="09a2019" detector="ND">
+
+<!--
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mock data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-->
+
+<data>
+
+  <default_binning> 
+    <file> binning/sbn_proposal_binning_NuMu_shifted_etrue.xml </file>
+    <scheme> reco_optimized </scheme>
+  </default_binning>
+  
+  
+  <using_dst_format> 
+     false
+  </using_dst_format> 
+
+  <using_varray_format> 
+     false 
+  </using_varray_format> 
+
+  <using_hist_format> 
+     true 
+  </using_hist_format> 
+
+  <hist> 
+    <bnb_fhc>
+      <filename> sbn_numu_inclusive/mock_data/mock_data_nd_m40MeV.root </filename> 
+      <objname>  valor_pdft_sb_rf_sbn_nd__BNB_FHC__numuCCincl_Ereco    </objname> 
+      <objtype>  TH1D    </objtype> 
+    </bnb_fhc>
+  </hist>
+  
+</data>
+
+</analysis_inputs>
+
+

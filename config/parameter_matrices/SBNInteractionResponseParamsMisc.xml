@@ -1,0 +1,5 @@
+<systematic_list name="SBNInteractionResponseParamsMisc">
+ <parameter> C12ToAr402p2hScalingv </parameter>
+ <parameter> C12ToAr402p2hScalingvbar </parameter>
+ <parameter> SPPLowQ2Suppression </parameter>
+</systematic_list>

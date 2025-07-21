@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_2020a1_1">
+   
+    <element name="sbn_nd_fhc_numuCCIncl">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCincl                                           </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_2024b_v9_04a1_nd.xml              </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml  </binning>
+    </element>
+  
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml   </filename>
+    <filename desc="sbn_mec_normalisation">            params/sbn_mec_normalisation.xml              </filename>
+    <filename desc="sbn_pot_normalisation">            params/sbn_pot_normalisation.xml              </filename>
+    <filename desc="int_response_parameters_genierw">  params/sbn_interaction_genierw.xml            </filename>
+    <filename desc="int_response_parameters_minerva">  params/sbn_interaction_minerva.xml            </filename>
+    <filename desc="int_response_parameters_misc">     params/sbn_interaction_misc.xml               </filename>
+    <filename desc="int_response_parameters_nova">     params/sbn_interaction_nova.xml               </filename>
+  </parameter_definitions>
+
+  <systematics name="SBN">
+    <group name="genierw">
+      <format> SBNInteractionResponseParamsGENIERW.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_genierw.root </filename>
+        <objname>    cov                                                                  </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_genierw.root </filename>
+        <objname>    untuned                                                              </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_genierw.root </filename>
+        <objname>    nominal                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="minerva">
+      <format> SBNInteractionResponseParamsMinerva.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_minerva.root </filename>
+        <objname>    cov                                                                  </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_minerva.root </filename>
+        <objname>    untuned                                                              </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_minerva.root </filename>
+        <objname>    nominal                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="misc">
+      <format> SBNInteractionResponseParamsMisc.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_misc.root </filename>
+        <objname>    cov                                                                  </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_misc.root </filename>
+        <objname>    untuned                                                              </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_misc.root </filename>
+        <objname>    nominal                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="nova">
+      <format> SBNInteractionResponseParamsNOvA.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_nova.root </filename>
+        <objname>    cov                                                                  </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </covariance_matrix>
+
+      <untuned_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_nova.root </filename>
+        <objname>    untuned                                                              </objname>    
+        <objtype>    TMatrixD                                                             </objtype>
+      </untuned_values> 
+
+      <initial_values>
+        <filename>   sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_nova.root </filename>
+        <objname>    nominal                                                              </objname>    
+      </initial_values> 
+
+    </group>
+    
+    <group name="int">
+
+      <format> SBNMEC.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03d1/mec_100pct_covariance.root </filename>
+        <objname>    frac_cov                                                            </objname>    
+        <objtype>    TMatrixD                                                            </objtype>
+      </covariance_matrix>
+  
+    </group>
+    
+    <group name="flux">
+      <format> SBNPOT.xml </format>
+      
+      <covariance_matrix>
+        <filename>   sbn_numu_inclusive/prior_errors/03d1/pot_2pct_covariance.root </filename>
+        <objname>    frac_cov                                                       </objname>    
+        <objtype>    TMatrixD                                                       </objtype>
+      </covariance_matrix>
+    </group>
+
+    
+  </systematics>
+
+</valor> 

@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='utf-8'?>
+<param_list name="v9_response_parameters">
+  <!--===========================================================================================-->
+  <param>
+    <name>
+      <simple>  E2p2hAvbar </simple>
+      <long>    E2p2h A nubar </long>
+      <rootex>  f_{E2p2h A #bar{#nu}} </rootex>
+      <tex>     f_{E2p2h A \bar{\nu}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccmec     </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  E2p2hAv </simple>
+      <long>    E2p2h A nu </long>
+      <rootex>  f_{E2p2h A #nu} </rootex>
+      <tex>     f_{E2p2h A \nu} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccmec     </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  E2p2hBvbar </simple>
+      <long>    E2p2h B nubar </long>
+      <rootex>  f_{E2p2h B #bar{#nu}} </rootex>
+      <tex>     f_{E2p2h B \bar{\nu}} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccmec     </reac_type>
+      <flav_init>   numubar       </flav_init>
+      <flav_final>  numubar       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  E2p2hBv </simple>
+      <long>    E2p2h B nu </long>
+      <rootex>  f_{E2p2h B #nu} </rootex>
+      <tex>     f_{E2p2h B \nu} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccmec     </reac_type>
+      <flav_init>   numu       </flav_init>
+      <flav_final>  numu       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+  <param>
+    <name>
+      <simple>  Mnv2p2hGaussEnhancement </simple>
+      <long>    Mnv2p2hGaussEnhancement </long>
+      <rootex>  f_{Mnv2p2hGaussEnhancement} </rootex>
+      <tex>     f_{Mnv2p2hGaussEnhancement} </tex>
+    </name>
+    <apply_to_range>
+      <Etrue> 0, 10. </Etrue>
+      <Ereco> 0, 10. </Ereco>
+    </apply_to_range>
+    <type>  response  </type>
+    <categories>
+      <category> int </category>
+      <category> splines </category>
+    </categories>
+    <apply_to>
+      <detector>    allsbn    </detector>
+      <beam>        fhc       </beam>
+      <selection>   all       </selection>
+      <reac_type>   ccqelike  </reac_type>
+      <flav_init>   numuany       </flav_init>
+      <flav_final>  numuany       </flav_final>
+      <target>      all       </target>
+    </apply_to>
+    <limits>  -inf, inf  </limits>
+    <update_from_cov_matrix> true  </update_from_cov_matrix>
+    <range_mode>             sigma </range_mode>
+    <range>                  -5,5  </range>
+  </param>
+</param_list>

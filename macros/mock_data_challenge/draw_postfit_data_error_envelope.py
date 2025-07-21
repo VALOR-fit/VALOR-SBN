@@ -38,6 +38,8 @@ postfit_line   = ROOT.kAzure-1
 #prefit_line   = ROOT.kPink+4
 prefit_color  = ROOT.kTeal+5
 prefit_line   = ROOT.kTeal+4
+prefitstat_color  = ROOT.kTeal+5
+prefitstat_line   = ROOT.kTeal+4
 #prefit_color  = ROOT.kAzure+7
 #prefit_line   = ROOT.kAzure-1
 #postfit_color = ROOT.kAzure+7
@@ -45,6 +47,7 @@ prefit_line   = ROOT.kTeal+4
 
 data_style    = 1001 # Solid
 prefit_style  = 3017 # Hatched
+prefitstat_style  = 1001 # Hatched
 postfit_style = 3018 # Solid
 #prefit_style  = 3001
 #postfit_style = 3001
@@ -54,6 +57,8 @@ to3dp = "{0:.3f}"
 default_data_input_file = (
   "")
 default_prefit_input_file = (
+  "")
+default_prefitstat_input_file = (
   "")
 default_postfit_input_file = (
   "")
@@ -77,12 +82,12 @@ conv =  valor.conv
 opt  =  valor.Opt.Instance()
 env  =  valor.Env.Instance()
 
-def main(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm):
+def main(config, data_fn, prefit_fn, prefitstat_fn, postfit_fn, data_label, prefit_label, prefitstat_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm, usesum, fix_y_max):
 
-  pre_and_postfit_envelope(config, data_fn, prefit_fn, postfit_fn, data_label, prefit_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm)
+  pre_and_postfit_envelope(config, data_fn, prefit_fn, prefitstat_fn, postfit_fn, data_label, prefit_label, prefitstat_label, postfit_label, tag, write_tex, img_format,ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm, usesum,fix_y_max)
 
 
-def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_label, prefit_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm):
+def pre_and_postfit_envelope(config, data_file, prefit_file, prefitstat_file,  postfit_file, data_label, prefit_label, prefitstat_label, postfit_label, tag,write_tex,img_format, ratio_mult, datatag, det, mdc, ratio, onesided, prepost, pm, usesum,fix_y_max):
 
   envelope_images = []
   ratio_images = []
@@ -96,24 +101,34 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
   plot_data    = False
   plot_prefit  = False
+  plot_prefitstat  = False
   plot_postfit = False
 
   f_data = ROOT.TFile()
   if data_file:
+    print("looking for data file ", data_file," with label ", data_label)
     f_data = ROOT.TFile(data_file,"READ")
     plot_data = True
 
   f_prefit = ROOT.TFile()
   if prefit_file:
+    print("looking for prefit file ", prefit_file," with label ", prefit_label)
     f_prefit = ROOT.TFile(prefit_file,"READ")
     plot_prefit = True
 
   f_postfit = ROOT.TFile()
   if postfit_file:
+    print("looking for postfit file ", postfit_file," with label ", postfit_label)
     f_postfit = ROOT.TFile(postfit_file,"READ")
     plot_postfit = True
 
-  n_files = int(plot_data) + int(plot_prefit) + int(plot_postfit)
+  f_prefitstat = ROOT.TFile()
+  if prefitstat_file:
+    print("looking for prefitstat file ", prefitstat_file," with label ", prefitstat_label)
+    f_prefitstat = ROOT.TFile(prefitstat_file,"READ")
+    plot_prefitstat = True
+
+  n_files = int(plot_data) + int(plot_prefit) + int(plot_postfit) + int(plot_prefitstat)
 
   #if n_files < 2:
   #  raise DUNEAnaError("Must pass at least 2 files to plot")
@@ -132,7 +147,7 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     s = m.GetSample()
     b = m.GetBeam()
     sample_str = util.SampleAsString(s)
-    if 'OA' in util.SampleAsString(s):
+    if 'OA' in util.SampleAsString(s) and usesum==True:
       sample_str = "numuCCinclOASUM" 
     hname_prefix = "env_sb_%s_%s" % (util.BeamConfAsString(b) , sample_str)
     # When running all tweaks at the same time, specify using the detector identifier:
@@ -149,23 +164,28 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
         hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       else:
         hname_data = "toymc_data_sb_rf_sbn_nd__%s__%s" % (util.BeamConfAsString(b), sample_str)
+      hname_prefitstat = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
 
     elif det == '2':
       if mdc is False:
         hname_data = "valor_pdfts_sb_rf_sbn_uboone__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       else:
         hname_data = "toymc_data_sb_rf_sbn_uboone__%s__%s" % (util.BeamConfAsString(b), sample_str)
+      hname_prefitstat = "valor_pdfts_sb_rf_sbn_uboone__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
 
     elif det == '3':
       if mdc is False:
         hname_data = "valor_pdfts_sb_rf_sbn_icarus__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       else:
         hname_data = "toymc_data_sb_rf_sbn_icarus__%s__%s" % (util.BeamConfAsString(b), sample_str)
+      hname_prefitstat = "valor_pdfts_sb_rf_sbn_icarus__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
 
     else:
       hname_data = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
+      hname_prefitstat = "valor_pdfts_sb_rf_sbn_nd__%s__%s_Ereco" % (util.BeamConfAsString(b), sample_str)
       print("No detector given, defaulting to the ND")
-
+    print("Accessed hname_data = ", hname_data, " from file = ", data_file)
+    print("Accessed hname_prefitstat = ", hname_prefitstat, " from file = ", prefitstat_file)
     out_prefix = "%s_sb_%s_%s" % (tag, util.BeamConfAsString(b) , sample_str)
 
     hists         = []
@@ -175,6 +195,9 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_data:
       data_nom       = get_hist(f_data,hname_data)
       hists.append(data_nom)
+    if plot_prefitstat:
+      prefitstat_nom       = get_hist(f_prefitstat,hname_prefitstat)
+      hists.append(prefitstat_nom)
 
     if plot_prefit:
       f_prefit.cd()
@@ -224,11 +247,11 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
       h.GetYaxis().SetTitleOffset(title_offset)
       h.GetYaxis().SetMaxDigits(3)
 
-    legend = ROOT.TLegend(0.425,0.697,0.948,0.870)
+    legend = ROOT.TLegend(0.45,0.62,0.96,0.86)
     legend.SetFillStyle(0)
     legend.SetBorderSize(0)
     legend.SetMargin(0.25)
-    legend.SetTextSize(0.036)
+    #legend.SetTextSize(0.016)
 
     canv_name = "c_%s" % sample_str
     canv = ROOT.TCanvas(canv_name,"",900,900)
@@ -281,28 +304,33 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
     if plot_prefit:
       prefit_width = prefit_nom
       widths.append(prefit_width)
+    if plot_prefitstat:
+      prefitstat_width = prefitstat_nom
+      widths.append(prefitstat_width)
     if plot_postfit:
       postfit_width = postfit_nom
       widths.append(postfit_width)
 
     max_y = 0.
-    for w in widths:
-      for i in range(w.GetXaxis().GetNbins()):
-        old_bin_content = w.GetBinContent(i+1)
-        bin_width       = w.GetXaxis().GetBinWidth(i+1)
-        new_bin_content = old_bin_content/bin_width
-        w.SetBinContent(i+1,new_bin_content)
-        if max_y < new_bin_content:
-          max_y = new_bin_content
-      wintegrals.append(w.Integral("width"))
-      integrals.append(w.Integral())
-
-#    max_y = max_y*1.4
-    if det == '1':
-      max_y = max(wintegrals)*1.6
+    if fix_y_max != 0:
+      max_y = float(fix_y_max)
     else:
-      max_y = max(wintegrals)*1.4
+      for w in widths:
+        for i in range(w.GetXaxis().GetNbins()):
+          old_bin_content = w.GetBinContent(i+1)
+          bin_width       = w.GetXaxis().GetBinWidth(i+1)
+          new_bin_content = old_bin_content/bin_width
+          w.SetBinContent(i+1,new_bin_content)
+          if max_y < new_bin_content:
+            max_y = new_bin_content
+        wintegrals.append(w.Integral("width"))
+        integrals.append(w.Integral())
 
+#      max_y = max_y*1.4
+      if det == '1':
+        max_y = max(wintegrals)*1.6
+      else:
+        max_y = max(wintegrals)*1.4
     envelope_fn       = out_prefix+"_envelope."+img_format
     png_output        = out_prefix+"_envelope.png"
     pdf_output        = out_prefix+"_envelope.pdf"
@@ -457,8 +485,32 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
 
       data_width.Write("data_hist")
 
+    if plot_prefitstat:
+      prefitstat_width.SetLineColor(prefitstat_color)
+      prefitstat_width.SetLineStyle(1)
+      prefitstat_width.SetLineWidth(linewidth)
+      prefitstat_width.Draw("same")
+
+      legend_prefitstat = ROOT.TH1D(prefitstat_width)
+      legend_prefitstat.SetLineStyle(prefitstat_width.GetLineStyle())
+      legend_prefitstat.SetLineColor(prefitstat_width.GetLineColor())
+      legend_prefitstat.SetLineWidth(prefitstat_width.GetLineWidth())
+
+      all_hists.append(legend_prefitstat)
+      all_graphs.append(legend_prefitstat)
+      all_labels.append(prefitstat_label)
+      all_legend.append(legend_prefitstat)
+
+      legend.AddEntry(legend_prefitstat, prefitstat_label, "L")
+
+      prefitstat_width.Write("prefitstat_hist")
+
     canv.RedrawAxis()
 
+
+    nEntries2 = legend.GetNRows()
+    currHeight2 = (legend.GetY2NDC() - legend.GetY1NDC())/2.
+    legend.SetY1NDC(legend.GetY2NDC()-(nEntries2*currHeight2))
     legend.SetTextFont(font)
     legend.Draw()
     legend.Write("legend")
@@ -520,6 +572,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
             h.Draw("same")
             graph.Draw("same2")
             r_legend.AddEntry(legend,label,"FL")
+          elif plot_prefitstat and i == 3:
+            h.Draw("same")
+            graph.Draw("same2")
+            r_legend.AddEntry(legend,label,"FL")
         elif plot_postfit:
           if i == 0:
             h.Draw()
@@ -534,6 +590,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
             h.Draw("same")
             graph.Draw("same2")
             r_legend.AddEntry(legend,label,"FL")
+          elif plot_prefitstat and i == 2:
+            h.Draw("same")
+            graph.Draw("same2")
+            r_legend.AddEntry(legend,label,"FL")
         elif plot_data:
           if i == 0:
             h.Draw()
@@ -543,6 +603,10 @@ def pre_and_postfit_envelope(config, data_file, prefit_file, postfit_file, data_
             h.GetYaxis().SetTitleOffset(0.9)
             h.GetYaxis().SetLabelSize(0.05)
             h.GetXaxis().SetLabelColor(0)
+            r_legend.AddEntry(legend,label,"FL")
+          elif plot_prefitstat and i == 1:
+            h.Draw("same")
+            graph.Draw("same2")
             r_legend.AddEntry(legend,label,"FL")
 
 
@@ -728,6 +792,10 @@ if __name__=="__main__":
   parser.add_option('--onesided', dest='onesided',default=False,help='Whether to plot only 1-sided errors')
   parser.add_option('--prepost', dest='prepost',default='pre',help='Which should be 1-sided, pre=prefit (-p), post=postfit (-b), both=both')
   parser.add_option('--pm', dest='pm',default='1',help='Which side to plot')
+  parser.add_option('--usesum', dest='usesum',default=True,help='is input tweak the summed version')
+  parser.add_option('-y', dest='fix_y_max',default=0,help='do we want all plots in a loop to have the same y axis')
+  parser.add_option('-s','--prefitstat', dest='prefitstat',default=default_prefitstat_input_file,help='The prefit stat-only input ROOT file')
+  parser.add_option('--slabel', dest='prefitstat_label'  ,default="Prefit Stat"  ,help='The label for the prefit stat-only')
 
   options,other = parser.parse_args()
 
@@ -735,8 +803,8 @@ if __name__=="__main__":
     print ("Bad arguments: ",other)
     exit(-1)
 
-  main(options.config, options.data, options.prefit, options.postfit,
-       options.data_label, options.prefit_label, options.postfit_label,
+  main(options.config, options.data, options.prefit, options.prefitstat, options.postfit,
+       options.data_label, options.prefit_label, options.prefitstat_label, options.postfit_label,
        options.tag, options.tex, options.imgformat, options.ratiomult,
        options.datatag, options.det, options.mdc, options.ratio,
-       options.onesided, options.prepost, options.pm)
+       options.onesided, options.prepost, options.pm,options.usesum, options.fix_y_max)

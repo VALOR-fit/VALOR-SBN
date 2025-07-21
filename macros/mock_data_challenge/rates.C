@@ -12,7 +12,7 @@ void rates(const std::string &md,
            const std::string &sample,
            const std::string &analysis,
            const std::string &model,
-           const std::string &out="rates.txt",
+           const std::string &out="rates",
            const std::string &treename = "valor_fit_ntp"){
 
   using namespace valor;
@@ -45,7 +45,7 @@ void rates(const std::string &md,
   std::string det_print = GetDetector(det);
   
   ofstream of;
-  of.open(out.c_str(), ios::app);
+  of.open((out+".txt").c_str(), ios::app);
   of << "==========================================" << std::endl;
   of << " Detector       : " << det_print << std::endl;
   of << " Sample         : " << sample << std::endl;
@@ -76,15 +76,49 @@ void rates(const std::string &md,
   std::map<std::string,double>::const_iterator it;
   of << " Fit statistic  : " <<  std::setprecision(6) << stat << std::endl;
   of << " NDOF           : " <<  std::setprecision(6) << ndof << std::endl;
+  double syst;
+  int i =0;
   for(it = gbf->GetBestFitStatisticContributions().begin(); it != gbf->GetBestFitStatisticContributions().end(); ++it){
       of << std::setprecision(6) << it->first;
       of << std::setprecision(6) << " = ";
       of << std::setprecision(6) << it->second;
       of << endl;
+      if(i==1) syst = it->second;
+      i++;
   }
   of << "==========================================" << std::endl;
   of.close();
-
+  ofstream tex;
+  tex.open((out+".tex").c_str(), ios::app);
+  tex <<  "\\documentclass{article} " << std::endl;
+  tex <<  "\\usepackage[utf8]{inputenc} " << std::endl;
+  tex <<  "\\usepackage{multirow} " << std::endl;
+  tex <<  "\\usepackage{makecell} % For bold hline " << std::endl;
+  tex <<  "\\usepackage{amsmath} % For math symbols" << std::endl;
+  tex <<  "\\usepackage{booktabs} " << std::endl;
+  tex <<  "\\usepackage{arydshln} " << std::endl;
+  tex <<  std::endl;
+  tex <<  "\\setlength\\dashlinedash{1.2pt} " << std::endl;
+  tex <<  "\\setlength\\dashlinegap{1.2pt} " << std::endl;
+  tex <<  "\\setlength\\arrayrulewidth{0.3pt}" << std::endl;
+  tex <<  std::endl;
+  tex <<  "\\begin{document} " << std::endl;
+  tex <<  std::endl;
+  tex <<  "\\begin{table} " << std::endl;
+  tex <<  "	\\renewcommand{\\arraystretch}{1.5} " << std::endl;
+  tex <<  "	\\centering " << std::endl;
+  tex <<  "	\\caption{Table showing a numerical sumamry of results from the mock data analyses for each of the SBND and PRISM3 fits. $N_{Post, MD}$ is the integrated event rate for the postfit and mock data cases respectively. $\\Delta N_{Post-MD}$ is the difference in integrated event rates between the postfit and MD cases.} " << std::endl;
+  tex <<  "	\\begin{tabular}{p{1.5cm} p{1.5cm} p{1.5cm} p{2cm} p{2cm} p{2cm}} \\toprule " << std::endl;
+  tex <<  "	Analysis & $\\chi^2$ $ \\chi^2_{syst}$ & $\\frac{\\sigma_{Postfit}}{N_{Postfit}}$ & $\\frac{\\Delta N_{Post-MD}}{N_{Mockdata}}$   & $\\frac{\\Delta N_{Post-MD}}{\\sigma_{Postfit}}$ \\\\ " << std::endl;
+  tex <<  "	\\midrule " << std::endl;
+  tex << "	\\multicolumn{5}{c}{\\textit{"<<analysis<<"}} \\\\ \\hdashline" << std::endl; 
+  tex << "	" << std::setprecision(6) << model<<" & "<<stat<<" & " << syst << " & "<<(post_err/post_rate)*100.<<"\\% & "<<((post_rate - md_rate)/md_rate)*100<<" \\% & "<<((post_rate - md_rate)/post_err)<<" \\\\ " << std::endl;
+  tex <<  "	\\bottomrule " << std::endl;
+  tex << "	\\end{tabular}" << std::endl;
+  tex << "	\\label{tab:my_label} " << std::endl;
+  tex << "\\end{table}  " << std::endl;
+  tex <<  std::endl;
+  tex << "\\end{document}" <<std::endl;
 }
 
 std::string GetDetector(const std::string &det){
