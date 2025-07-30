@@ -33,7 +33,7 @@ def main(filenames,treename,outputname):
   for f in filenames:
     chain.Add(f)
   assert(chain.GetEntries())
-  print "Chaining ",chain.GetEntries()," fits"
+  #print "Chaining ",chain.GetEntries()," fits"
   chain.Merge(outputname)
 
 if __name__=="__main__":

@@ -1,0 +1,1210 @@
+170,172d169
+< VALOR-SBN/src/sbn/Conventions/
+< VALOR-SBN/src/sbn/Conventions/Build.h
+< VALOR-SBN/src/sbn/Conventions/Version.h
+175d171
+< VALOR-SBN/src/sbn/Apps/.make_flux_splines.cxx.swp
+194a191
+> VALOR-SBN/src/sbn/Apps/.make_caf_minidst.cxx.swo
+239a237
+> VALOR-SBN/config/analysis/sbn_numu_disapp_2020a1_stat_fd_reducedmodes_universes.xml
+254a253
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_md_AR23_hN_03d1_nd.xml
+399a399
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_md_AR23_1p1QE_03d1_nd.xml
+413a414
+> VALOR-SBN/config/analysis/sbn_numu_disapp_2020a1_stat_nd_fd_reducedmodes.xml
+449a451
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_stat_nd_fd_reducedmodes.xml
+482a485
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_03d1_nd_fd_reducedmodes.xml
+525a529
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_md_AR23_1p1MEC_03d1_nd.xml
+657a662
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_md_AR23_INCL_03d1_nd.xml
+674a680
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_md_AR23_NievesMEC_03d1_nd.xml
+678a685
+> VALOR-SBN/config/analysis/sbn_numu_disapp_prism3_2020a1_md_AR23_G4_03d1_nd.xml
+891a899
+> VALOR-SBN/config/mc/sbn_numu_disapp_2020a1_stat_fd_reducedmodes_universes.xml
+1000a1009
+> VALOR-SBN/config/mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_updated_oa02.xml
+1090a1100
+> VALOR-SBN/config/mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_updated_oa00.xml
+1210a1221
+> VALOR-SBN/config/mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_updated_oa01.xml
+1438a1450
+> VALOR-SBN/.git/objects/06/842c5d0727c0459da836b2a6a5de86d9ce2e4f
+1458d1469
+< VALOR-SBN/.git/objects/9d/36c5a04f337bb2a123b7de2f1e032782384591
+1466d1476
+< VALOR-SBN/.git/objects/1c/e5a5e6b7d9c1b0b970165c9d1b59b5f59ad231
+1485a1496
+> VALOR-SBN/.git/objects/84/b0ce768ae3d7cfa0cc3841626b44ee0013de3f
+1503a1515
+> VALOR-SBN/.git/objects/73/0c1f2e4b318c1cdab9b37e20264e0d791b18df
+1507a1520
+> VALOR-SBN/.git/objects/73/d55fc16bc3380fd2887e7e839b826dfe76a075
+1511d1523
+< VALOR-SBN/.git/objects/d1/7b6bef2a19291c9a66847e9a1418fea752ec3c
+1519a1532
+> VALOR-SBN/.git/objects/27/c06614088ed345368a3d784ce2d370adb58c46
+1562a1576
+> VALOR-SBN/.git/objects/8c/3320a74269845da7b7175abdee2687c3d4def3
+1567a1582
+> VALOR-SBN/.git/objects/e7/6130614fbd1ab975def6be212c14b4c82bf2f3
+1602a1618
+> VALOR-SBN/.git/objects/5d/cf067513ba285e96e84bcce4feaf510f25d708
+1607a1624
+> VALOR-SBN/.git/objects/b9/af19c96fce746a1d9b36ad0a698d30fce833a1
+1609a1627
+> VALOR-SBN/.git/objects/b9/bb143b4fd8edb4fcd30551d5b3f86a048f56d7
+1612a1631
+> VALOR-SBN/.git/objects/2d/2f4783a28842c341acccc24244ff6dc7a63853
+1626a1646
+> VALOR-SBN/.git/objects/04/73dbf287a11b6c28a366c34d6dc589e55013d2
+1669a1690
+> VALOR-SBN/.git/objects/7b/68fc7fd67e6b583feef7d0616772d0bd2cbe07
+1697a1719
+> VALOR-SBN/.git/objects/07/5681f87ca053136a4582f5956a5059c9244e75
+1707a1730
+> VALOR-SBN/.git/objects/65/c2f5baeae934af4f29d3d82296eb603482c1ad
+1719a1743
+> VALOR-SBN/.git/objects/36/a9277fef6e6135e5063ce8820e593590253f42
+1723a1748
+> VALOR-SBN/.git/objects/1a/6ac7bea0501f431d71c30823adff8b8de59213
+1725a1751
+> VALOR-SBN/.git/objects/9f/0265fd85d86ec729cfde1e8285adda21eb7c14
+1742a1769
+> VALOR-SBN/.git/objects/74/cd8364e565090ed7fa2b43d2c4f23153472223
+1744d1770
+< VALOR-SBN/.git/objects/74/59df24609539609fafcf55fd4cd07b72a99169
+1755d1780
+< VALOR-SBN/.git/objects/3c/c19691f77503e4fc02806fd1e8d1ad63e07673
+1788a1814
+> VALOR-SBN/.git/objects/fd/5cd98803faa55a9b33a77cdccc4c2a359f51d1
+1808a1835
+> VALOR-SBN/.git/objects/46/c2fcf95f3ce88daed881deb64463bedd72d9a8
+1811a1839
+> VALOR-SBN/.git/objects/46/d8b0b9b6187d8d8cc0640a59e6d00f7adfeabb
+1842a1871
+> VALOR-SBN/.git/objects/8d/98fd1b975c9e821d1a0a11cde30eaf2de13288
+1852a1882
+> VALOR-SBN/.git/objects/c5/7d7ca28b81c72f32794d0a0cccb5bdb8bb1edf
+1874a1905
+> VALOR-SBN/.git/objects/55/9b73a09ed04a3a965dffaf2d327f0cf272cf1b
+1883a1915
+> VALOR-SBN/.git/objects/fa/d7948c70c45afb666157ad206c790b2fcc4383
+1893d1924
+< VALOR-SBN/.git/objects/b2/febad1e6132ebb8a5d013a1041b4c6a0d994aa
+1906d1936
+< VALOR-SBN/.git/objects/97/fb61912e4bb325562b0c3ae5f12466cca5d72e
+1921d1950
+< VALOR-SBN/.git/objects/34/449d0b221b0d0735c358eb046cd47851032d58
+1937a1967
+> VALOR-SBN/.git/objects/7e/03aeb728ca7d9db73bc7ef031f1b3d89f0b971
+1949a1980
+> VALOR-SBN/.git/objects/a9/c0b8dded408840b57581ee0b4554b94582f316
+1953a1985
+> VALOR-SBN/.git/objects/4e/cc88e2914eece6b731222f7fa5a02d3f6c2ff3
+1984a2017
+> VALOR-SBN/.git/objects/b1/fa6befb0e28b751837d0e90011528c23e89fe3
+1991a2025
+> VALOR-SBN/.git/objects/63/1fb71e0a24c45092cc131d99e36cdbff3499dc
+1999a2034
+> VALOR-SBN/.git/objects/d9/4f8a7e0a62ec39e525262e11e928d8ac98aec3
+2056a2092
+> VALOR-SBN/.git/objects/11/9d53e2fcb6030788df31d3d7f9f1a95b3bcca7
+2114d2149
+< VALOR-SBN/.git/objects/75/d23416d19c89af6652711a7b116246e565c7aa
+2159a2195
+> VALOR-SBN/.git/objects/71/6bce9d7cbf227ac77378093c812c7f975c71d1
+2194d2229
+< VALOR-SBN/.git/objects/4f/310e936c93a6a3177b44575c9d6017bc40e842
+2197a2233
+> VALOR-SBN/.git/objects/4f/bacc200395077304f287fbe782fceea917c49b
+2226a2263
+> VALOR-SBN/.git/objects/a1/7e7f4dbd4f664cb71d203534554f54d02d893c
+2249a2287,2288
+> VALOR-SBN/.git/objects/72/10be83052e53a158c5071efbe17e44c880c7f0
+> VALOR-SBN/.git/objects/72/bf032bc6c21b1d8a0cccf92996b8f6873f62ad
+2270a2310,2311
+> VALOR-SBN/.git/objects/68/50d7b8a62bf8215a2deb8627c8f0f440b2e66f
+> VALOR-SBN/.git/objects/68/5f867014c89b49a55b3565f37e8be8e7f9ca2a
+2285a2327
+> VALOR-SBN/.git/objects/b3/b50e775b614719e831d505054b2663c6277812
+2287a2330
+> VALOR-SBN/.git/objects/b3/56f9bc74477413d106799c3c05158a7b86c2b7
+2295a2339
+> VALOR-SBN/.git/objects/ad/c79b4b2b9b9a82c0679a16b4f90864919cdc3c
+2304d2347
+< VALOR-SBN/.git/objects/a5/715d59dbcf6863b5ae72d6f81009c4b9b1a297
+2311d2353
+< VALOR-SBN/.git/objects/54/8d07ec8f884814d0a45d2735d785c38c6233cc
+2313a2356
+> VALOR-SBN/.git/objects/b8/521f0e01891e0bacc1beb780170639b660181d
+2360d2402
+< VALOR-SBN/.git/objects/d4/e324971eb17d97af78110280e09a6c12834661
+2375a2418
+> VALOR-SBN/.git/objects/45/808f4fe57a09e9f5f2e22e0e40fe7f0c72e966
+2381a2425
+> VALOR-SBN/.git/objects/f0/d9a4d2e1b392f554bef59f2694a2c9a1a7bdab
+2391d2434
+< VALOR-SBN/.git/objects/c6/8e13137331f59bed09f19f56e4ddfa49ca1e1c
+2410d2452
+< VALOR-SBN/.git/objects/67/c270c6dd51c7f986f8e000ac80a2aa0fbb14a6
+2414a2457
+> VALOR-SBN/.git/objects/c4/784f86808b65b18b93f5f3cc5dba3048813e69
+2419a2463
+> VALOR-SBN/.git/objects/c3/e628046fc9f2d47935153f4adb1768dec6e19b
+2454d2497
+< VALOR-SBN/.git/objects/9c/19ad8e740523177efe53e1d19386bdbcddab29
+2497a2541
+> VALOR-SBN/.git/objects/e9/f4e9a4aa5192e08065887a150787fec3f23917
+2522d2565
+< VALOR-SBN/.git/objects/93/8c6e2c40371d2549799b4a9c254caee1bec03e
+2535d2577
+< VALOR-SBN/.git/objects/b6/aa5568a3f6d09e5912259b974257d7ebedf410
+2564c2606
+< VALOR-SBN/.git/objects/18/54765b86e193d6a9ba5931272fe3cb7e8c6453
+---
+> VALOR-SBN/.git/objects/18/b2b9e7f756f6dffe66d8c44e81a35d8e8968a4
+2583a2626
+> VALOR-SBN/.git/objects/5c/7471e4485af25ed895de45946976e82d744278
+2589a2633
+> VALOR-SBN/.git/objects/2a/058d76da51b15c788cc0bc510ab9f749fda154
+2602a2647
+> VALOR-SBN/.git/objects/23/beb6eb03548afcf1a0a8acfc723e3b3e3cefe8
+2604d2648
+< VALOR-SBN/.git/objects/23/49ac4a65ccb32f18cddc48c5bc12f810aa7540
+2624a2669
+> VALOR-SBN/.git/objects/91/0134c24086a44fcff0c87b585fe48a0e7e5a11
+2654a2700,2701
+> VALOR-SBN/.git/objects/02/2d3d426e40b522c001a80571cfd82d27aaabc9
+> VALOR-SBN/.git/objects/02/f371f971fcf4c8afc8dc93f1eebc62b413504d
+2657a2705,2706
+> VALOR-SBN/.git/objects/05/
+> VALOR-SBN/.git/objects/05/78df1e6ee90146f677a482babed0a984bae821
+2673a2723
+> VALOR-SBN/.git/objects/3d/447b6c294d77d1f7c26b4c117739a67bc55db9
+2682a2733
+> VALOR-SBN/.git/objects/c2/b238039670127041d09a2c173c52eeee893261
+2687a2739
+> VALOR-SBN/.git/objects/c2/5df9b4714c2c02e597e9129df3fe867803fb9e
+2707d2758
+< VALOR-SBN/.git/objects/ba/5ffb7c1b71d569550ee1ca9ab0dd97b2a96dcf
+2710a2762
+> VALOR-SBN/.git/objects/ba/1ef40d2ea15a15dce5cc597979925141fe4120
+2736a2789
+> VALOR-SBN/.git/objects/d2/37be072efec5d54b58c30abf091dacb9946c95
+2746a2800
+> VALOR-SBN/.git/objects/dd/3e4b709fb35610f74d2b77d33d0e31165d2447
+2771a2826
+> VALOR-SBN/.git/objects/f2/512ce1f0265c48cdc9577b5f910c538f0609ee
+2788a2844
+> VALOR-SBN/.git/objects/f3/a846e928ca07a6971e8bc62f6c6b4bb79acfb4
+2825a2882
+> VALOR-SBN/.git/objects/f4/4cbb36d587ca5c7f3a511c3009e25a3ce6c070
+2830c2887
+< VALOR-SBN/.git/objects/1d/d7a36a82d9be730c3cd132ac385b73a1afa3b3
+---
+> VALOR-SBN/.git/objects/1d/158d8256b5a3d5ca1da5901ce86a64a4957560
+2849a2907
+> VALOR-SBN/.git/objects/47/08a2ba01630b3f929aeb3edb19a041b78d29c1
+2852a2911
+> VALOR-SBN/.git/objects/47/9fe5287c0bbe40edd2f31058b29845f6253432
+2863a2923
+> VALOR-SBN/.git/objects/4c/3c596e1e142ca16358198887ab5ad397fc0655
+2867d2926
+< VALOR-SBN/.git/objects/pack/pack-13d4e6e17eb2939f827fc3084c4836a3d2a1729d.idx
+2869d2927
+< VALOR-SBN/.git/objects/pack/pack-13d4e6e17eb2939f827fc3084c4836a3d2a1729d.pack
+2872d2929
+< VALOR-SBN/.git/objects/pack/pack-13d4e6e17eb2939f827fc3084c4836a3d2a1729d.rev
+2894d2950
+< VALOR-SBN/.git/logs/refs/heads/sbnprism_sl7
+2898d2953
+< VALOR-SBN/.git/logs/refs/remotes/origin/syadav_sbn_exclusive_ana
+2905d2959
+< VALOR-SBN/.git/logs/refs/remotes/origin/feature/kjplows_caf_minidst_maker
+2907d2960
+< VALOR-SBN/.git/logs/refs/remotes/origin/feature/kjplows_caf_minidst_maker_workaround
+2909d2961
+< VALOR-SBN/.git/logs/refs/remotes/origin/sbnprism_sl7
+2923d2974
+< VALOR-SBN/.git/refs/heads/sbnprism_sl7
+2927d2977
+< VALOR-SBN/.git/refs/remotes/origin/syadav_sbn_exclusive_ana
+2934d2983
+< VALOR-SBN/.git/refs/remotes/origin/feature/kjplows_caf_minidst_maker
+2936d2984
+< VALOR-SBN/.git/refs/remotes/origin/feature/kjplows_caf_minidst_maker_workaround
+2938d2985
+< VALOR-SBN/.git/refs/remotes/origin/sbnprism_sl7
+2944a2992,2993
+> VALOR-SBN/grid_script/tar_output_prism3_nd_fd_03d1_reducedmodes_sl7.out
+> VALOR-SBN/grid_script/submit_fit_numu_sbn_04a1.sh
+2948d2996
+< VALOR-SBN/grid_script/tar_output_nd_fd_03d1_03d2.out
+2955d3002
+< VALOR-SBN/grid_script/tar_output_sl7_04a1.out
+2956a3004
+> VALOR-SBN/grid_script/tar_output_sbn_stat_sl7.out
+2963a3012
+> VALOR-SBN/grid_script/fd_03d1_reducedmodes_1.root
+2968d3016
+< VALOR-SBN/grid_script/tar_output_04a1_updated.out
+3735a3784
+> VALOR-SDK/.git/objects/b9/6b525adbff136e94ab7c8cd6984e754f37b4ed
+3769a3819
+> VALOR-SDK/.git/objects/3b/7cff70d83aa100389efbb3c00cc378cb88106e
+3789a3840
+> VALOR-SDK/.git/objects/1a/8a27da1d19512f4776d116d9fd3bea875e91f9
+3795a3847
+> VALOR-SDK/.git/objects/0d/cecd3e69feef91e6e28b645bfd27b06bf4fcea
+3802d3853
+< VALOR-SDK/.git/objects/74/e7d21d7ef30e5e9f0ceb6ad9741d5585bef02e
+3848a3900,3901
+> VALOR-SDK/.git/objects/66/
+> VALOR-SDK/.git/objects/66/3016066a12c213c69fd95b4076504e381a1d7d
+3866a3920,3921
+> VALOR-SDK/.git/objects/50/3fe04fcb30a8be9d4831cd7007f4a8c3f64fbb
+> VALOR-SDK/.git/objects/50/e618961833c654d43d1af06f166a03eca9c1aa
+3890a3946
+> VALOR-SDK/.git/objects/00/a3ca2eb37759eca27334a9c4a9b0c890d106c7
+3910a3967,3968
+> VALOR-SDK/.git/objects/87/
+> VALOR-SDK/.git/objects/87/af0e16b3520028f25b1983bfb030b1c6f742d6
+3922a3981
+> VALOR-SDK/.git/objects/a0/6fcc259c2de0a6617d3ed988e1cb6123154e2d
+3934a3994,3995
+> VALOR-SDK/.git/objects/11/
+> VALOR-SDK/.git/objects/11/3964d200b5e83988a161e396c64de81d845a47
+3974d4034
+< VALOR-SDK/.git/objects/24/49763b1c476a02d8aeb912fcf6553892b9d5c6
+4009a4070
+> VALOR-SDK/.git/objects/6f/03dc551dac9f886a4e7c51024b354519e1c671
+4012a4074
+> VALOR-SDK/.git/objects/51/cc282b2369639aa4b6c0c845939a62ba438e0e
+4019a4082,4083
+> VALOR-SDK/.git/objects/ec/21ca11a205dbfee5a876a22bbeff80cb87fa0a
+> VALOR-SDK/.git/objects/ec/8f63d630b46bbf8985e213edec692ba0494136
+4047a4112
+> VALOR-SDK/.git/objects/ad/537ca6923ae2e9f16525633a72c50dc4364ad5
+4057a4123,4124
+> VALOR-SDK/.git/objects/d8/
+> VALOR-SDK/.git/objects/d8/d86582cbd27ee59054489fde16af28569bc5ed
+4064a4132
+> VALOR-SDK/.git/objects/4a/78a5356f3a7f7aa01c571918c5c9ea68e8f2e7
+4209a4278
+> VALOR-SDK/.git/objects/05/7e7e8430b2e3cc194fc35a0768df94dd97844d
+4241d4309
+< VALOR-SDK/.git/objects/fb/bc64fcb0a96f86280c30e1636f416b078f648e
+4290a4359
+> VALOR-SDK/.git/objects/4c/c849832f3deecfcde348dd05fbf45bc8a28e27
+4325d4393
+< VALOR-SDK/.git/logs/refs/heads/feature/prism_sl7
+4341d4408
+< VALOR-SDK/.git/logs/refs/remotes/origin/feature/prism_sl7
+4362d4428
+< VALOR-SDK/.git/refs/heads/feature/prism_sl7
+4378d4443
+< VALOR-SDK/.git/refs/remotes/origin/feature/prism_sl7
+4435a4501,4538
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p34-0p485deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p2-0p4deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_prism3_equalwidth.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_1p0-1p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-0p34deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p955-1p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-0p2deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_prism3_shift0p5_manual.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p43-0p62deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_1p2-1p4deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p62-0p78deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p705-0p81deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_prism3_shift_true.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p6-0p8deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_escale.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-1p6deg_eshift_3pct.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_1p4-1p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p78-0p955deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p84-1p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p56-0p84deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_ub_minidst_mc.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-0p43deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-0p56deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_1p0-1p2deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p485-0p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p6-0p705deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p4-0p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p0-1p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p915-1p05deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_1p05-1p6deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p81-0p915deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_0p8-1p0deg.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_fd_minidst_mc.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_prism3_shift3p0_manual.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2024b/
+4436a4540,4541
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2024b/valor_caf_fhc_numuccinc_disappearance_nd_minidst_mc.root
+> VALOR-SBN/data/sbn_numu_inclusive/dsts/2024b/valor_caf_fhc_numuccinc_disappearance_nd_minidst_mc_oaa_prism3.root
+4472,4596c4577,5304
+< VALOR-SBN/data/sbn_numu_inclusive/prior_errors/04a1/
+< VALOR-SBN/data/sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_nova.root
+< VALOR-SBN/data/sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_misc.root
+< VALOR-SBN/data/sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_minerva.root
+< VALOR-SBN/data/sbn_numu_inclusive/prior_errors/04a1/int_params_cov_matrix_genierw.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvpNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarpNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarpCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NormCCMEC_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_RDecBR1gamma_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNinel_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_E2p2hBvbar_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA2CCQE_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_E2p2hAv_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNabs_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISCv2u_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvpCC2pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarpNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_CoulombCCQE_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnpCC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIcex_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvpCC3pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ccresVector_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_Mnv2p2hGaussEnhancement_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvnCC1pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNmfp_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvpCC2pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvnCC2pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_RDecBR1gamma_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA4CCQE_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISBth_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNpi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNinel_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnCC2pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarnCC3pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarnCC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvnNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA2CCQE_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ncresVector_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ccresAxial_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_C12ToAr402p2hScalingv_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIcex_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NormCCCOH_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvpCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnNC1pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnpCC1pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA3CCQE_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NormCCMEC_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_RDecBR1eta_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISAth_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNcex_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIabs_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvpCC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvnNC1pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_C12ToAr402p2hScalingv_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarnNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISCv1u_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvpCC3pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ncresAxial_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_E2p2hAvbar_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnNC3pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_E2p2hBv_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIpi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_AhtBY_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ccresVector_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarnCC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_RDecBR1eta_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_Mnv2p2hGaussEnhancement_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnNC3pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIinel_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_RPACCQE_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIabs_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvnNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_E2p2hBv_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvnCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePImfp_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarpCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarpNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNmfp_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISCv2u_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIpi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarnCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarnNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarnCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_SPPLowQ2Suppression_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePImfp_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNpi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarpCC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ncresVector_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISBth_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvpCC1pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA3CCQE_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_CoulombCCQE_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvnCC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISAth_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_SPPLowQ2Suppression_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarpNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvpCC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvpNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ncelAxial_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarnNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvbarpCC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvpNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNcex_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_E2p2hAv_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ncresAxial_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NormCCCOH_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_DISCv1u_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnCC3pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ncelEta_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvpNC2pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnCC3pi_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvpNC3pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukeNabs_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA1CCQE_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_C12ToAr402p2hScalingvbar_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NonResRvbarnNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA4CCQE_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ZExpA1CCQE_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_NOvANonResvnNC1pi_BNB_FHC_sbn_nd.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_ccresAxial_BNB_FHC_sbn_nd_modelist.root
+< VALOR-SBN/data/sbn_numu_inclusive/responses/04a1/valor_splines_numuCCincl_IntraNukePIinel_BNB_FHC_sbn_nd_modelist.root
+---
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ccresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ccresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ccresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncelEta_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_qema_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISBth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncelAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISAth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NC_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncelEta_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISAth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NC_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISBth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncelEta_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISCv2u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_cohR0_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_expskin_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ccresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_expskin_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISBth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_cohMA_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NC_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_expskin_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_qema_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_cohR0_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_horncurrent_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_ncresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISCv1u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_DISAth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_cohMA_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa01/valor_splines_numuCCinclOA01_genie_qema_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncelAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISAth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncelEta_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_cohR0_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISAth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISAth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_qema_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISCv1u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_horncurrent_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NC_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncelEta_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISBth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_cohR0_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_qema_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_expskin_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NC_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ccresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ccresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_expskin_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_cohMA_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISBth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISCv2u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ccresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NC_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ccresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_ncelEta_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_DISBth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_expskin_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_cohMA_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_qema_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa00/valor_splines_numuCCinclOA00_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISAth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_expskin_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_horncurrent_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ccresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_expskin_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_qema_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_cohMA_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ccresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ccresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISAth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISCv1u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ccresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISBth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NC_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NC_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_cohR0_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_expskin_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncelAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncelEta_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISBth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NC_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncelEta_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_cohR0_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISBth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISAth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_qema_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_cohMA_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISCv2u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_qema_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_prism3_reducedmodes/sbnd_oa02/valor_splines_numuCCinclOA02_genie_ncelEta_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISAth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_cohR0_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_piontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_cohR0_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_expskin_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_expskin_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_expskin_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncelEta_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_cohMA_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_cohMA_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISBth_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncelEta_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ccresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ccresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ccresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ResDecayGamma_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NC_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_qema_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncresVector_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISBth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_horncurrent_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISBth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISCv1u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_horncurrent_FluxUnisim_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_qema_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncelAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_pionqexsec_FluxUnisim_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_qema_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncresVector_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISCv1u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISCv2u_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISCv2u_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_pioninexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncelEta_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NC_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISAth_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NC_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncelAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ccresVector_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ncresAxial_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_nd_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_ccresAxial_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_DISAth_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_nd.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/sbnd/valor_splines_numuCCincl_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_nd_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncresAxial_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncresVector_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ccresAxial_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_pioninexsec_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncresVector_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISAth_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncelAxial_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_horncurrent_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_pionqexsec_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISCv2u_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ResDecayGamma_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncresVector_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ResDecayGamma_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ccresAxial_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_pionqexsec_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISBth_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISBth_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNinel_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NC_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISCv2u_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncelAxial_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_piontotxsec_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncelAxial_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpCC1pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_expskin_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_cohMA_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_piontotxsec_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncelEta_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ccresVector_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_cohMA_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISAth_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISBth_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_cohR0_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_cohMA_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIabs_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleoninexsec_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_qema_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleontotxsec_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ccresAxial_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNmfp_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_pionqexsec_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIpi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_horncurrent_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncresAxial_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpNC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_expskin_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_qema_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncelEta_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_cohR0_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncelEta_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_cohR0_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_horncurrent_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_pioninexsec_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnNC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISCv1u_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpCC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ccresVector_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_pioninexsec_FluxUnisim_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpNC1pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnCC1pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnCC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_nucleonqexsec_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISAth_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpNC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNabs_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIinel_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_piontotxsec_FluxUnisim_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISCv2u_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNpi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ncresAxial_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnCC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarnNC1pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePImfp_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukePIcex_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NC_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NC_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ccresVector_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvbarpCC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_expskin_FluxUnisim_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_ResDecayGamma_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpCC2pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_IntraNukeNcex_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_qema_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISCv1u_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_DISCv1u_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnCC2pi_Genie_BNB_FHC_sbn_icarus.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnNC1pi_Genie_BNB_FHC_sbn_icarus_modelist.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvnNC2pi_Genie_BNB_FHC_sbn_icarus_spectra.root
+> VALOR-SBN/data/sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/valor_splines_numuCCincl_genie_NonResRvpNC1pi_Genie_BNB_FHC_sbn_icarus.root

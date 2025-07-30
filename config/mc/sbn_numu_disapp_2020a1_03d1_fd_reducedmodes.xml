@@ -78,7 +78,7 @@ Splines
 -->
 
 <splines>
-  <folder>         sbn_numu_inclusive/responses/03d1/icarus/          </folder>
+  <folder>         sbn_numu_inclusive/responses/03d1_reducedmodes/icarus/          </folder>
   <pattern>        valor_splines_[SAMPLE]_[PARAM]_[BEAM]_[DET].root       </pattern>
   <type>           TSpline3                                               </type>
   <stored_as>      TObjArray                                              </stored_as>

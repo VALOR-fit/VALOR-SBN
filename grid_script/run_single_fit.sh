@@ -1,5 +1,5 @@
 valor-run_fit \
-   --config /sbnd/app/users/bslater/valor/VALOR-SBN/config/analysis/sbn_nue_prism_1_2020a1_1_universes_sbndonly_stat.xml \
+   --config /pnfs/sbnd/persistent/users/bslater/valor/config/sbn_numu_disapp_2020a1_03d1_fd_reducedmodes.xml \
    --physics-hypothesis eff_sterile_osc \
    --param-values-option prefit-errors \
    --osc-prior-file priors/void_priors.xml \
@@ -7,7 +7,7 @@ valor-run_fit \
    --fitter minuit+with_simplex_fallback \
    --mesg-thresholds verbosity.xml \
    --without-stat-fluct \
-   --tag sbn_toy \
+   --tag fd_03d1_reducedmodes \
    --run 1 \
    --ntoymc 1 \
    --input-dm41sq         0.      \

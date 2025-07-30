@@ -694,10 +694,12 @@ void sbn_pull_studies_3(const char * ana1_filename,
   l_comp->Clear();
 
   FormatComparisonHists(h_perndof_ana1,h_perndof_ana2,h_perndof_ana3, "Fit statistic / NDOF");
+  max_comp_y_test = std::max(h_perndof_ana1->GetMaximum(),h_perndof_ana2->GetMaximum());
+  max_comp_y = std::max(max_comp_y_test,h_perndof_ana3->GetMaximum());
   h_perndof_ana1->GetYaxis()->SetRangeUser(0.,max_comp_y*1.1);
   h_perndof_ana1->SetName(("#color["+std::to_string(ana1_color)+"]{SBND}").c_str());
   h_perndof_ana2->SetName(("#color["+std::to_string(ana2_color)+"]{PRISM3}").c_str());
-  h_perndof_ana3->SetName(("#color["+std::to_string(ana3_color)+"]{PRISM3}").c_str());
+  h_perndof_ana3->SetName(("#color["+std::to_string(ana3_color)+"]{PRISM5}").c_str());
   h_perndof_ana1->Draw("hist");
   h_perndof_ana2->Draw("sames hist");
   h_perndof_ana3->Draw("sames hist");

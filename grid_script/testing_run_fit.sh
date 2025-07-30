@@ -1,11 +1,11 @@
 valor-run_fit \
-   --tag run-fit-sterile-sbnd-03e1 \
+   --tag run-fit-sterile-prism3-equalwidth-stat \
    --first-octant \
    --run 1 \
    --ntoymc 1 \
    --param-values-option  prefit-errors \
    --fitter minuit+with_simplex_fallback+maxcalls=1000000 \
-   --config /pnfs/sbnd/persistent/users/bslater/valor/config/sbn_numu_disapp_2020a1_03e1_nd.xml\
+   --config /pnfs/sbnd/persistent/users/bslater/valor/config/sbn_numu_disapp_prism3_2020a1_stat_nd_reducedmodes_equalwidth.xml \
    --mesg-thresholds verbosity.xml \
    --without-stat-fluct \
    --normal \

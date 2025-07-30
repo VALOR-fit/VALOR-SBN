@@ -52,12 +52,12 @@ void read_osc_fit_results(const char * filename, const char * treename = "valor_
         cout << it->second;
         cout << endl;
     }
-    /*
-    cout << "Objects stored in `spectra' object array: " << endl;    
+    
+   /* cout << "Objects stored in `spectra' object array: " << endl;    
     spectra_array->Print();
     cout << endl;
     cout << "Objects stored in `best_fit_params' object array: " << endl;    
-    bfparam_array->Print();
-*/
+    bfparam_array->Print();*/
+
   }
 }

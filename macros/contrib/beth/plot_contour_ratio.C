@@ -48,7 +48,12 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
 	continue;
     }
 
-    TObject *obj = file->Get("contour_5sigma_lin_0");
+    TObject *obj;
+    if(std::string(files[i]).find("rsj") != std::string::npos){
+      obj = file->Get("stat_syst_5sigma_lin_0");
+    }else {
+      obj = file->Get("contour_5sigma_lin_0");
+    }
     if (!obj) {
 	std::cerr << "Error: Unable to retrieve object ``contour_5sigma_lin_0'' from file " << files[i] << std::endl;
 	file->Close();
@@ -80,13 +85,25 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
       graph->SetLineStyle(5);
       syst_label = "03e2_3";
     }
-    /*else if (std::string(files[i]).find("03e2") != std::string::npos) {
+    else if (std::string(files[i]).find("03e2") != std::string::npos) {
       graph->SetLineStyle(4);
       syst_label = "03e2";
-    }*/
+    }
     else if (std::string(files[i]).find("03d2") != std::string::npos) {
       graph->SetLineStyle(6);
       syst_label = "03d2";
+    }
+    else if (std::string(files[i]).find("04a1") != std::string::npos) {
+      graph->SetLineStyle(10);
+      syst_label = "04a1";
+    }else{
+      std::cout << "Syst group not recognised for file "<< i << std::endl;
+      std::cout << "Please enter syst_label:" << std::endl;
+      std::cin >> syst_label;
+      int style;
+      std::cout << "Please enter number for SetLineStyle:" << std::endl;
+      std::cin >> style;
+      graph->SetLineStyle(style);
     }
     /*if (std::string(tags[i]).find("Reducedmodes") != std::string::npos){
       syst_label += " reduced modes";
@@ -99,14 +116,19 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
     }
     //std::cout << "syst label " << i << " = " << syst_label << std::endl;
 
-    if (std::string(files[i]).find("2020a1_v6") != std::string::npos) version_label = " 2020a1 v6";
-    else if (std::string(files[i]).find("2024b_v9") != std::string::npos){ 
+    if (std::string(tags[i]).find("2020a1_v6") != std::string::npos) version_label = " 2020a1 v6";
+    if (std::string(tags[i]).find("2024b_v9") != std::string::npos){ 
       version_label = " 2024b v9";
-      graph->SetLineStyle(1);
+      //graph->SetLineStyle(1);
     }
   
     if(std::string(files[i]).find("sbnd") != std::string::npos){
       graph->SetLineColor(kAzure-4);
+      if (std::string(tags[i]).find("2020a1_v6") != std::string::npos) version_label = " 2020a1 v6";
+      if (std::string(tags[i]).find("2024b_v9") != std::string::npos){ 
+        version_label = " 2024b v9";
+        graph->SetLineColor(kCyan+3);
+      }
       legend->AddEntry(graph,("5#sigma SBND "+syst_label+version_label).c_str(),"L");
       /*if (std::string(files[i]).find("reducedmodes") != std::string::npos){
         graph->SetLineColor(kAzure-6);
@@ -124,6 +146,11 @@ std::vector<TGraph*> plotGraphs(const std::vector<std::string>& files, const std
       }
       if (std::string(files[i]).find("03e2_3") != std::string::npos && override_03e2_3){
         graph->SetLineColor(kViolet-2);
+      }
+      if (std::string(tags[i]).find("2020a1_v6") != std::string::npos) version_label = " 2020a1 v6";
+      if (std::string(tags[i]).find("2024b_v9") != std::string::npos){ 
+        version_label = " 2024b v9";
+        graph->SetLineColor(kMagenta+3);
       }
       legend->AddEntry(graph,("5#sigma PRISM3 "+syst_label+version_label).c_str(),"L");
       //std::cout << "legend entry = " << ("5#sigma PRISM3 "+syst_label).c_str() << std::endl;
