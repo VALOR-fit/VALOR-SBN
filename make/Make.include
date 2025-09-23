@@ -76,7 +76,21 @@ ifeq (1,$(SBNANALYSIS_ENABLED))
 endif
 
 # SBN CAF stuff
-SBNCAF_INC = -I$(SBNCODE_DIR)/
+#SBNCAF_INC = -I$(SBNCODE_DIR)/
+
+# Add includes for extra includes
+ifdef SBNANAOBJ_INC
+ SBNANAOBJ_INCLUDES = -I$(SBNANAOBJ_INC)/
+ 
+ SBNANAOBJ_LIBRARIES = -L$(SBNANAOBJ_LIB)/ -lsbnanaobj_Morgue -lsbnanaobj_StandardRecord
+endif
+
+# Add hdf5
+ifdef HDF5_INC
+ HDF5_INCLUDES = -I$(HDF5_INC)/
+
+ HDF5_LIBRARIES = -L$(HDF5_LIB)/ -lhdf5 -lhdf5_cpp -lhdf5_tools -lhdf5_hl
+endif
 
 #-------------------------------------------------------------------
 #                        GENIE
@@ -102,7 +116,6 @@ ifdef GENIE
   VALOR_GLIBRARIES := $(shell valor_fmwk-config --glibs)
  endif
 endif
-
 
 #-------------------------------------------------------------------
 #                      SUMMING-UP

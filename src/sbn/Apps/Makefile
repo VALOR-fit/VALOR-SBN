@@ -14,7 +14,8 @@ include $(VALOR_EXPT)/make/Make.include
 
 SBN_LIBRARIES =
 
-TGT = make_sbncode_minidst \
+TGT = make_caf_full_dst #\
+      make_sbncode_minidst \
       make_caf_minidst \
       make_xsec_splines \
       make_flux_splines \
@@ -41,6 +42,19 @@ else
 endif
 
 # Generate DSTs from CAF files
+#
+make_caf_full_dst: FORCE
+ifdef GENIE
+	$(CXX) $(CXXFLAGS) -c make_caf_full_dst.cxx $(GINCLUDES) $(SBNANAOBJ_INCLUDES) $(HDF5_INCLUDES) 
+	$(LD) $(LDFLAGS) make_caf_full_dst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANAOBJ_LIBRARIES) $(HDF5_LIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_caf_full_dst
+else
+	@echo "Skipping make_caf_full_dst due to no GENIE"
+endif
+#else
+#	@echo "Skipping make_caf_minidst due to no SBNanalysis"
+#endif
+
+# Generate DSTs from flat CAF files
 #
 make_caf_minidst: FORCE
 #ifeq ($(SBNANALYSIS_ENABLED),1)
@@ -145,6 +159,7 @@ purge: FORCE
 clean: FORCE
 	$(RM) *.o *~ core
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_sbncode_minidst
+	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_caf_full_dst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_caf_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT)/bin/valor_sbn-make_flux_splines
@@ -158,6 +173,7 @@ clean: FORCE
 distclean: FORCE
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_sbncode_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_caf_minidst
+	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_caf_full_dst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_recoselection_minidst
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_xsec_splines
 	$(RM) $(VALOR_EXPT_INSTALLATION_PATH)/bin/valor_sbn-make_flux_splines

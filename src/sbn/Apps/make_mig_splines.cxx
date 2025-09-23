@@ -447,11 +447,19 @@ int main(int argc, char ** argv)
     /*double factor00 = (N_recoOA00_scaled/N_true00)*kn;
     double factor01 = (N_recoOA01_scaled/N_true01)*kn;
     double factor02 = (N_recoOA02_scaled/N_true02)*kn;*/
-    double factor = kn;
+    double f00 = 0.001977;
+    double f01 = 0.011778;
+    double f02 = 0.013955;
+    //double f00 = 0.5;
+    //double f01 = 0.5;
+    //double f02 = 0.5;
+    double F00 = f00*kn;
+    double F01 = f01*kn;
+    double F02 = f02*kn;
 
     //OA01->OA00
     std::shared_ptr<TH2D> diffOA01_00(static_cast<TH2D*>(trueOA01_recoOA00->Clone()));
-    diffOA01_00->Scale(factor);
+    diffOA01_00->Scale(F01);
    
     std::shared_ptr<TH2D> recoOA00_OA01Scaled(static_cast<TH2D*>(recoOA00->Clone()));
     recoOA00_OA01Scaled->Add(diffOA01_00.get());
@@ -462,7 +470,7 @@ int main(int argc, char ** argv)
 
     //OA01->OA02
     std::shared_ptr<TH2D> diffOA01_02(static_cast<TH2D*>(trueOA01_recoOA02->Clone()));
-    diffOA01_02->Scale(factor);
+    diffOA01_02->Scale(F01);
    
     std::shared_ptr<TH2D> recoOA02_OA01Scaled(static_cast<TH2D*>(recoOA02->Clone()));
     recoOA02_OA01Scaled->Add(diffOA01_02.get());
@@ -472,7 +480,7 @@ int main(int argc, char ** argv)
 
     //OA00->OA01
     std::shared_ptr<TH2D> diffOA00_01(static_cast<TH2D*>(trueOA00_recoOA01->Clone()));
-    diffOA00_01->Scale(factor);
+    diffOA00_01->Scale(F00);
    
     std::shared_ptr<TH2D> recoOA01_OA00Scaled(static_cast<TH2D*>(recoOA01->Clone()));
     recoOA01_OA00Scaled->Add(diffOA00_01.get());
@@ -483,7 +491,7 @@ int main(int argc, char ** argv)
 
     //OA02->OA01
     std::shared_ptr<TH2D> diffOA02_01(static_cast<TH2D*>(trueOA02_recoOA01->Clone()));
-    diffOA02_01->Scale(factor);
+    diffOA02_01->Scale(F02);
    
     std::shared_ptr<TH2D> recoOA02_OA02Scaled(static_cast<TH2D*>(recoOA02->Clone()));
     recoOA02_OA02Scaled->Add(diffOA02_01.get());

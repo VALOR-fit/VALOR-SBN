@@ -11,3 +11,5 @@ data/
 *.root
 *.bin
 
+*.list
+
