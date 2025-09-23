@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<valor>
+
+  <element_list name="sbn_numu_disapp_prism3_2020a1_stat_nd_reducedmodes">
+
+    <element name="sbn_nd_fhc_numuCCIncl_oa00">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       numuCCinclOA00                                       </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_numu_disapp_prism3_2020a1_stat_nd_reducedmodes_equalwidth_oa00.xml   </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
+    </element>
+  
+  </element_list>
+
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml </filename>
+  </parameter_definitions>
+
+</valor>

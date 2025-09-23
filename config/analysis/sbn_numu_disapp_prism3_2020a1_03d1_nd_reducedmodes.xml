@@ -2,7 +2,7 @@
 
 <valor>
 
-  <element_list name="sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes">
+  <element_list name="sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_equalwidth">
 
     <element name="sbn_nd_fhc_numuCCIncl_oa00">
       <detector>     sbn_nd                                               </detector>
@@ -10,7 +10,7 @@
       <sample>       numuCCinclOA00                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_oa00.xml   </mc>
+      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_equalwidth_oa00.xml   </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
@@ -22,7 +22,7 @@
       <sample>       numuCCinclOA01                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_oa01.xml   </mc>
+      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_equalwidth_oa01.xml   </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>
@@ -34,7 +34,7 @@
       <sample>       numuCCinclOA02                                       </sample>
       <observable>   Ereco                                                </observable>
       <data>                                                              </data>
-      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_oa02.xml   </mc>
+      <mc>           mc/sbn_numu_disapp_prism3_2020a1_03d1_nd_reducedmodes_equalwidth_oa02.xml   </mc>
       <data_class>   valor::GenericSingleSampleFitData                    </data_class>
       <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
       <binning>      binning/sbn_proposal_binning_NuMu_shifted_etrue.xml      </binning>

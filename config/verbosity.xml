@@ -22,7 +22,7 @@
   <priority msgstream="InputMC">      NOTICE   </priority>
   <priority msgstream="HACK">         FATAL    </priority>
   
-  <priority msgstream="Minuit">                         NOTICE </priority>
+  <priority msgstream="Minuit">                         DEBUG </priority>
   <priority msgstream="Minuit2">                          INFO </priority>
   <priority msgstream="CompoundFitElements">            NOTICE </priority>
   <priority msgstream="CompoundFitModel">               NOTICE </priority>
@@ -36,7 +36,7 @@
   <priority msgstream="Lateral">                        NOTICE </priority>
 
   <priority msgstream="fitnt_conv">                     NOTICE </priority>
-  <priority msgstream="valor_sbn">                       DEBUG </priority>
+  <priority msgstream="valor_sbn">                      NOTICE  </priority>
   
   <priority msgstream="make_minidst">                   NOTICE </priority>
   <priority msgstream="make_fd_minidst">                NOTICE </priority>
@@ -55,6 +55,8 @@
   <priority msgstream="Interpolator">                   WARN   </priority>
   <priority msgstream="ToyStream">                      NOTICE </priority>
   <priority msgstream="ToyBuilder">                     NOTICE </priority>
-  <priority msgstream="UtlFitParamList">                DEBUG  </priority>
+  <priority msgstream="UtlFitParamList">                FATAL  </priority>
+
+  <priority msgstream="CmdLnArgList">                   WARN  </priority>
 
 </messenger_config>

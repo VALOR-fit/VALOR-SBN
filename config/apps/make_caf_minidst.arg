@@ -16,3 +16,4 @@ fix-nonres,keep-nonres             |   boolean_list |  optional   |  fix-nonres
 status-code-set,no-status-code     |   boolean_list |  optional   |  status-code-set
 max-n-events                       |   integer      |  optional   |  -1
 n-gen-files                        |   integer      |  optional   |  -1
+use-fake-reco                      |   boolean      |  optional   |  false
