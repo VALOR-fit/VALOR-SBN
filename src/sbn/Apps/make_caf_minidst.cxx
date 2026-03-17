@@ -384,6 +384,7 @@ int main(int argc, char ** argv)
   int    valor_minidst_final_nupdg  = -1;  // Final PDG
   double valor_minidst_enu_true     = -1.; // true neutrino energy, in GeV
   double valor_minidst_Q2_true      = -1.; // true neutrino energy, in GeV
+  double valor_minidst_Q2_reco      = -1.; // true neutrino energy, in GeV
   double valor_minidst_enu_reco     = -1.; // reco neutrino energy, in GeV
   double valor_minidst_q0_reco      = -1.; // reco lepton energy, in GeV // kinetic energy? Not massless
   double valor_minidst_Costheta_reco = -1.; // reco cos(lepton opening angle)
@@ -411,6 +412,7 @@ int main(int argc, char ** argv)
   valor_minidst->Branch("target"    , &valor_minidst_target      ,"target/I"     );
   valor_minidst->Branch("enu_true"  , &valor_minidst_enu_true    ,"enu_true/D"   );
   valor_minidst->Branch("Q2_true"   , &valor_minidst_Q2_true     ,"q2_true/D"    );
+  valor_minidst->Branch("Q2_reco"   , &valor_minidst_Q2_reco     ,"q2_reco/D"    );
   valor_minidst->Branch("enu_reco"  , &valor_minidst_enu_reco    ,"enu_reco/D"   );
   valor_minidst->Branch("q0_reco"   , &valor_minidst_q0_reco     ,"q0_reco/D"    );
   valor_minidst->Branch("Theta_reco", &valor_minidst_Theta_reco  ,"Theta_reco/D" );
@@ -1259,10 +1261,12 @@ int main(int argc, char ** argv)
 	  }
 	}
 
+	double Q2_reco = -1.0;
 	VLOG("valor_sbn", pINFO) << "+ Accepting event";
 
 	valor_minidst_enu_reco    = enu_reco;
-	valor_minidst_q0_reco     = q0_reco;
+	valor_minidst_q0_reco     = q0_reco;	
+	valor_minidst_Q2_reco     = Q2_reco;
 	valor_minidst_Costheta_reco  = Costheta_reco;
 	valor_minidst_Theta_reco  = Theta_reco;
 	valor_minidst_npion       = npion_reco;
@@ -1292,6 +1296,7 @@ int main(int argc, char ** argv)
 	
 	double enu_reco    =  -999.;
 	double q0_reco     =  -999.;
+	double Q2_reco     =  -999.;
 	double Costheta_reco = -999.;
 	double Theta_reco  =  -999.;
 	double reco_weight = 1.;
@@ -1309,6 +1314,7 @@ int main(int argc, char ** argv)
 	if( std::abs(lepton_pid_reco) == 11 ) lepton_m_reco = 0.000511;
 	else if( std::abs(lepton_pid_reco) == 13 ) lepton_m_reco = 0.10566;
 	q0_reco = lepton_ke_reco + lepton_m_reco;
+	// get an estimate for q3
 
 	Costheta_reco = fake_reco_cosths[ifr];
 	Theta_reco = std::acos(Costheta_reco) * 180.0 / M_PI;

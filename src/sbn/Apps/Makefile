@@ -14,7 +14,9 @@ include $(VALOR_EXPT)/make/Make.include
 
 SBN_LIBRARIES =
 
-TGT = make_caf_full_dst #\
+TGT = make_caf_sbruce_dst #\
+      make_caf_minidst \
+      make_caf_full_dst \
       make_sbncode_minidst \
       make_caf_minidst \
       make_xsec_splines \
@@ -40,6 +42,12 @@ endif
 else
 	@echo "Skipping make_sbncode_minidst due to no SBNanalysis"
 endif
+
+# Generate DSTs from sbruce trees. Only needs ROOT cause sbruce is flat!
+#
+make_caf_sbruce_dst: FORCE
+	$(CXX) $(CXXFLAGS) -c make_caf_sbruce_dst.cxx $(GINCLUDES) $(SBNANAOBJ_INCLUDES) $(HDF5_INCLUDES)
+	$(LD) $(LDFLAGS) make_caf_sbruce_dst.o $(GLIBRARIES) $(VALOR_GLIBRARIES) $(SBNANAOBJ_LIBRARIES) $(HDF5_LIBRARIES) -o $(VALOR_EXPT)/bin/valor_sbn-make_caf_sbruce_dst
 
 # Generate DSTs from CAF files
 #

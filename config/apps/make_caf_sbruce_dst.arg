@@ -1,0 +1,14 @@
+# argument                             |   type          |  require?   |   default
+# ......................................................................................................
+input                                  |   string        |  mandatory  |   -
+use-file-list,no-use-file-list         |   boolean_list  |  optional   |  no-use-file-list
+output                                 |   string        |  mandatory  |  valor_caf_dst.root
+beam                                   |   string        |  optional   |  BNB_FHC
+sample                                 |   string        |  optional   |  ND,NuMuCC,inclusive
+off-axis-bins                          |   double_vector |  optional   |  0.0,180.0
+oscillation                            |   string        |  optional   |  numu-disappearance
+is-data,no-is-data                     |   boolean_list  |  optional   |  no-is-data
+write-systematics,no-write-systematics |   boolean_list  |  optional   |  no-write-systematics
+systematics-output                     |   string        |  optional   |  valor_caf_systematics.h5
+max-n-events                           |   integer       |  optional   |  -1
+mesg-thresholds                        |   string        |  optional   |  verbosity.xml
