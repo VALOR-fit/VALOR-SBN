@@ -74,6 +74,9 @@
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/GENIEIncludes.h"
 #include "valor/GENIEUtilities/UtlEventRec.h"
+#include "valor/FitCore/CompoundFitElements.h"
+#include "valor/FitElements/GenericSingleSampleFitModel.h"
+#include "valor/KineBinning/UtlBinning.h"
 // hdf5
 #include "H5Cpp.h"
 #include "H5File.h"
@@ -235,6 +238,31 @@ void append_row( H5::DataSet & dataset, const std::vector<float> & row ) {
   return;
 }
 
+// Helper to convert a covariance (TH2D) to a H5 dataset. Is always 2-dimensional
+H5::DataSet create_or_open_cov_dataset( H5::Group & group, const std::string & name, 
+					const std::string & attr_name,
+					TH2D cov) {
+  if( H5Lexists( group.getId(), name.c_str(), H5P_DEFAULT ) ) 
+    return group.openDataSet(name);
+
+  int nx = cov.GetNbinsX(); int ny = cov.GetNbinsY(); // nx == ny
+  // HDF5 needs a flattened contiguous buffer for readout, which will be shaped as we want it
+  std::vector<double> data(nx * ny);
+
+  for( int i = 1; i <= nx; i++ ){
+    for( int j = 1; j <= ny; j++ ){
+      data[(i-1)*ny + (j-1)] = cov.GetBinContent(i, j);
+    }
+  } // loop over rows
+
+  hsize_t dims[2] = { static_cast<hsize_t>(nx), static_cast<hsize_t>(ny) };
+  H5::DataSpace dataspace(2, dims);
+
+  // no compression needed for this small set...
+  H5::DataSet dset = group.createDataSet( name, H5::PredType::NATIVE_DOUBLE, dataspace );
+  return dset;
+}
+
 // Some constants to transform vertex from detector coordinates to beamline coordinates. All in cm
 // Information grabbed from G4BNB, https://github.com/SBNSoftware/G4BNB
 static std::unordered_map<std::string, std::array<double, 3>> detector_origins = {
@@ -349,6 +377,14 @@ static std::unordered_map<Sample_t, std::string> sbn_sbruces = {
   { ksFarNuMuCC_Npi,     "numuCCNpi-far" }
 };
 
+// This data structure specifies a string, and a pair of vectors. One is to get weights from the tree,
+// the other is to write the weights to spectra
+struct SystUniverseTuple {
+  std::string name;
+  std::vector<double> * weights = nullptr;
+  std::vector<TH1D> hists;
+};
+
 // -------------------------------------------------------------------------------------------
 // Main method
 // -------------------------------------------------------------------------------------------
@@ -376,6 +412,7 @@ int main(int argc, char ** argv)
   string opt_beam_name      = arg.GetString("beam");
   string opt_sample_name    = arg.GetString("sample");
   string opt_oscillation    = arg.GetString("oscillation");
+  string config_file        = arg.GetString("config");
   bool   is_data            = arg.GetBool("is-data");
   bool   write_systematics  = arg.GetBool("write-systematics");
   std::vector<double> oaa_bin_edges = arg.GetDoubleVec("off-axis-bins");
@@ -429,16 +466,57 @@ int main(int argc, char ** argv)
 			   << " with doing_oaa = " << (int) doing_oaa
 			   << ", discriminate_topo = " << (int) discriminate_topo;
 
+  // Access the binning scheme
+  std::string elem_readopt("nomc nosplines");
+  CompoundFitElements * elements = new CompoundFitElements();
+  elements->Read(util::CompleteConfigPath(config_file),elem_readopt.c_str());
+  FitModelABC * model = elements->FitModel();
+  CompoundFitModel * cm = dynamic_cast<CompoundFitModel*>(model);
+  assert(cm);
+  
+  GenericSingleSampleFitModel * gmodel = 0;
+  bool got_appropriate_model = false;
+  for(unsigned int imodel = 0; imodel < cm->GetNSubModels(); imodel++) {
+    gmodel = dynamic_cast<GenericSingleSampleFitModel*>(cm->GetSubModel(imodel));
+    if(gmodel->GetSample() == vsample) { got_appropriate_model = true; break; }
+  }
+  if (!got_appropriate_model) {
+    VLOG("valor_sbn", pFATAL) << "Failed to identify appropriate fit model to get binning.";
+  }
+  VLOG("valor_sbn", pINFO) << " Successfully accessed the relevant model for binning information";
+  const SingleSampleKineBinning & binning = *(gmodel->GetBinning());
+  const VALORBinning * true_bins = binning.TrueSmpBinningSingle();
+  const VALORBinning * reco_bins = binning.RecoSmpBinning();
+  const int n_true_bins = true_bins->NBins();
+  const int n_reco_bins = reco_bins->NBins();
+  VLOG("valor_sbn",pINFO) << " Number of (reco, true) bins: " << n_reco_bins << ", " << n_true_bins;
+  VLOG("valor_sbn",pINFO) << "True min and max = " << true_bins->Minimum(0) << ", " << true_bins->Maximum(0);
+  
   // Get the trees. If asking for a particular topology, load in that tree
   TChain * selections = new TChain(Form("Selections/%s", vssample.c_str()));
+  // Add in the various systematics.
+  TChain * standard_multisigmas    = new 
+    TChain((Form("Standard multisigmas/multisigmaTree_%s", vssample.c_str())));
+  TChain * nonstandard_multisigmas = new 
+    TChain((Form("Nonstandard multisigmas/multisigmaTree_nonstandard_%s", vssample.c_str())));
+  TChain * interaction_multisims   = new 
+    TChain((Form("Interaction multisims/multisimTree_%s_int", vssample.c_str())));
+  TChain * flux_multisims          = new 
+    TChain((Form("Flux multisims/multisimTree_%s_flux", vssample.c_str())));
+  TChain * g4rw_multisims          = new 
+    TChain((Form("G4rw multisims/multisimTree_%s_g4rw", vssample.c_str())));
+  std::vector<TChain *> systematics = { standard_multisigmas, nonstandard_multisigmas, interaction_multisims,
+					flux_multisims, g4rw_multisims };
+  
   double NPOT = 0.0;
   if( ! opt_input_is_list ) {
     try {
       std::string dest = opt_input_name;
       selections->Add(dest.c_str());
+      for( auto const & chain : systematics ){ chain->Add(dest.c_str()); }
       // open the file and get the POT now.
       // unique_ptr releases mem when out of scope! yay for good memory mgmt :)
-      auto fin = std::unique_ptr<TFile>( TFile::Open(opt_input_name.c_str()) );
+      auto fin = std::unique_ptr<TFile>( TFile::Open(dest.c_str()) );
       NPOT += (dynamic_cast<TH1D *>( fin->Get("Selections/POT") ))->Integral();
       fin->Close();
     } catch (const std::exception & e) {
@@ -460,6 +538,8 @@ int main(int argc, char ** argv)
 	try {
 	  std::string dest = line;
 	  selections->Add(dest.c_str());
+	  for( auto const & chain : systematics ){ chain->Add(dest.c_str()); }
+
 	  printProgress(static_cast<double>(iFile+1)/static_cast<double>(nFiles));
 	  auto fin = std::unique_ptr<TFile>( TFile::Open(line.c_str()) );
 	  NPOT += (dynamic_cast<TH1D *>( fin->Get("Selections/POT") ))->Integral();
@@ -507,7 +587,7 @@ int main(int argc, char ** argv)
 
   TTree * valor_dst =
     new TTree("valor_sbn_dst","DST input for VALOR/SBN fit");
-
+  
   Long64_t nev = selections->GetEntries();
   if( max_n_events > 0 ) nev = std::min( nev, static_cast<Long64_t>(max_n_events) );
   Long64_t nev_accept = 0;
@@ -515,7 +595,7 @@ int main(int argc, char ** argv)
   for (int im = 0 ; im < valor::conv::kNReacModes; im++) {
     nev_accept_by_mode.push_back(0);
   }
-
+  
   valor_dst->Branch("beam"          , &valor_dst_beam         ,"beam/I"          );
   valor_dst->Branch("sample"        , &valor_dst_sample       ,"sample/I"        );
   valor_dst->Branch("reac_mode"     , &valor_dst_reac_mode    ,"reac_mode/I"     );
@@ -545,7 +625,7 @@ int main(int argc, char ** argv)
   double costhmu_true, costhmu_reco;
   double vtx_x, vtx_y, vtx_z;
   double wgt;
-
+  
   selections->SetBranchAddress("iscc", &iscc);
   selections->SetBranchAddress("isnc", &isnc);
   selections->SetBranchAddress("nu_pdg", &nupdg);
@@ -569,13 +649,34 @@ int main(int argc, char ** argv)
   valor_dst_beam    = beam;
   valor_dst_target  = tgtpdg;
   valor_dst_wgt_pot = 1.0e20 / NPOT;
+  
+  // and now get systematic branches
+  std::vector< SystUniverseTuple > flux_branches = {
+    { "expskin", nullptr, {} }
+  };
+  
+  if( write_systematics ) {
+    // Flux multisims
+    for( auto & flux_br : flux_branches ) {
+      flux_multisims->SetBranchAddress( Form("expskin_Flux", (flux_br.name).c_str()), &(flux_br.weights) ); 
+      // Initialise to 1k universes
+      for( int i = 0; i < 1000; i++ ) {
+	(flux_br.hists).push_back( TH1D(Form("%s_%d", (flux_br.name).c_str(), i), "",
+					n_true_bins, true_bins->Minimum(0), true_bins->Maximum(0)) );
+      } // initialise branch
+    } // for all flux branches
+  } // if write systematics
 
   for( Long64_t iev = 0; iev < nev; iev++ ) {
-    if( nev > 10000 ) { printProgress(static_cast<double>(iev+1)/static_cast<double>(nev)); }
+    if( nev > 100 ) { printProgress(static_cast<double>(iev+1)/static_cast<double>(nev)); }
 
     Sample_t valor_sample = vsample;
     int  isample = static_cast<int>(vsample);
     selections->GetEntry(iev);
+    
+    if( write_systematics ) {
+      for( auto const & chain : systematics ){ chain->GetEntry(iev); }
+    }
 
     // We'll fix the sample based on what was asked for.
     // If the sample is inclusive, just keep anything.
@@ -781,19 +882,33 @@ int main(int argc, char ** argv)
     // RETHERE fix eff weight
     valor_dst_wgt_eff = 1.0;
     
+    // Systematics
+    if( write_systematics ) {
+      for( auto & flux_br : flux_branches ) {
+	// For each of the flux multisims, if the weight is nontrivial add it to the covariance
+	std::vector<double> * wgts = flux_br.weights;
+	std::vector<TH1D> hists = flux_br.hists;
+	if( ! std::all_of( wgts->begin(), wgts->end(), [](double v){ return v == 1.0; } ) ) {
+	  for( int i = 0; i < wgts->size(); i++ ) {
+	    hists[i].Fill(valor_dst_enu_true, wgts->at(i));
+	  }
+	} // nontrivial event for this systematic
+      } // flux systematics
+    };    
+    
     valor_dst->Fill();
   } // loop over entries in chain
-
+  
   std::cout << "" << std::endl;
-
+  
   // Saving VALOR DST to output file
   VLOG("valor_sbn", pNOTICE)
     << "Saving VALOR/SBN DST to: " << opt_output_name;
   valor_dst->Write();
   fout.Close();
-
+  
   VLOG("valor_sbn", pNOTICE)  << "Done!";
-
+  
   time_t endrawtime;
   struct tm * endtimeinfo;
   time (&endrawtime);
