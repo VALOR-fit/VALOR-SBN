@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_pac_numu_dst">
+
+<!-- FHC -->
+    <element name="sbn_pac_numu">
+      <detector>     sbn_nd                                                     </detector>
+      <beam>         bnb_fhc                                                    </beam>
+      <sample>       ND,NuMuCC,inclusive                                        </sample>
+      <observable>   Ereco                                                      </observable>
+      <data>                                                                    </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                                   </mc>
+      <data_class>   valor::GenericSingleSampleFitData                          </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                         </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                           </binning>
+    </element>
+  
+  </element_list>
+  
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameters">       params/sterile_physics_parameter_values.xml     </filename>
+ </parameter_definitions>
+
+</valor> 

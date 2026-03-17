@@ -1,6 +1,7 @@
 # argument                             |   type          |  require?   |   default
 # ......................................................................................................
 input                                  |   string        |  mandatory  |   -
+config                                 |   string        |  optional   |  analysis/sbn_pac_numu_dst.xml
 use-file-list,no-use-file-list         |   boolean_list  |  optional   |  no-use-file-list
 output                                 |   string        |  mandatory  |  valor_caf_dst.root
 beam                                   |   string        |  optional   |  BNB_FHC
