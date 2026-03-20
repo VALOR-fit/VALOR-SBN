@@ -11,7 +11,7 @@ Assumed exposure for various beam configurations
 <data>
   <exposure> 
     <bnb_fhc>
-      1.6e+21
+      1.2e+21
     </bnb_fhc>
     <bnb_rhc>
       0
@@ -43,8 +43,8 @@ Input MC templates
 
   <dst> 
     <bnb_fhc>
-       <filename> sbn_numu_inclusive/dsts/2020a1/valor_sbncode_fhc_numuccinc_disappearance_nd_minidst_mc_universes_0p0-0p34deg.root </filename>
-       <objname> valor_sbn_minidst </objname> 
+       <filename> sbnd_PAC/mc_MCP2025C_exclusive_noPRISM.root </filename>
+       <objname> valor_sbn_dst </objname> 
        <objtype> TTree    </objtype> 
     </bnb_fhc>
   </dst>

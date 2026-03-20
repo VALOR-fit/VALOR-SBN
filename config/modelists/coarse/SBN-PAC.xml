@@ -7,4 +7,354 @@
     <fill_sty>   3544          </fill_sty>
   </coarse_mode>
 
+  <coarse_mode>
+    <name>       numuccres     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numuccdis     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numucccoh     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numuccmec     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numuncqe      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numuncres     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numuncdis     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numunccoh     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numuncmec     </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarccqe   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarccres  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarccdis  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarcccoh  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarccmec  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarncqe   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarncres  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarncdis  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarnccoh  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       numubarncmec  </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nueccqe       </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nueccres      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nueccdis      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuecccoh      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nueccmec      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuencqe       </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuencres      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuencdis      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuenccoh      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuencmec      </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarccqe    </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarccres   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarccdis   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarcccoh   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarccmec   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarncqe    </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarncres   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarncdis   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarnccoh   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       nuebarncmec   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       cohelastic    </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       electronscatter   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+  
+  <coarse_mode>
+    <name>       imd-annihilation   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       ibd           </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       glashow       </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       anomalynugamma   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       diffractive   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       em            </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       weakmix   </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       cosmic        </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
+  <coarse_mode>
+    <name>       dirt          </name>
+    <line_col>   1             </line_col>
+    <fill_col>   0             </fill_col>
+    <fill_sty>   3544          </fill_sty>
+  </coarse_mode>
+
 </coarse_mode_list>

@@ -1,0 +1,733 @@
+<?xml version="1.0"?>
+
+<valor> 
+
+  <element_list name="sbn_numu_disapp_pac">
+   
+    <element name="sbn_nd_fhc_inclusive_noPRISM">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive                                  </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa1">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA1                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa2">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA2                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa3">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA3                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa4">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA4                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa5">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA5                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa6">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA6                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa7">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA7                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa8">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA8                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_inclusive_oaa9">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,inclusive,OAA9                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_noPRISM">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi                                  </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa1">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA1                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa2">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA2                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa3">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA3                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa4">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA4                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa5">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA5                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa6">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA6                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa7">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA7                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa8">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA8                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_0p0pi_oaa9">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,0p0pi,OAA9                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_noPRISM">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi                                  </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa1">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA1                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa2">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA2                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa3">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA3                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa4">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA4                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa5">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA5                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa6">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA6                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa7">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA7                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa8">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA8                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1p0pi_oaa9">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1p0pi,OAA9                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_noPRISM">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi                                  </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa1">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA1                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa2">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA2                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa3">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA3                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa4">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA4                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa5">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA5                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa6">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA6                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa7">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA7                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa8">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA8                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Np0pi_oaa9">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Np0pi,OAA9                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+      
+    <element name="sbn_nd_fhc_1pi_noPRISM">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi                                  </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa1">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA1                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa2">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA2                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa3">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA3                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa4">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA4                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa5">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA5                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa6">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA6                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa7">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA7                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa8">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA8                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_1pi_oaa9">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,1pi,OAA9                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_noPRISM">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other                                  </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa1">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA1                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa2">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA2                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa3">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA3                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa4">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA4                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa5">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA5                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa6">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA6                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa7">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA7                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa8">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA8                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+
+    <element name="sbn_nd_fhc_Other_oaa9">
+      <detector>     sbn_nd                                               </detector>
+      <beam>         bnb_fhc                                              </beam>
+      <sample>       ND,NuMuCC,Other,OAA9                             </sample>
+      <observable>   Ereco                                                </observable>
+      <data>                                                              </data>
+      <mc>           mc/sbn_pac_NuMu_SBND.xml                             </mc>
+      <data_class>   valor::GenericSingleSampleFitData                    </data_class>
+      <model_class>  valor::GenericSingleSampleFitModel                   </model_class>
+      <binning>      binning/sbn_pac_binning_NuMu.xml                     </binning>
+    </element>
+    
+  </element_list>
+    
+  <parameter_definitions>
+    <filename desc="sterile_physics_parameter_values"> params/sterile_physics_parameter_values.xml </filename>
+  </parameter_definitions>
+
+</valor> 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<messenger_config>
+
+  <!-- 
+    Defines the priority levels for VALOR message streams.
+    The priority (in descending importance order) can be 
+    FATAL, ALERT, CRIT, ERROR, WARN, NOTICE, INFO, DEBUG.
+   -->
+
+  <priority msgstream="Messenger">    DEBUG   </priority>
+  <priority msgstream="Rnd">          DEBUG   </priority>
+  <priority msgstream="Reg">          DEBUG   </priority>
+  <priority msgstream="XML">          DEBUG   </priority>
+  <priority msgstream="SDData">       DEBUG   </priority>
+  <priority msgstream="SDModel">      DEBUG   </priority>
+  <priority msgstream="ArrIdx">       DEBUG    </priority>
+  <priority msgstream="NDBinning">    DEBUG   </priority>
+  <priority msgstream="NuFlux">       DEBUG   </priority>
+  <priority msgstream="NuDet">        DEBUG   </priority>
+  <priority msgstream="NuInt">        DEBUG   </priority>
+  <priority msgstream="InputMC">      DEBUG   </priority>
+  <priority msgstream="HACK">         DEBUG    </priority>
+  
+  <priority msgstream="Minuit">                         DEBUG </priority>
+  <priority msgstream="Minuit2">                          DEBUG </priority>
+  <priority msgstream="CompoundFitElements">            DEBUG </priority>
+  <priority msgstream="CompoundFitModel">               DEBUG </priority>
+  <priority msgstream="CompoundFitData">                DEBUG </priority>
+  <priority msgstream="CorrelatedSystematics">          DEBUG </priority>
+  <priority msgstream="CompoundCorrelatedSystematics">  DEBUG </priority>
+  <priority msgstream="GenericSingleSampleFitModel">    DEBUG </priority>
+  <priority msgstream="GenericSingleSampleFitData">     DEBUG </priority>
+  <priority msgstream="FitInputs">                      DEBUG </priority>
+  <priority msgstream="UtlNumStat">                     DEBUG </priority>
+  <priority msgstream="Lateral">                        DEBUG </priority>
+
+  <priority msgstream="fitnt_conv">                     DEBUG </priority>
+  <priority msgstream="valor_sbn">                      DEBUG  </priority>
+  
+  <priority msgstream="make_minidst">                   DEBUG </priority>
+  <priority msgstream="make_fd_minidst">                DEBUG </priority>
+  <priority msgstream="make_fastmc_minidst">            DEBUG </priority>
+  <priority msgstream="make_response_func">             DEBUG </priority>
+  <priority msgstream="RFL">                            DEBUG </priority>
+  <priority msgstream="KBCubHcmbMondrian">              DEBUG  </priority>
+  <priority msgstream="Binning">                        DEBUG  </priority>
+  <priority msgstream="SingleSampleKineBinning">        DEBUG  </priority>
+  <priority msgstream="SampleBinning">                  DEBUG  </priority>
+
+  <priority msgstream="universe_variation_tweaks">      DEBUG </priority>
+  <priority msgstream="make_sbncode_minidst">           DEBUG </priority>
+  <priority msgstream="Marginalisation">                DEBUG </priority>
+  <priority msgstream="UtlOscillation">                 DEBUG </priority>
+  <priority msgstream="Interpolator">                   DEBUG   </priority>
+  <priority msgstream="ToyStream">                      DEBUG </priority>
+  <priority msgstream="ToyBuilder">                     DEBUG </priority>
+  <priority msgstream="UtlFitParamList">                DEBUG  </priority>
+
+  <priority msgstream="CmdLnArgList">                   DEBUG  </priority>
+
+</messenger_config>

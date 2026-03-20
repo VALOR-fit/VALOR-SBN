@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<messenger_config>
+
+  <!-- 
+    Defines the priority levels for VALOR message streams.
+    The priority (in descending importance order) can be 
+    FATAL, ALERT, CRIT, ERROR, WARN, NOTICE, INFO, DEBUG.
+   -->
+
+  <priority msgstream="Messenger">    FATAL   </priority>
+  <priority msgstream="Rnd">          FATAL   </priority>
+  <priority msgstream="Reg">          FATAL   </priority>
+  <priority msgstream="XML">          FATAL   </priority>
+  <priority msgstream="SDData">       FATAL   </priority>
+  <priority msgstream="SDModel">      FATAL   </priority>
+  <priority msgstream="ArrIdx">       FATAL    </priority>
+  <priority msgstream="NDBinning">    FATAL   </priority>
+  <priority msgstream="NuFlux">       FATAL   </priority>
+  <priority msgstream="NuDet">        FATAL   </priority>
+  <priority msgstream="NuInt">        FATAL   </priority>
+  <priority msgstream="InputMC">      FATAL   </priority>
+  <priority msgstream="HACK">         FATAL    </priority>
+  
+  <priority msgstream="Minuit">                         FATAL </priority>
+  <priority msgstream="Minuit2">                          FATAL </priority>
+  <priority msgstream="CompoundFitElements">            FATAL </priority>
+  <priority msgstream="CompoundFitModel">               FATAL </priority>
+  <priority msgstream="CompoundFitData">                FATAL </priority>
+  <priority msgstream="CorrelatedSystematics">          FATAL </priority>
+  <priority msgstream="CompoundCorrelatedSystematics">  FATAL </priority>
+  <priority msgstream="GenericSingleSampleFitModel">    FATAL </priority>
+  <priority msgstream="GenericSingleSampleFitData">     FATAL </priority>
+  <priority msgstream="FitInputs">                      FATAL </priority>
+  <priority msgstream="UtlNumStat">                     FATAL </priority>
+  <priority msgstream="Lateral">                        FATAL </priority>
+
+  <priority msgstream="fitnt_conv">                     FATAL </priority>
+  <priority msgstream="valor">                          FATAL  </priority>
+  <priority msgstream="valor_sbn">                      FATAL  </priority>
+  
+  <priority msgstream="make_minidst">                   FATAL </priority>
+  <priority msgstream="make_fd_minidst">                FATAL </priority>
+  <priority msgstream="make_fastmc_minidst">            FATAL </priority>
+  <priority msgstream="make_response_func">             FATAL </priority>
+  <priority msgstream="RFL">                            FATAL </priority>
+  <priority msgstream="KBCubHcmbMondrian">              FATAL  </priority>
+  <priority msgstream="Binning">                        FATAL  </priority>
+  <priority msgstream="SingleSampleKineBinning">        FATAL  </priority>
+  <priority msgstream="SampleBinning">                  FATAL  </priority>
+
+  <priority msgstream="universe_variation_tweaks">      FATAL </priority>
+  <priority msgstream="make_sbncode_minidst">           FATAL </priority>
+  <priority msgstream="Marginalisation">                FATAL </priority>
+  <priority msgstream="UtlOscillation">                 FATAL </priority>
+  <priority msgstream="Interpolator">                   FATAL   </priority>
+  <priority msgstream="ToyStream">                      FATAL </priority>
+  <priority msgstream="ToyBuilder">                     FATAL </priority>
+  <priority msgstream="UtlFitParamList">                FATAL  </priority>
+
+  <priority msgstream="CmdLnArgList">                   FATAL  </priority>
+
+</messenger_config>
